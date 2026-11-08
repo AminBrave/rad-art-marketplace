@@ -35,3 +35,18 @@ Laravel session middleware, role middleware, policies, validation, and ownership
 Laravel's final web catch-all serves the React entry view for application paths while explicitly excluding `/api`, `/storage`, and `/build`. Existing public paths `/`, `/artists/{slug}`, and `/artworks/{slug}` remain valid. This enables direct entry and refresh on nested workspace paths.
 
 The artist directory and static information pages are route placeholders only; no artist-directory API or full static content was added in this routing issue. Their content remains in the corresponding public marketplace/content backlog work.
+
+## Manual route acceptance matrix
+
+| Session | Expected behavior |
+|---|---|
+| Guest opens an artist, buyer, or admin workspace URL | Redirect to `/login`; after successful login, return to the requested path if the role is allowed |
+| Buyer opens an artist or admin workspace | Redirect to `/unauthorized` |
+| Artist opens a buyer or admin workspace | Redirect to `/unauthorized` |
+| Admin opens an artist or buyer workspace | Redirect to `/unauthorized` |
+| Session expires and an API request returns 401 | Clear stale client session state; protected route returns to login |
+| An API request returns 403 | Keep server denial authoritative and show the relevant feature's access/error state |
+| Unknown browser path is opened or refreshed | Laravel serves the SPA shell; React Router renders the 404 page |
+| API path is requested | Laravel API routing remains in control; SPA fallback does not capture it |
+
+Run the PHPUnit frontend route test plus the repository's frontend lint and production build. Manual browser verification with guest, buyer, artist, and admin sessions remains part of release QA.
