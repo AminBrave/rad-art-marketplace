@@ -174,7 +174,7 @@ class ArtistProfileTest extends TestCase
     {
         $artist = $this->makeUser('portfolio@example.com');
         $profile = $artist->artistProfile()->create([...$this->validProfile(), 'slug' => 'portfolio-artist']);
-        $category = Category::create(['name' => 'نقاشی', 'slug' => 'painting', 'is_active' => true]);
+        $category = Category::query()->where('slug', 'painting')->firstOrFail();
 
         $profile->artworks()->create([
             'category_id' => $category->id,
