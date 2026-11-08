@@ -17,7 +17,7 @@ All notable project changes are recorded here.
 
 ### Notes
 - Apply the Phase 4 inquiry migration and run the Phase 4 smoke test before local acceptance.
-- CI and local browser verification are pending.
+- CI passed: 36 tests (149 assertions), Pint, ESLint, and Vite production build. Local browser smoke testing remains pending.
 
 ## [0.6.0-alpha] - 2026-11-08
 ### Added
