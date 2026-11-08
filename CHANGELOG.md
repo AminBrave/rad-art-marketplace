@@ -4,6 +4,11 @@ Notable project changes are recorded here in reverse chronological order. Dates 
 
 ## [Unreleased]
 
+### Added
+- Contemporary Art Editorial design tokens for palette, semantic colors, typography, spacing, shape, elevation, and layout.
+- Vazirmatn and Inter font loading, accessible focus styling, reduced-motion support, and a development-only design foundation specimen.
+- Tailwind semantic aliases and design foundation usage documentation.
+
 ### Changed
 - Selected `cleaned-MVP-1` (commit `bd459940`) as the MVP 2 implementation baseline; documented that `feature/roadmap-mvp-completion` is 15 commits behind.
 - Added the approved MVP 2 direction, scope boundaries, GitHub delivery tracker, and dedicated-branch workflow.
