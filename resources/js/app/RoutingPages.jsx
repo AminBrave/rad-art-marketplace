@@ -216,23 +216,6 @@ export function BuyerWorkspaceLayout() {
     return <WorkspaceLayout title="فضای خریدار" links={links} outletContext={{ user }} />;
 }
 
-export function BuyerDashboardHome() {
-    const { user } = useOutletContext();
-    return (
-        <section className="rounded-2xl border border-stone-200 bg-white p-6 sm:p-8" dir="rtl">
-            <p className="text-sm font-bold text-[#9a452b]">فضای خریدار</p>
-            <h1 className="mt-2 text-2xl font-black">خوش آمدید، {user.name}</h1>
-            <p className="mt-3 text-sm leading-7 text-stone-500">پیام‌های خصوصی خود به هنرمندان را از این بخش پیگیری کنید.</p>
-            <Link to="/dashboard/buyer/inquiries" className="mt-6 inline-block rounded-xl bg-[#20201e] px-5 py-3 text-sm font-bold text-white">مشاهده پیام‌های من</Link>
-        </section>
-    );
-}
-
-export function BuyerInquiryPage() {
-    const { user } = useOutletContext();
-    return <InquiryCenter user={user} hasProfile />;
-}
-
 export function AdminWorkspaceLayout() {
     const links = [
         { to: '/admin', label: 'نمای کلی', end: true },

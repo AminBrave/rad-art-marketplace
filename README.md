@@ -3,7 +3,7 @@
 Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact marketplace. It helps visitors discover approved artworks and public artist portfolios, and lets registered buyers send private inquiries to artists.
 
 **Current integration branch:** `main`  
-**Current delivery status:** MVP 2 Stages 1–3 (foundation, public marketplace, and artist workspace) are complete. Stage 4 (buyer workspace) is next.  
+**Current delivery status:** MVP 2 Stages 1–4 (foundation, public marketplace, artist workspace, and buyer workspace) are complete. Stage 5 (admin workspace) is next.  
 **Product status:** Active MVP development; not yet verified or signed off for production.
 
 ## Product capabilities
@@ -26,6 +26,13 @@ Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact mark
 - Paginated inquiry inbox, recipient-scoped detail, and read/archive controls.
 - No unsupported artwork deletion, inquiry replies, chat, or email delivery.
 
+### Buyer workspace — implemented
+
+- Buyer-only overview with the server-reported total sent-inquiry count and latest inquiry.
+- Paginated sent-inquiry history with artist/artwork context and server-reported status.
+- Dedicated inquiry detail routes that survive direct navigation and refresh.
+- Sender-scoped API reads; no inquiry status mutation, replies, chat, or email delivery.
+
 ### Accounts and other workflows — implemented baseline
 
 - Session-based registration, login, current-user, and logout.
@@ -35,7 +42,7 @@ Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact mark
 - Artist-owned artwork submission/editing and private image storage.
 - Admin artwork moderation: approve, reject, or request changes.
 - Buyer-to-artist inquiry intake and buyer sent-inquiry history.
-- Baseline buyer and admin workspaces; these are expanded in later MVP 2 stages.
+- Baseline admin workspace; it is expanded in Stage 5.
 
 ### Explicitly out of scope
 
@@ -50,8 +57,8 @@ The [GitHub delivery tracker](https://github.com/AminBrave/rad-art-marketplace/i
 | 1. Foundation and audit | Baseline, design system, routing, shared UI, API/UX audit | #6–#13 | Complete |
 | 2. Public marketplace | Homepage, gallery, artwork detail, artists, information pages | #14–#18 | Complete |
 | 3. Artist workspace | Overview, artwork management/submission, inquiry inbox | #19–#21 | Complete |
-| 4. Buyer workspace | Account and inquiry history | #22 | Next |
-| 5. Admin workspace | Overview, moderation UI, user management | #23–#25 | Planned |
+| 4. Buyer workspace | Account overview, paginated sent-inquiry history and detail | #22 | Complete |
+| 5. Admin workspace | Overview, moderation UI, user management | #23–#25 | Next |
 | 6. QA and release | Localization/RTL, accessibility/responsive, performance, regression/release | #26–#29 | Planned |
 
 MVP 2 follows the **Contemporary Art Editorial** visual direction, with Persian as the launch language and RTL as the default. Laravel remains authoritative for authentication, authorization, validation, ownership, and privacy.

@@ -2,6 +2,22 @@
 
 Notable repository changes are listed newest first. Entries describe merged implementation milestones and repository maintenance, not production releases. The current package version is not used as a release tag.
 
+## 2026-11-09 — MVP 2 Stage 4: Buyer workspace
+
+### Added
+- Buyer overview with API-reported total sent inquiries and latest inquiry.
+- Paginated, sender-scoped inquiry history with artist/artwork context and server-reported status.
+- Dedicated inquiry detail routes that support direct navigation and browser refresh.
+- Loading, empty, error, pagination, unauthorized, and not-found handling.
+- Reused the existing buyer inquiry API, role guard, shared workspace shell, and UI primitives. No backend endpoint, schema, or dependency was added.
+
+### Scope
+- Buyer status remains read-only; only artists can mark inquiries read/archive.
+- No replies, chat, email delivery, or unsupported buyer account settings.
+
+### Verification
+- Automated CI results are recorded on the Stage 4 pull request. Manual browser/device checks remain part of Stage 6 QA.
+
 ## 2026-11-09 — MVP 2 Stage 3: Artist workspace
 
 ### Added and refined

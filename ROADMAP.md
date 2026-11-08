@@ -47,15 +47,17 @@ This file is the concise project delivery map. The [GitHub tracker](https://gith
 - [x] Preserve server-side role checks, ownership, validation, and moderation assignment.
 - [x] Keep unsupported deletion, replies, chat, and email delivery out of the UI.
 
-### Stage 4 — Buyer workspace · Next
+### Stage 4 — Buyer workspace · Complete
 
-**Issue #22 · Open**
+**Issue #22 · Integrated into `main`**
 
-- [ ] Buyer account overview and sent-inquiry history/detail.
-- [ ] Show only the authenticated buyer's own inquiry records.
-- [ ] Keep inquiry status tracking distinct from chat or replies.
+- [x] Buyer overview with API-reported sent-inquiry total and latest request.
+- [x] Paginated sender-scoped sent-inquiry history with artist/artwork context and status.
+- [x] Dedicated, refresh-safe detail route for each inquiry.
+- [x] Empty, loading, error, unauthorized/not-found, and pagination states.
+- [x] Keep buyer status read-only; no replies, chat, or email delivery.
 
-### Stage 5 — Admin workspace · Planned
+### Stage 5 — Admin workspace · Next
 
 **Issues #23–#25 · Open**
 

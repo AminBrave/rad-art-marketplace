@@ -50,6 +50,18 @@ In a second terminal, run `php artisan serve` and open the Laravel URL. For the 
 10. Confirm the detail view contains only API-provided metadata and never exposes buyer email. Verify no reply/chat composer or email-delivery claim appears.
 11. Use separate artist accounts to verify recipient isolation through the UI and direct API requests; another artist's inquiry must return 404.
 
+## Buyer workspace
+
+1. Sign in as a Buyer and open `/dashboard/buyer`; confirm the total is the API paginator total and the latest inquiry matches the newest record.
+2. With a Buyer account that has no inquiries, confirm the overview and history show an empty state with a link to discover artists.
+3. Open `/dashboard/buyer/inquiries`; confirm only the signed-in buyer's sent inquiries appear, in newest-first order, with the artist, optional artwork, date, and API status.
+4. Navigate between history pages and confirm the URL page query and records match the API paginator.
+5. Open an inquiry detail from the list, refresh the detail URL, and use the back-to-list action; confirm the page context is preserved.
+6. Open a valid inquiry detail URL directly; confirm the original subject/message, artist context, optional artwork context, date, and current server status.
+7. Use another Buyer account to request the first buyer's inquiry detail URL; expect the API to return 404 and the UI to show a not-found state without leaking inquiry content.
+8. Confirm Buyer status is read-only and there are no reply/chat controls or email addresses. An inquiry is an initial contact request, not a conversation or email-delivery feature.
+9. Verify guest and wrong-role workspace navigation is redirected by the role guard, and protected API access remains server-authorized.
+
 ## Public artwork discovery
 
 1. Submit an artwork as an Artist with an active category and a JPG, JPEG, PNG, or WebP image no larger than 5 MB and 6000 × 6000 pixels.

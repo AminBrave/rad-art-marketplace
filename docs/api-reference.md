@@ -118,7 +118,7 @@ Inquiry creation fields:
 - `artwork_id`: optional; if supplied, it must identify approved artwork belonging to the target artist.
 - `honeypot`: must be empty/absent.
 
-The artist update accepts `status=read` or `status=archived`. The API omits both parties' email addresses. This feature does not send email and does not provide a reply/chat channel. Buyer and artist inquiry lists use Laravel pagination (10 per page).
+The artist update accepts `status=read` or `status=archived`; buyers have no status-update endpoint and see the current status read-only. Buyer detail reads are scoped to the authenticated sender and return 404 for another buyer's inquiry. The API omits both parties' email addresses. This feature does not send email and does not provide a reply/chat channel. Buyer and artist inquiry lists use Laravel pagination (10 per page).
 
 ## Common access and validation behavior
 

@@ -27,7 +27,7 @@ All public routes render inside `PublicLayout`, which provides the public naviga
 | Role | Base route | Child routes |
 |---|---|---|
 | Artist | `/dashboard/artist` | `profile`, `artworks`, `inquiries` |
-| Buyer | `/dashboard/buyer` | `inquiries` |
+| Buyer | `/dashboard/buyer` | `inquiries`, `inquiries/:id` |
 | Admin | `/admin` | `users`, `artworks` |
 
 `/dashboard` requires authentication and redirects to the user's role workspace: Admin to `/admin`, Buyer to `/dashboard/buyer`, and Artist to `/dashboard/artist`.
@@ -40,7 +40,7 @@ The artist workspace reuses `ArtistWorkspaceLayout` and the shared `WorkspaceLay
 
 The artwork form uses `GET /api/v1/categories`, `GET /api/v1/artist/artworks`, `POST /api/v1/artist/artworks`, and method-spoofed `PATCH /api/v1/artist/artworks/{id}`. There is no artwork deletion endpoint. The inquiry inbox uses the artist list/detail/update endpoints and only exposes the API's `new`, `read`, and `archived` states. It does not provide replies, chat, or email delivery.
 
-The artist, buyer, and admin route trees use their own role guards and workspace layouts. Nested and global not-found handling is provided for unknown workspace paths.
+The buyer workspace overview at `/dashboard/buyer` derives the total sent-inquiry count and latest request from the existing paginated buyer inquiry endpoint. `/dashboard/buyer/inquiries` displays the sender-scoped paginated history, and `/dashboard/buyer/inquiries/:id` reads one sender-scoped inquiry. The buyer can see the server's `new`, `read`, or `archived` status but cannot change it. Artist and admin workspaces retain their own route trees, role guards, and layouts. Nested and global not-found handling is provided for unknown workspace paths.
 
 ## Authentication and authorization
 
