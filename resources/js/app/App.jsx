@@ -5,6 +5,7 @@ import AdminArtworkModeration from './AdminArtworkModeration';
 import ArtworkStudio from './ArtworkStudio';
 import ContactArtistForm from './ContactArtistForm';
 import InquiryCenter from './InquiryCenter';
+import DesignFoundation from './DesignFoundation';
 
 const highlights = [
     { number: '01', title: 'هنر اصیل', description: 'آثار منتخب هنرمندان مستقل را کشف کنید.' },
@@ -140,6 +141,10 @@ export default function App() {
             setProfileBusy(false);
         }
     };
+
+    if (import.meta.env.DEV && new URLSearchParams(window.location.search).has('design-system')) {
+        return createElement(DesignFoundation);
+    }
 
     if (window.location.pathname.startsWith('/artworks/')) {
         return createElement(ArtworkGallery, { user });
