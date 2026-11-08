@@ -1,6 +1,6 @@
 # Frontend routing and access model
 
-The React application uses React Router as the single source of truth for browser navigation. Laravel serves the React entry document for application paths; JSON APIs remain under `/api/v1`.
+The React application uses React Router as the single source of truth for browser navigation. The catalogue list and artwork detail are separate route elements; the detail page reads its slug from React Router route parameters. Laravel serves the React entry document for application paths; JSON APIs remain under `/api/v1`.
 
 ## Public routes
 
