@@ -83,7 +83,7 @@ export function Breadcrumbs({ items = [], className = '' }) {
     );
 }
 
-export function Pagination({ currentPage, lastPage, onPageChange, disabled = false, className = '' }) {
+export function Pagination({ currentPage = 1, lastPage = 1, onPageChange, disabled = false, className = '' }) {
     if (!lastPage || lastPage < 2) return null;
     const page = Math.min(Math.max(1, currentPage), lastPage);
     const pages = Array.from({ length: lastPage }, (_, index) => index + 1);
