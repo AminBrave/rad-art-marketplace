@@ -54,7 +54,7 @@ All authorization must be enforced server-side. Hiding UI controls is not author
 - Promote a registered account with: php artisan users:make-admin admin@example.com
 - Persian RTL registration/login interface and basic administrator user-management view.
 
-Email verification and password-reset UX are not yet implemented. Artist-owned artwork permissions will be added with the artwork model.
+Email verification and password-reset UX are not yet implemented. Artist-owned artwork permissions are enforced by the artwork policy.
 
 ### Artist profiles
 - One-to-one artist profile per account, with display name, biography, city, website, Instagram handle, and public/private visibility.
