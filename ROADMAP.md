@@ -59,8 +59,6 @@ This file is the concise project delivery map. The [GitHub tracker](https://gith
 
 ### Stage 5 — Admin workspace · Next
 
-### Stage 5 — Admin workspace · Next
-
 **Issues #23–#25 · Open**
 
 - [ ] Admin workspace shell and honest overview metrics.
