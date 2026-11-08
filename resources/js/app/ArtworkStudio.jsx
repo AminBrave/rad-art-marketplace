@@ -44,6 +44,8 @@ export default function ArtworkStudio({ user }) {
     const resetForm = () => {
         setForm(emptyArtwork);
         setImage(null);
+        const imageInput = document.getElementById('artwork-image');
+        if (imageInput) imageInput.value = '';
         setEditingId(null);
         setErrors({});
     };
@@ -155,7 +157,7 @@ export default function ArtworkStudio({ user }) {
                 </label>
                 <label className="text-sm font-semibold sm:col-span-2">
                     تصویر اثر {editingId ? '(در صورت نیاز تصویر جدید انتخاب کنید)' : ''}
-                    <input type="file" accept="image/jpeg,image/png,image/webp" required={!editingId} onChange={(event) => setImage(event.target.files?.[0] ?? null)} className="mt-2 block w-full rounded-xl border border-stone-200 bg-[#fcfbf9] px-4 py-3 text-sm file:ml-3 file:rounded-full file:border-0 file:bg-[#eae3d8] file:px-4 file:py-2" />
+                    <input id="artwork-image" type="file" accept="image/jpeg,image/png,image/webp" required={!editingId} onChange={(event) => setImage(event.target.files?.[0] ?? null)} className="mt-2 block w-full rounded-xl border border-stone-200 bg-[#fcfbf9] px-4 py-3 text-sm file:ml-3 file:rounded-full file:border-0 file:bg-[#eae3d8] file:px-4 file:py-2" />
                     <span className="mt-1 block text-xs font-normal text-stone-500">فرمت JPG، PNG یا WebP؛ حداکثر ۵ مگابایت.</span>
                     {errors.image?.map((item) => <span key={item} className="mt-1 block text-xs text-red-700">{item}</span>)}
                 </label>
