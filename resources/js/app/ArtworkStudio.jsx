@@ -52,8 +52,12 @@ export default function ArtworkStudio({ user, hasProfile }) {
     if (!hasProfile) return <EmptyState title="ابتدا پروفایل هنرمند را تکمیل کنید" description="برای ثبت و مدیریت اثر، نام نمایشی پروفایل خود را ذخیره کنید." action={<Link to="/dashboard/artist/profile" className="text-sm font-bold text-terracotta-strong underline">تکمیل پروفایل</Link>} />;
 
     const updateForm = (event) => setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
+    const clearImageInput = () => {
+        const input = document.getElementById('artwork-image');
+        if (input) input.value = '';
+    };
     const resetForm = () => {
-        setForm(emptyArtwork); setImage(null); setEditingId(null); setErrors({}); setImageError(''); setUploadProgress(0);
+        setForm(emptyArtwork); setImage(null); setEditingId(null); setErrors({}); setImageError(''); setUploadProgress(0); clearImageInput();
     };
     const editArtwork = (item) => {
         setEditingId(item.id);
@@ -62,7 +66,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
             medium: item.medium ?? '', dimensions: item.dimensions ?? '', year: item.year ? String(item.year) : '',
             price: item.price ?? '', availability: item.availability ?? 'available',
         });
-        setImage(null); setErrors({}); setImageError(''); setMessage('');
+        setImage(null); clearImageInput(); setErrors({}); setImageError(''); setMessage('');
         document.getElementById('artwork-editor')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
     const chooseImage = (event) => {
