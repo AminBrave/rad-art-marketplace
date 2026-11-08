@@ -1,8 +1,8 @@
 # API Reference
 
-All feature endpoints use JSON request/response bodies unless noted. Feature routes are session-authenticated and are defined in `routes/web.php` under `/api/v1`; browser requests must preserve Laravel session cookies and CSRF behavior. The health route is defined separately in `routes/api.php`.
+This document describes API routes implemented in the current `main` branch. It is the source of truth for frontend API integration. It does not imply that all planned workspace UI is complete.
 
-This reference describes the routes present in the current codebase. It does not imply that every planned product feature exists.
+Feature endpoints use JSON request/response bodies and are defined in `routes/web.php` under `/api/v1`, using Laravel's session and CSRF middleware. The health route is defined separately in `routes/api.php`.
 
 ## Authentication
 
@@ -12,21 +12,38 @@ This reference describes the routes present in the current codebase. It does not
 | POST | `/api/v1/auth/register` | Guest, throttled | Register Buyer or Artist |
 | POST | `/api/v1/auth/login` | Guest, throttled | Start authenticated session |
 | GET | `/api/v1/auth/me` | Authenticated | Current user payload |
-| POST | `/api/v1/auth/logout` | Authenticated | End session |
+| POST | `/api/v1/auth/logout` | Authenticated | End authenticated session |
 
-Registration fields: `name`, `email`, `password`, `password_confirmation`, and optional `role`. Passwords must be at least 10 characters and confirmed. `role` may be `artist` or `buyer`; omission defaults to `artist`. Other values, including `admin`, fail validation.
+Registration fields: `name`, `email`, `password`, `password_confirmation`, and optional `role`. Passwords must be at least 10 characters and confirmed. `role` may be `artist` or `buyer`; omission defaults to `artist`. Other values, including `admin`, fail validation. Admins are provisioned server-side.
 
-## Artist profiles
+## Public artist discovery
 
 | Method | Path | Access | Purpose |
 |---|---|---|---|
-| GET | `/api/v1/artists/{slug}` | Public profile; owner/Admin may view private profile | Read profile by public slug |
+| GET | `/api/v1/artists` | Public | Paginated public artist directory |
+| GET | `/api/v1/artists/{slug}` | Public profile; owner/Admin may view private profile | Read profile and approved portfolio |
+| POST | `/api/v1/artists/{slug}/inquiries` | Authenticated Buyer, throttled | Send inquiry to public artist |
+
+Directory query parameters:
+
+- `q`: optional search against display name and city.
+- `page`: Laravel paginator page.
+- `per_page`: bounded to 1–48; default 12.
+
+Directory results are filtered by `is_public = true` in the database and ordered by display name, then profile ID. The card payload is allow-listed to `id`, `slug`, `display_name`, short `bio`, and `city`. It does not include account IDs, email addresses, the visibility flag, private profile fields, or inquiry data.
+
+The public profile payload includes profile presentation fields and an `artworks` array containing approved works only. Public portfolio artwork omits moderation status and rejection notes.
+
+## Authenticated artist profile
+
+| Method | Path | Access | Purpose |
+|---|---|---|---|
 | GET | `/api/v1/artist-profile/me` | Artist/Admin | Read current user's profile (or null) |
 | PUT | `/api/v1/artist-profile/me` | Artist/Admin | Create or update own profile |
 | GET | `/api/v1/artist-profiles/{id}` | Artist/Admin, policy-scoped | Read profile by ID |
 | PATCH | `/api/v1/artist-profiles/{id}` | Artist/Admin, owner/Admin | Update profile |
 
-Profile fields: `display_name` (required), optional `bio`, `city`, `website_url`, `instagram_handle`, and required boolean `is_public`.
+Profile fields: `display_name` (required, max 120), optional `bio` (max 2000), `city` (max 120), `website_url` (URL), `instagram_handle` (1–30 allowed characters), and required boolean `is_public`.
 
 ## Categories and public artwork
 
@@ -39,10 +56,13 @@ Profile fields: `display_name` (required), optional `bio`, `city`, `website_url`
 
 Catalogue query parameters:
 
-- `q`: optional search term matched against title, description, and medium.
+- `q`: optional search against title, description, or medium.
 - `category`: optional active category slug.
+- `page`: Laravel paginator page.
 
-Only approved artwork is included in the public catalogue query. The image route uses a policy check and private local storage.
+The catalogue is ordered newest first and paginates 12 items per page. There is no sort parameter. Only approved artwork is included in public catalogue queries. Public artwork payloads omit moderation status and rejection notes.
+
+The image route checks the artwork view policy and streams the original from private local storage. Responses use private caching and `X-Content-Type-Options: nosniff`.
 
 ## Artist artwork management
 
@@ -52,13 +72,7 @@ Only approved artwork is included in the public catalogue query. The image route
 | POST | `/api/v1/artist/artworks` | Artist, throttled | Submit artwork |
 | PATCH | `/api/v1/artist/artworks/{id}` | Artist/Admin route group; owner/Admin policy | Update artwork |
 
-Submission fields include `title`, `category_id`, `availability`, optional `description`, `medium`, `dimensions`, `year`, `price`, and required image. Updates may omit the image. Accepted image formats are JPG/JPEG, PNG, and WebP; maximum file size is 5 MB and maximum dimensions are 6000 × 6000. Ownership and pending-review status are assigned server-side.
-
-## Public artist directory
-
-`GET /api/v1/artists` is public and returns only profiles where `is_public = true`. It supports optional `q` matching against display name and city, plus Laravel pagination using `page` and `per_page` (default 12, maximum 48). Results use stable display-name and profile-ID ordering. Directory fields are limited to `id`, `slug`, `display_name`, short `bio`, and `city`; account identifiers, email addresses, private profile fields, and inquiry data are not returned.
-
-`GET /api/v1/artists/{slug}` returns the public artist profile and an `artworks` collection containing only approved portfolio works. Public artwork responses omit moderation state and rejection notes.
+Submission fields include `title` (required, max 160), `category_id` (active category), `availability` (`available`, `sold`, or `not_for_sale`), optional `description`, `medium`, `dimensions`, `year`, `price`, and required image. Updates may omit the image. Accepted image formats are JPG/JPEG, PNG, and WebP; maximum file size is 5 MB and maximum dimensions are 6000 × 6000. Ownership and pending-review status are assigned server-side. The current artist artwork list is not paginated.
 
 ## Artwork moderation
 
@@ -67,7 +81,7 @@ Submission fields include `title`, `category_id`, `availability`, optional `desc
 | GET | `/api/v1/admin/artworks` | Admin | Paginated moderation list |
 | PATCH | `/api/v1/admin/artworks/{id}/moderation` | Admin | Apply moderation decision |
 
-Optional list filter: `status` accepts `pending_review`, `approved`, `rejected`, or `changes_requested`.
+Optional list filter: `status` accepts `pending_review`, `approved`, `rejected`, or `changes_requested`. The list paginates 20 per page.
 
 Decision body:
 
@@ -75,7 +89,7 @@ Decision body:
 - `action=reject`; note required.
 - `action=request_changes`; note required.
 
-Only pending-review records can receive a decision. Attempting to moderate another status returns HTTP 422. A successful decision records `reviewed_by` and `reviewed_at`.
+Only pending-review records can receive a decision. A successful decision records `reviewed_by` and `reviewed_at`. Public endpoints must not expose those moderation details.
 
 ## User administration
 
@@ -84,9 +98,9 @@ Only pending-review records can receive a decision. Attempting to moderate anoth
 | GET | `/api/v1/admin/users` | Admin | Paginated user list |
 | PATCH | `/api/v1/admin/users/{id}/role` | Admin | Change user role |
 
-The role update accepts `artist` or `admin`. Public registration is the only supported Buyer creation flow. An Admin cannot remove their own Admin role through this endpoint.
+The role update accepts `artist` or `admin`. An Admin cannot remove their own Admin role through this endpoint. Public registration is the supported Buyer creation flow.
 
-## Buyer-to-artist inquiries
+## Buyer and artist inquiries
 
 | Method | Path | Access | Purpose |
 |---|---|---|---|
@@ -104,7 +118,7 @@ Inquiry creation fields:
 - `artwork_id`: optional; if supplied, it must identify approved artwork belonging to the target artist.
 - `honeypot`: must be empty/absent.
 
-The artist update accepts `status=read` or `status=archived`. The API does not expose buyer or artist email addresses in inquiry payloads. This feature does not send email and does not provide a reply/chat channel.
+The artist update accepts `status=read` or `status=archived`. The API omits both parties' email addresses. This feature does not send email and does not provide a reply/chat channel. Buyer and artist inquiry lists use Laravel pagination (10 per page).
 
 ## Common access and validation behavior
 
@@ -113,8 +127,8 @@ The artist update accepts `status=read` or `status=archived`. The API does not e
 - Owner/recipient scoping may return HTTP 404 to avoid exposing another user's resource.
 - Validation failures return HTTP 422.
 - Rate-limited requests return HTTP 429.
-- Exact error payloads should be confirmed against the controller and middleware behavior for the route being integrated.
+- Confirm exact response details against the controller and middleware when integrating a new UI.
 
 ## Not implemented
 
-There are no current API routes for email verification, password reset, admin category CRUD, buyer reports/abuse moderation, featured placements, static content management, payments, orders, or chat.
+There are no API routes for email verification, password reset, admin category CRUD, buyer reports/abuse moderation, featured placements, static content management, payments, orders, email delivery, or chat.
