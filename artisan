@@ -1,8 +1,8 @@
 #!/usr/bin/env php
 <?php
 
-use Illuminate\\Foundation\\Application;
-use Symfony\\Component\\Console\\Input\\ArgvInput;
+use Illuminate\Foundation\Application;
+use Symfony\Component\Console\Input\ArgvInput;
 
 define('LARAVEL_START', microtime(true));
 
