@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Models\ArtistProfile;
 use App\Models\Artwork;
 use App\Models\Category;
 use App\Models\User;
