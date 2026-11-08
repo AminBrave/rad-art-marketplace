@@ -16,6 +16,7 @@ export default function ArtistProfilePage() {
         let active = true;
         setLoading(true);
         setProfile(null);
+        setStatus(0);
         axios.get('/api/v1/artists/' + encodeURIComponent(slug))
             .then(({ data }) => { if (active) setProfile(data.data); })
             .catch((error) => { if (active) setStatus(error.response?.status ?? 0); })
