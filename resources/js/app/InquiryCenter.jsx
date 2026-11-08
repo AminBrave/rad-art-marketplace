@@ -1,34 +1,60 @@
 import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
+import { EmptyState, ErrorState, SkeletonLines, Badge, Button } from '../components/ui';
 
 const statusLabels = { new: 'جدید', read: 'خوانده‌شده', archived: 'بایگانی‌شده' };
 
 export default function InquiryCenter({ user, hasProfile }) {
-    const [items, setItems] = useState([]);
-    const [nextPage, setNextPage] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [busyId, setBusyId] = useState(null);
-    const [error, setError] = useState('');
     const isArtist = user?.role === 'artist';
     const endpoint = isArtist ? '/api/v1/artist/inquiries' : '/api/v1/buyer/inquiries';
+    const [items, setItems] = useState([]);
+    const [selected, setSelected] = useState(null);
+    const [nextPage, setNextPage] = useState(null);
+    const [previousPage, setPreviousPage] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [detailLoading, setDetailLoading] = useState(false);
+    const [busyId, setBusyId] = useState(null);
+    const [error, setError] = useState('');
+    const [detailError, setDetailError] = useState('');
 
-    const load = useCallback(async (url = endpoint, append = false) => {
+    const load = useCallback(async (url = endpoint) => {
         setLoading(true);
         setError('');
         try {
             const { data } = await axios.get(url);
-            setItems((current) => append ? [...current, ...data.data] : data.data);
-            setNextPage(data.next_page_url);
-        } catch {
-            setError('دریافت پیام‌ها انجام نشد. دوباره تلاش کنید.');
+            const rows = data.data ?? [];
+            setItems(rows);
+            setNextPage(data.next_page_url ?? null);
+            setPreviousPage(data.prev_page_url ?? null);
+            setSelected((current) => rows.find((item) => item.id === current?.id) ?? rows[0] ?? null);
+        } catch (requestError) {
+            setError(requestError.response?.status === 403
+                ? 'این حساب اجازه مشاهده این صندوق را ندارد.'
+                : 'دریافت درخواست‌ها انجام نشد. دوباره تلاش کنید.');
         } finally {
             setLoading(false);
         }
     }, [endpoint]);
 
+    const loadDetail = useCallback(async (item) => {
+        setSelected(item);
+        setDetailLoading(true);
+        setDetailError('');
+        try {
+            const { data } = await axios.get(endpoint + '/' + item.id);
+            setSelected(data.data);
+        } catch (requestError) {
+            setDetailError(requestError.response?.status === 403
+                ? 'دسترسی به این درخواست مجاز نیست.'
+                : 'جزئیات درخواست دریافت نشد.');
+        } finally {
+            setDetailLoading(false);
+        }
+    }, [endpoint]);
+
     useEffect(() => {
-        if (user?.role === 'buyer' || (user?.role === 'artist' && hasProfile)) load();
-    }, [hasProfile, load, user?.role]);
+        if (user?.role === 'buyer' || (isArtist && hasProfile)) load();
+    }, [hasProfile, isArtist, load, user?.role]);
 
     const updateStatus = async (item, status) => {
         setBusyId(item.id);
@@ -36,8 +62,11 @@ export default function InquiryCenter({ user, hasProfile }) {
         try {
             const { data } = await axios.patch('/api/v1/artist/inquiries/' + item.id, { status });
             setItems((current) => current.map((entry) => entry.id === item.id ? data.data : entry));
-        } catch {
-            setError('به‌روزرسانی وضعیت پیام انجام نشد.');
+            setSelected(data.data);
+        } catch (requestError) {
+            setError(requestError.response?.status === 403
+                ? 'سرور اجازه تغییر وضعیت این درخواست را نداد.'
+                : 'به‌روزرسانی وضعیت درخواست انجام نشد.');
         } finally {
             setBusyId(null);
         }
@@ -46,41 +75,59 @@ export default function InquiryCenter({ user, hasProfile }) {
     if ((!isArtist && user?.role !== 'buyer') || (isArtist && !hasProfile)) return null;
 
     return (
-        <section className="mx-auto max-w-7xl px-6 pb-16 lg:px-10" dir="rtl">
-            <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
+        <section className="space-y-6" dir="rtl">
+            <header>
                 <p className="text-sm font-bold text-terracotta-strong">{isArtist ? 'ارتباط با مخاطبان' : 'پیام‌های ارسال‌شده'}</p>
-                <h2 className="mt-2 text-2xl font-black">{isArtist ? 'صندوق پیام‌های هنرمند' : 'پیگیری پیام‌ها'}</h2>
-                <p className="mt-2 text-sm leading-7 text-stone-500">{isArtist ? 'پیام‌های دریافتی را بخوانید و پس از رسیدگی بایگانی کنید. ایمیل خصوصی فرستنده نمایش داده نمی‌شود.' : 'وضعیت پیام‌هایی را که برای هنرمندان فرستاده‌اید پیگیری کنید.'}</p>
+                <h1 className="mt-2 text-2xl font-black">{isArtist ? 'صندوق درخواست‌ها' : 'پیگیری درخواست‌ها'}</h1>
+                <p className="mt-2 text-sm leading-7 text-muted">{isArtist ? 'درخواست‌های دریافتی را بخوانید و وضعیت رسیدگی را ثبت کنید. اطلاعات تماس خصوصی در این بخش نمایش داده نمی‌شود.' : 'جزئیات و وضعیت درخواست‌هایی را که برای هنرمندان فرستاده‌اید مشاهده کنید.'}</p>
+            </header>
 
-                {error && <p role="alert" className="mt-5 text-sm text-red-700">{error}</p>}
-                {loading && items.length === 0 ? <p className="mt-6 text-sm text-stone-500">در حال دریافت پیام‌ها…</p> : items.length === 0 ? (
-                    <p className="mt-6 rounded-xl bg-surface-muted p-5 text-sm text-stone-500">{isArtist ? 'هنوز پیامی دریافت نکرده‌اید.' : 'هنوز پیامی ارسال نکرده‌اید.'}</p>
-                ) : (
-                    <div className="mt-6 space-y-4">
-                        {items.map((item) => (
-                            <article key={item.id} className="rounded-2xl border border-stone-200 p-5">
-                                <div className="flex flex-wrap items-center justify-between gap-3">
-                                    <h3 className="font-extrabold">{item.subject}</h3>
-                                    <span className="rounded-full bg-surface-muted px-3 py-1 text-xs font-semibold text-terracotta-strong">{statusLabels[item.status]}</span>
+            {error && <ErrorState title="عملیات انجام نشد" description={error} />}
+            {loading ? <SkeletonLines lines={6} /> : items.length === 0 ? (
+                <EmptyState title={isArtist ? 'هنوز درخواستی دریافت نکرده‌اید' : 'هنوز درخواستی ارسال نکرده‌اید'} description={isArtist ? 'درخواست‌های ارسال‌شده از طریق پروفایل عمومی شما در اینجا نمایش داده می‌شوند.' : 'از صفحه هنرمندان یا جزئیات یک اثر می‌توانید درخواست ارتباطی ارسال کنید.'} />
+            ) : (
+                <div className="grid gap-4 lg:grid-cols-[minmax(260px,0.85fr)_minmax(0,1.5fr)]">
+                    <nav aria-label={isArtist ? 'فهرست درخواست‌های دریافتی' : 'فهرست درخواست‌های ارسالی'} className="min-w-0 border border-border bg-paper">
+                        <ul className="divide-y divide-border">
+                            {items.map((item) => (
+                                <li key={item.id}>
+                                    <button type="button" onClick={() => loadDetail(item)} aria-current={selected?.id === item.id ? 'true' : undefined} className={`block w-full p-4 text-right transition-colors hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus ${selected?.id === item.id ? 'border-s-4 border-terracotta bg-surface-muted' : ''}`}>
+                                        <span className="flex items-start justify-between gap-2"><span className="min-w-0 truncate text-sm font-bold text-ink">{item.subject}</span><Badge variant={item.status === 'new' ? 'accent' : item.status === 'archived' ? 'neutral' : 'success'}>{statusLabels[item.status] ?? item.status}</Badge></span>
+                                        <span className="mt-2 block text-xs text-muted">{isArtist ? item.buyer?.name : item.artist?.display_name}</span>
+                                        <span className="mt-1 block text-xs text-muted">{new Date(item.created_at).toLocaleDateString('fa-IR')}</span>
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                        <div className="flex items-center justify-between gap-2 border-t border-border p-3">
+                            <Button size="sm" variant="outline" disabled={!previousPage || loading} onClick={() => load(previousPage)}>قبلی</Button>
+                            <Button size="sm" variant="outline" disabled={!nextPage || loading} onClick={() => load(nextPage)}>بعدی</Button>
+                        </div>
+                    </nav>
+
+                    <article className="min-w-0 border border-border bg-paper p-5 sm:p-7">
+                        {!selected ? <EmptyState title="یک درخواست را انتخاب کنید" /> : detailLoading ? <SkeletonLines lines={5} /> : detailError ? <ErrorState title="جزئیات در دسترس نیست" description={detailError} onRetry={() => loadDetail(selected)} /> : (
+                            <>
+                                <div className="flex flex-wrap items-start justify-between gap-3">
+                                    <div><p className="text-xs font-bold text-terracotta-strong">{isArtist ? 'درخواست دریافتی' : 'درخواست ارسالی'}</p><h2 className="mt-2 text-xl font-black">{selected.subject}</h2></div>
+                                    <Badge variant={selected.status === 'new' ? 'accent' : selected.status === 'archived' ? 'neutral' : 'success'}>{statusLabels[selected.status] ?? selected.status}</Badge>
                                 </div>
-                                <p className="mt-2 text-xs text-stone-500">
-                                    {isArtist ? 'فرستنده: ' + item.buyer.name : 'هنرمند: ' + item.artist.display_name}
-                                    {item.artwork ? ' · اثر: ' + item.artwork.title : ''}
-                                    {' · ' + new Date(item.created_at).toLocaleDateString('fa-IR')}
-                                </p>
-                                <p className="mt-4 whitespace-pre-line text-sm leading-8 text-stone-700">{item.message}</p>
-                                {isArtist && item.status !== 'archived' && (
-                                    <div className="mt-4 flex flex-wrap gap-2 border-t border-stone-100 pt-4">
-                                        {item.status === 'new' && <button type="button" disabled={busyId === item.id} onClick={() => updateStatus(item, 'read')} className="rounded-full border border-stone-300 px-4 py-2 text-xs font-semibold disabled:opacity-50">علامت‌گذاری به‌عنوان خوانده‌شده</button>}
-                                        <button type="button" disabled={busyId === item.id} onClick={() => updateStatus(item, 'archived')} className="rounded-full border border-stone-300 px-4 py-2 text-xs font-semibold disabled:opacity-50">بایگانی پیام</button>
-                                    </div>
-                                )}
-                            </article>
-                        ))}
-                    </div>
-                )}
-                {nextPage && <button type="button" disabled={loading} onClick={() => load(nextPage, true)} className="mt-5 rounded-full border border-stone-300 px-5 py-2.5 text-sm font-semibold disabled:opacity-50">{loading ? 'در حال دریافت…' : 'پیام‌های قدیمی‌تر'}</button>}
-            </div>
+                                <dl className="mt-5 grid gap-3 border-y border-border py-4 text-sm sm:grid-cols-2">
+                                    <div><dt className="text-xs text-muted">{isArtist ? 'فرستنده' : 'هنرمند'}</dt><dd className="mt-1 font-semibold">{isArtist ? selected.buyer?.name : selected.artist?.display_name}</dd></div>
+                                    <div><dt className="text-xs text-muted">تاریخ ثبت</dt><dd className="mt-1 font-semibold">{new Date(selected.created_at).toLocaleString('fa-IR')}</dd></div>
+                                    {selected.artwork && <div className="sm:col-span-2"><dt className="text-xs text-muted">اثر مرتبط</dt><dd className="mt-1 font-semibold">{selected.artwork.title}</dd></div>}
+                                </dl>
+                                <p className="whitespace-pre-wrap py-6 text-sm leading-9 text-ink">{selected.message}</p>
+                                {isArtist && <div className="flex flex-wrap gap-2 border-t border-border pt-4">
+                                    {selected.status !== 'read' && <Button size="sm" variant="outline" disabled={busyId === selected.id} onClick={() => updateStatus(selected, 'read')}>علامت‌گذاری به‌عنوان خوانده‌شده</Button>}
+                                    {selected.status !== 'archived' && <Button size="sm" variant="secondary" disabled={busyId === selected.id} onClick={() => updateStatus(selected, 'archived')}>بایگانی درخواست</Button>}
+                                </div>}
+                                <p className="mt-4 text-xs leading-6 text-muted">این بخش برای مشاهده و پیگیری وضعیت درخواست است؛ امکان پاسخ‌گویی، گفت‌وگو یا مشاهده ایمیل طرفین در سامانه وجود ندارد.</p>
+                            </>
+                        )}
+                    </article>
+                </div>
+            )}
         </section>
     );
 }

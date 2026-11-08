@@ -1,6 +1,6 @@
 # Frontend Routes and Access Model
 
-The production application entry point is `resources/js/app.jsx`. Normal navigation mounts `AppRouter` from `resources/js/app/AppRouter.jsx`; React Router is the single source of truth for browser navigation. The legacy `resources/js/app/App.jsx` is retained only for the development-only `?design-system` specimen and is not the normal application router.
+The production application entry point is `resources/js/app.jsx`. Normal navigation mounts `AppRouter` from `resources/js/app/AppRouter.jsx`; React Router is the single source of truth for browser navigation. The legacy `resources/js/app/App.jsx` is retained only for the development-only `?design-system` specimen.
 
 Laravel serves the React shell for application paths through the final web catch-all. JSON endpoints remain under `/api/v1`.
 
@@ -32,7 +32,15 @@ All public routes render inside `PublicLayout`, which provides the public naviga
 
 `/dashboard` requires authentication and redirects to the user's role workspace: Admin to `/admin`, Buyer to `/dashboard/buyer`, and Artist to `/dashboard/artist`.
 
-The artist, buyer, and admin route trees use their own role guards and workspace layouts. The route tree includes nested not-found handling for unknown workspace paths and a global not-found page.
+The artist workspace reuses `ArtistWorkspaceLayout` and the shared `WorkspaceLayout`. Its overview at `/dashboard/artist` derives profile visibility, artwork count/status, and inquiry count/recent items from the existing artist profile, artwork, and paginated inquiry endpoints. These are operational summaries, not analytics or fabricated performance metrics.
+
+- `/dashboard/artist/profile` edits the current artist's profile.
+- `/dashboard/artist/artworks` lists the current artist's unpaginated artwork collection and provides create/edit forms.
+- `/dashboard/artist/inquiries` provides a paginated inbox, recipient-scoped detail, and supported read/archive status actions.
+
+The artwork form uses `GET /api/v1/categories`, `GET /api/v1/artist/artworks`, `POST /api/v1/artist/artworks`, and method-spoofed `PATCH /api/v1/artist/artworks/{id}`. There is no artwork deletion endpoint. The inquiry inbox uses the artist list/detail/update endpoints and only exposes the API's `new`, `read`, and `archived` states. It does not provide replies, chat, or email delivery.
+
+The artist, buyer, and admin route trees use their own role guards and workspace layouts. Nested and global not-found handling is provided for unknown workspace paths.
 
 ## Authentication and authorization
 

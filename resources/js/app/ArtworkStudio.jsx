@@ -1,23 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import { Badge, Button, EmptyState, ErrorState, FormField, SkeletonLines, UploadFeedback } from '../components/ui';
 
-const emptyArtwork = {
-    title: '',
-    description: '',
-    category_id: '',
-    medium: '',
-    dimensions: '',
-    year: '',
-    price: '',
-    availability: 'available',
-};
-
-const statusLabels = {
-    pending_review: 'در انتظار بررسی',
-    approved: 'منتشرشده',
-    rejected: 'ردشده',
-    changes_requested: 'نیازمند اصلاح',
-};
+const emptyArtwork = { title: '', description: '', category_id: '', medium: '', dimensions: '', year: '', price: '', availability: 'available' };
+const statusLabels = { pending_review: 'در انتظار بررسی', approved: 'منتشرشده', rejected: 'ردشده', changes_requested: 'نیازمند اصلاح' };
+const inputClass = 'mt-2 w-full border border-border bg-canvas px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-terracotta focus-visible:ring-2 focus-visible:ring-focus';
 
 export default function ArtworkStudio({ user, hasProfile }) {
     const [categories, setCategories] = useState([]);
@@ -26,183 +14,131 @@ export default function ArtworkStudio({ user, hasProfile }) {
     const [image, setImage] = useState(null);
     const [editingId, setEditingId] = useState(null);
     const [busy, setBusy] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [uploadProgress, setUploadProgress] = useState(0);
     const [errors, setErrors] = useState({});
     const [message, setMessage] = useState('');
+    const [loadError, setLoadError] = useState('');
+    const [imageError, setImageError] = useState('');
+    const [imagePreview, setImagePreview] = useState('');
 
     useEffect(() => {
-        if (user?.role !== 'artist' || !hasProfile) return;
+        if (!image) { setImagePreview(''); return undefined; }
+        const url = window.URL.createObjectURL(image);
+        setImagePreview(url);
+        return () => window.URL.revokeObjectURL(url);
+    }, [image]);
 
-        axios.get('/api/v1/categories').then(({ data }) => setCategories(data.data)).catch(() => setCategories([]));
-        axios.get('/api/v1/artist/artworks').then(({ data }) => setArtworks(data.data)).catch(() => setMessage('دریافت آثار شما انجام نشد.'));
-    }, [hasProfile, user?.role]);
+    const loadData = useCallback(async () => {
+        setLoading(true);
+        setLoadError('');
+        try {
+            const [categoryResponse, artworkResponse] = await Promise.all([
+                axios.get('/api/v1/categories'),
+                axios.get('/api/v1/artist/artworks'),
+            ]);
+            setCategories(categoryResponse.data.data ?? []);
+            setArtworks(artworkResponse.data.data ?? []);
+        } catch (error) {
+            setLoadError(error.response?.status === 403 ? 'این حساب اجازه مدیریت آثار را ندارد.' : 'دریافت آثار یا دسته‌بندی‌ها انجام نشد. دوباره تلاش کنید.');
+        } finally { setLoading(false); }
+    }, []);
+
+    useEffect(() => {
+        if (user?.role === 'artist' && hasProfile) loadData();
+    }, [hasProfile, loadData, user?.role]);
 
     if (user?.role !== 'artist') return null;
+    if (!hasProfile) return <EmptyState title="ابتدا پروفایل هنرمند را تکمیل کنید" description="برای ثبت و مدیریت اثر، نام نمایشی پروفایل خود را ذخیره کنید." action={<Link to="/dashboard/artist/profile" className="text-sm font-bold text-terracotta-strong underline">تکمیل پروفایل</Link>} />;
 
-    if (!hasProfile) {
-        return (
-            <section className="mx-auto mt-8 max-w-7xl rounded-2xl border border-stone-200 bg-white p-6 text-sm leading-7 text-stone-600" dir="rtl">
-                برای ثبت اثر، ابتدا فرم پروفایل هنرمند را تکمیل و ذخیره کنید.
-            </section>
-        );
-    }
-
-    const updateForm = (event) => {
-        setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
+    const updateForm = (event) => setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
+    const clearImageInput = () => {
+        const input = document.getElementById('artwork-image');
+        if (input) input.value = '';
     };
-
     const resetForm = () => {
-        setForm(emptyArtwork);
-        setImage(null);
-        const imageInput = document.getElementById('artwork-image');
-        if (imageInput) imageInput.value = '';
-        setEditingId(null);
-        setErrors({});
+        setForm(emptyArtwork); setImage(null); setEditingId(null); setErrors({}); setImageError(''); setUploadProgress(0); clearImageInput();
     };
-
-    const editArtwork = (artwork) => {
-        setEditingId(artwork.id);
+    const editArtwork = (item) => {
+        setEditingId(item.id);
         setForm({
-            title: artwork.title ?? '',
-            description: artwork.description ?? '',
-            category_id: String(artwork.category.id),
-            medium: artwork.medium ?? '',
-            dimensions: artwork.dimensions ?? '',
-            year: artwork.year ? String(artwork.year) : '',
-            price: artwork.price ?? '',
-            availability: artwork.availability ?? 'available',
+            title: item.title ?? '', description: item.description ?? '', category_id: String(item.category?.id ?? ''),
+            medium: item.medium ?? '', dimensions: item.dimensions ?? '', year: item.year ? String(item.year) : '',
+            price: item.price ?? '', availability: item.availability ?? 'available',
         });
-        setImage(null);
-        setErrors({});
-        setMessage('');
-        document.getElementById('artwork-editor')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setImage(null); clearImageInput(); setErrors({}); setImageError(''); setMessage('');
+        document.getElementById('artwork-editor')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
-
+    const chooseImage = (event) => {
+        const file = event.target.files?.[0] ?? null;
+        setImageError('');
+        setErrors((current) => ({ ...current, image: undefined }));
+        if (file && !['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+            setImageError('فقط فایل JPG، PNG یا WebP پذیرفته می‌شود.'); event.target.value = ''; setImage(null); return;
+        }
+        if (file && file.size > 5 * 1024 * 1024) {
+            setImageError('حجم تصویر نباید بیشتر از ۵ مگابایت باشد.'); event.target.value = ''; setImage(null); return;
+        }
+        setImage(file);
+    };
     const saveArtwork = async (event) => {
-        event.preventDefault();
-        setBusy(true);
-        setErrors({});
-        setMessage('');
-
+        event.preventDefault(); setBusy(true); setErrors({}); setMessage(''); setUploadProgress(0);
         const payload = new FormData();
-        Object.entries(form).forEach(([key, value]) => {
-            if (value !== '') payload.append(key, value);
-        });
+        Object.entries(form).forEach(([key, value]) => { if (value !== '') payload.append(key, value); });
         if (image) payload.append('image', image);
         if (editingId) payload.append('_method', 'PATCH');
-
         try {
             const endpoint = editingId ? '/api/v1/artist/artworks/' + editingId : '/api/v1/artist/artworks';
-            const { data } = await axios.post(endpoint, payload);
-            setMessage(data.message);
+            const { data } = await axios.post(endpoint, payload, {
+                onUploadProgress: (event) => { if (event.total) setUploadProgress(Math.round((event.loaded * 100) / event.total)); },
+            });
             resetForm();
-            const refreshed = await axios.get('/api/v1/artist/artworks');
-            setArtworks(refreshed.data.data);
+            setMessage(data.message ?? 'اثر ذخیره شد.');
+            await loadData();
         } catch (error) {
             if (error.response?.status === 422) {
-                setErrors(error.response.data.errors ?? {});
-                setMessage('لطفاً خطاهای فرم را بررسی کنید.');
-            } else {
-                setMessage('ثبت اثر انجام نشد. دوباره تلاش کنید.');
-            }
-        } finally {
-            setBusy(false);
-        }
+                setErrors(error.response.data.errors ?? {}); setMessage('لطفاً خطاهای مشخص‌شده را اصلاح کنید.');
+            } else if (error.response?.status === 403) setMessage('سرور اجازه انجام این عملیات را نداد.');
+            else setMessage('ذخیره اثر انجام نشد. اطلاعات فرم حفظ شده است؛ دوباره تلاش کنید.');
+        } finally { setBusy(false); }
     };
+    const fieldError = (name) => errors[name]?.map((item) => <span key={item} className="mt-1 block text-xs font-normal text-danger">{item}</span>);
 
-    return (
-        <section className="mt-8 rounded-3xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8" dir="rtl">
-            <div className="mb-6">
-                <p className="text-sm font-bold text-terracotta-strong">گالری شخصی</p>
-                <h2 className="mt-2 text-2xl font-black">ثبت و مدیریت آثار</h2>
-                <p className="mt-2 text-sm leading-7 text-stone-500">آثار جدید پس از ثبت در صف بررسی مدیر قرار می‌گیرند و فقط پس از تأیید در کاتالوگ عمومی نمایش داده می‌شوند.</p>
-            </div>
-
-            <form id="artwork-editor" onSubmit={saveArtwork} className="grid gap-4 sm:grid-cols-2">
-                <label className="text-sm font-semibold sm:col-span-2">
-                    عنوان اثر
-                    <input name="title" value={form.title} onChange={updateForm} required maxLength="160" className="mt-2 w-full rounded-xl border border-stone-200 bg-surface-muted px-4 py-3 outline-none focus:border-terracotta" />
-                    {errors.title?.map((item) => <span key={item} className="mt-1 block text-xs text-red-700">{item}</span>)}
-                </label>
-                <label className="text-sm font-semibold">
-                    دسته‌بندی
-                    <select name="category_id" value={form.category_id} onChange={updateForm} required className="mt-2 w-full rounded-xl border border-stone-200 bg-surface-muted px-4 py-3">
-                        <option value="">انتخاب دسته‌بندی</option>
-                        {categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}
-                    </select>
-                    {errors.category_id?.map((item) => <span key={item} className="mt-1 block text-xs text-red-700">{item}</span>)}
-                </label>
-                <label className="text-sm font-semibold">
-                    تکنیک / متریال
-                    <input name="medium" value={form.medium} onChange={updateForm} maxLength="120" className="mt-2 w-full rounded-xl border border-stone-200 bg-surface-muted px-4 py-3" placeholder="مثلاً رنگ روغن، آبرنگ…" />
-                    {errors.medium?.map((item) => <span key={item} className="mt-1 block text-xs text-red-700">{item}</span>)}
-                </label>
-                <label className="text-sm font-semibold">
-                    ابعاد
-                    <input name="dimensions" value={form.dimensions} onChange={updateForm} maxLength="120" className="mt-2 w-full rounded-xl border border-stone-200 bg-surface-muted px-4 py-3" placeholder="مثلاً ۵۰ × ۷۰ سانتی‌متر" />
-                    {errors.dimensions?.map((item) => <span key={item} className="mt-1 block text-xs text-red-700">{item}</span>)}
-                </label>
-                <label className="text-sm font-semibold">
-                    سال خلق اثر
-                    <input name="year" type="number" value={form.year} onChange={updateForm} min="1000" max={new Date().getFullYear() + 1} className="mt-2 w-full rounded-xl border border-stone-200 bg-surface-muted px-4 py-3" />
-                    {errors.year?.map((item) => <span key={item} className="mt-1 block text-xs text-red-700">{item}</span>)}
-                </label>
-                <label className="text-sm font-semibold">
-                    قیمت (ریال)
-                    <input name="price" type="number" value={form.price} onChange={updateForm} min="0" step="1" className="mt-2 w-full rounded-xl border border-stone-200 bg-surface-muted px-4 py-3" />
-                    {errors.price?.map((item) => <span key={item} className="mt-1 block text-xs text-red-700">{item}</span>)}
-                </label>
-                <label className="text-sm font-semibold">
-                    وضعیت دسترس‌پذیری
-                    <select name="availability" value={form.availability} onChange={updateForm} className="mt-2 w-full rounded-xl border border-stone-200 bg-surface-muted px-4 py-3">
-                        <option value="available">موجود</option>
-                        <option value="sold">فروخته‌شده</option>
-                        <option value="not_for_sale">برای فروش نیست</option>
-                    </select>
-                </label>
-                <label className="text-sm font-semibold sm:col-span-2">
-                    توضیحات اثر
-                    <textarea name="description" value={form.description} onChange={updateForm} rows="3" maxLength="3000" className="mt-2 w-full rounded-xl border border-stone-200 bg-surface-muted px-4 py-3 leading-7" />
-                    {errors.description?.map((item) => <span key={item} className="mt-1 block text-xs text-red-700">{item}</span>)}
-                </label>
-                <label className="text-sm font-semibold sm:col-span-2">
-                    تصویر اثر {editingId ? '(در صورت نیاز تصویر جدید انتخاب کنید)' : ''}
-                    <input id="artwork-image" type="file" accept="image/jpeg,image/png,image/webp" required={!editingId} onChange={(event) => setImage(event.target.files?.[0] ?? null)} className="mt-2 block w-full rounded-xl border border-stone-200 bg-surface-muted px-4 py-3 text-sm file:ml-3 file:rounded-full file:border-0 file:bg-surface-muted file:px-4 file:py-2" />
-                    <span className="mt-1 block text-xs font-normal text-stone-500">فرمت JPG، PNG یا WebP؛ حداکثر ۵ مگابایت.</span>
-                    {errors.image?.map((item) => <span key={item} className="mt-1 block text-xs text-red-700">{item}</span>)}
-                </label>
-                <div className="flex flex-wrap gap-3 sm:col-span-2">
-                    <button disabled={busy} className="rounded-xl bg-ink px-6 py-3 font-bold text-white hover:bg-terracotta disabled:opacity-60">
-                        {busy ? 'در حال ذخیره…' : editingId ? 'ذخیره و ارسال دوباره برای بررسی' : 'ثبت اثر برای بررسی'}
-                    </button>
-                    {editingId && <button type="button" onClick={resetForm} className="rounded-xl border border-stone-300 px-5 py-3 text-sm font-semibold">انصراف از ویرایش</button>}
+    return <section className="space-y-7" dir="rtl">
+        <header><p className="text-sm font-bold text-terracotta-strong">گالری شخصی</p><h1 className="mt-2 text-2xl font-black">مدیریت آثار</h1>
+            <p className="mt-2 text-sm leading-7 text-muted">آثار جدید و ویرایش‌شده پس از ثبت دوباره برای بررسی مدیر ارسال می‌شوند. فقط آثار تأییدشده در گالری عمومی نمایش داده می‌شوند.</p></header>
+        <section id="artwork-editor" className="border border-border bg-paper p-5 sm:p-7">
+            <div className="mb-6 flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-lg font-bold">{editingId ? 'ویرایش اثر' : 'ثبت اثر جدید'}</h2><p className="mt-1 text-xs text-muted">فیلدهای الزامی با علامت * مشخص شده‌اند.</p></div>{editingId && <Button variant="outline" size="sm" onClick={resetForm}>انصراف از ویرایش</Button>}</div>
+            <form onSubmit={saveArtwork} className="grid gap-5 sm:grid-cols-2">
+                <FormField label="عنوان اثر" required error={errors.title?.[0]}><input name="title" value={form.title} onChange={updateForm} required maxLength={160} className={inputClass} /></FormField>
+                <FormField label="دسته‌بندی" required error={errors.category_id?.[0]}><select name="category_id" value={form.category_id} onChange={updateForm} required className={inputClass}><option value="">انتخاب دسته‌بندی</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select></FormField>
+                <FormField label="تکنیک / متریال" error={errors.medium?.[0]}><input name="medium" value={form.medium} onChange={updateForm} maxLength={120} className={inputClass} placeholder="مثلاً رنگ روغن، آبرنگ…" /></FormField>
+                <FormField label="ابعاد" error={errors.dimensions?.[0]}><input name="dimensions" value={form.dimensions} onChange={updateForm} maxLength={120} className={inputClass} placeholder="مثلاً ۵۰ × ۷۰ سانتی‌متر" /></FormField>
+                <FormField label="سال خلق اثر" error={errors.year?.[0]}><input name="year" type="number" value={form.year} onChange={updateForm} min="1000" max={new Date().getFullYear() + 1} className={inputClass} /></FormField>
+                <FormField label="قیمت (ریال)" error={errors.price?.[0]}><input name="price" type="number" value={form.price} onChange={updateForm} min="0" step="1" className={inputClass} /></FormField>
+                <FormField label="وضعیت دسترس‌پذیری" required><select name="availability" value={form.availability} onChange={updateForm} className={inputClass}><option value="available">موجود</option><option value="sold">فروخته‌شده</option><option value="not_for_sale">برای فروش نیست</option></select></FormField>
+                <FormField label="توضیحات اثر" error={errors.description?.[0]} className="sm:col-span-2"><textarea name="description" value={form.description} onChange={updateForm} rows={4} maxLength={3000} className={inputClass} /></FormField>
+                <div className="sm:col-span-2">
+                    <label htmlFor="artwork-image" className="block text-sm font-semibold text-ink">تصویر اثر {editingId ? '(اختیاری؛ برای جایگزینی تصویر)' : '*'}</label>
+                    <input id="artwork-image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required={!editingId} onChange={chooseImage} aria-describedby="artwork-image-help" className="mt-2 block w-full border border-border bg-canvas px-3 py-3 text-sm file:ml-3 file:border-0 file:bg-surface-muted file:px-3 file:py-2 file:font-semibold" />
+                    <p id="artwork-image-help" className="mt-2 text-xs leading-6 text-muted">JPG، JPEG، PNG یا WebP؛ حداکثر ۵ مگابایت و ابعاد حداکثر ۶۰۰۰ × ۶۰۰۰ پیکسل.</p>
+                    {fieldError('image')}{imageError && <p role="alert" className="mt-1 text-xs text-danger">{imageError}</p>}
+                    {imagePreview && <div className="mt-4 max-w-sm border border-border p-2"><img src={imagePreview} alt="پیش‌نمایش تصویر انتخاب‌شده" className="max-h-64 w-full object-contain" /></div>}
+                    <UploadFeedback fileName={image?.name} status={busy ? 'uploading' : uploadProgress === 100 ? 'success' : 'idle'} progress={uploadProgress} />
                 </div>
+                <div className="flex flex-wrap items-center gap-3 sm:col-span-2"><Button type="submit" disabled={busy || Boolean(imageError)} loading={busy}>{editingId ? 'ذخیره و ارسال دوباره برای بررسی' : 'ثبت اثر برای بررسی'}</Button>{message && <p role="status" className="text-sm text-muted">{message}</p>}</div>
             </form>
-
-            {message && <p role="status" className="mt-4 text-sm text-terracotta-strong">{message}</p>}
-
-            <div className="mt-10 border-t border-stone-100 pt-7">
-                <h3 className="text-lg font-extrabold">آثار ثبت‌شده شما</h3>
-                {artworks.length === 0 ? (
-                    <p className="mt-4 rounded-xl bg-surface-muted p-5 text-sm text-stone-500">هنوز اثری ثبت نکرده‌اید.</p>
-                ) : (
-                    <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {artworks.map((artwork) => (
-                            <article key={artwork.id} className="overflow-hidden rounded-2xl border border-stone-200">
-                                <img src={artwork.image_url} alt={artwork.title} className="aspect-[4/3] w-full object-cover" />
-                                <div className="p-4">
-                                    <div className="flex items-center justify-between gap-2">
-                                        <h4 className="font-bold">{artwork.title}</h4>
-                                        <span className="shrink-0 rounded-full bg-surface-muted px-2.5 py-1 text-[11px] font-semibold text-terracotta-strong">{statusLabels[artwork.status] ?? artwork.status}</span>
-                                    </div>
-                                    <p className="mt-2 text-xs text-stone-500">{artwork.category.name}</p>
-                                    {artwork.rejection_note && <p className="mt-2 text-xs leading-6 text-red-700">{artwork.rejection_note}</p>}
-                                    <button type="button" onClick={() => editArtwork(artwork)} className="mt-4 text-sm font-bold text-terracotta-strong underline">ویرایش اثر</button>
-                                </div>
-                            </article>
-                        ))}
-                    </div>
-                )}
-            </div>
         </section>
-    );
+        <section className="space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-bold">آثار ثبت‌شده شما</h2><Button variant="outline" size="sm" onClick={loadData} disabled={loading}>بروزرسانی</Button></div>
+            {loadError && <ErrorState title="دریافت آثار ناموفق بود" description={loadError} onRetry={loadData} />}
+            {loading ? <SkeletonLines lines={5} /> : artworks.length === 0 ? <EmptyState title="هنوز اثری ثبت نکرده‌اید" description="با فرم بالا اولین اثر خود را برای بررسی ارسال کنید." /> :
+                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{artworks.map((item) => <article key={item.id} className="overflow-hidden border border-border bg-paper">
+                    <div className="flex aspect-[4/3] items-center justify-center bg-surface-muted p-3"><img src={item.image_url} alt={item.title} loading="lazy" className="h-full w-full object-contain" /></div>
+                    <div className="space-y-3 p-4"><div className="flex flex-wrap items-start justify-between gap-2"><h3 className="font-bold">{item.title}</h3><Badge variant={item.status === 'approved' ? 'success' : item.status === 'rejected' ? 'danger' : item.status === 'changes_requested' ? 'warning' : 'neutral'}>{statusLabels[item.status] ?? item.status}</Badge></div>
+                        <p className="text-xs text-muted">{item.category?.name}</p>{item.rejection_note && <p className="border-s-2 border-danger bg-surface-muted p-3 text-xs leading-6 text-danger">{item.rejection_note}</p>}
+                        <Button variant="outline" size="sm" onClick={() => editArtwork(item)}>ویرایش اثر</Button></div>
+                </article>)}</div>}
+        </section>
+    </section>;
 }
