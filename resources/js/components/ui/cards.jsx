@@ -42,7 +42,7 @@ export function ArtistCard({ artist, className = '' }) {
         <article className={`grid gap-3 border border-border bg-paper p-5 ${className}`} dir="rtl">
             <div className="flex items-start gap-3">
                 <div aria-hidden="true" className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-surface-muted text-lg font-bold text-terracotta-strong">
-                    {name.trim().slice(0, 1)}
+                    {name.trim().slice(0, 1) || 'ه'}
                 </div>
                 <div className="min-w-0">
                     <h3 className="font-bold text-ink">{name}</h3>
