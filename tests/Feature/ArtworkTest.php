@@ -29,6 +29,8 @@ class ArtworkTest extends TestCase
         $response = $this->actingAs($artist)->post('/api/v1/artist/artworks', [
             ...$this->validArtwork(),
             'image' => UploadedFile::fake()->image('original.jpg', 1200, 800),
+            'artist_profile_id' => 999,
+            'status' => Artwork::STATUS_APPROVED,
         ]);
 
         $response->assertCreated()
@@ -149,6 +151,8 @@ class ArtworkTest extends TestCase
         Storage::disk('local')->put('artworks/private.jpg', 'private');
 
         $this->get('/api/v1/artworks/'.$artwork->slug.'/image')->assertForbidden();
+        [$otherArtist] = $this->artistWithProfile('other@example.com');
+        $this->actingAs($otherArtist)->get('/api/v1/artworks/'.$artwork->slug.'/image')->assertForbidden();
         $this->actingAs($owner)->get('/api/v1/artworks/'.$artwork->slug.'/image')->assertOk();
     }
 
