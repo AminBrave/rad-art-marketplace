@@ -19,7 +19,6 @@ class AuthenticationTest extends TestCase
             'email' => 'artist@example.com',
             'password' => 'strong-password-123',
             'password_confirmation' => 'strong-password-123',
-            'role' => 'artist',
         ]);
 
         $response->assertCreated()
