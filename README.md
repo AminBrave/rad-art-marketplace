@@ -64,7 +64,7 @@ Email verification and password-reset UX are not yet implemented. Artist-owned a
 
 ## Local development
 
-Prerequisites: PHP 8.3+, Composer, Node.js 22+, npm, and MySQL. The target hosting PHP version and required extensions still need verification.
+Prerequisites: PHP 8.3+, Composer, Node.js 22+, npm, and MySQL. Enable the PHP extensions required by Laravel, including PDO for MySQL. The test suite uses in-memory SQLite, so the PHP CLI must also have both `pdo_sqlite` and `sqlite3` enabled. On Windows, check the CLI configuration with `php --ini`, enable `extension=pdo_sqlite` and `extension=sqlite3` in the reported `php.ini`, open a new terminal, and verify with `php -m`. The target hosting PHP version and required extensions still need verification.
 
 1. Install PHP dependencies: composer install
 2. Create the local environment: cp .env.example .env
@@ -80,9 +80,10 @@ To grant administrator access to an already registered account, run the Artisan 
 
 ## Quality checks
 
-Run after installing dependencies:
+Run after installing dependencies. On Windows, run these commands with the same PHP CLI executable used by Composer:
 - Backend tests: composer test
-- PHP style: composer lint
+- PHP style check: composer lint
+- Apply PHP formatting fixes: composer lint:fix (then rerun composer lint)
 - Frontend lint: npm run lint
 - Frontend production build: npm run build
 
