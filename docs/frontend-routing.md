@@ -26,6 +26,8 @@ Role layouts render only the navigation appropriate to the authenticated role. T
 
 ## Authentication and security
 
+`resources/js/app.jsx` mounts the router for normal application requests. It reserves the development-only `?design-system` preview entry for the existing App component so the independent design-foundations PR can add its specimen without colliding with the route tree.
+
 `AuthProvider` reads the current session from `GET /api/v1/auth/me`. A 401 from an API request clears stale client authentication state; a 403 remains an authorization failure and is shown by the affected screen. The browser guard is a navigation/UX aid only.
 
 Laravel session middleware, role middleware, policies, validation, and ownership checks remain authoritative. Do not remove or weaken server-side checks because a route is hidden in React.
