@@ -29,6 +29,8 @@ class Artwork extends Model
         'availability',
         'status',
         'rejection_note',
+        'reviewed_by',
+        'reviewed_at',
         'image_path',
     ];
 
