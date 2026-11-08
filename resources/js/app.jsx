@@ -5,7 +5,7 @@ import AppRouter from './app/AppRouter';
 import './bootstrap';
 
 const isDesignSystemPreview = import.meta.env.DEV
-    && new URLSearchParams(window.location.search).has('design-system');
+    && window.location.search.includes('design-system');
 const RootApp = isDesignSystemPreview ? LegacyApp : AppRouter;
 
 createRoot(document.getElementById('app')).render(
