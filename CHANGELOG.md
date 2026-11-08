@@ -2,6 +2,25 @@
 
 All notable project changes are recorded here.
 
+## [0.5.0-alpha] - 2026-11-08
+### Added
+- Category and artwork database migrations with starter Persian catalogue categories.
+- Artist-owned artwork model, relationships, and authorization policy.
+- Validated artwork submission/edit endpoints with server-assigned ownership and moderation state.
+- Private image storage for JPG, PNG, and WebP uploads, with authorized image delivery.
+- Approved-only public catalogue, category filtering, search, and artwork detail endpoints.
+- Persian RTL artist artwork editor and public catalogue/detail interface.
+- Feature tests for ownership, guest restrictions, upload validation, private image access, and public visibility.
+
+### Security
+- Artwork owner is derived from the authenticated artist profile, never from client input.
+- Uploaded images are type/size validated, stored outside public paths, and served through policy-protected routes.
+- Public catalogue queries expose approved artwork only; artist edits return records to pending review.
+
+### Notes
+- Admin moderation queue/actions, image transformations, and pagination controls in the UI remain future work.
+- Local artwork upload/browser smoke testing is still required.
+
 ## [0.4.0-alpha] - 2026-11-08
 ### Added
 - One-to-one artist profile model and migration with unique user ownership and public slug.
