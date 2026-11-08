@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\\Http\\Controllers\\Api\\V1;
+namespace App\Http\Controllers\Api\V1;
 
-use App\\Http\\Controllers\\Controller;
-use App\\Models\\Artwork;
-use Illuminate\\Http\\JsonResponse;
-use Illuminate\\Http\\Request;
-use Illuminate\\Validation\\Rule;
+use App\Http\Controllers\Controller;
+use App\Models\Artwork;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class AdminArtworkModerationController extends Controller
 {
