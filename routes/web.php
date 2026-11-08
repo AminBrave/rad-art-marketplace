@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\Api\V1\AdminArtworkModerationController;
 use App\Http\Controllers\Api\V1\AdminUserController;
 use App\Http\Controllers\Api\V1\ArtistProfileController;
+use App\Http\Controllers\Api\V1\ArtistInquiryController;
 use App\Http\Controllers\Api\V1\ArtworkController;
 use App\Http\Controllers\Api\V1\AuthController;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,14 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
 
     Route::get('/artists/{artistProfile:slug}', [ArtistProfileController::class, 'publicShow'])
         ->name('artists.show');
+    Route::post('/artists/{artistProfile:slug}/inquiries', [ArtistInquiryController::class, 'store'])
+        ->middleware(['auth', 'role:buyer', 'throttle:5,1'])
+        ->name('artists.inquiries.store');
+
+    Route::middleware(['auth', 'role:buyer'])->prefix('buyer')->name('buyer.')->group(function (): void {
+        Route::get('/inquiries', [ArtistInquiryController::class, 'buyerIndex'])->name('inquiries.index');
+        Route::get('/inquiries/{inquiry}', [ArtistInquiryController::class, 'buyerShow'])->name('inquiries.show');
+    });
 
     Route::get('/categories', [ArtworkController::class, 'categories'])->name('categories.index');
     Route::get('/artworks', [ArtworkController::class, 'index'])->name('artworks.index');
@@ -45,6 +54,9 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
             ->name('artist-profiles.update');
 
         Route::prefix('artist')->name('artist.')->group(function (): void {
+            Route::get('/inquiries', [ArtistInquiryController::class, 'artistIndex'])->name('inquiries.index');
+            Route::get('/inquiries/{inquiry}', [ArtistInquiryController::class, 'artistShow'])->name('inquiries.show');
+            Route::patch('/inquiries/{inquiry}', [ArtistInquiryController::class, 'updateForArtist'])->name('inquiries.update');
             Route::get('/artworks', [ArtworkController::class, 'mine'])->name('artworks.index');
             Route::post('/artworks', [ArtworkController::class, 'store'])->middleware('throttle:10,1')->name('artworks.store');
             Route::patch('/artworks/{artwork}', [ArtworkController::class, 'update'])->middleware('throttle:10,1')->name('artworks.update');
