@@ -15,6 +15,13 @@ Notable project changes are recorded here in reverse chronological order. Dates 
 ### Notes
 - Documentation does not replace host verification, production mail configuration, a successful restore drill, or browser/device smoke testing.
 
+## [MVP 2 routing] - 2026-11-09
+
+### Added
+- Central React Router route tree, Persian public shell, and role-specific artist, buyer, and admin workspaces.
+- Session-aware route guards, login/register routes, unauthorized and not-found screens, and a Laravel SPA fallback for deep-link refresh.
+- Routing documentation; Laravel remains authoritative for API authorization and ownership.
+
 ## [0.7.0-alpha] - 2026-11-08
 
 ### Added
@@ -129,10 +136,3 @@ Notable project changes are recorded here in reverse chronological order. Dates 
 - Initial product scope and deferred-feature boundaries.
 - Repository agent guidance, engineering workflow, and roadmap.
 - Initial documentation baseline for a Persian-first, RTL art marketplace.
-
-## [MVP 2 routing] - 2026-11-09
-
-### Added
-- Central React Router route tree, Persian public shell, and role-specific artist, buyer, and admin workspaces.
-- Session-aware route guards, login/register routes, unauthorized and not-found screens, and a Laravel SPA fallback for deep-link refresh.
-- Routing documentation; Laravel remains authoritative for API authorization and ownership.
