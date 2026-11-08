@@ -123,4 +123,5 @@ GitHub Actions runs backend tests/style checks and frontend lint/build on pushes
 - [Roadmap](ROADMAP.md)
 - [Changelog](CHANGELOG.md)
 - [Phase 3 moderation smoke test](docs/phase-3-artwork-moderation-smoke-test.md)
+- [Phase 4 inquiry smoke test](docs/phase-4-buyer-artist-contact-smoke-test.md)
 - [Environment template](.env.example)
