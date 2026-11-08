@@ -158,7 +158,7 @@ export default function App() {
                             <h1 className="mt-3 text-4xl font-black">{publicProfile.display_name}</h1>
                             {publicProfile.city && <p className="mt-3 text-sm text-stone-500">{publicProfile.city}</p>}
                             {publicProfile.bio && <p className="mt-8 whitespace-pre-line leading-9 text-stone-700">{publicProfile.bio}</p>}
-                            {user?.role === 'buyer' && {createElement(ContactArtistForm, { artistSlug: publicProfile.slug })}}
+                            {user?.role === 'buyer' && createElement(ContactArtistForm, { artistSlug: publicProfile.slug })}
                             {!user && <a href="/#account" className="mt-8 inline-block rounded-full bg-[#20201e] px-5 py-3 text-sm font-bold text-white">برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید</a>}
                             <div className="mt-8 flex flex-wrap gap-4 text-sm font-semibold">
                                 {publicProfile.website_url && <a href={publicProfile.website_url} target="_blank" rel="noreferrer" className="text-[#b65c3a] underline">وب‌سایت</a>}
