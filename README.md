@@ -105,7 +105,14 @@ GitHub Actions runs backend tests/style checks and frontend lint/build on pushes
 - Run production dependency installation and database migrations during a controlled release.
 - Ensure storage/ and bootstrap/cache/ are writable by the PHP process.
 - Keep private uploads outside public paths. Serve only approved public artwork through controlled paths.
-- A complete cPanel deployment and backup/restore runbook remains a Phase 4 deliverable.
+- See [the cPanel deployment guide](docs/cpanel-deployment.md) for shared-hosting deployment and smoke-test instructions.
+- See [the backup and restore runbook](docs/backup-and-restore.md) for database and private-upload recovery procedures.
+
+## Operations and launch
+
+- [Privacy-conscious analytics baseline](docs/analytics-baseline.md) defines proposed events and data minimization; analytics collection is not enabled.
+- [Release checklist and known limitations](docs/release-checklist.md) records operational launch gates and intentionally deferred features.
+- Hosting PHP 8.3+, SMTP delivery, production backup automation, and real-device/cPanel smoke tests still require verification in the target environment.
 
 ## Engineering principles
 1. Keep the MVP focused; do not introduce deferred commerce features.
