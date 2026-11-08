@@ -2,19 +2,138 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Rad Art — Contemporary Art Editorial design tokens. */
 :root {
-    font-family: Tahoma, Arial, sans-serif;
+    color-scheme: light;
+    font-family: 'Vazirmatn', 'Inter', sans-serif;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    /* Core palette */
+    --color-canvas: #F7F5F0;
+    --color-ink: #242320;
+    --color-terracotta: #B65C3A;
+    --color-terracotta-strong: #9A452B;
+    --color-sand: #D8C9B7;
+    --color-olive: #536052;
+    --color-paper: #FFFFFF;
+
+    /* Semantic roles */
+    --color-text: var(--color-ink);
+    --color-text-muted: #625E56;
+    --color-text-subtle: #777168;
+    --color-border: #DED8CF;
+    --color-border-strong: #BDB3A6;
+    --color-surface: var(--color-paper);
+    --color-surface-muted: #F0EDE6;
+    --color-action: var(--color-terracotta);
+    --color-action-text: var(--color-terracotta-strong);
+    --color-focus: var(--color-terracotta-strong);
+    --color-success: var(--color-olive);
+    --color-danger: #A33D32;
+
+    /* Typography */
+    --font-persian: 'Vazirmatn', sans-serif;
+    --font-latin: 'Inter', sans-serif;
+    --font-sans: 'Vazirmatn', 'Inter', sans-serif;
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    --text-3xl: 1.875rem;
+    --text-4xl: 2.25rem;
+    --text-5xl: 3rem;
+    --leading-copy: 1.9;
+    --leading-heading: 1.35;
+
+    /* 4px spacing rhythm */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    --space-20: 5rem;
+    --space-24: 6rem;
+
+    /* Shape, elevation, and layout */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-pill: 9999px;
+    --shadow-soft: 0 8px 24px rgb(36 35 32 / 6%);
+    --shadow-raised: 0 16px 40px rgb(36 35 32 / 10%);
+    --content-width: 80rem;
+    --page-gutter: clamp(1.25rem, 4vw, 3rem);
+    --header-height: 5rem;
 }
 
 html {
     scroll-behavior: smooth;
+    scroll-padding-top: var(--header-height);
+    background: var(--color-canvas);
 }
 
 body {
-    margin: 0;
     min-width: 320px;
+    margin: 0;
+    background: var(--color-canvas);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--leading-copy);
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+    -webkit-tap-highlight-color: transparent;
+}
+
+a {
+    color: var(--color-action-text);
+    text-underline-offset: 0.2em;
+}
+
+:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+}
+
+::selection {
+    background: rgb(182 92 58 / 20%);
+    color: var(--color-ink);
+}
+
+[dir='ltr'] {
+    font-family: var(--font-latin), sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }
