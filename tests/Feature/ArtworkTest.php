@@ -28,7 +28,7 @@ class ArtworkTest extends TestCase
 
         $response = $this->actingAs($artist)->post('/api/v1/artist/artworks', [
             ...$this->validArtwork(),
-            'image' => UploadedFile::fake()->image('original.jpg', 1200, 800),
+            'image' => $this->fakePng('original.png'),
             'artist_profile_id' => 999,
             'status' => Artwork::STATUS_APPROVED,
         ]);
@@ -51,7 +51,7 @@ class ArtworkTest extends TestCase
         [$artist] = $this->artistWithProfile();
         $inactive = Category::create(['name' => 'غیرفعال', 'slug' => 'inactive', 'is_active' => false]);
 
-        $this->actingAs($artist)->post('/api/v1/artist/artworks', [
+        $this->actingAs($artist)->withHeaders(['Accept' => 'application/json'])->post('/api/v1/artist/artworks', [
             ...$this->validArtwork(),
             'category_id' => $inactive->id,
             'image' => UploadedFile::fake()->create('script.svg', 10, 'image/svg+xml'),
@@ -98,7 +98,7 @@ class ArtworkTest extends TestCase
     {
         $this->post('/api/v1/artist/artworks', [
             ...$this->validArtwork(),
-            'image' => UploadedFile::fake()->image('guest.jpg'),
+            'image' => $this->fakePng('guest.png'),
         ])->assertUnauthorized();
 
         [$artist, $profile] = $this->artistWithProfile();
@@ -154,6 +154,15 @@ class ArtworkTest extends TestCase
         [$otherArtist] = $this->artistWithProfile('other@example.com');
         $this->actingAs($otherArtist)->get('/api/v1/artworks/'.$artwork->slug.'/image')->assertForbidden();
         $this->actingAs($owner)->get('/api/v1/artworks/'.$artwork->slug.'/image')->assertOk();
+    }
+
+    private function fakePng(string $filename): UploadedFile
+    {
+        $contents = base64_decode(
+            'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADUlEQVR4nGP4z8AAAAMBAQDJ/pLvAAAAAElFTkSuQmCC'
+        );
+
+        return UploadedFile::fake()->createWithContent($filename, $contents);
     }
 
     /**
