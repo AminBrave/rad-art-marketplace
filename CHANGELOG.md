@@ -5,6 +5,7 @@ Notable project changes are recorded here in reverse chronological order. Dates 
 ## [Unreleased]
 
 ### Added
+- MVP 2 foundation API/UX audit: verified artist-directory gap, catalogue pagination/search contract, private image delivery, and existing workspace summary data sources.
 - Accessible shared UI components for buttons, form controls, cards, badges, tabs, dropdowns, dialogs, breadcrumbs, pagination, toasts, skeletons, and feedback states.
 - Interactive component specimen and shared component usage/accessibility documentation.
 
