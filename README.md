@@ -9,7 +9,7 @@ A Persian-first, RTL-friendly marketplace MVP that helps artists present origina
 - Artwork catalogue with search and category filters
 - Artwork detail pages
 - Public artist profiles
-- Artist registration, login, and dashboard
+- Buyer and artist registration, login, and role-specific dashboards
 - Artwork submission with images, specifications, price, and availability
 - Admin review workflow: approve, reject, or request revisions
 - Buyer-to-artist contact entry point
@@ -32,8 +32,9 @@ Payments, cart/checkout, orders, shipping, in-app chat, mobile apps, AI recommen
 > Hosting compatibility is not yet confirmed. Laravel 13 requires PHP 8.3 or newer. Confirm that the target cPanel account provides PHP 8.3+ and the required PHP extensions before proceeding with deployment. If it does not, hosting or framework-version strategy must be revisited rather than bypassing Composer security advisories.
 
 ## Roles
-- **Guest:** browse published artworks and artist profiles; contact artists through the defined public contact flow.
-- **Artist:** manage own profile and submitted artworks; view moderation status and feedback.
+- **Guest:** browse published artworks and public artist profiles.
+- **Buyer:** create a buyer account, send private inquiries to public artists, and track sent inquiries.
+- **Artist:** manage own profile and submitted artworks; review, read, and archive incoming buyer inquiries.
 - **Admin:** manage users, categories, artworks, moderation, reports, and featured placements.
 
 All authorization must be enforced server-side. Hiding UI controls is not authorization.
@@ -55,6 +56,13 @@ All authorization must be enforced server-side. Hiding UI controls is not author
 - Persian RTL registration/login interface and basic administrator user-management view.
 
 Email verification and password-reset UX are not yet implemented. Artist-owned artwork permissions are enforced by the artwork policy.
+
+### Buyer-to-artist inquiries
+- Public visitors can discover artist profiles and approved artworks; sending an inquiry requires an authenticated buyer account.
+- Buyers can send a subject and message to a public artist, optionally tied to one of that artist's approved artworks.
+- Artists can view their own inquiry inbox and mark messages read or archived. Buyers can view only their own sent inquiries.
+- Contact submissions are rate-limited and include a honeypot field; message content is validated and bounded.
+- Inquiry API payloads intentionally omit both parties' email addresses. This is a private inquiry intake and status-tracking flow, not real-time chat or a reply channel.
 
 ### Artist profiles
 - One-to-one artist profile per account, with display name, biography, city, website, Instagram handle, and public/private visibility.
