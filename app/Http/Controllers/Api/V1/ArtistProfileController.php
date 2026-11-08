@@ -65,9 +65,9 @@ class ArtistProfileController extends Controller
 
     public function publicShow(Request $request, ArtistProfile $artistProfile): JsonResponse
     {
-        if (! $artistProfile->is_public
-            && (! $request->user()
-                || (! $request->user()->isAdmin() && $request->user()->id !== $artistProfile->user_id))) {
+        if (!$artistProfile->is_public
+            && (!$request->user()
+                || (!$request->user()->isAdmin() && $request->user()->id !== $artistProfile->user_id))) {
             abort(404);
         }
 
