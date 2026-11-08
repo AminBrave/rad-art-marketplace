@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './AuthContext';
 import HomePage from './HomePage';
 import ArtworkGallery from './ArtworkGallery';
+import ArtworkDetailPage from './ArtworkDetailPage';
 import ArtistProfilePage from './ArtistProfilePage';
 import AuthPage from './AuthPage';
 import { PublicLayout } from './Layouts';
@@ -32,7 +33,7 @@ function AppRoutes() {
             <Route element={<PublicLayout />}>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/artworks" element={<ArtworkGallery />} />
-                <Route path="/artworks/:slug" element={<ArtworkGallery />} />
+                <Route path="/artworks/:slug" element={<ArtworkDetailPage />} />
                 <Route path="/artists" element={<PublicInfoPage title="هنرمندان راد آرت" description="فهرست و معرفی هنرمندان در مرحله بعدی تکمیل تجربه عمومی راد آرت ارائه می‌شود." />} />
                 <Route path="/artists/:slug" element={<ArtistProfilePage />} />
                 <Route path="/about" element={<PublicInfoPage title="درباره راد آرت" description="راد آرت فضایی برای کشف آثار هنری مستقل، شناخت هنرمندان و ارتباط مستقیم با خالقان هر اثر است." />} />
