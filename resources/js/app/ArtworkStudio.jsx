@@ -24,9 +24,9 @@ export default function ArtworkStudio({ user, hasProfile }) {
 
     useEffect(() => {
         if (!image) { setImagePreview(''); return undefined; }
-        const url = URL.createObjectURL(image);
+        const url = window.URL.createObjectURL(image);
         setImagePreview(url);
-        return () => URL.revokeObjectURL(url);
+        return () => window.URL.revokeObjectURL(url);
     }, [image]);
 
     const loadData = useCallback(async () => {
