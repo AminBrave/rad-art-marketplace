@@ -7,7 +7,7 @@ Notable repository changes are listed newest first. Entries describe merged impl
 - Rewrote README, roadmap, contributor instructions, engineering practices, API reference, architecture, and route documentation to match the current implementation and MVP 2 stages.
 - Consolidated five legacy feature smoke-test files into `docs/manual-smoke-tests.md` and removed the superseded Stage 1 API audit after its decisions were incorporated into current references.
 - Updated QA, release, and cPanel guidance; clarified which checks and hosting steps remain unverified.
-- Added a mandatory same-PR documentation update policy to `AGENTS.md`, `SKILLS.md`, and the GitHub delivery tracker.
+- Added a mandatory same-PR documentation update policy to `AGENTS.md`, `SKILLS.md`, and the GitHub delivery tracker, plus a pull-request template checklist.
 - Closed obsolete stacked MVP 1 pull requests #2–#5; their historical branches were retained for traceability.
 
 ## 2026-11-09 — MVP 2 Stage 2: Public marketplace
