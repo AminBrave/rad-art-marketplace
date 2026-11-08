@@ -15,6 +15,8 @@ class Artwork extends Model
 
     public const STATUS_REJECTED = 'rejected';
 
+    public const STATUS_CHANGES_REQUESTED = 'changes_requested';
+
     protected $fillable = [
         'category_id',
         'slug',
