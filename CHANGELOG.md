@@ -5,6 +5,7 @@ Notable project changes are recorded here in reverse chronological order. Dates 
 ## [Unreleased]
 
 ### Added
+- MVP 2 foundation API/UX audit: verified artist-directory gap, catalogue pagination/search contract, private image delivery, and existing workspace summary data sources.
 - Contemporary Art Editorial design tokens for palette, semantic colors, typography, spacing, shape, elevation, and layout.
 - Vazirmatn and Inter font loading, accessible focus styling, reduced-motion support, and a development-only design foundation specimen.
 - Tailwind semantic aliases and design foundation usage documentation.
