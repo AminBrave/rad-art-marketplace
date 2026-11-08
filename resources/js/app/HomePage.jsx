@@ -124,8 +124,6 @@ export default function HomePage() {
 
     return (
         <main className="min-h-screen overflow-hidden bg-[#f7f5f0] text-[#20201e]">
-
-
             <section className="mx-auto grid max-w-7xl gap-12 px-6 pb-24 pt-12 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:px-10 lg:pb-32 lg:pt-20">
                 <div className="max-w-2xl">
                     <p className="mb-6 inline-flex items-center gap-2 rounded-full bg-[#eae3d8] px-4 py-2 text-xs font-semibold text-[#80513d]">
