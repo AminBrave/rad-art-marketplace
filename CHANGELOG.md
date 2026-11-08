@@ -2,6 +2,23 @@
 
 All notable project changes are recorded here.
 
+## [0.7.0-alpha] - 2026-11-08
+### Added
+- Buyer role registration while preserving artist as the default registration role; public registration cannot create administrators.
+- Private buyer-to-artist inquiries for public artist profiles, optionally associated with the artist's approved artwork.
+- Buyer sent-inquiry history and artist-owned inbox with read/archive actions.
+- Persian RTL contact form, buyer dashboard panel, and artist inbox.
+- Rate limiting, honeypot validation, message length limits, and strict role/ownership scoping.
+- Feature tests for buyer registration, role boundaries, inquiry ownership, public profile visibility, artwork association, and spam honeypot handling.
+
+### Privacy
+- Inquiry API responses omit sender and artist email addresses.
+- Contact is an inquiry intake and tracking workflow, not real-time chat or a reply channel.
+
+### Notes
+- Apply the Phase 4 inquiry migration and run the Phase 4 smoke test before local acceptance.
+- CI and local browser verification are pending.
+
 ## [0.6.0-alpha] - 2026-11-08
 ### Added
 - Administrator-only artwork moderation queue with status filtering and pagination.
