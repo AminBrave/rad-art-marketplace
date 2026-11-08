@@ -83,3 +83,8 @@ The MVP does not require payment processing, order/fulfilment services, real-tim
 - Admin category management, reports/abuse queue, featured placements, and static content pages are not implemented.
 - Analytics is documented as a proposal; event collection is not enabled.
 - cPanel/PHP compatibility, production backups, restore drills, and production smoke tests remain unverified.
+
+
+## Frontend route ownership
+
+The browser route tree is centralized in React Router under `resources/js/app/App.jsx`. Session state is provided by `AuthProvider`; role-specific layouts and navigation live in `Layouts.jsx` and `RoutingPages.jsx`. Laravel's final web catch-all serves the SPA entry view for non-API paths so nested routes can be opened directly or refreshed. This client-side route protection is only a UX boundary: Laravel authentication middleware, role middleware, policies, and ownership checks remain the security boundary. See [frontend routing and access model](frontend-routing.md).

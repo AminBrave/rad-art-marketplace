@@ -8,6 +8,9 @@ Notable project changes are recorded here in reverse chronological order. Dates 
 - Contemporary Art Editorial design tokens for palette, semantic colors, typography, spacing, shape, elevation, and layout.
 - Vazirmatn and Inter font loading, accessible focus styling, reduced-motion support, and a development-only design foundation specimen.
 - Tailwind semantic aliases and design foundation usage documentation.
+- Central React Router route tree, Persian public shell, and role-specific artist, buyer, and admin workspaces.
+- Session-aware route guards, login/register routes, unauthorized and not-found screens, and a Laravel SPA fallback for deep-link refresh.
+- Routing documentation; Laravel remains authoritative for API authorization and ownership.
 
 ### Changed
 - Selected `cleaned-MVP-1` (commit `bd459940`) as the MVP 2 implementation baseline; documented that `feature/roadmap-mvp-completion` is 15 commits behind.
