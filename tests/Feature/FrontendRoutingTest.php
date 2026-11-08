@@ -13,6 +13,10 @@ final class FrontendRoutingTest extends TestCase
         foreach ([
             '/login',
             '/register',
+            '/dashboard',
+            '/dashboard/artist',
+            '/dashboard/buyer',
+            '/admin',
             '/artworks',
             '/artists',
             '/dashboard/artist/profile',
