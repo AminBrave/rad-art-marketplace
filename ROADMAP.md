@@ -15,7 +15,7 @@
 - [x] Artist profile create/edit flow with owner-scoped authorization
 - [x] Public/private profile visibility and public profile page
 - [x] Administrator view/edit access for artist profiles
-- [ ] Ownership policies for artist-owned artwork resources
+- [x] Ownership policies for artist-owned artwork resources
 - [x] Admin user listing and role management
 - [ ] Email verification and password-reset user experience
 
