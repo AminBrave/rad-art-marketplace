@@ -52,12 +52,21 @@ class AdminArtworkModerationController extends Controller
             'request_changes' => Artwork::STATUS_CHANGES_REQUESTED,
         };
 
-        $artwork->update([
-            'status' => $status,
-            'rejection_note' => $validated['note'] ?? null,
-            'reviewed_by' => $request->user()->id,
-            'reviewed_at' => now(),
-        ]);
+        $updated = Artwork::query()
+            ->whereKey($artwork->getKey())
+            ->where('status', Artwork::STATUS_PENDING_REVIEW)
+            ->update([
+                'status' => $status,
+                'rejection_note' => $validated['note'] ?? null,
+                'reviewed_by' => $request->user()->id,
+                'reviewed_at' => now(),
+            ]);
+
+        if ($updated !== 1) {
+            return response()->json([
+                'message' => 'این اثر هم‌زمان توسط مدیر دیگری بررسی شده است.',
+            ], 422);
+        }
 
         return response()->json([
             'message' => match ($validated['action']) {
