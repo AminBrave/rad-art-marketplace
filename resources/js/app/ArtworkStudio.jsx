@@ -18,7 +18,7 @@ const statusLabels = {
     rejected: 'نیازمند اصلاح',
 };
 
-export default function ArtworkStudio({ user }) {
+export default function ArtworkStudio({ user, hasProfile }) {
     const [categories, setCategories] = useState([]);
     const [artworks, setArtworks] = useState([]);
     const [form, setForm] = useState(emptyArtwork);
@@ -29,13 +29,21 @@ export default function ArtworkStudio({ user }) {
     const [message, setMessage] = useState('');
 
     useEffect(() => {
-        if (user?.role !== 'artist') return;
+        if (user?.role !== 'artist' || !hasProfile) return;
 
         axios.get('/api/v1/categories').then(({ data }) => setCategories(data.data)).catch(() => setCategories([]));
         axios.get('/api/v1/artist/artworks').then(({ data }) => setArtworks(data.data)).catch(() => setMessage('دریافت آثار شما انجام نشد.'));
-    }, [user?.role]);
+    }, [hasProfile, user?.role]);
 
     if (user?.role !== 'artist') return null;
+
+    if (!hasProfile) {
+        return (
+            <section className="mx-auto mt-8 max-w-7xl rounded-2xl border border-stone-200 bg-white p-6 text-sm leading-7 text-stone-600" dir="rtl">
+                برای ثبت اثر، ابتدا فرم پروفایل هنرمند را تکمیل و ذخیره کنید.
+            </section>
+        );
+    }
 
     const updateForm = (event) => {
         setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
