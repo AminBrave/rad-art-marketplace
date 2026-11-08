@@ -32,7 +32,7 @@ class ArtworkController extends Controller
             ->where('status', Artwork::STATUS_APPROVED)
             ->with(['category', 'artistProfile'])
             ->when($request->filled('q'), function ($query) use ($request): void {
-                $term = '%'.$request->string('q').'%';
+                $term = '%'.(string) $request->string('q').'%';
                 $query->where(function ($nested) use ($term): void {
                     $nested->where('title', 'like', $term)
                         ->orWhere('description', 'like', $term)
@@ -41,7 +41,7 @@ class ArtworkController extends Controller
             })
             ->when($request->filled('category'), fn ($query) => $query->whereHas(
                 'category',
-                fn ($category) => $category->where('slug', $request->string('category'))->where('is_active', true),
+                fn ($category) => $category->where('slug', (string) $request->string('category'))->where('is_active', true),
             ))
             ->latest()
             ->paginate(12)
