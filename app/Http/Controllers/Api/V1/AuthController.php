@@ -19,13 +19,14 @@ class AuthController extends Controller
             'name' => ['required', 'string', 'max:120'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:10', 'confirmed'],
+            'role' => ['sometimes', 'string', Rule::in([User::ROLE_ARTIST, User::ROLE_BUYER])],
         ]);
 
         $user = User::create([
             'name' => $validated['name'],
             'email' => mb_strtolower($validated['email']),
             'password' => $validated['password'],
-            'role' => User::ROLE_ARTIST,
+            'role' => $validated['role'] ?? User::ROLE_ARTIST,
         ]);
 
         Auth::login($user);
