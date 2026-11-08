@@ -88,6 +88,7 @@ class ArtistProfileController extends Controller
     public function show(Request $request, ArtistProfile $artistProfile): JsonResponse
     {
         $this->authorize('view', $artistProfile);
+
         return response()->json(['data' => $this->payload($artistProfile)]);
     }
 
@@ -95,6 +96,7 @@ class ArtistProfileController extends Controller
     {
         $this->authorize('update', $artistProfile);
         $artistProfile->update($this->validatedProfile($request));
+
         return response()->json(['message' => 'پروفایل هنرمند به‌روزرسانی شد.', 'data' => $this->payload($artistProfile->refresh())]);
     }
 
