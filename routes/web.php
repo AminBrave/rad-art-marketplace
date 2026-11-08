@@ -52,6 +52,8 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
 
     Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function (): void {
         Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+        Route::get('/artworks', [AdminArtworkModerationController::class, 'index'])->name('artworks.index');
+        Route::patch('/artworks/{artwork}/moderation', [AdminArtworkModerationController::class, 'update'])->name('artworks.moderation');
         Route::patch('/users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.role');
     });
 });
