@@ -5,7 +5,6 @@ import { useAuth } from './AuthContext';
 import { WorkspaceLayout } from './Layouts';
 import ArtworkStudio from './ArtworkStudio';
 import InquiryCenter from './InquiryCenter';
-import { BuyerDashboardHome } from './BuyerWorkspace';
 
 const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
 
