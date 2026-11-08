@@ -1,40 +1,75 @@
 # Release Checklist
 
-## Before release
+Use this checklist for a candidate release. A checked item means evidence has been collected for that release; documentation alone is not evidence. Assign an owner and record links/logs for each launch-critical item.
 
-- [ ] Confirm hosting PHP 8.3+ and required extensions.
-- [ ] Confirm production database, private storage, SMTP, HTTPS, and document root.
-- [ ] Review all pending migrations and backup the database/files.
-- [ ] Run `composer test`, `composer lint`, `npm run lint`, and `npm run build`.
+## Build and code quality
+
+- [ ] Confirm the target runtime supports PHP 8.3+ and required extensions.
+- [ ] Review pending migrations, schema impact, and rollback/forward-fix plan.
+- [ ] Run `composer test`.
+- [ ] Run `composer lint`.
+- [ ] Run `npm run lint`.
+- [ ] Run `npm run build`.
 - [ ] Review dependency advisories and lockfile changes.
-- [ ] Confirm `APP_DEBUG=false`, production `APP_ENV`, and secret handling.
-- [ ] Verify email verification and password-reset delivery.
-- [ ] Verify role boundaries for guest, buyer, artist, and admin.
-- [ ] Verify private artwork uploads and approved-only public delivery.
-- [ ] Verify inquiry ownership, rate limits, and abuse-report moderation.
-- [ ] Verify category and featured-placement administration.
-- [ ] Verify keyboard access, focus visibility, RTL layout, and responsive breakpoints.
-- [ ] Verify About, Help, Legal, and Contact content.
-- [ ] Confirm privacy notice, retention, analytics consent/legal basis, and contact details.
+- [ ] Record the release commit SHA and CI result.
+
+## Environment and operations
+
+- [ ] Confirm production MySQL, HTTPS, document root, private storage, and file permissions.
+- [ ] Confirm `APP_ENV=production`, `APP_DEBUG=false`, and secure secret handling.
+- [ ] Confirm a pre-release database and private-upload backup exists and is readable.
 - [ ] Complete a restore drill or verify a recent successful restore.
-- [ ] Run the cPanel smoke-test checklist.
-- [ ] Record release commit SHA, migration state, backup location, and rollback owner.
+- [ ] Confirm the rollback owner and recovery procedure.
+- [ ] Run the cPanel smoke-test checklist in the target environment.
+
+## Implemented product flows
+
+- [ ] Register Buyer and Artist accounts; confirm public registration cannot create Admin.
+- [ ] Verify login, logout, and authenticated session behavior.
+- [ ] Verify Guest/Buyer/Artist/Admin route and data boundaries.
+- [ ] Verify artist profile ownership and public/private visibility.
+- [ ] Verify artwork submission, validation, private storage, and owner-only editing.
+- [ ] Verify moderation approve/reject/request-changes behavior and audit metadata.
+- [ ] Verify only approved artwork is exposed by public catalogue/detail/image endpoints.
+- [ ] Verify search and active-category filtering.
+- [ ] Verify inquiry submission, rate limits, honeypot, and approved-artwork association.
+- [ ] Verify buyer sent-inquiry privacy and artist inbox ownership/read/archive behavior.
+- [ ] Verify inquiry payloads omit both parties' email addresses.
+
+## Product decisions and known gaps
+
+The following capabilities are not implemented in the current MVP baseline. Before launch, the product owner must explicitly decide whether each is a blocker or a documented deferral:
+
+- [ ] Admin category management.
+- [ ] Buyer reports and an abuse-moderation queue.
+- [ ] Featured artwork/artist placements.
+- [ ] About, Help, Legal, and Contact pages.
+- [ ] Email verification and password-reset user experience.
+- [ ] Any production mail-dependent workflow.
+
+## UX, privacy, and legal
+
+- [ ] Verify keyboard access, focus visibility, contrast, RTL layout, and responsive breakpoints.
+- [ ] Review Persian/Latin mixed text and form validation states.
+- [ ] Approve privacy notice, retention/deletion policy, and contact details.
+- [ ] Review analytics legal basis/consent before enabling any analytics provider (analytics is currently not enabled).
+- [ ] Obtain site-owner and qualified local-counsel review of legal text.
 
 ## After release
 
-- [ ] Run smoke tests using non-production test accounts.
-- [ ] Check Laravel logs and browser console for errors.
-- [ ] Verify mail delivery and public/private image behavior.
-- [ ] Monitor critical route failures and moderation backlog.
+- [ ] Run smoke tests with non-production test accounts.
+- [ ] Review Laravel logs, browser console, and critical route failures.
+- [ ] Verify private files are not web-accessible.
+- [ ] Monitor moderation backlog and abuse/rate-limit signals.
 - [ ] Keep the previous release and backups until sign-off.
 
-# Known Limitations
+## Known limitations
 
 - Payments, cart/checkout, orders, shipping, and payment-provider integration are intentionally deferred.
-- The inquiry feature is a private contact intake and status tracker, not a chat or reply system.
+- The inquiry feature is private contact intake and status tracking, not chat, replies, or email delivery.
 - Hosting PHP 8.3+ and required extensions have not been verified against the actual cPanel account.
-- Production SMTP delivery and sender-domain authentication must be configured and tested by the deployment owner.
-- Analytics are defined as an event/metric baseline only; no analytics provider or tracking script is enabled.
-- Backup automation depends on the capabilities of the selected cPanel host; this runbook defines the required manual/host-supported process.
-- Legal text, privacy/retention policy, and contact information require review and approval by the site owner and qualified local counsel before public launch.
+- Email verification and password-reset UX are not implemented.
+- Analytics is a proposed event/metric baseline only; no provider or tracking script is enabled.
+- Backup automation depends on the selected host; this runbook is a procedure, not proof of automation or a successful restore.
+- Admin category management, reports/abuse queue, featured placements, and static content pages remain open roadmap items.
 - Browser/device accessibility and real cPanel deployment smoke tests require execution in the target environment.
