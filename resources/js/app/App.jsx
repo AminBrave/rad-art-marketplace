@@ -178,7 +178,7 @@ export default function App() {
                     راد<span className="text-[#b65c3a]">آرت</span>
                 </a>
                 <nav aria-label="ناوبری اصلی" className="hidden items-center gap-8 text-sm text-stone-600 md:flex">
-                    <a className="transition hover:text-[#b65c3a]" href="#discover">کشف آثار</a>
+                    <a className="transition hover:text-[#b65c3a]" href="#artworks">کشف آثار</a>
                     <a className="transition hover:text-[#b65c3a]" href="#artists">هنرمندان</a>
                     <a className="transition hover:text-[#b65c3a]" href="#about">درباره ما</a>
                 </nav>
@@ -212,7 +212,7 @@ export default function App() {
                         راد آرت فضایی برای کشف آثار هنری مستقل، شناخت هنرمندان و ارتباط مستقیم با خالقان هر اثر است.
                     </p>
                     <div className="mt-9 flex flex-wrap gap-3">
-                        <a href="#discover" className="rounded-full bg-[#20201e] px-7 py-3.5 text-sm font-bold text-white transition hover:bg-[#b65c3a]">
+                        <a href="#artworks" className="rounded-full bg-[#20201e] px-7 py-3.5 text-sm font-bold text-white transition hover:bg-[#b65c3a]">
                             به تماشای آثار
                         </a>
                         <a href="#account" className="rounded-full border border-stone-300 px-7 py-3.5 text-sm font-bold transition hover:border-[#20201e]">
@@ -256,7 +256,7 @@ export default function App() {
                 <div>
                     <p className="text-sm font-bold text-[#b65c3a]">حساب کاربری راد آرت</p>
                     <h2 className="mt-3 text-3xl font-black leading-relaxed sm:text-4xl">به جمع هنرمندان راد آرت بپیوندید.</h2>
-                    <p className="mt-4 leading-8 text-stone-600">حساب هنرمندی بسازید تا در گام بعد پروفایل و آثار خود را مدیریت کنید. ثبت‌نام عمومی فقط نقش هنرمند ایجاد می‌کند.</p>
+                    <p className="mt-4 leading-8 text-stone-600">حساب هنرمندی بسازید، پروفایل خود را تکمیل کنید و آثار را برای بررسی و انتشار ثبت کنید. ثبت‌نام عمومی فقط نقش هنرمند ایجاد می‌کند.</p>
                     {user && (
                         <div className="mt-6 rounded-2xl border border-[#d7b5a2] bg-white p-5">
                             <p className="font-bold">خوش آمدید، {user.name}</p>
