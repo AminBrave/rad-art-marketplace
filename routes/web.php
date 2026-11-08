@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Api\V1\AdminUserController;
 use App\Http\Controllers\Api\V1\ArtistProfileController;
+use App\Http\Controllers\Api\V1\ArtworkController;
 use App\Http\Controllers\Api\V1\AuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'app')->name('home');
 Route::view('/artists/{slug}', 'app')->name('artists.page');
+Route::view('/artworks/{slug}', 'app')->name('artworks.page');
 
 Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
     Route::prefix('auth')->name('auth.')->group(function (): void {
@@ -26,6 +28,11 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
     Route::get('/artists/{artistProfile:slug}', [ArtistProfileController::class, 'publicShow'])
         ->name('artists.show');
 
+    Route::get('/categories', [ArtworkController::class, 'categories'])->name('categories.index');
+    Route::get('/artworks', [ArtworkController::class, 'index'])->name('artworks.index');
+    Route::get('/artworks/{artwork:slug}/image', [ArtworkController::class, 'image'])->name('artworks.image');
+    Route::get('/artworks/{artwork:slug}', [ArtworkController::class, 'show'])->name('artworks.show');
+
     Route::middleware(['auth', 'role:artist,admin'])->group(function (): void {
         Route::get('/artist-profile/me', [ArtistProfileController::class, 'mine'])
             ->name('artist-profile.me');
@@ -35,6 +42,12 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
             ->name('artist-profiles.show');
         Route::patch('/artist-profiles/{artistProfile}', [ArtistProfileController::class, 'update'])
             ->name('artist-profiles.update');
+
+        Route::prefix('artist')->name('artist.')->group(function (): void {
+            Route::get('/artworks', [ArtworkController::class, 'mine'])->name('artworks.index');
+            Route::post('/artworks', [ArtworkController::class, 'store'])->name('artworks.store');
+            Route::patch('/artworks/{artwork}', [ArtworkController::class, 'update'])->name('artworks.update');
+        });
     });
 
     Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function (): void {
