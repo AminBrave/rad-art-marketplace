@@ -2,6 +2,23 @@
 
 All notable project changes are recorded here.
 
+## [0.6.0-alpha] - 2026-11-08
+### Added
+- Administrator-only artwork moderation queue with status filtering and pagination.
+- Approve, reject, and request-changes decisions; rejection and revision requests require a note for the artist.
+- Review audit fields recording the administrator and decision timestamp.
+- Persian RTL moderation panel integrated into the administrator dashboard.
+- Feature tests for role isolation, moderation decisions, required notes, and resubmission behavior.
+
+### Security
+- Moderation endpoints require the administrator role on the server.
+- Only pending submissions can receive a moderation decision; artists cannot set moderation states through their submission/edit payloads.
+- Artist edits clear previous review metadata and return the artwork to pending review.
+
+### Notes
+- Run the Phase 3 moderation smoke test after applying the new review-audit migration.
+- CI and local browser verification are pending.
+
 ## [0.5.0-alpha] - 2026-11-08
 ### Added
 - Category and artwork database migrations with starter Persian catalogue categories.
