@@ -21,7 +21,7 @@ A Persian-first, RTL-friendly marketplace MVP that helps artists present origina
 Payments, cart/checkout, orders, shipping, in-app chat, mobile apps, AI recommendations, social graph, automated subscriptions, and advertising systems.
 
 ## Technology
-- Backend: Laravel 11 (PHP 8.2+)
+- Backend: Laravel 13 (PHP 8.3+)
 - Frontend: React 18 + Vite
 - UI: Tailwind CSS + Radix UI
 - Database: MySQL
@@ -29,7 +29,7 @@ Payments, cart/checkout, orders, shipping, in-app chat, mobile apps, AI recommen
 - Locale: Persian-first, RTL, with Jalali date presentation where appropriate
 - Hosting target: cPanel shared hosting; do not assume root access, long-running daemons, or process managers
 
-> Hosting compatibility is not yet confirmed. Verify the target host's PHP version and required extensions before deployment; Laravel 11 requires PHP 8.2 or newer.
+> Hosting compatibility is not yet confirmed. Laravel 13 requires PHP 8.3 or newer. Confirm that the target cPanel account provides PHP 8.3+ and the required PHP extensions before proceeding with deployment. If it does not, hosting or framework-version strategy must be revisited rather than bypassing Composer security advisories.
 
 ## Roles
 - **Guest:** browse published artworks and artist profiles; contact artists through the defined public contact flow.
@@ -41,7 +41,7 @@ All authorization must be enforced server-side. Hiding UI controls is not author
 ## Current implementation
 
 The first application scaffold is on the feature/phase-0-app-scaffold branch:
-- Laravel 11 application bootstrap and a versioned API health endpoint at GET /api/v1/health
+- Laravel 13 application bootstrap and a versioned API health endpoint at GET /api/v1/health
 - React/Vite landing page with Persian content and RTL document direction
 - Tailwind CSS, Axios, and Radix Dialog dependency baseline
 - PHPUnit feature test, Laravel Pint, ESLint, and GitHub Actions CI configuration
@@ -50,12 +50,12 @@ The landing page is a visual starting point. Authentication, artwork catalogue, 
 
 ## Local development
 
-Prerequisites: PHP 8.2+, Composer, Node.js 20+, npm, and a MySQL instance. The host-specific PHP extension list still needs verification.
+Prerequisites: PHP 8.3+, Composer, Node.js 22+, npm, and a MySQL instance. The host-specific PHP extension list still needs verification.
 
 1. Install PHP dependencies: composer install
 2. Create the local environment: cp .env.example .env
 3. Generate the application key: php artisan key:generate
-4. Configure database values in .env, then run migrations when the schema is introduced: php artisan migrate
+4. Configure database values in .env; run migrations when schema migrations have been added.
 5. Install frontend dependencies: npm install
 6. Start Laravel: php artisan serve
 7. Start Vite in another terminal: npm run dev
