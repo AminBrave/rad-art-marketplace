@@ -28,6 +28,7 @@ export default function ArtworkGallery() {
         if (detailSlug) return;
 
         setLoading(true);
+        setError(false);
         axios.get('/api/v1/artworks', { params: { q: search || undefined, category: category || undefined } })
             .then(({ data }) => setArtworks(data.data))
             .catch(() => setError(true))
