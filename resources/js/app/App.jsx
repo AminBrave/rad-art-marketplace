@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { createElement, useEffect, useState } from 'react';
 import axios from 'axios';
 import ArtworkGallery from './ArtworkGallery';
 import AdminArtworkModeration from './AdminArtworkModeration';
@@ -140,7 +140,7 @@ export default function App() {
     };
 
     if (window.location.pathname.startsWith('/artworks/')) {
-        return <ArtworkGallery />;
+        return createElement(ArtworkGallery);
     }
 
     if (window.location.pathname.startsWith('/artists/')) {
@@ -251,7 +251,7 @@ export default function App() {
                 </div>
             </section>
 
-            <ArtworkGallery />
+            {createElement(ArtworkGallery)}
 
             <section id="account" className="mx-auto grid max-w-7xl gap-10 px-6 py-20 lg:grid-cols-[.8fr_1.2fr] lg:px-10">
                 <div>
@@ -361,7 +361,7 @@ export default function App() {
                 )}
             </section>
 
-            <ArtworkStudio user={user} hasProfile={Boolean(profile.slug)} />
+            {createElement(ArtworkStudio, { user, hasProfile: Boolean(profile.slug) })}
 
             {user?.role === 'admin' && (
                 <section className="mx-auto max-w-7xl px-6 pb-20 lg:px-10">
@@ -393,7 +393,7 @@ export default function App() {
                 </section>
             )}
 
-            {user?.role === 'admin' && <AdminArtworkModeration />}
+            {user?.role === 'admin' && createElement(AdminArtworkModeration)}
 
             <section id="artists" className="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-16 lg:px-10">
                 <p className="text-sm font-bold text-[#b65c3a]">برای جامعه هنری</p>
