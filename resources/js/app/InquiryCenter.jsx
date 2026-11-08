@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const statusLabels = { new: 'جدید', read: 'خوانده‌شده', archived: 'بایگانی‌شده' };
 
-export default function InquiryCenter({ user }) {
+export default function InquiryCenter({ user, hasProfile }) {
     const [items, setItems] = useState([]);
     const [nextPage, setNextPage] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -27,8 +27,8 @@ export default function InquiryCenter({ user }) {
     }, [endpoint]);
 
     useEffect(() => {
-        if (user?.role === 'artist' || user?.role === 'buyer') load();
-    }, [load, user?.role]);
+        if (user?.role === 'buyer' || (user?.role === 'artist' && hasProfile)) load();
+    }, [hasProfile, load, user?.role]);
 
     const updateStatus = async (item, status) => {
         setBusyId(item.id);
@@ -43,7 +43,7 @@ export default function InquiryCenter({ user }) {
         }
     };
 
-    if (!isArtist && user?.role !== 'buyer') return null;
+    if ((!isArtist && user?.role !== 'buyer') || (isArtist && !hasProfile)) return null;
 
     return (
         <section className="mx-auto max-w-7xl px-6 pb-16 lg:px-10" dir="rtl">
