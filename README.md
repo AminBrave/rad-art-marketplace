@@ -1,134 +1,191 @@
 # Rad Art Marketplace
 
-A Persian-first, RTL-friendly marketplace MVP that helps artists present original artwork and helps visitors discover and contact artists.
+A Persian-first, RTL-friendly art discovery marketplace. Artists publish work for review; visitors browse approved artwork and public artist profiles; registered buyers can send private inquiries to artists.
+
+## Project status
+
+This repository contains an evolving MVP implementation. The core identity, artist profile, artwork catalogue, moderation, and buyer-to-artist inquiry flows are implemented. Several administration and launch-readiness items remain incomplete; see [the roadmap](ROADMAP.md) and [release checklist](docs/release-checklist.md).
+
+**This is not a production-ready commerce platform.** Payments, checkout, orders, shipping, and real-time messaging are not implemented.
 
 ## Product scope
 
-### In scope
-- Public homepage and curated/featured artwork
-- Artwork catalogue with search and category filters
-- Artwork detail pages
-- Public artist profiles
-- Buyer and artist registration, login, and role-specific dashboards
-- Artwork submission with images, specifications, price, and availability
-- Admin review workflow: approve, reject, or request revisions
-- Buyer-to-artist contact entry point
-- Admin management of users, categories, artworks, moderation, reports, and featured placements
-- About, help, legal, and contact pages
-- Responsive layouts, baseline security, backups, and analytics
+### MVP capabilities
 
-### Explicitly out of scope for this MVP
-Payments, cart/checkout, orders, shipping, in-app chat, mobile apps, AI recommendations, social graph, automated subscriptions, and advertising systems.
+- Public homepage and approved artwork catalogue.
+- Artwork search and active-category filtering.
+- Artwork detail pages and public artist profiles.
+- Session-based registration, login, current-user, and logout.
+- Buyer and artist accounts; administrator accounts are provisioned separately.
+- Artist profile creation/editing with public/private visibility.
+- Artist-owned artwork submission and editing, with private image storage.
+- Administrator artwork review: approve, reject, or request changes.
+- Buyer-to-artist inquiries, buyer sent-inquiry history, and artist inbox with read/archive status.
+- Persian-first, RTL-oriented React interface.
+
+### Planned but not yet implemented
+
+- Admin category management.
+- Buyer reports and an abuse-moderation queue.
+- Featured artwork/artist placements.
+- About, Help, Legal, and Contact pages.
+- Email verification and password-reset user experience.
+- Comprehensive responsive/accessibility review and production launch verification.
+
+### Explicitly deferred
+
+Payments, cart/checkout, orders, shipping, in-app chat/replies, mobile apps, AI recommendations, social networking, subscriptions, and advertising.
 
 ## Technology
-- Backend: Laravel 13 (PHP 8.3+)
-- Frontend: React 18 + Vite
-- UI: Tailwind CSS + Radix UI
-- Database: MySQL
-- HTTP client: Axios
-- Locale: Persian-first, RTL, with Jalali date presentation where appropriate
-- Hosting target: cPanel shared hosting; do not assume root access, long-running daemons, or process managers
 
-> Hosting compatibility is not yet confirmed. Laravel 13 requires PHP 8.3 or newer. Confirm that the target cPanel account provides PHP 8.3+ and the required PHP extensions before proceeding with deployment. If it does not, hosting or framework-version strategy must be revisited rather than bypassing Composer security advisories.
+| Area | Current stack |
+|---|---|
+| Backend | Laravel 13, PHP 8.3+ |
+| Frontend | React 18, Vite |
+| UI | Tailwind CSS, Radix UI |
+| Database | MySQL in deployment; SQLite in-memory for tests |
+| HTTP client | Axios |
+| Quality | PHPUnit, Laravel Pint, ESLint, Vite production build |
+| Hosting target | cPanel shared hosting |
 
-## Roles
-- **Guest:** browse published artworks and public artist profiles.
-- **Buyer:** create a buyer account, send private inquiries to public artists, and track sent inquiries.
-- **Artist:** manage own profile and submitted artworks; review, read, and archive incoming buyer inquiries.
-- **Admin:** manage users, categories, artworks, moderation, reports, and featured placements.
+Laravel 13 requires PHP 8.3 or newer. The target cPanel account has not yet been verified. Do not bypass Composer platform checks or security advisories to accommodate an incompatible host.
 
-All authorization must be enforced server-side. Hiding UI controls is not authorization.
+## Roles and access
 
-## Current implementation
+- **Guest:** browse approved artwork and public artist profiles.
+- **Buyer:** register as a buyer, browse public content, submit inquiries to public artists, and view only their own sent inquiries.
+- **Artist:** manage their own profile and artworks; view and update inquiries addressed to their own profile.
+- **Admin:** manage users and moderate artwork across the platform.
 
-### Phase 0 — Foundation
-- Laravel 13 application bootstrap and versioned API health endpoint at GET /api/v1/health
-- React/Vite Persian RTL landing page
-- Tailwind CSS, Axios, and Radix UI dependency baseline
-- PHPUnit feature test, Laravel Pint, ESLint, and GitHub Actions CI
+Public registration accepts `artist` or `buyer`; if no role is supplied, the account defaults to `artist`. It rejects other roles, including `admin`. Administrators must be provisioned through the server-side Artisan command:
 
-### Phase 1 — Identity and permissions
-- Session-based endpoints: POST /api/v1/auth/register, POST /api/v1/auth/login, GET /api/v1/auth/me, POST /api/v1/auth/logout
-- Public registration always creates an Artist; the role field supplied by a client is ignored.
-- Admin endpoints: GET /api/v1/admin/users and PATCH /api/v1/admin/users/{user}/role
-- Role middleware enforces administrator access on the server.
-- Promote a registered account with: php artisan users:make-admin admin@example.com
-- Persian RTL registration/login interface and basic administrator user-management view.
+```bash
+php artisan users:make-admin admin@example.com
+```
 
-Email verification and password-reset UX are not yet implemented. Artist-owned artwork permissions are enforced by the artwork policy.
+Authorization and ownership are enforced server-side. Hiding a UI control is not an authorization boundary.
 
-### Buyer-to-artist inquiries
-- Public visitors can discover artist profiles and approved artworks; sending an inquiry requires an authenticated buyer account.
-- Buyers can send a subject and message to a public artist, optionally tied to one of that artist's approved artworks.
-- Artists can view their own inquiry inbox and mark messages read or archived. Buyers can view only their own sent inquiries.
-- Contact submissions are rate-limited and include a honeypot field; message content is validated and bounded.
-- Inquiry API payloads intentionally omit both parties' email addresses. This is a private inquiry intake and status-tracking flow, not real-time chat or a reply channel.
+## Implemented behavior
+
+### Authentication
+
+Session-based endpoints are available under `/api/v1/auth`:
+
+- `POST /api/v1/auth/register`
+- `POST /api/v1/auth/login`
+- `GET /api/v1/auth/me`
+- `POST /api/v1/auth/logout`
+
+Registration validates name, email, confirmed password (minimum 10 characters), and optional role. Login regenerates the session. Email verification and password-reset UX are not implemented.
 
 ### Artist profiles
-- One-to-one artist profile per account, with display name, biography, city, website, Instagram handle, and public/private visibility.
-- Artists can create and edit only their own profile. Administrators can view and edit all profiles through the authenticated profile API.
-- Public profile pages are available at /artists/{slug} and load data from GET /api/v1/artists/{slug}; private profiles are visible only to their owner and administrators.
-- Authenticated profile endpoints: GET /api/v1/artist-profile/me, PUT /api/v1/artist-profile/me, GET /api/v1/artist-profiles/{id}, and PATCH /api/v1/artist-profiles/{id}.
+
+Each artist account can own one profile containing display name, biography, city, website, Instagram handle, and visibility. Public profiles are addressed by slug at `/artists/{slug}`; the corresponding API endpoint is `GET /api/v1/artists/{slug}`. Private profiles are hidden from guests and other users; owners and administrators can access them through authorized endpoints.
+
+Authenticated profile endpoints:
+
+- `GET /api/v1/artist-profile/me`
+- `PUT /api/v1/artist-profile/me`
+- `GET /api/v1/artist-profiles/{id}`
+- `PATCH /api/v1/artist-profiles/{id}`
+
+### Artwork catalogue and moderation
+
+- Public categories: `GET /api/v1/categories` (active categories only).
+- Public catalogue: `GET /api/v1/artworks` with optional `q` and `category` filters; only approved artwork is returned.
+- Public detail and image delivery: `GET /api/v1/artworks/{slug}` and `GET /api/v1/artworks/{slug}/image`; policy checks protect non-public artwork.
+- Artist-owned artwork: `GET/POST /api/v1/artist/artworks` and `PATCH /api/v1/artist/artworks/{id}`.
+- Admin moderation: `GET /api/v1/admin/artworks` and `PATCH /api/v1/admin/artworks/{id}/moderation`.
+
+Artwork uploads accept JPG/JPEG, PNG, or WebP images up to 5 MB and 6000 × 6000 pixels. Originals are stored on Laravel's private local disk. New submissions and artist edits enter pending review; editing clears prior review metadata. Only approved artwork appears in public catalogue queries.
+
+### Buyer-to-artist inquiries
+
+- An authenticated buyer can submit an inquiry to a public artist profile.
+- An inquiry may optionally reference an approved artwork owned by that artist.
+- Buyers can list and view only their own sent inquiries.
+- Artists can list and view inquiries addressed to their own profile, then mark them read or archived.
+- Subject and message lengths are bounded; a honeypot and per-user/IP throttling help reduce abuse.
+- Inquiry responses omit both parties' email addresses.
+
+This is an inquiry intake and status-tracking feature, not real-time chat, email delivery, or a reply channel.
 
 ## Local development
 
-Prerequisites: PHP 8.3+, Composer, Node.js 22+, npm, and MySQL. Enable the PHP extensions required by Laravel, including PDO for MySQL. The test suite uses in-memory SQLite, so the PHP CLI must also have both `pdo_sqlite` and `sqlite3` enabled. On Windows, check the CLI configuration with `php --ini`, enable `extension=pdo_sqlite` and `extension=sqlite3` in the reported `php.ini`, open a new terminal, and verify with `php -m`. The target hosting PHP version and required extensions still need verification.
+### Prerequisites
 
-1. Install PHP dependencies: composer install
-2. Create the local environment: cp .env.example .env
-3. Generate the application key: php artisan key:generate
-4. Configure database credentials in .env.
-5. Run database migrations: php artisan migrate
-6. Install frontend dependencies: npm install
-7. Start Laravel: php artisan serve
-8. Start Vite in another terminal: npm run dev
-9. Open the local URL printed by Laravel (normally http://127.0.0.1:8000).
+- PHP 8.3+
+- Composer
+- Node.js 22+ and npm
+- MySQL for a local MySQL environment
+- PHP extensions required by Laravel, including PDO MySQL
+- `pdo_sqlite` and `sqlite3` enabled in the PHP CLI for the in-memory test suite
 
-To grant administrator access to an already registered account, run the Artisan command from the server terminal: `php artisan users:make-admin email@example.com`. Do not add a public admin-registration path.
+On Windows, inspect the CLI configuration with `php --ini`, enable the required extensions in that `php.ini`, open a new terminal, and verify with `php -m`.
+
+### Setup
+
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+# Configure database credentials in .env
+php artisan migrate
+npm install
+```
+
+Run the backend and frontend development servers in separate terminals:
+
+```bash
+php artisan serve
+npm run dev
+```
+
+Open the local URL printed by Laravel (normally `http://127.0.0.1:8000`).
+
+To grant administrator access to an existing account, run `php artisan users:make-admin email@example.com` from the server terminal. There is no public administrator-registration path.
 
 ## Quality checks
 
-Run after installing dependencies. On Windows, run these commands with the same PHP CLI executable used by Composer:
-- Backend tests: composer test
-- PHP style check: composer lint
-- Apply PHP formatting fixes: composer lint:fix (then rerun composer lint)
-- Frontend lint: npm run lint
-- Frontend production build: npm run build
+Run after installing dependencies:
 
-GitHub Actions runs backend tests/style checks and frontend lint/build on pushes to main or feature branches, and on pull requests targeting main.
+```bash
+composer test
+composer lint
+npm run lint
+npm run build
+```
 
-## Deployment notes
+To apply PHP formatting fixes, run `composer lint:fix` and then rerun `composer lint`.
 
-- Point the web server document root at Laravel's public/ directory. Do not expose the repository root, .env, vendor/, or private storage.
-- Configure production secrets and database credentials through the hosting environment; never commit them.
-- Build frontend assets before deployment with npm run build.
-- Run production dependency installation and database migrations during a controlled release.
-- Ensure storage/ and bootstrap/cache/ are writable by the PHP process.
-- Keep private uploads outside public paths. Serve only approved public artwork through controlled paths.
-- See [the cPanel deployment guide](docs/cpanel-deployment.md) for shared-hosting deployment and smoke-test instructions.
-- See [the backup and restore runbook](docs/backup-and-restore.md) for database and private-upload recovery procedures.
+The PHPUnit configuration uses in-memory SQLite. GitHub Actions runs backend tests/style checks and frontend lint/build on pushes to `main` or feature branches and on pull requests targeting `main`. Do not treat a workflow result as a substitute for production-host or browser verification.
 
-## Operations and launch
+## Documentation map
 
-- [Privacy-conscious analytics baseline](docs/analytics-baseline.md) defines proposed events and data minimization; analytics collection is not enabled.
-- [Release checklist and known limitations](docs/release-checklist.md) records operational launch gates and intentionally deferred features.
-- Hosting PHP 8.3+, SMTP delivery, production backup automation, and real-device/cPanel smoke tests still require verification in the target environment.
+- [Architecture and request flows](docs/architecture.md)
+- [API reference](docs/api-reference.md)
+- [Product roadmap and implementation status](ROADMAP.md)
+- [Engineering workflow and contributor rules](AGENTS.md)
+- [Engineering practices and definition of done](SKILLS.md)
+- [Changelog](CHANGELOG.md)
+- [Artwork catalogue smoke test](docs/phase-2-artwork-catalogue-smoke-test.md)
+- [Artwork moderation smoke test](docs/phase-3-artwork-moderation-smoke-test.md)
+- [Buyer-to-artist inquiry smoke test](docs/phase-4-buyer-artist-contact-smoke-test.md)
+- [cPanel deployment guide](docs/cpanel-deployment.md)
+- [Backup and restore runbook](docs/backup-and-restore.md)
+- [Analytics baseline](docs/analytics-baseline.md)
+- [Release checklist and known limitations](docs/release-checklist.md)
+
+## Deployment status
+
+Deployment documentation is a plan, not evidence of a completed deployment. The following still require verification in the target environment: PHP 8.3+ and extensions, document-root isolation, SMTP (once mail features exist), storage permissions, backups and a successful restore drill, and real-device/browser smoke tests. See the [cPanel guide](docs/cpanel-deployment.md).
 
 ## Engineering principles
-1. Keep the MVP focused; do not introduce deferred commerce features.
-2. Validate and authorize every write on the server.
-3. Validate uploaded files by content/type, size, and safe storage location.
-4. Keep private uploads outside the public web root where possible; serve approved public artwork through controlled paths.
-5. Use migrations and seeders for reproducible database setup.
-6. Cover authentication, role boundaries, moderation, and upload validation with tests.
-7. Design for shared hosting and document deployment steps clearly.
-8. Keep all user-facing layouts responsive and test RTL behavior.
 
-## Project documentation
-- [Agent guidance](AGENTS.md)
-- [Skills and workflow](SKILLS.md)
-- [Roadmap](ROADMAP.md)
-- [Changelog](CHANGELOG.md)
-- [Phase 3 moderation smoke test](docs/phase-3-artwork-moderation-smoke-test.md)
-- [Phase 4 inquiry smoke test](docs/phase-4-buyer-artist-contact-smoke-test.md)
-- [Environment template](.env.example)
+1. Preserve the defined MVP boundary; do not silently add deferred commerce features.
+2. Validate and authorize every write on the server.
+3. Keep private uploads outside public paths and deliver approved artwork through controlled routes.
+4. Use migrations and seeders for reproducible database setup.
+5. Test authentication, role boundaries, ownership, moderation, and upload validation.
+6. Keep documentation aligned with implemented behavior; label plans and unverified assumptions clearly.
+7. Design and test Persian/RTL behavior across supported screen sizes.
