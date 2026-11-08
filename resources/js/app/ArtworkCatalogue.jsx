@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import {
+    ArtworkCard,
+    EmptyState,
+    ErrorState,
+    SearchField,
+    SelectField,
+    Skeleton,
+    SkeletonLines,
+} from '../components/ui';
 
 export default function ArtworkCatalogue() {
     const [categories, setCategories] = useState([]);
@@ -10,6 +18,7 @@ export default function ArtworkCatalogue() {
     const [searchInput, setSearchInput] = useState('');
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('');
+    const [retryCount, setRetryCount] = useState(0);
 
     useEffect(() => {
         axios.get('/api/v1/categories')
@@ -26,42 +35,60 @@ export default function ArtworkCatalogue() {
             .catch(() => { if (active) setError(true); })
             .finally(() => { if (active) setLoading(false); });
         return () => { active = false; };
-    }, [category, search]);
+    }, [category, retryCount, search]);
 
     return (
-        <section id="artworks" className="mx-auto max-w-7xl px-6 py-20 lg:px-10" dir="rtl">
+        <section id="artworks" className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10 lg:py-20" dir="rtl">
             <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
                 <div>
-                    <p className="text-sm font-bold text-[#b65c3a]">کاتالوگ راد آرت</p>
+                    <p className="text-sm font-bold text-terracotta-strong">کاتالوگ راد آرت</p>
                     <h2 className="mt-2 text-3xl font-black">آثار منتخب هنرمندان</h2>
-                    <p className="mt-3 text-sm leading-7 text-stone-500">آثاری که بررسی و برای نمایش عمومی تأیید شده‌اند.</p>
+                    <p className="mt-3 text-sm leading-7 text-muted">آثاری که بررسی و برای نمایش عمومی تأیید شده‌اند.</p>
                 </div>
-                <form onSubmit={(event) => { event.preventDefault(); setSearch(searchInput.trim()); }} className="flex flex-wrap gap-2">
-                    <input value={searchInput} onChange={(event) => setSearchInput(event.target.value)} aria-label="جست‌وجو در آثار" placeholder="جست‌وجوی عنوان یا تکنیک…" className="min-w-[220px] rounded-full border border-stone-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-[#b65c3a]" />
-                    <select value={category} onChange={(event) => setCategory(event.target.value)} aria-label="فیلتر دسته‌بندی" className="rounded-full border border-stone-300 bg-white px-4 py-2.5 text-sm">
+                <div className="grid w-full gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(10rem,auto)] md:max-w-2xl">
+                    <SearchField
+                        value={searchInput}
+                        onChange={(event) => setSearchInput(event.target.value)}
+                        onSearch={(value) => setSearch(value.trim())}
+                        label="جست‌وجو در آثار"
+                        placeholder="جست‌وجوی عنوان یا تکنیک…"
+                    />
+                    <SelectField
+                        value={category}
+                        onChange={(event) => setCategory(event.target.value)}
+                        aria-label="فیلتر دسته‌بندی"
+                    >
                         <option value="">همه دسته‌ها</option>
                         {categories.map((item) => <option key={item.id} value={item.slug}>{item.name}</option>)}
-                    </select>
-                    <button className="rounded-full bg-[#20201e] px-5 py-2.5 text-sm font-bold text-white">جست‌وجو</button>
-                </form>
+                    </SelectField>
+                </div>
             </div>
-            {loading ? <p className="mt-8 text-sm text-stone-500">در حال بارگذاری آثار…</p> : error ? (
-                <p role="alert" className="mt-8 rounded-xl bg-white p-5 text-sm text-red-700">دریافت کاتالوگ با خطا روبه‌رو شد.</p>
+
+            {loading ? (
+                <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" aria-label="در حال بارگذاری آثار" role="status">
+                    {Array.from({ length: 6 }, (_, index) => (
+                        <div key={index} className="grid gap-3 border border-border bg-paper p-3">
+                            <Skeleton height="12rem" />
+                            <SkeletonLines lines={2} />
+                        </div>
+                    ))}
+                </div>
+            ) : error ? (
+                <ErrorState
+                    className="mt-8"
+                    title="دریافت کاتالوگ با خطا روبه‌رو شد"
+                    description="اتصال را بررسی کنید و دوباره تلاش کنید."
+                    onRetry={() => setRetryCount((count) => count + 1)}
+                />
             ) : artworks.length === 0 ? (
-                <p className="mt-8 rounded-xl border border-stone-200 bg-white p-8 text-sm text-stone-500">هنوز اثری برای نمایش در این دسته‌بندی ثبت نشده است.</p>
+                <EmptyState
+                    className="mt-8"
+                    title="اثری برای نمایش پیدا نشد"
+                    description="عبارت جست‌وجو یا دسته‌بندی را تغییر دهید، یا بعداً دوباره سر بزنید."
+                />
             ) : (
                 <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                    {artworks.map((artwork) => (
-                        <Link key={artwork.id} to={'/artworks/' + artwork.slug} className="group overflow-hidden rounded-2xl border border-stone-200 bg-white transition hover:-translate-y-1 hover:shadow-lg">
-                            <img src={artwork.image_url} alt={artwork.title} loading="lazy" className="aspect-[4/3] w-full object-cover transition group-hover:scale-[1.02]" />
-                            <div className="p-5">
-                                <p className="text-xs font-bold text-[#b65c3a]">{artwork.category.name}</p>
-                                <h3 className="mt-2 text-lg font-extrabold">{artwork.title}</h3>
-                                <p className="mt-2 text-sm text-stone-500">{artwork.artist.display_name}</p>
-                                <p className="mt-4 text-sm font-bold">{artwork.price ? Number(artwork.price).toLocaleString('fa-IR') + ' ریال' : 'قیمت توافقی'}</p>
-                            </div>
-                        </Link>
-                    ))}
+                    {artworks.map((artwork) => <ArtworkCard key={artwork.id} artwork={artwork} />)}
                 </div>
             )}
         </section>

@@ -5,6 +5,13 @@ Notable project changes are recorded here in reverse chronological order. Dates 
 ## [Unreleased]
 
 ### Added
+- Accessible shared UI components for buttons, form controls, cards, badges, tabs, dropdowns, dialogs, breadcrumbs, pagination, toasts, skeletons, and feedback states.
+- Interactive component specimen and shared component usage/accessibility documentation.
+
+### Changed
+- Refactored the public artwork catalogue to use shared search, artwork cards, loading skeletons, and empty/error states.
+
+### Added
 - Contemporary Art Editorial design tokens for palette, semantic colors, typography, spacing, shape, elevation, and layout.
 - Vazirmatn and Inter font loading, accessible focus styling, reduced-motion support, and a development-only design foundation specimen.
 - Tailwind semantic aliases and design foundation usage documentation.

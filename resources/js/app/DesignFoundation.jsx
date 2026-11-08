@@ -1,3 +1,5 @@
+import ComponentShowcase from './ComponentShowcase';
+
 const swatches = [
     { name: 'Ivory', value: '#F7F5F0', token: 'canvas' },
     { name: 'Charcoal', value: '#242320', token: 'ink' },
@@ -75,6 +77,7 @@ export default function DesignFoundation() {
                         <div className="border-s border-2 border-olive bg-paper p-5"><p className="font-bold">نشانگر معنایی</p><p className="mt-2 text-sm text-muted">استفاده محدود از زیتونی</p></div>
                     </div>
                 </section>
+                <ComponentShowcase />
                 <footer className="border-t border-border pt-6 text-xs text-muted">Rad Art · Contemporary Art Editorial · MVP 2</footer>
             </div>
         </main>
