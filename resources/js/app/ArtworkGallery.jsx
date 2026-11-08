@@ -18,6 +18,9 @@ export default function ArtworkGallery() {
 
     useEffect(() => {
         if (detailSlug) {
+            setLoading(true);
+            setError(false);
+            setDetail(null);
             axios.get('/api/v1/artworks/' + encodeURIComponent(detailSlug))
                 .then(({ data }) => setDetail(data.data))
                 .catch(() => setError(true))
