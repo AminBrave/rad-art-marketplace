@@ -1,10 +1,10 @@
 # Rad Art Marketplace — Cursor Rules
 
-Follow `AGENTS.md` as the primary repository instruction file.
+Follow AGENTS.md as the primary repository instruction file.
 
-- Read `README.md` and the relevant roadmap milestone before implementation.
+- Read README.md and the relevant roadmap milestone before implementation.
 - Preserve the defined MVP scope; do not add deferred commerce or social features.
-- Backend: Laravel 11, MySQL, secure validation, Policies/Gates, migrations, and tests.
+- Backend: Laravel 13 (PHP 8.3+), MySQL, secure validation, Policies/Gates, migrations, and tests.
 - Frontend: React + Vite, Tailwind CSS, Radix UI, Axios.
 - Build Persian-first and RTL-aware experiences with responsive layouts.
 - Assume cPanel shared hosting; avoid dependencies on root access or persistent daemons.

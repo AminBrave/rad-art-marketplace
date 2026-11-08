@@ -1,54 +1,69 @@
 # Agent and Contributor Instructions
 
-These instructions apply to all automated agents and contributors working in this repository.
+These instructions apply to automated agents and human contributors working in this repository.
 
-## Before changing code
-- Read `README.md`, `ROADMAP.md`, and the relevant sections of `SKILLS.md`.
-- Inspect the existing implementation before proposing or making structural changes.
-- Prefer small, reviewable changes that directly advance the MVP.
-- If a requirement is ambiguous or conflicts with the current architecture, document the assumption rather than silently expanding scope.
+## Start here
+
+1. Read `README.md` for product scope, current behavior, setup, and documentation links.
+2. Read `ROADMAP.md` before selecting work; distinguish implemented items from open milestones.
+3. Read `SKILLS.md` and the relevant architecture/API documentation before changing a feature.
+4. Inspect the existing implementation, tests, migrations, and frontend flow before proposing structural changes.
+5. Work on a dedicated feature branch. Keep changes focused and reviewable.
 
 ## Product boundaries
-- Build a Persian-first art discovery and artist-contact marketplace.
-- Do not implement payments, cart/checkout, order management, shipping, in-app chat, mobile apps, AI recommendations, social networking, automated subscriptions, or advertising unless the product scope is explicitly revised.
-- The MVP contact flow is a way for a visitor to reach an artist; it is not a messaging platform.
+
+Build a Persian-first, RTL-oriented art discovery and artist-contact marketplace.
+
+Do not implement payments, cart/checkout, order management, shipping, in-app chat/replies, mobile apps, AI recommendations, social networking, subscriptions, or advertising unless the product scope is explicitly revised.
+
+The inquiry feature is a private contact-intake and status-tracking workflow. It is not a messaging platform and does not deliver email.
 
 ## Architecture and stack
-- Backend: Laravel 11 by default; consider Laravel 10 compatibility only when justified.
-- Frontend: React + Vite.
-- UI: Tailwind CSS and Radix UI.
-- Database: MySQL.
+
+- Backend: Laravel 13 / PHP 8.3+.
+- Frontend: React 18 + Vite.
+- Styling/UI: Tailwind CSS and Radix UI.
+- Database: MySQL for deployment; in-memory SQLite for tests.
 - HTTP: Axios.
-- Hosting: cPanel shared hosting. Avoid mandatory root access, persistent workers, Docker-at-runtime, Redis, or daemon processes.
-- Keep backend API contracts explicit and versionable where practical.
+- Hosting target: cPanel shared hosting.
+- Keep API contracts explicit and versioned under `/api/v1`.
+- Do not assume root access, Docker at runtime, Redis, persistent workers, queue daemons, or process managers.
+- Do not downgrade to an end-of-life framework or bypass Composer platform/security checks to accommodate an unverified host.
 
 ## Security requirements
-- Enforce authentication, authorization, and ownership checks on the server.
-- Use Laravel validation and mass-assignment protection.
-- Protect state-changing browser requests against CSRF where applicable; configure CORS narrowly.
-- Apply rate limits to authentication, contact, and other abuse-prone endpoints.
-- Store secrets only in environment variables; never commit real credentials.
-- Validate uploaded images by allowed format, actual content, dimensions, and size. Generate safe filenames; do not trust user-supplied paths.
-- Prevent executable uploads and path traversal. Keep originals/private files outside public paths when feasible.
-- Escape user-generated content and avoid unsafe HTML rendering.
-- Log security-relevant events without logging passwords, tokens, or sensitive message content.
-- Use least-privilege database credentials and document backup/restore procedures.
 
-## Data and UX
-- Use clear status values for artwork moderation (for example: draft, pending, changes_requested, approved, rejected, archived).
-- Artists may only modify their own records; admins may moderate across the platform.
-- Public catalogue endpoints must expose approved/published artwork only.
-- Support Persian text, RTL layout, keyboard navigation, and responsive mobile/tablet/desktop layouts.
+- Enforce authentication, authorization, and ownership on the server; UI visibility is not a security control.
+- Use Laravel validation and mass-assignment protection.
+- Preserve CSRF protection for state-changing browser requests and configure CORS narrowly if cross-origin access is introduced.
+- Apply rate limits to authentication, artwork mutations, inquiries, and other abuse-prone endpoints.
+- Keep secrets in environment configuration; never commit real credentials.
+- Validate uploaded images by actual content/type, dimensions, and size. Generate safe filenames and never trust client-supplied storage paths.
+- Prevent executable uploads and path traversal. Keep original/private files outside public paths.
+- Escape user-generated content and avoid unsafe HTML rendering.
+- Do not expose private account data or inquiry email addresses in public/API payloads.
+- Log security-relevant events without logging passwords, tokens, or private inquiry content.
+- Use least-privilege database credentials and follow the backup/restore runbook.
+
+## Domain and UX rules
+
+- Public catalogue and artwork detail/image access must expose approved artwork only.
+- New artwork submissions and artist edits enter pending review; clients must not choose moderation state or ownership.
+- Only the owning artist may edit their profile, artwork, or received inquiries; admins may moderate across the platform.
+- Buyer inquiries may target only public artist profiles and, when attached, an approved artwork owned by that artist.
+- Keep inquiry responses free of buyer and artist email addresses.
+- Support Persian text, RTL layout, keyboard navigation, and responsive layouts.
 - Store timestamps consistently; localize display dates and use Jalali presentation where required.
-- Provide accessible labels, validation feedback, empty states, and loading/error states.
+- Provide accessible labels, validation feedback, and loading/error/empty/success states.
 
 ## Quality gates
-- Add or update tests for behavior changes, especially permissions and moderation.
-- Run relevant backend tests, frontend lint/type checks, and production builds when available.
-- Do not claim a check passed unless it was actually run.
-- Update documentation and `CHANGELOG.md` for meaningful changes.
+
+- Add or update tests for behavior changes, especially authorization, ownership, validation, and moderation.
+- Run `composer test`, `composer lint`, `npm run lint`, and `npm run build` when the relevant dependencies/environment are available.
+- Do not claim a check passed unless it was actually run; report unavailable checks explicitly.
+- Review migrations for reversibility and data-loss risk.
+- Update documentation and `CHANGELOG.md` for meaningful behavior or workflow changes.
 - Never commit generated secrets, dependency folders, build artifacts, or local environment files.
 
 ## Delivery
-- Summarize what changed, why, tests/checks run, and known limitations.
-- Keep TODOs actionable and link them to roadmap milestones or issues.
+
+Summarize what changed, why, checks actually run, and known limitations. Keep TODOs actionable and tie them to roadmap milestones or issues. Do not describe planned functionality as implemented.

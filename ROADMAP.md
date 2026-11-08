@@ -1,43 +1,72 @@
 # Product Roadmap
 
-## Phase 0 — Foundation
-- [x] Define MVP scope and deferred features
-- [x] Establish repository guidance and delivery standards
-- [ ] Confirm hosting PHP version and available extensions
-- [ ] Scaffold Laravel backend and React/Vite frontend
-- [ ] Configure local environment, formatting, linting, and tests
-- [ ] Add CI checks that do not assume production secrets
+This roadmap distinguishes implemented behavior from remaining work. A checked item means the feature is represented in the current codebase; it does not imply production deployment or hosting verification.
 
-## Phase 1 — Identity and permissions
-- [ ] User registration and login
-- [ ] Roles: Guest, Artist, Admin
-- [ ] Server-side policies and ownership enforcement
-- [ ] Artist profile create/edit flow
-- [ ] Admin user management
+## Phase 0 — Foundation
+
+- [x] Define MVP scope and deferred features.
+- [x] Establish repository guidance and delivery standards.
+- [ ] Confirm hosting PHP version (PHP 8.3+) and required extensions.
+- [x] Scaffold Laravel 13 backend and React/Vite frontend.
+- [x] Add local environment, formatting, linting, and test configuration.
+- [x] Add CI checks that do not require production secrets.
+
+## Phase 1 — Identity and artist profiles
+
+- [x] Session-based registration, login, current-user, and logout.
+- [x] Roles: Guest (unauthenticated), Buyer, Artist, and Admin.
+- [x] Public registration permits Buyer or Artist; defaults to Artist; Admin is server-provisioned.
+- [x] Server-side role middleware and admin user-management endpoints.
+- [x] Artist profile create/edit flow with owner-scoped authorization.
+- [x] Public/private profile visibility and public profile page.
+- [x] Administrator view/edit access for artist profiles.
+- [ ] Email verification and password-reset user experience.
 
 ## Phase 2 — Artwork catalogue
-- [ ] Artwork/category database model and migrations
-- [ ] Secure image upload and storage
-- [ ] Artist artwork submission and editing
-- [ ] Moderation states and admin review actions
-- [ ] Public catalogue, search, and category filtering
-- [ ] Artwork detail and public artist profile pages
+
+- [x] Artwork/category database models and migrations.
+- [x] Private image upload and policy-protected image delivery.
+- [x] Artist artwork submission and editing.
+- [x] Moderation states and administrator review actions.
+- [x] Public catalogue, search, and active-category filtering.
+- [x] Artwork detail pages.
 
 ## Phase 3 — Contact and administration
-- [ ] Buyer-to-artist contact flow with abuse controls
-- [ ] Admin category management
-- [ ] Reports and moderation queue
-- [ ] Featured artwork/artist placements
-- [ ] About, help, legal, and contact pages
+
+- [x] Buyer-to-artist inquiry flow with abuse controls.
+- [x] Buyer sent-inquiry list and artist-owned inbox.
+- [x] Inquiry read/archive status updates.
+- [ ] Admin category management.
+- [ ] Buyer reports and abuse-moderation queue.
+- [ ] Featured artwork/artist placements.
+- [ ] About, Help, Legal, and Contact pages.
 
 ## Phase 4 — Hardening and launch
-- [ ] Responsive and RTL accessibility review
-- [ ] Security review: auth, authorization, validation, uploads, rate limits
-- [ ] Automated test coverage for critical flows
-- [ ] Analytics baseline and privacy-conscious event definitions
-- [ ] Backup and restore runbook
-- [ ] cPanel deployment guide and smoke-test checklist
-- [ ] Release checklist and known-limitations document
+
+- [ ] Responsive and RTL accessibility review across real devices.
+- [ ] Security review of authentication, authorization, validation, uploads, and rate limits.
+- [ ] Expand automated coverage for critical flows and edge cases.
+- [x] Analytics event/metric baseline documented; collection is not enabled.
+- [x] Backup and restore runbook documented; no successful production restore drill is recorded.
+- [x] cPanel deployment guide and smoke-test checklist documented; no target-host verification is recorded.
+- [x] Release checklist and known-limitations register documented.
+- [ ] Verify deployment prerequisites and execute production-like smoke tests.
 
 ## Deferred beyond MVP
-Payments, cart/checkout, orders, shipping, in-app chat, native mobile apps, AI recommendations, social graph, automated subscriptions, and advertising.
+
+Payments, cart/checkout, orders, shipping, in-app chat/replies, native mobile apps, AI recommendations, social networking, subscriptions, and advertising.
+
+## Current implementation baseline
+
+The branch `feature/roadmap-mvp-completion` is the documentation and implementation baseline for the cleanup work. It includes:
+
+- Laravel 13 / PHP 8.3+ application with a versioned health endpoint.
+- React 18 + Vite Persian RTL application shell.
+- Session authentication and Buyer/Artist/Admin role boundaries.
+- Artist profiles with public/private visibility and owner/admin policies.
+- Artist-owned artwork submission/editing, private image storage, approved-only public catalogue, search, category filtering, and detail pages.
+- Admin artwork moderation (approve, reject, request changes) with reviewer audit metadata.
+- Buyer-to-artist inquiries with buyer history, artist inbox, read/archive status, and abuse controls.
+- Operational documentation for cPanel deployment, backup/restore, analytics planning, and release readiness.
+
+The roadmap's unchecked items remain open. Documentation of an operational process does not mean that process has been configured or completed. In particular, hosting compatibility, production deployment, SMTP, automated backups, restore drills, and browser/device verification remain external acceptance gates.
