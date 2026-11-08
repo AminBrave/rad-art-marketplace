@@ -11,7 +11,7 @@ import { PublicLayout } from './Layouts';
 import {
     AdminDashboardHome, AdminUsersPage, AdminWorkspaceLayout, ArtistArtworkPage,
     ArtistInquiryPage, ArtistProfileSettings, ArtistWorkspaceLayout,
-    BuyerDashboardHome, BuyerInquiryPage, BuyerWorkspaceLayout, DashboardIndex,
+    BuyerWorkspaceLayout, DashboardIndex,
     NotFoundPage, RequireAuth, RequireRole, UnauthorizedPage,
 } from './RoutingPages';
 import ArtistWorkspaceOverview from './ArtistWorkspaceOverview';
