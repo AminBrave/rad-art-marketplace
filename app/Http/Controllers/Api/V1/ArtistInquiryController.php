@@ -17,6 +17,7 @@ class ArtistInquiryController extends Controller
     public function store(Request $request, ArtistProfile $artistProfile): JsonResponse
     {
         abort_unless($artistProfile->is_public, 404);
+        abort_if((int) $artistProfile->user_id === (int) $request->user()->id, 403);
 
         $validated = $request->validate([
             'subject' => ['required', 'string', 'min:4', 'max:160'],
@@ -64,7 +65,7 @@ class ArtistInquiryController extends Controller
 
     public function buyerShow(Request $request, ArtistInquiry $inquiry): JsonResponse
     {
-        abort_unless($inquiry->sender_user_id === $request->user()->id, 404);
+        abort_unless((int) $inquiry->sender_user_id === (int) $request->user()->id, 404);
 
         return response()->json([
             'data' => $this->payload($inquiry->load(['artistProfile', 'artwork']), false),
@@ -86,7 +87,7 @@ class ArtistInquiryController extends Controller
     public function artistShow(Request $request, ArtistInquiry $inquiry): JsonResponse
     {
         $profile = $request->user()->artistProfile()->firstOrFail();
-        abort_unless($inquiry->artist_profile_id === $profile->id, 404);
+        abort_unless((int) $inquiry->artist_profile_id === (int) $profile->id, 404);
 
         return response()->json([
             'data' => $this->payload($inquiry->load(['sender', 'artwork', 'artistProfile']), true),
