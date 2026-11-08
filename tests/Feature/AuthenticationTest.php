@@ -19,7 +19,7 @@ class AuthenticationTest extends TestCase
             'email' => 'artist@example.com',
             'password' => 'strong-password-123',
             'password_confirmation' => 'strong-password-123',
-            'role' => 'admin',
+            'role' => 'artist',
         ]);
 
         $response->assertCreated()
@@ -32,6 +32,33 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
+    }
+
+    public function test_buyer_can_register_without_receiving_artist_permissions(): void
+    {
+        $this->postJson('/api/v1/auth/register', [
+            'name' => 'خریدار آزمایشی',
+            'email' => 'buyer@example.com',
+            'password' => 'strong-password-123',
+            'password_confirmation' => 'strong-password-123',
+            'role' => User::ROLE_BUYER,
+        ])->assertCreated()->assertJsonPath('data.role', User::ROLE_BUYER);
+
+        $this->assertDatabaseHas('users', ['email' => 'buyer@example.com', 'role' => User::ROLE_BUYER]);
+        $this->getJson('/api/v1/artist/artworks')->assertForbidden();
+    }
+
+    public function test_public_registration_cannot_assign_the_admin_role(): void
+    {
+        $this->postJson('/api/v1/auth/register', [
+            'name' => 'کاربر آزمایشی',
+            'email' => 'admin-attempt@example.com',
+            'password' => 'strong-password-123',
+            'password_confirmation' => 'strong-password-123',
+            'role' => User::ROLE_ADMIN,
+        ])->assertUnprocessable()->assertJsonValidationErrors('role');
+
+        $this->assertDatabaseMissing('users', ['email' => 'admin-attempt@example.com']);
     }
 
     public function test_registration_requires_a_confirmed_strong_password(): void
