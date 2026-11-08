@@ -1,93 +1,94 @@
-# Product Roadmap
+# MVP 2 Roadmap
 
-This roadmap distinguishes implemented behavior from remaining work. A checked item means the feature is represented in the current codebase; it does not imply production deployment or hosting verification.
+This file is the concise project delivery map. The [GitHub tracker](https://github.com/AminBrave/rad-art-marketplace/issues/30) owns issue-level acceptance criteria and delivery sequencing. A checked item means implemented in the repository; it does not mean production deployment or manual QA is complete.
 
-## Phase 0 — Foundation
+## Product direction
 
-- [x] Define MVP scope and deferred features.
-- [x] Establish repository guidance and delivery standards.
-- [ ] Confirm hosting PHP version (PHP 8.3+) and required extensions.
-- [x] Scaffold Laravel 13 backend and React/Vite frontend.
-- [x] Add local environment, formatting, linting, and test configuration.
-- [x] Add CI checks that do not require production secrets.
+- **Product:** Persian-first art discovery and artist-contact marketplace.
+- **Visual direction:** Contemporary Art Editorial.
+- **Language and layout:** Persian-first, RTL by default; English-ready architecture, but no English UI launch commitment.
+- **Architecture:** Laravel 13 monolith + React 18/Vite + centralized React Router.
+- **Backend authority:** Laravel controls authentication, authorization, validation, ownership, and moderation.
+- **Scope exclusions:** Payments, cart/checkout, orders, shipping, real-time chat/replies, email delivery, native mobile apps, AI recommendations, social networking, subscriptions, and advertising.
 
-## Phase 1 — Identity and artist profiles
+## Delivery status
 
-- [x] Session-based registration, login, current-user, and logout.
-- [x] Roles: Guest (unauthenticated), Buyer, Artist, and Admin.
-- [x] Public registration permits Buyer or Artist; defaults to Artist; Admin is server-provisioned.
-- [x] Server-side role middleware and admin user-management endpoints.
-- [x] Artist profile create/edit flow with owner-scoped authorization.
-- [x] Public/private profile visibility and public profile page.
-- [x] Administrator view/edit access for artist profiles.
-- [ ] Email verification and password-reset user experience.
+### Stage 1 — Foundation and audit · Complete
 
-## Phase 2 — Artwork catalogue
+**Issues #6–#13 · Integrated into `main`**
 
-- [x] Artwork/category database models and migrations.
-- [x] Private image upload and policy-protected image delivery.
-- [x] Artist artwork submission and editing.
-- [x] Moderation states and administrator review actions.
-- [x] Public catalogue, search, and active-category filtering.
-- [x] Artwork detail pages.
+- [x] Reconcile the MVP 1 baseline and make `main` the active integration branch.
+- [x] Establish Contemporary Art Editorial design foundations and Persian/RTL defaults.
+- [x] Centralize React Router and role-aware route layouts.
+- [x] Build shared UI controls, cards, navigation, dialogs, and feedback states.
+- [x] Audit public artist directory, catalogue, image delivery, and workspace summary APIs.
+- [x] Document the minimal API extension required for public artist discovery.
+- [x] Preserve backend authorization and private image delivery.
 
-## Phase 3 — Contact and administration
+### Stage 2 — Public marketplace · Complete
 
-- [x] Buyer-to-artist inquiry flow with abuse controls.
-- [x] Buyer sent-inquiry list and artist-owned inbox.
-- [x] Inquiry read/archive status updates.
-- [ ] Admin category management.
-- [ ] Buyer reports and abuse-moderation queue.
-- [ ] Featured artwork/artist placements.
-- [ ] About, Help, Legal, and Contact pages.
+**Issues #14–#18 · PR [#42](https://github.com/AminBrave/rad-art-marketplace/pull/42) merged to `main`**
 
-## MVP 2 — Public marketplace (Stage 2)
+- [x] Editorial homepage with real public artwork, categories, and artists.
+- [x] Public artwork gallery with search, active-category filtering, URL state, and pagination.
+- [x] Artwork detail pages with artist context and buyer inquiry entry point.
+- [x] Public artist directory and artist profiles with approved-only portfolios.
+- [x] Persian About, Help, and Contact pages.
+- [x] Public navigation/footer and route integration.
 
-- [x] Editorial homepage with real approved artwork/category/artist data and resilient empty/loading/error states.
-- [x] Public artwork gallery with URL-persisted search, category filters, and server pagination.
-- [x] Artwork detail pages with artist links, conditional metadata, and buyer inquiry entry point.
-- [x] Public artist directory and profile portfolios limited to approved artwork.
-- [x] About, Help, and Contact pages with accurate descriptions of implemented capabilities and no invented contact channels.
+### Stage 3 — Artist workspace · Next
 
-## Phase 4 — Hardening and launch
+**Issues #19–#21 · Open**
 
-- [ ] Responsive and RTL accessibility review across real devices.
-- [ ] Security review of authentication, authorization, validation, uploads, and rate limits.
-- [ ] Expand automated coverage for critical flows and edge cases.
-- [x] Analytics event/metric baseline documented; collection is not enabled.
-- [x] Backup and restore runbook documented; no successful production restore drill is recorded.
-- [x] cPanel deployment guide and smoke-test checklist documented; no target-host verification is recorded.
-- [x] Release checklist and known-limitations register documented.
-- [ ] Verify deployment prerequisites and execute production-like smoke tests.
+- [ ] Refine artist workspace shell and overview using only real API data.
+- [ ] Implement artist artwork management and submission/edit forms, including image preview, validation, upload feedback, and moderation status.
+- [ ] Implement artist inquiry inbox/detail and read/archive status controls.
+- [ ] Preserve artist ownership and server-assigned moderation state.
 
-## Deferred beyond MVP
+### Stage 4 — Buyer workspace · Planned
 
-Payments, cart/checkout, orders, shipping, in-app chat/replies, native mobile apps, AI recommendations, social networking, subscriptions, and advertising.
+**Issue #22 · Open**
 
-## Current integration baseline
+- [ ] Buyer account overview and sent-inquiry history/detail.
+- [ ] Show only the authenticated buyer's own inquiry records.
+- [ ] Keep inquiry status tracking distinct from chat or replies.
 
-`main` is the active integration branch. The agreed MVP 1 snapshot was `cleaned-MVP-1` at commit `bd4599401e84cacc06807dea0db878fc2a9bd22d`; it was promoted to `main` through PR #34. The baseline documentation, Contemporary Art Editorial design foundations, and centralized routing were subsequently merged through PRs #31, #35, and #36.
+### Stage 5 — Admin workspace · Planned
 
-The current `main` includes:
+**Issues #23–#25 · Open**
 
-- Laravel 13 / PHP 8.3+ application with a versioned health endpoint.
-- React 18 + Vite Persian-first RTL application shell.
-- Session authentication and Buyer/Artist/Admin role boundaries.
-- Artist profiles with public/private visibility and owner/admin policies.
-- Artist-owned artwork submission/editing, private image storage, approved-only public catalogue, search, category filtering, and detail pages.
-- Admin artwork moderation (approve, reject, request changes) with reviewer audit metadata.
-- Buyer-to-artist inquiries with buyer history, artist inbox, read/archive status, and abuse controls.
-- Contemporary Art Editorial design foundations and centralized React Router with role-aware artist, buyer, and admin workspaces.
-- Operational documentation for cPanel deployment, backup/restore, analytics planning, and release readiness.
+- [ ] Admin workspace shell and honest overview metrics.
+- [ ] Paginated artwork moderation queue and approve/reject/request-changes controls.
+- [ ] User management using supported API actions and server restrictions.
 
-Create all new feature branches from the latest `main` and target pull requests at `main`. The branch `feature/roadmap-mvp-completion` remains historical context and must not be used as a starting point.
+### Stage 6 — QA and release · Planned
 
-The roadmap's unchecked items remain open. Documentation of an operational process does not mean that process has been configured or completed. In particular, hosting compatibility, production deployment, SMTP, automated backups, restore drills, and browser/device verification remain external acceptance gates.
+**Issues #26–#29 · Open**
 
-## MVP 2 direction and delivery
+- [ ] Persian localization and RTL quality pass.
+- [ ] Responsive and accessibility verification across phone, tablet, and desktop.
+- [ ] Measure and improve artwork image loading and public-page performance where evidence warrants it.
+- [ ] Critical end-to-end regression coverage and release verification.
+- [ ] Production-host compatibility, deployment, backup, and restore verification.
 
-MVP 2 is approved as a full frontend experience implementation with a **Contemporary Art Editorial** visual direction and a **Persian-first, RTL-by-default** interface. It covers the public marketplace, artist workspace, buyer workspace, admin workspace, centralized routing, reusable design system, responsive behavior, localization, accessibility, performance, and release QA. Small Laravel/API changes are allowed only when an audit confirms they are required.
+## MVP 1 capabilities retained
 
-The [MVP 2 GitHub delivery tracker](https://github.com/AminBrave/rad-art-marketplace/issues/30) is the source of truth for implementation sequencing, investigation tasks, and acceptance criteria.
+The current baseline includes session authentication, Buyer/Artist/Admin roles, artist profiles, artwork submission/editing, private image storage, approved-only public catalogue, admin artwork moderation, and buyer-to-artist inquiry intake with buyer history and artist read/archive controls.
 
-MVP 2 explicitly excludes payments, cart/checkout, orders, shipping, real-time chat/replies, AI recommendations, social networking, subscriptions, and advertising. Existing Laravel authorization, validation, ownership, and privacy controls remain authoritative.
+## Operational and release status
+
+The repository contains cPanel deployment and backup/restore procedures, an analytics proposal, manual smoke tests, QA checklists, and a release checklist. These documents are instructions/plans—not evidence that hosting is compatible, deployment is complete, analytics is collecting data, backups are automated, a restore drill succeeded, or browser/device QA has passed.
+
+Known unverified release gates:
+- Target cPanel PHP 8.3+ and required extensions.
+- Production environment, HTTPS, document-root isolation, and private-storage permissions.
+- Backup automation and a successful restore drill.
+- Real-browser and real-device smoke tests, accessibility, and responsive verification.
+
+## Integration rules
+
+- `main` is the only active integration branch.
+- Create feature branches from the latest `main`; target PRs at `main`.
+- `cleaned-MVP-1` is historical context only.
+- Update this roadmap, README, changelog, and GitHub tracker when delivery status changes.
+- Do not mark a feature complete based on a placeholder, a document, or a successful build alone.
