@@ -96,10 +96,12 @@ class ArtworkTest extends TestCase
 
     public function test_guest_cannot_submit_artwork_and_public_catalogue_hides_pending_items(): void
     {
-        $this->post('/api/v1/artist/artworks', [
-            ...$this->validArtwork(),
-            'image' => UploadedFile::fake()->image('guest.jpg'),
-        ])->assertUnauthorized();
+        $this->withHeaders(['Accept' => 'application/json'])
+            ->post('/api/v1/artist/artworks', [
+                ...$this->validArtwork(),
+                'image' => UploadedFile::fake()->image('guest.jpg'),
+            ])
+            ->assertUnauthorized();
 
         [$artist, $profile] = $this->artistWithProfile();
         $pending = $profile->artworks()->create([
