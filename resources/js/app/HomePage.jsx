@@ -1,6 +1,6 @@
 import { createElement, useEffect, useState } from 'react';
 import axios from 'axios';
-import ArtworkGallery from './ArtworkGallery';
+import ArtworkCatalogue from './ArtworkCatalogue';
 import AdminArtworkModeration from './AdminArtworkModeration';
 import ArtworkStudio from './ArtworkStudio';
 import InquiryCenter from './InquiryCenter';
@@ -16,7 +16,7 @@ const emptyForm = { name: '', email: '', password: '', password_confirmation: ''
 const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
 
 export default function HomePage() {
-    const { user, setUser, logout: signOut } = useAuth();
+    const { user, setUser } = useAuth();
     const [authMode, setAuthMode] = useState('login');
     const [form, setForm] = useState(emptyForm);
     const [authErrors, setAuthErrors] = useState({});
@@ -76,15 +76,7 @@ export default function HomePage() {
         }
     };
 
-    const logout = async () => {
-        try {
-            await signOut();
-            setAdminUsers([]);
-            setAuthMessage('با موفقیت خارج شدید.');
-        } catch {
-            setAuthMessage('خروج از حساب انجام نشد. دوباره تلاش کنید.');
-        }
-    };
+
 
     const changeRole = async (targetUser, role) => {
         try {
@@ -175,7 +167,7 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {createElement(ArtworkGallery)}
+            {createElement(ArtworkCatalogue)}
 
             <section id="account" className="mx-auto grid max-w-7xl gap-10 px-6 py-20 lg:grid-cols-[.8fr_1.2fr] lg:px-10">
                 <div>
