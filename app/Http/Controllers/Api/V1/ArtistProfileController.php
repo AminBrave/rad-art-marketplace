@@ -79,7 +79,7 @@ class ArtistProfileController extends Controller
 
         return response()->json([
             'data' => [
-                ...$this->payload($artistProfile),
+                ... $this->payload($artistProfile),
                 'artworks' => $artistProfile->artworks->map(fn (Artwork $artwork): array => $this->publicArtworkPayload($artwork))->values(),
             ],
         ]);
