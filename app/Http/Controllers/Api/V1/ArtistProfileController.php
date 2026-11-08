@@ -14,7 +14,7 @@ class ArtistProfileController extends Controller
 {
     public function mine(Request $request): JsonResponse
     {
-        $profile = $request->user()->artistProfile;
+        $profile = $request->user()->artistProfile()->first();
 
         return response()->json(['data' => $profile ? $this->payload($profile) : null]);
     }
@@ -22,7 +22,7 @@ class ArtistProfileController extends Controller
     public function saveMine(Request $request): JsonResponse
     {
         $user = $request->user();
-        $profile = $user->artistProfile;
+        $profile = $user->artistProfile()->first();
         $validated = $this->validatedProfile($request);
 
         if ($profile) {

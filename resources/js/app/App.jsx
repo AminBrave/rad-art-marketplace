@@ -48,7 +48,7 @@ export default function App() {
         axios.get('/api/v1/artist-profile/me')
             .then(({ data }) => setProfile(data.data ?? { ...emptyProfile, display_name: user.name }))
             .catch(() => setProfile({ ...emptyProfile, display_name: user.name }));
-    }, [user?.id, user?.name]);
+    }, [user]);
 
     useEffect(() => {
         const match = window.location.pathname.match(new RegExp('^/artists/([^/]+)$'));

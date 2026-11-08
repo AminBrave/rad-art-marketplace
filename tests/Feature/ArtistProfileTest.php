@@ -52,7 +52,7 @@ class ArtistProfileTest extends TestCase
         $artist = $this->makeUser('artist');
         $profile = $artist->artistProfile()->create([
             ...$this->validProfile(),
-            'slug' => $response->json('data.slug'),
+            'slug' => 'artist-'.$artist->id,
         ]);
 
         $this->actingAs($artist)
