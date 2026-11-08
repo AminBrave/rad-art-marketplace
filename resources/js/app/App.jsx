@@ -3,6 +3,8 @@ import axios from 'axios';
 import ArtworkGallery from './ArtworkGallery';
 import AdminArtworkModeration from './AdminArtworkModeration';
 import ArtworkStudio from './ArtworkStudio';
+import ContactArtistForm from './ContactArtistForm';
+import InquiryCenter from './InquiryCenter';
 
 const highlights = [
     { number: '01', title: 'هنر اصیل', description: 'آثار منتخب هنرمندان مستقل را کشف کنید.' },
@@ -10,7 +12,7 @@ const highlights = [
     { number: '03', title: 'ارتباط مستقیم', description: 'برای پرسش درباره آثار، مستقیم با هنرمند در تماس باشید.' },
 ];
 
-const emptyForm = { name: '', email: '', password: '', password_confirmation: '' };
+const emptyForm = { name: '', email: '', password: '', password_confirmation: '', role: 'artist' };
 const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
 
 export default function App() {
@@ -43,7 +45,7 @@ export default function App() {
     }, [user?.role]);
 
     useEffect(() => {
-        if (!user) {
+        if (!user || user.role === 'buyer') {
             setProfile(emptyProfile);
             return;
         }
@@ -140,7 +142,7 @@ export default function App() {
     };
 
     if (window.location.pathname.startsWith('/artworks/')) {
-        return createElement(ArtworkGallery);
+        return createElement(ArtworkGallery, { user });
     }
 
     if (window.location.pathname.startsWith('/artists/')) {
@@ -156,6 +158,8 @@ export default function App() {
                             <h1 className="mt-3 text-4xl font-black">{publicProfile.display_name}</h1>
                             {publicProfile.city && <p className="mt-3 text-sm text-stone-500">{publicProfile.city}</p>}
                             {publicProfile.bio && <p className="mt-8 whitespace-pre-line leading-9 text-stone-700">{publicProfile.bio}</p>}
+                            {user?.role === 'buyer' && <ContactArtistForm artistSlug={publicProfile.slug} />}
+                            {!user && <a href="/#account" className="mt-8 inline-block rounded-full bg-[#20201e] px-5 py-3 text-sm font-bold text-white">برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید</a>}
                             <div className="mt-8 flex flex-wrap gap-4 text-sm font-semibold">
                                 {publicProfile.website_url && <a href={publicProfile.website_url} target="_blank" rel="noreferrer" className="text-[#b65c3a] underline">وب‌سایت</a>}
                                 {publicProfile.instagram_handle && <a href={`https://instagram.com/${publicProfile.instagram_handle}`} target="_blank" rel="noreferrer" className="text-[#b65c3a] underline">اینستاگرام</a>}
@@ -187,7 +191,7 @@ export default function App() {
                     <div className="flex items-center gap-3 text-sm">
                         <span className="hidden font-semibold sm:inline">{user.name}</span>
                         <span className="rounded-full bg-[#eae3d8] px-3 py-2 text-xs font-bold text-[#80513d]">
-                            {user.role === 'admin' ? 'مدیر' : 'هنرمند'}
+                            {user.role === 'admin' ? 'مدیر' : user.role === 'buyer' ? 'خریدار' : 'هنرمند'}
                         </span>
                         <button onClick={logout} className="rounded-full border border-stone-300 px-4 py-2.5 font-semibold transition hover:border-[#b65c3a] hover:text-[#b65c3a]">
                             خروج
@@ -256,13 +260,13 @@ export default function App() {
             <section id="account" className="mx-auto grid max-w-7xl gap-10 px-6 py-20 lg:grid-cols-[.8fr_1.2fr] lg:px-10">
                 <div>
                     <p className="text-sm font-bold text-[#b65c3a]">حساب کاربری راد آرت</p>
-                    <h2 className="mt-3 text-3xl font-black leading-relaxed sm:text-4xl">به جمع هنرمندان راد آرت بپیوندید.</h2>
-                    <p className="mt-4 leading-8 text-stone-600">حساب هنرمندی بسازید، پروفایل خود را تکمیل کنید و آثار را برای بررسی و انتشار ثبت کنید. ثبت‌نام عمومی فقط نقش هنرمند ایجاد می‌کند.</p>
+                    <h2 className="mt-3 text-3xl font-black leading-relaxed sm:text-4xl">به جامعه راد آرت بپیوندید.</h2>
+                    <p className="mt-4 leading-8 text-stone-600">به‌عنوان خریدار با هنرمندان ارتباط بگیرید یا به‌عنوان هنرمند پروفایل و آثار خود را مدیریت کنید.</p>
                     {user && (
                         <div className="mt-6 rounded-2xl border border-[#d7b5a2] bg-white p-5">
                             <p className="font-bold">خوش آمدید، {user.name}</p>
                             <p className="mt-2 text-sm text-stone-500">{user.email}</p>
-                            <p className="mt-3 text-sm text-[#80513d]">{user.role === 'admin' ? 'دسترسی مدیریت فعال است.' : 'حساب هنرمندی شما فعال است.'}</p>
+                            <p className="mt-3 text-sm text-[#80513d]">{user.role === 'admin' ? 'دسترسی مدیریت فعال است.' : user.role === 'buyer' ? 'می‌توانید به هنرمندان پیام خصوصی ارسال کنید.' : 'حساب هنرمندی شما فعال است.'}</p>
                         </div>
                     )}
                 </div>
@@ -274,10 +278,19 @@ export default function App() {
                                 ورود
                             </button>
                             <button onClick={() => { setAuthMode('register'); setAuthErrors({}); }} className={authMode === 'register' ? 'font-extrabold text-[#b65c3a]' : 'text-stone-500'}>
-                                ثبت‌نام هنرمند
+                                ثبت‌نام
                             </button>
                         </div>
                         <form onSubmit={submitAuth} className="mt-6 space-y-4">
+                            {authMode === 'register' && (
+                                <label className="block text-sm font-semibold">
+                                    نوع حساب
+                                    <select name="role" value={form.role} onChange={updateForm} className="mt-2 w-full rounded-xl border border-stone-200 bg-[#fcfbf9] px-4 py-3">
+                                        <option value="buyer">خریدار</option>
+                                        <option value="artist">هنرمند</option>
+                                    </select>
+                                </label>
+                            )}
                             {authMode === 'register' && (
                                 <label className="block text-sm font-semibold">
                                     نام و نام خانوادگی
@@ -303,11 +316,16 @@ export default function App() {
                             )}
                             {authErrors.form?.map((message) => <p key={message} role="alert" className="text-sm text-red-700">{message}</p>)}
                             <button disabled={busy} className="w-full rounded-xl bg-[#20201e] px-6 py-3.5 font-bold text-white transition hover:bg-[#b65c3a] disabled:cursor-wait disabled:opacity-60">
-                                {busy ? 'لطفاً صبر کنید…' : authMode === 'register' ? 'ایجاد حساب هنرمند' : 'ورود به حساب'}
+                                {busy ? 'لطفاً صبر کنید…' : authMode === 'register' ? (form.role === 'buyer' ? 'ایجاد حساب خریدار' : 'ایجاد حساب هنرمند') : 'ورود به حساب'}
                             </button>
                         </form>
                         {authMessage && <p role="status" className="mt-4 text-sm text-[#80513d]">{authMessage}</p>}
-                        <p className="mt-5 text-xs leading-6 text-stone-400">با ثبت‌نام، نقش هنرمند برای حساب شما فعال می‌شود. ایجاد حساب مدیر فقط از طریق دستور مدیریتی سرور امکان‌پذیر است.</p>
+                        <p className="mt-5 text-xs leading-6 text-stone-400">با ثبت‌نام می‌توانید نقش خریدار یا هنرمند را انتخاب کنید. ایجاد حساب مدیر فقط از طریق دستور مدیریتی سرور امکان‌پذیر است.</p>
+                    </div>
+                ) : user.role === 'buyer' ? (
+                    <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
+                        <h3 className="text-xl font-extrabold">حساب خریدار</h3>
+                        <p className="mt-3 text-sm leading-7 text-stone-500">برای ارتباط با هنرمندان، صفحه اثر یا پروفایل عمومی آن‌ها را باز کنید. پیام‌های ارسالی شما در همین صفحه قابل پیگیری هستند.</p>
                     </div>
                 ) : (
                     <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
@@ -362,6 +380,7 @@ export default function App() {
             </section>
 
             {createElement(ArtworkStudio, { user, hasProfile: Boolean(profile.slug) })}
+            {createElement(InquiryCenter, { user })}
 
             {user?.role === 'admin' && (
                 <section className="mx-auto max-w-7xl px-6 pb-20 lg:px-10">
@@ -376,7 +395,7 @@ export default function App() {
                                         <tr key={item.id} className="border-b border-stone-100">
                                             <td className="py-4 font-semibold">{item.name}</td>
                                             <td dir="ltr" className="text-left">{item.email}</td>
-                                            <td>{item.role === 'admin' ? 'مدیر' : 'هنرمند'}</td>
+                                            <td>{item.role === 'admin' ? 'مدیر' : item.role === 'buyer' ? 'خریدار' : 'هنرمند'}</td>
                                             <td>
                                                 {item.id !== user.id && (
                                                     <button onClick={() => changeRole(item, item.role === 'admin' ? 'artist' : 'admin')} className="rounded-full border border-stone-300 px-3 py-1.5 text-xs font-semibold hover:border-[#b65c3a]">
