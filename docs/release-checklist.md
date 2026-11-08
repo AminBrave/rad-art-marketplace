@@ -1,59 +1,63 @@
-# Release Checklist
+# MVP 2 Release Checklist
 
-Use this checklist for a candidate release. A checked item means evidence has been collected for that release; documentation alone is not evidence. Assign an owner and record links/logs for each launch-critical item.
+Use this checklist for a release candidate. A checked item requires evidence for that release; documentation, a merged PR, or CI alone is not evidence of production readiness. Assign an owner and record commit IDs, workflow links, test results, and hosting evidence.
+
+## Scope and delivery
+
+- [ ] MVP 2 Stages 1–5 are complete and their GitHub issues are closed against accepted behavior.
+- [ ] Stage 6 QA issues are complete or explicitly accepted as documented residual risk by the product owner.
+- [ ] README, roadmap, API reference, route map, changelog, and manual test guidance match the release.
+- [ ] No deferred or unsupported feature is promised in UI copy or documentation.
 
 ## Build and code quality
 
-- [ ] Confirm the target runtime supports PHP 8.3+ and required extensions.
+- [ ] Confirm target runtime supports PHP 8.3+ and required extensions.
 - [ ] Review pending migrations, schema impact, and rollback/forward-fix plan.
 - [ ] Run `composer test`.
 - [ ] Run `composer lint`.
 - [ ] Run `npm run lint`.
 - [ ] Run `npm run build`.
 - [ ] Review dependency advisories and lockfile changes.
-- [ ] Record the release commit SHA and CI result.
+- [ ] Record release commit SHA and CI result.
 
 ## Environment and operations
 
 - [ ] Confirm production MySQL, HTTPS, document root, private storage, and file permissions.
 - [ ] Confirm `APP_ENV=production`, `APP_DEBUG=false`, and secure secret handling.
-- [ ] Confirm a pre-release database and private-upload backup exists and is readable.
+- [ ] Confirm pre-release database and private-upload backups exist and are readable.
 - [ ] Complete a restore drill or verify a recent successful restore.
-- [ ] Confirm the rollback owner and recovery procedure.
-- [ ] Run the cPanel smoke-test checklist in the target environment.
+- [ ] Confirm rollback owner and recovery procedure.
+- [ ] Run the [cPanel deployment and smoke-test procedure](cpanel-deployment.md) if cPanel remains the selected host.
 
-## Implemented product flows
+## Public marketplace
 
-- [ ] Register Buyer and Artist accounts; confirm public registration cannot create Admin.
-- [ ] Verify login, logout, and authenticated session behavior.
-- [ ] Verify Guest/Buyer/Artist/Admin route and data boundaries.
-- [ ] Verify artist profile ownership and public/private visibility.
-- [ ] Verify artwork submission, validation, private storage, and owner-only editing.
-- [ ] Verify moderation approve/reject/request-changes behavior and audit metadata.
-- [ ] Verify only approved artwork is exposed by public catalogue/detail/image endpoints.
-- [ ] Verify search and active-category filtering.
-- [ ] Verify inquiry submission, rate limits, honeypot, and approved-artwork association.
-- [ ] Verify buyer sent-inquiry privacy and artist inbox ownership/read/archive behavior.
-- [ ] Verify inquiry payloads omit both parties' email addresses.
+- [ ] Verify homepage, artwork catalogue, search, category filters, and pagination.
+- [ ] Verify artwork detail, public artist directory, artist profiles, and approved-only portfolios.
+- [ ] Verify About, Help, and Contact pages and all public navigation/footer links.
+- [ ] Verify private profiles, unapproved artwork, and private image files remain inaccessible publicly.
 
-## Product decisions and known gaps
+## Authentication and workspaces
 
-The following capabilities are not implemented in the current MVP baseline. Before launch, the product owner must explicitly decide whether each is a blocker or a documented deferral:
+- [ ] Verify Buyer/Artist registration, login, logout, session restoration, and Admin provisioning.
+- [ ] Verify server-side role and ownership boundaries.
+- [ ] Verify artist profile, artwork submission/edit, upload, moderation feedback, and inquiry inbox workflows.
+- [ ] Verify buyer sent-inquiry history/detail and privacy.
+- [ ] Verify admin overview, moderation, and user management.
+- [ ] Verify inquiry payloads omit both parties' email addresses; do not imply chat, replies, or email delivery.
 
-- [ ] Admin category management.
-- [ ] Buyer reports and an abuse-moderation queue.
-- [ ] Featured artwork/artist placements.
-- [ ] About, Help, Legal, and Contact pages.
-- [ ] Email verification and password-reset user experience.
-- [ ] Any production mail-dependent workflow.
+## UX, accessibility, privacy, and legal
 
-## UX, privacy, and legal
-
-- [ ] Verify keyboard access, focus visibility, contrast, RTL layout, and responsive breakpoints.
-- [ ] Review Persian/Latin mixed text and form validation states.
-- [ ] Approve privacy notice, retention/deletion policy, and contact details.
-- [ ] Review analytics legal basis/consent before enabling any analytics provider (analytics is currently not enabled).
+- [ ] Verify Persian-first copy, RTL, mixed-direction fields, dates, and number formatting.
+- [ ] Verify keyboard access, focus visibility, contrast, labels, responsive breakpoints, and reduced motion.
+- [ ] Review privacy notice, retention/deletion policy, and site contact details.
 - [ ] Obtain site-owner and qualified local-counsel review of legal text.
+- [ ] Review legal basis/consent before enabling any analytics provider; analytics collection is currently disabled.
+
+## Known limitations and product decisions
+
+These capabilities are not part of the approved MVP 2 scope unless the product owner revises it: payments, cart/checkout, orders, shipping, real-time chat/replies, email delivery, native mobile apps, AI recommendations, social networking, subscriptions, advertising, admin category CRUD, buyer reports/abuse queue, and featured placements.
+
+Email verification and password-reset UX are not implemented. Analytics is a proposal only. Hosting PHP 8.3+ compatibility, production deployment, backup automation, restore success, and browser/device QA remain unverified until evidence is attached.
 
 ## After release
 
@@ -61,15 +65,4 @@ The following capabilities are not implemented in the current MVP baseline. Befo
 - [ ] Review Laravel logs, browser console, and critical route failures.
 - [ ] Verify private files are not web-accessible.
 - [ ] Monitor moderation backlog and abuse/rate-limit signals.
-- [ ] Keep the previous release and backups until sign-off.
-
-## Known limitations
-
-- Payments, cart/checkout, orders, shipping, and payment-provider integration are intentionally deferred.
-- The inquiry feature is private contact intake and status tracking, not chat, replies, or email delivery.
-- Hosting PHP 8.3+ and required extensions have not been verified against the actual cPanel account.
-- Email verification and password-reset UX are not implemented.
-- Analytics is a proposed event/metric baseline only; no provider or tracking script is enabled.
-- Backup automation depends on the selected host; this runbook is a procedure, not proof of automation or a successful restore.
-- Admin category management, reports/abuse queue, featured placements, and static content pages remain open roadmap items.
-- Browser/device accessibility and real cPanel deployment smoke tests require execution in the target environment.
+- [ ] Keep previous release and backups until sign-off.

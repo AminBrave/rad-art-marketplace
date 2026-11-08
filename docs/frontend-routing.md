@@ -1,54 +1,68 @@
-# Frontend routing and access model
+# Frontend Routes and Access Model
 
-The React application uses React Router as the single source of truth for browser navigation. The catalogue list and artwork detail are separate route elements; the detail page reads its slug from React Router route parameters. Laravel serves the React entry document for application paths; JSON APIs remain under `/api/v1`.
+The production application entry point is `resources/js/app.jsx`. Normal navigation mounts `AppRouter` from `resources/js/app/AppRouter.jsx`; React Router is the single source of truth for browser navigation. The legacy `resources/js/app/App.jsx` is retained only for the development-only `?design-system` specimen and is not the normal application router.
+
+Laravel serves the React shell for application paths through the final web catch-all. JSON endpoints remain under `/api/v1`.
 
 ## Public routes
 
-| Route | Purpose |
+All public routes render inside `PublicLayout`, which provides the public navigation and footer.
+
+| Route | Page |
 |---|---|
-| `/` | Existing homepage and MVP 1 account entry |
-| `/artworks` | Public approved-artwork catalogue |
-| `/artworks/:slug` | Public artwork detail |
-| `/artists` | Artist directory route placeholder; directory API is a separate follow-up |
-| `/artists/:slug` | Public artist profile and buyer inquiry entry |
-| `/about`, `/contact`, `/help` | Public content route placeholders |
-| `/login`, `/register` | Session login and buyer/artist registration |
-| `/unauthorized` | Role mismatch page |
+| `/` | Editorial homepage |
+| `/artworks` | Approved artwork catalogue, search, category filter, pagination |
+| `/artworks/:slug` | Artwork detail and buyer inquiry entry point |
+| `/artists` | Searchable, paginated public artist directory |
+| `/artists/:slug` | Public artist profile and approved portfolio |
+| `/about` | About Rad Art |
+| `/help` | User help |
+| `/contact` | Contact information/content |
+| `/login` | Session login |
+| `/register` | Buyer/Artist registration |
+| `/unauthorized` | Authenticated user with an incompatible role |
 
 ## Protected workspaces
 
-- Artist: `/dashboard/artist`, `/dashboard/artist/profile`, `/dashboard/artist/artworks`, `/dashboard/artist/inquiries`
-- Buyer: `/dashboard/buyer`, `/dashboard/buyer/inquiries`
-- Admin: `/admin`, `/admin/users`, `/admin/artworks`
-- `/dashboard` redirects to the current role's workspace.
+| Role | Base route | Child routes |
+|---|---|---|
+| Artist | `/dashboard/artist` | `profile`, `artworks`, `inquiries` |
+| Buyer | `/dashboard/buyer` | `inquiries` |
+| Admin | `/admin` | `users`, `artworks` |
 
-Role layouts render only the navigation appropriate to the authenticated role. The route guard waits for the session check, sends guests to `/login`, and sends authenticated users with the wrong role to `/unauthorized`. The not-found route is rendered by React Router for unknown application paths, including unknown nested paths inside each role workspace.
+`/dashboard` requires authentication and redirects to the user's role workspace: Admin to `/admin`, Buyer to `/dashboard/buyer`, and Artist to `/dashboard/artist`.
 
-## Authentication and security
+The artist, buyer, and admin route trees use their own role guards and workspace layouts. The route tree includes nested not-found handling for unknown workspace paths and a global not-found page.
 
-`resources/js/app.jsx` mounts the router for normal application requests. It reserves the development-only `?design-system` preview entry for the existing App component so the independent design-foundations PR can add its specimen without colliding with the route tree.
+## Authentication and authorization
 
-`AuthProvider` reads the current session from `GET /api/v1/auth/me`. A 401 from an API request clears stale client authentication state; a 403 remains an authorization failure and is shown by the affected screen. The browser guard is a navigation/UX aid only.
+- `AuthProvider` in `resources/js/app/AuthContext.jsx` loads the current session from `GET /api/v1/auth/me`.
+- `RequireAuth` sends guests to `/login` and preserves the requested location in router state.
+- `RequireRole` sends authenticated users without the required role to `/unauthorized`.
+- A 401 from a feature API clears stale client authentication state. A 403 remains an authorization denial and must be handled by the affected page.
+- Successful login/registration and logout update the shared auth context.
 
-Laravel session middleware, role middleware, policies, validation, and ownership checks remain authoritative. Do not remove or weaken server-side checks because a route is hidden in React.
+Client-side guards are a navigation/UX boundary only. Laravel session middleware, role middleware, policies, validation, and ownership checks remain authoritative. Never remove server checks because a route or navigation item is hidden.
 
-## Deep links and legacy compatibility
+## Deep links and refresh
 
-Laravel's final web catch-all serves the React entry view for application paths while explicitly excluding `/api`, `/storage`, and `/build`. Existing public paths `/`, `/artists/{slug}`, and `/artworks/{slug}` remain valid. This enables direct entry and refresh on nested workspace paths.
+The final Laravel web catch-all serves the SPA entry view for application paths while excluding `/api`, `/storage`, and `/build`. Public and workspace routes should therefore load directly and survive browser refresh. The API and asset routes remain handled by Laravel.
 
-The artist directory and static information pages are route placeholders only; no artist-directory API or full static content was added in this routing issue. Their content remains in the corresponding public marketplace/content backlog work.
+## Development-only design specimen
 
-## Manual route acceptance matrix
+Open `/?design-system` while running Vite in development to render the existing design/component specimen. `resources/js/app.jsx` selects the legacy specimen entry only for this development query parameter; normal application navigation always uses `AppRouter`. This specimen is not a production route or product page.
+
+## Route acceptance matrix
 
 | Session | Expected behavior |
 |---|---|
-| Guest opens an artist, buyer, or admin workspace URL | Redirect to `/login`; after successful login, return to the requested path if the role is allowed |
-| Buyer opens an artist or admin workspace | Redirect to `/unauthorized` |
-| Artist opens a buyer or admin workspace | Redirect to `/unauthorized` |
-| Admin opens an artist or buyer workspace | Redirect to `/unauthorized` |
-| Session expires and an API request returns 401 | Clear stale client session state; protected route returns to login |
-| An API request returns 403 | Keep server denial authoritative and show the relevant feature's access/error state |
-| Unknown browser path is opened or refreshed | Laravel serves the SPA shell; React Router renders the 404 page |
-| API path is requested | Laravel API routing remains in control; SPA fallback does not capture it |
+| Guest opens an artist, buyer, or admin workspace | Redirect to login; preserve requested path for post-login navigation |
+| Buyer opens an artist or admin workspace | Redirect to unauthorized |
+| Artist opens a buyer or admin workspace | Redirect to unauthorized |
+| Admin opens an artist or buyer workspace | Redirect to unauthorized |
+| Session expires and a protected API returns 401 | Clear stale auth state and require login |
+| API returns 403 | Keep the server denial authoritative and show a relevant access/error state |
+| Unknown application path is opened/refreshed | Render the React not-found page |
+| API path is requested | Laravel API route handles it; SPA fallback must not capture it |
 
-Run the PHPUnit frontend route test plus the repository's frontend lint and production build. Manual browser verification with guest, buyer, artist, and admin sessions remains part of release QA.
+Manual browser verification for all roles and representative viewport sizes remains part of the MVP 2 QA stage. See [manual smoke tests](manual-smoke-tests.md) and [QA checklist](qa-checklist.md).
