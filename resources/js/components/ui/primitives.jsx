@@ -29,7 +29,7 @@ export function Button({
             type={type}
             disabled={disabled || loading}
             aria-busy={loading || undefined}
-            className={`inline-flex items-center justify-center gap-2 rounded-md font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:opacity-50 ${buttonVariants[variant] ?? buttonVariants.primary} ${buttonSizes[size] ?? buttonSizes.md} ${className}`}
+            className={`inline-flex items-center justify-center gap-2 rounded-md font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta-strong disabled:cursor-not-allowed disabled:opacity-50 ${buttonVariants[variant] ?? buttonVariants.primary} ${buttonSizes[size] ?? buttonSizes.md} ${className}`}
             {...props}
         >
             {loading && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-current border-e-transparent" />}
@@ -45,7 +45,7 @@ export function IconButton({ children, label, size = 'md', className = '', ...pr
             type="button"
             aria-label={label}
             title={label}
-            className={`inline-flex shrink-0 items-center justify-center rounded-md border border-border bg-paper text-ink transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:opacity-50 ${dimensions[size] ?? dimensions.md} ${className}`}
+            className={`inline-flex shrink-0 items-center justify-center rounded-md border border-border bg-paper text-ink transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta-strong disabled:cursor-not-allowed disabled:opacity-50 ${dimensions[size] ?? dimensions.md} ${className}`}
             {...props}
         >
             {children}
@@ -126,6 +126,7 @@ export function SearchField({
     disabled = false,
     className = '',
 }) {
+    const searchId = useId();
     const submit = (event) => {
         event.preventDefault();
         onSearch?.(value);
@@ -133,9 +134,9 @@ export function SearchField({
 
     return (
         <form onSubmit={submit} role="search" className={`flex min-w-0 flex-col gap-2 sm:flex-row ${className}`}>
-            <label className="sr-only" htmlFor="shared-search-field">{label}</label>
+            <label className="sr-only" htmlFor={searchId}>{label}</label>
             <TextInput
-                id="shared-search-field"
+                id={searchId}
                 type="search"
                 value={value}
                 onChange={onChange}
