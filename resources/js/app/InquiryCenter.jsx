@@ -19,8 +19,10 @@ export default function InquiryCenter({ user, hasProfile }) {
             const { data } = await axios.get(url);
             setItems((current) => append ? [...current, ...data.data] : data.data);
             setNextPage(data.next_page_url);
-        } catch {
-            setError('دریافت پیام‌ها انجام نشد. دوباره تلاش کنید.');
+        } catch (requestError) {
+            setError(requestError.response?.status === 403
+                ? 'سرور اجازه مشاهده این صندوق پیام را صادر نکرد.'
+                : 'دریافت پیام‌ها انجام نشد. دوباره تلاش کنید.');
         } finally {
             setLoading(false);
         }
@@ -36,8 +38,10 @@ export default function InquiryCenter({ user, hasProfile }) {
         try {
             const { data } = await axios.patch('/api/v1/artist/inquiries/' + item.id, { status });
             setItems((current) => current.map((entry) => entry.id === item.id ? data.data : entry));
-        } catch {
-            setError('به‌روزرسانی وضعیت پیام انجام نشد.');
+        } catch (requestError) {
+            setError(requestError.response?.status === 403
+                ? 'سرور اجازه تغییر وضعیت این پیام را صادر نکرد.'
+                : 'به‌روزرسانی وضعیت پیام انجام نشد.');
         } finally {
             setBusyId(null);
         }
