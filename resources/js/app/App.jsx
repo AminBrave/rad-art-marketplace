@@ -367,7 +367,7 @@ export default function App() {
                                 {profileErrors.website_url?.map((message) => <span key={message} className="mt-1 block text-xs text-red-700">{message}</span>)}
                             </label>
                             <label className="flex items-center gap-3 text-sm font-semibold">
-                                <input type="checkbox" name="is_public" checked={Boolean(profile.is_public)} onChange={updateProfileForm} className="h-4 w-4 accent-[#b65c3a]" />
+                                <input type="checkbox" name="is_public" checked={Boolean(profile.is_public)} onChange={updateProfileForm} className="h-4 w-4 accent-terracotta" />
                                 نمایش عمومی پروفایل
                             </label>
                             <button disabled={profileBusy} className="w-full rounded-xl bg-ink px-6 py-3.5 font-bold text-white transition hover:bg-terracotta disabled:cursor-wait disabled:opacity-60">
