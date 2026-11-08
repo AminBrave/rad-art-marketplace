@@ -158,7 +158,6 @@ class ArtworkTest extends TestCase
         $this->actingAs($owner)->get('/api/v1/artworks/'.$artwork->slug.'/image')->assertOk();
     }
 
-
     /**
      * @return array{0: User, 1: ArtistProfile}
      */
