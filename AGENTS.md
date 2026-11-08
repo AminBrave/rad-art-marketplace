@@ -3,7 +3,7 @@
 These instructions apply to all automated agents and contributors working in this repository.
 
 ## Before changing code
-- Read `README.md`, `ROADMAP.md`, and the relevant sections of `SKILLS.md`.
+- Read README.md, ROADMAP.md, and the relevant sections of SKILLS.md.
 - Inspect the existing implementation before proposing or making structural changes.
 - Prefer small, reviewable changes that directly advance the MVP.
 - If a requirement is ambiguous or conflicts with the current architecture, document the assumption rather than silently expanding scope.
@@ -14,13 +14,14 @@ These instructions apply to all automated agents and contributors working in thi
 - The MVP contact flow is a way for a visitor to reach an artist; it is not a messaging platform.
 
 ## Architecture and stack
-- Backend: Laravel 11 by default; consider Laravel 10 compatibility only when justified.
+- Backend: Laravel 13 by default (PHP 8.3+).
 - Frontend: React + Vite.
 - UI: Tailwind CSS and Radix UI.
 - Database: MySQL.
 - HTTP: Axios.
 - Hosting: cPanel shared hosting. Avoid mandatory root access, persistent workers, Docker-at-runtime, Redis, or daemon processes.
 - Keep backend API contracts explicit and versionable where practical.
+- Do not downgrade to an end-of-life Laravel release or bypass Composer security advisories to accommodate an unverified host. Confirm host PHP support first.
 
 ## Security requirements
 - Enforce authentication, authorization, and ownership checks on the server.
@@ -46,7 +47,7 @@ These instructions apply to all automated agents and contributors working in thi
 - Add or update tests for behavior changes, especially permissions and moderation.
 - Run relevant backend tests, frontend lint/type checks, and production builds when available.
 - Do not claim a check passed unless it was actually run.
-- Update documentation and `CHANGELOG.md` for meaningful changes.
+- Update documentation and CHANGELOG.md for meaningful changes.
 - Never commit generated secrets, dependency folders, build artifacts, or local environment files.
 
 ## Delivery
