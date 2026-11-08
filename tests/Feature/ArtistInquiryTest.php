@@ -42,6 +42,15 @@ class ArtistInquiryTest extends TestCase
         ]);
     }
 
+    public function test_artist_cannot_send_an_inquiry_to_their_own_public_profile(): void
+    {
+        [$artist, $profile] = $this->artistWithProfile();
+
+        $this->actingAs($artist)
+            ->postJson('/api/v1/artists/'.$profile->slug.'/inquiries', $this->validInquiry())
+            ->assertForbidden();
+    }
+
     public function test_buyers_can_only_list_and_view_their_own_inquiries(): void
     {
         [, $profile] = $this->artistWithProfile();
