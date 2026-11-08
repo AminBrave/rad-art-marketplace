@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import ArtworkGallery from './ArtworkGallery';
+import ArtworkStudio from './ArtworkStudio';
 
 const highlights = [
     { number: '01', title: 'هنر اصیل', description: 'آثار منتخب هنرمندان مستقل را کشف کنید.' },
@@ -136,6 +138,10 @@ export default function App() {
         }
     };
 
+    if (window.location.pathname.startsWith('/artworks/')) {
+        return <ArtworkGallery />;
+    }
+
     if (window.location.pathname.startsWith('/artists/')) {
         return (
             <main className="min-h-screen bg-[#f7f5f0] px-6 py-16 text-[#20201e]" dir="rtl">
@@ -244,6 +250,8 @@ export default function App() {
                 </div>
             </section>
 
+            <ArtworkGallery />
+
             <section id="account" className="mx-auto grid max-w-7xl gap-10 px-6 py-20 lg:grid-cols-[.8fr_1.2fr] lg:px-10">
                 <div>
                     <p className="text-sm font-bold text-[#b65c3a]">حساب کاربری راد آرت</p>
@@ -351,6 +359,8 @@ export default function App() {
                     </div>
                 )}
             </section>
+
+            <ArtworkStudio user={user} />
 
             {user?.role === 'admin' && (
                 <section className="mx-auto max-w-7xl px-6 pb-20 lg:px-10">
