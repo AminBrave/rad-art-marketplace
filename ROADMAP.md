@@ -23,14 +23,14 @@
 - [x] Artwork/category database model and migrations
 - [x] Secure image upload and storage
 - [x] Artist artwork submission and editing
-- [ ] Moderation states and admin review actions
+- [x] Moderation states and admin review actions
 - [x] Public catalogue, search, and category filtering
 - [x] Artwork detail pages
 
 ## Phase 3 — Contact and administration
 - [ ] Buyer-to-artist contact flow with abuse controls
 - [ ] Admin category management
-- [ ] Reports and moderation queue
+- [ ] Buyer reports and abuse moderation queue
 - [ ] Featured artwork/artist placements
 - [ ] About, help, legal, and contact pages
 
@@ -47,4 +47,4 @@
 Payments, cart/checkout, orders, shipping, in-app chat, native mobile apps, AI recommendations, social graph, automated subscriptions, and advertising.
 
 ## Current implementation note
-The Phase 0 scaffold is on `feature/phase-0-app-scaffold`. Phase 1 identity and artist-profile work is on `feature/phase-1-identity-permissions`: session-backed authentication, artist/admin roles, one-to-one artist profiles, owner/admin policies, public/private profile pages, Persian RTL profile editing, and feature tests. The Phase 2 catalogue foundation on the same branch adds categories, private image storage, artist-owned artwork submission/editing, approved-only public catalogue/search/detail endpoints, and Persian RTL catalogue UI. Admin moderation actions and local smoke testing remain open. Hosting PHP 8.3+ compatibility remains unconfirmed.
+The Phase 0 scaffold is on `feature/phase-0-app-scaffold`. Phase 1 identity and artist-profile work is on `feature/phase-1-identity-permissions`: session-backed authentication, artist/admin roles, one-to-one artist profiles, owner/admin policies, public/private profile pages, Persian RTL profile editing, and feature tests. The Phase 2 catalogue foundation on `feature/phase-1-identity-permissions` adds categories, private image storage, artist-owned artwork submission/editing, approved-only public catalogue/search/detail endpoints, and Persian RTL catalogue UI. Phase 3 artwork moderation is implemented on `feature/phase-3-artwork-moderation`, including an admin-only review queue, approve/reject/request-changes actions, review audit metadata, and Persian RTL admin UI. Local smoke testing and CI verification remain open. Hosting PHP 8.3+ compatibility remains unconfirmed.
