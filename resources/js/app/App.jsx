@@ -380,7 +380,7 @@ export default function App() {
             </section>
 
             {createElement(ArtworkStudio, { user, hasProfile: Boolean(profile.slug) })}
-            {createElement(InquiryCenter, { user })}
+            {createElement(InquiryCenter, { user, hasProfile: Boolean(profile.slug) })}
 
             {user?.role === 'admin' && (
                 <section className="mx-auto max-w-7xl px-6 pb-20 lg:px-10">
