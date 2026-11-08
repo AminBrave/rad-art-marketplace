@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
@@ -13,6 +13,8 @@ export default function AuthPage({ initialMode = 'login' }) {
     const { user, status, setUser } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
+
+    useEffect(() => { setMode(initialMode); }, [initialMode]);
 
     if (status === 'loading') return <RouteLoading label="در حال بررسی حساب کاربری…" />;
     if (status === 'error') return <p className="mx-auto max-w-xl px-6 py-16 text-center text-sm text-red-700">وضعیت حساب دریافت نشد. صفحه را دوباره بارگذاری کنید.</p>;
