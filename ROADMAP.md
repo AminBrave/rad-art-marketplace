@@ -3,8 +3,8 @@
 ## Phase 0 — Foundation
 - [x] Define MVP scope and deferred features
 - [x] Establish repository guidance and delivery standards
-- [ ] Confirm hosting PHP version and available extensions
-- [x] Scaffold Laravel backend and React/Vite frontend (initial scaffold)
+- [ ] Confirm hosting PHP version (PHP 8.3+) and available extensions
+- [x] Scaffold Laravel 13 backend and React/Vite frontend (initial scaffold)
 - [x] Add initial local environment, formatting, linting, and test configuration
 - [x] Add CI checks that do not assume production secrets
 
@@ -43,4 +43,4 @@
 Payments, cart/checkout, orders, shipping, in-app chat, native mobile apps, AI recommendations, social graph, automated subscriptions, and advertising.
 
 ## Current implementation note
-The initial scaffold provides the Laravel application entrypoint, a versioned health endpoint, a Persian RTL React landing page, baseline test/lint configuration, and CI workflow. Dependency installation, local execution, and CI verification are still outstanding. Hosting compatibility remains unconfirmed.
+The initial scaffold provides the Laravel application entrypoint, a versioned health endpoint, a Persian RTL React landing page, baseline test/lint configuration, and CI workflow. Dependency installation, local execution, and CI verification are still outstanding. Hosting PHP 8.3+ compatibility remains unconfirmed.
