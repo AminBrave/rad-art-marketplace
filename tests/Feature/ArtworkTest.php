@@ -28,7 +28,7 @@ class ArtworkTest extends TestCase
 
         $response = $this->actingAs($artist)->post('/api/v1/artist/artworks', [
             ...$this->validArtwork(),
-            'image' => $this->fakePng('original.png'),
+            'image' => UploadedFile::fake()->image('original.jpg', 1200, 800),
             'artist_profile_id' => 999,
             'status' => Artwork::STATUS_APPROVED,
         ]);
@@ -98,7 +98,7 @@ class ArtworkTest extends TestCase
     {
         $this->post('/api/v1/artist/artworks', [
             ...$this->validArtwork(),
-            'image' => $this->fakePng('guest.png'),
+            'image' => UploadedFile::fake()->image('guest.jpg'),
         ])->assertUnauthorized();
 
         [$artist, $profile] = $this->artistWithProfile();
@@ -156,14 +156,6 @@ class ArtworkTest extends TestCase
         $this->actingAs($owner)->get('/api/v1/artworks/'.$artwork->slug.'/image')->assertOk();
     }
 
-    private function fakePng(string $filename): UploadedFile
-    {
-        $contents = base64_decode(
-            'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADUlEQVR4nGP4z8AAAAMBAQDJ/pLvAAAAAElFTkSuQmCC'
-        );
-
-        return UploadedFile::fake()->createWithContent($filename, $contents);
-    }
 
     /**
      * @return array{0: User, 1: ArtistProfile}
