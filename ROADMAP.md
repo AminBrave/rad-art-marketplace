@@ -4,9 +4,9 @@
 - [x] Define MVP scope and deferred features
 - [x] Establish repository guidance and delivery standards
 - [ ] Confirm hosting PHP version and available extensions
-- [ ] Scaffold Laravel backend and React/Vite frontend
-- [ ] Configure local environment, formatting, linting, and tests
-- [ ] Add CI checks that do not assume production secrets
+- [x] Scaffold Laravel backend and React/Vite frontend (initial scaffold)
+- [x] Add initial local environment, formatting, linting, and test configuration
+- [x] Add CI checks that do not assume production secrets
 
 ## Phase 1 — Identity and permissions
 - [ ] User registration and login
@@ -41,3 +41,6 @@
 
 ## Deferred beyond MVP
 Payments, cart/checkout, orders, shipping, in-app chat, native mobile apps, AI recommendations, social graph, automated subscriptions, and advertising.
+
+## Current implementation note
+The initial scaffold provides the Laravel application entrypoint, a versioned health endpoint, a Persian RTL React landing page, baseline test/lint configuration, and CI workflow. Dependency installation, local execution, and CI verification are still outstanding. Hosting compatibility remains unconfirmed.
