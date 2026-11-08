@@ -2,6 +2,26 @@
 
 All notable project changes are recorded here.
 
+## [0.3.0-alpha] - 2026-11-08
+### Added
+- Session-based artist registration, login, current-user, and logout endpoints under /api/v1/auth.
+- User roles with artist as the public-registration default and admin as a server-provisioned role.
+- Server-side role middleware and admin user listing/role-management endpoints.
+- Artisan command to promote an existing account to administrator.
+- User and password-reset-token database migration.
+- Persian RTL registration/login interface and a basic admin user-management view.
+- Feature tests for registration, password validation, login/logout, role isolation, and admin user management.
+
+### Security
+- Public registration cannot assign an administrator role.
+- Passwords use Laravel's hashed cast; auth routes are rate-limited.
+- Browser auth uses Laravel's session guard and CSRF-protected web middleware.
+- Admin operations require authenticated administrator role on the server.
+
+### Notes
+- This milestone is implemented on feature/phase-1-identity-permissions and is awaiting CI/local verification.
+- Email verification, password-reset UX, artist profile editing, and ownership policies for future artwork resources remain open.
+
 ## [0.2.0-alpha] - 2026-11-08
 ### Added
 - Initial Laravel 13 application bootstrap and configuration.
@@ -19,7 +39,7 @@ All notable project changes are recorded here.
 
 ### Notes
 - This is an initial development scaffold, not a feature-complete or production-ready marketplace.
-- Dependency installation, local tests/build, and CI execution have not yet been verified.
+- Dependency installation, local execution, and CI execution have not yet been verified.
 - Hosting PHP 8.3+ and required extensions remain to be confirmed.
 
 ## [0.1.0-mvp] - 2026-11-08

@@ -9,11 +9,13 @@
 - [x] Add CI checks that do not assume production secrets
 
 ## Phase 1 — Identity and permissions
-- [ ] User registration and login
-- [ ] Roles: Guest, Artist, Admin
-- [ ] Server-side policies and ownership enforcement
+- [x] User registration and login
+- [x] Roles: Guest, Artist, Admin (Guest is unauthenticated; new accounts default to Artist)
+- [x] Server-side role middleware and admin user-management endpoints
+- [ ] Ownership policies for artist-owned resources (to be added with the artwork/profile models)
 - [ ] Artist profile create/edit flow
-- [ ] Admin user management
+- [x] Admin user listing and role management
+- [ ] Email verification and password-reset user experience
 
 ## Phase 2 — Artwork catalogue
 - [ ] Artwork/category database model and migrations
@@ -43,4 +45,4 @@
 Payments, cart/checkout, orders, shipping, in-app chat, native mobile apps, AI recommendations, social graph, automated subscriptions, and advertising.
 
 ## Current implementation note
-The initial scaffold provides the Laravel application entrypoint, a versioned health endpoint, a Persian RTL React landing page, baseline test/lint configuration, and CI workflow. Dependency installation, local execution, and CI verification are still outstanding. Hosting PHP 8.3+ compatibility remains unconfirmed.
+The Phase 0 scaffold is on `feature/phase-0-app-scaffold`. Phase 1 identity work is on `feature/phase-1-identity-permissions`: session-backed registration/login/logout, artist/admin roles, server-side admin authorization, an admin user view, and feature tests. Local and CI verification are still required before merge. Hosting PHP 8.3+ compatibility remains unconfirmed.

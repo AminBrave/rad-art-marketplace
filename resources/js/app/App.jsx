@@ -1,14 +1,87 @@
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
 const highlights = [
     { number: '01', title: 'هنر اصیل', description: 'آثار منتخب هنرمندان مستقل را کشف کنید.' },
     { number: '02', title: 'هنرمندان واقعی', description: 'با خالق هر اثر و مسیر هنری او آشنا شوید.' },
     { number: '03', title: 'ارتباط مستقیم', description: 'برای پرسش درباره آثار، مستقیم با هنرمند در تماس باشید.' },
 ];
 
+const emptyForm = { name: '', email: '', password: '', password_confirmation: '' };
+
 export default function App() {
+    const [user, setUser] = useState(null);
+    const [authMode, setAuthMode] = useState('login');
+    const [form, setForm] = useState(emptyForm);
+    const [authErrors, setAuthErrors] = useState({});
+    const [authMessage, setAuthMessage] = useState('');
+    const [busy, setBusy] = useState(false);
+    const [adminUsers, setAdminUsers] = useState([]);
+
+    useEffect(() => {
+        axios.get('/api/v1/auth/me')
+            .then(({ data }) => setUser(data.data))
+            .catch(() => setUser(null));
+    }, []);
+
+    useEffect(() => {
+        if (user?.role === 'admin') {
+            axios.get('/api/v1/admin/users')
+                .then(({ data }) => setAdminUsers(data.data))
+                .catch(() => setAdminUsers([]));
+        }
+    }, [user?.role]);
+
+    const updateForm = (event) => {
+        setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
+    };
+
+    const submitAuth = async (event) => {
+        event.preventDefault();
+        setBusy(true);
+        setAuthErrors({});
+        setAuthMessage('');
+
+        try {
+            const endpoint = authMode === 'register' ? '/api/v1/auth/register' : '/api/v1/auth/login';
+            const payload = authMode === 'register'
+                ? form
+                : { email: form.email, password: form.password };
+            const { data } = await axios.post(endpoint, payload);
+            setUser(data.data);
+            setForm(emptyForm);
+            setAuthMessage(data.message);
+        } catch (error) {
+            if (error.response?.status === 422) {
+                setAuthErrors(error.response.data.errors ?? { form: [error.response.data.message] });
+            } else {
+                setAuthErrors({ form: ['ارتباط با سرور برقرار نشد. دوباره تلاش کنید.'] });
+            }
+        } finally {
+            setBusy(false);
+        }
+    };
+
+    const logout = async () => {
+        await axios.post('/api/v1/auth/logout');
+        setUser(null);
+        setAdminUsers([]);
+        setAuthMessage('با موفقیت خارج شدید.');
+    };
+
+    const changeRole = async (targetUser, role) => {
+        try {
+            const { data } = await axios.patch(`/api/v1/admin/users/${targetUser.id}/role`, { role });
+            setAdminUsers((current) => current.map((item) => item.id === targetUser.id ? data.data : item));
+        } catch {
+            setAuthMessage('به‌روزرسانی نقش کاربر انجام نشد.');
+        }
+    };
+
     return (
         <main className="min-h-screen overflow-hidden bg-[#f7f5f0] text-[#20201e]">
-            <header className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-6 lg:px-10">
-                <a href="/" className="text-2xl font-black tracking-tight" aria-label="راد آرت، صفحه اصلی">
+            <header className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-6 py-6 lg:px-10">
+                <a href="/" className="shrink-0 text-2xl font-black tracking-tight" aria-label="راد آرت، صفحه اصلی">
                     راد<span className="text-[#b65c3a]">آرت</span>
                 </a>
                 <nav aria-label="ناوبری اصلی" className="hidden items-center gap-8 text-sm text-stone-600 md:flex">
@@ -16,9 +89,21 @@ export default function App() {
                     <a className="transition hover:text-[#b65c3a]" href="#artists">هنرمندان</a>
                     <a className="transition hover:text-[#b65c3a]" href="#about">درباره ما</a>
                 </nav>
-                <a href="#artists" className="rounded-full border border-stone-300 px-5 py-2.5 text-sm font-semibold transition hover:border-[#b65c3a] hover:text-[#b65c3a]">
-                    معرفی هنرمند
-                </a>
+                {user ? (
+                    <div className="flex items-center gap-3 text-sm">
+                        <span className="hidden font-semibold sm:inline">{user.name}</span>
+                        <span className="rounded-full bg-[#eae3d8] px-3 py-2 text-xs font-bold text-[#80513d]">
+                            {user.role === 'admin' ? 'مدیر' : 'هنرمند'}
+                        </span>
+                        <button onClick={logout} className="rounded-full border border-stone-300 px-4 py-2.5 font-semibold transition hover:border-[#b65c3a] hover:text-[#b65c3a]">
+                            خروج
+                        </button>
+                    </div>
+                ) : (
+                    <a href="#account" className="rounded-full border border-stone-300 px-5 py-2.5 text-sm font-semibold transition hover:border-[#b65c3a] hover:text-[#b65c3a]">
+                        ورود / ثبت‌نام
+                    </a>
+                )}
             </header>
 
             <section className="mx-auto grid max-w-7xl gap-12 px-6 pb-24 pt-12 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:px-10 lg:pb-32 lg:pt-20">
@@ -37,7 +122,7 @@ export default function App() {
                         <a href="#discover" className="rounded-full bg-[#20201e] px-7 py-3.5 text-sm font-bold text-white transition hover:bg-[#b65c3a]">
                             به تماشای آثار
                         </a>
-                        <a href="#artists" className="rounded-full border border-stone-300 px-7 py-3.5 text-sm font-bold transition hover:border-[#20201e]">
+                        <a href="#account" className="rounded-full border border-stone-300 px-7 py-3.5 text-sm font-bold transition hover:border-[#20201e]">
                             برای هنرمندان
                         </a>
                     </div>
@@ -72,10 +157,105 @@ export default function App() {
                 </div>
             </section>
 
-            <section id="artists" className="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-20 lg:px-10">
+            <section id="account" className="mx-auto grid max-w-7xl gap-10 px-6 py-20 lg:grid-cols-[.8fr_1.2fr] lg:px-10">
+                <div>
+                    <p className="text-sm font-bold text-[#b65c3a]">حساب کاربری راد آرت</p>
+                    <h2 className="mt-3 text-3xl font-black leading-relaxed sm:text-4xl">به جمع هنرمندان راد آرت بپیوندید.</h2>
+                    <p className="mt-4 leading-8 text-stone-600">حساب هنرمندی بسازید تا در گام بعد پروفایل و آثار خود را مدیریت کنید. ثبت‌نام عمومی فقط نقش هنرمند ایجاد می‌کند.</p>
+                    {user && (
+                        <div className="mt-6 rounded-2xl border border-[#d7b5a2] bg-white p-5">
+                            <p className="font-bold">خوش آمدید، {user.name}</p>
+                            <p className="mt-2 text-sm text-stone-500">{user.email}</p>
+                            <p className="mt-3 text-sm text-[#80513d]">{user.role === 'admin' ? 'دسترسی مدیریت فعال است.' : 'حساب هنرمندی شما فعال است.'}</p>
+                        </div>
+                    )}
+                </div>
+
+                {!user ? (
+                    <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm sm:p-9">
+                        <div className="flex gap-5 border-b border-stone-100 pb-4">
+                            <button onClick={() => { setAuthMode('login'); setAuthErrors({}); }} className={authMode === 'login' ? 'font-extrabold text-[#b65c3a]' : 'text-stone-500'}>
+                                ورود
+                            </button>
+                            <button onClick={() => { setAuthMode('register'); setAuthErrors({}); }} className={authMode === 'register' ? 'font-extrabold text-[#b65c3a]' : 'text-stone-500'}>
+                                ثبت‌نام هنرمند
+                            </button>
+                        </div>
+                        <form onSubmit={submitAuth} className="mt-6 space-y-4">
+                            {authMode === 'register' && (
+                                <label className="block text-sm font-semibold">
+                                    نام و نام خانوادگی
+                                    <input name="name" value={form.name} onChange={updateForm} required maxLength="120" autoComplete="name" className="mt-2 w-full rounded-xl border border-stone-200 bg-[#fcfbf9] px-4 py-3 outline-none focus:border-[#b65c3a]" />
+                                    {authErrors.name?.map((message) => <span key={message} className="mt-1 block text-xs text-red-700">{message}</span>)}
+                                </label>
+                            )}
+                            <label className="block text-sm font-semibold">
+                                ایمیل
+                                <input type="email" name="email" value={form.email} onChange={updateForm} required autoComplete="email" dir="ltr" className="mt-2 w-full rounded-xl border border-stone-200 bg-[#fcfbf9] px-4 py-3 text-left outline-none focus:border-[#b65c3a]" />
+                                {authErrors.email?.map((message) => <span key={message} className="mt-1 block text-xs text-red-700">{message}</span>)}
+                            </label>
+                            <label className="block text-sm font-semibold">
+                                گذرواژه
+                                <input type="password" name="password" value={form.password} onChange={updateForm} required minLength="10" autoComplete={authMode === 'register' ? 'new-password' : 'current-password'} dir="ltr" className="mt-2 w-full rounded-xl border border-stone-200 bg-[#fcfbf9] px-4 py-3 text-left outline-none focus:border-[#b65c3a]" />
+                                {authErrors.password?.map((message) => <span key={message} className="mt-1 block text-xs text-red-700">{message}</span>)}
+                            </label>
+                            {authMode === 'register' && (
+                                <label className="block text-sm font-semibold">
+                                    تکرار گذرواژه
+                                    <input type="password" name="password_confirmation" value={form.password_confirmation} onChange={updateForm} required minLength="10" autoComplete="new-password" dir="ltr" className="mt-2 w-full rounded-xl border border-stone-200 bg-[#fcfbf9] px-4 py-3 text-left outline-none focus:border-[#b65c3a]" />
+                                </label>
+                            )}
+                            {authErrors.form?.map((message) => <p key={message} role="alert" className="text-sm text-red-700">{message}</p>)}
+                            <button disabled={busy} className="w-full rounded-xl bg-[#20201e] px-6 py-3.5 font-bold text-white transition hover:bg-[#b65c3a] disabled:cursor-wait disabled:opacity-60">
+                                {busy ? 'لطفاً صبر کنید…' : authMode === 'register' ? 'ایجاد حساب هنرمند' : 'ورود به حساب'}
+                            </button>
+                        </form>
+                        {authMessage && <p role="status" className="mt-4 text-sm text-[#80513d]">{authMessage}</p>}
+                        <p className="mt-5 text-xs leading-6 text-stone-400">با ثبت‌نام، نقش هنرمند برای حساب شما فعال می‌شود. ایجاد حساب مدیر فقط از طریق دستور مدیریتی سرور امکان‌پذیر است.</p>
+                    </div>
+                ) : (
+                    <div className="rounded-3xl border border-stone-200 bg-white p-7">
+                        <h3 className="text-xl font-extrabold">وضعیت حساب</h3>
+                        <p className="mt-3 leading-8 text-stone-600">ورود شما با نشست امن سمت سرور انجام شده است. امکانات تکمیلی پروفایل هنرمند در مرحله بعدی توسعه داده می‌شود.</p>
+                        {authMessage && <p className="mt-4 text-sm text-[#80513d]">{authMessage}</p>}
+                    </div>
+                )}
+            </section>
+
+            {user?.role === 'admin' && (
+                <section className="mx-auto max-w-7xl px-6 pb-20 lg:px-10">
+                    <div className="rounded-3xl border border-stone-200 bg-white p-6 sm:p-8">
+                        <h2 className="text-2xl font-black">مدیریت کاربران</h2>
+                        <p className="mt-2 text-sm text-stone-500">تغییر نقش کاربران؛ این عملیات فقط از سمت سرور برای مدیر مجاز است.</p>
+                        <div className="mt-6 overflow-x-auto">
+                            <table className="w-full min-w-[560px] text-right text-sm">
+                                <thead><tr className="border-b border-stone-200 text-stone-500"><th className="py-3">نام</th><th>ایمیل</th><th>نقش</th><th>عملیات</th></tr></thead>
+                                <tbody>
+                                    {adminUsers.map((item) => (
+                                        <tr key={item.id} className="border-b border-stone-100">
+                                            <td className="py-4 font-semibold">{item.name}</td>
+                                            <td dir="ltr" className="text-left">{item.email}</td>
+                                            <td>{item.role === 'admin' ? 'مدیر' : 'هنرمند'}</td>
+                                            <td>
+                                                {item.id !== user.id && (
+                                                    <button onClick={() => changeRole(item, item.role === 'admin' ? 'artist' : 'admin')} className="rounded-full border border-stone-300 px-3 py-1.5 text-xs font-semibold hover:border-[#b65c3a]">
+                                                        {item.role === 'admin' ? 'تبدیل به هنرمند' : 'ارتقا به مدیر'}
+                                                    </button>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            )}
+
+            <section id="artists" className="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-16 lg:px-10">
                 <p className="text-sm font-bold text-[#b65c3a]">برای جامعه هنری</p>
                 <h2 className="max-w-2xl text-3xl font-black leading-relaxed sm:text-4xl">هنرمند هستید؟ جای شما در راد آرت خالی است.</h2>
-                <p className="max-w-2xl leading-8 text-stone-600">به‌زودی می‌توانید پروفایل هنری خود را بسازید، آثار خود را برای بررسی ارسال کنید و با مخاطبانتان ارتباط بگیرید.</p>
+                <p className="max-w-2xl leading-8 text-stone-600">حساب هنرمندی خود را ایجاد کنید؛ ساخت پروفایل و ثبت آثار در milestone بعدی تکمیل می‌شود.</p>
             </section>
 
             <footer id="about" className="bg-[#20201e] px-6 py-8 text-center text-sm text-stone-300">

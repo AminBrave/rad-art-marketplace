@@ -13,7 +13,7 @@ A Persian-first, RTL-friendly marketplace MVP that helps artists present origina
 - Artwork submission with images, specifications, price, and availability
 - Admin review workflow: approve, reject, or request revisions
 - Buyer-to-artist contact entry point
-- Admin management of users, artworks, categories, reports, and featured placements
+- Admin management of users, categories, artworks, moderation, reports, and featured placements
 - About, help, legal, and contact pages
 - Responsive layouts, baseline security, backups, and analytics
 
@@ -40,26 +40,37 @@ All authorization must be enforced server-side. Hiding UI controls is not author
 
 ## Current implementation
 
-The first application scaffold is on the feature/phase-0-app-scaffold branch:
-- Laravel 13 application bootstrap and a versioned API health endpoint at GET /api/v1/health
-- React/Vite landing page with Persian content and RTL document direction
-- Tailwind CSS, Axios, and Radix Dialog dependency baseline
-- PHPUnit feature test, Laravel Pint, ESLint, and GitHub Actions CI configuration
+### Phase 0 — Foundation
+- Laravel 13 application bootstrap and versioned API health endpoint at GET /api/v1/health
+- React/Vite Persian RTL landing page
+- Tailwind CSS, Axios, and Radix UI dependency baseline
+- PHPUnit feature test, Laravel Pint, ESLint, and GitHub Actions CI
 
-The landing page is a visual starting point. Authentication, artwork catalogue, persistence, moderation, and contact workflows are not implemented yet.
+### Phase 1 — Identity and permissions
+- Session-based endpoints: POST /api/v1/auth/register, POST /api/v1/auth/login, GET /api/v1/auth/me, POST /api/v1/auth/logout
+- Public registration always creates an Artist; the role field supplied by a client is ignored.
+- Admin endpoints: GET /api/v1/admin/users and PATCH /api/v1/admin/users/{user}/role
+- Role middleware enforces administrator access on the server.
+- Promote a registered account with: php artisan users:make-admin admin@example.com
+- Persian RTL registration/login interface and basic administrator user-management view.
+
+Email verification, password-reset UX, artist profile editing, and ownership policies for artwork/profile records are not yet implemented.
 
 ## Local development
 
-Prerequisites: PHP 8.3+, Composer, Node.js 22+, npm, and a MySQL instance. The host-specific PHP extension list still needs verification.
+Prerequisites: PHP 8.3+, Composer, Node.js 22+, npm, and MySQL. The target hosting PHP version and required extensions still need verification.
 
 1. Install PHP dependencies: composer install
 2. Create the local environment: cp .env.example .env
 3. Generate the application key: php artisan key:generate
-4. Configure database values in .env; run migrations when schema migrations have been added.
-5. Install frontend dependencies: npm install
-6. Start Laravel: php artisan serve
-7. Start Vite in another terminal: npm run dev
-8. Open the local URL printed by Laravel (normally http://127.0.0.1:8000).
+4. Configure database credentials in .env.
+5. Run database migrations: php artisan migrate
+6. Install frontend dependencies: npm install
+7. Start Laravel: php artisan serve
+8. Start Vite in another terminal: npm run dev
+9. Open the local URL printed by Laravel (normally http://127.0.0.1:8000).
+
+To grant administrator access to an already registered account, run the Artisan command from the server terminal: `php artisan users:make-admin email@example.com`. Do not add a public admin-registration path.
 
 ## Quality checks
 
@@ -69,7 +80,7 @@ Run after installing dependencies:
 - Frontend lint: npm run lint
 - Frontend production build: npm run build
 
-GitHub Actions is configured to run backend tests/style checks and frontend lint/build on pushes to main or feature branches, and on pull requests targeting main.
+GitHub Actions runs backend tests/style checks and frontend lint/build on pushes to main or feature branches, and on pull requests targeting main.
 
 ## Deployment notes
 
