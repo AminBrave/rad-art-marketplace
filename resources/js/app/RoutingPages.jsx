@@ -83,12 +83,13 @@ export function ArtistWorkspaceLayout() {
 }
 
 export function ArtistDashboardHome() {
-    const { user, profile, profileLoading } = useOutletContext();
+    const { user, profile, profileLoading, profileError } = useOutletContext();
     return (
         <section className="rounded-2xl border border-stone-200 bg-white p-6 sm:p-8" dir="rtl">
             <p className="text-sm font-bold text-[#9a452b]">فضای هنرمند</p>
             <h1 className="mt-2 text-2xl font-black">خوش آمدید، {user.name}</h1>
             <p className="mt-3 text-sm leading-7 text-stone-500">پروفایل، آثار ارسالی و درخواست‌های ارتباطی خود را از این بخش مدیریت کنید.</p>
+            {profileError && <p role="alert" className="mt-5 text-sm text-amber-800">{profileError}</p>}
             {profileLoading ? <p className="mt-5 text-sm text-stone-500">در حال دریافت پروفایل…</p> : (
                 <div className="mt-6 rounded-xl bg-[#f7f5f0] p-4">
                     <p className="font-semibold">{profile?.slug ? 'پروفایل هنرمند شما آماده است.' : 'برای شروع، پروفایل هنرمند خود را تکمیل کنید.'}</p>
@@ -192,9 +193,19 @@ export function ArtistArtworkPage() {
 }
 
 export function ArtistInquiryPage() {
-    const { user, profile, profileLoading } = useOutletContext();
+    const { user, profile, profileLoading, profileError } = useOutletContext();
     if (profileLoading) return <RouteLoading label="در حال آماده‌سازی صندوق پیام‌ها…" />;
-    return <InquiryCenter user={user} hasProfile={Boolean(profile?.slug)} />;
+    if (!profile?.slug) {
+        return (
+            <section className="rounded-2xl border border-stone-200 bg-white p-6" dir="rtl">
+                <h1 className="text-xl font-black">صندوق پیام‌های هنرمند</h1>
+                {profileError && <p role="alert" className="mt-3 text-sm text-amber-800">{profileError}</p>}
+                <p className="mt-3 text-sm leading-7 text-stone-500">برای دریافت و مدیریت درخواست‌های ارتباطی، ابتدا پروفایل هنرمند خود را تکمیل کنید.</p>
+                <Link to="/dashboard/artist/profile" className="mt-4 inline-block text-sm font-bold text-[#9a452b] underline">تکمیل پروفایل</Link>
+            </section>
+        );
+    }
+    return <InquiryCenter user={user} hasProfile />;
 }
 
 export function BuyerWorkspaceLayout() {
