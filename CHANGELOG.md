@@ -1,6 +1,14 @@
 # Changelog
 
-Notable repository changes are listed newest first. Entries describe merged implementation milestones, not production releases. The current package version is not used as a release tag.
+Notable repository changes are listed newest first. Entries describe merged implementation milestones and repository maintenance, not production releases. The current package version is not used as a release tag.
+
+## 2026-11-09 — Documentation and repository cleanup
+
+- Rewrote README, roadmap, contributor instructions, engineering practices, API reference, architecture, and route documentation to match the current implementation and MVP 2 stages.
+- Consolidated five legacy feature smoke-test files into `docs/manual-smoke-tests.md` and removed the superseded Stage 1 API audit after its decisions were incorporated into current references.
+- Updated QA, release, and cPanel guidance; clarified which checks and hosting steps remain unverified.
+- Added a mandatory same-PR documentation update policy to `AGENTS.md`, `SKILLS.md`, and the GitHub delivery tracker.
+- Closed obsolete stacked MVP 1 pull requests #2–#5; their historical branches were retained for traceability.
 
 ## 2026-11-09 — MVP 2 Stage 2: Public marketplace
 
@@ -68,7 +76,3 @@ Notable repository changes are listed newest first. Entries describe merged impl
 ### Initial application foundation
 - Added Laravel 13 / PHP 8.3+ application, React 18/Vite frontend, Tailwind CSS, Axios, Radix UI, PHPUnit, Pint, ESLint, and GitHub Actions CI.
 - Added versioned API health endpoint, initial Persian/RTL shell, and cPanel-oriented deployment guidance.
-
-## 2026-11-09 — Documentation maintenance policy
-
-Documentation is maintained alongside each feature. See [AGENTS.md](AGENTS.md) and [SKILLS.md](SKILLS.md) for mandatory update ownership and review rules.
