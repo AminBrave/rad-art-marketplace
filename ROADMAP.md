@@ -56,13 +56,11 @@ This roadmap distinguishes implemented behavior from remaining work. A checked i
 
 Payments, cart/checkout, orders, shipping, in-app chat/replies, native mobile apps, AI recommendations, social networking, subscriptions, and advertising.
 
-## Current implementation baseline
+## Current integration baseline
 
-The current MVP 1 implementation baseline for MVP 2 planning is the branch `cleaned-MVP-1` at commit `bd4599401e84cacc06807dea0db878fc2a9bd22d` (verified 2026-11-09).
+`main` is the active integration branch. The agreed MVP 1 snapshot was `cleaned-MVP-1` at commit `bd4599401e84cacc06807dea0db878fc2a9bd22d`; it was promoted to `main` through PR #34. The baseline documentation, Contemporary Art Editorial design foundations, and centralized routing were subsequently merged through PRs #31, #35, and #36.
 
-The branch `feature/roadmap-mvp-completion` is an ancestor of `cleaned-MVP-1` and is **15 commits behind** it. It is historical context, not the current implementation baseline. Do not start new MVP 2 work from that older branch.
-
-The selected baseline includes:
+The current `main` includes:
 
 - Laravel 13 / PHP 8.3+ application with a versioned health endpoint.
 - React 18 + Vite Persian-first RTL application shell.
@@ -71,7 +69,10 @@ The selected baseline includes:
 - Artist-owned artwork submission/editing, private image storage, approved-only public catalogue, search, category filtering, and detail pages.
 - Admin artwork moderation (approve, reject, request changes) with reviewer audit metadata.
 - Buyer-to-artist inquiries with buyer history, artist inbox, read/archive status, and abuse controls.
+- Contemporary Art Editorial design foundations and centralized React Router with role-aware artist, buyer, and admin workspaces.
 - Operational documentation for cPanel deployment, backup/restore, analytics planning, and release readiness.
+
+Create all new feature branches from the latest `main` and target pull requests at `main`. The branch `feature/roadmap-mvp-completion` remains historical context and must not be used as a starting point.
 
 The roadmap's unchecked items remain open. Documentation of an operational process does not mean that process has been configured or completed. In particular, hosting compatibility, production deployment, SMTP, automated backups, restore drills, and browser/device verification remain external acceptance gates.
 

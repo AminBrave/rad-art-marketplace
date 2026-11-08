@@ -8,6 +8,13 @@ use Tests\TestCase;
 
 final class FrontendRoutingTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->withoutVite();
+    }
+
     public function test_nested_frontend_routes_serve_the_react_entry_view(): void
     {
         foreach ([

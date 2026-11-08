@@ -12,11 +12,12 @@ These instructions apply to automated agents and human contributors working in t
 
 
 
-## MVP 2 branch workflow
+## Branch and integration workflow
 
-- Use `cleaned-MVP-1` as the MVP 2 starting point; do not branch new MVP 2 work from the historical `feature/roadmap-mvp-completion` branch.
-- Create a dedicated, focused branch from `cleaned-MVP-1` for each issue or cohesive implementation slice.
-- Keep pull requests small and reviewable. Until the repository owner defines a different integration strategy, target MVP 2 pull requests at `cleaned-MVP-1`; do not merge work directly into the baseline branch.
+- `main` is the active integration branch. The agreed MVP 1 snapshot `cleaned-MVP-1` (commit `bd4599401e84cacc06807dea0db878fc2a9bd22d`) is historical baseline context, not the current branch from which new work should be created.
+- Create a dedicated, focused feature branch from the latest `main` for each issue or cohesive implementation slice.
+- Open pull requests against `main`; keep them small, reviewable, and scoped to the relevant issue.
+- Run the repository quality gates when dependencies/environment are available: `composer test`, `composer lint`, `npm run lint`, and `npm run build`. Report checks that could not be run; never infer success from a merge or from an empty status-check list.
 - Keep the MVP 2 GitHub delivery tracker and `ROADMAP.md` aligned as scope or delivery status changes.
 - Never mark roadmap items complete based only on documentation or a successful build; verify the behavior and relevant acceptance criteria.
 
