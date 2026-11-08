@@ -151,6 +151,7 @@ class ArtworkController extends Controller
                 $imageRequired ? 'required' : 'sometimes',
                 'image',
                 'mimes:jpg,jpeg,png,webp',
+                'dimensions:max_width=6000,max_height=6000',
                 'max:5120',
             ],
         ]);
