@@ -77,6 +77,9 @@ class ArtistInquiryTest extends TestCase
         $inquiry = $this->createInquiry($profile, $buyer);
         $otherInquiry = $this->createInquiry($otherProfile, $buyer, 'پیام برای هنرمند دیگر');
 
+        $admin = $this->makeUser('admin@example.com', User::ROLE_ADMIN);
+        $this->actingAs($admin)->getJson('/api/v1/artist/inquiries')->assertForbidden();
+
         $this->actingAs($artist)
             ->getJson('/api/v1/artist/inquiries')
             ->assertOk()
