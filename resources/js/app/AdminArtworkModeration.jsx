@@ -24,8 +24,10 @@ export default function AdminArtworkModeration() {
         try {
             const { data } = await axios.get('/api/v1/admin/artworks', { params: { status } });
             setArtworks(data.data);
-        } catch {
-            setError('دریافت صف بررسی آثار انجام نشد.');
+        } catch (requestError) {
+            setError(requestError.response?.status === 403
+                ? 'سرور اجازه مشاهده صف بررسی را صادر نکرد.'
+                : 'دریافت صف بررسی آثار انجام نشد.');
         } finally {
             setLoading(false);
         }
@@ -53,7 +55,9 @@ export default function AdminArtworkModeration() {
             setMessage(data.message);
             setArtworks((current) => current.filter((item) => item.id !== artwork.id));
         } catch (requestError) {
-            setError(requestError.response?.data?.message ?? 'ثبت تصمیم انجام نشد. دوباره تلاش کنید.');
+            setError(requestError.response?.status === 403
+                ? 'سرور اجازه ثبت این تصمیم مدیریتی را صادر نکرد.'
+                : requestError.response?.data?.message ?? 'ثبت تصمیم انجام نشد. دوباره تلاش کنید.');
         } finally {
             setBusyId(null);
         }
