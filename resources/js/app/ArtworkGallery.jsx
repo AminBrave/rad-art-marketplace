@@ -1,12 +1,9 @@
 import { createElement, useEffect, useState } from 'react';
 import axios from 'axios';
 import ContactArtistForm from './ContactArtistForm';
-import { Link, useParams } from 'react-router-dom';
-import { useAuth } from './AuthContext';
 
-export default function ArtworkGallery() {
-    const { user } = useAuth();
-    const { slug: detailSlug } = useParams();
+export default function ArtworkGallery({ user }) {
+    const detailSlug = window.location.pathname.match(/^\/artworks\/([^/]+)$/)?.[1];
     const [categories, setCategories] = useState([]);
     const [artworks, setArtworks] = useState([]);
     const [detail, setDetail] = useState(null);
@@ -18,9 +15,6 @@ export default function ArtworkGallery() {
 
     useEffect(() => {
         if (detailSlug) {
-            setLoading(true);
-            setError(false);
-            setDetail(null);
             axios.get('/api/v1/artworks/' + encodeURIComponent(detailSlug))
                 .then(({ data }) => setDetail(data.data))
                 .catch(() => setError(true))
@@ -46,7 +40,7 @@ export default function ArtworkGallery() {
         return (
             <main className="min-h-screen bg-[#f7f5f0] px-6 py-12 text-[#20201e]" dir="rtl">
                 <article className="mx-auto max-w-4xl rounded-3xl border border-stone-200 bg-white p-6 shadow-sm sm:p-10">
-                    <Link to="/" className="font-black text-[#b65c3a]">بازگشت به راد آرت</Link>
+                    <a href="/" className="font-black text-[#b65c3a]">بازگشت به راد آرت</a>
                     {loading ? <p className="mt-10 text-stone-500">در حال دریافت اثر…</p> : error || !detail ? (
                         <div className="mt-10"><h1 className="text-2xl font-black">اثر در دسترس نیست</h1><p className="mt-3 text-stone-500">این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.</p></div>
                     ) : (
@@ -59,9 +53,9 @@ export default function ArtworkGallery() {
                                 {detail.description && <p className="mt-6 whitespace-pre-line leading-8 text-stone-700">{detail.description}</p>}
                                 <p className="mt-6 font-bold">{detail.price ? Number(detail.price).toLocaleString('fa-IR') + ' ریال' : 'قیمت توافقی'}</p>
                                 <p className="mt-2 text-sm text-stone-500">{detail.availability === 'available' ? 'موجود' : detail.availability === 'sold' ? 'فروخته‌شده' : 'برای فروش نیست'}</p>
-                                <Link to={'/artists/' + detail.artist.slug} className="mt-8 inline-block rounded-full bg-[#20201e] px-5 py-3 text-sm font-bold text-white">مشاهده پروفایل هنرمند: {detail.artist.display_name}</Link>
+                                <a href={'/artists/' + detail.artist.slug} className="mt-8 inline-block rounded-full bg-[#20201e] px-5 py-3 text-sm font-bold text-white">مشاهده پروفایل هنرمند: {detail.artist.display_name}</a>
                                 {user?.role === 'buyer' && createElement(ContactArtistForm, { artistSlug: detail.artist.slug, artworkId: detail.id })}
-                                {!user && <Link to="/login" className="mt-6 inline-block text-sm font-bold text-[#b65c3a] underline">برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید</Link>}
+                                {!user && <a href="/#account" className="mt-6 inline-block text-sm font-bold text-[#b65c3a] underline">برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید</a>}
                             </div>
                         </div>
                     )}
@@ -94,7 +88,7 @@ export default function ArtworkGallery() {
             ) : (
                 <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {artworks.map((artwork) => (
-                        <Link key={artwork.id} to={'/artworks/' + artwork.slug} className="group overflow-hidden rounded-2xl border border-stone-200 bg-white transition hover:-translate-y-1 hover:shadow-lg">
+                        <a key={artwork.id} href={'/artworks/' + artwork.slug} className="group overflow-hidden rounded-2xl border border-stone-200 bg-white transition hover:-translate-y-1 hover:shadow-lg">
                             <img src={artwork.image_url} alt={artwork.title} loading="lazy" className="aspect-[4/3] w-full object-cover transition group-hover:scale-[1.02]" />
                             <div className="p-5">
                                 <p className="text-xs font-bold text-[#b65c3a]">{artwork.category.name}</p>
@@ -102,7 +96,7 @@ export default function ArtworkGallery() {
                                 <p className="mt-2 text-sm text-stone-500">{artwork.artist.display_name}</p>
                                 <p className="mt-4 text-sm font-bold">{artwork.price ? Number(artwork.price).toLocaleString('fa-IR') + ' ریال' : 'قیمت توافقی'}</p>
                             </div>
-                        </Link>
+                        </a>
                     ))}
                 </div>
             )}
