@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { createElement, useEffect, useState } from 'react';
 import axios from 'axios';
 import ContactArtistForm from './ContactArtistForm';
 
@@ -54,7 +54,7 @@ export default function ArtworkGallery({ user }) {
                                 <p className="mt-6 font-bold">{detail.price ? Number(detail.price).toLocaleString('fa-IR') + ' ریال' : 'قیمت توافقی'}</p>
                                 <p className="mt-2 text-sm text-stone-500">{detail.availability === 'available' ? 'موجود' : detail.availability === 'sold' ? 'فروخته‌شده' : 'برای فروش نیست'}</p>
                                 <a href={'/artists/' + detail.artist.slug} className="mt-8 inline-block rounded-full bg-[#20201e] px-5 py-3 text-sm font-bold text-white">مشاهده پروفایل هنرمند: {detail.artist.display_name}</a>
-                                {user?.role === 'buyer' && <ContactArtistForm artistSlug={detail.artist.slug} artworkId={detail.id} />}
+                                {user?.role === 'buyer' && {createElement(ContactArtistForm, { artistSlug: detail.artist.slug, artworkId: detail.id })}}
                                 {!user && <a href="/#account" className="mt-6 inline-block text-sm font-bold text-[#b65c3a] underline">برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید</a>}
                             </div>
                         </div>
