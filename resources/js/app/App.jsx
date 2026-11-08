@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import ArtworkGallery from './ArtworkGallery';
+import AdminArtworkModeration from './AdminArtworkModeration';
 import ArtworkStudio from './ArtworkStudio';
 
 const highlights = [
@@ -391,6 +392,8 @@ export default function App() {
                     </div>
                 </section>
             )}
+
+            {user?.role === 'admin' && <AdminArtworkModeration />}
 
             <section id="artists" className="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-16 lg:px-10">
                 <p className="text-sm font-bold text-[#b65c3a]">برای جامعه هنری</p>
