@@ -163,6 +163,7 @@ The PHPUnit configuration uses in-memory SQLite. GitHub Actions runs backend tes
 ## Documentation map
 
 - [Architecture and request flows](docs/architecture.md)
+- [Frontend routing and access model](docs/frontend-routing.md)
 - [API reference](docs/api-reference.md)
 - [Product roadmap and implementation status](ROADMAP.md)
 - [Engineering workflow and contributor rules](AGENTS.md)

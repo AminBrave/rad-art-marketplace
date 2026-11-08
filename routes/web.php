@@ -71,4 +71,10 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
         Route::patch('/artworks/{artwork}/moderation', [AdminArtworkModerationController::class, 'update'])->name('artworks.moderation');
         Route::patch('/users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.role');
     });
+
+// React Router handles public and authenticated application routes. Keep this after API routes.
+Route::view('/{path?}', 'app')
+    ->where('path', '^(?!api(?:/|$)|storage(?:/|$)|build(?:/|$)).*')
+    ->name('app.spa');
+
 });

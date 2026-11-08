@@ -2,6 +2,14 @@
 
 Notable project changes are recorded here in reverse chronological order. Dates describe repository milestones, not production releases.
 
+## [Unreleased]
+
+### Added
+- Central React Router route tree, Persian public shell, and role-specific artist, buyer, and admin workspaces.
+- Session-aware route guards, login/register routes, unauthorized and not-found screens, and a Laravel SPA fallback for deep-link refresh.
+- Routing documentation; Laravel remains authoritative for API authorization and ownership.
+
+
 ## [0.8.0-alpha] - 2026-11-09
 
 ### Added
