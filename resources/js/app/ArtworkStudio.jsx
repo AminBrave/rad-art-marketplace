@@ -101,8 +101,6 @@ export default function ArtworkStudio({ user, hasProfile }) {
             if (error.response?.status === 422) {
                 setErrors(error.response.data.errors ?? {});
                 setMessage('لطفاً خطاهای فرم را بررسی کنید.');
-            } else if (error.response?.status === 403) {
-                setMessage('سرور اجازه مدیریت این اثر را صادر نکرد.');
             } else {
                 setMessage('ثبت اثر انجام نشد. دوباره تلاش کنید.');
             }
