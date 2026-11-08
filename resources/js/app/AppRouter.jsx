@@ -10,10 +10,11 @@ import AuthPage from './AuthPage';
 import { PublicLayout } from './Layouts';
 import {
     AdminDashboardHome, AdminUsersPage, AdminWorkspaceLayout, ArtistArtworkPage,
-    ArtistDashboardHome, ArtistInquiryPage, ArtistProfileSettings, ArtistWorkspaceLayout,
+    ArtistInquiryPage, ArtistProfileSettings, ArtistWorkspaceLayout,
     BuyerDashboardHome, BuyerInquiryPage, BuyerWorkspaceLayout, DashboardIndex,
     NotFoundPage, RequireAuth, RequireRole, UnauthorizedPage,
 } from './RoutingPages';
+import ArtistWorkspaceOverview from './ArtistWorkspaceOverview';
 import AdminArtworkModeration from './AdminArtworkModeration';
 
 function AppRoutes() {
@@ -33,15 +34,22 @@ function AppRoutes() {
         </Route>
         <Route path="/dashboard" element={<RequireAuth><DashboardIndex /></RequireAuth>} />
         <Route path="/dashboard/artist" element={<RequireRole roles={['artist']}><ArtistWorkspaceLayout /></RequireRole>}>
-            <Route index element={<ArtistDashboardHome />} /><Route path="profile" element={<ArtistProfileSettings />} />
-            <Route path="artworks" element={<ArtistArtworkPage />} /><Route path="inquiries" element={<ArtistInquiryPage />} /><Route path="*" element={<NotFoundPage />} />
+            <Route index element={<ArtistWorkspaceOverview />} />
+            <Route path="profile" element={<ArtistProfileSettings />} />
+            <Route path="artworks" element={<ArtistArtworkPage />} />
+            <Route path="inquiries" element={<ArtistInquiryPage />} />
+            <Route path="*" element={<NotFoundPage />} />
         </Route>
         <Route path="/dashboard/buyer" element={<RequireRole roles={['buyer']}><BuyerWorkspaceLayout /></RequireRole>}>
-            <Route index element={<BuyerDashboardHome />} /><Route path="inquiries" element={<BuyerInquiryPage />} /><Route path="*" element={<NotFoundPage />} />
+            <Route index element={<BuyerDashboardHome />} />
+            <Route path="inquiries" element={<BuyerInquiryPage />} />
+            <Route path="*" element={<NotFoundPage />} />
         </Route>
         <Route path="/admin" element={<RequireRole roles={['admin']}><AdminWorkspaceLayout /></RequireRole>}>
-            <Route index element={<AdminDashboardHome />} /><Route path="users" element={<AdminUsersPage />} />
-            <Route path="artworks" element={<AdminArtworkModeration />} /><Route path="*" element={<NotFoundPage />} />
+            <Route index element={<AdminDashboardHome />} />
+            <Route path="users" element={<AdminUsersPage />} />
+            <Route path="artworks" element={<AdminArtworkModeration />} />
+            <Route path="*" element={<NotFoundPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
     </Routes>;

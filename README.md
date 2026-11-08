@@ -3,7 +3,7 @@
 Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact marketplace. It helps visitors discover approved artworks and public artist portfolios, and lets registered buyers send private inquiries to artists.
 
 **Current integration branch:** `main`  
-**Current delivery status:** MVP 2 Stage 1 (foundation) and Stage 2 (public marketplace) are complete. Stage 3 (artist workspace) is next.  
+**Current delivery status:** MVP 2 Stages 1–3 (foundation, public marketplace, and artist workspace) are complete. Stage 4 (buyer workspace) is next.  
 **Product status:** Active MVP development; not yet verified or signed off for production.
 
 ## Product capabilities
@@ -17,7 +17,16 @@ Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact mark
 - Public artist profiles with approved-only portfolio artwork.
 - Persian About, Help, and Contact pages.
 
-### Accounts and workflows — implemented baseline
+### Artist workspace — implemented
+
+- Artist-only workspace navigation and profile-aware overview.
+- Profile completion and visibility state.
+- API-backed artwork and inquiry summaries without fabricated analytics.
+- Artist-owned artwork list and create/edit forms with image preview, upload feedback, validation, and moderation status.
+- Paginated inquiry inbox, recipient-scoped detail, and read/archive controls.
+- No unsupported artwork deletion, inquiry replies, chat, or email delivery.
+
+### Accounts and other workflows — implemented baseline
 
 - Session-based registration, login, current-user, and logout.
 - Roles: Buyer, Artist, and Admin. Guests are unauthenticated visitors.
@@ -25,10 +34,8 @@ Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact mark
 - Artist profile creation/editing and public/private visibility.
 - Artist-owned artwork submission/editing and private image storage.
 - Admin artwork moderation: approve, reject, or request changes.
-- Buyer-to-artist inquiry intake; buyer sent-inquiry history; artist read/archive controls.
-- Role-aware route layouts and baseline artist, buyer, and admin workspaces.
-
-The role workspaces are being expanded as part of the remaining MVP 2 stages. Do not assume every workspace workflow is complete merely because its route or baseline UI exists.
+- Buyer-to-artist inquiry intake and buyer sent-inquiry history.
+- Baseline buyer and admin workspaces; these are expanded in later MVP 2 stages.
 
 ### Explicitly out of scope
 
@@ -42,8 +49,8 @@ The [GitHub delivery tracker](https://github.com/AminBrave/rad-art-marketplace/i
 |---|---|---:|---|
 | 1. Foundation and audit | Baseline, design system, routing, shared UI, API/UX audit | #6–#13 | Complete |
 | 2. Public marketplace | Homepage, gallery, artwork detail, artists, information pages | #14–#18 | Complete |
-| 3. Artist workspace | Overview, artwork management/submission, inquiry inbox | #19–#21 | Next |
-| 4. Buyer workspace | Account and inquiry history | #22 | Planned |
+| 3. Artist workspace | Overview, artwork management/submission, inquiry inbox | #19–#21 | Complete |
+| 4. Buyer workspace | Account and inquiry history | #22 | Next |
 | 5. Admin workspace | Overview, moderation UI, user management | #23–#25 | Planned |
 | 6. QA and release | Localization/RTL, accessibility/responsive, performance, regression/release | #26–#29 | Planned |
 

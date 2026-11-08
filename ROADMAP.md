@@ -36,16 +36,18 @@ This file is the concise project delivery map. The [GitHub tracker](https://gith
 - [x] Persian About, Help, and Contact pages.
 - [x] Public navigation/footer and route integration.
 
-### Stage 3 — Artist workspace · Next
+### Stage 3 — Artist workspace · Complete
 
-**Issues #19–#21 · Open**
+**Issues #19–#21 · Integrated into `main`**
 
-- [ ] Refine artist workspace shell and overview using only real API data.
-- [ ] Implement artist artwork management and submission/edit forms, including image preview, validation, upload feedback, and moderation status.
-- [ ] Implement artist inquiry inbox/detail and read/archive status controls.
-- [ ] Preserve artist ownership and server-assigned moderation state.
+- [x] Artist-only workspace shell and profile-aware overview.
+- [x] Honest overview values derived from artist profile, artwork, and inquiry API responses; no fabricated analytics.
+- [x] Artist artwork list and create/edit forms with preview, upload progress, validation feedback, and server moderation state.
+- [x] Artist inquiry inbox with paginated list, recipient-scoped detail, and read/archive controls.
+- [x] Preserve server-side role checks, ownership, validation, and moderation assignment.
+- [x] Keep unsupported deletion, replies, chat, and email delivery out of the UI.
 
-### Stage 4 — Buyer workspace · Planned
+### Stage 4 — Buyer workspace · Next
 
 **Issue #22 · Open**
 

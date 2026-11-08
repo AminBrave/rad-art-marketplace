@@ -36,6 +36,20 @@ In a second terminal, run `php artisan serve` and open the Laravel URL. For the 
 6. Make a profile private; confirm guests and unrelated users cannot read it, while its owner retains authorized access.
 7. Try to access or update another artist's private profile through the API; the server must deny it.
 
+## Artist workspace
+
+1. Sign in as an Artist and open `/dashboard/artist`; confirm the profile state is accurate and artwork/inquiry summaries load from the existing endpoints.
+2. With a new artist account, confirm the overview directs the artist to complete the profile before artwork and inquiry management.
+3. Open `/dashboard/artist/artworks`; confirm the current artist sees only their own works and the page handles empty, loading, and API-error states.
+4. Create an artwork with an active category and a JPG, JPEG, PNG, or WebP image no larger than 5 MB and 6000 × 6000 pixels. Confirm the local preview and upload feedback are usable.
+5. Submit invalid fields and an invalid/oversized image; confirm client guidance and server validation errors are clear and recoverable.
+6. Confirm a successful new submission shows the server-returned pending-review state. Edit an existing work; confirm the returned state and review note reflect the server response.
+7. Confirm an artist cannot edit another artist's artwork and cannot set owner, moderation status, or reviewer metadata from the client. No delete action should be present.
+8. Open `/dashboard/artist/inquiries`; confirm only inquiries addressed to the signed-in artist appear, with page navigation and a separate detail view.
+9. Open an inquiry detail, mark it read, then archive it; confirm the server-returned state is shown and actions become unavailable as appropriate.
+10. Confirm the detail view contains only API-provided metadata and never exposes buyer email. Verify no reply/chat composer or email-delivery claim appears.
+11. Use separate artist accounts to verify recipient isolation through the UI and direct API requests; another artist's inquiry must return 404.
+
 ## Public artwork discovery
 
 1. Submit an artwork as an Artist with an active category and a JPG, JPEG, PNG, or WebP image no larger than 5 MB and 6000 × 6000 pixels.

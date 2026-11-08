@@ -2,6 +2,18 @@
 
 Notable repository changes are listed newest first. Entries describe merged implementation milestones and repository maintenance, not production releases. The current package version is not used as a release tag.
 
+## 2026-11-09 — MVP 2 Stage 3: Artist workspace
+
+### Added and refined
+- Replaced the minimal artist landing view with a profile-aware workspace overview using real artwork and inquiry API responses.
+- Refined artist artwork management with server-aligned fields, image preview, client-side format/size guidance, upload progress, field-level validation feedback, and recoverable errors.
+- Added a dedicated paginated inquiry inbox and API-backed detail view with recipient-scoped read/archive actions.
+- Reused the existing role-aware layout, centralized React Router, Axios session behavior, and shared UI primitives. No new runtime dependency or API endpoint was added.
+- Kept unsupported artwork deletion, inquiry replies, chat, and email delivery out of the workspace.
+
+### Verification
+- Automated CI results are recorded on the Stage 3 pull request. Manual browser/device checks remain part of Stage 6 QA.
+
 ## 2026-11-09 — Documentation and repository cleanup
 
 - Rewrote README, roadmap, contributor instructions, engineering practices, API reference, architecture, and route documentation to match the current implementation and MVP 2 stages.
