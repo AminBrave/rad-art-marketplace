@@ -17,6 +17,8 @@ class User extends Authenticatable
 
     public const ROLE_ADMIN = 'admin';
 
+    public const ROLE_BUYER = 'buyer';
+
     protected $fillable = [
         'name',
         'email',
@@ -35,6 +37,16 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function isBuyer(): bool
+    {
+        return $this->role === self::ROLE_BUYER;
+    }
+
+    public function inquiries(): HasMany
+    {
+        return $this->hasMany(ArtistInquiry::class, 'sender_user_id');
     }
 
     public function isAdmin(): bool
