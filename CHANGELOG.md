@@ -2,6 +2,12 @@
 
 Notable project changes are recorded here in reverse chronological order. Dates describe repository milestones, not production releases.
 
+## [Unreleased]
+
+### Changed
+- Selected `cleaned-MVP-1` (commit `bd459940`) as the MVP 2 implementation baseline; documented that `feature/roadmap-mvp-completion` is 15 commits behind.
+- Added the approved MVP 2 direction, scope boundaries, GitHub delivery tracker, and dedicated-branch workflow.
+
 ## [0.8.0-alpha] - 2026-11-09
 
 ### Added
