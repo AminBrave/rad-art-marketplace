@@ -9,6 +9,9 @@ Notable project changes are recorded here in reverse chronological order. Dates 
 - Vazirmatn and Inter font loading, accessible focus styling, reduced-motion support, and a development-only design foundation specimen.
 - Tailwind semantic aliases and design foundation usage documentation.
 
+### Changed
+- Selected `cleaned-MVP-1` (commit `bd459940`) as the MVP 2 implementation baseline; documented that `feature/roadmap-mvp-completion` is 15 commits behind.
+- Added the approved MVP 2 direction, scope boundaries, GitHub delivery tracker, and dedicated-branch workflow.
 
 ## [0.8.0-alpha] - 2026-11-09
 
