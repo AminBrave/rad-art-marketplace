@@ -8,6 +8,7 @@ const highlights = [
 ];
 
 const emptyForm = { name: '', email: '', password: '', password_confirmation: '' };
+const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
 
 export default function App() {
     const [user, setUser] = useState(null);
@@ -17,6 +18,12 @@ export default function App() {
     const [authMessage, setAuthMessage] = useState('');
     const [busy, setBusy] = useState(false);
     const [adminUsers, setAdminUsers] = useState([]);
+    const [profile, setProfile] = useState(emptyProfile);
+    const [profileErrors, setProfileErrors] = useState({});
+    const [profileMessage, setProfileMessage] = useState('');
+    const [profileBusy, setProfileBusy] = useState(false);
+    const [publicProfile, setPublicProfile] = useState(null);
+    const [publicProfileLoading, setPublicProfileLoading] = useState(window.location.pathname.startsWith('/artists/'));
 
     useEffect(() => {
         axios.get('/api/v1/auth/me')
@@ -31,6 +38,30 @@ export default function App() {
                 .catch(() => setAdminUsers([]));
         }
     }, [user?.role]);
+
+    useEffect(() => {
+        if (!user) {
+            setProfile(emptyProfile);
+            return;
+        }
+
+        axios.get('/api/v1/artist-profile/me')
+            .then(({ data }) => setProfile(data.data ?? { ...emptyProfile, display_name: user.name }))
+            .catch(() => setProfile({ ...emptyProfile, display_name: user.name }));
+    }, [user?.id]);
+
+    useEffect(() => {
+        const match = window.location.pathname.match(new RegExp('^/artists/([^/]+)$'));
+
+        if (!match) {
+            return;
+        }
+
+        axios.get(`/api/v1/artists/${encodeURIComponent(match[1])}`)
+            .then(({ data }) => setPublicProfile(data.data))
+            .catch(() => setPublicProfile(null))
+            .finally(() => setPublicProfileLoading(false));
+    }, []);
 
     const updateForm = (event) => {
         setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
@@ -77,6 +108,35 @@ export default function App() {
             setAuthMessage('به‌روزرسانی نقش کاربر انجام نشد.');
         }
     };
+
+    if (window.location.pathname.startsWith('/artists/')) {
+        return (
+            <main className="min-h-screen bg-[#f7f5f0] px-6 py-16 text-[#20201e]" dir="rtl">
+                <article className="mx-auto max-w-3xl rounded-3xl border border-stone-200 bg-white p-8 shadow-sm sm:p-12">
+                    <a href="/" className="text-xl font-black">راد<span className="text-[#b65c3a]">آرت</span></a>
+                    {publicProfileLoading ? (
+                        <p className="mt-10 text-stone-500">در حال دریافت پروفایل…</p>
+                    ) : publicProfile ? (
+                        <>
+                            <p className="mt-10 text-sm font-bold text-[#b65c3a]">پروفایل هنرمند</p>
+                            <h1 className="mt-3 text-4xl font-black">{publicProfile.display_name}</h1>
+                            {publicProfile.city && <p className="mt-3 text-sm text-stone-500">{publicProfile.city}</p>}
+                            {publicProfile.bio && <p className="mt-8 whitespace-pre-line leading-9 text-stone-700">{publicProfile.bio}</p>}
+                            <div className="mt-8 flex flex-wrap gap-4 text-sm font-semibold">
+                                {publicProfile.website_url && <a href={publicProfile.website_url} target="_blank" rel="noreferrer" className="text-[#b65c3a] underline">وب‌سایت</a>}
+                                {publicProfile.instagram_handle && <a href={`https://instagram.com/${publicProfile.instagram_handle}`} target="_blank" rel="noreferrer" className="text-[#b65c3a] underline">اینستاگرام</a>}
+                            </div>
+                        </>
+                    ) : (
+                        <div className="mt-10">
+                            <h1 className="text-2xl font-black">پروفایل در دسترس نیست</h1>
+                            <p className="mt-3 leading-8 text-stone-500">این پروفایل وجود ندارد یا نمایش عمومی آن غیرفعال شده است.</p>
+                        </div>
+                    )}
+                </article>
+            </main>
+        );
+    }
 
     return (
         <main className="min-h-screen overflow-hidden bg-[#f7f5f0] text-[#20201e]">
@@ -214,10 +274,53 @@ export default function App() {
                         <p className="mt-5 text-xs leading-6 text-stone-400">با ثبت‌نام، نقش هنرمند برای حساب شما فعال می‌شود. ایجاد حساب مدیر فقط از طریق دستور مدیریتی سرور امکان‌پذیر است.</p>
                     </div>
                 ) : (
-                    <div className="rounded-3xl border border-stone-200 bg-white p-7">
-                        <h3 className="text-xl font-extrabold">وضعیت حساب</h3>
-                        <p className="mt-3 leading-8 text-stone-600">ورود شما با نشست امن سمت سرور انجام شده است. امکانات تکمیلی پروفایل هنرمند در مرحله بعدی توسعه داده می‌شود.</p>
-                        {authMessage && <p className="mt-4 text-sm text-[#80513d]">{authMessage}</p>}
+                    <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
+                        <div className="mb-6">
+                            <h3 className="text-xl font-extrabold">پروفایل هنرمند</h3>
+                            <p className="mt-2 text-sm leading-7 text-stone-500">اطلاعات معرفی خود را تکمیل کنید. ایمیل و نقش حساب از بخش پروفایل قابل تغییر نیستند.</p>
+                        </div>
+                        <form onSubmit={saveProfile} className="space-y-4">
+                            <label className="block text-sm font-semibold">
+                                نام نمایشی
+                                <input name="display_name" value={profile.display_name} onChange={updateProfileForm} required maxLength="120" className="mt-2 w-full rounded-xl border border-stone-200 bg-[#fcfbf9] px-4 py-3 outline-none focus:border-[#b65c3a]" />
+                                {profileErrors.display_name?.map((message) => <span key={message} className="mt-1 block text-xs text-red-700">{message}</span>)}
+                            </label>
+                            <label className="block text-sm font-semibold">
+                                درباره هنرمند
+                                <textarea name="bio" value={profile.bio ?? ''} onChange={updateProfileForm} rows="4" maxLength="2000" className="mt-2 w-full rounded-xl border border-stone-200 bg-[#fcfbf9] px-4 py-3 leading-7 outline-none focus:border-[#b65c3a]" placeholder="درباره مسیر هنری و زمینه فعالیت خود بنویسید…" />
+                                {profileErrors.bio?.map((message) => <span key={message} className="mt-1 block text-xs text-red-700">{message}</span>)}
+                            </label>
+                            <div className="grid gap-4 sm:grid-cols-2">
+                                <label className="block text-sm font-semibold">
+                                    شهر
+                                    <input name="city" value={profile.city ?? ''} onChange={updateProfileForm} maxLength="120" className="mt-2 w-full rounded-xl border border-stone-200 bg-[#fcfbf9] px-4 py-3 outline-none focus:border-[#b65c3a]" />
+                                    {profileErrors.city?.map((message) => <span key={message} className="mt-1 block text-xs text-red-700">{message}</span>)}
+                                </label>
+                                <label className="block text-sm font-semibold">
+                                    شناسه اینستاگرام
+                                    <input name="instagram_handle" value={profile.instagram_handle ?? ''} onChange={updateProfileForm} maxLength="30" dir="ltr" className="mt-2 w-full rounded-xl border border-stone-200 bg-[#fcfbf9] px-4 py-3 text-left outline-none focus:border-[#b65c3a]" placeholder="your.handle" />
+                                    {profileErrors.instagram_handle?.map((message) => <span key={message} className="mt-1 block text-xs text-red-700">{message}</span>)}
+                                </label>
+                            </div>
+                            <label className="block text-sm font-semibold">
+                                وب‌سایت
+                                <input name="website_url" type="url" value={profile.website_url ?? ''} onChange={updateProfileForm} dir="ltr" className="mt-2 w-full rounded-xl border border-stone-200 bg-[#fcfbf9] px-4 py-3 text-left outline-none focus:border-[#b65c3a]" placeholder="https://example.com" />
+                                {profileErrors.website_url?.map((message) => <span key={message} className="mt-1 block text-xs text-red-700">{message}</span>)}
+                            </label>
+                            <label className="flex items-center gap-3 text-sm font-semibold">
+                                <input type="checkbox" name="is_public" checked={Boolean(profile.is_public)} onChange={updateProfileForm} className="h-4 w-4 accent-[#b65c3a]" />
+                                نمایش عمومی پروفایل
+                            </label>
+                            <button disabled={profileBusy} className="w-full rounded-xl bg-[#20201e] px-6 py-3.5 font-bold text-white transition hover:bg-[#b65c3a] disabled:cursor-wait disabled:opacity-60">
+                                {profileBusy ? 'در حال ذخیره…' : 'ذخیره پروفایل'}
+                            </button>
+                        </form>
+                        {profileMessage && <p role="status" className="mt-4 text-sm text-[#80513d]">{profileMessage}</p>}
+                        {profile.slug && profile.is_public && (
+                            <a href={`/artists/${profile.slug}`} className="mt-4 inline-block text-sm font-semibold text-[#b65c3a] underline">
+                                مشاهده پروفایل عمومی
+                            </a>
+                        )}
                     </div>
                 )}
             </section>
@@ -255,7 +358,7 @@ export default function App() {
             <section id="artists" className="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-16 lg:px-10">
                 <p className="text-sm font-bold text-[#b65c3a]">برای جامعه هنری</p>
                 <h2 className="max-w-2xl text-3xl font-black leading-relaxed sm:text-4xl">هنرمند هستید؟ جای شما در راد آرت خالی است.</h2>
-                <p className="max-w-2xl leading-8 text-stone-600">حساب هنرمندی خود را ایجاد کنید؛ ساخت پروفایل و ثبت آثار در milestone بعدی تکمیل می‌شود.</p>
+                <p className="max-w-2xl leading-8 text-stone-600">پروفایل هنرمندی خود را تکمیل کنید تا در مرحله بعد آثار هنری‌تان را در راد آرت منتشر کنید.</p>
             </section>
 
             <footer id="about" className="bg-[#20201e] px-6 py-8 text-center text-sm text-stone-300">

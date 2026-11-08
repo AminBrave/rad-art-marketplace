@@ -54,7 +54,13 @@ All authorization must be enforced server-side. Hiding UI controls is not author
 - Promote a registered account with: php artisan users:make-admin admin@example.com
 - Persian RTL registration/login interface and basic administrator user-management view.
 
-Email verification, password-reset UX, artist profile editing, and ownership policies for artwork/profile records are not yet implemented.
+Email verification and password-reset UX are not yet implemented. Artist-owned artwork permissions will be added with the artwork model.
+
+### Artist profiles
+- One-to-one artist profile per account, with display name, biography, city, website, Instagram handle, and public/private visibility.
+- Artists can create and edit only their own profile. Administrators can view and edit all profiles through the authenticated profile API.
+- Public profile pages are available at /artists/{slug} and load data from GET /api/v1/artists/{slug}; private profiles are visible only to their owner and administrators.
+- Authenticated profile endpoints: GET /api/v1/artist-profile/me, PUT /api/v1/artist-profile/me, GET /api/v1/artist-profiles/{id}, and PATCH /api/v1/artist-profiles/{id}.
 
 ## Local development
 

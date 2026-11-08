@@ -2,6 +2,23 @@
 
 All notable project changes are recorded here.
 
+## [0.4.0-alpha] - 2026-11-08
+### Added
+- One-to-one artist profile model and migration with unique user ownership and public slug.
+- Validated profile create/read/update endpoints and owner/admin authorization policy.
+- Public profile pages by slug with private-profile visibility protection.
+- Persian RTL artist profile editor for biography, city, website, Instagram handle, and visibility.
+- Feature tests for profile creation, validation, editing, guest access, cross-user denial, public/private visibility, and admin access.
+- Local artist-profile smoke-test guide.
+
+### Security
+- Profile ownership is assigned from the authenticated session, never from client input.
+- Artists cannot view or modify another artist's private profile.
+- Administrators can view and edit all profiles through authenticated endpoints.
+
+### Notes
+- Avatar/image uploads and artist-owned artwork permissions remain separate future work.
+
 ## [0.3.0-alpha] - 2026-11-08
 ### Added
 - Session-based artist registration, login, current-user, and logout endpoints under /api/v1/auth.
