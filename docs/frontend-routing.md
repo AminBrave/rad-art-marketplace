@@ -22,7 +22,7 @@ The React application uses React Router as the single source of truth for browse
 - Admin: `/admin`, `/admin/users`, `/admin/artworks`
 - `/dashboard` redirects to the current role's workspace.
 
-Role layouts render only the navigation appropriate to the authenticated role. The route guard waits for the session check, sends guests to `/login`, and sends authenticated users with the wrong role to `/unauthorized`. The not-found route is rendered by React Router for unknown application paths.
+Role layouts render only the navigation appropriate to the authenticated role. The route guard waits for the session check, sends guests to `/login`, and sends authenticated users with the wrong role to `/unauthorized`. The not-found route is rendered by React Router for unknown application paths, including unknown nested paths inside each role workspace.
 
 ## Authentication and security
 
