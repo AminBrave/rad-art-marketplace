@@ -17,14 +17,14 @@ export function TabsList({ className = '', ...props }) {
 export function TabsTrigger({ className = '', ...props }) {
     return (
         <TabsPrimitive.Trigger
-            className={`min-h-11 border-b-2 border-transparent px-4 py-2 text-sm font-semibold text-muted outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-focus data-[state=active]:border-terracotta data-[state=active]:text-ink disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+            className={`min-h-11 border-b-2 border-transparent px-4 py-2 text-sm font-semibold text-muted outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-terracotta-strong data-[state=active]:border-terracotta data-[state=active]:text-ink disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
             {...props}
         />
     );
 }
 
 export function TabsContent({ className = '', ...props }) {
-    return <TabsPrimitive.Content className={`pt-5 outline-none focus-visible:ring-2 focus-visible:ring-focus ${className}`} {...props} />;
+    return <TabsPrimitive.Content className={`pt-5 outline-none focus-visible:ring-2 focus-visible:ring-terracotta-strong ${className}`} {...props} />;
 }
 
 export const DropdownMenu = DropdownMenuPrimitive.Root;
@@ -37,7 +37,7 @@ export function DropdownMenuContent({ className = '', sideOffset = 6, ...props }
                 sideOffset={sideOffset}
                 align="end"
                 dir="rtl"
-                className={`z-50 min-w-44 rounded-md border border-border bg-paper p-1.5 text-ink shadow-raised outline-none data-[state=open]:animate-in data-[state=closed]:animate-out ${className}`}
+                className={`z-50 min-w-44 rounded-md border border-border bg-paper p-1.5 text-ink shadow-raised outline-none ${className}`}
                 {...props}
             />
         </DropdownMenuPrimitive.Portal>
@@ -104,7 +104,7 @@ export function Pagination({ currentPage, lastPage, onPageChange, disabled = fal
                             aria-current={number === page ? 'page' : undefined}
                             disabled={disabled}
                             onClick={() => onPageChange(number)}
-                            className={`h-9 min-w-9 rounded-sm px-2 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:opacity-50 ${number === page ? 'bg-ink text-white' : 'text-ink hover:bg-surface-muted'}`}
+                            className={`h-9 min-w-9 rounded-sm px-2 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-terracotta-strong disabled:opacity-50 ${number === page ? 'bg-ink text-white' : 'text-ink hover:bg-surface-muted'}`}
                         >
                             {number}
                         </button>
