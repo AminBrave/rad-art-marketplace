@@ -50,17 +50,20 @@ function AppRoutes() {
                 <Route path="profile" element={<ArtistProfileSettings />} />
                 <Route path="artworks" element={<ArtistArtworkPage />} />
                 <Route path="inquiries" element={<ArtistInquiryPage />} />
+                <Route path="*" element={<NotFoundPage />} />
             </Route>
 
             <Route path="/dashboard/buyer" element={<RequireRole roles={['buyer']}><BuyerWorkspaceLayout /></RequireRole>}>
                 <Route index element={<BuyerDashboardHome />} />
                 <Route path="inquiries" element={<BuyerInquiryPage />} />
+                <Route path="*" element={<NotFoundPage />} />
             </Route>
 
             <Route path="/admin" element={<RequireRole roles={['admin']}><AdminWorkspaceLayout /></RequireRole>}>
                 <Route index element={<AdminDashboardHome />} />
                 <Route path="users" element={<AdminUsersPage />} />
                 <Route path="artworks" element={<AdminArtworkModeration />} />
+                <Route path="*" element={<NotFoundPage />} />
             </Route>
 
             <Route path="*" element={<NotFoundPage />} />
