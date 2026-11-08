@@ -2,12 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature;
+namespace Tests\\Feature;
 
-use Tests\TestCase;
+use Tests\\TestCase;
 
 final class FrontendRoutingTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->withoutVite();
+    }
+
     public function test_nested_frontend_routes_serve_the_react_entry_view(): void
     {
         foreach ([
