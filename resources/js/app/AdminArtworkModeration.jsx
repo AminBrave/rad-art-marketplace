@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 
 const filters = [
@@ -18,7 +18,7 @@ export default function AdminArtworkModeration() {
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
 
-    const loadArtworks = async () => {
+    const loadArtworks = useCallback(async () => {
         setLoading(true);
         setError('');
         try {
@@ -29,11 +29,11 @@ export default function AdminArtworkModeration() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [status]);
 
     useEffect(() => {
         loadArtworks();
-    }, [status]);
+    }, [loadArtworks]);
 
     const moderate = async (artwork, action) => {
         const note = (notes[artwork.id] ?? '').trim();
