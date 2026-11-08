@@ -2,9 +2,11 @@ import { createElement, useEffect, useState } from 'react';
 import axios from 'axios';
 import ContactArtistForm from './ContactArtistForm';
 import { Link, useParams } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 
-export default function ArtworkGallery({ user }) {
-    const detailSlug = window.location.pathname.match(/^\/artworks\/([^/]+)$/)?.[1];
+export default function ArtworkGallery() {
+    const { user } = useAuth();
+    const { slug: detailSlug } = useParams();
     const [categories, setCategories] = useState([]);
     const [artworks, setArtworks] = useState([]);
     const [detail, setDetail] = useState(null);

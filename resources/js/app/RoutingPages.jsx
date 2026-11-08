@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, Navigate, Outlet, useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 import { useAuth } from './AuthContext';
@@ -253,7 +253,7 @@ export function AdminUsersPage() {
     const [error, setError] = useState('');
     const [busyId, setBusyId] = useState(null);
 
-    const load = async () => {
+    const load = useCallback(async () => {
         setLoading(true);
         setError('');
         try {
@@ -266,9 +266,9 @@ export function AdminUsersPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    useEffect(() => { load(); }, []);
+    useEffect(() => { load(); }, [load]);
 
     const changeRole = async (item, role) => {
         setBusyId(item.id);

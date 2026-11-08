@@ -3,7 +3,6 @@ import axios from 'axios';
 import ArtworkGallery from './ArtworkGallery';
 import AdminArtworkModeration from './AdminArtworkModeration';
 import ArtworkStudio from './ArtworkStudio';
-import ContactArtistForm from './ContactArtistForm';
 import InquiryCenter from './InquiryCenter';
 import { useAuth } from './AuthContext';
 
@@ -125,31 +124,7 @@ export default function HomePage() {
 
     return (
         <main className="min-h-screen overflow-hidden bg-[#f7f5f0] text-[#20201e]">
-            <header className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-6 py-6 lg:px-10">
-                <a href="/" className="shrink-0 text-2xl font-black tracking-tight" aria-label="راد آرت، صفحه اصلی">
-                    راد<span className="text-[#b65c3a]">آرت</span>
-                </a>
-                <nav aria-label="ناوبری اصلی" className="hidden items-center gap-8 text-sm text-stone-600 md:flex">
-                    <a className="transition hover:text-[#b65c3a]" href="#artworks">کشف آثار</a>
-                    <a className="transition hover:text-[#b65c3a]" href="#artists">هنرمندان</a>
-                    <a className="transition hover:text-[#b65c3a]" href="#about">درباره ما</a>
-                </nav>
-                {user ? (
-                    <div className="flex items-center gap-3 text-sm">
-                        <span className="hidden font-semibold sm:inline">{user.name}</span>
-                        <span className="rounded-full bg-[#eae3d8] px-3 py-2 text-xs font-bold text-[#80513d]">
-                            {user.role === 'admin' ? 'مدیر' : user.role === 'buyer' ? 'خریدار' : 'هنرمند'}
-                        </span>
-                        <button onClick={logout} className="rounded-full border border-stone-300 px-4 py-2.5 font-semibold transition hover:border-[#b65c3a] hover:text-[#b65c3a]">
-                            خروج
-                        </button>
-                    </div>
-                ) : (
-                    <a href="#account" className="rounded-full border border-stone-300 px-5 py-2.5 text-sm font-semibold transition hover:border-[#b65c3a] hover:text-[#b65c3a]">
-                        ورود / ثبت‌نام
-                    </a>
-                )}
-            </header>
+
 
             <section className="mx-auto grid max-w-7xl gap-12 px-6 pb-24 pt-12 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:px-10 lg:pb-32 lg:pt-20">
                 <div className="max-w-2xl">
