@@ -13,6 +13,8 @@ Notable project changes are recorded here in reverse chronological order. Dates 
 - Routing documentation; Laravel remains authoritative for API authorization and ownership.
 
 ### Changed
+- Configured ESLint to recognize React component usage in JSX and browser URL APIs; adjusted the auth hook export for Fast Refresh.
+- Made SPA route feature tests independent of a generated Vite manifest.
 - Promoted the agreed `cleaned-MVP-1` MVP 1 snapshot to `main` through PR #34; `main` is now the active integration branch.
 - Merged MVP 2 baseline documentation, Contemporary Art Editorial design foundations, and centralized routing through PRs #31, #35, and #36.
 - Updated contributor and roadmap guidance to branch from and target `main`.
