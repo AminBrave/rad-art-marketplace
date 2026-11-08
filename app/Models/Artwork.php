@@ -39,6 +39,7 @@ class Artwork extends Model
         return [
             'year' => 'integer',
             'price' => 'decimal:2',
+            'reviewed_at' => 'datetime',
         ];
     }
 
