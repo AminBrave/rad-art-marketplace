@@ -5,10 +5,7 @@
   "description": "Persian-first art discovery and artist-contact marketplace.",
   "keywords": ["laravel", "react", "art-marketplace"],
   "license": "proprietary",
-  "require": {
-    "php": "^8.2",
-    "laravel/framework": "^11.0"
-  },
+  "require": {"php": "^8.2", "laravel/framework": "^11.0"},
   "require-dev": {
     "fakerphp/faker": "^1.23",
     "laravel/pint": "^1.13",
@@ -16,43 +13,15 @@
     "nunomaduro/collision": "^8.1",
     "phpunit/phpunit": "^11.0"
   },
-  "autoload": {
-    "psr-4": {
-      "App\\": "app/",
-      "Database\\Factories\\": "database/factories/",
-      "Database\\Seeders\\": "database/seeders/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Tests\\": "tests/"
-    }
-  },
+  "autoload": {"psr-4": {"App\\": "app/", "Database\\Factories\\": "database/factories/", "Database\\Seeders\\": "database/seeders/"}},
+  "autoload-dev": {"psr-4": {"Tests\\": "tests/"}},
   "scripts": {
-    "setup": [
-      "composer install",
-      "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
-      "@php artisan key:generate",
-      "@php artisan migrate --force"
-    ],
     "test": "@php artisan test",
     "lint": "@php vendor/bin/pint --test",
-    "post-autoload-dump": [
-      "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-      "@php artisan package:discover --ansi"
-    ],
-    "post-create-project-cmd": [
-      "@php artisan key:generate --ansi"
-    ]
+    "post-autoload-dump": ["Illuminate\\Foundation\\ComposerScripts::postAutoloadDump", "@php artisan package:discover --ansi"],
+    "post-create-project-cmd": ["@php artisan key:generate --ansi"]
   },
-  "config": {
-    "optimize-autoloader": true,
-    "preferred-install": "dist",
-    "sort-packages": true,
-    "allow-plugins": {
-      "php-http/discovery": true
-    }
-  },
+  "config": {"optimize-autoloader": true, "preferred-install": "dist", "sort-packages": true, "allow-plugins": {"php-http/discovery": true}},
   "minimum-stability": "stable",
   "prefer-stable": true
 }
