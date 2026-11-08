@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Api\V1\AdminArtworkModerationController;
 use App\Http\Controllers\Api\V1\AdminUserController;
-use App\Http\Controllers\Api\V1\ArtistProfileController;
 use App\Http\Controllers\Api\V1\ArtistInquiryController;
+use App\Http\Controllers\Api\V1\ArtistProfileController;
 use App\Http\Controllers\Api\V1\ArtworkController;
 use App\Http\Controllers\Api\V1\AuthController;
 use Illuminate\Support\Facades\Route;
