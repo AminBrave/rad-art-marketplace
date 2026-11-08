@@ -360,7 +360,7 @@ export default function App() {
                 )}
             </section>
 
-            <ArtworkStudio user={user} />
+            <ArtworkStudio user={user} hasProfile={Boolean(profile.slug)} />
 
             {user?.role === 'admin' && (
                 <section className="mx-auto max-w-7xl px-6 pb-20 lg:px-10">
