@@ -54,9 +54,11 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
             ->name('artist-profiles.update');
 
         Route::prefix('artist')->name('artist.')->group(function (): void {
-            Route::get('/inquiries', [ArtistInquiryController::class, 'artistIndex'])->name('inquiries.index');
-            Route::get('/inquiries/{inquiry}', [ArtistInquiryController::class, 'artistShow'])->name('inquiries.show');
-            Route::patch('/inquiries/{inquiry}', [ArtistInquiryController::class, 'updateForArtist'])->name('inquiries.update');
+            Route::middleware('role:artist')->group(function (): void {
+                Route::get('/inquiries', [ArtistInquiryController::class, 'artistIndex'])->name('inquiries.index');
+                Route::get('/inquiries/{inquiry}', [ArtistInquiryController::class, 'artistShow'])->name('inquiries.show');
+                Route::patch('/inquiries/{inquiry}', [ArtistInquiryController::class, 'updateForArtist'])->name('inquiries.update');
+            });
             Route::get('/artworks', [ArtworkController::class, 'mine'])->name('artworks.index');
             Route::post('/artworks', [ArtworkController::class, 'store'])->middleware('throttle:10,1')->name('artworks.store');
             Route::patch('/artworks/{artwork}', [ArtworkController::class, 'update'])->middleware('throttle:10,1')->name('artworks.update');
