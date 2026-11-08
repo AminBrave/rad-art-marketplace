@@ -120,6 +120,8 @@ class ArtworkController extends Controller
             ...$validated,
             'status' => Artwork::STATUS_PENDING_REVIEW,
             'rejection_note' => null,
+            'reviewed_by' => null,
+            'reviewed_at' => null,
             ...($newImagePath ? ['image_path' => $newImagePath] : []),
         ]);
 
