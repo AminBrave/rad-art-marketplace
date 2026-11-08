@@ -2,6 +2,14 @@
 
 Notable project changes are recorded here in reverse chronological order. Dates describe repository milestones, not production releases.
 
+## [Unreleased]
+
+### Added
+- Contemporary Art Editorial design tokens for palette, semantic colors, typography, spacing, shape, elevation, and layout.
+- Vazirmatn and Inter font loading, accessible focus styling, reduced-motion support, and a development-only design foundation specimen.
+- Tailwind semantic aliases and design foundation usage documentation.
+
+
 ## [0.8.0-alpha] - 2026-11-09
 
 ### Added
