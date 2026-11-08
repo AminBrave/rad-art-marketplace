@@ -120,3 +120,15 @@ All notable project changes are recorded here.
 
 ### Notes
 - A documentation baseline, not a completed or deployable application.
+
+
+## [0.8.0-alpha] - 2026-11-09
+### Added
+- cPanel deployment guide with PHP 8.3, extension, document-root, private-storage, mail, and smoke-test gates.
+- Database and private-artwork backup/restore runbook with restore-drill requirements.
+- Privacy-conscious analytics event and metric baseline; no analytics provider or tracking script is enabled.
+- Release checklist and known-limitations register.
+- README links to operational and release documentation.
+
+### Notes
+- These documents do not replace host verification, production SMTP testing, an actual restore drill, or browser/device smoke testing.
