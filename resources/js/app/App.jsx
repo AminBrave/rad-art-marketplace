@@ -48,7 +48,7 @@ export default function App() {
         axios.get('/api/v1/artist-profile/me')
             .then(({ data }) => setProfile(data.data ?? { ...emptyProfile, display_name: user.name }))
             .catch(() => setProfile({ ...emptyProfile, display_name: user.name }));
-    }, [user?.id]);
+    }, [user?.id, user?.name]);
 
     useEffect(() => {
         const match = window.location.pathname.match(new RegExp('^/artists/([^/]+)$'));
@@ -106,6 +106,33 @@ export default function App() {
             setAdminUsers((current) => current.map((item) => item.id === targetUser.id ? data.data : item));
         } catch {
             setAuthMessage('به‌روزرسانی نقش کاربر انجام نشد.');
+        }
+    };
+
+    const updateProfileForm = (event) => {
+        const { name, value, type, checked } = event.target;
+        setProfile((current) => ({ ...current, [name]: type === 'checkbox' ? checked : value }));
+    };
+
+    const saveProfile = async (event) => {
+        event.preventDefault();
+        setProfileBusy(true);
+        setProfileErrors({});
+        setProfileMessage('');
+
+        try {
+            const { data } = await axios.put('/api/v1/artist-profile/me', profile);
+            setProfile(data.data);
+            setProfileMessage(data.message);
+        } catch (error) {
+            if (error.response?.status === 422) {
+                setProfileErrors(error.response.data.errors ?? {});
+                setProfileMessage('لطفاً خطاهای فرم را بررسی کنید.');
+            } else {
+                setProfileMessage('ذخیره پروفایل انجام نشد. دوباره تلاش کنید.');
+            }
+        } finally {
+            setProfileBusy(false);
         }
     };
 

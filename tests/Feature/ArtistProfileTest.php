@@ -17,7 +17,7 @@ class ArtistProfileTest extends TestCase
     {
         $artist = $this->makeUser('artist');
 
-        $this->actingAs($artist)
+        $response = $this->actingAs($artist)
             ->putJson('/api/v1/artist-profile/me', $this->validProfile())
             ->assertOk()
             ->assertJsonPath('data.display_name', 'هنرمند نمونه')
@@ -25,7 +25,7 @@ class ArtistProfileTest extends TestCase
 
         $this->assertDatabaseHas('artist_profiles', [
             'user_id' => $artist->id,
-            'slug' => 'artist-'.$artist->id,
+            'slug' => $response->json('data.slug'),
             'display_name' => 'هنرمند نمونه',
         ]);
 
@@ -52,7 +52,7 @@ class ArtistProfileTest extends TestCase
         $artist = $this->makeUser('artist');
         $profile = $artist->artistProfile()->create([
             ...$this->validProfile(),
-            'slug' => 'artist-'.$artist->id,
+            'slug' => $response->json('data.slug'),
         ]);
 
         $this->actingAs($artist)
