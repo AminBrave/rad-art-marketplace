@@ -53,7 +53,17 @@ export function PublicLayout() {
 }
 
 export function WorkspaceLayout({ title, links, outletContext }) {
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
+    const [logoutError, setLogoutError] = useState('');
+
+    const handleLogout = async () => {
+        setLogoutError('');
+        try {
+            await logout();
+        } catch {
+            setLogoutError('خروج انجام نشد. اتصال را بررسی کنید.');
+        }
+    };
 
     return (
         <div className="min-h-screen bg-[#f7f5f0] text-[#20201e]" dir="rtl">
@@ -66,8 +76,10 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     <div className="flex items-center gap-3 text-sm">
                         <span className="font-semibold">{user?.name}</span>
                         <Link to="/" className="rounded-full border border-stone-300 px-4 py-2 font-semibold hover:border-[#b65c3a]">مشاهده سایت</Link>
+                        <button type="button" onClick={handleLogout} className="rounded-full border border-stone-300 px-4 py-2 font-semibold hover:border-[#b65c3a]">خروج</button>
                     </div>
                 </div>
+                {logoutError && <p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-red-700 sm:px-8">{logoutError}</p>}
             </header>
             <div className="mx-auto grid max-w-7xl gap-6 px-5 py-7 sm:px-8 lg:grid-cols-[220px_1fr] lg:px-10">
                 <aside className="h-fit rounded-2xl border border-stone-200 bg-white p-3">
