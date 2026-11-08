@@ -10,6 +10,16 @@ These instructions apply to automated agents and human contributors working in t
 4. Inspect the existing implementation, tests, migrations, and frontend flow before proposing structural changes.
 5. Work on a dedicated feature branch. Keep changes focused and reviewable.
 
+
+
+## MVP 2 branch workflow
+
+- Use `cleaned-MVP-1` as the MVP 2 starting point; do not branch new MVP 2 work from the historical `feature/roadmap-mvp-completion` branch.
+- Create a dedicated, focused branch from `cleaned-MVP-1` for each issue or cohesive implementation slice.
+- Keep pull requests small and reviewable. Until the repository owner defines a different integration strategy, target MVP 2 pull requests at `cleaned-MVP-1`; do not merge work directly into the baseline branch.
+- Keep the MVP 2 GitHub delivery tracker and `ROADMAP.md` aligned as scope or delivery status changes.
+- Never mark roadmap items complete based only on documentation or a successful build; verify the behavior and relevant acceptance criteria.
+
 ## Product boundaries
 
 Build a Persian-first, RTL-oriented art discovery and artist-contact marketplace.
