@@ -1,164 +1,74 @@
 # Changelog
 
-Notable project changes are recorded here in reverse chronological order. Dates describe repository milestones, not production releases.
+Notable repository changes are listed newest first. Entries describe merged implementation milestones, not production releases. The current package version is not used as a release tag.
 
-## [Unreleased]
+## 2026-11-09 — MVP 2 Stage 2: Public marketplace
 
 ### Added
-- Public editorial homepage, URL-driven artwork search/category/pagination, paginated public artist directory and portfolio profiles, and Persian About/Help/Contact pages.
-- Public artist directory API with a minimal allow-listed profile payload and approved-only artist portfolio response.
+- Editorial public homepage using approved artwork, active categories, and public artist content.
+- Public artwork catalogue with URL-persisted search/category filters and server pagination.
+- Artwork detail pages with artist context and buyer inquiry entry point.
+- Searchable, paginated public artist directory and artist profiles with approved-only portfolios.
+- Persian About, Help, and Contact pages; public navigation and footer.
+- Safe `GET /api/v1/artists` directory endpoint with allow-listed profile fields and bounded pagination.
 
 ### Changed
-- Public artwork payloads no longer include moderation state or rejection notes; private moderation data remains available only through authorized artist/admin workflows.
+- Public artwork payloads omit moderation status and rejection notes.
+- API reference and delivery roadmap reflect the current public marketplace.
 
+### Verification
+- PR #42 merged to `main` as `a9f6a2222e9e57fdd78de6662b3bc1dc1b66f8e4`.
+- CI passed: 40 backend tests / 204 assertions, PHP style, frontend lint, and Vite production build.
+- Manual browser/device QA and production-host verification remain outstanding.
+
+## 2026-11-09 — MVP 2 Stage 1: Foundation and audit
 
 ### Added
-- MVP 2 foundation API/UX audit: verified artist-directory gap, catalogue pagination/search contract, private image delivery, and existing workspace summary data sources.
-- Accessible shared UI components for buttons, form controls, cards, badges, tabs, dropdowns, dialogs, breadcrumbs, pagination, toasts, skeletons, and feedback states.
-- Interactive component specimen and shared component usage/accessibility documentation.
+- Contemporary Art Editorial design foundations, Persian-first typography, semantic tokens, focus styling, reduced-motion support, and development specimen.
+- Central React Router, session-aware route guards, public shell, and role-aware artist, buyer, and admin workspaces.
+- Shared UI components for controls, cards, tabs, dropdowns, dialogs, breadcrumbs, pagination, loading, empty/error/permission states, upload feedback, and toasts.
+- MVP 2 API/UX audit covering public artist discovery, catalogue pagination, private image delivery, and workspace summary data.
 
 ### Changed
-- Refactored the public artwork catalogue to use shared search, artwork cards, loading skeletons, and empty/error states.
+- Public artwork catalogue uses shared controls/cards and consistent feedback states.
+- `main` is the active integration baseline; `cleaned-MVP-1` is historical only.
 
-### Added
-- Contemporary Art Editorial design tokens for palette, semantic colors, typography, spacing, shape, elevation, and layout.
-- Vazirmatn and Inter font loading, accessible focus styling, reduced-motion support, and a development-only design foundation specimen.
-- Tailwind semantic aliases and design foundation usage documentation.
-- Central React Router route tree, Persian public shell, and role-specific artist, buyer, and admin workspaces.
-- Session-aware route guards, login/register routes, unauthorized and not-found screens, and a Laravel SPA fallback for deep-link refresh.
-- Routing documentation; Laravel remains authoritative for API authorization and ownership.
+### Verification
+- Shared component PR #39 passed backend tests/style, frontend lint, and production build.
+- Audit documentation PR #41 was documentation-only.
+- Manual keyboard, responsive/device, image/upload, and production-host checks remain outstanding.
 
-### Changed
-- Configured ESLint to recognize React component usage in JSX and browser URL APIs; adjusted the auth hook export for Fast Refresh.
-- Made SPA route feature tests independent of a generated Vite manifest.
-- Added a post-merge QA checklist covering public routes, role boundaries, workspaces, RTL, accessibility, responsiveness, and release gates.
-- Promoted the agreed `cleaned-MVP-1` MVP 1 snapshot to `main` through PR #34; `main` is now the active integration branch.
-- Merged MVP 2 baseline documentation, Contemporary Art Editorial design foundations, and centralized routing through PRs #31, #35, and #36.
-- Updated contributor and roadmap guidance to branch from and target `main`.
+## 2026-11-09 — Integration and quality baseline
 
-## [0.8.0-alpha] - 2026-11-09
+- Reconciled the MVP 1 implementation baseline and promoted it to `main`.
+- Added post-merge CI cleanup and the manual QA checklist.
+- Updated contributor instructions and roadmap to use `main` as the only active integration branch.
 
-### Added
-- cPanel deployment guide with PHP 8.3, extension, document-root, private-storage, mail, and smoke-test gates.
-- Database and private-artwork backup/restore runbook with restore-drill requirements.
-- Privacy-conscious analytics event and metric baseline; no analytics provider or tracking script is enabled.
-- Release checklist and known-limitations register.
-- README links to operational and release documentation.
+## 2026-11-08 — MVP 1 feature milestones
 
-### Notes
-- Documentation does not replace host verification, production mail configuration, a successful restore drill, or browser/device smoke testing.
+### Buyer and artist inquiries
+- Added Buyer registration, private buyer-to-artist inquiry intake, buyer sent-inquiry history, and artist read/archive controls.
+- Added rate limiting, honeypot validation, bounded message fields, and strict role/ownership scoping.
+- Inquiry payloads omit both parties' email addresses. This feature is not chat, replies, or email delivery.
 
-## [0.7.0-alpha] - 2026-11-08
+### Artwork moderation
+- Added admin-only moderation queue and approve/reject/request-changes actions.
+- Required notes for rejection and change requests; added reviewer/timestamp audit fields.
+- Artist edits return artwork to pending review and clear previous review metadata.
 
-### Added
-- Buyer role registration while preserving Artist as the default registration role; public registration cannot create administrators.
-- Private buyer-to-artist inquiries for public artist profiles, optionally associated with the artist's approved artwork.
-- Buyer sent-inquiry history and artist-owned inbox with read/archive actions.
-- Persian RTL contact form, buyer dashboard panel, and artist inbox.
-- Rate limiting, honeypot validation, message length limits, and strict role/ownership scoping.
-- Feature tests for buyer registration, role boundaries, inquiry ownership, public profile visibility, artwork association, and honeypot handling.
+### Artwork catalogue
+- Added categories, artist-owned artwork submission/editing, private image storage, approved-only public catalogue, search, and artwork detail API/UI.
+- Uploads accept JPG/JPEG/PNG/WebP, max 5 MB and 6000 × 6000 pixels.
 
-### Privacy
-- Inquiry API responses omit sender and artist email addresses.
-- Contact is an inquiry-intake and tracking workflow, not real-time chat or a reply channel.
+### Identity and artist profiles
+- Added session-based registration/login/current-user/logout, Buyer/Artist/Admin roles, and server-side role boundaries.
+- Added artist profiles with public/private visibility and owner/admin policies.
+- Public registration cannot create an Admin; administrator access is provisioned server-side.
 
-### Notes
-- Apply the inquiry migration and follow the Phase 4 smoke test before local acceptance.
-- The recorded CI run passed 36 tests (149 assertions), Pint, ESLint, and the Vite production build. Local browser smoke testing remains pending.
+### Initial application foundation
+- Added Laravel 13 / PHP 8.3+ application, React 18/Vite frontend, Tailwind CSS, Axios, Radix UI, PHPUnit, Pint, ESLint, and GitHub Actions CI.
+- Added versioned API health endpoint, initial Persian/RTL shell, and cPanel-oriented deployment guidance.
 
-## [0.6.0-alpha] - 2026-11-08
+## 2026-11-09 — Documentation maintenance policy
 
-### Added
-- Administrator-only artwork moderation queue with status filtering and pagination.
-- Approve, reject, and request-changes decisions; rejection and revision requests require a note.
-- Review audit fields recording the administrator and decision timestamp.
-- Persian RTL moderation panel integrated into the administrator dashboard.
-- Feature tests for role isolation, moderation decisions, required notes, and resubmission behavior.
-
-### Security
-- Moderation endpoints require the administrator role on the server.
-- Only pending submissions can receive a moderation decision; artists cannot set moderation states through submission/edit payloads.
-- Artist edits clear previous review metadata and return the artwork to pending review.
-
-### Notes
-- Follow the Phase 3 moderation smoke test after applying the review-audit migration. CI and local browser verification were pending in the original milestone note.
-
-## [0.5.0-alpha] - 2026-11-08
-
-### Added
-- Category and artwork migrations with starter Persian catalogue categories.
-- Artist-owned artwork model, relationships, and authorization policy.
-- Validated artwork submission/edit endpoints with server-assigned ownership and moderation state.
-- Private image storage for JPG, PNG, and WebP uploads, with authorized image delivery.
-- Approved-only public catalogue, category filtering, search, and artwork detail endpoints.
-- Persian RTL artist artwork editor and public catalogue/detail interface.
-- Feature tests for ownership, guest restrictions, upload validation, private image access, and public visibility.
-
-### Security
-- Artwork ownership is derived from the authenticated artist profile, never from client input.
-- Uploaded images are type/size validated, stored outside public paths, and served through policy-protected routes.
-- Public catalogue queries expose approved artwork only; artist edits return records to pending review.
-
-### Notes
-- The original milestone deferred admin moderation queue/actions, image transformations, and pagination controls in the UI; moderation was added in the following milestone.
-- Local artwork upload/browser smoke testing remained required.
-
-## [0.4.0-alpha] - 2026-11-08
-
-### Added
-- One-to-one artist profile model and migration with unique user ownership and public slug.
-- Validated profile create/read/update endpoints and owner/admin authorization policy.
-- Public profile pages by slug with private-profile visibility protection.
-- Persian RTL artist profile editor for biography, city, website, Instagram handle, and visibility.
-- Feature tests for profile creation, validation, editing, guest access, cross-user denial, public/private visibility, and admin access.
-- Local artist-profile smoke-test guide.
-
-### Notes
-- Artist avatar uploads were not included.
-
-## [0.3.0-alpha] - 2026-11-08
-
-### Added
-- Session-based registration, login, current-user, and logout endpoints under `/api/v1/auth`.
-- Artist and Admin roles at the initial identity milestone; Buyer registration was added later.
-- Server-side role middleware and admin user listing/role-management endpoints.
-- Artisan command to promote an existing account to administrator.
-- User and password-reset-token database migration.
-- Persian RTL registration/login interface and basic admin user-management view.
-- Feature tests for registration, password validation, login/logout, role isolation, and admin user management.
-
-### Security
-- Public registration could not assign an administrator role.
-- Passwords use Laravel's hashed cast; auth routes are rate-limited.
-- Browser auth uses Laravel's session guard and CSRF-protected web middleware.
-- Admin operations require authenticated administrator role on the server.
-
-### Notes
-- Email verification and password-reset user experience remain unimplemented.
-
-## [0.2.0-alpha] - 2026-11-08
-
-### Added
-- Initial Laravel 13 application bootstrap and configuration.
-- Versioned API health endpoint at `GET /api/v1/health`.
-- React 18 + Vite application entrypoint and Persian RTL landing page.
-- Tailwind CSS, Axios, and Radix Dialog frontend dependency baseline.
-- PHPUnit health endpoint feature test and Laravel Pint/ESLint scripts.
-- GitHub Actions workflow for backend tests/style and frontend lint/build.
-- Apache rewrite rules and initial storage directory placeholders for shared-hosting deployment.
-
-### Changed
-- Selected Laravel 13 and PHP 8.3+ rather than Laravel 11 after Composer security-advisory checks blocked the Laravel 11 dependency set.
-- Removed the npm cache dependency on a lockfile that did not yet exist.
-- Expanded setup, quality-check, and deployment instructions.
-
-### Notes
-- This was an initial development scaffold, not a feature-complete or production-ready marketplace.
-- Hosting PHP 8.3+ and required extensions remained to be confirmed.
-
-## [0.1.0-mvp] - 2026-11-08
-
-### Added
-- Initial product scope and deferred-feature boundaries.
-- Repository agent guidance, engineering workflow, and roadmap.
-- Initial documentation baseline for a Persian-first, RTL art marketplace.
+Documentation is maintained alongside each feature. See [AGENTS.md](AGENTS.md) and [SKILLS.md](SKILLS.md) for mandatory update ownership and review rules.
