@@ -1,56 +1,77 @@
-# Post-merge QA checklist
+# MVP 2 QA Checklist
 
-This checklist supplements automated CI. A successful lint/build/test run does not replace browser, accessibility, security, or real-device verification.
+This checklist tracks verification across the whole MVP 2 delivery. Run the relevant sections as features are merged, then complete all applicable items before release. A passing CI workflow does not replace browser, accessibility, security, or real-device verification.
 
-## Automated checks
-
-Run from the repository root:
+## Automated quality gates
 
 - [ ] `composer test`
 - [ ] `composer lint`
 - [ ] `npm run lint`
 - [ ] `npm run build`
+- [ ] Record the exact commit SHA and CI workflow result.
 
-## Public routes and catalogue
+## Public marketplace — implemented; manual verification pending
 
-- [ ] Open the homepage as a guest.
-- [ ] Open `/artworks`, search, and filter by category.
-- [ ] Open an artwork detail page directly and refresh it.
-- [ ] Open a public artist profile directly and refresh it.
-- [ ] Verify private artist profiles and unapproved artworks are not publicly exposed.
+- [ ] Open the homepage and confirm public artwork/category/artist content and fallbacks.
+- [ ] Open `/artworks`; search, filter by category, paginate, and refresh with query parameters.
+- [ ] Open an artwork detail route directly and refresh.
+- [ ] Open `/artists`; search, paginate, and refresh with query parameters.
+- [ ] Open a public artist profile directly; verify approved portfolio works only.
+- [ ] Open `/about`, `/help`, and `/contact` directly and follow navigation/footer links.
+- [ ] Verify private profiles and unapproved artwork are not publicly exposed.
 - [ ] Verify unknown public paths render the not-found page.
 
 ## Authentication and role boundaries
 
-- [ ] Guest opening a protected artist, buyer, or admin route is sent to login.
-- [ ] Successful login returns the user to the originally requested permitted route.
-- [ ] Buyer can access only buyer workspace routes.
-- [ ] Artist can access only artist workspace routes.
-- [ ] Admin can access only admin workspace routes.
+- [ ] Register Buyer and Artist accounts; confirm Admin cannot be self-registered.
+- [ ] Verify login, session restoration, logout, and expired-session handling.
+- [ ] Guest opening protected workspace routes is redirected to login.
+- [ ] Buyer, Artist, and Admin are each restricted to their permitted workspace.
 - [ ] Wrong-role access renders the unauthorized page.
-- [ ] Logout clears the session and protected routes require login again.
-- [ ] Expired sessions recover cleanly after an API 401; API 403 responses remain server-authoritative.
+- [ ] Verify server-side authorization and ownership using API requests, not only hidden UI controls.
 
-## Workspace behavior
+## Artist workspace — Stage 3
 
-- [ ] Artist can load and update their own profile.
-- [ ] Artist can create/edit their own artwork and view their own inquiry inbox.
-- [ ] Buyer can view their own sent inquiries.
-- [ ] Admin can view user management and artwork moderation.
-- [ ] Verify ownership and role restrictions against API responses, not only hidden UI controls.
+- [ ] Artist overview uses real API data only.
+- [ ] Artist can manage only their own profile and artworks.
+- [ ] Submission/edit forms match API validation and image constraints.
+- [ ] Upload preview/progress/error states work where supported.
+- [ ] Moderation status and feedback reflect backend responses.
+- [ ] Artist inbox lists only inquiries addressed to their profile.
+- [ ] Read/archive actions update server state; no reply/chat UI is implied.
 
-## RTL, accessibility, and responsive behavior
+## Buyer workspace — Stage 4
 
-- [ ] Verify Persian content, mixed Persian/Latin fields, and RTL navigation.
-- [ ] Verify keyboard-only navigation and visible focus indicators.
-- [ ] Verify labels, validation errors, loading, empty, and error states.
-- [ ] Check mobile, tablet, and desktop widths for overflow and broken layouts.
-- [ ] Check reduced-motion behavior and text contrast.
-- [ ] Check image loading, aspect ratios, and layout stability.
+- [ ] Buyer overview and inquiry history use only the authenticated buyer's records.
+- [ ] Inquiry detail links and statuses reflect the API.
+- [ ] Empty, loading, error, and unauthorized states work.
+- [ ] No reply/chat, email-delivery, or unsupported account settings are implied.
 
-## Release gates
+## Admin workspace — Stage 5
 
-- [ ] Confirm target PHP version and required extensions on the actual host.
-- [ ] Verify environment configuration, mail settings, private storage permissions, and API routing.
-- [ ] Perform a backup and a restore drill before production launch.
-- [ ] Run production-like smoke tests after deployment.
+- [ ] Admin-only navigation and route guard are correct.
+- [ ] Overview metrics are traceable to actual API responses or omitted.
+- [ ] Moderation queue, filters, required notes, and decisions work.
+- [ ] User management actions match server-supported roles and restrictions.
+- [ ] Non-admin users cannot access admin data or actions.
+
+## Persian, RTL, accessibility, and responsive behavior — Stage 6
+
+- [ ] All user-facing MVP 2 copy is Persian and RTL is consistent.
+- [ ] Mixed Persian/Latin names, URLs, emails, and numeric values display correctly.
+- [ ] Keyboard-only navigation and visible focus work.
+- [ ] Labels, validation errors, dialogs, status announcements, and touch targets are accessible.
+- [ ] Contrast and reduced-motion behavior are acceptable.
+- [ ] Phone, tablet, desktop, and wide-desktop layouts have no critical overflow.
+- [ ] Artwork alternatives, loading, aspect ratio, and layout stability are verified.
+
+## Performance, security, and release
+
+- [ ] Off-screen images are lazy-loaded and image dimensions reserve layout space.
+- [ ] Public route loading and bundle behavior are measured; optimizations are evidence-based.
+- [ ] Private image access and upload validation remain protected.
+- [ ] Target PHP version/extensions, HTTPS, document root, and storage permissions are verified.
+- [ ] Backup exists, is readable, and a restore drill succeeds.
+- [ ] Production-like smoke tests and rollback plan are recorded.
+
+Use [manual smoke tests](manual-smoke-tests.md) for feature-specific steps and [release checklist](release-checklist.md) for sign-off. Mark items only after actual execution.
