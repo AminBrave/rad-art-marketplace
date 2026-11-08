@@ -13,8 +13,9 @@ Notable project changes are recorded here in reverse chronological order. Dates 
 - Routing documentation; Laravel remains authoritative for API authorization and ownership.
 
 ### Changed
-- Selected `cleaned-MVP-1` (commit `bd459940`) as the MVP 2 implementation baseline; documented that `feature/roadmap-mvp-completion` is 15 commits behind.
-- Added the approved MVP 2 direction, scope boundaries, GitHub delivery tracker, and dedicated-branch workflow.
+- Promoted the agreed `cleaned-MVP-1` MVP 1 snapshot to `main` through PR #34; `main` is now the active integration branch.
+- Merged MVP 2 baseline documentation, Contemporary Art Editorial design foundations, and centralized routing through PRs #31, #35, and #36.
+- Updated contributor and roadmap guidance to branch from and target `main`.
 
 ## [0.8.0-alpha] - 2026-11-09
 
