@@ -28,7 +28,7 @@
 - [x] Artwork detail pages
 
 ## Phase 3 — Contact and administration
-- [ ] Buyer-to-artist contact flow with abuse controls
+- [x] Buyer-to-artist contact flow with abuse controls
 - [ ] Admin category management
 - [ ] Buyer reports and abuse moderation queue
 - [ ] Featured artwork/artist placements
@@ -47,4 +47,4 @@
 Payments, cart/checkout, orders, shipping, in-app chat, native mobile apps, AI recommendations, social graph, automated subscriptions, and advertising.
 
 ## Current implementation note
-The Phase 0 scaffold is on `feature/phase-0-app-scaffold`. Phase 1 identity and artist-profile work is on `feature/phase-1-identity-permissions`: session-backed authentication, artist/admin roles, one-to-one artist profiles, owner/admin policies, public/private profile pages, Persian RTL profile editing, and feature tests. The Phase 2 catalogue foundation on `feature/phase-1-identity-permissions` adds categories, private image storage, artist-owned artwork submission/editing, approved-only public catalogue/search/detail endpoints, and Persian RTL catalogue UI. Phase 3 artwork moderation is implemented on `feature/phase-3-artwork-moderation`, including an admin-only review queue, approve/reject/request-changes actions, review audit metadata, and Persian RTL admin UI. Local smoke testing and CI verification remain open. Hosting PHP 8.3+ compatibility remains unconfirmed.
+The Phase 0 scaffold is on `feature/phase-0-app-scaffold`. Phase 1 identity and artist-profile work is on `feature/phase-1-identity-permissions`: session-backed authentication, artist/admin roles, one-to-one artist profiles, owner/admin policies, public/private profile pages, Persian RTL profile editing, and feature tests. The Phase 2 catalogue foundation on `feature/phase-1-identity-permissions` adds categories, private image storage, artist-owned artwork submission/editing, approved-only public catalogue/search/detail endpoints, and Persian RTL catalogue UI. Phase 3 artwork moderation is implemented on `feature/phase-3-artwork-moderation`, including an admin-only review queue, approve/reject/request-changes actions, review audit metadata, and Persian RTL admin UI. Phase 4 buyer-to-artist inquiries are implemented on `feature/phase-4-buyer-artist-contact`, including buyer registration, a private inquiry form, buyer sent-message tracking, artist inbox, abuse controls, and role/ownership tests. Local smoke testing and CI verification remain open. Hosting PHP 8.3+ compatibility remains unconfirmed.
