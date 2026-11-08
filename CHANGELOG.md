@@ -36,7 +36,7 @@ All notable project changes are recorded here.
 - Administrators can view and edit all profiles through authenticated endpoints.
 
 ### Notes
-- Avatar/image uploads and artist-owned artwork permissions remain separate future work.
+- Artist avatar uploads remain future work; artwork image uploads and ownership policies are covered by the Phase 2 catalogue foundation.
 
 ## [0.3.0-alpha] - 2026-11-08
 ### Added
