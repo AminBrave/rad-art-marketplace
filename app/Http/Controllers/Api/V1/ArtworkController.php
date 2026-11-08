@@ -45,7 +45,7 @@ class ArtworkController extends Controller
             ))
             ->latest()
             ->paginate(12)
-            ->through(fn (Artwork $artwork): array => $this->payload($artwork));
+            ->through(fn (Artwork $artwork): array => $this->publicPayload($artwork));
 
         return response()->json($artworks);
     }
@@ -54,7 +54,7 @@ class ArtworkController extends Controller
     {
         $this->authorize('view', $artwork);
 
-        return response()->json(['data' => $this->payload($artwork->load(['category', 'artistProfile']))]);
+        return response()->json(['data' => $this->publicPayload($artwork->load(['category', 'artistProfile']))]);
     }
 
     public function image(Artwork $artwork): StreamedResponse
@@ -157,6 +157,17 @@ class ArtworkController extends Controller
                 'max:5120',
             ],
         ]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function publicPayload(Artwork $artwork): array
+    {
+        $payload = $this->payload($artwork);
+        unset($payload['status'], $payload['rejection_note']);
+
+        return $payload;
     }
 
     /**

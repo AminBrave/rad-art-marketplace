@@ -54,6 +54,12 @@ Only approved artwork is included in the public catalogue query. The image route
 
 Submission fields include `title`, `category_id`, `availability`, optional `description`, `medium`, `dimensions`, `year`, `price`, and required image. Updates may omit the image. Accepted image formats are JPG/JPEG, PNG, and WebP; maximum file size is 5 MB and maximum dimensions are 6000 × 6000. Ownership and pending-review status are assigned server-side.
 
+## Public artist directory
+
+`GET /api/v1/artists` is public and returns only profiles where `is_public = true`. It supports optional `q` matching against display name and city, plus Laravel pagination using `page` and `per_page` (default 12, maximum 48). Results use stable display-name and profile-ID ordering. Directory fields are limited to `id`, `slug`, `display_name`, short `bio`, and `city`; account identifiers, email addresses, private profile fields, and inquiry data are not returned.
+
+`GET /api/v1/artists/{slug}` returns the public artist profile and an `artworks` collection containing only approved portfolio works. Public artwork responses omit moderation state and rejection notes.
+
 ## Artwork moderation
 
 | Method | Path | Access | Purpose |

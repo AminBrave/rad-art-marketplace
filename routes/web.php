@@ -20,18 +20,15 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
             Route::post('/register', [AuthController::class, 'register'])->name('register');
             Route::post('/login', [AuthController::class, 'login'])->name('login');
         });
-
         Route::middleware('auth')->group(function (): void {
             Route::get('/me', [AuthController::class, 'me'])->name('me');
             Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         });
     });
 
-    Route::get('/artists/{artistProfile:slug}', [ArtistProfileController::class, 'publicShow'])
-        ->name('artists.show');
-    Route::post('/artists/{artistProfile:slug}/inquiries', [ArtistInquiryController::class, 'store'])
-        ->middleware(['auth', 'role:buyer', 'throttle:5,1'])
-        ->name('artists.inquiries.store');
+    Route::get('/artists', [ArtistProfileController::class, 'index'])->name('artists.index');
+    Route::get('/artists/{artistProfile:slug}', [ArtistProfileController::class, 'publicShow'])->name('artists.show');
+    Route::post('/artists/{artistProfile:slug}/inquiries', [ArtistInquiryController::class, 'store'])->middleware(['auth', 'role:buyer', 'throttle:5,1'])->name('artists.inquiries.store');
 
     Route::middleware(['auth', 'role:buyer'])->prefix('buyer')->name('buyer.')->group(function (): void {
         Route::get('/inquiries', [ArtistInquiryController::class, 'buyerIndex'])->name('inquiries.index');
@@ -44,15 +41,10 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
     Route::get('/artworks/{artwork:slug}', [ArtworkController::class, 'show'])->name('artworks.show');
 
     Route::middleware(['auth', 'role:artist,admin'])->group(function (): void {
-        Route::get('/artist-profile/me', [ArtistProfileController::class, 'mine'])
-            ->name('artist-profile.me');
-        Route::put('/artist-profile/me', [ArtistProfileController::class, 'saveMine'])
-            ->name('artist-profile.save');
-        Route::get('/artist-profiles/{artistProfile}', [ArtistProfileController::class, 'show'])
-            ->name('artist-profiles.show');
-        Route::patch('/artist-profiles/{artistProfile}', [ArtistProfileController::class, 'update'])
-            ->name('artist-profiles.update');
-
+        Route::get('/artist-profile/me', [ArtistProfileController::class, 'mine'])->name('artist-profile.me');
+        Route::put('/artist-profile/me', [ArtistProfileController::class, 'saveMine'])->name('artist-profile.save');
+        Route::get('/artist-profiles/{artistProfile}', [ArtistProfileController::class, 'show'])->name('artist-profiles.show');
+        Route::patch('/artist-profiles/{artistProfile}', [ArtistProfileController::class, 'update'])->name('artist-profiles.update');
         Route::prefix('artist')->name('artist.')->group(function (): void {
             Route::middleware('role:artist')->group(function (): void {
                 Route::get('/inquiries', [ArtistInquiryController::class, 'artistIndex'])->name('inquiries.index');
@@ -73,7 +65,4 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
     });
 });
 
-// React Router handles public and authenticated application routes. Keep this after API routes.
-Route::view('/{path?}', 'app')
-    ->where('path', '^(?!api(?:/|$)|storage(?:/|$)|build(?:/|$)).*')
-    ->name('app.spa');
+Route::view('/{path?}', 'app')->where('path', '^(?!api(?:/|$)|storage(?:/|$)|build(?:/|$)).*')->name('app.spa');

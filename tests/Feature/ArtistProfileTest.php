@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Models\Artwork;
+use App\Models\Category;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -140,6 +142,64 @@ class ArtistProfileTest extends TestCase
         $this->actingAs($visitor)
             ->getJson('/api/v1/artist-profiles/'.$profile->id)
             ->assertForbidden();
+    }
+
+    public function test_public_artist_directory_only_lists_public_profiles_and_supports_search_and_pagination(): void
+    {
+        $first = $this->makeUser('first@example.com');
+        $first->artistProfile()->create([...$this->validProfile(), 'slug' => 'first-artist', 'display_name' => 'آرمان اول']);
+        $second = $this->makeUser('second@example.com');
+        $second->artistProfile()->create([...$this->validProfile(), 'slug' => 'second-artist', 'display_name' => 'آرمان دوم', 'city' => 'شیراز']);
+        $private = $this->makeUser('private@example.com');
+        $private->artistProfile()->create([...$this->validProfile(), 'slug' => 'private-artist', 'is_public' => false]);
+
+        $this->getJson('/api/v1/artists?per_page=1')
+            ->assertOk()
+            ->assertJsonPath('per_page', 1)
+            ->assertJsonCount(1, 'data')
+            ->assertJsonMissingPath('data.0.is_public')
+            ->assertJsonMissingPath('data.0.user_id');
+
+        $this->getJson('/api/v1/artists?q=شیراز')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.slug', 'second-artist');
+
+        $this->getJson('/api/v1/artists?q=private-artist')
+            ->assertOk()
+            ->assertJsonCount(0, 'data');
+    }
+
+    public function test_public_artist_profile_includes_only_approved_portfolio_artworks(): void
+    {
+        $artist = $this->makeUser('portfolio@example.com');
+        $profile = $artist->artistProfile()->create([...$this->validProfile(), 'slug' => 'portfolio-artist']);
+        $category = Category::query()->where('slug', 'painting')->firstOrFail();
+
+        $profile->artworks()->create([
+            'category_id' => $category->id,
+            'slug' => 'approved-portfolio-work',
+            'title' => 'اثر تأییدشده',
+            'image_path' => 'artworks/approved.jpg',
+            'status' => Artwork::STATUS_APPROVED,
+            'availability' => 'available',
+        ]);
+        $profile->artworks()->create([
+            'category_id' => $category->id,
+            'slug' => 'pending-portfolio-work',
+            'title' => 'اثر در انتظار بررسی',
+            'image_path' => 'artworks/pending.jpg',
+            'status' => Artwork::STATUS_PENDING_REVIEW,
+            'availability' => 'available',
+        ]);
+
+        $this->getJson('/api/v1/artists/'.$profile->slug)
+            ->assertOk()
+            ->assertJsonPath('data.slug', 'portfolio-artist')
+            ->assertJsonCount(1, 'data.artworks')
+            ->assertJsonPath('data.artworks.0.slug', 'approved-portfolio-work')
+            ->assertJsonMissingPath('data.artworks.0.status')
+            ->assertJsonMissingPath('data.artworks.0.rejection_note');
     }
 
     /**

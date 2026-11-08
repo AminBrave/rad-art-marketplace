@@ -5,6 +5,14 @@ Notable project changes are recorded here in reverse chronological order. Dates 
 ## [Unreleased]
 
 ### Added
+- Public editorial homepage, URL-driven artwork search/category/pagination, paginated public artist directory and portfolio profiles, and Persian About/Help/Contact pages.
+- Public artist directory API with a minimal allow-listed profile payload and approved-only artist portfolio response.
+
+### Changed
+- Public artwork payloads no longer include moderation state or rejection notes; private moderation data remains available only through authorized artist/admin workflows.
+
+
+### Added
 - MVP 2 foundation API/UX audit: verified artist-directory gap, catalogue pagination/search contract, private image delivery, and existing workspace summary data sources.
 - Accessible shared UI components for buttons, form controls, cards, badges, tabs, dropdowns, dialogs, breadcrumbs, pagination, toasts, skeletons, and feedback states.
 - Interactive component specimen and shared component usage/accessibility documentation.

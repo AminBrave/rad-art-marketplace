@@ -41,6 +41,14 @@ This roadmap distinguishes implemented behavior from remaining work. A checked i
 - [ ] Featured artwork/artist placements.
 - [ ] About, Help, Legal, and Contact pages.
 
+## MVP 2 — Public marketplace (Stage 2)
+
+- [x] Editorial homepage with real approved artwork/category/artist data and resilient empty/loading/error states.
+- [x] Public artwork gallery with URL-persisted search, category filters, and server pagination.
+- [x] Artwork detail pages with artist links, conditional metadata, and buyer inquiry entry point.
+- [x] Public artist directory and profile portfolios limited to approved artwork.
+- [x] About, Help, and Contact pages with accurate descriptions of implemented capabilities and no invented contact channels.
+
 ## Phase 4 — Hardening and launch
 
 - [ ] Responsive and RTL accessibility review across real devices.
