@@ -4,7 +4,5 @@ import App from './app/App';
 import './bootstrap';
 
 createRoot(document.getElementById('app')).render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>,
+    React.createElement(React.StrictMode, null, React.createElement(App)),
 );
