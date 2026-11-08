@@ -1,8 +1,8 @@
 <?php
 
-namespace App\\Http\\Controllers\\Api\\V1;
+namespace App\Http\Controllers\Api\V1;
 
-use Illuminate\\Http\\JsonResponse;
+use Illuminate\Http\JsonResponse;
 
 class HealthController
 {
