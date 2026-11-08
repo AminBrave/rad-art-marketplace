@@ -58,10 +58,14 @@ Payments, cart/checkout, orders, shipping, in-app chat/replies, native mobile ap
 
 ## Current implementation baseline
 
-The branch `feature/roadmap-mvp-completion` is the documentation and implementation baseline for the cleanup work. It includes:
+The current MVP 1 implementation baseline for MVP 2 planning is the branch `cleaned-MVP-1` at commit `bd4599401e84cacc06807dea0db878fc2a9bd22d` (verified 2026-11-09).
+
+The branch `feature/roadmap-mvp-completion` is an ancestor of `cleaned-MVP-1` and is **15 commits behind** it. It is historical context, not the current implementation baseline. Do not start new MVP 2 work from that older branch.
+
+The selected baseline includes:
 
 - Laravel 13 / PHP 8.3+ application with a versioned health endpoint.
-- React 18 + Vite Persian RTL application shell.
+- React 18 + Vite Persian-first RTL application shell.
 - Session authentication and Buyer/Artist/Admin role boundaries.
 - Artist profiles with public/private visibility and owner/admin policies.
 - Artist-owned artwork submission/editing, private image storage, approved-only public catalogue, search, category filtering, and detail pages.
@@ -70,3 +74,11 @@ The branch `feature/roadmap-mvp-completion` is the documentation and implementat
 - Operational documentation for cPanel deployment, backup/restore, analytics planning, and release readiness.
 
 The roadmap's unchecked items remain open. Documentation of an operational process does not mean that process has been configured or completed. In particular, hosting compatibility, production deployment, SMTP, automated backups, restore drills, and browser/device verification remain external acceptance gates.
+
+## MVP 2 direction and delivery
+
+MVP 2 is approved as a full frontend experience implementation with a **Contemporary Art Editorial** visual direction and a **Persian-first, RTL-by-default** interface. It covers the public marketplace, artist workspace, buyer workspace, admin workspace, centralized routing, reusable design system, responsive behavior, localization, accessibility, performance, and release QA. Small Laravel/API changes are allowed only when an audit confirms they are required.
+
+The [MVP 2 GitHub delivery tracker](https://github.com/AminBrave/rad-art-marketplace/issues/30) is the source of truth for implementation sequencing, investigation tasks, and acceptance criteria.
+
+MVP 2 explicitly excludes payments, cart/checkout, orders, shipping, real-time chat/replies, AI recommendations, social networking, subscriptions, and advertising. Existing Laravel authorization, validation, ownership, and privacy controls remain authoritative.
