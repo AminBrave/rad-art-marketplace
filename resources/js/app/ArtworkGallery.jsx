@@ -58,7 +58,7 @@ export default function ArtworkGallery() {
                                 <p className="mt-2 text-sm text-stone-500">{detail.availability === 'available' ? 'موجود' : detail.availability === 'sold' ? 'فروخته‌شده' : 'برای فروش نیست'}</p>
                                 <Link to={'/artists/' + detail.artist.slug} className="mt-8 inline-block rounded-full bg-[#20201e] px-5 py-3 text-sm font-bold text-white">مشاهده پروفایل هنرمند: {detail.artist.display_name}</Link>
                                 {user?.role === 'buyer' && createElement(ContactArtistForm, { artistSlug: detail.artist.slug, artworkId: detail.id })}
-                                {!user && <a href="/#account" className="mt-6 inline-block text-sm font-bold text-[#b65c3a] underline">برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید</a>}
+                                {!user && <Link to="/login" className="mt-6 inline-block text-sm font-bold text-[#b65c3a] underline">برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید</Link>}
                             </div>
                         </div>
                     )}
