@@ -1,0 +1,43 @@
+# Product Roadmap
+
+## Phase 0 — Foundation
+- [x] Define MVP scope and deferred features
+- [x] Establish repository guidance and delivery standards
+- [ ] Confirm hosting PHP version and available extensions
+- [ ] Scaffold Laravel backend and React/Vite frontend
+- [ ] Configure local environment, formatting, linting, and tests
+- [ ] Add CI checks that do not assume production secrets
+
+## Phase 1 — Identity and permissions
+- [ ] User registration and login
+- [ ] Roles: Guest, Artist, Admin
+- [ ] Server-side policies and ownership enforcement
+- [ ] Artist profile create/edit flow
+- [ ] Admin user management
+
+## Phase 2 — Artwork catalogue
+- [ ] Artwork/category database model and migrations
+- [ ] Secure image upload and storage
+- [ ] Artist artwork submission and editing
+- [ ] Moderation states and admin review actions
+- [ ] Public catalogue, search, and category filtering
+- [ ] Artwork detail and public artist profile pages
+
+## Phase 3 — Contact and administration
+- [ ] Buyer-to-artist contact flow with abuse controls
+- [ ] Admin category management
+- [ ] Reports and moderation queue
+- [ ] Featured artwork/artist placements
+- [ ] About, help, legal, and contact pages
+
+## Phase 4 — Hardening and launch
+- [ ] Responsive and RTL accessibility review
+- [ ] Security review: auth, authorization, validation, uploads, rate limits
+- [ ] Automated test coverage for critical flows
+- [ ] Analytics baseline and privacy-conscious event definitions
+- [ ] Backup and restore runbook
+- [ ] cPanel deployment guide and smoke-test checklist
+- [ ] Release checklist and known-limitations document
+
+## Deferred beyond MVP
+Payments, cart/checkout, orders, shipping, in-app chat, native mobile apps, AI recommendations, social graph, automated subscriptions, and advertising.
