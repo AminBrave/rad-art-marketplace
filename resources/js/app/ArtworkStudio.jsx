@@ -15,7 +15,8 @@ const emptyArtwork = {
 const statusLabels = {
     pending_review: 'در انتظار بررسی',
     approved: 'منتشرشده',
-    rejected: 'نیازمند اصلاح',
+    rejected: 'ردشده',
+    changes_requested: 'نیازمند اصلاح',
 };
 
 export default function ArtworkStudio({ user, hasProfile }) {
