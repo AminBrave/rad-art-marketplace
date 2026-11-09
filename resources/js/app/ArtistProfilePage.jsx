@@ -69,7 +69,10 @@ export default function ArtistProfilePage() {
         if (descriptionTag) descriptionTag.setAttribute('content', profile.bio || `پورتفولیوی عمومی ${profile.display_name} در راد آرت؛ آثار تأییدشده و راه ارتباط با هنرمند.`);
         return () => {
             document.title = previousTitle;
-            if (descriptionTag && previousDescription !== null) descriptionTag.setAttribute('content', previousDescription);
+            if (descriptionTag) {
+                if (previousDescription === null) descriptionTag.removeAttribute('content');
+                else descriptionTag.setAttribute('content', previousDescription);
+            }
         };
     }, [profile]);
 
