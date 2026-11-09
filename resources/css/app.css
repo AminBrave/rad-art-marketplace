@@ -229,6 +229,40 @@ a {
     aspect-ratio: 4 / 5;
 }
 
+.app-boot__hero-media {
+    width: 100%;
+    min-width: 0;
+}
+
+.app-boot__hero-caption {
+    display: flex;
+    min-height: 4.75rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 0.5rem;
+}
+
+.app-boot__caption-lines {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.app-boot__caption-label {
+    width: 8rem;
+    height: 0.75rem;
+}
+
+.app-boot__caption-title {
+    width: 6rem;
+    height: 1rem;
+}
+
+.app-boot__caption-action {
+    width: 5rem;
+    height: 0.75rem;
+}
+
 .app-boot__cards {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
