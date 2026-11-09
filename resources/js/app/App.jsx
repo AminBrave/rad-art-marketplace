@@ -1,7 +1,6 @@
 import { createElement, useEffect, useState } from 'react';
 import axios from 'axios';
 import ArtworkGallery from './ArtworkGallery';
-import AdminArtworkModeration from './AdminArtworkModeration';
 import ArtworkStudio from './ArtworkStudio';
 import ContactArtistForm from './ContactArtistForm';
 import InquiryCenter from './InquiryCenter';
@@ -416,8 +415,6 @@ export default function App() {
                     </div>
                 </section>
             )}
-
-            {user?.role === 'admin' && createElement(AdminArtworkModeration)}
 
             <section id="artists" className="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-16 lg:px-10">
                 <p className="text-sm font-bold text-terracotta-strong">برای جامعه هنری</p>
