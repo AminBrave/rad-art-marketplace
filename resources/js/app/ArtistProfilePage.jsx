@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
@@ -14,25 +14,29 @@ export default function ArtistProfilePage() {
     const [loadingMore, setLoadingMore] = useState(false);
     const [status, setStatus] = useState(0);
     const [moreError, setMoreError] = useState('');
+    const loadMoreController = useRef(null);
 
     useEffect(() => {
         let active = true;
+        const controller = new AbortController();
         setLoading(true);
         setProfile(null);
         setStatus(0);
         setMoreError('');
 
-        axios.get('/api/v1/artists/' + encodeURIComponent(slug), { params: { artworks_page: 1 } })
+        axios.get('/api/v1/artists/' + encodeURIComponent(slug), { params: { artworks_page: 1 }, signal: controller.signal })
             .then(({ data }) => { if (active) setProfile(data.data); })
-            .catch((error) => { if (active) setStatus(error.response?.status ?? 0); })
+            .catch((error) => { if (active && !axios.isCancel(error)) setStatus(error.response?.status ?? 0); })
             .finally(() => { if (active) setLoading(false); });
 
-        return () => { active = false; };
+        return () => { active = false; controller.abort(); loadMoreController.current?.abort(); };
     }, [slug]);
 
     const loadMore = useCallback(async () => {
         if (!profile?.artworks_pagination?.has_more || loadingMore) return;
 
+        const controller = new AbortController();
+        loadMoreController.current = controller;
         setLoadingMore(true);
         setMoreError('');
 
@@ -40,6 +44,7 @@ export default function ArtistProfilePage() {
             const nextPage = profile.artworks_pagination.next_page;
             const { data } = await axios.get('/api/v1/artists/' + encodeURIComponent(slug), {
                 params: { artworks_page: nextPage },
+                signal: controller.signal,
             });
             setProfile((current) => {
                 if (!current || current.slug !== slug) return current;
@@ -52,10 +57,13 @@ export default function ArtistProfilePage() {
                     artworks_pagination: data.data.artworks_pagination,
                 };
             });
-        } catch {
-            setMoreError('دریافت آثار بیشتر انجام نشد. دوباره تلاش کنید.');
+        } catch (error) {
+            if (!axios.isCancel(error)) setMoreError('دریافت آثار بیشتر انجام نشد. دوباره تلاش کنید.');
         } finally {
-            setLoadingMore(false);
+            if (loadMoreController.current === controller) {
+                loadMoreController.current = null;
+                setLoadingMore(false);
+            }
         }
     }, [loadingMore, profile, slug]);
 
