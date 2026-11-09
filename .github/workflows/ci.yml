@@ -91,4 +91,4 @@ jobs:
           cat /tmp/rad-art-laravel.log
           exit 1
       - name: Run browser regressions
-        run: python tests/browser/test_buyer_inquiry.py
+        run: python -m unittest discover -s tests/browser -p 'test_*.py' -v
