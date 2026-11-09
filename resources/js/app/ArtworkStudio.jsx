@@ -35,18 +35,25 @@ export default function ArtworkStudio({ user, hasProfile }) {
         setLoading(true);
         setLoadError('');
         try {
-            const [categoryResponse, artworkResponse] = await Promise.all([
-                axios.get('/api/v1/categories'),
-                axios.get('/api/v1/artist/artworks', { params: { page } }),
-            ]);
-            setCategories(categoryResponse.data.data ?? []);
-            setArtworks(artworkResponse.data.data ?? []);
-            setArtworkPage(artworkResponse.data.current_page ?? page);
-            setHasMoreArtworks(Boolean(artworkResponse.data.next_page_url));
+            const { data } = await axios.get('/api/v1/artist/artworks', { params: { page } });
+            setArtworks(data.data ?? []);
+            setArtworkPage(data.current_page ?? page);
+            setHasMoreArtworks(Boolean(data.next_page_url));
         } catch (error) {
-            setLoadError(error.response?.status === 403 ? 'این حساب اجازه مدیریت آثار را ندارد.' : 'دریافت آثار یا دسته‌بندی‌ها انجام نشد. دوباره تلاش کنید.');
+            setLoadError(error.response?.status === 403 ? 'این حساب اجازه مدیریت آثار را ندارد.' : 'دریافت آثار انجام نشد. دوباره تلاش کنید.');
         } finally { setLoading(false); }
     }, []);
+
+    useEffect(() => {
+        if (user?.role !== 'artist' || !hasProfile) return undefined;
+
+        let active = true;
+        axios.get('/api/v1/categories')
+            .then(({ data }) => { if (active) setCategories(data.data ?? []); })
+            .catch(() => { if (active) setLoadError('دریافت دسته‌بندی‌ها انجام نشد.'); });
+
+        return () => { active = false; };
+    }, [hasProfile, user?.role]);
 
     useEffect(() => {
         if (user?.role === 'artist' && hasProfile) loadData(1);
