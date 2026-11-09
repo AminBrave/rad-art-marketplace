@@ -58,7 +58,7 @@ HTTP/2 and HTTP/3 are server/host settings; Laravel and `.htaccess` cannot enabl
 - **HTTPS/TLS:** enable AutoSSL or install a valid certificate for the production hostname and any active `www` alias.
 - **HTTP/2:** ask the host to enable HTTP/2 on the TLS virtual host (Apache `mod_http2` or the provider's LiteSpeed equivalent).
 - **HTTP/3:** ask the host to enable QUIC/HTTP/3 and permit inbound UDP 443 at the server/firewall/CDN.
-- **CDN/proxy:** use Full (strict) TLS with a valid origin certificate. Do not use Flexible TLS; confirm forwarded-protocol handling does not cause redirect loops.
+- **CDN/proxy:** use Full (strict) TLS with a valid origin certificate and enable the visitor HTTP-to-HTTPS redirect at the edge. Do not use Flexible TLS. The origin rewrite intentionally does not trust a client-supplied `X-Forwarded-Proto` header; if a proxy connects to the origin over plain HTTP, configure a provider-managed trusted scheme/redirect mechanism or HTTPS to the origin to avoid loops.
 - **Verify:** inspect the browser Network panel or run `curl -I --http2 https://your-domain.example`. For HTTP/3, use a curl build with HTTP/3 support: `curl --http3-only -I https://your-domain.example`. Confirm the negotiated protocol in browser DevTools. A client curl without HTTP/3 support cannot prove the server lacks it.
 
 Do not advertise HTTP/3 as active until the real production hostname is tested externally. Shared-hosting customers may need their provider to enable these protocols.
