@@ -25,22 +25,27 @@ export function BuyerDashboardHome() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    const load = useCallback(async () => {
+    const load = useCallback(async (signal) => {
         setLoading(true);
         setError('');
         try {
-            const { data } = await axios.get(apiUrl);
+            const { data } = await axios.get(apiUrl, { signal });
             setSummary({ total: data.total ?? data.meta?.total ?? data.data?.length ?? 0, latest: data.data?.[0] ?? null });
         } catch (requestError) {
+            if (axios.isCancel(requestError)) return;
             setError(requestError.response?.status === 403
                 ? 'این حساب اجازه مشاهده درخواست‌های خریدار را ندارد.'
                 : 'دریافت خلاصه درخواست‌ها انجام نشد. دوباره تلاش کنید.');
         } finally {
-            setLoading(false);
+            if (!signal?.aborted) setLoading(false);
         }
     }, []);
 
-    useEffect(() => { load(); }, [load]);
+    useEffect(() => {
+        const controller = new AbortController();
+        load(controller.signal);
+        return () => controller.abort();
+    }, [load]);
 
     return (
         <section className="space-y-6" dir="rtl">
@@ -100,18 +105,23 @@ export function BuyerInquiryPage() {
         setLoading(true);
         setError('');
         try {
-            const { data } = await axios.get(apiUrl, { params: { page } });
+            const { data } = await axios.get(apiUrl, { params: { page }, signal });
             setResult(data);
         } catch (requestError) {
+            if (axios.isCancel(requestError)) return;
             setError(requestError.response?.status === 403
                 ? 'این حساب اجازه مشاهده این فهرست را ندارد.'
                 : 'دریافت فهرست درخواست‌ها انجام نشد. دوباره تلاش کنید.');
         } finally {
-            setLoading(false);
+            if (!signal?.aborted) setLoading(false);
         }
     }, [page]);
 
-    useEffect(() => { load(); }, [load]);
+    useEffect(() => {
+        const controller = new AbortController();
+        load(controller.signal);
+        return () => controller.abort();
+    }, [load]);
 
     const changePage = (nextPage) => setSearchParams(nextPage > 1 ? { page: String(nextPage) } : {});
 
@@ -175,20 +185,25 @@ export function BuyerInquiryDetailPage() {
         setError('');
         setInquiry(null);
         try {
-            const { data } = await axios.get(apiUrl + '/' + id);
+            const { data } = await axios.get(apiUrl + '/' + id, { signal });
             setInquiry(data.data);
         } catch (requestError) {
+            if (axios.isCancel(requestError)) return;
             setError(requestError.response?.status === 404
                 ? 'این درخواست در حساب شما پیدا نشد.'
                 : requestError.response?.status === 403
                     ? 'دسترسی به این درخواست مجاز نیست.'
                     : 'دریافت جزئیات درخواست انجام نشد. دوباره تلاش کنید.');
         } finally {
-            setLoading(false);
+            if (!signal?.aborted) setLoading(false);
         }
     }, [id]);
 
-    useEffect(() => { load(); }, [load]);
+    useEffect(() => {
+        const controller = new AbortController();
+        load(controller.signal);
+        return () => controller.abort();
+    }, [load]);
 
     return (
         <section className="space-y-6" dir="rtl">
