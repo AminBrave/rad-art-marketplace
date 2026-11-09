@@ -1,5 +1,7 @@
 # Changelog
 
+Notable repository changes are listed newest first. Entries describe merged implementation milestones and repository maintenance, not production releases. The current package version is not used as a release tag.
+
 ## 2026-11-09 — MVP 2 Stage 6: QA hardening (verification in progress)
 
 ### Changed
@@ -12,8 +14,6 @@
 - Source review confirmed Persian document language/direction, Vazirmatn/Inter font declarations, existing visible focus and reduced-motion rules, and the inspected LTR account fields.
 - Browser/device accessibility, measured performance baselines, production-host compatibility, backup automation, and restore drills remain unverified; Stage 6 is not signed off for production.
 
-
-Notable repository changes are listed newest first. Entries describe merged implementation milestones and repository maintenance, not production releases. The current package version is not used as a release tag.
 
 ## 2026-11-09 — MVP 2 Stage 5: Admin workspace
 
