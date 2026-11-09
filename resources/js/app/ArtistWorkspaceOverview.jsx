@@ -32,14 +32,15 @@ export default function ArtistWorkspaceOverview() {
                 if (!active) return;
                 const nextErrors = [];
                 if (results[0].status === 'fulfilled') {
-                    const rows = results[0].value.data.data ?? [];
+                    const response = results[0].value.data;
+                    const rows = response.data ?? [];
                     setArtworks(rows);
-                    setCounts((current) => ({ ...current, artworks: rows.length }));
+                    setCounts((current) => ({ ...current, artworks: response.total ?? rows.length }));
                 } else nextErrors.push('آمار آثار دریافت نشد.');
                 if (results[1].status === 'fulfilled') {
                     const response = results[1].value.data;
                     setInquiries(response.data ?? []);
-                    setCounts((current) => ({ ...current, inquiries: response.meta?.total ?? response.data?.length ?? 0 }));
+                    setCounts((current) => ({ ...current, inquiries: response.meta?.total ?? response.total ?? response.data?.length ?? 0 }));
                 } else nextErrors.push('آمار درخواست‌های ارتباطی دریافت نشد.');
                 setErrors(nextErrors);
             })
@@ -65,7 +66,7 @@ export default function ArtistWorkspaceOverview() {
         </div>}
         {!profileLoading && complete && <>
             {loading ? <div className="grid gap-3 sm:grid-cols-3"><SkeletonLines lines={3} /><SkeletonLines lines={3} /><SkeletonLines lines={3} /></div> : <div className="grid gap-3 sm:grid-cols-3">
-                <SummaryCard label="مجموع آثار" value={counts.artworks ?? '—'} detail={pending ? pending + ' اثر در انتظار بررسی' : 'فهرست آثار ثبت‌شده شما'} to="/dashboard/artist/artworks" />
+                <SummaryCard label="مجموع آثار" value={counts.artworks ?? '—'} detail={pending ? pending + ' اثر در این صفحه در انتظار بررسی' : 'فهرست آثار ثبت‌شده شما'} to="/dashboard/artist/artworks" />
                 <SummaryCard label="درخواست‌های دریافتی" value={counts.inquiries ?? '—'} detail={newInquiries ? newInquiries + ' درخواست جدید در صفحه فعلی' : 'مجموع درخواست‌های دریافتی'} to="/dashboard/artist/inquiries" />
                 <SummaryCard label="وضعیت پروفایل" value={profile.is_public ? 'عمومی' : 'خصوصی'} detail="تنظیم نمایش پروفایل هنری" to="/dashboard/artist/profile" />
             </div>}
