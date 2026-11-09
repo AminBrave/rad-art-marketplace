@@ -34,6 +34,7 @@ class ArtworkController extends Controller
             'data' => [
                 'mediums' => Artwork::query()
                     ->where('status', Artwork::STATUS_APPROVED)
+                    ->whereHas('artistProfile', fn ($artist) => $artist->where('is_public', true))
                     ->whereNotNull('medium')
                     ->where('medium', '<>', '')
                     ->distinct()
