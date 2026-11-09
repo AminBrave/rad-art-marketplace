@@ -29,6 +29,7 @@ class DemoDatabaseSeederTest extends TestCase
         $this->assertDatabaseHas('users', ['email' => 'buyer@rademan.test', 'role' => User::ROLE_BUYER]);
         $this->assertTrue(Hash::check('Demo@12345', User::query()->where('email', 'admin@rademan.test')->value('password')));
 
+        $this->assertSame(22, User::query()->count());
         $this->assertSame(14, ArtistProfile::query()->count());
         $this->assertSame(13, ArtistProfile::query()->where('is_public', true)->count());
         $this->assertSame(6, Category::query()->where('is_active', true)->count());
@@ -52,6 +53,34 @@ class DemoDatabaseSeederTest extends TestCase
         $this->assertGreaterThan(0, ArtistInquiry::query()->whereNotNull('artwork_id')->count());
         $sample = Artwork::query()->where('slug', 'demo-01-01')->firstOrFail();
         Storage::disk('local')->assertExists($sample->image_path);
+    }
+
+
+    public function test_seeded_accounts_exercise_admin_and_buyer_pagination(): void
+    {
+        Storage::fake('local');
+        $this->seed(DemoDatabaseSeeder::class);
+
+        $admin = User::query()->where('email', 'admin@rademan.test')->firstOrFail();
+        $this->actingAs($admin)->getJson('/api/v1/admin/users')
+            ->assertOk()
+            ->assertJsonCount(20, 'data')
+            ->assertJsonPath('total', 22)
+            ->assertJsonPath('current_page', 1);
+        $this->actingAs($admin)->getJson('/api/v1/admin/users?page=2')
+            ->assertOk()
+            ->assertJsonCount(2, 'data')
+            ->assertJsonPath('current_page', 2);
+
+        $buyer = User::query()->where('email', 'buyer@rademan.test')->firstOrFail();
+        $this->actingAs($buyer)->getJson('/api/v1/buyer/inquiries')
+            ->assertOk()
+            ->assertJsonCount(10, 'data')
+            ->assertJsonPath('total', 12);
+        $this->actingAs($buyer)->getJson('/api/v1/buyer/inquiries?page=2')
+            ->assertOk()
+            ->assertJsonCount(2, 'data')
+            ->assertJsonPath('current_page', 2);
     }
 
     public function test_demo_seeder_is_repeatable_without_duplicate_records(): void
