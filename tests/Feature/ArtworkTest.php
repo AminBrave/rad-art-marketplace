@@ -125,6 +125,26 @@ class ArtworkTest extends TestCase
         $this->getJson('/api/v1/artworks/'.$approved->slug)->assertOk();
     }
 
+    public function test_public_artwork_catalogue_honors_a_bounded_per_page_request(): void
+    {
+        [, $profile] = $this->artistWithProfile();
+
+        foreach (range(1, 7) as $index) {
+            $profile->artworks()->create([
+                ...$this->validArtwork(),
+                'slug' => 'catalogue-page-work-'.$index,
+                'image_path' => 'artworks/catalogue-page-work-'.$index.'.jpg',
+                'status' => Artwork::STATUS_APPROVED,
+            ]);
+        }
+
+        $this->getJson('/api/v1/artworks?per_page=3')
+            ->assertOk()
+            ->assertJsonCount(3, 'data')
+            ->assertJsonPath('per_page', 3)
+            ->assertJsonPath('total', 7);
+    }
+
     public function test_artist_artwork_list_is_paginated_and_scoped_to_the_current_artist(): void
     {
         [$artist, $profile] = $this->artistWithProfile();
