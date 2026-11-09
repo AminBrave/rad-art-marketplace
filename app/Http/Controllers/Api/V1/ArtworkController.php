@@ -80,7 +80,7 @@ class ArtworkController extends Controller
                 ->with(['category', 'artistProfile'])
                 ->latest()
                 ->orderByDesc('id')
-                ->simplePaginate(12)
+                ->paginate(12)
                 ->through(fn (Artwork $artwork): array => $this->payload($artwork)),
         );
     }
