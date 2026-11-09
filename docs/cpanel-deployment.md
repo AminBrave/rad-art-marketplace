@@ -27,7 +27,7 @@ Build on a trusted development/build machine:
 ```bash
 composer install --no-dev --prefer-dist --optimize-autoloader
 npm ci
-npm run build
+npm run build:cpanel
 ```
 
 Upload application source and generated `public/build` assets. Exclude `.env`, `node_modules/`, local databases, test artifacts, and development-only files. If Composer is unavailable on the host, prepare production dependencies using a compatible PHP environment.
@@ -83,8 +83,6 @@ After deployment, use dedicated non-production test accounts and verify the curr
 - Homepage, `/artworks`, `/artists`, `/about`, `/help`, and `/contact` load over HTTPS.
 - HTTP requests redirect to the matching HTTPS URL without a loop; HSTS is present on HTTPS responses.
 - HTTP/2 is negotiated over TLS; HTTP/3 is negotiated if enabled by the hosting provider.
-- HTTP requests redirect to the matching HTTPS URL without a loop; HSTS is present on HTTPS responses.
-- HTTP/2 is negotiated over TLS; HTTP/3 is negotiated if enabled by the hosting provider.
 - Artwork search, category filtering, pagination, detail routes, and public artist profiles work.
 - Only approved artwork and public artist profiles are exposed.
 - Private images remain inaccessible by direct filesystem URL.
@@ -96,7 +94,7 @@ After deployment, use dedicated non-production test accounts and verify the curr
 - Inquiry read/archive updates work and payloads do not expose email addresses.
 - Browser console, Laravel logs, and failed requests are reviewed.
 
-Complete the artist, buyer, and admin workspace checks only after the corresponding MVP 2 stages are implemented. Do not mark planned workspace behavior as passed. Use [manual smoke tests](manual-smoke-tests.md) and [QA checklist](qa-checklist.md).
+Verify the implemented artist, buyer, and admin workspaces as part of the release smoke test; all three MVP 2 workspace stages are integrated. Do not mark any manual check as passed until it has actually been run. Use [manual smoke tests](manual-smoke-tests.md) and [QA checklist](qa-checklist.md).
 
 ## 8. Rollback
 

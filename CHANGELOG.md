@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-11-09 — Guest session bootstrap and local build workflows
+
+### Changed
+- Made `GET /api/v1/auth/me` a public session-bootstrap endpoint: guests receive HTTP 200 with `{"data": null}`, while authenticated sessions continue to receive the user payload.
+- Kept logout protected and added guest/post-logout regression coverage.
+- Added `npm run dev:local` to start Laravel, HTTPS Vite/HMR, and Caddy together on local development machines.
+- Added `npm run build:cpanel` to lint and compile frontend production assets for cPanel packaging.
+
+### Verification boundary
+- Automated regression coverage and CI passed for the merged change. The local runner still requires PHP, Node/npm, Caddy 2.8+, a trusted Caddy local CA, and an available local HTTPS port.
+
 ## 2026-11-09 — HTTPS and modern HTTP protocol support
 
 ### Changed
@@ -13,7 +24,7 @@
 
 Notable repository changes are listed newest first. Entries describe implementation milestones and repository maintenance, not production releases. The current package version is not used as a release tag.
 
-## 2026-11-09 — Performance and visual stability hardening (in progress)
+## 2026-11-09 — Performance and visual stability hardening (implementation merged; measurement pending)
 
 ### Changed
 - Added a static first-paint skeleton and shared page-shaped route loading placeholders; public/workspace layout shells remain mounted during route chunk loading.
@@ -23,9 +34,8 @@ Notable repository changes are listed newest first. Entries describe implementat
 - Set Google Fonts to `display=optional` to reduce late font-swap layout shifts.
 
 ### Verification boundary
-- Changes are on `perf/mvp2-app-performance-stability` in [PR #49](https://github.com/AminBrave/rad-art-marketplace/pull/49); the PR is open and not merged.
-- CI run #311 passed on branch head `16dbd35ac15eb0d0080bba60278e15ba2fb87694`: 44 backend tests / 235 assertions, PHP style, frontend lint, and Vite production build ([run #311](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42547394218)).
-- Lighthouse, Core Web Vitals, repeated browser-level CLS, real database query plans, and production-host measurements remain outstanding. No score or zero-shift claim is made.
+- The implementation was merged to `main` through [PR #49](https://github.com/AminBrave/rad-art-marketplace/pull/49). CI passed for the merged PR, including backend tests/style, frontend lint, and the Vite production build.
+- Lighthouse, Core Web Vitals, repeated browser-level CLS, real database query plans, bundle-size baselines, and production-host measurements remain outstanding. No score or zero-shift claim is made.
 
 ## 2026-11-09 — MVP 2 Stage 6: QA hardening (verification in progress)
 

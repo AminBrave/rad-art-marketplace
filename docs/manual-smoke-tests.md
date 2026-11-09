@@ -14,7 +14,7 @@ npm install
 npm run dev
 ```
 
-In a second terminal, run `php artisan serve` and open the Laravel URL. For the automated suite, the CLI PHP environment must have `pdo_sqlite` and `sqlite3` enabled.
+In a second terminal, run `php artisan serve` and open the Laravel URL. To run the complete local HTTPS stack on a machine with Caddy installed and trusted, configure `APP_URL=https://rad.localhost` and `SESSION_SECURE_COOKIE=true`, then run `npm run dev:local` and open `https://rad.localhost`. For the automated suite, the CLI PHP environment must have `pdo_sqlite` and `sqlite3` enabled.
 
 ## Loading, visual stability, and performance
 
@@ -33,7 +33,8 @@ In a second terminal, run `php artisan serve` and open the Laravel URL. For the 
 3. Refresh while signed in; confirm the session is restored. Sign out and sign in again.
 4. Try an incorrect password and duplicate email; confirm understandable validation errors.
 5. Promote a disposable account to Admin with `php artisan users:make-admin admin@example.com`.
-6. Confirm guest access to protected APIs returns 401 and authenticated wrong-role access returns 403.
+6. Confirm `GET /api/v1/auth/me` returns HTTP 200 with exactly `{"data": null}` for a guest, and returns the current user payload after login.
+7. Confirm logout remains protected; after logout, `GET /api/v1/auth/me` again returns HTTP 200 with `data: null`. Other protected feature APIs still return 401 for guests, and authenticated wrong-role access returns 403.
 7. Confirm an administrator cannot remove their own administrator role through the role-update endpoint.
 
 ## Artist profile and public directory
@@ -130,6 +131,7 @@ composer test
 composer lint
 npm run lint
 npm run build
+npm run build:cpanel
 ```
 
 Record actual results and any manual/browser limitations in the PR and release checklist. Do not mark a check complete because the page exists or CI passed.
