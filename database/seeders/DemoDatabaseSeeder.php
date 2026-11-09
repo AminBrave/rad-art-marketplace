@@ -21,6 +21,7 @@ class DemoDatabaseSeeder extends Seeder
     {
         if (! app()->environment(['local', 'testing'])) {
             $this->command?->warn('Demo data is restricted to local/testing environments. No records were changed.');
+
             return;
         }
 
@@ -183,6 +184,7 @@ class DemoDatabaseSeeder extends Seeder
             'sculpture' => 'فرم و فضا', 'digital-art' => 'جهان دیجیتال',
             'calligraphy' => 'نقش واژه', 'other' => 'تجربه هنری',
         ];
+
         return ($prefix[$category] ?? 'اثر هنری').' '.$n;
     }
 
@@ -204,6 +206,7 @@ class DemoDatabaseSeeder extends Seeder
         ];
         [$dark, $accent, $light] = $palette[$seed % count($palette)];
         $label = htmlspecialchars($title, ENT_QUOTES | ENT_XML1, 'UTF-8');
+
         return <<<SVG
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-label="{$label}">
 <rect width="1200" height="900" fill="{$light}"/>
