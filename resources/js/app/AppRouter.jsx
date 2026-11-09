@@ -69,5 +69,5 @@ function AppRoutes() {
 }
 
 export default function App() {
-    return <AuthProvider><BrowserRouter><AppRoutes /></BrowserRouter></AuthProvider>;
+    return <AuthProvider><BrowserRouter future={{ v7_relativeSplatPath: true }}><AppRoutes /></BrowserRouter></AuthProvider>;
 }
