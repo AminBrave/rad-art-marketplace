@@ -30,8 +30,8 @@ export function AdminDashboardHome() {
     const load = useCallback(async () => {
         setLoading(true);
         const responses = await Promise.allSettled([
-            axios.get(api + '/artworks', { params: { status: 'pending_review', page: 1 } }),
-            axios.get(api + '/users', { params: { page: 1 } }),
+            axios.get(api + '/artworks', { params: { status: 'pending_review', page: 1, per_page: 1 } }),
+            axios.get(api + '/users', { params: { page: 1, per_page: 1 } }),
         ]);
         const next = { pending: null, users: null, latest: null }, failures = [];
         if (responses[0].status === 'fulfilled') { next.pending = responses[0].value.data.total ?? null; next.latest = responses[0].value.data.data?.[0] ?? null; }
