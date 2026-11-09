@@ -95,7 +95,7 @@ Hiding a control in React is not a security boundary. Server-side middleware, po
 
 ## API overview
 
-Feature endpoints are session-authenticated and defined under `/api/v1` in `routes/web.php`; the health endpoint is in `routes/api.php`.
+Feature endpoints are defined under `/api/v1` in `routes/web.php` and use Laravel's session/CSRF middleware. `GET /api/v1/auth/me` is a public session-bootstrap endpoint: it returns `200` with `{"data": null}` for guests and the current user payload for an authenticated session. Mutating/private feature endpoints remain protected; logout requires authentication. The health endpoint is in `routes/api.php`.
 
 | Area | Main endpoints |
 |---|---|
@@ -141,19 +141,15 @@ npm run dev
 
 Open the local URL printed by Laravel (normally `http://127.0.0.1:8000`). The development-only design specimen is available at `/?design-system`.
 
-### HTTPS + HTTP/2 + HTTP/3 local setup
+### HTTPS local development
 
-The repository includes an optional Caddy reverse-proxy profile for a browser-trusted local HTTPS origin. Caddy negotiates HTTP/2 and HTTP/3 over TLS; Laravel and Vite remain bound to loopback.
-
-Prerequisites: install Caddy 2.8+ and run `caddy trust` once. Caddy may need elevated permission to bind port 443. Permit UDP 443 in the local firewall to test HTTP/3.
+The optional Caddy profile provides a browser-trusted HTTPS origin at `https://rad.localhost`; Laravel and Vite remain bound to loopback. Install Caddy 2.8+, run `caddy trust` once, and ensure port 443 is available. Permit UDP 443 only if you want to test local HTTP/3.
 
 1. Copy `.env.example` to `.env`, generate `APP_KEY`, configure the database, and set `APP_URL=https://rad.localhost` and `SESSION_SECURE_COOKIE=true`.
-2. Terminal 1: `php artisan serve --host=127.0.0.1 --port=8000`.
-3. Terminal 2: `npm run dev:https`.
-4. Terminal 3, from the repository root: `caddy run --config Caddyfile.dev`.
-5. Open `https://rad.localhost`. Trust the local Caddy root CA in the browser/OS if it is not trusted automatically.
+2. Run `npm run dev:local` from the repository root. This starts Laravel, HTTPS Vite/HMR, and Caddy together.
+3. Open `https://rad.localhost`. If startup fails, verify PHP, Node/npm, and Caddy are installed and available on `PATH`; trust Caddy's local root CA if the browser does not already trust it.
 
-The Caddy profile proxies Laravel to port 8000 and Vite/HMR to port 5173. Do not expose either development server to a public network. Standard `npm run dev` remains unchanged for the HTTP workflow.
+The runner stops the other processes if one service exits and supports Ctrl+C. Do not expose the development servers to a public network. For the standard HTTP workflow, run `php artisan serve` and `npm run dev` in separate terminals.
 
 ### Quality checks
 
@@ -163,6 +159,8 @@ composer lint
 npm run lint
 npm run build
 ```
+
+For the cPanel frontend artifact, use `npm ci` followed by `npm run build:cpanel` (runs frontend lint and `vite build`); the generated Laravel assets and manifest are written to `public/build/`. The script builds frontend assets only and does not replace Composer production dependency installation or Laravel deployment commands.
 
 Use `composer lint:fix` only when intentionally applying PHP formatting changes, then rerun `composer lint`.
 
@@ -188,11 +186,11 @@ Use `composer lint:fix` only when intentionally applying PHP formatting changes,
 
 ## Performance hardening status
 
-The in-progress performance branch adds a static first-paint skeleton, route-level loading placeholders, lazy-loaded public/workspace feature bundles, and bounded 12-item pagination for public artist portfolios and artist artwork management. These changes are not merged or performance-certified until CI and browser measurements pass. No Lighthouse score or Core Web Vitals improvement is claimed.
+The implementation is integrated in `main` via [PR #49](https://github.com/AminBrave/rad-art-marketplace/pull/49): static first-paint and route-level skeletons, lazy-loaded public/workspace feature bundles, bounded 12-item pagination for public artist portfolios and artist artwork management, and eager loading of relationships used by the artist artwork payload. CI passed for the merged implementation. Performance certification is still pending: Lighthouse/Core Web Vitals, repeated browser CLS, production-like query plans, and production-host measurements have not been recorded. No score or measured improvement is claimed.
 
 ## Stage 6 verification status
 
-The Stage 6 QA PR adds a resilient broken-artwork-image fallback, lazy/asynchronous loading for artwork cards, eager/high-priority loading for primary artwork imagery, and reserved detail-image aspect ratios. Source review confirms Persian/RTL document defaults, Vazirmatn/Inter font declarations, explicit LTR account fields in inspected views, visible focus styles, and reduced-motion rules. Automated CI is required on the PR.
+The Stage 6 QA changes are integrated in `main`: resilient broken-artwork-image fallback, lazy/asynchronous loading for artwork cards, eager/high-priority loading for primary artwork imagery, and reserved detail-image aspect ratios. Source review confirms Persian/RTL document defaults, Vazirmatn/Inter font declarations, explicit LTR account fields in inspected views, visible focus styles, and reduced-motion rules. Automated CI passed; manual browser/device accessibility, measured performance, production-host verification, and backup restore evidence remain outstanding.
 
 These checks do not constitute a full browser/device accessibility audit, measured Core Web Vitals baseline, production-host verification, or backup restore drill. See the QA checklist, manual smoke tests, and release checklist.
 
