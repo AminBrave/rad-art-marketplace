@@ -154,7 +154,7 @@
                     <div class="app-boot__section-heading"><div class="grid gap-3"><span class="app-skeleton h-3 w-24"></span><span class="app-skeleton h-8 w-40"></span></div><span class="app-skeleton h-4 w-20"></span></div>
                     <div class="app-boot__cards" aria-hidden="true">
                         @foreach (range(1, 3) as $item)
-                            <div class="app-boot__gallery-card"><span class="app-skeleton app-boot__card"></span><div class="grid gap-3 p-4"><span class="app-skeleton h-4 w-4/5"></span><span class="app-skeleton h-3 w-2/5"></span></div></div>
+                            <article class="app-boot__gallery-card"><a href="#" tabindex="-1" class="block"><div class="flex aspect-[4/3] items-center justify-center overflow-hidden bg-surface-muted p-3"><span class="app-skeleton app-boot__card"></span></div><div class="grid gap-2 p-4"><span class="app-skeleton h-5 w-20"></span><span class="app-skeleton h-6 w-4/5"></span><span class="app-skeleton h-4 w-2/5"></span><span class="app-skeleton h-4 w-1/3"></span></div></a></article>
                         @endforeach
                     </div>
                 </section>
@@ -168,7 +168,7 @@
                     <div class="app-boot__section-heading"><div class="grid gap-3"><span class="app-skeleton h-3 w-24"></span><span class="app-skeleton h-8 w-44"></span></div><span class="app-skeleton h-4 w-24"></span></div>
                     <div class="app-boot__artist-cards">
                         @foreach (range(1, 3) as $item)
-                            <div class="grid gap-3 border border-border bg-white p-5"><span class="app-skeleton h-4 w-3/4"></span><span class="app-skeleton h-3 w-1/2"></span><span class="app-skeleton h-3 w-full"></span><span class="app-skeleton h-3 w-4/5"></span></div>
+                            <article class="grid gap-3 border border-border bg-white p-5"><div class="flex items-start gap-3"><span class="app-skeleton h-12 w-12 shrink-0 rounded-full"></span><div class="grid flex-1 content-start gap-2 pt-1"><span class="app-skeleton h-5 w-2/3"></span><span class="app-skeleton h-3 w-1/3"></span></div></div><div class="grid gap-2"><span class="app-skeleton h-3 w-full"></span><span class="app-skeleton h-3 w-11/12"></span><span class="app-skeleton h-3 w-3/4"></span></div><a href="#" tabindex="-1" class="mt-1 block"><span class="app-skeleton h-4 w-28"></span></a></article>
                         @endforeach
                     </div>
                 </section>
