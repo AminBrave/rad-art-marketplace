@@ -5,6 +5,8 @@ This checklist tracks verification across the whole MVP 2 delivery. Run the rele
 ## Automated quality gates
 
 - [ ] `composer test`
+- [ ] `php artisan test --filter=DemoDatabaseSeederTest`
+- [ ] Seed the disposable local database with `php artisan db:seed` and verify the demo accounts/data in [demo data guide](demo-data.md).
 - [ ] `composer lint`
 - [ ] `npm run lint`
 - [ ] `npm run build`
