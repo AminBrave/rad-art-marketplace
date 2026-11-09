@@ -18,7 +18,6 @@ use Tests\TestCase;
 class DemoDatabaseSeederTest extends TestCase
 {
     use RefreshDatabase;
-
     public function test_demo_seeder_covers_roles_states_pagination_and_private_images(): void
     {
         Storage::fake('local');
