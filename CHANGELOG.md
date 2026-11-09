@@ -8,6 +8,7 @@ Notable repository changes are listed newest first. Entries describe implementat
 - Added a static first-paint skeleton and shared page-shaped route loading placeholders; public/workspace layout shells remain mounted during route chunk loading.
 - Split public pages and workspace dashboards into lazy-loaded feature bundles; artist artwork and inquiry tools load only when opened.
 - Changed public artist portfolios and artist-owned artwork lists to 12-item simple pagination, avoiding unbounded payloads and total-count queries; added frontend navigation and backend regression coverage.
+- Eager-loaded the artist profile relationship in the artist-owned artwork list after code review identified an avoidable per-row relationship query.
 - Set Google Fonts to `display=optional` to reduce late font-swap layout shifts.
 
 ### Verification boundary
