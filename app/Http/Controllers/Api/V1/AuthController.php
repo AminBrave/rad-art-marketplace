@@ -65,7 +65,11 @@ class AuthController extends Controller
 
     public function me(Request $request): JsonResponse
     {
-        return response()->json(['data' => $this->userPayload($request->user())]);
+        $user = $request->user();
+
+        return response()->json([
+            'data' => $user ? $this->userPayload($user) : null,
+        ]);
     }
 
     public function logout(Request $request): JsonResponse
