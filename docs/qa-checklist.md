@@ -8,6 +8,7 @@ This checklist tracks verification across the whole MVP 2 delivery. Run the rele
 - [ ] `composer lint`
 - [ ] `npm run lint`
 - [ ] `npm run build`
+- [ ] `npm run build:cpanel`
 - [ ] Record the exact commit SHA and CI workflow result.
 
 ## Public marketplace — implemented; manual verification pending
@@ -24,7 +25,8 @@ This checklist tracks verification across the whole MVP 2 delivery. Run the rele
 ## Authentication and role boundaries
 
 - [ ] Register Buyer and Artist accounts; confirm Admin cannot be self-registered.
-- [ ] Verify login, session restoration, logout, and expired-session handling.
+- [ ] Verify login, guest session bootstrap (`GET /api/v1/auth/me` returns HTTP 200 with `data: null`), session restoration, logout, and expired-session handling.
+- [ ] Verify logout is protected and other protected feature APIs still reject guests with HTTP 401.
 - [ ] Guest opening protected workspace routes is redirected to login.
 - [ ] Buyer, Artist, and Admin are each restricted to their permitted workspace.
 - [ ] Wrong-role access renders the unauthorized page.
