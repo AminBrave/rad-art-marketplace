@@ -79,16 +79,18 @@ This file is the concise project delivery map. The [GitHub tracker](https://gith
 - [ ] Complete target-host compatibility, production configuration, backup, and successful restore verification.
 - [ ] Complete manual end-to-end regression journeys and attach evidence to the release checklist.
 
-### Performance and visual stability hardening — In progress
+### Performance and visual stability hardening — Implementation merged; measurement in progress
 
-**Issue #48 · Branch `perf/mvp2-app-performance-stability`**
+**Issue #48 · PR [#49](https://github.com/AminBrave/rad-art-marketplace/pull/49) merged to `main`**
 
 - [x] Add a first-paint shell skeleton before React mounts and route-level placeholders for public and workspace screens.
 - [x] Split feature screens into lazy-loaded route bundles while preserving public/workspace navigation shells.
 - [x] Bound public artist portfolio and artist artwork list responses with 12-item simple pagination.
-- [ ] Run all frontend/backend CI checks and review generated production bundle sizes.
+- [x] Backend tests/style, frontend lint, and production build passed in CI for the merged implementation.
+- [ ] Review generated production bundle sizes and record them against a production-like baseline.
 - [ ] Run repeatable Lighthouse mobile/desktop audits and Core Web Vitals measurements against a production-like host.
 - [ ] Profile real database query plans and API request waterfalls; make further backend changes only where measurements demonstrate a bottleneck.
+- [ ] Record repeatable Lighthouse mobile/desktop and Core Web Vitals measurements; do not claim a performance improvement until measured.
 
 ## MVP 1 capabilities retained
 
@@ -110,4 +112,5 @@ Known unverified release gates (release sign-off blockers):
 - Create feature branches from the latest `main`; target PRs at `main`.
 - `cleaned-MVP-1` is historical context only.
 - Update this roadmap, README, changelog, and GitHub tracker when delivery status changes.
+- Keep implementation status distinct from browser performance certification and production release sign-off.
 - Do not mark a feature complete based on a placeholder, a document, or a successful build alone.
