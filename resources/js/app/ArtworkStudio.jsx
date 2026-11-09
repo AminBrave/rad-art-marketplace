@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Badge, Button, EmptyState, ErrorState, FormField, SkeletonLines, UploadFeedback } from '../components/ui';
@@ -23,6 +23,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
     const [loadError, setLoadError] = useState('');
     const [imageError, setImageError] = useState('');
     const [imagePreview, setImagePreview] = useState('');
+    const artworkController = useRef(null);
 
     useEffect(() => {
         if (!image) { setImagePreview(''); return undefined; }
@@ -32,31 +33,42 @@ export default function ArtworkStudio({ user, hasProfile }) {
     }, [image]);
 
     const loadData = useCallback(async (page = 1) => {
+        artworkController.current?.abort();
+        const controller = new AbortController();
+        artworkController.current = controller;
         setLoading(true);
         setLoadError('');
         try {
-            const { data } = await axios.get('/api/v1/artist/artworks', { params: { page } });
+            const { data } = await axios.get('/api/v1/artist/artworks', { params: { page }, signal: controller.signal });
             setArtworks(data.data ?? []);
             setArtworkPage(data.current_page ?? page);
             setHasMoreArtworks(Boolean(data.next_page_url));
         } catch (error) {
+            if (axios.isCancel(error)) return;
             setLoadError(error.response?.status === 403 ? 'این حساب اجازه مدیریت آثار را ندارد.' : 'دریافت آثار انجام نشد. دوباره تلاش کنید.');
-        } finally { setLoading(false); }
+        } finally {
+            if (artworkController.current === controller) {
+                artworkController.current = null;
+                setLoading(false);
+            }
+        }
     }, []);
 
     useEffect(() => {
         if (user?.role !== 'artist' || !hasProfile) return undefined;
 
         let active = true;
-        axios.get('/api/v1/categories')
+        const controller = new AbortController();
+        axios.get('/api/v1/categories', { signal: controller.signal })
             .then(({ data }) => { if (active) setCategories(data.data ?? []); })
-            .catch(() => { if (active) setLoadError('دریافت دسته‌بندی‌ها انجام نشد.'); });
+            .catch((error) => { if (active && !axios.isCancel(error)) setLoadError('دریافت دسته‌بندی‌ها انجام نشد.'); });
 
-        return () => { active = false; };
+        return () => { active = false; controller.abort(); };
     }, [hasProfile, user?.role]);
 
     useEffect(() => {
         if (user?.role === 'artist' && hasProfile) loadData(1);
+        return () => artworkController.current?.abort();
     }, [hasProfile, loadData, user?.role]);
 
     if (user?.role !== 'artist') return null;
