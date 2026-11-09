@@ -54,7 +54,7 @@ export function BuyerDashboardHome() {
                 <h1 className="mt-2 text-2xl font-black">پیگیری ارتباط‌های شما</h1>
                 <p className="mt-3 max-w-2xl text-sm leading-7 text-muted">درخواست‌هایی را که برای هنرمندان فرستاده‌اید مرور کنید و وضعیت ثبت‌شده آن‌ها را ببینید.</p>
             </header>
-            {error && <ErrorState title="خلاصه درخواست‌ها در دسترس نیست" description={error} onRetry={load} />}
+            {error && <ErrorState title="خلاصه درخواست‌ها در دسترس نیست" description={error} onRetry={() => load()} />}
             {loading ? <SkeletonLines lines={4} /> : !error && (
                 <>
                     <div className="grid gap-4 sm:grid-cols-2">
@@ -101,7 +101,7 @@ export function BuyerInquiryPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    const load = useCallback(async () => {
+    const load = useCallback(async (signal) => {
         setLoading(true);
         setError('');
         try {
@@ -132,7 +132,7 @@ export function BuyerInquiryPage() {
                 <h1 className="mt-2 text-2xl font-black">درخواست‌های ارسال‌شده</h1>
                 <p className="mt-2 text-sm leading-7 text-muted">فهرست درخواست‌های ارتباطی شما و وضعیت فعلی هرکدام.</p>
             </header>
-            {error && <ErrorState title="دریافت درخواست‌ها انجام نشد" description={error} onRetry={load} />}
+            {error && <ErrorState title="دریافت درخواست‌ها انجام نشد" description={error} onRetry={() => load()} />}
             {loading ? <SkeletonLines lines={6} /> : !error && (
                 <>
                     {!result?.data?.length ? (
@@ -180,7 +180,7 @@ export function BuyerInquiryDetailPage() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const load = useCallback(async () => {
+    const load = useCallback(async (signal) => {
         setLoading(true);
         setError('');
         setInquiry(null);
@@ -209,7 +209,7 @@ export function BuyerInquiryDetailPage() {
         <section className="space-y-6" dir="rtl">
             <Button variant="outline" size="sm" onClick={() => navigate(inquiriesUrl + (page > 1 ? '?page=' + page : ''))}>بازگشت به فهرست درخواست‌ها</Button>
             {loading ? <SkeletonLines lines={6} /> : error ? (
-                <ErrorState title="جزئیات درخواست در دسترس نیست" description={error} onRetry={load} />
+                <ErrorState title="جزئیات درخواست در دسترس نیست" description={error} onRetry={() => load()} />
             ) : inquiry && (
                 <article className="border border-border bg-paper p-5 sm:p-8">
                     <div className="flex flex-wrap items-start justify-between gap-3">
