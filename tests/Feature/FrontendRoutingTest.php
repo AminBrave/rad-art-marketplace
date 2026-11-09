@@ -32,6 +32,7 @@ final class FrontendRoutingTest extends TestCase
             '/dashboard/artist/artworks',
             '/dashboard/artist/inquiries',
             '/dashboard/buyer/inquiries',
+            '/dashboard/buyer/inquiries/123',
             '/admin/users',
             '/admin/artworks',
             '/about',
