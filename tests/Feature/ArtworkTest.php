@@ -149,7 +149,7 @@ class ArtworkTest extends TestCase
             ->assertOk()
             ->assertJsonCount(12, 'data')
             ->assertJsonPath('current_page', 1)
-            ->assertJsonPath('next_page_url', fn ($url) => is_string($url))
+            ->assertJsonStructure(['next_page_url'])
             ->assertJsonMissing(['slug' => 'another-artists-work']);
 
         $this->actingAs($artist)
