@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-11-09 — MVP 2 Stage 6: QA hardening (verification in progress)
+
+### Changed
+- Added a localized fallback when artwork-card images fail to load.
+- Artwork cards now lazy-load and asynchronously decode off-screen imagery; the homepage hero and artwork detail image are eager/high-priority.
+- Reserved responsive aspect ratios for artwork detail imagery to reduce avoidable layout shift.
+- Expanded QA, manual smoke-test, design-system, and release documentation with source-level findings and explicit external verification steps.
+
+### Verification boundary
+- Source review confirmed Persian document language/direction, Vazirmatn/Inter font declarations, existing visible focus and reduced-motion rules, and the inspected LTR account fields.
+- Browser/device accessibility, measured performance baselines, production-host compatibility, backup automation, and restore drills remain unverified; Stage 6 is not signed off for production.
+
+
 Notable repository changes are listed newest first. Entries describe merged implementation milestones and repository maintenance, not production releases. The current package version is not used as a release tag.
 
 ## 2026-11-09 — MVP 2 Stage 5: Admin workspace
