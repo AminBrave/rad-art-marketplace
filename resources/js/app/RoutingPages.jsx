@@ -41,7 +41,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                     </div>
                     <LoadingBlock className="aspect-[4/5] w-full max-w-xl justify-self-center" />
                 </section>
-            ) : isDetail ? (
+            ) : isArtworkDetail ? (
                 <div className="grid gap-8 lg:grid-cols-[1.15fr_.85fr]">
                     <LoadingBlock className="aspect-[4/3] w-full lg:aspect-[4/5]" />
                     <div className="grid content-start gap-5 border border-border bg-paper p-6 sm:p-9">
@@ -52,6 +52,18 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                         <LoadingBlock className="mt-3 h-20 w-full" />
                     </div>
                 </div>
+            ) : isArtistProfile ? (
+                <>
+                    <section className="grid gap-4 border border-border bg-paper p-7 sm:p-12">
+                        <LoadingBlock className="h-3 w-28" />
+                        <LoadingBlock className="h-10 w-2/3 max-w-md" />
+                        <LoadingBlock className="h-4 w-28" />
+                        <LoadingBlock className="mt-3 h-20 w-full max-w-3xl" />
+                    </section>
+                    <section className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                        {[0, 1, 2, 3, 4, 5].map((item) => <div key={item} className="border border-border bg-paper"><LoadingBlock className="aspect-[4/3] w-full" /><div className="grid gap-3 p-4"><LoadingBlock className="h-4 w-4/5" /><LoadingBlock className="h-3 w-2/5" /></div></div>)}
+                    </section>
+                </>
             ) : isForm ? (
                 <section className="grid gap-5 border border-border bg-paper p-6 sm:p-8">
                     <LoadingBlock className="h-6 w-40" />
@@ -61,6 +73,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                     <LoadingBlock className="h-28 w-full" />
                     <LoadingBlock className="h-12 w-36" />
                 </section>
+                {isWorkspace && <section className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2].map((item) => <div key={item} className="border border-border bg-paper"><LoadingBlock className="aspect-[4/3] w-full" /><div className="grid gap-3 p-4"><LoadingBlock className="h-4 w-4/5" /><LoadingBlock className="h-3 w-2/5" /></div></div>)}</section>}
             ) : /^\/(about|help|contact)$/.test(pathname) ? (
                 <section className="grid gap-6">
                     {[0, 1, 2].map((item) => <div key={item} className="grid gap-3 border-b border-border pb-6"><LoadingBlock className="h-6 w-48" /><LoadingBlock className="h-4 w-full" /><LoadingBlock className="h-4 w-5/6" /></div>)}
