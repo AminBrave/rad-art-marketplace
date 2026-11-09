@@ -11,7 +11,7 @@ This file is the concise project delivery map. The [GitHub tracker](https://gith
 - **Language and layout:** Persian-first, RTL by default; English-ready architecture, but no English UI launch commitment.
 - **Architecture:** Laravel 13 monolith + React 18/Vite + centralized React Router.
 - **Backend authority:** Laravel controls authentication, authorization, validation, ownership, and moderation.
-- **Scope exclusions:** Payments, cart/checkout, orders, shipping, real-time chat/replies, email delivery, native mobile apps, AI recommendations, social networking, subscriptions, paid placements, and advertising.
+- **Scope exclusions:** Payments, cart/checkout, orders, shipping, native mobile apps, native mobile apps, AI recommendations, social networking, subscriptions, paid placements, and advertising.
 
 ## Delivery status
 
@@ -96,7 +96,7 @@ This file is the concise project delivery map. The [GitHub tracker](https://gith
 
 ## Next roadmap — Premium Art Discovery (approved)
 
-This roadmap extends the existing MVP 2 baseline. The historical MVP 2 stages and their recorded status above remain unchanged. The next delivery sequence is fixed as six milestones; do not reorder or silently remove phases. The planning estimates remain the estimates approved in the product strategy. AI-assisted execution may parallelize independent issue work but does not waive dependencies or acceptance gates.
+This roadmap extends the existing MVP 2 baseline. The historical MVP 2 stages and their recorded status above remain unchanged. The next delivery sequence is fixed as seven milestones; do not reorder or silently remove phases. The planning estimates remain the estimates approved in the product strategy. AI-assisted execution may parallelize independent issue work but does not waive dependencies or acceptance gates.
 
 **North-star outcome:** qualified artwork-to-artist connections per month, supported by high-quality discovery, trustworthy artist profiles, editorial curation and a clear inquiry path.
 
@@ -166,10 +166,27 @@ This roadmap extends the existing MVP 2 baseline. The historical MVP 2 stages an
 
 **Exit:** an artist can complete a credible profile, submit work and understand inquiry/moderation states without compromising ownership or privacy.
 
-### M05 — Complete launch readiness and growth foundations · 2–3 weeks
+### M05 — Build secure in-app messaging and conversations · 3–4 weeks
+
+**Milestone issue:** [#77](https://github.com/AminBrave/rad-art-marketplace/issues/77)  
+**Execution issues:** [#78](https://github.com/AminBrave/rad-art-marketplace/issues/78)–[#84](https://github.com/AminBrave/rad-art-marketplace/issues/84)
+
+- [ ] One-to-one buyer/artist conversations linked to inquiry and optional artwork context.
+- [ ] Inbox with unread counts, search, filters, archive/mute and paginated history.
+- [ ] Reply to a message with quoted context; edit/delete own messages with clear audit/retention semantics.
+- [ ] Emoji reactions and sent/delivered/read states.
+- [ ] Real-time message delivery, typing indicator and privacy-controlled presence, with reconnect/retry and polling fallback.
+- [ ] Secure private image/document attachments with validation, previews and authorized downloads.
+- [ ] In-app and optional email notifications with preferences, queues and reliable deep links.
+- [ ] Report/block, rate limits, spam controls and admin moderation workflow.
+- [ ] Participant-only authorization and IDOR/privacy regression tests for every message/attachment operation.
+
+**Exit:** buyer and artist can conduct a secure, reliable, accessible conversation across refresh/reconnect; all security, notification, attachment, RTL and moderation checks have evidence. Do not claim end-to-end encryption without a separately reviewed design.
+
+### M06 — Complete launch readiness and growth foundations · 2–3 weeks
 
 **Milestone issue:** [#65](https://github.com/AminBrave/rad-art-marketplace/issues/65)  
-**Execution issues:** [#74](https://github.com/AminBrave/rad-art-marketplace/issues/74), [#75](https://github.com/AminBrave/rad-art-marketplace/issues/75)
+**Execution issues:** [#74](https://github.com/AminBrave/rad-art-marketplace/issues/74), [#75](https://github.com/AminBrave/rad-art-marketplace/issues/75), plus QA gates #26–#29.
 
 - [ ] SEO metadata, canonical URLs, sitemap and social previews.
 - [ ] Structured logs, error tracking and uptime monitoring.
@@ -187,7 +204,7 @@ North star: qualified artwork-to-artist connections per month. Supporting measur
 
 ### Explicitly deferred
 
-Checkout, payments, orders, shipping, real-time chat, email delivery, social feeds/likes, AI recommendations, subscriptions, paid placements, and generic CMS infrastructure remain deferred. Do not add them as incidental work.
+Checkout, payments, orders, shipping, group chat, public social feeds, AI recommendations, subscriptions, paid placements, and generic CMS infrastructure remain deferred. Private one-to-one buyer/artist messaging and its optional email notifications are now in scope. Do not add them as incidental work.
 
 ### Completion and reporting rules
 

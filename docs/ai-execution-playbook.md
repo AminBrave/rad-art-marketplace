@@ -2,7 +2,7 @@
 
 ## Purpose and authority
 
-This document defines how AI coding agents collaborate on RAD Art. It does not replace the approved product strategy or reorder the six-phase roadmap.
+This document defines how AI coding agents collaborate on RAD Art. It does not replace the approved product strategy or reorder the seven-phase roadmap.
 
 **Approved product direction:** premium, discovery-first contemporary art platform.  
 **Visual direction:** Contemporary Art Editorial.  
@@ -15,7 +15,7 @@ Read `AGENTS.md` and `SKILLS.md` before using this playbook.
 
 ## The two-day AI execution window
 
-The owner wants the next work accelerated into a two-day AI-assisted sprint. Treat two days as a strict coordination/timebox target—not as permission to compress the approved roadmap estimates, skip code review, waive security, or claim all six milestones are complete.
+The owner wants the next work accelerated into a two-day AI-assisted sprint. Treat two days as a strict coordination/timebox target—not as permission to compress the approved roadmap estimates, skip code review, waive security, or claim all seven milestones are complete.
 
 The six milestones remain in their approved order:
 
@@ -188,3 +188,28 @@ Do not close #60–#65 based on agent output, generated code, a merged PR or CI 
 ## Change-control policy
 
 The six-phase roadmap and premium discovery positioning are approved. If implementation reveals a material change to product scope, data semantics, architecture, user privacy, cost, hosting requirements or milestone order, stop and request product-owner approval. Do not silently replace the plan.
+
+
+## Messaging milestone addendum — M05
+
+Messaging is now approved scope. Read milestone [#77](https://github.com/AminBrave/rad-art-marketplace/issues/77) and tasks [#78–#84](https://github.com/AminBrave/rad-art-marketplace/issues/78).
+
+### Messaging specialist workstreams
+- Domain/API and participant authorization: #78.
+- Inbox/thread UI: #79.
+- Replies, edits/deletes, reactions and states: #80.
+- Real-time delivery, typing/presence and fallback: #81.
+- Secure private attachments: #82.
+- In-app and optional email notifications: #83.
+- Reporting, blocking, anti-spam and moderation: #84.
+
+### Mandatory messaging safeguards
+- Do not build on the current inquiry read/archive endpoints as if they were a message API; define and review a versioned conversation/message contract.
+- Agree on conversation identity, inquiry relationship, deletion/retention semantics and event payloads before parallel backend/frontend work.
+- All conversation, message, attachment, notification and report operations are participant-scoped and server-authorized.
+- Use database persistence as the source of truth. Realtime events must handle reconnect, duplicate events, retry and polling fallback.
+- Typing/presence is ephemeral and must not reveal user activity by default without an approved privacy decision.
+- Attachment delivery is private and authorization-checked; no public storage URLs.
+- Email notifications are opt-in/configurable and remain disabled until production delivery and unsubscribe are verified.
+- Do not claim end-to-end encryption, message delivery, online presence or malware scanning unless the implementation genuinely provides it.
+- Test IDOR, blocked participants, rate limits, abuse/report workflows, notification leakage, attachment access and RTL/keyboard behavior.

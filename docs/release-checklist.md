@@ -119,3 +119,15 @@ The next product roadmap is recorded in [ROADMAP.md](../ROADMAP.md). This sectio
 - [ ] Production host compatibility, HTTPS, private storage, backup and restore drill are verified.
 - [ ] Rollback and incident ownership are documented.
 - [ ] Product owner signs off the remaining risks and launch decision.
+
+
+## M05 messaging release gates
+- [ ] Participant-only access tests cover conversation, message, attachment, reaction, notification and report resources.
+- [ ] Message retention, edit/delete and moderation access rules have documented owners and approval.
+- [ ] Realtime host compatibility, reconnect, retry, idempotency and polling fallback are evidenced.
+- [ ] Attachment private storage, content validation, authorized download and scanning strategy are reviewed.
+- [ ] Abuse reporting, blocking, rate limits and admin workflow are operational.
+- [ ] Notification queues, preferences, deduplication and failure monitoring are verified.
+- [ ] Email delivery is explicitly opt-in and remains disabled until sender, queue, unsubscribe and delivery monitoring are proven.
+- [ ] No end-to-end encryption claim is made unless independently reviewed and implemented.
+- [ ] Logs and analytics exclude message bodies, attachment URLs and sensitive personal data.

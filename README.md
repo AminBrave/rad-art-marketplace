@@ -25,14 +25,14 @@ RAD Art is a premium, Persian-first art discovery platform. It helps art enthusi
 - API-backed artwork and inquiry summaries without fabricated analytics.
 - Artist-owned artwork list and create/edit forms with image preview, upload feedback, validation, and moderation status.
 - Paginated inquiry inbox, recipient-scoped detail, and read/archive controls.
-- No unsupported artwork deletion, inquiry replies, chat, or email delivery.
+- The current inquiry workflow is the baseline for the planned dedicated conversation experience; messaging is not yet implemented.
 
 ### Buyer workspace — implemented
 
 - Buyer-only overview with the server-reported total sent-inquiry count and latest inquiry.
 - Paginated sent-inquiry history with artist/artwork context and server-reported status.
 - Dedicated inquiry detail routes that survive direct navigation and refresh.
-- Sender-scoped API reads; no inquiry status mutation, replies, chat, or email delivery.
+- Sender-scoped API reads; no inquiry status mutation or messaging is implemented in the current baseline.
 
 ### Accounts and other workflows — implemented baseline
 
@@ -50,7 +50,7 @@ RAD Art is a premium, Persian-first art discovery platform. It helps art enthusi
 
 ### Explicitly out of scope
 
-Payments, cart/checkout, orders, shipping, real-time chat/replies, email delivery, native mobile apps, AI recommendations, social networking, subscriptions, and advertising. Email verification and password-reset user experience are also not implemented.
+Payments, cart/checkout, orders, shipping, group chat, public social networking, native mobile apps, AI recommendations, subscriptions, and advertising. Private one-to-one buyer/artist messaging, replies and optional email notifications are approved roadmap work but are not implemented yet. Email verification and password-reset user experience are also not implemented.
 
 ## MVP 2 delivery plan
 
@@ -69,7 +69,7 @@ MVP 2 follows the **Contemporary Art Editorial** visual direction, with Persian 
 
 ## Next roadmap — Premium Art Discovery
 
-The approved next direction is **premium art discovery**: curation over volume, artwork over interface, trust over transactions, and editorial quality over generic marketplace patterns. The six-phase roadmap below extends the existing MVP 2 baseline; it does not change the completed MVP 2 history or its outstanding QA obligations.
+The approved next direction is **premium art discovery**: curation over volume, artwork over interface, trust over transactions, and editorial quality over generic marketplace patterns. The seven-phase roadmap below extends the existing MVP 2 baseline; it does not change the completed MVP 2 history or its outstanding QA obligations.
 
 | Milestone | Focus | Estimate | GitHub milestone issue |
 |---|---|---:|---|
@@ -78,11 +78,12 @@ The approved next direction is **premium art discovery**: curation over volume, 
 | M02 | Transform discovery and artwork pages | 2–3 weeks | [#62](https://github.com/AminBrave/rad-art-marketplace/issues/62) |
 | M03 | Introduce curation and editorial tools | 2 weeks | [#63](https://github.com/AminBrave/rad-art-marketplace/issues/63) |
 | M04 | Elevate the artist experience | 2 weeks | [#64](https://github.com/AminBrave/rad-art-marketplace/issues/64) |
-| M05 | Complete launch readiness and growth foundations | 2–3 weeks | [#65](https://github.com/AminBrave/rad-art-marketplace/issues/65) |
+| M05 | Secure in-app messaging and conversations | 3–4 weeks | [#77](https://github.com/AminBrave/rad-art-marketplace/issues/77) |
+| M06 | Complete launch readiness and growth foundations | 2–3 weeks | [#65](https://github.com/AminBrave/rad-art-marketplace/issues/65) |
 
 The execution issues are linked from [delivery tracker #30](https://github.com/AminBrave/rad-art-marketplace/issues/30). Existing MVP 2 QA issues #26–#29 remain open and are carried into the foundation and release gates.
 
-**Two-day AI execution window:** this is a timebox for coordinated AI-assisted delivery, not a replacement for the six milestones or their estimates. Independent issues may be worked in parallel using isolated branches/worktrees. Dependencies, reviews, test gates and evidence remain mandatory. Anything not verified at the end of the window stays open.
+**Two-day AI execution window:** this is a timebox for coordinated AI-assisted delivery, not a replacement for the seven milestones or their estimates. Independent issues may be worked in parallel using isolated branches/worktrees. Dependencies, reviews, test gates and evidence remain mandatory. Anything not verified at the end of the window stays open.
 
 Read the [AI execution playbook](docs/ai-execution-playbook.md) before assigning coding agents. It defines agent roles, task boundaries, prompts, branch/PR rules, verification and milestone completion.
 

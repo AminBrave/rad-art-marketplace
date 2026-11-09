@@ -139,3 +139,12 @@ Use this ownership map:
 - UI states, RTL, keyboard, and responsive behavior are considered.
 - Relevant docs and changelog are updated in the same PR.
 - No redundant docs, dead links, secrets, generated dependencies, or build artifacts are introduced.
+
+
+## Messaging and realtime specialist workflow
+- Coordinate backend contract, schema and frontend event payloads before parallel implementation.
+- Prefer durable database-backed APIs; realtime events notify clients but do not replace persistence.
+- Verify target-host support and operating cost before selecting a broadcasting transport.
+- Include reconnect, idempotent send, duplicate-event handling, polling fallback and notification retry.
+- Treat typing/presence as ephemeral and privacy-controlled.
+- Test participant isolation, attachment authorization, blocking, reporting, rate limits and notification privacy.

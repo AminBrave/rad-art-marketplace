@@ -96,3 +96,11 @@ Update existing documents instead of creating duplicates. Remove stale statement
 - Consider Persian/RTL, keyboard access, focus, semantic labels, responsive layouts, and reduced motion in UI work.
 - Never claim manual/device/production checks unless they were actually performed.
 - Summarize scope, implementation, docs updated, CI results, manual checks, known limitations, and follow-up work.
+
+
+## Messaging-specific guardrails
+- Private one-to-one buyer/artist messaging is approved roadmap scope under M05; group chat, public comments and social feeds remain excluded.
+- Read docs/architecture.md and docs/ai-execution-playbook.md before implementing messaging.
+- Never trust client-supplied participant IDs, sender IDs, read states or delivery states.
+- Never expose message bodies or private attachment URLs in logs, analytics, public APIs or error reports.
+- Do not claim end-to-end encryption or malware scanning unless actually implemented and independently verified.

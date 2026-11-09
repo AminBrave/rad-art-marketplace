@@ -153,3 +153,19 @@ The following checks apply to roadmap milestones M00–M05. They are deliberatel
 - [ ] Analytics remains disabled until consent/legal/data-minimization approval.
 - [ ] Product owner records launch decision and residual risks.
 
+
+
+## M05 — Secure messaging verification
+- [ ] Buyer and artist can open/reopen only conversations in which they are participants.
+- [ ] Cross-account access is denied for conversations, messages, attachments, reactions, notifications and reports.
+- [ ] Message send is idempotent; retries/reconnects do not duplicate messages.
+- [ ] Reply references, edits, deletes and reactions obey sender/retention permissions.
+- [ ] Read receipts and unread counts remain correct with concurrent sessions and pagination.
+- [ ] Real-time events recover after disconnect and polling fallback keeps the thread current.
+- [ ] Typing/presence respects privacy and does not leak activity to non-participants.
+- [ ] Attachment content/size/type validation, private storage and authorized download are tested.
+- [ ] Block/report/rate-limit/moderation paths are tested, including abusive and repeated requests.
+- [ ] Notification preferences, deduplication, queue retry and private deep links are tested.
+- [ ] Email notifications are disabled until delivery, unsubscribe and sender-domain checks pass.
+- [ ] Persian RTL, mixed LTR/RTL messages, keyboard, screen-reader announcements and mobile composer are verified.
+- [ ] Message content and private attachment data are absent from logs/analytics.
