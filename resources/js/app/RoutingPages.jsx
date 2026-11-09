@@ -171,8 +171,6 @@ export function ArtistWorkspaceLayout() {
     return <WorkspaceLayout title="فضای هنرمند" links={links} outletContext={{ user, profile, setProfile, profileLoading, profileError }} />;
 }
 
-}
-
 export function ArtistDashboardHome() {
     const { user, profile, profileLoading, profileError } = useOutletContext();
     return (
