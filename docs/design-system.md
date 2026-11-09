@@ -41,6 +41,7 @@ Fonts are loaded from Google Fonts in the Blade entry document. If self-hosting 
 - Prefer restrained radii: 4px, 8px, 12px, and 16px. Avoid defaulting every surface to pill or oversized rounded corners.
 - Use subtle elevation only when it clarifies hierarchy; prefer borders and whitespace.
 - Focus indicators are global and visible; reduced-motion preferences are respected.
+- Artwork cards use a fixed aspect-ratio media frame, lazy loading, asynchronous decoding, and a localized broken-image fallback. The homepage hero and artwork detail image use eager/high-priority loading; detail media reserves a responsive aspect ratio.
 
 ## Preview
 
