@@ -81,6 +81,16 @@ class DemoDatabaseSeeder extends Seeder
             ]);
         }
 
+        // Include artists who have registered but have not completed their profiles yet.
+        foreach (range(1, 3) as $number) {
+            User::query()->updateOrCreate(['email' => sprintf('new-artist-%02d@rademan.test', $number)], [
+                'name' => 'هنرمند تازه‌وارد '.$number,
+                'password' => Hash::make(self::PASSWORD),
+                'role' => User::ROLE_ARTIST,
+                'email_verified_at' => now(),
+            ]);
+        }
+
         $categorySlugs = array_keys($categories);
         $availabilityValues = ['available', 'sold', 'not_for_sale'];
         $artworks = [];
