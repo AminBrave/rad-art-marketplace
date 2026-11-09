@@ -62,7 +62,7 @@ class DemoDatabaseSeeder extends Seeder
                 'name' => $name, 'password' => Hash::make(self::PASSWORD),
                 'role' => User::ROLE_ARTIST, 'email_verified_at' => now(),
             ]);
-            $artists[] = ArtistProfile::query()->updateOrCreate(['user_id' => $user->id], [
+            $artists[] = $user->artistProfile()->updateOrCreate([], [
                 'slug' => $key === 'artist' ? 'arman-rezaei' : $key,
                 'display_name' => $name,
                 'bio' => $name.' هنرمندی فعال در حوزه '.$specialty.' است. این پروفایل برای آزمایش امکانات بازار هنر رادمان ساخته شده است.',
@@ -100,8 +100,7 @@ class DemoDatabaseSeeder extends Seeder
                 $path = 'artworks/demo/'.$slug.'.svg';
                 $reviewed = $status !== Artwork::STATUS_PENDING_REVIEW;
 
-                $artwork = Artwork::query()->updateOrCreate(['slug' => $slug], [
-                    'artist_profile_id' => $profile->id,
+                $artwork = $profile->artworks()->updateOrCreate(['slug' => $slug], [
                     'category_id' => $categories[$category]->id,
                     'title' => $title,
                     'description' => $n % 7 === 0 ? null : 'اثر نمایشی شماره '.$n.' برای آزمایش جست‌وجو، فیلتر و جزئیات کاتالوگ.',
