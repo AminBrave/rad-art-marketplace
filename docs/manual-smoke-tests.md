@@ -155,3 +155,21 @@ Run these checks at 320, 375, 390, 768, 1024, 1280, and 1536 CSS pixels in curre
 7. Use browser performance tooling to capture LCP, CLS, image transfer sizes, request counts, and route bundle sizes on a documented test dataset. Compare before/after using the same environment; do not infer a performance score from a production build alone.
 8. Run `composer test`, `composer lint`, `npm run lint`, and `npm run build`; attach workflow run and commit SHA.
 9. On the actual target host, verify PHP 8.3+, required extensions, HTTPS, document-root isolation, private storage permissions, migrations, logs, and production configuration. Take a backup and complete a restore drill before production sign-off.
+
+
+## Automated browser regressions
+
+The CI workflow now runs a Chromium browser suite against the actual Laravel-served React application using deterministic API fixtures. It covers buyer inquiry history/detail navigation, direct deep links and refresh, back navigation with page context, guest and wrong-role redirects, not-found UI privacy, mobile overflow, artist artwork total pagination metadata, and null/zero/positive price formatting.
+
+Run locally after preparing the app and building the frontend:
+
+```bash
+python -m pip install playwright==1.55.0
+python -m playwright install --with-deps chromium
+php artisan serve --host=127.0.0.1 --port=8000
+python tests/browser/test_buyer_inquiry.py
+```
+
+The CI run [#42721783132](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42721783132) passed all 9 browser tests. API authorization is tested separately by the Laravel feature suite, including cross-buyer inquiry detail access returning 404. The browser suite's foreign/missing inquiry response is a deterministic UI fixture, not a live authenticated database ownership test.
+
+These automated checks do not replace the Stage 6 manual cross-browser/device, assistive-technology, RTL/mixed-direction, performance, target-host, or backup/restore checks below.
