@@ -1,6 +1,6 @@
 # Manual Smoke Tests
 
-These checks validate the features currently implemented in `main`. Run them against a disposable local/test database, never against production data. They complement—not replace—the automated test suite and the release QA checklist.
+These checks validate the features currently implemented in the integration branch. Run them against a disposable local/test database, never against production data. They complement—not replace—the automated test suite and the release QA checklist.
 
 ## Prepare a local environment
 
@@ -173,3 +173,17 @@ python tests/browser/test_buyer_inquiry.py
 The CI run [#42721783132](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42721783132) passed all 9 browser tests. API authorization is tested separately by the Laravel feature suite, including cross-buyer inquiry detail access returning 404. The browser suite's foreign/missing inquiry response is a deterministic UI fixture, not a live authenticated database ownership test.
 
 These automated checks do not replace the Stage 6 manual cross-browser/device, assistive-technology, RTL/mixed-direction, performance, target-host, or backup/restore checks below.
+
+
+## M02 public discovery and artwork experience
+
+1. Open the homepage as a guest. Confirm the editorial hero links to a real approved artwork, category pathways use active categories returned by the API, and artist spotlights link to public profiles. Do not interpret the newest item or directory order as manually curated editorial placement.
+2. Open the catalogue. Search by title, description, medium, and public artist display name. Combine category, medium, and availability filters; change sorting; copy the URL into a new tab and refresh. Confirm filters and page state remain in the URL and results match the API.
+3. Exercise every supported sort option (newest, oldest, title ascending/descending, year ascending/descending, and price ascending/descending). Confirm unknown/null year and price values remain last.
+4. Confirm catalogue and filter metadata never reveal pending artwork, private artist profiles, private-profile mediums, rejection notes, or moderation state.
+5. Open an approved artwork detail URL directly and refresh. Confirm image fallback, title, artist, category, medium, dimensions, year, price semantics, and availability wording. A null price must remain “قیمت اعلام نشده”; zero must remain “۰ ریال”.
+6. Confirm related works, when available, are approved/public and share the artwork's category or artist. Confirm the current artwork is not repeated.
+7. Open an artist profile. Confirm biography, city, public links, and approved portfolio only. Filter the loaded portfolio by category and load subsequent portfolio pages; confirm no duplicate works.
+8. As a Buyer, submit an inquiry from both artwork detail and artist profile. Confirm the correct artist and optional artwork context are used. Guests are sent to login; non-Buyer roles do not receive a Buyer inquiry form.
+9. Set browser widths to 320, 375, 768, 1024, and 1440 CSS pixels. Confirm no horizontal overflow, image containers reserve space, filters remain usable, and artwork cards preserve readable hierarchy.
+10. Simulate failed image requests and slow API responses. Confirm accessible image fallback, loading, empty, and error states; retry without losing URL-backed filter state.
