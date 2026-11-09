@@ -17,6 +17,7 @@ Use this checklist for a release candidate. A checked item requires evidence for
 - [ ] Run `composer lint`.
 - [ ] Run `npm run lint`.
 - [ ] Run `npm run build`.
+- [ ] Run `npm run build:cpanel` to verify the documented cPanel frontend build path.
 - [ ] Review dependency advisories and lockfile changes.
 - [ ] Record release commit SHA and CI result.
 
@@ -44,6 +45,7 @@ Use this checklist for a release candidate. A checked item requires evidence for
 ## Authentication and workspaces
 
 - [ ] Verify Buyer/Artist registration, login, logout, session restoration, and Admin provisioning.
+- [ ] Verify guest `GET /api/v1/auth/me` returns HTTP 200 with `data: null`; authenticated sessions return the user payload, and logout remains protected.
 - [ ] Verify server-side role and ownership boundaries.
 - [ ] Verify artist profile, artwork submission/edit, upload, moderation feedback, and inquiry inbox workflows.
 - [ ] Verify buyer sent-inquiry history/detail and privacy.
