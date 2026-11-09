@@ -24,4 +24,8 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
-    })->create();
+    })
+    ->create()
+    // cPanel variant: the repository root is the web root, so Vite assets live at /build.
+    // The root .htaccess must deny direct access to all application/source directories.
+    ->usePublicPath(dirname(__DIR__));
