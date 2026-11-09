@@ -24,8 +24,10 @@ class DemoDatabaseSeeder extends Seeder
             return;
         }
 
+        $passwordHash = Hash::make(self::PASSWORD);
+
         $admin = User::query()->updateOrCreate(['email' => 'admin@rademan.test'], [
-            'name' => 'مدیر رادمان', 'password' => Hash::make(self::PASSWORD),
+            'name' => 'مدیر رادمان', 'password' => $passwordHash,
             'role' => User::ROLE_ADMIN, 'email_verified_at' => now(),
         ]);
 
@@ -59,7 +61,7 @@ class DemoDatabaseSeeder extends Seeder
         foreach ($artistData as $i => [$key, $name, $city, $specialty]) {
             $email = ($key === 'artist' ? 'artist' : $key).'@rademan.test';
             $user = User::query()->updateOrCreate(['email' => $email], [
-                'name' => $name, 'password' => Hash::make(self::PASSWORD),
+                'name' => $name, 'password' => $passwordHash,
                 'role' => User::ROLE_ARTIST, 'email_verified_at' => now(),
             ]);
             $artists[] = $user->artistProfile()->updateOrCreate([], [
@@ -76,7 +78,7 @@ class DemoDatabaseSeeder extends Seeder
         $buyers = [];
         foreach ([['buyer', 'مینا خریدار'], ['buyer-02', 'علی خریدار'], ['buyer-03', 'نگار مجموعه‌دار'], ['buyer-04', 'رضا علاقه‌مند به هنر']] as [$key, $name]) {
             $buyers[] = User::query()->updateOrCreate(['email' => $key.'@rademan.test'], [
-                'name' => $name, 'password' => Hash::make(self::PASSWORD),
+                'name' => $name, 'password' => $passwordHash,
                 'role' => User::ROLE_BUYER, 'email_verified_at' => now(),
             ]);
         }
@@ -85,7 +87,7 @@ class DemoDatabaseSeeder extends Seeder
         foreach (range(1, 3) as $number) {
             User::query()->updateOrCreate(['email' => sprintf('new-artist-%02d@rademan.test', $number)], [
                 'name' => 'هنرمند تازه‌وارد '.$number,
-                'password' => Hash::make(self::PASSWORD),
+                'password' => $passwordHash,
                 'role' => User::ROLE_ARTIST,
                 'email_verified_at' => now(),
             ]);
@@ -117,7 +119,11 @@ class DemoDatabaseSeeder extends Seeder
                     'medium' => $n % 6 === 0 ? null : $this->medium($category),
                     'dimensions' => $n % 5 === 0 ? null : ($n % 2 === 0 ? '۵۰ × ۷۰ سانتی‌متر' : '۳۰ × ۴۰ × ۲۰ سانتی‌متر'),
                     'year' => $n % 8 === 0 ? null : 2018 + ($n % 9),
-                    'price' => match ($n % 5) { 0 => null, 1 => 0, default => 1500000 + ($n * 275000) },
+                    'price' => match ($n % 5) {
+                        0 => null,
+                        1 => 0,
+                        default => 1500000 + ($n * 275000),
+                    },
                     'availability' => $availabilityValues[($n - 1) % 3],
                     'status' => $status,
                     'rejection_note' => match ($status) {
