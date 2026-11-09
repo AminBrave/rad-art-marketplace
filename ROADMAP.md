@@ -130,3 +130,16 @@ Known unverified release gates (release sign-off blockers):
 - [ ] Complete or explicitly defer the still-open QA gates [#26–#29](https://github.com/AminBrave/rad-art-marketplace/issues/26).
 
 **Status rule:** implementation is integrated, but M00 is not signed off. Browser/device accessibility and RTL checks, measured performance baselines, target-host verification, and backup/restore evidence remain separate release gates. See the QA checklist, release checklist, and [M00 tracker #60](https://github.com/AminBrave/rad-art-marketplace/issues/60).
+
+
+## M00 browser regression evidence — 2026-11-10
+
+- [x] PR #89 merged buyer browser regressions: history-to-detail navigation, direct deep link, refresh, back navigation with query context, guest/wrong-role redirects, not-found UI without content leakage, and 375px overflow.
+- [x] PR #90 merged artwork browser regressions: artist overview shows server total 15 with 12 current-page rows; artwork detail distinguishes null/undisclosed, zero, and positive prices.
+- [x] Final PR #90 CI run [#42721783132](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42721783132) passed backend tests/style, frontend unit tests/lint/build, and all 9 Chromium browser tests.
+- [x] Existing backend feature tests in `tests/Feature/ArtistInquiryTest.php` verify cross-buyer detail access returns 404 and artist inquiry ownership boundaries.
+- [ ] Manual multi-browser/device, assistive-technology, RTL/mixed-direction and keyboard QA remains a release gate.
+- [ ] Measured Lighthouse/Core Web Vitals and before/after performance evidence remains a release gate.
+- [ ] Target-host compatibility, production deployment verification, backup and successful restore drill remain release gates.
+
+**M00 implementation and automated regression coverage are merged. M00 is not fully signed off while the manual and operational release gates remain open.**

@@ -110,3 +110,23 @@ Observed successful steps:
 - Frontend job: npm ci, npm run test:frontend, npm run lint, and npm run build.
 
 These are verified CI results. They do not check off the manual/browser/device, accessibility, performance-measurement, production-host, or backup/restore items above. M00-specific browser E2E coverage for the buyer inquiry detail route and artwork count/price display is not evidenced. The Stage 6 tracker issues #26–#29 were reopened on 2026-11-10 because their previous closed state conflicted with their unchecked acceptance criteria.
+
+
+## M00 browser regression evidence — 2026-11-10
+
+**Passed:** [CI run #42721783132](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42721783132) on the PR #90 head. All three jobs passed: backend tests/style, frontend tests/lint/build, and browser regressions.
+
+The Chromium browser suite ran 9 tests against a real Laravel-served React app with deterministic API fixtures:
+1. Artist overview displays 15 server-total artworks while only 12 rows are returned for the current page.
+2. Artwork detail formats undisclosed/null, zero, and positive prices distinctly.
+3. Buyer history opens the inquiry detail view.
+4. Detail route works as a direct deep link and after refresh.
+5. Back-to-history preserves the page query.
+6. Buyer inquiry detail does not expose buyer email and clearly states this is an initial inquiry, not a conversation.
+7. Guest route access redirects to login.
+8. Wrong-role access redirects to the unauthorized page.
+9. A missing/foreign inquiry response displays a not-found state without rendering inquiry content; the mobile 375px detail view has no horizontal overflow.
+
+Database-backed authorization is separately covered by `tests/Feature/ArtistInquiryTest.php`, including cross-buyer detail access returning 404, artist recipient isolation, and email omission.
+
+**Still not checked off by CI:** full viewport matrix, real-device testing, keyboard/screen-reader/contrast review, manual mixed RTL/LTR content checks, repeatable performance measurements, production-host verification, and backup/restore drill. These remain manual/operational release gates; a green browser suite is not a substitute.

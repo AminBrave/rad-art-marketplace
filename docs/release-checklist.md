@@ -99,3 +99,18 @@ Email verification and password-reset UX are not implemented. Analytics is a pro
 - [ ] Accessibility/responsive/RTL checks, performance measurements, target-host checks and backup/restore drill evidenced.
 
 **Release decision:** M00 implementation is integrated and automated CI is green. M00 is not fully signed off, and this checklist must not be treated as a production deployment approval until the unchecked release gates are completed.
+
+
+## M00 browser and API regression evidence — 2026-11-10
+
+- [x] Buyer browser regression suite merged in PR #89.
+- [x] Artwork total and price-state browser suite merged in PR #90.
+- [x] [CI run #42721783132](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42721783132) passed backend, frontend, and Chromium browser jobs; 9 browser tests passed.
+- [x] Existing backend `ArtistInquiryTest` covers cross-buyer detail 404, recipient isolation, and private-field omission.
+- [ ] Manual cross-browser/device and viewport matrix.
+- [ ] Keyboard, focus, screen-reader, contrast, reduced-motion, RTL and mixed-direction QA.
+- [ ] Repeatable Lighthouse/Core Web Vitals and network/performance evidence.
+- [ ] Target-host compatibility/configuration and production deployment verification.
+- [ ] Backup creation and successful restore drill.
+
+**M00 status:** implementation and automated regression coverage are integrated. Do not mark release readiness complete until all remaining manual/operational gates are verified or explicitly accepted as deferred risk.

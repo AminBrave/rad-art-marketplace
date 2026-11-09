@@ -217,3 +217,8 @@ The cPanel guide is a procedure, not evidence of a deployment. Hosting compatibi
 ## M00 foundation status
 
 M00 implementation PRs #85, #87 and #86 are merged into main. The latest main CI run [#42715135296](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42715135296) passed backend tests/style, frontend unit tests, lint and production build on commit 6da7d608333ba046a90cc050808854f0d2767474. This is an automated-code-quality result, not a production or browser-QA sign-off. Buyer inquiry browser E2E, artwork count/price browser verification, independent review, the reopened QA issues #26–#29, measured performance, target-host checks and backup/restore verification remain tracked in [M00 issue #60](https://github.com/AminBrave/rad-art-marketplace/issues/60) and the release checklist.
+
+
+## M00 verification update
+
+The M00 browser regression suite is now merged. [PR #89](https://github.com/AminBrave/rad-art-marketplace/pull/89) covers buyer inquiry navigation, deep links, refresh, role redirects and UI privacy states; [PR #90](https://github.com/AminBrave/rad-art-marketplace/pull/90) covers artist artwork totals and null/zero/positive price rendering. Final CI [run #42721783132](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42721783132) passed all backend/frontend jobs and all 9 Chromium browser tests. Backend ownership isolation is also covered in `tests/Feature/ArtistInquiryTest.php`. Manual accessibility/device/RTL QA, measured performance, target-host and backup/restore verification remain open in [M00 #60](https://github.com/AminBrave/rad-art-marketplace/issues/60).
