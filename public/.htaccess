@@ -25,12 +25,12 @@
     RewriteRule ^ index.php [L]
 </IfModule>
 
-# HSTS is emitted only for secure requests; subdomains are intentionally excluded.
-<IfModule mod_headers.c>
-    Header always set Strict-Transport-Security "max-age=31536000" env=HTTPS
-</IfModule>
-
 # Mark HTTPS when TLS is terminated by a trusted front proxy.
 <IfModule mod_setenvif.c>
     SetEnvIf X-Forwarded-Proto "^https$" HTTPS=on
+</IfModule>
+
+# HSTS is emitted only for secure requests; subdomains are intentionally excluded.
+<IfModule mod_headers.c>
+    Header always set Strict-Transport-Security "max-age=31536000" env=HTTPS
 </IfModule>
