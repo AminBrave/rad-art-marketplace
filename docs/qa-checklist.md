@@ -49,11 +49,14 @@ This checklist tracks verification across the whole MVP 2 delivery. Run the rele
 
 ## Admin workspace — Stage 5
 
-- [ ] Admin-only navigation and route guard are correct.
-- [ ] Overview metrics are traceable to actual API responses or omitted.
-- [ ] Moderation queue, filters, required notes, and decisions work.
-- [ ] User management actions match server-supported roles and restrictions.
-- [ ] Non-admin users cannot access admin data or actions.
+- [ ] Admin-only navigation and route guard are correct; API denies non-admin access.
+- [ ] Overview pending-artwork and user totals match paginator metadata; partial API failures are recoverable.
+- [ ] Moderation filters and pagination preserve URL state and match API results.
+- [ ] Approve, reject, and request-changes use exact API payloads; notes are required for the latter two.
+- [ ] Only pending-review artworks expose actions; invalid/concurrent decisions show server errors.
+- [ ] User pagination and fields match the API response.
+- [ ] Role assignment offers only `artist` and `admin`; server blocks self-demotion.
+- [ ] No unsupported search, Buyer-role assignment, deletion, suspension, or analytics UI is present.
 
 ## Persian, RTL, accessibility, and responsive behavior — Stage 6
 
