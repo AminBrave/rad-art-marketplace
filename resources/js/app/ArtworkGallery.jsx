@@ -4,7 +4,7 @@ import ContactArtistForm from './ContactArtistForm';
 import { formatArtworkPrice } from '../utils/formatArtworkPrice';
 
 export default function ArtworkGallery({ user }) {
-    const detailSlug = window.location.pathname.match(/^\\/artworks\\/([^/]+)$/)?.[1];
+    const detailSlug = window.location.pathname.match(/^[/]artworks[/]([^/]+)$/)?.[1];
     const [categories, setCategories] = useState([]);
     const [artworks, setArtworks] = useState([]);
     const [detail, setDetail] = useState(null);
