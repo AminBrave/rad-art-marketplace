@@ -145,7 +145,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
             {loadError && <ErrorState title="دریافت آثار ناموفق بود" description={loadError} onRetry={() => loadData(1)} />}
             {loading ? <SkeletonLines lines={5} /> : artworks.length === 0 ? <EmptyState title="هنوز اثری ثبت نکرده‌اید" description="با فرم بالا اولین اثر خود را برای بررسی ارسال کنید." /> :
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{artworks.map((item) => <article key={item.id} className="overflow-hidden border border-border bg-paper">
-                    <div className="flex aspect-[4/3] items-center justify-center bg-surface-muted p-3"><img src={item.image_url} alt={item.title} loading="lazy" className="h-full w-full object-contain" /></div>
+                    <div className="flex aspect-[4/3] items-center justify-center bg-surface-muted p-3"><img src={item.image_url} alt={item.title} loading="lazy" decoding="async" className="h-full w-full object-contain" /></div>
                     <div className="space-y-3 p-4"><div className="flex flex-wrap items-start justify-between gap-2"><h3 className="font-bold">{item.title}</h3><Badge variant={item.status === 'approved' ? 'success' : item.status === 'rejected' ? 'danger' : item.status === 'changes_requested' ? 'warning' : 'neutral'}>{statusLabels[item.status] ?? item.status}</Badge></div>
                         <p className="text-xs text-muted">{item.category?.name}</p>{item.rejection_note && <p className="border-s-2 border-danger bg-surface-muted p-3 text-xs leading-6 text-danger">{item.rejection_note}</p>}
                         <Button variant="outline" size="sm" onClick={() => editArtwork(item)}>ویرایش اثر</Button></div>
