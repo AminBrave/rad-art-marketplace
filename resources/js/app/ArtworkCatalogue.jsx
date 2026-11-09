@@ -3,12 +3,6 @@ import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, SelectField } from '../components/ui';
 
-const availabilityLabels = {
-    available: 'قابل استعلام',
-    sold: 'فروخته‌شده',
-    not_for_sale: 'برای فروش ارائه نشده',
-};
-
 export default function ArtworkCatalogue() {
     const [params, setParams] = useSearchParams();
     const search = params.get('q') ?? '';
