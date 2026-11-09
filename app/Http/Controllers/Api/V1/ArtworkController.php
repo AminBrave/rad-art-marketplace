@@ -73,14 +73,14 @@ class ArtworkController extends Controller
     {
         $profile = $request->user()->artistProfile()->firstOrFail();
 
-        return response()->json([
-            'data' => $profile->artworks()
+        return response()->json(
+            $profile->artworks()
                 ->with('category')
                 ->latest()
                 ->orderByDesc('id')
                 ->simplePaginate(12)
                 ->through(fn (Artwork $artwork): array => $this->payload($artwork)),
-        ]);
+        );
     }
 
     public function store(Request $request): JsonResponse
