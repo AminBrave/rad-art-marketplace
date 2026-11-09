@@ -6,8 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:cpanel": "npm run lint && vite build",
     "lint": "eslint resources/js --max-warnings=0",
-    "dev:https": "vite --mode https"
+    "dev:https": "vite --mode https",
+    "dev:local": "node scripts/dev-local.js"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",
