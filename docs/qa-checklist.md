@@ -99,3 +99,14 @@ This checklist tracks verification across the whole MVP 2 delivery. Run the rele
 - [ ] Production-like smoke tests and rollback plan are recorded.
 
 Use [manual smoke tests](manual-smoke-tests.md) for feature-specific steps and [release checklist](release-checklist.md) for sign-off. Mark items only after actual execution.
+
+
+## M00 automated verification evidence — 2026-11-10
+
+**Passed CI:** commit 6da7d608333ba046a90cc050808854f0d2767474 · [GitHub Actions run #42715135296](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42715135296)
+
+Observed successful steps:
+- Backend job: composer install, composer test, and composer lint.
+- Frontend job: npm ci, npm run test:frontend, npm run lint, and npm run build.
+
+These are verified CI results. They do not check off the manual/browser/device, accessibility, performance-measurement, production-host, or backup/restore items above. M00-specific browser E2E coverage for the buyer inquiry detail route and artwork count/price display is not evidenced. The Stage 6 tracker issues #26–#29 were reopened on 2026-11-10 because their previous closed state conflicted with their unchecked acceptance criteria.
