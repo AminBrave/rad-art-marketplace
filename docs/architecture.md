@@ -28,7 +28,7 @@ Browser
 - `resources/js/app/AppRouter.jsx` defines public pages and role-protected workspace route trees; route screens are lazy-loaded while shared auth and layout boundaries remain eager.
 - The Blade shell renders a static first-paint skeleton before the React root mounts. Route-level fallbacks retain the public/workspace navigation shell and reserve approximate page/media dimensions.
 - Public artist portfolio and artist-owned artwork list endpoints use 12-item simple pagination to bound response size and avoid unnecessary total-count queries. The artist artwork list eager-loads both category and artist profile relationships used by its serialized payload, avoiding per-row relationship queries.
-- `AuthProvider` loads and exposes the current session.
+- `AuthProvider` loads and exposes the current session through the public `GET /api/v1/auth/me` bootstrap endpoint; guests receive `data: null` with HTTP 200, while authenticated sessions receive the user payload.
 - `PublicLayout` owns public navigation/footer; role-specific workspace layouts own their navigation.
 - The legacy `resources/js/app/App.jsx` is selected only for the development-only `?design-system` preview.
 - Application shell routes and session-authenticated feature API routes are in `routes/web.php`; the health endpoint is in `routes/api.php`.
@@ -93,13 +93,19 @@ An `ArtistInquiry` belongs to a recipient ArtistProfile and sender User, and may
 - Authentication, artwork mutations, and inquiry creation have route-level throttles.
 - API payloads are explicit and must not expose private account data, inquiry email addresses, private image paths, or moderation metadata on public routes.
 
+## Local development and transport
+
+- Standard local development uses Laravel's local server and Vite. The optional Caddy profile exposes `https://rad.localhost`, proxying Laravel and Vite/HMR while both development servers remain bound to loopback.
+- `npm run dev:local` starts Laravel, HTTPS Vite, and Caddy as child processes and stops the group when a service exits or Ctrl+C is received. It requires PHP, Node/npm, Caddy 2.8+, a trusted local Caddy CA, and an available port 443.
+- Production `.htaccess` redirects HTTP to HTTPS and adds one-year HSTS on HTTPS responses. The application configuration does not enable production HTTP/2 or HTTP/3; those depend on the hosting provider/CDN and must be verified against the live hostname.
+
 ## Deliberate constraints
 
 The current MVP does not require payment processing, order/fulfilment services, real-time chat, queues, Redis, long-running workers, microservices, or external analytics. Do not add these as incidental dependencies. Revisit architecture only for a concrete approved requirement and document the decision.
 
 ## Current limitations and release dependencies
 
-- MVP 2 artist, buyer, and admin workspace experiences are being delivered in stages; see [ROADMAP.md](../ROADMAP.md).
+- MVP 2 feature stages 1–5 (foundation, public marketplace, artist, buyer, and admin workspaces) are integrated in `main`; Stage 6 external QA/release verification remains open. See [ROADMAP.md](../ROADMAP.md).
 - Email verification and password-reset UX are not implemented.
 - Admin category management, buyer reports/abuse queue, and featured placements are outside the current approved MVP 2 scope.
 - Analytics is a proposal only; no provider or event collection is enabled.
