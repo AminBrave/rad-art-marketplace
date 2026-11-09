@@ -25,6 +25,12 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('composer.json') }}
           restore-keys: ${{ runner.os }}-composer-
       - run: composer update --no-interaction --prefer-dist --no-progress
+      - uses: actions/upload-artifact@v4
+        with:
+          name: composer-lockfile-bootstrap
+          path: composer.lock
+          if-no-files-found: error
+          retention-days: 1
       - run: cp .env.example .env
       - run: composer test
       - run: composer lint
@@ -38,5 +44,11 @@ jobs:
         with:
           node-version: '22'
       - run: npm install --no-audit --no-fund
+      - uses: actions/upload-artifact@v4
+        with:
+          name: npm-lockfile-bootstrap
+          path: package-lock.json
+          if-no-files-found: error
+          retention-days: 1
       - run: npm run lint
       - run: npm run build
