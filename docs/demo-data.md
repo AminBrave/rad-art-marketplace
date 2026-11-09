@@ -27,11 +27,11 @@ All demo accounts use password `Demo@12345`.
 | Artist | `artist@rademan.test` | Main public profile, 15 approved portfolio works, artist inbox |
 | Buyer | `buyer@rademan.test` | Inquiry submission and buyer history |
 
-Additional accounts: `artist-02@rademan.test` through `artist-14@rademan.test`, and `buyer-02@rademan.test` through `buyer-04@rademan.test`. All use the same password. The fourteenth artist profile is private.
+Additional accounts: `artist-02@rademan.test` through `artist-14@rademan.test`, `new-artist-01@rademan.test` through `new-artist-03@rademan.test` (no profile yet), and `buyer-02@rademan.test` through `buyer-04@rademan.test`. All use the same password. The fourteenth artist profile is private.
 
 ## Included variations
 
-- 1 admin, 14 artist accounts/profiles (13 public and 1 private), and 4 buyers.
+- 1 admin, 14 artist accounts/profiles (13 public and 1 private), 3 artists without profiles for the profile-completion state, and 4 buyers (22 user accounts total).
 - All six active categories plus one inactive category for filter/validation checks.
 - 70 artworks across all categories and all moderation states: approved, pending review, rejected, and changes requested.
 - All availability states: available, sold, and not for sale.
