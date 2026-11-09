@@ -16,3 +16,5 @@ export {
 export { Dialog, DialogTrigger, DialogClose, DialogContent, DialogTitle, DialogDescription } from './Dialog';
 export { Skeleton, SkeletonLines, EmptyState, ErrorState, SuccessState, PermissionState, UploadFeedback, Toast } from './feedback';
 export { ArtworkCard, ArtistCard } from './cards';
+
+export { ArtworkCardSkeleton, ArtistCardSkeleton, ArtworkDetailSkeleton, ArtistProfileSkeleton } from './skeletons';
