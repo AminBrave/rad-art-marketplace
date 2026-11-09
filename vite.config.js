@@ -7,9 +7,15 @@ export default defineConfig(({ mode }) => {
     const localHttps = env.VITE_DEV_HTTPS === 'true';
 
     return {
+        // This deployment profile serves the repository root as the document root.
+        // Keep Vite's generated manifest and assets at ./build, not ./public/build.
+        // Static files from ./public are copied manually to the document root.
+        publicDir: false,
         plugins: [
             laravel({
                 input: ['resources/css/app.css', 'resources/js/app.jsx'],
+                publicDirectory: '.',
+                buildDirectory: 'build',
                 refresh: true,
             }),
             react(),
