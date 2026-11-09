@@ -75,7 +75,7 @@ The Stage 6 PR records source-level localization/RTL review, image-loading corre
 
 ## Known limitations and product decisions
 
-These capabilities are not part of the approved MVP 2 scope unless the product owner revises it: payments, cart/checkout, orders, shipping, real-time chat/replies, email delivery, native mobile apps, AI recommendations, social networking, subscriptions, advertising, admin category CRUD, buyer reports/abuse queue, and featured placements.
+These capabilities are not part of the implemented MVP 2 baseline: payments, cart/checkout, orders, shipping, private messaging/replies, email delivery, native mobile apps, AI recommendations, social networking, subscriptions, advertising, admin category CRUD, buyer reports/abuse queue, and featured placements. Private one-to-one messaging and optional email notifications are approved next-roadmap M05 work but remain unavailable until implemented and verified.
 
 Email verification and password-reset UX are not implemented. Analytics is a proposal only. Hosting PHP 8.3+ compatibility, production deployment, backup automation, restore success, and browser/device QA remain unverified until evidence is attached.
 
@@ -88,7 +88,7 @@ Email verification and password-reset UX are not implemented. Analytics is a pro
 - [ ] Keep previous release and backups until sign-off.
 
 
-## Premium discovery launch gates (M00–M05)
+## Premium discovery launch gates (M00–M06)
 
 The next product roadmap is recorded in [ROADMAP.md](../ROADMAP.md). This section supplements—not replaces—the existing MVP 2 release checks. Do not check an item until evidence for the target release is attached.
 
