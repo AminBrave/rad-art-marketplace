@@ -77,6 +77,7 @@ class ArtworkController extends Controller
             'data' => $profile->artworks()
                 ->with('category')
                 ->latest()
+                ->orderByDesc('id')
                 ->simplePaginate(12)
                 ->through(fn (Artwork $artwork): array => $this->payload($artwork)),
         ]);
