@@ -77,8 +77,8 @@ class ArtworkController extends Controller
             'data' => $profile->artworks()
                 ->with('category')
                 ->latest()
-                ->get()
-                ->map(fn (Artwork $artwork): array => $this->payload($artwork)),
+                ->simplePaginate(12)
+                ->through(fn (Artwork $artwork): array => $this->payload($artwork)),
         ]);
     }
 
