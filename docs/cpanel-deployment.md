@@ -50,7 +50,19 @@ Use the PHP selector's matching CLI binary for Composer and Artisan. Keep creden
 
 Email verification, password reset, and email delivery are not implemented. Do not treat mail configuration as a working product feature.
 
-## 5. Storage and web server
+## 5. TLS, HTTP/2, HTTP/3, and web server
+
+The repository's `public/.htaccess` redirects HTTP requests to HTTPS and adds a one-year HSTS policy to HTTPS responses. Install a valid certificate before enabling the redirect. HSTS intentionally excludes subdomains and preload until every affected hostname has been verified.
+
+HTTP/2 and HTTP/3 are server/host settings; Laravel and `.htaccess` cannot enable them:
+- **HTTPS/TLS:** enable AutoSSL or install a valid certificate for the production hostname and any active `www` alias.
+- **HTTP/2:** ask the host to enable HTTP/2 on the TLS virtual host (Apache `mod_http2` or the provider's LiteSpeed equivalent).
+- **HTTP/3:** ask the host to enable QUIC/HTTP/3 and permit inbound UDP 443 at the server/firewall/CDN.
+- **CDN/proxy:** use Full (strict) TLS with a valid origin certificate. Do not use Flexible TLS; confirm forwarded-protocol handling does not cause redirect loops.
+- **Verify:** inspect the browser Network panel or run `curl -I --http2 https://your-domain.example`. For HTTP/3, use a curl build with HTTP/3 support: `curl --http3-only -I https://your-domain.example`. Confirm the negotiated protocol in browser DevTools. A client curl without HTTP/3 support cannot prove the server lacks it.
+
+Do not advertise HTTP/3 as active until the real production hostname is tested externally. Shared-hosting customers may need their provider to enable these protocols.
+## 6. Storage and web server
 
 Ensure `storage/` and `bootstrap/cache/` are writable by the PHP process. Artwork originals are stored on Laravel's private local disk and delivered through an application route with authorization checks. Do not symlink the private artwork directory into a public path.
 
@@ -63,11 +75,13 @@ php artisan optimize
 
 Set the domain document root to Laravel's `public/` directory. Verify requests for `.env`, `composer.json`, `vendor/`, source files, and private upload paths return 403/404 and never reveal file contents.
 
-## 6. Release smoke test
+## 7. Release smoke test
 
 After deployment, use dedicated non-production test accounts and verify the currently implemented public marketplace:
 
 - Homepage, `/artworks`, `/artists`, `/about`, `/help`, and `/contact` load over HTTPS.
+- HTTP requests redirect to the matching HTTPS URL without a loop; HSTS is present on HTTPS responses.
+- HTTP/2 is negotiated over TLS; HTTP/3 is negotiated if enabled by the hosting provider.
 - HTTP requests redirect to the matching HTTPS URL without a loop; HSTS is present on HTTPS responses.
 - HTTP/2 is negotiated over TLS; HTTP/3 is negotiated if enabled by the hosting provider.
 - Artwork search, category filtering, pagination, detail routes, and public artist profiles work.
@@ -83,7 +97,7 @@ After deployment, use dedicated non-production test accounts and verify the curr
 
 Complete the artist, buyer, and admin workspace checks only after the corresponding MVP 2 stages are implemented. Do not mark planned workspace behavior as passed. Use [manual smoke tests](manual-smoke-tests.md) and [QA checklist](qa-checklist.md).
 
-## 7. Rollback
+## 8. Rollback
 
 Keep the previous release directory and a verified database/files backup until the new release passes smoke tests. Roll back application code and assets together. Do not blindly roll back migrations that may have accepted production data; prefer a forward corrective migration where possible.
 
