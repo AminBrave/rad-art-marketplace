@@ -12,6 +12,13 @@ class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_guest_authentication_bootstrap_returns_a_guest_state_without_unauthorized_response(): void
+    {
+        $this->getJson('/api/v1/auth/me')
+            ->assertOk()
+            ->assertExactJson(['data' => null]);
+    }
+
     public function test_registration_creates_an_artist_and_authenticates_them(): void
     {
         $response = $this->postJson('/api/v1/auth/register', [
