@@ -75,6 +75,7 @@ class ArtworkController extends Controller
 
         $query = Artwork::query()
             ->where('status', Artwork::STATUS_APPROVED)
+            ->whereHas('artistProfile', fn ($artist) => $artist->where('is_public', true))
             ->with(['category', 'artistProfile'])
             ->when(! empty($validated['q']), function ($query) use ($validated): void {
                 $term = '%'.$validated['q'].'%';
@@ -116,6 +117,7 @@ class ArtworkController extends Controller
 
         $related = Artwork::query()
             ->where('status', Artwork::STATUS_APPROVED)
+            ->whereHas('artistProfile', fn ($artist) => $artist->where('is_public', true))
             ->whereKeyNot($artwork->id)
             ->where(function ($query) use ($artwork): void {
                 $query->where('category_id', $artwork->category_id)
