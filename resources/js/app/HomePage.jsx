@@ -5,7 +5,7 @@ import { ArtworkCard,ArtistCard,EmptyState,ErrorState,Skeleton } from '../compon
 
 export default function HomePage(){
  const [artworks,setArtworks]=useState([]),[categories,setCategories]=useState([]),[artists,setArtists]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState(false);
- useEffect(()=>{let active=true;Promise.all([axios.get('/api/v1/artworks',{params:{per_page:6}}),axios.get('/api/v1/categories'),axios.get('/api/v1/artists',{params:{per_page:3}})]).then(([a,c,p])=>{if(!active)return;setArtworks(a.data.data??[]);setCategories(c.data.data??[]);setArtists(p.data.data??[]);}).catch(()=>{if(active)setError(true);}).finally(()=>{if(active)setLoading(false);});return()=>{active=false;};},[]);
+ useEffect(()=>{let active=true;const controller=new AbortController();Promise.all([axios.get('/api/v1/artworks',{params:{per_page:6},signal:controller.signal}),axios.get('/api/v1/categories',{signal:controller.signal}),axios.get('/api/v1/artists',{params:{per_page:3},signal:controller.signal})]).then(([a,c,p])=>{if(!active)return;setArtworks(a.data.data??[]);setCategories(c.data.data??[]);setArtists(p.data.data??[]);}).catch((requestError)=>{if(active&&!axios.isCancel(requestError))setError(true);}).finally(()=>{if(active)setLoading(false);});return()=>{active=false;controller.abort();};},[]);
  const hero=artworks[0];
  return <main className="overflow-hidden" dir="rtl">
   <section className="mx-auto grid max-w-7xl items-center gap-12 px-5 py-14 sm:px-8 lg:grid-cols-[1fr_.9fr] lg:px-10 lg:py-24">
