@@ -119,7 +119,7 @@ class ArtworkController extends Controller
         $related = Artwork::query()
             ->where('status', Artwork::STATUS_APPROVED)
             ->whereHas('artistProfile', fn ($artist) => $artist->where('is_public', true))
-            ->whereKeyNot($artwork->id)
+            ->where('id', '<>', $artwork->id)
             ->where(function ($query) use ($artwork): void {
                 $query->where('category_id', $artwork->category_id)
                     ->orWhere('artist_profile_id', $artwork->artist_profile_id);
