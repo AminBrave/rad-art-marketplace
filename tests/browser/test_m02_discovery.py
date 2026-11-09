@@ -94,7 +94,7 @@ class DiscoveryBrowserTests(unittest.TestCase):
             page.get_by_label("فیلتر دسته‌بندی").select_option("painting")
             page.get_by_label("فیلتر تکنیک و مواد").select_option("آبرنگ")
             page.get_by_label("فیلتر وضعیت اثر").select_option("available")
-            page.get_by_label("مرتب‌سازی آثار").select_option("year_desc")
+            page.get_by_label("مرتب‌سازی آثار", exact=True).select_option("year_desc")
             self.assertIn("q=%D8%A2%D8%A8%D8%B1%D9%86%DA%AF", page.url)
             self.assertIn("category=painting", page.url)
             self.assertIn("medium=", page.url)
@@ -121,7 +121,7 @@ class DiscoveryBrowserTests(unittest.TestCase):
             page.get_by_text("قابل استعلام از هنرمند").wait_for()
             page.get_by_role("heading", name="آثار مرتبط").wait_for()
             page.get_by_role("link", name="مطالعه مرتبط").wait_for()
-            page.get_by_role("link", name="هنرمند آزمایشی").wait_for()
+            page.get_by_role("link", name="هنرمند آزمایشی", exact=True).wait_for()
         finally:
             context.close()
 
@@ -199,7 +199,7 @@ class DiscoveryBrowserTests(unittest.TestCase):
             page.get_by_role("heading", name="هنر را کشف کنید؛ فراتر از قاب.").wait_for()
             page.get_by_role("link", name="مطالعه آبی").first.click()
             page.get_by_role("heading", name="مطالعه آبی").wait_for()
-            page.get_by_role("link", name="هنرمند آزمایشی").click()
+            page.get_by_role("link", name="هنرمند آزمایشی", exact=True).click()
             page.get_by_role("heading", name="هنرمند آزمایشی").wait_for()
             page.get_by_label("موضوع").fill("پرسش درباره آثار")
             page.get_by_label("متن پیام").fill("سلام، مایلم درباره مسیر هنری و آثار شما بیشتر بدانم.")
