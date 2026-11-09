@@ -52,22 +52,26 @@ Profile fields: `display_name` (required, max 120), optional `bio` (max 2000), `
 | Method | Path | Access | Purpose |
 |---|---|---|---|
 | GET | `/api/v1/categories` | Public | List active categories |
+| GET | `/api/v1/artwork-filters` | Public | Return available public mediums, availability choices, and sort choices |
 | GET | `/api/v1/artworks` | Public | Paginated approved catalogue |
-| GET | `/api/v1/artworks/{slug}` | Public for approved work; owner/Admin policy access otherwise | Read artwork |
+| GET | `/api/v1/artworks/{slug}` | Public for approved/public work; owner/Admin policy access otherwise | Read artwork and related works |
 | GET | `/api/v1/artworks/{slug}/image` | Same artwork policy | Stream artwork image |
 
 Catalogue query parameters:
 
-- `q`: optional search against title, description, or medium.
+- `q`: optional search against title, description, medium, or public artist display name.
 - `category`: optional active category slug.
+- `medium`: optional exact medium/technique value returned by `/api/v1/artwork-filters`.
+- `availability`: `available`, `sold`, or `not_for_sale`.
+- `sort`: `newest`, `oldest`, `title_asc`, `title_desc`, `year_desc`, `year_asc`, `price_asc`, or `price_desc`; defaults to `newest`. Null years/prices sort after known values.
 - `page`: Laravel paginator page.
-- `per_page`: bounded to 1–24; default 12. The homepage requests 6 items while the catalogue uses the default page size.
+- `per_page`: bounded to 1–24; default 12.
 
-The catalogue is ordered newest first and paginates 12 items per page by default. There is no sort parameter. Only approved artwork is included in public catalogue queries. Public artwork payloads omit moderation status and rejection notes.
+The catalogue includes only approved artworks whose artist profile is public. Filter metadata is derived from the same public/approved dataset; private-profile and pending-work mediums are not exposed. Public artwork payloads omit moderation status and rejection notes. Artwork detail responses additionally include up to four approved, public related works from the same category or artist when such works exist.
 
 **Price semantics:** `price = null` means no price has been disclosed and the UI must say “قیمت اعلام نشده”. A numeric zero is a supplied amount and must be rendered as `۰ ریال`; do not infer or label it “free” or “complimentary”. Positive values are formatted as Rial amounts. This is display semantics only; it does not define a payment or transaction workflow.
 
-The image route checks the artwork view policy and streams the original from private local storage. Responses use private caching and `X-Content-Type-Options: nosniff`.
+The image route checks the artwork view policy and streams the original from private local storage. An approved artwork is publicly viewable only while its artist profile is public; the owner and Admin retain policy-authorized access to private/pending items. Responses use private caching and `X-Content-Type-Options: nosniff`.
 
 ## Artist artwork management
 
