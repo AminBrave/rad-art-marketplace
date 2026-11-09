@@ -27,8 +27,7 @@ jobs:
       - run: composer update --no-interaction --prefer-dist --no-progress
       - run: cp .env.example .env
       - run: composer test
-      - run: composer lint:fix
-      - run: git diff -- database/seeders/DemoDatabaseSeeder.php tests/Feature/DemoDatabaseSeederTest.php
+      - run: composer lint
 
   frontend:
     name: Frontend lint and production build
