@@ -10,6 +10,8 @@ const inputClass = 'mt-2 w-full border border-border bg-canvas px-4 py-3 text-sm
 export default function ArtworkStudio({ user, hasProfile }) {
     const [categories, setCategories] = useState([]);
     const [artworks, setArtworks] = useState([]);
+    const [artworkPage, setArtworkPage] = useState(1);
+    const [hasMoreArtworks, setHasMoreArtworks] = useState(false);
     const [form, setForm] = useState(emptyArtwork);
     const [image, setImage] = useState(null);
     const [editingId, setEditingId] = useState(null);
@@ -29,23 +31,25 @@ export default function ArtworkStudio({ user, hasProfile }) {
         return () => window.URL.revokeObjectURL(url);
     }, [image]);
 
-    const loadData = useCallback(async () => {
+    const loadData = useCallback(async (page = 1) => {
         setLoading(true);
         setLoadError('');
         try {
             const [categoryResponse, artworkResponse] = await Promise.all([
                 axios.get('/api/v1/categories'),
-                axios.get('/api/v1/artist/artworks'),
+                axios.get('/api/v1/artist/artworks', { params: { page } }),
             ]);
             setCategories(categoryResponse.data.data ?? []);
             setArtworks(artworkResponse.data.data ?? []);
+            setArtworkPage(artworkResponse.data.current_page ?? page);
+            setHasMoreArtworks(Boolean(artworkResponse.data.next_page_url));
         } catch (error) {
             setLoadError(error.response?.status === 403 ? 'این حساب اجازه مدیریت آثار را ندارد.' : 'دریافت آثار یا دسته‌بندی‌ها انجام نشد. دوباره تلاش کنید.');
         } finally { setLoading(false); }
     }, []);
 
     useEffect(() => {
-        if (user?.role === 'artist' && hasProfile) loadData();
+        if (user?.role === 'artist' && hasProfile) loadData(1);
     }, [hasProfile, loadData, user?.role]);
 
     if (user?.role !== 'artist') return null;
@@ -94,7 +98,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
             });
             resetForm();
             setMessage(data.message ?? 'اثر ذخیره شد.');
-            await loadData();
+            await loadData(1);
         } catch (error) {
             if (error.response?.status === 422) {
                 setErrors(error.response.data.errors ?? {}); setMessage('لطفاً خطاهای مشخص‌شده را اصلاح کنید.');
@@ -130,8 +134,8 @@ export default function ArtworkStudio({ user, hasProfile }) {
             </form>
         </section>
         <section className="space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-bold">آثار ثبت‌شده شما</h2><Button variant="outline" size="sm" onClick={loadData} disabled={loading}>بروزرسانی</Button></div>
-            {loadError && <ErrorState title="دریافت آثار ناموفق بود" description={loadError} onRetry={loadData} />}
+            <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-bold">آثار ثبت‌شده شما</h2><Button variant="outline" size="sm" onClick={() => loadData(1)} disabled={loading}>بروزرسانی</Button></div>
+            {loadError && <ErrorState title="دریافت آثار ناموفق بود" description={loadError} onRetry={() => loadData(1)} />}
             {loading ? <SkeletonLines lines={5} /> : artworks.length === 0 ? <EmptyState title="هنوز اثری ثبت نکرده‌اید" description="با فرم بالا اولین اثر خود را برای بررسی ارسال کنید." /> :
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{artworks.map((item) => <article key={item.id} className="overflow-hidden border border-border bg-paper">
                     <div className="flex aspect-[4/3] items-center justify-center bg-surface-muted p-3"><img src={item.image_url} alt={item.title} loading="lazy" className="h-full w-full object-contain" /></div>
@@ -139,6 +143,13 @@ export default function ArtworkStudio({ user, hasProfile }) {
                         <p className="text-xs text-muted">{item.category?.name}</p>{item.rejection_note && <p className="border-s-2 border-danger bg-surface-muted p-3 text-xs leading-6 text-danger">{item.rejection_note}</p>}
                         <Button variant="outline" size="sm" onClick={() => editArtwork(item)}>ویرایش اثر</Button></div>
                 </article>)}</div>}
+            {artworks.length > 0 && !loading && (
+                <nav aria-label="صفحه‌بندی آثار ثبت‌شده" className="flex items-center justify-center gap-4">
+                    <Button variant="outline" size="sm" disabled={loading || artworkPage <= 1} onClick={() => loadData(artworkPage - 1)}>قبلی</Button>
+                    <span className="text-xs text-muted">صفحه {artworkPage.toLocaleString('fa-IR')}</span>
+                    <Button variant="outline" size="sm" disabled={loading || !hasMoreArtworks} onClick={() => loadData(artworkPage + 1)}>بعدی</Button>
+                </nav>
+            )}
         </section>
     </section>;
 }
