@@ -1,0 +1,10 @@
+# Local TLS entry point. Caddy serves HTTP/2 and HTTP/3 over HTTPS.
+# The Laravel and Vite development servers stay bound to loopback only.
+rad.localhost {
+    tls internal
+
+    @vite path /@* /resources/* /node_modules/* /__vite_hmr
+    reverse_proxy @vite 127.0.0.1:5173
+
+    reverse_proxy 127.0.0.1:8000
+}

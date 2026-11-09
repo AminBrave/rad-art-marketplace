@@ -23,6 +23,11 @@ Use this checklist for a release candidate. A checked item requires evidence for
 ## Environment and operations
 
 - [ ] Confirm production MySQL, HTTPS, document root, private storage, and file permissions.
+- [ ] Confirm valid TLS certificate and automatic HTTP-to-HTTPS redirect without loops.
+- [ ] Confirm session cookies are marked Secure in production.
+- [ ] Confirm HSTS is present on HTTPS responses and covers only verified hostnames.
+- [ ] Verify HTTP/2 negotiation on the production TLS endpoint.
+- [ ] Verify HTTP/3 negotiation if the hosting provider supports/enables it; otherwise record the provider limitation.
 - [ ] Confirm `APP_ENV=production`, `APP_DEBUG=false`, and secure secret handling.
 - [ ] Confirm pre-release database and private-upload backups exist and are readable.
 - [ ] Complete a restore drill or verify a recent successful restore.

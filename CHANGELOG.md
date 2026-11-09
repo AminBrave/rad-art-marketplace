@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-11-09 — HTTPS and modern HTTP protocol support
+
+### Changed
+- Added production HTTP-to-HTTPS redirection and a one-year HSTS header for secure responses; subdomains and preload are deliberately excluded until separately verified.
+- Added an optional Caddy-based local HTTPS reverse proxy with Vite HMR routing and loopback-only backend/dev-server bindings.
+- Added deployment guidance for provider-managed HTTP/2 and HTTP/3/QUIC enablement and external protocol verification.
+
+### Verification boundary
+- Repository configuration and documentation do not enable HTTP/2 or HTTP/3 on a production cPanel account. The hosting provider must enable those protocols, and the live hostname must be externally tested before claiming support.
+
+
 Notable repository changes are listed newest first. Entries describe implementation milestones and repository maintenance, not production releases. The current package version is not used as a release tag.
 
 ## 2026-11-09 — Performance and visual stability hardening (in progress)
