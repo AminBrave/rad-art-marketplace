@@ -212,3 +212,8 @@ The cPanel guide is a procedure, not evidence of a deployment. Hosting compatibi
 4. Keep the project structure simple. Add a new document or architectural layer only when it has a distinct, maintained purpose.
 5. Update the relevant documentation in the same feature change whenever behavior, API contracts, routes, setup, security, design, or operational procedures change.
 6. Distinguish implemented behavior from plans and unverified operational assumptions.
+
+
+## M00 foundation status
+
+M00 implementation PRs #85, #87 and #86 are merged into main. The latest main CI run [#42715135296](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42715135296) passed backend tests/style, frontend unit tests, lint and production build on commit 6da7d608333ba046a90cc050808854f0d2767474. This is an automated-code-quality result, not a production or browser-QA sign-off. Buyer inquiry browser E2E, artwork count/price browser verification, independent review, the reopened QA issues #26–#29, measured performance, target-host checks and backup/restore verification remain tracked in [M00 issue #60](https://github.com/AminBrave/rad-art-marketplace/issues/60) and the release checklist.
