@@ -5,9 +5,8 @@
 
     RewriteEngine On
 
-    # Redirect plain HTTP to HTTPS; honor the protocol from a TLS-terminating proxy.
+    # Enforce HTTPS at the web server. Do not trust client-supplied forwarded headers.
     RewriteCond %{HTTPS} !=on
-    RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L,NE]
 
     RewriteCond %{HTTP:Authorization} .
@@ -23,11 +22,6 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
-</IfModule>
-
-# Mark HTTPS when TLS is terminated by a trusted front proxy.
-<IfModule mod_setenvif.c>
-    SetEnvIf X-Forwarded-Proto "^https$" HTTPS=on
 </IfModule>
 
 # HSTS is emitted only for secure requests; subdomains are intentionally excluded.
