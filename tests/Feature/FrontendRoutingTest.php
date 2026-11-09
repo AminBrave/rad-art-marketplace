@@ -46,6 +46,8 @@ final class FrontendRoutingTest extends TestCase
 
     public function test_api_routes_are_not_captured_by_the_frontend_fallback(): void
     {
-        $this->getJson('/api/v1/auth/me')->assertUnauthorized();
+        $this->getJson('/api/v1/auth/me')
+            ->assertOk()
+            ->assertExactJson(['data' => null]);
     }
 }
