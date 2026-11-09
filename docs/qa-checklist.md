@@ -81,7 +81,14 @@ This checklist tracks verification across the whole MVP 2 delivery. Run the rele
 - [x] Artwork-card images are lazy-loaded and decoded asynchronously; homepage hero and artwork detail imagery are eager/high-priority.
 - [x] Artwork-card and detail containers reserve image aspect ratios; artwork cards show a localized fallback when an image fails.
 - [ ] Verify workspace/upload image behavior and actual layout shift using browser tooling.
-- [ ] Public route loading and bundle behavior are measured; optimizations are evidence-based.
+- [ ] Verify public artist profile portfolio pagination and artist artwork management pagination, including page changes and error states.
+- [x] A static first-paint skeleton is present before React mounts; route-level loading placeholders preserve navigation shells and reserve media dimensions.
+- [x] Public and workspace feature screens are split into lazy-loaded route bundles; artist artwork/inquiry tools load when opened.
+- [x] Public artist portfolios and artist artwork management use bounded simple pagination (12 records/page) rather than unbounded responses.
+- [ ] Verify every route's loading skeleton against its final rendered layout at supported viewport widths.
+- [ ] Run Lighthouse mobile and desktop on homepage, catalogue, artwork detail, artist profile, and authenticated workspace routes; record exact scores and actionable audits.
+- [ ] Record repeatable LCP, CLS, INP, TTFB, transfer-size, request-count, and route-bundle measurements before/after.
+- [ ] Public route loading, bundle behavior, and API waterfalls are measured in a production-like environment; optimizations are evidence-based.
 - [ ] Private image access and upload validation remain protected.
 - [ ] Target PHP version/extensions, HTTPS, document root, and storage permissions are verified.
 - [ ] Backup exists, is readable, and a restore drill succeeds.
