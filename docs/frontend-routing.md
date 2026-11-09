@@ -35,7 +35,7 @@ All public routes render inside `PublicLayout`, which provides the public naviga
 The artist workspace reuses `ArtistWorkspaceLayout` and the shared `WorkspaceLayout`. Its overview at `/dashboard/artist` derives profile visibility, artwork count/status, and inquiry count/recent items from the existing artist profile, artwork, and paginated inquiry endpoints. These are operational summaries, not analytics or fabricated performance metrics.
 
 - `/dashboard/artist/profile` edits the current artist's profile.
-- `/dashboard/artist/artworks` lists the current artist's unpaginated artwork collection and provides create/edit forms.
+- `/dashboard/artist/artworks` lists the current artist's artwork in 12-item pages and provides create/edit forms.
 - `/dashboard/artist/inquiries` provides a paginated inbox, recipient-scoped detail, and supported read/archive status actions.
 
 The artwork form uses `GET /api/v1/categories`, `GET /api/v1/artist/artworks`, `POST /api/v1/artist/artworks`, and method-spoofed `PATCH /api/v1/artist/artworks/{id}`. There is no artwork deletion endpoint. The inquiry inbox uses the artist list/detail/update endpoints and only exposes the API's `new`, `read`, and `archived` states. It does not provide replies, chat, or email delivery.
@@ -44,10 +44,10 @@ The buyer workspace overview at `/dashboard/buyer` derives the total sent-inquir
 
 ## Authentication and authorization
 
-- `AuthProvider` in `resources/js/app/AuthContext.jsx` loads the current session from `GET /api/v1/auth/me`.
+- `AuthProvider` in `resources/js/app/AuthContext.jsx` loads the current session from `GET /api/v1/auth/me`; this endpoint returns HTTP 200 with `data: null` for guests and the user payload for authenticated sessions, so an ordinary guest bootstrap is not treated as an unauthorized API failure.
 - `RequireAuth` sends guests to `/login` and preserves the requested location in router state.
 - `RequireRole` sends authenticated users without the required role to `/unauthorized`.
-- A 401 from a feature API clears stale client authentication state. A 403 remains an authorization denial and must be handled by the affected page.
+- A 401 from a protected feature API clears stale client authentication state. The public `/api/v1/auth/me` bootstrap endpoint is the deliberate exception and returns a guest payload with HTTP 200. A 403 remains an authorization denial and must be handled by the affected page.
 - Successful login/registration and logout update the shared auth context.
 
 Client-side guards are a navigation/UX boundary only. Laravel session middleware, role middleware, policies, validation, and ownership checks remain authoritative. Never remove server checks because a route or navigation item is hidden.
