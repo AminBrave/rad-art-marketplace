@@ -79,6 +79,17 @@ This file is the concise project delivery map. The [GitHub tracker](https://gith
 - [ ] Complete target-host compatibility, production configuration, backup, and successful restore verification.
 - [ ] Complete manual end-to-end regression journeys and attach evidence to the release checklist.
 
+### Performance and visual stability hardening — In progress
+
+**Issue #48 · Branch `perf/mvp2-app-performance-stability`**
+
+- [x] Add a first-paint shell skeleton before React mounts and route-level placeholders for public and workspace screens.
+- [x] Split feature screens into lazy-loaded route bundles while preserving public/workspace navigation shells.
+- [x] Bound public artist portfolio and artist artwork list responses with 12-item simple pagination.
+- [ ] Run all frontend/backend CI checks and review generated production bundle sizes.
+- [ ] Run repeatable Lighthouse mobile/desktop audits and Core Web Vitals measurements against a production-like host.
+- [ ] Profile real database query plans and API request waterfalls; make further backend changes only where measurements demonstrate a bottleneck.
+
 ## MVP 1 capabilities retained
 
 The current baseline includes session authentication, Buyer/Artist/Admin roles, artist profiles, artwork submission/editing, private image storage, approved-only public catalogue, admin artwork moderation, and buyer-to-artist inquiry intake with buyer history and artist read/archive controls.
