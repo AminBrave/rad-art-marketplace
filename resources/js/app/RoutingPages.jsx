@@ -61,7 +61,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                     <LoadingBlock className="h-28 w-full" />
                     <LoadingBlock className="h-12 w-36" />
                 </section>
-            ) : /^\\/(about|help|contact)$/.test(pathname) ? (
+            ) : /^\/(about|help|contact)$/.test(pathname) ? (
                 <section className="grid gap-6">
                     {[0, 1, 2].map((item) => <div key={item} className="grid gap-3 border-b border-border pb-6"><LoadingBlock className="h-6 w-48" /><LoadingBlock className="h-4 w-full" /><LoadingBlock className="h-4 w-5/6" /></div>)}
                 </section>
