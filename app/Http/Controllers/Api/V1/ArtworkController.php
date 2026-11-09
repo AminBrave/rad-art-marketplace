@@ -77,7 +77,7 @@ class ArtworkController extends Controller
 
         return response()->json(
             $profile->artworks()
-                ->with('category')
+                ->with(['category', 'artistProfile'])
                 ->latest()
                 ->orderByDesc('id')
                 ->simplePaginate(12)
