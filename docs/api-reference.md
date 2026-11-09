@@ -11,8 +11,10 @@ Feature endpoints use JSON request/response bodies and are defined in `routes/we
 | GET | `/api/v1/health` | Public | Health response |
 | POST | `/api/v1/auth/register` | Guest, throttled | Register Buyer or Artist |
 | POST | `/api/v1/auth/login` | Guest, throttled | Start authenticated session |
-| GET | `/api/v1/auth/me` | Authenticated | Current user payload |
+| GET | `/api/v1/auth/me` | Public session bootstrap | Returns `{"data": null}` for a guest or the current user payload for an authenticated session |
 | POST | `/api/v1/auth/logout` | Authenticated | End authenticated session |
+
+`GET /api/v1/auth/me` is intentionally accessible without authentication so the frontend can distinguish a guest session from a failed API request. It always returns HTTP 200; the `data` value is `null` for guests. `POST /api/v1/auth/logout` remains authenticated.
 
 Registration fields: `name`, `email`, `password`, `password_confirmation`, and optional `role`. Passwords must be at least 10 characters and confirmed. `role` may be `artist` or `buyer`; omission defaults to `artist`. Other values, including `admin`, fail validation. Admins are provisioned server-side.
 
@@ -123,7 +125,7 @@ The artist update accepts `status=read` or `status=archived`; buyers have no sta
 
 ## Common access and validation behavior
 
-- Unauthenticated requests to protected routes normally return HTTP 401.
+- Unauthenticated requests to protected feature routes normally return HTTP 401. The deliberate exception is `GET /api/v1/auth/me`, which returns HTTP 200 with `data: null` for guests.
 - Authenticated users without the required role normally receive HTTP 403.
 - Owner/recipient scoping may return HTTP 404 to avoid exposing another user's resource.
 - Validation failures return HTTP 422.
