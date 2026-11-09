@@ -243,6 +243,149 @@ class ArtworkTest extends TestCase
         $this->actingAs($owner)->get('/api/v1/artworks/'.$artwork->slug.'/image')->assertOk();
     }
 
+    public function test_public_catalogue_filters_by_medium_availability_and_artist_and_supports_sorting(): void
+    {
+        [$artist, $profile] = $this->artistWithProfile('discovery-artist@example.com');
+        $category = Category::query()->where('slug', 'painting')->firstOrFail();
+
+        $watercolor = $profile->artworks()->create([
+            ...$this->validArtwork(),
+            'slug' => 'discovery-watercolor',
+            'title' => 'منظره آبرنگی',
+            'medium' => 'آبرنگ',
+            'year' => 2022,
+            'availability' => 'available',
+            'image_path' => 'artworks/watercolor.jpg',
+            'status' => Artwork::STATUS_APPROVED,
+        ]);
+        $oil = $profile->artworks()->create([
+            ...$this->validArtwork(),
+            'slug' => 'discovery-oil',
+            'title' => 'پرتره رنگ روغن',
+            'medium' => 'رنگ روغن',
+            'year' => 2025,
+            'availability' => 'sold',
+            'image_path' => 'artworks/oil.jpg',
+            'status' => Artwork::STATUS_APPROVED,
+        ]);
+
+        $this->getJson('/api/v1/artworks?medium='.urlencode('آبرنگ').'&availability=available')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.slug', $watercolor->slug);
+
+        $this->getJson('/api/v1/artworks?q='.urlencode('هنرمند آزمایشی'))
+            ->assertOk()
+            ->assertJsonCount(2, 'data');
+
+        $this->getJson('/api/v1/artworks?sort=year_desc')
+            ->assertOk()
+            ->assertJsonPath('data.0.slug', $oil->slug);
+
+        $this->getJson('/api/v1/artworks?sort=year_asc')
+            ->assertOk()
+            ->assertJsonPath('data.0.slug', $watercolor->slug);
+
+        $this->getJson('/api/v1/artworks?availability=unknown')
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['availability']);
+    }
+
+    public function test_public_artwork_filters_only_include_mediums_from_public_approved_work(): void
+    {
+        [, $publicProfile] = $this->artistWithProfile('public-filter@example.com');
+        [, $privateProfile] = $this->artistWithProfile('private-filter@example.com');
+        $privateProfile->update(['is_public' => false]);
+
+        $publicProfile->artworks()->create([
+            ...$this->validArtwork(),
+            'slug' => 'public-filter-work',
+            'medium' => 'مداد رنگی',
+            'image_path' => 'artworks/public-filter.jpg',
+            'status' => Artwork::STATUS_APPROVED,
+        ]);
+        $privateProfile->artworks()->create([
+            ...$this->validArtwork(),
+            'slug' => 'private-filter-work',
+            'medium' => 'تکنیک خصوصی',
+            'image_path' => 'artworks/private-filter.jpg',
+            'status' => Artwork::STATUS_APPROVED,
+        ]);
+        $publicProfile->artworks()->create([
+            ...$this->validArtwork(),
+            'slug' => 'pending-filter-work',
+            'medium' => 'تکنیک در انتظار',
+            'image_path' => 'artworks/pending-filter.jpg',
+            'status' => Artwork::STATUS_PENDING_REVIEW,
+        ]);
+
+        $response = $this->getJson('/api/v1/artwork-filters')->assertOk();
+        $mediums = $response->json('data.mediums');
+        $this->assertContains('مداد رنگی', $mediums);
+        $this->assertNotContains('تکنیک خصوصی', $mediums);
+        $this->assertNotContains('تکنیک در انتظار', $mediums);
+    }
+
+    public function test_approved_artwork_of_a_private_artist_is_not_publicly_discoverable_or_viewable(): void
+    {
+        [, $profile] = $this->artistWithProfile('hidden-artist@example.com');
+        $profile->update(['is_public' => false]);
+        $artwork = $profile->artworks()->create([
+            ...$this->validArtwork(),
+            'slug' => 'hidden-artist-work',
+            'image_path' => 'artworks/hidden-artist.jpg',
+            'status' => Artwork::STATUS_APPROVED,
+        ]);
+
+        $this->getJson('/api/v1/artworks')
+            ->assertOk()
+            ->assertJsonMissing(['slug' => $artwork->slug]);
+
+        $this->getJson('/api/v1/artworks/'.$artwork->slug)->assertForbidden();
+        $this->get('/api/v1/artworks/'.$artwork->slug.'/image')->assertForbidden();
+    }
+
+    public function test_artwork_detail_returns_only_public_approved_related_works(): void
+    {
+        [, $artistProfile] = $this->artistWithProfile('related-owner@example.com');
+        [, $otherProfile] = $this->artistWithProfile('related-peer@example.com');
+        [, $privateProfile] = $this->artistWithProfile('related-private@example.com');
+        $privateProfile->update(['is_public' => false]);
+        $category = Category::query()->where('slug', 'painting')->firstOrFail();
+
+        $target = $artistProfile->artworks()->create([
+            ...$this->validArtwork(),
+            'slug' => 'related-target',
+            'image_path' => 'artworks/related-target.jpg',
+            'status' => Artwork::STATUS_APPROVED,
+        ]);
+        $sameArtist = $artistProfile->artworks()->create([
+            ...$this->validArtwork(),
+            'slug' => 'related-same-artist',
+            'image_path' => 'artworks/related-same-artist.jpg',
+            'status' => Artwork::STATUS_APPROVED,
+        ]);
+        $sameCategory = $otherProfile->artworks()->create([
+            ...$this->validArtwork(),
+            'slug' => 'related-same-category',
+            'image_path' => 'artworks/related-same-category.jpg',
+            'status' => Artwork::STATUS_APPROVED,
+        ]);
+        $privateRelated = $privateProfile->artworks()->create([
+            ...$this->validArtwork(),
+            'slug' => 'related-private',
+            'image_path' => 'artworks/related-private.jpg',
+            'status' => Artwork::STATUS_APPROVED,
+        ]);
+
+        $this->getJson('/api/v1/artworks/'.$target->slug)
+            ->assertOk()
+            ->assertJsonFragment(['slug' => $sameArtist->slug])
+            ->assertJsonFragment(['slug' => $sameCategory->slug])
+            ->assertJsonMissing(['slug' => $privateRelated->slug])
+            ->assertJsonMissingPath('data.related_artworks.0.status');
+    }
+
     /**
      * @return array{0: User, 1: ArtistProfile}
      */

@@ -143,3 +143,25 @@ Known unverified release gates (release sign-off blockers):
 - [ ] Target-host compatibility, production deployment verification, backup and successful restore drill remain release gates.
 
 **M00 implementation and automated regression coverage are merged. M00 is not fully signed off while the manual and operational release gates remain open.**
+
+
+## M02 — Transform discovery and artwork pages · Implementation in progress
+
+**GitHub parent:** [#62](https://github.com/AminBrave/rad-art-marketplace/issues/62) · **Child tracks:** [#70](https://github.com/AminBrave/rad-art-marketplace/issues/70), [#71](https://github.com/AminBrave/rad-art-marketplace/issues/71) · **Branch:** `feat/m02-discovery-artwork-experience`
+
+- [x] Rework the homepage around real approved work, active category pathways, and public artist spotlights; avoid fabricated editorial claims or artist facts.
+- [x] Add server-validated catalogue filters for category, medium, availability, search, and eight sort modes.
+- [x] Preserve shareable search/filter/sort/pagination state in the catalogue URL.
+- [x] Add bounded related public works to artwork detail pages and explicit price/availability presentation.
+- [x] Improve artist portfolio hierarchy and category filtering using actual approved portfolio categories.
+- [x] Enforce public artist visibility consistently for catalogue, filter metadata, artwork detail, related works, and image delivery.
+- [x] Add page-specific document title/description metadata and artwork image fallback.
+- [x] Add Laravel feature tests for filter/sort behavior, related works, and public/private visibility boundaries.
+- [x] Add Chromium browser coverage for homepage discovery, URL-backed catalogue filters, artwork detail/related works, artist portfolio filtering/load-more, and mobile overflow.
+- [ ] Run all CI jobs on the M02 pull request and fix any failures.
+- [ ] Complete manual visual review at mobile/tablet/desktop sizes and verify the full discovery → artwork → artist → buyer inquiry journey.
+- [ ] Attach CI and manual QA evidence, synchronize child/parent issues, and obtain product-owner acceptance before closing #62.
+
+**Explicitly deferred:** artist portrait/cover uploads because no corresponding data model or upload policy exists; admin-managed featured placements because no CMS/curation data exists; no fabricated biography, discipline, availability, or artwork facts. Portfolio category chips are derived only from actual approved portfolio data.
+
+**Status rule:** M02 remains open until automated checks pass, manual visual/journey QA is recorded, and child issues are closed. A green build alone is not the full exit gate.

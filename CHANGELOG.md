@@ -208,3 +208,12 @@ Notable repository changes are listed newest first. Entries describe implementat
 ### Initial application foundation
 - Added Laravel 13 / PHP 8.3+ application, React 18/Vite frontend, Tailwind CSS, Axios, Radix UI, PHPUnit, Pint, ESLint, and GitHub Actions CI.
 - Added versioned API health endpoint, initial Persian/RTL shell, and cPanel-oriented deployment guidance.
+
+
+## Unreleased — M02 discovery experience
+
+- Reworked the public homepage around approved new work, active category discovery, and public artist spotlights.
+- Expanded catalogue filters to medium, availability, and eight server-validated sort modes while preserving shareable URL state and pagination.
+- Added related public works to artwork detail pages and category filtering within artist portfolios.
+- Enforced public artist-profile visibility consistently across catalogue, filter metadata, artwork detail, related work, and image authorization.
+- Added page-specific metadata, detail-image failure fallback, backend feature coverage, and Chromium discovery browser regressions.

@@ -56,6 +56,7 @@ An Artist account owns one `ArtistProfile` with a public slug, display name, bio
 - Admins may view/edit profiles through authorized endpoints.
 - Guests and unrelated users may view only public profiles.
 - The public directory returns public profiles only, with a minimal allow-listed card payload.
+- Public portfolio pages support category filtering on the currently loaded approved portfolio; further pages remain server-paginated.
 - A public artist profile includes approved portfolio artworks only.
 
 ### Artwork and category
@@ -70,7 +71,7 @@ Status transitions:
 - Admin revision request → `changes_requested` (note required).
 - Artist edit/resubmission → `pending_review`; previous review note/audit metadata is cleared.
 
-Only approved artwork appears in public catalogue queries and artist portfolios. Public artwork payloads omit moderation status and rejection notes. Ownership is derived from the authenticated artist profile, never request input.
+Only approved artwork from public artist profiles appears in public catalogue queries and portfolios. Artwork view policy applies the same public-profile condition to detail and image routes; owners and Admins retain their authorized private/pending access. Public artwork payloads omit moderation status and rejection notes. Catalogue filters and sorting are server-validated, URL-backed in React, and applied before pagination. Artwork detail responses may include a bounded set of related public works selected by shared category or artist. Ownership is derived from the authenticated artist profile, never request input.
 
 ### Artist inquiry
 
@@ -105,7 +106,7 @@ The current MVP does not require payment processing, order/fulfilment services, 
 
 ## Current limitations and release dependencies
 
-- MVP 2 feature stages 1–5 (foundation, public marketplace, artist, buyer, and admin workspaces) are integrated in `main`; Stage 6 external QA/release verification remains open. See [ROADMAP.md](../ROADMAP.md).
+- M02 discovery experience changes are delivered on a dedicated feature branch against the current public marketplace baseline; see GitHub issue [#62](https://github.com/AminBrave/rad-art-marketplace/issues/62). The prior MVP2 workspace stages remain integrated; M00 release gates remain tracked separately.
 - Email verification and password-reset UX are not implemented.
 - Admin category management, buyer reports/abuse queue, and featured placements are outside the current approved MVP 2 scope.
 - Analytics is a proposal only; no provider or event collection is enabled.

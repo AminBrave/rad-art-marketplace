@@ -16,7 +16,10 @@ class ArtworkPolicy
 
     public function view(?User $user, Artwork $artwork): bool
     {
-        return $artwork->status === Artwork::STATUS_APPROVED
+        $isPublicArtwork = $artwork->status === Artwork::STATUS_APPROVED
+            && $artwork->artistProfile?->is_public === true;
+
+        return $isPublicArtwork
             || ($user !== null && ($user->isAdmin() || $user->artistProfile?->id === $artwork->artist_profile_id));
     }
 
