@@ -86,3 +86,16 @@ Email verification and password-reset UX are not implemented. Analytics is a pro
 - [ ] Verify private files are not web-accessible.
 - [ ] Monitor moderation backlog and abuse/rate-limit signals.
 - [ ] Keep previous release and backups until sign-off.
+
+
+## M00 closeout evidence — 2026-11-10
+
+- [x] M00 implementation PRs #85, #87 and #86 are merged into main.
+- [x] Latest automated CI passed on 6da7d608333ba046a90cc050808854f0d2767474: [run #42715135296](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42715135296). Backend composer install, composer test, composer lint; frontend npm ci, npm run test:frontend, npm run lint, npm run build.
+- [ ] Browser E2E for buyer inquiry detail route, refresh, role redirects and ownership isolation.
+- [ ] Browser verification of artwork totals across pages and null/zero/positive price values.
+- [ ] Independent review recorded for M00 PR changes and dependency lockfiles.
+- [ ] Stage 6 QA issues #26–#29 complete or explicitly accepted as residual risk.
+- [ ] Accessibility/responsive/RTL checks, performance measurements, target-host checks and backup/restore drill evidenced.
+
+**Release decision:** M00 implementation is integrated and automated CI is green. M00 is not fully signed off, and this checklist must not be treated as a production deployment approval until the unchecked release gates are completed.
