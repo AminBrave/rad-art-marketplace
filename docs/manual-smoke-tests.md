@@ -10,11 +10,16 @@ cp .env.example .env
 php artisan key:generate
 # Configure a disposable database in .env
 php artisan migrate
+php artisan db:seed # seeds local-only demo data and test accounts
 npm install
 npm run dev
 ```
 
 In a second terminal, run `php artisan serve` and open the Laravel URL. To run the complete local HTTPS stack on a machine with Caddy installed and trusted, configure `APP_URL=https://rad.localhost` and `SESSION_SECURE_COOKIE=true`, then run `npm run dev:local` and open `https://rad.localhost`. For the automated suite, the CLI PHP environment must have `pdo_sqlite` and `sqlite3` enabled.
+
+## Demo accounts and dataset
+
+Use the seeded accounts documented in [demo data and test accounts](demo-data.md). The shared demo password is `Demo@12345`. The dataset includes 14 artist profiles (one private), 3 profile-incomplete artists, 4 buyers, all artwork moderation and availability states, 15 approved works on the main artist profile, 70 artworks with generated private SVG thumbnails, and 48 inquiries. Use the main artist/buyer/admin accounts to verify the three role-specific workspaces. Seed only a disposable local database; the seeder is guarded against non-local/non-testing environments.
 
 ## Loading, visual stability, and performance
 
