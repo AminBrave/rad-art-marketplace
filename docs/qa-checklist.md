@@ -60,6 +60,14 @@ This checklist tracks verification across the whole MVP 2 delivery. Run the rele
 
 ## Persian, RTL, accessibility, and responsive behavior — Stage 6
 
+### Source-level review recorded for this PR
+
+- The Blade document declares `lang="fa"` and `dir="rtl"`; Vazirmatn and Inter are configured as the approved font families.
+- Inspected marketplace/workspace views use Persian number/date/price formatting and explicit LTR treatment for account email and URL fields.
+- Global visible focus styling and `prefers-reduced-motion` handling are present.
+- Artwork cards now have a localized failed-image fallback, lazy loading, and asynchronous decoding. Homepage hero and artwork detail imagery use eager/high-priority loading; detail media reserves a responsive aspect ratio.
+- These are source-level findings, not proof that all UI strings, rendered contrast, viewport layouts, or assistive-technology behavior passed real-browser testing.
+
 - [ ] All user-facing MVP 2 copy is Persian and RTL is consistent.
 - [ ] Mixed Persian/Latin names, URLs, emails, and numeric values display correctly.
 - [ ] Keyboard-only navigation and visible focus work.
@@ -70,7 +78,9 @@ This checklist tracks verification across the whole MVP 2 delivery. Run the rele
 
 ## Performance, security, and release
 
-- [ ] Off-screen images are lazy-loaded and image dimensions reserve layout space.
+- [x] Artwork-card images are lazy-loaded and decoded asynchronously; homepage hero and artwork detail imagery are eager/high-priority.
+- [x] Artwork-card and detail containers reserve image aspect ratios; artwork cards show a localized fallback when an image fails.
+- [ ] Verify workspace/upload image behavior and actual layout shift using browser tooling.
 - [ ] Public route loading and bundle behavior are measured; optimizations are evidence-based.
 - [ ] Private image access and upload validation remain protected.
 - [ ] Target PHP version/extensions, HTTPS, document root, and storage permissions are verified.

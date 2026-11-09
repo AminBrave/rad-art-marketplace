@@ -4,7 +4,7 @@ Use this checklist for a release candidate. A checked item requires evidence for
 
 ## Scope and delivery
 
-- [ ] MVP 2 Stages 1–5 are complete and their GitHub issues are closed against accepted behavior.
+- [x] MVP 2 feature stages 1–5 are integrated; Stage 6 source-level QA and automated checks are recorded separately.
 - [ ] Stage 6 QA issues are complete or explicitly accepted as documented residual risk by the product owner.
 - [ ] README, roadmap, API reference, route map, changelog, and manual test guidance match the release.
 - [ ] No deferred or unsupported feature is promised in UI copy or documentation.
@@ -52,6 +52,10 @@ Use this checklist for a release candidate. A checked item requires evidence for
 - [ ] Review privacy notice, retention/deletion policy, and site contact details.
 - [ ] Obtain site-owner and qualified local-counsel review of legal text.
 - [ ] Review legal basis/consent before enabling any analytics provider; analytics collection is currently disabled.
+
+## Stage 6 evidence boundary
+
+The Stage 6 PR records source-level localization/RTL review, image-loading corrections, and automated CI. It does not certify real-browser/device accessibility, visual contrast across all rendered states, performance metrics, production-host compatibility, backup automation, or a successful restore. Those require access to the target environment and must remain unchecked until evidence is attached.
 
 ## Known limitations and product decisions
 

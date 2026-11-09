@@ -1,5 +1,16 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Badge } from './primitives';
+
+function ArtworkImage({ src, title }) {
+    const [failed, setFailed] = useState(false);
+
+    if (!src || failed) {
+        return <span role="img" aria-label={`تصویر اثر ${title} در دسترس نیست`} className="px-4 text-center text-sm text-muted">تصویر اثر در دسترس نیست</span>;
+    }
+
+    return <img src={src} alt={title} loading="lazy" decoding="async" onError={() => setFailed(true)} className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]" />;
+}
 
 export function ArtworkCard({ artwork, className = '' }) {
     if (!artwork) return null;
@@ -14,14 +25,9 @@ export function ArtworkCard({ artwork, className = '' }) {
             <Link to={`/artworks/${artwork.slug}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus">
                 <div className="flex aspect-[4/3] items-center justify-center overflow-hidden bg-surface-muted p-3">
                     {artwork.image_url ? (
-                        <img
-                            src={artwork.image_url}
-                            alt={title}
-                            loading="lazy"
-                            className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
-                        />
+                        <ArtworkImage src={artwork.image_url} title={title} />
                     ) : (
-                        <span className="text-sm text-muted">تصویر اثر موجود نیست</span>
+                        <ArtworkImage src={null} title={title} />
                     )}
                 </div>
                 <div className="grid gap-2 p-4">

@@ -123,3 +123,18 @@ npm run build
 ```
 
 Record actual results and any manual/browser limitations in the PR and release checklist. Do not mark a check complete because the page exists or CI passed.
+
+
+## Stage 6 release verification
+
+Run these checks at 320, 375, 390, 768, 1024, 1280, and 1536 CSS pixels in current Chromium, Firefox, and WebKit where available. Record browser/version, viewport, operating system, account role, route, and result; do not mark a device/browser as passed unless it was actually tested.
+
+1. Navigate homepage, catalogue, artist directory, artwork detail, artist profile, About, Help, and Contact routes using keyboard only. Confirm logical tab order, visible focus, and no keyboard traps.
+2. Repeat critical journeys as Guest, Buyer, Artist, and Admin. Confirm role redirects, direct route refresh, and server-side denial for unauthorized API requests.
+3. Submit invalid and valid login/register, artist profile, artwork upload, buyer inquiry, artist read/archive, and admin moderation/user-role forms. Confirm labels, inline errors, required notes, status announcements, and focus behavior.
+4. Test Persian text mixed with Latin names, email addresses, URLs, artwork dimensions, years, and large Rial values. Confirm correct direction and readable wrapping.
+5. Simulate slow network, failed artwork image requests, empty API responses, 401/403/404/422/429 responses, and retry flows. Confirm image fallback and no private image leakage.
+6. Inspect horizontal overflow, touch targets, dialog/menu behavior, table scrolling, contrast, and reduced-motion mode at each viewport.
+7. Use browser performance tooling to capture LCP, CLS, image transfer sizes, request counts, and route bundle sizes on a documented test dataset. Compare before/after using the same environment; do not infer a performance score from a production build alone.
+8. Run `composer test`, `composer lint`, `npm run lint`, and `npm run build`; attach workflow run and commit SHA.
+9. On the actual target host, verify PHP 8.3+, required extensions, HTTPS, document-root isolation, private storage permissions, migrations, logs, and production configuration. Take a backup and complete a restore drill before production sign-off.

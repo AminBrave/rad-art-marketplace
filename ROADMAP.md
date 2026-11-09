@@ -66,15 +66,18 @@ This file is the concise project delivery map. The [GitHub tracker](https://gith
 - [x] Paginated user management with supported Artist/Admin role updates and server-enforced self-demotion protection.
 - [x] Loading, empty, error, and success feedback; no unsupported analytics or user actions.
 
-### Stage 6 — QA and release · Next
+### Stage 6 — QA and release · Verification in progress
 
-**Issues #26–#29 · Open**
+**Issues #26–#29 · Open pending external verification**
 
-- [ ] Persian localization and RTL quality pass.
-- [ ] Responsive and accessibility verification across phone, tablet, and desktop.
-- [ ] Measure and improve artwork image loading and public-page performance where evidence warrants it.
-- [ ] Critical end-to-end regression coverage and release verification.
-- [ ] Production-host compatibility, deployment, backup, and restore verification.
+- [x] Source-level review of Persian document language/direction, Vazirmatn/Inter font configuration, Persian dates/prices, and explicit LTR account fields in inspected views.
+- [x] Preserve existing visible focus styling and reduced-motion behavior; record remaining real-browser accessibility checks.
+- [x] Improve artwork image fallback, lazy loading/async decoding for cards, eager/high-priority loading for primary imagery, and reserved detail-image aspect ratios.
+- [x] Run backend tests/style, frontend lint, and production build in GitHub Actions on the Stage 6 PR.
+- [ ] Complete real-browser/device keyboard, screen-reader, responsive, contrast, and mixed-direction verification.
+- [ ] Record repeatable performance metrics (LCP, CLS, transfer size, request count, route bundles) before claiming performance targets.
+- [ ] Complete target-host compatibility, production configuration, backup, and successful restore verification.
+- [ ] Complete manual end-to-end regression journeys and attach evidence to the release checklist.
 
 ## MVP 1 capabilities retained
 
@@ -84,7 +87,7 @@ The current baseline includes session authentication, Buyer/Artist/Admin roles, 
 
 The repository contains cPanel deployment and backup/restore procedures, an analytics proposal, manual smoke tests, QA checklists, and a release checklist. These documents are instructions/plans—not evidence that hosting is compatible, deployment is complete, analytics is collecting data, backups are automated, a restore drill succeeded, or browser/device QA has passed.
 
-Known unverified release gates:
+Known unverified release gates (release sign-off blockers):
 - Target cPanel PHP 8.3+ and required extensions.
 - Production environment, HTTPS, document-root isolation, and private-storage permissions.
 - Backup automation and a successful restore drill.

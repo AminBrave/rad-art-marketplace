@@ -3,7 +3,7 @@
 Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact marketplace. It helps visitors discover approved artworks and public artist portfolios, and lets registered buyers send private inquiries to artists.
 
 **Current integration branch:** `main`  
-**Current delivery status:** MVP 2 Stages 1–5 (foundation, public marketplace, artist, buyer, and admin workspaces) are implemented and integrated. Stage 6 (QA and release) remains.  
+**Current delivery status:** MVP 2 feature stages 1–5 are integrated. Stage 6 source-level QA, image-loading corrections, and automated verification are being delivered; real-browser/device and production sign-off remain outstanding.  
 **Product status:** Active MVP development; not yet verified or signed off for production.
 
 ## Product capabilities
@@ -171,6 +171,12 @@ Use `composer lint:fix` only when intentionally applying PHP formatting changes,
 | [docs/cpanel-deployment.md](docs/cpanel-deployment.md) | Proposed cPanel deployment procedure |
 | [docs/backup-and-restore.md](docs/backup-and-restore.md) | Database and private-file recovery procedure |
 | [docs/analytics-baseline.md](docs/analytics-baseline.md) | Privacy-conscious analytics proposal; collection is disabled |
+
+## Stage 6 verification status
+
+The Stage 6 QA PR adds a resilient broken-artwork-image fallback, lazy/asynchronous loading for artwork cards, eager/high-priority loading for primary artwork imagery, and reserved detail-image aspect ratios. Source review confirms Persian/RTL document defaults, Vazirmatn/Inter font declarations, explicit LTR account fields in inspected views, visible focus styles, and reduced-motion rules. Automated CI is required on the PR.
+
+These checks do not constitute a full browser/device accessibility audit, measured Core Web Vitals baseline, production-host verification, or backup restore drill. See the QA checklist, manual smoke tests, and release checklist.
 
 ## Deployment status
 
