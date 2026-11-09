@@ -15,6 +15,7 @@ import {
     NotFoundPage, RequireAuth, RequireRole, UnauthorizedPage,
 } from './RoutingPages';
 import ArtistWorkspaceOverview from './ArtistWorkspaceOverview';
+import { BuyerDashboardHome, BuyerInquiryPage } from './BuyerWorkspace';
 import { AdminArtworkModeration, AdminDashboardHome, AdminUsersPage } from './AdminWorkspace';
 
 function AppRoutes() {
