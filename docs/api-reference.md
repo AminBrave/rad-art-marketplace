@@ -65,6 +65,8 @@ Catalogue query parameters:
 
 The catalogue is ordered newest first and paginates 12 items per page by default. There is no sort parameter. Only approved artwork is included in public catalogue queries. Public artwork payloads omit moderation status and rejection notes.
 
+**Price semantics:** `price = null` means no price has been disclosed and the UI must say “قیمت اعلام نشده”. A numeric zero is a supplied amount and must be rendered as `۰ ریال`; do not infer or label it “free” or “complimentary”. Positive values are formatted as Rial amounts. This is display semantics only; it does not define a payment or transaction workflow.
+
 The image route checks the artwork view policy and streams the original from private local storage. Responses use private caching and `X-Content-Type-Options: nosniff`.
 
 ## Artist artwork management
@@ -75,7 +77,7 @@ The image route checks the artwork view policy and streams the original from pri
 | POST | `/api/v1/artist/artworks` | Artist, throttled | Submit artwork |
 | PATCH | `/api/v1/artist/artworks/{id}` | Artist/Admin route group; owner/Admin policy | Update artwork |
 
-Submission fields include `title` (required, max 160), `category_id` (active category), `availability` (`available`, `sold`, or `not_for_sale`), optional `description`, `medium`, `dimensions`, `year`, `price`, and required image. Updates may omit the image. Accepted image formats are JPG/JPEG, PNG, and WebP; maximum file size is 5 MB and maximum dimensions are 6000 × 6000. Ownership and pending-review status are assigned server-side. The current artist artwork list uses simple pagination at 12 items per page. Pass the standard `page` query parameter; the paginator returns `next_page_url` and `prev_page_url`. This keeps large artist libraries from producing unbounded responses.
+Submission fields include `title` (required, max 160), `category_id` (active category), `availability` (`available`, `sold`, or `not_for_sale`), optional `description`, `medium`, `dimensions`, `year`, `price`, and required image. Updates may omit the image. Accepted image formats are JPG/JPEG, PNG, and WebP; maximum file size is 5 MB and maximum dimensions are 6000 × 6000. Ownership and pending-review status are assigned server-side. The current artist artwork list uses length-aware Laravel pagination at 12 items per page and returns `total`, `current_page`, `last_page`, `next_page_url`, and `prev_page_url`. The endpoint remains scoped to the authenticated artist's profile.
 
 ## Artwork moderation
 

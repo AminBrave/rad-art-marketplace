@@ -1,9 +1,10 @@
 import { createElement, useEffect, useState } from 'react';
 import axios from 'axios';
 import ContactArtistForm from './ContactArtistForm';
+import { formatArtworkPrice } from '../utils/formatArtworkPrice';
 
 export default function ArtworkGallery({ user }) {
-    const detailSlug = window.location.pathname.match(/^\/artworks\/([^/]+)$/)?.[1];
+    const detailSlug = window.location.pathname.match(/^[/]artworks[/]([^/]+)$/)?.[1];
     const [categories, setCategories] = useState([]);
     const [artworks, setArtworks] = useState([]);
     const [detail, setDetail] = useState(null);
@@ -51,7 +52,7 @@ export default function ArtworkGallery({ user }) {
                                 <h1 className="mt-3 text-3xl font-black leading-relaxed">{detail.title}</h1>
                                 <p className="mt-3 text-sm text-stone-500">{detail.medium} {detail.dimensions ? '· ' + detail.dimensions : ''}</p>
                                 {detail.description && <p className="mt-6 whitespace-pre-line leading-8 text-stone-700">{detail.description}</p>}
-                                <p className="mt-6 font-bold">{detail.price ? Number(detail.price).toLocaleString('fa-IR') + ' ریال' : 'قیمت توافقی'}</p>
+                                <p className="mt-6 font-bold">{formatArtworkPrice(detail.price)}</p>
                                 <p className="mt-2 text-sm text-stone-500">{detail.availability === 'available' ? 'موجود' : detail.availability === 'sold' ? 'فروخته‌شده' : 'برای فروش نیست'}</p>
                                 <a href={'/artists/' + detail.artist.slug} className="mt-8 inline-block rounded-full bg-ink px-5 py-3 text-sm font-bold text-white">مشاهده پروفایل هنرمند: {detail.artist.display_name}</a>
                                 {user?.role === 'buyer' && createElement(ContactArtistForm, { artistSlug: detail.artist.slug, artworkId: detail.id })}
@@ -94,7 +95,7 @@ export default function ArtworkGallery({ user }) {
                                 <p className="text-xs font-bold text-terracotta-strong">{artwork.category.name}</p>
                                 <h3 className="mt-2 text-lg font-extrabold">{artwork.title}</h3>
                                 <p className="mt-2 text-sm text-stone-500">{artwork.artist.display_name}</p>
-                                <p className="mt-4 text-sm font-bold">{artwork.price ? Number(artwork.price).toLocaleString('fa-IR') + ' ریال' : 'قیمت توافقی'}</p>
+                                <p className="mt-4 text-sm font-bold">{formatArtworkPrice(artwork.price)}</p>
                             </div>
                         </a>
                     ))}

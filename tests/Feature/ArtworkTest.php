@@ -103,7 +103,7 @@ class ArtworkTest extends TestCase
             ])
             ->assertUnauthorized();
 
-        [$artist, $profile] = $this->artistWithProfile();
+        [, $profile] = $this->artistWithProfile();
         $pending = $profile->artworks()->create([
             ...$this->validArtwork(),
             'slug' => 'pending-work',
@@ -145,7 +145,7 @@ class ArtworkTest extends TestCase
             ->assertJsonPath('total', 7);
     }
 
-    public function test_artist_artwork_list_is_paginated_and_scoped_to_the_current_artist(): void
+    public function test_artist_artwork_list_includes_total_and_is_scoped_to_the_current_artist(): void
     {
         [$artist, $profile] = $this->artistWithProfile();
 
@@ -169,6 +169,7 @@ class ArtworkTest extends TestCase
             ->assertOk()
             ->assertJsonCount(12, 'data')
             ->assertJsonPath('current_page', 1)
+            ->assertJsonPath('total', 13)
             ->assertJsonStructure(['next_page_url'])
             ->assertJsonMissing(['slug' => 'another-artists-work']);
 
@@ -177,7 +178,36 @@ class ArtworkTest extends TestCase
             ->assertOk()
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('current_page', 2)
+            ->assertJsonPath('total', 13)
             ->assertJsonPath('next_page_url', null);
+    }
+
+    public function test_public_artwork_payload_distinguishes_zero_price_from_undisclosed_price(): void
+    {
+        [, $profile] = $this->artistWithProfile();
+
+        $zeroPrice = $profile->artworks()->create([
+            ...$this->validArtwork(),
+            'slug' => 'zero-priced-work',
+            'image_path' => 'artworks/zero-priced-work.jpg',
+            'price' => 0,
+            'status' => Artwork::STATUS_APPROVED,
+        ]);
+        $undisclosedPrice = $profile->artworks()->create([
+            ...$this->validArtwork(),
+            'slug' => 'undisclosed-price-work',
+            'image_path' => 'artworks/undisclosed-price-work.jpg',
+            'price' => null,
+            'status' => Artwork::STATUS_APPROVED,
+        ]);
+
+        $this->getJson('/api/v1/artworks/'.$zeroPrice->slug)
+            ->assertOk()
+            ->assertJsonPath('data.price', '0.00');
+
+        $this->getJson('/api/v1/artworks/'.$undisclosedPrice->slug)
+            ->assertOk()
+            ->assertJsonPath('data.price', null);
     }
 
     public function test_admin_can_view_and_edit_an_artists_artwork(): void
