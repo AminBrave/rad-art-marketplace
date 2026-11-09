@@ -72,15 +72,27 @@ class ArtistProfileController extends Controller
         }
 
         $this->authorize('view', $artistProfile);
-        $artistProfile->load(['artworks' => fn ($query) => $query
+
+        // Keep public profile payloads bounded even when an artist has a large portfolio.
+        // simplePaginate avoids the additional COUNT query used by length-aware pagination.
+        $artworks = $artistProfile->artworks()
             ->where('status', Artwork::STATUS_APPROVED)
             ->with('category')
-            ->latest()]);
+            ->latest()
+            ->simplePaginate(12, ['*'], 'artworks_page');
 
         return response()->json([
             'data' => [
                 ... $this->payload($artistProfile),
-                'artworks' => $artistProfile->artworks->map(fn (Artwork $artwork): array => $this->publicArtworkPayload($artwork))->values(),
+                'artworks' => $artworks->getCollection()
+                    ->map(fn (Artwork $artwork): array => $this->publicArtworkPayload($artwork))
+                    ->values(),
+                'artworks_pagination' => [
+                    'current_page' => $artworks->currentPage(),
+                    'per_page' => $artworks->perPage(),
+                    'has_more' => $artworks->hasMorePages(),
+                    'next_page' => $artworks->hasMorePages() ? $artworks->currentPage() + 1 : null,
+                ],
             ],
         ]);
     }
