@@ -18,6 +18,7 @@ use Tests\TestCase;
 class DemoDatabaseSeederTest extends TestCase
 {
     use RefreshDatabase;
+
     public function test_demo_seeder_covers_roles_states_pagination_and_private_images(): void
     {
         Storage::fake('local');
@@ -53,7 +54,6 @@ class DemoDatabaseSeederTest extends TestCase
         $sample = Artwork::query()->where('slug', 'demo-01-01')->firstOrFail();
         Storage::disk('local')->assertExists($sample->image_path);
     }
-
 
     public function test_seeded_accounts_exercise_admin_and_buyer_pagination(): void
     {
