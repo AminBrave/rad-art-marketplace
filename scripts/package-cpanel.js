@@ -86,14 +86,22 @@ try {
     fs.rmSync(outputZip, { force: true });
 
     if (process.platform === 'win32') {
-        const quote = (value) => `'${value.replaceAll("'", "''")}'`;
-        const command = `Compress-Archive -Path (Join-Path ${quote(stagingDir)} '*') -DestinationPath ${quote(outputZip)} -Force`;
-        const result = spawnSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', command], {
+        // Windows ships bsdtar as tar.exe; it creates ZIP archives without
+        // the slow PowerShell Compress-Archive pipeline on large vendor trees.
+        const result = spawnSync('tar.exe', [
+            '-a',
+            '-c',
+            '-f',
+            outputZip,
+            '-C',
+            stagingDir,
+            '.',
+        ], {
             stdio: 'inherit',
         });
 
-        if (result.status !== 0) {
-            throw new Error('PowerShell could not create rad-file.zip.');
+        if (result.error || result.status !== 0) {
+            throw new Error('Windows tar.exe could not create rad-file.zip. Ensure tar.exe is available on PATH.');
         }
     } else {
         const result = spawnSync('zip', ['-qr', outputZip, '.'], {
