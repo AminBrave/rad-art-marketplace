@@ -114,3 +114,19 @@ Known unverified release gates (release sign-off blockers):
 - Update this roadmap, README, changelog, and GitHub tracker when delivery status changes.
 - Keep implementation status distinct from browser performance certification and production release sign-off.
 - Do not mark a feature complete based on a placeholder, a document, or a successful build alone.
+
+
+## M00 — Foundation stabilization · Implementation merged; closeout pending
+
+**GitHub parent:** [#60](https://github.com/AminBrave/rad-art-marketplace/issues/60) · **Implementation PRs:** [#85](https://github.com/AminBrave/rad-art-marketplace/pull/85), [#87](https://github.com/AminBrave/rad-art-marketplace/pull/87), [#86](https://github.com/AminBrave/rad-art-marketplace/pull/86)
+
+- [x] Buyer inquiry detail route registered under the buyer role guard; Laravel SPA deep-link fallback regression added.
+- [x] Composer and npm lockfiles committed; CI uses deterministic composer install and npm ci.
+- [x] Artist artwork totals use server paginator metadata; null and numeric-zero price presentation are distinct.
+- [x] Latest main CI passed on commit 6da7d608333ba046a90cc050808854f0d2767474: [workflow run #42715135296](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42715135296). Backend tests/style and frontend unit tests/lint/build all passed.
+- [ ] Browser E2E for buyer inquiry detail, direct navigation/refresh, role redirects and ownership isolation.
+- [ ] Browser verification for artwork totals beyond the first page and null/zero/positive price rendering.
+- [ ] Independent review evidence for the implementation/lockfile diffs.
+- [ ] Complete or explicitly defer the still-open QA gates [#26–#29](https://github.com/AminBrave/rad-art-marketplace/issues/26).
+
+**Status rule:** implementation is integrated, but M00 is not signed off. Browser/device accessibility and RTL checks, measured performance baselines, target-host verification, and backup/restore evidence remain separate release gates. See the QA checklist, release checklist, and [M00 tracker #60](https://github.com/AminBrave/rad-art-marketplace/issues/60).
