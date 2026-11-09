@@ -60,6 +60,19 @@ export default function ArtistProfilePage() {
         }
     }, [loadingMore, profile, slug]);
 
+    useEffect(() => {
+        if (!profile) return undefined;
+        const previousTitle = document.title;
+        const descriptionTag = document.querySelector('meta[name="description"]');
+        const previousDescription = descriptionTag?.getAttribute('content');
+        document.title = `${profile.display_name} | هنرمندان راد آرت`;
+        if (descriptionTag) descriptionTag.setAttribute('content', profile.bio || `پورتفولیوی عمومی ${profile.display_name} در راد آرت؛ آثار تأییدشده و راه ارتباط با هنرمند.`);
+        return () => {
+            document.title = previousTitle;
+            if (descriptionTag && previousDescription !== null) descriptionTag.setAttribute('content', previousDescription);
+        };
+    }, [profile]);
+
     const portfolioCategories = useMemo(() => {
         const seen = new Map();
         (profile?.artworks ?? []).forEach((artwork) => {
