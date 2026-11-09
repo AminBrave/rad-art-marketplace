@@ -129,6 +129,7 @@ cp .env.example .env
 php artisan key:generate
 # Configure database credentials in .env
 php artisan migrate
+php artisan db:seed # local/testing demo accounts and content
 npm install
 ```
 
@@ -164,6 +165,10 @@ For the cPanel frontend artifact, use `npm ci` followed by `npm run build:cpanel
 
 Use `composer lint:fix` only when intentionally applying PHP formatting changes, then rerun `composer lint`.
 
+## Demo data
+
+A repeatable, local/testing-only dataset is available through `php artisan db:seed`. It creates demo admin, artist, and buyer accounts, 70 artworks, all moderation/availability states, inquiries, and private SVG placeholder images. The seeder does not truncate the database and refuses to run outside local/testing. See [demo data and test accounts](docs/demo-data.md) for credentials, coverage, and reset guidance.
+
 ## Documentation map
 
 | Document | Purpose / authority |
@@ -178,6 +183,7 @@ Use `composer lint:fix` only when intentionally applying PHP formatting changes,
 | [docs/design-system.md](docs/design-system.md) | Visual tokens and typography |
 | [docs/ui-components.md](docs/ui-components.md) | Shared UI component usage |
 | [docs/manual-smoke-tests.md](docs/manual-smoke-tests.md) | Manual checks for implemented features |
+| [docs/demo-data.md](docs/demo-data.md) | Local-only demo dataset, credentials, and test scenarios |
 | [docs/qa-checklist.md](docs/qa-checklist.md) | Cross-feature QA checklist |
 | [docs/release-checklist.md](docs/release-checklist.md) | Production release gates and known limitations |
 | [docs/cpanel-deployment.md](docs/cpanel-deployment.md) | Proposed cPanel deployment procedure |
