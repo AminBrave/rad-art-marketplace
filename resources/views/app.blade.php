@@ -101,7 +101,13 @@
                         <span class="app-skeleton app-boot__paragraph app-boot__paragraph--short"></span>
                         <span class="app-skeleton app-boot__button"></span>
                     </div>
-                    <span class="app-skeleton app-boot__artwork"></span>
+                    <div class="app-boot__hero-media">
+                        <span class="app-skeleton app-boot__artwork"></span>
+                        <div class="app-boot__hero-caption">
+                            <div class="app-boot__caption-lines"><span class="app-skeleton app-boot__caption-label"></span><span class="app-skeleton app-boot__caption-title"></span></div>
+                            <span class="app-skeleton app-boot__caption-action"></span>
+                        </div>
+                    </div>
                 </section>
                 <section class="app-boot__cards" aria-hidden="true">
                     @foreach (range(1, 3) as $item)<span class="app-skeleton app-boot__card"></span>@endforeach
