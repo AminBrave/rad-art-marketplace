@@ -24,6 +24,7 @@ Use this checklist for a release candidate. A checked item requires evidence for
 
 - [ ] Confirm production MySQL, HTTPS, document root, private storage, and file permissions.
 - [ ] Confirm valid TLS certificate and automatic HTTP-to-HTTPS redirect without loops.
+- [ ] Confirm session cookies are marked Secure in production.
 - [ ] Confirm HSTS is present on HTTPS responses and covers only verified hostnames.
 - [ ] Verify HTTP/2 negotiation on the production TLS endpoint.
 - [ ] Verify HTTP/3 negotiation if the hosting provider supports/enables it; otherwise record the provider limitation.
