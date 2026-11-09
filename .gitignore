@@ -43,6 +43,3 @@ Thumbs.db
 .phpactor.json
 .phpstorm.meta.php
 
-# Local cPanel deployment archive (generated, never commit)
-/rad-file/
-/rad-file.zip
