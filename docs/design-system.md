@@ -42,6 +42,8 @@ Fonts are loaded from Google Fonts in the Blade entry document. If self-hosting 
 - Use subtle elevation only when it clarifies hierarchy; prefer borders and whitespace.
 - Focus indicators are global and visible; reduced-motion preferences are respected.
 - Artwork cards use a fixed aspect-ratio media frame, lazy loading, asynchronous decoding, and a localized broken-image fallback. The homepage hero and artwork detail image use eager/high-priority loading; detail media reserves a responsive aspect ratio.
+- The Blade entry point renders a static first-paint skeleton before React mounts. Route-level skeletons reserve media and content space while lazy-loaded feature bundles are fetched; reduced-motion users receive a static shimmer-free placeholder.
+- Google Fonts use `display=optional` to reduce late font swaps and avoidable text reflow. Recheck typography and CLS on the actual production host because font availability and network timing affect rendered metrics.
 
 ## Preview
 
