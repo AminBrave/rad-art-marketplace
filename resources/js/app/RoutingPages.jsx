@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { WorkspaceLayout } from './Layouts';
-import ArtworkStudio from './ArtworkStudio';
-import InquiryCenter from './InquiryCenter';
+const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
+const InquiryCenter = lazy(() => import('./InquiryCenter'));
 
 const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
 
@@ -240,7 +240,7 @@ export function ArtistProfileSettings() {
 export function ArtistArtworkPage() {
     const { user, profile, profileLoading } = useOutletContext();
     if (profileLoading) return <RouteLoading label="در حال آماده‌سازی فضای آثار…" />;
-    return <ArtworkStudio user={user} hasProfile={Boolean(profile?.slug)} />;
+    return <Suspense fallback={<RouteLoading label="در حال آماده‌سازی فضای آثار…" />}><ArtworkStudio user={user} hasProfile={Boolean(profile?.slug)} /></Suspense>;
 }
 
 export function ArtistInquiryPage() {
@@ -256,7 +256,7 @@ export function ArtistInquiryPage() {
             </section>
         );
     }
-    return <InquiryCenter user={user} hasProfile />;
+    return <Suspense fallback={<RouteLoading label="در حال آماده‌سازی صندوق پیام‌ها…" />}><InquiryCenter user={user} hasProfile /></Suspense>;
 }
 
 export function BuyerWorkspaceLayout() {
