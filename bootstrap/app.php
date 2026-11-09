@@ -18,6 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => EnsureUserHasRole::class,
         ]);
+
+        // The local Caddy reverse proxy is loopback-only; never trust arbitrary proxies.
+        if (app()->environment('local')) {
+            $middleware->trustProxies(at: ['127.0.0.1', '::1']);
+        }
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
