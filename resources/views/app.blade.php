@@ -15,7 +15,7 @@
 </head>
 <body>
     @php
-        $isWorkspace = request()->is('dashboard/*') || request()->is('admin*');
+        $isWorkspace = request()->is('dashboard', 'dashboard/*', 'admin*');
         $isArtworkDetail = request()->is('artworks/*');
         $isArtistProfile = request()->is('artists/*');
         $isForm = request()->is('login', 'register', 'dashboard/artist/profile', 'dashboard/artist/artworks');
