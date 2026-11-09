@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { formatArtworkPrice } from '../../utils/formatArtworkPrice';
 import { Badge } from './primitives';
 
 function ArtworkImage({ src, title }) {
@@ -16,9 +17,7 @@ export function ArtworkCard({ artwork, className = '' }) {
     if (!artwork) return null;
     const title = artwork.title ?? 'اثر هنری';
     const artistName = artwork.artist?.display_name ?? artwork.artist?.name ?? '';
-    const price = artwork.price
-        ? `${Number(artwork.price).toLocaleString('fa-IR')} ریال`
-        : 'قیمت توافقی';
+    const price = formatArtworkPrice(artwork.price);
 
     return (
         <article className={`group min-w-0 overflow-hidden border border-border bg-paper transition-shadow hover:shadow-soft ${className}`}>
