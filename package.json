@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:cpanel": "npm run lint && vite build",
+    "build:cpanel": "npm run lint && vite build --config vite.config.cpanel.js",
     "lint": "eslint resources/js --max-warnings=0",
     "dev:https": "vite --mode https",
     "dev:local": "node scripts/dev-local.js"
