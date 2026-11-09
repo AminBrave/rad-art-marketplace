@@ -109,8 +109,41 @@
                         </div>
                     </div>
                 </section>
-                <section class="app-boot__cards" aria-hidden="true">
-                    @foreach (range(1, 3) as $item)<span class="app-skeleton app-boot__card"></span>@endforeach
+                <section class="app-boot__features">
+                    @foreach (range(1, 3) as $item)
+                        <div class="app-boot__feature">
+                            <span class="app-skeleton h-3 w-20"></span>
+                            <span class="app-skeleton mt-3 h-6 w-3/4"></span>
+                            <span class="app-skeleton mt-3 h-3 w-full"></span>
+                            <span class="app-skeleton mt-2 h-3 w-5/6"></span>
+                        </div>
+                    @endforeach
+                </section>
+                <section class="app-boot__gallery">
+                    <div class="app-boot__section-heading"><div class="grid gap-3"><span class="app-skeleton h-3 w-24"></span><span class="app-skeleton h-8 w-40"></span></div><span class="app-skeleton h-4 w-20"></span></div>
+                    <div class="app-boot__cards" aria-hidden="true">
+                        @foreach (range(1, 3) as $item)
+                            <div class="app-boot__gallery-card"><span class="app-skeleton app-boot__card"></span><div class="grid gap-3 p-4"><span class="app-skeleton h-4 w-4/5"></span><span class="app-skeleton h-3 w-2/5"></span></div></div>
+                        @endforeach
+                    </div>
+                </section>
+                <section class="app-boot__categories">
+                    <div class="grid gap-3"><span class="app-skeleton h-3 w-24"></span><span class="app-skeleton h-8 w-48"></span></div>
+                    <div class="app-boot__category-pills">
+                        @foreach (range(1, 6) as $item)<span class="app-skeleton h-11 w-28"></span>@endforeach
+                    </div>
+                </section>
+                <section class="app-boot__artists">
+                    <div class="app-boot__section-heading"><div class="grid gap-3"><span class="app-skeleton h-3 w-24"></span><span class="app-skeleton h-8 w-44"></span></div><span class="app-skeleton h-4 w-24"></span></div>
+                    <div class="app-boot__artist-cards">
+                        @foreach (range(1, 3) as $item)
+                            <div class="grid gap-3 border border-border bg-white p-5"><span class="app-skeleton h-4 w-3/4"></span><span class="app-skeleton h-3 w-1/2"></span><span class="app-skeleton h-3 w-full"></span><span class="app-skeleton h-3 w-4/5"></span></div>
+                        @endforeach
+                    </div>
+                </section>
+                <section class="app-boot__cta">
+                    <div class="grid max-w-2xl gap-3"><span class="app-skeleton h-3 w-24"></span><span class="app-skeleton h-8 w-full"></span><span class="app-skeleton h-4 w-5/6"></span></div>
+                    <span class="app-skeleton h-12 w-36"></span>
                 </section>
             @endif
         </main>
