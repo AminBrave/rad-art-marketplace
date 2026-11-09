@@ -17,8 +17,10 @@ Do not bypass Composer platform checks or security advisories. If PHP 8.3+ is un
 1. Create a MySQL database and a dedicated database user in cPanel.
 2. Grant only the privileges required by this application.
 3. Configure the domain/subdomain and issue/install a valid TLS certificate (for example, AutoSSL/Let's Encrypt).
-4. Prefer placing the Laravel project outside `public_html` and setting the domain document root to Laravel's `public/` directory.
-5. If document-root configuration is restricted, keep the application outside the public directory and use a reviewed hosting-specific entry-point arrangement. Never expose `.env`, `vendor/`, source files, or private storage.
+4. **Recommended:** place the Laravel project outside `public_html` and set the domain document root to Laravel's `public/` directory.
+5. If document-root configuration is restricted and you specifically require the entire repository inside `public_html`, follow [the dedicated public_html-root deployment guide](cpanel-public-html-deployment.md). This is a less secure alternative and must pass all of its security checks before use.
+
+Never expose `.env`, `vendor/`, source files, or private storage.
 
 ## 3. Build and upload
 
@@ -27,14 +29,21 @@ Build on a trusted development/build machine:
 ```bash
 composer install --no-dev --prefer-dist --optimize-autoloader
 npm ci
-npm run build:cpanel
 ```
 
-Upload application source and generated `public/build` assets. Exclude `.env`, `node_modules/`, local databases, test artifacts, and development-only files. If Composer is unavailable on the host, prepare production dependencies using a compatible PHP environment.
+For the **recommended standard deployment** (Laravel's `public/` directory is the document root), run:
+
+```bash
+npm run build
+```
+
+This writes assets to `public/build/`. Upload application source and generated `public/build` assets. Exclude `.env`, `node_modules/`, local databases, test artifacts, and development-only files. If Composer is unavailable on the host, prepare production dependencies using a compatible PHP environment.
+
+For the **entire-project-in-public_html alternative**, use `npm run build:cpanel` instead; it uses `vite.config.cpanel.js` and writes assets to the repository-root `build/` directory. Follow the dedicated guide for the matching root `index.php`, `.htaccess`, and upload layout. Do not mix the two layouts.
 
 ## 4. Configure production
 
-Create production `.env` outside the public web root. Configure at minimum:
+For the recommended standard deployment, create production `.env` outside the public web root. For the public_html-root alternative, create it in the repository root only after installing and verifying the protective root `.htaccess` rules. Configure at minimum:
 
 - `APP_ENV=production`
 - `APP_DEBUG=false`
@@ -53,7 +62,7 @@ Email verification, password reset, and email delivery are not implemented. Do n
 
 ## 5. TLS, HTTP/2, HTTP/3, and web server
 
-The repository's `public/.htaccess` redirects HTTP requests to HTTPS and adds a one-year HSTS policy to HTTPS responses. Install a valid certificate before enabling the redirect. HSTS intentionally excludes subdomains and preload until every affected hostname has been verified.
+The repository's standard `public/.htaccess` redirects HTTP requests to HTTPS and adds a one-year HSTS policy to HTTPS responses. The public_html-root profile has a separate root `.htaccess` with equivalent HTTPS/HSTS behavior. Install a valid certificate before enabling the redirect. HSTS intentionally excludes subdomains and preload until every affected hostname has been verified.
 
 HTTP/2 and HTTP/3 are server/host settings; Laravel and `.htaccess` cannot enable them:
 - **HTTPS/TLS:** enable AutoSSL or install a valid certificate for the production hostname and any active `www` alias.
@@ -63,6 +72,7 @@ HTTP/2 and HTTP/3 are server/host settings; Laravel and `.htaccess` cannot enabl
 - **Verify:** inspect the browser Network panel or run `curl -I --http2 https://your-domain.example`. For HTTP/3, use a curl build with HTTP/3 support: `curl --http3-only -I https://your-domain.example`. Confirm the negotiated protocol in browser DevTools. A client curl without HTTP/3 support cannot prove the server lacks it.
 
 Do not advertise HTTP/3 as active until the real production hostname is tested externally. Shared-hosting customers may need their provider to enable these protocols.
+
 ## 6. Storage and web server
 
 Ensure `storage/` and `bootstrap/cache/` are writable by the PHP process. Artwork originals are stored on Laravel's private local disk and delivered through an application route with authorization checks. Do not symlink the private artwork directory into a public path.
@@ -74,7 +84,7 @@ php artisan migrate --force
 php artisan optimize
 ```
 
-Set the domain document root to Laravel's `public/` directory. Verify requests for `.env`, `composer.json`, `vendor/`, source files, and private upload paths return 403/404 and never reveal file contents.
+For the recommended deployment, set the domain document root to Laravel's `public/` directory. For the public_html-root alternative, keep the document root at the repository root and use only the root entry point and protective rules from the dedicated guide. In either case, verify requests for `.env`, `composer.json`, `vendor/`, source files, and private upload paths return 403/404 and never reveal file contents.
 
 ## 7. Release smoke test
 
