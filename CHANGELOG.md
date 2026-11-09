@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-11-09 — Comprehensive local demo dataset
+
+### Added
+- Made `DatabaseSeeder` invoke a repeatable demo seeder for local and testing environments.
+- Added 22 demo users: 1 admin, 14 artist accounts (13 public profiles and 1 private profile), 3 artists with incomplete profiles, and 4 buyers.
+- Added six active categories and one inactive category, plus 70 artworks spanning all moderation statuses and availability states.
+- Added 48 inquiries covering new, read, and archived states, including inquiries with and without linked artworks.
+- Generated synthetic SVG artwork thumbnails on Laravel's private local storage disk.
+- Added feature tests for dataset coverage, repeatability, seeded account access, and admin/buyer pagination; documented credentials and QA scenarios in `docs/demo-data.md`.
+
+### Safety and verification
+- The seeder runs only when `APP_ENV` is `local` or `testing`; it does not truncate tables or delete records and updates matching demo records by stable identifiers.
+- All demo accounts use the documented shared password `Demo@12345`; these public test credentials must never be used for real or production accounts.
+- Merged in [PR #54](https://github.com/AminBrave/rad-art-marketplace/pull/54). CI passed: 48 backend tests / 278 assertions, Laravel Pint, frontend ESLint, and the Vite production build.
+
 ## 2026-11-09 — Guest session bootstrap and local build workflows
 
 ### Changed
