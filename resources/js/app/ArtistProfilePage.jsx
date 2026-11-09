@@ -3,8 +3,7 @@ import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import ContactArtistForm from './ContactArtistForm';
-import { RouteLoading } from './RoutingPages';
-import { ArtworkCard, EmptyState, ErrorState } from '../components/ui';
+import { ArtworkCard, EmptyState, ErrorState, ArtistProfileSkeleton } from '../components/ui';
 
 export default function ArtistProfilePage() {
     const { slug } = useParams();
@@ -67,7 +66,7 @@ export default function ArtistProfilePage() {
         }
     }, [loadingMore, profile, slug]);
 
-    if (loading) return <RouteLoading label="در حال دریافت پروفایل هنرمند…" />;
+    if (loading) return <ArtistProfileSkeleton />;
 
     return (
         <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl">
