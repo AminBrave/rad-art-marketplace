@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-11-10 — M00 foundation implementation integrated
+
+### Changed
+- Merged [PR #85](https://github.com/AminBrave/rad-art-marketplace/pull/85): registered the buyer inquiry detail route under the buyer role guard and added SPA deep-link fallback regression coverage.
+- Merged [PR #87](https://github.com/AminBrave/rad-art-marketplace/pull/87): committed Composer/npm lockfiles and switched CI installation to composer install / npm ci.
+- Merged [PR #86](https://github.com/AminBrave/rad-art-marketplace/pull/86): corrected artist artwork totals using server paginator metadata and clarified null/zero price display semantics.
+
+### Verification
+- Latest main commit: 6da7d608333ba046a90cc050808854f0d2767474.
+- [CI run #42715135296](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42715135296) passed backend tests/style, frontend unit tests, lint and production build.
+- Browser E2E, manual accessibility/responsive/RTL QA, performance measurement, production-host and backup/restore verification remain outstanding. M00 is implementation-complete but not fully signed off.
+
+
 ## 2026-11-09 — Comprehensive local demo dataset
 
 ### Added
