@@ -29,6 +29,8 @@ class BuyerInquiryBrowserTests(unittest.TestCase):
     def new_page(self, user=BUYER, viewport=None):
         context = self.browser.new_context(viewport=viewport or {"width": 1280, "height": 900})
         page = context.new_page()
+        page.set_default_timeout(15000)
+        page.set_default_navigation_timeout(15000)
         page.route("**/api/v1/auth/me", lambda route: route.fulfill(
             status=200, content_type="application/json",
             body='{"data":' + (__import__("json").dumps(user, ensure_ascii=False) if user else "null") + '}'
@@ -171,7 +173,7 @@ class BuyerInquiryBrowserTests(unittest.TestCase):
                         "availability": "available", "medium": "رنگ روغن",
                         "dimensions": "۴۰ × ۶۰ سانتی‌متر", "year": 2024,
                     }
-                    page.route(f"**/api/v1/artworks/{slug}", lambda route, item=artwork: route.fulfill(
+                    page.route(f"**/api/v1/artworks/{slug}", lambda route, request, item=artwork: route.fulfill(
                         status=200, content_type="application/json",
                         body=__import__("json").dumps({"data": item}, ensure_ascii=False)
                     ))
