@@ -97,7 +97,7 @@ class AuthenticationTest extends TestCase
             ->assertJsonPath('data.role', User::ROLE_ARTIST);
 
         $this->postJson('/api/v1/auth/logout')->assertOk();
-        $this->getJson('/api/v1/auth/me')->assertUnauthorized();
+        $this->getJson('/api/v1/auth/me')->assertOk()->assertExactJson(['data' => null]);
         $this->assertGuest();
     }
 
