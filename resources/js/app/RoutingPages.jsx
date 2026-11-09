@@ -15,7 +15,8 @@ function LoadingBlock({ className = '' }) {
 export function RouteLoading({ label = 'در حال آماده‌سازی صفحه…' }) {
     const { pathname } = useLocation();
     const isWorkspace = pathname.startsWith('/dashboard/') || pathname.startsWith('/admin');
-    const isDetail = /^\/(artworks|artists)\/[^/]+/.test(pathname);
+    const isArtworkDetail = /^\/artworks\/[^/]+/.test(pathname);
+    const isArtistProfile = /^\/artists\/[^/]+/.test(pathname);
     const isForm = /\/(login|register)$/.test(pathname) || (isWorkspace && /\/(profile|artworks)$/.test(pathname));
 
     return (
