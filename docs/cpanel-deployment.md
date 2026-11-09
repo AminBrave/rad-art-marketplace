@@ -16,7 +16,7 @@ Do not bypass Composer platform checks or security advisories. If PHP 8.3+ is un
 
 1. Create a MySQL database and a dedicated database user in cPanel.
 2. Grant only the privileges required by this application.
-3. Configure the domain/subdomain and enable HTTPS.
+3. Configure the domain/subdomain and issue/install a valid TLS certificate (for example, AutoSSL/Let's Encrypt).
 4. Prefer placing the Laravel project outside `public_html` and setting the domain document root to Laravel's `public/` directory.
 5. If document-root configuration is restricted, keep the application outside the public directory and use a reviewed hosting-specific entry-point arrangement. Never expose `.env`, `vendor/`, source files, or private storage.
 
@@ -68,6 +68,8 @@ Set the domain document root to Laravel's `public/` directory. Verify requests f
 After deployment, use dedicated non-production test accounts and verify the currently implemented public marketplace:
 
 - Homepage, `/artworks`, `/artists`, `/about`, `/help`, and `/contact` load over HTTPS.
+- HTTP requests redirect to the matching HTTPS URL without a loop; HSTS is present on HTTPS responses.
+- HTTP/2 is negotiated over TLS; HTTP/3 is negotiated if enabled by the hosting provider.
 - Artwork search, category filtering, pagination, detail routes, and public artist profiles work.
 - Only approved artwork and public artist profiles are exposed.
 - Private images remain inaccessible by direct filesystem URL.
@@ -87,4 +89,4 @@ Keep the previous release directory and a verified database/files backup until t
 
 ## Hosting sign-off
 
-Deployment readiness requires evidence that the actual cPanel account supports PHP 8.3+, required extensions, safe document-root isolation, writable storage, MySQL, HTTPS, and successful smoke tests. Backup automation and restore readiness require a successful restore drill, not merely a configured schedule.
+Deployment readiness requires evidence that the actual cPanel account supports PHP 8.3+, required extensions, safe document-root isolation, writable storage, MySQL, valid HTTPS, HTTP/2, and (if required) HTTP/3, plus successful smoke tests. Backup automation and restore readiness require a successful restore drill, not merely a configured schedule.
