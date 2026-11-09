@@ -59,7 +59,10 @@ export default function ArtworkDetailPage() {
         if (descriptionTag) descriptionTag.setAttribute('content', artwork.description || `اثر ${artwork.title} از ${artwork.artist?.display_name || 'هنرمندان راد آرت'}؛ جزئیات اثر و راه ارتباط با هنرمند.`);
         return () => {
             document.title = previousTitle;
-            if (descriptionTag && previousDescription !== null) descriptionTag.setAttribute('content', previousDescription);
+            if (descriptionTag) {
+                if (previousDescription === null) descriptionTag.removeAttribute('content');
+                else descriptionTag.setAttribute('content', previousDescription);
+            }
         };
     }, [artwork]);
 
