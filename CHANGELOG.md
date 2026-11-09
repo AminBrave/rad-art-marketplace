@@ -1,6 +1,18 @@
 # Changelog
 
-Notable repository changes are listed newest first. Entries describe merged implementation milestones and repository maintenance, not production releases. The current package version is not used as a release tag.
+Notable repository changes are listed newest first. Entries describe implementation milestones and repository maintenance, not production releases. The current package version is not used as a release tag.
+
+## 2026-11-09 — Performance and visual stability hardening (in progress)
+
+### Changed
+- Added a static first-paint skeleton and shared page-shaped route loading placeholders; public/workspace layout shells remain mounted during route chunk loading.
+- Split public pages and workspace dashboards into lazy-loaded feature bundles; artist artwork and inquiry tools load only when opened.
+- Changed public artist portfolios and artist-owned artwork lists to 12-item simple pagination, avoiding unbounded payloads and total-count queries; added frontend navigation and backend regression coverage.
+- Set Google Fonts to `display=optional` to reduce late font-swap layout shifts.
+
+### Verification boundary
+- Changes are on `perf/mvp2-app-performance-stability` and are not yet merged.
+- Lighthouse, Core Web Vitals, real database query plans, browser-level CLS, and production-host measurements remain outstanding. No score or zero-shift claim is made.
 
 ## 2026-11-09 — MVP 2 Stage 6: QA hardening (verification in progress)
 
