@@ -2,6 +2,22 @@
 
 Notable repository changes are listed newest first. Entries describe merged implementation milestones and repository maintenance, not production releases. The current package version is not used as a release tag.
 
+## 2026-11-09 — MVP 2 Stage 5: Admin workspace
+
+### Added
+- Admin overview with pending artwork and total user counts derived from existing paginated API responses.
+- Artwork moderation queue with URL-backed status filters, server pagination, previews, required notes, and approve/reject/request-changes actions for pending work only.
+- Paginated user management with supported Artist/Admin role assignment and self-demotion restrictions.
+- Loading, empty, error, permission, and success feedback across admin pages.
+
+### Scope
+- Reused existing admin endpoints and server authorization; no API, schema, or dependency changes.
+- No fabricated analytics, user search, Buyer-role assignment, deletion, suspension, or category/report management.
+
+### Verification
+- Automated CI results are recorded on the Stage 5 pull request. Manual browser/device and accessibility checks remain part of Stage 6 QA.
+
+
 ## 2026-11-09 — MVP 2 Stage 4: Buyer workspace
 
 ### Added

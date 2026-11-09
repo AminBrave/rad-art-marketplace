@@ -3,7 +3,7 @@
 Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact marketplace. It helps visitors discover approved artworks and public artist portfolios, and lets registered buyers send private inquiries to artists.
 
 **Current integration branch:** `main`  
-**Current delivery status:** MVP 2 Stages 1–4 (foundation, public marketplace, artist workspace, and buyer workspace) are complete. Stage 5 (admin workspace) is next.  
+**Current delivery status:** MVP 2 Stages 1–5 (foundation, public marketplace, artist, buyer, and admin workspaces) are implemented and integrated. Stage 6 (QA and release) remains.  
 **Product status:** Active MVP development; not yet verified or signed off for production.
 
 ## Product capabilities
@@ -42,7 +42,10 @@ Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact mark
 - Artist-owned artwork submission/editing and private image storage.
 - Admin artwork moderation: approve, reject, or request changes.
 - Buyer-to-artist inquiry intake and buyer sent-inquiry history.
-- Baseline admin workspace; it is expanded in Stage 5.
+- Admin overview using real pending-artwork and user totals.
+- Paginated artwork moderation with supported decisions, required notes, and status filters.
+- Paginated user management with supported Artist/Admin role updates and self-demotion protection.
+- No unsupported search, Buyer-role assignment, deletion, suspension, or fabricated analytics.
 
 ### Explicitly out of scope
 
@@ -58,8 +61,8 @@ The [GitHub delivery tracker](https://github.com/AminBrave/rad-art-marketplace/i
 | 2. Public marketplace | Homepage, gallery, artwork detail, artists, information pages | #14–#18 | Complete |
 | 3. Artist workspace | Overview, artwork management/submission, inquiry inbox | #19–#21 | Complete |
 | 4. Buyer workspace | Account overview, paginated sent-inquiry history and detail | #22 | Complete |
-| 5. Admin workspace | Overview, moderation UI, user management | #23–#25 | Next |
-| 6. QA and release | Localization/RTL, accessibility/responsive, performance, regression/release | #26–#29 | Planned |
+| 5. Admin workspace | Overview, moderation UI, user management | #23–#25 | Complete |
+| 6. QA and release | Localization/RTL, accessibility/responsive, performance, regression/release | #26–#29 | Next |
 
 MVP 2 follows the **Contemporary Art Editorial** visual direction, with Persian as the launch language and RTL as the default. Laravel remains authoritative for authentication, authorization, validation, ownership, and privacy.
 

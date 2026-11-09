@@ -62,6 +62,19 @@ In a second terminal, run `php artisan serve` and open the Laravel URL. For the 
 8. Confirm Buyer status is read-only and there are no reply/chat controls or email addresses. An inquiry is an initial contact request, not a conversation or email-delivery feature.
 9. Verify guest and wrong-role workspace navigation is redirected by the role guard, and protected API access remains server-authorized.
 
+## Admin workspace
+
+1. Sign in with a server-provisioned Admin account and open `/admin`; confirm pending-review artwork and total user counts match paginator totals from the two admin endpoints.
+2. Confirm the overview handles either endpoint failing independently and never presents fabricated activity, unread counts, or analytics.
+3. Open `/admin/artworks`; switch among pending, approved, changes-requested, and rejected filters. Confirm status and page are reflected in the URL and pagination matches the API.
+4. Verify artwork image, title, artist, category, description, medium, dimensions, year, creation date, and review note use only fields returned by the API.
+5. Approve a pending artwork without a note. Confirm it disappears from the pending queue and the API reports the decision.
+6. Reject a pending artwork and request changes for another; each action must require a non-empty note, show server feedback, and refresh the queue. Non-pending items must have no action controls.
+7. Open `/admin/users`; verify 20-item server pagination and API-backed account fields.
+8. Promote a disposable Buyer or Artist to Admin, and change a different Admin to Artist. Confirm the updated role is reflected after the API response.
+9. Confirm there is no Buyer assignment, search, deletion, or suspension UI. Attempt self-demotion through the API and expect HTTP 422.
+10. Verify guest and wrong-role requests are denied by Laravel (401/403) even if the UI route is visited directly.
+
 ## Public artwork discovery
 
 1. Submit an artwork as an Artist with an active category and a JPG, JPEG, PNG, or WebP image no larger than 5 MB and 6000 × 6000 pixels.

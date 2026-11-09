@@ -9,13 +9,14 @@ import PublicInfoPage from './PublicInfoPages';
 import AuthPage from './AuthPage';
 import { PublicLayout } from './Layouts';
 import {
-    AdminDashboardHome, AdminUsersPage, AdminWorkspaceLayout, ArtistArtworkPage,
+    AdminWorkspaceLayout, ArtistArtworkPage,
     ArtistInquiryPage, ArtistProfileSettings, ArtistWorkspaceLayout,
     BuyerWorkspaceLayout, DashboardIndex,
     NotFoundPage, RequireAuth, RequireRole, UnauthorizedPage,
 } from './RoutingPages';
 import ArtistWorkspaceOverview from './ArtistWorkspaceOverview';
-import AdminArtworkModeration from './AdminArtworkModeration';
+import { BuyerDashboardHome, BuyerInquiryPage } from './BuyerWorkspace';
+import { AdminArtworkModeration, AdminDashboardHome, AdminUsersPage } from './AdminWorkspace';
 
 function AppRoutes() {
     return <Routes>
