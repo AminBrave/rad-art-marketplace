@@ -50,6 +50,19 @@ export default function ArtworkDetailPage() {
         return () => { active = false; controller.abort(); };
     }, [slug]);
 
+    useEffect(() => {
+        if (!artwork) return undefined;
+        const previousTitle = document.title;
+        const descriptionTag = document.querySelector('meta[name="description"]');
+        const previousDescription = descriptionTag?.getAttribute('content');
+        document.title = `${artwork.title} | راد آرت`;
+        if (descriptionTag) descriptionTag.setAttribute('content', artwork.description || `اثر ${artwork.title} از ${artwork.artist?.display_name || 'هنرمندان راد آرت'}؛ جزئیات اثر و راه ارتباط با هنرمند.`);
+        return () => {
+            document.title = previousTitle;
+            if (descriptionTag && previousDescription !== null) descriptionTag.setAttribute('content', previousDescription);
+        };
+    }, [artwork]);
+
     if (loading) return <ArtworkDetailSkeleton />;
 
     return (
