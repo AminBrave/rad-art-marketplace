@@ -13,7 +13,7 @@ Notable repository changes are listed newest first. Entries describe implementat
 
 ### Verification boundary
 - Changes are on `perf/mvp2-app-performance-stability` in [PR #49](https://github.com/AminBrave/rad-art-marketplace/pull/49); the PR is open and not merged.
-- CI passed on final PR head `cb8f9ba6b873c18123f550b1463ebcc56b28108c`: 44 backend tests / 235 assertions, PHP style, frontend lint, and Vite production build ([run #307](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42547005152)).
+- CI passed on final PR head `09d73c1a2b2a3a52689de43bced6471764c6fb92`: 44 backend tests / 235 assertions, PHP style, frontend lint, and Vite production build ([run #310](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42547259734)).
 - Lighthouse, Core Web Vitals, repeated browser-level CLS, real database query plans, and production-host measurements remain outstanding. No score or zero-shift claim is made.
 
 ## 2026-11-09 — MVP 2 Stage 6: QA hardening (verification in progress)
