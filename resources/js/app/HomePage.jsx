@@ -10,28 +10,29 @@ export default function HomePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [retry, setRetry] = useState(0);
+    const [heroImageFailed, setHeroImageFailed] = useState(false);
 
     useEffect(() => {
         let active = true;
         const controller = new AbortController();
         Promise.all([
-            axios.get('/api/v1/artworks', { params: { per_page: 7, sort: 'newest' }, signal: controller.signal }),
-            axios.get('/api/v1/categories', { signal: controller.signal }),
-            axios.get('/api/v1/artists', { params: { per_page: 3 }, signal: controller.signal }),
-        ]).then(([artworkResponse, categoryResponse, artistResponse]) => {
-            if (!active) return;
-            setArtworks(artworkResponse.data.data ?? []);
-            setCategories(categoryResponse.data.data ?? []);
-            setArtists(artistResponse.data.data ?? []);
-        }).catch((requestError) => {
-            if (active && !axios.isCancel(requestError)) setError(true);
-        }).finally(() => {
+            axios.get('/api/v1/artworks', { params: { per_page: 7, sort: 'newest' }, signal: controller.signal })
+                .then(({ data }) => { if (active) setArtworks(data.data ?? []); })
+                .catch((requestError) => { if (active && !axios.isCancel(requestError)) setError(true); }),
+            axios.get('/api/v1/categories', { signal: controller.signal })
+                .then(({ data }) => { if (active) setCategories(data.data ?? []); })
+                .catch((requestError) => { if (active && !axios.isCancel(requestError)) setCategories([]); }),
+            axios.get('/api/v1/artists', { params: { per_page: 3 }, signal: controller.signal })
+                .then(({ data }) => { if (active) setArtists(data.data ?? []); })
+                .catch((requestError) => { if (active && !axios.isCancel(requestError)) setArtists([]); }),
+        ]).finally(() => {
             if (active) setLoading(false);
         });
         return () => { active = false; controller.abort(); };
     }, [retry]);
 
     const hero = artworks[0];
+    useEffect(() => setHeroImageFailed(false), [hero?.id]);
     const recentWorks = artworks.slice(1, 7);
     const spotlight = artists[0];
 
@@ -53,7 +54,7 @@ export default function HomePage() {
                     {hero ? (
                         <Link to={'/artworks/' + hero.slug} className="group relative block bg-surface-muted p-3">
                             <div className="aspect-[4/5] overflow-hidden bg-paper">
-                                <img src={hero.image_url} alt={hero.title} loading="eager" fetchPriority="high" decoding="async" className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]" />
+                                {heroImageFailed ? <div role="img" aria-label={`تصویر اثر ${hero.title} در دسترس نیست`} className="grid h-full w-full place-items-center bg-surface-muted p-8 text-center text-sm leading-7 text-muted">تصویر این اثر در حال حاضر در دسترس نیست.</div> : <img src={hero.image_url} alt={hero.title} onError={() => setHeroImageFailed(true)} loading="eager" fetchPriority="high" decoding="async" className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]" />}
                             </div>
                             <div className="flex items-center justify-between gap-4 px-2 py-4">
                                 <div><p className="text-xs text-muted">تازه در گالری</p><p className="mt-1 font-bold">{hero.title}</p><p className="mt-1 text-xs text-muted">{hero.artist?.display_name}</p></div>
