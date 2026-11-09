@@ -148,17 +148,18 @@ export function ArtistWorkspaceLayout() {
 
     useEffect(() => {
         let active = true;
-        axios.get('/api/v1/artist-profile/me')
+        const controller = new AbortController();
+        axios.get('/api/v1/artist-profile/me', { signal: controller.signal })
             .then(({ data }) => { if (active) setProfile(data.data ?? emptyProfile); })
             .catch((error) => {
-                if (!active) return;
+                if (!active || axios.isCancel(error)) return;
                 setProfile(emptyProfile);
                 setProfileError(error.response?.status === 403
                     ? 'حساب فعلی اجازه مدیریت این پروفایل را ندارد.'
                     : 'دریافت پروفایل هنرمند انجام نشد. می‌توانید دوباره تلاش کنید.');
             })
             .finally(() => { if (active) setProfileLoading(false); });
-        return () => { active = false; };
+        return () => { active = false; controller.abort(); };
     }, [user?.id]);
 
     const links = [
