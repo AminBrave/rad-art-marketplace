@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use App\\Http\\Controllers\\Api\\V1\\AdminArtworkModerationController;
-use App\\Http\\Controllers\\Api\\V1\\AdminUserController;
-use App\\Http\\Controllers\\Api\\V1\\ArtistInquiryController;
-use App\\Http\\Controllers\\Api\\V1\\ArtistProfileController;
-use App\\Http\\Controllers\\Api\\V1\\ArtworkController;
-use App\\Http\\Controllers\\Api\\V1\\AuthController;
-use Illuminate\\Support\\Facades\\Route;
+use App\Http\Controllers\Api\V1\AdminArtworkModerationController;
+use App\Http\Controllers\Api\V1\AdminUserController;
+use App\Http\Controllers\Api\V1\ArtistInquiryController;
+use App\Http\Controllers\Api\V1\ArtistProfileController;
+use App\Http\Controllers\Api\V1\ArtworkController;
+use App\Http\Controllers\Api\V1\AuthController;
+use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'app')->name('home');
 Route::view('/artists/{slug}', 'app')->name('artists.page');
