@@ -29,7 +29,7 @@ MVP 2 includes the public marketplace, artist workspace, buyer workspace, admin 
 
 Do not implement without an explicit scope revision:
 - Payments, cart, checkout, orders, or shipping.
-- Features not yet implemented in the current MVP baseline, including private messaging, replies and email delivery; implement only under approved roadmap M05 and its security requirements.
+- Real-time chat, replies, or email delivery.
 - Native mobile apps, AI recommendations, social networking, subscriptions, or advertising.
 - Paid placements, advertising, subscriptions, generic CMS, social networking, AI recommendations, checkout or transaction fulfillment.
 - Editorial collections and curated featured-artist selections are approved in the next roadmap; these are editorial decisions, not paid placements.
@@ -54,7 +54,7 @@ Keep the Laravel monolith and centralized React Router. Do not introduce microse
 - Artist submissions and edits enter pending review; the client cannot set owner or moderation state.
 - Only the owning Artist may edit their profile/artwork or manage inquiries addressed to that profile; Admin access follows policies.
 - Buyer inquiries may target public artist profiles and optionally approved artwork owned by that artist.
-- Inquiry payloads must not expose either party's email address. Do not imply that messaging, replies or email delivery are available until the approved M05 implementation is shipped and verified.
+- Inquiry payloads must not expose either party's email address. Do not imply chat, replies, or email delivery.
 - Keep original artwork uploads private. Validate actual image type, dimensions, and size; use policy-protected image delivery.
 - Keep secrets in environment configuration; never commit credentials or production data.
 - Escape user-generated content and avoid unsafe HTML rendering.

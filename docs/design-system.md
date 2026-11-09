@@ -48,3 +48,30 @@ Fonts are loaded from Google Fonts in the Blade entry document. If self-hosting 
 ## Preview
 
 In local development, open the app with `?design-system` (for example `http://127.0.0.1:8000/?design-system`) to view the foundation specimen. It is intentionally disabled in production and does not replace real page QA.
+
+## Premium discovery experience principles (approved target)
+
+The premium direction builds on the existing Contemporary Art Editorial foundation; it is not a replacement theme.
+
+- **Artwork first:** use generous image areas and intentional crops; interface chrome must not compete with the work.
+- **Editorial rhythm:** vary image scale and grid composition deliberately; avoid a uniform wall of identical rounded cards.
+- **Curation over volume:** featured selections and collections need a clear editorial rationale, concise introductions and coherent ordering.
+- **Typography as hierarchy:** use a restrained display/body/metadata scale; preserve Vazirmatn for Persian and Inter for Latin metadata.
+- **Trust through clarity:** show artist attribution, medium, year, dimensions, availability and price only when the data is known. Never imply unknown price means free or unknown availability means available.
+- **Contact with context:** inquiry actions should identify the artist and, when applicable, the artwork; do not imply checkout or chat.
+- **Motion is subordinate:** use subtle transitions only when they clarify interaction; respect reduced-motion preferences.
+- **Responsive art viewing:** mobile must retain legible metadata, useful image framing and a reachable contact action without reducing the artwork to a tiny thumbnail.
+- **Editorial featuring is not advertising:** curated artist selections are content decisions, not paid ranking or sponsored placement.
+
+For each new page, review the design-system specimen and shared components first. Update this document and the specimen when a reusable visual rule changes. Verify actual rendered RTL/LTR, keyboard, focus, contrast and responsive states rather than relying on source inspection alone.
+
+
+## Messaging experience design principles
+
+- Treat the conversation as a private continuation of artwork discovery, with artist and artwork/inquiry context visible but not visually noisy.
+- Use a calm, editorial thread layout; message bubbles are readable and restrained rather than oversized playful chat chrome.
+- Make reply context, edited/deleted states, reactions and read status understandable without relying on color alone.
+- Composer supports Persian RTL, mixed-direction names/URLs, keyboard send/newline behavior, attachment progress and recoverable errors.
+- Inbox prioritizes identity, last message, time and unread state; search, filters, archive and mute remain discoverable.
+- Typing and presence indicators are subtle, optional and privacy-controlled.
+- Include accessible live-region announcements for new messages and clear focus management when opening threads.

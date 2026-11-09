@@ -110,3 +110,77 @@ The current MVP does not require payment processing, order/fulfilment services, 
 - Admin category management, buyer reports/abuse queue, and featured placements are outside the current approved MVP 2 scope.
 - Analytics is a proposal only; no provider or event collection is enabled.
 - cPanel/PHP compatibility, production deployment, backup automation, restore drills, and browser/device release QA remain unverified.
+
+## Approved target architecture — premium discovery (planned, not yet implemented)
+
+This section records the approved direction for the next roadmap. It is a target, not a claim that the modules, tables or services below already exist. Preserve the current Laravel monolith + React/Vite application and evolve it incrementally.
+
+### Architectural decision
+
+Retain a **modular monolith**: Laravel remains the system of record for identity, authorization, validation, persistence, publication and moderation; React remains the presentation and interaction layer. MySQL remains the primary database. Do not migrate frameworks, split services or add infrastructure without measured need and a documented decision.
+
+### Logical domain boundaries
+
+- **Identity:** accounts, authentication, roles and verification.
+- **Artists:** artist profile, public identity, biography, disciplines and portfolio metadata.
+- **Artworks:** metadata, availability, pricing semantics, media variants and publication state.
+- **Discovery:** public catalogue queries, filters, sorting, pagination and related content.
+- **Curation:** collections, ordered collection membership, editorial featured-artist selections and publication scheduling.
+- **Inquiries:** buyer-to-artist inquiry intake, privacy and lifecycle.
+- **Moderation:** submission review, approval/rejection/revision and append-only decision history.
+- **Notifications:** only explicitly supported in-app/system notifications; do not imply email delivery.
+- **Editorial:** short structured stories/introductions associated with artists, artworks or collections when the product requires them.
+
+Keep boundaries logical within the existing application. Add a module-specific service or action only where it owns a meaningful business operation; do not create a generic service/repository layer for every model.
+
+### Curation data principles
+
+A collection should have a stable slug, title, editorial introduction, cover/hero media, publication status, optional publication window and ordered items. Collection membership must reference existing artworks and use deterministic ordering. Public collection queries must return published collections and approved artworks only. Featured-artist selections are editorial content—not paid placement or advertising—and must have server-side admin authorization and auditable changes.
+
+Before introducing tables, inspect existing schema and naming conventions. Use incremental, reversible migrations, foreign keys, unique constraints and indexes justified by query patterns. Do not create speculative columns or a generic CMS schema.
+
+### Media and discovery principles
+
+Artwork imagery is a core product asset. Preserve private originals and policy-protected delivery; introduce public derivatives only through a deliberate, tested storage policy. Generate responsive variants asynchronously only if the actual hosting/runtime supports the processing path. Measure image payloads, query plans and API waterfalls before adding caching or dedicated search infrastructure.
+
+### API and security principles
+
+Keep resource-oriented, versioned API contracts consistent with existing `/api/v1` conventions. Public endpoints must expose only public artist fields, published collections and approved artworks. Keep owner IDs, moderation metadata, private image paths, inquiry messages and personal contact details out of public responses. Every write remains validated and authorized server-side.
+
+
+
+## Messaging architecture target (approved roadmap M05; not yet implemented)
+
+Messaging is a private communication capability between a buyer and an artist, normally opened from a valid inquiry and optionally contextualized by an artwork. It is not a public social feed or transaction workflow.
+
+### Domain boundaries and data model
+
+- Conversation: participant IDs, originating inquiry/artwork references, status, timestamps and last-message pointer.
+- Message: conversation ID, immutable sender ID, body/content type, optional reply-to message ID, timestamps and edit/delete state.
+- MessageAttachment: private storage key, validated media metadata, owner/message references, scan state and retention metadata.
+- MessageReaction: message, actor and normalized reaction value with uniqueness constraints.
+- ConversationReadState: per-participant last-read message/time; avoid updating every row unnecessarily.
+- Notification: recipient, conversation/message reference, channel, delivery state, deduplication key and timestamps.
+- Report/Block: reporter/blocked user, message/conversation reference, reason, status and audit trail.
+
+Inspect the current schema and inquiry lifecycle before designing migrations. Decide whether a conversation is unique per inquiry or whether a buyer/artist pair may have multiple inquiry-scoped conversations; record the decision in an ADR before implementation. Use foreign keys, unique constraints and query-driven indexes.
+
+### Security and privacy
+
+- Every read/write must verify the authenticated user is a conversation participant. Test direct object reference attacks across conversations, messages, attachments, reports and notifications.
+- Sender identity and timestamps are assigned by the server. A client must never set sender, recipient, read receipts or delivery state.
+- Message bodies are untrusted input. Escape output; do not render arbitrary HTML.
+- Attachments remain private and are delivered only after participant authorization. Validate content, extension, size and actual file type; use generated storage names.
+- Do not log message bodies, attachment contents/URLs, access tokens or unnecessary personal data.
+- Define retention, deletion, legal hold and moderation access rules before implementing message deletion or admin access.
+- Do not advertise end-to-end encryption unless an independently reviewed cryptographic protocol and key lifecycle are actually implemented.
+
+### Delivery and reliability
+
+Use the broadcasting transport supported by the actual deployment host after a spike validates compatibility and operating cost. Realtime is an enhancement to a durable database-backed message API, not the source of truth. Include reconnect, retry, idempotency/deduplication and polling fallback. Presence/typing data is ephemeral and privacy-controlled.
+
+Notifications must be queued, deduplicated, user-configurable and safe to retry. Email delivery is optional and must not be enabled until sender/domain/queue/monitoring and unsubscribe behavior are verified. Deep links must re-check participant authorization.
+
+### Product scope
+
+One-to-one conversations, quoted replies, edit/delete, reactions, read states, attachments, inbox search/filter/archive, mute/preferences, notifications and report/block are approved. Group chat, public comments, social feeds, payments, escrow and transaction fulfillment remain out of scope.

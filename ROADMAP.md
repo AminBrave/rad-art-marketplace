@@ -1,15 +1,17 @@
-# MVP 2 Roadmap
+# RAD Art Roadmap
 
 This file is the concise project delivery map. The [GitHub tracker](https://github.com/AminBrave/rad-art-marketplace/issues/30) owns issue-level acceptance criteria and delivery sequencing. A checked item means implemented in the repository; it does not mean production deployment or manual QA is complete.
 
 ## Product direction
 
-- **Product:** Persian-first art discovery and artist-contact marketplace.
+- **Product:** Premium, discovery-first contemporary art platform connecting art enthusiasts and collectors with artists and their work.
+- **Positioning:** Curated, editorial, trustworthy and artwork-led; direct artist inquiry rather than checkout-led commerce.
+- **Editorial model:** Collections and featured-artist selections are curated editorial content, not paid placements or advertising.
 - **Visual direction:** Contemporary Art Editorial.
 - **Language and layout:** Persian-first, RTL by default; English-ready architecture, but no English UI launch commitment.
 - **Architecture:** Laravel 13 monolith + React 18/Vite + centralized React Router.
 - **Backend authority:** Laravel controls authentication, authorization, validation, ownership, and moderation.
-- **Scope exclusions:** Payments, cart/checkout, orders, shipping, real-time chat/replies, email delivery, native mobile apps, AI recommendations, social networking, subscriptions, and advertising.
+- **Scope exclusions:** Payments, cart/checkout, orders, shipping, native mobile apps, native mobile apps, AI recommendations, social networking, subscriptions, paid placements, and advertising.
 
 ## Delivery status
 
@@ -91,6 +93,125 @@ This file is the concise project delivery map. The [GitHub tracker](https://gith
 - [ ] Run repeatable Lighthouse mobile/desktop audits and Core Web Vitals measurements against a production-like host.
 - [ ] Profile real database query plans and API request waterfalls; make further backend changes only where measurements demonstrate a bottleneck.
 - [ ] Record repeatable Lighthouse mobile/desktop and Core Web Vitals measurements; do not claim a performance improvement until measured.
+
+## Next roadmap — Premium Art Discovery (approved)
+
+This roadmap extends the existing MVP 2 baseline. The historical MVP 2 stages and their recorded status above remain unchanged. The next delivery sequence is fixed as seven milestones; do not reorder or silently remove phases. The planning estimates remain the estimates approved in the product strategy. AI-assisted execution may parallelize independent issue work but does not waive dependencies or acceptance gates.
+
+**North-star outcome:** qualified artwork-to-artist connections per month, supported by high-quality discovery, trustworthy artist profiles, editorial curation and a clear inquiry path.
+
+### M00 — Stabilize the foundation · 1–2 weeks
+
+**Milestone issue:** [#60](https://github.com/AminBrave/rad-art-marketplace/issues/60)  
+**Execution issues:** [#66](https://github.com/AminBrave/rad-art-marketplace/issues/66), [#67](https://github.com/AminBrave/rad-art-marketplace/issues/67), [#68](https://github.com/AminBrave/rad-art-marketplace/issues/68), plus existing QA issues [#26–#29](https://github.com/AminBrave/rad-art-marketplace/issues/26).
+
+- [ ] Fix buyer inquiry detail routing and add browser regression tests.
+- [ ] Commit dependency lockfiles and make CI deterministic.
+- [ ] Correct paginated artwork counts and null/zero price semantics.
+- [ ] Verify role journeys, RTL/accessibility and performance baselines.
+- [ ] Preserve security, upload, moderation and inquiry privacy boundaries.
+
+**Exit:** critical journeys pass; reproducible CI; evidence recorded; existing release QA debt is resolved or explicitly carried with owner/risk.
+
+### M01 — Build the premium design system · 2 weeks
+
+**Milestone issue:** [#61](https://github.com/AminBrave/rad-art-marketplace/issues/61)  
+**Execution issue:** [#69](https://github.com/AminBrave/rad-art-marketplace/issues/69)
+
+- [ ] Consolidate semantic design tokens and shared components.
+- [ ] Standardize typography, spacing, artwork cards, forms, dialogs and navigation.
+- [ ] Define responsive editorial grids and image ratios.
+- [ ] Standardize loading, empty, error, success and disabled states.
+- [ ] Verify Persian RTL, Latin LTR, keyboard access, focus, contrast and reduced motion.
+
+**Exit:** shared patterns are implemented and documented; high-traffic pages have a coherent premium visual language.
+
+### M02 — Transform discovery and artwork pages · 2–3 weeks
+
+**Milestone issue:** [#62](https://github.com/AminBrave/rad-art-marketplace/issues/62)  
+**Execution issues:** [#70](https://github.com/AminBrave/rad-art-marketplace/issues/70), [#71](https://github.com/AminBrave/rad-art-marketplace/issues/71)
+
+- [ ] Editorial homepage with curated works, artist spotlights and themes.
+- [ ] Catalogue filters/sorting for useful artistic attributes and availability.
+- [ ] Shareable URL-backed discovery state.
+- [ ] Artwork detail pages with high-quality imagery, metadata, context and contact.
+- [ ] Artist profiles as credible professional portfolios.
+- [ ] Responsive image delivery and accessible content.
+
+**Exit:** discovery → artwork → artist → inquiry works end-to-end on mobile and desktop, with public-only data rules intact.
+
+### M03 — Introduce curation and editorial tools · 2 weeks
+
+**Milestone issue:** [#63](https://github.com/AminBrave/rad-art-marketplace/issues/63)  
+**Execution issue:** [#72](https://github.com/AminBrave/rad-art-marketplace/issues/72)
+
+- [ ] Collections with stable slugs and ordered artwork membership.
+- [ ] Editorial featured-artist selections.
+- [ ] Focused admin curation and publication workflow.
+- [ ] Public collection listing/detail pages.
+- [ ] Published-only visibility and approved-artwork constraints.
+
+**Exit:** editors can curate and publish coherent collections without code changes; authorization, ordering and publication tests pass.
+
+### M04 — Elevate the artist experience · 2 weeks
+
+**Milestone issue:** [#64](https://github.com/AminBrave/rad-art-marketplace/issues/64)  
+**Execution issue:** [#73](https://github.com/AminBrave/rad-art-marketplace/issues/73)
+
+- [ ] Guided profile completion and artist onboarding.
+- [ ] Professional portfolio preview.
+- [ ] Clear artwork submission, upload and moderation guidance.
+- [ ] Improved inquiry inbox and actionable empty states.
+- [ ] Real, useful activity summaries only.
+
+**Exit:** an artist can complete a credible profile, submit work and understand inquiry/moderation states without compromising ownership or privacy.
+
+### M05 — Build secure in-app messaging and conversations · 3–4 weeks
+
+**Milestone issue:** [#77](https://github.com/AminBrave/rad-art-marketplace/issues/77)  
+**Execution issues:** [#78](https://github.com/AminBrave/rad-art-marketplace/issues/78)–[#84](https://github.com/AminBrave/rad-art-marketplace/issues/84)
+
+- [ ] One-to-one buyer/artist conversations linked to inquiry and optional artwork context.
+- [ ] Inbox with unread counts, search, filters, archive/mute and paginated history.
+- [ ] Reply to a message with quoted context; edit/delete own messages with clear audit/retention semantics.
+- [ ] Emoji reactions and sent/delivered/read states.
+- [ ] Real-time message delivery, typing indicator and privacy-controlled presence, with reconnect/retry and polling fallback.
+- [ ] Secure private image/document attachments with validation, previews and authorized downloads.
+- [ ] In-app and optional email notifications with preferences, queues and reliable deep links.
+- [ ] Report/block, rate limits, spam controls and admin moderation workflow.
+- [ ] Participant-only authorization and IDOR/privacy regression tests for every message/attachment operation.
+
+**Exit:** buyer and artist can conduct a secure, reliable, accessible conversation across refresh/reconnect; all security, notification, attachment, RTL and moderation checks have evidence. Do not claim end-to-end encryption without a separately reviewed design.
+
+### M06 — Complete launch readiness and growth foundations · 2–3 weeks
+
+**Milestone issue:** [#65](https://github.com/AminBrave/rad-art-marketplace/issues/65)  
+**Execution issues:** [#74](https://github.com/AminBrave/rad-art-marketplace/issues/74), [#75](https://github.com/AminBrave/rad-art-marketplace/issues/75), plus QA gates #26–#29.
+
+- [ ] SEO metadata, canonical URLs, sitemap and social previews.
+- [ ] Structured logs, error tracking and uptime monitoring.
+- [ ] Performance evidence and Core Web Vitals baselines.
+- [ ] Backup, restore, rollback and production-host verification.
+- [ ] Privacy, retention, artist content rights and moderation policy review.
+- [ ] Consent/legal/data-minimization gate before analytics collection.
+- [ ] Artist acquisition and editorial launch plan.
+
+**Exit:** production readiness is supported by real evidence and product-owner sign-off, not by a successful build alone.
+
+### Product metrics
+
+North star: qualified artwork-to-artist connections per month. Supporting measures: artwork detail engagement, artist profile visit rate, inquiry conversion, artist activation, first artwork approval time, collection engagement, search zero-result rate and mobile engagement. Analytics collection remains disabled until its privacy/legal approval gate is satisfied.
+
+### Explicitly deferred
+
+Checkout, payments, orders, shipping, group chat, public social feeds, AI recommendations, subscriptions, paid placements, and generic CMS infrastructure remain deferred. Private one-to-one buyer/artist messaging and its optional email notifications are now in scope. Do not add them as incidental work.
+
+### Completion and reporting rules
+
+- A milestone issue closes only when its child issues are complete, acceptance evidence is linked, relevant docs are synchronized and the product owner accepts any explicit deferral.
+- A task is not complete because an agent generated code, a route exists, a PR merged or CI passed alone.
+- Keep all unverified manual/device/production checks unchecked.
+- Update this roadmap, README and issue #30 whenever delivery status changes.
 
 ## MVP 1 capabilities retained
 

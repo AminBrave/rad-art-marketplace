@@ -1,8 +1,9 @@
 # Rad Art Marketplace
 
-Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact marketplace. It helps visitors discover approved artworks and public artist portfolios, and lets registered buyers send private inquiries to artists.
+RAD Art is a premium, Persian-first art discovery platform. It helps art enthusiasts and collectors discover carefully selected contemporary artworks, understand the artists behind them, and make thoughtful direct inquiries. The product is discovery-first—not a checkout-led marketplace.
 
 **Current integration branch:** `main`  
+**Premium discovery planning branch:** `feat/premium-discovery-roadmap` (created from `main`; documentation and delivery planning only)  
 **Current delivery status:** MVP 2 feature stages 1–5 are integrated. Stage 6 QA remains open; performance hardening is in progress under [issue #48](https://github.com/AminBrave/rad-art-marketplace/issues/48). Real-browser/device, Lighthouse, and production sign-off remain outstanding.  
 **Product status:** Active MVP development; not yet verified or signed off for production.
 
@@ -24,14 +25,14 @@ Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact mark
 - API-backed artwork and inquiry summaries without fabricated analytics.
 - Artist-owned artwork list and create/edit forms with image preview, upload feedback, validation, and moderation status.
 - Paginated inquiry inbox, recipient-scoped detail, and read/archive controls.
-- No unsupported artwork deletion, inquiry replies, chat, or email delivery.
+- The current inquiry workflow is the baseline for the planned dedicated conversation experience; messaging is not yet implemented.
 
 ### Buyer workspace — implemented
 
 - Buyer-only overview with the server-reported total sent-inquiry count and latest inquiry.
 - Paginated sent-inquiry history with artist/artwork context and server-reported status.
 - Dedicated inquiry detail routes that survive direct navigation and refresh.
-- Sender-scoped API reads; no inquiry status mutation, replies, chat, or email delivery.
+- Sender-scoped API reads; no inquiry status mutation or messaging is implemented in the current baseline.
 
 ### Accounts and other workflows — implemented baseline
 
@@ -49,7 +50,7 @@ Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact mark
 
 ### Explicitly out of scope
 
-Payments, cart/checkout, orders, shipping, real-time chat/replies, email delivery, native mobile apps, AI recommendations, social networking, subscriptions, and advertising. Email verification and password-reset user experience are also not implemented.
+Payments, cart/checkout, orders, shipping, group chat, public social networking, native mobile apps, AI recommendations, subscriptions, and advertising. Private one-to-one buyer/artist messaging, replies and optional email notifications are approved roadmap work but are not implemented yet. Email verification and password-reset user experience are also not implemented.
 
 ## MVP 2 delivery plan
 
@@ -65,6 +66,26 @@ The [GitHub delivery tracker](https://github.com/AminBrave/rad-art-marketplace/i
 | 6. QA and release | Localization/RTL, accessibility/responsive, performance, regression/release | #26–#29 | Next |
 
 MVP 2 follows the **Contemporary Art Editorial** visual direction, with Persian as the launch language and RTL as the default. Laravel remains authoritative for authentication, authorization, validation, ownership, and privacy.
+
+## Next roadmap — Premium Art Discovery
+
+The approved next direction is **premium art discovery**: curation over volume, artwork over interface, trust over transactions, and editorial quality over generic marketplace patterns. The seven-phase roadmap below extends the existing MVP 2 baseline; it does not change the completed MVP 2 history or its outstanding QA obligations.
+
+| Milestone | Focus | Estimate | GitHub milestone issue |
+|---|---|---:|---|
+| M00 | Stabilize the foundation | 1–2 weeks | [#60](https://github.com/AminBrave/rad-art-marketplace/issues/60) |
+| M01 | Build the premium design system | 2 weeks | [#61](https://github.com/AminBrave/rad-art-marketplace/issues/61) |
+| M02 | Transform discovery and artwork pages | 2–3 weeks | [#62](https://github.com/AminBrave/rad-art-marketplace/issues/62) |
+| M03 | Introduce curation and editorial tools | 2 weeks | [#63](https://github.com/AminBrave/rad-art-marketplace/issues/63) |
+| M04 | Elevate the artist experience | 2 weeks | [#64](https://github.com/AminBrave/rad-art-marketplace/issues/64) |
+| M05 | Secure in-app messaging and conversations | 3–4 weeks | [#77](https://github.com/AminBrave/rad-art-marketplace/issues/77) |
+| M06 | Complete launch readiness and growth foundations | 2–3 weeks | [#65](https://github.com/AminBrave/rad-art-marketplace/issues/65) |
+
+The execution issues are linked from [delivery tracker #30](https://github.com/AminBrave/rad-art-marketplace/issues/30). Existing MVP 2 QA issues #26–#29 remain open and are carried into the foundation and release gates.
+
+**Two-day AI execution window:** this is a timebox for coordinated AI-assisted delivery, not a replacement for the seven milestones or their estimates. Independent issues may be worked in parallel using isolated branches/worktrees. Dependencies, reviews, test gates and evidence remain mandatory. Anything not verified at the end of the window stays open.
+
+Read the [AI execution playbook](docs/ai-execution-playbook.md) before assigning coding agents. It defines agent roles, task boundaries, prompts, branch/PR rules, verification and milestone completion.
 
 ## Technology
 

@@ -17,15 +17,14 @@ Read `AGENTS.md` and `SKILLS.md` before using this playbook.
 
 The owner wants the next work accelerated into a two-day AI-assisted sprint. Treat two days as a strict coordination/timebox target—not as permission to compress the approved roadmap estimates, skip code review, waive security, or claim all seven milestones are complete.
 
-The seven milestones remain in their approved order:
+The six milestones remain in their approved order:
 
 1. M00 Foundation — 1–2 weeks.
 2. M01 Design system — 2 weeks.
 3. M02 Discovery pages — 2–3 weeks.
 4. M03 Curation — 2 weeks.
 5. M04 Artist experience — 2 weeks.
-6. M05 Secure messaging — 3–4 weeks.
-7. M06 Launch readiness — 2–3 weeks.
+6. M05 Launch readiness — 2–3 weeks.
 
 AI agents can reduce implementation/research overhead and work on independent issues concurrently. The full scope includes browser QA, editorial decisions, production-host verification, legal review, and restore testing; those cannot be honestly guaranteed within two calendar days. At the end of the sprint, report completed issues with evidence and leave everything else open. Do not change roadmap estimates or milestone exit criteria to make the sprint appear successful.
 
@@ -43,8 +42,7 @@ AI agents can reduce implementation/research overhead and work on independent is
 - Implement M01 shared design-system changes before dependent page redesign.
 - Frontend and backend agents may start independent M02/M03/M04 work only after their API/data contracts are agreed; isolate worktrees and avoid shared-file edits.
 - QA/reviewer agents run independent tests, inspect security/privacy and check responsive/RTL behavior.
-- Prepare M06 SEO/operations work as separate bounded issues; production/legal/restore evidence must be performed by authorized people/environments.
-- Messaging work is sequenced as M05; use the seven scoped issues and do not parallelize shared contracts/schema without an agreed owner.
+- Prepare M05 SEO/operations work as separate bounded issues; production/legal/restore evidence must be performed by authorized people/environments.
 - End-of-window report: merged/PR-ready/blocked/open issues, exact test evidence, risks and next actions.
 
 If the dependency chain or review capacity prevents safe parallelization, reduce the amount of work attempted—not the quality gate.
@@ -74,17 +72,10 @@ One person/agent may cover more than one specialist role if capacity is limited,
 | M02 | #71 Artwork + artist pages | Frontend + backend | M01; verify data contracts |
 | M03 | #72 Collections + editorial | Backend + frontend | Domain/API contract first |
 | M04 | #73 Artist onboarding | Frontend + backend | Existing profile/artwork APIs |
-| M05 | #78 Conversation/message APIs | Backend | Domain contract and participant authorization |
-| M05 | #79 Inbox/thread UI | Frontend | API contract from #78 |
-| M05 | #80 Replies/edit/delete/reactions/read states | Full-stack | Message model and API |
-| M05 | #81 Realtime delivery/typing/presence | Backend + frontend | Durable message API and host compatibility |
-| M05 | #82 Secure attachments | Backend + frontend | Private storage and upload policy |
-| M05 | #83 In-app/email notifications | Full-stack | Message events and notification preferences |
-| M05 | #84 Safety/report/block/moderation | Backend + QA/security | Participant policy and audit model |
-| M06 | #74 SEO/shareability | Frontend + backend | Stable public slugs and publication rules |
-| M06 | #75 Observability/privacy/release | Platform + QA/security | Hosting access and owner approvals |
+| M05 | #74 SEO/shareability | Frontend + backend | Stable public slugs and publication rules |
+| M05 | #75 Observability/privacy/release | Platform + QA/security | Hosting access and owner approvals |
 
-The existing MVP 2 QA issues #26–#29 remain open until independently verified; map them to M00/M06 and do not duplicate or close them merely because a new milestone exists.
+The existing MVP 2 QA issues #26–#29 remain open until independently verified; map them to M00/M05 and do not duplicate or close them merely because a new milestone exists.
 
 ## Isolation and parallel-work rules
 
@@ -196,7 +187,7 @@ Do not close #60–#65 based on agent output, generated code, a merged PR or CI 
 
 ## Change-control policy
 
-The seven-phase roadmap and premium discovery positioning, including private one-to-one messaging, are approved. If implementation reveals a material change to product scope, data semantics, architecture, user privacy, cost, hosting requirements or milestone order, stop and request product-owner approval. Do not silently replace the plan.
+The six-phase roadmap and premium discovery positioning are approved. If implementation reveals a material change to product scope, data semantics, architecture, user privacy, cost, hosting requirements or milestone order, stop and request product-owner approval. Do not silently replace the plan.
 
 
 ## Messaging milestone addendum — M05

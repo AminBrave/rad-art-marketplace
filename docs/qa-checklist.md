@@ -103,7 +103,7 @@ Use [manual smoke tests](manual-smoke-tests.md) for feature-specific steps and [
 
 ## Premium discovery roadmap — milestone verification
 
-The following checks apply to roadmap milestones M00–M06. They are deliberately unchecked until executed and evidenced. See [ROADMAP.md](../ROADMAP.md), [AI execution playbook](ai-execution-playbook.md), [milestone issues #60–#65 and #77](https://github.com/AminBrave/rad-art-marketplace/issues/60) and [delivery tracker #30](https://github.com/AminBrave/rad-art-marketplace/issues/30).
+The following checks apply to roadmap milestones M00–M05. They are deliberately unchecked until executed and evidenced. See [ROADMAP.md](../ROADMAP.md), [AI execution playbook](ai-execution-playbook.md), [milestone issues #60–#65](https://github.com/AminBrave/rad-art-marketplace/issues/60) and [delivery tracker #30](https://github.com/AminBrave/rad-art-marketplace/issues/30).
 
 ### M00 — Foundation
 - [ ] Buyer inquiry detail direct navigation, refresh, role and ownership tests pass.
@@ -143,7 +143,7 @@ The following checks apply to roadmap milestones M00–M06. They are deliberatel
 - [ ] Artist data and inquiries remain owner/recipient-scoped.
 - [ ] No fabricated activity metrics or unsupported messaging claims appear.
 
-### M06 — Launch readiness
+### M05 — Launch readiness
 - [ ] Artwork, artist and collection SEO metadata/canonicals are unique and accurate.
 - [ ] Sitemap excludes private, pending and unpublished content.
 - [ ] Monitoring/logging excludes secrets and private inquiry content.
