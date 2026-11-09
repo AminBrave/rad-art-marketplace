@@ -79,6 +79,7 @@ class ArtistProfileController extends Controller
             ->where('status', Artwork::STATUS_APPROVED)
             ->with('category')
             ->latest()
+            ->orderByDesc('id')
             ->simplePaginate(12, ['*'], 'artworks_page');
 
         return response()->json([
