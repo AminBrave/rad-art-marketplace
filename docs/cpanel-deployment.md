@@ -39,6 +39,7 @@ Create production `.env` outside the public web root. Configure at minimum:
 - `APP_ENV=production`
 - `APP_DEBUG=false`
 - `APP_URL=https://your-domain.example`
+- `SESSION_SECURE_COOKIE=true`
 - A unique `APP_KEY`
 - MySQL connection details
 - `SESSION_DRIVER=file`
