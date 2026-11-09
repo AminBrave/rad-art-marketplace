@@ -57,15 +57,16 @@ This file is the concise project delivery map. The [GitHub tracker](https://gith
 - [x] Empty, loading, error, unauthorized/not-found, and pagination states.
 - [x] Keep buyer status read-only; no replies, chat, or email delivery.
 
-### Stage 5 — Admin workspace · Next
+### Stage 5 — Admin workspace · Complete
 
-**Issues #23–#25 · Open**
+**Issues #23–#25 · Integrated into `main`**
 
-- [ ] Admin workspace shell and honest overview metrics.
-- [ ] Paginated artwork moderation queue and approve/reject/request-changes controls.
-- [ ] User management using supported API actions and server restrictions.
+- [x] Admin-only workspace shell and overview using real paginator totals for pending artwork and users.
+- [x] Paginated artwork moderation queue with URL-backed filters, previews, required notes, and supported decisions.
+- [x] Paginated user management with supported Artist/Admin role updates and server-enforced self-demotion protection.
+- [x] Loading, empty, error, and success feedback; no unsupported analytics or user actions.
 
-### Stage 6 — QA and release · Planned
+### Stage 6 — QA and release · Next
 
 **Issues #26–#29 · Open**
 
