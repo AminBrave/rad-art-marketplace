@@ -20,6 +20,9 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
     const isArtistProfile = /^\/artists\/[^/]+/.test(pathname);
     const isForm = /\/(login|register)$/.test(pathname) || (isWorkspace && /\/(profile|artworks)$/.test(pathname));
 
+    if (isArtworkDetail) return <ArtworkDetailSkeleton />;
+    if (isArtistProfile) return <ArtistProfileSkeleton />;
+
     return (
         <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-10 sm:px-8 lg:px-10" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
             <span className="sr-only">{label}</span>
