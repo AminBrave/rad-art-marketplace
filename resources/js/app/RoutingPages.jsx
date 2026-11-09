@@ -16,7 +16,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
     const { pathname } = useLocation();
     const isWorkspace = pathname.startsWith('/dashboard/') || pathname.startsWith('/admin');
     const isDetail = /^\/(artworks|artists)\/[^/]+/.test(pathname);
-    const isForm = /login|register|profile$|artworks$/.test(pathname) && isWorkspace;
+    const isForm = /\\/(login|register)$/.test(pathname) || (isWorkspace && /\\/(profile|artworks)$/.test(pathname));
 
     return (
         <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-10 sm:px-8 lg:px-10" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
