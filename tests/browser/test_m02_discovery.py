@@ -31,13 +31,14 @@ class DiscoveryBrowserTests(unittest.TestCase):
         cls.browser.close()
         cls.playwright.stop()
 
-    def new_page(self, viewport=None):
+    def new_page(self, viewport=None, user=None):
         context = self.browser.new_context(viewport=viewport or {"width": 1280, "height": 900})
         page = context.new_page()
         page.set_default_timeout(15000)
         page.set_default_navigation_timeout(15000)
         page.route("**/api/v1/auth/me", lambda route: route.fulfill(
-            status=200, content_type="application/json", body='{"data":null}'
+            status=200, content_type="application/json",
+            body=json.dumps({"data": user}, ensure_ascii=False)
         ))
         return context, page
 
@@ -158,18 +159,95 @@ class DiscoveryBrowserTests(unittest.TestCase):
         finally:
             context.close()
 
-    def test_catalogue_has_no_horizontal_overflow_at_mobile_width(self):
-        context, page = self.new_page(viewport={"width": 375, "height": 812})
+
+    def test_discovery_to_artwork_to_artist_to_inquiry_journey(self):
+        buyer = {"id": 42, "name": "Buyer QA", "email": "buyer@example.test", "role": "buyer"}
+        context, page = self.new_page(user=buyer)
+        submissions = []
         try:
-            page.route("**/api/v1/categories", lambda route: route.fulfill(status=200, content_type="application/json", body='{"data":[]}'))
-            page.route("**/api/v1/artwork-filters", lambda route: route.fulfill(status=200, content_type="application/json", body='{"data":{"mediums":[],"availability":[],"sorts":[]}}'))
-            page.route("**/api/v1/artworks**", lambda route: route.fulfill(status=200, content_type="application/json", body='{"data":[],"current_page":1,"last_page":1,"total":0}'))
-            page.goto(BASE_URL + "/artworks")
-            page.get_by_role("heading", name="گالری آثار").wait_for()
-            dimensions = page.evaluate("({width: document.documentElement.clientWidth, scrollWidth: document.documentElement.scrollWidth})")
-            self.assertLessEqual(dimensions["scrollWidth"], dimensions["width"])
+            page.route("**/api/v1/artworks**", lambda route: route.fulfill(
+                status=200, content_type="application/json",
+                body=json.dumps({"data": [ARTWORK], "current_page": 1, "last_page": 1, "total": 1}, ensure_ascii=False)
+            ))
+            page.route("**/api/v1/categories", lambda route: route.fulfill(
+                status=200, content_type="application/json",
+                body=json.dumps({"data": [{"id": 1, "name": "نقاشی", "slug": "painting"}]}, ensure_ascii=False)
+            ))
+            page.route("**/api/v1/artists**", lambda route: route.fulfill(
+                status=200, content_type="application/json",
+                body=json.dumps({"data": [{"id": 84, "slug": "qa-artist", "display_name": "هنرمند آزمایشی", "bio": "روایت هنری", "city": "تهران"}]}, ensure_ascii=False)
+            ))
+            page.route("**/api/v1/artworks/blue-study", lambda route: route.fulfill(
+                status=200, content_type="application/json",
+                body=json.dumps({"data": {**ARTWORK, "related_artworks": []}}, ensure_ascii=False)
+            ))
+            profile = {"data": {
+                "id": 84, "slug": "qa-artist", "display_name": "هنرمند آزمایشی",
+                "bio": "روایت هنری", "city": "تهران", "website_url": None, "instagram_handle": None,
+                "artworks": [], "artworks_pagination": {"current_page": 1, "per_page": 12, "has_more": False, "next_page": None}
+            }}
+            page.route("**/api/v1/artists/qa-artist**", lambda route: route.fulfill(
+                status=200, content_type="application/json",
+                body=json.dumps(profile, ensure_ascii=False)
+            ))
+            def submit_inquiry(route):
+                submissions.append(route.request.post_data_json)
+                route.fulfill(status=201, content_type="application/json", body=json.dumps({"message": "درخواست شما ثبت شد."}, ensure_ascii=False))
+            page.route("**/api/v1/artists/qa-artist/inquiries", submit_inquiry)
+
+            page.goto(BASE_URL + "/")
+            page.get_by_role("heading", name="هنر را کشف کنید؛ فراتر از قاب.").wait_for()
+            page.get_by_role("link", name="مطالعه آبی").first.click()
+            page.get_by_role("heading", name="مطالعه آبی").wait_for()
+            page.get_by_role("link", name="هنرمند آزمایشی").click()
+            page.get_by_role("heading", name="هنرمند آزمایشی").wait_for()
+            page.get_by_label("موضوع").fill("پرسش درباره آثار")
+            page.get_by_label("متن پیام").fill("سلام، مایلم درباره مسیر هنری و آثار شما بیشتر بدانم.")
+            page.get_by_role("button", name="ارسال پیام").click()
+            page.get_by_text("درخواست شما ثبت شد.").wait_for()
+            self.assertEqual(len(submissions), 1)
+            self.assertEqual(submissions[0]["subject"], "پرسش درباره آثار")
+            self.assertEqual(submissions[0]["artwork_id"], None)
         finally:
             context.close()
+
+    def test_artwork_detail_inquiry_preserves_artwork_context(self):
+        buyer = {"id": 42, "name": "Buyer QA", "email": "buyer@example.test", "role": "buyer"}
+        context, page = self.new_page(user=buyer)
+        submissions = []
+        try:
+            page.route("**/api/v1/artworks/blue-study", lambda route: route.fulfill(
+                status=200, content_type="application/json",
+                body=json.dumps({"data": {**ARTWORK, "related_artworks": []}}, ensure_ascii=False)
+            ))
+            def submit_inquiry(route):
+                submissions.append(route.request.post_data_json)
+                route.fulfill(status=201, content_type="application/json", body=json.dumps({"message": "درخواست شما ثبت شد."}, ensure_ascii=False))
+            page.route("**/api/v1/artists/qa-artist/inquiries", submit_inquiry)
+            page.goto(BASE_URL + "/artworks/blue-study")
+            page.get_by_role("heading", name="مطالعه آبی").wait_for()
+            page.get_by_label("موضوع").fill("پرسش درباره این اثر")
+            page.get_by_label("متن پیام").fill("سلام، لطفاً اطلاعات بیشتری درباره این اثر ارائه کنید.")
+            page.get_by_role("button", name="ارسال پیام").click()
+            page.get_by_text("درخواست شما ثبت شد.").wait_for()
+            self.assertEqual(submissions[0]["artwork_id"], ARTWORK["id"])
+        finally:
+            context.close()
+
+    def test_catalogue_has_no_horizontal_overflow_across_viewport_matrix(self):
+        for width in [320, 375, 768, 1024, 1440]:
+            with self.subTest(width=width):
+                context, page = self.new_page(viewport={"width": width, "height": 900})
+                try:
+                    page.route("**/api/v1/categories", lambda route: route.fulfill(status=200, content_type="application/json", body='{"data":[]}'))
+                    page.route("**/api/v1/artwork-filters", lambda route: route.fulfill(status=200, content_type="application/json", body='{"data":{"mediums":[],"availability":[],"sorts":[]}}'))
+                    page.route("**/api/v1/artworks**", lambda route: route.fulfill(status=200, content_type="application/json", body='{"data":[],"current_page":1,"last_page":1,"total":0}'))
+                    page.goto(BASE_URL + "/artworks")
+                    page.get_by_role("heading", name="گالری آثار").wait_for()
+                    dimensions = page.evaluate("({width: document.documentElement.clientWidth, scrollWidth: document.documentElement.scrollWidth})")
+                    self.assertLessEqual(dimensions["scrollWidth"], dimensions["width"])
+                finally:
+                    context.close()
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
