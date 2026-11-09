@@ -28,6 +28,8 @@ class ArtworkController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $perPage = min(max($request->integer('per_page', 12), 1), 24);
+
         $artworks = Artwork::query()
             ->where('status', Artwork::STATUS_APPROVED)
             ->with(['category', 'artistProfile'])
@@ -44,7 +46,7 @@ class ArtworkController extends Controller
                 fn ($category) => $category->where('slug', (string) $request->string('category'))->where('is_active', true),
             ))
             ->latest()
-            ->paginate(12)
+            ->paginate($perPage)
             ->through(fn (Artwork $artwork): array => $this->publicPayload($artwork));
 
         return response()->json($artworks);
@@ -73,13 +75,14 @@ class ArtworkController extends Controller
     {
         $profile = $request->user()->artistProfile()->firstOrFail();
 
-        return response()->json([
-            'data' => $profile->artworks()
-                ->with('category')
+        return response()->json(
+            $profile->artworks()
+                ->with(['category', 'artistProfile'])
                 ->latest()
-                ->get()
-                ->map(fn (Artwork $artwork): array => $this->payload($artwork)),
-        ]);
+                ->orderByDesc('id')
+                ->simplePaginate(12)
+                ->through(fn (Artwork $artwork): array => $this->payload($artwork)),
+        );
     }
 
     public function store(Request $request): JsonResponse

@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
-import LegacyApp from './app/App';
 import AppRouter from './app/AppRouter';
 import './bootstrap';
 
-// The legacy App is reserved for the independent design-system specimen; normal navigation always uses AppRouter.
+// Keep the development-only specimen out of the normal production entry bundle.
+const LegacyApp = lazy(() => import('./app/App'));
 const isDesignSystemPreview = import.meta.env.DEV
-    && window.location.search.includes('design-system');
-const RootApp = isDesignSystemPreview ? LegacyApp : AppRouter;
+    && new URLSearchParams(window.location.search).has('design-system');
+const RootApp = isDesignSystemPreview
+    ? <Suspense fallback={null}><LegacyApp /></Suspense>
+    : <AppRouter />;
 
 createRoot(document.getElementById('app')).render(
-    React.createElement(React.StrictMode, null, React.createElement(RootApp)),
+    <React.StrictMode>{RootApp}</React.StrictMode>,
 );

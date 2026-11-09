@@ -12,12 +12,14 @@ use Illuminate\Validation\Rule;
 
 class AdminUserController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
+        $perPage = min(max($request->integer('per_page', 20), 1), 20);
+
         $users = User::query()
             ->select(['id', 'name', 'email', 'role', 'created_at'])
             ->latest()
-            ->paginate(20);
+            ->paginate($perPage);
 
         return response()->json($users);
     }

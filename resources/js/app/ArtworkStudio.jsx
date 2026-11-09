@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Badge, Button, EmptyState, ErrorState, FormField, SkeletonLines, UploadFeedback } from '../components/ui';
@@ -10,6 +10,8 @@ const inputClass = 'mt-2 w-full border border-border bg-canvas px-4 py-3 text-sm
 export default function ArtworkStudio({ user, hasProfile }) {
     const [categories, setCategories] = useState([]);
     const [artworks, setArtworks] = useState([]);
+    const [artworkPage, setArtworkPage] = useState(1);
+    const [hasMoreArtworks, setHasMoreArtworks] = useState(false);
     const [form, setForm] = useState(emptyArtwork);
     const [image, setImage] = useState(null);
     const [editingId, setEditingId] = useState(null);
@@ -21,6 +23,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
     const [loadError, setLoadError] = useState('');
     const [imageError, setImageError] = useState('');
     const [imagePreview, setImagePreview] = useState('');
+    const artworkController = useRef(null);
 
     useEffect(() => {
         if (!image) { setImagePreview(''); return undefined; }
@@ -29,23 +32,43 @@ export default function ArtworkStudio({ user, hasProfile }) {
         return () => window.URL.revokeObjectURL(url);
     }, [image]);
 
-    const loadData = useCallback(async () => {
+    const loadData = useCallback(async (page = 1) => {
+        artworkController.current?.abort();
+        const controller = new AbortController();
+        artworkController.current = controller;
         setLoading(true);
         setLoadError('');
         try {
-            const [categoryResponse, artworkResponse] = await Promise.all([
-                axios.get('/api/v1/categories'),
-                axios.get('/api/v1/artist/artworks'),
-            ]);
-            setCategories(categoryResponse.data.data ?? []);
-            setArtworks(artworkResponse.data.data ?? []);
+            const { data } = await axios.get('/api/v1/artist/artworks', { params: { page }, signal: controller.signal });
+            setArtworks(data.data ?? []);
+            setArtworkPage(data.current_page ?? page);
+            setHasMoreArtworks(Boolean(data.next_page_url));
         } catch (error) {
-            setLoadError(error.response?.status === 403 ? 'این حساب اجازه مدیریت آثار را ندارد.' : 'دریافت آثار یا دسته‌بندی‌ها انجام نشد. دوباره تلاش کنید.');
-        } finally { setLoading(false); }
+            if (axios.isCancel(error)) return;
+            setLoadError(error.response?.status === 403 ? 'این حساب اجازه مدیریت آثار را ندارد.' : 'دریافت آثار انجام نشد. دوباره تلاش کنید.');
+        } finally {
+            if (artworkController.current === controller) {
+                artworkController.current = null;
+                setLoading(false);
+            }
+        }
     }, []);
 
     useEffect(() => {
-        if (user?.role === 'artist' && hasProfile) loadData();
+        if (user?.role !== 'artist' || !hasProfile) return undefined;
+
+        let active = true;
+        const controller = new AbortController();
+        axios.get('/api/v1/categories', { signal: controller.signal })
+            .then(({ data }) => { if (active) setCategories(data.data ?? []); })
+            .catch((error) => { if (active && !axios.isCancel(error)) setLoadError('دریافت دسته‌بندی‌ها انجام نشد.'); });
+
+        return () => { active = false; controller.abort(); };
+    }, [hasProfile, user?.role]);
+
+    useEffect(() => {
+        if (user?.role === 'artist' && hasProfile) loadData(1);
+        return () => artworkController.current?.abort();
     }, [hasProfile, loadData, user?.role]);
 
     if (user?.role !== 'artist') return null;
@@ -94,7 +117,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
             });
             resetForm();
             setMessage(data.message ?? 'اثر ذخیره شد.');
-            await loadData();
+            await loadData(1);
         } catch (error) {
             if (error.response?.status === 422) {
                 setErrors(error.response.data.errors ?? {}); setMessage('لطفاً خطاهای مشخص‌شده را اصلاح کنید.');
@@ -130,15 +153,22 @@ export default function ArtworkStudio({ user, hasProfile }) {
             </form>
         </section>
         <section className="space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-bold">آثار ثبت‌شده شما</h2><Button variant="outline" size="sm" onClick={loadData} disabled={loading}>بروزرسانی</Button></div>
-            {loadError && <ErrorState title="دریافت آثار ناموفق بود" description={loadError} onRetry={loadData} />}
+            <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-bold">آثار ثبت‌شده شما</h2><Button variant="outline" size="sm" onClick={() => loadData(1)} disabled={loading}>بروزرسانی</Button></div>
+            {loadError && <ErrorState title="دریافت آثار ناموفق بود" description={loadError} onRetry={() => loadData(1)} />}
             {loading ? <SkeletonLines lines={5} /> : artworks.length === 0 ? <EmptyState title="هنوز اثری ثبت نکرده‌اید" description="با فرم بالا اولین اثر خود را برای بررسی ارسال کنید." /> :
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{artworks.map((item) => <article key={item.id} className="overflow-hidden border border-border bg-paper">
-                    <div className="flex aspect-[4/3] items-center justify-center bg-surface-muted p-3"><img src={item.image_url} alt={item.title} loading="lazy" className="h-full w-full object-contain" /></div>
+                    <div className="flex aspect-[4/3] items-center justify-center bg-surface-muted p-3"><img src={item.image_url} alt={item.title} loading="lazy" decoding="async" className="h-full w-full object-contain" /></div>
                     <div className="space-y-3 p-4"><div className="flex flex-wrap items-start justify-between gap-2"><h3 className="font-bold">{item.title}</h3><Badge variant={item.status === 'approved' ? 'success' : item.status === 'rejected' ? 'danger' : item.status === 'changes_requested' ? 'warning' : 'neutral'}>{statusLabels[item.status] ?? item.status}</Badge></div>
                         <p className="text-xs text-muted">{item.category?.name}</p>{item.rejection_note && <p className="border-s-2 border-danger bg-surface-muted p-3 text-xs leading-6 text-danger">{item.rejection_note}</p>}
                         <Button variant="outline" size="sm" onClick={() => editArtwork(item)}>ویرایش اثر</Button></div>
                 </article>)}</div>}
+            {artworks.length > 0 && !loading && (
+                <nav aria-label="صفحه‌بندی آثار ثبت‌شده" className="flex items-center justify-center gap-4">
+                    <Button variant="outline" size="sm" disabled={loading || artworkPage <= 1} onClick={() => loadData(artworkPage - 1)}>قبلی</Button>
+                    <span className="text-xs text-muted">صفحه {artworkPage.toLocaleString('fa-IR')}</span>
+                    <Button variant="outline" size="sm" disabled={loading || !hasMoreArtworks} onClick={() => loadData(artworkPage + 1)}>بعدی</Button>
+                </nav>
+            )}
         </section>
     </section>;
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { EmptyState, ErrorState, SkeletonLines, Badge, Button } from '../components/ui';
 
@@ -16,44 +16,64 @@ export default function InquiryCenter({ user, hasProfile }) {
     const [busyId, setBusyId] = useState(null);
     const [error, setError] = useState('');
     const [detailError, setDetailError] = useState('');
+    const listController = useRef(null);
+    const detailController = useRef(null);
 
     const load = useCallback(async (url = endpoint) => {
+        listController.current?.abort();
+        const controller = new AbortController();
+        listController.current = controller;
         setLoading(true);
         setError('');
         try {
-            const { data } = await axios.get(url);
+            const { data } = await axios.get(url, { signal: controller.signal });
             const rows = data.data ?? [];
             setItems(rows);
             setNextPage(data.next_page_url ?? null);
             setPreviousPage(data.prev_page_url ?? null);
             setSelected((current) => rows.find((item) => item.id === current?.id) ?? rows[0] ?? null);
         } catch (requestError) {
+            if (axios.isCancel(requestError)) return;
             setError(requestError.response?.status === 403
                 ? 'این حساب اجازه مشاهده این صندوق را ندارد.'
                 : 'دریافت درخواست‌ها انجام نشد. دوباره تلاش کنید.');
         } finally {
-            setLoading(false);
+            if (listController.current === controller) {
+                listController.current = null;
+                setLoading(false);
+            }
         }
     }, [endpoint]);
 
     const loadDetail = useCallback(async (item) => {
+        detailController.current?.abort();
+        const controller = new AbortController();
+        detailController.current = controller;
         setSelected(item);
         setDetailLoading(true);
         setDetailError('');
         try {
-            const { data } = await axios.get(endpoint + '/' + item.id);
+            const { data } = await axios.get(endpoint + '/' + item.id, { signal: controller.signal });
             setSelected(data.data);
         } catch (requestError) {
+            if (axios.isCancel(requestError)) return;
             setDetailError(requestError.response?.status === 403
                 ? 'دسترسی به این درخواست مجاز نیست.'
                 : 'جزئیات درخواست دریافت نشد.');
         } finally {
-            setDetailLoading(false);
+            if (detailController.current === controller) {
+                detailController.current = null;
+                setDetailLoading(false);
+            }
         }
     }, [endpoint]);
 
     useEffect(() => {
         if (user?.role === 'buyer' || (isArtist && hasProfile)) load();
+        return () => {
+            listController.current?.abort();
+            detailController.current?.abort();
+        };
     }, [hasProfile, isArtist, load, user?.role]);
 
     const updateStatus = async (item, status) => {

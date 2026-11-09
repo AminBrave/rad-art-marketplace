@@ -1,15 +1,146 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { WorkspaceLayout } from './Layouts';
-import ArtworkStudio from './ArtworkStudio';
-import InquiryCenter from './InquiryCenter';
+import { ArtworkDetailSkeleton, ArtistProfileSkeleton } from '../components/ui';
+const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
+const InquiryCenter = lazy(() => import('./InquiryCenter'));
 
 const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
 
+function LoadingBlock({ className = '' }) {
+    return <span aria-hidden="true" className={`app-skeleton block ${className}`} />;
+}
+
 export function RouteLoading({ label = 'در حال آماده‌سازی صفحه…' }) {
-    return <div className="mx-auto max-w-3xl px-6 py-20 text-center text-sm text-stone-500" role="status" aria-live="polite">{label}</div>;
+    const { pathname } = useLocation();
+    const isWorkspace = pathname === '/dashboard' || pathname.startsWith('/dashboard/') || pathname.startsWith('/admin');
+    const isArtworkDetail = /^\/artworks\/[^/]+/.test(pathname);
+    const isArtistProfile = /^\/artists\/[^/]+/.test(pathname);
+    const isForm = /\/(login|register)$/.test(pathname) || (isWorkspace && /\/(profile|artworks)$/.test(pathname));
+
+    if (isArtworkDetail) return <ArtworkDetailSkeleton />;
+    if (isArtistProfile) return <ArtistProfileSkeleton />;
+
+    return (
+        <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-10 sm:px-8 lg:px-10" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
+            <span className="sr-only">{label}</span>
+            <div className="mb-8 flex items-center justify-between gap-5 border-b border-border pb-6">
+                <div className="grid min-w-0 flex-1 gap-3">
+                    <LoadingBlock className="h-3 w-24" />
+                    <LoadingBlock className="h-9 w-2/3 max-w-sm" />
+                    <LoadingBlock className="h-4 w-full max-w-xl" />
+                </div>
+                {isWorkspace && <LoadingBlock className="h-10 w-28 shrink-0" />}
+            </div>
+            {pathname === '/' ? (
+                <section className="grid items-center gap-8 lg:grid-cols-2">
+                    <div className="grid gap-4">
+                        <LoadingBlock className="h-3 w-28" />
+                        <LoadingBlock className="h-12 w-11/12" />
+                        <LoadingBlock className="h-12 w-3/4" />
+                        <LoadingBlock className="mt-3 h-4 w-full max-w-xl" />
+                        <LoadingBlock className="h-4 w-4/5" />
+                        <LoadingBlock className="mt-4 h-12 w-36" />
+                    </div>
+                    <LoadingBlock className="aspect-[4/5] w-full max-w-xl justify-self-center" />
+                </section>
+            ) : isArtworkDetail ? (
+                <div className="grid gap-8 lg:grid-cols-[1.15fr_.85fr]">
+                    <LoadingBlock className="aspect-[4/3] w-full lg:aspect-[4/5]" />
+                    <div className="grid content-start gap-5 border border-border bg-paper p-6 sm:p-9">
+                        <LoadingBlock className="h-4 w-24" />
+                        <LoadingBlock className="h-10 w-4/5" />
+                        <LoadingBlock className="h-4 w-2/5" />
+                        <LoadingBlock className="mt-5 h-28 w-full" />
+                        <LoadingBlock className="mt-3 h-20 w-full" />
+                    </div>
+                </div>
+            ) : isArtistProfile ? (
+                <>
+                    <section className="grid gap-4 border border-border bg-paper p-7 sm:p-12">
+                        <LoadingBlock className="h-3 w-28" />
+                        <LoadingBlock className="h-10 w-2/3 max-w-md" />
+                        <LoadingBlock className="h-4 w-28" />
+                        <LoadingBlock className="mt-3 h-20 w-full max-w-3xl" />
+                    </section>
+                    <section className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                        {[0, 1, 2, 3, 4, 5].map((item) => <div key={item} className="border border-border bg-paper"><LoadingBlock className="aspect-[4/3] w-full" /><div className="grid gap-3 p-4"><LoadingBlock className="h-4 w-4/5" /><LoadingBlock className="h-3 w-2/5" /></div></div>)}
+                    </section>
+                </>
+            ) : isForm ? (
+                <>
+                    <section className="grid gap-5 border border-border bg-paper p-6 sm:p-8">
+                        <LoadingBlock className="h-6 w-40" />
+                        <LoadingBlock className="h-12 w-full" />
+                        <LoadingBlock className="h-12 w-full" />
+                        <LoadingBlock className="h-12 w-full" />
+                        <LoadingBlock className="h-28 w-full" />
+                        <LoadingBlock className="h-12 w-36" />
+                    </section>
+                    {pathname.endsWith('/artworks') && <section className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2].map((item) => <div key={item} className="border border-border bg-paper"><LoadingBlock className="aspect-[4/3] w-full" /><div className="grid gap-3 p-4"><LoadingBlock className="h-4 w-4/5" /><LoadingBlock className="h-3 w-2/5" /></div></div>)}</section>}
+                </>
+            ) : pathname === '/admin' ? (
+                <>
+                    <section className="grid gap-3 sm:grid-cols-2">
+                        <LoadingBlock className="h-36 w-full" />
+                        <LoadingBlock className="h-36 w-full" />
+                    </section>
+                    <section className="mt-7 border border-border bg-paper p-5">
+                        <LoadingBlock className="h-5 w-48" />
+                        <div className="mt-5 flex items-center justify-between gap-4 border-t border-border pt-5"><div className="grid flex-1 gap-3"><LoadingBlock className="h-5 w-2/3" /><LoadingBlock className="h-3 w-1/3" /></div><LoadingBlock className="h-8 w-24" /></div>
+                    </section>
+                </>
+            ) : /^\/admin\/(users|artworks)$/.test(pathname) ? (
+                <section className="overflow-hidden border border-border bg-paper">
+                    <div className="flex justify-between gap-4 border-b border-border p-5"><LoadingBlock className="h-6 w-40" /><LoadingBlock className="h-9 w-28" /></div>
+                    <div className="grid gap-4 p-5">
+                        {[0, 1, 2, 3, 4, 5].map((item) => <div key={item} className="grid gap-3 border-b border-border pb-4 sm:grid-cols-3"><LoadingBlock className="h-5 w-4/5" /><LoadingBlock className="h-5 w-3/4" /><LoadingBlock className="h-9 w-28" /></div>)}
+                    </div>
+                </section>
+            ) : pathname === '/dashboard/buyer' ? (
+                <>
+                    <section className="grid gap-4 sm:grid-cols-2"><LoadingBlock className="h-32 w-full" /><LoadingBlock className="h-32 w-full" /></section>
+                    <section className="mt-6 border border-border bg-paper p-5"><LoadingBlock className="h-5 w-48" /><LoadingBlock className="mt-5 h-16 w-full" /><LoadingBlock className="mt-4 h-4 w-28" /></section>
+                </>
+            ) : pathname === '/dashboard/buyer/inquiries' ? (
+                <section className="overflow-hidden border border-border bg-paper">
+                    {[0, 1, 2, 3, 4].map((item) => <div key={item} className="grid gap-3 border-b border-border p-5"><LoadingBlock className="h-5 w-2/3" /><LoadingBlock className="h-4 w-1/3" /><LoadingBlock className="h-3 w-1/4" /></div>)}
+                </section>
+            ) : pathname === '/dashboard/artist/inquiries' ? (
+                <div className="grid gap-4 lg:grid-cols-[minmax(260px,0.85fr)_minmax(0,1.5fr)]">
+                    <section className="border border-border bg-paper p-4">{[0, 1, 2, 3, 4].map((item) => <div key={item} className="grid gap-2 border-b border-border p-3"><LoadingBlock className="h-4 w-4/5" /><LoadingBlock className="h-3 w-1/2" /></div>)}</section>
+                    <section className="border border-border bg-paper p-6"><LoadingBlock className="h-6 w-2/3" /><LoadingBlock className="mt-6 h-4 w-1/3" /><LoadingBlock className="mt-8 h-32 w-full" /></section>
+                </div>
+            ) : pathname === '/dashboard/artist' ? (
+                <>
+                    <section className="border border-border bg-paper p-6"><LoadingBlock className="h-5 w-40" /><LoadingBlock className="mt-4 h-8 w-2/3" /><LoadingBlock className="mt-4 h-4 w-full" /><LoadingBlock className="mt-3 h-4 w-3/4" /></section>
+                    <section className="mt-6 grid gap-3 sm:grid-cols-2"><LoadingBlock className="h-24 w-full" /><LoadingBlock className="h-24 w-full" /></section>
+                </>
+            ) : /^\/(about|help|contact)$/.test(pathname) ? (
+                <section className="grid gap-6">
+                    {[0, 1, 2].map((item) => <div key={item} className="grid gap-3 border-b border-border pb-6"><LoadingBlock className="h-6 w-48" /><LoadingBlock className="h-4 w-full" /><LoadingBlock className="h-4 w-5/6" /></div>)}
+                </section>
+            ) : (
+                <>
+                    {isWorkspace && <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2].map((item) => <LoadingBlock key={item} className="h-28 w-full" />)}</div>}
+                    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                        {[0, 1, 2, 3, 4, 5].map((item) => (
+                            <div key={item} className="overflow-hidden border border-border bg-paper">
+                                <LoadingBlock className="aspect-[4/3] w-full" />
+                                <div className="grid gap-3 p-4">
+                                    <LoadingBlock className="h-3 w-20" />
+                                    <LoadingBlock className="h-5 w-4/5" />
+                                    <LoadingBlock className="h-4 w-2/5" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </>
+            )}
+        </main>
+    );
 }
 
 function AuthUnavailable() {
@@ -58,17 +189,18 @@ export function ArtistWorkspaceLayout() {
 
     useEffect(() => {
         let active = true;
-        axios.get('/api/v1/artist-profile/me')
+        const controller = new AbortController();
+        axios.get('/api/v1/artist-profile/me', { signal: controller.signal })
             .then(({ data }) => { if (active) setProfile(data.data ?? emptyProfile); })
             .catch((error) => {
-                if (!active) return;
+                if (!active || axios.isCancel(error)) return;
                 setProfile(emptyProfile);
                 setProfileError(error.response?.status === 403
                     ? 'حساب فعلی اجازه مدیریت این پروفایل را ندارد.'
                     : 'دریافت پروفایل هنرمند انجام نشد. می‌توانید دوباره تلاش کنید.');
             })
             .finally(() => { if (active) setProfileLoading(false); });
-        return () => { active = false; };
+        return () => { active = false; controller.abort(); };
     }, [user?.id]);
 
     const links = [
@@ -188,7 +320,7 @@ export function ArtistProfileSettings() {
 export function ArtistArtworkPage() {
     const { user, profile, profileLoading } = useOutletContext();
     if (profileLoading) return <RouteLoading label="در حال آماده‌سازی فضای آثار…" />;
-    return <ArtworkStudio user={user} hasProfile={Boolean(profile?.slug)} />;
+    return <Suspense fallback={<RouteLoading label="در حال آماده‌سازی فضای آثار…" />}><ArtworkStudio user={user} hasProfile={Boolean(profile?.slug)} /></Suspense>;
 }
 
 export function ArtistInquiryPage() {
@@ -204,7 +336,7 @@ export function ArtistInquiryPage() {
             </section>
         );
     }
-    return <InquiryCenter user={user} hasProfile />;
+    return <Suspense fallback={<RouteLoading label="در حال آماده‌سازی صندوق پیام‌ها…" />}><InquiryCenter user={user} hasProfile /></Suspense>;
 }
 
 export function BuyerWorkspaceLayout() {

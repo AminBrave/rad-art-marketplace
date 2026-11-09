@@ -17,6 +17,7 @@ export default [
                 console: 'readonly',
                 FormData: 'readonly',
                 URLSearchParams: 'readonly',
+                AbortController: 'readonly',
             },
             parserOptions: { ecmaFeatures: { jsx: true } },
         },

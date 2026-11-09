@@ -45,6 +45,15 @@ Use this checklist for a release candidate. A checked item requires evidence for
 - [ ] Verify admin overview, moderation, and user management.
 - [ ] Verify inquiry payloads omit both parties' email addresses; do not imply chat, replies, or email delivery.
 
+## Performance and Lighthouse evidence
+
+- [ ] Run Lighthouse mobile and desktop against the production-like release candidate for homepage, catalogue, artwork detail, artist profile, and authenticated role workspaces.
+- [ ] Attach Lighthouse reports and record Chrome/Lighthouse version, host, build SHA, test location, network/CPU throttling, and run count.
+- [ ] Record median LCP, CLS, INP, TTFB, transfer size, request count, and initial/route chunk sizes across repeat runs.
+- [ ] Fix every actionable performance audit or document a justified exception with evidence and owner.
+- [ ] Confirm no avoidable layout shifts occur during initial boot, route transitions, image loading, font loading, pagination, and workspace data loading.
+- [ ] Review backend query counts and database query plans using production-like data; document any justified indexes or query changes.
+
 ## UX, accessibility, privacy, and legal
 
 - [ ] Verify Persian-first copy, RTL, mixed-direction fields, dates, and number formatting.

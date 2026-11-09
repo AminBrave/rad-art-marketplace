@@ -137,3 +137,255 @@ a {
         transition-duration: 0.01ms !important;
     }
 }
+
+
+/* Shared loading treatment. Intrinsic skeleton dimensions mirror the first viewport. */
+.app-skeleton {
+    display: block;
+    background: linear-gradient(100deg, #eeeae3 25%, #f8f6f2 42%, #eeeae3 62%);
+    background-size: 200% 100%;
+    animation: app-skeleton-shimmer 1.35s ease-in-out infinite;
+}
+
+@keyframes app-skeleton-shimmer {
+    to {
+        background-position-x: -200%;
+    }
+}
+
+.app-boot {
+    width: min(100% - 2.5rem, 80rem);
+    min-height: 100vh;
+    margin-inline: auto;
+    padding-block: 1.5rem 4rem;
+}
+
+.app-boot__header {
+    display: flex;
+    min-height: 3.5rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.app-boot__brand {
+    width: 6rem;
+    height: 1.75rem;
+}
+
+.app-boot__nav {
+    width: min(42%, 22rem);
+    height: 1rem;
+}
+
+.app-boot__hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.9fr);
+    align-items: center;
+    gap: clamp(2rem, 5vw, 5rem);
+    padding-block: clamp(3.5rem, 8vw, 6rem);
+}
+
+.app-boot__copy {
+    display: grid;
+    gap: 1rem;
+}
+
+.app-boot__eyebrow {
+    width: 7rem;
+    height: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.app-boot__heading {
+    width: 92%;
+    height: clamp(2rem, 4vw, 3.5rem);
+}
+
+.app-boot__heading--short {
+    width: 66%;
+}
+
+.app-boot__paragraph {
+    width: 94%;
+    height: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.app-boot__paragraph--short {
+    width: 70%;
+    margin-top: 0;
+}
+
+.app-boot__button {
+    width: 9rem;
+    height: 3rem;
+    margin-top: 1.25rem;
+}
+
+.app-boot__artwork {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+}
+
+.app-boot__hero-media {
+    width: 100%;
+    min-width: 0;
+}
+
+.app-boot__hero-caption {
+    display: flex;
+    min-height: 4.75rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 0.5rem;
+}
+
+.app-boot__caption-lines {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.app-boot__caption-label {
+    width: 8rem;
+    height: 0.75rem;
+}
+
+.app-boot__caption-title {
+    width: 6rem;
+    height: 1rem;
+}
+
+.app-boot__caption-action {
+    width: 5rem;
+    height: 0.75rem;
+}
+
+.app-boot__cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+}
+
+.app-boot__card {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+}
+
+@media (max-width: 767px) {
+    .app-boot__hero {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 3rem;
+        padding-block: 3.5rem;
+    }
+
+    .app-boot__artwork {
+        max-width: 32rem;
+        margin-inline: auto;
+    }
+
+    .app-boot__cards {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .app-skeleton {
+        animation: none;
+    }
+}
+
+
+.app-boot__features {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+    border-block: 1px solid var(--color-border);
+    background: var(--color-surface-muted);
+    padding: 3rem 0;
+}
+
+.app-boot__feature {
+    display: grid;
+    align-content: start;
+    gap: 0.35rem;
+}
+
+.app-boot__gallery,
+.app-boot__artists {
+    padding-block: 4rem;
+}
+
+.app-boot__section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.app-boot__cards,
+.app-boot__artist-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+}
+
+.app-boot__gallery-card {
+    min-width: 0;
+    border: 1px solid var(--color-border);
+    background: white;
+}
+
+.app-boot__card {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+}
+
+.app-boot__categories {
+    border-block: 1px solid var(--color-border);
+    background: white;
+    padding-block: 3.5rem;
+}
+
+.app-boot__category-pills {
+    display: flex;
+    min-height: 6rem;
+    flex-wrap: wrap;
+    align-content: start;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.app-boot__artist-cards > div {
+    min-height: 9rem;
+}
+
+.app-boot__cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    background: #242320;
+    padding: 3.5rem 0;
+}
+
+@media (max-width: 767px) {
+    .app-boot__features {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 2rem;
+    }
+
+    .app-boot__cards,
+    .app-boot__artist-cards {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .app-boot__cta {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

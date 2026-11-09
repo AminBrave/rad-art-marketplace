@@ -1,6 +1,20 @@
 # Changelog
 
-Notable repository changes are listed newest first. Entries describe merged implementation milestones and repository maintenance, not production releases. The current package version is not used as a release tag.
+Notable repository changes are listed newest first. Entries describe implementation milestones and repository maintenance, not production releases. The current package version is not used as a release tag.
+
+## 2026-11-09 — Performance and visual stability hardening (in progress)
+
+### Changed
+- Added a static first-paint skeleton and shared page-shaped route loading placeholders; public/workspace layout shells remain mounted during route chunk loading.
+- Split public pages and workspace dashboards into lazy-loaded feature bundles; artist artwork and inquiry tools load only when opened.
+- Changed public artist portfolios and artist-owned artwork lists to 12-item simple pagination, avoiding unbounded payloads and total-count queries; added frontend navigation and backend regression coverage.
+- Eager-loaded the artist profile relationship in the artist-owned artwork list after code review identified an avoidable per-row relationship query.
+- Set Google Fonts to `display=optional` to reduce late font-swap layout shifts.
+
+### Verification boundary
+- Changes are on `perf/mvp2-app-performance-stability` in [PR #49](https://github.com/AminBrave/rad-art-marketplace/pull/49); the PR is open and not merged.
+- CI run #311 passed on branch head `16dbd35ac15eb0d0080bba60278e15ba2fb87694`: 44 backend tests / 235 assertions, PHP style, frontend lint, and Vite production build ([run #311](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42547394218)).
+- Lighthouse, Core Web Vitals, repeated browser-level CLS, real database query plans, and production-host measurements remain outstanding. No score or zero-shift claim is made.
 
 ## 2026-11-09 — MVP 2 Stage 6: QA hardening (verification in progress)
 

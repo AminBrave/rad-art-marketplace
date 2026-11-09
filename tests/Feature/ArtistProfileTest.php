@@ -202,6 +202,38 @@ class ArtistProfileTest extends TestCase
             ->assertJsonMissingPath('data.artworks.0.rejection_note');
     }
 
+    public function test_public_artist_portfolio_is_bounded_and_supports_load_more_pagination(): void
+    {
+        $artist = $this->makeUser('large-portfolio@example.com');
+        $profile = $artist->artistProfile()->create([...$this->validProfile(), 'slug' => 'large-portfolio']);
+        $category = Category::query()->where('slug', 'painting')->firstOrFail();
+
+        foreach (range(1, 13) as $index) {
+            $profile->artworks()->create([
+                'category_id' => $category->id,
+                'slug' => 'portfolio-work-'.$index,
+                'title' => 'اثر شماره '.$index,
+                'image_path' => 'artworks/work-'.$index.'.jpg',
+                'status' => Artwork::STATUS_APPROVED,
+                'availability' => 'available',
+            ]);
+        }
+
+        $this->getJson('/api/v1/artists/'.$profile->slug.'?artworks_page=1')
+            ->assertOk()
+            ->assertJsonCount(12, 'data.artworks')
+            ->assertJsonPath('data.artworks_pagination.current_page', 1)
+            ->assertJsonPath('data.artworks_pagination.has_more', true)
+            ->assertJsonPath('data.artworks_pagination.next_page', 2);
+
+        $this->getJson('/api/v1/artists/'.$profile->slug.'?artworks_page=2')
+            ->assertOk()
+            ->assertJsonCount(1, 'data.artworks')
+            ->assertJsonPath('data.artworks_pagination.current_page', 2)
+            ->assertJsonPath('data.artworks_pagination.has_more', false)
+            ->assertJsonPath('data.artworks_pagination.next_page', null);
+    }
+
     /**
      * @return array<string, mixed>
      */

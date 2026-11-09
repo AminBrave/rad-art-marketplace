@@ -125,6 +125,61 @@ class ArtworkTest extends TestCase
         $this->getJson('/api/v1/artworks/'.$approved->slug)->assertOk();
     }
 
+    public function test_public_artwork_catalogue_honors_a_bounded_per_page_request(): void
+    {
+        [, $profile] = $this->artistWithProfile();
+
+        foreach (range(1, 7) as $index) {
+            $profile->artworks()->create([
+                ...$this->validArtwork(),
+                'slug' => 'catalogue-page-work-'.$index,
+                'image_path' => 'artworks/catalogue-page-work-'.$index.'.jpg',
+                'status' => Artwork::STATUS_APPROVED,
+            ]);
+        }
+
+        $this->getJson('/api/v1/artworks?per_page=3')
+            ->assertOk()
+            ->assertJsonCount(3, 'data')
+            ->assertJsonPath('per_page', 3)
+            ->assertJsonPath('total', 7);
+    }
+
+    public function test_artist_artwork_list_is_paginated_and_scoped_to_the_current_artist(): void
+    {
+        [$artist, $profile] = $this->artistWithProfile();
+
+        foreach (range(1, 13) as $index) {
+            $profile->artworks()->create([
+                ...$this->validArtwork(),
+                'slug' => 'artist-work-'.$index,
+                'image_path' => 'artworks/artist-work-'.$index.'.jpg',
+            ]);
+        }
+
+        [, $otherProfile] = $this->artistWithProfile('other-artist@example.com');
+        $otherProfile->artworks()->create([
+            ...$this->validArtwork(),
+            'slug' => 'another-artists-work',
+            'image_path' => 'artworks/another-artists-work.jpg',
+        ]);
+
+        $this->actingAs($artist)
+            ->getJson('/api/v1/artist/artworks?page=1')
+            ->assertOk()
+            ->assertJsonCount(12, 'data')
+            ->assertJsonPath('current_page', 1)
+            ->assertJsonStructure(['next_page_url'])
+            ->assertJsonMissing(['slug' => 'another-artists-work']);
+
+        $this->actingAs($artist)
+            ->getJson('/api/v1/artist/artworks?page=2')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('current_page', 2)
+            ->assertJsonPath('next_page_url', null);
+    }
+
     public function test_admin_can_view_and_edit_an_artists_artwork(): void
     {
         [, $profile] = $this->artistWithProfile();

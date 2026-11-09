@@ -23,11 +23,13 @@ class AdminArtworkModerationController extends Controller
             ])],
         ]);
 
+        $perPage = min(max($request->integer('per_page', 20), 1), 20);
+
         $artworks = Artwork::query()
             ->with(['category', 'artistProfile'])
             ->when($validated['status'] ?? null, fn ($query, $status) => $query->where('status', $status))
             ->latest()
-            ->paginate(20)
+            ->paginate($perPage)
             ->through(fn (Artwork $artwork): array => $this->payload($artwork));
 
         return response()->json($artworks);

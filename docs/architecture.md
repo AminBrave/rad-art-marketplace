@@ -25,7 +25,9 @@ Browser
 ## Application entry and routing
 
 - `resources/js/app.jsx` mounts the normal `AppRouter`.
-- `resources/js/app/AppRouter.jsx` defines public pages and role-protected workspace route trees.
+- `resources/js/app/AppRouter.jsx` defines public pages and role-protected workspace route trees; route screens are lazy-loaded while shared auth and layout boundaries remain eager.
+- The Blade shell renders a static first-paint skeleton before the React root mounts. Route-level fallbacks retain the public/workspace navigation shell and reserve approximate page/media dimensions.
+- Public artist portfolio and artist-owned artwork list endpoints use 12-item simple pagination to bound response size and avoid unnecessary total-count queries. The artist artwork list eager-loads both category and artist profile relationships used by its serialized payload, avoiding per-row relationship queries.
 - `AuthProvider` loads and exposes the current session.
 - `PublicLayout` owns public navigation/footer; role-specific workspace layouts own their navigation.
 - The legacy `resources/js/app/App.jsx` is selected only for the development-only `?design-system` preview.

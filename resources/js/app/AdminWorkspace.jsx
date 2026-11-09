@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
@@ -27,20 +27,26 @@ export function AdminDashboardHome() {
     const [summary, setSummary] = useState({ pending: null, users: null, latest: null });
     const [loading, setLoading] = useState(true);
     const [errors, setErrors] = useState([]);
+    const controllerRef = useRef(null);
     const load = useCallback(async () => {
+        controllerRef.current?.abort();
+        const controller = new AbortController();
+        controllerRef.current = controller;
         setLoading(true);
         const responses = await Promise.allSettled([
-            axios.get(api + '/artworks', { params: { status: 'pending_review', page: 1 } }),
-            axios.get(api + '/users', { params: { page: 1 } }),
+            axios.get(api + '/artworks', { params: { status: 'pending_review', page: 1, per_page: 1 }, signal: controller.signal }),
+            axios.get(api + '/users', { params: { page: 1, per_page: 1 }, signal: controller.signal }),
         ]);
+        if (controller.signal.aborted) return;
         const next = { pending: null, users: null, latest: null }, failures = [];
         if (responses[0].status === 'fulfilled') { next.pending = responses[0].value.data.total ?? null; next.latest = responses[0].value.data.data?.[0] ?? null; }
         else failures.push('دریافت تعداد آثار در صف بررسی انجام نشد.');
         if (responses[1].status === 'fulfilled') next.users = responses[1].value.data.total ?? null;
         else failures.push('دریافت تعداد کاربران انجام نشد.');
-        setSummary(next); setErrors(failures); setLoading(false);
+        setSummary(next); setErrors(failures);
+        if (controllerRef.current === controller) { controllerRef.current = null; setLoading(false); }
     }, []);
-    useEffect(() => { load(); }, [load]);
+    useEffect(() => { load(); return () => controllerRef.current?.abort(); }, [load]);
     return <section className="space-y-7" dir="rtl">
         <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6"><div><p className="text-sm font-bold text-terracotta-strong">فضای مدیریت</p><h1 className="mt-2 text-2xl font-black sm:text-3xl">نمای کلی سامانه</h1><p className="mt-3 max-w-2xl text-sm leading-7 text-muted">آمار عملیاتی از پاسخ واقعی API؛ بدون شاخص یا فعالیت ساختگی.</p></div><Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button></header>
         {errors.length > 0 && <ErrorState title="بخشی از اطلاعات دریافت نشد" description={errors.join(' ')} onRetry={load} />}
@@ -60,13 +66,17 @@ export function AdminArtworkModeration() {
     const [result, setResult] = useState(null), [notes, setNotes] = useState({});
     const [loading, setLoading] = useState(true), [busyId, setBusyId] = useState(null);
     const [error, setError] = useState(''), [message, setMessage] = useState('');
+    const controllerRef = useRef(null);
     const load = useCallback(async () => {
+        controllerRef.current?.abort();
+        const controller = new AbortController();
+        controllerRef.current = controller;
         setLoading(true); setError('');
-        try { const { data } = await axios.get(api + '/artworks', { params: { status, page } }); setResult(data); }
-        catch (e) { setError(e.response?.status === 403 ? 'این حساب اجازه مشاهده صف بررسی آثار را ندارد.' : 'دریافت آثار انجام نشد. دوباره تلاش کنید.'); }
-        finally { setLoading(false); }
+        try { const { data } = await axios.get(api + '/artworks', { params: { status, page }, signal: controller.signal }); if (!controller.signal.aborted) setResult(data); }
+        catch (e) { if (!axios.isCancel(e)) setError(e.response?.status === 403 ? 'این حساب اجازه مشاهده صف بررسی آثار را ندارد.' : 'دریافت آثار انجام نشد. دوباره تلاش کنید.'); }
+        finally { if (controllerRef.current === controller) { controllerRef.current = null; setLoading(false); } }
     }, [status, page]);
-    useEffect(() => { load(); }, [load]);
+    useEffect(() => { load(); return () => controllerRef.current?.abort(); }, [load]);
     const chooseStatus = (value) => { setMessage(''); setParams(value === 'pending_review' ? {} : { status: value }); };
     const changePage = (next) => setParams({ ...(status !== 'pending_review' ? { status } : {}), ...(next > 1 ? { page: String(next) } : {}) });
     const moderate = async (artwork, action) => {
@@ -87,7 +97,7 @@ export function AdminArtworkModeration() {
             <div className="grid gap-4 xl:grid-cols-2">{result.data.map((artwork) => {
                 const actionable = artwork.status === 'pending_review';
                 return <article key={artwork.id} className="overflow-hidden border border-border bg-paper">
-                    <div className="grid sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]"><div className="bg-surface-muted"><img src={artwork.image_url} alt={'تصویر اثر ' + artwork.title} loading="lazy" className="h-56 w-full object-cover sm:h-full sm:min-h-64" /></div>
+                    <div className="grid sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]"><div className="bg-surface-muted"><img src={artwork.image_url} alt={'تصویر اثر ' + artwork.title} loading="lazy" decoding="async" className="h-56 w-full object-cover sm:h-full sm:min-h-64" /></div>
                         <div className="min-w-0 p-5"><div className="flex flex-wrap items-start justify-between gap-2"><h2 className="font-bold">{artwork.title}</h2><Badge variant={artwork.status === 'approved' ? 'success' : artwork.status === 'rejected' ? 'danger' : artwork.status === 'pending_review' ? 'warning' : 'info'}>{statusLabels[artwork.status] ?? artwork.status}</Badge></div>
                             <p className="mt-2 text-xs text-muted">{artwork.artist?.display_name ?? '—'} · {artwork.category?.name ?? '—'}</p>
                             <dl className="mt-4 grid grid-cols-2 gap-3 text-xs">{artwork.medium && <div><dt className="text-muted">تکنیک</dt><dd className="mt-1 font-semibold">{artwork.medium}</dd></div>}{artwork.dimensions && <div><dt className="text-muted">ابعاد</dt><dd className="mt-1 font-semibold">{artwork.dimensions}</dd></div>}{artwork.year && <div><dt className="text-muted">سال</dt><dd className="mt-1 font-semibold">{artwork.year}</dd></div>}<div><dt className="text-muted">تاریخ ثبت</dt><dd className="mt-1 font-semibold">{dateLabel(artwork.created_at)}</dd></div></dl>
@@ -109,13 +119,17 @@ export function AdminUsersPage() {
     const [result, setResult] = useState(null), [drafts, setDrafts] = useState({});
     const [loading, setLoading] = useState(true), [busyId, setBusyId] = useState(null);
     const [error, setError] = useState(''), [message, setMessage] = useState('');
+    const controllerRef = useRef(null);
     const load = useCallback(async () => {
+        controllerRef.current?.abort();
+        const controller = new AbortController();
+        controllerRef.current = controller;
         setLoading(true); setError('');
-        try { const { data } = await axios.get(api + '/users', { params: { page } }); setResult(data); }
-        catch (e) { setError(e.response?.status === 403 ? 'این حساب اجازه مشاهده کاربران را ندارد.' : 'دریافت فهرست کاربران انجام نشد. دوباره تلاش کنید.'); }
-        finally { setLoading(false); }
+        try { const { data } = await axios.get(api + '/users', { params: { page }, signal: controller.signal }); if (!controller.signal.aborted) setResult(data); }
+        catch (e) { if (!axios.isCancel(e)) setError(e.response?.status === 403 ? 'این حساب اجازه مشاهده کاربران را ندارد.' : 'دریافت فهرست کاربران انجام نشد. دوباره تلاش کنید.'); }
+        finally { if (controllerRef.current === controller) { controllerRef.current = null; setLoading(false); } }
     }, [page]);
-    useEffect(() => { load(); }, [load]);
+    useEffect(() => { load(); return () => controllerRef.current?.abort(); }, [load]);
     const changePage = (next) => setParams(next > 1 ? { page: String(next) } : {});
     const updateRole = async (item) => {
         const role = drafts[item.id] ?? (item.role === 'buyer' ? '' : item.role);

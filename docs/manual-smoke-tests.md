@@ -16,6 +16,16 @@ npm run dev
 
 In a second terminal, run `php artisan serve` and open the Laravel URL. For the automated suite, the CLI PHP environment must have `pdo_sqlite` and `sqlite3` enabled.
 
+## Loading, visual stability, and performance
+
+1. Open each public route directly (home, catalogue, artwork detail, artist directory, artist profile, About, Help, Contact, login, and registration) on a cold cache. Confirm the initial boot skeleton appears before the React screen and that the public navigation shell remains visible while route code loads.
+2. Open Artist, Buyer, and Admin workspace routes on a cold cache. Confirm the role-check and route skeletons preserve the workspace frame and do not flash an empty page.
+3. Use a slow network profile and CPU throttling. Confirm skeleton blocks reserve the same major media and content regions as the loaded page; record any visible shifts rather than assuming they are absent.
+4. Confirm below-the-fold artwork images load lazily, primary imagery loads promptly, broken images show the designed fallback, and no image changes its reserved frame when it loads.
+5. Create an artist with more than 12 approved portfolio works. Confirm the public profile initially loads 12 works and “نمایش آثار بیشتر” appends the next page without duplicates; verify the final page hides the control.
+6. Create an artist with more than 12 submitted works. Confirm `/dashboard/artist/artworks` displays 12 at a time, previous/next navigation works, and editing/submitting an item returns the list to page 1.
+7. Run Lighthouse mobile and desktop on the release candidate for `/`, `/artworks`, a representative `/artworks/{slug}`, `/artists/{slug}`, and representative authenticated workspace routes. Save JSON/HTML reports, environment, browser version, throttling, scores, LCP, CLS, INP, TTFB, and each actionable audit. Repeat runs and compare medians.
+
 ## Authentication and role boundaries
 
 1. Register a Buyer and an Artist using separate email addresses. Confirm each account receives the selected role.
