@@ -29,7 +29,19 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                 </div>
                 {isWorkspace && <LoadingBlock className="h-10 w-28 shrink-0" />}
             </div>
-            {isDetail ? (
+            {pathname === '/' ? (
+                <section className="grid items-center gap-8 lg:grid-cols-2">
+                    <div className="grid gap-4">
+                        <LoadingBlock className="h-3 w-28" />
+                        <LoadingBlock className="h-12 w-11/12" />
+                        <LoadingBlock className="h-12 w-3/4" />
+                        <LoadingBlock className="mt-3 h-4 w-full max-w-xl" />
+                        <LoadingBlock className="h-4 w-4/5" />
+                        <LoadingBlock className="mt-4 h-12 w-36" />
+                    </div>
+                    <LoadingBlock className="aspect-[4/5] w-full max-w-xl justify-self-center" />
+                </section>
+            ) : isDetail ? (
                 <div className="grid gap-8 lg:grid-cols-[1.15fr_.85fr]">
                     <LoadingBlock className="aspect-[4/3] w-full lg:aspect-[4/5]" />
                     <div className="grid content-start gap-5 border border-border bg-paper p-6 sm:p-9">
@@ -40,10 +52,22 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                         <LoadingBlock className="mt-3 h-20 w-full" />
                     </div>
                 </div>
+            ) : isForm ? (
+                <section className="grid gap-5 border border-border bg-paper p-6 sm:p-8">
+                    <LoadingBlock className="h-6 w-40" />
+                    <LoadingBlock className="h-12 w-full" />
+                    <LoadingBlock className="h-12 w-full" />
+                    <LoadingBlock className="h-12 w-full" />
+                    <LoadingBlock className="h-28 w-full" />
+                    <LoadingBlock className="h-12 w-36" />
+                </section>
+            ) : /^\\/(about|help|contact)$/.test(pathname) ? (
+                <section className="grid gap-6">
+                    {[0, 1, 2].map((item) => <div key={item} className="grid gap-3 border-b border-border pb-6"><LoadingBlock className="h-6 w-48" /><LoadingBlock className="h-4 w-full" /><LoadingBlock className="h-4 w-5/6" /></div>)}
+                </section>
             ) : (
                 <>
                     {isWorkspace && <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2].map((item) => <LoadingBlock key={item} className="h-28 w-full" />)}</div>}
-                    {isForm && <div className="mb-6 grid gap-3 sm:grid-cols-2"><LoadingBlock className="h-12 w-full" /><LoadingBlock className="h-12 w-full" /></div>}
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                         {[0, 1, 2, 3, 4, 5].map((item) => (
                             <div key={item} className="overflow-hidden border border-border bg-paper">
