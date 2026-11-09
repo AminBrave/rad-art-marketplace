@@ -130,7 +130,7 @@ php artisan key:generate
 # Configure database credentials in .env
 php artisan migrate
 php artisan db:seed # local/testing demo accounts and content
-npm install
+npm ci
 ```
 
 Run the backend and frontend in separate terminals:

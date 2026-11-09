@@ -11,7 +11,7 @@ php artisan key:generate
 # Configure a disposable database in .env
 php artisan migrate
 php artisan db:seed # seeds local-only demo data and test accounts
-npm install
+npm ci
 npm run dev
 ```
 
