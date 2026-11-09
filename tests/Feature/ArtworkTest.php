@@ -319,11 +319,11 @@ class ArtworkTest extends TestCase
             'status' => Artwork::STATUS_PENDING_REVIEW,
         ]);
 
-        $this->getJson('/api/v1/artwork-filters')
-            ->assertOk()
-            ->assertJsonFragment(['مداد رنگی'])
-            ->assertJsonMissing(['تکنیک خصوصی'])
-            ->assertJsonMissing(['تکنیک در انتظار']);
+        $response = $this->getJson('/api/v1/artwork-filters')->assertOk();
+        $mediums = $response->json('data.mediums');
+        $this->assertContains('مداد رنگی', $mediums);
+        $this->assertNotContains('تکنیک خصوصی', $mediums);
+        $this->assertNotContains('تکنیک در انتظار', $mediums);
     }
 
     public function test_approved_artwork_of_a_private_artist_is_not_publicly_discoverable_or_viewable(): void
