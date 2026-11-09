@@ -274,7 +274,7 @@ class ArtworkTest extends TestCase
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.slug', $watercolor->slug);
 
-        $this->getJson('/api/v1/artworks?q='.urlencode('discovery-artist'))
+        $this->getJson('/api/v1/artworks?q='.urlencode('هنرمند آزمایشی'))
             ->assertOk()
             ->assertJsonCount(2, 'data');
 
