@@ -59,8 +59,9 @@ Catalogue query parameters:
 - `q`: optional search against title, description, or medium.
 - `category`: optional active category slug.
 - `page`: Laravel paginator page.
+- `per_page`: bounded to 1–24; default 12. The homepage requests 6 items while the catalogue uses the default page size.
 
-The catalogue is ordered newest first and paginates 12 items per page. There is no sort parameter. Only approved artwork is included in public catalogue queries. Public artwork payloads omit moderation status and rejection notes.
+The catalogue is ordered newest first and paginates 12 items per page by default. There is no sort parameter. Only approved artwork is included in public catalogue queries. Public artwork payloads omit moderation status and rejection notes.
 
 The image route checks the artwork view policy and streams the original from private local storage. Responses use private caching and `X-Content-Type-Options: nosniff`.
 
@@ -81,7 +82,7 @@ Submission fields include `title` (required, max 160), `category_id` (active cat
 | GET | `/api/v1/admin/artworks` | Admin | Paginated moderation list |
 | PATCH | `/api/v1/admin/artworks/{id}/moderation` | Admin | Apply moderation decision |
 
-Optional list filter: `status` accepts `pending_review`, `approved`, `rejected`, or `changes_requested`. The list paginates 20 per page.
+Optional list parameters: `status` accepts `pending_review`, `approved`, `rejected`, or `changes_requested`; `per_page` is bounded to 1–20 and defaults to 20. The admin overview requests one row while preserving the paginator's total count.
 
 Decision body:
 
@@ -98,7 +99,7 @@ Only pending-review records can receive a decision. A successful decision record
 | GET | `/api/v1/admin/users` | Admin | Paginated user list |
 | PATCH | `/api/v1/admin/users/{id}/role` | Admin | Change user role |
 
-The role update accepts `artist` or `admin`. An Admin cannot remove their own Admin role through this endpoint. Public registration is the supported Buyer creation flow.
+The list accepts `page` and `per_page` (bounded to 1–20; default 20). The admin overview requests one row and reads the paginator's total count. The role update accepts `artist` or `admin`. An Admin cannot remove their own Admin role through this endpoint. Public registration is the supported Buyer creation flow.
 
 ## Buyer and artist inquiries
 
