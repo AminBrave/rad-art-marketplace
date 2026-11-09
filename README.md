@@ -3,7 +3,7 @@
 Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact marketplace. It helps visitors discover approved artworks and public artist portfolios, and lets registered buyers send private inquiries to artists.
 
 **Current integration branch:** `main`  
-**Current delivery status:** MVP 2 feature stages 1–5 are integrated. Stage 6 source-level QA, image-loading corrections, and automated verification are being delivered; real-browser/device and production sign-off remain outstanding.  
+**Current delivery status:** MVP 2 feature stages 1–5 are integrated. Stage 6 QA remains open; performance hardening is in progress under [issue #48](https://github.com/AminBrave/rad-art-marketplace/issues/48). Real-browser/device, Lighthouse, and production sign-off remain outstanding.  
 **Product status:** Active MVP development; not yet verified or signed off for production.
 
 ## Product capabilities
@@ -171,6 +171,10 @@ Use `composer lint:fix` only when intentionally applying PHP formatting changes,
 | [docs/cpanel-deployment.md](docs/cpanel-deployment.md) | Proposed cPanel deployment procedure |
 | [docs/backup-and-restore.md](docs/backup-and-restore.md) | Database and private-file recovery procedure |
 | [docs/analytics-baseline.md](docs/analytics-baseline.md) | Privacy-conscious analytics proposal; collection is disabled |
+
+## Performance hardening status
+
+The in-progress performance branch adds a static first-paint skeleton, route-level loading placeholders, lazy-loaded public/workspace feature bundles, and bounded 12-item pagination for public artist portfolios and artist artwork management. These changes are not merged or performance-certified until CI and browser measurements pass. No Lighthouse score or Core Web Vitals improvement is claimed.
 
 ## Stage 6 verification status
 
