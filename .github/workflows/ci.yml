@@ -22,9 +22,9 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: ~/.composer/cache/files
-          key: ${{ runner.os }}-composer-${{ hashFiles('composer.json') }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
-      - run: composer update --no-interaction --prefer-dist --no-progress
+      - run: composer install --no-interaction --prefer-dist --no-progress --optimize-autoloader
       - run: cp .env.example .env
       - run: composer test
       - run: composer lint
@@ -37,7 +37,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npm install --no-audit --no-fund
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci --no-audit --no-fund
       - run: npm run test:frontend
       - run: npm run lint
       - run: npm run build
