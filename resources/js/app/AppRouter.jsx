@@ -24,45 +24,47 @@ const AdminDashboardHome = lazy(() => import('./AdminWorkspace').then((module) =
 const AdminArtworkModeration = lazy(() => import('./AdminWorkspace').then((module) => ({ default: module.AdminArtworkModeration })));
 const AdminUsersPage = lazy(() => import('./AdminWorkspace').then((module) => ({ default: module.AdminUsersPage })));
 
+function withRouteFallback(element) {
+    return <Suspense fallback={<RouteLoading />}>{element}</Suspense>;
+}
+
 function AppRoutes() {
     return (
-        <Suspense fallback={<RouteLoading />}>
-            <Routes>
+        <Routes>
                 <Route element={<PublicLayout />}>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/artworks" element={<ArtworkCatalogue />} />
-                    <Route path="/artworks/:slug" element={<ArtworkDetailPage />} />
-                    <Route path="/artists" element={<ArtistDirectoryPage />} />
-                    <Route path="/artists/:slug" element={<ArtistProfilePage />} />
-                    <Route path="/about" element={<PublicInfoPage page="about" />} />
-                    <Route path="/help" element={<PublicInfoPage page="help" />} />
-                    <Route path="/contact" element={<PublicInfoPage page="contact" />} />
-                    <Route path="/login" element={<AuthPage />} />
-                    <Route path="/register" element={<AuthPage initialMode="register" />} />
+                    <Route path="/" element={withRouteFallback(<HomePage />)} />
+                    <Route path="/artworks" element={withRouteFallback(<ArtworkCatalogue />)} />
+                    <Route path="/artworks/:slug" element={withRouteFallback(<ArtworkDetailPage />)} />
+                    <Route path="/artists" element={withRouteFallback(<ArtistDirectoryPage />)} />
+                    <Route path="/artists/:slug" element={withRouteFallback(<ArtistProfilePage />)} />
+                    <Route path="/about" element={withRouteFallback(<PublicInfoPage page="about" />)} />
+                    <Route path="/help" element={withRouteFallback(<PublicInfoPage page="help" />)} />
+                    <Route path="/contact" element={withRouteFallback(<PublicInfoPage page="contact" />)} />
+                    <Route path="/login" element={withRouteFallback(<AuthPage />)} />
+                    <Route path="/register" element={withRouteFallback(<AuthPage initialMode="register" />)} />
                     <Route path="/unauthorized" element={<UnauthorizedPage />} />
                 </Route>
                 <Route path="/dashboard" element={<RequireAuth><DashboardIndex /></RequireAuth>} />
                 <Route path="/dashboard/artist" element={<RequireRole roles={['artist']}><ArtistWorkspaceLayout /></RequireRole>}>
-                    <Route index element={<ArtistWorkspaceOverview />} />
+                    <Route index element={withRouteFallback(<ArtistWorkspaceOverview />)} />
                     <Route path="profile" element={<ArtistProfileSettings />} />
                     <Route path="artworks" element={<ArtistArtworkPage />} />
                     <Route path="inquiries" element={<ArtistInquiryPage />} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
                 <Route path="/dashboard/buyer" element={<RequireRole roles={['buyer']}><BuyerWorkspaceLayout /></RequireRole>}>
-                    <Route index element={<BuyerDashboardHome />} />
-                    <Route path="inquiries" element={<BuyerInquiryPage />} />
+                    <Route index element={withRouteFallback(<BuyerDashboardHome />)} />
+                    <Route path="inquiries" element={withRouteFallback(<BuyerInquiryPage />)} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
                 <Route path="/admin" element={<RequireRole roles={['admin']}><AdminWorkspaceLayout /></RequireRole>}>
-                    <Route index element={<AdminDashboardHome />} />
-                    <Route path="users" element={<AdminUsersPage />} />
-                    <Route path="artworks" element={<AdminArtworkModeration />} />
+                    <Route index element={withRouteFallback(<AdminDashboardHome />)} />
+                    <Route path="users" element={withRouteFallback(<AdminUsersPage />)} />
+                    <Route path="artworks" element={withRouteFallback(<AdminArtworkModeration />)} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
                 <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-        </Suspense>
+        </Routes>
     );
 }
 
