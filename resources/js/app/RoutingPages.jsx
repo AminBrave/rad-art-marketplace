@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { WorkspaceLayout } from './Layouts';
+import { ArtworkDetailSkeleton, ArtistProfileSkeleton } from '../components/ui';
 const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
 const InquiryCenter = lazy(() => import('./InquiryCenter'));
 
