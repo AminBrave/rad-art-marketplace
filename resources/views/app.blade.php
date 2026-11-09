@@ -22,8 +22,8 @@
         $isInformationPage = request()->is('about', 'help', 'contact');
         $isDirectory = request()->is('artworks', 'artists');
     @endphp
-    <div id="app" aria-busy="true">
-        <main class="app-boot" aria-label="در حال بارگذاری راد آرت">
+    <div id="app">
+        <main class="app-boot" role="status" aria-busy="true" aria-label="در حال بارگذاری راد آرت">
             <div class="app-boot__header">
                 <span class="app-skeleton app-boot__brand"></span>
                 <span class="app-skeleton app-boot__nav"></span>
