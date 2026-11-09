@@ -141,6 +141,20 @@ npm run dev
 
 Open the local URL printed by Laravel (normally `http://127.0.0.1:8000`). The development-only design specimen is available at `/?design-system`.
 
+### HTTPS + HTTP/2 + HTTP/3 local setup
+
+The repository includes an optional Caddy reverse-proxy profile for a browser-trusted local HTTPS origin. Caddy negotiates HTTP/2 and HTTP/3 over TLS; Laravel and Vite remain bound to loopback.
+
+Prerequisites: install Caddy 2.8+ and run `caddy trust` once. Caddy may need elevated permission to bind port 443. Permit UDP 443 in the local firewall to test HTTP/3.
+
+1. Copy `.env.example` to `.env`, generate `APP_KEY`, configure the database, and set `APP_URL=https://rad.localhost` and `SESSION_SECURE_COOKIE=true`.
+2. Terminal 1: `php artisan serve --host=127.0.0.1 --port=8000`.
+3. Terminal 2: `npm run dev:https`.
+4. Terminal 3, from the repository root: `caddy run --config Caddyfile.dev`.
+5. Open `https://rad.localhost`. Trust the local Caddy root CA in the browser/OS if it is not trusted automatically.
+
+The Caddy profile proxies Laravel to port 8000 and Vite/HMR to port 5173. Do not expose either development server to a public network. Standard `npm run dev` remains unchanged for the HTTP workflow.
+
 ### Quality checks
 
 ```bash
