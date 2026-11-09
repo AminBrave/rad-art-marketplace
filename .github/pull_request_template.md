@@ -37,3 +37,24 @@ Record exact commands/results and any checks not run:
 ## Reviewer notes
 
 List known limitations, migration/rollback considerations, and any follow-up issue. Do not describe unverified behavior as complete.
+
+
+## AI-agent execution record
+
+- Task issue(s) and milestone issue:
+- Implementing agent role:
+- Reviewer (independent of implementation author):
+- Files/domains intentionally changed:
+- Files/domains intentionally not changed:
+- Any agent-generated assumptions requiring product-owner confirmation:
+
+## Milestone acceptance and evidence
+
+- [ ] Linked task issue acceptance checklist is satisfied.
+- [ ] No unrelated scope or dependency changes are included.
+- [ ] Tests cover success, validation/error and relevant authorization/ownership boundaries.
+- [ ] RTL/LTR, accessibility and responsive states considered.
+- [ ] Relevant docs and changelog updated in this PR.
+- [ ] Exact commands, CI run URLs, commit SHA and results recorded.
+- [ ] Unrun manual/production checks remain explicitly unchecked.
+- [ ] Independent reviewer approved the diff and evidence.

@@ -13,6 +13,51 @@ This document defines how contributors should make changes in the Rad Art Market
 - Do not add APIs when existing endpoints and pagination metadata satisfy the real UI requirement.
 - Keep Laravel authoritative for authorization, validation, ownership, and state transitions.
 
+## AI-assisted implementation and multi-agent coordination
+
+Use [`docs/ai-execution-playbook.md`](docs/ai-execution-playbook.md) as the operating procedure for AI coding agents. The approved roadmap and issue checklists are the scope contract.
+
+### Required workflow
+
+1. Read `AGENTS.md`, `README.md`, `ROADMAP.md`, the milestone issue and the exact task issue.
+2. Inspect current code, API contract, policies, migrations, tests and relevant docs. Do not assume prior agent summaries are accurate.
+3. Write a short implementation plan and list files/domains the agent will touch before editing.
+4. Implement one issue as a small vertical slice. Keep schema, API, UI, tests and docs aligned.
+5. Run focused tests first, then repository quality gates when feasible.
+6. Review the diff for accidental scope, security/privacy regressions, accessibility, RTL and performance.
+7. Open a PR with exact verification evidence; wait for independent review.
+8. Update milestone and roadmap checklists only after acceptance criteria are verified.
+
+### Agent role boundaries
+
+- **Orchestrator / product architect:** owns scope, sequencing, dependencies, issue assignment and integration decisions; does not silently change approved roadmap.
+- **Backend specialist:** Laravel models, migrations, controllers, requests, policies, resources, queries and backend tests.
+- **Frontend specialist:** React routes, feature components, API integration, design-system reuse and frontend tests.
+- **Design/UX reviewer:** editorial hierarchy, artwork prominence, responsive behavior, typography, RTL/LTR and interaction states.
+- **QA/security reviewer:** independent test design, authorization/ownership, privacy, upload safety, regression and evidence review.
+- **Code reviewer:** independently reviews changed lines, tests, maintainability, data integrity and scope. The implementation author cannot be the sole reviewer.
+
+### Parallel execution rules
+
+- Parallelize only tasks with non-overlapping files and no unresolved dependency.
+- Use isolated branches/worktrees per task; do not share a dirty working tree.
+- Shared API/schema contracts must be agreed before parallel frontend/backend implementation.
+- Never run multiple agents' formatters or generators against the same files concurrently.
+- Integrate in dependency order; rebase/merge from the latest approved base and rerun tests after conflict resolution.
+- If an agent finds a scope change is necessary, stop and request product-owner approval before implementing it.
+
+### Definition of done for AI-generated changes
+
+- The linked issue's acceptance checklist is met.
+- Tests cover success, validation/error, authorization/ownership and relevant edge cases.
+- Migrations are safe and rollback/data-loss implications are documented.
+- Public responses expose only approved/public fields; private inquiry/account data remains private.
+- Loading, empty, error, success and permission states are considered.
+- Persian RTL, mixed-direction text, keyboard/focus, contrast, reduced motion and responsive layouts are considered.
+- Relevant docs and changelog are updated in the same PR.
+- Exact test commands/results and unverified manual checks are recorded.
+- Independent review has no unresolved blocker.
+
 ## Backend — Laravel
 
 - Follow the existing Laravel 13 conventions and repository naming.

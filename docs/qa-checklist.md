@@ -99,3 +99,57 @@ This checklist tracks verification across the whole MVP 2 delivery. Run the rele
 - [ ] Production-like smoke tests and rollback plan are recorded.
 
 Use [manual smoke tests](manual-smoke-tests.md) for feature-specific steps and [release checklist](release-checklist.md) for sign-off. Mark items only after actual execution.
+
+
+## Premium discovery roadmap — milestone verification
+
+The following checks apply to roadmap milestones M00–M05. They are deliberately unchecked until executed and evidenced. See [ROADMAP.md](../ROADMAP.md), [AI execution playbook](ai-execution-playbook.md), [milestone issues #60–#65](https://github.com/AminBrave/rad-art-marketplace/issues/60) and [delivery tracker #30](https://github.com/AminBrave/rad-art-marketplace/issues/30).
+
+### M00 — Foundation
+- [ ] Buyer inquiry detail direct navigation, refresh, role and ownership tests pass.
+- [ ] Composer/npm lockfiles are committed and CI uses deterministic installs.
+- [ ] Artwork totals use server totals; null and zero prices have distinct semantics.
+- [ ] Critical public, buyer, artist and admin journeys pass browser tests.
+- [ ] Existing QA issues #26–#29 are resolved or have documented owner/risk/acceptance.
+
+### M01 — Design system
+- [ ] Tokens and shared component variants have a single source of truth.
+- [ ] Artwork cards, fields, buttons, dialogs, navigation and feedback states are consistent.
+- [ ] Persian RTL, Latin LTR and mixed-direction values are verified.
+- [ ] Keyboard, focus, contrast and reduced-motion behavior are tested.
+- [ ] Mobile/tablet/desktop editorial layouts are visually reviewed.
+
+### M02 — Discovery experience
+- [ ] Homepage editorial hierarchy uses real, approved public content.
+- [ ] Catalogue filters/sorting are useful, URL-backed and refresh-safe.
+- [ ] Artwork detail metadata, availability, price and artist context are accurate.
+- [ ] Artist profile portfolios expose approved works only.
+- [ ] Discovery → artwork → artist → inquiry journey works on mobile and desktop.
+- [ ] Image failure, loading, aspect ratio and responsive delivery are verified.
+
+### M03 — Curation
+- [ ] Admin-only create/edit/order/publish permissions are enforced by Laravel.
+- [ ] Collections have stable slugs and deterministic item ordering.
+- [ ] Draft/unpublished collections are inaccessible publicly.
+- [ ] Published collection pages contain approved artworks only.
+- [ ] Migration rollback, invalid references and concurrent edits are tested.
+- [ ] Editorial featured selections are not represented as paid/sponsored placements.
+
+### M04 — Artist experience
+- [ ] New artist onboarding can be completed with clear progress and recovery.
+- [ ] Profile completeness follows documented fields and rules.
+- [ ] Artist can preview their public portfolio.
+- [ ] Upload constraints and moderation feedback are understandable.
+- [ ] Artist data and inquiries remain owner/recipient-scoped.
+- [ ] No fabricated activity metrics or unsupported messaging claims appear.
+
+### M05 — Launch readiness
+- [ ] Artwork, artist and collection SEO metadata/canonicals are unique and accurate.
+- [ ] Sitemap excludes private, pending and unpublished content.
+- [ ] Monitoring/logging excludes secrets and private inquiry content.
+- [ ] Performance baselines include environment, commit, browser, viewport and repeat runs.
+- [ ] Production host, backups, restore and rollback are evidenced.
+- [ ] Privacy/legal/content-rights review has an accountable owner.
+- [ ] Analytics remains disabled until consent/legal/data-minimization approval.
+- [ ] Product owner records launch decision and residual risks.
+

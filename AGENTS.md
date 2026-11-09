@@ -23,7 +23,7 @@ These instructions are mandatory for automated agents and human contributors.
 
 ## Product direction and boundaries
 
-Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact marketplace. The approved MVP 2 visual direction is **Contemporary Art Editorial**: restrained, editorial, artwork-led, and distinct from generic e-commerce/SaaS templates.
+RAD Art is a **premium, discovery-first contemporary art platform**. Its approved visual direction is **Contemporary Art Editorial**: curated, restrained, editorial, artwork-led, and distinct from generic e-commerce/SaaS templates. Persian-first and RTL-by-default remain launch requirements. The product optimizes for qualified artwork-to-artist connections, not transaction volume.
 
 MVP 2 includes the public marketplace, artist workspace, buyer workspace, admin workspace, shared design system, centralized routing, responsive behavior, localization, accessibility, performance, and release QA. Small Laravel/API changes are allowed only when an approved UI requirement cannot be met safely by the existing API.
 
@@ -31,7 +31,8 @@ Do not implement without an explicit scope revision:
 - Payments, cart, checkout, orders, or shipping.
 - Real-time chat, replies, or email delivery.
 - Native mobile apps, AI recommendations, social networking, subscriptions, or advertising.
-- Admin category management, reports/abuse queue, or featured placements unless explicitly brought into MVP 2 scope.
+- Paid placements, advertising, subscriptions, generic CMS, social networking, AI recommendations, checkout or transaction fulfillment.
+- Editorial collections and curated featured-artist selections are approved in the next roadmap; these are editorial decisions, not paid placements.
 
 Email verification and password-reset UX are not currently implemented. Do not promise or imply them.
 
@@ -58,6 +59,19 @@ Keep the Laravel monolith and centralized React Router. Do not introduce microse
 - Keep secrets in environment configuration; never commit credentials or production data.
 - Escape user-generated content and avoid unsafe HTML rendering.
 - Preserve session/CSRF behavior. Review cookie, CORS, and middleware implications before changing auth architecture.
+
+## AI-agent execution contract
+
+The approved next roadmap is in `ROADMAP.md`; milestone issues #60–#65 and task issues #66–#75 are the execution source of truth. Read [the AI execution playbook](docs/ai-execution-playbook.md) before assigning work.
+
+- One task issue per focused implementation branch and pull request. Branch from the latest approved `main`; target PRs at `main`. The planning branch `feat/premium-discovery-roadmap` is for roadmap/docs coordination and must not become a long-lived mixed-feature integration branch.
+- The orchestrator assigns one accountable agent per issue and names the allowed files/domains, dependencies, acceptance criteria and tests before coding.
+- Specialist agents work in isolated branches/worktrees. Never let parallel agents edit the same files or shared contracts simultaneously.
+- Backend agent owns Laravel domain/API/schema/policy changes; frontend agent owns React/UI changes; design agent reviews visual consistency; QA agent writes/runs independent tests; reviewer agent inspects the final diff and evidence. One agent may hold multiple roles only when team capacity requires it, but implementation and independent review must remain separate.
+- Do not let an agent invent requirements, modify unrelated modules, upgrade dependencies opportunistically, or expand scope. Stop and report blockers/ambiguities.
+- Use existing architecture and dependencies. Keep Laravel authoritative for validation, authorization, ownership and state transitions.
+- Every PR must link its task issue, state exclusions, include tests and docs, and record exact commands/results. Never claim checks that were not run.
+- The two-day AI sprint is a timebox, not permission to waive the roadmap, tests, reviews, security or release criteria. Incomplete work remains open.
 
 ## Documentation is required in every feature PR
 

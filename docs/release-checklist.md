@@ -86,3 +86,36 @@ Email verification and password-reset UX are not implemented. Analytics is a pro
 - [ ] Verify private files are not web-accessible.
 - [ ] Monitor moderation backlog and abuse/rate-limit signals.
 - [ ] Keep previous release and backups until sign-off.
+
+
+## Premium discovery launch gates (M00–M05)
+
+The next product roadmap is recorded in [ROADMAP.md](../ROADMAP.md). This section supplements—not replaces—the existing MVP 2 release checks. Do not check an item until evidence for the target release is attached.
+
+### Product and experience
+- [ ] Premium discovery positioning is reflected consistently in homepage, catalogue, artwork, artist and collection pages.
+- [ ] Curated editorial content has a named owner and review process.
+- [ ] Artwork, artist and collection pages have stable URLs and accurate share previews.
+- [ ] Inquiry actions are contextual and do not imply checkout, chat or email delivery.
+- [ ] Price and availability semantics distinguish unknown, unavailable, sold and zero-value cases.
+
+### Engineering and data integrity
+- [ ] Lockfile-based CI is reproducible.
+- [ ] Critical browser journeys cover direct navigation, refresh, role boundaries and ownership.
+- [ ] Curation migrations have been reviewed for foreign keys, uniqueness, indexes and rollback/data-loss risk.
+- [ ] Public collection queries expose published collections and approved artworks only.
+- [ ] Media variants preserve private originals and policy-protected delivery.
+- [ ] Logs and monitoring do not capture secrets, inquiry message bodies or unnecessary personal data.
+
+### Editorial, SEO and privacy
+- [ ] Collections and featured-artist selections are editorial, not paid placement.
+- [ ] SEO metadata, canonical URLs, sitemap and social previews are verified.
+- [ ] Artist content rights, moderation policy, privacy and retention copy have owners and qualified review where appropriate.
+- [ ] Analytics collection remains disabled until provider terms, legal basis, consent, minimization and retention are approved.
+
+### Launch evidence
+- [ ] Lighthouse/Core Web Vitals measurements are repeatable and tied to a commit/environment.
+- [ ] Responsive and accessibility evidence covers actual browser/device combinations.
+- [ ] Production host compatibility, HTTPS, private storage, backup and restore drill are verified.
+- [ ] Rollback and incident ownership are documented.
+- [ ] Product owner signs off the remaining risks and launch decision.
