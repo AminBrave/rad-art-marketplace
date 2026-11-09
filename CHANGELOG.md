@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-11-10 — M00 browser regression coverage
+
+### Added
+- Added a Chromium browser CI job running against the Laravel-served React app with isolated SQLite and deterministic API fixtures.
+- Added buyer inquiry browser checks for history/detail navigation, direct deep links, refresh, back navigation, guest/wrong-role redirects, not-found privacy behavior, and mobile overflow.
+- Added artist overview server-total and artwork null/zero/positive price rendering checks.
+- Final [CI run #42721783132](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42721783132) passed all 9 browser tests plus backend and frontend checks.
+
+### Remaining release gates
+Manual cross-browser/device, accessibility/RTL, measured performance, target-host, and backup/restore verification remain outstanding; M00 is not yet signed off for production readiness.
+
+
 ## 2026-11-10 — M00 foundation implementation integrated
 
 ### Changed
