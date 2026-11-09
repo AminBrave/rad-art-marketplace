@@ -1,0 +1,43 @@
+Options -Indexes -MultiViews
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Never expose dotfiles (.env, .git, editor metadata), except ACME/web well-known files.
+    RewriteRule (^|/)\.(?!well-known(?:/|$)) - [F,L,NC]
+
+    # The repository root is the document root in this cPanel deployment profile.
+    # Block application code, dependencies, private storage, and the original public directory.
+    RewriteRule ^(?:app|bootstrap|config|database|docs|lang|node_modules|public|resources|routes|scripts|storage|stubs|tests|vendor)(?:/|$) - [F,L,NC]
+
+    # Block common project/configuration files from direct HTTP access.
+    RewriteRule ^(?:artisan|composer\.(?:json|lock)|package(?:-lock)?\.json|phpunit\.xml|vite\.config\.js|postcss\.config\.js|tailwind\.config\.js|README(?:\..*)?|CHANGELOG(?:\..*)?|ROADMAP(?:\..*)?|AGENTS\.md|SKILLS\.md|Caddyfile\.dev)$ - [F,L,NC]
+
+    # Only the root Laravel front controller may execute as PHP.
+    RewriteCond %{REQUEST_URI} !^/index\.php$ [NC]
+    RewriteRule \.php(?:/|$) - [F,L,NC]
+
+    # Enforce HTTPS after a valid certificate has been installed.
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L,NE]
+
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    RewriteCond %{HTTP:x-xsrf-token} .
+    RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:x-xsrf-token}]
+
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Existing public assets (including /build/*) are served directly.
+    # All other requests enter Laravel.
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set Strict-Transport-Security "max-age=31536000" env=HTTPS
+</IfModule>
