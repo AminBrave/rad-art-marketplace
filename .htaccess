@@ -11,7 +11,10 @@ Options -Indexes -MultiViews
     RewriteRule ^(?:app|bootstrap|config|database|docs|lang|node_modules|public|resources|routes|scripts|storage|stubs|tests|vendor)(?:/|$) - [F,L,NC]
 
     # Block common project/configuration files from direct HTTP access.
-    RewriteRule ^(?:artisan|composer\.(?:json|lock)|package(?:-lock)?\.json|phpunit\.xml|vite\.config\.js|postcss\.config\.js|tailwind\.config\.js|README(?:\..*)?|CHANGELOG(?:\..*)?|ROADMAP(?:\..*)?|AGENTS\.md|SKILLS\.md|Caddyfile\.dev)$ - [F,L,NC]
+    RewriteRule ^(?:artisan|composer\.(?:json|lock)|package(?:-lock)?\.json|phpunit\.xml|vite\.config(?:\.cpanel)?\.js|postcss\.config\.js|tailwind\.config\.js|README(?:\..*)?|CHANGELOG(?:\..*)?|ROADMAP(?:\..*)?|AGENTS\.md|SKILLS\.md|Caddyfile\.dev)$ - [F,L,NC]
+
+    # The Vite manifest is needed by Laravel on disk, not by browsers.
+    RewriteRule ^build/manifest\.json$ - [F,L,NC]
 
     # Only the root Laravel front controller may execute as PHP.
     RewriteCond %{REQUEST_URI} !^/index\.php$ [NC]
