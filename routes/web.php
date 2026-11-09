@@ -37,6 +37,7 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
     });
 
     Route::get('/categories', [ArtworkController::class, 'categories'])->name('categories.index');
+    Route::get('/artwork-filters', [ArtworkController::class, 'filters'])->name('artworks.filters');
     Route::get('/artworks', [ArtworkController::class, 'index'])->name('artworks.index');
     Route::get('/artworks/{artwork:slug}/image', [ArtworkController::class, 'image'])->name('artworks.image');
     Route::get('/artworks/{artwork:slug}', [ArtworkController::class, 'show'])->name('artworks.show');
