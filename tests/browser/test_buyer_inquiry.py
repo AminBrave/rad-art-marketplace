@@ -33,6 +33,13 @@ class BuyerInquiryBrowserTests(unittest.TestCase):
             status=200, content_type="application/json",
             body='{"data":' + (__import__("json").dumps(user, ensure_ascii=False) if user else "null") + '}'
         ))
+        page.route("**/api/v1/buyer/inquiries**", lambda route: route.fulfill(
+            status=200, content_type="application/json",
+            body=__import__("json").dumps({
+                "data": [INQUIRY], "current_page": 1, "last_page": 1,
+                "per_page": 12, "total": 1
+            }, ensure_ascii=False)
+        ))
         page.route("**/api/v1/buyer/inquiries/101", lambda route: route.fulfill(
             status=200, content_type="application/json",
             body=__import__("json").dumps({"data": INQUIRY}, ensure_ascii=False)
@@ -40,13 +47,6 @@ class BuyerInquiryBrowserTests(unittest.TestCase):
         page.route("**/api/v1/buyer/inquiries/999", lambda route: route.fulfill(
             status=404, content_type="application/json",
             body='{"message":"Not found"}'
-        ))
-        page.route("**/api/v1/buyer/inquiries**", lambda route: route.fulfill(
-            status=200, content_type="application/json",
-            body=__import__("json").dumps({
-                "data": [INQUIRY], "current_page": 1, "last_page": 1,
-                "per_page": 12, "total": 1
-            }, ensure_ascii=False)
         ))
         return context, page
 
