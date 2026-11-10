@@ -215,7 +215,7 @@ class DemoDatabaseSeeder extends Seeder
                     'reviewed_at' => $reviewed ? now()->subDays($n % 25) : null,
                     'image_path' => $path,
                 ]);
-                Storage::disk('local')->put($path, $this->svg($title, $n));
+                if (! app()->environment('production') || ! Storage::disk('local')->exists($path)) {\n                    Storage::disk('local')->put($path, $this->svg($title, $n));\n                }
                 $artworks[] = $artwork;
             }
         }
@@ -396,7 +396,7 @@ class DemoDatabaseSeeder extends Seeder
                 );
 
                 $latestMessageAt = $conversation->messages()->max('created_at');
-                $conversation->forceFill(['last_message_at' => $latestMessageAt])->save();
+                if ($conversation->last_message_at === null) {\n                    $conversation->forceFill(['last_message_at' => $latestMessageAt])->save();\n                }
             }
         }
     }
