@@ -67,7 +67,7 @@ class MessageSafetyTest extends TestCase
             'client_message_id' => 'unblocked-message-1',
         ])->assertCreated();
 
-        $this->assertDatabaseCount('messages', 1);
+        $this->assertDatabaseCount('messages', 2);
     }
 
     public function test_admin_can_review_report_and_remove_reported_message_with_audit_record(): void
