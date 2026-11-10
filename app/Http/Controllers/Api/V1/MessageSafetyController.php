@@ -18,6 +18,20 @@ use Illuminate\Validation\Rule;
 
 class MessageSafetyController extends Controller
 {
+    public function status(Request $request, Conversation $conversation): JsonResponse
+    {
+        $user = $request->user();
+        abort_unless($this->isParticipant($user, $conversation), 404);
+        $otherId = (int) $conversation->buyer_user_id === (int) $user->id
+            ? (int) $conversation->artist_user_id
+            : (int) $conversation->buyer_user_id;
+
+        return response()->json(['data' => [
+            'blocked_by_me' => UserBlock::query()->where('blocker_user_id', $user->id)->where('blocked_user_id', $otherId)->exists(),
+            'blocked_by_other' => UserBlock::query()->where('blocker_user_id', $otherId)->where('blocked_user_id', $user->id)->exists(),
+        ]]);
+    }
+
     public function report(Request $request, Conversation $conversation, ?Message $message = null): JsonResponse
     {
         $user = $request->user();
