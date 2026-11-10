@@ -1,6 +1,6 @@
 # Documentation Index
 
-This is a linked knowledge system. Start with [AGENTS.md](../AGENTS.md), then follow the relevant path.
+This is a linked knowledge system. Start with [AGENTS.md](../AGENTS.md), then follow only the path relevant to the task.
 
 | Need | Read |
 |---|---|
@@ -14,6 +14,10 @@ This is a linked knowledge system. Start with [AGENTS.md](../AGENTS.md), then fo
 | Operations | [CI/CD](operations/ci-cd-and-release.md), [deployment/recovery](operations/deployment-and-recovery.md) |
 | Decisions | [ADR index](decisions/index.md) |
 
-New agent: AGENTS → graph → vision → system → agent model → Git/GitHub → testing. Backend feature: system → data → API → domain → security → tests. Frontend feature: frontend → API → domain → tests. Release: GitHub milestone/issues → gates → CI/CD → operations.
+New agent: AGENTS → graph → relevant product/architecture nodes → agent model → Git/GitHub → relevant tests. Avoid reading every document for a small task.
+
+**Execution policy:** feature branches are verified locally by the user; GitHub Actions runs only on pushes to `main` after merge. See [testing strategy](engineering/testing-strategy.md) and [CI/CD](operations/ci-cd-and-release.md).
+
+**Documentation is part of the change:** whenever a user-requested or user-approved code change affects documented behavior, contracts, architecture, tests, security, operations or workflows, update the related documents and graph links in the same change.
 
 See [knowledge graph](knowledge-graph.md) for dependencies and update propagation.

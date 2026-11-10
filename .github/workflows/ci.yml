@@ -2,8 +2,6 @@ name: CI
 
 on:
   push:
-    branches: [main, 'feat/**', 'fix/**', 'refactor/**', 'test/**', 'docs/**', 'chore/**', 'hotfix/**']
-  pull_request:
     branches: [main]
 
 permissions:
