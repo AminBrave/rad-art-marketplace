@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Tests\\Feature;
+namespace Tests\Feature;
 
-use App\\Models\\User;
-use Database\\Seeders\\ShowcaseDatabaseSeeder;
-use Illuminate\\Foundation\\Testing\\RefreshDatabase;
-use Illuminate\\Support\\Facades\\Hash;
-use Illuminate\\Support\\Facades\\Storage;
+use App\Models\User;
+use Database\Seeders\ShowcaseDatabaseSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use RuntimeException;
-use Tests\\TestCase;
+use Tests\TestCase;
 
 class ShowcaseDatabaseSeederTest extends TestCase
 {
@@ -76,7 +76,7 @@ class ShowcaseDatabaseSeederTest extends TestCase
         ]);
 
         try {
-            app(\\Database\\Seeders\\DemoDatabaseSeeder::class)->runForShowcase();
+            app(\Database\Seeders\DemoDatabaseSeeder::class)->runForShowcase();
             $this->fail('Expected a reserved-account collision to abort seeding.');
         } catch (RuntimeException $exception) {
             $this->assertStringContainsString('account collision', $exception->getMessage());
