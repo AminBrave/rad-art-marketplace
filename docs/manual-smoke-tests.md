@@ -264,4 +264,18 @@ These automated checks do not replace manual visual design review, Firefox/WebKi
 9. Send a message and confirm it shows the server-accepted/delivered state. Read it from the other account and confirm the sender sees the read state. Do not interpret delivered as device-level push delivery.
 10. Test all actions at narrow mobile and desktop widths, with keyboard navigation and Persian text mixed with URLs/names. Confirm visible focus, readable quoted content, and no horizontal overflow.
 
-The remaining M05 real-time, typing/presence, attachment, notification, search/archive/mute, reporting/blocking and moderation workflows are separate implementation stages. Do not infer their completion from this message-actions slice.
+M05-T05 attachments and M05-T07 reporting/blocking/moderation have an additional acceptance protocol below. Real-time push, typing/presence and email remain host-gated; archive/mute and conversation search remain separate product gaps.
+
+
+## M05 safety and private attachment acceptance (implementation pending final CI)
+
+1. In a disposable database, open a buyer/artist conversation and upload a JPEG, PNG, WebP and PDF below 10 MB. Confirm preview/progress feedback and that the conversation message displays an authorized attachment link.
+2. Try an executable, unsupported MIME type, oversized file, and a file with a mismatched extension/MIME. Confirm HTTP 422 and no public file is created.
+3. Confirm the attachment is not reachable under /storage or by guessing a path. Download as either participant; confirm an unrelated account receives 404.
+4. Try uploading to a message authored by the other participant; confirm 403. Delete the owning message and verify the private file and attachment row are purged while the message tombstone remains.
+5. Report a message as a participant; confirm an unrelated account cannot report it and cannot read the report queue. Repeating the same report must not create a duplicate.
+6. Sign in as Admin, open /admin/message-reports, review/dismiss a report, and remove a reported message. Verify the audit record and content-free tombstone.
+7. Block the other participant and confirm sending is disabled for both participants. Unblock and confirm sending resumes. Confirm the API does not reveal which side initiated the block.
+8. Verify rate limits, keyboard focus, Persian RTL and narrow-screen behavior for report/block controls and the admin queue.
+
+Malware scanning is not integrated. Do not use real sensitive documents in testing. Email and WebSocket/presence behavior remain disabled until the target host is verified.
