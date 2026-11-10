@@ -18,7 +18,7 @@ class MessageReceivedNotification extends Notification
     /**
      * @return array<int, string>
      */
-    public function via(User $notifiable): array
+    public function via($notifiable): array
     {
         return $notifiable->messageNotificationPreferences()['in_app_messages'] ? ['database'] : [];
     }
@@ -26,7 +26,7 @@ class MessageReceivedNotification extends Notification
     /**
      * @return array<string, int|string>
      */
-    public function toDatabase(User $notifiable): array
+    public function toDatabase($notifiable): array
     {
         return [
             'kind' => 'message_received',
