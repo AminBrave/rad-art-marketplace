@@ -10,19 +10,23 @@ use App\Models\CuratedCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\View\View;
 
 class PublicPageController extends Controller
 {
-    public function artwork(string $slug): View
+    public function artwork(string $slug): Response
     {
-        $artwork = Artwork::query()->with(['artistProfile', 'category'])->where('slug', $slug)->firstOrFail();
+        $artwork = Artwork::query()->with(['artistProfile', 'category'])->where('slug', $slug)->first();
+        if (! $artwork) {
+            return $this->missingPage();
+        }
         $isPublic = $artwork->status === Artwork::STATUS_APPROVED
             && (bool) $artwork->artistProfile?->is_public;
         $viewer = request()->user();
         $isOwnerOrAdmin = $viewer !== null
             && ($viewer->isAdmin() || $viewer->artistProfile?->id === $artwork->artist_profile_id);
-        abort_unless($isPublic || $isOwnerOrAdmin, 404);
+        if (! $isPublic && ! $isOwnerOrAdmin) {
+            return $this->missingPage();
+        }
         $artistName = $artwork->artistProfile?->display_name ?? 'هنرمند راد آرت';
         $description = Str::limit(trim(strip_tags((string) ($artwork->description ?: "اثر هنری {$artwork->title} از {$artistName}؛ جزئیات اثر و راه ارتباط با هنرمند."))), 155);
         $canonical = $isPublic ? $this->canonical('/artworks/'.$artwork->slug) : null;
@@ -44,7 +48,7 @@ class PublicPageController extends Controller
             ...($artwork->year ? ['dateCreated' => (string) $artwork->year] : []),
         ] : null;
 
-        return view('app', ['seo' => [
+        return response()->view('app', ['seo' => [
             'title' => $artwork->title.' | راد آرت',
             'description' => $description,
             'canonical' => $canonical,
@@ -56,9 +60,12 @@ class PublicPageController extends Controller
         ]]);
     }
 
-    public function artist(string $slug): View
+    public function artist(string $slug): Response
     {
-        $profile = ArtistProfile::query()->where('slug', $slug)->firstOrFail();
+        $profile = ArtistProfile::query()->where('slug', $slug)->first();
+        if (! $profile) {
+            return $this->missingPage();
+        }
         $isPublic = (bool) $profile->is_public;
         $viewer = request()->user();
         $isOwnerOrAdmin = $viewer !== null
@@ -101,10 +108,12 @@ class PublicPageController extends Controller
         ]]);
     }
 
-    public function collection(string $slug): View
+    public function collection(string $slug): Response
     {
-        $collection = CuratedCollection::query()->where('slug', $slug)->firstOrFail();
-        abort_unless($collection->isPublished(), 404);
+        $collection = CuratedCollection::query()->where('slug', $slug)->first();
+        if (! $collection || ! $collection->isPublished()) {
+            return $this->missingPage();
+        }
 
         $collection->load(['artworks' => fn ($query) => $query
             ->where('status', Artwork::STATUS_APPROVED)
@@ -194,6 +203,13 @@ class PublicPageController extends Controller
         ]);
 
         return response($content)->header('Content-Type', 'text/plain; charset=UTF-8');
+    }
+
+    private function missingPage(): Response
+    {
+        return response()->view('app', [
+            'seo' => ['robots' => 'noindex,nofollow'],
+        ], 404);
     }
 
     private function canonical(string $path): string
