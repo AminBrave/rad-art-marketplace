@@ -10,6 +10,15 @@ Mandatory entrypoint for every AI coding agent. Follow before exploring or editi
 - Do not run GitHub Actions for feature-branch work. GitHub CI is intentionally restricted to pushes to `main` after merge.
 - The user runs relevant tests locally on non-main branches. Do not launch full test suites automatically on their behalf; provide the exact local commands and let the user execute them. Run a narrow local check only when explicitly requested or essential to diagnose a concrete issue.
 
+## Explicit force mode override
+- **Trigger:** when the exact token `#FORCE_MODE` appears at the very end of a user's command, treat it as explicit authorization to prioritize completing the requested, in-scope repository work over ordinary project process gates.
+- In this mode, make a best-effort pass over incomplete tasks and blockers that are directly related to the user's requested scope; implement, commit, merge, or close only work the user has authorized and that is actually completed. Do not silently abandon a task merely because a normal workflow preference would delay it.
+- The token can override project-level process preferences such as draft-only status, waiting for routine local verification, ordinary review sequencing, or a preference not to commit/merge—provided the user has explicitly requested that outcome and GitHub permits it.
+- **It does not override** system/developer instructions, law, platform or repository permissions/branch protection, security/privacy controls, authorization boundaries, data-loss safeguards, or explicit confirmation requirements for destructive or externally consequential actions.
+- Never fabricate tests, verification, review, acceptance, deployment, or completion. If checks are skipped, record them as **not run / unverified**, explain the residual risk, and do not describe the change as tested.
+- Do not close unrelated issues or mark incomplete work complete to make a tracker look clean. Close only issues whose acceptance criteria are demonstrably met; otherwise leave them open with a concise blocker and next action, or close as not planned only when the user explicitly directs that disposition.
+- If a required safety or platform gate cannot be bypassed, finish all safe work, state the exact blocker, and provide the smallest remaining action.
+
 ## Bootstrap
 1. Read this file, [knowledge graph](docs/knowledge-graph.md), [docs index](docs/index.md), [product scope](docs/product/vision-and-scope.md) and [system overview](docs/architecture/system-overview.md).
 2. Read only linked domain/API/frontend/security/testing nodes relevant to the task.
