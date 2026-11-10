@@ -170,7 +170,7 @@ Known unverified release gates (release sign-off blockers):
 **Status rule:** implementation is merged and automated checks pass, but M02 remains open until visual QA is recorded, image-optimization scope is accepted, and child issues are closed.
 
 
-## M04 — Elevate the artist experience · Implementation in progress
+## M04 — Elevate the artist experience · Implementation merged; acceptance pending
 
 **GitHub parent:** [#64](https://github.com/AminBrave/rad-art-marketplace/issues/64) · **Child track:** [#73](https://github.com/AminBrave/rad-art-marketplace/issues/73)
 
@@ -180,7 +180,9 @@ Known unverified release gates (release sign-off blockers):
 - [x] Explain pending, approved, rejected, and changes-requested moderation states and surface the moderator's actual note.
 - [x] Explain inquiry new/read/archived lifecycle and make clear that status changes do not send replies or notifications.
 - [x] Add backend, frontend contract, and Chromium browser regression coverage for the artist journeys.
-- [ ] Pass all pull-request and post-merge CI jobs.
+- [x] Pass all pull-request CI jobs: 59 backend tests / 358 assertions, Laravel Pint, frontend lint/build, and 22 Chromium browser tests in [run #42787611474](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42787611474).
+- [x] Merge [PR #99](https://github.com/AminBrave/rad-art-marketplace/pull/99) to main as `b9892632cf7a2773b9a6b600ff39f71cbce4f446`.
+- [x] Post-merge main CI [run #42787835227](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42787835227) passed all three jobs.
 - [ ] Complete product-owner visual/functional review of onboarding, private/public preview, artwork submission and moderation feedback, and inquiry lifecycle.
 
-**Guardrails:** profile progress is a transparent checklist, not a quality rating; artwork moderation and ownership remain server-authoritative; private profile preview is available only to the owner/Admin; no replies, chat, email delivery, deletion, subscription, or speculative analytics are added. M04 remains open until implementation checks pass and product-owner acceptance is recorded.
+**Guardrails:** profile progress is a transparent checklist, not a quality rating; artwork moderation and ownership remain server-authoritative; private profile preview is available only to the owner/Admin; no replies, chat, email delivery, deletion, subscription, or speculative analytics are added. M04 implementation is integrated; the parent milestone remains open until post-merge CI and product-owner acceptance are recorded.
