@@ -26,6 +26,8 @@ class MessageAttachmentController extends Controller
         abort_unless((int) $message->sender_user_id === (int) $user->id, 403);
         abort_if($message->trashed(), 404);
 
+        abort_if($message->attachments()->count() >= 5, 422, 'برای هر پیام حداکثر پنج پیوست مجاز است.');
+
         $request->validate([
             'file' => [
                 'required',
@@ -39,6 +41,13 @@ class MessageAttachmentController extends Controller
         $file = $request->file('file');
         if (! $file || ! $file->isValid()) {
             throw ValidationException::withMessages(['file' => 'بارگذاری فایل معتبر نیست.']);
+        }
+
+        if (str_starts_with((string) $file->getMimeType(), 'image/')) {
+            $dimensions = getimagesize($file->getRealPath());
+            if (! $dimensions || $dimensions[0] < 1 || $dimensions[1] < 1 || $dimensions[0] > 6000 || $dimensions[1] > 6000) {
+                throw ValidationException::withMessages(['file' => 'ابعاد تصویر پیوست معتبر نیست.']);
+            }
         }
 
         $originalName = Str::of($file->getClientOriginalName())
