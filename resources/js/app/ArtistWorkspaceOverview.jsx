@@ -54,7 +54,7 @@ export default function ArtistWorkspaceOverview() {
         { label: 'معرفی هنری', done: Boolean(profile?.bio?.trim()) },
         { label: 'شهر فعالیت', done: Boolean(profile?.city?.trim()) },
         { label: 'راه ارتباطی یا وب‌سایت', done: Boolean(profile?.website_url?.trim() || profile?.instagram_handle?.trim()) },
-        { label: 'نمایش عمومی پروفایل', done: Boolean(profile?.is_public) },
+        { label: 'نمایش عمومی پروفایل', done: Boolean(profile?.slug && profile.is_public) },
     ];
     const completedProfileSteps = profileSteps.filter((step) => step.done).length;
     const hasArtwork = (counts.artworks ?? 0) > 0;
