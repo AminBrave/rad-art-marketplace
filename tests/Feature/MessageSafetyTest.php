@@ -32,6 +32,7 @@ class MessageSafetyTest extends TestCase
             'conversation_id' => $conversation->id,
             'message_id' => $message->id,
             'reporter_user_id' => $buyer->id,
+            'subject_key' => 'message:'.$message->id,
             'reason' => 'harassment',
             'status' => 'open',
         ]);
@@ -91,6 +92,7 @@ class MessageSafetyTest extends TestCase
             'conversation_id' => $conversation->id,
             'message_id' => $message->id,
             'reporter_user_id' => $buyer->id,
+            'subject_key' => 'message:'.$message->id,
             'reason' => 'scam',
             'details' => 'گزارش آزمایشی',
         ]);
