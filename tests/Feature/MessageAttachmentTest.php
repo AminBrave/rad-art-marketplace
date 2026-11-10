@@ -43,6 +43,12 @@ class MessageAttachmentTest extends TestCase
             ->get("/api/v1/conversations/{$conversation->id}/messages/{$message->id}/attachments/{$attachment->id}")
             ->assertOk()
             ->assertHeader('X-Content-Type-Options', 'nosniff');
+
+        $this->actingAs($buyer)
+            ->deleteJson("/api/v1/conversations/{$conversation->id}/messages/{$message->id}")
+            ->assertOk();
+        Storage::disk('local')->assertMissing($attachment->storage_path);
+        $this->assertDatabaseMissing('message_attachments', ['id' => $attachment->id]);
     }
 
     public function test_only_the_message_sender_can_upload_and_unsupported_files_are_rejected(): void
