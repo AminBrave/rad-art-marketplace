@@ -35,6 +35,14 @@ class BuyerInquiryBrowserTests(unittest.TestCase):
             status=200, content_type="application/json",
             body='{"data":' + (__import__("json").dumps(user, ensure_ascii=False) if user else "null") + '}'
         ))
+        page.route("**/api/v1/notifications", lambda route: route.fulfill(
+            status=200, content_type="application/json",
+            body='{"data":[],"current_page":1,"last_page":1,"per_page":20,"total":0,"unread_count":0}'
+        ))
+        page.route("**/api/v1/notifications/preferences", lambda route: route.fulfill(
+            status=200, content_type="application/json",
+            body='{"data":{"in_app_messages":true,"email_messages":false,"email_available":false}}'
+        ))
         page.route("**/api/v1/buyer/inquiries**", lambda route: route.fulfill(
             status=200, content_type="application/json",
             body=__import__("json").dumps({

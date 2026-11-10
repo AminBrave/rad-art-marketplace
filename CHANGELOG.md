@@ -1,3 +1,16 @@
+## 2026-11-10 — M05-T06 in-app message notifications (implementation in review)
+
+### Added
+- Added database-backed recipient-only notifications when a new conversation message is persisted.
+- Added notification list, unread count, mark-one/read-all endpoints, per-user in-app preferences and conversation deep links.
+- Added a notification center in Buyer and Artist workspace headers with 30-second refresh and preference control.
+- Notification payloads contain sender display name and conversation/message identifiers only; message body and email are excluded.
+
+### Verification boundary
+- Implementation branch: `feat/m05-in-app-notifications`; CI and manual acceptance are pending.
+- Email notifications remain disabled (`email_available=false`) until the target host has verified mail configuration and a queue worker/retry setup. This code does not send email synchronously.
+- Real-time push, typing/presence, private attachments, reporting/blocking and moderation remain separate M05 tasks.
+
 ## 2026-11-10 — M06-T09 SEO and shareability (merged; external verification pending)
 
 ### Added

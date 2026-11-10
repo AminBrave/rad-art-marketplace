@@ -9,6 +9,7 @@ use App\Models\ArtistInquiry;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\User;
+use App\Notifications\MessageReceivedNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -57,7 +58,7 @@ class ConversationController extends Controller
                 'artwork_id' => $inquiry->artwork_id,
             ], ['added_by_user_id' => $inquiry->sender_user_id, 'created_at' => now(), 'updated_at' => now()]);
 
-            $conversation->messages()->firstOrCreate(
+            $initialMessage = $conversation->messages()->firstOrCreate(
                 [
                     'sender_user_id' => $inquiry->sender_user_id,
                     'client_message_id' => 'inquiry-'.$inquiry->id,
@@ -69,6 +70,14 @@ class ConversationController extends Controller
                     'updated_at' => $inquiry->created_at ?? now(),
                 ],
             );
+
+            if ($initialMessage->wasRecentlyCreated && (int) $inquiry->sender_user_id === (int) auth()->id()) {
+                User::query()->find($artistUserId)?->notify(new MessageReceivedNotification(
+                    (int) $conversation->id,
+                    (int) $initialMessage->id,
+                    auth()->user()->name,
+                ));
+            }
 
             return $conversation;
         });
@@ -156,6 +165,15 @@ class ConversationController extends Controller
             ]);
 
             $lockedConversation->forceFill(['last_message_at' => $message->created_at])->save();
+
+            $recipientId = (int) $request->user()->id === (int) $lockedConversation->buyer_user_id
+                ? (int) $lockedConversation->artist_user_id
+                : (int) $lockedConversation->buyer_user_id;
+            User::query()->find($recipientId)?->notify(new MessageReceivedNotification(
+                (int) $lockedConversation->id,
+                (int) $message->id,
+                $request->user()->name,
+            ));
 
             return $message->load(['sender', 'replyTo.sender', 'reactions']);
         });

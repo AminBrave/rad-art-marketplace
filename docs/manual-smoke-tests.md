@@ -229,6 +229,18 @@ These automated checks do not replace manual visual design review, Firefox/WebKi
 10. Confirm API responses omit participant email addresses and private storage paths.
 
 
+## M05-T06 — In-app message notifications
+
+1. Sign in as a Buyer and Artist in separate sessions. Send a new message from one account; confirm only the other participant receives an unread notification.
+2. Retry the same send with the same client message ID. Confirm no duplicate notification is created.
+3. Open the notification center. Confirm it shows sender name and timestamp but never message body, email address or storage path.
+4. Select the notification. Confirm it is marked read and opens the exact conversation using the conversation query parameter.
+5. Use “خواندن همه” and confirm the unread count becomes zero for the current account only.
+6. Disable “اعلان پیام‌های جدید در این بخش” in notification preferences. Send a new message from the other participant and confirm no new in-app notification is stored.
+7. Try reading another user's notification ID. Confirm the API returns 404 and does not change its read state.
+8. Confirm email preference remains false and the UI clearly states email notifications are unavailable until the host has a verified queue worker and mail setup. No email should be sent synchronously.
+9. Test notification panel keyboard access, mobile width, unread badge and 30-second refresh behavior.
+
 ## M06-T09 — SEO metadata, robots and sitemap
 
 1. Open an approved artwork detail URL as a guest. View page source (not only the live DOM) and confirm a unique Persian title/description, canonical URL using `APP_URL`, Open Graph/Twitter preview metadata, and factual `VisualArtwork` JSON-LD are present before React runs.
