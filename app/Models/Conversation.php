@@ -73,7 +73,7 @@ class Conversation extends Model
 
     public function archivedAtFor(User $user): mixed
     {
-        return $user->id === $this->buyer_user_id
+        return (int) $user->id === (int) $this->buyer_user_id
             ? $this->buyer_archived_at
             : $this->artist_archived_at;
     }
