@@ -1,7 +1,7 @@
 ## 2026-11-10 — M05 inbox search, archive and mute (implementation batch; verification pending)
 
 ### Added
-- Added participant-scoped conversation search by participant name and message text, unread and archived filters, and independent archive/mute controls for Buyer and Artist.
+- Added participant-scoped conversation search by participant name and message text, unread and archived filters, and independent archive/mute controls for Buyer and Artist; mute suppresses only that recipient's conversation notifications.
 - Added public artwork context links to the shared conversation thread and inbox.
 
 ### Verification boundary
