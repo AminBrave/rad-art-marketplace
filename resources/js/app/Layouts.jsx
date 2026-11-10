@@ -19,6 +19,7 @@ export function PublicLayout() {
                 <nav aria-label="ناوبری اصلی" className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted">
                     <NavLink to="/artworks" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>کشف آثار</NavLink>
                     <NavLink to="/artists" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>هنرمندان</NavLink>
+                    <NavLink to="/collections" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>مجموعه‌های منتخب</NavLink>
                     <NavLink to="/about" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>درباره ما</NavLink>
                     <NavLink to="/help" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>راهنما</NavLink>
                 </nav>
@@ -32,7 +33,7 @@ export function PublicLayout() {
         <footer className="border-t border-border bg-surface-muted">
             <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 sm:grid-cols-2 sm:px-8 lg:grid-cols-[1.3fr_1fr_1fr] lg:px-10">
                 <div><Link to="/" className="text-xl font-black text-ink">راد<span className="text-terracotta-strong">آرت</span></Link><p className="mt-3 max-w-sm text-sm leading-7 text-muted">فضایی برای کشف آثار هنری مستقل، شناخت هنرمندان و ارتباط درباره هنر.</p></div>
-                <div><h2 className="text-sm font-bold">کشف</h2><div className="mt-3 flex flex-col items-start gap-3 text-sm text-muted"><Link to="/artworks">گالری آثار</Link><Link to="/artists">هنرمندان</Link></div></div>
+                <div><h2 className="text-sm font-bold">کشف</h2><div className="mt-3 flex flex-col items-start gap-3 text-sm text-muted"><Link to="/artworks">گالری آثار</Link><Link to="/artists">هنرمندان</Link><Link to="/collections">مجموعه‌های منتخب</Link></div></div>
                 <div><h2 className="text-sm font-bold">راد آرت</h2><div className="mt-3 flex flex-col items-start gap-3 text-sm text-muted"><Link to="/about">درباره ما</Link><Link to="/help">راهنما</Link><Link to="/contact">تماس با ما</Link></div></div>
             </div>
             <div className="border-t border-border py-4 text-center text-xs text-muted">راد آرت — گالری هنر مستقل معاصر</div>

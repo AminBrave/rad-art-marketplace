@@ -111,3 +111,8 @@ The current MVP does not require payment processing, order/fulfilment services, 
 - Admin category management, buyer reports/abuse queue, and featured placements are outside the current approved MVP 2 scope.
 - Analytics is a proposal only; no provider or event collection is enabled.
 - cPanel/PHP compatibility, production deployment, backup automation, restore drills, and browser/device release QA remain unverified.
+
+
+## Editorial curation (M03)
+
+Editorial content is deliberately narrow and role-protected. `curated_collections` stores stable slugs, copy, publication state, position and creator/updater references. `curated_collection_items` stores deterministic artwork order. Public reads re-check approved artwork status and public artist-profile visibility rather than trusting the saved association. `featured_artist_selections` stores ordered artist selections and optional publication windows. `editorial_audits` records actor, action, subject and metadata for admin mutations. Admin editorial workflows are served from the existing session-authenticated API and do not expose a generic CMS.

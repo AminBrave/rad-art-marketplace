@@ -48,7 +48,7 @@ export function AdminEditorialPage() {
     const [featured, setFeatured] = useState([]);
     const [editing, setEditing] = useState(null);
     const [title, setTitle] = useState(''), [intro, setIntro] = useState(''), [artworkIds, setArtworkIds] = useState([]);
-    const [featuredIds, setFeaturedIds] = useState([]);
+    const [featuredIds, setFeaturedIds] = useState([]), [featuredIntros, setFeaturedIntros] = useState({});
     const [loading, setLoading] = useState(true), [busy, setBusy] = useState(false);
     const [error, setError] = useState(''), [message, setMessage] = useState('');
     const load = useCallback(async () => {
@@ -60,7 +60,7 @@ export function AdminEditorialPage() {
                 axios.get('/api/v1/admin/editorial/featured-artists'),
             ]);
             setOptions(o.data.data); setCollections(c.data.data ?? []);
-            setFeatured(f.data.data ?? []); setFeaturedIds((f.data.data ?? []).filter((x) => x.is_published).map((x) => x.artist_profile_id));
+            setFeatured(f.data.data ?? []); setFeaturedIds((f.data.data ?? []).filter((x) => x.is_published).map((x) => x.artist_profile_id)); setFeaturedIntros(Object.fromEntries((f.data.data ?? []).map((x) => [x.artist_profile_id, x.editorial_intro || ''])));
         } catch (e) { setError(e.response?.data?.message || 'دریافت اطلاعات مدیریت محتوای منتخب انجام نشد.'); }
         finally { setLoading(false); }
     }, []);
@@ -85,10 +85,21 @@ export function AdminEditorialPage() {
         catch (e) { setError(e.response?.data?.message || 'تغییر وضعیت انتشار انجام نشد.'); }
         finally { setBusy(false); }
     };
+    const moveCollection = (index, delta) => {
+        const next = [...collections]; const target = index + delta;
+        if (target < 0 || target >= next.length) return;
+        [next[index], next[target]] = [next[target], next[index]]; setCollections(next);
+    };
+    const saveCollectionOrder = async () => {
+        setBusy(true); setError(''); setMessage('');
+        try { const { data } = await axios.put('/api/v1/admin/editorial/collections/order', { collection_ids: collections.map((item) => item.id) }); setMessage(data.message); await load(); }
+        catch (e) { setError(e.response?.data?.message || 'ثبت ترتیب مجموعه‌ها انجام نشد.'); }
+        finally { setBusy(false); }
+    };
     const saveFeatured = async () => {
         setBusy(true); setError(''); setMessage('');
         try {
-            const selections = featuredIds.map((id) => ({ artist_profile_id: id, editorial_intro: featured.find((x) => x.artist_profile_id === id)?.editorial_intro || '' }));
+            const selections = featuredIds.map((id) => ({ artist_profile_id: id, editorial_intro: featuredIntros[id] || '' }));
             const { data } = await axios.put('/api/v1/admin/editorial/featured-artists', { selections });
             setMessage(data.message); await load();
         } catch (e) { setError(e.response?.data?.message || 'ذخیره انتخاب هنرمندان انجام نشد.'); }
@@ -105,9 +116,9 @@ export function AdminEditorialPage() {
                 <div><p className="mb-2 text-sm font-bold">آثار مجموعه (حداکثر ۳۰ اثر)</p><div className="max-h-72 space-y-2 overflow-y-auto border border-border p-3">{options.artworks.map((work) => <label key={work.id} className="flex items-start gap-3 py-1 text-sm"><input type="checkbox" checked={artworkIds.includes(work.id)} disabled={!artworkIds.includes(work.id) && artworkIds.length >= 30} onChange={(e) => setArtworkIds((current) => e.target.checked ? [...current, work.id] : current.filter((id) => id !== work.id))} /><span>{work.title}<span className="block text-xs text-muted">{work.artist}</span></span></label>)}</div><p className="mt-2 text-xs text-muted">ترتیب انتخاب، ترتیب نمایش آثار در مجموعه خواهد بود.</p></div>
                 <div className="flex flex-wrap gap-2"><Button onClick={() => saveCollection(false)} loading={busy}>{editing ? 'ذخیره تغییرات' : 'ذخیره پیش‌نویس'}</Button>{!editing && <Button variant="outline" disabled={busy} onClick={() => saveCollection(true)}>ذخیره و انتشار</Button>}{editing && <Button variant="outline" disabled={busy} onClick={reset}>لغو ویرایش</Button>}</div>
             </section>
-            <section className="space-y-4"><div className="flex items-center justify-between"><h2 className="text-xl font-black">مجموعه‌های ثبت‌شده</h2><Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button></div>
-                {collections.length ? collections.map((collection) => <article key={collection.id} className="flex flex-wrap items-center justify-between gap-4 border border-border bg-white p-4"><div><h3 className="font-bold">{collection.title}</h3><p className="mt-1 text-xs text-muted">{collection.artworks_count ?? 0} اثر · {collection.status === 'published' ? 'منتشرشده' : 'پیش‌نویس'} · <span dir="ltr">{collection.slug}</span></p></div><div className="flex flex-wrap gap-2"><Button size="sm" variant="outline" disabled={busy} onClick={() => edit(collection)}>ویرایش</Button><Button size="sm" variant={collection.status === 'published' ? 'danger' : 'primary'} disabled={busy} onClick={() => publish(collection, collection.status !== 'published')}>{collection.status === 'published' ? 'توقف انتشار' : 'انتشار'}</Button></div></article>) : <EmptyState title="مجموعه‌ای ثبت نشده است" />}</section>
-            <section className="space-y-4 border border-border bg-white p-5 sm:p-7"><h2 className="text-xl font-black">هنرمندان منتخب</h2><p className="text-sm leading-7 text-muted">انتخاب‌ها به ترتیب انتخاب شما در صفحه اصلی نمایش داده می‌شوند. بازه انتشار از طریق API قابل تنظیم است.</p><div className="grid gap-3 sm:grid-cols-2">{options.artists.map((artist) => <label key={artist.id} className="flex items-center gap-3 border border-border p-3 text-sm"><input type="checkbox" checked={featuredIds.includes(artist.id)} onChange={(e) => setFeaturedIds((current) => e.target.checked ? [...current, artist.id] : current.filter((id) => id !== artist.id))} />{artist.display_name}</label>)}</div><Button onClick={saveFeatured} loading={busy}>ذخیره هنرمندان منتخب</Button></section>
+            <section className="space-y-4"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-xl font-black">مجموعه‌های ثبت‌شده</h2><div className="flex gap-2"><Button variant="outline" size="sm" onClick={saveCollectionOrder} disabled={busy || collections.length < 2}>ذخیره ترتیب</Button><Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button></div></div>
+                {collections.length ? collections.map((collection) => <article key={collection.id} className="flex flex-wrap items-center justify-between gap-4 border border-border bg-white p-4"><div><h3 className="font-bold">{collection.title}</h3><p className="mt-1 text-xs text-muted">{collection.artworks_count ?? 0} اثر · {collection.status === 'published' ? 'منتشرشده' : 'پیش‌نویس'} · <span dir="ltr">{collection.slug}</span></p></div><div className="flex flex-wrap gap-2"><Button size="sm" variant="outline" disabled={busy || collections.indexOf(collection) === 0} onClick={() => moveCollection(collections.indexOf(collection), -1)}>بالا</Button><Button size="sm" variant="outline" disabled={busy || collections.indexOf(collection) === collections.length - 1} onClick={() => moveCollection(collections.indexOf(collection), 1)}>پایین</Button><Button size="sm" variant="outline" disabled={busy} onClick={() => edit(collection)}>ویرایش</Button><Button size="sm" variant={collection.status === 'published' ? 'danger' : 'primary'} disabled={busy} onClick={() => publish(collection, collection.status !== 'published')}>{collection.status === 'published' ? 'توقف انتشار' : 'انتشار'}</Button></div></article>) : <EmptyState title="مجموعه‌ای ثبت نشده است" />}</section>
+            <section className="space-y-4 border border-border bg-white p-5 sm:p-7"><h2 className="text-xl font-black">هنرمندان منتخب</h2><p className="text-sm leading-7 text-muted">انتخاب‌ها به ترتیب انتخاب شما در صفحه اصلی نمایش داده می‌شوند. بازه انتشار از طریق API قابل تنظیم است.</p><div className="grid gap-3 sm:grid-cols-2">{options.artists.map((artist) => <div key={artist.id} className="border border-border p-3"><label className="flex items-center gap-3 text-sm"><input type="checkbox" checked={featuredIds.includes(artist.id)} onChange={(e) => setFeaturedIds((current) => e.target.checked ? [...current, artist.id] : current.filter((id) => id !== artist.id))} />{artist.display_name}</label>{featuredIds.includes(artist.id) && <input aria-label={'معرفی کوتاه ' + artist.display_name} className="ra-control mt-3 w-full" placeholder="معرفی کوتاه سردبیر" value={featuredIntros[artist.id] || ''} maxLength={500} onChange={(e) => setFeaturedIntros((current) => ({ ...current, [artist.id]: e.target.value }))} />}</div>)}</div><Button onClick={saveFeatured} loading={busy}>ذخیره هنرمندان منتخب</Button></section>
         </>}
     </section>;
 }
