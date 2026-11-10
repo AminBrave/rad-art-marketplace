@@ -66,6 +66,19 @@ Use the seeded accounts documented in [demo data and test accounts](demo-data.md
 10. Confirm the detail view contains only API-provided metadata and never exposes buyer email. Verify no reply/chat composer or email-delivery claim appears.
 11. Use separate artist accounts to verify recipient isolation through the UI and direct API requests; another artist's inquiry must return 404.
 
+## M04 artist experience
+
+1. Register a fresh Artist and open /dashboard/artist. Confirm the guided checklist explains its five profile fields and does not show a fabricated score or engagement analytics.
+2. Save a profile with only a display name and verify the completed-field count changes only for fields actually supplied. Add a biography, city, and one social/website link; confirm the matching checklist items update after save.
+3. Keep the profile private and use **پیش‌نمایش خصوصی پروفایل**. Confirm the owner can preview it while a guest and a different artist receive no profile content. Confirm preview does not change the visibility setting.
+4. Make the profile public and use the preview link again. Confirm the public-facing profile shows only approved artworks and the profile's actual public details.
+5. Submit artwork using JPG/JPEG, PNG, and WebP fixtures within the 5 MB and 6000 × 6000 pixel limits. Confirm preview and upload progress, and verify server response is the source of the resulting moderation state.
+6. Select an unsupported file type, a file larger than 5 MB, a corrupt image, and an image exceeding 6000 pixels in either dimension. Confirm each is rejected with a clear, recoverable message before upload. Also submit an invalid image directly to the API and confirm Laravel rejects it.
+7. Verify the artist artwork list explains pending review, approved, rejected, and changes-requested states. For rejected/changes-requested work, confirm the actual moderation note is visible and editing/re-submitting retains the artist's form values on failure.
+8. Verify an artwork edit returns to pending review and clears previous moderation metadata; public catalogue and portfolio must continue to expose approved works only.
+9. Open /dashboard/artist/inquiries and verify the meaning of new, read, and archived states. Mark a new request as read and archive it; confirm server-returned state is displayed and no reply, email, or notification is claimed.
+10. Use two artist accounts to verify profile, artwork, and inquiry ownership isolation through both UI and direct API requests.
+
 ## Buyer workspace
 
 1. Sign in as a Buyer and open `/dashboard/buyer`; confirm the total is the API paginator total and the latest inquiry matches the newest record.

@@ -168,3 +168,19 @@ Known unverified release gates (release sign-off blockers):
 **Explicitly deferred:** artist portrait/cover uploads because no corresponding data model or upload policy exists; admin-managed featured placements because no CMS/curation data exists; no fabricated biography, discipline, availability, or artwork facts. Portfolio category chips are derived only from actual approved portfolio data. No server-generated image derivatives or external image-processing service were introduced; original private files remain intact, with browser-side responsive layout, loading priority, async decoding, lazy loading, reserved aspect ratios, and failure fallbacks.
 
 **Status rule:** implementation is merged and automated checks pass, but M02 remains open until visual QA is recorded, image-optimization scope is accepted, and child issues are closed.
+
+
+## M04 — Elevate the artist experience · Implementation in progress
+
+**GitHub parent:** [#64](https://github.com/AminBrave/rad-art-marketplace/issues/64) · **Child track:** [#73](https://github.com/AminBrave/rad-art-marketplace/issues/73)
+
+- [x] Add a guided start checklist derived from five explicit profile fields and the actual server-reported artwork total; do not invent scores or analytics.
+- [x] Allow artists to preview their own private profile without making it public; preserve server-side visibility rules.
+- [x] Validate artwork image type, size, decodability, and 6000 × 6000 pixel bounds before upload, while retaining server validation as authoritative.
+- [x] Explain pending, approved, rejected, and changes-requested moderation states and surface the moderator's actual note.
+- [x] Explain inquiry new/read/archived lifecycle and make clear that status changes do not send replies or notifications.
+- [x] Add backend, frontend contract, and Chromium browser regression coverage for the artist journeys.
+- [ ] Pass all pull-request and post-merge CI jobs.
+- [ ] Complete product-owner visual/functional review of onboarding, private/public preview, artwork submission and moderation feedback, and inquiry lifecycle.
+
+**Guardrails:** profile progress is a transparent checklist, not a quality rating; artwork moderation and ownership remain server-authoritative; private profile preview is available only to the owner/Admin; no replies, chat, email delivery, deletion, subscription, or speculative analytics are added. M04 remains open until implementation checks pass and product-owner acceptance is recorded.

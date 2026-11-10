@@ -3,7 +3,7 @@
 Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact marketplace. It helps visitors discover approved artworks and public artist portfolios, and lets registered buyers send private inquiries to artists.
 
 **Current integration branch:** `main`  
-**Current delivery status:** MVP2 workspace stages and M02 discovery implementation are integrated. [PR #92](https://github.com/AminBrave/rad-art-marketplace/pull/92) passed PR and post-merge CI; M02 visual review and image-optimization acceptance remain open under [issue #62](https://github.com/AminBrave/rad-art-marketplace/issues/62). M00 release gates and production sign-off remain separate and open.  
+**Current delivery status:** M00, M02, and M03 implementation work is integrated into main; M03 was accepted and closed after all post-merge CI jobs passed. M04 artist-experience improvements are in progress on a feature branch; automated and manual acceptance are pending. M00 release gates and production sign-off remain separate and open.  
 **Product status:** Active MVP development; not yet verified or signed off for production.
 
 ## Product capabilities
@@ -20,10 +20,12 @@ Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact mark
 ### Artist workspace — implemented
 
 - Artist-only workspace navigation and profile-aware overview.
-- Profile completion and visibility state.
+- Guided onboarding checklist based on five explicit profile fields plus the actual artwork count; no fabricated completion score.
+- Public/private profile preview, including owner-only preview for private profiles.
+- Clear image requirements and client-side type, size, and dimension checks before upload.
 - API-backed artwork and inquiry summaries without fabricated analytics.
 - Artist-owned artwork list and create/edit forms with image preview, upload feedback, validation, and moderation status.
-- Paginated inquiry inbox, recipient-scoped detail, and read/archive controls.
+- Paginated inquiry inbox, recipient-scoped detail, read/archive controls, and explicit lifecycle guidance.
 - No unsupported artwork deletion, inquiry replies, chat, or email delivery.
 
 ### Buyer workspace — implemented
