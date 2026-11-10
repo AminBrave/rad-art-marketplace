@@ -20,12 +20,12 @@ class ConversationController extends Controller
 {
     public function buyerIndex(Request $request): JsonResponse
     {
-        return $this->indexFor($request->user(), 'buyer_user_id');
+        return $this->indexFor($request, $request->user(), 'buyer_user_id');
     }
 
     public function artistIndex(Request $request): JsonResponse
     {
-        return $this->indexFor($request->user(), 'artist_user_id');
+        return $this->indexFor($request, $request->user(), 'artist_user_id');
     }
 
     public function startFromInquiry(Request $request, ArtistInquiry $inquiry): JsonResponse
@@ -252,6 +252,38 @@ class ConversationController extends Controller
         ]);
     }
 
+    public function updateSettings(Request $request, Conversation $conversation): JsonResponse
+    {
+        $user = $request->user();
+        $this->authorizeParticipant($user, $conversation, 'update');
+        $validated = $request->validate([
+            'archived' => ['sometimes', 'boolean'],
+            'muted' => ['sometimes', 'boolean'],
+        ]);
+
+        $fields = [];
+        if (array_key_exists('archived', $validated)) {
+            $fields[(int) $user->id === (int) $conversation->buyer_user_id ? 'buyer_archived_at' : 'artist_archived_at'] =
+                $validated['archived'] ? now() : null;
+        }
+        if (array_key_exists('muted', $validated)) {
+            $fields[(int) $user->id === (int) $conversation->buyer_user_id ? 'buyer_muted_at' : 'artist_muted_at'] =
+                $validated['muted'] ? now() : null;
+        }
+        if ($fields !== []) {
+            $conversation->forceFill($fields)->save();
+        }
+
+        return response()->json([
+            'data' => [
+                'archived' => $conversation->fresh()->archivedAtFor($user) !== null,
+                'muted' => ((int) $user->id === (int) $conversation->buyer_user_id
+                    ? $conversation->fresh()->buyer_muted_at
+                    : $conversation->fresh()->artist_muted_at) !== null,
+            ],
+        ]);
+    }
+
     public function markRead(Request $request, Conversation $conversation): JsonResponse
     {
         $this->authorizeParticipant($request->user(), $conversation, 'update');
@@ -280,17 +312,44 @@ class ConversationController extends Controller
         abort_if($message->trashed(), 404);
     }
 
-    private function indexFor(User $user, string $participantColumn): JsonResponse
+    private function indexFor(Request $request, User $user, string $participantColumn): JsonResponse
     {
-        $conversations = Conversation::query()
+        $filters = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'filter' => ['nullable', 'string', Rule::in(['all', 'unread', 'archived'])],
+        ]);
+        $archivedColumn = $participantColumn === 'buyer_user_id' ? 'buyer_archived_at' : 'artist_archived_at';
+        $search = trim((string) ($filters['search'] ?? ''));
+        $filter = $filters['filter'] ?? 'all';
+
+        $query = Conversation::query()
             ->where($participantColumn, $user->id)
-            ->with(['inquiry.artistProfile', 'inquiry.artwork', 'buyer', 'artist.artistProfile', 'latestMessage.sender'])
+            ->with(['inquiry.artistProfile', 'inquiry.artwork', 'buyer', 'artist.artistProfile', 'latestMessage.sender', 'latestMessage.attachments'])
             ->withCount([
-                'messages as unread_count' => fn ($query) => $query
+                'messages as unread_count' => fn ($messages) => $messages
                     ->where('sender_user_id', '!=', $user->id)
                     ->whereNull('read_at'),
-            ])
-            ->orderByDesc('last_message_at')
+            ]);
+
+        if ($filter === 'archived') {
+            $query->whereNotNull($archivedColumn);
+        } else {
+            $query->whereNull($archivedColumn);
+        }
+        if ($filter === 'unread') {
+            $query->whereHas('messages', fn ($messages) => $messages
+                ->where('sender_user_id', '!=', $user->id)
+                ->whereNull('read_at'));
+        }
+        if ($search !== '') {
+            $query->where(function ($nested) use ($search): void {
+                $nested->whereHas('buyer', fn ($buyer) => $buyer->where('name', 'like', '%'.$search.'%'))
+                    ->orWhereHas('artist', fn ($artist) => $artist->where('name', 'like', '%'.$search.'%'))
+                    ->orWhereHas('messages', fn ($messages) => $messages->where('body', 'like', '%'.$search.'%'));
+            });
+        }
+
+        $conversations = $query->orderByDesc('last_message_at')
             ->paginate(20)
             ->through(fn (Conversation $conversation): array => $this->conversationPayload($conversation, $user));
 
