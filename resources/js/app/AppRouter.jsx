@@ -1,5 +1,5 @@
-import { lazy, Suspense } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { lazy, Suspense, useEffect } from 'react';
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { AuthProvider } from './AuthContext';
 import { PublicLayout } from './Layouts';
 import {
@@ -29,9 +29,26 @@ function withRouteFallback(element) {
     return <Suspense fallback={<RouteLoading />}>{element}</Suspense>;
 }
 
+function RouteScrollRestoration() {
+    const { pathname, hash } = useLocation();
+
+    useEffect(() => {
+        if (hash) {
+            document.getElementById(decodeURIComponent(hash.slice(1)))?.scrollIntoView();
+            return;
+        }
+
+        window.scrollTo(0, 0);
+    }, [pathname, hash]);
+
+    return null;
+}
+
 function AppRoutes() {
     return (
-        <Routes>
+        <>
+            <RouteScrollRestoration />
+            <Routes>
                 <Route element={<PublicLayout />}>
                     <Route path="/" element={withRouteFallback(<HomePage />)} />
                     <Route path="/artworks" element={withRouteFallback(<ArtworkCatalogue />)} />
@@ -66,7 +83,8 @@ function AppRoutes() {
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
                 <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+            </Routes>
+        </>
     );
 }
 
