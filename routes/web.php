@@ -11,11 +11,15 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ConversationController;
 use App\Http\Controllers\Api\V1\DirectConversationController;
 use App\Http\Controllers\Api\V1\EditorialController;
+use App\Http\Controllers\PublicPageController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'app')->name('home');
-Route::view('/artists/{slug}', 'app')->name('artists.page');
-Route::view('/artworks/{slug}', 'app')->name('artworks.page');
+Route::get('/sitemap.xml', [PublicPageController::class, 'sitemap'])->name('sitemap');
+Route::get('/robots.txt', [PublicPageController::class, 'robots'])->name('robots');
+Route::get('/artists/{slug}', [PublicPageController::class, 'artist'])->name('artists.page');
+Route::get('/artworks/{slug}', [PublicPageController::class, 'artwork'])->name('artworks.page');
+Route::get('/collections/{slug}', [PublicPageController::class, 'collection'])->name('collections.page');
 
 Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
     Route::prefix('auth')->name('auth.')->group(function (): void {
