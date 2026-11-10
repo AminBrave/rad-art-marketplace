@@ -213,6 +213,17 @@ class ConversationController extends Controller
             'inquiry_id' => $conversation->inquiry_id,
             'subject' => $conversation->inquiry?->subject,
             'participant' => ['name' => $other?->name],
+            'contexts' => DB::table('conversation_contexts')
+                ->where('conversation_id', $conversation->id)
+                ->get()
+                ->map(function ($context): array {
+                    $artwork = $context->artwork_id ? DB::table('artworks')->where('id', $context->artwork_id)->first() : null;
+                    $inquiry = $context->inquiry_id ? DB::table('artist_inquiries')->where('id', $context->inquiry_id)->first() : null;
+                    return [
+                        'artwork' => $artwork ? ['title' => $artwork->title, 'slug' => $artwork->slug] : null,
+                        'inquiry' => $inquiry ? ['subject' => $inquiry->subject, 'id' => $inquiry->id] : null,
+                    ];
+                })->all(),
             'artist' => [
                 'display_name' => $conversation->inquiry?->artistProfile?->display_name ?? $conversation->artist?->artistProfile?->display_name,
                 'slug' => $conversation->inquiry?->artistProfile?->slug ?? $conversation->artist?->artistProfile?->slug,
