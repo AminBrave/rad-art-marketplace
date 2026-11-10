@@ -45,7 +45,7 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
         Route::get('/conversations/{conversation}/messages', [ConversationController::class, 'messages'])->name('conversations.messages');
         Route::post('/conversations/{conversation}/messages', [ConversationController::class, 'storeMessage'])->middleware(['throttle:30,1', EnsureConversationNotBlocked::class])->name('conversations.messages.store');
         Route::get('/conversations/{conversation}/safety', [MessageSafetyController::class, 'status'])->name('conversations.safety');
-        Route::post('/conversations/{conversation}/messages/{message}/attachments', [MessageAttachmentController::class, 'store'])->middleware('throttle:10,1')->name('conversations.attachments.store');
+        Route::post('/conversations/{conversation}/messages/{message}/attachments', [MessageAttachmentController::class, 'store'])->middleware(['throttle:10,1', EnsureConversationNotBlocked::class])->name('conversations.attachments.store');
         Route::get('/conversations/{conversation}/messages/{message}/attachments/{attachment}', [MessageAttachmentController::class, 'download'])->name('conversations.attachments.download');
         Route::post('/conversations/{conversation}/report', [MessageSafetyController::class, 'reportConversation'])->middleware('throttle:5,1')->name('conversations.report');
         Route::post('/conversations/{conversation}/messages/{message}/report', [MessageSafetyController::class, 'reportMessage'])->middleware('throttle:5,1')->name('conversations.messages.report');
