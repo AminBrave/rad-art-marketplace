@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Illuminate\\Database\\Migrations\\Migration;
-use Illuminate\\Database\\Schema\\Blueprint;
-use Illuminate\\Support\\Facades\\DB;
-use Illuminate\\Support\\Facades\\Schema;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -63,13 +63,21 @@ return new class extends Migration
             }
         }
 
+        // Split these operations: MySQL must release the foreign-key dependency before
+        // dropping the unique index that currently supports it.
         Schema::table('conversations', function (Blueprint $table): void {
-            // MySQL requires the foreign key to be removed before its supporting unique index.
             $table->dropForeign(['inquiry_id']);
+        });
+
+        Schema::table('conversations', function (Blueprint $table): void {
             $table->dropUnique(['inquiry_id']);
             $table->unsignedBigInteger('inquiry_id')->nullable()->change();
-            $table->foreign('inquiry_id')->references('id')->on('artist_inquiries')->cascadeOnDelete();
+            $table->index('inquiry_id');
             $table->string('pair_key', 64)->nullable()->unique();
+        });
+
+        Schema::table('conversations', function (Blueprint $table): void {
+            $table->foreign('inquiry_id')->references('id')->on('artist_inquiries')->cascadeOnDelete();
         });
 
         DB::table('conversations')->orderBy('id')->each(function ($conversation): void {
