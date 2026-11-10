@@ -219,7 +219,7 @@ class ConversationController extends Controller
             'last_message_at' => $conversation->last_message_at?->toISOString(),
             'unread_count' => (int) ($conversation->unread_count ?? 0),
             'archived' => $conversation->archivedAtFor($viewer) !== null,
-            'muted' => ($viewer->id === $conversation->buyer_user_id
+            'muted' => ((int) $viewer->id === (int) $conversation->buyer_user_id
                 ? $conversation->buyer_muted_at
                 : $conversation->artist_muted_at) !== null,
         ];
