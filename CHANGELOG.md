@@ -1,17 +1,31 @@
 # Changelog
 
-## 2026-11-10 — M05 secure messaging API foundation (implementation in review)
+## 2026-11-10 — M05-T03 message actions (implementation in review)
 
 ### Added
-- Added one-to-one conversations uniquely linked to existing buyer-to-artist inquiries, with the original inquiry preserved as the initial message.
-- Added participant-scoped buyer/artist conversation lists, conversation detail, paginated message history, message send, and read-state APIs.
-- Added server-side conversation policies, 404 privacy behavior for non-participants, same-conversation reply validation, and per-sender client message idempotency.
-- Added backend feature tests for conversation creation, artist replies, read state, duplicate-send retry, cross-account access, and invalid cross-conversation replies.
+- Added sender-authorized message editing and deletion. Deletion clears the stored body and reactions, then retains a content-free soft-delete tombstone for conversation continuity.
+- Added same-conversation quoted replies in the API and buyer/artist chat UI.
+- Added allow-listed emoji reactions with participant-level uniqueness and idempotent add/remove behavior.
+- Added message edit/read/delivery indicators and responsive Persian controls.
+- Added backend regression coverage for sender ownership, deletion retention, reaction idempotency, and quoted reply context.
 
 ### Verification boundary
-- Implementation is under review on branch feat/m05-secure-messaging. CI has not yet been run for this branch.
-- Inbox/thread UI, message editing/deletion, reactions, real-time transport, attachments, notifications, archive/mute, reporting/blocking and admin moderation remain outstanding M05 work.
-- No real-time delivery, email delivery, malware scanning, or end-to-end encryption is claimed.
+- Implementation branch: `feat/m05-message-actions`. CI has not yet run for this branch; all checks and manual acceptance remain pending.
+- M05 WebSocket delivery, typing/presence, private attachments, notifications/email, archive/mute/search, reporting/blocking and moderation remain outstanding.
+- `delivered_at` still means server acceptance/persistence, not device-level delivery. No end-to-end encryption or malware-scanning claim is made.
+
+## 2026-11-10 — M05 core direct messaging integrated
+
+### Added
+- Added canonical one-to-one buyer–artist conversations keyed by participant pair, with inquiry and artwork references preserved as context.
+- Added buyer and artist inbox/thread screens, direct-message entry points from public artist profiles and approved artwork, message history, send/retry, unread counts/read receipts, and five-second polling.
+- Added idempotent demo data for 70 conversations and 140 messages across five demo buyers and 14 public artist profiles.
+
+### Verification
+- Core messaging implementation and demo data merged through [PR #103](https://github.com/AminBrave/rad-art-marketplace/pull/103) and [PR #105](https://github.com/AminBrave/rad-art-marketplace/pull/105).
+- Main CI run [#42816226028](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42816226028) passed backend tests/style, frontend lint/build, and buyer browser regression tests.
+- Product-owner manual acceptance: the user reports all checks passed and no issues found on the QA branch.
+- Real-time push, typing/presence, attachments, notifications/email, reporting/blocking and moderation are not part of this integrated core.
 
 ## 2026-11-10 — M04 artist experience implementation merged
 
