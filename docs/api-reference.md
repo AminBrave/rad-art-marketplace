@@ -178,6 +178,22 @@ Only the original sender may edit or delete a message. Editing updates **edited_
 
 M05-T01 conversation persistence and participant-scoped reads/sends are integrated. M05-T03 message replies, editing, deletion and reactions are being implemented in this branch. Real-time transport, typing/presence, attachments, notifications, archive/mute controls, conversation search, reporting/blocking and moderation remain separate M05 work and are not implied by these endpoints.
 
+## In-app message notifications (M05-T06)
+
+All endpoints require authentication and return only the current user's message notifications.
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | /api/v1/notifications | List the current user's message notifications, paginated 20 per page, with unread count |
+| PATCH | /api/v1/notifications/{notification}/read | Mark one of the current user's message notifications as read |
+| PATCH | /api/v1/notifications/read-all | Mark all current user's message notifications as read |
+| GET | /api/v1/notifications/preferences | Read in-app notification preference and email availability |
+| PATCH | /api/v1/notifications/preferences | Update the in-app message-notification preference |
+
+A new message creates a database-backed notification for the other conversation participant, once per newly persisted message. Repeated idempotent sends do not create duplicate notifications. The notification payload contains only notification type, conversation ID, message ID and sender display name; it never includes message body, email address or private storage paths. Opening a notification marks it read and deep-links to the participant's conversation.
+
+In-app notifications can be disabled by each user. Email notifications are explicitly unavailable (`email_available=false`, `email_messages=false`) until the target host has a verified mail configuration and queue worker/retry setup. This branch does not send email synchronously or claim queued email delivery.
+
 ## Common access and validation behavior
 
 - Unauthenticated requests to protected feature routes normally return HTTP 401. The deliberate exception is `GET /api/v1/auth/me`, which returns HTTP 200 with `data: null` for guests.
