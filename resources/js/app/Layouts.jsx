@@ -68,8 +68,8 @@ function NotificationBell({ user }) {
             setUnreadCount(data.unread_count ?? 0);
             setPreferences(preferenceResponse.data.data ?? { in_app_messages: true, email_available: false });
             setError('');
-        } catch {
-            setError('دریافت اعلان‌ها انجام نشد.');
+        } catch (requestError) {
+            if (requestError.response?.status !== 401) setError('دریافت اعلان‌ها انجام نشد.');
         } finally {
             setLoading(false);
         }
