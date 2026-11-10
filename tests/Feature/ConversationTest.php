@@ -115,7 +115,86 @@ class ConversationTest extends TestCase
             ->assertJsonValidationErrors('reply_to_id');
     }
 
-    private function participantsWithInquiry(
+
+    public function test_message_sender_can_edit_and_delete_own_message_without_retaining_deleted_body(): void
+    {
+        [$buyer, $artist, $inquiry] = $this->participantsWithInquiry();
+        $conversation = $this->openConversationAsBuyer($buyer, $inquiry);
+        $message = $conversation->messages()->firstOrFail();
+
+        $this->actingAs($buyer)
+            ->patchJson('/api/v1/conversations/'.$conversation->id.'/messages/'.$message->id, [
+                'body' => 'متن ویرایش‌شده پیام اولیه',
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.body', 'متن ویرایش‌شده پیام اولیه')
+            ->assertJsonPath('data.edited_at', fn ($value) => is_string($value));
+
+        $this->actingAs($artist)
+            ->patchJson('/api/v1/conversations/'.$conversation->id.'/messages/'.$message->id, [
+                'body' => 'تغییر غیرمجاز',
+            ])
+            ->assertNotFound();
+
+        $this->actingAs($buyer)
+            ->deleteJson('/api/v1/conversations/'.$conversation->id.'/messages/'.$message->id)
+            ->assertOk()
+            ->assertJsonPath('data.body', null)
+            ->assertJsonPath('data.deleted_at', fn ($value) => is_string($value));
+
+        $this->assertDatabaseHas('messages', [
+            'id' => $message->id,
+            'body' => '',
+        ]);
+        $this->assertSoftDeleted('messages', ['id' => $message->id]);
+    }
+
+    public function test_participants_can_add_and_remove_idempotent_message_reactions(): void
+    {
+        [$buyer, $artist, $inquiry] = $this->participantsWithInquiry();
+        $conversation = $this->openConversationAsBuyer($buyer, $inquiry);
+        $message = $conversation->messages()->firstOrFail();
+
+        $payload = ['emoji' => '❤️', 'action' => 'add'];
+
+        $this->actingAs($artist)
+            ->postJson('/api/v1/conversations/'.$conversation->id.'/messages/'.$message->id.'/reactions', $payload)
+            ->assertOk()
+            ->assertJsonPath('data.reactions.0.emoji', '❤️')
+            ->assertJsonPath('data.reactions.0.count', 1)
+            ->assertJsonPath('data.reactions.0.reacted_by_me', true);
+
+        $this->postJson('/api/v1/conversations/'.$conversation->id.'/messages/'.$message->id.'/reactions', $payload)
+            ->assertOk()
+            ->assertJsonPath('data.reactions.0.count', 1);
+
+        $this->assertDatabaseCount('message_reactions', 1);
+
+        $this->postJson('/api/v1/conversations/'.$conversation->id.'/messages/'.$message->id.'/reactions', [
+            'emoji' => '❤️',
+            'action' => 'remove',
+        ])->assertOk()->assertJsonCount(0, 'data.reactions');
+
+        $this->assertDatabaseCount('message_reactions', 0);
+    }
+
+    public function test_message_reply_returns_quoted_message_context(): void
+    {
+        [$buyer, , $inquiry] = $this->participantsWithInquiry();
+        $conversation = $this->openConversationAsBuyer($buyer, $inquiry);
+        $original = $conversation->messages()->firstOrFail();
+
+        $this->actingAs($buyer)
+            ->postJson('/api/v1/conversations/'.$conversation->id.'/messages', [
+                'body' => 'پاسخ به پیام قبلی',
+                'reply_to_id' => $original->id,
+                'client_message_id' => 'reply-context-1',
+            ])
+            ->assertCreated()
+            ->assertJsonPath('data.reply_to.id', $original->id)
+            ->assertJsonPath('data.reply_to.body', $inquiry->message);
+    }
+\n    private function participantsWithInquiry(
         string $buyerEmail = 'buyer@example.test',
         string $artistEmail = 'artist@example.test'
     ): array {
