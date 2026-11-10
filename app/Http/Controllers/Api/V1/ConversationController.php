@@ -116,7 +116,7 @@ class ConversationController extends Controller
 
         $messages = $conversation->messages()
             ->withTrashed()
-            ->with(['sender', 'replyTo.sender', 'reactions'])
+            ->with(['sender', 'replyTo.sender', 'reactions', 'attachments'])
             ->latest('id')
             ->paginate(30);
 
@@ -152,7 +152,7 @@ class ConversationController extends Controller
                     ->first();
 
                 if ($existing) {
-                    return $existing->load(['sender', 'replyTo.sender', 'reactions']);
+                    return $existing->load(['sender', 'replyTo.sender', 'reactions', 'attachments']);
                 }
             }
 
@@ -175,7 +175,7 @@ class ConversationController extends Controller
                 $request->user()->name,
             ));
 
-            return $message->load(['sender', 'replyTo.sender', 'reactions']);
+            return $message->load(['sender', 'replyTo.sender', 'reactions', 'attachments']);
         });
 
         return response()->json([
@@ -197,7 +197,7 @@ class ConversationController extends Controller
         ])->save();
 
         return response()->json([
-            'data' => $this->messagePayload($message->load(['sender', 'replyTo.sender', 'reactions']), $request->user()),
+            'data' => $this->messagePayload($message->load(['sender', 'replyTo.sender', 'reactions', 'attachments']), $request->user()),
         ]);
     }
 
@@ -214,7 +214,7 @@ class ConversationController extends Controller
 
         return response()->json([
             'message' => 'پیام حذف شد.',
-            'data' => $this->messagePayload($message->load(['sender', 'replyTo.sender', 'reactions']), $request->user()),
+            'data' => $this->messagePayload($message->load(['sender', 'replyTo.sender', 'reactions', 'attachments']), $request->user()),
         ]);
     }
 
@@ -243,7 +243,7 @@ class ConversationController extends Controller
         }
 
         return response()->json([
-            'data' => $this->messagePayload($message->load(['sender', 'replyTo.sender', 'reactions']), $request->user()),
+            'data' => $this->messagePayload($message->load(['sender', 'replyTo.sender', 'reactions', 'attachments']), $request->user()),
         ]);
     }
 
@@ -344,6 +344,7 @@ class ConversationController extends Controller
     private function messagePayload(Message $message, ?User $viewer = null): array
     {
         $reactions = $message->relationLoaded('reactions') ? $message->reactions : collect();
+        $attachments = $message->relationLoaded('attachments') ? $message->attachments : $message->attachments()->get();
         $reactionSummary = $reactions->groupBy('emoji')->map(
             fn ($items, string $emoji): array => [
                 'emoji' => $emoji,
@@ -365,6 +366,13 @@ class ConversationController extends Controller
                 'body' => $message->replyTo->trashed() ? null : $message->replyTo->body,
             ] : null,
             'reactions' => $reactionSummary,
+            'attachments' => $attachments->map(fn ($attachment): array => [
+                'id' => $attachment->id,
+                'name' => $attachment->original_name,
+                'mime_type' => $attachment->mime_type,
+                'size_bytes' => $attachment->size_bytes,
+                'download_url' => '/api/v1/conversations/'.$message->conversation_id.'/messages/'.$message->id.'/attachments/'.$attachment->id,
+            ])->values()->all(),
             'delivered_at' => $message->delivered_at?->toISOString(),
             'read_at' => $message->read_at?->toISOString(),
             'edited_at' => $message->edited_at?->toISOString(),
