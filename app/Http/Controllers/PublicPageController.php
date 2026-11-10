@@ -16,10 +16,12 @@ class PublicPageController extends Controller
     public function artwork(string $slug): View
     {
         $artwork = Artwork::query()->with(['artistProfile', 'category'])->where('slug', $slug)->firstOrFail();
-        $this->authorize('view', $artwork);
-
         $isPublic = $artwork->status === Artwork::STATUS_APPROVED
             && (bool) $artwork->artistProfile?->is_public;
+        $viewer = request()->user();
+        $isOwnerOrAdmin = $viewer !== null
+            && ($viewer->isAdmin() || $viewer->artistProfile?->id === $artwork->artist_profile_id);
+        abort_unless($isPublic || $isOwnerOrAdmin, 404);
         $artistName = $artwork->artistProfile?->display_name ?? 'هنرمند راد آرت';
         $description = Str::limit(trim(strip_tags((string) ($artwork->description ?: "اثر هنری {$artwork->title} از {$artistName}؛ جزئیات اثر و راه ارتباط با هنرمند."))), 155);
         $canonical = $isPublic ? $this->canonical('/artworks/'.$artwork->slug) : null;
@@ -56,9 +58,11 @@ class PublicPageController extends Controller
     public function artist(string $slug): View
     {
         $profile = ArtistProfile::query()->where('slug', $slug)->firstOrFail();
-        $this->authorize('view', $profile);
-
         $isPublic = (bool) $profile->is_public;
+        $viewer = request()->user();
+        $isOwnerOrAdmin = $viewer !== null
+            && ($viewer->isAdmin() || (int) $viewer->id === (int) $profile->user_id);
+        abort_unless($isPublic || $isOwnerOrAdmin, 404);
         $firstArtwork = $isPublic
             ? $profile->artworks()
                 ->where('status', Artwork::STATUS_APPROVED)
