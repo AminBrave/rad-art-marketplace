@@ -127,3 +127,12 @@ M05 (#77) explicitly authorizes private one-to-one conversations and message wor
 ## Editorial curation (M03)
 
 Editorial content is deliberately narrow and role-protected. `curated_collections` stores stable slugs, copy, publication state, position and creator/updater references. `curated_collection_items` stores deterministic artwork order. Public reads re-check approved artwork status and public artist-profile visibility rather than trusting the saved association. `featured_artist_selections` stores ordered artist selections and optional publication windows. `editorial_audits` records actor, action, subject and metadata for admin mutations. Admin editorial workflows are served from the existing session-authenticated API and do not expose a generic CMS.
+
+
+## Messaging safety and attachment boundaries (M05-T05/T07)
+
+Participant blocks are stored directionally in user_blocks; a block by either participant prevents message creation in that pair without exposing the blocker's identity. Report records are stored in message_reports, scoped to the reporting participant, conversation and optional message. Admin review decisions are appended to message_moderation_audits. Admin report APIs return an allow-listed view of report details and message content; these resources are not exposed to other participants.
+
+Message attachments are stored on Laravel's private local disk under a generated path. The database stores the sanitized display name, detected MIME type and byte size. Upload is limited to the message sender and an allowlist of JPEG, PNG, WebP and PDF, maximum 10 MB. Download requires conversation participation and exact conversation/message/attachment linkage. Storage paths never appear in API payloads. Sender deletion and moderator removal purge attachment files and attachment rows before preserving the content-free message tombstone.
+
+No malware scanner is bundled or claimed. A production operator must supply an approved scanning control at the host boundary or explicitly accept the residual risk. Real-time broadcasting, typing and presence remain gated on verified target-host support; current messaging refresh is polling-based. Email remains disabled until persistent queue/mail/retry/unsubscribe operations are verified.
