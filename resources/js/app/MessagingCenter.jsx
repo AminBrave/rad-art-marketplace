@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import { useAuth } from './AuthContext';
 import { useSearchParams } from 'react-router-dom';
 
 function dateLabel(value) {
@@ -9,6 +10,7 @@ function dateLabel(value) {
 }
 
 export default function MessagingCenter({ role }) {
+    const { user } = useAuth();
     const [params, setParams] = useSearchParams();
     const [threads, setThreads] = useState([]);
     const [active, setActive] = useState(null);
@@ -115,7 +117,7 @@ export default function MessagingCenter({ role }) {
                                 <div><h2 className="font-bold">{selected?.participant?.name ?? 'گفتگوی خصوصی'}</h2><p className="mt-1 text-xs text-muted">گفتگوی مستقیم</p></div>
                             </header>
                             <div className="flex-1 space-y-4 overflow-y-auto bg-canvas p-4 sm:p-6" aria-live="polite">
-                                {messages.map((message) => <div key={message.id} className={'flex ' + (message.sender_id ? 'justify-start' : 'justify-end')}>
+                                {messages.map((message) => <div key={message.id} className={'flex ' + (Number(message.sender_id) === Number(user?.id) ? 'justify-end' : 'justify-start')}>
                                     <article className="max-w-[85%] border border-border bg-white px-4 py-3 shadow-sm">
                                         <p className="whitespace-pre-wrap break-words text-sm leading-7">{message.body ?? 'این پیام حذف شده است.'}</p>
                                         <p className="mt-2 text-left text-[10px] text-muted">{dateLabel(message.created_at)} {message.read_at ? '· خوانده‌شده' : ''}</p>
