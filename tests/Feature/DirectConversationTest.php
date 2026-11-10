@@ -31,7 +31,7 @@ class DirectConversationTest extends TestCase
             ->assertCreated()
             ->assertJsonStructure(['data' => ['id']]);
 
-        $conversationId = \App\Models\Conversation::query()->value('id');
+        $conversationId = Conversation::query()->value('id');
 
         $this->postJson('/api/v1/conversations/direct', ['artist_slug' => $profile->slug])
             ->assertCreated()
@@ -62,7 +62,7 @@ class DirectConversationTest extends TestCase
             'display_name' => 'هنرمند اثر',
             'is_public' => true,
         ]);
-        $category = \App\Models\Category::query()->where('slug', 'painting')->firstOrFail();
+        $category = Category::query()->where('slug', 'painting')->firstOrFail();
         $artwork = $profile->artworks()->create([
             'category_id' => $category->id,
             'slug' => 'approved-artwork',
