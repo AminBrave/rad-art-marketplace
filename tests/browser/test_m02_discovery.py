@@ -1,3 +1,4 @@
+import base64
 import json
 import os
 import unittest
@@ -48,6 +49,10 @@ class DiscoveryBrowserTests(unittest.TestCase):
             page.route("**/api/v1/artworks**", lambda route: route.fulfill(
                 status=200, content_type="application/json",
                 body=json.dumps({"data": [ARTWORK], "current_page": 1, "last_page": 1, "total": 1}, ensure_ascii=False)
+            ))
+            page.route("**/api/v1/artworks/*/image", lambda route: route.fulfill(
+                status=200, content_type="image/png",
+                body=base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jq2kAAAAASUVORK5CYII=")
             ))
             page.route("**/api/v1/categories", lambda route: route.fulfill(
                 status=200, content_type="application/json",
@@ -113,6 +118,10 @@ class DiscoveryBrowserTests(unittest.TestCase):
         context, page = self.new_page()
         try:
             payload = {**ARTWORK, "related_artworks": [RELATED]}
+            page.route("**/api/v1/artworks/*/image", lambda route: route.fulfill(
+                status=200, content_type="image/png",
+                body=base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jq2kAAAAASUVORK5CYII=")
+            ))
             page.route("**/api/v1/artworks/blue-study", lambda route: route.fulfill(
                 status=200, content_type="application/json",
                 body=json.dumps({"data": payload}, ensure_ascii=False)
