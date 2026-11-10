@@ -46,6 +46,14 @@ class ArtistExperienceBrowserTests(unittest.TestCase):
         page.route("**/api/v1/auth/me", lambda route: route.fulfill(
             status=200, content_type="application/json", body=json.dumps({"data": ARTIST}, ensure_ascii=False)
         ))
+        page.route("**/api/v1/notifications", lambda route: route.fulfill(
+            status=200, content_type="application/json",
+            body='{"data":[],"current_page":1,"last_page":1,"per_page":20,"total":0,"unread_count":0}'
+        ))
+        page.route("**/api/v1/notifications/preferences", lambda route: route.fulfill(
+            status=200, content_type="application/json",
+            body='{"data":{"in_app_messages":true,"email_messages":false,"email_available":false}}'
+        ))
         return context, page
 
     def mock_workspace(self, page, profile=PRIVATE_PROFILE, artworks=None, inquiries=None):
