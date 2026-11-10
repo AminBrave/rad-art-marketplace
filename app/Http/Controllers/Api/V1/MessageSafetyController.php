@@ -14,6 +14,7 @@ use App\Models\UserBlock;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class MessageSafetyController extends Controller
@@ -128,6 +129,10 @@ class MessageSafetyController extends Controller
                 $message = Message::withTrashed()->find($locked->message_id);
                 if ($message && ! $message->trashed()) {
                     $message->reactions()->delete();
+                    $message->attachments()->get()->each(function ($attachment): void {
+                        Storage::disk('local')->delete($attachment->storage_path);
+                        $attachment->delete();
+                    });
                     $message->forceFill(['body' => ''])->save();
                     $message->delete();
                 }
