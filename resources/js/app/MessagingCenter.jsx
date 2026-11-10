@@ -15,6 +15,8 @@ export default function MessagingCenter({ role }) {
     const { user } = useAuth();
     const [params, setParams] = useSearchParams();
     const [threads, setThreads] = useState([]);
+    const [search, setSearch] = useState('');
+    const [threadFilter, setThreadFilter] = useState('all');
     const [active, setActive] = useState(null);
     const [messages, setMessages] = useState([]);
     const [draft, setDraft] = useState('');
@@ -37,12 +39,21 @@ export default function MessagingCenter({ role }) {
 
     const loadThreads = useCallback(async () => {
         try {
-            const { data } = await axios.get(endpoint);
+            const { data } = await axios.get(endpoint, { params: { search: search.trim() || undefined, filter: threadFilter } });
             setThreads(data.data ?? []);
         } catch {
             setError('دریافت گفتگوها انجام نشد. دوباره تلاش کنید.');
         } finally { setLoading(false); }
-    }, [endpoint]);
+    }, [endpoint, search, threadFilter]);
+
+    const updateThreadSetting = async (thread, setting, value) => {
+        try {
+            await axios.patch('/api/v1/conversations/' + thread.id + '/settings', { [setting]: value });
+            await loadThreads();
+        } catch {
+            setError('به‌روزرسانی وضعیت گفتگو انجام نشد.');
+        }
+    };
 
     const loadMessages = useCallback(async (id) => {
         if (!id) return;
@@ -223,6 +234,12 @@ export default function MessagingCenter({ role }) {
             <div className="grid min-h-[620px] overflow-hidden border border-border bg-white lg:grid-cols-[320px_minmax(0,1fr)]">
                 <aside className={active ? 'hidden border-l border-border lg:block' : 'border-l border-border'}>
                     <div className="border-b border-border p-4 font-bold">گفتگوها</div>
+                    <div className="space-y-2 border-b border-border p-3">
+                        <input aria-label="جستجوی گفتگوها" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="جستجو در گفتگوها…" className="w-full border border-border bg-canvas px-3 py-2 text-xs focus:border-terracotta" />
+                        <select aria-label="فیلتر گفتگوها" value={threadFilter} onChange={(event) => setThreadFilter(event.target.value)} className="w-full border border-border bg-white px-3 py-2 text-xs">
+                            <option value="all">گفتگوهای فعال</option><option value="unread">خوانده‌نشده‌ها</option><option value="archived">بایگانی‌شده‌ها</option>
+                        </select>
+                    </div>
                     {loading ? <p className="p-5 text-sm text-muted">در حال دریافت…</p> : threads.length === 0 ? <p className="p-5 text-sm leading-7 text-muted">هنوز گفتگویی ندارید. از صفحه هنرمند یا یک اثر، گزینه «پیام مستقیم» را انتخاب کنید.</p> : (
                         <ul className="divide-y divide-border">
                             {threads.map((thread) => <li key={thread.id}>
@@ -231,6 +248,10 @@ export default function MessagingCenter({ role }) {
                                     <span className="mt-2 block truncate text-xs text-muted">{thread.last_message?.body ?? (thread.last_message?.deleted_at ? 'پیام حذف شده است' : 'گفتگوی جدید')}</span>
                                     <span className="mt-1 block text-[11px] text-muted">{dateLabel(thread.last_message_at)}</span>
                                 </button>
+                                <div className="flex gap-3 px-4 pb-3 text-[11px] text-muted">
+                                    <button type="button" onClick={() => updateThreadSetting(thread, 'archived', !thread.archived)} className="underline">{thread.archived ? 'بازگردانی' : 'بایگانی'}</button>
+                                    <button type="button" onClick={() => updateThreadSetting(thread, 'muted', !thread.muted)} className="underline">{thread.muted ? 'لغو بی‌صدا' : 'بی‌صدا کردن'}</button>
+                                </div>
                             </li>)}
                         </ul>
                     )}
