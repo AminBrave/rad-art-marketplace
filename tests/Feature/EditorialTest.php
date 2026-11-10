@@ -25,7 +25,7 @@ class EditorialTest extends TestCase
     private function artist(string $email = 'artist@example.com', bool $public = true): ArtistProfile
     {
         $user = User::create(['name' => 'Artist', 'email' => $email, 'password' => 'strong-password-123', 'role' => User::ROLE_ARTIST]);
-        return ArtistProfile::create(['user_id' => $user->id, 'slug' => 'artist-'.str_replace(['@', '.'], '-', $email), 'display_name' => 'Artist '.$email, 'bio' => 'Artist biography', 'is_public' => $public]);
+        return $user->artistProfile()->create(['slug' => 'artist-'.str_replace(['@', '.'], '-', $email), 'display_name' => 'Artist '.$email, 'bio' => 'Artist biography', 'is_public' => $public]);
     }
 
     private function artwork(ArtistProfile $artist, string $slug, string $status = Artwork::STATUS_APPROVED): Artwork
