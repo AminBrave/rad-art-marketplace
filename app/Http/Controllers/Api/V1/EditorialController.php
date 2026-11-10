@@ -10,7 +10,6 @@ use App\Models\ArtistProfile;
 use App\Models\CuratedCollection;
 use App\Models\EditorialAudit;
 use App\Models\FeaturedArtistSelection;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +22,7 @@ class EditorialController extends Controller
     {
         $items = CuratedCollection::query()
             ->where('status', 'published')->whereNotNull('published_at')->where('published_at', '<=', now())
-            ->with(['artworks' => fn (Builder $query) => $this->publicArtworkQuery($query)])
+            ->with(['artworks' => fn ($query) => $this->publicArtworkQuery($query)])
             ->orderBy('position')->orderByDesc('published_at')->orderBy('id')
             ->paginate(12)
             ->through(fn (CuratedCollection $collection) => $this->collectionPayload($collection, false));
@@ -207,7 +206,7 @@ class EditorialController extends Controller
         return response()->json(['message' => 'انتخاب هنرمندان ویژه ذخیره شد.']);
     }
 
-    private function publicArtworkQuery(Builder $query): Builder
+    private function publicArtworkQuery($query)
     {
         return $query->where('artworks.status', Artwork::STATUS_APPROVED)
             ->whereHas('artistProfile', fn ($artist) => $artist->where('is_public', true))
