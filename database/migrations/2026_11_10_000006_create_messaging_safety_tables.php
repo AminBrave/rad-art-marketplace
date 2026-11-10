@@ -24,6 +24,7 @@ return new class extends Migration
             $table->foreignId('conversation_id')->constrained()->cascadeOnDelete();
             $table->foreignId('message_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('reporter_user_id')->constrained('users')->cascadeOnDelete();
+            $table->string('subject_key', 80);
             $table->string('reason', 32);
             $table->text('details')->nullable();
             $table->string('status', 24)->default('open')->index();
@@ -31,7 +32,7 @@ return new class extends Migration
             $table->timestamp('reviewed_at')->nullable();
             $table->timestamps();
             $table->index(['conversation_id', 'created_at']);
-            $table->unique(['reporter_user_id', 'message_id']);
+            $table->unique(['reporter_user_id', 'subject_key']);
         });
 
         Schema::create('message_moderation_audits', function (Blueprint $table): void {
