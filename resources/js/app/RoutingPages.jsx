@@ -346,7 +346,8 @@ export function BuyerWorkspaceLayout() {
     const { user } = useAuth();
     const links = [
         { to: '/dashboard/buyer', label: 'نمای کلی', end: true },
-        { to: '/dashboard/buyer/inquiries', label: 'پیام‌های من' },
+        { to: '/dashboard/buyer/inquiries', label: 'درخواست‌های من' },
+        { to: '/dashboard/buyer/messages', label: 'پیام‌های مستقیم' },
     ];
     return <WorkspaceLayout title="فضای خریدار" links={links} outletContext={{ user }} />;
 }
