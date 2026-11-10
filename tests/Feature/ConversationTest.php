@@ -122,13 +122,13 @@ class ConversationTest extends TestCase
         $conversation = $this->openConversationAsBuyer($buyer, $inquiry);
         $message = $conversation->messages()->firstOrFail();
 
-        $this->actingAs($buyer)
+        $edited = $this->actingAs($buyer)
             ->patchJson('/api/v1/conversations/'.$conversation->id.'/messages/'.$message->id, [
                 'body' => 'متن ویرایش‌شده پیام اولیه',
             ])
             ->assertOk()
-            ->assertJsonPath('data.body', 'متن ویرایش‌شده پیام اولیه')
-            ->assertJsonPath('data.edited_at', fn ($value) => is_string($value));
+            ->assertJsonPath('data.body', 'متن ویرایش‌شده پیام اولیه');
+        $this->assertNotNull($edited->json('data.edited_at'));
 
         $this->actingAs($artist)
             ->patchJson('/api/v1/conversations/'.$conversation->id.'/messages/'.$message->id, [
@@ -136,11 +136,11 @@ class ConversationTest extends TestCase
             ])
             ->assertNotFound();
 
-        $this->actingAs($buyer)
+        $deleted = $this->actingAs($buyer)
             ->deleteJson('/api/v1/conversations/'.$conversation->id.'/messages/'.$message->id)
             ->assertOk()
-            ->assertJsonPath('data.body', null)
-            ->assertJsonPath('data.deleted_at', fn ($value) => is_string($value));
+            ->assertJsonPath('data.body', null);
+        $this->assertNotNull($deleted->json('data.deleted_at'));
 
         $this->assertDatabaseHas('messages', [
             'id' => $message->id,
