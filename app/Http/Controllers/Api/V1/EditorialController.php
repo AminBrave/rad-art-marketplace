@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Artwork;
 use App\Models\ArtistProfile;
+use App\Models\Artwork;
 use App\Models\CuratedCollection;
 use App\Models\EditorialAudit;
 use App\Models\FeaturedArtistSelection;
