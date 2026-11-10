@@ -178,7 +178,7 @@ class ConversationController extends Controller
     {
         $conversations = Conversation::query()
             ->where($participantColumn, $user->id)
-            ->with(['inquiry.artistProfile', 'inquiry.artwork', 'buyer', 'artist', 'latestMessage.sender'])
+            ->with(['inquiry.artistProfile', 'inquiry.artwork', 'buyer', 'artist.artistProfile', 'latestMessage.sender'])
             ->withCount([
                 'messages as unread_count' => fn ($query) => $query
                     ->where('sender_user_id', '!=', $user->id)
