@@ -31,7 +31,7 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
     });
 
     Route::middleware('auth')->group(function (): void {
-        Route::post('/conversations/direct', [DirectConversationController::class, 'start'])->middleware('role:buyer', 'throttle:10,1')->name('conversations.direct');
+        Route::post('/conversations/direct', [DirectConversationController::class, 'start'])->middleware(['role:buyer', 'throttle:10,1'])->name('conversations.direct');
         Route::post('/inquiries/{inquiry}/conversation', [ConversationController::class, 'startFromInquiry'])->name('conversations.start');
         Route::get('/conversations/{conversation}', [ConversationController::class, 'show'])->name('conversations.show');
         Route::get('/conversations/{conversation}/messages', [ConversationController::class, 'messages'])->name('conversations.messages');
