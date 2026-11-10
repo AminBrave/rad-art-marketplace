@@ -9,8 +9,10 @@ use App\Models\ArtistProfile;
 use App\Models\Artwork;
 use App\Models\Category;
 use App\Models\CuratedCollection;
+use App\Models\Conversation;
 use App\Models\EditorialAudit;
 use App\Models\FeaturedArtistSelection;
+use App\Models\Message;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -193,6 +195,10 @@ class DemoDatabaseSeeder extends Seeder
         ]);
         $artworks[] = $missingImage;
 
+        // Seed one canonical direct conversation for every buyer and publicly contactable artist.
+        // Private profiles and artists without a profile are intentionally excluded, matching the public start-chat flow.
+        $this->seedDirectConversations($buyers);
+
         $publicArtists = array_values(array_filter($artists, fn (ArtistProfile $p): bool => $p->is_public));
         $approved = array_values(array_filter($artworks, fn (Artwork $a): bool => $a->status === Artwork::STATUS_APPROVED));
         for ($i = 1; $i <= 48; $i++) {
@@ -290,6 +296,64 @@ class DemoDatabaseSeeder extends Seeder
         $this->command?->line('Admin: admin@rademan.test | Artist: artist@rademan.test | Buyer: buyer@rademan.test');
         $this->command?->line('Empty buyer: buyer-empty@rademan.test | Private starter: new-artist-01@rademan.test | Public incomplete starter: new-artist-02@rademan.test');
         $this->command?->line('Password for all demo accounts: '.self::PASSWORD);
+    }
+
+    /**
+     * @param  array<int, User>  $buyers
+     */
+    private function seedDirectConversations(array $buyers): void
+    {
+        $profiles = ArtistProfile::query()
+            ->where('is_public', true)
+            ->whereHas('user', fn ($query) => $query->where('role', User::ROLE_ARTIST))
+            ->with('user')
+            ->orderBy('id')
+            ->get();
+
+        foreach ($buyers as $buyer) {
+            foreach ($profiles as $profile) {
+                $artist = $profile->user;
+                if (! $artist || (int) $artist->id === (int) $buyer->id) {
+                    continue;
+                }
+
+                $pairKey = $buyer->id.':'.$artist->id;
+                $conversation = Conversation::query()->updateOrCreate(
+                    ['pair_key' => $pairKey],
+                    [
+                        'inquiry_id' => null,
+                        'buyer_user_id' => $buyer->id,
+                        'artist_user_id' => $artist->id,
+                    ],
+                );
+
+                $firstMessage = $conversation->messages()->firstOrCreate(
+                    ['client_message_id' => 'demo-'.$pairKey.'-buyer'],
+                    [
+                        'sender_user_id' => $buyer->id,
+                        'body' => 'سلام، آثار شما را دیدم و مایلم درباره روند خلق و شرایط تهیه آثار بیشتر بدانم.',
+                        'delivered_at' => now()->subMinutes(3),
+                        'read_at' => now()->subMinutes(2),
+                        'created_at' => now()->subMinutes(3),
+                        'updated_at' => now()->subMinutes(3),
+                    ],
+                );
+
+                $conversation->messages()->firstOrCreate(
+                    ['client_message_id' => 'demo-'.$pairKey.'-artist'],
+                    [
+                        'sender_user_id' => $artist->id,
+                        'body' => 'سلام، خوش آمدید. با کمال میل پاسخ‌گوی پرسش‌های شما هستم. اگر اثر مشخصی مدنظرتان است بفرمایید.',
+                        'delivered_at' => now()->subMinute(),
+                        'created_at' => now()->subMinute(),
+                        'updated_at' => now()->subMinute(),
+                    ],
+                );
+
+                $latestMessageAt = $conversation->messages()->max('created_at');
+                $conversation->forceFill(['last_message_at' => $latestMessageAt])->save();
+            }
+        }
     }
 
     private function title(string $category, int $n): string
