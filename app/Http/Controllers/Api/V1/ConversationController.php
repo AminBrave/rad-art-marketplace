@@ -63,7 +63,7 @@ class ConversationController extends Controller
             return $conversation;
         });
 
-        $this->authorize('view', $conversation);
+        $this->authorizeParticipant($request->user(), $conversation, 'view');
 
         return response()->json([
             'data' => $this->conversationPayload($conversation->load([
@@ -109,7 +109,7 @@ class ConversationController extends Controller
 
     public function storeMessage(Request $request, Conversation $conversation): JsonResponse
     {
-        $this->authorize('sendMessage', $conversation);
+        $this->authorizeParticipant($request->user(), $conversation, 'sendMessage');
 
         $validated = $request->validate([
             'body' => ['required', 'string', 'min:1', 'max:5000'],
@@ -123,7 +123,7 @@ class ConversationController extends Controller
 
         $message = DB::transaction(function () use ($conversation, $request, $validated): Message {
             if (! empty($validated['client_message_id'])) {
-                $existing = $conversation->messages()
+                $existing = $lockedConversation->messages()
                     ->where('sender_user_id', $request->user()->id)
                     ->where('client_message_id', $validated['client_message_id'])
                     ->first();
@@ -133,7 +133,7 @@ class ConversationController extends Controller
                 }
             }
 
-            $message = $conversation->messages()->create([
+            $message = $lockedConversation->messages()->create([
                 'sender_user_id' => $request->user()->id,
                 'client_message_id' => $validated['client_message_id'] ?? null,
                 'body' => trim($validated['body']),
@@ -141,7 +141,7 @@ class ConversationController extends Controller
                 'delivered_at' => now(),
             ]);
 
-            $conversation->forceFill(['last_message_at' => $message->created_at])->save();
+            $lockedConversation->forceFill(['last_message_at' => $message->created_at])->save();
 
             return $message->load(['sender', 'replyTo.sender']);
         });
@@ -153,7 +153,7 @@ class ConversationController extends Controller
 
     public function markRead(Request $request, Conversation $conversation): JsonResponse
     {
-        $this->authorize('update', $conversation);
+        $this->authorizeParticipant($request->user(), $conversation, 'update');
 
         $updated = $conversation->messages()
             ->where('sender_user_id', '!=', $request->user()->id)
@@ -166,7 +166,7 @@ class ConversationController extends Controller
         ]);
     }
 
-    private function indexFor(User $user, string $participantColumn): JsonResponse
+    private function authorizeParticipant(User $user, Conversation $conversation, string $ability): void\n    {\n        abort_unless($user->can($ability, $conversation), 404);\n    }\n\n    private function indexFor(User $user, string $participantColumn): JsonResponse
     {
         $conversations = Conversation::query()
             ->where($participantColumn, $user->id)
