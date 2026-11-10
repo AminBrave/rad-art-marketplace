@@ -156,7 +156,7 @@ export default function MessagingCenter({ role }) {
                             {threads.map((thread) => <li key={thread.id}>
                                 <button type="button" onClick={() => { setActive(thread.id); setReplyTo(null); setEditingId(null); }} className={'w-full p-4 text-right transition hover:bg-surface-muted ' + (active === thread.id ? 'bg-surface-muted' : '')}>
                                     <span className="flex items-center justify-between gap-2"><strong className="truncate text-sm">{thread.participant?.name ?? 'گفتگو'}</strong>{thread.unread_count > 0 && <span className="rounded-full bg-terracotta px-2 py-1 text-xs text-white">{thread.unread_count}</span>}</span>
-                                    <span className="mt-2 block truncate text-xs text-muted">{thread.last_message?.body ?? 'گفتگوی جدید'}</span>
+                                    <span className="mt-2 block truncate text-xs text-muted">{thread.last_message?.body ?? (thread.last_message?.deleted_at ? 'پیام حذف شده است' : 'گفتگوی جدید')}</span>
                                     <span className="mt-1 block text-[11px] text-muted">{dateLabel(thread.last_message_at)}</span>
                                 </button>
                             </li>)}
@@ -180,13 +180,13 @@ export default function MessagingCenter({ role }) {
                                                 {message.reply_to && <div className="mb-3 border-r-2 border-terracotta bg-surface-muted px-3 py-2 text-xs"><strong>{message.reply_to.sender_name ?? 'پیام قبلی'}</strong><p className="mt-1 line-clamp-2 text-muted">{message.reply_to.body ?? 'این پیام حذف شده است.'}</p></div>}
                                                 {editingId === message.id ? (
                                                     <form onSubmit={(event) => saveEdit(event, message)} className="space-y-2">
-                                                        <textarea autoFocus value={editDraft} onChange={(event) => setEditDraft(event.target.value)} rows={3} maxLength={5000} className="w-full border border-border bg-canvas p-2 text-sm focus:border-terracotta" />
+                                                        <textarea aria-label="متن ویرایش‌شده پیام" autoFocus value={editDraft} onChange={(event) => setEditDraft(event.target.value)} rows={3} maxLength={5000} className="w-full border border-border bg-canvas p-2 text-sm focus:border-terracotta" />
                                                         <div className="flex gap-2"><button disabled={!editDraft.trim() || actionId === message.id} className="bg-ink px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50">ذخیره</button><button type="button" onClick={() => setEditingId(null)} className="px-3 py-1.5 text-xs text-muted">انصراف</button></div>
                                                     </form>
                                                 ) : <p className={'whitespace-pre-wrap break-words text-sm leading-7 ' + (deleted ? 'italic text-muted' : '')}>{message.body ?? 'این پیام حذف شده است.'}</p>}
                                                 <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[10px] text-muted">
                                                     <span>{dateLabel(message.created_at)} {message.edited_at && !deleted ? '· ویرایش‌شده' : ''}</span>
-                                                    {own && !deleted && <span>{message.read_at ? 'خوانده‌شده' : message.delivered_at ? 'تحویل‌شده' : 'ارسال‌شده'}</span>}
+                                                    {own && !deleted && <span>{message.read_at ? 'خوانده‌شده' : message.delivered_at ? 'ثبت‌شده' : 'ارسال‌شده'}</span>}
                                                 </div>
                                                 {!deleted && (
                                                     <>
@@ -212,7 +212,7 @@ export default function MessagingCenter({ role }) {
                             <form onSubmit={send} className="border-t border-border bg-white p-3 sm:p-4">
                                 {replyTo && <div className="mb-3 flex items-start justify-between gap-3 border-r-2 border-terracotta bg-surface-muted p-3 text-xs"><div><strong>پاسخ به {replyTo.sender_name ?? 'پیام'}</strong><p className="mt-1 line-clamp-2 text-muted">{replyTo.body}</p></div><button type="button" onClick={() => setReplyTo(null)} aria-label="لغو پاسخ">×</button></div>}
                                 <div className="flex items-end gap-3">
-                                    <textarea ref={draftRef} value={draft} onChange={(event) => setDraft(event.target.value)} rows={2} maxLength={5000} placeholder="پیام خود را بنویسید…" className="min-h-12 flex-1 resize-y border border-border bg-canvas p-3 text-sm outline-none focus:border-terracotta" />
+                                    <textarea aria-label="متن پیام" ref={draftRef} value={draft} onChange={(event) => setDraft(event.target.value)} rows={2} maxLength={5000} placeholder="پیام خود را بنویسید…" className="min-h-12 flex-1 resize-y border border-border bg-canvas p-3 text-sm outline-none focus:border-terracotta" />
                                     <button type="submit" disabled={!draft.trim() || sending} className="min-h-12 bg-ink px-5 text-sm font-bold text-white disabled:opacity-50">{sending ? '…' : 'ارسال'}</button>
                                 </div>
                             </form>
