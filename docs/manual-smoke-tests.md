@@ -279,3 +279,13 @@ M05-T05 attachments and M05-T07 reporting/blocking/moderation have an additional
 8. Verify rate limits, keyboard focus, Persian RTL and narrow-screen behavior for report/block controls and the admin queue.
 
 Malware scanning is not integrated. Do not use real sensitive documents in testing. Email and WebSocket/presence behavior remain disabled until the target host is verified.
+
+
+## M05 inbox search, archive and mute acceptance
+
+1. In buyer and artist accounts, search by participant name and by a unique phrase in a message. Confirm only the current participant's own conversations are returned.
+2. Select the unread filter and confirm conversations with unread messages only appear; mark them read and confirm they leave the filter.
+3. Archive a conversation as Buyer. Confirm it disappears from the buyer active inbox but remains visible in the Artist inbox. Open the buyer archived filter and restore it.
+4. Mute a conversation as Artist. Confirm the Artist sees muted state while the Buyer does not inherit it. Unmute and refresh.
+5. Start from two artworks by the same artist and confirm the same conversation is reused and each public artwork context link appears in the thread.
+6. Verify search/filter, context links and archive/mute controls at mobile and desktop widths with keyboard navigation and Persian RTL.
