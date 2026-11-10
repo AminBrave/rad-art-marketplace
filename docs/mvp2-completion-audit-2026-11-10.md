@@ -51,3 +51,8 @@ Automated RTL/responsive smoke coverage includes public routes and Buyer, Artist
 ## Decision
 
 The implementation batch is integrated and the automated CI baseline is green. This is **not** a production launch sign-off. Keep the affected issues open until their specific remaining acceptance evidence is recorded or the product owner explicitly accepts a documented deferral. Do not enable email, WebSocket transport or production attachment uploads without the corresponding host/security decisions.
+
+
+**Follow-up CI verification (2026-11-10):** PR #118 corrected the Playwright notification-to-conversation fixture boundaries and added an explicit nested-route regression. Latest post-merge `main` [CI run #42852936094](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42852936094) passed all three jobs: 92 backend tests / 890 assertions, PHP style, frontend lint/build, and 27 Chromium browser tests. Main commit: `d7c056645addf33d872bec4868995e0e9bfda89f`. This supersedes the intermediate documentation-sync run that exposed the fixture failure; no application feature regression was found.
+
+The final browser fixture correction is test-only; no application feature behavior was changed by PR #118.
