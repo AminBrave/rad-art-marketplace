@@ -209,7 +209,8 @@ Known unverified release gates (release sign-off blockers):
 - [ ] Conversation archive/mute and search UX/API remain unimplemented (#79/#80).
 - [ ] WebSocket/broadcast delivery, typing and presence; retain polling fallback and do not claim real-time while only polling is active (#81).
 - [ ] Private message attachments with content validation, authorized download, retention and malware-scanning decision (#82).
-- [ ] Implement M05-T06 recipient-only in-app notifications, read-all, per-user preferences and conversation deep links (#83). Implementation is in progress on `feat/m05-in-app-notifications`; email delivery remains blocked pending verified queue-worker and mail configuration on the target host.
+- [x] Implement M05-T06 recipient-only in-app notifications, read-all, per-user preferences and conversation deep links through [PR #111](https://github.com/AminBrave/rad-art-marketplace/pull/111), merged as `702e1f839d34577790e6438e999064f40f5a6a77`.
+- [ ] Complete optional email delivery and verify mail configuration, persistent queue worker/retries and unsubscribe behavior on the target host (#83). Product-owner manual acceptance is also pending.
 - [ ] Blocking, reporting, rate limits and an admin moderation workflow (#84).
 - [ ] Independent security review, Persian RTL/accessibility checks and product-owner acceptance.
 

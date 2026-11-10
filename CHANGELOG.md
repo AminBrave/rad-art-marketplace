@@ -1,4 +1,4 @@
-## 2026-11-10 — M05-T06 in-app message notifications (implementation in review)
+## 2026-11-10 — M05-T06 in-app message notifications (merged; email host gate pending)
 
 ### Added
 - Added database-backed recipient-only notifications when a new conversation message is persisted.
@@ -7,7 +7,9 @@
 - Notification payloads contain sender display name and conversation/message identifiers only; message body and email are excluded.
 
 ### Verification boundary
-- Implementation branch: `feat/m05-in-app-notifications`; CI and manual acceptance are pending.
+- Merged through [PR #111](https://github.com/AminBrave/rad-art-marketplace/pull/111) as `702e1f839d34577790e6438e999064f40f5a6a77`.
+- GitHub Actions [run #42831765614](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42831765614) passed: 84 backend tests / 824 assertions, PHP style, frontend tests/lint/build and 24 Chromium browser tests.
+- Product-owner manual acceptance and optional email delivery remain pending. Email stays disabled until host mail and persistent queue/retry support are verified.
 - Email notifications remain disabled (`email_available=false`) until the target host has verified mail configuration and a queue worker/retry setup. This code does not send email synchronously.
 - Real-time push, typing/presence, private attachments, reporting/blocking and moderation remain separate M05 tasks.
 
