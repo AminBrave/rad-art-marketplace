@@ -15,7 +15,7 @@ class ShowcaseDatabaseSeeder extends Seeder
             throw new RuntimeException('Showcase seeding is available only in the production environment.');
         }
 
-        if (filter_var(env('RADEMAN_SHOWCASE_SEEDING_ENABLED', false), FILTER_VALIDATE_BOOL) !== true) {
+        if (filter_var(config('showcase.seeding_enabled', false), FILTER_VALIDATE_BOOL) !== true) {
             throw new RuntimeException('Set RADEMAN_SHOWCASE_SEEDING_ENABLED=true in the hosting environment before running this seeder.');
         }
 
