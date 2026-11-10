@@ -130,6 +130,7 @@ Email verification and password-reset UX are not implemented. Analytics is a pro
 - [ ] Verify migrations on the supported production MySQL version and rehearse rollback/forward recovery.
 - [ ] Verify participant-only access for conversation, message, attachment and report resources, including cross-account 404 behavior.
 - [ ] Verify sender-only message edit/delete, content-free deletion tombstones, reply context, reaction idempotency, and sent/server-accepted/read state semantics.
+- [ ] Verify in-app message notifications, unread counts, read-all, notification preferences, conversation deep links and recipient-only access. Confirm email remains disabled until host queue/mail readiness is proven.
 - [ ] Verify rate limits, block/report behavior, admin audit trail, retention and private attachment storage.
 - [ ] Verify notification content and deep links do not disclose message bodies or private resources to unauthorized recipients.
 - [ ] Enable email only after queue/worker availability, sender identity, retry/failure handling, preferences and unsubscribe controls are verified.
