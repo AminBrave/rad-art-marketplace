@@ -1,6 +1,6 @@
 # Manual Smoke Tests
 
-These checks validate the features currently implemented in the integration branch. Run them against a disposable local/test database, never against production data. They complement—not replace—the automated test suite and the release QA checklist.
+These checks validate the features currently implemented in `main`. Run them against a disposable local/test database, never against production data. They complement—not replace—the automated test suite and the release QA checklist.
 
 ## Prepare a local environment
 
@@ -159,7 +159,7 @@ Run these checks at 320, 375, 390, 768, 1024, 1280, and 1536 CSS pixels in curre
 
 ## Automated browser regressions
 
-The CI workflow now runs a Chromium browser suite against the actual Laravel-served React application using deterministic API fixtures. It covers buyer inquiry history/detail navigation, direct deep links and refresh, back navigation with page context, guest and wrong-role redirects, not-found UI privacy, mobile overflow, artist artwork total pagination metadata, and null/zero/positive price formatting.
+CI runs the buyer and M02 Chromium browser suites against the actual Laravel-served React application using deterministic API fixtures. The 16 tests cover buyer inquiry history/detail navigation, direct deep links and refresh, back navigation with page context, guest/wrong-role redirects, not-found UI privacy, artist artwork totals, price formatting, homepage discovery, URL-backed catalogue filters, artwork detail/related works, artist portfolio filtering/load-more, both discovery-to-inquiry entry points, and viewport overflow at 320, 375, 768, 1024, and 1440 CSS pixels.
 
 Run locally after preparing the app and building the frontend:
 
@@ -167,12 +167,12 @@ Run locally after preparing the app and building the frontend:
 python -m pip install playwright==1.55.0
 python -m playwright install --with-deps chromium
 php artisan serve --host=127.0.0.1 --port=8000
-python tests/browser/test_buyer_inquiry.py
+python -m unittest discover -s tests/browser -p 'test_*.py' -v
 ```
 
-The CI run [#42721783132](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42721783132) passed all 9 browser tests. API authorization is tested separately by the Laravel feature suite, including cross-buyer inquiry detail access returning 404. The browser suite's foreign/missing inquiry response is a deterministic UI fixture, not a live authenticated database ownership test.
+M02 PR CI [run #42724547388](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42724547388) and post-merge main CI [run #42724722130](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42724722130) passed all 16 Chromium browser tests and the backend/frontend jobs. API authorization and inquiry creation are tested separately by Laravel feature tests, including cross-buyer inquiry isolation and approval/ownership requirements for artwork-linked inquiries.
 
-These automated checks do not replace the Stage 6 manual cross-browser/device, assistive-technology, RTL/mixed-direction, performance, target-host, or backup/restore checks below.
+These automated checks do not replace manual visual design review, Firefox/WebKit, assistive-technology, mixed-direction, image-transfer performance, target-host, or backup/restore checks.
 
 
 ## M02 public discovery and artwork experience

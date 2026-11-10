@@ -3,7 +3,7 @@
 Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact marketplace. It helps visitors discover approved artworks and public artist portfolios, and lets registered buyers send private inquiries to artists.
 
 **Current integration branch:** `main`  
-**Current delivery status:** MVP2 workspace stages are integrated. M02 discovery upgrades are in progress under [issue #62](https://github.com/AminBrave/rad-art-marketplace/issues/62); automated and manual acceptance is tracked in its child issues. M00 release gates and production sign-off remain separate and open.  
+**Current delivery status:** MVP2 workspace stages and M02 discovery implementation are integrated. [PR #92](https://github.com/AminBrave/rad-art-marketplace/pull/92) passed PR and post-merge CI; M02 visual review and image-optimization acceptance remain open under [issue #62](https://github.com/AminBrave/rad-art-marketplace/issues/62). M00 release gates and production sign-off remain separate and open.  
 **Product status:** Active MVP development; not yet verified or signed off for production.
 
 ## Product capabilities

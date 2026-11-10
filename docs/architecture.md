@@ -106,7 +106,7 @@ The current MVP does not require payment processing, order/fulfilment services, 
 
 ## Current limitations and release dependencies
 
-- M02 discovery experience changes are delivered on a dedicated feature branch against the current public marketplace baseline; see GitHub issue [#62](https://github.com/AminBrave/rad-art-marketplace/issues/62). The prior MVP2 workspace stages remain integrated; M00 release gates remain tracked separately.
+- M02 discovery experience implementation is integrated in `main` via [PR #92](https://github.com/AminBrave/rad-art-marketplace/pull/92). Human visual review and the image-derivative decision remain open in [issue #62](https://github.com/AminBrave/rad-art-marketplace/issues/62). The prior MVP2 workspace stages remain integrated; M00 release gates remain tracked separately.
 - Email verification and password-reset UX are not implemented.
 - Admin category management, buyer reports/abuse queue, and featured placements are outside the current approved MVP 2 scope.
 - Analytics is a proposal only; no provider or event collection is enabled.
