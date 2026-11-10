@@ -208,11 +208,12 @@ Known unverified release gates (release sign-off blockers):
 - [ ] Product-owner manual retest of M05-T03 is pending; keep issue #80 open until accepted.
 - [x] Implement participant-scoped inbox search, unread/archived filters, independent archive/mute settings and artwork context links (#79); final CI and manual keyboard/mobile acceptance remain pending.
 - [ ] WebSocket/broadcast delivery, typing and presence remain host-gated; five-second polling is the current fallback and no real-time push is claimed (#81).
-- [x] Implement private image/PDF attachments, MIME/size validation, sender-only upload, participant-authorized download, private local storage and deletion purge (#82); final CI/MySQL verification and a host-level malware-scanning decision remain pending.
+- [x] Implement private image/PDF attachments, MIME/size validation, sender-only upload, participant-authorized download, private local storage and deletion purge (#82); PR #114 final CI passed; supported-MySQL migration review and a host-level malware-scanning decision remain pending.
 - [x] Implement M05-T06 recipient-only in-app notifications, read-all, per-user preferences and conversation deep links through [PR #111](https://github.com/AminBrave/rad-art-marketplace/pull/111), merged as `702e1f839d34577790e6438e999064f40f5a6a77`.
 - [ ] Complete optional email delivery and verify mail configuration, persistent queue worker/retries and unsubscribe behavior on the target host (#83). Product-owner manual acceptance is also pending.
-- [x] Implement participant blocking, message/conversation reports, rate-limited report endpoints, Admin review queue/actions and moderation audit records (#84); final CI/security review and retention-owner acceptance remain pending.
-- [ ] Run final batch CI, review MySQL migrations and private-file deletion, obtain independent security review, complete Persian RTL/accessibility checks and product-owner acceptance.
+- [x] Implement participant blocking, message/conversation reports, rate-limited report endpoints, Admin review queue/actions and moderation audit records (#84); PR #114 final CI passed; independent security review and retention-owner acceptance remain pending.
+- [x] Run final batch CI on PR #114: [workflow #42845563969](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42845563969) passed all three jobs (92 backend tests / 890 assertions, PHP style, frontend tests/lint/build, and 26 Chromium browser tests).
+- [ ] Review migrations on the supported production MySQL version and private-file permissions/deletion, obtain independent security review, complete manual Persian RTL/accessibility checks and product-owner acceptance.
 
 **Hosting constraint:** cPanel compatibility for persistent workers, Redis, broadcasting daemons and queued mail is unverified. Do not enable these services or claim WebSocket/email delivery until the target host is tested. No end-to-end encryption or malware-scanning claim is made. Attachments are implemented using private local storage but must not be enabled in production without a host-level malware-scanning decision.
 
