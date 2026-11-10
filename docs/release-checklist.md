@@ -136,3 +136,13 @@ Email verification and password-reset UX are not implemented. Analytics is a pro
 - [ ] Enable email only after queue/worker availability, sender identity, retry/failure handling, preferences and unsubscribe controls are verified.
 - [ ] Enable real-time transport only after persistent process/broadcasting support is verified on the target host; otherwise document the polling fallback.
 - [ ] Complete independent security review and product-owner acceptance before messaging launch.
+
+
+## M05 safety and private attachments — implementation gate
+
+- [ ] Verify migration and rollback/forward recovery on the supported production MySQL version.
+- [ ] Verify private local storage permissions and that no attachment path is web-accessible.
+- [ ] Verify detected MIME validation, 10 MB cap, participant download authorization, sender-only upload and file purge on message removal.
+- [ ] Decide and document a host-level malware-scanning control or explicitly accept the residual risk before enabling uploads in production.
+- [ ] Verify block/report/admin review permissions, rate limits, audit trail and retention owner.
+- [ ] Keep email and broadcasting disabled until persistent worker and target-host support are evidenced.
