@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\ArtworkController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ConversationController;
 use App\Http\Controllers\Api\V1\EditorialController;
+use App\Http\Controllers\Api\V1\DirectConversationController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'app')->name('home');
