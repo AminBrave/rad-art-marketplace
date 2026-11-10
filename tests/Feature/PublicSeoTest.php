@@ -54,6 +54,43 @@ class PublicSeoTest extends TestCase
             ->assertDontSee('property="og:image"', false);
     }
 
+    public function test_pending_artwork_page_is_hidden_from_guests_and_noindexed_for_its_owner(): void
+    {
+        [$artist, $profile] = $this->makeArtist('seo-pending-artist', true);
+        $artwork = $this->makeArtwork($profile, 'seo-pending-owner-work', 'اثر در انتظار', Artwork::STATUS_PENDING_REVIEW);
+
+        $this->get('/artworks/'.$artwork->slug)->assertNotFound();
+
+        $this->actingAs($artist)
+            ->get('/artworks/'.$artwork->slug)
+            ->assertOk()
+            ->assertSee('name="robots" content="noindex,nofollow"', false)
+            ->assertDontSee('rel="canonical"', false)
+            ->assertDontSee('property="og:image"', false);
+    }
+
+    public function test_published_collection_page_renders_collection_metadata(): void
+    {
+        [, $profile] = $this->makeArtist('seo-collection-artist', true);
+        $artwork = $this->makeArtwork($profile, 'seo-collection-work', 'اثر مجموعه', Artwork::STATUS_APPROVED);
+        $collection = CuratedCollection::query()->create([
+            'slug' => 'seo-public-collection-page',
+            'title' => 'مجموعه نور',
+            'intro' => 'گزیده‌ای از آثار نورپردازی.',
+            'status' => 'published',
+            'position' => 1,
+            'published_at' => now()->subMinute(),
+        ]);
+        $collection->artworks()->attach($artwork->id, ['position' => 0]);
+
+        $this->get('/collections/'.$collection->slug)
+            ->assertOk()
+            ->assertSee('<title>مجموعه نور | مجموعه‌های راد آرت</title>', false)
+            ->assertSee('rel="canonical"', false)
+            ->assertSee('"@type":"CollectionPage"', false)
+            ->assertSee('property="og:description"', false);
+    }
+
     public function test_sitemap_contains_only_public_artists_approved_public_artworks_and_published_collections(): void
     {
         [, $publicProfile] = $this->makeArtist('seo-public-artist', true);
