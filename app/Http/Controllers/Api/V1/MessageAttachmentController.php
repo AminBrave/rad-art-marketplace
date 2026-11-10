@@ -57,6 +57,9 @@ class MessageAttachmentController extends Controller
             ->toString();
         $originalName = $originalName !== '' ? $originalName : 'attachment';
         $path = $file->store('message-attachments/'.$conversation->id, 'local');
+        if (! is_string($path) || $path === '') {
+            throw ValidationException::withMessages(['file' => 'ذخیره فایل پیوست انجام نشد. دوباره تلاش کنید.']);
+        }
 
         $attachment = MessageAttachment::query()->create([
             'message_id' => $message->id,
