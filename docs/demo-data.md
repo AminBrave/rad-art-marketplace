@@ -1,6 +1,6 @@
 # Demo data and test accounts
 
-The demo dataset is designed to exercise the complete current Rademan MVP (M00–M04): public discovery, buyer/artist workspaces, admin moderation and user management, curated editorial content, privacy boundaries, pagination, empty states, and image fallbacks.
+The demo dataset is designed to exercise the complete current Rademan MVP (M00–M05): public discovery, buyer/artist workspaces, admin moderation and user management, curated editorial content, privacy boundaries, pagination, empty states, and image fallbacks.
 
 It is for local development and automated testing only. It is disabled outside Laravel's `local` and `testing` environments.
 
@@ -28,7 +28,7 @@ All demo accounts use password `Demo@12345`.
 | Admin | `admin@rademan.test` | User management, artwork moderation, collections, featured artists |
 | Artist | `artist@rademan.test` | Main public profile, 16 approved works, artist inbox and artwork pagination |
 | Buyer | `buyer@rademan.test` | Inquiry submission and buyer history (12 sent inquiries) |
-| Buyer with empty inbox | `buyer-empty@rademan.test` | Buyer dashboard empty state |
+| Buyer without inquiries | `buyer-empty@rademan.test` | No inquiry history, but seeded direct conversations for messaging QA |
 | Artist with private incomplete profile | `new-artist-01@rademan.test` | Onboarding, private profile preview, no artworks/inquiries |
 | Artist with public incomplete profile | `new-artist-02@rademan.test` | Partial onboarding, public empty portfolio, no artworks/inquiries |
 
@@ -45,7 +45,8 @@ Additional accounts: `artist-02@rademan.test` through `artist-14@rademan.test`, 
 - Moderation notes, reviewer IDs, and timestamps.
 - 16 approved works on the main artist profile to test the 12-item portfolio pagination boundary.
 - One approved artwork intentionally points to a missing private image file to test image endpoint 404 and UI fallback behavior.
-- 48 inquiries across new, read, and archived states, with and without an associated artwork; a separate buyer and two profiled artists have empty inboxes.
+- 48 inquiries across new, read, and archived states, with and without an associated artwork.
+- 70 seeded direct conversations: every one of the 5 demo buyers (including the empty-inquiry buyer) has a conversation with each of the 14 publicly contactable artist profiles, with a two-message exchange in every thread. Private profiles and artist accounts without a profile are excluded to match the public messaging rules.
 - Five curated collections: published with ordered artworks, draft, scheduled for the future, mixed approved/pending/private works, and published empty collection.
 - Six featured-artist selections: active without dates, active bounded window, future, expired, unpublished, and private-profile selection.
 - Editorial audit rows for seeded collection and featured-artist records.
@@ -59,7 +60,7 @@ Additional accounts: `artist-02@rademan.test` through `artist-14@rademan.test`, 
 - `/artists/artist-14`: private profile; guests should receive not found.
 - `/artists/new-artist-private-preview`: private profile; owner/Admin can preview, guests and unrelated users should receive not found.
 - Artist workspace: sign in as `artist@rademan.test`.
-- Buyer workspace: sign in as `buyer@rademan.test`; empty buyer: `buyer-empty@rademan.test`.
+- Buyer workspace: sign in as `buyer@rademan.test` or `buyer-empty@rademan.test`; the latter has no inquiry history but does have direct-message threads.
 - Admin workspace: sign in as `admin@rademan.test`; test each moderation filter, user role, collection and featured-artist state.
 
 See [MVP 2 QA checklist](qa-checklist.md) and [manual smoke tests](manual-smoke-tests.md) for broader verification.
