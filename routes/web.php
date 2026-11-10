@@ -47,8 +47,8 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
         Route::get('/conversations/{conversation}/safety', [MessageSafetyController::class, 'status'])->name('conversations.safety');
         Route::post('/conversations/{conversation}/messages/{message}/attachments', [MessageAttachmentController::class, 'store'])->middleware('throttle:10,1')->name('conversations.attachments.store');
         Route::get('/conversations/{conversation}/messages/{message}/attachments/{attachment}', [MessageAttachmentController::class, 'download'])->name('conversations.attachments.download');
-        Route::post('/conversations/{conversation}/report', [MessageSafetyController::class, 'report'])->middleware('throttle:5,1')->name('conversations.report');
-        Route::post('/conversations/{conversation}/messages/{message}/report', [MessageSafetyController::class, 'report'])->middleware('throttle:5,1')->name('conversations.messages.report');
+        Route::post('/conversations/{conversation}/report', [MessageSafetyController::class, 'reportConversation'])->middleware('throttle:5,1')->name('conversations.report');
+        Route::post('/conversations/{conversation}/messages/{message}/report', [MessageSafetyController::class, 'reportMessage'])->middleware('throttle:5,1')->name('conversations.messages.report');
         Route::post('/conversations/{conversation}/block', [MessageSafetyController::class, 'block'])->name('conversations.block');
         Route::delete('/conversations/{conversation}/block', [MessageSafetyController::class, 'unblock'])->name('conversations.unblock');
         Route::patch('/conversations/{conversation}/messages/{message}', [ConversationController::class, 'updateMessage'])->middleware('throttle:30,1')->name('conversations.messages.update');
