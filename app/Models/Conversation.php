@@ -13,6 +13,7 @@ class Conversation extends Model
 {
     protected $fillable = [
         'inquiry_id',
+        'pair_key',
         'buyer_user_id',
         'artist_user_id',
         'last_message_at',
