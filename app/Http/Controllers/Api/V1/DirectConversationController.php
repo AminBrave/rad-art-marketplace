@@ -42,6 +42,12 @@ class DirectConversationController extends Controller
 
         $artistId = (int) $profile->user_id;
         abort_if($artistId === (int) $buyer->id, 422, 'امکان شروع گفتگو با حساب خودتان وجود ندارد.');
+        $pairBlocked = DB::table('user_blocks')->where(function ($query) use ($buyer, $artistId): void {
+            $query->where('blocker_user_id', $buyer->id)->where('blocked_user_id', $artistId);
+        })->orWhere(function ($query) use ($buyer, $artistId): void {
+            $query->where('blocker_user_id', $artistId)->where('blocked_user_id', $buyer->id);
+        })->exists();
+        abort_if($pairBlocked, 403, 'شروع گفتگو در این وضعیت امکان‌پذیر نیست.');
 
         $conversation = DB::transaction(function () use ($buyer, $artistId, $artwork): Conversation {
             $pairKey = $buyer->id.':'.$artistId;
