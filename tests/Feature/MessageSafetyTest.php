@@ -35,6 +35,10 @@ class MessageSafetyTest extends TestCase
             'reason' => 'harassment',
             'status' => 'open',
         ]);
+        $this->postJson("/api/v1/conversations/{$conversation->id}/messages/{$message->id}/report", [
+            'reason' => 'harassment',
+        ])->assertOk();
+        $this->assertDatabaseCount('message_reports', 1);
 
         $this->actingAs($outsider)
             ->postJson("/api/v1/conversations/{$conversation->id}/messages/{$message->id}/report", [
