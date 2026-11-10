@@ -22,7 +22,7 @@ THREAD = {
     "last_message_at": "2026-11-10T10:30:00.000000Z",
     "unread_count": 1,
 }
-INBOX_CONVERSATIONS_ROUTE = re.compile(r".*/api/v1/buyer/conversations(?:\\?.*)?$")
+INBOX_CONVERSATIONS_ROUTE = re.compile(r".*/api/v1/buyer/conversations(?:\?.*)?$")
 
 MESSAGE = {
     "id": 501,
