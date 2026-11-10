@@ -162,3 +162,5 @@ Database-backed authorization is separately covered by `tests/Feature/ArtistInqu
 - [ ] Run ConversationInboxSettingsTest and the full backend suite.
 - [ ] Verify buyer/artist independent archive and mute state, unread filter, message/name search and access isolation.
 - [ ] Verify artwork context links, direct-entry deep links and responsive/keyboard behavior.
+
+- [ ] Verify muted conversation notification suppression does not affect the other participant or global notification preferences.
