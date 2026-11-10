@@ -28,7 +28,7 @@ All demo accounts use password `Demo@12345`.
 | Admin | `admin@rademan.test` | User management, artwork moderation, collections, featured artists |
 | Artist | `artist@rademan.test` | Main public profile, 16 approved works, artist inbox and artwork pagination |
 | Buyer | `buyer@rademan.test` | Inquiry submission and buyer history (12 sent inquiries) |
-| Buyer with empty inbox | `buyer-empty@rademan.test` | Buyer dashboard empty state |
+| Buyer without inquiries | `buyer-empty@rademan.test` | No inquiry history, but seeded direct conversations for messaging QA |
 | Artist with private incomplete profile | `new-artist-01@rademan.test` | Onboarding, private profile preview, no artworks/inquiries |
 | Artist with public incomplete profile | `new-artist-02@rademan.test` | Partial onboarding, public empty portfolio, no artworks/inquiries |
 
@@ -60,7 +60,7 @@ Additional accounts: `artist-02@rademan.test` through `artist-14@rademan.test`, 
 - `/artists/artist-14`: private profile; guests should receive not found.
 - `/artists/new-artist-private-preview`: private profile; owner/Admin can preview, guests and unrelated users should receive not found.
 - Artist workspace: sign in as `artist@rademan.test`.
-- Buyer workspace: sign in as `buyer@rademan.test`; empty buyer: `buyer-empty@rademan.test`.
+- Buyer workspace: sign in as `buyer@rademan.test` or `buyer-empty@rademan.test`; the latter has no inquiry history but does have direct-message threads.
 - Admin workspace: sign in as `admin@rademan.test`; test each moderation filter, user role, collection and featured-artist state.
 
 See [MVP 2 QA checklist](qa-checklist.md) and [manual smoke tests](manual-smoke-tests.md) for broader verification.
