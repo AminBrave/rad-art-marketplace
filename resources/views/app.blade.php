@@ -1,15 +1,55 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
+    @php
+        $seo = $seo ?? [];
+        $seoTitle = $seo['title'] ?? 'راد آرت | کشف آثار هنری و ارتباط با هنرمندان';
+        $seoDescription = $seo['description'] ?? 'راد آرت؛ جایی برای کشف آثار هنری تأییدشده، آشنایی با هنرمندان و ارتباط مستقیم با آن‌ها.';
+        $seoPath = request()->getPathInfo();
+        $indexableStaticPaths = ['/', '/artworks', '/artists', '/collections', '/about', '/help', '/contact'];
+        $seoRobots = $seo['robots'] ?? (in_array($seoPath, $indexableStaticPaths, true) ? 'index,follow' : 'noindex,nofollow');
+        $seoCanonical = $seo['canonical'] ?? (in_array($seoPath, $indexableStaticPaths, true)
+            ? rtrim((string) config('app.url'), '/').($seoPath === '/' ? '/' : $seoPath)
+            : null);
+        $seoImage = $seo['image'] ?? null;
+        $seoImageAlt = $seo['image_alt'] ?? $seoTitle;
+        $seoStructuredData = $seo['structured_data'] ?? null;
+    @endphp
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#F7F5F0">
-    <meta name="description" content="راد آرت؛ جایی برای کشف هنر و ارتباط مستقیم با هنرمندان.">
+    <meta name="description" content="{{ $seoDescription }}">
+    <meta name="robots" content="{{ $seoRobots }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @if ($seoCanonical)
+        <link rel="canonical" href="{{ $seoCanonical }}">
+    @endif
+    <meta property="og:site_name" content="راد آرت">
+    <meta property="og:locale" content="fa_IR">
+    <meta property="og:type" content="{{ $seo['og_type'] ?? 'website' }}">
+    <meta property="og:title" content="{{ $seoTitle }}">
+    <meta property="og:description" content="{{ $seoDescription }}">
+    @if ($seoCanonical)
+        <meta property="og:url" content="{{ $seoCanonical }}">
+    @endif
+    @if ($seoImage)
+        <meta property="og:image" content="{{ $seoImage }}">
+        <meta property="og:image:alt" content="{{ $seoImageAlt }}">
+    @endif
+    <meta name="twitter:card" content="{{ $seoImage ? 'summary_large_image' : 'summary' }}">
+    <meta name="twitter:title" content="{{ $seoTitle }}">
+    <meta name="twitter:description" content="{{ $seoDescription }}">
+    @if ($seoImage)
+        <meta name="twitter:image" content="{{ $seoImage }}">
+        <meta name="twitter:image:alt" content="{{ $seoImageAlt }}">
+    @endif
+    @if (is_array($seoStructuredData))
+        <script type="application/ld+json">@json($seoStructuredData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)</script>
+    @endif
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <title>{{ config('app.name', 'Rad Art Marketplace') }}</title>
+    <title>{{ $seoTitle }}</title>
     @viteReactRefresh
     @vite(['resources/css/app.css', 'resources/js/app.jsx'])
 </head>
