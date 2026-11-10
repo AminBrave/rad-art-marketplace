@@ -12,7 +12,7 @@
 ### Verification in progress
 - Added backend regression coverage for private profile preview isolation, frontend contract tests, and Chromium journeys for onboarding, oversized image rejection, moderation feedback, and inquiry lifecycle.
 - Merged through [PR #99](https://github.com/AminBrave/rad-art-marketplace/pull/99) as `b9892632cf7a2773b9a6b600ff39f71cbce4f446`.
-- PR CI run [#42787611474](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42787611474) passed all three jobs: 59 backend tests / 358 assertions, Laravel Pint, frontend lint/build, and 22 Chromium tests. Post-merge CI run #42787835227 is being verified.
+- PR CI run [#42787611474](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42787611474) passed all three jobs: 59 backend tests / 358 assertions, Laravel Pint, frontend lint/build, and 22 Chromium tests. Post-merge main CI [run #42787835227](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42787835227) passed all three jobs.
 - Product-owner visual/functional acceptance remains a separate milestone closeout step.
 
 ## 2026-11-10 — M00 browser regression coverage
