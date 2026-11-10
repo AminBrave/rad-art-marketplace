@@ -28,11 +28,11 @@ class DemoDatabaseSeeder extends Seeder
             throw new \\RuntimeException('The showcase seeder is intended for production only.');
         }
 
-        if (filter_var(env('RADEMAN_SHOWCASE_SEEDING_ENABLED', false), FILTER_VALIDATE_BOOL) !== true) {
+        if (filter_var(config('showcase.seeding_enabled', false), FILTER_VALIDATE_BOOL) !== true) {
             throw new \\RuntimeException('Set RADEMAN_SHOWCASE_SEEDING_ENABLED=true to authorize production showcase seeding.');
         }
 
-        $password = (string) env('RADEMAN_SHOWCASE_PASSWORD', '');
+        $password = (string) config('showcase.password', '');
         if (strlen($password) < 32) {
             throw new \\RuntimeException('RADEMAN_SHOWCASE_PASSWORD must contain at least 32 characters.');
         }
@@ -71,7 +71,7 @@ class DemoDatabaseSeeder extends Seeder
             return;
         }
 
-        $password = app()->environment('production') ? (string) env('RADEMAN_SHOWCASE_PASSWORD') : self::PASSWORD;
+        $password = app()->environment('production') ? (string) config('showcase.password') : self::PASSWORD;
         $passwordHash = Hash::make($password);
 
         // Production showcase records must be attributed to a real, already-authorized admin.
