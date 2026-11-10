@@ -15,7 +15,7 @@ function ArtworkImage({ artwork }) {
             {failed ? (
                 <div role="img" aria-label={`تصویر اثر ${artwork.title} در دسترس نیست`} className="grid h-full w-full place-items-center border border-border bg-surface-muted p-8 text-center text-sm leading-7 text-muted">تصویر این اثر در حال حاضر در دسترس نیست.</div>
             ) : (
-                <img src={artwork.image_url} alt={artwork.title} onError={() => setFailed(true)} loading="eager" fetchPriority="high" decoding="async" className="h-full max-h-[78vh] w-full object-contain" />
+                <img src={artwork.image_url} alt={artwork.title} onError={() => setFailed(true)} loading="eager" fetchpriority="high" decoding="async" className="h-full max-h-[78vh] w-full object-contain" />
             )}
         </div>
     );
