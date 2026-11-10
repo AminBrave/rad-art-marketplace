@@ -1,7 +1,3 @@
-<?php
-
-declare(strict_types=1);
-
 use App\Http\Controllers\Api\V1\AdminArtworkModerationController;
 use App\Http\Controllers\Api\V1\AdminUserController;
 use App\Http\Controllers\Api\V1\ArtistInquiryController;
@@ -11,11 +7,11 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ConversationController;
 use App\Http\Controllers\Api\V1\DirectConversationController;
 use App\Http\Controllers\Api\V1\EditorialController;
-use App\Http\Controllers\Api\V1\NotificationController;
-use App\Http\Controllers\Api\V1\MessageSafetyController;
 use App\Http\Controllers\Api\V1\MessageAttachmentController;
-use App\Http\Middleware\EnsureConversationNotBlocked;
+use App\Http\Controllers\Api\V1\MessageSafetyController;
+use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\PublicPageController;
+use App\Http\Middleware\EnsureConversationNotBlocked;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'app')->name('home');
