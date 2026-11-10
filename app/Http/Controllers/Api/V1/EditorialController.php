@@ -121,7 +121,9 @@ class EditorialController extends Controller
             'artwork_ids' => ['sometimes', 'array', 'max:30'],
             'artwork_ids.*' => ['integer', 'distinct', 'exists:artworks,id'],
         ]);
-        if (array_key_exists('artwork_ids', $validated)) $this->assertPublicArtworks($validated['artwork_ids']);
+        if (array_key_exists('artwork_ids', $validated)) {
+            $this->assertPublicArtworks($validated['artwork_ids']);
+        }
 
         DB::transaction(function () use ($request, $collection, $validated): void {
             $collection->fill(array_intersect_key($validated, array_flip(['title', 'intro'])));
@@ -215,7 +217,9 @@ class EditorialController extends Controller
 
     private function assertPublicArtworks(array $ids): void
     {
-        if ($ids === []) return;
+        if ($ids === []) {
+            return;
+        }
         $count = Artwork::query()->whereIn('id', $ids)->where('status', Artwork::STATUS_APPROVED)
             ->whereHas('artistProfile', fn ($artist) => $artist->where('is_public', true))->count();
         abort_if($count !== count($ids), 422, 'مجموعه فقط می‌تواند شامل آثار تأییدشده از هنرمندان عمومی باشد.');
@@ -224,14 +228,18 @@ class EditorialController extends Controller
     private function syncCollectionItems(CuratedCollection $collection, array $ids): void
     {
         $sync = [];
-        foreach (array_values($ids) as $position => $id) $sync[$id] = ['position' => $position];
+        foreach (array_values($ids) as $position => $id) {
+            $sync[$id] = ['position' => $position];
+        }
         $collection->artworks()->sync($sync);
     }
 
     private function collectionPayload(CuratedCollection $collection, bool $includeItems): array
     {
         $payload = ['id' => $collection->id, 'slug' => $collection->slug, 'title' => $collection->title, 'intro' => $collection->intro, 'published_at' => $collection->published_at?->toISOString(), 'artwork_count' => $collection->artworks->count()];
-        if ($includeItems) $payload['artworks'] = $collection->artworks->map(fn (Artwork $artwork) => $this->artworkPayload($artwork))->values();
+        if ($includeItems) {
+            $payload['artworks'] = $collection->artworks->map(fn (Artwork $artwork) => $this->artworkPayload($artwork))->values();
+        }
 
         return $payload;
     }

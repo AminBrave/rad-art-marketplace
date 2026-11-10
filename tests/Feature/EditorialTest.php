@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Models\Artwork;
 use App\Models\ArtistProfile;
+use App\Models\Artwork;
 use App\Models\Category;
 use App\Models\CuratedCollection;
 use App\Models\FeaturedArtistSelection;
@@ -25,12 +25,14 @@ class EditorialTest extends TestCase
     private function artist(string $email = 'artist@example.com', bool $public = true): ArtistProfile
     {
         $user = User::create(['name' => 'Artist', 'email' => $email, 'password' => 'strong-password-123', 'role' => User::ROLE_ARTIST]);
+
         return $user->artistProfile()->create(['slug' => 'artist-'.str_replace(['@', '.'], '-', $email), 'display_name' => 'Artist '.$email, 'bio' => 'Artist biography', 'is_public' => $public]);
     }
 
     private function artwork(ArtistProfile $artist, string $slug, string $status = Artwork::STATUS_APPROVED): Artwork
     {
         $category = Category::firstOrCreate(['slug' => 'painting'], ['name' => 'Painting', 'is_active' => true]);
+
         return $artist->artworks()->create([
             'category_id' => $category->id, 'slug' => $slug, 'title' => $slug,
             'image_path' => 'artworks/'.$slug.'.jpg', 'status' => $status, 'availability' => 'available',
