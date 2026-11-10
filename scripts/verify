@@ -48,6 +48,6 @@ case "${1:-}" in
   frontend) frontend ;;
   browser) browser ;;
   all) backend; frontend; browser ;;
-  -h|--help|"") usage; [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]] ;;
+  -h|--help|"") usage; exit 0 ;;
   *) usage >&2; exit 2 ;;
 esac
