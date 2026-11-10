@@ -186,8 +186,8 @@ class PublicPageController extends Controller
         $content = implode("\n", [
             'User-agent: *',
             'Allow: /',
-            'Disallow: /dashboard/',
-            'Disallow: /admin/',
+            'Disallow: /dashboard',
+            'Disallow: /admin',
             'Sitemap: '.$origin.'/sitemap.xml',
             '',
         ]);
