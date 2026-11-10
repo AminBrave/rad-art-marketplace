@@ -1,4 +1,3 @@
-import base64
 import binascii
 import json
 import os
@@ -113,9 +112,6 @@ class ArtistExperienceBrowserTests(unittest.TestCase):
                 route.fulfill(status=200, content_type="application/json", body=json.dumps({
                     "message": "وضعیت پیام به‌روزرسانی شد.", "data": {**INQUIRY, "status": "read", "read_at": "2026-11-10T11:00:00Z"}
                 }, ensure_ascii=False))
-            page.route("**/api/v1/artist/inquiries/51", lambda route: route.fulfill(
-                status=200, content_type="application/json", body=json.dumps({"data": INQUIRY}, ensure_ascii=False)
-            ))
             page.route("**/api/v1/artist/inquiries/51", lambda route: update(route) if route.request.method == "PATCH" else route.fulfill(
                 status=200, content_type="application/json", body=json.dumps({"data": INQUIRY}, ensure_ascii=False)
             ))
