@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import { EmptyState, ErrorState, SkeletonLines, Badge, Button } from '../components/ui';
 
 const statusLabels = { new: 'جدید', read: 'خوانده‌شده', archived: 'بایگانی‌شده' };
@@ -105,7 +106,13 @@ export default function InquiryCenter({ user, hasProfile }) {
 
             {error && <ErrorState title="عملیات انجام نشد" description={error} />}
             {loading ? <SkeletonLines lines={6} /> : items.length === 0 ? (
-                <EmptyState title={isArtist ? 'هنوز درخواستی دریافت نکرده‌اید' : 'هنوز درخواستی ارسال نکرده‌اید'} description={isArtist ? 'درخواست‌های ارسال‌شده از طریق پروفایل عمومی شما در اینجا نمایش داده می‌شوند.' : 'از صفحه هنرمندان یا جزئیات یک اثر می‌توانید درخواست ارتباطی ارسال کنید.'} />
+                <EmptyState
+                    title={isArtist ? 'هنوز درخواستی دریافت نکرده‌اید' : 'هنوز درخواستی ارسال نکرده‌اید'}
+                    description={isArtist ? 'درخواست‌های ارسال‌شده از طریق پروفایل عمومی شما در اینجا نمایش داده می‌شوند.' : 'از صفحه هنرمندان یا جزئیات یک اثر می‌توانید درخواست ارتباطی ارسال کنید.'}
+                    action={isArtist
+                        ? <Link to="/dashboard/artist/profile" className="text-sm font-bold text-terracotta-strong underline">بررسی و به‌روزرسانی پروفایل هنری</Link>
+                        : <Link to="/artists" className="text-sm font-bold text-terracotta-strong underline">مشاهده هنرمندان</Link>}
+                />
             ) : (
                 <div className="grid gap-4 lg:grid-cols-[minmax(260px,0.85fr)_minmax(0,1.5fr)]">
                     <nav aria-label={isArtist ? 'فهرست درخواست‌های دریافتی' : 'فهرست درخواست‌های ارسالی'} className="min-w-0 border border-border bg-paper">
