@@ -40,13 +40,21 @@ class ConversationController extends Controller
 
         $conversation = DB::transaction(function () use ($inquiry, $artistUserId): Conversation {
             $conversation = Conversation::query()->firstOrCreate(
-                ['inquiry_id' => $inquiry->id],
+                ['pair_key' => $inquiry->sender_user_id.':'.$artistUserId],
                 [
+                    'inquiry_id' => $inquiry->id,
+                    'pair_key' => $inquiry->sender_user_id.':'.$artistUserId,
                     'buyer_user_id' => $inquiry->sender_user_id,
                     'artist_user_id' => $artistUserId,
                     'last_message_at' => $inquiry->created_at ?? now(),
                 ],
             );
+
+            DB::table('conversation_contexts')->updateOrInsert([
+                'conversation_id' => $conversation->id,
+                'inquiry_id' => $inquiry->id,
+                'artwork_id' => $inquiry->artwork_id,
+            ], ['added_by_user_id' => $inquiry->sender_user_id, 'created_at' => now(), 'updated_at' => now()]);
 
             $conversation->messages()->firstOrCreate(
                 [
@@ -71,7 +79,7 @@ class ConversationController extends Controller
                 'inquiry.artistProfile',
                 'inquiry.artwork',
                 'buyer',
-                'artist',
+                'artist.artistProfile',
                 'latestMessage.sender',
             ]), $user),
         ]);
@@ -132,6 +140,7 @@ class ConversationController extends Controller
                     ->first();
 
                 if ($existing) {
+
                     return $existing->load(['sender', 'replyTo.sender']);
                 }
             }
@@ -178,7 +187,7 @@ class ConversationController extends Controller
     {
         $conversations = Conversation::query()
             ->where($participantColumn, $user->id)
-            ->with(['inquiry.artistProfile', 'inquiry.artwork', 'buyer', 'artist', 'latestMessage.sender'])
+            ->with(['inquiry.artistProfile', 'inquiry.artwork', 'buyer', 'artist.artistProfile', 'latestMessage.sender'])
             ->withCount([
                 'messages as unread_count' => fn ($query) => $query
                     ->where('sender_user_id', '!=', $user->id)
@@ -205,9 +214,21 @@ class ConversationController extends Controller
             'inquiry_id' => $conversation->inquiry_id,
             'subject' => $conversation->inquiry?->subject,
             'participant' => ['name' => $other?->name],
+            'contexts' => DB::table('conversation_contexts')
+                ->where('conversation_id', $conversation->id)
+                ->get()
+                ->map(function ($context): array {
+                    $artwork = $context->artwork_id ? DB::table('artworks')->where('id', $context->artwork_id)->first() : null;
+                    $inquiry = $context->inquiry_id ? DB::table('artist_inquiries')->where('id', $context->inquiry_id)->first() : null;
+
+                    return [
+                        'artwork' => $artwork ? ['title' => $artwork->title, 'slug' => $artwork->slug] : null,
+                        'inquiry' => $inquiry ? ['subject' => $inquiry->subject, 'id' => $inquiry->id] : null,
+                    ];
+                })->all(),
             'artist' => [
-                'display_name' => $conversation->inquiry?->artistProfile?->display_name,
-                'slug' => $conversation->inquiry?->artistProfile?->slug,
+                'display_name' => $conversation->inquiry?->artistProfile?->display_name ?? $conversation->artist?->artistProfile?->display_name,
+                'slug' => $conversation->inquiry?->artistProfile?->slug ?? $conversation->artist?->artistProfile?->slug,
             ],
             'artwork' => $conversation->inquiry?->artwork ? [
                 'title' => $conversation->inquiry->artwork->title,

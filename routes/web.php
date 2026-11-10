@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\ArtistProfileController;
 use App\Http\Controllers\Api\V1\ArtworkController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ConversationController;
+use App\Http\Controllers\Api\V1\DirectConversationController;
 use App\Http\Controllers\Api\V1\EditorialController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,7 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
     });
 
     Route::middleware('auth')->group(function (): void {
+        Route::post('/conversations/direct', [DirectConversationController::class, 'start'])->middleware(['role:buyer', 'throttle:10,1'])->name('conversations.direct');
         Route::post('/inquiries/{inquiry}/conversation', [ConversationController::class, 'startFromInquiry'])->name('conversations.start');
         Route::get('/conversations/{conversation}', [ConversationController::class, 'show'])->name('conversations.show');
         Route::get('/conversations/{conversation}/messages', [ConversationController::class, 'messages'])->name('conversations.messages');
