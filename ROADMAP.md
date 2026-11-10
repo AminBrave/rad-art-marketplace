@@ -204,7 +204,8 @@ Known unverified release gates (release sign-off blockers):
 
 **Remaining M05 scope (not implemented or not verified):**
 
-- [ ] Message replies as first-class quoted context, edit/delete UX, reactions, archive/mute, search and delivery-state UX (#80).
+- [ ] Complete and verify M05-T03 message replies, sender-only edit/delete, content-free deletion tombstones, emoji reactions, and delivery/read-state UX (#80). Implementation is in review on `feat/m05-message-actions`; automated CI and product-owner retest are pending.
+- [ ] Conversation archive/mute and search UX/API remain unimplemented (#79/#80).
 - [ ] WebSocket/broadcast delivery, typing and presence; retain polling fallback and do not claim real-time while only polling is active (#81).
 - [ ] Private message attachments with content validation, authorized download, retention and malware-scanning decision (#82).
 - [ ] In-app notifications and optional email with preferences, deduplication, queue/retry and unsubscribe controls (#83).
