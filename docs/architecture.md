@@ -74,18 +74,21 @@ Status transitions:
 
 Only approved artwork from public artist profiles appears in public catalogue queries and portfolios. Artwork view policy applies the same public-profile condition to detail and image routes; owners and Admins retain their authorized private/pending access. Public artwork payloads omit moderation status and rejection notes. Catalogue filters and sorting are server-validated, URL-backed in React, and applied before pagination. Artwork detail responses may include a bounded set of related public works selected by shared category or artist. Ownership is derived from the authenticated artist profile, never request input.
 
-### Artist inquiry and private conversation
+### Buyer–artist conversations and inquiries
 
-An ArtistInquiry belongs to a recipient ArtistProfile and sender User, and may optionally reference approved Artwork belonging to that profile. M05 adds a Conversation uniquely linked to one inquiry, with the original buyer and artist account as its only participants. Each Message belongs to that conversation and has a server-assigned sender, timestamps, optional same-conversation reply reference, delivery/read timestamps, and soft-delete support.
+An ArtistInquiry belongs to a recipient ArtistProfile and sender User, and may optionally reference approved Artwork belonging to that profile. M05 conversations are canonical one-to-one threads keyed by the buyer/artist participant pair; an inquiry or artwork is contextual metadata, not the identity of the conversation. Starting a conversation from another artwork or the artist profile reuses the same thread and may add context. Legacy inquiry-linked threads are consolidated while preserving inquiry context and message history.
+
+Each Conversation has exactly two participants: the buyer account and artist account. Each Message belongs to a conversation and has a server-assigned sender, client idempotency key, timestamps, optional same-conversation reply reference, delivery/read timestamps, and soft-delete support.
 
 - Buyers can create inquiries to public artists and access only their own sent inquiries.
 - Artists can access and update only inquiries addressed to their own profile.
-- Opening an inquiry conversation is idempotent and preserves the original inquiry as the initial message.
+- Direct conversation creation is idempotent for a buyer/artist pair; inquiry and artwork references remain context rather than separate chat identities.
 - Every conversation/message read and write is authorized against the two participant IDs; non-participant lookups return 404.
 - Client message IDs are unique per sender/conversation to make retrying a send idempotent.
 - Message payloads are allow-listed and omit participant email addresses, private file paths, and credentials.
-- delivered_at currently means accepted and persisted by the server, not confirmed delivery to a recipient device. read_at is set by the recipient's read action.
-- The initial M05 API slice uses the existing Laravel session/CSRF stack and database persistence; it does not claim real-time transport, attachment handling, notifications, or end-to-end encryption.
+- Buyer and artist inboxes use paginated database-backed threads, unread counts/read receipts, and five-second polling. This is not WebSocket or push delivery.
+- `delivered_at` currently means accepted and persisted by the server, not confirmed delivery to a recipient device. `read_at` is set by the recipient's read action.
+- The current implementation uses the existing Laravel session/CSRF stack and database persistence. Attachments, first-class edit/delete/reactions, typing/presence, notifications, reporting/blocking and end-to-end encryption are not claimed implemented.
 
 
 ## Security boundaries

@@ -188,19 +188,28 @@ Known unverified release gates (release sign-off blockers):
 **Guardrails:** profile progress is a transparent checklist, not a quality rating; artwork moderation and ownership remain server-authoritative; private profile preview is available only to the owner/Admin; no replies, chat, email delivery, deletion, subscription, or speculative analytics are added. M04 implementation is integrated; the parent milestone remains open until post-merge CI and product-owner acceptance are recorded.
 
 
-## M05 — Secure in-app messaging · In progress
+## M05 — Secure in-app messaging · Core direct messaging integrated; advanced capabilities pending
 
-**GitHub parent:** [#77](https://github.com/AminBrave/rad-art-marketplace/issues/77) · **Child issues:** [#78](https://github.com/AminBrave/rad-art-marketplace/issues/78)–[#84](https://github.com/AminBrave/rad-art-marketplace/issues/84) · **Working branch:** feat/m05-secure-messaging
+**GitHub parent:** [#77](https://github.com/AminBrave/rad-art-marketplace/issues/77) · **Implementation PR:** [#103](https://github.com/AminBrave/rad-art-marketplace/pull/103) · **Demo seed PR:** [#105](https://github.com/AminBrave/rad-art-marketplace/pull/105) · **Task issues:** [#78](https://github.com/AminBrave/rad-art-marketplace/issues/78)–[#84](https://github.com/AminBrave/rad-art-marketplace/issues/84)
 
-- [x] Create a dedicated conversation per inquiry with exactly the original buyer and artist participants.
-- [x] Add participant-scoped conversation listing, detail, paginated message reads, message send, and read-state APIs.
-- [x] Preserve the original inquiry as the initial message and make conversation creation idempotent.
-- [x] Add per-sender client message IDs for retry-safe message creation and same-conversation reply references.
-- [x] Add backend authorization, validation, and IDOR regression tests for the initial API slice.
-- [ ] Build buyer and artist inbox/thread UI.
-- [ ] Complete message editing/deletion, reactions, archive/mute, search and delivery/read UX.
-- [ ] Evaluate and implement a hosting-compatible real-time transport with polling fallback.
-- [ ] Add private attachment handling, in-app notifications, optional email, reporting, blocking and admin moderation.
-- [ ] Complete independent security review, full CI, manual Persian RTL/accessibility checks, and product-owner acceptance.
+**Integrated core (main commit `4f4f03b22333095f4a07881ca7231c262fbe97f7`):**
 
-**Architecture constraint:** current cPanel hosting compatibility for persistent workers, Redis, broadcasting daemons and queued mail is unverified. Do not enable those capabilities or claim real-time delivery/email operation until the target host is verified. No end-to-end encryption claim is made.
+- [x] Canonical one-to-one buyer–artist conversation per participant pair; inquiry and artwork are context, not conversation identity.
+- [x] Consolidate legacy inquiry conversations while preserving inquiry context and message history.
+- [x] Participant-scoped inbox, conversation detail, paginated history, send and read-state APIs.
+- [x] Buyer and artist inbox/thread screens, direct-message entry points on public artist profiles and approved artwork, and artwork context in threads.
+- [x] Retry-safe client message IDs, unread counts/read receipts, and five-second polling with database persistence.
+- [x] Seed 70 buyer–artist conversations and 140 messages across five demo buyers and 14 public artist profiles; seeder is idempotent.
+- [x] Backend, frontend and Chromium browser CI passed on the latest main workflow [run #42816226028](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42816226028).
+
+**Remaining M05 scope (not implemented or not verified):**
+
+- [ ] Message replies as first-class quoted context, edit/delete UX, reactions, archive/mute, search and delivery-state UX (#80).
+- [ ] WebSocket/broadcast delivery, typing and presence; retain polling fallback and do not claim real-time while only polling is active (#81).
+- [ ] Private message attachments with content validation, authorized download, retention and malware-scanning decision (#82).
+- [ ] In-app notifications and optional email with preferences, deduplication, queue/retry and unsubscribe controls (#83).
+- [ ] Blocking, reporting, rate limits and an admin moderation workflow (#84).
+- [ ] Independent security review, Persian RTL/accessibility checks and product-owner acceptance.
+
+**Hosting constraint:** cPanel compatibility for persistent workers, Redis, broadcasting daemons and queued mail is unverified. Do not enable these services or claim WebSocket/email delivery until the target host is tested. No end-to-end encryption or malware-scanning claim is made.
+
