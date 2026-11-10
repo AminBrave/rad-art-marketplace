@@ -28,6 +28,10 @@ class ConversationInboxSettingsTest extends TestCase
             ->assertOk()
             ->assertJsonCount(0, 'data');
 
+        $this->getJson('/api/v1/buyer/conversations?search=پیام%20اولیه')
+            ->assertOk()
+            ->assertJsonPath('data.0.id', $conversation->id);
+
         $this->patchJson("/api/v1/conversations/{$conversation->id}/settings", [
             'archived' => true,
             'muted' => true,
