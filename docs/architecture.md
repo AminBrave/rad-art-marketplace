@@ -113,7 +113,7 @@ M05 (#77) explicitly authorizes private one-to-one conversations and message wor
 
 - M02 discovery experience implementation is integrated in `main` via [PR #92](https://github.com/AminBrave/rad-art-marketplace/pull/92). Human visual review and the image-derivative decision remain open in [issue #62](https://github.com/AminBrave/rad-art-marketplace/issues/62). The prior MVP2 workspace stages remain integrated; M00 release gates remain tracked separately.
 - Email verification and password-reset UX are not implemented.
-- Admin category management, buyer reports/abuse queue, and featured placements are outside the current approved MVP 2 scope.
+- General-purpose admin category management, site-wide reports/abuse queue, and featured placements remain outside scope. M05 explicitly approves a message-specific reporting/blocking and moderation workflow.
 - Analytics is a proposal only; no provider or event collection is enabled.
 - cPanel/PHP compatibility, production deployment, backup automation, restore drills, and browser/device release QA remain unverified.
 
