@@ -141,3 +141,5 @@ No malware scanner is bundled or claimed. A production operator must supply an a
 ## Inbox search, archive and mute
 
 Buyer and Artist inbox endpoints accept a participant-scoped search string and a filter of all, unread or archived. Search is limited to conversations belonging to the authenticated participant and matches participant names or message text. Archived and muted timestamps are independent for each participant; archiving does not hide the conversation from the other participant. The UI shows related artwork context links only within the participant's thread. No group chat or public search is introduced.
+
+Per-participant mute state also suppresses new in-app message notifications for that recipient only; the sender and the other participant are unaffected. Muting is separate from the global in-app notification preference.
