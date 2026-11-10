@@ -22,6 +22,7 @@ flowchart TD
  G --> C[CI/CD]
  Q --> C
  C --> O[Operations]
+ C --> R[Workflow-run cleanup]
  ADR[ADRs] -. constrains .-> S
  ADR -. constrains .-> API
  V[Local verification script] --> T
@@ -41,7 +42,7 @@ flowchart TD
 - [Quality](engineering/quality-gates.md): merge blockers and DoD.
 - [Lifecycle](delivery/feature-lifecycle.md): stages from issue to release.
 - [GitHub](engineering/git-and-github.md): branching, commits, collaboration.
-- [CI/CD](operations/ci-cd-and-release.md): workflow/release.
+- [CI/CD](operations/ci-cd-and-release.md): application CI, scheduled maintenance workflows and release.
 - [Operations](operations/deployment-and-recovery.md): deployment and recovery.
 - [ADRs](decisions/index.md): durable decisions; use [ADR template](decisions/adr-template.md).
 - [Local verification](../scripts/verify): selective local checks; see [testing strategy](engineering/testing-strategy.md).

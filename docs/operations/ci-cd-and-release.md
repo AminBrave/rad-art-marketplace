@@ -10,6 +10,11 @@ This is a deliberate resource-efficiency decision: do not start GitHub Actions f
 - Node unit tests + ESLint + Vite production build.
 - Playwright browser/full-stack E2E tests against migrated SQLite.
 
+## Workflow-run cleanup
+`.github/workflows/cleanup-workflow-runs.yml` is a separate maintenance workflow, not application CI. It runs hourly and can also be started manually. It uses `igorjs/gh-actions-clean-workflow@v8` to delete completed workflow runs older than one day, retaining zero eligible old runs. The action accepts whole days only, so this implements an approximately 24-hour cleanup threshold—not an exact 12-hour threshold. Running hourly means eligible runs are normally removed on the next scheduled sweep. Queued and in-progress runs are not deleted.
+
+The cleanup workflow has only `actions: write` and `contents: read` permissions. It does not change the main-only application CI policy and does not run on feature branches or pull requests. The Marketplace action version is pinned to major version `v8`; review upstream changes before upgrading it.
+
 ## Workflow rules
 Use reviewed action versions, minimum permissions, concurrency cancellation, lockfile-keyed caches and deterministic runtime versions. Keep CI independent from production. Upload failure artifacts only when safe; never include secrets or user data. Validate workflow syntax and observe the actual main-branch run after workflow changes are merged.
 

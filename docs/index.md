@@ -11,12 +11,12 @@ This is a linked knowledge system. Start with [AGENTS.md](../AGENTS.md), then fo
 | Tests and gates | [Testing strategy](engineering/testing-strategy.md), [quality gates](engineering/quality-gates.md), [local verification script](../scripts/verify) |
 | Planning | Use GitHub Issues, Milestones and Projects; see [Git and GitHub](engineering/git-and-github.md). |
 | Security | [Security model](security/security-model.md) |
-| Operations | [CI/CD](operations/ci-cd-and-release.md), [deployment/recovery](operations/deployment-and-recovery.md) |
+| Operations | [CI/CD and workflow cleanup](operations/ci-cd-and-release.md), [deployment/recovery](operations/deployment-and-recovery.md) |
 | Decisions | [ADR index](decisions/index.md), [ADR template](decisions/adr-template.md) |
 
 New agent: AGENTS → graph → relevant product/architecture nodes → agent model → Git/GitHub → relevant tests. Avoid reading every document for a small task.
 
-**Execution policy:** feature branches are verified locally by the user; GitHub Actions runs only on pushes to `main` after merge. Docs-only pushes do not run CI. See [testing strategy](engineering/testing-strategy.md) and [CI/CD](operations/ci-cd-and-release.md).
+**Execution policy:** feature branches are verified locally by the user; application CI runs only on pushes to `main` after merge. Docs-only pushes do not run CI. A separate hourly maintenance workflow deletes completed Actions runs older than 24 hours. See [testing strategy](engineering/testing-strategy.md) and [CI/CD](operations/ci-cd-and-release.md).
 
 **Documentation is part of the change:** whenever a user-requested or user-approved code change affects documented behavior, contracts, architecture, tests, security, operations or workflows, update the related documents and graph links in the same change.
 
