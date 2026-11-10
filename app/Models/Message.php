@@ -46,7 +46,7 @@ class Message extends Model
 
     public function replyTo(): BelongsTo
     {
-        return $this->belongsTo(self::class, 'reply_to_id');
+        return $this->belongsTo(self::class, 'reply_to_id')->withTrashed();
     }
 
     public function reactions(): HasMany
