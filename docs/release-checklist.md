@@ -146,3 +146,22 @@ Email verification and password-reset UX are not implemented. Analytics is a pro
 - [ ] Decide and document a host-level malware-scanning control or explicitly accept the residual risk before enabling uploads in production.
 - [ ] Verify block/report/admin review permissions, rate limits, audit trail and retention owner.
 - [ ] Keep email and broadcasting disabled until persistent worker and target-host support are evidenced.
+
+
+## Latest integrated batch — 2026-11-10
+
+- [x] PR #114 merged to main as `b24e91dd44dcac8d5ef9b5f78140bf256dacd5ba`.
+- [x] Final PR CI [run #42845563969](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42845563969): backend 92 tests / 890 assertions, PHP style, frontend lint/build, and 26 Chromium browser tests all passed.
+- [x] Post-merge main CI [run #42845923790](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42845923790) passed backend, frontend and browser jobs.
+- [x] Messaging private attachments, blocking/reporting, Admin moderation, inbox search/unread/archive filters and per-participant archive/mute are integrated.
+- [ ] Host-level malware scanning or explicit risk acceptance before production attachment uploads.
+- [ ] Retention period and policy owner approved for reports, moderation audits and private attachments.
+- [ ] Independent security review of the messaging implementation.
+- [ ] Verify migrations, private-storage permissions and deletion/retention behavior on the production-like target.
+- [ ] Verify target-host persistent worker/mail support before enabling email notifications.
+- [ ] Verify target-host broadcasting support before enabling WebSocket delivery, typing or presence.
+- [ ] Complete human visual, keyboard, screen-reader, contrast, cross-browser and physical-device QA.
+- [ ] Complete production Lighthouse/Core Web Vitals, network and database-query evidence.
+- [ ] Complete production configuration, backup/restore and rollback drills.
+
+See [MVP 2 completion audit](mvp2-completion-audit-2026-11-10.md) for detailed evidence and issue-by-issue boundaries. A green CI run is not production sign-off.
