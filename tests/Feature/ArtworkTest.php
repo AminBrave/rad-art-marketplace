@@ -291,6 +291,50 @@ class ArtworkTest extends TestCase
             ->assertJsonValidationErrors(['availability']);
     }
 
+    public function test_catalogue_sort_modes_are_deterministic_and_keep_unknown_values_last(): void
+    {
+        [, $profile] = $this->artistWithProfile('sort-modes@example.com');
+        $oldest = $profile->artworks()->create([
+            ...$this->validArtwork(),
+            'slug' => 'sort-oldest',
+            'title' => 'A Study',
+            'year' => 2020,
+            'price' => 100,
+            'image_path' => 'artworks/sort-oldest.jpg',
+            'status' => Artwork::STATUS_APPROVED,
+        ]);
+        $oldest->forceFill(['created_at' => now()->subDays(3)])->save();
+        $newest = $profile->artworks()->create([
+            ...$this->validArtwork(),
+            'slug' => 'sort-newest',
+            'title' => 'Z Study',
+            'year' => 2025,
+            'price' => 500,
+            'image_path' => 'artworks/sort-newest.jpg',
+            'status' => Artwork::STATUS_APPROVED,
+        ]);
+        $newest->forceFill(['created_at' => now()->subDay()])->save();
+        $unknown = $profile->artworks()->create([
+            ...$this->validArtwork(),
+            'slug' => 'sort-unknown',
+            'title' => 'M Study',
+            'year' => null,
+            'price' => null,
+            'image_path' => 'artworks/sort-unknown.jpg',
+            'status' => Artwork::STATUS_APPROVED,
+        ]);
+        $unknown->forceFill(['created_at' => now()])->save();
+
+        $this->getJson('/api/v1/artworks?sort=newest')->assertOk()->assertJsonPath('data.0.slug', $unknown->slug);
+        $this->getJson('/api/v1/artworks?sort=oldest')->assertOk()->assertJsonPath('data.0.slug', $oldest->slug);
+        $this->getJson('/api/v1/artworks?sort=title_asc')->assertOk()->assertJsonPath('data.0.slug', $oldest->slug);
+        $this->getJson('/api/v1/artworks?sort=title_desc')->assertOk()->assertJsonPath('data.0.slug', $newest->slug);
+        $this->getJson('/api/v1/artworks?sort=year_asc')->assertOk()->assertJsonPath('data.0.slug', $oldest->slug)->assertJsonPath('data.2.slug', $unknown->slug);
+        $this->getJson('/api/v1/artworks?sort=year_desc')->assertOk()->assertJsonPath('data.0.slug', $newest->slug)->assertJsonPath('data.2.slug', $unknown->slug);
+        $this->getJson('/api/v1/artworks?sort=price_asc')->assertOk()->assertJsonPath('data.0.slug', $oldest->slug)->assertJsonPath('data.2.slug', $unknown->slug);
+        $this->getJson('/api/v1/artworks?sort=price_desc')->assertOk()->assertJsonPath('data.0.slug', $newest->slug)->assertJsonPath('data.2.slug', $unknown->slug);
+    }
+
     public function test_public_artwork_filters_only_include_mediums_from_public_approved_work(): void
     {
         [, $publicProfile] = $this->artistWithProfile('public-filter@example.com');
