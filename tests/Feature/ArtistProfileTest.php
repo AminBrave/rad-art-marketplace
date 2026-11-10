@@ -104,6 +104,30 @@ class ArtistProfileTest extends TestCase
         $this->getJson('/api/v1/artists/'.$privateProfile->slug)->assertNotFound();
     }
 
+    public function test_artist_can_preview_their_own_private_profile_without_making_it_public(): void
+    {
+        $artist = $this->makeUser('private-preview');
+        $profile = $artist->artistProfile()->create([
+            ...$this->validProfile(),
+            'slug' => 'private-preview',
+            'is_public' => false,
+        ]);
+
+        $this->actingAs($artist)
+            ->getJson('/api/v1/artists/'.$profile->slug)
+            ->assertOk()
+            ->assertJsonPath('data.slug', 'private-preview')
+            ->assertJsonPath('data.is_public', false);
+
+        $this->getJson('/api/v1/artists/'.$profile->slug)
+            ->assertNotFound();
+
+        $this->assertDatabaseHas('artist_profiles', [
+            'id' => $profile->id,
+            'is_public' => false,
+        ]);
+    }
+
     public function test_admin_can_view_and_update_any_artist_profile(): void
     {
         $artist = $this->makeUser('artist');
