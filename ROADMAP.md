@@ -220,7 +220,8 @@ Known unverified release gates (release sign-off blockers):
 
 **GitHub parent:** [#65](https://github.com/AminBrave/rad-art-marketplace/issues/65) · **Child tracks:** [#74](https://github.com/AminBrave/rad-art-marketplace/issues/74), [#75](https://github.com/AminBrave/rad-art-marketplace/issues/75)
 
-- [ ] Complete M06-T09 SEO/shareability: server-rendered unique metadata, canonical URLs, social previews, factual structured data, and a public-only XML sitemap. Implementation is in review on `feat/m06-seo-shareability`; CI and external crawler verification are pending.
+- [x] Implement M06-T09 SEO/shareability: server-rendered unique metadata, canonical URLs, social previews, factual structured data, and a public-only XML sitemap through [PR #109](https://github.com/AminBrave/rad-art-marketplace/pull/109), merged as `1956800995f3a8ab52bbc2fab7adcf4b72a0d9dc`.
+- [ ] Verify external social previews/crawler behavior on the deployed hostname and record product-owner review (#74).
 - [ ] Complete production observability, privacy controls, monitoring, backup/restore evidence and release documentation (#75).
 - [ ] Verify actual production-host configuration, HTTPS, private storage, migration/rollback and backup restoration; these cannot be inferred from repository CI.
 - [ ] Record external social-preview and search-crawler behavior after deployment.

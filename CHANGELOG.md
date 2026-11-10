@@ -1,4 +1,4 @@
-## 2026-11-10 — M06-T09 SEO and shareability (implementation in review)
+## 2026-11-10 — M06-T09 SEO and shareability (merged; external verification pending)
 
 ### Added
 - Added server-rendered page titles/descriptions, canonical URLs, robots directives, Open Graph/Twitter metadata and factual JSON-LD for artwork, artist and published-collection detail pages.
@@ -7,7 +7,9 @@
 - Added backend feature tests and manual smoke-test steps for public/private visibility and configured-origin behavior.
 
 ### Verification boundary
-- Implementation branch: `feat/m06-seo-shareability`; CI and external crawler/share-preview verification are pending.
+- Merged through [PR #109](https://github.com/AminBrave/rad-art-marketplace/pull/109) as `1956800995f3a8ab52bbc2fab7adcf4b72a0d9dc`.
+- GitHub Actions [run #42828385872](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42828385872) passed: 80 backend tests / 787 assertions, PHP style, frontend tests/lint/build, and 22 Chromium browser tests.
+- External social-preview/crawler verification on the deployed hostname and product-owner review remain pending.
 - A passing local HTML test does not prove that external search/social crawlers have fetched, cached or indexed the deployed pages.
 
 # Changelog
