@@ -20,9 +20,9 @@ export function ArtworkCard({ artwork, className = '' }) {
     const price = formatArtworkPrice(artwork.price);
 
     return (
-        <article className={`group min-w-0 overflow-hidden border border-border bg-paper transition-shadow hover:shadow-soft ${className}`}>
+        <article className={`group ra-surface min-w-0 overflow-hidden transition-shadow hover:shadow-soft ${className}`}>
             <Link to={`/artworks/${artwork.slug}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus">
-                <div className="flex aspect-[4/3] items-center justify-center overflow-hidden bg-surface-muted p-3">
+                <div className="ra-artwork-frame p-3">
                     {artwork.image_url ? (
                         <ArtworkImage src={artwork.image_url} title={title} />
                     ) : (
@@ -44,7 +44,7 @@ export function ArtistCard({ artist, className = '' }) {
     if (!artist) return null;
     const name = artist.display_name ?? artist.name ?? 'هنرمند';
     return (
-        <article className={`grid gap-3 border border-border bg-paper p-5 ${className}`} dir="rtl">
+        <article className={`ra-surface grid gap-3 p-5 ${className}`} dir="rtl">
             <div className="flex items-start gap-3">
                 <div aria-hidden="true" className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-surface-muted text-lg font-bold text-terracotta-strong">
                     {name.trim().slice(0, 1) || 'ه'}

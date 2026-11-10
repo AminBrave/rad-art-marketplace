@@ -29,7 +29,7 @@ export function Button({
             type={type}
             disabled={disabled || loading}
             aria-busy={loading || undefined}
-            className={`inline-flex items-center justify-center gap-2 rounded-md font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta-strong disabled:cursor-not-allowed disabled:opacity-50 ${buttonVariants[variant] ?? buttonVariants.primary} ${buttonSizes[size] ?? buttonSizes.md} ${className}`}
+            className={`ra-button ${buttonVariants[variant] ?? buttonVariants.primary} ${buttonSizes[size] ?? buttonSizes.md} ${className}`}
             {...props}
         >
             {loading && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-current border-e-transparent" />}
@@ -45,7 +45,7 @@ export function IconButton({ children, label, size = 'md', className = '', ...pr
             type="button"
             aria-label={label}
             title={label}
-            className={`inline-flex shrink-0 items-center justify-center rounded-md border border-border bg-paper text-ink transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta-strong disabled:cursor-not-allowed disabled:opacity-50 ${dimensions[size] ?? dimensions.md} ${className}`}
+            className={`ra-button ra-button--outline shrink-0 ${dimensions[size] ?? dimensions.md} !p-0 ${className}`}
             {...props}
         >
             {children}
@@ -56,9 +56,9 @@ export function IconButton({ children, label, size = 'md', className = '', ...pr
 const badgeVariants = {
     neutral: 'bg-surface-muted text-muted',
     success: 'bg-olive/10 text-olive',
-    warning: 'bg-amber-100 text-amber-900',
-    danger: 'bg-red-100 text-red-800',
-    info: 'bg-sky-100 text-sky-900',
+    warning: 'bg-warning/10 text-warning',
+    danger: 'bg-danger/10 text-danger',
+    info: 'bg-info/10 text-info',
     accent: 'bg-terracotta/10 text-terracotta-strong',
 };
 
@@ -70,7 +70,7 @@ export function Badge({ children, variant = 'neutral', className = '' }) {
     );
 }
 
-const controlClass = 'w-full rounded-md border border-border-strong bg-paper px-3.5 py-3 text-sm text-ink placeholder:text-subtle outline-none transition-colors focus:border-terracotta focus:ring-2 focus:ring-terracotta/15 disabled:cursor-not-allowed disabled:bg-surface-muted disabled:opacity-60 aria-[invalid=true]:border-danger';
+const controlClass = 'ra-control';
 
 export function FormField({ id, label, hint, error, required = false, children, className = '' }) {
     const generatedId = useId();

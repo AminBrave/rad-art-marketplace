@@ -23,7 +23,7 @@ export function SkeletonLines({ lines = 3, className = '' }) {
 
 export function EmptyState({ title, description, action, className = '' }) {
     return (
-        <section className={`grid justify-items-center gap-3 border border-dashed border-border-strong bg-paper px-5 py-10 text-center ${className}`} dir="rtl">
+        <section className={`ra-state ra-state--empty grid justify-items-center gap-3 px-5 py-10 text-center ${className}`} dir="rtl">
             <span aria-hidden="true" className="h-2 w-10 rounded-full bg-sand" />
             <h2 className="text-base font-bold text-ink">{title}</h2>
             {description && <p className="max-w-lg text-sm leading-7 text-muted">{description}</p>}
@@ -34,7 +34,7 @@ export function EmptyState({ title, description, action, className = '' }) {
 
 export function ErrorState({ title = 'مشکلی پیش آمد', description, onRetry, retryLabel = 'تلاش دوباره', className = '' }) {
     return (
-        <section role="alert" className={`grid justify-items-start gap-3 border border-danger/25 bg-paper p-5 ${className}`} dir="rtl">
+        <section role="alert" className={`ra-state ra-state--error grid justify-items-start gap-3 p-5 ${className}`} dir="rtl">
             <h2 className="font-bold text-danger">{title}</h2>
             {description && <p className="text-sm leading-7 text-muted">{description}</p>}
             {onRetry && <Button variant="outline" size="sm" onClick={onRetry}>{retryLabel}</Button>}
@@ -44,7 +44,7 @@ export function ErrorState({ title = 'مشکلی پیش آمد', description, on
 
 export function SuccessState({ title, description, className = '' }) {
     return (
-        <div role="status" className={`border-s-2 border-olive bg-paper px-4 py-3 ${className}`} dir="rtl">
+        <div role="status" className={`ra-state ra-state--success px-4 py-3 ${className}`} dir="rtl">
             <p className="font-semibold text-olive">{title}</p>
             {description && <p className="mt-1 text-sm leading-6 text-muted">{description}</p>}
         </div>
@@ -53,7 +53,7 @@ export function SuccessState({ title, description, className = '' }) {
 
 export function PermissionState({ title = 'دسترسی مجاز نیست', description, className = '' }) {
     return (
-        <section role="status" className={`border border-border bg-surface-muted p-5 ${className}`} dir="rtl">
+        <section role="status" className={`ra-state bg-surface-muted p-5 ${className}`} dir="rtl">
             <h2 className="font-bold text-ink">{title}</h2>
             {description && <p className="mt-2 text-sm leading-7 text-muted">{description}</p>}
         </section>
