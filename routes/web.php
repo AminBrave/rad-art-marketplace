@@ -36,6 +36,9 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
         Route::get('/conversations/{conversation}', [ConversationController::class, 'show'])->name('conversations.show');
         Route::get('/conversations/{conversation}/messages', [ConversationController::class, 'messages'])->name('conversations.messages');
         Route::post('/conversations/{conversation}/messages', [ConversationController::class, 'storeMessage'])->middleware('throttle:30,1')->name('conversations.messages.store');
+        Route::patch('/conversations/{conversation}/messages/{message}', [ConversationController::class, 'updateMessage'])->middleware('throttle:30,1')->name('conversations.messages.update');
+        Route::delete('/conversations/{conversation}/messages/{message}', [ConversationController::class, 'deleteMessage'])->name('conversations.messages.delete');
+        Route::post('/conversations/{conversation}/messages/{message}/reactions', [ConversationController::class, 'setReaction'])->middleware('throttle:60,1')->name('conversations.messages.reactions');
         Route::patch('/conversations/{conversation}/read', [ConversationController::class, 'markRead'])->name('conversations.read');
     });
 
