@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import unittest
 from playwright.sync_api import sync_playwright
 
@@ -21,6 +22,8 @@ THREAD = {
     "last_message_at": "2026-11-10T10:30:00.000000Z",
     "unread_count": 1,
 }
+INBOX_CONVERSATIONS_ROUTE = re.compile(r".*/api/v1/buyer/conversations(?:\?.*)?$")
+
 MESSAGE = {
     "id": 501,
     "sender_id": 84,
@@ -93,7 +96,7 @@ class MessageNotificationBrowserTests(unittest.TestCase):
         page.route("**/api/v1/notifications/notification-uuid-1/read", lambda route: route.fulfill(
             status=200, content_type="application/json", body='{"message":"read"}'
         ))
-        page.route("**/api/v1/buyer/conversations**", lambda route: route.fulfill(
+        page.route(INBOX_CONVERSATIONS_ROUTE, lambda route: route.fulfill(
             status=200,
             content_type="application/json",
             body=json.dumps({"data": [THREAD], "current_page": 1, "last_page": 1, "total": 1}, ensure_ascii=False),
@@ -107,6 +110,10 @@ class MessageNotificationBrowserTests(unittest.TestCase):
             status=200, content_type="application/json", body='{"data":{"updated_messages":1}}'
         ))
         return context, page
+
+    def test_inbox_fixture_does_not_match_nested_conversation_routes(self):
+        self.assertIsNotNone(INBOX_CONVERSATIONS_ROUTE.match("http://localhost/api/v1/buyer/conversations?search=test"))
+        self.assertIsNone(INBOX_CONVERSATIONS_ROUTE.match("http://localhost/api/v1/buyer/conversations/101/messages"))
 
     def test_notification_opens_its_conversation_and_marks_it_read(self):
         context, page = self.new_page()
