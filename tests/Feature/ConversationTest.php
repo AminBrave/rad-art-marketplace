@@ -201,7 +201,8 @@ class ConversationTest extends TestCase
             ->assertJsonPath('data.reply_to.id', $original->id)
             ->assertJsonPath('data.reply_to.body', $inquiry->message);
     }
-\n    private function participantsWithInquiry(
+
+    private function participantsWithInquiry(
         string $buyerEmail = 'buyer@example.test',
         string $artistEmail = 'artist@example.test'
     ): array {
