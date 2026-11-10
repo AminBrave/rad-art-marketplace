@@ -213,3 +213,19 @@ These automated checks do not replace manual visual design review, Firefox/WebKi
 7. Confirm pending artworks and works owned by private artist profiles cannot be attached to public collections.
 8. Verify non-admin accounts receive 403 from every `/api/v1/admin/editorial/*` endpoint.
 9. Verify editorial audit rows record the admin actor and collection/featured-artist actions.
+
+
+## M05-T01 — Private conversation API foundation
+
+1. Sign in as a seeded Buyer who has sent an inquiry and open POST /api/v1/inquiries/{id}/conversation. Confirm a conversation is returned and the original inquiry text is the first message.
+2. Repeat the same request. Confirm the same conversation and initial message are returned; no duplicate conversation/message is created.
+3. Sign in as the recipient Artist and open GET /api/v1/artist/conversations. Confirm only conversations addressed to that artist are listed.
+4. Sign in as the Buyer and open GET /api/v1/buyer/conversations. Confirm only that buyer's conversations are listed.
+5. Send a message from each participant. Retry one POST with the same client_message_id and confirm the API returns the existing message instead of creating a duplicate.
+6. Read the message history as the other participant and mark the conversation read. Confirm unread_count is reduced and read_at is set on received messages only.
+7. Try to open, list, send to, or mark read a conversation as an unrelated Buyer, another Artist, Guest, and Admin. Confirm non-participant resource access returns 404 and no message content is exposed.
+8. Try to reply to a message from another conversation. Confirm validation returns 422.
+9. Refresh the API reads and confirm messages, timestamps, sender identity, and inquiry/artwork context remain server-derived.
+10. Confirm API responses omit participant email addresses and private storage paths.
+
+The remaining M05 UI, real-time, attachment, notification and safety workflows have separate smoke-test steps when implemented. Do not infer their completion from this API slice.
