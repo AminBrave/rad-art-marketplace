@@ -1,3 +1,7 @@
+<?php
+
+declare(strict_types=1);
+
 use App\Http\Controllers\Api\V1\AdminArtworkModerationController;
 use App\Http\Controllers\Api\V1\AdminUserController;
 use App\Http\Controllers\Api\V1\ArtistInquiryController;
