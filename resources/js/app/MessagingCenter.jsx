@@ -77,9 +77,9 @@ export default function MessagingCenter({ role }) {
 
     useEffect(() => {
         if (!selectedFile || !selectedFile.type.startsWith('image/')) { setFilePreview(''); return undefined; }
-        const url = URL.createObjectURL(selectedFile);
+        const url = window.URL.createObjectURL(selectedFile);
         setFilePreview(url);
-        return () => URL.revokeObjectURL(url);
+        return () => window.URL.revokeObjectURL(url);
     }, [selectedFile]);
 
     const requestedConversation = params.get('conversation');
