@@ -35,3 +35,15 @@ For APIs test success, validation, guest, wrong role/owner/participant, private 
 For browser flows test entry, success, validation/error, refresh/deep link, role boundary, keyboard and mobile. Maintain both isolated UI tests and unmocked full-stack paths for critical journeys.
 
 Use RefreshDatabase in backend tests. Browser tests use unique accounts and isolated DB. Never target production or rely on test order. Do not claim local checks passed unless the user reports results or the agent actually ran the requested focused check. Main-branch CI is authoritative automated evidence after merge.
+
+
+## Seeder verification
+
+For changes to the production showcase seeder, run the focused guard/idempotency tests first:
+
+```bash
+php artisan test --filter=ShowcaseDatabaseSeederTest
+php artisan test --filter=DemoDatabaseSeederTest
+```
+
+These tests use the test database only. Never point seeder tests or manual showcase runs at production except for the explicitly documented, backed-up production operation.
