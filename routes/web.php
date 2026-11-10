@@ -55,6 +55,7 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
         Route::delete('/conversations/{conversation}/messages/{message}', [ConversationController::class, 'deleteMessage'])->name('conversations.messages.delete');
         Route::post('/conversations/{conversation}/messages/{message}/reactions', [ConversationController::class, 'setReaction'])->middleware('throttle:60,1')->name('conversations.messages.reactions');
         Route::patch('/conversations/{conversation}/read', [ConversationController::class, 'markRead'])->name('conversations.read');
+        Route::patch('/conversations/{conversation}/settings', [ConversationController::class, 'updateSettings'])->name('conversations.settings');
         Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
         Route::patch('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
         Route::get('/notifications/preferences', [NotificationController::class, 'preferences'])->name('notifications.preferences');
