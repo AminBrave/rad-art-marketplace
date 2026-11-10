@@ -11,6 +11,7 @@ use App\Models\CuratedCollection;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class PublicSeoTest extends TestCase
@@ -22,6 +23,7 @@ class PublicSeoTest extends TestCase
         parent::setUp();
 
         $this->withoutVite();
+        Storage::fake('local');
         config(['app.url' => 'https://rad.example']);
     }
 
@@ -164,7 +166,7 @@ class PublicSeoTest extends TestCase
     {
         $categoryId = Category::query()->where('slug', 'painting')->value('id');
 
-        return $profile->artworks()->create([
+        $artwork = $profile->artworks()->create([
             'category_id' => $categoryId,
             'slug' => $slug,
             'title' => $title,
@@ -175,5 +177,8 @@ class PublicSeoTest extends TestCase
             'image_path' => 'artworks/'.$slug.'.jpg',
             'availability' => 'available',
         ]);
+        Storage::disk('local')->put($artwork->image_path, 'test image');
+
+        return $artwork;
     }
 }
