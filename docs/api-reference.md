@@ -176,7 +176,7 @@ Only the original sender may edit or delete a message. Editing updates **edited_
 
 **delivered_at** records server acceptance/persistence, not device-level delivery; **read_at** is set when the other participant marks the conversation read. These states must not be presented as guaranteed device delivery. The API payload does not expose participant email addresses or storage paths.
 
-M05-T01 conversation persistence and participant-scoped reads/sends are integrated. M05-T03 message replies, editing, deletion and reactions are being implemented in this branch. Real-time transport, typing/presence, attachments, notifications, archive/mute controls, conversation search, reporting/blocking and moderation remain separate M05 work and are not implied by these endpoints.
+M05-T01 and M05-T03 canonical conversations, replies, sender-only edit/delete, reactions and message states are integrated. M05-T05 private attachments and M05-T07 participant blocking, reports and Admin moderation are implemented in the current completion batch; final CI/security review is pending. M05-T06 in-app notifications are integrated. Inbox search, unread/archive filters and participant-specific archive/mute settings are implemented. Real-time push, typing/presence and optional email remain disabled pending target-host verification.
 
 ## In-app message notifications (M05-T06)
 
