@@ -1,3 +1,12 @@
+## 2026-11-10 — M05 inbox search, archive and mute (implementation batch; verification pending)
+
+### Added
+- Added participant-scoped conversation search by participant name and message text, unread and archived filters, and independent archive/mute controls for Buyer and Artist.
+- Added public artwork context links to the shared conversation thread and inbox.
+
+### Verification boundary
+- Backend feature tests and full CI are pending the final implementation batch.
+
 ## 2026-11-10 — M05 private attachments and messaging safety (implementation batch; verification pending)
 
 ### Added
