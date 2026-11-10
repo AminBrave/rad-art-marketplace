@@ -1,6 +1,6 @@
 # Demo data and test accounts
 
-The demo dataset is designed to exercise the complete current Rademan MVP (M00–M04): public discovery, buyer/artist workspaces, admin moderation and user management, curated editorial content, privacy boundaries, pagination, empty states, and image fallbacks.
+The demo dataset is designed to exercise the complete current Rademan MVP (M00–M05): public discovery, buyer/artist workspaces, admin moderation and user management, curated editorial content, privacy boundaries, pagination, empty states, and image fallbacks.
 
 It is for local development and automated testing only. It is disabled outside Laravel's `local` and `testing` environments.
 
@@ -45,7 +45,8 @@ Additional accounts: `artist-02@rademan.test` through `artist-14@rademan.test`, 
 - Moderation notes, reviewer IDs, and timestamps.
 - 16 approved works on the main artist profile to test the 12-item portfolio pagination boundary.
 - One approved artwork intentionally points to a missing private image file to test image endpoint 404 and UI fallback behavior.
-- 48 inquiries across new, read, and archived states, with and without an associated artwork; a separate buyer and two profiled artists have empty inboxes.
+- 48 inquiries across new, read, and archived states, with and without an associated artwork.
+- 70 seeded direct conversations: every one of the 5 demo buyers (including the empty-inquiry buyer) has a conversation with each of the 14 publicly contactable artist profiles, with a two-message exchange in every thread. Private profiles and artist accounts without a profile are excluded to match the public messaging rules.
 - Five curated collections: published with ordered artworks, draft, scheduled for the future, mixed approved/pending/private works, and published empty collection.
 - Six featured-artist selections: active without dates, active bounded window, future, expired, unpublished, and private-profile selection.
 - Editorial audit rows for seeded collection and featured-artist records.
