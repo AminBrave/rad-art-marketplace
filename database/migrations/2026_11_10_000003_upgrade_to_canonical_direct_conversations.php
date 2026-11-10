@@ -63,10 +63,21 @@ return new class extends Migration
             }
         }
 
+        // Split these operations: MySQL must release the foreign-key dependency before
+        // dropping the unique index that currently supports it.
+        Schema::table('conversations', function (Blueprint $table): void {
+            $table->dropForeign(['inquiry_id']);
+        });
+
         Schema::table('conversations', function (Blueprint $table): void {
             $table->dropUnique(['inquiry_id']);
             $table->unsignedBigInteger('inquiry_id')->nullable()->change();
+            $table->index('inquiry_id');
             $table->string('pair_key', 64)->nullable()->unique();
+        });
+
+        Schema::table('conversations', function (Blueprint $table): void {
+            $table->foreign('inquiry_id')->references('id')->on('artist_inquiries')->cascadeOnDelete();
         });
 
         DB::table('conversations')->orderBy('id')->each(function ($conversation): void {
