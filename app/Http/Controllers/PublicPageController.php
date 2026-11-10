@@ -184,7 +184,6 @@ class PublicPageController extends Controller
             'Allow: /',
             'Disallow: /dashboard/',
             'Disallow: /admin/',
-            'Disallow: /api/',
             'Sitemap: '.$origin.'/sitemap.xml',
             '',
         ]);
