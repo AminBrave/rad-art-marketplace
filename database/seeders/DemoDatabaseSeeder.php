@@ -22,17 +22,60 @@ class DemoDatabaseSeeder extends Seeder
 {
     private const PASSWORD = 'Demo@12345';
 
+    public function runForShowcase(): void
+    {
+        if (! app()->environment('production')) {
+            throw new \\RuntimeException('The showcase seeder is intended for production only.');
+        }
+
+        if (filter_var(env('RADEMAN_SHOWCASE_SEEDING_ENABLED', false), FILTER_VALIDATE_BOOL) !== true) {
+            throw new \\RuntimeException('Set RADEMAN_SHOWCASE_SEEDING_ENABLED=true to authorize production showcase seeding.');
+        }
+
+        $password = (string) env('RADEMAN_SHOWCASE_PASSWORD', '');
+        if (strlen($password) < 32) {
+            throw new \\RuntimeException('RADEMAN_SHOWCASE_PASSWORD must contain at least 32 characters.');
+        }
+
+        $reservedAccounts = [
+            'admin@rademan.test' => User::ROLE_ADMIN,
+            'artist@rademan.test' => User::ROLE_ARTIST,
+            'buyer@rademan.test' => User::ROLE_BUYER,
+            'buyer-02@rademan.test' => User::ROLE_BUYER,
+            'buyer-03@rademan.test' => User::ROLE_BUYER,
+            'buyer-04@rademan.test' => User::ROLE_BUYER,
+            'buyer-empty@rademan.test' => User::ROLE_BUYER,
+            'new-artist-01@rademan.test' => User::ROLE_ARTIST,
+            'new-artist-02@rademan.test' => User::ROLE_ARTIST,
+            'new-artist-03@rademan.test' => User::ROLE_ARTIST,
+        ];
+        foreach (range(2, 14) as $number) {
+            $reservedAccounts[sprintf('artist-%02d@rademan.test', $number)] = User::ROLE_ARTIST;
+        }
+
+        foreach ($reservedAccounts as $email => $role) {
+            $existing = User::query()->where('email', $email)->first();
+            if ($existing && $existing->role !== $role) {
+                throw new \\RuntimeException("Showcase account collision for {$email}; no showcase records were seeded.");
+            }
+        }
+
+        config(['rademan.showcase_seeding' => true]);
+        $this->run();
+    }
+
     public function run(): void
     {
-        if (! app()->environment(['local', 'testing'])) {
+        if (! app()->environment(['local', 'testing']) && ! config('rademan.showcase_seeding', false)) {
             $this->command?->warn('Demo data is restricted to local/testing environments. No records were changed.');
 
             return;
         }
 
-        $passwordHash = Hash::make(self::PASSWORD);
+        $password = app()->environment('production') ? (string) env('RADEMAN_SHOWCASE_PASSWORD') : self::PASSWORD;
+        $passwordHash = Hash::make($password);
 
-        $admin = User::query()->updateOrCreate(['email' => 'admin@rademan.test'], [
+        $admin = User::query()->firstOrCreate(['email' => 'admin@rademan.test'], [
             'name' => 'مدیر رادمان', 'password' => $passwordHash,
             'role' => User::ROLE_ADMIN, 'email_verified_at' => now(),
         ]);
@@ -42,9 +85,9 @@ class DemoDatabaseSeeder extends Seeder
             'painting' => 'نقاشی', 'photography' => 'عکاسی', 'sculpture' => 'مجسمه‌سازی',
             'digital-art' => 'هنر دیجیتال', 'calligraphy' => 'خوشنویسی', 'other' => 'سایر',
         ] as $slug => $name) {
-            $categories[$slug] = Category::query()->updateOrCreate(['slug' => $slug], ['name' => $name, 'is_active' => true]);
+            $categories[$slug] = Category::query()->firstOrCreate(['slug' => $slug], ['name' => $name, 'is_active' => true]);
         }
-        Category::query()->updateOrCreate(['slug' => 'demo-inactive'], ['name' => 'دسته آزمایشی غیرفعال', 'is_active' => false]);
+        Category::query()->firstOrCreate(['slug' => 'demo-inactive'], ['name' => 'دسته آزمایشی غیرفعال', 'is_active' => false]);
 
         $artistData = [
             ['artist', 'آرمان رضایی', 'تهران', 'نقاشی معاصر'],
@@ -66,11 +109,11 @@ class DemoDatabaseSeeder extends Seeder
         $artists = [];
         foreach ($artistData as $i => [$key, $name, $city, $specialty]) {
             $email = ($key === 'artist' ? 'artist' : $key).'@rademan.test';
-            $user = User::query()->updateOrCreate(['email' => $email], [
+            $user = User::query()->firstOrCreate(['email' => $email], [
                 'name' => $name, 'password' => $passwordHash,
                 'role' => User::ROLE_ARTIST, 'email_verified_at' => now(),
             ]);
-            $artists[] = $user->artistProfile()->updateOrCreate([], [
+            $artists[] = $user->artistProfile()->firstOrCreate([], [
                 'slug' => $key === 'artist' ? 'arman-rezaei' : $key,
                 'display_name' => $name,
                 'bio' => $name.' هنرمندی فعال در حوزه '.$specialty.' است. این پروفایل برای آزمایش امکانات بازار هنر رادمان ساخته شده است.',
@@ -83,14 +126,14 @@ class DemoDatabaseSeeder extends Seeder
 
         $buyers = [];
         foreach ([['buyer', 'مینا خریدار'], ['buyer-02', 'علی خریدار'], ['buyer-03', 'نگار مجموعه‌دار'], ['buyer-04', 'رضا علاقه‌مند به هنر']] as [$key, $name]) {
-            $buyers[] = User::query()->updateOrCreate(['email' => $key.'@rademan.test'], [
+            $buyers[] = User::query()->firstOrCreate(['email' => $key.'@rademan.test'], [
                 'name' => $name, 'password' => $passwordHash,
                 'role' => User::ROLE_BUYER, 'email_verified_at' => now(),
             ]);
         }
 
         // This buyer intentionally has no sent inquiries; direct-message seed data still exercises the buyer inbox.
-        $emptyBuyer = User::query()->updateOrCreate(['email' => 'buyer-empty@rademan.test'], [
+        $emptyBuyer = User::query()->firstOrCreate(['email' => 'buyer-empty@rademan.test'], [
             'name' => 'خریدار بدون درخواست',
             'password' => $passwordHash,
             'role' => User::ROLE_BUYER,
@@ -99,7 +142,7 @@ class DemoDatabaseSeeder extends Seeder
 
         // Include artists who have registered but have not completed their profiles yet.
         foreach (range(1, 3) as $number) {
-            User::query()->updateOrCreate(['email' => sprintf('new-artist-%02d@rademan.test', $number)], [
+            User::query()->firstOrCreate(['email' => sprintf('new-artist-%02d@rademan.test', $number)], [
                 'name' => 'هنرمند تازه‌وارد '.$number,
                 'password' => $passwordHash,
                 'role' => User::ROLE_ARTIST,
@@ -109,7 +152,7 @@ class DemoDatabaseSeeder extends Seeder
 
         // Partial profiles exercise onboarding and private/public empty-portfolio states.
         $privateStarter = User::query()->where('email', 'new-artist-01@rademan.test')->firstOrFail();
-        $privateStarter->artistProfile()->updateOrCreate([], [
+        $privateStarter->artistProfile()->firstOrCreate([], [
             'slug' => 'new-artist-private-preview',
             'display_name' => $privateStarter->name,
             'bio' => null,
@@ -120,7 +163,7 @@ class DemoDatabaseSeeder extends Seeder
         ]);
 
         $publicStarter = User::query()->where('email', 'new-artist-02@rademan.test')->firstOrFail();
-        $publicStarter->artistProfile()->updateOrCreate([], [
+        $publicStarter->artistProfile()->firstOrCreate([], [
             'slug' => 'new-artist-incomplete-public',
             'display_name' => $publicStarter->name,
             'bio' => null,
@@ -149,7 +192,7 @@ class DemoDatabaseSeeder extends Seeder
                 $path = 'artworks/demo/'.$slug.'.svg';
                 $reviewed = $status !== Artwork::STATUS_PENDING_REVIEW;
 
-                $artwork = $profile->artworks()->updateOrCreate(['slug' => $slug], [
+                $artwork = $profile->artworks()->firstOrCreate(['slug' => $slug], [
                     'category_id' => $categories[$category]->id,
                     'title' => $title,
                     'description' => $n % 7 === 0 ? null : 'اثر نمایشی شماره '.$n.' برای آزمایش جست‌وجو، فیلتر و جزئیات کاتالوگ.',
@@ -178,7 +221,7 @@ class DemoDatabaseSeeder extends Seeder
         }
 
         // A deliberately missing file exercises the public image endpoint's 404/fallback path.
-        $missingImage = $artists[0]->artworks()->updateOrCreate(['slug' => 'demo-broken-image'], [
+        $missingImage = $artists[0]->artworks()->firstOrCreate(['slug' => 'demo-broken-image'], [
             'category_id' => $categories['other']->id,
             'title' => 'تصویر در دسترس نیست',
             'description' => 'این رکورد عمداً به فایل تصویری ناموجود اشاره می‌کند تا حالت جایگزین تصویر بررسی شود.',
@@ -218,7 +261,7 @@ class DemoDatabaseSeeder extends Seeder
                     }
                 }
             }
-            ArtistInquiry::query()->updateOrCreate([
+            ArtistInquiry::query()->firstOrCreate([
                 'artist_profile_id' => $profile->id,
                 'sender_user_id' => $buyer->id,
                 'subject' => 'پرسش نمایشی شماره '.$i,
@@ -247,7 +290,7 @@ class DemoDatabaseSeeder extends Seeder
         ];
 
         foreach ($collectionDefinitions as $definition) {
-            $collection = CuratedCollection::query()->updateOrCreate(
+            $collection = CuratedCollection::query()->firstOrCreate(
                 ['slug' => $definition['slug']],
                 [
                     'title' => $definition['title'], 'intro' => $definition['intro'],
@@ -260,8 +303,8 @@ class DemoDatabaseSeeder extends Seeder
             foreach ($definition['artwork_ids'] as $position => $artworkId) {
                 $sync[$artworkId] = ['position' => $position];
             }
-            $collection->artworks()->sync($sync);
-            EditorialAudit::query()->updateOrCreate(
+            $collection->artworks()->syncWithoutDetaching($sync);
+            EditorialAudit::query()->firstOrCreate(
                 ['action' => 'collection.seeded', 'subject_type' => 'CuratedCollection', 'subject_id' => $collection->id],
                 ['actor_id' => $admin->id, 'metadata' => ['seeded' => true, 'status' => $collection->status, 'items' => count($sync)]],
             );
@@ -278,7 +321,7 @@ class DemoDatabaseSeeder extends Seeder
         ];
 
         foreach ($featuredDefinitions as $position => [$profile, $published, $startsAt, $endsAt, $intro]) {
-            $selection = FeaturedArtistSelection::query()->updateOrCreate(
+            $selection = FeaturedArtistSelection::query()->firstOrCreate(
                 ['artist_profile_id' => $profile->id],
                 [
                     'editorial_intro' => $intro, 'position' => $position,
@@ -286,7 +329,7 @@ class DemoDatabaseSeeder extends Seeder
                     'is_published' => $published, 'created_by' => $admin->id, 'updated_by' => $admin->id,
                 ],
             );
-            EditorialAudit::query()->updateOrCreate(
+            EditorialAudit::query()->firstOrCreate(
                 ['action' => 'featured_artist.seeded', 'subject_type' => 'FeaturedArtistSelection', 'subject_id' => $selection->id],
                 ['actor_id' => $admin->id, 'metadata' => ['seeded' => true, 'position' => $position, 'published' => $published]],
             );
@@ -295,7 +338,9 @@ class DemoDatabaseSeeder extends Seeder
         $this->command?->info('Rademan demo dataset is ready.');
         $this->command?->line('Admin: admin@rademan.test | Artist: artist@rademan.test | Buyer: buyer@rademan.test');
         $this->command?->line('Empty buyer: buyer-empty@rademan.test | Private starter: new-artist-01@rademan.test | Public incomplete starter: new-artist-02@rademan.test');
-        $this->command?->line('Password for all demo accounts: '.self::PASSWORD);
+        if (! app()->environment('production')) {
+            $this->command?->line('Password for all demo accounts: '.self::PASSWORD);
+        }
     }
 
     /**
@@ -318,7 +363,7 @@ class DemoDatabaseSeeder extends Seeder
                 }
 
                 $pairKey = $buyer->id.':'.$artist->id;
-                $conversation = Conversation::query()->updateOrCreate(
+                $conversation = Conversation::query()->firstOrCreate(
                     ['pair_key' => $pairKey],
                     [
                         'inquiry_id' => null,
