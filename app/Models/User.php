@@ -37,7 +37,19 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'notification_preferences' => 'array',
         ];
+    }
+
+    /**
+     * @return array{in_app_messages: bool, email_messages: bool}
+     */
+    public function messageNotificationPreferences(): array
+    {
+        return array_replace([
+            'in_app_messages' => true,
+            'email_messages' => false,
+        ], $this->notification_preferences ?? []);
     }
 
     public function isBuyer(): bool
