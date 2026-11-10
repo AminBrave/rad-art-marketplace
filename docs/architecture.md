@@ -136,3 +136,8 @@ Participant blocks are stored directionally in user_blocks; a block by either pa
 Message attachments are stored on Laravel's private local disk under a generated path. The database stores the sanitized display name, detected MIME type and byte size. Upload is limited to the message sender and an allowlist of JPEG, PNG, WebP and PDF, maximum 10 MB. Download requires conversation participation and exact conversation/message/attachment linkage. Storage paths never appear in API payloads. Sender deletion and moderator removal purge attachment files and attachment rows before preserving the content-free message tombstone.
 
 No malware scanner is bundled or claimed. A production operator must supply an approved scanning control at the host boundary or explicitly accept the residual risk. Real-time broadcasting, typing and presence remain gated on verified target-host support; current messaging refresh is polling-based. Email remains disabled until persistent queue/mail/retry/unsubscribe operations are verified.
+
+
+## Inbox search, archive and mute
+
+Buyer and Artist inbox endpoints accept a participant-scoped search string and a filter of all, unread or archived. Search is limited to conversations belonging to the authenticated participant and matches participant names or message text. Archived and muted timestamps are independent for each participant; archiving does not hide the conversation from the other participant. The UI shows related artwork context links only within the participant's thread. No group chat or public search is introduced.
