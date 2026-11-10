@@ -47,15 +47,19 @@ class MessageSafetyController extends Controller
             'details' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        $report = MessageReport::query()->create([
-            'conversation_id' => $conversation->id,
-            'message_id' => $message?->id,
-            'reporter_user_id' => $user->id,
-            'reason' => $validated['reason'],
-            'details' => isset($validated['details']) ? trim($validated['details']) : null,
-        ]);
+        $report = MessageReport::query()->firstOrCreate(
+            [
+                'conversation_id' => $conversation->id,
+                'message_id' => $message?->id,
+                'reporter_user_id' => $user->id,
+            ],
+            [
+                'reason' => $validated['reason'],
+                'details' => isset($validated['details']) ? trim($validated['details']) : null,
+            ],
+        );
 
-        return response()->json(['data' => ['id' => $report->id, 'status' => $report->status]], 201);
+        return response()->json(['data' => ['id' => $report->id, 'status' => $report->status]], $report->wasRecentlyCreated ? 201 : 200);
     }
 
     public function block(Request $request, Conversation $conversation): JsonResponse
