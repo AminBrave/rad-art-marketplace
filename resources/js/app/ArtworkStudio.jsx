@@ -4,7 +4,13 @@ import { Link } from 'react-router-dom';
 import { Badge, Button, EmptyState, ErrorState, FormField, SkeletonLines, UploadFeedback } from '../components/ui';
 
 const emptyArtwork = { title: '', description: '', category_id: '', medium: '', dimensions: '', year: '', price: '', availability: 'available' };
-const statusLabels = { pending_review: 'در انتظار بررسی', approved: 'منتشرشده', rejected: 'ردشده', changes_requested: 'نیازمند اصلاح' };
+const statusLabels = { pending_review: 'در انتظار بررسی', approved: 'تأیید و منتشرشده', rejected: 'ردشده', changes_requested: 'نیازمند اصلاح' };
+const statusGuidance = {
+    pending_review: 'اثر ثبت شده و منتظر بررسی مدیر است. تا زمان تأیید، در گالری عمومی نمایش داده نمی‌شود.',
+    approved: 'اثر تأیید شده است. اگر پروفایل شما عمومی باشد، این اثر در پورتفولیوی عمومی نمایش داده می‌شود.',
+    rejected: 'این اثر رد شده است. بازخورد مدیر را بخوانید و در صورت امکان با ویرایش اثر دوباره ارسال کنید.',
+    changes_requested: 'مدیر برای این اثر اصلاحاتی درخواست کرده است. بازخورد را بررسی کنید، اثر را ویرایش و دوباره برای بررسی ارسال کنید.',
+};
 const inputClass = 'mt-2 w-full border border-border bg-canvas px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-terracotta focus-visible:ring-2 focus-visible:ring-focus';
 
 export default function ArtworkStudio({ user, hasProfile }) {
@@ -92,17 +98,35 @@ export default function ArtworkStudio({ user, hasProfile }) {
         setImage(null); clearImageInput(); setErrors({}); setImageError(''); setMessage('');
         document.getElementById('artwork-editor')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
-    const chooseImage = (event) => {
-        const file = event.target.files?.[0] ?? null;
+    const chooseImage = async (event) => {
+        const input = event.currentTarget;
+        const file = input.files?.[0] ?? null;
         setImageError('');
         setErrors((current) => ({ ...current, image: undefined }));
-        if (file && !['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-            setImageError('فقط فایل JPG، PNG یا WebP پذیرفته می‌شود.'); event.target.value = ''; setImage(null); return;
+        if (!file) { setImage(null); return; }
+        if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+            setImageError('فقط فایل JPG، PNG یا WebP پذیرفته می‌شود.'); input.value = ''; setImage(null); return;
         }
-        if (file && file.size > 5 * 1024 * 1024) {
-            setImageError('حجم تصویر نباید بیشتر از ۵ مگابایت باشد.'); event.target.value = ''; setImage(null); return;
+        if (file.size > 5 * 1024 * 1024) {
+            setImageError('حجم تصویر نباید بیشتر از ۵ مگابایت باشد.'); input.value = ''; setImage(null); return;
         }
-        setImage(file);
+        try {
+            const dimensions = await new Promise((resolve, reject) => {
+                const url = window.URL.createObjectURL(file);
+                const preview = new window.Image();
+                preview.onload = () => { window.URL.revokeObjectURL(url); resolve({ width: preview.naturalWidth, height: preview.naturalHeight }); };
+                preview.onerror = () => { window.URL.revokeObjectURL(url); reject(new Error('invalid-image')); };
+                preview.src = url;
+            });
+            if (dimensions.width > 6000 || dimensions.height > 6000) {
+                setImageError('ابعاد تصویر نباید از ۶۰۰۰ × ۶۰۰۰ پیکسل بیشتر باشد. تصویر کوچک‌تری انتخاب کنید.');
+                input.value = ''; setImage(null); return;
+            }
+            setImage(file);
+        } catch {
+            setImageError('خواندن تصویر ممکن نشد. فایل سالم JPG، PNG یا WebP دیگری انتخاب کنید.');
+            input.value = ''; setImage(null);
+        }
     };
     const saveArtwork = async (event) => {
         event.preventDefault(); setBusy(true); setErrors({}); setMessage(''); setUploadProgress(0);
@@ -144,7 +168,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
                 <div className="sm:col-span-2">
                     <label htmlFor="artwork-image" className="block text-sm font-semibold text-ink">تصویر اثر {editingId ? '(اختیاری؛ برای جایگزینی تصویر)' : '*'}</label>
                     <input id="artwork-image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required={!editingId} onChange={chooseImage} aria-describedby="artwork-image-help" className="mt-2 block w-full border border-border bg-canvas px-3 py-3 text-sm file:ml-3 file:border-0 file:bg-surface-muted file:px-3 file:py-2 file:font-semibold" />
-                    <p id="artwork-image-help" className="mt-2 text-xs leading-6 text-muted">JPG، JPEG، PNG یا WebP؛ حداکثر ۵ مگابایت و ابعاد حداکثر ۶۰۰۰ × ۶۰۰۰ پیکسل.</p>
+                    <p id="artwork-image-help" className="mt-2 text-xs leading-6 text-muted">JPG، JPEG، PNG یا WebP؛ حداکثر ۵ مگابایت و ۶۰۰۰ × ۶۰۰۰ پیکسل. ابعاد تصویر پیش از ارسال بررسی می‌شود.</p>
                     {fieldError('image')}{imageError && <p role="alert" className="mt-1 text-xs text-danger">{imageError}</p>}
                     {imagePreview && <div className="mt-4 max-w-sm border border-border p-2"><img src={imagePreview} alt="پیش‌نمایش تصویر انتخاب‌شده" className="max-h-64 w-full object-contain" /></div>}
                     <UploadFeedback fileName={image?.name} status={busy ? 'uploading' : uploadProgress === 100 ? 'success' : 'idle'} progress={uploadProgress} />
@@ -159,7 +183,9 @@ export default function ArtworkStudio({ user, hasProfile }) {
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{artworks.map((item) => <article key={item.id} className="overflow-hidden border border-border bg-paper">
                     <div className="flex aspect-[4/3] items-center justify-center bg-surface-muted p-3"><img src={item.image_url} alt={item.title} loading="lazy" decoding="async" className="h-full w-full object-contain" /></div>
                     <div className="space-y-3 p-4"><div className="flex flex-wrap items-start justify-between gap-2"><h3 className="font-bold">{item.title}</h3><Badge variant={item.status === 'approved' ? 'success' : item.status === 'rejected' ? 'danger' : item.status === 'changes_requested' ? 'warning' : 'neutral'}>{statusLabels[item.status] ?? item.status}</Badge></div>
-                        <p className="text-xs text-muted">{item.category?.name}</p>{item.rejection_note && <p className="border-s-2 border-danger bg-surface-muted p-3 text-xs leading-6 text-danger">{item.rejection_note}</p>}
+                        <p className="text-xs text-muted">{item.category?.name}</p>
+                        <p className="text-xs leading-6 text-muted">{statusGuidance[item.status] ?? 'وضعیت این اثر از سوی سرور تعیین شده است.'}</p>
+                        {item.rejection_note && <div className="border-s-2 border-danger bg-surface-muted p-3 text-xs leading-6 text-danger"><p className="mb-1 font-bold">بازخورد مدیر</p>{item.rejection_note}</div>}
                         <Button variant="outline" size="sm" onClick={() => editArtwork(item)}>ویرایش اثر</Button></div>
                 </article>)}</div>}
             {artworks.length > 0 && !loading && (

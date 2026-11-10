@@ -49,6 +49,15 @@ export default function ArtistWorkspaceOverview() {
     }, [profile?.slug, profileLoading]);
 
     const complete = Boolean(profile?.slug && profile?.display_name?.trim());
+    const profileSteps = [
+        { label: 'نام نمایشی حرفه‌ای', done: Boolean(profile?.display_name?.trim()) },
+        { label: 'معرفی هنری', done: Boolean(profile?.bio?.trim()) },
+        { label: 'شهر فعالیت', done: Boolean(profile?.city?.trim()) },
+        { label: 'راه ارتباطی یا وب‌سایت', done: Boolean(profile?.website_url?.trim() || profile?.instagram_handle?.trim()) },
+        { label: 'نمایش عمومی پروفایل', done: Boolean(profile?.is_public) },
+    ];
+    const completedProfileSteps = profileSteps.filter((step) => step.done).length;
+    const hasArtwork = (counts.artworks ?? 0) > 0;
     const pending = artworks.filter((item) => item.status === 'pending_review').length;
     const newInquiries = inquiries.filter((item) => item.status === 'new').length;
 
@@ -64,6 +73,32 @@ export default function ArtistWorkspaceOverview() {
                 <p className="mt-1 text-xs leading-6 text-muted">{complete ? (profile.is_public ? 'پروفایل شما برای بازدیدکنندگان قابل مشاهده است.' : 'پروفایل شما خصوصی است و در فهرست عمومی نمایش داده نمی‌شود.') : 'با تکمیل نام نمایشی می‌توانید آثار و درخواست‌های ارتباطی را مدیریت کنید.'}</p></div>
             <Link to="/dashboard/artist/profile" className="shrink-0 bg-ink px-5 py-3 text-sm font-bold text-white hover:bg-terracotta">{complete ? 'ویرایش پروفایل' : 'تکمیل پروفایل'}</Link>
         </div>}
+        {!profileLoading && <section className="border border-border bg-paper p-5 sm:p-6">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+                <div><p className="text-xs font-bold text-terracotta-strong">مسیر شروع هنرمند</p><h2 className="mt-2 text-lg font-black">پروفایل و اولین اثر خود را آماده کنید</h2>
+                    <p className="mt-2 text-xs leading-6 text-muted">پیشرفت پروفایل بر اساس پنج مورد مشخص زیر محاسبه می‌شود؛ این شاخص، امتیاز یا رتبه هنری نیست.</p></div>
+                <span className="shrink-0 text-sm font-bold tabular-nums text-ink">{completedProfileSteps.toLocaleString('fa-IR')} از ۵ مورد پروفایل</span>
+            </div>
+            <div className="mt-4 h-2 overflow-hidden bg-surface-muted" role="progressbar" aria-label="تکمیل فیلدهای پروفایل" aria-valuemin={0} aria-valuemax={5} aria-valuenow={completedProfileSteps}>
+                <div className="h-full bg-terracotta transition-all" style={{ width: (completedProfileSteps / 5 * 100) + '%' }} />
+            </div>
+            <ol className="mt-4 grid gap-3 sm:grid-cols-2">
+                {profileSteps.map((step) => <li key={step.label} className="flex items-center gap-3 text-sm">
+                    <span aria-hidden="true" className={step.done ? 'text-success' : 'text-muted'}>{step.done ? '✓' : '○'}</span>
+                    <span className={step.done ? 'text-muted line-through' : 'font-semibold text-ink'}>{step.label}</span>
+                </li>)}
+                <li className="flex items-center gap-3 text-sm">
+                    <span aria-hidden="true" className={hasArtwork ? 'text-success' : 'text-muted'}>{hasArtwork ? '✓' : '○'}</span>
+                    <span className={hasArtwork ? 'text-muted line-through' : 'font-semibold text-ink'}>ثبت اولین اثر برای بررسی</span>
+                </li>
+            </ol>
+            <div className="mt-5 flex flex-wrap gap-3">
+                <Link to="/dashboard/artist/profile" className="bg-ink px-4 py-2.5 text-sm font-bold text-white hover:bg-terracotta">{profile?.slug ? 'تکمیل یا ویرایش پروفایل' : 'ساخت پروفایل هنری'}</Link>
+                <Link to="/dashboard/artist/artworks" className="border border-border px-4 py-2.5 text-sm font-semibold text-ink hover:border-terracotta">رفتن به مدیریت آثار</Link>
+                {profile?.slug && <Link to={'/artists/' + profile.slug} className="border border-border px-4 py-2.5 text-sm font-semibold text-terracotta-strong hover:border-terracotta">پیش‌نمایش پروفایل</Link>}
+            </div>
+            {profile?.slug && !profile.is_public && <p className="mt-3 text-xs leading-6 text-muted">پروفایل خصوصی در پیش‌نمایش فقط برای شما قابل مشاهده است و در فهرست عمومی نمایش داده نمی‌شود.</p>}
+        </section>}
         {!profileLoading && complete && <>
             {loading ? <div className="grid gap-3 sm:grid-cols-3"><SkeletonLines lines={3} /><SkeletonLines lines={3} /><SkeletonLines lines={3} /></div> : <div className="grid gap-3 sm:grid-cols-3">
                 <SummaryCard label="مجموع آثار" value={counts.artworks ?? '—'} detail={pending ? pending + ' اثر در این صفحه در انتظار بررسی' : 'فهرست آثار ثبت‌شده شما'} to="/dashboard/artist/artworks" />

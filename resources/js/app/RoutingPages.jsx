@@ -309,7 +309,9 @@ export function ArtistProfileSettings() {
                 </label>
                 <div className="sm:col-span-2">
                     <button disabled={busy} className="rounded-xl bg-[#20201e] px-6 py-3 font-bold text-white disabled:opacity-60">{busy ? 'در حال ذخیره…' : 'ذخیره پروفایل'}</button>
-                    {profile?.slug && profile.is_public && <Link to={'/artists/' + profile.slug} className="mr-4 text-sm font-semibold text-[#9a452b] underline">مشاهده پروفایل عمومی</Link>}
+                    {profile?.slug && <Link to={'/artists/' + profile.slug} className="mr-4 text-sm font-semibold text-[#9a452b] underline">{profile.is_public ? 'پیش‌نمایش پروفایل عمومی' : 'پیش‌نمایش خصوصی پروفایل'}</Link>}
+                    {profile?.slug && !profile.is_public && <p className="mt-3 text-xs leading-6 text-stone-500 sm:col-span-2">این پیش‌نمایش فقط برای شما و مدیران مجاز قابل مشاهده است؛ بازدیدکنندگان عمومی به پروفایل خصوصی دسترسی ندارند.</p>}
+                    <p className="mt-2 text-xs text-stone-500 sm:col-span-2">{(form.bio?.length ?? 0).toLocaleString('fa-IR')} از ۲۰۰۰ نویسه برای معرفی هنری استفاده شده است.</p>
                 </div>
             </form>
             {message && <p role="status" className="mt-4 text-sm text-[#80513d]">{message}</p>}
