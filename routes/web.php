@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\ArtistProfileController;
 use App\Http\Controllers\Api\V1\ArtworkController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\EditorialController;
+use App\Http\Controllers\Api\V1\ConversationController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'app')->name('home');
@@ -41,7 +42,8 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
     Route::post('/artists/{artistProfile:slug}/inquiries', [ArtistInquiryController::class, 'store'])->middleware(['auth', 'role:buyer', 'throttle:5,1'])->name('artists.inquiries.store');
 
     Route::middleware(['auth', 'role:buyer'])->prefix('buyer')->name('buyer.')->group(function (): void {
-        Route::get('/inquiries', [ArtistInquiryController::class, 'buyerIndex'])->name('inquiries.index');\n        Route::get('/conversations', [ConversationController::class, 'buyerIndex'])->name('conversations.index');
+        Route::get('/inquiries', [ArtistInquiryController::class, 'buyerIndex'])->name('inquiries.index');
+        Route::get('/conversations', [ConversationController::class, 'buyerIndex'])->name('conversations.index');
         Route::get('/inquiries/{inquiry}', [ArtistInquiryController::class, 'buyerShow'])->name('inquiries.show');
     });
 
@@ -62,7 +64,8 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
         Route::patch('/artist-profiles/{artistProfile}', [ArtistProfileController::class, 'update'])->name('artist-profiles.update');
         Route::prefix('artist')->name('artist.')->group(function (): void {
             Route::middleware('role:artist')->group(function (): void {
-                Route::get('/inquiries', [ArtistInquiryController::class, 'artistIndex'])->name('inquiries.index');\n                Route::get('/conversations', [ConversationController::class, 'artistIndex'])->name('conversations.index');
+                Route::get('/inquiries', [ArtistInquiryController::class, 'artistIndex'])->name('inquiries.index');
+                Route::get('/conversations', [ConversationController::class, 'artistIndex'])->name('conversations.index');
                 Route::get('/inquiries/{inquiry}', [ArtistInquiryController::class, 'artistShow'])->name('inquiries.show');
                 Route::patch('/inquiries/{inquiry}', [ArtistInquiryController::class, 'updateForArtist'])->name('inquiries.update');
             });
