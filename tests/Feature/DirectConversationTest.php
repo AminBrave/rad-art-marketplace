@@ -60,7 +60,7 @@ class DirectConversationTest extends TestCase
             'display_name' => 'هنرمند اثر',
             'is_public' => true,
         ]);
-        $category = \App\Models\Category::query()->create(['name' => 'نقاشی', 'slug' => 'painting']);
+        $category = \App\Models\Category::query()->where('slug', 'painting')->firstOrFail();
         $artwork = $profile->artworks()->create([
             'category_id' => $category->id,
             'slug' => 'approved-artwork',
