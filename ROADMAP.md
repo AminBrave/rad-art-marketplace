@@ -204,7 +204,8 @@ Known unverified release gates (release sign-off blockers):
 
 **Remaining M05 scope (not implemented or not verified):**
 
-- [ ] Complete and verify M05-T03 message replies, sender-only edit/delete, content-free deletion tombstones, emoji reactions, and delivery/read-state UX (#80). Implementation is in review on `feat/m05-message-actions`; automated CI and product-owner retest are pending.
+- [x] Implement M05-T03 message replies, sender-only edit/delete, content-free deletion tombstones, emoji reactions, and delivery/read-state UX (#80) through [PR #107](https://github.com/AminBrave/rad-art-marketplace/pull/107), merged as `07a48d082b49efb53f1f38377abdd9c13a1c848b`.
+- [ ] Product-owner manual retest of M05-T03 is pending; keep issue #80 open until accepted.
 - [ ] Conversation archive/mute and search UX/API remain unimplemented (#79/#80).
 - [ ] WebSocket/broadcast delivery, typing and presence; retain polling fallback and do not claim real-time while only polling is active (#81).
 - [ ] Private message attachments with content validation, authorized download, retention and malware-scanning decision (#82).
