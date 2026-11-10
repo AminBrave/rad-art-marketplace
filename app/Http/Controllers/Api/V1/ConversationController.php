@@ -140,6 +140,7 @@ class ConversationController extends Controller
                     ->first();
 
                 if ($existing) {
+
                     return $existing->load(['sender', 'replyTo.sender']);
                 }
             }
