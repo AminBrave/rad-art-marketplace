@@ -165,3 +165,6 @@ Email verification and password-reset UX are not implemented. Analytics is a pro
 - [ ] Complete production configuration, backup/restore and rollback drills.
 
 See [MVP 2 completion audit](mvp2-completion-audit-2026-11-10.md) for detailed evidence and issue-by-issue boundaries. A green CI run is not production sign-off.
+
+
+**Follow-up CI verification (2026-11-10):** PR #118 corrected the Playwright notification-to-conversation fixture boundaries and added an explicit nested-route regression. Latest post-merge `main` [CI run #42852936094](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42852936094) passed all three jobs: 92 backend tests / 890 assertions, PHP style, frontend lint/build, and 27 Chromium browser tests. Main commit: `d7c056645addf33d872bec4868995e0e9bfda89f`. This supersedes the intermediate documentation-sync run that exposed the fixture failure; no application feature regression was found.
