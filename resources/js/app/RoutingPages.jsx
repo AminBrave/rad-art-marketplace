@@ -207,7 +207,8 @@ export function ArtistWorkspaceLayout() {
         { to: '/dashboard/artist', label: 'نمای کلی', end: true },
         { to: '/dashboard/artist/profile', label: 'پروفایل هنرمند' },
         { to: '/dashboard/artist/artworks', label: 'مدیریت آثار' },
-        { to: '/dashboard/artist/inquiries', label: 'صندوق پیام‌ها' },
+        { to: '/dashboard/artist/inquiries', label: 'صندوق درخواست‌ها' },
+        { to: '/dashboard/artist/messages', label: 'پیام‌های مستقیم' },
     ];
 
     return <WorkspaceLayout title="فضای هنرمند" links={links} outletContext={{ user, profile, setProfile, profileLoading, profileError }} />;
