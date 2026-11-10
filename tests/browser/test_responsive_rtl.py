@@ -28,14 +28,15 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
         )
         page = context.new_page()
         page.set_default_timeout(15000)
-        page.route(
-            "**/api/v1/**",
-            lambda route: route.fulfill(
-                status=200,
-                content_type="application/json",
-                body='{"data":[],"current_page":1,"last_page":1,"per_page":12,"total":0}',
-            ),
-        )
+
+        def api_fixture(route):
+            if route.request.url.endswith("/api/v1/auth/me"):
+                payload = '{"data":null}'
+            else:
+                payload = '{"data":[],"current_page":1,"last_page":1,"per_page":12,"total":0}'
+            route.fulfill(status=200, content_type="application/json", body=payload)
+
+        page.route("**/api/v1/**", api_fixture)
 
         try:
             for route_path in PUBLIC_ROUTES:
@@ -60,7 +61,9 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
 
                 for width in VIEWPORTS:
                     page.set_viewport_size({"width": width, "height": 812})
-                    page.evaluate("() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))")
+                    page.evaluate(
+                        "() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))"
+                    )
                     dimensions = page.evaluate(
                         "() => ({ viewport: document.documentElement.clientWidth, "
                         "document: document.documentElement.scrollWidth, "
