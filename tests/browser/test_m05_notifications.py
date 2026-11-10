@@ -93,7 +93,7 @@ class MessageNotificationBrowserTests(unittest.TestCase):
         page.route("**/api/v1/notifications/notification-uuid-1/read", lambda route: route.fulfill(
             status=200, content_type="application/json", body='{"message":"read"}'
         ))
-        page.route("**/api/v1/buyer/conversations", lambda route: route.fulfill(
+        page.route("**/api/v1/buyer/conversations**", lambda route: route.fulfill(
             status=200,
             content_type="application/json",
             body=json.dumps({"data": [THREAD], "current_page": 1, "last_page": 1, "total": 1}, ensure_ascii=False),
