@@ -8,6 +8,7 @@ use App\Models\ArtistProfile;
 use App\Models\Artwork;
 use App\Models\CuratedCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
