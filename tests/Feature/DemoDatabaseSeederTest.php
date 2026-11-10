@@ -69,7 +69,7 @@ class DemoDatabaseSeederTest extends TestCase
         $this->actingAs($admin)->getJson('/api/v1/admin/users')
             ->assertOk()
             ->assertJsonCount(20, 'data')
-            ->assertJsonPath('total', 22)
+            ->assertJsonPath('total', 23)
             ->assertJsonPath('current_page', 1);
         $this->actingAs($admin)->getJson('/api/v1/admin/users?page=2')
             ->assertOk()

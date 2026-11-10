@@ -79,29 +79,6 @@ class DemoDatabaseSeeder extends Seeder
             ]);
         }
 
-        // Partial profiles exercise onboarding and private/public empty-portfolio states.
-        $privateStarter = User::query()->where('email', 'new-artist-01@rademan.test')->firstOrFail();
-        $privateStarter->artistProfile()->updateOrCreate([], [
-            'slug' => 'new-artist-private-preview',
-            'display_name' => $privateStarter->name,
-            'bio' => null,
-            'city' => null,
-            'website_url' => null,
-            'instagram_handle' => null,
-            'is_public' => false,
-        ]);
-
-        $publicStarter = User::query()->where('email', 'new-artist-02@rademan.test')->firstOrFail();
-        $publicStarter->artistProfile()->updateOrCreate([], [
-            'slug' => 'new-artist-incomplete-public',
-            'display_name' => $publicStarter->name,
-            'bio' => null,
-            'city' => 'کرمان',
-            'website_url' => 'https://example.com/new-artist-02',
-            'instagram_handle' => null,
-            'is_public' => true,
-        ]);
-
         $buyers = [];
         foreach ([['buyer', 'مینا خریدار'], ['buyer-02', 'علی خریدار'], ['buyer-03', 'نگار مجموعه‌دار'], ['buyer-04', 'رضا علاقه‌مند به هنر']] as [$key, $name]) {
             $buyers[] = User::query()->updateOrCreate(['email' => $key.'@rademan.test'], [
@@ -127,6 +104,29 @@ class DemoDatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
             ]);
         }
+
+        // Partial profiles exercise onboarding and private/public empty-portfolio states.
+        $privateStarter = User::query()->where('email', 'new-artist-01@rademan.test')->firstOrFail();
+        $privateStarter->artistProfile()->updateOrCreate([], [
+            'slug' => 'new-artist-private-preview',
+            'display_name' => $privateStarter->name,
+            'bio' => null,
+            'city' => null,
+            'website_url' => null,
+            'instagram_handle' => null,
+            'is_public' => false,
+        ]);
+
+        $publicStarter = User::query()->where('email', 'new-artist-02@rademan.test')->firstOrFail();
+        $publicStarter->artistProfile()->updateOrCreate([], [
+            'slug' => 'new-artist-incomplete-public',
+            'display_name' => $publicStarter->name,
+            'bio' => null,
+            'city' => 'کرمان',
+            'website_url' => 'https://example.com/new-artist-02',
+            'instagram_handle' => null,
+            'is_public' => true,
+        ]);
 
         $categorySlugs = array_keys($categories);
         $availabilityValues = ['available', 'sold', 'not_for_sale'];

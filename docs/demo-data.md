@@ -36,7 +36,7 @@ Additional accounts: `artist-02@rademan.test` through `artist-14@rademan.test`, 
 
 ## Included variations
 
-- 23 users: 1 Admin, 16 Artist accounts (15 with profiles and one registered without a profile), and 5 Buyers.
+- 23 users: 1 Admin, 17 Artist accounts (16 with profiles and one registered without a profile), and 5 Buyers.
 - 16 artist profiles: 14 public and 2 private, including fully completed and intentionally partial onboarding profiles.
 - 6 active categories and 1 inactive category for filter/validation checks.
 - 71 artworks across all categories and all moderation states: approved, pending review, rejected, and changes requested.
