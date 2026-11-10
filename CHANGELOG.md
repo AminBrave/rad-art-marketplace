@@ -1,3 +1,5 @@
+# Changelog
+
 ## 2026-11-10 — M04 artist experience improvements (implementation in progress)
 
 ### Added
@@ -10,8 +12,6 @@
 ### Verification in progress
 - Added backend regression coverage for private profile preview isolation, frontend contract tests, and Chromium journeys for onboarding, oversized image rejection, moderation feedback, and inquiry lifecycle.
 - M04 is not complete until all CI jobs pass and product-owner review is recorded.
-
-# Changelog
 
 ## 2026-11-10 — M00 browser regression coverage
 
