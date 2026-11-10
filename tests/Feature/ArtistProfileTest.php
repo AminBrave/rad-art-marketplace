@@ -119,6 +119,8 @@ class ArtistProfileTest extends TestCase
             ->assertJsonPath('data.slug', 'private-preview')
             ->assertJsonPath('data.is_public', false);
 
+        $this->app['auth']->forgetGuards();
+
         $this->getJson('/api/v1/artists/'.$profile->slug)
             ->assertNotFound();
 
