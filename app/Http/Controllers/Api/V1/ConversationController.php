@@ -40,13 +40,21 @@ class ConversationController extends Controller
 
         $conversation = DB::transaction(function () use ($inquiry, $artistUserId): Conversation {
             $conversation = Conversation::query()->firstOrCreate(
-                ['inquiry_id' => $inquiry->id],
+                ['pair_key' => $inquiry->sender_user_id.':'.$artistUserId],
                 [
+                    'inquiry_id' => $inquiry->id,
+                    'pair_key' => $inquiry->sender_user_id.':'.$artistUserId,
                     'buyer_user_id' => $inquiry->sender_user_id,
                     'artist_user_id' => $artistUserId,
                     'last_message_at' => $inquiry->created_at ?? now(),
                 ],
             );
+
+            DB::table('conversation_contexts')->updateOrInsert([
+                'conversation_id' => $conversation->id,
+                'inquiry_id' => $inquiry->id,
+                'artwork_id' => $inquiry->artwork_id,
+            ], ['added_by_user_id' => $inquiry->sender_user_id, 'created_at' => now(), 'updated_at' => now()]);
 
             $conversation->messages()->firstOrCreate(
                 [
