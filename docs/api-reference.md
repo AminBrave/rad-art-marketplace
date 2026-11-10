@@ -194,6 +194,30 @@ A new message creates a database-backed notification for the other conversation 
 
 In-app notifications can be disabled by each user. Email notifications are explicitly unavailable (`email_available=false`, `email_messages=false`) until the target host has a verified mail configuration and queue worker/retry setup. This branch does not send email synchronously or claim queued email delivery.
 
+## Messaging safety and private attachments (M05-T05/T07)
+
+All routes below require an authenticated conversation participant unless explicitly restricted to Admin.
+
+| Method | Endpoint | Access | Purpose |
+|---|---|---|---|
+| GET | `/api/v1/conversations/{id}/safety` | Participant | Read directional block state for the current pair |
+| POST | `/api/v1/conversations/{id}/block` | Participant | Block the other participant; sending is disabled for both sides |
+| DELETE | `/api/v1/conversations/{id}/block` | Participant | Remove the current user's block |
+| POST | `/api/v1/conversations/{id}/report` | Participant, throttled | Report a conversation |
+| POST | `/api/v1/conversations/{id}/messages/{message}/report` | Participant, throttled | Report a message in that conversation |
+| POST | `/api/v1/conversations/{id}/messages/{message}/attachments` | Message sender, throttled | Upload a private image/PDF attachment |
+| GET | `/api/v1/conversations/{id}/messages/{message}/attachments/{attachment}` | Participant | Download an attachment after conversation/message/attachment ownership checks |
+| GET | `/api/v1/admin/message-reports` | Admin | Paginated private report review queue |
+| PATCH | `/api/v1/admin/message-reports/{report}` | Admin | Review, dismiss, or remove the reported message |
+
+Report reasons are allow-listed: `spam`, `harassment`, `inappropriate`, `scam`, and `other`. Report details are optional and limited to 1000 characters. A participant's repeated report of the same message is idempotent. Report payloads are never exposed to the other participant. Admin actions are recorded in `message_moderation_audits`; removing a message clears its body, removes reactions and purges its private attachment files before retaining the tombstone.
+
+Blocking is pair-wide for sending: either participant's block prevents either side from posting new messages. A generic 403 is returned without disclosing which participant created the block. Existing conversation history remains participant-scoped.
+
+Attachment policy: maximum 10 MB; accepted formats are JPEG, PNG, WebP and PDF, checked against extension and detected MIME type. Files are stored on Laravel's private local disk, never the public storage symlink. Only the original message sender may upload; either conversation participant may download. API payloads expose a safe display name, MIME type, byte size and authorized download route, never the storage path. Message deletion and moderator removal purge attachment files. No antivirus/malware scanner is integrated; operators must scan uploads at the hosting boundary or accept this documented residual risk before production launch. Do not upload executable or macro-enabled documents.
+
+Email notifications remain disabled until a persistent queue worker, mail sender, retries and unsubscribe controls are verified on the target host. Real-time push remains disabled; current inbox refresh uses polling until the target-host broadcasting capability is proven.
+
 ## Common access and validation behavior
 
 - Unauthenticated requests to protected feature routes normally return HTTP 401. The deliberate exception is `GET /api/v1/auth/me`, which returns HTTP 200 with `data: null` for guests.
@@ -205,4 +229,4 @@ In-app notifications can be disabled by each user. Email notifications are expli
 
 ## Not implemented
 
-There are no API routes for email verification, password reset, admin category CRUD, buyer reports/abuse moderation, featured placements, static content management, payments, orders, email delivery, or the remaining M05 features.
+There are no API routes for email verification, password reset, admin category CRUD, featured placements, static content management, payments, orders, email delivery, or WebSocket broadcasting/typing presence. Messaging report/block and moderation endpoints are documented above.
