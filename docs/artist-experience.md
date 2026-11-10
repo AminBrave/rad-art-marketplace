@@ -37,6 +37,9 @@ These are internal tracking states only. They do not send a response, email, or 
 
 ## Verification
 
+Implementation is merged in [PR #99](https://github.com/AminBrave/rad-art-marketplace/pull/99). Pull-request CI run [#42787611474](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42787611474) passed 59 backend tests / 358 assertions, Laravel Pint, frontend lint/build, and 22 Chromium browser tests. Post-merge main CI is tracked separately. Product-owner visual and functional acceptance remains required for M04 sign-off.
+
+
 Automated coverage lives in:
 - `tests/Feature/ArtistProfileTest.php`
 - `tests/Feature/ArtworkTest.php`
