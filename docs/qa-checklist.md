@@ -155,3 +155,10 @@ Database-backed authorization is separately covered by `tests/Feature/ArtistInqu
 - [ ] Verify block enforcement in both directions, idempotent reports, admin queue authorization and audit records.
 - [ ] Complete manual keyboard/RTL/mobile review of new messaging and admin safety UI.
 - [ ] Obtain independent security review; no antivirus scanner is integrated and no WebSocket/email service is enabled.
+
+
+## M05 inbox controls — final verification pending
+
+- [ ] Run ConversationInboxSettingsTest and the full backend suite.
+- [ ] Verify buyer/artist independent archive and mute state, unread filter, message/name search and access isolation.
+- [ ] Verify artwork context links, direct-entry deep links and responsive/keyboard behavior.
