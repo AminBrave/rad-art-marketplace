@@ -55,6 +55,15 @@ class MessageSafetyTest extends TestCase
             ->postJson("/api/v1/conversations/{$conversation->id}/block")
             ->assertOk();
 
+        $artist->artistProfile()->create([
+            'slug' => 'blocked-artist-profile',
+            'display_name' => 'هنرمند مسدود',
+            'is_public' => true,
+        ]);
+        $this->actingAs($buyer)
+            ->postJson('/api/v1/conversations/direct', ['artist_slug' => 'blocked-artist-profile'])
+            ->assertForbidden();
+
         $this->actingAs($artist)
             ->postJson("/api/v1/conversations/{$conversation->id}/messages", [
                 'body' => 'این پیام باید مسدود شود.',
