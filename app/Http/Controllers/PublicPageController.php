@@ -70,7 +70,9 @@ class PublicPageController extends Controller
         $viewer = request()->user();
         $isOwnerOrAdmin = $viewer !== null
             && ($viewer->isAdmin() || (int) $viewer->id === (int) $profile->user_id);
-        abort_unless($isPublic || $isOwnerOrAdmin, 404);
+        if (! $isPublic && ! $isOwnerOrAdmin) {
+            return $this->missingPage();
+        }
         $firstArtwork = $isPublic
             ? $profile->artworks()
                 ->where('status', Artwork::STATUS_APPROVED)
@@ -96,7 +98,7 @@ class PublicPageController extends Controller
             ...($sameAs ? ['sameAs' => $sameAs] : []),
         ] : null;
 
-        return view('app', ['seo' => [
+        return response()->view('app', ['seo' => [
             'title' => $profile->display_name.' | هنرمندان راد آرت',
             'description' => $description,
             'canonical' => $canonical,
