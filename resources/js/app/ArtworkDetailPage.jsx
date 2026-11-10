@@ -97,7 +97,10 @@ export default function ArtworkDetailPage() {
                                 <div><dt className="text-xs text-muted">قیمت</dt><dd className="mt-1 font-semibold">{formatArtworkPrice(artwork.price)}</dd></div>
                             </dl>
                             <p className="mt-5 text-sm text-muted">وضعیت: {availabilityLabel(artwork.availability)}</p>
-                            {user?.role === 'buyer' && <ContactArtistForm artistSlug={artwork.artist.slug} artworkId={artwork.id} />}
+                            {user?.role === 'buyer' && <div className="mt-7 flex flex-wrap gap-3">
+                                <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(artwork.artist.slug) + '&artwork=' + encodeURIComponent(artwork.slug)} className="inline-flex items-center bg-ink px-5 py-3 text-sm font-bold text-white hover:bg-terracotta">پیام مستقیم درباره این اثر</Link>
+                                <ContactArtistForm artistSlug={artwork.artist.slug} artworkId={artwork.id} />
+                            </div>}
                             {!user && <Link to="/login" state={{ from: { pathname: '/artworks/' + slug } }} className="mt-7 inline-block text-sm font-bold text-terracotta-strong underline">برای ارتباط با هنرمند وارد شوید</Link>}
                             {user && user.role !== 'buyer' && <p className="mt-7 text-xs leading-6 text-muted">ارسال درخواست ارتباط از حساب خریدار امکان‌پذیر است.</p>}
                         </div>
