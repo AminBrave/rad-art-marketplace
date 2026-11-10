@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Database\\Seeders;
+namespace Database\Seeders;
 
-use Illuminate\\Database\\Seeder;
+use Illuminate\Database\Seeder;
 use RuntimeException;
 
 class ShowcaseDatabaseSeeder extends Seeder
