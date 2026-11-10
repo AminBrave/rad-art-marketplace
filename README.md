@@ -3,7 +3,7 @@
 Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact marketplace. It helps visitors discover approved artworks and public artist portfolios, and lets buyers and artists continue approved inquiries in private one-to-one conversations.
 
 **Current integration branch:** `main`  
-**Current delivery status:** M00 foundation, M02 discovery, M03 editorial, and M04 artist-experience implementation are integrated into main; M03 and M04 were accepted in project testing. M05 core buyer–artist direct messaging (inbox, threads, direct entry points, unread/read state, polling, and demo data) is integrated and has passed product-owner manual testing. M05-T03 message replies, edit/delete, reactions, and message-state UX are being implemented on branch `feat/m05-message-actions`; CI and acceptance are pending. M00/M06 release and production-host gates remain open.  
+**Current delivery status:** M00 foundation, M02 discovery, M03 editorial, and M04 artist-experience implementation are integrated into main; M03 and M04 were accepted in project testing. M05 core buyer–artist direct messaging (inbox, threads, direct entry points, unread/read state, polling, and demo data) is integrated and has passed product-owner manual testing. M05-T03 message replies, sender-only edit/delete, reactions, and message-state UX are merged through [PR #107](https://github.com/AminBrave/rad-art-marketplace/pull/107); CI passed and product-owner retest is pending. M06-T09 SEO metadata, canonical URLs, social previews, robots and sitemap are being implemented on branch `feat/m06-seo-shareability`. M00/M06 release and production-host gates remain open.  
 **Product status:** Active MVP development; not yet verified or signed off for production.
 
 ## Product capabilities
@@ -15,6 +15,7 @@ Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact mark
 - Artwork detail pages with artist links and buyer inquiry entry point.
 - Searchable, paginated public artist directory.
 - Public artist profiles with approved-only portfolio artwork.
+- Server-rendered SEO metadata and shareable canonical URLs for public artwork, artist and collection detail pages are in progress.
 - Persian About, Help, and Contact pages.
 
 ### Artist workspace — implemented
