@@ -220,6 +220,7 @@ class ConversationController extends Controller
                 ->map(function ($context): array {
                     $artwork = $context->artwork_id ? DB::table('artworks')->where('id', $context->artwork_id)->first() : null;
                     $inquiry = $context->inquiry_id ? DB::table('artist_inquiries')->where('id', $context->inquiry_id)->first() : null;
+
                     return [
                         'artwork' => $artwork ? ['title' => $artwork->title, 'slug' => $artwork->slug] : null,
                         'inquiry' => $inquiry ? ['subject' => $inquiry->subject, 'id' => $inquiry->id] : null,
