@@ -216,6 +216,10 @@ Known unverified release gates (release sign-off blockers):
 **Hosting constraint:** cPanel compatibility for persistent workers, Redis, broadcasting daemons and queued mail is unverified. Do not enable these services or claim WebSocket/email delivery until the target host is tested. No end-to-end encryption or malware-scanning claim is made.
 
 
+## M05 — Advanced messaging · In progress
+
+- [ ] Implement M05-T06 recipient-only in-app notifications, read-all, per-user preferences and conversation deep links (#83). Implementation is in progress on `feat/m05-in-app-notifications`; email delivery remains blocked pending verified queue-worker and mail configuration on the target host.
+
 ## M06 — Launch readiness and growth foundations · In progress
 
 **GitHub parent:** [#65](https://github.com/AminBrave/rad-art-marketplace/issues/65) · **Child tracks:** [#74](https://github.com/AminBrave/rad-art-marketplace/issues/74), [#75](https://github.com/AminBrave/rad-art-marketplace/issues/75)
