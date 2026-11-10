@@ -187,3 +187,16 @@ These automated checks do not replace manual visual design review, Firefox/WebKi
 8. As a Buyer, submit an inquiry from both artwork detail and artist profile. Confirm the correct artist and optional artwork context are used. Guests are sent to login; non-Buyer roles do not receive a Buyer inquiry form.
 9. Set browser widths to 320, 375, 768, 1024, and 1440 CSS pixels. Confirm no horizontal overflow, image containers reserve space, filters remain usable, and artwork cards preserve readable hierarchy.
 10. Simulate failed image requests and slow API responses. Confirm accessible image fallback, loading, empty, and error states; retry without losing URL-backed filter state.
+
+
+## M03 — Editorial curation
+
+1. As Admin, open `/admin/editorial`.
+2. Create a collection with an introduction and several approved public artworks. Save as draft; verify it is absent from `/collections` and its detail URL returns 404.
+3. Publish the collection; verify it appears in the public list and detail page with artworks in the selected order.
+4. Edit the introduction and artwork order; save and confirm the stable collection slug remains unchanged.
+5. Unpublish the collection; verify the public detail URL returns 404.
+6. Select featured public artists, add an editorial introduction, and save. Verify only active published selections appear on the homepage.
+7. Confirm pending artworks and works owned by private artist profiles cannot be attached to public collections.
+8. Verify non-admin accounts receive 403 from every `/api/v1/admin/editorial/*` endpoint.
+9. Verify editorial audit rows record the admin actor and collection/featured-artist actions.
