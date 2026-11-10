@@ -50,7 +50,7 @@ Use this checklist for a release candidate. A checked item requires evidence for
 - [ ] Verify artist profile, artwork submission/edit, upload, moderation feedback, and inquiry inbox workflows.
 - [ ] Verify buyer sent-inquiry history/detail and privacy.
 - [ ] Verify admin overview, moderation, and user management.
-- [ ] Verify inquiry payloads omit both parties' email addresses; do not imply chat, replies, or email delivery.
+- [ ] Verify inquiry and conversation payloads omit both parties' email addresses and private storage paths; verify all conversation operations are participant-scoped.
 
 ## Performance and Lighthouse evidence
 
@@ -75,7 +75,7 @@ The Stage 6 PR records source-level localization/RTL review, image-loading corre
 
 ## Known limitations and product decisions
 
-These capabilities are not part of the approved MVP 2 scope unless the product owner revises it: payments, cart/checkout, orders, shipping, real-time chat/replies, email delivery, native mobile apps, AI recommendations, social networking, subscriptions, advertising, admin category CRUD, buyer reports/abuse queue, and featured placements.
+These capabilities remain outside the approved scope: payments, cart/checkout, orders, shipping, group chat, public social networking, native mobile apps, AI recommendations, subscriptions, advertising, general-purpose admin category CRUD, and featured placements. Private one-to-one messaging and message-specific safety/moderation are approved under M05. Real-time transport and optional email must not be enabled until target-host compatibility and operational controls are verified.
 
 Email verification and password-reset UX are not implemented. Analytics is a proposal only. Hosting PHP 8.3+ compatibility, production deployment, backup automation, restore success, and browser/device QA remain unverified until evidence is attached.
 
@@ -114,3 +114,14 @@ Email verification and password-reset UX are not implemented. Analytics is a pro
 - [ ] Backup creation and successful restore drill.
 
 **M00 status:** implementation and automated regression coverage are integrated. Do not mark release readiness complete until all remaining manual/operational gates are verified or explicitly accepted as deferred risk.
+
+
+## M05 — Secure messaging release gates
+
+- [ ] Verify migrations on the supported production MySQL version and rehearse rollback/forward recovery.
+- [ ] Verify participant-only access for conversation, message, attachment and report resources, including cross-account 404 behavior.
+- [ ] Verify rate limits, block/report behavior, admin audit trail, retention and private attachment storage.
+- [ ] Verify notification content and deep links do not disclose message bodies or private resources to unauthorized recipients.
+- [ ] Enable email only after queue/worker availability, sender identity, retry/failure handling, preferences and unsubscribe controls are verified.
+- [ ] Enable real-time transport only after persistent process/broadcasting support is verified on the target host; otherwise document the polling fallback.
+- [ ] Complete independent security review and product-owner acceptance before messaging launch.
