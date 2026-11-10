@@ -49,6 +49,13 @@ export default function MessagingCenter({ role }) {
         }
     }, []);
 
+    const requestedConversation = params.get('conversation');
+
+    useEffect(() => {
+        const id = Number(requestedConversation);
+        if (Number.isSafeInteger(id) && id > 0) setActive(id);
+    }, [requestedConversation]);
+
     useEffect(() => { loadThreads(); }, [loadThreads]);
     useEffect(() => {
         const artistSlug = params.get('artist');
@@ -154,7 +161,7 @@ export default function MessagingCenter({ role }) {
                     {loading ? <p className="p-5 text-sm text-muted">در حال دریافت…</p> : threads.length === 0 ? <p className="p-5 text-sm leading-7 text-muted">هنوز گفتگویی ندارید. از صفحه هنرمند یا یک اثر، گزینه «پیام مستقیم» را انتخاب کنید.</p> : (
                         <ul className="divide-y divide-border">
                             {threads.map((thread) => <li key={thread.id}>
-                                <button type="button" onClick={() => { setActive(thread.id); setReplyTo(null); setEditingId(null); }} className={'w-full p-4 text-right transition hover:bg-surface-muted ' + (active === thread.id ? 'bg-surface-muted' : '')}>
+                                <button type="button" onClick={() => { setActive(thread.id); setReplyTo(null); setEditingId(null); if (requestedConversation) setParams({}, { replace: true }); }} className={'w-full p-4 text-right transition hover:bg-surface-muted ' + (active === thread.id ? 'bg-surface-muted' : '')}>
                                     <span className="flex items-center justify-between gap-2"><strong className="truncate text-sm">{thread.participant?.name ?? 'گفتگو'}</strong>{thread.unread_count > 0 && <span className="rounded-full bg-terracotta px-2 py-1 text-xs text-white">{thread.unread_count}</span>}</span>
                                     <span className="mt-2 block truncate text-xs text-muted">{thread.last_message?.body ?? (thread.last_message?.deleted_at ? 'پیام حذف شده است' : 'گفتگوی جدید')}</span>
                                     <span className="mt-1 block text-[11px] text-muted">{dateLabel(thread.last_message_at)}</span>
