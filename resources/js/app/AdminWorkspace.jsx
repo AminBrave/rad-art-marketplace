@@ -161,3 +161,51 @@ export function AdminUsersPage() {
         </>}
     </section>;
 }
+
+
+export function AdminMessageReportsPage() {
+    const [params, setParams] = useSearchParams();
+    const page = Math.max(1, Number(params.get('page')) || 1);
+    const [result, setResult] = useState(null);
+    const [notes, setNotes] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [busyId, setBusyId] = useState(null);
+    const [error, setError] = useState('');
+    const [message, setMessage] = useState('');
+    const load = useCallback(async () => {
+        setLoading(true); setError('');
+        try {
+            const { data } = await axios.get(api + '/message-reports', { params: { page } });
+            setResult(data);
+        } catch (e) {
+            setError(e.response?.status === 403 ? 'دسترسی به گزارش‌های پیام مجاز نیست.' : 'دریافت گزارش‌ها انجام نشد.');
+        } finally { setLoading(false); }
+    }, [page]);
+    useEffect(() => { load(); }, [load]);
+    const review = async (report, action) => {
+        setBusyId(report.id); setError(''); setMessage('');
+        try {
+            const { data } = await axios.patch(api + '/message-reports/' + report.id, { action, note: (notes[report.id] ?? '').trim() || null });
+            setMessage(data.message ?? 'تصمیم ثبت شد.');
+            await load();
+        } catch (e) {
+            setError(e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.');
+        } finally { setBusyId(null); }
+    };
+    return <section className="space-y-6" dir="rtl">
+        <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
+            <div><p className="text-sm font-bold text-terracotta-strong">ایمنی گفتگوها</p><h1 className="mt-2 text-2xl font-black">گزارش‌های پیام</h1><p className="mt-2 text-sm leading-7 text-muted">محتوای گزارش فقط برای مدیران مجاز قابل مشاهده است. هر تصمیم در سابقه رسیدگی ثبت می‌شود.</p></div>
+            <Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>
+        </header>
+        {message && <SuccessState title={message} />}{error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
+        {loading ? <SkeletonLines lines={8} /> : !result?.data?.length ? <EmptyState title="گزارش بازی وجود ندارد" description="گزارش‌های جدید پس از ثبت از سوی یکی از طرفین گفتگو در اینجا نمایش داده می‌شوند." /> : <>
+            <div className="space-y-4">{result.data.map((report) => <article key={report.id} className="space-y-4 border border-border bg-paper p-5">
+                <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-bold">گزارش #{report.id} · {report.reason}</h2><p className="mt-1 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? 'کاربر'} · {dateLabel(report.created_at)}</p></div><Badge variant={report.status === 'open' ? 'warning' : 'neutral'}>{report.status === 'open' ? 'در انتظار بررسی' : report.status === 'dismissed' ? 'رد گزارش' : 'بررسی‌شده'}</Badge></div>
+                {report.details && <p className="text-sm leading-7">{report.details}</p>}
+                {report.message && <blockquote className="border-r-2 border-terracotta bg-surface-muted p-4 text-sm leading-7">{report.message.body ?? 'متن پیام حذف شده است.'}</blockquote>}
+                {report.status === 'open' && <><label className="block text-xs font-semibold text-muted">یادداشت رسیدگی (اختیاری)<textarea value={notes[report.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [report.id]: event.target.value }))} maxLength={1000} rows={2} className="mt-2 w-full border border-border bg-white p-3 text-sm focus:border-terracotta" /></label><div className="flex flex-wrap gap-2"><Button size="sm" variant="outline" disabled={busyId !== null} loading={busyId === report.id} onClick={() => review(report, 'reviewed')}>ثبت بررسی</Button><Button size="sm" variant="outline" disabled={busyId !== null} onClick={() => review(report, 'dismissed')}>رد گزارش</Button>{report.message && <Button size="sm" variant="danger" disabled={busyId !== null} onClick={() => review(report, 'remove_message')}>حذف پیام</Button>}</div></>}
+            </article>)}</div>
+            <Pagination currentPage={result.current_page ?? page} lastPage={result.last_page ?? 1} onPageChange={(next) => setParams(next > 1 ? { page: String(next) } : {})} disabled={loading || busyId !== null} />
+        </>}
+    </section>;
+}
