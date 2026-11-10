@@ -27,6 +27,7 @@ const AdminUsersPage = lazy(() => import('./AdminWorkspace').then((module) => ({
 const AdminEditorialPage = lazy(() => import('./EditorialPages').then((module) => ({ default: module.AdminEditorialPage })));
 const CollectionIndexPage = lazy(() => import('./EditorialPages').then((module) => ({ default: module.CollectionIndexPage })));
 const CollectionDetailPage = lazy(() => import('./EditorialPages').then((module) => ({ default: module.CollectionDetailPage })));
+const MessagingCenter = lazy(() => import('./MessagingCenter'));
 
 function withRouteFallback(element) {
     return <Suspense fallback={<RouteLoading />}>{element}</Suspense>;
@@ -73,12 +74,14 @@ function AppRoutes() {
                     <Route path="profile" element={<ArtistProfileSettings />} />
                     <Route path="artworks" element={<ArtistArtworkPage />} />
                     <Route path="inquiries" element={<ArtistInquiryPage />} />
+                    <Route path="messages" element={withRouteFallback(<MessagingCenter role="artist" />)} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
                 <Route path="/dashboard/buyer" element={<RequireRole roles={['buyer']}><BuyerWorkspaceLayout /></RequireRole>}>
                     <Route index element={withRouteFallback(<BuyerDashboardHome />)} />
                     <Route path="inquiries" element={withRouteFallback(<BuyerInquiryPage />)} />
                     <Route path="inquiries/:id" element={withRouteFallback(<BuyerInquiryDetailPage />)} />
+                    <Route path="messages" element={withRouteFallback(<MessagingCenter role="buyer" />)} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
                 <Route path="/admin" element={<RequireRole roles={['admin']}><AdminWorkspaceLayout /></RequireRole>}>
