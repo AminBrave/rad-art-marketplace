@@ -90,6 +90,7 @@ Each Conversation has exactly two participants: the buyer account and artist acc
 - Replies may reference only a message in the same conversation. Editing records `edited_at`; deletion clears the stored body and reactions before retaining a soft-deleted tombstone.
 - Reactions are allow-listed and unique per message/participant/emoji; add/remove requests are idempotent.
 - Buyer and artist inboxes use paginated database-backed threads, unread counts/read receipts, and five-second polling. This is not WebSocket or push delivery.
+- New messages create recipient-only database notifications with sender display name and a conversation deep link; payloads omit message body and email. Users can disable in-app message notifications. Email delivery remains disabled until a verified mail configuration and queue worker are available.
 - `delivered_at` currently means accepted and persisted by the server, not confirmed delivery to a recipient device. `read_at` is set by the recipient's read action.
 - The current implementation uses the existing Laravel session/CSRF stack and database persistence. Attachments, typing/presence, notifications, reporting/blocking, moderation and end-to-end encryption are not claimed implemented.
 
