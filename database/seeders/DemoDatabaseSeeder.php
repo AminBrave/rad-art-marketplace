@@ -38,7 +38,6 @@ class DemoDatabaseSeeder extends Seeder
         }
 
         $reservedAccounts = [
-            'admin@rademan.test' => User::ROLE_ADMIN,
             'artist@rademan.test' => User::ROLE_ARTIST,
             'buyer@rademan.test' => User::ROLE_BUYER,
             'buyer-02@rademan.test' => User::ROLE_BUYER,
@@ -75,10 +74,14 @@ class DemoDatabaseSeeder extends Seeder
         $password = app()->environment('production') ? (string) env('RADEMAN_SHOWCASE_PASSWORD') : self::PASSWORD;
         $passwordHash = Hash::make($password);
 
-        $admin = User::query()->firstOrCreate(['email' => 'admin@rademan.test'], [
-            'name' => 'مدیر رادمان', 'password' => $passwordHash,
-            'role' => User::ROLE_ADMIN, 'email_verified_at' => now(),
-        ]);
+        // Production showcase records must be attributed to a real, already-authorized admin.
+        // Never create a privileged production login with a shared demo password.
+        $admin = app()->environment('production')
+            ? User::query()->where('role', User::ROLE_ADMIN)->orderBy('id')->firstOrFail()
+            : User::query()->firstOrCreate(['email' => 'admin@rademan.test'], [
+                'name' => 'مدیر رادمان', 'password' => $passwordHash,
+                'role' => User::ROLE_ADMIN, 'email_verified_at' => now(),
+            ]);
 
         $categories = [];
         foreach ([
