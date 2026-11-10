@@ -33,7 +33,7 @@ class EditorialController extends Controller
     public function collection(CuratedCollection $collection): JsonResponse
     {
         abort_unless($collection->isPublished(), 404);
-        $collection->load(['artworks' => fn (Builder $query) => $this->publicArtworkQuery($query)]);
+        $collection->load(['artworks' => fn ($query) => $this->publicArtworkQuery($query)]);
 
         return response()->json(['data' => $this->collectionPayload($collection, true)]);
     }
