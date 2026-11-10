@@ -42,6 +42,15 @@ Use this checklist for a release candidate. A checked item requires evidence for
 - [ ] Verify About, Help, and Contact pages and all public navigation/footer links.
 - [ ] Verify private profiles, unapproved artwork, and private image files remain inaccessible publicly.
 
+## SEO and shareability
+
+- [ ] Confirm public artwork, artist and published-collection pages emit unique server-rendered title/description, canonical, Open Graph/Twitter and factual JSON-LD in the initial HTML.
+- [ ] Confirm canonical origins use production `APP_URL`, not the incoming Host header.
+- [ ] Validate `/sitemap.xml` contains only public artists, approved artworks belonging to public profiles, published collections and public static pages.
+- [ ] Validate `/robots.txt` references the production sitemap and excludes authenticated workspace roots without blocking public artwork image URLs.
+- [ ] Confirm private profiles, pending/private artworks and draft/unpublished collections are absent from public metadata and sitemap.
+- [ ] Verify actual social preview fetches and crawler behavior on the deployed hostname; local HTML tests are not external indexing evidence.
+
 ## Authentication and workspaces
 
 - [ ] Verify Buyer/Artist registration, login, logout, session restoration, and Admin provisioning.
@@ -120,6 +129,7 @@ Email verification and password-reset UX are not implemented. Analytics is a pro
 
 - [ ] Verify migrations on the supported production MySQL version and rehearse rollback/forward recovery.
 - [ ] Verify participant-only access for conversation, message, attachment and report resources, including cross-account 404 behavior.
+- [ ] Verify sender-only message edit/delete, content-free deletion tombstones, reply context, reaction idempotency, and sent/server-accepted/read state semantics.
 - [ ] Verify rate limits, block/report behavior, admin audit trail, retention and private attachment storage.
 - [ ] Verify notification content and deep links do not disclose message bodies or private resources to unauthorized recipients.
 - [ ] Enable email only after queue/worker availability, sender identity, retry/failure handling, preferences and unsubscribe controls are verified.
