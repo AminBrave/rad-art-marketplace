@@ -228,4 +228,17 @@ These automated checks do not replace manual visual design review, Firefox/WebKi
 9. Refresh the API reads and confirm messages, timestamps, sender identity, and inquiry/artwork context remain server-derived.
 10. Confirm API responses omit participant email addresses and private storage paths.
 
-The remaining M05 UI, real-time, attachment, notification and safety workflows have separate smoke-test steps when implemented. Do not infer their completion from this API slice.
+## M05-T03 — Replies, editing, deletion, reactions and message states
+
+1. Sign in as a Buyer and open a conversation. Reply to an existing message; confirm the quoted sender and text appear above the new message for both participants.
+2. As the message sender, edit the message. Confirm the updated text and edited marker appear for both participants after polling/refresh.
+3. As the other participant, attempt to edit that message through the API or UI. Confirm the server returns 404 and the original text is unchanged.
+4. As the sender, delete a message. Confirm both participants see a deleted-message tombstone, not the original body. Verify reactions are removed with the deleted message.
+5. Attempt to edit or delete a message that belongs to another conversation, or a message sent by the other participant. Confirm 404 and no content is changed.
+6. Add each supported reaction (👍, ❤️, 😂, 😮, 🙏, 🎨) as a participant. Confirm the count and your selected state update for both participants.
+7. Repeat the same reaction-add request. Confirm the count remains one for that participant/emoji. Remove the reaction and confirm the count/state update.
+8. Try an unsupported emoji and a nonparticipant reaction request. Confirm validation returns 422 for unsupported emoji and 404 for a nonparticipant.
+9. Send a message and confirm it shows the server-accepted/delivered state. Read it from the other account and confirm the sender sees the read state. Do not interpret delivered as device-level push delivery.
+10. Test all actions at narrow mobile and desktop widths, with keyboard navigation and Persian text mixed with URLs/names. Confirm visible focus, readable quoted content, and no horizontal overflow.
+
+The remaining M05 real-time, typing/presence, attachment, notification, search/archive/mute, reporting/blocking and moderation workflows are separate implementation stages. Do not infer their completion from this message-actions slice.
