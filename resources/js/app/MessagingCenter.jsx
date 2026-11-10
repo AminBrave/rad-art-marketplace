@@ -19,6 +19,8 @@ export default function MessagingCenter({ role }) {
     const [messages, setMessages] = useState([]);
     const [draft, setDraft] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
+    const [filePreview, setFilePreview] = useState('');
+    const [pendingMessageId, setPendingMessageId] = useState(null);
     const [uploadProgress, setUploadProgress] = useState(0);
     const [replyTo, setReplyTo] = useState(null);
     const [editingId, setEditingId] = useState(null);
@@ -62,6 +64,13 @@ export default function MessagingCenter({ role }) {
         return () => { cancelled = true; };
     }, [active]);
 
+    useEffect(() => {
+        if (!selectedFile || !selectedFile.type.startsWith('image/')) { setFilePreview(''); return undefined; }
+        const url = URL.createObjectURL(selectedFile);
+        setFilePreview(url);
+        return () => URL.revokeObjectURL(url);
+    }, [selectedFile]);
+
     const requestedConversation = params.get('conversation');
 
     useEffect(() => {
@@ -102,11 +111,13 @@ export default function MessagingCenter({ role }) {
         if ((!body && !selectedFile) || !active || sending || safety.blocked_by_me || safety.blocked_by_other) return;
         setSending(true);
         setError('');
+        const messageClientId = pendingMessageId || (window.crypto?.randomUUID?.() ?? ('msg-' + Date.now() + '-' + Math.random().toString(36).slice(2)));
+        setPendingMessageId(messageClientId);
         try {
             const { data } = await axios.post('/api/v1/conversations/' + active + '/messages', {
                 body: body || 'فایل پیوست',
                 reply_to_id: replyTo?.id ?? null,
-                client_message_id: window.crypto?.randomUUID?.() ?? ('msg-' + Date.now() + '-' + Math.random().toString(36).slice(2)),
+                client_message_id: messageClientId,
             });
             let savedMessage = data.data;
             if (selectedFile) {
@@ -121,6 +132,7 @@ export default function MessagingCenter({ role }) {
             setMessages((current) => current.some((item) => item.id === savedMessage.id) ? current.map((item) => item.id === savedMessage.id ? savedMessage : item) : [...current, savedMessage]);
             setDraft('');
             setSelectedFile(null);
+            setPendingMessageId(null);
             setUploadProgress(0);
             setReplyTo(null);
             loadThreads();
@@ -275,7 +287,7 @@ export default function MessagingCenter({ role }) {
                                 {replyTo && <div className="mb-3 flex items-start justify-between gap-3 border-r-2 border-terracotta bg-surface-muted p-3 text-xs"><div><strong>پاسخ به {replyTo.sender_name ?? 'پیام'}</strong><p className="mt-1 line-clamp-2 text-muted">{replyTo.body}</p></div><button type="button" onClick={() => setReplyTo(null)} aria-label="لغو پاسخ">×</button></div>}
                                 <div className="flex items-end gap-3">
                                     <div className="min-w-0 flex-1 space-y-2"><textarea aria-label="متن پیام" ref={draftRef} value={draft} onChange={(event) => setDraft(event.target.value)} rows={2} maxLength={5000} placeholder="پیام خود را بنویسید…" className="min-h-12 w-full resize-y border border-border bg-canvas p-3 text-sm outline-none focus:border-terracotta" />
-                                        <div className="flex flex-wrap items-center gap-3"><label className="cursor-pointer text-xs font-semibold text-muted underline">افزودن تصویر یا PDF<input type="file" accept="image/jpeg,image/png,image/webp,application/pdf" className="sr-only" onChange={(event) => setSelectedFile(event.target.files?.[0] ?? null)} /></label>{selectedFile && <span className="max-w-48 truncate text-xs text-muted">{selectedFile.name}</span>}{sending && selectedFile && <span role="status" className="text-xs text-muted">بارگذاری {uploadProgress}%</span>}</div>
+                                        <div className="flex flex-wrap items-center gap-3"><label className="cursor-pointer text-xs font-semibold text-muted underline">افزودن تصویر یا PDF<input type="file" accept="image/jpeg,image/png,image/webp,application/pdf" className="sr-only" onChange={(event) => setSelectedFile(event.target.files?.[0] ?? null)} /></label>{selectedFile && <><span className="max-w-48 truncate text-xs text-muted">{selectedFile.name}</span><button type="button" onClick={() => setSelectedFile(null)} className="text-xs text-red-700 underline">حذف پیوست</button></>}{sending && selectedFile && <span role="status" className="text-xs text-muted">بارگذاری {uploadProgress}%</span>}</div>{filePreview && <img src={filePreview} alt="پیش‌نمایش فایل پیوست" className="mt-2 max-h-24 max-w-32 border border-border object-contain" />}
                                     </div>
                                     <button type="submit" disabled={(!draft.trim() && !selectedFile) || sending || safety.blocked_by_me || safety.blocked_by_other} className="min-h-12 bg-ink px-5 text-sm font-bold text-white disabled:opacity-50">{sending ? '…' : 'ارسال'}</button>
                                 </div>
