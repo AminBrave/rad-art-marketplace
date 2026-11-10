@@ -144,3 +144,23 @@ Database-backed authorization is separately covered by `tests/Feature/ArtistInqu
 - [ ] Independently review authorization, attachment handling, notification privacy, rate limits, retention and abuse workflows before M05 sign-off.
 - [ ] Verify actual target-host support before enabling broadcasting daemons, queues, Redis, email workers, or malware-scanning services.
 - [ ] Do not claim end-to-end encryption, device-level delivery, real-time transport, email delivery, or production readiness without corresponding evidence.
+
+
+## M05 safety and attachment implementation — final verification pending
+
+- [ ] Run the new MessageSafetyTest and MessageAttachmentTest feature suites.
+- [ ] Run the complete Laravel tests and Pint; run frontend tests, ESLint and Vite build.
+- [ ] Verify migration up/down behavior on supported MySQL as well as SQLite test migrations.
+- [ ] Verify private file upload/download, MIME/size rejection, participant 404, sender-only upload, deletion purge and no public storage exposure.
+- [ ] Verify block enforcement in both directions, idempotent reports, admin queue authorization and audit records.
+- [ ] Complete manual keyboard/RTL/mobile review of new messaging and admin safety UI.
+- [ ] Obtain independent security review; no antivirus scanner is integrated and no WebSocket/email service is enabled.
+
+
+## M05 inbox controls — final verification pending
+
+- [ ] Run ConversationInboxSettingsTest and the full backend suite.
+- [ ] Verify buyer/artist independent archive and mute state, unread filter, message/name search and access isolation.
+- [ ] Verify artwork context links, direct-entry deep links and responsive/keyboard behavior.
+
+- [ ] Verify muted conversation notification suppression does not affect the other participant or global notification preferences.

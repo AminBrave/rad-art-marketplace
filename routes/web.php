@@ -11,8 +11,11 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ConversationController;
 use App\Http\Controllers\Api\V1\DirectConversationController;
 use App\Http\Controllers\Api\V1\EditorialController;
+use App\Http\Controllers\Api\V1\MessageAttachmentController;
+use App\Http\Controllers\Api\V1\MessageSafetyController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\PublicPageController;
+use App\Http\Middleware\EnsureConversationNotBlocked;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'app')->name('home');
@@ -40,11 +43,19 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
         Route::post('/inquiries/{inquiry}/conversation', [ConversationController::class, 'startFromInquiry'])->name('conversations.start');
         Route::get('/conversations/{conversation}', [ConversationController::class, 'show'])->name('conversations.show');
         Route::get('/conversations/{conversation}/messages', [ConversationController::class, 'messages'])->name('conversations.messages');
-        Route::post('/conversations/{conversation}/messages', [ConversationController::class, 'storeMessage'])->middleware('throttle:30,1')->name('conversations.messages.store');
+        Route::post('/conversations/{conversation}/messages', [ConversationController::class, 'storeMessage'])->middleware(['throttle:30,1', EnsureConversationNotBlocked::class])->name('conversations.messages.store');
+        Route::get('/conversations/{conversation}/safety', [MessageSafetyController::class, 'status'])->name('conversations.safety');
+        Route::post('/conversations/{conversation}/messages/{message}/attachments', [MessageAttachmentController::class, 'store'])->middleware(['throttle:10,1', EnsureConversationNotBlocked::class])->name('conversations.attachments.store');
+        Route::get('/conversations/{conversation}/messages/{message}/attachments/{attachment}', [MessageAttachmentController::class, 'download'])->name('conversations.attachments.download');
+        Route::post('/conversations/{conversation}/report', [MessageSafetyController::class, 'reportConversation'])->middleware('throttle:5,1')->name('conversations.report');
+        Route::post('/conversations/{conversation}/messages/{message}/report', [MessageSafetyController::class, 'reportMessage'])->middleware('throttle:5,1')->name('conversations.messages.report');
+        Route::post('/conversations/{conversation}/block', [MessageSafetyController::class, 'block'])->middleware('throttle:10,1')->name('conversations.block');
+        Route::delete('/conversations/{conversation}/block', [MessageSafetyController::class, 'unblock'])->middleware('throttle:10,1')->name('conversations.unblock');
         Route::patch('/conversations/{conversation}/messages/{message}', [ConversationController::class, 'updateMessage'])->middleware('throttle:30,1')->name('conversations.messages.update');
         Route::delete('/conversations/{conversation}/messages/{message}', [ConversationController::class, 'deleteMessage'])->name('conversations.messages.delete');
         Route::post('/conversations/{conversation}/messages/{message}/reactions', [ConversationController::class, 'setReaction'])->middleware('throttle:60,1')->name('conversations.messages.reactions');
         Route::patch('/conversations/{conversation}/read', [ConversationController::class, 'markRead'])->name('conversations.read');
+        Route::patch('/conversations/{conversation}/settings', [ConversationController::class, 'updateSettings'])->middleware('throttle:30,1')->name('conversations.settings');
         Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
         Route::patch('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
         Route::get('/notifications/preferences', [NotificationController::class, 'preferences'])->name('notifications.preferences');
@@ -92,6 +103,8 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
 
     Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function (): void {
         Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+        Route::get('/message-reports', [MessageSafetyController::class, 'adminIndex'])->name('message-reports.index');
+        Route::patch('/message-reports/{report}', [MessageSafetyController::class, 'adminUpdate'])->name('message-reports.update');
         Route::prefix('editorial')->name('editorial.')->group(function (): void {
             Route::get('/options', [EditorialController::class, 'options'])->name('options');
             Route::get('/featured-artists', [EditorialController::class, 'adminFeaturedArtists'])->name('featured-artists.index');

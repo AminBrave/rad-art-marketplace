@@ -13,18 +13,19 @@ use App\Notifications\MessageReceivedNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class ConversationController extends Controller
 {
     public function buyerIndex(Request $request): JsonResponse
     {
-        return $this->indexFor($request->user(), 'buyer_user_id');
+        return $this->indexFor($request, $request->user(), 'buyer_user_id');
     }
 
     public function artistIndex(Request $request): JsonResponse
     {
-        return $this->indexFor($request->user(), 'artist_user_id');
+        return $this->indexFor($request, $request->user(), 'artist_user_id');
     }
 
     public function startFromInquiry(Request $request, ArtistInquiry $inquiry): JsonResponse
@@ -38,6 +39,13 @@ class ConversationController extends Controller
             404
         );
         abort_unless(in_array($user->role, [User::ROLE_BUYER, User::ROLE_ARTIST], true), 403);
+        $buyerUserId = (int) $inquiry->sender_user_id;
+        $pairBlocked = DB::table('user_blocks')->where(function ($query) use ($buyerUserId, $artistUserId): void {
+            $query->where('blocker_user_id', $buyerUserId)->where('blocked_user_id', $artistUserId);
+        })->orWhere(function ($query) use ($buyerUserId, $artistUserId): void {
+            $query->where('blocker_user_id', $artistUserId)->where('blocked_user_id', $buyerUserId);
+        })->exists();
+        abort_if($pairBlocked, 403, 'شروع گفتگو در این وضعیت امکان‌پذیر نیست.');
 
         $conversation = DB::transaction(function () use ($inquiry, $artistUserId): Conversation {
             $pairKey = $inquiry->sender_user_id.':'.$artistUserId;
@@ -71,7 +79,7 @@ class ConversationController extends Controller
                 ],
             );
 
-            if ($initialMessage->wasRecentlyCreated && (int) $inquiry->sender_user_id === (int) auth()->id()) {
+            if ($initialMessage->wasRecentlyCreated && (int) $inquiry->sender_user_id === (int) auth()->id() && $conversation->artist_muted_at === null) {
                 User::query()->find($artistUserId)?->notify(new MessageReceivedNotification(
                     (int) $conversation->id,
                     (int) $initialMessage->id,
@@ -116,7 +124,7 @@ class ConversationController extends Controller
 
         $messages = $conversation->messages()
             ->withTrashed()
-            ->with(['sender', 'replyTo.sender', 'reactions'])
+            ->with(['sender', 'replyTo.sender', 'reactions', 'attachments'])
             ->latest('id')
             ->paginate(30);
 
@@ -152,7 +160,7 @@ class ConversationController extends Controller
                     ->first();
 
                 if ($existing) {
-                    return $existing->load(['sender', 'replyTo.sender', 'reactions']);
+                    return $existing->load(['sender', 'replyTo.sender', 'reactions', 'attachments']);
                 }
             }
 
@@ -169,13 +177,18 @@ class ConversationController extends Controller
             $recipientId = (int) $request->user()->id === (int) $lockedConversation->buyer_user_id
                 ? (int) $lockedConversation->artist_user_id
                 : (int) $lockedConversation->buyer_user_id;
-            User::query()->find($recipientId)?->notify(new MessageReceivedNotification(
-                (int) $lockedConversation->id,
-                (int) $message->id,
-                $request->user()->name,
-            ));
+            $recipientMutedAt = $recipientId === (int) $lockedConversation->buyer_user_id
+                ? $lockedConversation->buyer_muted_at
+                : $lockedConversation->artist_muted_at;
+            if ($recipientMutedAt === null) {
+                User::query()->find($recipientId)?->notify(new MessageReceivedNotification(
+                    (int) $lockedConversation->id,
+                    (int) $message->id,
+                    $request->user()->name,
+                ));
+            }
 
-            return $message->load(['sender', 'replyTo.sender', 'reactions']);
+            return $message->load(['sender', 'replyTo.sender', 'reactions', 'attachments']);
         });
 
         return response()->json([
@@ -197,7 +210,7 @@ class ConversationController extends Controller
         ])->save();
 
         return response()->json([
-            'data' => $this->messagePayload($message->load(['sender', 'replyTo.sender', 'reactions']), $request->user()),
+            'data' => $this->messagePayload($message->load(['sender', 'replyTo.sender', 'reactions', 'attachments']), $request->user()),
         ]);
     }
 
@@ -208,13 +221,17 @@ class ConversationController extends Controller
         // Remove message content and reactions before retaining a minimal tombstone for thread continuity.
         DB::transaction(function () use ($message): void {
             $message->reactions()->delete();
+            $message->attachments()->get()->each(function ($attachment): void {
+                Storage::disk('local')->delete($attachment->storage_path);
+                $attachment->delete();
+            });
             $message->forceFill(['body' => ''])->save();
             $message->delete();
         });
 
         return response()->json([
             'message' => 'پیام حذف شد.',
-            'data' => $this->messagePayload($message->load(['sender', 'replyTo.sender', 'reactions']), $request->user()),
+            'data' => $this->messagePayload($message->load(['sender', 'replyTo.sender', 'reactions', 'attachments']), $request->user()),
         ]);
     }
 
@@ -243,7 +260,39 @@ class ConversationController extends Controller
         }
 
         return response()->json([
-            'data' => $this->messagePayload($message->load(['sender', 'replyTo.sender', 'reactions']), $request->user()),
+            'data' => $this->messagePayload($message->load(['sender', 'replyTo.sender', 'reactions', 'attachments']), $request->user()),
+        ]);
+    }
+
+    public function updateSettings(Request $request, Conversation $conversation): JsonResponse
+    {
+        $user = $request->user();
+        $this->authorizeParticipant($user, $conversation, 'update');
+        $validated = $request->validate([
+            'archived' => ['sometimes', 'boolean'],
+            'muted' => ['sometimes', 'boolean'],
+        ]);
+
+        $fields = [];
+        if (array_key_exists('archived', $validated)) {
+            $fields[(int) $user->id === (int) $conversation->buyer_user_id ? 'buyer_archived_at' : 'artist_archived_at'] =
+                $validated['archived'] ? now() : null;
+        }
+        if (array_key_exists('muted', $validated)) {
+            $fields[(int) $user->id === (int) $conversation->buyer_user_id ? 'buyer_muted_at' : 'artist_muted_at'] =
+                $validated['muted'] ? now() : null;
+        }
+        if ($fields !== []) {
+            $conversation->forceFill($fields)->save();
+        }
+
+        return response()->json([
+            'data' => [
+                'archived' => $conversation->fresh()->archivedAtFor($user) !== null,
+                'muted' => ((int) $user->id === (int) $conversation->buyer_user_id
+                    ? $conversation->fresh()->buyer_muted_at
+                    : $conversation->fresh()->artist_muted_at) !== null,
+            ],
         ]);
     }
 
@@ -275,17 +324,44 @@ class ConversationController extends Controller
         abort_if($message->trashed(), 404);
     }
 
-    private function indexFor(User $user, string $participantColumn): JsonResponse
+    private function indexFor(Request $request, User $user, string $participantColumn): JsonResponse
     {
-        $conversations = Conversation::query()
+        $filters = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'filter' => ['nullable', 'string', Rule::in(['all', 'unread', 'archived'])],
+        ]);
+        $archivedColumn = $participantColumn === 'buyer_user_id' ? 'buyer_archived_at' : 'artist_archived_at';
+        $search = trim((string) ($filters['search'] ?? ''));
+        $filter = $filters['filter'] ?? 'all';
+
+        $query = Conversation::query()
             ->where($participantColumn, $user->id)
-            ->with(['inquiry.artistProfile', 'inquiry.artwork', 'buyer', 'artist.artistProfile', 'latestMessage.sender'])
+            ->with(['inquiry.artistProfile', 'inquiry.artwork', 'buyer', 'artist.artistProfile', 'latestMessage.sender', 'latestMessage.attachments'])
             ->withCount([
-                'messages as unread_count' => fn ($query) => $query
+                'messages as unread_count' => fn ($messages) => $messages
                     ->where('sender_user_id', '!=', $user->id)
                     ->whereNull('read_at'),
-            ])
-            ->orderByDesc('last_message_at')
+            ]);
+
+        if ($filter === 'archived') {
+            $query->whereNotNull($archivedColumn);
+        } else {
+            $query->whereNull($archivedColumn);
+        }
+        if ($filter === 'unread') {
+            $query->whereHas('messages', fn ($messages) => $messages
+                ->where('sender_user_id', '!=', $user->id)
+                ->whereNull('read_at'));
+        }
+        if ($search !== '') {
+            $query->where(function ($nested) use ($search): void {
+                $nested->whereHas('buyer', fn ($buyer) => $buyer->where('name', 'like', '%'.$search.'%'))
+                    ->orWhereHas('artist', fn ($artist) => $artist->where('name', 'like', '%'.$search.'%'))
+                    ->orWhereHas('messages', fn ($messages) => $messages->where('body', 'like', '%'.$search.'%'));
+            });
+        }
+
+        $conversations = $query->orderByDesc('last_message_at')
             ->paginate(20)
             ->through(fn (Conversation $conversation): array => $this->conversationPayload($conversation, $user));
 
@@ -344,6 +420,7 @@ class ConversationController extends Controller
     private function messagePayload(Message $message, ?User $viewer = null): array
     {
         $reactions = $message->relationLoaded('reactions') ? $message->reactions : collect();
+        $attachments = $message->relationLoaded('attachments') ? $message->attachments : $message->attachments()->get();
         $reactionSummary = $reactions->groupBy('emoji')->map(
             fn ($items, string $emoji): array => [
                 'emoji' => $emoji,
@@ -365,6 +442,13 @@ class ConversationController extends Controller
                 'body' => $message->replyTo->trashed() ? null : $message->replyTo->body,
             ] : null,
             'reactions' => $reactionSummary,
+            'attachments' => $attachments->map(fn ($attachment): array => [
+                'id' => $attachment->id,
+                'name' => $attachment->original_name,
+                'mime_type' => $attachment->mime_type,
+                'size_bytes' => $attachment->size_bytes,
+                'download_url' => '/api/v1/conversations/'.$message->conversation_id.'/messages/'.$message->id.'/attachments/'.$attachment->id,
+            ])->values()->all(),
             'delivered_at' => $message->delivered_at?->toISOString(),
             'read_at' => $message->read_at?->toISOString(),
             'edited_at' => $message->edited_at?->toISOString(),

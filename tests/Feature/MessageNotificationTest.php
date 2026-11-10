@@ -99,6 +99,26 @@ class MessageNotificationTest extends TestCase
             ->assertJsonCount(0, 'data');
     }
 
+    public function test_muted_conversation_suppresses_in_app_message_notifications_for_that_participant(): void
+    {
+        [$buyer, $artist, $conversation] = $this->conversation();
+
+        $this->actingAs($artist)
+            ->patchJson('/api/v1/conversations/'.$conversation->id.'/settings', ['muted' => true])
+            ->assertOk()
+            ->assertJsonPath('data.muted', true);
+
+        $this->actingAs($buyer)
+            ->postJson('/api/v1/conversations/'.$conversation->id.'/messages', [
+                'body' => 'پیام در گفتگوی بی‌صدا',
+                'client_message_id' => 'notify-muted-1',
+            ])
+            ->assertCreated();
+
+        $this->assertDatabaseCount('notifications', 0);
+        $this->assertSame(0, $artist->notifications()->count());
+    }
+
     public function test_mark_all_read_only_updates_the_current_users_message_notifications(): void
     {
         [$buyer, $artist, $conversation] = $this->conversation();

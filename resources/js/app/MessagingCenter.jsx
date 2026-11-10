@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 const reactionOptions = ['👍', '❤️', '😂', '😮', '🙏', '🎨'];
 
@@ -15,9 +15,15 @@ export default function MessagingCenter({ role }) {
     const { user } = useAuth();
     const [params, setParams] = useSearchParams();
     const [threads, setThreads] = useState([]);
+    const [search, setSearch] = useState('');
+    const [threadFilter, setThreadFilter] = useState('all');
     const [active, setActive] = useState(null);
     const [messages, setMessages] = useState([]);
     const [draft, setDraft] = useState('');
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [filePreview, setFilePreview] = useState('');
+    const [pendingMessageId, setPendingMessageId] = useState(null);
+    const [uploadProgress, setUploadProgress] = useState(0);
     const [replyTo, setReplyTo] = useState(null);
     const [editingId, setEditingId] = useState(null);
     const [editDraft, setEditDraft] = useState('');
@@ -25,18 +31,32 @@ export default function MessagingCenter({ role }) {
     const [sending, setSending] = useState(false);
     const [actionId, setActionId] = useState(null);
     const [error, setError] = useState('');
+    const [notice, setNotice] = useState('');
+    const [safety, setSafety] = useState({ blocked_by_me: false, blocked_by_other: false });
     const bottomRef = useRef(null);
     const draftRef = useRef(null);
     const endpoint = role === 'artist' ? '/api/v1/artist/conversations' : '/api/v1/buyer/conversations';
 
     const loadThreads = useCallback(async () => {
         try {
-            const { data } = await axios.get(endpoint);
+            const query = {};
+            if (search.trim()) query.search = search.trim();
+            if (threadFilter !== 'all') query.filter = threadFilter;
+            const { data } = await axios.get(endpoint, { params: query });
             setThreads(data.data ?? []);
         } catch {
             setError('دریافت گفتگوها انجام نشد. دوباره تلاش کنید.');
         } finally { setLoading(false); }
-    }, [endpoint]);
+    }, [endpoint, search, threadFilter]);
+
+    const updateThreadSetting = async (thread, setting, value) => {
+        try {
+            await axios.patch('/api/v1/conversations/' + thread.id + '/settings', { [setting]: value });
+            await loadThreads();
+        } catch {
+            setError('به‌روزرسانی وضعیت گفتگو انجام نشد.');
+        }
+    };
 
     const loadMessages = useCallback(async (id) => {
         if (!id) return;
@@ -48,6 +68,22 @@ export default function MessagingCenter({ role }) {
             setError('دریافت پیام‌ها انجام نشد.');
         }
     }, []);
+
+    useEffect(() => {
+        if (!active) { setSafety({ blocked_by_me: false, blocked_by_other: false }); return; }
+        let cancelled = false;
+        axios.get('/api/v1/conversations/' + active + '/safety')
+            .then(({ data }) => { if (!cancelled) setSafety(data.data ?? { blocked_by_me: false, blocked_by_other: false }); })
+            .catch(() => { if (!cancelled) setError('وضعیت ایمنی گفتگو دریافت نشد.'); });
+        return () => { cancelled = true; };
+    }, [active]);
+
+    useEffect(() => {
+        if (!selectedFile || !selectedFile.type.startsWith('image/')) { setFilePreview(''); return undefined; }
+        const url = window.URL.createObjectURL(selectedFile);
+        setFilePreview(url);
+        return () => window.URL.revokeObjectURL(url);
+    }, [selectedFile]);
 
     const requestedConversation = params.get('conversation');
 
@@ -86,21 +122,36 @@ export default function MessagingCenter({ role }) {
     const send = async (event) => {
         event.preventDefault();
         const body = draft.trim();
-        if (!body || !active || sending) return;
+        if ((!body && !selectedFile) || !active || sending || safety.blocked_by_me || safety.blocked_by_other) return;
         setSending(true);
         setError('');
+        const messageClientId = pendingMessageId || (window.crypto?.randomUUID?.() ?? ('msg-' + Date.now() + '-' + Math.random().toString(36).slice(2)));
+        setPendingMessageId(messageClientId);
         try {
             const { data } = await axios.post('/api/v1/conversations/' + active + '/messages', {
-                body,
+                body: body || 'فایل پیوست',
                 reply_to_id: replyTo?.id ?? null,
-                client_message_id: window.crypto?.randomUUID?.() ?? ('msg-' + Date.now() + '-' + Math.random().toString(36).slice(2)),
+                client_message_id: messageClientId,
             });
-            setMessages((current) => current.some((item) => item.id === data.data.id) ? current : [...current, data.data]);
+            let savedMessage = data.data;
+            if (selectedFile) {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+                const uploaded = await axios.post('/api/v1/conversations/' + active + '/messages/' + savedMessage.id + '/attachments', formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                    onUploadProgress: (event) => setUploadProgress(event.total ? Math.round((event.loaded * 100) / event.total) : 0),
+                });
+                savedMessage = { ...savedMessage, attachments: [...(savedMessage.attachments ?? []), { ...uploaded.data.data, download_url: '/api/v1/conversations/' + active + '/messages/' + savedMessage.id + '/attachments/' + uploaded.data.data.id }] };
+            }
+            setMessages((current) => current.some((item) => item.id === savedMessage.id) ? current.map((item) => item.id === savedMessage.id ? savedMessage : item) : [...current, savedMessage]);
             setDraft('');
+            setSelectedFile(null);
+            setPendingMessageId(null);
+            setUploadProgress(0);
             setReplyTo(null);
             loadThreads();
         } catch {
-            setError('ارسال پیام انجام نشد. متن پیام را نگه داشته‌ایم؛ دوباره تلاش کنید.');
+            setError('ارسال پیام یا پیوست انجام نشد. وضعیت پیام را بررسی و دوباره تلاش کنید.');
         } finally { setSending(false); }
     };
 
@@ -130,6 +181,44 @@ export default function MessagingCenter({ role }) {
         } finally { setActionId(null); }
     };
 
+    const reportMessage = async (message) => {
+        const details = window.prompt('دلیل گزارش این پیام را کوتاه توضیح دهید:');
+        if (details === null) return;
+        try {
+            await axios.post('/api/v1/conversations/' + active + '/messages/' + message.id + '/report', { reason: 'other', details });
+            setNotice('گزارش شما برای بررسی ثبت شد.');
+        } catch {
+            setError('ثبت گزارش انجام نشد. دوباره تلاش کنید.');
+        }
+    };
+
+    const reportConversation = async () => {
+        const details = window.prompt('دلیل گزارش این گفتگو را کوتاه توضیح دهید:');
+        if (details === null) return;
+        try {
+            await axios.post('/api/v1/conversations/' + active + '/report', { reason: 'other', details });
+            setNotice('گزارش گفتگو برای بررسی ثبت شد.');
+        } catch {
+            setError('ثبت گزارش گفتگو انجام نشد.');
+        }
+    };
+
+    const toggleBlock = async () => {
+        try {
+            if (safety.blocked_by_me) {
+                await axios.delete('/api/v1/conversations/' + active + '/block');
+                setSafety((current) => ({ ...current, blocked_by_me: false }));
+                setNotice('مسدودسازی برداشته شد.');
+            } else if (window.confirm('با مسدودسازی این کاربر، ارسال پیام در این گفتگو برای هر دو طرف متوقف می‌شود. ادامه می‌دهید؟')) {
+                await axios.post('/api/v1/conversations/' + active + '/block');
+                setSafety((current) => ({ ...current, blocked_by_me: true }));
+                setNotice('کاربر مسدود شد.');
+            }
+        } catch {
+            setError('به‌روزرسانی وضعیت مسدودسازی انجام نشد.');
+        }
+    };
+
     const toggleReaction = async (message, emoji) => {
         if (actionId || message.deleted_at) return;
         const existing = message.reactions?.find((reaction) => reaction.emoji === emoji);
@@ -154,10 +243,17 @@ export default function MessagingCenter({ role }) {
                 <h1 className="mt-2 text-2xl font-black">پیام‌ها</h1>
                 <p className="mt-2 text-sm text-muted">گفتگوی خصوصی خریداران و هنرمندان؛ پیام‌ها به‌صورت خودکار به‌روزرسانی می‌شوند.</p>
             </header>
+            {notice && <p role="status" className="border border-border bg-surface-muted p-3 text-sm">{notice}</p>}
             {error && <p role="alert" className="border border-red-200 bg-red-50 p-3 text-sm text-red-800">{error}</p>}
             <div className="grid min-h-[620px] overflow-hidden border border-border bg-white lg:grid-cols-[320px_minmax(0,1fr)]">
                 <aside className={active ? 'hidden border-l border-border lg:block' : 'border-l border-border'}>
                     <div className="border-b border-border p-4 font-bold">گفتگوها</div>
+                    <div className="space-y-2 border-b border-border p-3">
+                        <input aria-label="جستجوی گفتگوها" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="جستجو در گفتگوها…" className="w-full border border-border bg-canvas px-3 py-2 text-xs focus:border-terracotta" />
+                        <select aria-label="فیلتر گفتگوها" value={threadFilter} onChange={(event) => setThreadFilter(event.target.value)} className="w-full border border-border bg-white px-3 py-2 text-xs">
+                            <option value="all">گفتگوهای فعال</option><option value="unread">خوانده‌نشده‌ها</option><option value="archived">بایگانی‌شده‌ها</option>
+                        </select>
+                    </div>
                     {loading ? <p className="p-5 text-sm text-muted">در حال دریافت…</p> : threads.length === 0 ? <p className="p-5 text-sm leading-7 text-muted">هنوز گفتگویی ندارید. از صفحه هنرمند یا یک اثر، گزینه «پیام مستقیم» را انتخاب کنید.</p> : (
                         <ul className="divide-y divide-border">
                             {threads.map((thread) => <li key={thread.id}>
@@ -166,6 +262,10 @@ export default function MessagingCenter({ role }) {
                                     <span className="mt-2 block truncate text-xs text-muted">{thread.last_message?.body ?? (thread.last_message?.deleted_at ? 'پیام حذف شده است' : 'گفتگوی جدید')}</span>
                                     <span className="mt-1 block text-[11px] text-muted">{dateLabel(thread.last_message_at)}</span>
                                 </button>
+                                <div className="flex gap-3 px-4 pb-3 text-[11px] text-muted">
+                                    <button type="button" onClick={() => updateThreadSetting(thread, 'archived', !thread.archived)} className="underline">{thread.archived ? 'بازگردانی' : 'بایگانی'}</button>
+                                    <button type="button" onClick={() => updateThreadSetting(thread, 'muted', !thread.muted)} className="underline">{thread.muted ? 'لغو بی‌صدا' : 'بی‌صدا کردن'}</button>
+                                </div>
                             </li>)}
                         </ul>
                     )}
@@ -173,9 +273,10 @@ export default function MessagingCenter({ role }) {
                 <div className={active ? 'flex min-w-0 flex-col' : 'hidden min-w-0 flex-col lg:flex'}>
                     {!active ? <div className="m-auto p-8 text-center text-sm text-muted">برای مشاهده پیام‌ها یک گفتگو را انتخاب کنید.</div> : (
                         <>
-                            <header className="flex items-center gap-3 border-b border-border p-4">
+                            <header className="flex flex-wrap items-center gap-3 border-b border-border p-4">
                                 <button type="button" className="text-sm font-bold lg:hidden" onClick={() => setActive(null)}>بازگشت</button>
-                                <div><h2 className="font-bold">{selected?.participant?.name ?? 'گفتگوی خصوصی'}</h2><p className="mt-1 text-xs text-muted">گفتگوی مستقیم</p></div>
+                                <div className="min-w-0"><h2 className="font-bold">{selected?.participant?.name ?? 'گفتگوی خصوصی'}</h2><p className="mt-1 text-xs text-muted">گفتگوی مستقیم</p></div><button type="button" onClick={reportConversation} className="text-xs font-semibold text-muted underline">گزارش گفتگو</button><button type="button" onClick={toggleBlock} className="mr-auto text-xs font-semibold text-red-700 underline">{safety.blocked_by_me ? 'رفع مسدودسازی' : 'مسدودسازی کاربر'}</button>
+                                {selected?.contexts?.some((context) => context.artwork?.slug) && <div className="flex w-full flex-wrap gap-2 border-t border-border pt-3"><span className="text-xs text-muted">آثار مرتبط:</span>{selected.contexts.filter((context) => context.artwork?.slug).map((context) => <Link key={context.artwork.slug} to={'/artworks/' + context.artwork.slug} className="border border-border bg-surface-muted px-3 py-1.5 text-xs font-semibold underline">{context.artwork.title}</Link>)}</div>}
                             </header>
                             <div className="flex-1 space-y-4 overflow-y-auto bg-canvas p-4 sm:p-6" aria-live="polite">
                                 {messages.map((message) => {
@@ -184,6 +285,7 @@ export default function MessagingCenter({ role }) {
                                     return (
                                         <div key={message.id} className={'flex ' + (own ? 'justify-end' : 'justify-start')}>
                                             <article className="max-w-[90%] border border-border bg-white px-4 py-3 shadow-sm sm:max-w-[85%]">
+                                                {message.attachments?.length > 0 && <ul className="mb-3 space-y-2">{message.attachments.map((attachment) => <li key={attachment.id}><a href={attachment.download_url} className="inline-flex max-w-full items-center gap-2 border border-border bg-surface-muted px-3 py-2 text-xs font-semibold underline" rel="noreferrer"><span aria-hidden="true">📎</span><span className="truncate">{attachment.name}</span><span className="text-muted">({Math.max(1, Math.round(attachment.size_bytes / 1024))} KB)</span></a></li>)}</ul>}
                                                 {message.reply_to && <div className="mb-3 border-r-2 border-terracotta bg-surface-muted px-3 py-2 text-xs"><strong>{message.reply_to.sender_name ?? 'پیام قبلی'}</strong><p className="mt-1 line-clamp-2 text-muted">{message.reply_to.body ?? 'این پیام حذف شده است.'}</p></div>}
                                                 {editingId === message.id ? (
                                                     <form onSubmit={(event) => saveEdit(event, message)} className="space-y-2">
@@ -205,6 +307,7 @@ export default function MessagingCenter({ role }) {
                                                         </div>
                                                         <div className="mt-2 flex flex-wrap gap-3 text-[11px] text-muted">
                                                             <button type="button" onClick={() => { setReplyTo(message); setEditingId(null); draftRef.current?.focus(); }}>پاسخ</button>
+                                                            {!own && <button type="button" onClick={() => reportMessage(message)}>گزارش</button>}
                                                             {own && <button type="button" onClick={() => { setEditingId(message.id); setEditDraft(message.body ?? ''); }}>ویرایش</button>}
                                                             {own && <button type="button" disabled={actionId === message.id} onClick={() => deleteMessage(message)}>حذف</button>}
                                                         </div>
@@ -216,13 +319,15 @@ export default function MessagingCenter({ role }) {
                                 })}
                                 <div ref={bottomRef} />
                             </div>
-                            <form onSubmit={send} className="border-t border-border bg-white p-3 sm:p-4">
+                            {safety.blocked_by_me || safety.blocked_by_other ? <p role="status" className="border-t border-border bg-surface-muted p-4 text-sm text-muted">{safety.blocked_by_me ? 'این کاربر را مسدود کرده‌اید؛ برای ادامه گفتگو ابتدا مسدودسازی را بردارید.' : 'این گفتگو به‌دلیل تنظیمات ایمنی امکان ارسال پیام ندارد.'}</p> : <form onSubmit={send} className="border-t border-border bg-white p-3 sm:p-4">
                                 {replyTo && <div className="mb-3 flex items-start justify-between gap-3 border-r-2 border-terracotta bg-surface-muted p-3 text-xs"><div><strong>پاسخ به {replyTo.sender_name ?? 'پیام'}</strong><p className="mt-1 line-clamp-2 text-muted">{replyTo.body}</p></div><button type="button" onClick={() => setReplyTo(null)} aria-label="لغو پاسخ">×</button></div>}
                                 <div className="flex items-end gap-3">
-                                    <textarea aria-label="متن پیام" ref={draftRef} value={draft} onChange={(event) => setDraft(event.target.value)} rows={2} maxLength={5000} placeholder="پیام خود را بنویسید…" className="min-h-12 flex-1 resize-y border border-border bg-canvas p-3 text-sm outline-none focus:border-terracotta" />
-                                    <button type="submit" disabled={!draft.trim() || sending} className="min-h-12 bg-ink px-5 text-sm font-bold text-white disabled:opacity-50">{sending ? '…' : 'ارسال'}</button>
+                                    <div className="min-w-0 flex-1 space-y-2"><textarea aria-label="متن پیام" ref={draftRef} value={draft} onChange={(event) => setDraft(event.target.value)} rows={2} maxLength={5000} placeholder="پیام خود را بنویسید…" className="min-h-12 w-full resize-y border border-border bg-canvas p-3 text-sm outline-none focus:border-terracotta" />
+                                        <div className="flex flex-wrap items-center gap-3"><label className="cursor-pointer text-xs font-semibold text-muted underline">افزودن تصویر یا PDF<input type="file" accept="image/jpeg,image/png,image/webp,application/pdf" className="sr-only" onChange={(event) => setSelectedFile(event.target.files?.[0] ?? null)} /></label>{selectedFile && <><span className="max-w-48 truncate text-xs text-muted">{selectedFile.name}</span><button type="button" onClick={() => setSelectedFile(null)} className="text-xs text-red-700 underline">حذف پیوست</button></>}{sending && selectedFile && <span role="status" className="text-xs text-muted">بارگذاری {uploadProgress}%</span>}</div>{filePreview && <img src={filePreview} alt="پیش‌نمایش فایل پیوست" className="mt-2 max-h-24 max-w-32 border border-border object-contain" />}
+                                    </div>
+                                    <button type="submit" disabled={(!draft.trim() && !selectedFile) || sending || safety.blocked_by_me || safety.blocked_by_other} className="min-h-12 bg-ink px-5 text-sm font-bold text-white disabled:opacity-50">{sending ? '…' : 'ارسال'}</button>
                                 </div>
-                            </form>
+                            </form>}
                         </>
                     )}
                 </div>
