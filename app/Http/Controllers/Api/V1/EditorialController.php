@@ -129,7 +129,9 @@ class EditorialController extends Controller
             $collection->fill(array_intersect_key($validated, array_flip(['title', 'intro'])));
             $collection->updated_by = $request->user()->id;
             $collection->save();
-            if (array_key_exists('artwork_ids', $validated)) $this->syncCollectionItems($collection, $validated['artwork_ids']);
+            if (array_key_exists('artwork_ids', $validated)) {
+                $this->syncCollectionItems($collection, $validated['artwork_ids']);
+            }
             $this->audit($request, 'collection.updated', $collection, ['fields' => array_keys($validated)]);
         });
 
