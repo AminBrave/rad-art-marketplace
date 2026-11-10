@@ -1,9 +1,9 @@
 # Rad Art Marketplace
 
-Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact marketplace. It helps visitors discover approved artworks and public artist portfolios, and lets registered buyers send private inquiries to artists.
+Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact marketplace. It helps visitors discover approved artworks and public artist portfolios, and lets buyers and artists continue approved inquiries in private one-to-one conversations.
 
 **Current integration branch:** `main`  
-**Current delivery status:** M00, M02, and M03 implementation work is integrated into main; M03 was accepted and closed after all post-merge CI jobs passed. M04 artist-experience implementation is merged via [PR #99](https://github.com/AminBrave/rad-art-marketplace/pull/99); automated checks passed, with product-owner visual/functional acceptance still pending. M00 release gates and production sign-off remain separate and open.  
+**Current delivery status:** M00, M02, and M03 implementation work is integrated into main; M03 was accepted and closed after all post-merge CI jobs passed. M04 artist-experience implementation is merged via [PR #99](https://github.com/AminBrave/rad-art-marketplace/pull/99); automated checks passed, with product-owner visual/functional acceptance still pending. M05 secure messaging is in progress; its initial participant-scoped conversation API is being implemented on branch feat/m05-secure-messaging. M00 release gates and production sign-off remain separate and open.  
 **Product status:** Active MVP development; not yet verified or signed off for production.
 
 ## Product capabilities
@@ -26,14 +26,14 @@ Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact mark
 - API-backed artwork and inquiry summaries without fabricated analytics.
 - Artist-owned artwork list and create/edit forms with image preview, upload feedback, validation, and moderation status.
 - Paginated inquiry inbox, recipient-scoped detail, read/archive controls, and explicit lifecycle guidance.
-- No unsupported artwork deletion, inquiry replies, chat, or email delivery.
+- Private one-to-one conversation API foundation tied to the original inquiry; UI and remaining messaging features are still in progress.
 
 ### Buyer workspace — implemented
 
 - Buyer-only overview with the server-reported total sent-inquiry count and latest inquiry.
 - Paginated sent-inquiry history with artist/artwork context and server-reported status.
 - Dedicated inquiry detail routes that survive direct navigation and refresh.
-- Sender-scoped API reads; no inquiry status mutation, replies, chat, or email delivery.
+- Sender-scoped API reads and a participant-only conversation API foundation; the buyer inbox/thread UI is still in progress.
 
 ### Accounts and other workflows — implemented baseline
 
@@ -43,7 +43,7 @@ Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact mark
 - Artist profile creation/editing and public/private visibility.
 - Artist-owned artwork submission/editing and private image storage.
 - Admin artwork moderation: approve, reject, or request changes.
-- Buyer-to-artist inquiry intake and buyer sent-inquiry history.
+- Buyer-to-artist inquiry intake, sender-scoped history, and private one-to-one conversation persistence/API.
 - Admin overview using real pending-artwork and user totals.
 - Paginated artwork moderation with supported decisions, required notes, and status filters.
 - Paginated user management with supported Artist/Admin role updates and self-demotion protection.
@@ -51,7 +51,7 @@ Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact mark
 
 ### Explicitly out of scope
 
-Payments, cart/checkout, orders, shipping, real-time chat/replies, email delivery, native mobile apps, AI recommendations, social networking, subscriptions, and advertising. Email verification and password-reset user experience are also not implemented.
+Payments, cart/checkout, orders, shipping, group chat, public social networking, native mobile apps, AI recommendations, subscriptions, and advertising. Real-time transport, email delivery and attachments remain M05 implementation stages; they are not enabled by the initial API foundation. Email verification and password-reset user experience are also not implemented.
 
 ## MVP 2 delivery plan
 
@@ -83,8 +83,8 @@ MVP 2 follows the **Contemporary Art Editorial** visual direction, with Persian 
 ## Roles and access
 
 - **Guest:** browse approved artworks, public artist profiles, and public information pages.
-- **Buyer:** register, submit inquiries to public artists, and view only their own sent inquiries.
-- **Artist:** manage their own profile and artwork; view and update inquiries addressed to their profile.
+- **Buyer:** register, submit inquiries to public artists, and view only their own sent inquiries and conversations.
+- **Artist:** manage their own profile and artwork; view inquiries and participate in conversations addressed to their profile.
 - **Admin:** manage users and moderate artwork.
 
 Public registration accepts `artist` or `buyer`; omission defaults to `artist`. It never grants Admin. Provision an administrator from the server:

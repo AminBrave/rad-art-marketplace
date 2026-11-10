@@ -130,3 +130,17 @@ The Chromium browser suite ran 9 tests against a real Laravel-served React app w
 Database-backed authorization is separately covered by `tests/Feature/ArtistInquiryTest.php`, including cross-buyer detail access returning 404, artist recipient isolation, and email omission.
 
 **Still not checked off by CI:** full viewport matrix, real-device testing, keyboard/screen-reader/contrast review, manual mixed RTL/LTR content checks, repeatable performance measurements, production-host verification, and backup/restore drill. These remain manual/operational release gates; a green browser suite is not a substitute.
+
+
+## M05 — Secure messaging verification (in progress)
+
+- [ ] Run the focused ConversationTest feature suite and full Laravel test suite.
+- [ ] Run Laravel Pint, frontend tests, ESLint, and production build.
+- [ ] Verify buyer/artist participant isolation and 404 behavior for cross-account conversation/message IDs.
+- [ ] Verify duplicate client_message_id retries do not create duplicate messages under concurrent requests.
+- [ ] Verify reply references cannot cross conversation boundaries.
+- [ ] Verify sender identity, timestamps, unread counts, and read states are server-authoritative.
+- [ ] Complete responsive Persian RTL, mixed-direction, keyboard/focus, screen-reader and error/empty-state browser checks after inbox/thread UI lands.
+- [ ] Independently review authorization, attachment handling, notification privacy, rate limits, retention and abuse workflows before M05 sign-off.
+- [ ] Verify actual target-host support before enabling broadcasting daemons, queues, Redis, email workers, or malware-scanning services.
+- [ ] Do not claim end-to-end encryption, device-level delivery, real-time transport, email delivery, or production readiness without corresponding evidence.

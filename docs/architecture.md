@@ -74,15 +74,19 @@ Status transitions:
 
 Only approved artwork from public artist profiles appears in public catalogue queries and portfolios. Artwork view policy applies the same public-profile condition to detail and image routes; owners and Admins retain their authorized private/pending access. Public artwork payloads omit moderation status and rejection notes. Catalogue filters and sorting are server-validated, URL-backed in React, and applied before pagination. Artwork detail responses may include a bounded set of related public works selected by shared category or artist. Ownership is derived from the authenticated artist profile, never request input.
 
-### Artist inquiry
+### Artist inquiry and private conversation
 
-An `ArtistInquiry` belongs to a recipient ArtistProfile and sender User, and may optionally reference approved Artwork belonging to that profile.
+An ArtistInquiry belongs to a recipient ArtistProfile and sender User, and may optionally reference approved Artwork belonging to that profile. M05 adds a Conversation uniquely linked to one inquiry, with the original buyer and artist account as its only participants. Each Message belongs to that conversation and has a server-assigned sender, timestamps, optional same-conversation reply reference, delivery/read timestamps, and soft-delete support.
 
 - Buyers can create inquiries to public artists and access only their own sent inquiries.
 - Artists can access and update only inquiries addressed to their own profile.
-- Supported artist status actions are read and archived.
-- Inquiry payloads intentionally omit both parties' email addresses.
-- This is private inquiry intake/status tracking, not chat, replies, or email delivery.
+- Opening an inquiry conversation is idempotent and preserves the original inquiry as the initial message.
+- Every conversation/message read and write is authorized against the two participant IDs; non-participant lookups return 404.
+- Client message IDs are unique per sender/conversation to make retrying a send idempotent.
+- Message payloads are allow-listed and omit participant email addresses, private file paths, and credentials.
+- delivered_at currently means accepted and persisted by the server, not confirmed delivery to a recipient device. read_at is set by the recipient's read action.
+- The initial M05 API slice uses the existing Laravel session/CSRF stack and database persistence; it does not claim real-time transport, attachment handling, notifications, or end-to-end encryption.
+
 
 ## Security boundaries
 
@@ -103,13 +107,13 @@ An `ArtistInquiry` belongs to a recipient ArtistProfile and sender User, and may
 
 ## Deliberate constraints
 
-The current MVP does not require payment processing, order/fulfilment services, real-time chat, queues, Redis, long-running workers, microservices, or external analytics. Do not add these as incidental dependencies. Revisit architecture only for a concrete approved requirement and document the decision.
+M05 (#77) explicitly authorizes private one-to-one conversations and message workflows. Do not infer approval for payment processing, order/fulfilment services, group chat, public social feeds, or external analytics. Real-time transport, queued email delivery, and malware scanning require a separate compatibility/operations decision because the current cPanel target does not establish support for Redis, persistent workers, daemons, or a Reverb process. Do not add runtime infrastructure without verified hosting support and a documented decision.
 
 ## Current limitations and release dependencies
 
 - M02 discovery experience implementation is integrated in `main` via [PR #92](https://github.com/AminBrave/rad-art-marketplace/pull/92). Human visual review and the image-derivative decision remain open in [issue #62](https://github.com/AminBrave/rad-art-marketplace/issues/62). The prior MVP2 workspace stages remain integrated; M00 release gates remain tracked separately.
 - Email verification and password-reset UX are not implemented.
-- Admin category management, buyer reports/abuse queue, and featured placements are outside the current approved MVP 2 scope.
+- General-purpose admin category management, site-wide reports/abuse queue, and featured placements remain outside scope. M05 explicitly approves a message-specific reporting/blocking and moderation workflow.
 - Analytics is a proposal only; no provider or event collection is enabled.
 - cPanel/PHP compatibility, production deployment, backup automation, restore drills, and browser/device release QA remain unverified.
 

@@ -147,7 +147,26 @@ Inquiry creation fields:
 - `artwork_id`: optional; if supplied, it must identify approved artwork belonging to the target artist.
 - `honeypot`: must be empty/absent.
 
-The artist update accepts `status=read` or `status=archived`; buyers have no status-update endpoint and see the current status read-only. Buyer detail reads are scoped to the authenticated sender and return 404 for another buyer's inquiry. The API omits both parties' email addresses. This feature does not send email and does not provide a reply/chat channel. Buyer and artist inquiry lists use Laravel pagination (10 per page).
+The artist update accepts `status=read` or `status=archived`; buyers have no status-update endpoint and see the current status read-only. Buyer detail reads are scoped to the authenticated sender and return 404 for another buyer's inquiry. The API omits both parties' email addresses. Buyer and artist inquiry lists use Laravel pagination (10 per page). An inquiry is the context for a private one-to-one conversation; the conversation API below does not change the original inquiry.
+
+
+## Private conversations and messages (M05-T01)
+
+| Method | Path | Access | Purpose |
+|---|---|---|---|
+| POST | /api/v1/inquiries/{id}/conversation | Authenticated inquiry buyer or recipient artist | Create or reopen the inquiry's one-to-one conversation |
+| GET | /api/v1/buyer/conversations | Buyer | List conversations for the current buyer |
+| GET | /api/v1/artist/conversations | Artist | List conversations for the current artist |
+| GET | /api/v1/conversations/{id} | Conversation participant | Read conversation context and latest message |
+| GET | /api/v1/conversations/{id}/messages | Conversation participant | Read messages, paginated 30 per page |
+| POST | /api/v1/conversations/{id}/messages | Conversation participant, throttled | Send a message or reply |
+| PATCH | /api/v1/conversations/{id}/read | Conversation participant | Mark received messages as read |
+
+A conversation is unique to one existing inquiry and has exactly two participants: the inquiry sender and the owner of its recipient artist profile. Opening a conversation is idempotent and seeds the thread with the original inquiry text if it has not already been seeded. Admins and unrelated users are not participants. Participant-only resource checks return 404 for another user's conversation to avoid confirming its existence.
+
+Message body fields: **body** (required, 1–5000 characters), optional **client_message_id** (up to 64 safe ASCII characters; repeated sends with the same ID by the same sender in one conversation return the existing message), and optional **reply_to_id** (must reference a message in the same conversation). Sender identity and timestamps are assigned by Laravel. **delivered_at** records server acceptance/persistence, not device-level delivery; **read_at** is set when the other participant marks the conversation read. The API payload does not expose participant email addresses or storage paths.
+
+M05-T01 currently provides the persistence and participant-scoped API foundation. Message edit/delete, reactions, attachment upload/download, notifications, archive/mute controls, search, real-time transport and safety/reporting workflows are separate M05 child issues and are not implied by these endpoints.
 
 ## Common access and validation behavior
 
@@ -160,4 +179,4 @@ The artist update accepts `status=read` or `status=archived`; buyers have no sta
 
 ## Not implemented
 
-There are no API routes for email verification, password reset, admin category CRUD, buyer reports/abuse moderation, featured placements, static content management, payments, orders, email delivery, or chat.
+There are no API routes for email verification, password reset, admin category CRUD, buyer reports/abuse moderation, featured placements, static content management, payments, orders, email delivery, or the remaining M05 features.
