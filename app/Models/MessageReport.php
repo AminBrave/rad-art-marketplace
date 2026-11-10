@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class MessageReport extends Model
 {
     protected $fillable = [
-        'conversation_id', 'message_id', 'reporter_user_id', 'reason',
+        'conversation_id', 'message_id', 'reporter_user_id', 'subject_key', 'reason',
         'details', 'status', 'reviewed_by_user_id', 'reviewed_at',
     ];
 
