@@ -33,7 +33,17 @@ class MessageSafetyController extends Controller
         ]]);
     }
 
-    public function report(Request $request, Conversation $conversation, ?Message $message = null): JsonResponse
+    public function reportConversation(Request $request, Conversation $conversation): JsonResponse
+    {
+        return $this->createReport($request, $conversation, null);
+    }
+
+    public function reportMessage(Request $request, Conversation $conversation, Message $message): JsonResponse
+    {
+        return $this->createReport($request, $conversation, $message);
+    }
+
+    private function createReport(Request $request, Conversation $conversation, ?Message $message): JsonResponse
     {
         $user = $request->user();
         abort_unless($this->isParticipant($user, $conversation), 404);
