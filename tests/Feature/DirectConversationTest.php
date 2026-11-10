@@ -66,6 +66,7 @@ class DirectConversationTest extends TestCase
             'slug' => 'approved-artwork',
             'title' => 'اثر تأییدشده',
             'status' => Artwork::STATUS_APPROVED,
+            'image_path' => 'artworks/test.jpg',
             'availability' => 'available',
         ]);
 
