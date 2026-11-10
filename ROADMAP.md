@@ -9,7 +9,7 @@ This file is the concise project delivery map. The [GitHub tracker](https://gith
 - **Language and layout:** Persian-first, RTL by default; English-ready architecture, but no English UI launch commitment.
 - **Architecture:** Laravel 13 monolith + React 18/Vite + centralized React Router.
 - **Backend authority:** Laravel controls authentication, authorization, validation, ownership, and moderation.
-- **Scope exclusions:** Payments, cart/checkout, orders, shipping, real-time chat/replies, email delivery, native mobile apps, AI recommendations, social networking, subscriptions, and advertising.
+- **Scope exclusions:** Payments, cart/checkout, orders, shipping, group chat, public social networking, native mobile apps, AI recommendations, subscriptions, and advertising. Private one-to-one messaging is an approved M05 capability.
 
 ## Delivery status
 
@@ -186,3 +186,21 @@ Known unverified release gates (release sign-off blockers):
 - [ ] Complete product-owner visual/functional review of onboarding, private/public preview, artwork submission and moderation feedback, and inquiry lifecycle.
 
 **Guardrails:** profile progress is a transparent checklist, not a quality rating; artwork moderation and ownership remain server-authoritative; private profile preview is available only to the owner/Admin; no replies, chat, email delivery, deletion, subscription, or speculative analytics are added. M04 implementation is integrated; the parent milestone remains open until post-merge CI and product-owner acceptance are recorded.
+
+
+## M05 — Secure in-app messaging · In progress
+
+**GitHub parent:** [#77](https://github.com/AminBrave/rad-art-marketplace/issues/77) · **Child issues:** [#78](https://github.com/AminBrave/rad-art-marketplace/issues/78)–[#84](https://github.com/AminBrave/rad-art-marketplace/issues/84) · **Working branch:** feat/m05-secure-messaging
+
+- [x] Create a dedicated conversation per inquiry with exactly the original buyer and artist participants.
+- [x] Add participant-scoped conversation listing, detail, paginated message reads, message send, and read-state APIs.
+- [x] Preserve the original inquiry as the initial message and make conversation creation idempotent.
+- [x] Add per-sender client message IDs for retry-safe message creation and same-conversation reply references.
+- [x] Add backend authorization, validation, and IDOR regression tests for the initial API slice.
+- [ ] Build buyer and artist inbox/thread UI.
+- [ ] Complete message editing/deletion, reactions, archive/mute, search and delivery/read UX.
+- [ ] Evaluate and implement a hosting-compatible real-time transport with polling fallback.
+- [ ] Add private attachment handling, in-app notifications, optional email, reporting, blocking and admin moderation.
+- [ ] Complete independent security review, full CI, manual Persian RTL/accessibility checks, and product-owner acceptance.
+
+**Architecture constraint:** current cPanel hosting compatibility for persistent workers, Redis, broadcasting daemons and queued mail is unverified. Do not enable those capabilities or claim real-time delivery/email operation until the target host is verified. No end-to-end encryption claim is made.
