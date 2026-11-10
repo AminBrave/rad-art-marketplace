@@ -230,3 +230,6 @@ Email notifications remain disabled until a persistent queue worker, mail sender
 ## Not implemented
 
 There are no API routes for email verification, password reset, admin category CRUD, featured placements, static content management, payments, orders, email delivery, or WebSocket broadcasting/typing presence. Messaging report/block and moderation endpoints are documented above.
+
+
+**Follow-up CI verification (2026-11-10):** PR #118 corrected the Playwright notification-to-conversation fixture boundaries and added an explicit nested-route regression. Latest post-merge `main` [CI run #42852936094](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42852936094) passed all three jobs: 92 backend tests / 890 assertions, PHP style, frontend lint/build, and 27 Chromium browser tests. Main commit: `d7c056645addf33d872bec4868995e0e9bfda89f`. This supersedes the intermediate documentation-sync run that exposed the fixture failure; no application feature regression was found.
