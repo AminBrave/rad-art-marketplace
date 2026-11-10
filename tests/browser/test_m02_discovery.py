@@ -199,6 +199,7 @@ class DiscoveryBrowserTests(unittest.TestCase):
 
             page.goto(BASE_URL + "/")
             page.get_by_role("heading", name="هنر را کشف کنید؛ فراتر از قاب.").wait_for()
+            page.evaluate("document.documentElement.style.minHeight = '2000px'")
             page.evaluate("window.scrollTo(0, 900)")
             self.assertGreater(page.evaluate("window.scrollY"), 0)
             page.get_by_role("link", name="مطالعه آبی").first.click()
