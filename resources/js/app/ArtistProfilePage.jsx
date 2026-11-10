@@ -109,7 +109,10 @@ export default function ArtistProfilePage() {
                                 </div>
                             </div>
                             <div className="flex flex-wrap items-center gap-3 lg:flex-col lg:items-stretch">
-                                {user?.role === 'buyer' && <ContactArtistForm artistSlug={profile.slug} />}
+                                {user?.role === 'buyer' && <>
+                                    <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(profile.slug)} className="bg-ink px-5 py-3 text-center text-sm font-bold text-white hover:bg-terracotta">پیام مستقیم</Link>
+                                    <ContactArtistForm artistSlug={profile.slug} />
+                                </>}
                                 {!user && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className="bg-ink px-5 py-3 text-center text-sm font-bold text-white">درخواست ارتباط با هنرمند</Link>}
                             </div>
                         </div>
