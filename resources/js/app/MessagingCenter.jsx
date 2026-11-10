@@ -25,6 +25,8 @@ export default function MessagingCenter({ role }) {
     const [sending, setSending] = useState(false);
     const [actionId, setActionId] = useState(null);
     const [error, setError] = useState('');
+    const [notice, setNotice] = useState('');
+    const [safety, setSafety] = useState({ blocked_by_me: false, blocked_by_other: false });
     const bottomRef = useRef(null);
     const draftRef = useRef(null);
     const endpoint = role === 'artist' ? '/api/v1/artist/conversations' : '/api/v1/buyer/conversations';
@@ -48,6 +50,15 @@ export default function MessagingCenter({ role }) {
             setError('دریافت پیام‌ها انجام نشد.');
         }
     }, []);
+
+    useEffect(() => {
+        if (!active) { setSafety({ blocked_by_me: false, blocked_by_other: false }); return; }
+        let cancelled = false;
+        axios.get('/api/v1/conversations/' + active + '/safety')
+            .then(({ data }) => { if (!cancelled) setSafety(data.data ?? { blocked_by_me: false, blocked_by_other: false }); })
+            .catch(() => { if (!cancelled) setError('وضعیت ایمنی گفتگو دریافت نشد.'); });
+        return () => { cancelled = true; };
+    }, [active]);
 
     const requestedConversation = params.get('conversation');
 
@@ -130,6 +141,33 @@ export default function MessagingCenter({ role }) {
         } finally { setActionId(null); }
     };
 
+    const reportMessage = async (message) => {
+        const details = window.prompt('دلیل گزارش این پیام را کوتاه توضیح دهید:');
+        if (details === null) return;
+        try {
+            await axios.post('/api/v1/conversations/' + active + '/messages/' + message.id + '/report', { reason: 'other', details });
+            setNotice('گزارش شما برای بررسی ثبت شد.');
+        } catch {
+            setError('ثبت گزارش انجام نشد. دوباره تلاش کنید.');
+        }
+    };
+
+    const toggleBlock = async () => {
+        try {
+            if (safety.blocked_by_me) {
+                await axios.delete('/api/v1/conversations/' + active + '/block');
+                setSafety((current) => ({ ...current, blocked_by_me: false }));
+                setNotice('مسدودسازی برداشته شد.');
+            } else if (window.confirm('با مسدودسازی این کاربر، ارسال پیام در این گفتگو برای هر دو طرف متوقف می‌شود. ادامه می‌دهید؟')) {
+                await axios.post('/api/v1/conversations/' + active + '/block');
+                setSafety((current) => ({ ...current, blocked_by_me: true }));
+                setNotice('کاربر مسدود شد.');
+            }
+        } catch {
+            setError('به‌روزرسانی وضعیت مسدودسازی انجام نشد.');
+        }
+    };
+
     const toggleReaction = async (message, emoji) => {
         if (actionId || message.deleted_at) return;
         const existing = message.reactions?.find((reaction) => reaction.emoji === emoji);
@@ -154,6 +192,7 @@ export default function MessagingCenter({ role }) {
                 <h1 className="mt-2 text-2xl font-black">پیام‌ها</h1>
                 <p className="mt-2 text-sm text-muted">گفتگوی خصوصی خریداران و هنرمندان؛ پیام‌ها به‌صورت خودکار به‌روزرسانی می‌شوند.</p>
             </header>
+            {notice && <p role="status" className="border border-border bg-surface-muted p-3 text-sm">{notice}</p>}
             {error && <p role="alert" className="border border-red-200 bg-red-50 p-3 text-sm text-red-800">{error}</p>}
             <div className="grid min-h-[620px] overflow-hidden border border-border bg-white lg:grid-cols-[320px_minmax(0,1fr)]">
                 <aside className={active ? 'hidden border-l border-border lg:block' : 'border-l border-border'}>
@@ -175,7 +214,7 @@ export default function MessagingCenter({ role }) {
                         <>
                             <header className="flex items-center gap-3 border-b border-border p-4">
                                 <button type="button" className="text-sm font-bold lg:hidden" onClick={() => setActive(null)}>بازگشت</button>
-                                <div><h2 className="font-bold">{selected?.participant?.name ?? 'گفتگوی خصوصی'}</h2><p className="mt-1 text-xs text-muted">گفتگوی مستقیم</p></div>
+                                <div className="min-w-0"><h2 className="font-bold">{selected?.participant?.name ?? 'گفتگوی خصوصی'}</h2><p className="mt-1 text-xs text-muted">گفتگوی مستقیم</p></div><button type="button" onClick={toggleBlock} className="mr-auto text-xs font-semibold text-red-700 underline">{safety.blocked_by_me ? 'رفع مسدودسازی' : 'مسدودسازی کاربر'}</button>
                             </header>
                             <div className="flex-1 space-y-4 overflow-y-auto bg-canvas p-4 sm:p-6" aria-live="polite">
                                 {messages.map((message) => {
@@ -205,6 +244,7 @@ export default function MessagingCenter({ role }) {
                                                         </div>
                                                         <div className="mt-2 flex flex-wrap gap-3 text-[11px] text-muted">
                                                             <button type="button" onClick={() => { setReplyTo(message); setEditingId(null); draftRef.current?.focus(); }}>پاسخ</button>
+                                                            {!own && <button type="button" onClick={() => reportMessage(message)}>گزارش</button>}
                                                             {own && <button type="button" onClick={() => { setEditingId(message.id); setEditDraft(message.body ?? ''); }}>ویرایش</button>}
                                                             {own && <button type="button" disabled={actionId === message.id} onClick={() => deleteMessage(message)}>حذف</button>}
                                                         </div>
@@ -216,13 +256,13 @@ export default function MessagingCenter({ role }) {
                                 })}
                                 <div ref={bottomRef} />
                             </div>
-                            <form onSubmit={send} className="border-t border-border bg-white p-3 sm:p-4">
+                            {safety.blocked_by_me || safety.blocked_by_other ? <p role="status" className="border-t border-border bg-surface-muted p-4 text-sm text-muted">{safety.blocked_by_me ? 'این کاربر را مسدود کرده‌اید؛ برای ادامه گفتگو ابتدا مسدودسازی را بردارید.' : 'این گفتگو به‌دلیل تنظیمات ایمنی امکان ارسال پیام ندارد.'}</p> : <form onSubmit={send} className="border-t border-border bg-white p-3 sm:p-4">
                                 {replyTo && <div className="mb-3 flex items-start justify-between gap-3 border-r-2 border-terracotta bg-surface-muted p-3 text-xs"><div><strong>پاسخ به {replyTo.sender_name ?? 'پیام'}</strong><p className="mt-1 line-clamp-2 text-muted">{replyTo.body}</p></div><button type="button" onClick={() => setReplyTo(null)} aria-label="لغو پاسخ">×</button></div>}
                                 <div className="flex items-end gap-3">
                                     <textarea aria-label="متن پیام" ref={draftRef} value={draft} onChange={(event) => setDraft(event.target.value)} rows={2} maxLength={5000} placeholder="پیام خود را بنویسید…" className="min-h-12 flex-1 resize-y border border-border bg-canvas p-3 text-sm outline-none focus:border-terracotta" />
                                     <button type="submit" disabled={!draft.trim() || sending} className="min-h-12 bg-ink px-5 text-sm font-bold text-white disabled:opacity-50">{sending ? '…' : 'ارسال'}</button>
                                 </div>
-                            </form>
+                            </form>}
                         </>
                     )}
                 </div>
