@@ -137,6 +137,7 @@ class ConversationController extends Controller
 
             if (! empty($validated['client_message_id'])) {
                 $existing = $lockedConversation->messages()
+                    ->withTrashed()
                     ->where('sender_user_id', $request->user()->id)
                     ->where('client_message_id', $validated['client_message_id'])
                     ->first();
