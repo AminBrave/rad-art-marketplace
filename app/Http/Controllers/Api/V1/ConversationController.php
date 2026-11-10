@@ -39,10 +39,11 @@ class ConversationController extends Controller
             404
         );
         abort_unless(in_array($user->role, [User::ROLE_BUYER, User::ROLE_ARTIST], true), 403);
-        $pairBlocked = DB::table('user_blocks')->where(function ($query) use ($user, $artistUserId): void {
-            $query->where('blocker_user_id', $user->id)->where('blocked_user_id', $artistUserId);
-        })->orWhere(function ($query) use ($user, $artistUserId): void {
-            $query->where('blocker_user_id', $artistUserId)->where('blocked_user_id', $user->id);
+        $buyerUserId = (int) $inquiry->sender_user_id;
+        $pairBlocked = DB::table('user_blocks')->where(function ($query) use ($buyerUserId, $artistUserId): void {
+            $query->where('blocker_user_id', $buyerUserId)->where('blocked_user_id', $artistUserId);
+        })->orWhere(function ($query) use ($buyerUserId, $artistUserId): void {
+            $query->where('blocker_user_id', $artistUserId)->where('blocked_user_id', $buyerUserId);
         })->exists();
         abort_if($pairBlocked, 403, 'شروع گفتگو در این وضعیت امکان‌پذیر نیست.');
 
