@@ -96,7 +96,6 @@ class DemoDatabaseSeeder extends Seeder
             'role' => User::ROLE_BUYER,
             'email_verified_at' => now(),
         ]);
-        $buyers[] = $emptyBuyer;
 
         // Include artists who have registered but have not completed their profiles yet.
         foreach (range(1, 3) as $number) {
@@ -198,7 +197,7 @@ class DemoDatabaseSeeder extends Seeder
 
         // Seed one canonical direct conversation for every buyer and publicly contactable artist.
         // Private profiles and artists without a profile are intentionally excluded, matching the public start-chat flow.
-        $this->seedDirectConversations($buyers);
+        $this->seedDirectConversations([...$buyers, $emptyBuyer]);
 
         $publicArtists = array_values(array_filter($artists, fn (ArtistProfile $p): bool => $p->is_public));
         $approved = array_values(array_filter($artworks, fn (Artwork $a): bool => $a->status === Artwork::STATUS_APPROVED));
