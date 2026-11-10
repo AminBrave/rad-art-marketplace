@@ -13,6 +13,7 @@ use App\Notifications\MessageReceivedNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class ConversationController extends Controller
@@ -208,6 +209,10 @@ class ConversationController extends Controller
         // Remove message content and reactions before retaining a minimal tombstone for thread continuity.
         DB::transaction(function () use ($message): void {
             $message->reactions()->delete();
+            $message->attachments()->get()->each(function ($attachment): void {
+                Storage::disk('local')->delete($attachment->storage_path);
+                $attachment->delete();
+            });
             $message->forceFill(['body' => ''])->save();
             $message->delete();
         });
