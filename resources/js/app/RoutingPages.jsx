@@ -357,6 +357,7 @@ export function AdminWorkspaceLayout() {
         { to: '/admin', label: 'نمای کلی', end: true },
         { to: '/admin/users', label: 'مدیریت کاربران' },
         { to: '/admin/artworks', label: 'بررسی آثار' },
+        { to: '/admin/message-reports', label: 'گزارش پیام‌ها' },
         { to: '/admin/editorial', label: 'مجموعه‌ها و سردبیری' },
     ];
     return <WorkspaceLayout title="پنل مدیریت" links={links} />;
