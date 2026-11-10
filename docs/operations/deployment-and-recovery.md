@@ -48,7 +48,7 @@ The normal `DatabaseSeeder` remains development-only and does not populate produ
    php artisan db:seed --class=ShowcaseDatabaseSeeder --force
    ```
 5. Verify public artist/artwork/collection pages and the demo artist/buyer sign-in flows. Review the created demo accounts and sample conversations.
-6. Immediately set `RADEMAN_SHOWCASE_SEEDING_ENABLED=false` (or remove it), keep or securely rotate the demo password, then run `php artisan config:cache` again. The flag prevents future seeder runs; it does not disable the seeded accounts.
+6. Immediately set `RADEMAN_SHOWCASE_SEEDING_ENABLED=false` (or remove it), then run `php artisan config:cache` again. The flag prevents future seeder runs; it does not disable the seeded accounts. If the shared demo password is exposed, disable or reset the demo accounts through a reviewed account-management procedure; changing the environment variable alone does not rotate passwords already stored in the database.
 7. Keep the backup until public pages and account flows have been checked.
 
 Do not use `migrate:fresh`, `migrate:refresh`, `db:wipe`, table truncation or a production database reset for showcase seeding. The seeder is additive and can be rerun to complete a partial run; it does not remove showcase records when disabled.
