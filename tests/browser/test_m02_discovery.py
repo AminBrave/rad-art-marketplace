@@ -1,3 +1,4 @@
+import base64
 import json
 import os
 import unittest
@@ -49,6 +50,10 @@ class DiscoveryBrowserTests(unittest.TestCase):
                 status=200, content_type="application/json",
                 body=json.dumps({"data": [ARTWORK], "current_page": 1, "last_page": 1, "total": 1}, ensure_ascii=False)
             ))
+            page.route("**/api/v1/artworks/*/image", lambda route: route.fulfill(
+                status=200, content_type="image/png",
+                body=base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jq2kAAAAASUVORK5CYII=")
+            ))
             page.route("**/api/v1/categories", lambda route: route.fulfill(
                 status=200, content_type="application/json",
                 body=json.dumps({"data": [{"id": 1, "name": "نقاشی", "slug": "painting"}]}, ensure_ascii=False)
@@ -60,7 +65,8 @@ class DiscoveryBrowserTests(unittest.TestCase):
             page.goto(BASE_URL + "/")
             page.get_by_role("heading", name="هنر را کشف کنید؛ فراتر از قاب.").wait_for()
             page.get_by_role("heading", name="تازه در گالری").wait_for()
-            page.get_by_role("img", name="تصویر اثر مطالعه آبی در دسترس نیست").wait_for()
+            page.locator('img[alt="مطالعه آبی"]').wait_for()
+            self.assertEqual(page.locator("img").first.get_attribute("fetchpriority"), "high")
             page.get_by_role("heading", name="از کجا شروع کنیم؟").wait_for()
             page.get_by_role("heading", name="هنرمندان راد آرت").wait_for()
             page.get_by_role("link", name="ورود به پورتفولیو").wait_for()
@@ -112,13 +118,18 @@ class DiscoveryBrowserTests(unittest.TestCase):
         context, page = self.new_page()
         try:
             payload = {**ARTWORK, "related_artworks": [RELATED]}
+            page.route("**/api/v1/artworks/*/image", lambda route: route.fulfill(
+                status=200, content_type="image/png",
+                body=base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jq2kAAAAASUVORK5CYII=")
+            ))
             page.route("**/api/v1/artworks/blue-study", lambda route: route.fulfill(
                 status=200, content_type="application/json",
                 body=json.dumps({"data": payload}, ensure_ascii=False)
             ))
             page.goto(BASE_URL + "/artworks/blue-study")
             page.get_by_role("heading", name="مطالعه آبی").wait_for()
-            page.get_by_role("img", name="تصویر اثر مطالعه آبی در دسترس نیست").wait_for()
+            page.locator('img[alt="مطالعه آبی"]').wait_for()
+            self.assertEqual(page.locator("img").first.get_attribute("fetchpriority"), "high")
             page.get_by_text("قیمت اعلام نشده").wait_for()
             page.get_by_text("قابل استعلام از هنرمند").wait_for()
             page.get_by_role("heading", name="آثار مرتبط").wait_for()
