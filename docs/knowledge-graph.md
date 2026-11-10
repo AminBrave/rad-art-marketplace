@@ -20,10 +20,12 @@ flowchart TD
  Q --> L[Feature lifecycle]
  L --> G[Git and GitHub]
  G --> C[CI/CD]
- Q --> C[CI/CD]
+ Q --> C
  C --> O[Operations]
  ADR[ADRs] -. constrains .-> S
  ADR -. constrains .-> API
+ V[Local verification script] --> T
+ V --> Q
 ```
 
 ## Nodes
@@ -41,7 +43,8 @@ flowchart TD
 - [GitHub](engineering/git-and-github.md): branching, commits, collaboration.
 - [CI/CD](operations/ci-cd-and-release.md): workflow/release.
 - [Operations](operations/deployment-and-recovery.md): deployment and recovery.
-- [ADRs](decisions/index.md): durable decisions.
+- [ADRs](decisions/index.md): durable decisions; use [ADR template](decisions/adr-template.md).
+- [Local verification](../scripts/verify): selective local checks; see [testing strategy](engineering/testing-strategy.md).
 
 ## Change propagation
-Schema/domain → data, domain, API, tests, security. API → API docs, backend tests, frontend consumers, browser E2E. UI/navigation → frontend docs and browser tests. Auth/moderation/messaging/uploads/privacy → threat review. Workflow/release → CI/CD and GitHub docs.
+Schema/domain → data, domain, API, tests, security. API → API docs, backend tests, frontend consumers, browser E2E. UI/navigation → frontend docs and browser tests. Auth/moderation/messaging/uploads/privacy → threat review. Workflow/release → CI/CD and GitHub docs. Local verification commands → script, testing strategy, quality gates and agent handoff instructions.

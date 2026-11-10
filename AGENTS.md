@@ -48,7 +48,7 @@ Mandatory entrypoint for every AI coding agent. Follow before exploring or editi
 - [ ] S7 Close: issue, milestone, affected docs and release notes updated.
 
 ## GitHub delivery
-Follow [Git/GitHub workflow](docs/engineering/git-and-github.md). Feature branches are developed and reviewed without Actions runs; the user performs local verification before merging. The repository workflow runs automated checks only after changes reach `main`.
+Follow [Git/GitHub workflow](docs/engineering/git-and-github.md). Feature branches are developed and reviewed without Actions runs; the user performs local verification before merging. The repository workflow runs automated checks only after changes reach `main`. Use [the local verification script](scripts/verify) to run only the relevant layer or the full suite.
 
 ## Definition of done
 Acceptance criteria met; appropriate tests exist; auth/privacy/failure paths are covered; migrations are safe; focused diff reviewed; affected docs and graph updated; local test commands and merge expectations communicated. After merge, main-branch CI must pass. Never mark a milestone complete based on intention.

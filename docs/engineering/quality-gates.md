@@ -3,10 +3,10 @@
 ## During feature-branch development
 - [ ] Acceptance criteria mapped to implementation.
 - [ ] No unrelated edits, secrets or generated caches.
-- [ ] Server auth, validation, privacy and abuse controls reviewed.
+- [ ] Authorization, privacy, validation and abuse controls reviewed.
 - [ ] Migration and rollback/forward recovery considered.
 - [ ] Loading/empty/error/success and RTL/mobile/accessibility states considered.
-- [ ] Relevant tests added or updated.
+- [ ] Relevant tests added or updated, selected by [risk tier](testing-strategy.md#risk-based-test-selection).
 - [ ] Every affected document and knowledge-graph relationship updated.
 - [ ] Agent supplies exact local verification commands; user runs them before merge.
 - [ ] Focused diff reviewed.
@@ -19,8 +19,8 @@
 - [ ] Do not expect PR Actions checks: they are intentionally disabled.
 
 ## After merge (automated main gate)
-- [ ] GitHub Actions ran on the resulting `main` commit.
-- [ ] Backend, frontend, browser E2E, lint and production build jobs pass.
+- [ ] GitHub Actions ran on the resulting `main` commit, unless the push changed only Markdown documentation.
+- [ ] Backend, frontend, browser E2E, lint and production build jobs pass when CI runs.
 - [ ] If main CI fails, create a fix branch, repair, have the user verify locally, then merge the fix.
 
 ## Risk tiers

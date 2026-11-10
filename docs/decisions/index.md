@@ -1,16 +1,6 @@
 # Architecture Decision Records
 
-Store durable decisions as `NNNN-short-title.md` and link from relevant graph nodes.
-
-## Template
-- **Status:** proposed | accepted | superseded | rejected
-- **Date:**
-- **Context:** problem and constraints.
-- **Decision:** selected approach.
-- **Alternatives:** considered and rejected.
-- **Consequences:** trade-offs, migration and operations.
-- **Validation:** tests/measurements/review.
-- **Related:** issue, PR and graph links.
+Store durable decisions as `NNNN-short-title.md` and link from relevant graph nodes. Use the [ADR template](adr-template.md). Record decisions that constrain future work, not routine implementation details.
 
 ## Decisions to capture
 - [ ] Canonical direct conversation per buyer/artist pair and migration strategy.

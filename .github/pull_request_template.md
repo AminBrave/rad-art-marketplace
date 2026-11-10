@@ -1,5 +1,5 @@
 ## Why
-<!-- User problem and outcome. Link issue. -->
+<!-- User problem and outcome. Link the issue. -->
 
 ## What changed
 -
@@ -13,16 +13,18 @@
 - [ ] API/frontend compatibility reviewed
 - [ ] RTL/mobile/accessibility reviewed
 
-## Verification
-- [ ] composer test
-- [ ] composer lint
-- [ ] npm run test:frontend
-- [ ] npm run lint
-- [ ] npm run build
-- [ ] Relevant Playwright browser tests
-- [ ] GitHub Actions green on this PR head
+## Verification (feature branch — run locally)
+- [ ] Relevant local checks executed; paste exact commands and results below
+- [ ] Backend: `./scripts/verify backend` (when relevant)
+- [ ] Frontend: `./scripts/verify frontend` (when relevant)
+- [ ] Browser: `./scripts/verify browser` (when relevant)
+- [ ] Full suite: `./scripts/verify all` (for broad/high-risk changes)
+- **Results / environment:**
 
 ## Delivery
 - [ ] Knowledge graph/docs updated
-- [ ] Milestone and issue checklist updated
+- [ ] Issue checklist and milestone updated where applicable
 - [ ] Deployment/rollback notes included where needed
+- [ ] Human review and local verification confirmation obtained
+
+<!-- GitHub Actions intentionally do not run on PRs. Main CI runs after merge for non-doc-only changes. -->
