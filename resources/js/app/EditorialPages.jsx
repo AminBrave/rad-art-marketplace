@@ -45,7 +45,6 @@ export function CollectionDetailPage() {
 export function AdminEditorialPage() {
     const [options, setOptions] = useState({ artworks: [], artists: [] });
     const [collections, setCollections] = useState([]);
-    const [featured, setFeatured] = useState([]);
     const [editing, setEditing] = useState(null);
     const [title, setTitle] = useState(''), [intro, setIntro] = useState(''), [artworkIds, setArtworkIds] = useState([]);
     const [featuredIds, setFeaturedIds] = useState([]), [featuredIntros, setFeaturedIntros] = useState({});
@@ -60,7 +59,7 @@ export function AdminEditorialPage() {
                 axios.get('/api/v1/admin/editorial/featured-artists'),
             ]);
             setOptions(o.data.data); setCollections(c.data.data ?? []);
-            setFeatured(f.data.data ?? []); setFeaturedIds((f.data.data ?? []).filter((x) => x.is_published).map((x) => x.artist_profile_id)); setFeaturedIntros(Object.fromEntries((f.data.data ?? []).map((x) => [x.artist_profile_id, x.editorial_intro || ''])));
+            setFeaturedIds((f.data.data ?? []).filter((x) => x.is_published).map((x) => x.artist_profile_id)); setFeaturedIntros(Object.fromEntries((f.data.data ?? []).map((x) => [x.artist_profile_id, x.editorial_intro || ''])));
         } catch (e) { setError(e.response?.data?.message || 'دریافت اطلاعات مدیریت محتوای منتخب انجام نشد.'); }
         finally { setLoading(false); }
     }, []);
