@@ -66,7 +66,8 @@ class EditorialController extends Controller
 
     public function adminCollections(): JsonResponse
     {
-        $items = CuratedCollection::query()->withCount('artworks')->orderBy('position')->orderByDesc('updated_at')->paginate(20);
+        $items = CuratedCollection::query()->with('artworks')->withCount('artworks')->orderBy('position')->orderByDesc('updated_at')->paginate(20)
+            ->through(fn (CuratedCollection $collection) => $this->adminCollectionPayload($collection));
 
         return response()->json($items);
     }

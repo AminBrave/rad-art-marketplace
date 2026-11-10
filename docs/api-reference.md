@@ -100,6 +100,26 @@ Decision body:
 
 Only pending-review records can receive a decision. A successful decision records `reviewed_by` and `reviewed_at`. Public endpoints must not expose those moderation details.
 
+## Editorial curation
+
+| Method | Path | Access | Purpose |
+|---|---|---|---|
+| GET | `/api/v1/collections` | Public | Paginated published collections |
+| GET | `/api/v1/collections/{slug}` | Public | Published collection and ordered approved works |
+| GET | `/api/v1/featured-artists` | Public | Active featured artist selections |
+| GET | `/api/v1/admin/editorial/options` | Admin | Approved public artworks and public artist choices |
+| GET | `/api/v1/admin/editorial/collections` | Admin | Paginated collection management list |
+| POST | `/api/v1/admin/editorial/collections` | Admin | Create a draft or publish a collection |
+| PATCH | `/api/v1/admin/editorial/collections/{id}` | Admin | Update title, introduction and ordered artwork IDs |
+| PATCH | `/api/v1/admin/editorial/collections/{id}/publication` | Admin | Publish or unpublish a collection |
+| PUT | `/api/v1/admin/editorial/collections/order` | Admin | Save collection ordering |
+| GET | `/api/v1/admin/editorial/featured-artists` | Admin | Read current featured artist selections |
+| PUT | `/api/v1/admin/editorial/featured-artists` | Admin | Replace ordered featured artist selections |
+
+Collections have stable generated slugs. Only approved artworks belonging to public artist profiles can be attached; public collection responses re-check those conditions on every read. Draft and unpublished collections return 404 to public detail requests. Featured artist responses require a public profile, a published selection, and an active optional start/end window. Admin writes are role-protected and create editorial audit records with actor, action, subject and metadata. Collection and featured-artist editing is available under `/admin/editorial`.
+
+Create collection body: `title`, optional `intro`, ordered `artwork_ids` (up to 30 distinct IDs), and optional `publish` boolean. Updating accepts `title`, `intro`, and/or `artwork_ids`. Publication body is `publish` boolean. Featured selection body is `selections`, an ordered array of `artist_profile_id`, optional `editorial_intro`, `starts_at`, and `ends_at` values. Featured selections are currently replaced as a complete ordered set.
+
 ## User administration
 
 | Method | Path | Access | Purpose |
