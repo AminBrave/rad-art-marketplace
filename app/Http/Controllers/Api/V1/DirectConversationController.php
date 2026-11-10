@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Artwork;
 use App\Models\ArtistProfile;
+use App\Models\Artwork;
 use App\Models\Conversation;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
