@@ -3,7 +3,7 @@
 Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact marketplace. It helps visitors discover approved artworks and public artist portfolios, and lets buyers and artists continue approved inquiries in private one-to-one conversations.
 
 **Current integration branch:** `main`  
-**Current delivery status:** M00, M02, and M03 implementation work is integrated into main; M03 was accepted and closed after all post-merge CI jobs passed. M04 artist-experience implementation is merged via [PR #99](https://github.com/AminBrave/rad-art-marketplace/pull/99); automated checks passed, with product-owner visual/functional acceptance still pending. M05 secure messaging is in progress; its initial participant-scoped conversation API is being implemented on branch feat/m05-secure-messaging. M00 release gates and production sign-off remain separate and open.  
+**Current delivery status:** M00 foundation, M02 discovery, M03 editorial, and M04 artist-experience implementation are integrated into main; M03 and M04 were accepted in project testing. M05 core buyer–artist direct messaging (inbox, threads, direct entry points, unread/read state, polling, and demo data) is integrated and has passed product-owner manual testing. M05-T03 message replies, edit/delete, reactions, and message-state UX are being implemented on branch `feat/m05-message-actions`; CI and acceptance are pending. M00/M06 release and production-host gates remain open.  
 **Product status:** Active MVP development; not yet verified or signed off for production.
 
 ## Product capabilities
@@ -26,14 +26,14 @@ Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact mark
 - API-backed artwork and inquiry summaries without fabricated analytics.
 - Artist-owned artwork list and create/edit forms with image preview, upload feedback, validation, and moderation status.
 - Paginated inquiry inbox, recipient-scoped detail, read/archive controls, and explicit lifecycle guidance.
-- Private one-to-one conversation API foundation tied to the original inquiry; UI and remaining messaging features are still in progress.
+- Buyer/artist inboxes, direct-message entry points from public artist profiles and approved artworks, artwork/inquiry context, message history, and read receipts.
 
 ### Buyer workspace — implemented
 
 - Buyer-only overview with the server-reported total sent-inquiry count and latest inquiry.
 - Paginated sent-inquiry history with artist/artwork context and server-reported status.
 - Dedicated inquiry detail routes that survive direct navigation and refresh.
-- Sender-scoped API reads and a participant-only conversation API foundation; the buyer inbox/thread UI is still in progress.
+- Sender-scoped inquiry history and a participant-only buyer inbox/thread for private conversations.
 
 ### Accounts and other workflows — implemented baseline
 
@@ -51,7 +51,7 @@ Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact mark
 
 ### Explicitly out of scope
 
-Payments, cart/checkout, orders, shipping, group chat, public social networking, native mobile apps, AI recommendations, subscriptions, and advertising. Real-time transport, email delivery and attachments remain M05 implementation stages; they are not enabled by the initial API foundation. Email verification and password-reset user experience are also not implemented.
+Payments, cart/checkout, orders, shipping, group chat, public social networking, native mobile apps, AI recommendations, subscriptions, and advertising. WebSocket delivery, typing/presence, private attachments, notifications/email delivery, conversation search/archive/mute, reporting/blocking, and moderation remain M05 implementation stages. Email verification and password-reset user experience are also not implemented.
 
 ## MVP 2 delivery plan
 
