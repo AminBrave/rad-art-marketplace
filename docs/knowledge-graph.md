@@ -19,7 +19,7 @@ flowchart TD
  T --> Q
  Q --> L[Feature lifecycle]
  L --> G[Git and GitHub]
- G --> R[Roadmap]
+ G --> C[CI/CD]
  Q --> C[CI/CD]
  C --> O[Operations]
  ADR[ADRs] -. constrains .-> S
@@ -39,7 +39,6 @@ flowchart TD
 - [Quality](engineering/quality-gates.md): merge blockers and DoD.
 - [Lifecycle](delivery/feature-lifecycle.md): stages from issue to release.
 - [GitHub](engineering/git-and-github.md): branching, commits, collaboration.
-- [Roadmap](delivery/roadmap.md): milestone status.
 - [CI/CD](operations/ci-cd-and-release.md): workflow/release.
 - [Operations](operations/deployment-and-recovery.md): deployment and recovery.
 - [ADRs](decisions/index.md): durable decisions.
