@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-11-10 — M05 secure messaging API foundation (implementation in review)
+
+### Added
+- Added one-to-one conversations uniquely linked to existing buyer-to-artist inquiries, with the original inquiry preserved as the initial message.
+- Added participant-scoped buyer/artist conversation lists, conversation detail, paginated message history, message send, and read-state APIs.
+- Added server-side conversation policies, 404 privacy behavior for non-participants, same-conversation reply validation, and per-sender client message idempotency.
+- Added backend feature tests for conversation creation, artist replies, read state, duplicate-send retry, cross-account access, and invalid cross-conversation replies.
+
+### Verification boundary
+- Implementation is under review on branch feat/m05-secure-messaging. CI has not yet been run for this branch.
+- Inbox/thread UI, message editing/deletion, reactions, real-time transport, attachments, notifications, archive/mute, reporting/blocking and admin moderation remain outstanding M05 work.
+- No real-time delivery, email delivery, malware scanning, or end-to-end encryption is claimed.
+
 ## 2026-11-10 — M04 artist experience implementation merged
 
 ### Added
