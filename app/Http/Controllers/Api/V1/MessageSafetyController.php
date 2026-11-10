@@ -59,11 +59,12 @@ class MessageSafetyController extends Controller
 
         $report = MessageReport::query()->firstOrCreate(
             [
-                'conversation_id' => $conversation->id,
-                'message_id' => $message?->id,
                 'reporter_user_id' => $user->id,
+                'subject_key' => $message ? 'message:'.$message->id : 'conversation:'.$conversation->id,
             ],
             [
+                'conversation_id' => $conversation->id,
+                'message_id' => $message?->id,
                 'reason' => $validated['reason'],
                 'status' => 'open',
                 'details' => isset($validated['details']) ? trim($validated['details']) : null,
