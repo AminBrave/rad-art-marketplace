@@ -106,6 +106,7 @@ class ConversationController extends Controller
         $this->authorizeParticipant($request->user(), $conversation, 'view');
 
         $messages = $conversation->messages()
+            ->withTrashed()
             ->with(['sender', 'replyTo.sender', 'reactions'])
             ->latest('id')
             ->paginate(30);
@@ -186,9 +187,11 @@ class ConversationController extends Controller
         $this->assertOwnMessage($request->user(), $conversation, $message);
 
         // Remove message content and reactions before retaining a minimal tombstone for thread continuity.
-        $message->reactions()->delete();
-        $message->forceFill(['body' => ''])->save();
-        $message->delete();
+        DB::transaction(function () use ($message): void {
+            $message->reactions()->delete();
+            $message->forceFill(['body' => ''])->save();
+            $message->delete();
+        });
 
         return response()->json([
             'message' => 'پیام حذف شد.',
