@@ -115,7 +115,6 @@ class ConversationTest extends TestCase
             ->assertJsonValidationErrors('reply_to_id');
     }
 
-
     public function test_message_sender_can_edit_and_delete_own_message_without_retaining_deleted_body(): void
     {
         [$buyer, $artist, $inquiry] = $this->participantsWithInquiry();
