@@ -214,8 +214,8 @@ class ConversationController extends Controller
             'subject' => $conversation->inquiry?->subject,
             'participant' => ['name' => $other?->name],
             'artist' => [
-                'display_name' => $conversation->inquiry?->artistProfile?->display_name,
-                'slug' => $conversation->inquiry?->artistProfile?->slug,
+                'display_name' => $conversation->inquiry?->artistProfile?->display_name ?? $conversation->artist?->artistProfile?->display_name,
+                'slug' => $conversation->inquiry?->artistProfile?->slug ?? $conversation->artist?->artistProfile?->slug,
             ],
             'artwork' => $conversation->inquiry?->artwork ? [
                 'title' => $conversation->inquiry->artwork->title,
