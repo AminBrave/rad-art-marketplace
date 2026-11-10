@@ -25,7 +25,7 @@ class MessageAttachmentTest extends TestCase
 
         $upload = $this->actingAs($buyer)
             ->postJson("/api/v1/conversations/{$conversation->id}/messages/{$message->id}/attachments", [
-                'file' => UploadedFile::fake()->create('reference.pdf', 120, 'application/pdf'),
+                'file' => UploadedFile::fake()->createWithContent('reference.pdf', "%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF"),
             ])
             ->assertCreated()
             ->assertJsonPath('data.name', 'reference.pdf')
@@ -52,13 +52,13 @@ class MessageAttachmentTest extends TestCase
 
         $this->actingAs($artist)
             ->postJson("/api/v1/conversations/{$conversation->id}/messages/{$message->id}/attachments", [
-                'file' => UploadedFile::fake()->create('other.pdf', 100, 'application/pdf'),
+                'file' => UploadedFile::fake()->createWithContent('other.pdf', "%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF"),
             ])
             ->assertForbidden();
 
         $this->actingAs($buyer)
             ->postJson("/api/v1/conversations/{$conversation->id}/messages/{$message->id}/attachments", [
-                'file' => UploadedFile::fake()->create('payload.exe', 100, 'application/x-msdownload'),
+                'file' => UploadedFile::fake()->createWithContent('payload.exe', 'MZ executable content'),
             ])
             ->assertUnprocessable()
             ->assertJsonValidationErrors('file');
