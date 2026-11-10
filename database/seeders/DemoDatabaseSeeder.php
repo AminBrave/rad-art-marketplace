@@ -25,16 +25,16 @@ class DemoDatabaseSeeder extends Seeder
     public function runForShowcase(): void
     {
         if (! app()->environment('production')) {
-            throw new \\RuntimeException('The showcase seeder is intended for production only.');
+            throw new \RuntimeException('The showcase seeder is intended for production only.');
         }
 
         if (filter_var(config('showcase.seeding_enabled', false), FILTER_VALIDATE_BOOL) !== true) {
-            throw new \\RuntimeException('Set RADEMAN_SHOWCASE_SEEDING_ENABLED=true to authorize production showcase seeding.');
+            throw new \RuntimeException('Set RADEMAN_SHOWCASE_SEEDING_ENABLED=true to authorize production showcase seeding.');
         }
 
         $password = (string) config('showcase.password', '');
         if (strlen($password) < 32) {
-            throw new \\RuntimeException('RADEMAN_SHOWCASE_PASSWORD must contain at least 32 characters.');
+            throw new \RuntimeException('RADEMAN_SHOWCASE_PASSWORD must contain at least 32 characters.');
         }
 
         $reservedAccounts = [
@@ -55,7 +55,7 @@ class DemoDatabaseSeeder extends Seeder
         foreach ($reservedAccounts as $email => $role) {
             $existing = User::query()->where('email', $email)->first();
             if ($existing && $existing->role !== $role) {
-                throw new \\RuntimeException("Showcase account collision for {$email}; no showcase records were seeded.");
+                throw new \RuntimeException("Showcase account collision for {$email}; no showcase records were seeded.");
             }
         }
 
