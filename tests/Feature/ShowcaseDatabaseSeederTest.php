@@ -23,6 +23,34 @@ class ShowcaseDatabaseSeederTest extends TestCase
         $this->seed(ShowcaseDatabaseSeeder::class);
     }
 
+    public function test_production_showcase_requires_explicit_opt_in(): void
+    {
+        app()->detectEnvironment(fn (): string => 'production');
+        config([
+            'showcase.seeding_enabled' => false,
+            'showcase.password' => str_repeat('RademanShowcaseSecret-', 2),
+        ]);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('RADEMAN_SHOWCASE_SEEDING_ENABLED=true');
+
+        $this->seed(ShowcaseDatabaseSeeder::class);
+    }
+
+    public function test_production_showcase_requires_a_long_demo_password(): void
+    {
+        app()->detectEnvironment(fn (): string => 'production');
+        config([
+            'showcase.seeding_enabled' => true,
+            'showcase.password' => 'too-short',
+        ]);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('at least 32 characters');
+
+        $this->seed(ShowcaseDatabaseSeeder::class);
+    }
+
     public function test_production_showcase_uses_existing_admin_and_preserves_existing_demo_accounts(): void
     {
         Storage::fake('local');
