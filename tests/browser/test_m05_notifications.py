@@ -117,7 +117,7 @@ class MessageNotificationBrowserTests(unittest.TestCase):
             page.get_by_role("button", name="هنرمند آزمایشی پیام جدیدی فرستاد").click()
             page.wait_for_url("**/dashboard/buyer/messages?conversation=101")
             page.get_by_role("heading", name="هنرمند آزمایشی").wait_for()
-            page.get_by_text(MESSAGE["body"]).wait_for()
+            page.get_by_role("paragraph").filter(has_text=MESSAGE["body"]).wait_for()
         finally:
             context.close()
 
