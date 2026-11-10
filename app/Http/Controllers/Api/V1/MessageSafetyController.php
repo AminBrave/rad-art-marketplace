@@ -65,6 +65,7 @@ class MessageSafetyController extends Controller
             ],
             [
                 'reason' => $validated['reason'],
+                'status' => 'open',
                 'details' => isset($validated['details']) ? trim($validated['details']) : null,
             ],
         );
