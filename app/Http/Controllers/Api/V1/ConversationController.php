@@ -78,7 +78,7 @@ class ConversationController extends Controller
                 ],
             );
 
-            if ($initialMessage->wasRecentlyCreated && (int) $inquiry->sender_user_id === (int) auth()->id()) {
+            if ($initialMessage->wasRecentlyCreated && (int) $inquiry->sender_user_id === (int) auth()->id() && $conversation->artist_muted_at === null) {
                 User::query()->find($artistUserId)?->notify(new MessageReceivedNotification(
                     (int) $conversation->id,
                     (int) $initialMessage->id,
@@ -176,11 +176,16 @@ class ConversationController extends Controller
             $recipientId = (int) $request->user()->id === (int) $lockedConversation->buyer_user_id
                 ? (int) $lockedConversation->artist_user_id
                 : (int) $lockedConversation->buyer_user_id;
-            User::query()->find($recipientId)?->notify(new MessageReceivedNotification(
-                (int) $lockedConversation->id,
-                (int) $message->id,
-                $request->user()->name,
-            ));
+            $recipientMutedAt = $recipientId === (int) $lockedConversation->buyer_user_id
+                ? $lockedConversation->buyer_muted_at
+                : $lockedConversation->artist_muted_at;
+            if ($recipientMutedAt === null) {
+                User::query()->find($recipientId)?->notify(new MessageReceivedNotification(
+                    (int) $lockedConversation->id,
+                    (int) $message->id,
+                    $request->user()->name,
+                ));
+            }
 
             return $message->load(['sender', 'replyTo.sender', 'reactions', 'attachments']);
         });
