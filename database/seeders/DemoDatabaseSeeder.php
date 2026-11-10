@@ -8,6 +8,9 @@ use App\Models\ArtistInquiry;
 use App\Models\ArtistProfile;
 use App\Models\Artwork;
 use App\Models\Category;
+use App\Models\CuratedCollection;
+use App\Models\EditorialAudit;
+use App\Models\FeaturedArtistSelection;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -84,6 +87,14 @@ class DemoDatabaseSeeder extends Seeder
             ]);
         }
 
+        // This buyer intentionally has no sent inquiries for empty-state QA.
+        User::query()->updateOrCreate(['email' => 'buyer-empty@rademan.test'], [
+            'name' => 'خریدار بدون درخواست',
+            'password' => $passwordHash,
+            'role' => User::ROLE_BUYER,
+            'email_verified_at' => now(),
+        ]);
+
         // Include artists who have registered but have not completed their profiles yet.
         foreach (range(1, 3) as $number) {
             User::query()->updateOrCreate(['email' => sprintf('new-artist-%02d@rademan.test', $number)], [
@@ -93,6 +104,29 @@ class DemoDatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
             ]);
         }
+
+        // Partial profiles exercise onboarding and private/public empty-portfolio states.
+        $privateStarter = User::query()->where('email', 'new-artist-01@rademan.test')->firstOrFail();
+        $privateStarter->artistProfile()->updateOrCreate([], [
+            'slug' => 'new-artist-private-preview',
+            'display_name' => $privateStarter->name,
+            'bio' => null,
+            'city' => null,
+            'website_url' => null,
+            'instagram_handle' => null,
+            'is_public' => false,
+        ]);
+
+        $publicStarter = User::query()->where('email', 'new-artist-02@rademan.test')->firstOrFail();
+        $publicStarter->artistProfile()->updateOrCreate([], [
+            'slug' => 'new-artist-incomplete-public',
+            'display_name' => $publicStarter->name,
+            'bio' => null,
+            'city' => 'کرمان',
+            'website_url' => 'https://example.com/new-artist-02',
+            'instagram_handle' => null,
+            'is_public' => true,
+        ]);
 
         $categorySlugs = array_keys($categories);
         $availabilityValues = ['available', 'sold', 'not_for_sale'];
@@ -141,6 +175,24 @@ class DemoDatabaseSeeder extends Seeder
             }
         }
 
+        // A deliberately missing file exercises the public image endpoint's 404/fallback path.
+        $missingImage = $artists[0]->artworks()->updateOrCreate(['slug' => 'demo-broken-image'], [
+            'category_id' => $categories['other']->id,
+            'title' => 'تصویر در دسترس نیست',
+            'description' => 'این رکورد عمداً به فایل تصویری ناموجود اشاره می‌کند تا حالت جایگزین تصویر بررسی شود.',
+            'medium' => null,
+            'dimensions' => null,
+            'year' => null,
+            'price' => null,
+            'availability' => 'not_for_sale',
+            'status' => Artwork::STATUS_APPROVED,
+            'rejection_note' => null,
+            'reviewed_by' => $admin->id,
+            'reviewed_at' => now()->subDay(),
+            'image_path' => 'artworks/demo/missing-image-intentionally.svg',
+        ]);
+        $artworks[] = $missingImage;
+
         $publicArtists = array_values(array_filter($artists, fn (ArtistProfile $p): bool => $p->is_public));
         $approved = array_values(array_filter($artworks, fn (Artwork $a): bool => $a->status === Artwork::STATUS_APPROVED));
         for ($i = 1; $i <= 48; $i++) {
@@ -172,8 +224,71 @@ class DemoDatabaseSeeder extends Seeder
             ]);
         }
 
+        $publicApproved = array_values(array_filter(
+            $approved,
+            fn (Artwork $artwork): bool => $artwork->artist_profile_id !== $artists[13]->id,
+        ));
+        $pendingArtwork = collect($artworks)->first(fn (Artwork $artwork): bool => $artwork->status === Artwork::STATUS_PENDING_REVIEW);
+        $privateApproved = collect($artworks)->first(fn (Artwork $artwork): bool => $artwork->artist_profile_id === $artists[13]->id && $artwork->status === Artwork::STATUS_APPROVED);
+
+        // Editorial variations: published, draft, scheduled, empty, and mixed-visibility collections.
+        $collectionDefinitions = [
+            ['slug' => 'demo-curated-selection', 'title' => 'گزیده‌ای از نگاه معاصر', 'intro' => 'مجموعه‌ای نمایشی از آثار تأییدشده هنرمندان عمومی.', 'status' => 'published', 'position' => 0, 'published_at' => now()->subDays(2), 'artwork_ids' => array_slice(array_map(fn (Artwork $artwork): int => $artwork->id, $publicApproved), 0, 4)],
+            ['slug' => 'demo-curated-draft', 'title' => 'پیش‌نویس مجموعه', 'intro' => 'این مجموعه فقط در فضای مدیریت قابل مشاهده است.', 'status' => 'draft', 'position' => 1, 'published_at' => null, 'artwork_ids' => isset($publicApproved[4]) ? [$publicApproved[4]->id] : []],
+            ['slug' => 'demo-curated-upcoming', 'title' => 'نمایشگاه آینده', 'intro' => 'این مجموعه تا رسیدن زمان انتشار نباید در خروجی عمومی نمایش داده شود.', 'status' => 'published', 'position' => 2, 'published_at' => now()->addDays(7), 'artwork_ids' => isset($publicApproved[5]) ? [$publicApproved[5]->id] : []],
+            ['slug' => 'demo-curated-mixed-visibility', 'title' => 'آزمون نمایش آثار عمومی', 'intro' => 'آثار در انتظار بررسی و آثار هنرمند خصوصی باید از خروجی عمومی حذف شوند.', 'status' => 'published', 'position' => 3, 'published_at' => now()->subDay(), 'artwork_ids' => array_values(array_filter([$publicApproved[6]->id ?? null, $pendingArtwork?->id, $privateApproved?->id]))],
+            ['slug' => 'demo-curated-empty', 'title' => 'مجموعه بدون اثر', 'intro' => 'برای بررسی حالت مجموعه منتشرشده بدون اثر.', 'status' => 'published', 'position' => 4, 'published_at' => now()->subHours(2), 'artwork_ids' => []],
+        ];
+
+        foreach ($collectionDefinitions as $definition) {
+            $collection = CuratedCollection::query()->updateOrCreate(
+                ['slug' => $definition['slug']],
+                [
+                    'title' => $definition['title'], 'intro' => $definition['intro'],
+                    'status' => $definition['status'], 'position' => $definition['position'],
+                    'published_at' => $definition['published_at'],
+                    'created_by' => $admin->id, 'updated_by' => $admin->id,
+                ],
+            );
+            $sync = [];
+            foreach ($definition['artwork_ids'] as $position => $artworkId) {
+                $sync[$artworkId] = ['position' => $position];
+            }
+            $collection->artworks()->sync($sync);
+            EditorialAudit::query()->updateOrCreate(
+                ['action' => 'collection.seeded', 'subject_type' => 'CuratedCollection', 'subject_id' => $collection->id],
+                ['actor_id' => $admin->id, 'metadata' => ['seeded' => true, 'status' => $collection->status, 'items' => count($sync)]],
+            );
+        }
+
+        // Featured artist windows exercise active, scheduled, expired, unpublished, and private-profile filtering.
+        $featuredDefinitions = [
+            [$publicArtists[0], true, null, null, 'هنرمندی با انتخاب ویژه فعال'],
+            [$publicArtists[1], true, now()->addDays(3), now()->addDays(10), 'انتخابی که هنوز زمان انتشارش نرسیده است'],
+            [$publicArtists[2], true, now()->subDays(10), now()->subDay(), 'انتخاب ویژه منقضی‌شده'],
+            [$publicArtists[3], false, null, null, 'انتخاب ذخیره‌شده اما منتشرنشده'],
+            [$artists[13], true, null, null, 'پروفایل خصوصی نباید در خروجی عمومی باشد'],
+            [$publicArtists[4], true, now()->subDay(), now()->addDay(), 'انتخاب ویژه با بازه انتشار فعال'],
+        ];
+
+        foreach ($featuredDefinitions as $position => [$profile, $published, $startsAt, $endsAt, $intro]) {
+            $selection = FeaturedArtistSelection::query()->updateOrCreate(
+                ['artist_profile_id' => $profile->id],
+                [
+                    'editorial_intro' => $intro, 'position' => $position,
+                    'starts_at' => $startsAt, 'ends_at' => $endsAt,
+                    'is_published' => $published, 'created_by' => $admin->id, 'updated_by' => $admin->id,
+                ],
+            );
+            EditorialAudit::query()->updateOrCreate(
+                ['action' => 'featured_artist.seeded', 'subject_type' => 'FeaturedArtistSelection', 'subject_id' => $selection->id],
+                ['actor_id' => $admin->id, 'metadata' => ['seeded' => true, 'position' => $position, 'published' => $published]],
+            );
+        }
+
         $this->command?->info('Rademan demo dataset is ready.');
         $this->command?->line('Admin: admin@rademan.test | Artist: artist@rademan.test | Buyer: buyer@rademan.test');
+        $this->command?->line('Empty buyer: buyer-empty@rademan.test | Private starter: new-artist-01@rademan.test | Public incomplete starter: new-artist-02@rademan.test');
         $this->command?->line('Password for all demo accounts: '.self::PASSWORD);
     }
 

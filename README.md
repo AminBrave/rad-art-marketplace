@@ -169,7 +169,7 @@ Use `composer lint:fix` only when intentionally applying PHP formatting changes,
 
 ## Demo data
 
-A repeatable, local/testing-only dataset is available through `php artisan db:seed`. It creates demo admin, artist, and buyer accounts (including profile-incomplete artists), 70 artworks, all moderation/availability states, inquiries, and private SVG placeholder images. The seeder does not truncate the database and refuses to run outside local/testing. See [demo data and test accounts](docs/demo-data.md) for credentials, coverage, and reset guidance.
+A repeatable, local/testing-only dataset is available through `php artisan db:seed`. It creates demo admin, artist, and buyer accounts (including profile-incomplete artists), 71 artworks, all moderation/availability states, inquiries, editorial states, empty states, and private SVG placeholders (including one intentional missing-image record). The seeder does not truncate the database and refuses to run outside local/testing. See [demo data and test accounts](docs/demo-data.md) for credentials, coverage, and reset guidance.
 
 ## Documentation map
 
