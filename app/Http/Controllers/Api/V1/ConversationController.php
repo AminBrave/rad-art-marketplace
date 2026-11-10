@@ -36,7 +36,6 @@ class ConversationController extends Controller
                 || $artistUserId === (int) $user->id,
             404
         );
-
         abort_unless(in_array($user->role, [User::ROLE_BUYER, User::ROLE_ARTIST], true), 403);
 
         $conversation = DB::transaction(function () use ($inquiry, $artistUserId): Conversation {
@@ -49,21 +48,23 @@ class ConversationController extends Controller
                 ],
             );
 
-            if (! $conversation->messages()->exists()) {
-                $conversation->messages()->create([
+            $conversation->messages()->firstOrCreate(
+                [
                     'sender_user_id' => $inquiry->sender_user_id,
                     'client_message_id' => 'inquiry-'.$inquiry->id,
+                ],
+                [
                     'body' => $inquiry->message,
                     'delivered_at' => $inquiry->created_at ?? now(),
                     'created_at' => $inquiry->created_at ?? now(),
                     'updated_at' => $inquiry->created_at ?? now(),
-                ]);
-            }
+                ],
+            );
 
             return $conversation;
         });
 
-        $this->authorizeParticipant($request->user(), $conversation, 'view');
+        $this->authorizeParticipant($user, $conversation, 'view');
 
         return response()->json([
             'data' => $this->conversationPayload($conversation->load([
@@ -73,12 +74,12 @@ class ConversationController extends Controller
                 'artist',
                 'latestMessage.sender',
             ]), $user),
-        ], 200);
+        ]);
     }
 
     public function show(Request $request, Conversation $conversation): JsonResponse
     {
-        $this->authorize('view', $conversation);
+        $this->authorizeParticipant($request->user(), $conversation, 'view');
 
         return response()->json([
             'data' => $this->conversationPayload($conversation->load([
@@ -93,7 +94,7 @@ class ConversationController extends Controller
 
     public function messages(Request $request, Conversation $conversation): JsonResponse
     {
-        $this->authorize('view', $conversation);
+        $this->authorizeParticipant($request->user(), $conversation, 'view');
 
         $messages = $conversation->messages()
             ->with(['sender', 'replyTo.sender'])
@@ -122,6 +123,8 @@ class ConversationController extends Controller
         ]);
 
         $message = DB::transaction(function () use ($conversation, $request, $validated): Message {
+            $lockedConversation = Conversation::query()->lockForUpdate()->findOrFail($conversation->id);
+
             if (! empty($validated['client_message_id'])) {
                 $existing = $lockedConversation->messages()
                     ->where('sender_user_id', $request->user()->id)
@@ -166,7 +169,12 @@ class ConversationController extends Controller
         ]);
     }
 
-    private function authorizeParticipant(User $user, Conversation $conversation, string $ability): void\n    {\n        abort_unless($user->can($ability, $conversation), 404);\n    }\n\n    private function indexFor(User $user, string $participantColumn): JsonResponse
+    private function authorizeParticipant(User $user, Conversation $conversation, string $ability): void
+    {
+        abort_unless($user->can($ability, $conversation), 404);
+    }
+
+    private function indexFor(User $user, string $participantColumn): JsonResponse
     {
         $conversations = Conversation::query()
             ->where($participantColumn, $user->id)
