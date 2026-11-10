@@ -89,13 +89,14 @@ class DemoDatabaseSeeder extends Seeder
             ]);
         }
 
-        // This buyer intentionally has no sent inquiries for empty-state QA.
-        User::query()->updateOrCreate(['email' => 'buyer-empty@rademan.test'], [
+        // This buyer intentionally has no sent inquiries; direct-message seed data still exercises the buyer inbox.
+        $emptyBuyer = User::query()->updateOrCreate(['email' => 'buyer-empty@rademan.test'], [
             'name' => 'خریدار بدون درخواست',
             'password' => $passwordHash,
             'role' => User::ROLE_BUYER,
             'email_verified_at' => now(),
         ]);
+        $buyers[] = $emptyBuyer;
 
         // Include artists who have registered but have not completed their profiles yet.
         foreach (range(1, 3) as $number) {
