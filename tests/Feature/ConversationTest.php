@@ -147,6 +147,13 @@ class ConversationTest extends TestCase
             'body' => '',
         ]);
         $this->assertSoftDeleted('messages', ['id' => $message->id]);
+
+        $this->actingAs($artist)
+            ->getJson('/api/v1/conversations/'.$conversation->id.'/messages')
+            ->assertOk()
+            ->assertJsonPath('data.0.id', $message->id)
+            ->assertJsonPath('data.0.body', null)
+            ->assertJsonPath('data.0.deleted_at', $deleted->json('data.deleted_at'));
     }
 
     public function test_participants_can_add_and_remove_idempotent_message_reactions(): void
