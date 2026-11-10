@@ -71,6 +71,21 @@ return new class extends Migration
                 'updated_at' => now(),
             ]);
         });
+
+        DB::table('conversations')->whereNotNull('inquiry_id')->orderBy('id')->each(function ($conversation): void {
+            $inquiry = DB::table('artist_inquiries')->where('id', $conversation->inquiry_id)->first();
+            if (! $inquiry) {
+                return;
+            }
+            DB::table('conversation_contexts')->insertOrIgnore([
+                'conversation_id' => $conversation->id,
+                'artwork_id' => $inquiry->artwork_id,
+                'inquiry_id' => $inquiry->id,
+                'added_by_user_id' => $inquiry->sender_user_id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        });
     }
 
     public function down(): void
