@@ -39,11 +39,12 @@ class ConversationController extends Controller
         abort_unless(in_array($user->role, [User::ROLE_BUYER, User::ROLE_ARTIST], true), 403);
 
         $conversation = DB::transaction(function () use ($inquiry, $artistUserId): Conversation {
+            $pairKey = $inquiry->sender_user_id.':'.$artistUserId;
             $conversation = Conversation::query()->firstOrCreate(
-                ['pair_key' => $inquiry->sender_user_id.':'.$artistUserId],
+                ['pair_key' => $pairKey],
                 [
                     'inquiry_id' => $inquiry->id,
-                    'pair_key' => $inquiry->sender_user_id.':'.$artistUserId,
+                    'pair_key' => $pairKey,
                     'buyer_user_id' => $inquiry->sender_user_id,
                     'artist_user_id' => $artistUserId,
                     'last_message_at' => $inquiry->created_at ?? now(),
@@ -105,12 +106,12 @@ class ConversationController extends Controller
         $this->authorizeParticipant($request->user(), $conversation, 'view');
 
         $messages = $conversation->messages()
-            ->with(['sender', 'replyTo.sender'])
+            ->with(['sender', 'replyTo.sender', 'reactions'])
             ->latest('id')
             ->paginate(30);
 
         $messages->setCollection($messages->getCollection()->reverse()->values()->map(
-            fn (Message $message): array => $this->messagePayload($message)
+            fn (Message $message): array => $this->messagePayload($message, $request->user())
         ));
 
         return response()->json($messages);
@@ -140,8 +141,7 @@ class ConversationController extends Controller
                     ->first();
 
                 if ($existing) {
-
-                    return $existing->load(['sender', 'replyTo.sender']);
+                    return $existing->load(['sender', 'replyTo.sender', 'reactions']);
                 }
             }
 
@@ -155,12 +155,74 @@ class ConversationController extends Controller
 
             $lockedConversation->forceFill(['last_message_at' => $message->created_at])->save();
 
-            return $message->load(['sender', 'replyTo.sender']);
+            return $message->load(['sender', 'replyTo.sender', 'reactions']);
         });
 
         return response()->json([
-            'data' => $this->messagePayload($message),
+            'data' => $this->messagePayload($message, $request->user()),
         ], $message->wasRecentlyCreated ? 201 : 200);
+    }
+
+    public function updateMessage(Request $request, Conversation $conversation, Message $message): JsonResponse
+    {
+        $this->assertOwnMessage($request->user(), $conversation, $message);
+
+        $validated = $request->validate([
+            'body' => ['required', 'string', 'min:1', 'max:5000'],
+        ]);
+
+        $message->forceFill([
+            'body' => trim($validated['body']),
+            'edited_at' => now(),
+        ])->save();
+
+        return response()->json([
+            'data' => $this->messagePayload($message->load(['sender', 'replyTo.sender', 'reactions']), $request->user()),
+        ]);
+    }
+
+    public function deleteMessage(Request $request, Conversation $conversation, Message $message): JsonResponse
+    {
+        $this->assertOwnMessage($request->user(), $conversation, $message);
+
+        // Remove message content and reactions before retaining a minimal tombstone for thread continuity.
+        $message->reactions()->delete();
+        $message->forceFill(['body' => ''])->save();
+        $message->delete();
+
+        return response()->json([
+            'message' => 'پیام حذف شد.',
+            'data' => $this->messagePayload($message->load(['sender', 'replyTo.sender', 'reactions']), $request->user()),
+        ]);
+    }
+
+    public function setReaction(Request $request, Conversation $conversation, Message $message): JsonResponse
+    {
+        $this->authorizeParticipant($request->user(), $conversation, 'view');
+        abort_unless((int) $message->conversation_id === (int) $conversation->id, 404);
+        abort_if($message->trashed(), 404);
+
+        $validated = $request->validate([
+            'emoji' => ['required', 'string', Rule::in(['👍', '❤️', '😂', '😮', '🙏', '🎨'])],
+            'action' => ['required', Rule::in(['add', 'remove'])],
+        ]);
+
+        $reaction = $message->reactions()
+            ->where('user_id', $request->user()->id)
+            ->where('emoji', $validated['emoji']);
+
+        if ($validated['action'] === 'add') {
+            $reaction->firstOrCreate([
+                'user_id' => $request->user()->id,
+                'emoji' => $validated['emoji'],
+            ]);
+        } else {
+            $reaction->delete();
+        }
+
+        return response()->json([
+            'data' => $this->messagePayload($message->load(['sender', 'replyTo.sender', 'reactions']), $request->user()),
+        ]);
     }
 
     public function markRead(Request $request, Conversation $conversation): JsonResponse
@@ -181,6 +243,14 @@ class ConversationController extends Controller
     private function authorizeParticipant(User $user, Conversation $conversation, string $ability): void
     {
         abort_unless($user->can($ability, $conversation), 404);
+    }
+
+    private function assertOwnMessage(User $user, Conversation $conversation, Message $message): void
+    {
+        $this->authorizeParticipant($user, $conversation, 'view');
+        abort_unless((int) $message->conversation_id === (int) $conversation->id, 404);
+        abort_unless((int) $message->sender_user_id === (int) $user->id, 404);
+        abort_if($message->trashed(), 404);
     }
 
     private function indexFor(User $user, string $participantColumn): JsonResponse
@@ -235,7 +305,7 @@ class ConversationController extends Controller
                 'slug' => $conversation->inquiry->artwork->slug,
             ] : null,
             'last_message' => $conversation->latestMessage
-                ? $this->messagePayload($conversation->latestMessage)
+                ? $this->messagePayload($conversation->latestMessage, $viewer)
                 : null,
             'last_message_at' => $conversation->last_message_at?->toISOString(),
             'unread_count' => (int) ($conversation->unread_count ?? 0),
@@ -249,8 +319,19 @@ class ConversationController extends Controller
     /**
      * @return array<string, mixed>
      */
-    private function messagePayload(Message $message): array
+    private function messagePayload(Message $message, ?User $viewer = null): array
     {
+        $reactions = $message->relationLoaded('reactions') ? $message->reactions : collect();
+        $reactionSummary = $reactions->groupBy('emoji')->map(
+            fn ($items, string $emoji): array => [
+                'emoji' => $emoji,
+                'count' => $items->count(),
+                'reacted_by_me' => $viewer !== null && $items->contains(
+                    fn ($reaction): bool => (int) $reaction->user_id === (int) $viewer->id
+                ),
+            ]
+        )->values()->all();
+
         return [
             'id' => $message->id,
             'sender_id' => $message->sender_user_id,
@@ -261,6 +342,7 @@ class ConversationController extends Controller
                 'sender_name' => $message->replyTo->sender?->name,
                 'body' => $message->replyTo->trashed() ? null : $message->replyTo->body,
             ] : null,
+            'reactions' => $reactionSummary,
             'delivered_at' => $message->delivered_at?->toISOString(),
             'read_at' => $message->read_at?->toISOString(),
             'edited_at' => $message->edited_at?->toISOString(),
