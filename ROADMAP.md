@@ -206,7 +206,7 @@ Known unverified release gates (release sign-off blockers):
 
 - [x] Implement M05-T03 message replies, sender-only edit/delete, content-free deletion tombstones, emoji reactions, and delivery/read-state UX (#80) through [PR #107](https://github.com/AminBrave/rad-art-marketplace/pull/107), merged as `07a48d082b49efb53f1f38377abdd9c13a1c848b`.
 - [ ] Product-owner manual retest of M05-T03 is pending; keep issue #80 open until accepted.
-- [ ] Conversation archive/mute and search UX/API remain unimplemented (#79/#80).
+- [x] Implement participant-scoped inbox search, unread/archived filters, independent archive/mute settings and artwork context links (#79); final CI and manual keyboard/mobile acceptance remain pending.
 - [ ] WebSocket/broadcast delivery, typing and presence remain host-gated; five-second polling is the current fallback and no real-time push is claimed (#81).
 - [x] Implement private image/PDF attachments, MIME/size validation, sender-only upload, participant-authorized download, private local storage and deletion purge (#82); final CI/MySQL verification and a host-level malware-scanning decision remain pending.
 - [x] Implement M05-T06 recipient-only in-app notifications, read-all, per-user preferences and conversation deep links through [PR #111](https://github.com/AminBrave/rad-art-marketplace/pull/111), merged as `702e1f839d34577790e6438e999064f40f5a6a77`.
