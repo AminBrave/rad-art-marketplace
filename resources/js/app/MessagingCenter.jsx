@@ -39,7 +39,10 @@ export default function MessagingCenter({ role }) {
 
     const loadThreads = useCallback(async () => {
         try {
-            const { data } = await axios.get(endpoint, { params: { search: search.trim() || undefined, filter: threadFilter } });
+            const query = {};
+            if (search.trim()) query.search = search.trim();
+            if (threadFilter !== 'all') query.filter = threadFilter;
+            const { data } = await axios.get(endpoint, { params: query });
             setThreads(data.data ?? []);
         } catch {
             setError('دریافت گفتگوها انجام نشد. دوباره تلاش کنید.');
