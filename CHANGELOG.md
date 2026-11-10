@@ -210,10 +210,11 @@ Notable repository changes are listed newest first. Entries describe implementat
 - Added versioned API health endpoint, initial Persian/RTL shell, and cPanel-oriented deployment guidance.
 
 
-## Unreleased — M02 discovery experience
+## 2026-11-10 — M02 discovery experience (PR #92 merged)
 
 - Reworked the public homepage around approved new work, active category discovery, and public artist spotlights.
 - Expanded catalogue filters to medium, availability, and eight server-validated sort modes while preserving shareable URL state and pagination.
 - Added related public works to artwork detail pages and category filtering within artist portfolios.
 - Enforced public artist-profile visibility consistently across catalogue, filter metadata, artwork detail, related work, and image authorization.
 - Added page-specific metadata, detail-image failure fallback, backend feature coverage, and Chromium discovery browser regressions.
+- Merged as `3a634308494e4ebb8b93d3768b06f8ff581bce0a`; PR CI run #42724547388 and post-merge main CI run #42724722130 passed all three jobs, including 16 Chromium browser tests.
