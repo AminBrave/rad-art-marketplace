@@ -52,3 +52,15 @@ git push -u origin HEAD
 Actions for main-branch CI/deploy/artifacts; CODEOWNERS/rulesets/branch protection for reviews; Dependabot/security advisories for dependencies; Projects for planning; milestones for releases; PR templates/reviews for auditable decisions; Releases/tags for reproducibility; environments/approvals for deployment secrets.
 
 Never force-push main. After conflict resolution inspect the diff and rerun local tests yourself only if requested; otherwise provide commands to the user. For shared-history mistakes revert, do not rewrite. Do not bypass repository policy.
+
+
+## Main branch protection — repository owner action
+The repository connection used for this change cannot administer branch-protection settings, so these controls are documented but not enabled by this commit. A repository owner should configure **Settings → Branches → Add branch protection rule** (or a repository ruleset) targeting `main`:
+
+- Require a pull request before merging; do not allow direct pushes.
+- Require at least one approval when an independent reviewer is available; resolve conversations before merging.
+- Block force pushes and branch deletion; restrict bypass to a deliberate emergency path.
+- Do **not** require GitHub Actions status checks on PRs: this project intentionally has no PR workflow, so required CI checks would block every merge.
+- Keep the PR template's local-verification evidence as the pre-merge test gate; verify main-branch Actions after merge.
+
+If this repository is maintained by one person, a mandatory independent approval may make merging impossible. Keep PR-only merges and explicit local verification, and enable required approval when another reviewer is available.
