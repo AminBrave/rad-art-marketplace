@@ -141,7 +141,7 @@ class PublicPageController extends Controller
             ])->values()->all(),
         ];
 
-        return view('app', ['seo' => [
+        return response()->view('app', ['seo' => [
             'title' => $collection->title.' | مجموعه‌های راد آرت',
             'description' => $description,
             'canonical' => $canonical,
