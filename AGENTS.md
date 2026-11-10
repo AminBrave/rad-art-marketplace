@@ -29,9 +29,10 @@ MVP 2 includes the public marketplace, artist workspace, buyer workspace, admin 
 
 Do not implement without an explicit scope revision:
 - Payments, cart, checkout, orders, or shipping.
-- Real-time chat, replies, or email delivery.
-- Native mobile apps, AI recommendations, social networking, subscriptions, or advertising.
-- Admin category management, reports/abuse queue, or featured placements unless explicitly brought into MVP 2 scope.
+- Group chat, public social networking, native mobile apps, AI recommendations, subscriptions, or advertising.
+- General-purpose admin reports/abuse queue, category management, or featured placements unless explicitly brought into scope.
+
+M05 issue #77 explicitly approves private one-to-one conversations, replies, edits/deletes, reactions, private attachments, in-app notifications, message reporting/blocking, and a messaging moderation queue. Real-time transport and optional email remain conditional on verified target-host support, privacy controls, and operational configuration; do not add Redis, persistent workers, daemons, or external services without that verification.
 
 Email verification and password-reset UX are not currently implemented. Do not promise or imply them.
 
@@ -53,7 +54,7 @@ Keep the Laravel monolith and centralized React Router. Do not introduce microse
 - Artist submissions and edits enter pending review; the client cannot set owner or moderation state.
 - Only the owning Artist may edit their profile/artwork or manage inquiries addressed to that profile; Admin access follows policies.
 - Buyer inquiries may target public artist profiles and optionally approved artwork owned by that artist.
-- Inquiry payloads must not expose either party's email address. Do not imply chat, replies, or email delivery.
+- Inquiry and conversation payloads must not expose either party's email address. Conversation messages use the separate participant-scoped M05 APIs; do not claim email delivery or real-time transport until those services are configured and verified.
 - Keep original artwork uploads private. Validate actual image type, dimensions, and size; use policy-protected image delivery.
 - Keep secrets in environment configuration; never commit credentials or production data.
 - Escape user-generated content and avoid unsafe HTML rendering.
