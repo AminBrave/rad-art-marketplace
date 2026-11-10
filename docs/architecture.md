@@ -52,9 +52,10 @@ A `User` has one persisted role: `buyer`, `artist`, or `admin`. A guest is an un
 
 An Artist account owns one `ArtistProfile` with a public slug, display name, biography, city, website, Instagram handle, and public/private flag.
 
-- The owner manages their profile.
+- The owner manages their profile and may preview their own public or private profile through the slug route.
 - Admins may view/edit profiles through authorized endpoints.
-- Guests and unrelated users may view only public profiles.
+- Guests and unrelated users may view only public profiles; private-profile preview does not change visibility.
+- The artist workspace onboarding checklist derives completion from five explicit fields (display name, biography, city, website/Instagram, public visibility) and the actual artwork paginator total; it is not a quality score or analytics metric.
 - The public directory returns public profiles only, with a minimal allow-listed card payload.
 - Public portfolio pages support category filtering on the currently loaded approved portfolio; further pages remain server-paginated.
 - A public artist profile includes approved portfolio artworks only.
@@ -87,7 +88,7 @@ An `ArtistInquiry` belongs to a recipient ArtistProfile and sender User, and may
 
 - Session authentication and role middleware protect private route groups.
 - Policies enforce profile, artwork, and inquiry ownership.
-- Laravel validation constrains registration, profile data, artwork metadata/uploads, moderation decisions, and inquiry content.
+- Laravel validation constrains registration, profile data, artwork metadata/uploads, moderation decisions, and inquiry content. Browser image checks improve feedback but never replace server validation.
 - Artwork uploads accept JPG/JPEG/PNG/WebP, up to 5 MB and 6000 × 6000 pixels, and are stored on the private local disk.
 - Image delivery invokes the artwork view policy; private storage must not be symlinked into a public directory.
 - Inquiry creation is limited to authenticated Buyers, public artist profiles, and optionally approved artwork owned by the target artist.

@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-11-10 — M04 artist experience improvements (implementation in progress)
+
+### Added
+- Added a guided artist start checklist based on five explicit profile fields and the real server-reported artwork total; the checklist is not presented as an artistic quality score or analytics metric.
+- Added an owner-only preview path for private artist profiles without changing their visibility setting.
+- Added browser-side image type, file-size, decode, and 6000 × 6000 pixel dimension checks before artwork upload.
+- Explained pending, approved, rejected, and changes-requested moderation outcomes with actionable next steps and the actual moderator feedback.
+- Clarified the meaning and limitations of new, read, and archived inquiry states.
+
+### Verification in progress
+- Added backend regression coverage for private profile preview isolation, frontend contract tests, and Chromium journeys for onboarding, oversized image rejection, moderation feedback, and inquiry lifecycle.
+- M04 is not complete until all CI jobs pass and product-owner review is recorded.
+
 ## 2026-11-10 — M00 browser regression coverage
 
 ### Added
