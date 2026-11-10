@@ -25,6 +25,7 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
             Route::post('/login', [AuthController::class, 'login'])->name('login');
         });
         Route::middleware('auth')->group(function (): void {
+        Route::post('/conversations/direct', [DirectConversationController::class, 'start'])->middleware('throttle:10,1')->name('conversations.direct');
             Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         });
     });
