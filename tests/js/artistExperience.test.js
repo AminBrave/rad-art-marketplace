@@ -39,4 +39,6 @@ test('artist inquiry workspace explains the actual read and archive lifecycle', 
     assert.ok(inquiries.includes('خوانده‌شده'));
     assert.ok(inquiries.includes('بایگانی‌شده'));
     assert.ok(inquiries.includes('این وضعیت‌ها پاسخ یا اعلان برای فرستنده ارسال نمی‌کنند'));
+    assert.ok(inquiries.includes('بررسی و به‌روزرسانی پروفایل هنری'));
+    assert.ok(inquiries.includes('مشاهده هنرمندان'));
 });

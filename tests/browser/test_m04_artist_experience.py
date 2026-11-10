@@ -103,6 +103,18 @@ class ArtistExperienceBrowserTests(unittest.TestCase):
         finally:
             context.close()
 
+    def test_empty_artist_inbox_has_a_relevant_next_step(self):
+        context, page = self.new_page()
+        try:
+            self.mock_workspace(page, inquiries=[])
+            page.goto(BASE_URL + "/dashboard/artist/inquiries")
+            page.get_by_role("heading", name="صندوق درخواست‌ها").wait_for()
+            page.get_by_role("link", name="بررسی و به‌روزرسانی پروفایل هنری").click()
+            page.get_by_role("heading", name="پروفایل هنرمند").wait_for()
+            self.assertTrue(page.url.endswith("/dashboard/artist/profile"))
+        finally:
+            context.close()
+
     def test_inquiry_status_lifecycle_is_explained_and_updates_from_server(self):
         context, page = self.new_page()
         try:
