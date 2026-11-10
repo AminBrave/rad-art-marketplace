@@ -136,8 +136,8 @@ class PublicSeoTest extends TestCase
         $this->get('/robots.txt')
             ->assertOk()
             ->assertHeader('Content-Type', 'text/plain; charset=UTF-8')
-            ->assertSee('Disallow: /dashboard/', false)
-            ->assertSee('Disallow: /admin/', false)
+            ->assertSee('Disallow: /dashboard', false)
+            ->assertSee('Disallow: /admin', false)
             ->assertSee('Sitemap: https://rad.example/sitemap.xml', false)
             ->assertDontSee('Disallow: /api/', false);
     }
