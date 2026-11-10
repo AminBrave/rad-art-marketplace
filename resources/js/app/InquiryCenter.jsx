@@ -100,6 +100,7 @@ export default function InquiryCenter({ user, hasProfile }) {
                 <p className="text-sm font-bold text-terracotta-strong">{isArtist ? 'ارتباط با مخاطبان' : 'پیام‌های ارسال‌شده'}</p>
                 <h1 className="mt-2 text-2xl font-black">{isArtist ? 'صندوق درخواست‌ها' : 'پیگیری درخواست‌ها'}</h1>
                 <p className="mt-2 text-sm leading-7 text-muted">{isArtist ? 'درخواست‌های دریافتی را بخوانید و وضعیت رسیدگی را ثبت کنید. اطلاعات تماس خصوصی در این بخش نمایش داده نمی‌شود.' : 'جزئیات و وضعیت درخواست‌هایی را که برای هنرمندان فرستاده‌اید مشاهده کنید.'}</p>
+                {isArtist && <p className="mt-3 border-s-2 border-border bg-surface-muted px-4 py-3 text-xs leading-6 text-muted">«جدید» یعنی هنوز وضعیت رسیدگی ثبت نشده؛ «خوانده‌شده» یعنی درخواست را بررسی کرده‌اید؛ «بایگانی‌شده» یعنی آن را از صندوق فعال خارج کرده‌اید. این وضعیت‌ها پاسخ یا اعلان برای فرستنده ارسال نمی‌کنند.</p>}
             </header>
 
             {error && <ErrorState title="عملیات انجام نشد" description={error} />}
@@ -138,6 +139,7 @@ export default function InquiryCenter({ user, hasProfile }) {
                                     {selected.artwork && <div className="sm:col-span-2"><dt className="text-xs text-muted">اثر مرتبط</dt><dd className="mt-1 font-semibold">{selected.artwork.title}</dd></div>}
                                 </dl>
                                 <p className="whitespace-pre-wrap py-6 text-sm leading-9 text-ink">{selected.message}</p>
+                                {isArtist && <p className="mb-3 text-xs leading-6 text-muted">{selected.status === 'new' ? 'هنوز رسیدگی به این درخواست را ثبت نکرده‌اید.' : selected.status === 'read' ? 'این درخواست به‌عنوان خوانده‌شده ثبت شده است؛ در صورت نیاز می‌توانید آن را بایگانی کنید.' : 'این درخواست بایگانی شده و از فهرست فعال خارج است.'}</p>}
                                 {isArtist && <div className="flex flex-wrap gap-2 border-t border-border pt-4">
                                     {selected.status !== 'read' && <Button size="sm" variant="outline" disabled={busyId === selected.id} onClick={() => updateStatus(selected, 'read')}>علامت‌گذاری به‌عنوان خوانده‌شده</Button>}
                                     {selected.status !== 'archived' && <Button size="sm" variant="secondary" disabled={busyId === selected.id} onClick={() => updateStatus(selected, 'archived')}>بایگانی درخواست</Button>}
