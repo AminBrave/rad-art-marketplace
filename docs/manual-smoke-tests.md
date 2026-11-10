@@ -228,6 +228,17 @@ These automated checks do not replace manual visual design review, Firefox/WebKi
 9. Refresh the API reads and confirm messages, timestamps, sender identity, and inquiry/artwork context remain server-derived.
 10. Confirm API responses omit participant email addresses and private storage paths.
 
+
+## M06-T09 — SEO metadata, robots and sitemap
+
+1. Open an approved artwork detail URL as a guest. View page source (not only the live DOM) and confirm a unique Persian title/description, canonical URL using `APP_URL`, Open Graph/Twitter preview metadata, and factual `VisualArtwork` JSON-LD are present before React runs.
+2. Open a public artist profile and a published collection. Confirm unique title/description/canonical/social metadata; artist schema must use only the stored display name, bio, city, website and Instagram fields.
+3. Open a private artist profile or pending/private artwork as a guest. Confirm HTTP 404. As its owner/Admin, confirm the page is available for preview but has `noindex,nofollow`, no canonical URL, and no social preview image.
+4. Request `/sitemap.xml`. Confirm it is valid XML and includes only public artist profiles, approved artworks owned by public profiles, published collections, and the public static pages. Confirm private profiles, pending artworks, and draft/unpublished collections are absent.
+5. Request `/robots.txt`. Confirm authenticated workspaces are disallowed and the sitemap URL uses the configured `APP_URL`. Confirm public artwork image URLs are not blocked by the robots rules.
+6. Change the test `APP_URL` and repeat metadata, sitemap, and robots checks. Confirm all canonical/image/sitemap origins use the configured production origin, not an arbitrary incoming Host header.
+7. Validate the artwork and collection URLs with social preview tools after deployment. Record the actual deployed hostname and crawler results; local HTML tests do not prove external crawler caching or indexing.
+
 ## M05-T03 — Replies, editing, deletion, reactions and message states
 
 1. Sign in as a Buyer and open a conversation. Reply to an existing message; confirm the quoted sender and text appear above the new message for both participants.

@@ -215,3 +215,15 @@ Known unverified release gates (release sign-off blockers):
 
 **Hosting constraint:** cPanel compatibility for persistent workers, Redis, broadcasting daemons and queued mail is unverified. Do not enable these services or claim WebSocket/email delivery until the target host is tested. No end-to-end encryption or malware-scanning claim is made.
 
+
+## M06 — Launch readiness and growth foundations · In progress
+
+**GitHub parent:** [#65](https://github.com/AminBrave/rad-art-marketplace/issues/65) · **Child tracks:** [#74](https://github.com/AminBrave/rad-art-marketplace/issues/74), [#75](https://github.com/AminBrave/rad-art-marketplace/issues/75)
+
+- [ ] Complete M06-T09 SEO/shareability: server-rendered unique metadata, canonical URLs, social previews, factual structured data, and a public-only XML sitemap. Implementation is in review on `feat/m06-seo-shareability`; CI and external crawler verification are pending.
+- [ ] Complete production observability, privacy controls, monitoring, backup/restore evidence and release documentation (#75).
+- [ ] Verify actual production-host configuration, HTTPS, private storage, migration/rollback and backup restoration; these cannot be inferred from repository CI.
+- [ ] Record external social-preview and search-crawler behavior after deployment.
+
+**Guardrails:** Never include private artist profiles, pending artworks, draft collections, inquiry content or personal account data in public metadata/sitemaps. Use `APP_URL` as the canonical origin; do not trust arbitrary request Host headers. No tracking pixels or unapproved analytics.
+

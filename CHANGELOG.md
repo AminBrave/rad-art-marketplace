@@ -1,3 +1,15 @@
+## 2026-11-10 — M06-T09 SEO and shareability (implementation in review)
+
+### Added
+- Added server-rendered page titles/descriptions, canonical URLs, robots directives, Open Graph/Twitter metadata and factual JSON-LD for artwork, artist and published-collection detail pages.
+- Added a dynamic XML sitemap containing only public artist profiles, approved artworks belonging to public profiles, published collections and public static pages.
+- Added a robots.txt route that uses the configured APP_URL and keeps authenticated workspaces out of crawl paths without blocking public artwork image URLs.
+- Added backend feature tests and manual smoke-test steps for public/private visibility and configured-origin behavior.
+
+### Verification boundary
+- Implementation branch: `feat/m06-seo-shareability`; CI and external crawler/share-preview verification are pending.
+- A passing local HTML test does not prove that external search/social crawlers have fetched, cached or indexed the deployed pages.
+
 # Changelog
 
 ## 2026-11-10 — M05-T03 message actions (merged; manual acceptance pending)
