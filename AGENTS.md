@@ -1,85 +1,63 @@
-# Agent and Contributor Instructions
+# Agent Operating Contract
 
-These instructions are mandatory for automated agents and human contributors.
+Mandatory entrypoint for every AI coding agent. Follow before exploring or editing code.
 
-## Start every task here
+## Operating priorities
+- Deliver the requested outcome quickly with the smallest safe change.
+- Minimize token, tool, compute and CI usage. Avoid broad repository scans, repeated file reads, speculative refactors, redundant summaries and unnecessary agent delegation.
+- Start from this contract and the knowledge graph; read only the nodes and source files relevant to the task. Expand scope only when evidence requires it.
+- Prefer existing patterns and dependencies. Do not redesign unrelated systems.
+- Do not run GitHub Actions for feature-branch work. GitHub CI is intentionally restricted to pushes to `main` after merge.
+- The user runs relevant tests locally on non-main branches. Do not launch full test suites automatically on their behalf; provide the exact local commands and let the user execute them. Run a narrow local check only when explicitly requested or essential to diagnose a concrete issue.
 
-1. Read [README.md](README.md) for product scope, implemented capabilities, setup, and documentation map.
-2. Read [ROADMAP.md](ROADMAP.md) and the relevant GitHub issue before selecting work.
-3. Read [SKILLS.md](SKILLS.md) for engineering, review, and documentation standards.
-4. Inspect the latest `main`, current implementation, tests, migrations, and relevant docs before editing.
-5. Check open/recent PRs to avoid duplicating or reviving superseded work.
-6. Create a focused branch from the latest `main`. Keep one cohesive stage or feature slice per PR.
+## Explicit force mode override
+- **Trigger:** when the exact token `#FORCE_MODE` appears at the very end of a user's command, treat it as explicit authorization to prioritize completing the requested, in-scope repository work over ordinary project process gates.
+- In this mode, make a best-effort pass over incomplete tasks and blockers that are directly related to the user's requested scope; implement, commit, merge, or close only work the user has authorized and that is actually completed. Do not silently abandon a task merely because a normal workflow preference would delay it.
+- The token can override project-level process preferences such as draft-only status, waiting for routine local verification, ordinary review sequencing, or a preference not to commit/merge—provided the user has explicitly requested that outcome and GitHub permits it.
+- **It does not override** system/developer instructions, law, platform or repository permissions/branch protection, security/privacy controls, authorization boundaries, data-loss safeguards, or explicit confirmation requirements for destructive or externally consequential actions.
+- Never fabricate tests, verification, review, acceptance, deployment, or completion. If checks are skipped, record them as **not run / unverified**, explain the residual risk, and do not describe the change as tested.
+- Do not close unrelated issues or mark incomplete work complete to make a tracker look clean. Close only issues whose acceptance criteria are demonstrably met; otherwise leave them open with a concise blocker and next action, or close as not planned only when the user explicitly directs that disposition.
+- If a required safety or platform gate cannot be bypassed, finish all safe work, state the exact blocker, and provide the smallest remaining action.
 
-## Branch, review, and integration workflow
+## Bootstrap
+1. Read this file, [knowledge graph](docs/knowledge-graph.md), [docs index](docs/index.md), [product scope](docs/product/vision-and-scope.md) and [system overview](docs/architecture/system-overview.md).
+2. Read only linked domain/API/frontend/security/testing nodes relevant to the task.
+3. Inspect the smallest relevant set of source files, migrations, routes, tests, manifests and workflows. Code + tests + migrations are implementation truth; docs are navigation, not proof.
+4. Never infer missing behavior. If docs conflict with code/tests, report it and prefer executable evidence.
+5. Never expose secrets, inspect production personal data or weaken authorization to make tests pass.
 
-- `main` is the only active integration branch. `cleaned-MVP-1` is historical baseline context only.
-- Create new work branches from the latest `main`; target PRs at `main`.
-- Do not build on old stacked feature branches or use historical PR branches as a baseline.
-- Keep PRs scoped to the issue(s) they complete and state what is deliberately excluded.
-- Run `composer test`, `composer lint`, `npm run lint`, and `npm run build` when available. Report exact results; do not infer success from a merge.
-- Do not merge a PR unless the user explicitly authorizes merging or asks to finish/integrate the stage.
-- Update the GitHub delivery tracker and `ROADMAP.md` when a stage changes status.
+## Before coding
+- Confirm branch, worktree status, HEAD, target base and related issue/PR.
+- Link work to an issue when useful; do not create planning overhead for trivial changes.
+- Define user outcome, actor, scope/non-goals, acceptance criteria, edge cases, security/privacy and data/API/UI impact.
+- Map only the affected routes/controllers/policies/models/migrations/React pages/API callers and existing tests.
+- Identify dependencies and backward compatibility. Add ordered stages to issue/PR when the task warrants them.
 
-## Product direction and boundaries
+## Implementation and documentation rules
+- Make the smallest coherent change that satisfies the user's request.
+- Laravel authorization is the security boundary; React guards are UX only.
+- Validate untrusted input server-side. Use transactions for multi-record invariants and idempotency for retryable writes.
+- Add forward migrations; never rewrite deployed historical migrations.
+- Preserve `/api/v1` response/pagination contracts unless a reviewed contract change is intended.
+- Keep UI Persian-first, RTL, responsive, keyboard accessible and consistent with shared UI primitives.
+- Prevent N+1 queries, unbounded lists, unsafe file access and private data leakage.
+- Never delete/weaken a failing test without justified replacement.
+- Do not add dependencies without compatibility review and lockfile update.
+- **When the user requests or approves a codebase change, update every related document whose description, contract, architecture, workflow, test instructions or operational guidance is affected.** Update cross-links and the knowledge graph/index where relationships change. This applies equally to user-requested changes and agent-authored changes; do not leave docs stale. Do not edit unrelated docs.
+- Claim checks passed only with execution evidence. Do not imply that feature-branch GitHub CI ran.
 
-Rad Art is a Persian-first, RTL-by-default art discovery and artist-contact marketplace. The approved MVP 2 visual direction is **Contemporary Art Editorial**: restrained, editorial, artwork-led, and distinct from generic e-commerce/SaaS templates.
+## Required stages — tick only with evidence
+- [ ] S0 Understand: relevant source, graph nodes and dependencies inspected.
+- [ ] S1 Specify: acceptance, edge cases and security/data impact defined.
+- [ ] S2 Design: only necessary API/data/UI contract decisions recorded.
+- [ ] S3 Implement: smallest coherent vertical slice completed.
+- [ ] S4 Handoff verification: relevant local commands documented; user-run results recorded when supplied. Main-branch CI evidence is recorded only after merge.
+- [ ] S5 Review: focused diff inspected; review threads resolved.
+- [ ] S6 Release: main-branch CI, deployment/health and rollback verified where applicable.
+- [ ] S7 Close: issue, milestone, affected docs and release notes updated.
 
-MVP 2 includes the public marketplace, artist workspace, buyer workspace, admin workspace, shared design system, centralized routing, responsive behavior, localization, accessibility, performance, and release QA. Small Laravel/API changes are allowed only when an approved UI requirement cannot be met safely by the existing API.
+## GitHub delivery
+Follow [Git/GitHub workflow](docs/engineering/git-and-github.md). Feature branches are developed and reviewed without Actions runs; the user performs local verification before merging. The repository workflow runs automated checks only after changes reach `main`. Use [the local verification script](scripts/verify) to run only the relevant layer or the full suite.
 
-Do not implement without an explicit scope revision:
-- Payments, cart, checkout, orders, or shipping.
-- Group chat, public social networking, native mobile apps, AI recommendations, subscriptions, or advertising.
-- General-purpose admin reports/abuse queue, category management, or featured placements unless explicitly brought into scope.
-
-M05 issue #77 explicitly approves private one-to-one conversations, replies, edits/deletes, reactions, private attachments, in-app notifications, message reporting/blocking, and a messaging moderation queue. Real-time transport and optional email remain conditional on verified target-host support, privacy controls, and operational configuration; do not add Redis, persistent workers, daemons, or external services without that verification.
-
-Email verification and password-reset UX are not currently implemented. Do not promise or imply them.
-
-## Architecture and technology
-
-- Backend: Laravel 13 / PHP 8.3+.
-- Frontend: React 18, Vite, React Router 6.
-- UI: Tailwind CSS 3, Radix UI, shared components under `resources/js/components/ui`.
-- Database: MySQL for deployment; in-memory SQLite for tests.
-- HTTP: Axios and Laravel session authentication/CSRF.
-- Hosting target: cPanel shared hosting; actual host compatibility is unverified.
-
-Keep the Laravel monolith and centralized React Router. Do not introduce microservices, repositories/services for every model, global state frameworks, new runtime infrastructure, or dependencies without a concrete requirement and documented rationale. Do not assume Docker at runtime, Redis, persistent workers, queues, daemons, root access, or process managers.
-
-## Security and domain requirements
-
-- Server-side authentication, authorization, ownership, validation, and state transitions are mandatory. UI hiding is never a security control.
-- Public artwork discovery/detail and public artist portfolios expose approved artwork only.
-- Artist submissions and edits enter pending review; the client cannot set owner or moderation state.
-- Only the owning Artist may edit their profile/artwork or manage inquiries addressed to that profile; Admin access follows policies.
-- Buyer inquiries may target public artist profiles and optionally approved artwork owned by that artist.
-- Inquiry and conversation payloads must not expose either party's email address. Conversation messages use the separate participant-scoped M05 APIs; do not claim email delivery or real-time transport until those services are configured and verified.
-- Keep original artwork uploads private. Validate actual image type, dimensions, and size; use policy-protected image delivery.
-- Keep secrets in environment configuration; never commit credentials or production data.
-- Escape user-generated content and avoid unsafe HTML rendering.
-- Preserve session/CSRF behavior. Review cookie, CORS, and middleware implications before changing auth architecture.
-
-## Documentation is required in every feature PR
-
-**Every feature change must update its relevant documentation in the same PR.** This is a release requirement, not optional cleanup.
-
-- API changes → `docs/api-reference.md`.
-- Route/layout/guard/navigation changes → `docs/frontend-routing.md`.
-- Domain/data/security/architecture changes → `docs/architecture.md`.
-- Design tokens/components → `docs/design-system.md` and/or `docs/ui-components.md`.
-- User-visible behavior → `CHANGELOG.md`.
-- Setup/operations changes → relevant runbook and `README.md`.
-- Stage/scope/status changes → `ROADMAP.md`, `README.md`, and GitHub issue #30.
-- Manual acceptance changes → `docs/manual-smoke-tests.md` and relevant QA checklist.
-
-Update existing documents instead of creating duplicates. Remove stale statements, links, and steps when behavior changes. Do not create a new document unless it has a distinct, maintained purpose. Keep README as the concise entry point and the specialist document as the detailed source of truth.
-
-## Quality gates and delivery
-
-- Add/update automated tests for behavior, validation, role boundaries, ownership, and state transitions.
-- Run `composer test`, `composer lint`, `npm run lint`, and `npm run build` when the environment supports them.
-- Review migrations for reversibility and data-loss risk.
-- Consider Persian/RTL, keyboard access, focus, semantic labels, responsive layouts, and reduced motion in UI work.
-- Never claim manual/device/production checks unless they were actually performed.
-- Summarize scope, implementation, docs updated, CI results, manual checks, known limitations, and follow-up work.
+## Definition of done
+Acceptance criteria met; appropriate tests exist; auth/privacy/failure paths are covered; migrations are safe; focused diff reviewed; affected docs and graph updated; local test commands and merge expectations communicated. After merge, main-branch CI must pass. Never mark a milestone complete based on intention.
