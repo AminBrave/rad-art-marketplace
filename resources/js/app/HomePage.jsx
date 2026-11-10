@@ -7,6 +7,8 @@ export default function HomePage() {
     const [artworks, setArtworks] = useState([]);
     const [categories, setCategories] = useState([]);
     const [artists, setArtists] = useState([]);
+    const [collections, setCollections] = useState([]);
+    const [featuredArtists, setFeaturedArtists] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [retry, setRetry] = useState(0);
@@ -30,6 +32,15 @@ export default function HomePage() {
         });
         return () => { active = false; controller.abort(); };
     }, [retry]);
+
+    useEffect(() => {
+        const controller = new AbortController();
+        Promise.all([
+            axios.get('/api/v1/collections', { params: { per_page: 3 }, signal: controller.signal }).then(({ data }) => setCollections(data.data ?? [])).catch(() => setCollections([])),
+            axios.get('/api/v1/featured-artists', { signal: controller.signal }).then(({ data }) => setFeaturedArtists(data.data ?? [])).catch(() => setFeaturedArtists([])),
+        ]);
+        return () => controller.abort();
+    }, []);
 
     const hero = artworks[0];
     useEffect(() => setHeroImageFailed(false), [hero?.id]);
@@ -94,6 +105,11 @@ export default function HomePage() {
                 {loading ? <div className="mt-8 grid gap-4 sm:grid-cols-3">{[0, 1, 2].map((item) => <ArtistCardSkeleton key={item} />)}</div> : artists.length ? <div className="mt-8 grid gap-4 sm:grid-cols-3">{artists.map((artist) => <ArtistCard key={artist.id} artist={artist} />)}</div> : <p className="mt-6 text-sm text-muted">هنرمندان دارای پروفایل عمومی در این بخش معرفی می‌شوند.</p>}
                 {spotlight && <div className="mt-8 flex flex-col gap-4 border border-border bg-surface-muted p-6 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-xs font-bold text-terracotta-strong">نقطه شروع پیشنهادی</p><h3 className="mt-2 text-xl font-black">{spotlight.display_name}</h3><p className="mt-2 max-w-2xl text-sm leading-7 text-muted">{spotlight.bio || 'پورتفولیوی عمومی این هنرمند را ببینید و با آثار تأییدشده او آشنا شوید.'}</p></div><Link to={'/artists/' + spotlight.slug} className="shrink-0 text-sm font-bold text-terracotta-strong underline">ورود به پورتفولیو</Link></div>}
             </section>
+
+            {(collections.length > 0 || featuredArtists.length > 0) && <section className="border-y border-border bg-surface-muted"><div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 lg:px-10">
+                {collections.length > 0 && <div><div className="flex items-end justify-between gap-4"><div><p className="text-xs font-bold text-terracotta-strong">روایت‌های منتخب</p><h2 className="mt-2 text-2xl font-black">مجموعه‌های سردبیر</h2></div><Link to="/collections" className="text-sm font-bold text-terracotta-strong underline">همه مجموعه‌ها</Link></div><div className="mt-6 grid gap-4 sm:grid-cols-3">{collections.slice(0, 3).map((item) => <Link key={item.id} to={'/collections/' + item.slug} className="border border-border bg-white p-5 hover:border-terracotta"><p className="text-xs text-terracotta-strong">{item.artwork_count} اثر منتخب</p><h3 className="mt-2 font-black">{item.title}</h3><p className="mt-2 line-clamp-3 text-sm leading-7 text-muted">{item.intro || 'انتخابی از آثار تأییدشده راد آرت'}</p></Link>)}</div></div>}
+                {featuredArtists.length > 0 && <div className="mt-10"><p className="text-xs font-bold text-terracotta-strong">چهره‌های منتخب</p><div className="mt-4 grid gap-4 sm:grid-cols-3">{featuredArtists.slice(0, 3).map((item) => <Link key={item.id} to={'/artists/' + item.artist.slug} className="border border-border bg-white p-5"><h3 className="font-black">{item.artist.display_name}</h3><p className="mt-2 text-sm leading-7 text-muted">{item.editorial_intro || item.artist.bio || 'با پورتفولیوی این هنرمند آشنا شوید.'}</p></Link>)}</div></div>}
+            </div></section>}
 
             <section className="bg-ink text-white">
                 <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-5 py-14 sm:px-8 md:flex-row md:items-center lg:px-10">

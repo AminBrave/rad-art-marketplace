@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title', 160);
             $table->text('intro')->nullable();
             $table->string('status', 16)->default('draft')->index();
+            $table->unsignedInteger('position')->default(0)->index();
             $table->timestamp('published_at')->nullable()->index();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();

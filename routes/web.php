@@ -67,6 +67,7 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
         Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
         Route::prefix('editorial')->name('editorial.')->group(function (): void {
             Route::get('/options', [EditorialController::class, 'options'])->name('options');
+            Route::get('/featured-artists', [EditorialController::class, 'adminFeaturedArtists'])->name('featured-artists.index');
             Route::get('/collections', [EditorialController::class, 'adminCollections'])->name('collections.index');
             Route::post('/collections', [EditorialController::class, 'storeCollection'])->name('collections.store');
             Route::patch('/collections/{collection}', [EditorialController::class, 'updateCollection'])->name('collections.update');

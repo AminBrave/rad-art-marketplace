@@ -24,6 +24,9 @@ const BuyerInquiryDetailPage = lazy(() => import('./BuyerWorkspace').then((modul
 const AdminDashboardHome = lazy(() => import('./AdminWorkspace').then((module) => ({ default: module.AdminDashboardHome })));
 const AdminArtworkModeration = lazy(() => import('./AdminWorkspace').then((module) => ({ default: module.AdminArtworkModeration })));
 const AdminUsersPage = lazy(() => import('./AdminWorkspace').then((module) => ({ default: module.AdminUsersPage })));
+const AdminEditorialPage = lazy(() => import('./EditorialPages').then((module) => ({ default: module.AdminEditorialPage })));
+const CollectionIndexPage = lazy(() => import('./EditorialPages').then((module) => ({ default: module.CollectionIndexPage })));
+const CollectionDetailPage = lazy(() => import('./EditorialPages').then((module) => ({ default: module.CollectionDetailPage })));
 
 function withRouteFallback(element) {
     return <Suspense fallback={<RouteLoading />}>{element}</Suspense>;
@@ -52,6 +55,8 @@ function AppRoutes() {
                 <Route element={<PublicLayout />}>
                     <Route path="/" element={withRouteFallback(<HomePage />)} />
                     <Route path="/artworks" element={withRouteFallback(<ArtworkCatalogue />)} />
+                    <Route path="/collections" element={withRouteFallback(<CollectionIndexPage />)} />
+                    <Route path="/collections/:slug" element={withRouteFallback(<CollectionDetailPage />)} />
                     <Route path="/artworks/:slug" element={withRouteFallback(<ArtworkDetailPage />)} />
                     <Route path="/artists" element={withRouteFallback(<ArtistDirectoryPage />)} />
                     <Route path="/artists/:slug" element={withRouteFallback(<ArtistProfilePage />)} />
@@ -80,6 +85,7 @@ function AppRoutes() {
                     <Route index element={withRouteFallback(<AdminDashboardHome />)} />
                     <Route path="users" element={withRouteFallback(<AdminUsersPage />)} />
                     <Route path="artworks" element={withRouteFallback(<AdminArtworkModeration />)} />
+                    <Route path="editorial" element={withRouteFallback(<AdminEditorialPage />)} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
                 <Route path="*" element={<NotFoundPage />} />

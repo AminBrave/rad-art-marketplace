@@ -24,7 +24,7 @@ class EditorialController extends Controller
         $items = CuratedCollection::query()
             ->where('status', 'published')->whereNotNull('published_at')->where('published_at', '<=', now())
             ->with(['artworks' => fn (Builder $query) => $this->publicArtworkQuery($query)])
-            ->orderByDesc('published_at')->orderBy('id')
+            ->orderBy('position')->orderByDesc('published_at')->orderBy('id')
             ->paginate(12)
             ->through(fn (CuratedCollection $collection) => $this->collectionPayload($collection, false));
 
@@ -66,7 +66,7 @@ class EditorialController extends Controller
 
     public function adminCollections(): JsonResponse
     {
-        $items = CuratedCollection::query()->withCount('artworks')->orderByDesc('updated_at')->paginate(20);
+        $items = CuratedCollection::query()->withCount('artworks')->orderBy('position')->orderByDesc('updated_at')->paginate(20);
 
         return response()->json($items);
     }
@@ -100,6 +100,7 @@ class EditorialController extends Controller
             $collection = CuratedCollection::create([
                 'slug' => $slug, 'title' => $validated['title'], 'intro' => $validated['intro'] ?? null,
                 'status' => ($validated['publish'] ?? false) ? 'published' : 'draft',
+                'position' => (int) CuratedCollection::max('position') + 1,
                 'published_at' => ($validated['publish'] ?? false) ? now() : null,
                 'created_by' => $request->user()->id, 'updated_by' => $request->user()->id,
             ]);
@@ -155,12 +156,28 @@ class EditorialController extends Controller
         ]);
         DB::transaction(function () use ($validated, $request): void {
             foreach ($validated['collection_ids'] as $position => $id) {
-                CuratedCollection::whereKey($id)->update(['updated_by' => $request->user()->id, 'updated_at' => now()]);
+                CuratedCollection::whereKey($id)->update(['position' => $position, 'updated_by' => $request->user()->id, 'updated_at' => now()]);
                 EditorialAudit::create(['actor_id' => $request->user()->id, 'action' => 'collection.reordered', 'subject_type' => 'collection', 'subject_id' => $id, 'metadata' => ['position' => $position]]);
             }
         });
 
         return response()->json(['message' => 'ترتیب مجموعه‌ها ثبت شد.']);
+    }
+
+    public function adminFeaturedArtists(): JsonResponse
+    {
+        $items = FeaturedArtistSelection::query()->with('artistProfile')->orderBy('position')->orderBy('id')->get()
+            ->map(fn (FeaturedArtistSelection $selection) => [
+                'id' => $selection->id,
+                'artist_profile_id' => $selection->artist_profile_id,
+                'editorial_intro' => $selection->editorial_intro,
+                'starts_at' => $selection->starts_at?->toISOString(),
+                'ends_at' => $selection->ends_at?->toISOString(),
+                'is_published' => $selection->is_published,
+                'artist' => ['display_name' => $selection->artistProfile->display_name, 'slug' => $selection->artistProfile->slug],
+            ]);
+
+        return response()->json(['data' => $items]);
     }
 
     public function saveFeaturedArtists(Request $request): JsonResponse
@@ -223,7 +240,7 @@ class EditorialController extends Controller
     {
         return [
             'id' => $collection->id, 'slug' => $collection->slug, 'title' => $collection->title,
-            'intro' => $collection->intro, 'status' => $collection->status,
+            'intro' => $collection->intro, 'status' => $collection->status, 'position' => $collection->position,
             'published_at' => $collection->published_at?->toISOString(),
             'artwork_ids' => $collection->artworks->pluck('id')->all(),
             'artwork_count' => $collection->artworks->count(),

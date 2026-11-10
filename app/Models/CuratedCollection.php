@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CuratedCollection extends Model
 {
-    protected $fillable = ['slug', 'title', 'intro', 'status', 'published_at', 'created_by', 'updated_by'];
+    protected $fillable = ['slug', 'title', 'intro', 'status', 'position', 'published_at', 'created_by', 'updated_by'];
 
     protected function casts(): array
     {
