@@ -22,7 +22,10 @@ THREAD = {
     "last_message_at": "2026-11-10T10:30:00.000000Z",
     "unread_count": 1,
 }
-INBOX_CONVERSATIONS_ROUTE = re.compile(r".*/api/v1/buyer/conversations(?:\?.*)?$")
+INBOX_CONVERSATIONS_ROUTE = re.compile(r".*/api/v1/buyer/conversations(?:\\?.*)?$")
+MESSAGES_ROUTE = re.compile(r".*/api/v1/conversations/101/messages/?(?:\\?.*)?$")
+READ_ROUTE = re.compile(r".*/api/v1/conversations/101/read/?(?:\\?.*)?$")
+SAFETY_ROUTE = re.compile(r".*/api/v1/conversations/101/safety/?(?:\\?.*)?$")
 
 MESSAGE = {
     "id": 501,
@@ -101,13 +104,16 @@ class MessageNotificationBrowserTests(unittest.TestCase):
             content_type="application/json",
             body=json.dumps({"data": [THREAD], "current_page": 1, "last_page": 1, "total": 1}, ensure_ascii=False),
         ))
-        page.route("**/api/v1/conversations/101/messages", lambda route: route.fulfill(
+        page.route(MESSAGES_ROUTE, lambda route: route.fulfill(
             status=200,
             content_type="application/json",
             body=json.dumps({"data": [MESSAGE], "current_page": 1, "last_page": 1, "total": 1}, ensure_ascii=False),
         ))
-        page.route("**/api/v1/conversations/101/read", lambda route: route.fulfill(
+        page.route(READ_ROUTE, lambda route: route.fulfill(
             status=200, content_type="application/json", body='{"data":{"updated_messages":1}}'
+        ))
+        page.route(SAFETY_ROUTE, lambda route: route.fulfill(
+            status=200, content_type="application/json", body=json.dumps({"data": {"blocked_by_me": False, "blocked_by_other": False}})
         ))
         return context, page
 
@@ -120,10 +126,16 @@ class MessageNotificationBrowserTests(unittest.TestCase):
         try:
             page.goto(BASE_URL + "/dashboard/buyer/messages")
             page.get_by_role("heading", name="پیام‌ها").wait_for()
+            api_requests = []
+            page.on("request", lambda request: api_requests.append(request.url))
             page.get_by_role("button", name="اعلان‌ها").click()
             page.get_by_role("button", name="هنرمند آزمایشی پیام جدیدی فرستاد").click()
             page.wait_for_url("**/dashboard/buyer/messages?conversation=101")
             page.get_by_role("heading", name="هنرمند آزمایشی").wait_for()
+            self.assertTrue(
+                any("/api/v1/conversations/101/messages" in url for url in api_requests),
+                f"Conversation message endpoint was not requested. Requests: {api_requests}",
+            )
             page.get_by_role("paragraph").filter(has_text=MESSAGE["body"]).wait_for()
         finally:
             context.close()
