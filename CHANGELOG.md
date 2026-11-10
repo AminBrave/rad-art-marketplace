@@ -1,6 +1,6 @@
 # Changelog
 
-## 2026-11-10 — M05-T03 message actions (implementation in review)
+## 2026-11-10 — M05-T03 message actions (merged; manual acceptance pending)
 
 ### Added
 - Added sender-authorized message editing and deletion. Deletion clears the stored body and reactions, then retains a content-free soft-delete tombstone for conversation continuity.
@@ -10,7 +10,9 @@
 - Added backend regression coverage for sender ownership, deletion retention, reaction idempotency, and quoted reply context.
 
 ### Verification boundary
-- Implementation branch: `feat/m05-message-actions`. CI has not yet run for this branch; all checks and manual acceptance remain pending.
+- Merged through [PR #107](https://github.com/AminBrave/rad-art-marketplace/pull/107) as `07a48d082b49efb53f1f38377abdd9c13a1c848b`.
+- GitHub Actions [run #42826223056](https://github.com/AminBrave/rad-art-marketplace/actions/runs/42826223056) passed: 74 backend tests / 750 assertions, PHP style, frontend tests/lint/build, and 22 Chromium browser tests.
+- Product-owner manual retest of the new message-action UI remains pending.
 - M05 WebSocket delivery, typing/presence, private attachments, notifications/email, archive/mute/search, reporting/blocking and moderation remain outstanding.
 - `delivered_at` still means server acceptance/persistence, not device-level delivery. No end-to-end encryption or malware-scanning claim is made.
 
