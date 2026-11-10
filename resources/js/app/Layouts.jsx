@@ -117,11 +117,14 @@ function NotificationBell({ user }) {
     };
 
     const updatePreference = async (enabled) => {
+        const previous = preferences.in_app_messages;
+        setPreferences((current) => ({ ...current, in_app_messages: enabled }));
         setBusy(true);
         try {
             const { data } = await axios.patch('/api/v1/notifications/preferences', { in_app_messages: enabled });
             setPreferences(data.data);
         } catch {
+            setPreferences((current) => ({ ...current, in_app_messages: previous }));
             setError('ذخیره تنظیمات اعلان انجام نشد.');
         } finally {
             setBusy(false);
