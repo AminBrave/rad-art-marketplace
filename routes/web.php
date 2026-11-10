@@ -12,6 +12,8 @@ use App\Http\Controllers\Api\V1\ConversationController;
 use App\Http\Controllers\Api\V1\DirectConversationController;
 use App\Http\Controllers\Api\V1\EditorialController;
 use App\Http\Controllers\Api\V1\NotificationController;
+use App\Http\Controllers\Api\V1\MessageSafetyController;
+use App\Http\Middleware\EnsureConversationNotBlocked;
 use App\Http\Controllers\PublicPageController;
 use Illuminate\Support\Facades\Route;
 
