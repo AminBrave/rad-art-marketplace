@@ -88,14 +88,14 @@ class ConversationTest extends TestCase
 
         $this->actingAs($outsider)
             ->getJson('/api/v1/conversations/'.$conversation->id)
-            ->assertForbidden();
+            ->assertNotFound();
 
         $this->postJson('/api/v1/conversations/'.$conversation->id.'/messages', [
             'body' => 'این پیام نباید ارسال شود.',
-        ])->assertForbidden();
+        ])->assertNotFound();
 
         $this->patchJson('/api/v1/conversations/'.$conversation->id.'/read')
-            ->assertForbidden();
+            ->assertNotFound();
     }
 
     public function test_users_cannot_reply_to_a_message_from_another_conversation(): void
