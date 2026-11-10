@@ -25,8 +25,8 @@ def png_bytes(width, height):
         payload = kind + data
         return struct.pack(">I", len(data)) + payload + struct.pack(">I", binascii.crc32(payload) & 0xffffffff)
     header = struct.pack(">IIBBBBB", width, height, 8, 2, 0, 0, 0)
-    raw = b"\\x00" + (b"\\x00\\x00\\x00" * width)
-    return b"\\x89PNG\\r\\n\\x1a\\n" + chunk(b"IHDR", header) + chunk(b"IDAT", zlib.compress(raw)) + chunk(b"IEND", b"")
+    raw = b"\x00" + (b"\x00\x00\x00" * width)
+    return b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", header) + chunk(b"IDAT", zlib.compress(raw)) + chunk(b"IEND", b"")
 
 class ArtistExperienceBrowserTests(unittest.TestCase):
     @classmethod
