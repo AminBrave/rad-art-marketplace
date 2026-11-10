@@ -33,7 +33,7 @@ class PublicPageController extends Controller
             'name' => $artwork->title,
             'description' => $description,
             'url' => $canonical,
-            'image' => $image,
+            ...($image ? ['image' => $image] : []),
             'creator' => [
                 '@type' => 'Person',
                 'name' => $artistName,
@@ -200,8 +200,10 @@ class PublicPageController extends Controller
         return rtrim((string) config('app.url'), '/').'/'.ltrim($path, '/');
     }
 
-    private function artworkImage(Artwork $artwork): string
+    private function artworkImage(Artwork $artwork): ?string
     {
-        return $this->canonical('/api/v1/artworks/'.$artwork->slug.'/image');
+        return Storage::disk('local')->exists($artwork->image_path)
+            ? $this->canonical('/api/v1/artworks/'.$artwork->slug.'/image')
+            : null;
     }
 }
