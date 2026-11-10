@@ -1,3 +1,16 @@
+## 2026-11-10 — M05 private attachments and messaging safety (implementation batch; verification pending)
+
+### Added
+- Added participant-level blocking with server-enforced send prevention and a pair-scoped safety status endpoint.
+- Added participant message/conversation reporting, an Admin review queue, dismiss/review/remove actions, and an action-history record.
+- Added private image/PDF attachment upload and authorized participant download, strict MIME/size allowlists, sanitized display names, and file purge when a message is deleted or moderated.
+- Added Persian buyer/artist report/block controls, attachment preview/progress and an Admin report-review screen.
+
+### Verification boundary
+- This is an implementation batch on feat/mvp2-completion-batch; it has not yet been tested or merged.
+- Final verification must include the new backend feature tests, full CI, manual RTL/accessibility checks and MySQL migration review.
+- No malware scanner is integrated. WebSocket/typing/presence and email delivery remain disabled until target-host capabilities are verified.
+
 ## 2026-11-10 — M05-T06 in-app message notifications (merged; email host gate pending)
 
 ### Added
