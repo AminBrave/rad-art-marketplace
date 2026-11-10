@@ -40,7 +40,11 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
         Route::post('/inquiries/{inquiry}/conversation', [ConversationController::class, 'startFromInquiry'])->name('conversations.start');
         Route::get('/conversations/{conversation}', [ConversationController::class, 'show'])->name('conversations.show');
         Route::get('/conversations/{conversation}/messages', [ConversationController::class, 'messages'])->name('conversations.messages');
-        Route::post('/conversations/{conversation}/messages', [ConversationController::class, 'storeMessage'])->middleware('throttle:30,1')->name('conversations.messages.store');
+        Route::post('/conversations/{conversation}/messages', [ConversationController::class, 'storeMessage'])->middleware(['throttle:30,1', EnsureConversationNotBlocked::class])->name('conversations.messages.store');
+        Route::post('/conversations/{conversation}/report', [MessageSafetyController::class, 'report'])->middleware('throttle:5,1')->name('conversations.report');
+        Route::post('/conversations/{conversation}/messages/{message}/report', [MessageSafetyController::class, 'report'])->middleware('throttle:5,1')->name('conversations.messages.report');
+        Route::post('/conversations/{conversation}/block', [MessageSafetyController::class, 'block'])->name('conversations.block');
+        Route::delete('/conversations/{conversation}/block', [MessageSafetyController::class, 'unblock'])->name('conversations.unblock');
         Route::patch('/conversations/{conversation}/messages/{message}', [ConversationController::class, 'updateMessage'])->middleware('throttle:30,1')->name('conversations.messages.update');
         Route::delete('/conversations/{conversation}/messages/{message}', [ConversationController::class, 'deleteMessage'])->name('conversations.messages.delete');
         Route::post('/conversations/{conversation}/messages/{message}/reactions', [ConversationController::class, 'setReaction'])->middleware('throttle:60,1')->name('conversations.messages.reactions');
@@ -92,6 +96,8 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
 
     Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function (): void {
         Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+        Route::get('/message-reports', [MessageSafetyController::class, 'adminIndex'])->name('message-reports.index');
+        Route::patch('/message-reports/{report}', [MessageSafetyController::class, 'adminUpdate'])->name('message-reports.update');
         Route::prefix('editorial')->name('editorial.')->group(function (): void {
             Route::get('/options', [EditorialController::class, 'options'])->name('options');
             Route::get('/featured-artists', [EditorialController::class, 'adminFeaturedArtists'])->name('featured-artists.index');
