@@ -302,9 +302,8 @@ class ArtworkTest extends TestCase
             'price' => 100,
             'image_path' => 'artworks/sort-oldest.jpg',
             'status' => Artwork::STATUS_APPROVED,
-            'created_at' => now()->subDays(3),
-            'updated_at' => now()->subDays(3),
         ]);
+        $oldest->forceFill(['created_at' => now()->subDays(3)])->save();
         $newest = $profile->artworks()->create([
             ...$this->validArtwork(),
             'slug' => 'sort-newest',
@@ -313,9 +312,8 @@ class ArtworkTest extends TestCase
             'price' => 500,
             'image_path' => 'artworks/sort-newest.jpg',
             'status' => Artwork::STATUS_APPROVED,
-            'created_at' => now()->subDay(),
-            'updated_at' => now()->subDay(),
         ]);
+        $newest->forceFill(['created_at' => now()->subDay()])->save();
         $unknown = $profile->artworks()->create([
             ...$this->validArtwork(),
             'slug' => 'sort-unknown',
@@ -324,9 +322,8 @@ class ArtworkTest extends TestCase
             'price' => null,
             'image_path' => 'artworks/sort-unknown.jpg',
             'status' => Artwork::STATUS_APPROVED,
-            'created_at' => now(),
-            'updated_at' => now(),
         ]);
+        $unknown->forceFill(['created_at' => now()])->save();
 
         $this->getJson('/api/v1/artworks?sort=newest')->assertOk()->assertJsonPath('data.0.slug', $unknown->slug);
         $this->getJson('/api/v1/artworks?sort=oldest')->assertOk()->assertJsonPath('data.0.slug', $oldest->slug);
