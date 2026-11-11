@@ -6,6 +6,9 @@ This graph maps documentation dependencies and change propagation. It is a human
 flowchart TD
  A[AGENTS.md] --> K[Documentation graph]
  A --> AT[AI agent tooling]
+ A --> CHAT[ChatGPT entry point]
+ CHAT --> CPI[ChatGPT Project integration]
+ CPI --> AT
  K --> P[Product vision]
  P --> D[Domain workflows]
  D --> S[System overview]
@@ -36,6 +39,8 @@ flowchart TD
 ## Nodes
 
 - [AGENTS](../AGENTS.md): authoritative agent contract.
+- [ChatGPT entry point](../../CHATGPT.md): ChatGPT-specific instructions for retrieving the actual relevant skill files when repository access is connected.
+- [ChatGPT Project integration](engineering/chatgpt-project-integration.md): setup, skill routing and ChatGPT repository-access limitations.
 - [AI agent tooling](engineering/ai-agent-tooling.md): selected frameworks, project skills and execution boundaries.
 - [Vision](product/vision-and-scope.md): user value and boundaries.
 - [Domain](product/domain-workflows.md): actor workflows and invariants.
@@ -61,4 +66,4 @@ flowchart TD
 
 ## Change propagation
 
-Schema/domain → data, domain, API, tests, security. API → API docs, backend tests, frontend consumers, optional browser E2E. Feature availability → feature registry, backend route tests, frontend route/navigation tests and system/API/frontend docs. UI/navigation → frontend docs and browser tests. Auth/moderation/messaging/uploads/privacy → threat review. Workflow/release → CI/CD and GitHub docs. Test architecture or coverage changes → testing strategy, coverage matrix, route test map, tests README, PHPUnit configuration and quality gates. Do not add CI workflow references as application verification gates; no application CI workflow exists.
+Schema/domain → data, domain, API, tests, security. API → API docs, backend tests, frontend consumers, optional browser E2E. Feature availability → feature registry, backend route tests, frontend route/navigation tests and system/API/frontend docs. UI/navigation → frontend docs and browser tests. Auth/moderation/messaging/uploads/privacy → threat review. Workflow/release → CI/CD and GitHub docs. Test architecture or coverage changes → testing strategy, coverage matrix, route test map, tests README, PHPUnit configuration and quality gates. ChatGPT skill routing or setup changes → CHATGPT.md, ChatGPT Project integration, AI agent tooling and this graph. Do not add CI workflow references as application verification gates; no application CI workflow exists.
