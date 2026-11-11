@@ -3,8 +3,6 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import ContactArtistForm from './ContactArtistForm';
-import { isFeatureEnabled } from './features';
 import { ArtworkCard, EmptyState, ErrorState, ArtistProfileSkeleton } from '../components/ui';
 
 export default function ArtistProfilePage() {
@@ -107,9 +105,7 @@ export default function ArtistProfilePage() {
                                 <div className="grid gap-3">
                                     {user?.role === 'buyer' && <>
                                         <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(profile.slug)} className="flex min-h-12 items-center justify-center bg-ink px-5 py-3 text-center text-sm font-bold text-white transition-colors hover:bg-terracotta">ارسال پیام به هنرمند</Link>
-                                        {isFeatureEnabled('inquiries') && <ContactArtistForm artistSlug={profile.slug} />}
                                     </>}
-                                    {!user && isFeatureEnabled('inquiries') && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className="flex min-h-12 items-center justify-center bg-ink px-5 py-3 text-center text-sm font-bold text-white transition-colors hover:bg-terracotta">درخواست ارتباط با هنرمند</Link>}
                                     {user?.role !== 'buyer' && user && <p className="text-xs leading-6 text-muted">برای ارتباط با این هنرمند، از حساب خریدار استفاده کنید.</p>}
                                 </div>
                             </aside>
