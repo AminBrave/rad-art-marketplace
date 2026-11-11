@@ -185,6 +185,9 @@ export default function MessagingCenter({ role }) {
             if (!incremental || hasUnreadIncoming) {
                 await axios.patch('/api/v1/conversations/' + id + '/read', {}, { signal: controller.signal });
                 if (controller.signal.aborted || Number(activeConversationRef.current) !== Number(id)) return;
+                setThreads((current) => current.map((thread) =>
+                    Number(thread.id) === Number(id) ? { ...thread, unread_count: 0 } : thread
+                ));
             }
             // Keep the inbox preview and unread badge in sync for new messages and edits,
             // including messages sent from another tab/device by the current user.
