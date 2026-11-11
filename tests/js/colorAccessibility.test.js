@@ -74,3 +74,28 @@ test('contrast utility accepts common hex and computed RGB color formats', () =>
     assert.equal(parseColor('rgb(255 255 255)').g, 255);
     assert.ok(getContrastRatio('#000000', 'rgba(255, 255, 255, 1)') >= 20.9);
 });
+
+function mixWithWhite(color, weight) {
+    const source = parseColor(color);
+    const white = parseColor('#FFFFFF');
+    return {
+        r: source.r * weight + white.r * (1 - weight),
+        g: source.g * weight + white.g * (1 - weight),
+        b: source.b * weight + white.b * (1 - weight),
+        a: 1,
+    };
+}
+
+test('semantic status badges preserve readable text on their own tinted surfaces', () => {
+    const states = [
+        ['--color-success', 0.12],
+        ['--color-danger', 0.10],
+        ['--color-warning', 0.10],
+        ['--color-info', 0.10],
+        ['--color-terracotta-strong', 0.10],
+    ];
+    for (const [foreground, tint] of states) {
+        const ratio = getContrastRatio(token(foreground), mixWithWhite(token(foreground), tint));
+        assert.ok(ratio >= 4.5, foreground + ' on its semantic badge surface must meet 4.5:1 (received ' + ratio.toFixed(2) + ':1)');
+    }
+});
