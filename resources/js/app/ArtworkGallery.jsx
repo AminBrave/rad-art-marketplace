@@ -1,3 +1,4 @@
+import { Button, Input, Select } from '../components/ui';
 import { createElement, useEffect, useState } from 'react';
 import axios from 'axios';
 import ContactArtistForm from './ContactArtistForm';
@@ -74,12 +75,12 @@ export default function ArtworkGallery({ user }) {
                     <p className="mt-3 text-sm leading-7 text-muted-foreground">آثاری که بررسی و برای نمایش عمومی تأیید شده‌اند.</p>
                 </div>
                 <form onSubmit={(event) => { event.preventDefault(); setSearch(searchInput.trim()); }} className="flex flex-wrap gap-2">
-                    <input value={searchInput} onChange={(event) => setSearchInput(event.target.value)} aria-label="جست‌وجو در آثار" placeholder="جست‌وجوی عنوان یا تکنیک…" className="min-w-[220px] rounded-full border border-border bg-card px-4 py-2.5 text-sm outline-none focus:border-terracotta" />
-                    <select value={category} onChange={(event) => setCategory(event.target.value)} aria-label="فیلتر دسته‌بندی" className="rounded-full border border-border bg-card px-4 py-2.5 text-sm">
+                    <Input value={searchInput} onChange={(event) => setSearchInput(event.target.value)} aria-label="جست‌وجو در آثار" placeholder="جست‌وجوی عنوان یا تکنیک…" / className="min-w-[220px]" />
+                    <Select value={category} onChange={(event) => setCategory(event.target.value)} aria-label="فیلتر دسته‌بندی">
                         <option value="">همه دسته‌ها</option>
                         {categories.map((item) => <option key={item.id} value={item.slug}>{item.name}</option>)}
-                    </select>
-                    <button className="rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-white">جست‌وجو</button>
+                    </Select>
+                    <Button variant="default" size="default" type="submit">جست‌وجو</Button>
                 </form>
             </div>
             {loading ? <p className="mt-8 text-sm text-muted-foreground">در حال بارگذاری آثار…</p> : error ? (
