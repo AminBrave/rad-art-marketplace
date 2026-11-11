@@ -54,12 +54,12 @@ class ThemeSwitchingBrowserTests(unittest.TestCase):
             self.assertGreater(float(email.evaluate("(element) => parseFloat(getComputedStyle(element).borderRadius)")), 0)
 
             page.get_by_role("button", name="تغییر به حالت تیره").click()
+            page.wait_for_function("document.documentElement.classList.contains('dark') && localStorage.getItem('rad-art-color-scheme') === 'dark'")
             self.assertTrue(page.locator("html").evaluate("(element) => element.classList.contains('dark')"))
-            self.assertEqual(page.evaluate("localStorage.getItem('rad-art-color-scheme')"), "dark")
 
             page.get_by_role("button", name="تغییر به حالت روشن").click()
+            page.wait_for_function("!document.documentElement.classList.contains('dark') && localStorage.getItem('rad-art-color-scheme') === 'light'")
             self.assertFalse(page.locator("html").evaluate("(element) => element.classList.contains('dark')"))
-            self.assertEqual(page.evaluate("localStorage.getItem('rad-art-color-scheme')"), "light")
         finally:
             context.close()
 
