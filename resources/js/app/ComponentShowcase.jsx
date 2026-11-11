@@ -252,10 +252,10 @@ export default function ComponentShowcase() {
                                 <CardDescription>کارت ترکیبی با بخش‌های مستقل و قابل جایگزینی.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-sm leading-7 text-muted-foreground-foreground">اجزای کارت از یک API ترکیبی استفاده می‌کنند تا ساختار محتوا، عنوان و اقدامات از هم جدا بمانند.</p>
+                                <p className="text-sm leading-7 text-muted-foreground">اجزای کارت از یک API ترکیبی استفاده می‌کنند تا ساختار محتوا، عنوان و اقدامات از هم جدا بمانند.</p>
                             </CardContent>
                             <CardFooter className="justify-between">
-                                <span className="text-xs text-muted-foreground-foreground">به‌روزرسانی امروز</span>
+                                <span className="text-xs text-muted-foreground">به‌روزرسانی امروز</span>
                                 <Button size="sm">مشاهده جزئیات</Button>
                             </CardFooter>
                         </Card>
@@ -283,14 +283,14 @@ export default function ComponentShowcase() {
                             </Field>
                         </FieldGroup>
                         <Separator />
-                        <p className="text-xs text-muted-foreground-foreground">کنترل‌ها از توکن‌های semantic استفاده می‌کنند و وضعیت خطا با aria-invalid قابل تشخیص است.</p>
+                        <p className="text-xs text-muted-foreground">کنترل‌ها از توکن‌های semantic استفاده می‌کنند و وضعیت خطا با aria-invalid قابل تشخیص است.</p>
                     </div>
                 </div>
 
                 <div className="grid gap-4 border-b border-border pb-8">
                     <div>
                         <h3 className="font-semibold">جدول داده و واکنش‌گرایی</h3>
-                        <p className="mt-1 text-sm text-muted-foreground-foreground">جدول پایه برای ترکیب با مرتب‌سازی، فیلتر و صفحه‌بندی متناسب با هر دامنه.</p>
+                        <p className="mt-1 text-sm text-muted-foreground">جدول پایه برای ترکیب با مرتب‌سازی، فیلتر و صفحه‌بندی متناسب با هر دامنه.</p>
                     </div>
                     <Table>
                         <TableCaption>فهرست نمونه آثار در انتظار بررسی</TableCaption>
