@@ -164,7 +164,7 @@ export default function App() {
                             {publicProfile.city && <p className="mt-3 text-sm text-muted-foreground">{publicProfile.city}</p>}
                             {publicProfile.bio && <p className="mt-8 whitespace-pre-line leading-9 text-foreground">{publicProfile.bio}</p>}
                             {user?.role === 'buyer' && createElement(ContactArtistForm, { artistSlug: publicProfile.slug })}
-                            {!user && <Button asChild variant="default" size="default" className="mt-8 inline-block"><a href="/#account">برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید</a></Button>}
+                            {!user && <Button asChild variant="default" size="default" className="mt-8"><a href="/#account">برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید</a></Button>}
                             <div className="mt-8 flex flex-wrap gap-4 text-sm font-semibold">
                                 {publicProfile.website_url && <a href={publicProfile.website_url} target="_blank" rel="noreferrer" className="text-primary underline">وب‌سایت</a>}
                                 {publicProfile.instagram_handle && <a href={`https://instagram.com/${publicProfile.instagram_handle}`} target="_blank" rel="noreferrer" className="text-primary underline">اینستاگرام</a>}
@@ -376,7 +376,7 @@ export default function App() {
                         </form>
                         {profileMessage && <p role="status" className="mt-4 text-sm text-primary">{profileMessage}</p>}
                         {profile.slug && profile.is_public && (
-                            <a href={`/artists/${profile.slug}`} className="mt-4 inline-block text-sm font-semibold text-primary underline">
+                            <a href={`/artists/${profile.slug}`} className="mt-4 text-sm font-semibold text-primary underline">
                                 مشاهده پروفایل عمومی
                             </a>
                         )}
