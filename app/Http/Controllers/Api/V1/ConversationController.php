@@ -226,7 +226,7 @@ class ConversationController extends Controller
                 ));
             }
 
-            return $message->load(['sender', 'replyTo.sender', 'reactions', 'attachments']);
+            return $message->load(['sender', 'replyTo.sender', 'artwork.category', 'artwork.artistProfile', 'reactions', 'attachments']);
         });
 
         return response()->json([
@@ -248,7 +248,7 @@ class ConversationController extends Controller
         ])->save();
 
         return response()->json([
-            'data' => $this->messagePayload($message->load(['sender', 'replyTo.sender', 'reactions', 'attachments']), $request->user()),
+            'data' => $this->messagePayload($message->load(['sender', 'replyTo.sender', 'artwork.category', 'artwork.artistProfile', 'reactions', 'attachments']), $request->user()),
         ]);
     }
 
