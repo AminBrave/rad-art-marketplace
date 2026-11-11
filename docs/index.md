@@ -6,6 +6,7 @@ This is a linked knowledge system. Start with [AGENTS.md](../AGENTS.md), then fo
 |---|---|
 | Product | [Vision and scope](product/vision-and-scope.md), [domain workflows](product/domain-workflows.md) |
 | Code | [System overview](architecture/system-overview.md), [feature registry](architecture/feature-registry.md), [data model](architecture/data-model.md), [frontend](architecture/frontend-and-ui.md), [API](architecture/api-contracts.md) |
+| Design system | [shadcn/ui New York adoption](architecture/shadcn-new-york-design-system.md) |
 | Feature delivery | [Feature lifecycle](delivery/feature-lifecycle.md), [agent operating model](engineering/agent-operating-model.md) |
 | GitHub | [Git and GitHub](engineering/git-and-github.md) |
 | Tests and gates | [Testing strategy](engineering/testing-strategy.md), [quality gates](engineering/quality-gates.md), [local verification script](../scripts/verify) |
