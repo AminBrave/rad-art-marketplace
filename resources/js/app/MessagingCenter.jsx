@@ -1,3 +1,4 @@
+import { Button, Input, Textarea, Select } from '../components/ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
@@ -249,22 +250,22 @@ export default function MessagingCenter({ role }) {
                 <aside className={active ? 'hidden border-l border-border lg:block' : 'border-l border-border'}>
                     <div className="border-b border-border p-4 font-bold">گفتگوها</div>
                     <div className="space-y-2 border-b border-border p-3">
-                        <input aria-label="جستجوی گفتگوها" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="جستجو در گفتگوها…" className="w-full border border-border bg-background px-3 py-2 text-xs focus:border-terracotta" />
-                        <select aria-label="فیلتر گفتگوها" value={threadFilter} onChange={(event) => setThreadFilter(event.target.value)} className="w-full border border-border bg-card px-3 py-2 text-xs">
+                        <Input aria-label="جستجوی گفتگوها" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="جستجو در گفتگوها…" / className="w-full" />
+                        <Select aria-label="فیلتر گفتگوها" value={threadFilter} onChange={(event) => setThreadFilter(event.target.value)} className="w-full">
                             <option value="all">گفتگوهای فعال</option><option value="unread">خوانده‌نشده‌ها</option><option value="archived">بایگانی‌شده‌ها</option>
-                        </select>
+                        </Select>
                     </div>
                     {loading ? <p className="p-5 text-sm text-muted-foreground">در حال دریافت…</p> : threads.length === 0 ? <p className="p-5 text-sm leading-7 text-muted-foreground">هنوز گفتگویی ندارید. از صفحه هنرمند یا یک اثر، گزینه «پیام مستقیم» را انتخاب کنید.</p> : (
                         <ul className="divide-y divide-border">
                             {threads.map((thread) => <li key={thread.id}>
-                                <button type="button" onClick={() => { setActive(thread.id); setReplyTo(null); setEditingId(null); if (requestedConversation) setParams({}, { replace: true }); }} className={'w-full p-4 text-right transition hover:bg-muted ' + (active === thread.id ? 'bg-muted' : '')}>
+                                <Button type="button" onClick={() => { setActive(thread.id); setReplyTo(null); setEditingId(null); if (requestedConversation) setParams({}, { replace: true }); }} variant="ghost" size="default">
                                     <span className="flex items-center justify-between gap-2"><strong className="truncate text-sm">{thread.participant?.name ?? 'گفتگو'}</strong>{thread.unread_count > 0 && <span className="rounded-full bg-terracotta px-2 py-1 text-xs text-white">{thread.unread_count}</span>}</span>
                                     <span className="mt-2 block truncate text-xs text-muted-foreground">{thread.last_message?.body ?? (thread.last_message?.deleted_at ? 'پیام حذف شده است' : 'گفتگوی جدید')}</span>
                                     <span className="mt-1 block text-[11px] text-muted-foreground">{dateLabel(thread.last_message_at)}</span>
-                                </button>
+                                </Button>
                                 <div className="flex gap-3 px-4 pb-3 text-[11px] text-muted-foreground">
-                                    <button type="button" onClick={() => updateThreadSetting(thread, 'archived', !thread.archived)} className="underline">{thread.archived ? 'بازگردانی' : 'بایگانی'}</button>
-                                    <button type="button" onClick={() => updateThreadSetting(thread, 'muted', !thread.muted)} className="underline">{thread.muted ? 'لغو بی‌صدا' : 'بی‌صدا کردن'}</button>
+                                    <Button type="button" onClick={() => updateThreadSetting(thread, 'archived', !thread.archived)} variant="ghost" size="default">{thread.archived ? 'بازگردانی' : 'بایگانی'}</Button>
+                                    <Button type="button" onClick={() => updateThreadSetting(thread, 'muted', !thread.muted)} variant="ghost" size="default">{thread.muted ? 'لغو بی‌صدا' : 'بی‌صدا کردن'}</Button>
                                 </div>
                             </li>)}
                         </ul>
@@ -274,8 +275,8 @@ export default function MessagingCenter({ role }) {
                     {!active ? <div className="m-auto p-8 text-center text-sm text-muted-foreground">برای مشاهده پیام‌ها یک گفتگو را انتخاب کنید.</div> : (
                         <>
                             <header className="flex flex-wrap items-center gap-3 border-b border-border p-4">
-                                <button type="button" className="text-sm font-bold lg:hidden" onClick={() => setActive(null)}>بازگشت</button>
-                                <div className="min-w-0"><h2 className="font-bold">{selected?.participant?.name ?? 'گفتگوی خصوصی'}</h2><p className="mt-1 text-xs text-muted-foreground">گفتگوی مستقیم</p></div><button type="button" onClick={reportConversation} className="text-xs font-semibold text-muted-foreground underline">گزارش گفتگو</button><button type="button" onClick={toggleBlock} className="mr-auto text-xs font-semibold text-destructive underline">{safety.blocked_by_me ? 'رفع مسدودسازی' : 'مسدودسازی کاربر'}</button>
+                                <Button type="button" onClick={() => setActive(null)} variant="ghost" size="default">بازگشت</Button>
+                                <div className="min-w-0"><h2 className="font-bold">{selected?.participant?.name ?? 'گفتگوی خصوصی'}</h2><p className="mt-1 text-xs text-muted-foreground">گفتگوی مستقیم</p></div><Button type="button" onClick={reportConversation} variant="ghost" size="sm">گزارش گفتگو</Button><Button type="button" onClick={toggleBlock} variant="destructive" size="sm" className="mr-auto">{safety.blocked_by_me ? 'رفع مسدودسازی' : 'مسدودسازی کاربر'}</Button>
                                 {selected?.contexts?.some((context) => context.artwork?.slug) && <div className="flex w-full flex-wrap gap-2 border-t border-border pt-3"><span className="text-xs text-muted-foreground">آثار مرتبط:</span>{selected.contexts.filter((context) => context.artwork?.slug).map((context) => <Link key={context.artwork.slug} to={'/artworks/' + context.artwork.slug} className="border border-border bg-muted px-3 py-1.5 text-xs font-semibold underline">{context.artwork.title}</Link>)}</div>}
                             </header>
                             <div className="flex-1 space-y-4 overflow-y-auto bg-background p-4 sm:p-6" aria-live="polite">
@@ -289,8 +290,8 @@ export default function MessagingCenter({ role }) {
                                                 {message.reply_to && <div className="mb-3 border-r-2 border-terracotta bg-muted px-3 py-2 text-xs"><strong>{message.reply_to.sender_name ?? 'پیام قبلی'}</strong><p className="mt-1 line-clamp-2 text-muted-foreground">{message.reply_to.body ?? 'این پیام حذف شده است.'}</p></div>}
                                                 {editingId === message.id ? (
                                                     <form onSubmit={(event) => saveEdit(event, message)} className="space-y-2">
-                                                        <textarea aria-label="متن ویرایش‌شده پیام" autoFocus value={editDraft} onChange={(event) => setEditDraft(event.target.value)} rows={3} maxLength={5000} className="w-full border border-border bg-background p-2 text-sm focus:border-terracotta" />
-                                                        <div className="flex gap-2"><button disabled={!editDraft.trim() || actionId === message.id} className="bg-ink px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50">ذخیره</button><button type="button" onClick={() => setEditingId(null)} className="px-3 py-1.5 text-xs text-muted-foreground">انصراف</button></div>
+                                                        <Textarea aria-label="متن ویرایش‌شده پیام" autoFocus value={editDraft} onChange={(event) => setEditDraft(event.target.value)} rows={3} maxLength={5000} / className="w-full">
+                                                        <div className="flex gap-2"><Button disabled={!editDraft.trim() || actionId === message.id} variant="default" size="sm" type="submit">ذخیره</Button><Button type="button" onClick={() => setEditingId(null)} variant="ghost" size="sm">انصراف</Button></div>
                                                     </form>
                                                 ) : <p className={'whitespace-pre-wrap break-words text-sm leading-7 ' + (deleted ? 'italic text-muted-foreground' : '')}>{message.body ?? 'این پیام حذف شده است.'}</p>}
                                                 <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[10px] text-muted-foreground">
@@ -302,14 +303,14 @@ export default function MessagingCenter({ role }) {
                                                         <div className="mt-3 flex flex-wrap items-center gap-1">
                                                             {reactionOptions.map((emoji) => {
                                                                 const reaction = message.reactions?.find((item) => item.emoji === emoji);
-                                                                return <button key={emoji} type="button" disabled={actionId === message.id} onClick={() => toggleReaction(message, emoji)} aria-label={'واکنش ' + emoji} aria-pressed={Boolean(reaction?.reacted_by_me)} className={'rounded-full border px-2 py-1 text-xs ' + (reaction?.reacted_by_me ? 'border-terracotta bg-muted' : 'border-border')}>{emoji}{reaction?.count ? ' ' + reaction.count : ''}</button>;
+                                                                return <Button key={emoji} type="button" disabled={actionId === message.id} onClick={() => toggleReaction(message, emoji)} aria-label={'واکنش ' + emoji} aria-pressed={Boolean(reaction?.reacted_by_me)} variant="ghost" size="default">{emoji}{reaction?.count ? ' ' + reaction.count : ''}</Button>;
                                                             })}
                                                         </div>
                                                         <div className="mt-2 flex flex-wrap gap-3 text-[11px] text-muted-foreground">
-                                                            <button type="button" onClick={() => { setReplyTo(message); setEditingId(null); draftRef.current?.focus(); }}>پاسخ</button>
-                                                            {!own && <button type="button" onClick={() => reportMessage(message)}>گزارش</button>}
-                                                            {own && <button type="button" onClick={() => { setEditingId(message.id); setEditDraft(message.body ?? ''); }}>ویرایش</button>}
-                                                            {own && <button type="button" disabled={actionId === message.id} onClick={() => deleteMessage(message)}>حذف</button>}
+                                                            <Button type="button" onClick={() => { setReplyTo(message); setEditingId(null); draftRef.current?.focus(); }} variant="ghost" size="default">پاسخ</Button>
+                                                            {!own && <Button type="button" onClick={() => reportMessage(message)} variant="ghost" size="default">گزارش</Button>}
+                                                            {own && <Button type="button" onClick={() => { setEditingId(message.id); setEditDraft(message.body ?? ''); }} variant="ghost" size="default">ویرایش</Button>}
+                                                            {own && <Button type="button" disabled={actionId === message.id} onClick={() => deleteMessage(message)} variant="ghost" size="default">حذف</Button>}
                                                         </div>
                                                     </>
                                                 )}
@@ -320,12 +321,12 @@ export default function MessagingCenter({ role }) {
                                 <div ref={bottomRef} />
                             </div>
                             {safety.blocked_by_me || safety.blocked_by_other ? <p role="status" className="border-t border-border bg-muted p-4 text-sm text-muted-foreground">{safety.blocked_by_me ? 'این کاربر را مسدود کرده‌اید؛ برای ادامه گفتگو ابتدا مسدودسازی را بردارید.' : 'این گفتگو به‌دلیل تنظیمات ایمنی امکان ارسال پیام ندارد.'}</p> : <form onSubmit={send} className="border-t border-border bg-card p-3 sm:p-4">
-                                {replyTo && <div className="mb-3 flex items-start justify-between gap-3 border-r-2 border-terracotta bg-muted p-3 text-xs"><div><strong>پاسخ به {replyTo.sender_name ?? 'پیام'}</strong><p className="mt-1 line-clamp-2 text-muted-foreground">{replyTo.body}</p></div><button type="button" onClick={() => setReplyTo(null)} aria-label="لغو پاسخ">×</button></div>}
+                                {replyTo && <div className="mb-3 flex items-start justify-between gap-3 border-r-2 border-terracotta bg-muted p-3 text-xs"><div><strong>پاسخ به {replyTo.sender_name ?? 'پیام'}</strong><p className="mt-1 line-clamp-2 text-muted-foreground">{replyTo.body}</p></div><Button type="button" onClick={() => setReplyTo(null)} aria-label="لغو پاسخ" variant="ghost" size="default">×</Button></div>}
                                 <div className="flex items-end gap-3">
-                                    <div className="min-w-0 flex-1 space-y-2"><textarea aria-label="متن پیام" ref={draftRef} value={draft} onChange={(event) => setDraft(event.target.value)} rows={2} maxLength={5000} placeholder="پیام خود را بنویسید…" className="min-h-12 w-full resize-y border border-border bg-background p-3 text-sm outline-none focus:border-terracotta" />
-                                        <div className="flex flex-wrap items-center gap-3"><label className="cursor-pointer text-xs font-semibold text-muted-foreground underline">افزودن تصویر یا PDF<input type="file" accept="image/jpeg,image/png,image/webp,application/pdf" className="sr-only" onChange={(event) => setSelectedFile(event.target.files?.[0] ?? null)} /></label>{selectedFile && <><span className="max-w-48 truncate text-xs text-muted-foreground">{selectedFile.name}</span><button type="button" onClick={() => setSelectedFile(null)} className="text-xs text-destructive underline">حذف پیوست</button></>}{sending && selectedFile && <span role="status" className="text-xs text-muted-foreground">بارگذاری {uploadProgress}%</span>}</div>{filePreview && <img src={filePreview} alt="پیش‌نمایش فایل پیوست" className="mt-2 max-h-24 max-w-32 border border-border object-contain" />}
+                                    <div className="min-w-0 flex-1 space-y-2"><Textarea aria-label="متن پیام" ref={draftRef} value={draft} onChange={(event) => setDraft(event.target.value)} rows={2} maxLength={5000} placeholder="پیام خود را بنویسید…" / className="w-full">
+                                        <div className="flex flex-wrap items-center gap-3"><label className="cursor-pointer text-xs font-semibold text-muted-foreground underline">افزودن تصویر یا PDF<Input type="file" accept="image/jpeg,image/png,image/webp,application/pdf" onChange={(event) => setSelectedFile(event.target.files?.[0] ?? null)} / className="sr-only" /></label>{selectedFile && <><span className="max-w-48 truncate text-xs text-muted-foreground">{selectedFile.name}</span><Button type="button" onClick={() => setSelectedFile(null)} variant="destructive" size="sm">حذف پیوست</Button></>}{sending && selectedFile && <span role="status" className="text-xs text-muted-foreground">بارگذاری {uploadProgress}%</span>}</div>{filePreview && <img src={filePreview} alt="پیش‌نمایش فایل پیوست" className="mt-2 max-h-24 max-w-32 border border-border object-contain" />}
                                     </div>
-                                    <button type="submit" disabled={(!draft.trim() && !selectedFile) || sending || safety.blocked_by_me || safety.blocked_by_other} className="min-h-12 bg-ink px-5 text-sm font-bold text-white disabled:opacity-50">{sending ? '…' : 'ارسال'}</button>
+                                    <Button type="submit" disabled={(!draft.trim() && !selectedFile) || sending || safety.blocked_by_me || safety.blocked_by_other} variant="default" size="default" className="min-h-12">{sending ? '…' : 'ارسال'}</Button>
                                 </div>
                             </form>}
                         </>
