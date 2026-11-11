@@ -78,7 +78,7 @@ test('application screens use shared shadcn controls instead of raw interactive 
     ];
     for (const screen of screens) {
         const source = read(`../../resources/js/app/${screen}`);
-        assert.doesNotMatch(source, /<(?:button|input|textarea|select|table)\b/, \`Raw interactive element remains in \${screen}\`);
-        assert.doesNotMatch(source, /\/\s+className=/, \`Malformed self-closing component in \${screen}\`);
+        assert.doesNotMatch(source, /<(?:button|input|textarea|select|table)\b/, 'Raw interactive element remains in ' + screen);
+        assert.doesNotMatch(source, /\/\s+className=/, 'Malformed self-closing component in ' + screen);
     }
 });
