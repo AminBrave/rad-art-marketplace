@@ -194,6 +194,14 @@ export function CollectionDetailSkeleton() {
     );
 }
 
+export function NotificationListSkeleton({ count = 3 }) {
+    return (
+        <div aria-hidden="true" className="divide-y divide-border">
+            {Array.from({ length: count }, (_, index) => <div key={index} className="flex items-start gap-2 py-3"><Skeleton className="mt-1 h-2 w-2 shrink-0 rounded-full" /><div className="grid min-w-0 flex-1 gap-2"><Skeleton className="h-4 w-4/5 rounded-sm" /><Skeleton className="h-3 w-1/3 rounded-sm" /></div></div>)}
+        </div>
+    );
+}
+
 export function ArtworkDetailSkeleton() {
     return (
         <PageContainer as="main" className="min-h-[65vh] py-10 lg:py-14" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت اثر هنری">
