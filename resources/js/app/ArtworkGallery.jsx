@@ -75,7 +75,7 @@ export default function ArtworkGallery({ user }) {
                     <p className="mt-3 text-sm leading-7 text-muted-foreground">آثاری که بررسی و برای نمایش عمومی تأیید شده‌اند.</p>
                 </div>
                 <form onSubmit={(event) => { event.preventDefault(); setSearch(searchInput.trim()); }} className="flex flex-wrap gap-2">
-                    <Input value={searchInput} onChange={(event) => setSearchInput(event.target.value)} aria-label="جست‌وجو در آثار" placeholder="جست‌وجوی عنوان یا تکنیک…" / className="min-w-[220px]" />
+                    <Input value={searchInput} onChange={(event) => setSearchInput(event.target.value)} aria-label="جست‌وجو در آثار" placeholder="جست‌وجوی عنوان یا تکنیک…"  className="min-w-[220px]" />
                     <Select value={category} onChange={(event) => setCategory(event.target.value)} aria-label="فیلتر دسته‌بندی">
                         <option value="">همه دسته‌ها</option>
                         {categories.map((item) => <option key={item.id} value={item.slug}>{item.name}</option>)}
