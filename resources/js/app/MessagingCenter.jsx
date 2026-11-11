@@ -53,6 +53,7 @@ export default function MessagingCenter({ role }) {
     const hasOlderMessagesRef = useRef(false);
     const pendingScrollRestoreRef = useRef(null);
     const draftsByConversationRef = useRef(new Map());
+    const filesByConversationRef = useRef(new Map());
     const pendingIdsByConversationRef = useRef(new Map());
     const threadsRequestRef = useRef(null);
     const threadsPageRef = useRef(1);
@@ -183,6 +184,9 @@ export default function MessagingCenter({ role }) {
         if (previousConversation && previousConversation !== active && draftRef.current) {
             draftsByConversationRef.current.set(Number(previousConversation), draftRef.current.value);
         }
+        if (previousConversation && previousConversation !== active && selectedFile) {
+            filesByConversationRef.current.set(Number(previousConversation), selectedFile);
+        }
         messageRequestRef.current?.abort();
         historyRequestRef.current?.abort();
         historyLoadingRef.current = false;
@@ -197,7 +201,7 @@ export default function MessagingCenter({ role }) {
         latestMessageIdRef.current = null;
         syncCursorRef.current = null;
         setDraft(active ? (draftsByConversationRef.current.get(Number(active)) ?? '') : '');
-        setSelectedFile(null);
+        setSelectedFile(active ? (filesByConversationRef.current.get(Number(active)) ?? null) : null);
         setReplyTo(null);
         setEditingId(null);
         setEditDraft('');
@@ -377,6 +381,7 @@ export default function MessagingCenter({ role }) {
             if (Number(activeConversationRef.current) === Number(conversationId)) setMessages((current) => current.some((item) => item.id === savedMessage.id) ? current.map((item) => item.id === savedMessage.id ? savedMessage : item) : [...current, savedMessage]);
             pendingIdsByConversationRef.current.delete(Number(conversationId));
             draftsByConversationRef.current.delete(Number(conversationId));
+            filesByConversationRef.current.delete(Number(conversationId));
             if (Number(activeConversationRef.current) === Number(conversationId)) {
                 latestMessageIdRef.current = Math.max(Number(latestMessageIdRef.current ?? 0), Number(savedMessage.id));
                 shouldStickToBottomRef.current = true;
@@ -597,7 +602,9 @@ export default function MessagingCenter({ role }) {
                                                 }
                                                 setError('');
                                                 setSelectedFile(file);
-                                            }} /></label>{selectedFile && <><span className="max-w-48 truncate rounded-full bg-white px-3 py-1.5 text-xs text-muted">{selectedFile.name}</span><button type="button" onClick={() => { setSelectedFile(null); if (fileInputRef.current) fileInputRef.current.value = ''; }} className="text-xs text-red-700 underline">حذف پیوست</button></>}{sending && selectedFile && <span role="status" className="text-xs text-muted">بارگذاری {uploadProgress}%</span>}</div>{filePreview && <img src={filePreview} alt="پیش‌نمایش فایل پیوست" className="mt-2 max-h-24 max-w-32 rounded-xl object-contain" />}
+                                                if (file) filesByConversationRef.current.set(Number(active), file);
+                                                else filesByConversationRef.current.delete(Number(active));
+                                            }} /></label>{selectedFile && <><span className="max-w-48 truncate rounded-full bg-white px-3 py-1.5 text-xs text-muted">{selectedFile.name}</span><button type="button" onClick={() => { setSelectedFile(null); filesByConversationRef.current.delete(Number(active)); if (fileInputRef.current) fileInputRef.current.value = ''; }} className="text-xs text-red-700 underline">حذف پیوست</button></>}{sending && selectedFile && <span role="status" className="text-xs text-muted">بارگذاری {uploadProgress}%</span>}</div>{filePreview && <img src={filePreview} alt="پیش‌نمایش فایل پیوست" className="mt-2 max-h-24 max-w-32 rounded-xl object-contain" />}
                                     </div>
                                     <button type="submit" aria-label="ارسال پیام" aria-busy={sending} disabled={(!draft.trim() && !selectedFile) || sending || safety.blocked_by_me || safety.blocked_by_other} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-terracotta text-xl font-bold text-white shadow-sm transition hover:bg-terracotta-strong disabled:cursor-not-allowed disabled:opacity-40">{sending ? '…' : '➤'}</button>
                                 </div>
