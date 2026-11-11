@@ -1,10 +1,11 @@
-# Rademan Knowledge Graph
+# Rademan Documentation Knowledge Graph
 
-Read upstream nodes before changing a downstream concern. Update every affected node when a contract changes.
+This graph maps documentation dependencies and change propagation. It is not a graph of runtime code relationships; use Graphify for code-level exploration when useful.
 
 ~~~mermaid
 flowchart TD
- A[AGENTS.md] --> K[Knowledge graph]
+ A[AGENTS.md] --> K[Documentation graph]
+ A --> AT[AI agent tooling]
  K --> P[Product vision]
  P --> D[Domain workflows]
  D --> S[System overview]
@@ -22,19 +23,20 @@ flowchart TD
  T --> Q
  Q --> L[Feature lifecycle]
  L --> G[Git and GitHub]
- G --> C[CI/CD]
- Q --> C
+ G --> C[CI/CD and release]
  C --> O[Operations]
  ADR[ADRs] -. constrains .-> S
  ADR -. constrains .-> API
- V[Local verification script] --> T
- V --> Q
  CM[Test coverage matrix] --> T
  RM[API route test map] --> T
+ AT --> G
+ AT --> T
 ~~~
 
 ## Nodes
-- [AGENTS](../AGENTS.md): agent contract.
+
+- [AGENTS](../AGENTS.md): authoritative agent contract.
+- [AI agent tooling](engineering/ai-agent-tooling.md): selected frameworks, project skills, Graphify and execution boundaries.
 - [Vision](product/vision-and-scope.md): user value and boundaries.
 - [Domain](product/domain-workflows.md): actor workflows and invariants.
 - [System](architecture/system-overview.md): runtime and stack.
@@ -43,13 +45,13 @@ flowchart TD
 - [Frontend](architecture/frontend-and-ui.md): routes, state and UI rules.
 - [API](architecture/api-contracts.md): endpoint groups and contracts.
 - [Security](security/security-model.md): trust boundaries and threats.
-- [Testing](engineering/testing-strategy.md): test layers and commands.
+- [Testing](engineering/testing-strategy.md): test layers and opt-in local commands.
 - [Coverage matrix](engineering/test-coverage-matrix.md): route/domain/scenario evidence and gaps.
 - [API route map](engineering/api-route-test-map.md): endpoint access, existing test evidence and remaining checks.
-- [Quality](engineering/quality-gates.md): merge blockers and DoD.
+- [Quality](engineering/quality-gates.md): implementation/review checklist and risk tiers.
 - [Lifecycle](delivery/feature-lifecycle.md): stages from issue to release.
 - [GitHub](engineering/git-and-github.md): branching, commits, collaboration.
-- [CI/CD](operations/ci-cd-and-release.md): application CI, scheduled maintenance workflows and release.
+- [CI/CD](operations/ci-cd-and-release.md): maintenance automation policy and release.
 - [Operations](operations/developer-workflow.md): installation, local development, database, tests and builds.
 - [Deployment](operations/deployment-and-recovery.md): production hosting, deployment, backup and recovery.
 - [ADRs](decisions/index.md): durable decisions; use [ADR template](decisions/adr-template.md).
@@ -58,4 +60,5 @@ flowchart TD
 - [Coverage summarizer](../scripts/summarize-coverage.py): combines per-suite Clover reports into an overall line-coverage baseline and low-coverage priority list.
 
 ## Change propagation
-Schema/domain → data, domain, API, tests, security. API → API docs, backend tests, frontend consumers, browser E2E. Feature availability → feature registry, backend route tests, frontend route/navigation tests and system/API/frontend docs. UI/navigation → frontend docs and browser tests. Auth/moderation/messaging/uploads/privacy → threat review. Workflow/release → CI/CD and GitHub docs. Test architecture or coverage changes → testing strategy, coverage matrix, route test map, tests README, PHPUnit configuration, quality gates and CI workflow.
+
+Schema/domain → data, domain, API, tests, security. API → API docs, backend tests, frontend consumers, optional browser E2E. Feature availability → feature registry, backend route tests, frontend route/navigation tests and system/API/frontend docs. UI/navigation → frontend docs and browser tests. Auth/moderation/messaging/uploads/privacy → threat review. Workflow/release → CI/CD and GitHub docs. Test architecture or coverage changes → testing strategy, coverage matrix, route test map, tests README, PHPUnit configuration and quality gates. Do not add CI workflow references as application verification gates; no application CI workflow exists.
