@@ -63,7 +63,7 @@ export default function ComponentShowcase() {
         <section id="shared-components" aria-labelledby="shared-components-title" className="border-t border-border py-12">
             <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
                 <div>
-                    <p className="text-xs font-bold text-terracotta-strong">05 / COMPONENT LIBRARY</p>
+                    <p className="text-xs font-bold text-primary">05 / COMPONENT LIBRARY</p>
                     <h2 id="shared-components-title" className="mt-2 text-2xl font-bold">کتابخانه اجزای رابط</h2>
                     <p className="mt-2 text-sm leading-7 text-muted-foreground">نمونه‌های تعاملی اجزای مشترک؛ همه اجزا با چیدمان راست‌به‌چپ سازگارند.</p>
                 </div>
