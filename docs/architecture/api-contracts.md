@@ -5,6 +5,10 @@ Versioned prefix is `/api/v1`; JSON resources generally use `data` and paginatio
 ## Endpoint groups
 Auth; public artists/artworks/categories/filters; collections/featured artists; artist profile/artworks/inquiries/conversations; buyer inquiries/conversations/direct start; conversation messages/read/settings/reactions/attachments/safety; notifications/preferences; admin users/roles/artwork moderation/reports/editorial; health at `/api/v1/health`.
 
+## Validation and authorization
+
+Artwork creation and update endpoints use dedicated Laravel Form Requests (`StoreArtworkRequest` and `UpdateArtworkRequest`). Their `authorize()` methods delegate to the existing artwork policy; request rules validate the uploaded image, active category, metadata and availability before controller writes. Other API controllers retain their existing validation approach until each endpoint is migrated with matching regression coverage.
+
 ## Search behavior
 
 Public artwork search accepts Persian and Arabic keyboard variants for yeh/kaf, Arabic/Persian digits, tatweel and common diacritics. Search normalization is applied at query time; stored titles and descriptions remain unchanged for display. User-provided wildcard characters are treated literally.
