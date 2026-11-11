@@ -27,7 +27,7 @@
         (function () {
             var config = window.__RAD_THEME_CONFIG__ || {};
             var themes = config.themes || {};
-            var selected = config.defaultTheme || 'editorial';
+            var selected = config.defaultTheme || 'new-york';
             try {
                 var saved = window.localStorage.getItem(config.storageKey || 'rad-art-theme');
                 if (config.allowRuntimeSwitching && config.persistSelection && themes[saved] && themes[saved].enabled) {
@@ -36,7 +36,7 @@
             } catch (error) {
                 // Storage can be unavailable in private browsing; use the configured default.
             }
-            document.documentElement.setAttribute('data-theme', themes[selected]?.enabled ? selected : 'editorial');
+            document.documentElement.setAttribute('data-theme', themes[selected]?.enabled ? selected : (config.defaultTheme || 'new-york'));
         })();
     </script>
     @if ($seoCanonical)
