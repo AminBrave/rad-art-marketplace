@@ -20,20 +20,26 @@ export function ArtworkCard({ artwork, className = '' }) {
     const price = formatArtworkPrice(artwork.price);
 
     return (
-        <article className={`group ra-surface min-w-0 overflow-hidden transition-shadow hover:shadow-soft ${className}`}>
+        <article className={`group min-w-0 ${className}`}>
             <Link to={`/artworks/${artwork.slug}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus">
-                <div className="ra-artwork-frame p-3">
-                    {artwork.image_url ? (
-                        <ArtworkImage src={artwork.image_url} title={title} />
-                    ) : (
-                        <ArtworkImage src={null} title={title} />
-                    )}
+                <div className="relative overflow-hidden bg-surface-muted">
+                    <div className="ra-artwork-frame aspect-[4/5] bg-surface-muted p-0">
+                        {artwork.image_url ? (
+                            <ArtworkImage src={artwork.image_url} title={title} />
+                        ) : (
+                            <ArtworkImage src={null} title={title} />
+                        )}
+                    </div>
+                    <span aria-hidden="true" className="pointer-events-none absolute inset-0 border border-ink/5 transition-colors group-hover:border-terracotta/50" />
                 </div>
-                <div className="grid gap-2 p-4">
-                    {artwork.category?.name && <Badge variant="accent">{artwork.category.name}</Badge>}
-                    <h3 className="line-clamp-2 font-bold leading-7 text-ink">{title}</h3>
+                <div className="grid gap-1.5 px-0.5 pb-2 pt-4">
+                    <div className="flex min-h-5 items-center justify-between gap-3">
+                        {artwork.category?.name ? <span className="text-[11px] font-semibold text-terracotta-strong">{artwork.category.name}</span> : <span />}
+                        <span className="text-[11px] text-subtle transition-transform group-hover:-translate-x-1" aria-hidden="true">←</span>
+                    </div>
+                    <h3 className="line-clamp-2 text-base font-bold leading-7 text-ink transition-colors group-hover:text-terracotta-strong">{title}</h3>
                     {artistName && <p className="text-sm text-muted">{artistName}</p>}
-                    <p className="text-sm font-bold text-ink">{price}</p>
+                    <p className="mt-1 text-sm font-semibold text-ink">{price}</p>
                 </div>
             </Link>
         </article>
