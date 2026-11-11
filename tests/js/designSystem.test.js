@@ -9,6 +9,7 @@ const cards = readFileSync(new URL('../../resources/js/components/ui/cards.jsx',
 const feedback = readFileSync(new URL('../../resources/js/components/ui/feedback.jsx', import.meta.url), 'utf8');
 const navigation = readFileSync(new URL('../../resources/js/components/ui/navigation.jsx', import.meta.url), 'utf8');
 const dialog = readFileSync(new URL('../../resources/js/components/ui/Dialog.jsx', import.meta.url), 'utf8');
+const skeletons = readFileSync(new URL('../../resources/js/components/ui/skeletons.jsx', import.meta.url), 'utf8');
 const showcase = readFileSync(new URL('../../resources/js/app/ComponentShowcase.jsx', import.meta.url), 'utf8');
 const publicPages = ['ArtworkCatalogue.jsx', 'ArtistDirectoryPage.jsx', 'ArtworkDetailPage.jsx'].map((file) => readFileSync(new URL('../../resources/js/app/' + file, import.meta.url), 'utf8'));
 const layouts = readFileSync(new URL('../../resources/js/app/Layouts.jsx', import.meta.url), 'utf8');
@@ -101,4 +102,14 @@ test('navigation, dialog and design-system showcase use shared contracts', () =>
     }
     assert.ok(showcase.includes('WorkspaceHero'));
     assert.ok(showcase.includes('DashboardMetricCard'));
+});
+
+test('shared UI component source does not introduce arbitrary hex or raw palette colors', () => {
+    const componentSources = [primitives, cards, feedback, navigation, dialog, skeletons];
+    const arbitraryHex = /#[0-9a-fA-F]{3,8}\\b/;
+    const rawPalette = /\\b(?:bg|text|border|ring)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\\d{2,3}(?:\\/\\d{1,3})?\\b/;
+    for (const source of componentSources) {
+        assert.equal(arbitraryHex.test(source), false, 'Shared components must use semantic color tokens, not hex literals.');
+        assert.equal(rawPalette.test(source), false, 'Shared components must use semantic color roles, not raw palette utilities.');
+    }
 });
