@@ -153,9 +153,9 @@ export default function ArtworkStudio({ user, hasProfile }) {
 
     return <section className="space-y-7" dir="rtl">
         <header><p className="text-sm font-bold text-primary">گالری شخصی</p><h1 className="mt-2 text-2xl font-black">مدیریت آثار</h1>
-            <p className="mt-2 text-sm leading-7 text-muted-foreground-foreground">آثار جدید و ویرایش‌شده پس از ثبت دوباره برای بررسی مدیر ارسال می‌شوند. فقط آثار تأییدشده در گالری عمومی نمایش داده می‌شوند.</p></header>
+            <p className="mt-2 text-sm leading-7 text-muted-foreground">آثار جدید و ویرایش‌شده پس از ثبت دوباره برای بررسی مدیر ارسال می‌شوند. فقط آثار تأییدشده در گالری عمومی نمایش داده می‌شوند.</p></header>
         <section id="artwork-editor" className="border border-border bg-card p-5 sm:p-7">
-            <div className="mb-6 flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-lg font-bold">{editingId ? 'ویرایش اثر' : 'ثبت اثر جدید'}</h2><p className="mt-1 text-xs text-muted-foreground-foreground">فیلدهای الزامی با علامت * مشخص شده‌اند.</p></div>{editingId && <Button variant="outline" size="sm" onClick={resetForm}>انصراف از ویرایش</Button>}</div>
+            <div className="mb-6 flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-lg font-bold">{editingId ? 'ویرایش اثر' : 'ثبت اثر جدید'}</h2><p className="mt-1 text-xs text-muted-foreground">فیلدهای الزامی با علامت * مشخص شده‌اند.</p></div>{editingId && <Button variant="outline" size="sm" onClick={resetForm}>انصراف از ویرایش</Button>}</div>
             <form onSubmit={saveArtwork} className="grid gap-5 sm:grid-cols-2">
                 <FormField label="عنوان اثر" required error={errors.title?.[0]}><input name="title" value={form.title} onChange={updateForm} required maxLength={160} className={inputClass} /></FormField>
                 <FormField label="دسته‌بندی" required error={errors.category_id?.[0]}><select name="category_id" value={form.category_id} onChange={updateForm} required className={inputClass}><option value="">انتخاب دسته‌بندی</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select></FormField>
@@ -168,12 +168,12 @@ export default function ArtworkStudio({ user, hasProfile }) {
                 <div className="sm:col-span-2">
                     <label htmlFor="artwork-image" className="block text-sm font-semibold text-foreground">تصویر اثر {editingId ? '(اختیاری؛ برای جایگزینی تصویر)' : '*'}</label>
                     <input id="artwork-image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required={!editingId} onChange={chooseImage} aria-describedby="artwork-image-help" className="mt-2 block w-full border border-border bg-background px-3 py-3 text-sm file:ml-3 file:border-0 file:bg-muted file:px-3 file:py-2 file:font-semibold" />
-                    <p id="artwork-image-help" className="mt-2 text-xs leading-6 text-muted-foreground-foreground">JPG، JPEG، PNG یا WebP؛ حداکثر ۵ مگابایت و ۶۰۰۰ × ۶۰۰۰ پیکسل. ابعاد تصویر پیش از ارسال بررسی می‌شود.</p>
+                    <p id="artwork-image-help" className="mt-2 text-xs leading-6 text-muted-foreground">JPG، JPEG، PNG یا WebP؛ حداکثر ۵ مگابایت و ۶۰۰۰ × ۶۰۰۰ پیکسل. ابعاد تصویر پیش از ارسال بررسی می‌شود.</p>
                     {fieldError('image')}{imageError && <p role="alert" className="mt-1 text-xs text-destructive">{imageError}</p>}
                     {imagePreview && <div className="mt-4 max-w-sm border border-border p-2"><img src={imagePreview} alt="پیش‌نمایش تصویر انتخاب‌شده" className="max-h-64 w-full object-contain" /></div>}
                     <UploadFeedback fileName={image?.name} status={busy ? 'uploading' : uploadProgress === 100 ? 'success' : 'idle'} progress={uploadProgress} />
                 </div>
-                <div className="flex flex-wrap items-center gap-3 sm:col-span-2"><Button type="submit" disabled={busy || Boolean(imageError)} loading={busy}>{editingId ? 'ذخیره و ارسال دوباره برای بررسی' : 'ثبت اثر برای بررسی'}</Button>{message && <p role="status" className="text-sm text-muted-foreground-foreground">{message}</p>}</div>
+                <div className="flex flex-wrap items-center gap-3 sm:col-span-2"><Button type="submit" disabled={busy || Boolean(imageError)} loading={busy}>{editingId ? 'ذخیره و ارسال دوباره برای بررسی' : 'ثبت اثر برای بررسی'}</Button>{message && <p role="status" className="text-sm text-muted-foreground">{message}</p>}</div>
             </form>
         </section>
         <section className="space-y-4">
@@ -183,15 +183,15 @@ export default function ArtworkStudio({ user, hasProfile }) {
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{artworks.map((item) => <article key={item.id} className="overflow-hidden border border-border bg-card">
                     <div className="flex aspect-[4/3] items-center justify-center bg-muted p-3"><img src={item.image_url} alt={item.title} loading="lazy" decoding="async" className="h-full w-full object-contain" /></div>
                     <div className="space-y-3 p-4"><div className="flex flex-wrap items-start justify-between gap-2"><h3 className="font-bold">{item.title}</h3><Badge variant={item.status === 'approved' ? 'success' : item.status === 'rejected' ? 'danger' : item.status === 'changes_requested' ? 'warning' : 'neutral'}>{statusLabels[item.status] ?? item.status}</Badge></div>
-                        <p className="text-xs text-muted-foreground-foreground">{item.category?.name}</p>
-                        <p className="text-xs leading-6 text-muted-foreground-foreground">{statusGuidance[item.status] ?? 'وضعیت این اثر از سوی سرور تعیین شده است.'}</p>
+                        <p className="text-xs text-muted-foreground">{item.category?.name}</p>
+                        <p className="text-xs leading-6 text-muted-foreground">{statusGuidance[item.status] ?? 'وضعیت این اثر از سوی سرور تعیین شده است.'}</p>
                         {item.rejection_note && <div className="border-s-2 border-danger bg-muted p-3 text-xs leading-6 text-destructive"><p className="mb-1 font-bold">بازخورد مدیر</p>{item.rejection_note}</div>}
                         <Button variant="outline" size="sm" onClick={() => editArtwork(item)}>ویرایش اثر</Button></div>
                 </article>)}</div>}
             {artworks.length > 0 && !loading && (
                 <nav aria-label="صفحه‌بندی آثار ثبت‌شده" className="flex items-center justify-center gap-4">
                     <Button variant="outline" size="sm" disabled={loading || artworkPage <= 1} onClick={() => loadData(artworkPage - 1)}>قبلی</Button>
-                    <span className="text-xs text-muted-foreground-foreground">صفحه {artworkPage.toLocaleString('fa-IR')}</span>
+                    <span className="text-xs text-muted-foreground">صفحه {artworkPage.toLocaleString('fa-IR')}</span>
                     <Button variant="outline" size="sm" disabled={loading || !hasMoreArtworks} onClick={() => loadData(artworkPage + 1)}>بعدی</Button>
                 </nav>
             )}
