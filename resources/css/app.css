@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Rad Art — Contemporary Art Editorial design tokens. */
+/* Global resets and app-shell loading skeleton. Theme colors are defined below as shadcn tokens. */
 :root {
     color-scheme: light;
     font-synthesis: none;
