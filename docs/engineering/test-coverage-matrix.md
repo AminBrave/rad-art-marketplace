@@ -57,7 +57,7 @@ Status vocabulary:
 | Editing approved artwork resets moderation state | Feature | Existing evidence |
 | Public catalogue/detail exposes approved public work only | Feature | Existing evidence |
 | Catalogue pagination and artist ownership scoping | Feature | Existing evidence |
-| Search normalization, wildcard escaping and Arabic/Persian digits | Unit + Feature | Gap / expand |
+| Search normalization, wildcard escaping and Arabic/Persian digits | Unit + Feature | Unit and SQLite-backed feature regression tests added; CI execution pending |
 | Category/filter/sort combinations and malformed filters | Feature | Gap / expand |
 | Approve/reject/request changes with required notes | Feature | Existing evidence; verify transition matrix |
 | Rejected/changes-requested resubmission | Feature | Gap / expand |
@@ -75,7 +75,7 @@ Status vocabulary:
 | Honeypot and throttling | Feature | Existing evidence; expand |
 | Start conversation from inquiry | Feature + Browser | Existing evidence |
 | Direct conversation without inquiry | Feature | Existing evidence |
-| One canonical conversation per buyer/artist pair across entry points | Feature + Integration | Existing evidence; expand race/idempotency |
+| One canonical conversation per buyer/artist pair across entry points | Feature + Integration | Existing evidence; database uniqueness test added |
 | Pair key ordering and database uniqueness under retries | Unit + Integration | Gap / expand |
 | Invalid actor, role and context relationships | Feature | Gap / expand |
 
@@ -85,7 +85,7 @@ Status vocabulary:
 |---|---|---|
 | Participant-only conversation and message access | Feature | Existing evidence |
 | Send, edit, delete and reply validation | Feature | Existing evidence |
-| Client message idempotency | Feature | Existing evidence |
+| Client message idempotency | Feature | Existing evidence |\n| Buyer creates a direct thread, artist replies, buyer receives reply in real browser | Unmocked E2E | Added in current batch; CI execution pending |
 | Read/unread state and pagination | Feature | Existing evidence; expand concurrency |
 | Reactions and duplicate reaction behavior | Feature | Existing evidence |
 | Archive/mute are participant-specific | Feature | Existing evidence |

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Public;
+namespace Tests\Feature\Discovery;
 
 use App\Models\Artwork;
 use App\Models\Category;
