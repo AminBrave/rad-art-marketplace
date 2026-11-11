@@ -3,7 +3,7 @@
 Versioned prefix is `/api/v1`; JSON resources generally use `data` and pagination metadata. Authentication is Laravel session-based; guest bootstrap returns `{data:null}`. Validation uses Laravel 422 responses.
 
 ## Endpoint groups
-Auth; public artists/artworks/categories/filters; collections/featured artists; artist profile/artworks/conversations; buyer conversations/direct start; conversation messages/read/settings/reactions/attachments/safety; notifications/preferences; admin users/roles/artwork moderation/reports/editorial; health at `/api/v1/health`. Inquiry submission, inbox/detail/status and inquiry-to-conversation endpoints are blocked with 404 by feature middleware while `features.inquiries` is false. Their route definitions, implementation and data are retained for reactivation. Direct messaging routes remain operational under the independent `features.messaging` flag.
+Auth; public artists/artworks/categories/filters; collections/featured artists; artist profile/artworks/conversations; buyer conversations/direct start; conversation messages/read/settings/reactions/attachments/safety; notifications/preferences; admin users/roles/artwork moderation/reports/editorial; health at `/api/v1/health`. Inquiry submission, inbox/detail/status and inquiry-to-conversation endpoints are blocked with 404 by feature middleware while `features.inquiries` is false. Their route definitions, implementation and data are retained for reactivation. Direct messaging routes remain operational and are not coupled to the Inquiry flag.
 
 ## Artwork response resources
 
