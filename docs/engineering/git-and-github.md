@@ -63,6 +63,6 @@ The repository connection used for this change cannot administer branch-protecti
 - Require at least one approval when an independent reviewer is available; resolve conversations before merging.
 - Block force pushes and branch deletion; restrict bypass to a deliberate emergency path.
 - Do not require GitHub Actions application test status checks; no application CI workflow is configured.
-- Keep the PR template's local-verification evidence as a complementary pre-merge test gate; do not expect a post-merge application test workflow.
+- Record local verification in the PR only when the user explicitly requested it; do not make test execution a default merge gate or expect a post-merge application test workflow.
 
 If this repository is maintained by one person, a mandatory independent approval may make merging impossible. Keep PR-only merges and explicit local verification, and enable required approval when another reviewer is available.
