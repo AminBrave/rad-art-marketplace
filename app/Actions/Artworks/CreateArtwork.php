@@ -9,6 +9,7 @@ use App\Models\Artwork;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use RuntimeException;
 use Throwable;
 
 class CreateArtwork
@@ -23,6 +24,10 @@ class CreateArtwork
         unset($attributes['image']);
 
         $imagePath = $image->store('artworks', 'local');
+
+        if (! is_string($imagePath) || $imagePath === '') {
+            throw new RuntimeException('The artwork image could not be stored.');
+        }
 
         try {
             $baseSlug = Str::slug($attributes['title']) ?: 'artwork';
