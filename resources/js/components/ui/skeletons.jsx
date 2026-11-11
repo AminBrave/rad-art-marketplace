@@ -95,7 +95,7 @@ export function MessageHistorySkeleton({ count = 5, className = '' }) {
     );
 }
 
-export function AdminRecordListSkeleton({ count = 5, columns = 3, className = '' }) {
+export function AdminRecordListSkeleton({ count = 5, className = '' }) {
     return (
         <div aria-hidden="true" className={`overflow-hidden border border-border bg-paper ${className}`}>
             <div className="flex items-center justify-between gap-4 border-b border-border p-5"><Skeleton className="h-6 w-40 rounded-sm" /><Skeleton className="h-9 w-28 rounded-sm" /></div>
