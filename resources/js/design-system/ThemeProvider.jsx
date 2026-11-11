@@ -22,7 +22,7 @@ export function ThemeProvider({ children }) {
 
     const resetTheme = useCallback(() => {
         setTheme(resolveTheme(config.defaultTheme, config));
-    }, [config.defaultTheme, setTheme]);
+    }, [config, setTheme]);
 
     useEffect(() => {
         if (typeof document !== 'undefined') {
