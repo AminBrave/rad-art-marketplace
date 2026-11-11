@@ -1,4 +1,4 @@
-name: RAD color accessibility
+name: RAD accessibility and regression checks
 
 on:
   pull_request:
@@ -31,3 +31,21 @@ jobs:
         run: npm run lint
       - name: Build the production frontend
         run: npm run build
+
+  backend-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, dom, fileinfo, pdo_sqlite, sqlite3, xml, curl, zip
+          coverage: none
+      - name: Install backend dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+      - name: Run Laravel feature and unit tests
+        run: php artisan test
+      - name: Verify PHP formatting
+        run: vendor/bin/pint --test
