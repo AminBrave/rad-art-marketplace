@@ -33,9 +33,9 @@ export default function MessagingCenter({ role }) {
     const [error, setError] = useState('');
     const [notice, setNotice] = useState('');
     const [safety, setSafety] = useState({ blocked_by_me: false, blocked_by_other: false });
-    const bottomRef = useRef(null);
     const messagesContainerRef = useRef(null);
     const draftRef = useRef(null);
+    const fileInputRef = useRef(null);
     const latestMessageIdRef = useRef(null);
     const syncCursorRef = useRef(null);
     const activeConversationRef = useRef(null);
@@ -152,7 +152,10 @@ export default function MessagingCenter({ role }) {
     }, [active, loadMessages]);
 
     useEffect(() => {
-        if (shouldStickToBottomRef.current) bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        const container = messagesContainerRef.current;
+        if (!container || !shouldStickToBottomRef.current) return undefined;
+        const frame = window.requestAnimationFrame(() => container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' }));
+        return () => window.cancelAnimationFrame(frame);
     }, [messages]);
 
     const replaceMessage = (updated) => {
@@ -287,24 +290,25 @@ export default function MessagingCenter({ role }) {
             </header>
             {notice && <p role="status" className="border border-border bg-surface-muted p-3 text-sm">{notice}</p>}
             {error && <p role="alert" className="border border-red-200 bg-red-50 p-3 text-sm text-red-800">{error}</p>}
-            <div className="grid min-h-[min(78vh,860px)] overflow-hidden rounded-2xl border border-border bg-white shadow-[0_18px_55px_rgba(36,35,32,0.07)] lg:grid-cols-[360px_minmax(0,1fr)]">
-                <aside className={active ? 'hidden min-h-0 border-l border-border bg-white lg:block' : 'min-h-0 border-l border-border bg-white'}>
-                    <div className="border-b border-border bg-white px-5 py-5">
+            <div className="grid h-[calc(100dvh-12rem)] min-h-[520px] max-h-[900px] grid-cols-1 overflow-hidden rounded-2xl border border-border bg-white shadow-[0_18px_55px_rgba(36,35,32,0.07)] lg:h-[min(82dvh,900px)] lg:min-h-[620px] lg:grid-cols-[360px_minmax(0,1fr)]">
+                <aside className={active ? 'hidden h-full min-h-0 flex-col border-l border-border bg-white lg:flex' : 'flex h-full min-h-0 flex-col border-l border-border bg-white'}>
+                    <div className="shrink-0 border-b border-border bg-white px-5 py-5">
                         <div className="flex items-center justify-between gap-3"><div><p className="text-[11px] font-bold tracking-wide text-terracotta-strong">RAD / MESSAGES</p><h2 className="mt-1 text-lg font-black">گفتگوها</h2></div><span className="rounded-full bg-surface-muted px-3 py-1 text-[11px] font-bold text-muted">{threads.length} گفتگو</span></div>
                     </div>
-                    <div className="space-y-3 border-b border-border bg-canvas/70 p-4">
+                    <div className="shrink-0 space-y-3 border-b border-border bg-[#F7F6F3] p-4">
                         <input aria-label="جستجوی گفتگوها" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="جستجو در گفتگوها…" className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm outline-none transition focus:border-terracotta focus:ring-2 focus:ring-terracotta/10" />
                         <select aria-label="فیلتر گفتگوها" value={threadFilter} onChange={(event) => setThreadFilter(event.target.value)} className="w-full rounded-xl border border-border bg-white px-4 py-2.5 text-sm outline-none focus:border-terracotta">
                             <option value="all">گفتگوهای فعال</option><option value="unread">خوانده‌نشده‌ها</option><option value="archived">بایگانی‌شده‌ها</option>
                         </select>
                     </div>
                     {loading ? <p className="p-5 text-sm text-muted">در حال دریافت…</p> : threads.length === 0 ? <p className="p-5 text-sm leading-7 text-muted">هنوز گفتگویی ندارید. از صفحه هنرمند یا یک اثر، گزینه «پیام مستقیم» را انتخاب کنید.</p> : (
-                        <ul className="max-h-[calc(78vh-150px)] divide-y divide-border overflow-y-auto">
+                        <ul className="min-h-0 flex-1 divide-y divide-border overflow-y-auto overscroll-contain">
                             {threads.map((thread) => <li key={thread.id}>
-                                <button type="button" onClick={() => { setActive(thread.id); setReplyTo(null); setEditingId(null); if (requestedConversation) setParams({}, { replace: true }); }} aria-current={active === thread.id ? 'true' : undefined} className={'w-full px-4 py-4 text-right transition hover:bg-surface-muted/80 ' + (active === thread.id ? 'bg-surface-muted shadow-[inset_-3px_0_0_var(--color-action)]' : '')}>
+                                <button type="button" onClick={() => { setActive(thread.id); setReplyTo(null); setEditingId(null); if (requestedConversation) setParams({}, { replace: true }); }} aria-current={active === thread.id ? 'true' : undefined} className={'flex w-full items-center gap-3 px-4 py-4 text-right transition hover:bg-[#F7F6F3] ' + (active === thread.id ? 'bg-[#F2F0EB] shadow-[inset_-3px_0_0_#279B63]' : '')}><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#E9E4DA] text-sm font-black text-[#665D4E]">{(thread.participant?.name ?? 'گ').trim().slice(0, 1)}</span><span className="min-w-0 flex-1">
                                     <span className="flex items-center justify-between gap-2"><strong className="truncate text-sm font-extrabold">{thread.participant?.name ?? 'گفتگو'}</strong>{thread.unread_count > 0 && <span className="rounded-full bg-terracotta px-2 py-1 text-xs text-white">{thread.unread_count}</span>}</span>
                                     <span className="mt-2 block truncate text-xs leading-6 text-muted">{thread.last_message?.body ?? (thread.last_message?.deleted_at ? 'پیام حذف شده است' : 'برای شروع گفتگو پیام بفرستید')}</span>
                                     <span className="mt-1 block text-[11px] text-muted">{dateLabel(thread.last_message_at)}</span>
+                                    </span>
                                 </button>
                                 <div className="flex gap-3 px-4 pb-3 text-[11px] text-muted">
                                     <button type="button" onClick={() => updateThreadSetting(thread, 'archived', !thread.archived)} className="underline">{thread.archived ? 'بازگردانی' : 'بایگانی'}</button>
@@ -314,21 +318,21 @@ export default function MessagingCenter({ role }) {
                         </ul>
                     )}
                 </aside>
-                <div className={active ? 'flex min-h-0 min-w-0 flex-col bg-[#F5F3EF]' : 'hidden min-w-0 flex-col bg-[#F5F3EF] lg:flex'}>
+                <div dir="rtl" className={active ? 'flex h-full min-h-0 min-w-0 flex-col bg-[#F4F2ED]' : 'hidden h-full min-h-0 min-w-0 flex-col bg-[#F4F2ED] lg:flex'}>
                     {!active ? <div className="m-auto p-8 text-center text-sm text-muted">برای مشاهده پیام‌ها یک گفتگو را انتخاب کنید.</div> : (
                         <>
-                            <header className="sticky top-0 z-10 flex flex-wrap items-center gap-3 border-b border-border bg-white/95 p-4 shadow-sm backdrop-blur">
-                                <button type="button" className="text-sm font-bold lg:hidden" onClick={() => setActive(null)}>بازگشت</button>
-                                <div className="min-w-0"><h2 className="truncate font-extrabold">{selected?.participant?.name ?? 'گفتگوی خصوصی'}</h2><p className="mt-1 text-xs text-muted">گفتگوی خصوصی مستقیم · پیام‌رسانی امن</p></div><button type="button" onClick={reportConversation} className="text-xs font-semibold text-muted underline">گزارش گفتگو</button><button type="button" onClick={toggleBlock} className="mr-auto text-xs font-semibold text-red-700 underline">{safety.blocked_by_me ? 'رفع مسدودسازی' : 'مسدودسازی کاربر'}</button>
+                            <header className="relative z-10 flex shrink-0 flex-wrap items-center gap-3 border-b border-[#EAE7E1] bg-white px-4 py-3 shadow-[0_2px_12px_rgba(31,30,27,0.035)] sm:px-5">
+                                <button type="button" aria-label="بازگشت به گفتگوها" className="flex h-9 w-9 items-center justify-center rounded-full bg-[#F4F2ED] text-lg text-ink lg:hidden" onClick={() => setActive(null)}>‹</button>
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#E8E3DA] text-sm font-black text-[#645B4D]">{(selected?.participant?.name ?? 'گ').trim().slice(0, 1)}</div><div className="min-w-0 flex-1"><h2 className="truncate text-sm font-extrabold text-[#292824]">{selected?.participant?.name ?? 'گفتگوی خصوصی'}</h2><p className="mt-1 text-[11px] text-[#85827B]">گفتگوی خصوصی مستقیم</p></div><button type="button" onClick={reportConversation} className="rounded-full px-2 py-1 text-[11px] font-semibold text-muted transition hover:bg-surface-muted">گزارش</button><button type="button" onClick={toggleBlock} className="rounded-full px-2 py-1 text-[11px] font-semibold text-red-700 transition hover:bg-red-50">{safety.blocked_by_me ? 'رفع مسدودسازی' : 'مسدودسازی کاربر'}</button>
                                 {selected?.contexts?.some((context) => context.artwork?.slug) && <div className="flex w-full flex-wrap gap-2 border-t border-border pt-3"><span className="text-xs text-muted">آثار مرتبط:</span>{selected.contexts.filter((context) => context.artwork?.slug).map((context) => <Link key={context.artwork.slug} to={'/artworks/' + context.artwork.slug} className="border border-border bg-surface-muted px-3 py-1.5 text-xs font-semibold underline">{context.artwork.title}</Link>)}</div>}
                             </header>
-                            <div ref={messagesContainerRef} onScroll={(event) => { const node = event.currentTarget; shouldStickToBottomRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 120; }} className="flex-1 space-y-4 overflow-y-auto bg-[radial-gradient(circle_at_1px_1px,rgba(36,35,32,0.045)_1px,transparent_0)] [background-size:22px_22px] p-4 sm:p-6" aria-live="polite" aria-relevant="additions text">
+                            <div dir="ltr" ref={messagesContainerRef} onScroll={(event) => { const node = event.currentTarget; shouldStickToBottomRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 120; }} className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain bg-[radial-gradient(circle_at_1px_1px,rgba(66,62,53,0.055)_1px,transparent_0)] [background-size:24px_24px] px-3 py-5 sm:gap-4 sm:px-6 sm:py-6" aria-live="polite" aria-relevant="additions text">
                                 {messages.map((message) => {
                                     const own = Number(message.sender_id) === Number(user?.id);
                                     const deleted = Boolean(message.deleted_at);
                                     return (
-                                        <div key={message.id} className={'flex ' + (own ? 'justify-end' : 'justify-start')}>
-                                            <article className={'max-w-[90%] rounded-2xl border px-4 py-3 shadow-sm sm:max-w-[78%] ' + (own ? 'rounded-bl-md border-ink bg-ink text-white' : 'rounded-br-md border-border bg-white text-ink')}>
+                                        <div dir="ltr" key={message.id} className={'flex w-full ' + (own ? 'justify-end' : 'justify-start')}>
+                                            <article dir="rtl" className={'min-w-0 max-w-[88%] rounded-[20px] px-4 py-3 shadow-[0_2px_5px_rgba(31,30,27,0.055)] sm:max-w-[min(72%,680px)] ' + (own ? 'rounded-bl-[7px] bg-[#DDF4D0] text-[#202820]' : 'rounded-br-[7px] border border-[#EAE7E1] bg-white text-[#292824]')}>
                                                 {message.attachments?.length > 0 && <ul className="mb-3 space-y-2">{message.attachments.map((attachment) => <li key={attachment.id}><a href={attachment.download_url} className="inline-flex max-w-full items-center gap-2 border border-border bg-surface-muted px-3 py-2 text-xs font-semibold underline" rel="noreferrer"><span aria-hidden="true">📎</span><span className="truncate">{attachment.name}</span><span className="text-muted">({Math.max(1, Math.round(attachment.size_bytes / 1024))} KB)</span></a></li>)}</ul>}
                                                 {message.reply_to && <div className="mb-3 border-r-2 border-terracotta bg-surface-muted px-3 py-2 text-xs"><strong>{message.reply_to.sender_name ?? 'پیام قبلی'}</strong><p className="mt-1 line-clamp-2 text-muted">{message.reply_to.body ?? 'این پیام حذف شده است.'}</p></div>}
                                                 {editingId === message.id ? (
@@ -361,13 +365,13 @@ export default function MessagingCenter({ role }) {
                                         </div>
                                     );
                                 })}
-                                <div ref={bottomRef} />
+                                
                             </div>
-                            {safety.blocked_by_me || safety.blocked_by_other ? <p role="status" className="border-t border-border bg-surface-muted p-4 text-sm text-muted">{safety.blocked_by_me ? 'این کاربر را مسدود کرده‌اید؛ برای ادامه گفتگو ابتدا مسدودسازی را بردارید.' : 'این گفتگو به‌دلیل تنظیمات ایمنی امکان ارسال پیام ندارد.'}</p> : <form onSubmit={send} className="border-t border-border bg-white p-3 shadow-[0_-8px_28px_rgba(36,35,32,0.04)] sm:p-4">
+                            {safety.blocked_by_me || safety.blocked_by_other ? <p role="status" className="border-t border-border bg-surface-muted p-4 text-sm text-muted">{safety.blocked_by_me ? 'این کاربر را مسدود کرده‌اید؛ برای ادامه گفتگو ابتدا مسدودسازی را بردارید.' : 'این گفتگو به‌دلیل تنظیمات ایمنی امکان ارسال پیام ندارد.'}</p> : <form onSubmit={send} className="shrink-0 border-t border-[#E9E6E0] bg-white px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 sm:px-5 sm:py-4">
                                 {replyTo && <div className="mb-3 flex items-start justify-between gap-3 border-r-2 border-terracotta bg-surface-muted p-3 text-xs"><div><strong>پاسخ به {replyTo.sender_name ?? 'پیام'}</strong><p className="mt-1 line-clamp-2 text-muted">{replyTo.body}</p></div><button type="button" onClick={() => setReplyTo(null)} aria-label="لغو پاسخ">×</button></div>}
-                                <div className="flex items-end gap-3">
-                                    <div className="min-w-0 flex-1 space-y-2"><textarea aria-label="متن پیام" ref={draftRef} value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); event.currentTarget.form?.requestSubmit(); } }} rows={2} maxLength={5000} placeholder="پیام خود را بنویسید…" className="min-h-12 w-full resize-y rounded-2xl border border-border bg-canvas px-4 py-3 text-sm outline-none transition placeholder:text-muted focus:border-terracotta focus:ring-2 focus:ring-terracotta/10" />
-                                        <div className="flex flex-wrap items-center gap-3"><label className="cursor-pointer text-xs font-semibold text-muted underline">افزودن تصویر یا PDF<input type="file" accept="image/jpeg,image/png,image/webp,application/pdf" className="sr-only" onChange={(event) => {
+                                <div className="flex items-end gap-2 rounded-[26px] border border-[#E5E2DC] bg-[#F7F7F5] p-2 shadow-[0_2px_10px_rgba(31,30,27,0.045)] focus-within:border-[#C9BEB0] focus-within:bg-white">
+                                    <div className="min-w-0 flex-1"><textarea aria-label="متن پیام" ref={draftRef} value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); event.currentTarget.form?.requestSubmit(); } }} rows={1} maxLength={5000} placeholder="پیام بنویسید…" className="max-h-36 min-h-11 w-full resize-none overflow-y-auto border-0 bg-transparent px-3 py-2.5 text-[14px] leading-7 text-[#262722] outline-none placeholder:text-[#96948E] focus:ring-0" />
+                                        <div className="mt-2 flex flex-wrap items-center gap-2"><label className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-xl text-[#77756E] transition hover:bg-[#ECEAE5]" title="افزودن تصویر یا PDF"><span aria-hidden="true">＋</span><input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp,application/pdf" className="sr-only" onChange={(event) => {
                                                 const file = event.target.files?.[0] ?? null;
                                                 if (file && file.size > 10 * 1024 * 1024) {
                                                     setError('حجم فایل نباید بیشتر از ۱۰ مگابایت باشد.');
@@ -376,9 +380,9 @@ export default function MessagingCenter({ role }) {
                                                 }
                                                 setError('');
                                                 setSelectedFile(file);
-                                            }} /></label>{selectedFile && <><span className="max-w-48 truncate text-xs text-muted">{selectedFile.name}</span><button type="button" onClick={() => setSelectedFile(null)} className="text-xs text-red-700 underline">حذف پیوست</button></>}{sending && selectedFile && <span role="status" className="text-xs text-muted">بارگذاری {uploadProgress}%</span>}</div>{filePreview && <img src={filePreview} alt="پیش‌نمایش فایل پیوست" className="mt-2 max-h-24 max-w-32 border border-border object-contain" />}
+                                            }} /></label>{selectedFile && <><span className="max-w-48 truncate rounded-full bg-white px-3 py-1.5 text-xs text-muted">{selectedFile.name}</span><button type="button" onClick={() => setSelectedFile(null)} className="text-xs text-red-700 underline">حذف پیوست</button></>}{sending && selectedFile && <span role="status" className="text-xs text-muted">بارگذاری {uploadProgress}%</span>}</div>{filePreview && <img src={filePreview} alt="پیش‌نمایش فایل پیوست" className="mt-2 max-h-24 max-w-32 rounded-xl object-contain" />}
                                     </div>
-                                    <button type="submit" disabled={(!draft.trim() && !selectedFile) || sending || safety.blocked_by_me || safety.blocked_by_other} className="min-h-12 rounded-xl bg-terracotta px-6 text-sm font-extrabold text-white shadow-sm transition hover:bg-terracotta-strong disabled:cursor-not-allowed disabled:opacity-50">{sending ? '…' : 'ارسال'}</button>
+                                    <button type="submit" aria-label="ارسال پیام" disabled={(!draft.trim() && !selectedFile) || sending || safety.blocked_by_me || safety.blocked_by_other} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#279B63] text-xl font-bold text-white shadow-sm transition hover:bg-[#218755] disabled:cursor-not-allowed disabled:opacity-40">{sending ? '…' : '➤'}</button>
                                 </div>
                             </form>}
                         </>
