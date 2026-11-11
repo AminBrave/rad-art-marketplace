@@ -1,4 +1,4 @@
-import { Button, Input, Textarea, Select } from '../components/ui';
+import { Button, Input, Textarea, Select, Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../components/ui';
 import { createElement, useEffect, useState } from 'react';
 import axios from 'axios';
 import ArtworkGallery from './ArtworkGallery';
@@ -393,25 +393,25 @@ export default function App() {
                         <h2 className="text-2xl font-semibold">مدیریت کاربران</h2>
                         <p className="mt-2 text-sm text-muted-foreground">تغییر نقش کاربران؛ این عملیات فقط از سمت سرور برای مدیر مجاز است.</p>
                         <div className="mt-6 overflow-x-auto">
-                            <table className="w-full min-w-[560px] text-right text-sm">
-                                <thead><tr className="border-b border-border text-muted-foreground"><th className="py-3">نام</th><th>ایمیل</th><th>نقش</th><th>عملیات</th></tr></thead>
-                                <tbody>
+                            <Table className="w-full min-w-[560px] text-right text-sm">
+                                <TableHeader><TableRow className="border-b border-border text-muted-foreground"><TableHead className="py-3">نام</TableHead><TableHead>ایمیل</TableHead><TableHead>نقش</TableHead><TableHead>عملیات</TableHead></TableRow></TableHeader>
+                                <TableBody>
                                     {adminUsers.map((item) => (
-                                        <tr key={item.id} className="border-b border-border">
-                                            <td className="py-4 font-semibold">{item.name}</td>
-                                            <td dir="ltr" className="text-left">{item.email}</td>
-                                            <td>{item.role === 'admin' ? 'مدیر' : item.role === 'buyer' ? 'خریدار' : 'هنرمند'}</td>
-                                            <td>
+                                        <TableRow key={item.id} className="border-b border-border">
+                                            <TableCell className="py-4 font-semibold">{item.name}</TableCell>
+                                            <TableCell dir="ltr" className="text-left">{item.email}</TableCell>
+                                            <TableCell>{item.role === 'admin' ? 'مدیر' : item.role === 'buyer' ? 'خریدار' : 'هنرمند'}</TableCell>
+                                            <TableCell>
                                                 {item.id !== user.id && (
                                                     <Button onClick={() => changeRole(item, item.role === 'admin' ? 'artist' : 'admin')} variant="outline" size="sm">
                                                         {item.role === 'admin' ? 'تبدیل به هنرمند' : 'ارتقا به مدیر'}
                                                     </Button>
                                                 )}
-                                            </td>
-                                        </tr>
+                                            </TableCell>
+                                        </TableRow>
                                     ))}
-                                </tbody>
-                            </table>
+                                </TableBody>
+                            </Table>
                         </div>
                     </div>
                 </section>
