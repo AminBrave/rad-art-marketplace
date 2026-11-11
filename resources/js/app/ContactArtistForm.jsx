@@ -51,7 +51,7 @@ export default function ContactArtistForm({ artistSlug, artworkId = null }) {
             </label>
             <label className="mt-4 block text-sm font-semibold">
                 متن پیام
-                <Textarea value={message} onChange={(event) => setMessage(event.target.value)} required minLength="20" maxLength="3000" rows="5"  className="w-full">
+                <Textarea value={message} onChange={(event) => setMessage(event.target.value)} required minLength="20" maxLength="3000" rows="5"  className="w-full"/>
                 <span className="mt-1 block text-xs font-normal text-muted-foreground">حداقل ۲۰ و حداکثر ۳۰۰۰ نویسه</span>
                 {errors.message?.map((item) => <span key={item} className="mt-1 block text-xs text-destructive">{item}</span>)}
             </label>
