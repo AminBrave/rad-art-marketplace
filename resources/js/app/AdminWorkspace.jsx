@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { Badge, Button, EmptyState, ErrorState, FormField, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableCaption } from '../components/ui';
+import { Badge, Button, EmptyState, ErrorState, FormField, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableCaption, Card } from '../components/ui';
 
 const api = '/api/v1/admin';
 const statuses = [
