@@ -1,4 +1,4 @@
-export { Button, IconButton, Badge, FormField, TextInput, TextareaField, SelectField, SearchField } from './primitives';
+export { Button, IconButton, Badge, FormField, SearchField } from './primitives';
 export {
     Tabs, TabsList, TabsTrigger, TabsContent,
     DropdownMenu, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuPortal,
