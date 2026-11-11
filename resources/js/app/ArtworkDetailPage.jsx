@@ -3,8 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import ContactArtistForm from './ContactArtistForm';
-import { isFeatureEnabled } from './features';
 import { ArtworkCard, ArtworkDetailSkeleton } from '../components/ui';
 import { formatArtworkPrice } from '../utils/formatArtworkPrice';
 
@@ -96,7 +94,6 @@ export default function ArtworkDetailPage() {
                             <p className="mt-5 inline-flex items-center gap-2 text-sm text-muted"><span aria-hidden="true" className="h-2 w-2 rounded-full bg-olive" />وضعیت: {availabilityLabel(artwork.availability)}</p>
                             {user?.role === 'buyer' && <div className="mt-7 flex flex-wrap gap-3">
                                 <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(artwork.artist.slug) + '&artwork=' + encodeURIComponent(artwork.slug)} className="inline-flex items-center bg-ink px-5 py-3 text-sm font-bold text-white hover:bg-terracotta">پیام مستقیم درباره این اثر</Link>
-                                {isFeatureEnabled('inquiries') && <ContactArtistForm artistSlug={artwork.artist.slug} artworkId={artwork.id} />}
                             </div>}
                             {!user && <Link to="/login" state={{ from: { pathname: '/artworks/' + slug } }} className="mt-7 inline-block text-sm font-bold text-terracotta-strong underline">برای ارسال پیام مستقیم وارد شوید</Link>}
                             {user && user.role !== 'buyer' && <p className="mt-7 text-xs leading-6 text-muted">ارسال پیام مستقیم از حساب خریدار امکان‌پذیر است.</p>}
