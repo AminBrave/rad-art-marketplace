@@ -430,6 +430,7 @@ class ConversationController extends Controller
                     return [
                         'artwork' => $artwork ? (function () use ($artwork): array {
                             $record = Artwork::query()->with(['category', 'artistProfile'])->find($artwork->id);
+
                             return [
                                 'id' => $record?->id,
                                 'title' => $record?->title ?? $artwork->title,
