@@ -187,7 +187,8 @@ class DiscoveryBrowserTests(unittest.TestCase):
 
 
     def test_discovery_to_artwork_to_artist_keeps_direct_messaging_without_inquiry(self):
-        context, page = self.new_page()
+        buyer = {"id": 42, "name": "Buyer QA", "email": "buyer@example.test", "role": "buyer"}
+        context, page = self.new_page(user=buyer)
         try:
             page.route("**/api/v1/artworks/*/image", lambda route: route.fulfill(
                 status=200, content_type="image/png",
