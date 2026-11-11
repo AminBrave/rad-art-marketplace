@@ -12,10 +12,10 @@ export function AuthProvider({ children }) {
 
     const setUser = useCallback((nextUser) => {
         const nextIdentity = nextUser ? String(nextUser.id) + ':' + String(nextUser.role) : null;
-        if (userIdentityRef.current !== nextIdentity) {
+        if (userIdentityRef.current !== null && userIdentityRef.current !== nextIdentity) {
             queryClient.clear();
-            userIdentityRef.current = nextIdentity;
         }
+        userIdentityRef.current = nextIdentity;
         setUserState(nextUser);
         setStatus(nextUser ? 'authenticated' : 'guest');
         setAuthError('');
