@@ -335,6 +335,23 @@ class ArtworkTest extends TestCase
         $this->getJson('/api/v1/artworks?sort=price_desc')->assertOk()->assertJsonPath('data.0.slug', $newest->slug)->assertJsonPath('data.2.slug', $unknown->slug);
     }
 
+    public function test_public_artwork_search_normalizes_arabic_letter_variants_and_persian_digits(): void
+    {
+        [, $profile] = $this->artistWithProfile('normalized-search@example.com');
+        $artwork = $profile->artworks()->create([
+            ...$this->validArtwork(),
+            'slug' => 'normalized-search-work',
+            'title' => 'هنر و کاغذ ۱۲۳',
+            'image_path' => 'artworks/normalized-search.jpg',
+            'status' => Artwork::STATUS_APPROVED,
+        ]);
+
+        $this->getJson('/api/v1/artworks?q='.urlencode('هنر و كاغذ ١٢٣'))
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.slug', $artwork->slug);
+    }
+
     public function test_public_artwork_filters_only_include_mediums_from_public_approved_work(): void
     {
         [, $publicProfile] = $this->artistWithProfile('public-filter@example.com');
