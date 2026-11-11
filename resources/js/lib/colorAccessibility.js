@@ -110,8 +110,12 @@ function hasOwnText(element) {
     return [...element.childNodes].some((node) => node.nodeType === 3 && node.textContent.trim().length > 0);
 }
 
-function isVisible(style) {
-    return style.display !== 'none' && style.visibility !== 'hidden' && Number.parseFloat(style.opacity || '1') > 0;
+function isVisible(element, getStyle) {
+    for (let node = element; node && node.nodeType === 1; node = node.parentElement) {
+        const style = getStyle(node);
+        if (style.display === 'none' || style.visibility === 'hidden') return false;
+    }
+    return true;
 }
 
 /**
@@ -152,7 +156,7 @@ export function auditColorAccessibility(root = globalThis.document) {
     for (const element of elements) {
         const style = getStyle(element);
         const opacity = effectiveOpacity(element, getStyle);
-        if (!isVisible(style) || opacity <= 0 || isDisabled(element)) continue;
+        if (!isVisible(element, getStyle) || opacity <= 0 || isDisabled(element)) continue;
         const resolved = effectiveBackground(element, getStyle);
         const background = resolved.background;
 
