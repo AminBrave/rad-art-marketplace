@@ -112,7 +112,7 @@ class ConversationController extends Controller
                 'inquiry.artistProfile',
                 'inquiry.artwork',
                 'buyer',
-                'artist',
+                'artist.artistProfile',
                 'latestMessage.sender',
             ]), $request->user()),
         ]);
