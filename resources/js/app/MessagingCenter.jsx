@@ -240,12 +240,12 @@ export default function MessagingCenter({ role }) {
     return (
         <section className="space-y-5" dir="rtl">
             <header className="border-b border-border pb-5">
-                <p className="text-sm font-bold text-terracotta-strong">ارتباط مستقیم</p>
-                <h1 className="mt-2 text-2xl font-black">پیام‌ها</h1>
+                <p className="text-sm font-bold text-primary">ارتباط مستقیم</p>
+                <h1 className="mt-2 text-2xl font-semibold">پیام‌ها</h1>
                 <p className="mt-2 text-sm text-muted-foreground">گفتگوی خصوصی خریداران و هنرمندان؛ پیام‌ها به‌صورت خودکار به‌روزرسانی می‌شوند.</p>
             </header>
             {notice && <p role="status" className="border border-border bg-muted p-3 text-sm">{notice}</p>}
-            {error && <p role="alert" className="border border-red-200 bg-red-50 p-3 text-sm text-destructive">{error}</p>}
+            {error && <p role="alert" className="border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">{error}</p>}
             <div className="grid min-h-[620px] overflow-hidden border border-border bg-card lg:grid-cols-[320px_minmax(0,1fr)]">
                 <aside className={active ? 'hidden border-l border-border lg:block' : 'border-l border-border'}>
                     <div className="border-b border-border p-4 font-bold">گفتگوها</div>
@@ -259,7 +259,7 @@ export default function MessagingCenter({ role }) {
                         <ul className="divide-y divide-border">
                             {threads.map((thread) => <li key={thread.id}>
                                 <Button type="button" onClick={() => { setActive(thread.id); setReplyTo(null); setEditingId(null); if (requestedConversation) setParams({}, { replace: true }); }} variant="ghost" size="default">
-                                    <span className="flex items-center justify-between gap-2"><strong className="truncate text-sm">{thread.participant?.name ?? 'گفتگو'}</strong>{thread.unread_count > 0 && <span className="rounded-full bg-terracotta px-2 py-1 text-xs text-white">{thread.unread_count}</span>}</span>
+                                    <span className="flex items-center justify-between gap-2"><strong className="truncate text-sm">{thread.participant?.name ?? 'گفتگو'}</strong>{thread.unread_count > 0 && <span className="rounded-full bg-primary px-2 py-1 text-xs text-white">{thread.unread_count}</span>}</span>
                                     <span className="mt-2 block truncate text-xs text-muted-foreground">{thread.last_message?.body ?? (thread.last_message?.deleted_at ? 'پیام حذف شده است' : 'گفتگوی جدید')}</span>
                                     <span className="mt-1 block text-[11px] text-muted-foreground">{dateLabel(thread.last_message_at)}</span>
                                 </Button>
@@ -287,7 +287,7 @@ export default function MessagingCenter({ role }) {
                                         <div key={message.id} className={'flex ' + (own ? 'justify-end' : 'justify-start')}>
                                             <article className="max-w-[90%] border border-border bg-card px-4 py-3 shadow-sm sm:max-w-[85%]">
                                                 {message.attachments?.length > 0 && <ul className="mb-3 space-y-2">{message.attachments.map((attachment) => <li key={attachment.id}><a href={attachment.download_url} className="inline-flex max-w-full items-center gap-2 border border-border bg-muted px-3 py-2 text-xs font-semibold underline" rel="noreferrer"><span aria-hidden="true">📎</span><span className="truncate">{attachment.name}</span><span className="text-muted-foreground">({Math.max(1, Math.round(attachment.size_bytes / 1024))} KB)</span></a></li>)}</ul>}
-                                                {message.reply_to && <div className="mb-3 border-r-2 border-terracotta bg-muted px-3 py-2 text-xs"><strong>{message.reply_to.sender_name ?? 'پیام قبلی'}</strong><p className="mt-1 line-clamp-2 text-muted-foreground">{message.reply_to.body ?? 'این پیام حذف شده است.'}</p></div>}
+                                                {message.reply_to && <div className="mb-3 border-r-2 border-primary bg-muted px-3 py-2 text-xs"><strong>{message.reply_to.sender_name ?? 'پیام قبلی'}</strong><p className="mt-1 line-clamp-2 text-muted-foreground">{message.reply_to.body ?? 'این پیام حذف شده است.'}</p></div>}
                                                 {editingId === message.id ? (
                                                     <form onSubmit={(event) => saveEdit(event, message)} className="space-y-2">
                                                         <Textarea aria-label="متن ویرایش‌شده پیام" autoFocus value={editDraft} onChange={(event) => setEditDraft(event.target.value)} rows={3} maxLength={5000} / className="w-full">
@@ -321,7 +321,7 @@ export default function MessagingCenter({ role }) {
                                 <div ref={bottomRef} />
                             </div>
                             {safety.blocked_by_me || safety.blocked_by_other ? <p role="status" className="border-t border-border bg-muted p-4 text-sm text-muted-foreground">{safety.blocked_by_me ? 'این کاربر را مسدود کرده‌اید؛ برای ادامه گفتگو ابتدا مسدودسازی را بردارید.' : 'این گفتگو به‌دلیل تنظیمات ایمنی امکان ارسال پیام ندارد.'}</p> : <form onSubmit={send} className="border-t border-border bg-card p-3 sm:p-4">
-                                {replyTo && <div className="mb-3 flex items-start justify-between gap-3 border-r-2 border-terracotta bg-muted p-3 text-xs"><div><strong>پاسخ به {replyTo.sender_name ?? 'پیام'}</strong><p className="mt-1 line-clamp-2 text-muted-foreground">{replyTo.body}</p></div><Button type="button" onClick={() => setReplyTo(null)} aria-label="لغو پاسخ" variant="ghost" size="default">×</Button></div>}
+                                {replyTo && <div className="mb-3 flex items-start justify-between gap-3 border-r-2 border-primary bg-muted p-3 text-xs"><div><strong>پاسخ به {replyTo.sender_name ?? 'پیام'}</strong><p className="mt-1 line-clamp-2 text-muted-foreground">{replyTo.body}</p></div><Button type="button" onClick={() => setReplyTo(null)} aria-label="لغو پاسخ" variant="ghost" size="default">×</Button></div>}
                                 <div className="flex items-end gap-3">
                                     <div className="min-w-0 flex-1 space-y-2"><Textarea aria-label="متن پیام" ref={draftRef} value={draft} onChange={(event) => setDraft(event.target.value)} rows={2} maxLength={5000} placeholder="پیام خود را بنویسید…" / className="w-full">
                                         <div className="flex flex-wrap items-center gap-3"><label className="cursor-pointer text-xs font-semibold text-muted-foreground underline">افزودن تصویر یا PDF<Input type="file" accept="image/jpeg,image/png,image/webp,application/pdf" onChange={(event) => setSelectedFile(event.target.files?.[0] ?? null)} / className="sr-only" /></label>{selectedFile && <><span className="max-w-48 truncate text-xs text-muted-foreground">{selectedFile.name}</span><Button type="button" onClick={() => setSelectedFile(null)} variant="destructive" size="sm">حذف پیوست</Button></>}{sending && selectedFile && <span role="status" className="text-xs text-muted-foreground">بارگذاری {uploadProgress}%</span>}</div>{filePreview && <img src={filePreview} alt="پیش‌نمایش فایل پیوست" className="mt-2 max-h-24 max-w-32 border border-border object-contain" />}
