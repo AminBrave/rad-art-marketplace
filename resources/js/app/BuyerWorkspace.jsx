@@ -24,14 +24,14 @@ export function BuyerDashboardHome() {
     return (
         <section className="space-y-6" dir="rtl">
             <header className="border-b border-border pb-6">
-                <p className="text-sm font-bold text-terracotta-strong">فضای خریدار</p>
-                <h1 className="mt-2 text-2xl font-black">ارتباط مستقیم با هنرمندان</h1>
+                <p className="text-sm font-bold text-primary">فضای خریدار</p>
+                <h1 className="mt-2 text-2xl font-semibold">ارتباط مستقیم با هنرمندان</h1>
                 <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">از صفحه هنرمند یا اثر هنری، گفت‌وگوی مستقیمی آغاز کنید و پیام‌های خود را در این بخش پیگیری کنید.</p>
             </header>
             <article className="border border-border bg-card p-6 sm:p-8">
                 <h2 className="text-lg font-bold">صندوق پیام‌های شما</h2>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">گفت‌وگوهای فعال، پیوست‌ها و اعلان‌های پیام در بخش پیام‌های مستقیم در دسترس هستند.</p>
-                <Link to="/dashboard/buyer/messages" className="mt-5 inline-flex min-h-11 items-center bg-ink px-5 py-3 text-sm font-bold text-white hover:bg-terracotta">رفتن به پیام‌های مستقیم</Link>
+                <Link to="/dashboard/buyer/messages" className="mt-5 inline-flex min-h-11 items-center bg-brand-ink px-5 py-3 text-sm font-bold text-white hover:bg-primary">رفتن به پیام‌های مستقیم</Link>
             </article>
         </section>
     );
@@ -71,8 +71,8 @@ export function BuyerInquiryPage() {
     return (
         <section className="space-y-6" dir="rtl">
             <header>
-                <p className="text-sm font-bold text-terracotta-strong">فضای خریدار</p>
-                <h1 className="mt-2 text-2xl font-black">درخواست‌های ارسال‌شده</h1>
+                <p className="text-sm font-bold text-primary">فضای خریدار</p>
+                <h1 className="mt-2 text-2xl font-semibold">درخواست‌های ارسال‌شده</h1>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">فهرست درخواست‌های ارتباطی شما و وضعیت فعلی هرکدام.</p>
             </header>
             {error && <ErrorState title="دریافت درخواست‌ها انجام نشد" description={error} onRetry={() => load()} />}
@@ -82,7 +82,7 @@ export function BuyerInquiryPage() {
                         <EmptyState
                             title="هنوز درخواستی ارسال نکرده‌اید"
                             description="پس از ارسال درخواست از صفحه یک هنرمند یا اثر، سوابق شما در اینجا نمایش داده می‌شود."
-                            action={<Link to="/artists" className="mt-2 inline-flex min-h-11 items-center bg-ink px-5 py-3 text-sm font-bold text-white">مشاهده هنرمندان</Link>}
+                            action={<Link to="/artists" className="mt-2 inline-flex min-h-11 items-center bg-brand-ink px-5 py-3 text-sm font-bold text-white">مشاهده هنرمندان</Link>}
                         />
                     ) : (
                         <div className="overflow-hidden border border-border bg-card">
@@ -99,7 +99,7 @@ export function BuyerInquiryPage() {
                                                 <InquiryStatus status={item.status} />
                                             </div>
                                             <p className="mt-3 text-xs text-muted-foreground">{formatDate(item.created_at)}</p>
-                                            <span className="mt-3 inline-block text-sm font-bold text-terracotta-strong underline underline-offset-4">مشاهده جزئیات</span>
+                                            <span className="mt-3 inline-block text-sm font-bold text-primary underline underline-offset-4">مشاهده جزئیات</span>
                                         </Link>
                                     </li>
                                 ))}
@@ -156,7 +156,7 @@ export function BuyerInquiryDetailPage() {
             ) : inquiry && (
                 <article className="border border-border bg-card p-5 sm:p-8">
                     <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div><p className="text-xs font-bold text-terracotta-strong">جزئیات درخواست ارسالی</p><h1 className="mt-2 text-2xl font-black">{inquiry.subject}</h1></div>
+                        <div><p className="text-xs font-bold text-primary">جزئیات درخواست ارسالی</p><h1 className="mt-2 text-2xl font-semibold">{inquiry.subject}</h1></div>
                         <InquiryStatus status={inquiry.status} />
                     </div>
                     <dl className="mt-6 grid gap-4 border-y border-border py-5 text-sm sm:grid-cols-2">
@@ -166,8 +166,8 @@ export function BuyerInquiryDetailPage() {
                     </dl>
                     <h2 className="mt-6 text-sm font-bold">متن درخواست شما</h2>
                     <p className="whitespace-pre-wrap py-4 text-sm leading-9 text-foreground">{inquiry.message}</p>
-                    {inquiry.artist?.slug && <Link to={'/artists/' + inquiry.artist.slug} className="inline-block text-sm font-bold text-terracotta-strong underline underline-offset-4">مشاهده پروفایل هنرمند</Link>}
-                    {inquiry.artwork?.slug && <Link to={'/artworks/' + inquiry.artwork.slug} className="mr-5 inline-block text-sm font-bold text-terracotta-strong underline underline-offset-4">مشاهده اثر مرتبط</Link>}
+                    {inquiry.artist?.slug && <Link to={'/artists/' + inquiry.artist.slug} className="inline-block text-sm font-bold text-primary underline underline-offset-4">مشاهده پروفایل هنرمند</Link>}
+                    {inquiry.artwork?.slug && <Link to={'/artworks/' + inquiry.artwork.slug} className="mr-5 inline-block text-sm font-bold text-primary underline underline-offset-4">مشاهده اثر مرتبط</Link>}
                     <p className="mt-6 border-t border-border pt-4 text-xs leading-7 text-muted-foreground">این صفحه فقط درخواست اولیه و وضعیت ثبت‌شده آن را نمایش می‌دهد. امکان پاسخ‌گویی، گفت‌وگو یا ارسال ایمیل در سامانه وجود ندارد.</p>
                 </article>
             )}
