@@ -12,7 +12,7 @@ export default function ThemeSwitcher({ className = '' }) {
                 aria-label="انتخاب پوسته"
                 value={theme}
                 onChange={(event) => setTheme(event.target.value)}
-                className="min-h-9 max-w-36 rounded-md border border-input bg-background px-2 text-xs font-semibold text-foreground outline-none transition focus-visible:ring-2 focus-visible:ring-ring"
+                className="min-h-9 max-w-28 sm:max-w-36 rounded-md border border-input bg-background px-2 text-xs font-semibold text-foreground outline-none transition focus-visible:ring-2 focus-visible:ring-ring"
             >
                 {availableThemes.map((item) => (
                     <option key={item.id} value={item.id}>{item.name}</option>
