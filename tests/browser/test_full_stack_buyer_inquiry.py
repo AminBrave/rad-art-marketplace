@@ -61,7 +61,7 @@ class FullStackBuyerInquiryTests(unittest.TestCase):
             buyer_page.get_by_role("status").filter(has_text="با موفقیت").wait_for()
 
             buyer_page.goto(BASE_URL + "/dashboard/buyer/inquiries")
-            buyer_page.get_by_role("heading", name="پیگیری درخواست‌ها").wait_for()
+            buyer_page.get_by_role("heading", name="درخواست‌های ارسال‌شده").wait_for()
             buyer_page.get_by_text(subject, exact=True).wait_for()
 
             self.login(artist_page, "artist@rademan.test")
