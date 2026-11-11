@@ -31,7 +31,7 @@ export default function ArtistProfilePage() {
         staleTime: 60_000,
     });
 
-    const pages = profileQuery.data?.pages ?? [];
+    const pages = useMemo(() => profileQuery.data?.pages ?? [], [profileQuery.data?.pages]);
     const profile = pages[0] ?? null;
     const pagination = pages[pages.length - 1]?.artworks_pagination;
     const allArtworks = useMemo(() => {
