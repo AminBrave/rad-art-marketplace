@@ -70,6 +70,30 @@ class ConversationTest extends TestCase
         $this->assertNotNull($conversation->messages()->where('sender_user_id', $artist->id)->firstOrFail()->fresh()->read_at);
     }
 
+    public function test_incremental_message_fetch_returns_only_messages_after_the_cursor(): void
+    {
+        [$buyer, $artist, $inquiry] = $this->participantsWithInquiry();
+        $conversation = $this->openConversationAsBuyer($buyer, $inquiry);
+        $firstMessage = $conversation->messages()->firstOrFail();
+
+        $this->actingAs($artist)
+            ->postJson('/api/v1/conversations/'.$conversation->id.'/messages', [
+                'body' => 'پیام جدید برای دریافت افزایشی',
+                'client_message_id' => 'incremental-message-1',
+            ])
+            ->assertCreated();
+
+        $this->actingAs($buyer)
+            ->getJson('/api/v1/conversations/'.$conversation->id.'/messages?after_id='.$firstMessage->id)
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.body', 'پیام جدید برای دریافت افزایشی')
+            ->assertJsonPath('current_page', 1);
+
+        $this->getJson('/api/v1/conversations/'.$conversation->id.'/messages?after_id=invalid')
+            ->assertUnprocessable();
+    }
+
     public function test_message_sending_is_idempotent_for_a_client_message_id(): void
     {
         [$buyer, , $inquiry] = $this->participantsWithInquiry();
