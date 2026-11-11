@@ -4,47 +4,57 @@ import test from 'node:test';
 
 const css = readFileSync(new URL('../../resources/css/app.css', import.meta.url), 'utf8');
 const tailwind = readFileSync(new URL('../../tailwind.config.js', import.meta.url), 'utf8');
+const components = readFileSync(new URL('../../components.json', import.meta.url), 'utf8');
+const button = readFileSync(new URL('../../resources/js/components/ui/button.jsx', import.meta.url), 'utf8');
 const primitives = readFileSync(new URL('../../resources/js/components/ui/primitives.jsx', import.meta.url), 'utf8');
+const field = readFileSync(new URL('../../resources/js/components/ui/field.jsx', import.meta.url), 'utf8');
 const cards = readFileSync(new URL('../../resources/js/components/ui/cards.jsx', import.meta.url), 'utf8');
 const feedback = readFileSync(new URL('../../resources/js/components/ui/feedback.jsx', import.meta.url), 'utf8');
 
-test('semantic palette, typography, spacing and layout tokens have one CSS source', () => {
+test('New York light and dark themes expose complete semantic roles', () => {
     for (const token of [
-        '--color-canvas', '--color-ink', '--color-terracotta', '--color-terracotta-strong',
-        '--color-sand', '--color-olive', '--color-paper', '--color-text-muted',
-        '--color-border', '--color-success', '--color-danger', '--color-warning', '--color-info',
-        '--font-persian', '--font-latin', '--text-base', '--leading-copy',
-        '--space-1', '--space-4', '--space-8', '--radius-md', '--content-width',
-        '--page-gutter', '--control-height-md', '--artwork-ratio',
+        '--background', '--foreground', '--card', '--card-foreground',
+        '--popover', '--popover-foreground', '--primary', '--primary-foreground',
+        '--secondary', '--secondary-foreground', '--muted', '--muted-foreground',
+        '--accent', '--accent-foreground', '--destructive', '--destructive-foreground',
+        '--border', '--input', '--ring', '--chart-1', '--chart-5',
+        '--sidebar', '--sidebar-foreground', '--sidebar-primary', '--sidebar-border',
     ]) {
-        assert.match(css, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Missing design token: ${token}`);
+        assert.ok(css.includes(token), `Missing New York semantic token: ${token}`);
     }
+    assert.match(css, /\[data-theme='new-york'\]\.dark/);
+    assert.match(css, /prefers-reduced-motion/);
 });
 
-test('Tailwind semantic aliases reference CSS variables rather than duplicate literal values', () => {
-    for (const alias of ['canvas:', 'terracotta:', 'muted:', 'warning:', 'info:', 'fontSize:', 'lineHeight:', 'spacing:']) {
-        assert.ok(tailwind.includes(alias), `Missing Tailwind alias: ${alias}`);
+test('shadcn metadata and Tailwind aliases use the New York Stone CSS-variable contract', () => {
+    const metadata = JSON.parse(components);
+    assert.equal(metadata.style, 'new-york');
+    assert.equal(metadata.tailwind.baseColor, 'stone');
+    assert.equal(metadata.tailwind.cssVariables, true);
+    assert.equal(tailwind.includes("darkMode: 'class'"), true);
+    for (const alias of ['background:', 'foreground:', 'card:', 'primary:', 'muted:', 'popover:', 'sidebar:', 'chart:']) {
+        assert.ok(tailwind.includes(alias), `Missing semantic Tailwind alias: ${alias}`);
     }
-    assert.ok(tailwind.includes('var(--color-canvas)'));
-    assert.ok(tailwind.includes('var(--text-base)'));
-    assert.ok(tailwind.includes('var(--space-4)'));
+    assert.ok(tailwind.includes('hsl(var(--background))'));
+    assert.ok(tailwind.includes('hsl(var(--sidebar))'));
+    assert.ok(tailwind.includes("lg: 'var(--radius)'"));
 });
 
-test('shared primitives use centralized component contracts and expose accessible states', () => {
-    assert.ok(css.includes('.ra-button--primary'));
-    assert.ok(css.includes('.ra-button--danger'));
-    assert.ok(css.includes('.ra-control:focus-visible'));
-    assert.ok(css.includes('.ra-control[aria-invalid='));
-    assert.ok(primitives.includes('ra-button'));
-    assert.ok(primitives.includes('aria-busy={loading || undefined}'));
+test('New York Button and Field primitives expose documented variants and accessible states', () => {
+    assert.ok(button.includes('variants[variant]'));
+    assert.ok(button.includes('aria-busy={loading || undefined}'));
+    assert.ok(button.includes('block && \'w-full\''));
     assert.ok(primitives.includes("'aria-describedby': describedBy"));
     assert.ok(primitives.includes("'aria-invalid': error ? true"));
+    assert.ok(field.includes('data-slot="field"'));
+    assert.ok(field.includes('role="alert"'));
 });
 
-test('shared content and feedback components use semantic surface and state contracts', () => {
-    assert.ok(cards.includes('ra-surface'));
-    assert.ok(cards.includes('ra-artwork-frame'));
-    assert.ok(feedback.includes('ra-state--empty'));
-    assert.ok(feedback.includes('ra-state--error'));
-    assert.ok(feedback.includes('ra-state--success'));
+test('marketplace cards and feedback use composable semantic surfaces', () => {
+    assert.ok(cards.includes('<Card'));
+    assert.ok(cards.includes('bg-card'));
+    assert.ok(cards.includes('<Badge'));
+    assert.ok(feedback.includes('<Alert'));
+    assert.ok(feedback.includes('role="progressbar"') || feedback.includes('<Progress'));
+    assert.ok(feedback.includes('<section'));
 });
