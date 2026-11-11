@@ -100,3 +100,12 @@ test('application screens use shared shadcn controls instead of raw interactive 
         assert.doesNotMatch(source, /\/\s+className=/, 'Malformed self-closing component in ' + screen);
     }
 });
+
+
+test('editorial form imports the exported shadcn Textarea primitive', () => {
+    const editorial = read('../../resources/js/app/EditorialPages.jsx');
+    assert.match(uiIndex, /export \{ Textarea \} from '\.\/textarea'/);
+    assert.match(editorial, /import \{[^}]*\bTextarea\b[^}]*\} from '\.\.\/components\/ui'/);
+    assert.match(editorial, /<Textarea\b/);
+    assert.doesNotMatch(editorial, /\bTextareaField\b/);
+});
