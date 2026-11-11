@@ -1,5 +1,6 @@
 import { cloneElement, forwardRef, isValidElement, useId } from 'react';
 import { Slot, Slottable } from '@radix-ui/react-slot';
+import { Input } from './input';
 import { cn } from '../../lib/utils';
 
 const buttonVariants = {
@@ -17,7 +18,7 @@ const buttonSizes = {
     icon: 'h-9 w-9',
 };
 
-export const Button = forwardRef(function Button({ children, variant = 'default', size = 'default', asChild = false, loading = false, disabled = false, type = 'button', className = '', ...props }, ref) {
+export const Button = forwardRef(function Button({ children, variant = 'default', size = 'default', asChild = false, loading = false, disabled = false, type = 'button', tabIndex, className = '', ...props }, ref) {
     const Comp = asChild ? Slot : 'button';
     const resolvedVariant = ({ primary: 'default', danger: 'destructive' })[variant] ?? variant;
     const resolvedSize = ({ md: 'default' })[size] ?? size;
@@ -27,10 +28,14 @@ export const Button = forwardRef(function Button({ children, variant = 'default'
             type={asChild ? undefined : type}
             disabled={asChild ? undefined : disabled || loading}
             aria-busy={loading || undefined}
-            className={cn('inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50', buttonVariants[resolvedVariant] ?? buttonVariants.default, buttonSizes[resolvedSize] ?? buttonSizes.default, className)}
+            aria-disabled={asChild && (disabled || loading) ? true : undefined}
+            data-disabled={asChild && (disabled || loading) ? '' : undefined}
+            tabIndex={asChild && (disabled || loading) ? -1 : tabIndex}
+            className={cn('inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50', buttonVariants[resolvedVariant] ?? buttonVariants.default, buttonSizes[resolvedSize] ?? buttonSizes.default, asChild && (disabled || loading) && 'pointer-events-none opacity-50', className)}
             {...props}
         >
-            {asChild ? <Slottable>{children}</Slottable> : <>{loading && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-current border-e-transparent" />}{children}</>}
+            {loading && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-current border-e-transparent" />}
+            {asChild ? <Slottable>{children}</Slottable> : children}
         </Comp>
     );
 });
@@ -43,17 +48,18 @@ export function IconButton({ children, label, size = 'icon', className = '', ...
 
 const badgeVariants = {
     default: 'border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/90',
+    success: 'border-transparent bg-accent text-accent-foreground',
+    warning: 'border-transparent bg-secondary text-secondary-foreground',
+    info: 'border-transparent bg-muted text-muted-foreground',
     secondary: 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
     destructive: 'border-transparent bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',
     outline: 'text-foreground',
 };
 
 export function Badge({ children, variant = 'default', className = '', ...props }) {
-    const resolvedVariant = ({ danger: 'destructive', success: 'secondary', warning: 'secondary', info: 'outline', accent: 'default', neutral: 'secondary' })[variant] ?? variant;
+    const resolvedVariant = ({ danger: 'destructive', accent: 'default', neutral: 'secondary' })[variant] ?? variant;
     return <span className={cn('inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2', badgeVariants[resolvedVariant] ?? badgeVariants.default, className)} {...props}>{children}</span>;
 }
-
-const inputClass = 'flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50';
 
 export function FormField({ id, label, hint, error, required = false, children, className = '' }) {
     const generatedId = useId();
@@ -72,21 +78,12 @@ export function FormField({ id, label, hint, error, required = false, children, 
     </div>;
 }
 
-export function TextInput({ className = '', ...props }) {
-    return <input className={cn(inputClass, className)} {...props} />;
-}
-export function TextareaField({ className = '', rows = 4, ...props }) {
-    return <textarea rows={rows} className={cn('min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50', className)} {...props} />;
-}
-export function SelectField({ className = '', children, ...props }) {
-    return <select className={cn(inputClass, className)} {...props}>{children}</select>;
-}
 export function SearchField({ value, onChange, onSearch, placeholder = 'جست‌وجو…', label = 'جست‌وجو', buttonLabel = 'جست‌وجو', disabled = false, className = '' }) {
     const searchId = useId();
     const submit = (event) => { event.preventDefault(); onSearch?.(value); };
     return <form onSubmit={submit} role="search" className={cn('flex min-w-0 flex-col gap-2 sm:flex-row', className)}>
         <label className="sr-only" htmlFor={searchId}>{label}</label>
-        <TextInput id={searchId} type="search" value={value} onChange={onChange} placeholder={placeholder} disabled={disabled} />
+        <Input id={searchId} type="search" value={value} onChange={onChange} placeholder={placeholder} disabled={disabled} />
         <Button type="submit" disabled={disabled}>{buttonLabel}</Button>
     </form>;
 }
