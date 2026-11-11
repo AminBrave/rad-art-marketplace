@@ -83,12 +83,25 @@ class ConversationTest extends TestCase
             ])
             ->assertCreated();
 
+        $newMessage = $conversation->messages()->where('client_message_id', 'incremental-message-1')->firstOrFail();
+
         $this->actingAs($buyer)
             ->getJson('/api/v1/conversations/'.$conversation->id.'/messages?after_id='.$firstMessage->id)
             ->assertOk()
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.body', 'پیام جدید برای دریافت افزایشی')
-            ->assertJsonPath('current_page', 1);
+            ->assertJsonPath('current_page', 1)
+            ->assertJsonStructure(['sync_cursor']);
+
+        $this->actingAs($buyer)->patchJson('/api/v1/conversations/'.$conversation->id.'/messages/'.$firstMessage->id, [
+            'body' => 'پیام قدیمی ویرایش شد',
+        ])->assertOk();
+
+        $this->getJson('/api/v1/conversations/'.$conversation->id.'/messages?after_id='.$newMessage->id.'&updated_after='.urlencode(now()->subMinute()->toISOString()))
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', $firstMessage->id)
+            ->assertJsonPath('data.0.body', 'پیام قدیمی ویرایش شد');
 
         $this->getJson('/api/v1/conversations/'.$conversation->id.'/messages?after_id=invalid')
             ->assertUnprocessable();
