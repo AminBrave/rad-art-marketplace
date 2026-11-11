@@ -48,6 +48,7 @@ export default function MessagingCenter({ role }) {
     const hasOlderMessagesRef = useRef(false);
     const pendingScrollRestoreRef = useRef(null);
     const draftsByConversationRef = useRef(new Map());
+    const pendingIdsByConversationRef = useRef(new Map());
     const threadsRequestRef = useRef(null);
     const shouldStickToBottomRef = useRef(true);
     const endpoint = role === 'artist' ? '/api/v1/artist/conversations' : '/api/v1/buyer/conversations';
@@ -160,7 +161,7 @@ export default function MessagingCenter({ role }) {
         setReplyTo(null);
         setEditingId(null);
         setEditDraft('');
-        setPendingMessageId(null);
+        setPendingMessageId(active ? (pendingIdsByConversationRef.current.get(Number(active)) ?? null) : null);
         if (fileInputRef.current) fileInputRef.current.value = '';
         if (draftRef.current) draftRef.current.style.height = 'auto';
         if (!active) {
@@ -295,6 +296,7 @@ export default function MessagingCenter({ role }) {
         setError('');
         const messageClientId = pendingMessageId || (window.crypto?.randomUUID?.() ?? ('msg-' + Date.now() + '-' + Math.random().toString(36).slice(2)));
         setPendingMessageId(messageClientId);
+        pendingIdsByConversationRef.current.set(Number(conversationId), messageClientId);
         try {
             const { data } = await axios.post('/api/v1/conversations/' + conversationId + '/messages', {
                 body: body || 'فایل پیوست',
@@ -321,6 +323,7 @@ export default function MessagingCenter({ role }) {
                 if (fileInputRef.current) fileInputRef.current.value = '';
                 setSelectedFile(null);
                 setPendingMessageId(null);
+                pendingIdsByConversationRef.current.delete(Number(conversationId));
                 setUploadProgress(0);
                 setReplyTo(null);
                 shouldStickToBottomRef.current = true;
@@ -427,8 +430,8 @@ export default function MessagingCenter({ role }) {
                         <div className="flex items-center justify-between gap-3"><div><p className="text-[11px] font-bold tracking-wide text-terracotta-strong">RAD / MESSAGES</p><h2 className="mt-1 text-lg font-black">گفتگوها</h2></div><span className="rounded-full bg-surface-muted px-3 py-1 text-[11px] font-bold text-muted">{threads.length} گفتگو</span></div>
                     </div>
                     <div className="shrink-0 space-y-3 border-b border-border bg-surface-muted p-4">
-                        <input aria-label="جستجوی گفتگوها" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="جستجو در گفتگوها…" className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm outline-none transition focus:border-border focus:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2" />
-                        <select aria-label="فیلتر گفتگوها" value={threadFilter} onChange={(event) => setThreadFilter(event.target.value)} className="w-full rounded-xl border border-border bg-white px-4 py-2.5 text-sm outline-none focus:border-terracotta focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2">
+                        <input aria-label="جستجوی گفتگوها" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="جستجو در گفتگوها…" className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm outline-none transition focus:border-border focus:ring-0" />
+                        <select aria-label="فیلتر گفتگوها" value={threadFilter} onChange={(event) => setThreadFilter(event.target.value)} className="w-full rounded-xl border border-border bg-white px-4 py-2.5 text-sm outline-none focus:border-terracotta">
                             <option value="all">گفتگوهای فعال</option><option value="unread">خوانده‌نشده‌ها</option><option value="archived">بایگانی‌شده‌ها</option>
                         </select>
                     </div>
@@ -516,9 +519,9 @@ export default function MessagingCenter({ role }) {
                                                 }
                                                 setError('');
                                                 setSelectedFile(file);
-                                            }} /></label>{selectedFile && <><span className="max-w-48 truncate rounded-full bg-white px-3 py-1.5 text-xs text-muted">{selectedFile.name}</span><button type="button" onClick={() => setSelectedFile(null)} className="text-xs text-red-700 underline">حذف پیوست</button></>}{sending && selectedFile && <span role="status" className="text-xs text-muted">بارگذاری {uploadProgress}%</span>}</div>{filePreview && <img src={filePreview} alt="پیش‌نمایش فایل پیوست" className="mt-2 max-h-24 max-w-32 rounded-xl object-contain" />}
+                                            }} /></label>{selectedFile && <><span className="max-w-48 truncate rounded-full bg-white px-3 py-1.5 text-xs text-muted">{selectedFile.name}</span><button type="button" onClick={() => { setSelectedFile(null); if (fileInputRef.current) fileInputRef.current.value = ''; }} className="text-xs text-red-700 underline">حذف پیوست</button></>}{sending && selectedFile && <span role="status" className="text-xs text-muted">بارگذاری {uploadProgress}%</span>}</div>{filePreview && <img src={filePreview} alt="پیش‌نمایش فایل پیوست" className="mt-2 max-h-24 max-w-32 rounded-xl object-contain" />}
                                     </div>
-                                    <button type="submit" aria-label="ارسال پیام" disabled={(!draft.trim() && !selectedFile) || sending || safety.blocked_by_me || safety.blocked_by_other} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-terracotta text-xl font-bold text-white shadow-sm transition hover:bg-terracotta-strong disabled:cursor-not-allowed disabled:opacity-40">{sending ? '…' : '➤'}</button>
+                                    <button type="submit" aria-label="ارسال پیام" aria-busy={sending} disabled={(!draft.trim() && !selectedFile) || sending || safety.blocked_by_me || safety.blocked_by_other} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-terracotta text-xl font-bold text-white shadow-sm transition hover:bg-terracotta-strong disabled:cursor-not-allowed disabled:opacity-40">{sending ? '…' : '➤'}</button>
                                 </div>
                             </form>}
                         </>
