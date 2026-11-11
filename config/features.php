@@ -16,5 +16,4 @@ declare(strict_types=1);
 
 return [
     'inquiries' => false,
-    'messaging' => true,
 ];
