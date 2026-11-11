@@ -34,6 +34,10 @@ function MetricCard({ label, value, detail, to, eyebrow }) {
     );
 }
 
+function formatCount(value) {
+    return typeof value === 'number' ? value.toLocaleString('fa-IR') : (value ?? '—');
+}
+
 function StatusLabel({ status }) {
     return <span className={`shrink-0 px-2.5 py-1 text-[11px] font-semibold ${statusStyles[status] ?? 'bg-surface-muted text-muted'}`}>{statusLabels[status] ?? status ?? 'نامشخص'}</span>;
 }
@@ -158,10 +162,10 @@ export default function ArtistWorkspaceOverview() {
                 <>
                     <section aria-label="آمار فضای هنرمند" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                         {loading ? <><div className="border border-border bg-white p-5"><SkeletonLines lines={3} /></div><div className="border border-border bg-white p-5"><SkeletonLines lines={3} /></div><div className="border border-border bg-white p-5"><SkeletonLines lines={3} /></div><div className="border border-border bg-white p-5"><SkeletonLines lines={3} /></div></> : <>
-                            <MetricCard label="مجموع آثار" value={(counts.artworks ?? '—').toLocaleString?.('fa-IR') ?? counts.artworks ?? '—'} detail="تمام آثار ثبت‌شده در استودیوی شما" to="/dashboard/artist/artworks" eyebrow="پورتفولیو" />
+                            <MetricCard label="مجموع آثار" value={formatCount(counts.artworks)} detail="تمام آثار ثبت‌شده در استودیوی شما" to="/dashboard/artist/artworks" eyebrow="پورتفولیو" />
                             <MetricCard label="منتشرشده" value={published.toLocaleString('fa-IR')} detail="آثاری که در گالری عمومی نمایش داده می‌شوند" to="/dashboard/artist/artworks" eyebrow="عمومی" />
                             <MetricCard label="در انتظار بررسی" value={pending.toLocaleString('fa-IR')} detail="آثاری که هنوز بررسی نهایی نشده‌اند" to="/dashboard/artist/artworks" eyebrow="بررسی" />
-                            {inquiriesEnabled ? <MetricCard label="درخواست‌های دریافتی" value={(counts.inquiries ?? '—').toLocaleString?.('fa-IR') ?? counts.inquiries ?? '—'} detail="درخواست‌های ارتباطی ثبت‌شده" to="/dashboard/artist/inquiries" eyebrow="ارتباط" /> : <MetricCard label="پیام‌های مستقیم" value="صندوق پیام‌ها" detail="گفت‌وگو با خریداران" to="/dashboard/artist/messages" eyebrow="ارتباط" />}
+                            {inquiriesEnabled ? <MetricCard label="درخواست‌های دریافتی" value={formatCount(counts.inquiries)} detail="درخواست‌های ارتباطی ثبت‌شده" to="/dashboard/artist/inquiries" eyebrow="ارتباط" /> : <MetricCard label="پیام‌های مستقیم" value="صندوق پیام‌ها" detail="گفت‌وگو با خریداران" to="/dashboard/artist/messages" eyebrow="ارتباط" />}
                         </>}
                     </section>
                     {errors.length > 0 && <ErrorState title="بخشی از اطلاعات بارگذاری نشد" description={errors.join(' ')} />}
