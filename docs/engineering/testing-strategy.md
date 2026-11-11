@@ -14,8 +14,8 @@ Organize testing around product behavior, domain boundaries and risk—not file 
 | Frontend unit | tests/js | Node test runner | Pure JS utilities and deterministic state/query behavior |
 | React component rendering | tests/js | Node test runner + Vite SSR + React DOM server | Shared component markup, semantic roles, labels, ARIA and accessible state contracts |
 | Frontend interaction / E2E | tests/browser | Python Playwright | User interactions, loading/error/empty states, route behavior and full browser journeys |
-| Test reporting | CI artifacts | PHPUnit Clover/JUnit, Node JUnit, browser JUnit | Inspectable test results and backend line-coverage baselines per layer |
-| Quality / build | CI | Pint, ESLint, Vite | Style, static hygiene and deployable builds |
+| Test reporting | Local, on request | PHPUnit/Node/Playwright reports when explicitly run | Inspectable results only when the user requests verification |
+| Quality / build | Local, on request | Pint, ESLint, Vite | Style, static hygiene and deployable builds only when requested |
 
 Do not mock the boundary a test intends to verify. Unit tests should not boot Laravel or use a database. Feature tests should use the real Laravel container, middleware and test database. Integration tests exercise the actual adapter. Critical browser journeys remain unmocked.
 
@@ -37,7 +37,11 @@ React SSR component tests validate semantic markup and accessibility attributes;
 
 See the [Test Coverage Matrix](test-coverage-matrix.md) and [API/Route Test Map](api-route-test-map.md). They distinguish existing evidence, planned tests and out-of-scope capabilities. A test file's existence is not proof that every scenario in its domain is covered. Update the matrices when features or tests change.
 
-## Local commands
+## Local commands (manual, opt-in)
+
+These commands are references, not automatic gates. Neither AI agents nor GitHub Actions may execute them unless the user explicitly requests verification. Normal development should focus on implementation and the running localhost application without waiting for test pipelines.
+
+When the user asks to test, choose only the relevant layer:
 
 ~~~bash
 composer test
@@ -49,19 +53,27 @@ composer lint
 npm run lint
 npm run build
 npm run build:cpanel
-./scripts/verify browser
-./scripts/verify all
 ~~~
 
-The browser suite defaults to https://rad.localhost. Start the complete local stack with npm run dev:local in one terminal and run browser verification in another. Set RAD_ART_BASE_URL to override the URL. The browser suite contains both API-mocked regressions and unmocked full-stack paths; preserve and label that distinction.
+## Optional browser / E2E verification
+
+Playwright is not part of the default development or verification path. Run it only when the user explicitly requests browser/E2E testing. It requires a running local app, an isolated disposable local/test database, Python dependencies and Chromium:
+
+~~~bash
+python -m pip install -r requirements-dev.txt
+python -m playwright install chromium
+RAD_ART_BASE_URL=http://127.0.0.1:8000 npm run test:browser
+~~~
+
+Use the PowerShell equivalent to set RAD_ART_BASE_URL on Windows. Never target production. The browser suite contains API-mocked regressions and unmocked full-stack paths; preserve and label that distinction.
 
 ## Cross-platform developer workflow
 
-The Node-based task runner is exposed through npm scripts and works in PowerShell, Git Bash, macOS and Linux. See [Developer Workflow](../operations/developer-workflow.md) for prerequisites, safe setup, database initialization, local servers, browser tests, builds, deployment and troubleshooting. Preferred commands are `npm run setup`, `npm run dev`, `npm test`, `npm run verify`, and `npm run verify:all`. The latter requires a running local application and installed Playwright Chromium. The compatibility wrapper `./scripts/verify` remains available in Git Bash/macOS/Linux.
+The Node-based task runner is exposed through npm scripts and works in PowerShell, Git Bash, macOS and Linux. See the Developer Workflow for setup, database initialization, local servers, optional browser tests, builds and deployment. The default loop is npm run setup followed by npm run dev; verification commands are run only on explicit user request. The compatibility wrapper ./scripts/verify remains available in Git Bash/macOS/Linux.
 
-## CI policy
+## GitHub Actions policy
 
-The current .github/workflows/ci.yml runs for pull requests targeting main and pushes to main. Markdown path-ignore rules apply only to push events; pull-request events still run the workflow. Required CI checks must be green on the PR head before merge, and a post-merge run validates the merged main commit. Feature-branch pushes do not trigger this workflow.
+There is no application CI workflow. GitHub Actions must not run application tests, lint, builds, browser tests or E2E checks on pushes, pull requests or schedules. Do not recreate or dispatch a test workflow. The user controls when AI agents run local verification; when asked, testing happens on the user's local development environment.
 
 ## Test design checklist
 
@@ -93,7 +105,7 @@ For each critical journey, test the real actor sequence and verify persisted or 
 - Parallel execution is allowed only after database, storage and browser fixture isolation is demonstrated.
 
 ## Coverage and quality gates
-Coverage is a diagnostic and trend signal, not a correctness guarantee. CI publishes separate PHPUnit Clover line-coverage reports for Unit, Feature and Integration suites, plus JUnit test reports for backend, frontend and browser runs. The initial combined PCOV baseline was 91.4% statement-line coverage (1,491/1,631) on PR head c1e0f4c; the latest verified batch reached 95.6% (1,560/1,631) on PR head 286a906, with 114 backend tests, 20 frontend tests and 36 browser tests. Branch/condition coverage is not measured. Prioritize branches enforcing authorization, privacy, moderation, validation, idempotency and state transitions. Do not enforce a global threshold from a single baseline; use changed-code and critical-domain gates first.
+Coverage is a diagnostic and trend signal, not a correctness guarantee. When explicitly requested and run locally, PHPUnit can publish Clover line-coverage reports for Unit, Feature and Integration suites, plus JUnit reports for backend, frontend and browser runs. The initial combined PCOV baseline was 91.4% statement-line coverage (1,491/1,631) on PR head c1e0f4c; the latest verified batch reached 95.6% (1,560/1,631) on PR head 286a906, with 114 backend tests, 20 frontend tests and 36 browser tests. Branch/condition coverage is not measured. Prioritize branches enforcing authorization, privacy, moderation, validation, idempotency and state transitions. Do not enforce a global threshold from a single baseline; use changed-code and critical-domain gates first.
 
 Proposed targets after several stable baselines:
 - 90%+ line coverage for isolated domain rules where practical;
