@@ -19,15 +19,29 @@ const dateLabel = (value) => {
     return Number.isNaN(date.getTime()) ? '—' : date.toLocaleDateString('fa-IR', { dateStyle: 'medium' });
 };
 
-function SummaryCard({ label, value, description, to }) {
-    return <Link to={to} className="block border border-border bg-paper p-5 transition-colors hover:border-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"><p className="text-sm text-muted">{label}</p><p className="mt-3 text-3xl font-black tabular-nums">{value ?? '—'}</p><p className="mt-2 text-xs leading-6 text-muted">{description}</p></Link>;
+function SummaryCard({ label, value, description, to, eyebrow }) {
+    return (
+        <Link to={to} className="group flex min-h-40 flex-col justify-between border border-border bg-white p-5 transition-all hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus sm:p-6">
+            <div className="flex items-center justify-between gap-3">
+                <span className="text-sm font-semibold text-muted">{label}</span>
+                <span className="text-[10px] font-bold text-terracotta-strong">{eyebrow}</span>
+            </div>
+            <div className="mt-5">
+                <p className="text-3xl font-black tabular-nums text-ink">{value ?? '—'}</p>
+                <p className="mt-2 text-xs leading-6 text-muted">{description}</p>
+            </div>
+            <span className="mt-4 text-xs font-bold text-terracotta-strong">مشاهده بخش <span aria-hidden="true">←</span></span>
+        </Link>
+    );
 }
 
 export function AdminDashboardHome() {
-    const [summary, setSummary] = useState({ pending: null, users: null, latest: null });
+    const { user } = useAuth();
+    const [summary, setSummary] = useState({ pending: null, users: null, reports: null, latest: null });
     const [loading, setLoading] = useState(true);
     const [errors, setErrors] = useState([]);
     const controllerRef = useRef(null);
+
     const load = useCallback(async () => {
         controllerRef.current?.abort();
         const controller = new AbortController();
@@ -36,27 +50,112 @@ export function AdminDashboardHome() {
         const responses = await Promise.allSettled([
             axios.get(api + '/artworks', { params: { status: 'pending_review', page: 1, per_page: 1 }, signal: controller.signal }),
             axios.get(api + '/users', { params: { page: 1, per_page: 1 }, signal: controller.signal }),
+            axios.get(api + '/message-reports', { params: { page: 1 }, signal: controller.signal }),
         ]);
         if (controller.signal.aborted) return;
-        const next = { pending: null, users: null, latest: null }, failures = [];
-        if (responses[0].status === 'fulfilled') { next.pending = responses[0].value.data.total ?? null; next.latest = responses[0].value.data.data?.[0] ?? null; }
-        else failures.push('دریافت تعداد آثار در صف بررسی انجام نشد.');
+
+        const next = { pending: null, users: null, reports: null, latest: null };
+        const failures = [];
+        if (responses[0].status === 'fulfilled') {
+            next.pending = responses[0].value.data.total ?? null;
+            next.latest = responses[0].value.data.data?.[0] ?? null;
+        } else failures.push('دریافت صف بررسی آثار انجام نشد.');
         if (responses[1].status === 'fulfilled') next.users = responses[1].value.data.total ?? null;
         else failures.push('دریافت تعداد کاربران انجام نشد.');
-        setSummary(next); setErrors(failures);
-        if (controllerRef.current === controller) { controllerRef.current = null; setLoading(false); }
+        if (responses[2].status === 'fulfilled') next.reports = responses[2].value.data.total ?? null;
+        else failures.push('دریافت گزارش‌های پیام انجام نشد.');
+
+        setSummary(next);
+        setErrors(failures);
+        if (controllerRef.current === controller) {
+            controllerRef.current = null;
+            setLoading(false);
+        }
     }, []);
-    useEffect(() => { load(); return () => controllerRef.current?.abort(); }, [load]);
-    return <section className="space-y-7" dir="rtl">
-        <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6"><div><p className="text-sm font-bold text-terracotta-strong">فضای مدیریت</p><h1 className="mt-2 text-2xl font-black sm:text-3xl">نمای کلی سامانه</h1><p className="mt-3 max-w-2xl text-sm leading-7 text-muted">آمار عملیاتی از پاسخ واقعی API؛ بدون شاخص یا فعالیت ساختگی.</p></div><Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button></header>
-        {errors.length > 0 && <ErrorState title="بخشی از اطلاعات دریافت نشد" description={errors.join(' ')} onRetry={load} />}
-        {loading ? <div className="grid gap-3 sm:grid-cols-2"><SkeletonLines lines={3} /><SkeletonLines lines={3} /></div> : <>
-            <div className="grid gap-3 sm:grid-cols-2"><SummaryCard label="آثار در انتظار بررسی" value={summary.pending} description="تعداد کل صف طبق صفحه‌بندی سرور" to="/admin/artworks" /><SummaryCard label="حساب‌های کاربری" value={summary.users} description="تعداد کل حساب‌ها طبق صفحه‌بندی سرور" to="/admin/users" /></div>
-            <section className="border border-border bg-paper p-5 sm:p-6"><div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-bold">آخرین اثر در صف بررسی</h2><p className="mt-1 text-xs text-muted">اولین نتیجه صف، نه گزارش فعالیت</p></div><Link to="/admin/artworks" className="text-sm font-bold text-terracotta-strong underline">رفتن به صف بررسی</Link></div>
-                {summary.latest ? <div className="mt-5 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-5"><div><p className="font-bold">{summary.latest.title}</p><p className="mt-2 text-sm text-muted">{summary.latest.artist?.display_name ?? '—'} · {dateLabel(summary.latest.created_at)}</p></div><Badge variant="warning">{statusLabels[summary.latest.status] ?? summary.latest.status}</Badge></div> : <p className="mt-5 border-t border-border pt-5 text-sm text-muted">{summary.pending === 0 ? 'در حال حاضر اثری در صف بررسی نیست.' : 'نمونه‌ای از صف بررسی در دسترس نیست.'}</p>}
-            </section><div className="flex flex-wrap gap-3"><Link to="/admin/artworks" className="border border-border px-4 py-3 text-sm font-bold hover:border-terracotta">مدیریت آثار</Link><Link to="/admin/users" className="border border-border px-4 py-3 text-sm font-bold hover:border-terracotta">مدیریت کاربران</Link><Link to="/admin/editorial" className="border border-border px-4 py-3 text-sm font-bold hover:border-terracotta">مجموعه‌ها و سردبیری</Link></div>
-        </>}
-    </section>;
+
+    useEffect(() => {
+        load();
+        return () => controllerRef.current?.abort();
+    }, [load]);
+
+    const shortcuts = [
+        { to: '/admin/artworks', eyebrow: 'محتوا', title: 'بررسی آثار', description: 'صف انتظار، تصمیم‌های انتشار و سوابق اصلاح یا رد آثار', symbol: '▧' },
+        { to: '/admin/users', eyebrow: 'حساب‌ها', title: 'مدیریت کاربران', description: 'مرور حساب‌ها و مدیریت نقش‌های مجاز در سامانه', symbol: '◎' },
+        { to: '/admin/editorial', eyebrow: 'انتخاب سردبیر', title: 'مجموعه‌های منتخب', description: 'تنظیم مجموعه‌ها و انتخاب هنرمندان برجسته', symbol: '✳' },
+        { to: '/admin/message-reports', eyebrow: 'اعتماد و ایمنی', title: 'گزارش‌های پیام', description: 'رسیدگی به گزارش‌ها و بررسی محتوای علامت‌گذاری‌شده', symbol: '⚑' },
+    ];
+
+    return (
+        <section className="space-y-8" dir="rtl">
+            <header className="relative overflow-hidden bg-ink px-6 py-8 text-white sm:px-9 sm:py-10">
+                <div aria-hidden="true" className="pointer-events-none absolute -left-16 -top-24 h-72 w-72 rounded-full border border-white/10" />
+                <div aria-hidden="true" className="pointer-events-none absolute -left-5 -top-12 h-48 w-48 rounded-full border border-white/10" />
+                <div className="relative flex flex-wrap items-end justify-between gap-6">
+                    <div className="max-w-2xl">
+                        <p className="text-xs font-bold tracking-wide text-sand">مرکز کنترل راد آرت</p>
+                        <h1 className="mt-3 text-2xl font-black leading-relaxed sm:text-3xl">خوش آمدید، {user?.name ?? 'مدیر'}</h1>
+                        <p className="mt-3 text-sm leading-8 text-white/70">از اینجا صف انتشار، حساب‌های کاربری، مجموعه‌های سردبیری و گزارش‌های ایمنی را مدیریت کنید. شاخص‌ها از داده‌های واقعی سامانه دریافت می‌شوند.</p>
+                    </div>
+                    <Button variant="secondary" onClick={load} loading={loading}>به‌روزرسانی آمار</Button>
+                </div>
+            </header>
+
+            {errors.length > 0 && <ErrorState title="بخشی از اطلاعات دریافت نشد" description={errors.join(' ')} onRetry={load} />}
+
+            <section aria-label="شاخص‌های عملیاتی" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                {loading ? <><div className="border border-border bg-white p-6"><SkeletonLines lines={3} /></div><div className="border border-border bg-white p-6"><SkeletonLines lines={3} /></div><div className="border border-border bg-white p-6"><SkeletonLines lines={3} /></div></> : <>
+                    <SummaryCard label="آثار در انتظار بررسی" value={summary.pending?.toLocaleString('fa-IR')} description="تعداد کل آثار منتظر تصمیم انتشار" to="/admin/artworks" eyebrow="انتشار" />
+                    <SummaryCard label="حساب‌های کاربری" value={summary.users?.toLocaleString('fa-IR')} description="تعداد کل حساب‌های ثبت‌شده" to="/admin/users" eyebrow="جامعه" />
+                    <SummaryCard label="گزارش‌های پیام" value={summary.reports?.toLocaleString('fa-IR')} description="مجموع گزارش‌های ثبت‌شده برای رسیدگی" to="/admin/message-reports" eyebrow="ایمنی" />
+                </>}
+            </section>
+
+            <section className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,.8fr)]">
+                <div className="border border-border bg-white p-5 sm:p-7">
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
+                        <div><p className="text-xs font-bold text-terracotta-strong">اولویت امروز</p><h2 className="mt-1 text-lg font-black">صف بررسی آثار</h2></div>
+                        <Link to="/admin/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">مشاهده صف</Link>
+                    </div>
+                    {loading ? <div className="mt-5"><SkeletonLines lines={4} /></div> : summary.latest ? (
+                        <div className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]">
+                            <div className="aspect-square overflow-hidden bg-surface-muted">
+                                {summary.latest.image_url ? <img src={summary.latest.image_url} alt={'تصویر اثر ' + summary.latest.title} loading="lazy" decoding="async" className="h-full w-full object-cover" /> : <div className="grid h-full place-items-center text-xs text-muted">بدون تصویر</div>}
+                            </div>
+                            <div className="flex min-w-0 flex-col items-start">
+                                <Badge variant="warning">{statusLabels[summary.latest.status] ?? summary.latest.status}</Badge>
+                                <h3 className="mt-3 text-lg font-black">{summary.latest.title}</h3>
+                                <p className="mt-2 text-sm text-muted">{summary.latest.artist?.display_name ?? 'هنرمند نامشخص'} · {dateLabel(summary.latest.created_at)}</p>
+                                <Link to="/admin/artworks" className="mt-auto pt-5 text-sm font-bold text-terracotta-strong underline underline-offset-4">رفتن به بررسی اثر</Link>
+                            </div>
+                        </div>
+                    ) : (
+                        <p className="mt-5 text-sm leading-7 text-muted">{summary.pending === 0 ? 'در حال حاضر اثری در صف بررسی نیست.' : 'نمونه‌ای از صف بررسی در دسترس نیست.'}</p>
+                    )}
+                </div>
+
+                <aside className="border border-border bg-surface-muted p-5 sm:p-7">
+                    <p className="text-xs font-bold text-terracotta-strong">راهنمای عملیات</p>
+                    <h2 className="mt-2 text-lg font-black">رسیدگی منظم و قابل پیگیری</h2>
+                    <p className="mt-3 text-sm leading-7 text-muted">تصمیم‌های انتشار را همراه با توضیح ثبت کنید، نقش‌ها را با دقت مدیریت کنید و گزارش‌های ایمنی را از مسیر اختصاصی بررسی کنید.</p>
+                    <Link to="/admin/artworks" className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-terracotta">شروع بررسی آثار <span aria-hidden="true" className="mr-3">←</span></Link>
+                </aside>
+            </section>
+
+            <section aria-labelledby="admin-shortcuts-heading">
+                <div className="flex flex-wrap items-end justify-between gap-3 border-b border-border pb-4">
+                    <div><p className="text-xs font-bold text-terracotta-strong">دسترسی سریع</p><h2 id="admin-shortcuts-heading" className="mt-2 text-xl font-black">بخش‌های مدیریتی</h2></div>
+                </div>
+                <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                    {shortcuts.map((item) => <Link key={item.to} to={item.to} className="group flex min-h-44 flex-col border border-border bg-white p-5 transition-all hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
+                        <div className="flex items-center justify-between gap-3"><span aria-hidden="true" className="grid h-10 w-10 place-items-center bg-surface-muted text-lg text-terracotta-strong">{item.symbol}</span><span className="text-[10px] font-bold text-muted">{item.eyebrow}</span></div>
+                        <h3 className="mt-5 font-black">{item.title}</h3>
+                        <p className="mt-2 text-xs leading-6 text-muted">{item.description}</p>
+                        <span className="mt-auto pt-4 text-xs font-bold text-terracotta-strong">ورود به بخش <span aria-hidden="true">←</span></span>
+                    </Link>)}
+                </div>
+            </section>
+        </section>
+    );
 }
 
 export function AdminArtworkModeration() {
