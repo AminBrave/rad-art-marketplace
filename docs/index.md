@@ -19,7 +19,7 @@ Start with [AGENTS.md](../AGENTS.md), then follow only the path relevant to the 
 
 AGENTS.md → identify task domain → read only relevant docs/source → select one primary skill if useful → implement → inspect focused diff.
 
-Use the documentation knowledge graph for change propagation. Use Graphify only when code relationships are broad, cross-cutting or likely to be queried repeatedly.
+Use the documentation knowledge graph for document dependencies and change propagation. Do not generate or maintain a separate code graph.
 
 ## Execution policy
 
@@ -27,6 +27,6 @@ No GitHub Actions workflow runs application tests, lint, builds or E2E. AI agent
 
 ## Documentation maintenance
 
-When a change affects documented behavior, contracts, architecture, tests, security, operations or workflows, update only the directly affected documents and graph/index links in the same change. Avoid duplicating policy text across documents; link to the authoritative page instead.
+When a change affects documented behavior, contracts, architecture, tests, security, operations or workflows, update only the directly affected documents and knowledge-graph/index links in the same change. Avoid duplicating policy text across documents; link to the authoritative page instead.
 
-See [knowledge graph](knowledge-graph.md) for dependencies and update propagation.
+See [knowledge graph](knowledge-graph.md) for documentation dependencies and update propagation.
