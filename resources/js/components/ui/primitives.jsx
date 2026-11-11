@@ -1,71 +1,46 @@
 import { cloneElement, isValidElement, useId } from 'react';
 import { cn } from '../../lib/utils';
+import { Button } from './button';
 
-const buttonVariants = {
-    primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
-    secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-    outline: 'border border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground',
-    ghost: 'bg-transparent text-foreground hover:bg-accent/10',
-    danger: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-};
+export { Button };
 
-const buttonSizes = {
-    sm: 'min-h-9 px-3 text-xs',
-    md: 'min-h-11 px-4 py-2.5 text-sm',
-    lg: 'min-h-12 px-6 py-3 text-base',
-};
-
-export function Button({
-    children,
-    variant = 'primary',
-    size = 'md',
-    loading = false,
-    disabled = false,
-    type = 'button',
-    className = '',
-    ...props
-}) {
+export function IconButton({ children, label, size = 'icon', className = '', ...props }) {
+    const normalizedSize = size === 'sm' ? 'icon-sm' : size === 'lg' ? 'icon-lg' : size;
     return (
-        <button
-            type={type}
-            disabled={disabled || loading}
-            aria-busy={loading || undefined}
-            className={cn('ra-button', buttonVariants[variant] ?? buttonVariants.primary, buttonSizes[size] ?? buttonSizes.md, className)}
-            {...props}
-        >
-            {loading && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-current border-e-transparent" />}
-            {children}
-        </button>
-    );
-}
-
-export function IconButton({ children, label, size = 'md', className = '', ...props }) {
-    const dimensions = { sm: 'h-9 w-9', md: 'h-11 w-11', lg: 'h-12 w-12' };
-    return (
-        <button
+        <Button
             type="button"
+            variant="outline"
+            size={normalizedSize}
             aria-label={label}
             title={label}
-            className={cn('ra-button ra-button--outline shrink-0 !p-0', dimensions[size] ?? dimensions.md, className)}
+            className={cn('shrink-0 p-0', className)}
             {...props}
         >
             {children}
-        </button>
+        </Button>
     );
 }
 
 const badgeVariants = {
-    neutral: 'bg-surface-muted text-muted',
-    success: 'bg-olive/10 text-olive',
-    warning: 'bg-warning/10 text-warning',
-    danger: 'bg-danger/10 text-danger',
-    info: 'bg-info/10 text-info',
-    accent: 'bg-terracotta/10 text-terracotta-strong',
+    default: 'border-transparent bg-primary text-primary-foreground shadow-sm',
+    neutral: 'border-transparent bg-secondary text-secondary-foreground',
+    secondary: 'border-transparent bg-secondary text-secondary-foreground',
+    outline: 'text-foreground',
+    destructive: 'border-transparent bg-destructive text-destructive-foreground shadow-sm',
+    success: 'border-transparent bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300',
+    warning: 'border-transparent bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300',
+    danger: 'border-transparent bg-destructive text-destructive-foreground',
+    info: 'border-transparent bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-300',
+    accent: 'border-transparent bg-accent text-accent-foreground',
 };
 
 export function Badge({ children, variant = 'neutral', className = '' }) {
     return (
-        <span className={cn('inline-flex items-center rounded-sm px-2.5 py-1 text-xs font-bold', badgeVariants[variant] ?? badgeVariants.neutral, className)}>
+        <span className={cn(
+            'inline-flex w-fit items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+            badgeVariants[variant] ?? badgeVariants.neutral,
+            className,
+        )}>
             {children}
         </span>
     );
@@ -89,29 +64,29 @@ export function FormField({ id, label, hint, error, required = false, children, 
         : children;
 
     return (
-        <div className={`grid gap-2 ${className}`}>
-            <label htmlFor={fieldId} className="text-sm font-semibold text-ink">
+        <div className={`grid gap-2 ${className}`} data-slot="field">
+            <label htmlFor={fieldId} className="text-sm font-medium leading-none">
                 {label}
-                {required && <span aria-hidden="true" className="ms-1 text-danger">*</span>}
+                {required && <span aria-hidden="true" className="ms-1 text-destructive">*</span>}
             </label>
             {control}
-            {hint && <p id={`${fieldId}-hint`} className="text-xs leading-6 text-muted">{hint}</p>}
-            {error && <p id={`${fieldId}-error`} role="alert" className="text-xs leading-6 text-danger">{error}</p>}
+            {hint && <p id={`${fieldId}-hint`} className="text-sm text-muted-foreground">{hint}</p>}
+            {error && <p id={`${fieldId}-error`} role="alert" className="text-sm font-medium text-destructive">{error}</p>}
         </div>
     );
 }
 
 export function TextInput({ className = '', ...props }) {
-    return <input className={`${controlClass} ${className}`} {...props} />;
+    return <input className={cn(controlClass, className)} {...props} />;
 }
 
 export function TextareaField({ className = '', rows = 4, ...props }) {
-    return <textarea rows={rows} className={`${controlClass} min-h-28 resize-y leading-7 ${className}`} {...props} />;
+    return <textarea rows={rows} className={cn(controlClass, 'min-h-20 resize-y', className)} {...props} />;
 }
 
 export function SelectField({ className = '', children, ...props }) {
     return (
-        <select className={`${controlClass} ${className}`} {...props}>
+        <select className={cn(controlClass, className)} {...props}>
             {children}
         </select>
     );
@@ -134,7 +109,7 @@ export function SearchField({
     };
 
     return (
-        <form onSubmit={submit} role="search" className={`flex min-w-0 flex-col gap-2 sm:flex-row ${className}`}>
+        <form onSubmit={submit} role="search" className={cn('flex min-w-0 flex-col gap-2 sm:flex-row', className)}>
             <label className="sr-only" htmlFor={searchId}>{label}</label>
             <TextInput
                 id={searchId}
