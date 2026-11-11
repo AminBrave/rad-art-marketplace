@@ -12,7 +12,7 @@ PHP 8.3+, Laravel 13, React 18, React Router 7, Vite 6, Tailwind CSS 3.4, Axios,
 Routes/middleware → controllers → focused actions and Form Requests → policies/authorization → API resources → Eloquent models/relations → migrations. Artwork writes use dedicated create/update actions with private-file cleanup on persistence failures. Message notifications implement Laravel `ShouldQueue` and are dispatched after commit; the database queue is the cPanel-compatible production default. Filesystem abstractions keep artwork and message attachments private.
 
 ## Frontend
-Entry/bootstrap: app.jsx/bootstrap.js. Shared server-state cache: `lib/queryClient.js` (TanStack Query) with Axios as the transport; cache is cleared when the authenticated account identity changes. Auth: AuthContext. Route/layout/access UX: AppRouter, RoutingPages, Layouts. Screens: HomePage, ArtworkCatalogue/Detail/Studio, ArtistDirectory/Profile, BuyerWorkspace, ArtistWorkspaceOverview, InquiryCenter, MessagingCenter, AdminWorkspace, EditorialPages. Shared UI in `resources/js/components/ui/`.
+Entry/bootstrap: app.jsx/bootstrap.js. Shared server-state cache: `lib/queryClient.js` (TanStack Query) with Axios as the transport; cache is cleared when the authenticated account identity changes. Auth: AuthContext. Route/layout/access UX: AppRouter, RoutingPages, Layouts. Screens: HomePage, ArtworkCatalogue/Detail/Studio, ArtistDirectory/Profile, BuyerWorkspace, ArtistWorkspaceOverview, MessagingCenter, AdminWorkspace, EditorialPages. InquiryCenter and buyer Inquiry screens remain in source for reactivation but are disabled by default. Shared UI in `resources/js/components/ui/`.
 
 ## Feature availability
 
