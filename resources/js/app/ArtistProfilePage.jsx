@@ -99,10 +99,10 @@ export default function ArtistProfilePage() {
                             </div>
                             <div className="flex flex-wrap items-center gap-3 lg:flex-col lg:items-stretch">
                                 {user?.role === 'buyer' && <>
-                                    <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(profile.slug)} className="bg-brand-ink px-5 py-3 text-center text-sm font-bold text-white hover:bg-primary">پیام مستقیم</Link>
+                                    <Button asChild variant="default" size="default"><Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(profile.slug)}>پیام مستقیم</Link></Button>
                                     {isFeatureEnabled('inquiries') && <ContactArtistForm artistSlug={profile.slug} />}
                                 </>}
-                                {!user && isFeatureEnabled('inquiries') && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className="bg-brand-ink px-5 py-3 text-center text-sm font-bold text-white">درخواست ارتباط با هنرمند</Link>}
+                                {!user && isFeatureEnabled('inquiries') && <Button asChild variant="default" size="default"><Link to="/login" state={{ from: { pathname: '/artists/' + slug } }}>درخواست ارتباط با هنرمند</Link></Button>}
                             </div>
                         </div>
                     </section>
