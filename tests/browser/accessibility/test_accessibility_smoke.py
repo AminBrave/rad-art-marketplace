@@ -88,7 +88,7 @@ class AccessibilitySmokeTests(unittest.TestCase):
                 page.get_by_role("main").wait_for()
                 self.assert_document_accessible_basics(page)
                 page.get_by_label("ایمیل").wait_for()
-                page.get_by_label("گذرواژه").wait_for()
+                page.get_by_label("گذرواژه", exact=True).wait_for()
                 page.get_by_role("button", name="ایجاد حساب" if route == "/register" else "ورود به حساب").wait_for()
         finally:
             context.close()
@@ -105,7 +105,7 @@ class AccessibilitySmokeTests(unittest.TestCase):
             page.get_by_label("فیلتر دسته‌بندی").wait_for()
             page.get_by_label("فیلتر تکنیک و مواد").wait_for()
             page.get_by_label("فیلتر وضعیت اثر").wait_for()
-            page.get_by_label("مرتب‌سازی آثار").wait_for()
+            page.get_by_label("مرتب‌سازی آثار", exact=True).wait_for()
         finally:
             context.close()
 
