@@ -16,6 +16,7 @@ export default function MessagingCenter({ role }) {
     const [params, setParams] = useSearchParams();
     const [threads, setThreads] = useState([]);
     const [search, setSearch] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
     const [threadFilter, setThreadFilter] = useState('all');
     const [active, setActive] = useState(null);
     const [messages, setMessages] = useState([]);
@@ -71,7 +72,7 @@ export default function MessagingCenter({ role }) {
         const page = append ? threadsPageRef.current + 1 : 1;
         try {
             const query = { page };
-            if (search.trim()) query.search = search.trim();
+            if (debouncedSearch) query.search = debouncedSearch;
             if (threadFilter !== 'all') query.filter = threadFilter;
             const { data } = await axios.get(endpoint, { params: query, signal: controller.signal });
             if (!controller.signal.aborted) {
@@ -98,7 +99,12 @@ export default function MessagingCenter({ role }) {
                 else setLoading(false);
             }
         }
-    }, [endpoint, search, threadFilter]);
+    }, [endpoint, debouncedSearch, threadFilter]);
+
+    useEffect(() => {
+        const timer = window.setTimeout(() => setDebouncedSearch(search.trim()), 250);
+        return () => window.clearTimeout(timer);
+    }, [search]);
 
     const loadThreadsRef = useRef(loadThreads);
     useEffect(() => { loadThreadsRef.current = loadThreads; }, [loadThreads]);
