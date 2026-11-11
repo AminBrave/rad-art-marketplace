@@ -202,6 +202,7 @@ export default function MessagingCenter({ role }) {
         syncCursorRef.current = null;
         setDraft(active ? (draftsByConversationRef.current.get(Number(active)) ?? '') : '');
         setSelectedFile(active ? (filesByConversationRef.current.get(Number(active)) ?? null) : null);
+        setUploadProgress(0);
         setReplyTo(null);
         setEditingId(null);
         setEditDraft('');
@@ -270,6 +271,11 @@ export default function MessagingCenter({ role }) {
             .then(async ({ data }) => {
                 await loadThreadsRef.current();
                 setActive(data.data.id);
+                setParams((current) => {
+                    const next = new URLSearchParams(current);
+                    next.set('conversation', String(data.data.id));
+                    return next;
+                }, { replace: true });
                 directStartKeyRef.current = null;
             })
             .catch(() => {
@@ -374,7 +380,11 @@ export default function MessagingCenter({ role }) {
                 formData.append('file', selectedFile);
                 const uploaded = await axios.post('/api/v1/conversations/' + conversationId + '/messages/' + savedMessage.id + '/attachments', formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
-                    onUploadProgress: (event) => setUploadProgress(event.total ? Math.round((event.loaded * 100) / event.total) : 0),
+                    onUploadProgress: (event) => {
+                        if (Number(activeConversationRef.current) === Number(conversationId)) {
+                            setUploadProgress(event.total ? Math.round((event.loaded * 100) / event.total) : 0);
+                        }
+                    },
                 });
                 savedMessage = { ...savedMessage, attachments: [...(savedMessage.attachments ?? []), { ...uploaded.data.data, download_url: '/api/v1/conversations/' + conversationId + '/messages/' + savedMessage.id + '/attachments/' + uploaded.data.data.id }] };
             }
