@@ -1,0 +1,154 @@
+# Test Coverage Matrix
+
+This is the source-backed inventory for the implemented Rademan product. It records known test evidence at the start of the testing overhaul. It is not a claim that every listed scenario is already covered. Update the status as batches add and verify tests.
+
+Status vocabulary:
+- **Existing evidence** — an existing test exercises at least part of this capability; inspect assertions before assuming full coverage.
+- **Gap / expand** — behavior exists but explicit scenarios need to be added or strengthened.
+- **Planned** — target coverage not yet implemented.
+- **Out of scope** — not currently an implemented product capability.
+
+## Current test inventory
+
+| Layer | Current location | Existing files / scope |
+|---|---|---|
+| Backend feature | tests/Feature | Authentication, authorization, artist inquiry/profile, artwork, moderation, admin pagination, conversation/direct conversation/inbox settings, attachments, safety, notifications, editorial, SEO, health, frontend routing and demo seeders |
+| Frontend logic | tests/js | Artist experience, design system, price formatting, query client and UI utilities |
+| Browser | tests/browser | Buyer inquiry, full-stack auth, discovery, editorial, artist experience, notifications, responsive RTL |
+| Backend unit | — | No dedicated tests/Unit suite at baseline |
+| Backend integration | — | No dedicated tests/Integration suite at baseline |
+| React component | — | No dedicated React Testing Library suite at baseline |
+
+## Domain coverage matrix
+
+### Authentication and account security
+
+| Scenario | Layer | Baseline |
+|---|---|---|
+| Registration: artist default and buyer role | Feature + E2E | Existing evidence |
+| Public registration cannot assign admin | Feature | Existing evidence |
+| Password confirmation/validation | Feature | Existing evidence |
+| Login, current-user bootstrap and logout | Feature + E2E | Existing evidence |
+| Invalid credentials and duplicate registration | Feature | Existing evidence; expand |
+| Guest, buyer, artist and admin access matrix for every protected route | Feature | Gap / expand |
+| Session regeneration/invalidation, CSRF and cookie behavior | Feature + E2E | Gap / expand |
+| Login/register throttling and abuse boundaries | Feature | Gap / expand |
+| Account identity switch clears client cache | Frontend integration + E2E | Gap / expand |
+
+### Artist profiles and directory
+
+| Scenario | Layer | Baseline |
+|---|---|---|
+| Profile create/update and public visibility | Feature | Existing evidence |
+| Owner/admin access and cross-artist denial | Feature | Existing evidence; expand route matrix |
+| Unique slug, slug changes and missing profile | Feature | Gap / expand |
+| Incomplete onboarding profile | Feature | Gap / expand |
+| Public profile serialization excludes private fields | Feature + E2E | Gap / expand |
+| Directory search, filtering, pagination and empty state | Feature + Frontend + E2E | Gap / expand |
+| Persian/Arabic normalization and Unicode profile content | Unit + Feature | Gap / expand |
+
+### Artworks and moderation
+
+| Scenario | Layer | Baseline |
+|---|---|---|
+| Artist creates artwork and stores image privately | Feature | Existing evidence |
+| Form validation, MIME/size and inactive category | Feature | Existing evidence; expand boundary cases |
+| Owner edits; another artist denied | Feature | Existing evidence |
+| Editing approved artwork resets moderation state | Feature | Existing evidence |
+| Public catalogue/detail exposes approved public work only | Feature | Existing evidence |
+| Catalogue pagination and artist ownership scoping | Feature | Existing evidence |
+| Search normalization, wildcard escaping and Arabic/Persian digits | Unit + Feature | Gap / expand |
+| Category/filter/sort combinations and malformed filters | Feature | Gap / expand |
+| Approve/reject/request changes with required notes | Feature | Existing evidence; verify transition matrix |
+| Rejected/changes-requested resubmission | Feature | Gap / expand |
+| File cleanup after failed update/delete and private image access | Integration + Feature | Gap / expand |
+| Moderation audit integrity and public serializer privacy | Feature | Gap / expand |
+
+### Buyer inquiries and canonical conversations
+
+| Scenario | Layer | Baseline |
+|---|---|---|
+| Buyer-only inquiry submission and validation | Feature | Existing evidence |
+| Private artist and invalid/unapproved artwork target | Feature | Existing evidence |
+| Buyer sees own inquiry; other buyer denied | Feature | Existing evidence |
+| Artist sees/manages only addressed inquiries | Feature | Existing evidence |
+| Honeypot and throttling | Feature | Existing evidence; expand |
+| Start conversation from inquiry | Feature + Browser | Existing evidence |
+| Direct conversation without inquiry | Feature | Existing evidence |
+| One canonical conversation per buyer/artist pair across entry points | Feature + Integration | Existing evidence; expand race/idempotency |
+| Pair key ordering and database uniqueness under retries | Unit + Integration | Gap / expand |
+| Invalid actor, role and context relationships | Feature | Gap / expand |
+
+### Messaging, safety and notifications
+
+| Scenario | Layer | Baseline |
+|---|---|---|
+| Participant-only conversation and message access | Feature | Existing evidence |
+| Send, edit, delete and reply validation | Feature | Existing evidence |
+| Client message idempotency | Feature | Existing evidence |
+| Read/unread state and pagination | Feature | Existing evidence; expand concurrency |
+| Reactions and duplicate reaction behavior | Feature | Existing evidence |
+| Archive/mute are participant-specific | Feature | Existing evidence |
+| Attachment validation, private storage and participant download | Feature | Existing evidence; expand MIME/path traversal/oversize |
+| Block/unblock and both-direction messaging restriction | Feature | Existing evidence |
+| Conversation/message reporting and duplicate report handling | Feature | Existing evidence |
+| Admin review, removal and audit record | Feature | Existing evidence |
+| Notification dispatch after commit and queue retry/failure | Feature + Integration | Existing evidence; expand |
+| Notification preference persistence and filtering | Feature | Existing evidence; expand |
+| Cross-user notification and attachment privacy | Feature | Gap / expand |
+| Race conditions around duplicate conversation/message submission | Integration | Planned |
+
+### Editorial and administration
+
+| Scenario | Layer | Baseline |
+|---|---|---|
+| Admin-only user list and role update | Feature | Existing evidence |
+| Admin cannot remove own admin role | Feature | Existing evidence |
+| Collection create/edit/publish/unpublish/order | Feature | Existing evidence |
+| Public visibility respects publication and eligible content | Feature | Existing evidence; expand time windows |
+| Featured artist curation and public eligibility | Feature | Existing evidence; expand |
+| Admin routes denied for guest/non-admin across all endpoints | Feature | Gap / expand |
+| Audit fields and invalid/deleted references | Feature | Gap / expand |
+
+### Public pages, SEO and infrastructure
+
+| Scenario | Layer | Baseline |
+|---|---|---|
+| Public artists/artworks/collections and detail routes | Feature + Browser | Existing evidence; expand deep links |
+| Sitemap and robots rules | Feature | Existing evidence |
+| SEO metadata and canonical URL behavior | Feature + Browser | Existing evidence; expand |
+| Health endpoint response | Feature | Existing evidence |
+| SPA fallback and API route separation | Feature | Existing evidence |
+| Fresh migrations and migration rollback safety | Integration | Planned |
+| Queue worker, database queue persistence and failure handling | Integration | Gap / expand |
+| Production and cPanel build | CI | Existing evidence |
+| Database query count/N+1 and performance budgets | Integration | Planned |
+
+### Frontend experience and accessibility
+
+| Scenario | Layer | Baseline |
+|---|---|---|
+| Price formatting, class merge, query retry defaults | JS unit | Existing evidence |
+| Shared component keyboard/focus/dialog behavior | React component | Planned |
+| Feature form validation and API errors | React component | Planned |
+| Loading, empty and error states across screens | React component | Planned |
+| Route guards and unauthorized redirects | React integration + Browser | Browser evidence partial; expand |
+| Query cache invalidation and account switch | React integration | Gap / expand |
+| Persian numerals, RTL, long text and mixed-direction content | Component + Browser | Browser evidence partial; expand |
+| Responsive navigation, forms, messaging and admin tables | Browser | Existing evidence; expand |
+| Automated accessibility scan and keyboard-only journeys | Browser | Planned |
+| Reduced motion, focus visibility and semantic landmarks | Component + Browser | Planned |
+
+## Product boundary: intentionally not tested as implemented features
+
+The following are not currently evidenced as implemented product capabilities and must not be represented as covered: cart/checkout, payment capture, orders, refunds, shipping, escrow, commissions, tax calculation, artist payouts, email notifications, or realtime transport. Add tests only after the relevant feature is implemented and accepted.
+
+## Batch exit criteria
+
+A domain batch is complete only when:
+1. Each implemented route and business transition in scope maps to tests.
+2. Positive, validation, unauthenticated, wrong-role, wrong-owner and privacy cases are covered where applicable.
+3. Tests use isolated state and assert persisted/serialized outcomes.
+4. Relevant frontend and unmocked browser paths exist for user-visible critical behavior.
+5. Test commands and evidence are recorded; unrun tests remain explicitly unverified.
+6. This matrix and testing strategy match actual code.

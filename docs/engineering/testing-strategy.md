@@ -1,39 +1,92 @@
 # Testing Strategy
 
-## Where tests run
-**Feature branches:** the user runs tests locally. GitHub Actions is deliberately not triggered by feature-branch pushes or pull requests. Agents should not consume runner resources by launching full suites for each incremental task; provide the relevant commands and wait for the user's results. Run a focused local diagnostic only when explicitly requested or essential to investigate a concrete failure.
+## Goals
+Organize testing around product behavior, domain boundaries and risk—not file counts or a single coverage percentage. Every implemented capability needs traceable evidence at the cheapest reliable layer; critical journeys are verified through the real application.
 
-**Main branch:** GitHub Actions runs automated test, lint and build suites on pushes to `main` (normally after merge). Docs-only pushes are ignored because they do not change executable behavior. A green run validates the merged main commit, not the earlier PR head.
+## Test layers
 
-## One-command local verification
-Use the repository script to select the smallest relevant layer; it does not install dependencies, start services, mutate databases or invoke Actions.
+| Layer | Location | Tool | Responsibility |
+|---|---|---|---|
+| Unit | tests/Unit | PHPUnit | Isolated PHP rules, transformations and support logic |
+| Backend feature | tests/Feature | PHPUnit + Laravel | HTTP/API contracts, authorization, validation and persistence |
+| Integration | tests/Integration | PHPUnit + Laravel | Real database, filesystem, queue and notification boundaries |
+| Frontend unit | tests/js | Node test runner | Pure JS utilities and deterministic state/query behavior |
+| Frontend component/integration | tests/Frontend | React Testing Library (planned adoption) | Accessible interactions, forms, routing and UI states |
+| Browser / E2E | tests/browser | Python Playwright | Critical real-browser journeys across React, Laravel and database |
+| Quality / build | CI | Pint, ESLint, Vite | Style, static hygiene and deployable builds |
 
-```bash
-./scripts/verify backend
-./scripts/verify frontend
+Do not mock the boundary a test intends to verify. Unit tests should not boot Laravel or use a database. Feature tests should use the real Laravel container, middleware and test database. Integration tests exercise the actual adapter. Critical browser journeys remain unmocked.
+
+## Repository conventions
+- Backend tests use PHPUnit namespaces Tests\Unit, Tests\Feature or Tests\Integration.
+- Organize new tests by business domain: Auth, Artists, Artworks, Inquiries, Messaging, Editorial, Admin, Public and Infrastructure.
+- Existing flat feature tests remain valid; move them only when touching them or when a focused cleanup is justified. Avoid a high-churn rename-only PR.
+- PHP class names end in Test; methods use test_actor_behavior_expected_result.
+- JS tests use .test.js; group by component/domain and behavior-oriented test names.
+- Playwright Python files use test_*.py; names state actor, action and observable outcome.
+- Use factories/builders for complex setup. Keep fixtures explicit, minimal and isolated.
+- Tests must not depend on execution order, shared mutable state, production services or demo seed data.
+- Every test must assert an observable result; avoid tests that only execute code.
+
+## Coverage matrix and traceability
+See the [Test Coverage Matrix](test-coverage-matrix.md). It distinguishes existing evidence, planned tests and out-of-scope capabilities. A test file's existence is not proof that every scenario in its domain is covered. Update the matrix when features or tests change.
+
+## Local commands
+
+~~~bash
+composer test
+php artisan test --testsuite=Unit
+php artisan test --testsuite=Feature
+php artisan test --testsuite=Integration
+npm run test:frontend
+composer lint
+npm run lint
+npm run build
+npm run build:cpanel
 ./scripts/verify browser
 ./scripts/verify all
-```
+~~~
 
-Run the full suite locally before merge when the change is broad or high-risk. Browser tests require the local application/database and Playwright Chromium. For this repository, start the complete local stack in one terminal with `npm run dev:local`; it starts Laravel on `127.0.0.1:8000`, Vite in HTTPS mode on `127.0.0.1:5173`, and Caddy at `https://rad.localhost`. The browser suite defaults to `https://rad.localhost` and ignores the locally generated Caddy certificate. Do not start `npm run dev:https` separately while `dev:local` is running: `dev:local` already starts it. `dev:https` by itself only starts Vite, not Laravel or the Caddy application entry point.
+The browser suite defaults to https://rad.localhost. Start the complete local stack with npm run dev:local in one terminal and run browser verification in another. Set RAD_ART_BASE_URL to override the URL. The browser suite contains both API-mocked regressions and unmocked full-stack paths; preserve and label that distinction.
 
-Run `./scripts/verify browser` in a second terminal. It checks server reachability first and reports a single actionable error if the stack is not available. Override the browser target with `RAD_ART_BASE_URL` when needed, for example `RAD_ART_BASE_URL=http://127.0.0.1:8000 ./scripts/verify browser` (PowerShell: `$env:RAD_ART_BASE_URL='http://127.0.0.1:8000'; ./scripts/verify browser`). Set `RAD_ART_IGNORE_HTTPS_ERRORS=false` only when using a certificate trusted by the test browser. See script help with `./scripts/verify --help`.
+## CI policy
+The current GitHub Actions workflow runs for pull requests targeting main and pushes to main (with configured Markdown path-ignore behavior for push events). Required CI checks must be green on the PR head before merge. A post-merge run validates the merged main commit. Documentation must reflect .github/workflows/ci.yml, not historical process assumptions.
 
-## Test pyramid
-1. Laravel PHPUnit feature suite in `tests/Feature`: HTTP routes, middleware, validation, DB, policies, notifications and persistence; SQLite in-memory from phpunit.xml.
-2. Node built-in tests in `tests/js/*.test.js`: deterministic frontend utilities/logic.
-3. Python Playwright in `tests/browser`: route, RTL, responsive and user journeys. Existing tests include isolated API-mocked UI regressions; `test_full_stack_auth.py` is unmocked and crosses React, Laravel session and SQLite.
-4. Pint, ESLint, the standard Vite production build and the cPanel-specific production build (`npm run build:cpanel`).
+## Test design checklist
+For each API or server action, consider:
+- valid authenticated request and persisted result;
+- guest, wrong role, wrong owner and non-participant;
+- malformed input, boundary values and validation response;
+- missing, private, unpublished, deleted and cross-tenant records;
+- rate limits, retries, idempotency and duplicate submissions;
+- transaction rollback and external dependency failure;
+- serialization/privacy: only intended fields are returned.
 
-## Risk-based test selection
-- **Low — docs, copy, non-functional styling:** inspect rendered result/diff; no full suite. Docs-only main pushes skip CI.
-- **Medium — isolated UI or API behavior:** run the affected frontend or backend layer; add a regression test for changed behavior.
-- **High — authentication, roles, messaging, uploads, moderation, privacy or migrations:** run backend + affected frontend/browser journeys; cover negative authorization, validation, concurrency/transactions, privacy and failure paths.
-- **Critical — irreversible/high-volume data changes or security boundary redesign:** require staged migration/rollout plan, backup and reconciliation, explicit architecture/security review, and full relevant test suite before merge.
+For each UI feature, consider:
+- initial/loading, success, empty and API-error states;
+- validation, disabled/submitting and duplicate-click behavior;
+- keyboard and accessible names/roles;
+- refresh, deep link, browser history and session expiration;
+- responsive breakpoints, Persian content and RTL direction;
+- authorization UX without relying on it as the security boundary.
 
-## Coverage expectations
-For APIs test success, validation, guest, wrong role/owner/participant, private records, throttling and idempotency. For transitions test allowed/forbidden states and persisted metadata. For public queries test pagination/filtering and absence of private fields.
+For each critical journey, test the real actor sequence and verify persisted or externally observable outcomes. Include a negative/permission path for sensitive journeys.
 
-For browser flows test entry, success, validation/error, refresh/deep link, role boundary, keyboard and mobile. Maintain both isolated UI tests and unmocked full-stack paths for critical journeys.
+## Isolation and data safety
+- Backend tests use an isolated testing database and refresh state per test where appropriate.
+- Integration tests fake only external boundaries not under test.
+- Browser tests use unique accounts and isolated disposable data. Never target production.
+- Do not rely on demo seeders or test execution order.
+- Avoid exposing credentials, private message content or personal data in logs and artifacts.
+- Parallel execution is allowed only after database, storage and browser fixture isolation is demonstrated.
 
-Use RefreshDatabase in backend tests. Browser tests use unique accounts and isolated DB. Never target production or rely on test order. Do not claim local checks passed unless the user reports results or the agent actually ran the requested focused check. Main-branch CI is authoritative automated evidence after merge.
+## Coverage and quality gates
+Coverage is a diagnostic and trend signal, not a correctness guarantee. Prioritize branches enforcing authorization, privacy, moderation, validation, idempotency and state transitions. Introduce reporting only when the runner produces a trustworthy CI report. Do not set a repository-wide threshold before collecting a baseline; use changed-code and critical-domain gates first.
+
+Proposed targets after a measured baseline:
+- 90%+ line/branch coverage for isolated domain rules where practical;
+- 80%+ backend coverage as a directional target, with exclusions documented;
+- meaningful branch and interaction coverage for critical frontend components;
+- every critical buyer, artist and admin journey represented by at least one unmocked browser scenario.
+
+Never weaken or delete a failing test without an equivalent or stronger regression test and documented reason.

@@ -2,7 +2,7 @@
 
 Read upstream nodes before changing a downstream concern. Update every affected node when a contract changes.
 
-```mermaid
+~~~mermaid
 flowchart TD
  A[AGENTS.md] --> K[Knowledge graph]
  K --> P[Product vision]
@@ -22,12 +22,12 @@ flowchart TD
  G --> C[CI/CD]
  Q --> C
  C --> O[Operations]
- C --> R[Workflow-run cleanup]
  ADR[ADRs] -. constrains .-> S
  ADR -. constrains .-> API
  V[Local verification script] --> T
  V --> Q
-```
+ CM[Test coverage matrix] --> T
+~~~
 
 ## Nodes
 - [AGENTS](../AGENTS.md): agent contract.
@@ -39,6 +39,7 @@ flowchart TD
 - [API](architecture/api-contracts.md): endpoint groups and contracts.
 - [Security](security/security-model.md): trust boundaries and threats.
 - [Testing](engineering/testing-strategy.md): test layers and commands.
+- [Coverage matrix](engineering/test-coverage-matrix.md): route/domain/scenario evidence and gaps.
 - [Quality](engineering/quality-gates.md): merge blockers and DoD.
 - [Lifecycle](delivery/feature-lifecycle.md): stages from issue to release.
 - [GitHub](engineering/git-and-github.md): branching, commits, collaboration.
@@ -48,4 +49,4 @@ flowchart TD
 - [Local verification](../scripts/verify): selective local checks; see [testing strategy](engineering/testing-strategy.md).
 
 ## Change propagation
-Schema/domain → data, domain, API, tests, security. API → API docs, backend tests, frontend consumers, browser E2E. UI/navigation → frontend docs and browser tests. Auth/moderation/messaging/uploads/privacy → threat review. Workflow/release → CI/CD and GitHub docs. Local verification commands → script, testing strategy, quality gates and agent handoff instructions.
+Schema/domain → data, domain, API, tests, security. API → API docs, backend tests, frontend consumers, browser E2E. UI/navigation → frontend docs and browser tests. Auth/moderation/messaging/uploads/privacy → threat review. Workflow/release → CI/CD and GitHub docs. Test architecture or coverage changes → testing strategy, coverage matrix, tests README, phpunit configuration, quality gates and CI workflow.
