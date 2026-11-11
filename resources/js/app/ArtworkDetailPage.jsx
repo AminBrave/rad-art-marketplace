@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
@@ -13,7 +14,7 @@ function ArtworkImage({ artwork }) {
     return (
         <div className="flex aspect-[4/3] items-center justify-center overflow-hidden bg-white p-4 sm:p-8 lg:aspect-[4/5]">
             {failed ? (
-                <div role="img" aria-label={`تصویر اثر ${artwork.title} در دسترس نیست`} className="grid h-full w-full place-items-center border border-border bg-surface-muted p-8 text-center text-sm leading-7 text-muted">تصویر این اثر در حال حاضر در دسترس نیست.</div>
+                <div role="img" aria-label={'تصویر اثر ' + artwork.title + ' در دسترس نیست'} className="grid h-full w-full place-items-center border border-border bg-surface-muted p-8 text-center text-sm leading-7 text-muted">تصویر این اثر در حال حاضر در دسترس نیست.</div>
             ) : (
                 <img src={artwork.image_url} alt={artwork.title} onError={() => setFailed(true)} loading="eager" fetchpriority="high" decoding="async" className="h-full max-h-[78vh] w-full object-contain" />
             )}
@@ -31,32 +32,26 @@ function availabilityLabel(value) {
 export default function ArtworkDetailPage() {
     const { slug } = useParams();
     const { user } = useAuth();
-    const [artwork, setArtwork] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [status, setStatus] = useState(0);
-
-    useEffect(() => {
-        let active = true;
-        const controller = new AbortController();
-        setLoading(true);
-        setArtwork(null);
-        setStatus(0);
-
-        axios.get('/api/v1/artworks/' + encodeURIComponent(slug), { signal: controller.signal })
-            .then(({ data }) => { if (active) setArtwork(data.data); })
-            .catch((error) => { if (active && !axios.isCancel(error)) setStatus(error.response?.status ?? 0); })
-            .finally(() => { if (active) setLoading(false); });
-
-        return () => { active = false; controller.abort(); };
-    }, [slug]);
+    const artworkQuery = useQuery({
+        queryKey: ['artwork', slug],
+        queryFn: async ({ signal }) => {
+            const { data } = await axios.get('/api/v1/artworks/' + encodeURIComponent(slug), { signal });
+            return data.data;
+        },
+        enabled: Boolean(slug),
+        staleTime: 60_000,
+    });
+    const artwork = artworkQuery.data ?? null;
+    const loading = artworkQuery.isPending;
+    const status = artworkQuery.error?.response?.status ?? 0;
 
     useEffect(() => {
         if (!artwork) return undefined;
         const previousTitle = document.title;
         const descriptionTag = document.querySelector('meta[name="description"]');
         const previousDescription = descriptionTag?.getAttribute('content');
-        document.title = `${artwork.title} | راد آرت`;
-        if (descriptionTag) descriptionTag.setAttribute('content', artwork.description || `اثر ${artwork.title} از ${artwork.artist?.display_name || 'هنرمندان راد آرت'}؛ جزئیات اثر و راه ارتباط با هنرمند.`);
+        document.title = artwork.title + ' | راد آرت';
+        if (descriptionTag) descriptionTag.setAttribute('content', artwork.description || ('اثر ' + artwork.title + ' از ' + (artwork.artist?.display_name || 'هنرمندان راد آرت') + '؛ جزئیات اثر و راه ارتباط با هنرمند.'));
         return () => {
             document.title = previousTitle;
             if (descriptionTag) {
@@ -79,6 +74,7 @@ export default function ArtworkDetailPage() {
                 <section className="mt-8 border border-border bg-white p-8">
                     <h1 className="text-2xl font-black">{status === 403 ? 'دسترسی به این اثر مجاز نیست' : 'اثر در دسترس نیست'}</h1>
                     <p className="mt-3 text-sm leading-7 text-muted">{status === 403 ? 'سرور اجازه مشاهده این اثر را صادر نکرد.' : 'این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.'}</p>
+                    {artworkQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-danger">ارتباط با سرور برقرار نشد. <button type="button" onClick={() => artworkQuery.refetch()} className="font-bold underline">تلاش دوباره</button></p>}
                     <Link to="/artworks" className="mt-5 inline-block font-bold text-terracotta-strong underline">بازگشت به گالری</Link>
                 </section>
             ) : (
