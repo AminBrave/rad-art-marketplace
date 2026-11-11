@@ -14,7 +14,7 @@ export function EmptyState({ title, description, action, className = '' }) {
         <span aria-hidden="true" className="grid size-10 place-items-center rounded-full bg-muted text-lg text-muted-foreground">◇</span>
         <h2 className="text-base font-semibold text-card-foreground">{title}</h2>
         {description && <p className="max-w-lg text-sm leading-7 text-muted-foreground">{description}</p>}{action}
-    </Card>;
+    </section>;
 }
 export function ErrorState({ title = 'مشکلی پیش آمد', description, onRetry, retryLabel = 'تلاش دوباره', className = '' }) {
     return <Alert variant="destructive" className={`grid gap-2 p-5 ${className}`} dir="rtl"><AlertTitle>{title}</AlertTitle>{description && <AlertDescription>{description}</AlertDescription>}{onRetry && <div><Button variant="outline" size="sm" onClick={onRetry}>{retryLabel}</Button></div>}</Alert>;
