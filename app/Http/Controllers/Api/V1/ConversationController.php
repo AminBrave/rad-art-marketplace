@@ -123,18 +123,26 @@ class ConversationController extends Controller
         $this->authorizeParticipant($request->user(), $conversation, 'view');
 
         $filters = $request->validate([
-            'after_id' => ['nullable', 'integer', 'min:1'],
+            'after_id' => ['nullable', 'integer', 'min:0'],
+            'updated_after' => ['nullable', 'date'],
         ]);
+        $syncCursor = now();
 
         $query = $conversation->messages()
             ->withTrashed()
             ->with(['sender', 'replyTo.sender', 'reactions', 'attachments']);
 
-        if (isset($filters['after_id'])) {
-            // Incremental polling returns only newer messages and avoids reloading the whole window.
-            $messages = $query->where('id', '>', (int) $filters['after_id'])
-                ->oldest('id')
-                ->paginate(100);
+        if (isset($filters['after_id']) || isset($filters['updated_after'])) {
+            // Include new messages and changed existing messages (e.g. edits, deletes and read receipts).
+            $messages = $query->where(function ($nested) use ($filters): void {
+                if (isset($filters['after_id'])) {
+                    $nested->where('id', '>', (int) $filters['after_id']);
+                }
+                if (isset($filters['updated_after'])) {
+                    $method = isset($filters['after_id']) ? 'orWhere' : 'where';
+                    $nested->{$method}('updated_at', '>', $filters['updated_after']);
+                }
+            })->oldest('id')->paginate(100);
         } else {
             $messages = $query->latest('id')->paginate(30);
             $messages->setCollection($messages->getCollection()->reverse()->values());
@@ -144,7 +152,9 @@ class ConversationController extends Controller
             fn (Message $message): array => $this->messagePayload($message, $request->user())
         ));
 
-        return response()->json($messages);
+        return response()->json(array_merge($messages->toArray(), [
+            'sync_cursor' => $syncCursor->toISOString(),
+        ]));
     }
 
     public function storeMessage(Request $request, Conversation $conversation): JsonResponse
