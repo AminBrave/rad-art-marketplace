@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { WorkspaceLayout } from './Layouts';
-import { ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton } from '../components/ui';
+import { ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, FormFieldSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton } from '../components/ui';
 const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
 
 const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
@@ -82,16 +82,19 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                 </>
             ) : /^\/(dashboard\/(artist|buyer)\/messages)$/.test(pathname) ? (
                 <section className="grid min-h-[34rem] overflow-hidden border border-border bg-paper md:grid-cols-[minmax(16rem,.36fr)_minmax(0,.64fr)]">
-                    <div className="border-b border-border p-4 md:border-b-0 md:border-l">
-                        <LoadingBlock className="mb-4 h-10 w-full" />
-                        {[0, 1, 2, 3, 4, 5].map((item) => <div key={item} className="flex items-center gap-3 border-b border-border py-4"><LoadingBlock className="h-11 w-11 shrink-0 rounded-full" /><div className="grid min-w-0 flex-1 gap-2"><LoadingBlock className="h-4 w-2/3" /><LoadingBlock className="h-3 w-full" /></div></div>)}
-                    </div>
-                    <div className="hidden min-w-0 flex-col justify-between p-5 md:flex">
-                        <div className="flex items-center gap-3 border-b border-border pb-4"><LoadingBlock className="h-10 w-10 rounded-full" /><LoadingBlock className="h-4 w-40" /></div>
-                        <div className="grid gap-4 py-8"><LoadingBlock className="h-14 w-3/5 justify-self-start" /><LoadingBlock className="h-14 w-2/5 justify-self-end" /><LoadingBlock className="h-14 w-1/2 justify-self-start" /></div>
-                        <LoadingBlock className="h-12 w-full rounded-full" />
+                    <aside className="min-h-0 border-b border-border md:border-b-0 md:border-l"><ConversationInboxSkeleton count={6} /></aside>
+                    <div className="hidden min-w-0 flex-col justify-between md:flex">
+                        <div className="flex items-center gap-3 border-b border-border p-5"><LoadingBlock className="h-10 w-10 rounded-full" /><div className="grid gap-2"><LoadingBlock className="h-4 w-40" /><LoadingBlock className="h-3 w-28" /></div></div>
+                        <MessageHistorySkeleton count={4} className="flex-1" />
+                        <div className="border-t border-border p-5"><LoadingBlock className="h-12 w-full rounded-full" /></div>
                     </div>
                 </section>
+            ) : pathname === '/admin/artworks' ? (
+                <ArtworkModerationSkeleton count={4} />
+            ) : pathname === '/admin/users' ? (
+                <AdminUserCardsSkeleton count={4} />
+            ) : pathname === '/admin/message-reports' ? (
+                <MessageReportsSkeleton count={3} />
             ) : isArtworkDetail ? (
                 <div className="grid gap-8 lg:grid-cols-[1.15fr_.85fr]">
                     <LoadingBlock className="aspect-[4/3] w-full lg:aspect-[4/5]" />
@@ -115,18 +118,22 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                         {[0, 1, 2, 3, 4, 5].map((item) => <div key={item} className="border border-border bg-paper"><LoadingBlock className="aspect-[4/3] w-full" /><div className="grid gap-3 p-4"><LoadingBlock className="h-4 w-4/5" /><LoadingBlock className="h-3 w-2/5" /></div></div>)}
                     </section>
                 </>
+            ) : pathname === '/dashboard/artist/artworks' ? (
+                <section className="border border-border bg-paper p-5 sm:p-7">
+                    <div className="mb-6 border-b border-border pb-5"><LoadingBlock className="h-6 w-36" /><LoadingBlock className="mt-2 h-4 w-64 max-w-full" /></div>
+                    <div className="grid gap-5 sm:grid-cols-2">
+                        {[0, 1, 2, 3, 4, 5, 6].map((item) => <FormFieldSkeleton key={item} />)}
+                        <FormFieldSkeleton className="sm:col-span-2" controlClassName="h-28" />
+                        <div className="grid gap-2 sm:col-span-2"><LoadingBlock className="h-4 w-36" /><LoadingBlock className="h-24 w-full max-w-md" /><LoadingBlock className="h-3 w-2/3 max-w-md" /></div>
+                        <LoadingBlock className="h-11 w-40" />
+                    </div>
+                </section>
             ) : isForm ? (
-                <>
-                    <section className="grid gap-5 border border-border bg-paper p-6 sm:p-8">
-                        <LoadingBlock className="h-6 w-40" />
-                        <LoadingBlock className="h-12 w-full" />
-                        <LoadingBlock className="h-12 w-full" />
-                        <LoadingBlock className="h-12 w-full" />
-                        <LoadingBlock className="h-28 w-full" />
-                        <LoadingBlock className="h-12 w-36" />
-                    </section>
-                    {pathname.endsWith('/artworks') && <section className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2].map((item) => <div key={item} className="border border-border bg-paper"><LoadingBlock className="aspect-[4/3] w-full" /><div className="grid gap-3 p-4"><LoadingBlock className="h-4 w-4/5" /><LoadingBlock className="h-3 w-2/5" /></div></div>)}</section>}
-                </>
+                <section className="grid gap-5 border border-border bg-paper p-6 sm:grid-cols-2 sm:p-8">
+                    {[0, 1, 2, 3].map((item) => <FormFieldSkeleton key={item} />)}
+                    <FormFieldSkeleton className="sm:col-span-2" controlClassName="h-28" />
+                    <LoadingBlock className="h-11 w-36" />
+                </section>
             ) : pathname === '/admin' ? (
                 <>
                     <section className="grid gap-3 sm:grid-cols-2">
