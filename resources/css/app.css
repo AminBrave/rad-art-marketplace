@@ -14,7 +14,7 @@
     /* Core palette */
     --color-canvas: #F7F5F0;
     --color-ink: #242320;
-    --color-terracotta: #B65C3A;
+    --color-terracotta: #A64F31;
     --color-terracotta-strong: #9A452B;
     --color-sand: #D8C9B7;
     --color-olive: #536052;
@@ -23,9 +23,9 @@
     /* Semantic roles */
     --color-text: var(--color-ink);
     --color-text-muted: #625E56;
-    --color-text-subtle: #777168;
+    --color-text-subtle: #706A61;
     --color-border: #DED8CF;
-    --color-border-strong: #BDB3A6;
+    --color-border-strong: #8F877D;
     --color-surface: var(--color-paper);
     --color-surface-muted: #F0EDE6;
     --color-action: var(--color-terracotta);
@@ -137,7 +137,7 @@ a {
 }
 
 ::selection {
-    background: rgb(182 92 58 / 20%);
+    background: rgb(166 79 49 / 20%);
     color: var(--color-ink);
 }
 
