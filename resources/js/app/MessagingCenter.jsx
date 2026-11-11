@@ -547,8 +547,12 @@ export default function MessagingCenter({ role }) {
                 shouldStickToBottomRef.current = true;
             }
             loadThreads();
-        } catch {
-            if (Number(activeConversationRef.current) === Number(conversationId)) setError('ارسال پیام یا پیوست انجام نشد. وضعیت پیام را بررسی و دوباره تلاش کنید.');
+        } catch (requestError) {
+            if (Number(activeConversationRef.current) === Number(conversationId)) {
+                setError(requestError.response?.status === 503 && pendingArtwork
+                    ? 'برای ارسال کارت اثر، پایگاه داده هنوز به‌روزرسانی نشده است. کارت اثر را حذف کنید تا پیام عادی ارسال شود؛ سپس مدیر فنی باید مهاجرت پایگاه داده را اجرا کند.'
+                    : 'ارسال پیام یا پیوست انجام نشد. وضعیت اتصال و پاسخ سرور را بررسی و دوباره تلاش کنید.');
+            }
         } finally { setSending(false); }
     };
 
