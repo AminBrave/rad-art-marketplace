@@ -1,11 +1,7 @@
-import { createContext, useContext } from 'react';
-import { NavLink } from 'react-router-dom';
 import { cn } from '../../lib/utils';
 
-const SidebarContext = createContext({});
-
 export function SidebarProvider({ children, className, ...props }) {
-    return <SidebarContext.Provider value={{}}><div data-slot="sidebar-provider" className={cn('group/sidebar-wrapper flex min-h-svh w-full bg-background', className)} {...props}>{children}</div></SidebarContext.Provider>;
+    return <div data-slot="sidebar-provider" className={cn('group/sidebar-wrapper flex min-h-svh w-full bg-background', className)} {...props}>{children}</div>;
 }
 
 export function Sidebar({ children, side = 'right', className, ...props }) {
