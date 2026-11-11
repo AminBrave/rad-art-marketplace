@@ -64,7 +64,7 @@ export default function ArtworkCatalogue() {
         total: artworksQuery.data?.total ?? 0,
     };
     const loading = artworksQuery.isPending;
-    const error = artworksQuery.isError && !artworksQuery.data;
+    const error = artworksQuery.isError;
     const filtersLoading = filtersQuery.isPending;
     const filtersError = filtersQuery.isError;
 
@@ -117,7 +117,7 @@ export default function ArtworkCatalogue() {
                         {(filters.sorts?.length ? filters.sorts : [{ value: 'newest', label: 'جدیدترین' }]).map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
                     </SelectField>
                     <div className="flex items-center justify-between gap-3">
-                        <p className="text-xs text-muted">{activeFilterCount.toLocaleString('fa-IR')} فیلتر فعال</p>
+                        <p className="text-xs text-muted">{activeFilterCount ? activeFilterCount.toLocaleString('fa-IR') + ' فیلتر فعال' : 'بدون فیلتر'}</p>
                         {activeFilterCount > 0 && <button type="button" onClick={clearFilters} className="text-sm font-bold text-terracotta-strong underline underline-offset-4">پاک‌کردن فیلترها</button>}
                     </div>
                 </div>
