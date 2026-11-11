@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import ThemeSwitcher from '../design-system/ThemeSwitcher';
 import {
     ArtistCard,
     ArtworkCard,
@@ -67,7 +68,7 @@ export default function ComponentShowcase() {
                     <h2 id="shared-components-title" className="mt-2 text-2xl font-bold">کتابخانه اجزای رابط</h2>
                     <p className="mt-2 text-sm leading-7 text-muted">نمونه‌های تعاملی اجزای مشترک؛ همه اجزا با چیدمان راست‌به‌چپ سازگارند.</p>
                 </div>
-                <Badge variant="success">RTL ready</Badge>
+                <div className="flex items-center gap-3"><ThemeSwitcher /><Badge variant="success">RTL ready</Badge></div>
             </div>
 
             <div className="grid gap-8">
