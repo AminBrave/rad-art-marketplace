@@ -44,7 +44,7 @@ export const Button = forwardRef(function Button({
                 'disabled:pointer-events-none disabled:opacity-50',
                 '[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
                 variants[variant] ?? variants.default,
-                sizes[size] ?? sizes.default,
+                sizes[size] ?? sizes.default,\n                block && 'w-full',
                 className,
             )}
             {...props}
