@@ -12,6 +12,13 @@ final class InquiryRateLimitTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        config(['features.inquiries' => true]);
+    }
+
     public function test_buyer_inquiry_submission_is_limited_to_five_requests_per_minute(): void
     {
         $artist = User::query()->create([
