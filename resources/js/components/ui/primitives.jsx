@@ -41,20 +41,14 @@ export function IconButton({ children, label, size = 'icon', className = '', ...
 }
 
 const badgeVariants = {
-    default: 'border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80',
+    default: 'border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/90',
     secondary: 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
-    destructive: 'border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80',
+    destructive: 'border-transparent bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',
     outline: 'text-foreground',
-    neutral: 'border-transparent bg-secondary text-secondary-foreground',
-    success: 'border-transparent bg-accent text-accent-foreground',
-    warning: 'border-transparent bg-warning/15 text-warning',
-    danger: 'border-transparent bg-destructive/10 text-destructive',
-    info: 'border-transparent bg-info/15 text-info',
-    accent: 'border-transparent bg-primary/10 text-primary',
 };
 
 export function Badge({ children, variant = 'default', className = '', ...props }) {
-    const resolvedVariant = ({ danger: 'destructive' })[variant] ?? variant;
+    const resolvedVariant = ({ danger: 'destructive', success: 'secondary', warning: 'secondary', info: 'outline', accent: 'default', neutral: 'secondary' })[variant] ?? variant;
     return <span className={cn('inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2', badgeVariants[resolvedVariant] ?? badgeVariants.default, className)} {...props}>{children}</span>;
 }
 
