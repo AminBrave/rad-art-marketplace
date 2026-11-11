@@ -8,6 +8,7 @@ Mandatory repository contract for every AI coding agent. Keep the default workfl
 - Minimize context, tool calls, compute and unrelated exploration.
 - Prefer existing patterns and dependencies. Do not redesign unrelated systems.
 - Use project skills only when they materially help; see [AI Agent Tooling](docs/engineering/ai-agent-tooling.md).
+- For ChatGPT repository work, use [CHATGPT.md](CHATGPT.md) as the ChatGPT-specific entry point; it explains how to retrieve the actual skill files when GitHub access is connected.
 - Do not run tests, lint, builds, browser checks, type checks, scanners or other verification commands unless the user explicitly asks. A code change, issue, PR, merge or agent task is not authorization.
 - Never claim a command, test, review, deployment or verification succeeded unless there is direct evidence.
 
