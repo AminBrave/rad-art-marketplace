@@ -55,6 +55,10 @@ npm run build:cpanel
 
 The browser suite defaults to https://rad.localhost. Start the complete local stack with npm run dev:local in one terminal and run browser verification in another. Set RAD_ART_BASE_URL to override the URL. The browser suite contains both API-mocked regressions and unmocked full-stack paths; preserve and label that distinction.
 
+## Cross-platform developer workflow
+
+The Node-based task runner is exposed through npm scripts and works in PowerShell, Git Bash, macOS and Linux. See [Developer Workflow](../operations/developer-workflow.md) for prerequisites, safe setup, database initialization, local servers, browser tests, builds, deployment and troubleshooting. Preferred commands are `npm run setup`, `npm run dev`, `npm test`, `npm run verify`, and `npm run verify:all`. The latter requires a running local application and installed Playwright Chromium. The compatibility wrapper `./scripts/verify` remains available in Git Bash/macOS/Linux.
+
 ## CI policy
 
 The current GitHub Actions workflow runs for pull requests targeting main and pushes to main (with configured Markdown path-ignore behavior for push events). Required CI checks must be green on the PR head before merge. A post-merge run validates the merged main commit. Documentation must reflect .github/workflows/ci.yml, not historical process assumptions.

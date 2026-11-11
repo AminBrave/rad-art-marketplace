@@ -1,78 +1,8 @@
 #!/usr/bin/env bash
+# Backward-compatible Unix/Git Bash entry point. The Node task runner is cross-platform.
 set -euo pipefail
-
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
-
-usage() {
-  cat <<'USAGE'
-Usage: ./scripts/verify <backend|frontend|browser|all>
-
-  backend   Laravel feature tests and PHP style check
-  frontend  JavaScript unit tests, ESLint, standard and cPanel production builds
-  browser   Playwright browser and full-stack tests (requires a prepared app)
-  all       Run every verification layer in sequence
-
-This script does not install dependencies, start services, modify databases,
-or invoke GitHub Actions. Prepare the local environment before running it.
-USAGE
-}
-
-require_command() {
-  command -v "$1" >/dev/null 2>&1 || {
-    printf 'Missing required command: %s\n' "$1" >&2
-    exit 1
-  }
-}
-
-backend() {
-  require_command composer
-  composer test
-  composer lint
-}
-
-frontend() {
-  require_command npm
-  npm run test:frontend
-  npm run lint
-  npm run build
-  npm run build:cpanel
-}
-
-browser() {
-  require_command python
-  local base_url="${RAD_ART_BASE_URL:-https://rad.localhost}"
-
-  # Fail once with a useful hint instead of producing a cascade of Playwright
-  # connection-refused errors when the local stack is not running.
-  python - "$base_url" <<'PY'
-import sys
-import ssl
-from urllib.error import HTTPError, URLError
-from urllib.request import urlopen
-
-url = sys.argv[1]
-try:
-    urlopen(url, timeout=5, context=ssl._create_unverified_context())
-except HTTPError:
-    pass  # Any HTTP response proves that the server is reachable.
-except (URLError, OSError) as error:
-    raise SystemExit(
-        f"Browser-test server is unreachable at {url}. "
-        "Start the full local stack with 'npm run dev:local', or set "
-        "RAD_ART_BASE_URL to the URL your Laravel app serves. "
-        f"Underlying error: {error}"
-    )
-PY
-
-  RAD_ART_BASE_URL="$base_url" python -m unittest discover -s tests/browser -p 'test_*.py' -v
-}
-
-case "${1:-}" in
-  backend) backend ;;
-  frontend) frontend ;;
-  browser) browser ;;
-  all) backend; frontend; browser ;;
-  -h|--help|"") usage; exit 0 ;;
-  *) usage >&2; exit 2 ;;
-esac
+TASK="${1:-verify}"
+if (($# > 0)); then shift; fi
+exec node scripts/project.mjs "$TASK" "$@"

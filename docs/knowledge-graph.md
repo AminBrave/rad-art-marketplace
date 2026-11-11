@@ -46,9 +46,11 @@ flowchart TD
 - [Lifecycle](delivery/feature-lifecycle.md): stages from issue to release.
 - [GitHub](engineering/git-and-github.md): branching, commits, collaboration.
 - [CI/CD](operations/ci-cd-and-release.md): application CI, scheduled maintenance workflows and release.
-- [Operations](operations/deployment-and-recovery.md): deployment and recovery.
+- [Operations](operations/developer-workflow.md): installation, local development, database, tests and builds.
+- [Deployment](operations/deployment-and-recovery.md): production hosting, deployment, backup and recovery.
 - [ADRs](decisions/index.md): durable decisions; use [ADR template](decisions/adr-template.md).
-- [Local verification](../scripts/verify): selective local checks; see [testing strategy](engineering/testing-strategy.md).
+- [Project task runner](../scripts/project.mjs): cross-platform setup, dev, database, test, build and production tasks.
+- [Local verification](../scripts/verify): backward-compatible Bash/Git Bash wrapper; see [testing strategy](engineering/testing-strategy.md).
 - [Coverage summarizer](../scripts/summarize-coverage.py): combines per-suite Clover reports into an overall line-coverage baseline and low-coverage priority list.
 
 ## Change propagation

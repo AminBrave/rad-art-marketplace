@@ -7,6 +7,7 @@
 
 # PHP / Laravel
 /vendor/
+/database/*.sqlite
 /.phpunit.cache/
 /.phpunit.result.cache
 /storage/*.key
@@ -36,6 +37,12 @@ Thumbs.db
 *.swo
 
 # Test / coverage
+/__pycache__/
+*.py[cod]
+/.venv/
+/venv/
+/playwright-report/
+/test-results/
 /coverage/
 /.phpunit.cache/
 
