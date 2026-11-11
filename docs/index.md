@@ -11,7 +11,7 @@ This is a linked knowledge system. Start with [AGENTS.md](../AGENTS.md), then fo
 | Tests and gates | [Testing strategy](engineering/testing-strategy.md), [quality gates](engineering/quality-gates.md), [local verification script](../scripts/verify) |
 | Planning | Use GitHub Issues, Milestones and Projects; see [Git and GitHub](engineering/git-and-github.md). |
 | Security | [Security model](security/security-model.md) |
-| Operations | [CI/CD and workflow cleanup](operations/ci-cd-and-release.md), [deployment/recovery](operations/deployment-and-recovery.md) |
+| Operations | [Developer workflow](operations/developer-workflow.md), [CI/CD and workflow cleanup](operations/ci-cd-and-release.md), [deployment/recovery](operations/deployment-and-recovery.md) |
 | Decisions | [ADR index](decisions/index.md), [ADR template](decisions/adr-template.md) |
 
 New agent: AGENTS → graph → relevant product/architecture nodes → agent model → Git/GitHub → relevant tests. Avoid reading every document for a small task.

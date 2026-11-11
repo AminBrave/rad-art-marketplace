@@ -8,7 +8,7 @@
 - [ ] Loading/empty/error/success and RTL/mobile/accessibility states considered.
 - [ ] Relevant tests added or updated, selected by [test design checklist](testing-strategy.md#test-design-checklist).
 - [ ] Coverage matrix and affected documentation updated.
-- [ ] Relevant local test commands executed where possible; unrun checks clearly marked.
+- [ ] User confirms the relevant local checks pass; PR CI checks are green where configured.
 - [ ] Focused diff reviewed.
 
 ## Before merge
