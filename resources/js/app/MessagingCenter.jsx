@@ -185,8 +185,10 @@ export default function MessagingCenter({ role }) {
             if (!incremental || hasUnreadIncoming) {
                 await axios.patch('/api/v1/conversations/' + id + '/read', {}, { signal: controller.signal });
                 if (controller.signal.aborted || Number(activeConversationRef.current) !== Number(id)) return;
-                loadThreadsRef.current();
             }
+            // Keep the inbox preview and unread badge in sync for new messages and edits,
+            // including messages sent from another tab/device by the current user.
+            if (!incremental || incoming.length > 0) loadThreadsRef.current();
         } catch (requestError) {
             if (!axios.isCancel(requestError) && !controller.signal.aborted
                 && Number(activeConversationRef.current) === Number(id)) setError('دریافت پیام‌ها انجام نشد. دوباره تلاش کنید.');
@@ -316,8 +318,17 @@ export default function MessagingCenter({ role }) {
     useEffect(() => {
         if (!active) return undefined;
         loadMessages(active);
-        const poll = window.setInterval(() => loadMessages(active, { incremental: true }), 5000);
-        return () => window.clearInterval(poll);
+        const syncWhenVisible = () => {
+            if (document.visibilityState === 'visible') loadMessages(active, { incremental: true });
+        };
+        const poll = window.setInterval(syncWhenVisible, 5000);
+        document.addEventListener('visibilitychange', syncWhenVisible);
+        window.addEventListener('focus', syncWhenVisible);
+        return () => {
+            window.clearInterval(poll);
+            document.removeEventListener('visibilitychange', syncWhenVisible);
+            window.removeEventListener('focus', syncWhenVisible);
+        };
     }, [active, loadMessages]);
 
     useEffect(() => {
