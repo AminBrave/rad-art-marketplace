@@ -47,7 +47,7 @@ Build the graph only when the task is broad, cross-cutting, or likely to require
 
 Use --update for incremental refresh. Use a full rebuild only when files were removed or a stale graph must shrink. A graph is an index, not implementation truth: open referenced source files before changing code. Distinguish EXTRACTED edges from INFERRED edges and never present inferred links as proven behavior.
 
-**Privacy and scope:** before the first graph build, inspect Graphify's ignore/exclusion behavior for the installed version. Exclude .env files, credentials, local databases, logs, private uploads, user-generated/private content, vendor/, node_modules/, build output and generated caches. Do not run semantic extraction over secrets or private user data. Do not upload graph artifacts to a hosted service unless the user explicitly approves.
+**Privacy and scope:** Graphify's current skill uses repository gitignore rules and a sensitive-file detection pass, but neither replaces human review. Before the first graph build, inspect the detection summary and skipped-sensitive list. Confirm .env files, credentials, local databases, logs, private uploads, user-generated/private content, vendor/, node_modules/, build output and generated caches are excluded. Add any additional exclusions using the ignore mechanism supported by the installed Graphify version. Do not run semantic extraction over secrets or private user data. Do not upload graph artifacts to a hosted service unless the user explicitly approves.
 
 Graph outputs are local developer artifacts by default. Keep graphify-out/ untracked unless the team explicitly decides to review and share a sanitized graph.
 
