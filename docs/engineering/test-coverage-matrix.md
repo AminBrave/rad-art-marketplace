@@ -51,7 +51,7 @@ Status vocabulary:
 
 | Scenario | Layer | Baseline |
 |---|---|---|
-| Artist creates artwork and stores image privately | Feature | Existing evidence |
+| Artist creates artwork and stores image privately | Feature + unmocked E2E | Existing API evidence plus real browser upload and pending-publication exclusion added |
 | Form validation, MIME/size and inactive category | Feature | Existing evidence; expand boundary cases |
 | Owner edits; another artist denied | Feature | Existing evidence |
 | Editing approved artwork resets moderation state | Feature | Existing evidence |
@@ -68,7 +68,7 @@ Status vocabulary:
 
 | Scenario | Layer | Baseline |
 |---|---|---|
-| Buyer-only inquiry submission and validation | Feature | Existing evidence |
+| Buyer-only inquiry submission and validation | Feature + unmocked E2E | Existing API evidence plus buyer submission and artist receipt journey added |
 | Private artist and invalid/unapproved artwork target | Feature | Existing evidence |
 | Buyer sees own inquiry; other buyer denied | Feature | Existing evidence |
 | Artist sees/manages only addressed inquiries | Feature | Existing evidence |

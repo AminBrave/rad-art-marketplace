@@ -15,7 +15,7 @@ This inventory is derived from the current route declarations in routes/web.php 
 
 | Method and route | Access | Existing evidence | Remaining checks |
 |---|---|---|---|
-| GET /api/v1/artists | Public | ArtistProfileTest | Search normalization, filter combinations and bounds |
+| GET /api/v1/artists | Public | ArtistProfileTest, ArtistDirectorySearchNormalizationTest | Filter combinations and bounds |
 | GET /api/v1/artists/{artistProfile:slug} | Public; owner/admin can preview private | ArtistProfileTest | All private fields and deleted/missing relationships |
 | GET /api/v1/categories | Public | ArtworkTest / discovery browser fixtures | Active-only categories and empty state |
 | GET /api/v1/artwork-filters | Public | Discovery browser tests | Eligible public content only and stable ordering |
@@ -25,7 +25,7 @@ This inventory is derived from the current route declarations in routes/web.php 
 | GET /api/v1/collections | Public published content | EditorialTest, test_m03_editorial.py | Pagination and publication-time boundaries |
 | GET /api/v1/collections/{collection:slug} | Public published content | EditorialTest, test_m03_editorial.py | Missing/draft collection and ineligible artwork |
 | GET /api/v1/featured-artists | Public eligible artists | EditorialTest | Publication windows and private/unapproved content |
-| POST /api/v1/artists/{artistProfile:slug}/inquiries | Authenticated buyer, throttled | ArtistInquiryTest, InquiryRateLimitTest, buyer inquiry browser tests | Retry/idempotency expectations and per-actor/IP policy |
+| POST /api/v1/artists/{artistProfile:slug}/inquiries | Authenticated buyer, throttled | ArtistInquiryTest, InquiryRateLimitTest, test_full_stack_buyer_inquiry.py | Retry/idempotency expectations and per-actor/IP policy |
 
 ## Artist workspace
 
@@ -36,7 +36,7 @@ This inventory is derived from the current route declarations in routes/web.php 
 | GET /api/v1/artist-profiles/{artistProfile} | Artist/admin policy | ArtistProfileTest | Full role/ownership matrix |
 | PATCH /api/v1/artist-profiles/{artistProfile} | Owner/admin policy | ArtistProfileTest | Invalid fields and non-owner denial |
 | GET /api/v1/artist/artworks | Artist | ArtworkTest | Empty state, pagination boundaries and private fields |
-| POST /api/v1/artist/artworks | Artist, throttled | ArtworkTest, ArtworkStorageRollbackTest | MIME spoofing and size boundaries |
+| POST /api/v1/artist/artworks | Artist, throttled | ArtworkTest, ArtworkStorageRollbackTest, test_full_stack_artist_artwork.py | MIME spoofing and size boundaries |
 | PATCH /api/v1/artist/artworks/{artwork} | Owner/admin, throttled | ArtworkTest, ArtworkModerationTest, ArtworkStorageRollbackTest | Foreign ownership and successful replacement lifecycle |
 | GET /api/v1/artist/inquiries | Artist | ArtistInquiryTest | Pagination and status filters |
 | GET /api/v1/artist/inquiries/{inquiry} | Owning artist | ArtistInquiryTest | Private buyer-field contract |
@@ -121,13 +121,13 @@ This inventory is derived from the current route declarations in routes/web.php 
 | /, /artworks, /artworks/:slug | Visitor | test_m02_discovery.py |
 | /about, /help, /contact | Visitor | FrontendRoutingTest; browser smoke coverage to expand |
 | /unauthorized | Authenticated user with insufficient role | test_buyer_inquiry.py role-boundary scenario |
-| /artists, /artists/:slug | Visitor / buyer | test_m02_discovery.py, test_full_stack_buyer_artist_messaging.py |
+| /artists, /artists/:slug | Visitor / buyer | test_m02_discovery.py, test_full_stack_buyer_inquiry.py, test_full_stack_buyer_artist_messaging.py |
 | /collections, /collections/:slug | Visitor | test_m03_editorial.py |
 | /login, /register | Guest | test_full_stack_auth.py, accessibility smoke tests |
 | /dashboard | Authenticated | test_full_stack_auth.py |
-| /dashboard/buyer, /dashboard/buyer/inquiries, /dashboard/buyer/inquiries/:id | Buyer | test_buyer_inquiry.py |
+| /dashboard/buyer, /dashboard/buyer/inquiries, /dashboard/buyer/inquiries/:id | Buyer | test_buyer_inquiry.py, test_full_stack_buyer_inquiry.py |
 | /dashboard/buyer/messages | Buyer | full-stack messaging and notification browser tests |
-| /dashboard/artist, /dashboard/artist/profile, /dashboard/artist/artworks, /dashboard/artist/inquiries | Artist | test_m04_artist_experience.py |
+| /dashboard/artist, /dashboard/artist/profile, /dashboard/artist/artworks, /dashboard/artist/inquiries | Artist | test_m04_artist_experience.py, test_full_stack_artist_artwork.py, test_full_stack_buyer_inquiry.py |
 | /dashboard/artist/messages | Artist | full-stack messaging and notification browser tests |
 | /admin, /admin/users, /admin/artworks, /admin/message-reports, /admin/editorial | Admin | test_full_stack_admin_moderation.py, test_m03_editorial.py, responsive RTL suite |
 

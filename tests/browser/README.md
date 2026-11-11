@@ -3,7 +3,7 @@
 The browser suite uses Python unittest and Playwright Chromium.
 
 ## Test categories
-- Full-stack tests: unmocked journeys across the browser, React, Laravel session/API and isolated database. These must use disposable test data.
+- Full-stack tests: unmocked journeys across the browser, React, Laravel session/API and isolated database. These must use disposable test data. Current seeded journeys cover buyer-to-artist messaging, buyer inquiries/privacy, artist artwork submission and admin moderation.
 - Feature regressions: browser interactions with API routes intercepted by Playwright. Use these for deterministic UI states and hard-to-reproduce responses.
 - Responsive tests: viewport/RTL and overflow regressions.
 - Accessibility smoke tests: document direction, landmarks, labels and image alt attributes. These are heuristics, not a replacement for axe-core or manual keyboard/screen-reader review.
