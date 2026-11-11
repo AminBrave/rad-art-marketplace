@@ -5,7 +5,7 @@ import { Button } from './button';
 export { Button };
 
 export function IconButton({ children, label, size = 'icon', className = '', ...props }) {
-    const normalizedSize = size === 'sm' ? 'icon-sm' : size === 'lg' ? 'icon-lg' : size;
+    const normalizedSize = size === 'sm' ? 'icon-sm' : size === 'lg' ? 'icon-lg' : size === 'md' ? 'icon' : size;
     return (
         <Button
             type="button"
