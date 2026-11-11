@@ -105,7 +105,10 @@ export default function ComponentShowcase() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [search, setSearch] = useState('');
     const [page, setPage] = useState(2);
-    const [toastOpen, setToastOpen] = useState(true);\n    const [notificationsEnabled, setNotificationsEnabled] = useState(true);\n    const [selectedRole, setSelectedRole] = useState('artist');\n    const [togglePressed, setTogglePressed] = useState(false);
+    const [toastOpen, setToastOpen] = useState(true);
+    const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+    const [selectedRole, setSelectedRole] = useState('artist');
+    const [togglePressed, setTogglePressed] = useState(false);
 
     return (
         <section id="shared-components" aria-labelledby="shared-components-title" className="border-t border-border py-12">
