@@ -61,7 +61,18 @@ export default function MessagingCenter({ role }) {
     const threadsRef = useRef(threads);
     const hasLoadedThreadsRef = useRef(false);
     const directStartKeyRef = useRef(null);
+    const directStartRequestRef = useRef(null);
     const shouldStickToBottomRef = useRef(true);
+
+    useEffect(() => {
+        return () => {
+            threadsRequestRef.current?.abort();
+            messageRequestRef.current?.abort();
+            historyRequestRef.current?.abort();
+            directStartRequestRef.current?.abort();
+        };
+    }, []);
+
     const endpoint = role === 'artist' ? '/api/v1/artist/conversations' : '/api/v1/buyer/conversations';
     const loadThreads = useCallback(async ({ append = false } = {}) => {
         threadsRequestRef.current?.abort();
@@ -276,9 +287,13 @@ export default function MessagingCenter({ role }) {
             next.delete('artwork');
             return next;
         }, { replace: true });
-        axios.post('/api/v1/conversations/direct', { artist_slug: artistSlug, artwork_slug: artworkSlug || null })
+        const controller = new AbortController();
+        directStartRequestRef.current = controller;
+        axios.post('/api/v1/conversations/direct', { artist_slug: artistSlug, artwork_slug: artworkSlug || null }, { signal: controller.signal })
             .then(async ({ data }) => {
+                if (controller.signal.aborted) return;
                 await loadThreadsRef.current();
+                if (controller.signal.aborted) return;
                 setActive(data.data.id);
                 setParams((current) => {
                     const next = new URLSearchParams(current);
@@ -287,9 +302,14 @@ export default function MessagingCenter({ role }) {
                 }, { replace: true });
                 directStartKeyRef.current = null;
             })
-            .catch(() => {
-                directStartKeyRef.current = null;
-                setError('شروع گفتگوی مستقیم ممکن نشد. ممکن است پروفایل یا اثر دیگر عمومی نباشد.');
+            .catch((requestError) => {
+                if (!axios.isCancel(requestError) && !controller.signal.aborted) {
+                    directStartKeyRef.current = null;
+                    setError('شروع گفتگوی مستقیم ممکن نشد. ممکن است پروفایل یا اثر دیگر عمومی نباشد.');
+                }
+            })
+            .finally(() => {
+                if (directStartRequestRef.current === controller) directStartRequestRef.current = null;
             });
     }, [artistSlug, artworkSlug, role, setParams]);
 
