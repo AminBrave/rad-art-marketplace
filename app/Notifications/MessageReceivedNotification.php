@@ -11,6 +11,7 @@ use Illuminate\Notifications\Notification;
 class MessageReceivedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
+
     public function __construct(
         public readonly int $conversationId,
         public readonly int $messageId,
