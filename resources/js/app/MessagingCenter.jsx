@@ -509,7 +509,9 @@ export default function MessagingCenter({ role }) {
             if (Number(activeConversationRef.current) === Number(conversationId)) replaceMessage(data.data);
         } catch {
             if (Number(activeConversationRef.current) === Number(conversationId)) setError('حذف پیام انجام نشد. دوباره تلاش کنید.');
-        } finally { setActionId(null); }
+        } finally {
+            if (Number(activeConversationRef.current) === Number(conversationId)) setActionId(null);
+        }
     };
 
     const reportMessage = async (message) => {
