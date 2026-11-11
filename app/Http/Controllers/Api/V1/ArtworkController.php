@@ -79,12 +79,15 @@ class ArtworkController extends Controller
             ->whereHas('artistProfile', fn ($artist) => $artist->where('is_public', true))
             ->with(['category', 'artistProfile'])
             ->when(! empty($validated['q']), function ($query) use ($validated): void {
-                $term = '%'.$validated['q'].'%';
+                $term = $validated['q'];
                 $query->where(function ($nested) use ($term): void {
-                    $nested->where('title', 'like', $term)
-                        ->orWhere('description', 'like', $term)
-                        ->orWhere('medium', 'like', $term)
-                        ->orWhereHas('artistProfile', fn ($artist) => $artist->where('display_name', 'like', $term));
+                    PersianSearch::whereLike($nested, 'title', $term);
+                    PersianSearch::whereLike($nested, 'description', $term, 'or');
+                    PersianSearch::whereLike($nested, 'medium', $term, 'or');
+                    $nested->orWhereHas(
+                        'artistProfile',
+                        fn ($artist) => PersianSearch::whereLike($artist, 'display_name', $term),
+                    );
                 });
             })
             ->when(! empty($validated['category']), fn ($query) => $query->whereHas(
