@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import axios from 'axios';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { WorkspaceLayout } from './Layouts';
@@ -219,25 +220,25 @@ export function DashboardIndex() {
 
 export function ArtistWorkspaceLayout() {
     const { user } = useAuth();
-    const [profile, setProfile] = useState(null);
-    const [profileLoading, setProfileLoading] = useState(true);
-    const [profileError, setProfileError] = useState('');
-
-    useEffect(() => {
-        let active = true;
-        const controller = new AbortController();
-        axios.get('/api/v1/artist-profile/me', { signal: controller.signal })
-            .then(({ data }) => { if (active) setProfile(data.data ?? emptyProfile); })
-            .catch((error) => {
-                if (!active || axios.isCancel(error)) return;
-                setProfile(emptyProfile);
-                setProfileError(error.response?.status === 403
-                    ? 'حساب فعلی اجازه مدیریت این پروفایل را ندارد.'
-                    : 'دریافت پروفایل هنرمند انجام نشد. می‌توانید دوباره تلاش کنید.');
-            })
-            .finally(() => { if (active) setProfileLoading(false); });
-        return () => { active = false; controller.abort(); };
-    }, [user?.id]);
+    const queryClient = useQueryClient();
+    const profileKey = ['artist-profile', 'me', user?.id];
+    const profileQuery = useQuery({
+        queryKey: profileKey,
+        queryFn: async ({ signal }) => {
+            const { data } = await axios.get('/api/v1/artist-profile/me', { signal });
+            return data.data ?? emptyProfile;
+        },
+        enabled: Boolean(user?.id),
+        staleTime: 60_000,
+    });
+    const profile = profileQuery.data ?? (profileQuery.isError ? emptyProfile : null);
+    const profileLoading = profileQuery.isPending;
+    const profileError = profileQuery.isError
+        ? (profileQuery.error?.response?.status === 403
+            ? 'حساب فعلی اجازه مدیریت این پروفایل را ندارد.'
+            : 'دریافت پروفایل هنرمند انجام نشد. می‌توانید دوباره تلاش کنید.')
+        : '';
+    const setProfile = (nextProfile) => queryClient.setQueryData(profileKey, nextProfile);
 
     const links = [
         { to: '/dashboard/artist', label: 'نمای کلی', end: true },
