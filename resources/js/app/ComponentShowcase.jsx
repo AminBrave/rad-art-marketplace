@@ -18,6 +18,29 @@ import {
     FieldGroup,
     FieldLabel,
     Input,
+    Label,
+    NativeSelect,
+    Checkbox,
+    Radio,
+    Switch,
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
+    Progress,
+    Spinner,
+    Kbd,
+    Toggle,
+    AspectRatio,
+    SidebarProvider,
+    Sidebar,
+    SidebarHeader,
+    SidebarContent,
+    SidebarGroup,
+    SidebarGroupLabel,
+    SidebarMenu,
+    SidebarMenuItem,
+    SidebarMenuButton,
+    SidebarInset,
     Separator,
     Table,
     TableBody,
@@ -82,15 +105,15 @@ export default function ComponentShowcase() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [search, setSearch] = useState('');
     const [page, setPage] = useState(2);
-    const [toastOpen, setToastOpen] = useState(true);
+    const [toastOpen, setToastOpen] = useState(true);\n    const [notificationsEnabled, setNotificationsEnabled] = useState(true);\n    const [selectedRole, setSelectedRole] = useState('artist');\n    const [togglePressed, setTogglePressed] = useState(false);
 
     return (
         <section id="shared-components" aria-labelledby="shared-components-title" className="border-t border-border py-12">
             <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
                 <div>
-                    <p className="text-xs font-bold text-terracotta-strong">05 / COMPONENT LIBRARY</p>
+                    <p className="text-xs font-bold text-primary">05 / COMPONENT LIBRARY</p>
                     <h2 id="shared-components-title" className="mt-2 text-2xl font-bold">کتابخانه اجزای رابط</h2>
-                    <p className="mt-2 text-sm leading-7 text-muted">نمونه‌های تعاملی اجزای مشترک؛ همه اجزا با چیدمان راست‌به‌چپ سازگارند.</p>
+                    <p className="mt-2 text-sm leading-7 text-muted-foreground">نمونه‌های تعاملی اجزای مشترک؛ همه اجزا با چیدمان راست‌به‌چپ سازگارند.</p>
                 </div>
                 <div className="flex items-center gap-3"><ThemeSwitcher /><Badge variant="success">RTL ready</Badge></div>
             </div>
@@ -179,9 +202,9 @@ export default function ComponentShowcase() {
                                 <TabsTrigger value="details">جزئیات</TabsTrigger>
                                 <TabsTrigger value="history">تاریخچه</TabsTrigger>
                             </TabsList>
-                            <TabsContent value="overview"><p className="text-sm leading-7 text-muted">محتوای هر تب با کلیدهای جهت‌دار قابل پیمایش است.</p></TabsContent>
-                            <TabsContent value="details"><p className="text-sm leading-7 text-muted">جزئیات نمونه برای بررسی حالت فعال تب.</p></TabsContent>
-                            <TabsContent value="history"><p className="text-sm leading-7 text-muted">تاریخچه نمونه.</p></TabsContent>
+                            <TabsContent value="overview"><p className="text-sm leading-7 text-muted-foreground">محتوای هر تب با کلیدهای جهت‌دار قابل پیمایش است.</p></TabsContent>
+                            <TabsContent value="details"><p className="text-sm leading-7 text-muted-foreground">جزئیات نمونه برای بررسی حالت فعال تب.</p></TabsContent>
+                            <TabsContent value="history"><p className="text-sm leading-7 text-muted-foreground">تاریخچه نمونه.</p></TabsContent>
                         </Tabs>
                         <h3 className="mt-3 font-bold">صفحه‌بندی</h3>
                         <Pagination currentPage={page} lastPage={6} onPageChange={setPage} />
@@ -229,10 +252,10 @@ export default function ComponentShowcase() {
                                 <CardDescription>کارت ترکیبی با بخش‌های مستقل و قابل جایگزینی.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-sm leading-7 text-muted-foreground">اجزای کارت از یک API ترکیبی استفاده می‌کنند تا ساختار محتوا، عنوان و اقدامات از هم جدا بمانند.</p>
+                                <p className="text-sm leading-7 text-muted-foreground-foreground">اجزای کارت از یک API ترکیبی استفاده می‌کنند تا ساختار محتوا، عنوان و اقدامات از هم جدا بمانند.</p>
                             </CardContent>
                             <CardFooter className="justify-between">
-                                <span className="text-xs text-muted-foreground">به‌روزرسانی امروز</span>
+                                <span className="text-xs text-muted-foreground-foreground">به‌روزرسانی امروز</span>
                                 <Button size="sm">مشاهده جزئیات</Button>
                             </CardFooter>
                         </Card>
@@ -260,14 +283,14 @@ export default function ComponentShowcase() {
                             </Field>
                         </FieldGroup>
                         <Separator />
-                        <p className="text-xs text-muted-foreground">کنترل‌ها از توکن‌های semantic استفاده می‌کنند و وضعیت خطا با aria-invalid قابل تشخیص است.</p>
+                        <p className="text-xs text-muted-foreground-foreground">کنترل‌ها از توکن‌های semantic استفاده می‌کنند و وضعیت خطا با aria-invalid قابل تشخیص است.</p>
                     </div>
                 </div>
 
                 <div className="grid gap-4 border-b border-border pb-8">
                     <div>
                         <h3 className="font-semibold">جدول داده و واکنش‌گرایی</h3>
-                        <p className="mt-1 text-sm text-muted-foreground">جدول پایه برای ترکیب با مرتب‌سازی، فیلتر و صفحه‌بندی متناسب با هر دامنه.</p>
+                        <p className="mt-1 text-sm text-muted-foreground-foreground">جدول پایه برای ترکیب با مرتب‌سازی، فیلتر و صفحه‌بندی متناسب با هر دامنه.</p>
                     </div>
                     <Table>
                         <TableCaption>فهرست نمونه آثار در انتظار بررسی</TableCaption>
