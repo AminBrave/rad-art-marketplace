@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { Badge, Button, EmptyState, ErrorState, FormField, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField, WorkspaceHero, DashboardMetricCard, DashboardMetricSkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton } from '../components/ui';
+import { Badge, Button, EmptyState, ErrorState, FormField, Skeleton, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField, WorkspaceHero, DashboardMetricCard, DashboardMetricSkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton } from '../components/ui';
 
 const api = '/api/v1/admin';
 const statuses = [
@@ -94,7 +94,7 @@ export function AdminDashboardHome() {
                         <div><p className="text-xs font-bold text-terracotta-strong">اولویت امروز</p><h2 className="mt-1 text-lg font-black">صف بررسی آثار</h2></div>
                         <Link to="/admin/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">مشاهده صف</Link>
                     </div>
-                    {loading ? <div aria-hidden="true" className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]"><SkeletonLines lines={1} className="hidden sm:grid" /><div className="grid gap-3"><SkeletonLines lines={3} /><SkeletonLines lines={1} /></div></div> : summary.latest ? (
+                    {loading ? <div aria-hidden="true" className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]"><Skeleton className="aspect-square w-full rounded-none sm:max-w-32" /><div className="grid gap-3"><SkeletonLines lines={3} /><SkeletonLines lines={1} /></div></div> : summary.latest ? (
                         <div className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]">
                             <div className="aspect-square overflow-hidden bg-surface-muted">
                                 {summary.latest.image_url ? <img src={summary.latest.image_url} alt={'تصویر اثر ' + summary.latest.title} loading="lazy" decoding="async" className="h-full w-full object-cover" /> : <div className="grid h-full place-items-center text-xs text-muted">بدون تصویر</div>}
