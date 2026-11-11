@@ -17,3 +17,8 @@ export { ArtworkCardSkeleton, ArtistCardSkeleton, ArtworkDetailSkeleton, ArtistP
 export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './card';
 export { Alert, AlertTitle, AlertDescription } from './alert';
 export { Separator } from './separator';
+
+export { Input } from './input';
+export { Textarea } from './textarea';
+export { Select } from './select';
+export { Label } from './label';
