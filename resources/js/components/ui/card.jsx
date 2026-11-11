@@ -7,7 +7,7 @@ export const Card = forwardRef(({ className, ...props }, ref) => (
 Card.displayName = 'Card';
 
 export const CardHeader = forwardRef(({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('grid grid-cols-[1fr_auto] items-start gap-x-4 gap-y-1.5 p-6', className)} {...props} />
+    <div ref={ref} className={cn('flex flex-col gap-1.5 p-6 [&:has([data-slot=card-action])]:grid [&:has([data-slot=card-action])]:grid-cols-[1fr_auto] [&:has([data-slot=card-action])]:items-start [&:has([data-slot=card-action])]:gap-x-4', className)} {...props} />
 ));
 CardHeader.displayName = 'CardHeader';
 
@@ -22,7 +22,7 @@ export const CardDescription = forwardRef(({ className, ...props }, ref) => (
 CardDescription.displayName = 'CardDescription';
 
 export const CardAction = forwardRef(({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('col-start-2 row-span-2 row-start-1 self-start justify-self-end', className)} {...props} />
+    <div ref={ref} data-slot="card-action" className={cn('col-start-2 row-span-2 row-start-1 self-start justify-self-end', className)} {...props} />
 ));
 CardAction.displayName = 'CardAction';
 
