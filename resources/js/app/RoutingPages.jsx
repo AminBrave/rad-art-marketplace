@@ -382,7 +382,7 @@ export function UnauthorizedPage() {
             <p className="text-sm font-bold text-primary">۴۰۳</p>
             <h1 className="mt-3 text-3xl font-semibold">دسترسی به این بخش مجاز نیست</h1>
             <p className="mt-4 leading-8 text-muted-foreground">نقش این حساب اجازه ورود به این فضای کاربری را ندارد. مجوزهای واقعی همچنان در سمت سرور بررسی می‌شوند.</p>
-            <Link to={user ? (user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist') : '/'} className="mt-7 inline-block rounded-full bg-brand-ink px-6 py-3 font-bold text-white">بازگشت</Link>
+            <Button asChild variant="default" size="default" className="mt-7 inline-block"><Link to={user ? (user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist') : '/'}>بازگشت</Link></Button>
         </main>
     );
 }
@@ -393,7 +393,7 @@ export function NotFoundPage() {
             <p className="text-sm font-bold text-primary">۴۰۴</p>
             <h1 className="mt-3 text-3xl font-semibold">این صفحه پیدا نشد</h1>
             <p className="mt-4 leading-8 text-muted-foreground">نشانی واردشده معتبر نیست یا صفحه جابه‌جا شده است.</p>
-            <Link to="/" className="mt-7 inline-block rounded-full bg-brand-ink px-6 py-3 font-bold text-white">بازگشت به صفحه اصلی</Link>
+            <Button asChild variant="default" size="default" className="mt-7 inline-block"><Link to="/">بازگشت به صفحه اصلی</Link></Button>
         </main>
     );
 }
