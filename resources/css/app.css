@@ -561,3 +561,11 @@ a {
 [data-theme='new-york'] .ra-control {
     background: hsl(var(--background));
 }
+
+
+/* Legacy Rad Art text-muted utility remains compatible with the semantic muted surface token. */
+@layer utilities {
+    .text-muted {
+        color: var(--color-text-muted);
+    }
+}
