@@ -155,15 +155,6 @@ export default function MessagingCenter({ role }) {
                 && (threadFilter === 'archived' ? !value : value);
             if (leavesCurrentFilter) {
                 setThreads((current) => current.filter((item) => Number(item.id) !== Number(thread.id)));
-                if (Number(activeConversationRef.current) === Number(thread.id)) {
-                    activeConversationRef.current = null;
-                    setActive(null);
-                    setParams((current) => {
-                        const next = new URLSearchParams(current);
-                        next.delete('conversation');
-                        return next;
-                    }, { replace: true });
-                }
             } else {
                 setThreads((current) => current.map((item) => Number(item.id) === Number(thread.id)
                     ? { ...item, [setting]: value }
