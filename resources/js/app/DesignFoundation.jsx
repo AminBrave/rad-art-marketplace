@@ -3,7 +3,7 @@ import ComponentShowcase from './ComponentShowcase';
 const swatches = [
     { name: 'Ivory', value: '#F7F5F0', token: 'canvas' },
     { name: 'Charcoal', value: '#242320', token: 'ink' },
-    { name: 'Terracotta', value: '#B65C3A', token: 'terracotta' },
+    { name: 'Terracotta', value: '#A64F31', token: 'terracotta' },
     { name: 'Sand', value: '#D8C9B7', token: 'sand' },
     { name: 'Olive', value: '#536052', token: 'olive' },
     { name: 'White', value: '#FFFFFF', token: 'paper' },
