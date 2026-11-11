@@ -134,4 +134,6 @@ test('shared query cache keeps recently visited data warm and supports stale-whi
     assert.ok(queryClient.includes('refetchOnReconnect: true'));
     assert.ok(artistWorkspace.includes("queryKey: ['artist-workspace', 'artworks', user?.id]"));
     assert.ok(artistWorkspace.includes('enabled: !profileLoading && Boolean(profile?.slug)'));
+    assert.ok(routeLoading.includes("queryKey: profileKey"));
+    assert.ok(routeLoading.includes('queryClient.setQueryData(profileKey, nextProfile)'));
 });
