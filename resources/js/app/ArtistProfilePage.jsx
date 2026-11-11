@@ -78,37 +78,37 @@ export default function ArtistProfilePage() {
     return (
         <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl">
             <nav aria-label="مسیر صفحه" className="text-sm text-muted-foreground">
-                <Link to="/" className="hover:text-terracotta-strong">خانه</Link><span className="mx-2" aria-hidden="true">/</span>
-                <Link to="/artists" className="hover:text-terracotta-strong">هنرمندان</Link><span className="mx-2" aria-hidden="true">/</span>
+                <Link to="/" className="hover:text-primary">خانه</Link><span className="mx-2" aria-hidden="true">/</span>
+                <Link to="/artists" className="hover:text-primary">هنرمندان</Link><span className="mx-2" aria-hidden="true">/</span>
                 <span aria-current="page" className="text-foreground">پروفایل هنرمند</span>
             </nav>
             {profile ? (
                 <>
                     <section className="relative mt-7 overflow-hidden border border-border bg-card">
-                        <div aria-hidden="true" className="absolute inset-x-0 top-0 h-2 bg-terracotta" />
+                        <div aria-hidden="true" className="absolute inset-x-0 top-0 h-2 bg-primary" />
                         <div className="grid gap-7 p-7 pt-10 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-end">
                             <div>
-                                <p className="text-xs font-bold tracking-wide text-terracotta-strong">پرونده هنرمند</p>
-                                <h1 className="mt-3 text-4xl font-black leading-tight">{profile.display_name}</h1>
+                                <p className="text-xs font-bold tracking-wide text-primary">پرونده هنرمند</p>
+                                <h1 className="mt-3 text-4xl font-semibold leading-tight">{profile.display_name}</h1>
                                 {profile.city && <p className="mt-3 text-sm text-muted-foreground">{profile.city}</p>}
                                 {profile.bio && <p className="mt-7 max-w-3xl whitespace-pre-line text-sm leading-9 text-muted-foreground">{profile.bio}</p>}
                                 <div className="mt-7 flex flex-wrap gap-4 text-sm font-semibold">
-                                    {profile.website_url && <a href={profile.website_url} target="_blank" rel="noreferrer" className="text-terracotta-strong underline">وب‌سایت هنرمند</a>}
-                                    {profile.instagram_handle && <a href={'https://instagram.com/' + profile.instagram_handle} target="_blank" rel="noreferrer" className="text-terracotta-strong underline">اینستاگرام</a>}
+                                    {profile.website_url && <a href={profile.website_url} target="_blank" rel="noreferrer" className="text-primary underline">وب‌سایت هنرمند</a>}
+                                    {profile.instagram_handle && <a href={'https://instagram.com/' + profile.instagram_handle} target="_blank" rel="noreferrer" className="text-primary underline">اینستاگرام</a>}
                                 </div>
                             </div>
                             <div className="flex flex-wrap items-center gap-3 lg:flex-col lg:items-stretch">
                                 {user?.role === 'buyer' && <>
-                                    <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(profile.slug)} className="bg-ink px-5 py-3 text-center text-sm font-bold text-white hover:bg-terracotta">پیام مستقیم</Link>
+                                    <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(profile.slug)} className="bg-brand-ink px-5 py-3 text-center text-sm font-bold text-white hover:bg-primary">پیام مستقیم</Link>
                                     {isFeatureEnabled('inquiries') && <ContactArtistForm artistSlug={profile.slug} />}
                                 </>}
-                                {!user && isFeatureEnabled('inquiries') && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className="bg-ink px-5 py-3 text-center text-sm font-bold text-white">درخواست ارتباط با هنرمند</Link>}
+                                {!user && isFeatureEnabled('inquiries') && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className="bg-brand-ink px-5 py-3 text-center text-sm font-bold text-white">درخواست ارتباط با هنرمند</Link>}
                             </div>
                         </div>
                     </section>
                     <section className="mt-12">
                         <div className="flex flex-wrap items-end justify-between gap-3">
-                            <div><p className="text-xs font-bold text-terracotta-strong">پورتفولیو</p><h2 className="mt-2 text-2xl font-black">آثار تأییدشده این هنرمند</h2><p className="mt-2 text-sm text-muted-foreground">نمونه‌کارهای عمومی؛ تازه‌ترین آثار در ابتدای فهرست قرار دارند.</p></div>
+                            <div><p className="text-xs font-bold text-primary">پورتفولیو</p><h2 className="mt-2 text-2xl font-semibold">آثار تأییدشده این هنرمند</h2><p className="mt-2 text-sm text-muted-foreground">نمونه‌کارهای عمومی؛ تازه‌ترین آثار در ابتدای فهرست قرار دارند.</p></div>
                             <span className="text-xs text-muted-foreground">{allArtworks.length.toLocaleString('fa-IR')} اثر بارگذاری‌شده</span>
                         </div>
                         {portfolioCategories.length > 1 && <div className="mt-6 flex flex-wrap gap-2" aria-label="فیلتر آثار بر اساس دسته">
@@ -122,9 +122,9 @@ export default function ArtistProfilePage() {
                 </>
             ) : (
                 <section className="mt-8 border border-border bg-card p-8">
-                    <h1 className="text-2xl font-black">{status === 403 ? 'دسترسی به پروفایل مجاز نیست' : 'پروفایل در دسترس نیست'}</h1>
+                    <h1 className="text-2xl font-semibold">{status === 403 ? 'دسترسی به پروفایل مجاز نیست' : 'پروفایل در دسترس نیست'}</h1>
                     <p className="mt-3 text-sm leading-7 text-muted-foreground">این پروفایل وجود ندارد یا نمایش عمومی آن غیرفعال شده است.</p>
-                    {profileQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-danger">ارتباط با سرور برقرار نشد. <Button type="button" onClick={() => profileQuery.refetch()} variant="ghost" size="default">تلاش دوباره</Button></p>}
+                    {profileQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-destructive">ارتباط با سرور برقرار نشد. <Button type="button" onClick={() => profileQuery.refetch()} variant="ghost" size="default">تلاش دوباره</Button></p>}
                 </section>
             )}
         </main>
