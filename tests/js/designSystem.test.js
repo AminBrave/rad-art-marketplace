@@ -55,6 +55,8 @@ test('shared content and feedback components use semantic surface and state cont
     assert.ok(feedback.includes('ra-state--empty'));
     assert.ok(feedback.includes('ra-state--error'));
     assert.ok(feedback.includes('ra-state--success'));
+    assert.ok(feedback.includes('app-skeleton'));
+    assert.ok(feedback.includes('ra-toast--success'));
 });
 
 test('RAD visual tokens are declared in one canonical root block', () => {
@@ -67,7 +69,7 @@ test('shared layout, surface, button, badge and form contracts are defined centr
     for (const contract of [
         '.ra-page--wide', '.ra-page--reading', '.ra-page-header__title',
         '.ra-section-header__title', '.ra-surface--muted', '.ra-surface--interactive',
-        '.ra-badge--success', '.ra-badge--danger', '.ra-form-field__error', '.ra-workspace-hero', '.ra-metric-card', '.ra-tabs-list', '.ra-tabs-trigger', '.ra-menu-content', '.ra-menu-item', '.ra-dialog-content', '.ra-dialog-title', '.ra-breadcrumbs', '.ra-pagination__page',
+        '.ra-badge--success', '.ra-badge--danger', '.ra-form-field__error', '.ra-workspace-hero', '.ra-metric-card', '.ra-tabs-list', '.ra-tabs-trigger', '.ra-menu-content', '.ra-menu-item', '.ra-dialog-content', '.ra-dialog-title', '.ra-breadcrumbs', '.ra-pagination__page', '.ra-toast', '.ra-toast--success', '.ra-toast--danger',
         '.ra-control--textarea', '.ra-workspace-content',
     ]) {
         assert.ok(css.includes(contract), 'Missing component contract: ' + contract);
