@@ -7,20 +7,20 @@ This repository uses a small, project-scoped toolset. The goal is better code un
 1. System/developer instructions and user requests.
 2. AGENTS.md — authoritative repository contract.
 3. Relevant project architecture, product, API, security and operational documentation.
-4. Project skills under .agents/skills/ and platform-specific skills installed by the developer.
+4. Project skills under .agents/skills/ or .claude/skills/.
 5. Third-party agent frameworks and generated knowledge graphs.
 
 Imported skills are advisory. They must not override project architecture, security rules, user instructions, or the opt-in verification policy. If a skill says to run tests, lint, type-check, build, start a server, install dependencies or execute a scanner, treat that as a recommendation and ask for explicit authorization before executing it.
 
 ## Selected upstream projects
 
-| Project | Use in Rademan | Integration approach |
-|---|---|---|
-| [Everything Claude Code (ECC)](https://github.com/affaan-m/ECC) | Agent workflow patterns, specialist roles, context discipline and optional security tooling | Use selectively. Do not install the full bundle or enable hooks by default. |
-| [Graphify](https://github.com/Graphify-Labs/graphify) | Local code-relationship graph and graph queries for unfamiliar or cross-cutting changes | Install the official project-scoped skill when desired; build/update the graph only when it will save repeated exploration. |
-| [Jeffallan/claude-skills](https://github.com/Jeffallan/claude-skills) | Specialist skill patterns for Laravel, React, debugging, security and code review | Use the small project-specific skills in .agents/skills/; they are adapted to Rademan rather than copied wholesale. |
+| Project | Use in Rademan | Integration approach | Reviewed source |
+|---|---|---|---|
+| [Everything Claude Code (ECC)](https://github.com/affaan-m/ECC) | Agent workflow patterns, specialist roles, context discipline and optional security tooling | Use selectively. Do not install the full bundle or enable hooks by default. | MIT; reviewed README commit d2ef268 |
+| [Graphify](https://github.com/Graphify-Labs/graphify) | Local code-relationship graph and graph queries for unfamiliar or cross-cutting changes | Install the official project-scoped skill when desired; build/update the graph only when it will save repeated exploration. | Apache-2.0; reviewed skill commit 59336ec |
+| [Jeffallan/claude-skills](https://github.com/Jeffallan/claude-skills) | Specialist skill patterns for Laravel, React, debugging, security and code review | Use the small project-specific skills in .agents/skills/ and .claude/skills/; they are adapted to Rademan rather than copied wholesale. | MIT; reviewed source commit 078a25c |
 
-Upstream licenses: ECC and Jeffallan/claude-skills are MIT-licensed; Graphify is Apache-2.0. Review upstream licenses and notices again before redistributing substantial copied material.
+Review upstream licenses and notices again before redistributing substantial copied material.
 
 ## 1. Graphify — optional local knowledge graph
 
@@ -71,7 +71,7 @@ ECC's MIT license permits use subject to its license notice. It is not necessary
 
 ## 3. Jeffallan skills — project-scoped specialist skills
 
-The curated skills in .agents/skills/ are deliberately limited to this stack:
+The curated skills are deliberately limited to this stack and mirrored for the two common project-level skill locations:
 
 - feature-planning: define user outcome, scope, acceptance and edge cases.
 - laravel-backend: Laravel 13, PHP 8.3+, Eloquent, API and authorization work.
@@ -80,9 +80,7 @@ The curated skills in .agents/skills/ are deliberately limited to this stack:
 - security-review: threat-aware implementation and review.
 - code-review: read-only review of the focused diff.
 
-These skills are adapted from patterns in Jeffallan/claude-skills and intentionally remove incompatible assumptions (for example React 19/TypeScript defaults and mandatory test execution). They are not a substitute for reading current project source and contracts.
-
-Codex discovers project skills in .agents/skills/. For Claude Code, install/copy selected skill folders into .claude/skills/ using the platform's supported project-scope mechanism. Avoid installing the same skill twice through both a marketplace plugin and a manual copy.
+Codex reads .agents/skills/. Claude Code reads .claude/skills/. The mirrored copies should be kept in sync. These skills are adapted from patterns in Jeffallan/claude-skills and intentionally remove incompatible assumptions (for example React 19/TypeScript defaults and mandatory test execution). They are not a substitute for reading current project source and contracts.
 
 ## Task routing
 
