@@ -9,6 +9,7 @@ const button = readFileSync(new URL('../../resources/js/components/ui/button.jsx
 const primitives = readFileSync(new URL('../../resources/js/components/ui/primitives.jsx', import.meta.url), 'utf8');
 const field = readFileSync(new URL('../../resources/js/components/ui/field.jsx', import.meta.url), 'utf8');
 const cards = readFileSync(new URL('../../resources/js/components/ui/cards.jsx', import.meta.url), 'utf8');
+const card = readFileSync(new URL('../../resources/js/components/ui/card.jsx', import.meta.url), 'utf8');
 const feedback = readFileSync(new URL('../../resources/js/components/ui/feedback.jsx', import.meta.url), 'utf8');
 
 test('New York light and dark themes expose complete semantic roles', () => {
@@ -52,7 +53,7 @@ test('New York Button and Field primitives expose documented variants and access
 
 test('marketplace cards and feedback use composable semantic surfaces', () => {
     assert.ok(cards.includes('<Card'));
-    assert.ok(cards.includes('bg-card'));
+    assert.ok(card.includes('bg-card'));
     assert.ok(cards.includes('<Badge'));
     assert.ok(feedback.includes('<Alert'));
     assert.ok(feedback.includes('role="progressbar"') || feedback.includes('<Progress'));
