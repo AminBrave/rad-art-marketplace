@@ -41,8 +41,8 @@ export default function ContactArtistForm({ artistSlug, artworkId = null }) {
     };
 
     return (
-        <form onSubmit={submit} className="mt-8 rounded-2xl border border-border bg-muted p-5" dir="rtl">
-            <h2 className="text-lg font-extrabold">ارسال پیام به هنرمند</h2>
+        <form onSubmit={submit} className="mt-8 rounded-lg border border-border bg-muted p-5" dir="rtl">
+            <h2 className="text-lg font-semibold">ارسال پیام به هنرمند</h2>
             <p className="mt-2 text-xs leading-6 text-muted-foreground">اطلاعات تماس خصوصی شما در اختیار هنرمند قرار نمی‌گیرد. پیام در صندوق ورودی حساب او ثبت می‌شود.</p>
             <label className="mt-4 block text-sm font-semibold">
                 موضوع
@@ -61,7 +61,7 @@ export default function ContactArtistForm({ artistSlug, artworkId = null }) {
             <Button disabled={busy} variant="default" size="default" type="submit" className="mt-4">
                 {busy ? 'در حال ارسال…' : 'ارسال پیام'}
             </Button>
-            {feedback && <p role="status" className="mt-3 text-sm text-terracotta-strong">{feedback}</p>}
+            {feedback && <p role="status" className="mt-3 text-sm text-primary">{feedback}</p>}
         </form>
     );
 }
