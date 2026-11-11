@@ -507,3 +507,17 @@ a {
         font-size: 0.9375rem;
     }
 }
+
+/* Messaging typography and RAD-native conversation surfaces. */
+:root {
+    --color-message-own: color-mix(in srgb, var(--color-terracotta) 12%, white);
+    --color-message-peer: var(--color-paper);
+}
+.rad-messaging { font-family: var(--font-persian); }
+.rad-messaging [dir='ltr'] { font-family: inherit; }
+.rad-messaging [dir='rtl'] { font-family: var(--font-persian); }
+.rad-messaging input,
+.rad-messaging textarea,
+.rad-messaging select { font-family: var(--font-persian); font-synthesis: none; }
+.rad-messaging textarea:focus,
+.rad-messaging textarea:focus-visible { outline: none !important; box-shadow: none !important; }
