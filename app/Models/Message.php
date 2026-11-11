@@ -44,6 +44,11 @@ class Message extends Model
         return $this->belongsTo(User::class, 'sender_user_id');
     }
 
+    public function artwork(): BelongsTo
+    {
+        return $this->belongsTo(Artwork::class);
+    }
+
     public function replyTo(): BelongsTo
     {
         return $this->belongsTo(self::class, 'reply_to_id')->withTrashed();
