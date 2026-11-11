@@ -15,6 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 
 class ConversationController extends Controller
@@ -133,7 +134,7 @@ class ConversationController extends Controller
 
         $query = $conversation->messages()
             ->withTrashed()
-            ->with(['sender', 'replyTo.sender', 'artwork.category', 'artwork.artistProfile', 'reactions', 'attachments']);
+            ->with($this->messageRelations());
 
         if (isset($filters['before_id'])) {
             // Keyset pagination keeps older history stable while new messages arrive.
@@ -168,6 +169,7 @@ class ConversationController extends Controller
     {
         $this->authorizeParticipant($request->user(), $conversation, 'sendMessage');
 
+        $supportsArtworkReferences = Schema::hasColumn('messages', 'artwork_id');
         $validated = $request->validate([
             'body' => ['required', 'string', 'min:1', 'max:5000'],
             'client_message_id' => ['nullable', 'string', 'max:64', 'regex:/^[A-Za-z0-9._:-]+$/'],
@@ -176,8 +178,14 @@ class ConversationController extends Controller
                 'integer',
                 Rule::exists('messages', 'id')->where('conversation_id', $conversation->id),
             ],
-            'artwork_id' => ['nullable', 'integer', Rule::exists('artworks', 'id')->where('status', Artwork::STATUS_APPROVED)],
+            'artwork_id' => $supportsArtworkReferences
+                ? ['nullable', 'integer', Rule::exists('artworks', 'id')->where('status', Artwork::STATUS_APPROVED)]
+                : ['nullable', 'integer'],
         ]);
+
+        if (! $supportsArtworkReferences && ! empty($validated['artwork_id'])) {
+            abort(503, 'ارجاع اثر تا زمان به‌روزرسانی پایگاه داده در دسترس نیست.');
+        }
 
         if (! empty($validated['artwork_id'])) {
             abort_unless((int) $request->user()->id === (int) $conversation->buyer_user_id, 403);
@@ -197,18 +205,22 @@ class ConversationController extends Controller
                     ->first();
 
                 if ($existing) {
-                    return $existing->load(['sender', 'replyTo.sender', 'artwork.category', 'artwork.artistProfile', 'reactions', 'attachments']);
+                    return $existing->load($this->messageRelations());
                 }
             }
 
-            $message = $lockedConversation->messages()->create([
+            $attributes = [
                 'sender_user_id' => $request->user()->id,
                 'client_message_id' => $validated['client_message_id'] ?? null,
                 'body' => trim($validated['body']),
                 'reply_to_id' => $validated['reply_to_id'] ?? null,
-                'artwork_id' => $validated['artwork_id'] ?? null,
                 'delivered_at' => now(),
-            ]);
+            ];
+            if (Schema::hasColumn('messages', 'artwork_id')) {
+                $attributes['artwork_id'] = $validated['artwork_id'] ?? null;
+            }
+
+            $message = $lockedConversation->messages()->create($attributes);
 
             $lockedConversation->forceFill(['last_message_at' => $message->created_at])->save();
 
@@ -349,6 +361,24 @@ class ConversationController extends Controller
         ]);
     }
 
+    /**
+     * Keep ordinary direct messaging available while an older deployment is
+     * waiting for the nullable artwork reference migration.
+     *
+     * @return array<int, string>
+     */
+    private function messageRelations(): array
+    {
+        $relations = ['sender', 'replyTo.sender', 'reactions', 'attachments'];
+
+        if (Schema::hasColumn('messages', 'artwork_id')) {
+            $relations[] = 'artwork.category';
+            $relations[] = 'artwork.artistProfile';
+        }
+
+        return $relations;
+    }
+
     private function authorizeParticipant(User $user, Conversation $conversation, string $ability): void
     {
         abort_unless($user->can($ability, $conversation), 404);
@@ -484,22 +514,24 @@ class ConversationController extends Controller
             ]
         )->values()->all();
 
+        $artwork = $message->relationLoaded('artwork') ? $message->getRelation('artwork') : null;
+
         return [
             'id' => $message->id,
             'sender_id' => $message->sender_user_id,
             'sender_name' => $message->sender?->name,
             'body' => $message->trashed() ? null : $message->body,
-            'artwork' => $message->artwork ? [
-                'id' => $message->artwork->id,
-                'title' => $message->artwork->title,
-                'slug' => $message->artwork->slug,
-                'image_url' => '/api/v1/artworks/'.$message->artwork->slug.'/image',
-                'category' => $message->artwork->category?->name,
-                'medium' => $message->artwork->medium,
-                'dimensions' => $message->artwork->dimensions,
-                'year' => $message->artwork->year,
-                'price' => $message->artwork->price,
-                'artist_name' => $message->artwork->artistProfile?->display_name,
+            'artwork' => $artwork ? [
+                'id' => $artwork->id,
+                'title' => $artwork->title,
+                'slug' => $artwork->slug,
+                'image_url' => '/api/v1/artworks/'.$artwork->slug.'/image',
+                'category' => $artwork->category?->name,
+                'medium' => $artwork->medium,
+                'dimensions' => $artwork->dimensions,
+                'year' => $artwork->year,
+                'price' => $artwork->price,
+                'artist_name' => $artwork->artistProfile?->display_name,
             ] : null,
             'reply_to' => $message->replyTo ? [
                 'id' => $message->replyTo->id,
