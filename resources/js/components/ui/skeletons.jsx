@@ -183,6 +183,17 @@ export function AdminEditorialSkeleton() {
     );
 }
 
+export function CollectionDetailSkeleton() {
+    return (
+        <PageContainer as="main" className="min-h-[65vh] py-12" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت مجموعه منتخب">
+            <span className="sr-only">در حال دریافت مجموعه منتخب…</span>
+            <nav aria-hidden="true" className="flex items-center gap-2"><Skeleton className="h-3 w-10 rounded-sm" /><Skeleton className="h-3 w-2 rounded-sm" /><Skeleton className="h-3 w-20 rounded-sm" /></nav>
+            <header className="mt-7 max-w-3xl border-b border-border pb-8"><Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="mt-3 h-10 w-2/3 rounded-sm" /><div className="mt-5 grid gap-2"><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div></header>
+            <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}</div>
+        </PageContainer>
+    );
+}
+
 export function ArtworkDetailSkeleton() {
     return (
         <PageContainer as="main" className="min-h-[65vh] py-10 lg:py-14" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت اثر هنری">
