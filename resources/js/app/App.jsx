@@ -225,7 +225,7 @@ export default function App() {
                         <a href="#artworks" className="rounded-full bg-brand-ink px-7 py-3.5 text-sm font-bold text-white transition hover:bg-primary">
                             به تماشای آثار
                         </a>
-                        <a href="#account" className="rounded-full border border-border px-7 py-3.5 text-sm font-bold transition hover:border-ink">
+                        <a href="#account" className="rounded-full border border-border px-7 py-3.5 text-sm font-bold transition hover:border-foreground">
                             برای هنرمندان
                         </a>
                     </div>
