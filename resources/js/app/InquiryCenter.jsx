@@ -119,11 +119,11 @@ export default function InquiryCenter({ user, hasProfile }) {
                         <ul className="divide-y divide-border">
                             {items.map((item) => (
                                 <li key={item.id}>
-                                    <button type="button" onClick={() => loadDetail(item)} aria-current={selected?.id === item.id ? 'true' : undefined} className={`block w-full p-4 text-right transition-colors hover:bg-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus ${selected?.id === item.id ? 'border-s-4 border-terracotta bg-muted' : ''}`}>
+                                    <Button type="button" onClick={() => loadDetail(item)} aria-current={selected?.id === item.id ? 'true' : undefined} variant="ghost" size="default">
                                         <span className="flex items-start justify-between gap-2"><span className="min-w-0 truncate text-sm font-bold text-foreground">{item.subject}</span><Badge variant={item.status === 'new' ? 'accent' : item.status === 'archived' ? 'neutral' : 'success'}>{statusLabels[item.status] ?? item.status}</Badge></span>
                                         <span className="mt-2 block text-xs text-muted-foreground">{isArtist ? item.buyer?.name : item.artist?.display_name}</span>
                                         <span className="mt-1 block text-xs text-muted-foreground">{new Date(item.created_at).toLocaleDateString('fa-IR')}</span>
-                                    </button>
+                                    </Button>
                                 </li>
                             ))}
                         </ul>
