@@ -193,6 +193,7 @@ test('artwork-origin messages persist and render a reply-style artwork reference
     assert.ok(messaging.includes('setPendingArtwork(artwork)'));
     assert.ok(messaging.includes('پاسخ درباره این اثر'));
     assert.ok(messaging.includes('اثر مورد گفتگو'));
+    assert.ok(messaging.includes("ارسال پیام درباره ' + context.artwork.title"));
     assert.ok(conversationApi.includes("'artwork_id' => ['nullable', 'integer'"));
     assert.ok(conversationApi.includes("'image_url' => '/api/v1/artworks/'.$message->artwork->slug.'/image'"));
     assert.ok(conversationApi.includes("$artwork->artistProfile?->user_id"));
