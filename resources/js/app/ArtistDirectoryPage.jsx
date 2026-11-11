@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
-import { ArtistCard, ArtistCardSkeleton, EmptyState, ErrorState, SearchField } from '../components/ui';
+import { ArtistCard, ArtistCardSkeleton, EmptyState, ErrorState, SearchField, PageContainer, SectionHeader } from '../components/ui';
 
 export default function ArtistDirectoryPage() {
     const [params, setParams] = useSearchParams();
@@ -45,7 +45,7 @@ export default function ArtistDirectoryPage() {
     const submitSearch = (value) => setParams(value.trim() ? { q: value.trim() } : {});
 
     return (
-        <main className="mx-auto min-h-[65vh] max-w-7xl px-5 pb-16 pt-8 sm:px-8 sm:pt-12 lg:px-10" dir="rtl">
+        <PageContainer as="main" className="min-h-[65vh] pb-16 pt-8 sm:pt-12" dir="rtl">
             <nav aria-label="مسیر صفحه" className="text-xs text-muted">
                 <span>خانه</span><span className="mx-2" aria-hidden="true">/</span><span aria-current="page" className="text-ink">هنرمندان</span>
             </nav>
@@ -66,16 +66,11 @@ export default function ArtistDirectoryPage() {
             </header>
 
             <section className="mt-10" aria-labelledby="artist-directory-heading">
-                <div className="flex flex-wrap items-end justify-between gap-3 border-b border-border pb-4">
-                    <div>
-                        <p className="text-[11px] font-bold text-terracotta-strong">جامعه هنرمندان</p>
-                        <h2 id="artist-directory-heading" className="mt-1 text-xl font-black sm:text-2xl">{query ? 'نتایج جست‌وجو' : 'چهره‌های خلاق'}</h2>
-                    </div>
-                    <p className="text-xs text-muted" aria-live="polite">
-                        {loading ? 'در حال دریافت هنرمندان…' : meta.total.toLocaleString('fa-IR') + ' هنرمند'}
-                        {artistsQuery.isFetching && !loading ? ' · به‌روزرسانی…' : ''}
-                    </p>
-                </div>
+                <SectionHeader
+                    eyebrow="جامعه هنرمندان"
+                    title={query ? 'نتایج جست‌وجو' : 'چهره‌های خلاق'}
+                    actions={<p className="text-xs text-muted" aria-live="polite">{loading ? 'در حال دریافت هنرمندان…' : meta.total.toLocaleString('fa-IR') + ' هنرمند'}{artistsQuery.isFetching && !loading ? ' · به‌روزرسانی…' : ''}</p>}
+                />
 
                 {loading ? (
                     <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((item) => <ArtistCardSkeleton key={item} />)}</div>
@@ -95,6 +90,6 @@ export default function ArtistDirectoryPage() {
                     <button type="button" disabled={page >= meta.last_page} onClick={() => updatePage(page + 1)} className="min-h-11 border border-border px-5 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40">بعدی</button>
                 </nav>
             )}
-        </main>
+        </PageContainer>
     );
 }
