@@ -111,5 +111,34 @@ class InquiryDisabledBrowserTests(unittest.TestCase):
             context.close()
 
 
+    def test_artwork_detail_hides_inquiry_form_but_keeps_direct_message_entry(self):
+        context, page = self.new_page()
+        try:
+            page.route("**/api/v1/artworks/qa-work", lambda route: route.fulfill(
+                status=200, content_type="application/json",
+                body=json.dumps({"data": {
+                    "id": 500,
+                    "slug": "qa-work",
+                    "title": "اثر آزمایشی",
+                    "price": None,
+                    "image_url": "https://example.test/artwork.png",
+                    "category": {"name": "نقاشی"},
+                    "artist": {"slug": "qa-artist", "display_name": "هنرمند آزمایشی"},
+                    "availability": "available",
+                    "medium": "رنگ روغن",
+                    "dimensions": "۴۰ × ۶۰ سانتی‌متر",
+                    "year": 2024,
+                    "related_artworks": [],
+                }}, ensure_ascii=False),
+            ))
+            page.goto(BASE_URL + "/artworks/qa-work")
+            page.get_by_role("heading", name="اثر آزمایشی").wait_for()
+            page.get_by_role("link", name="پیام مستقیم درباره این اثر").wait_for()
+            self.assertEqual(page.get_by_label("موضوع").count(), 0)
+            self.assertEqual(page.get_by_label("متن پیام").count(), 0)
+        finally:
+            context.close()
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
