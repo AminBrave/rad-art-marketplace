@@ -17,7 +17,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
     const isWorkspace = pathname === '/dashboard' || pathname.startsWith('/dashboard/') || pathname.startsWith('/admin');
     const isArtworkDetail = /^\/artworks\/[^/]+/.test(pathname);
     const isArtistProfile = /^\/artists\/[^/]+/.test(pathname);
-    const isForm = /\/(login|register)$/.test(pathname) || (isWorkspace && /\/(profile|artworks)$/.test(pathname));
+    const isForm = /\/(login|register)$/.test(pathname) || /^\/dashboard\/artist\/(profile|artworks)$/.test(pathname);
 
     if (isArtworkDetail) return <ArtworkDetailSkeleton />;
     if (isArtistProfile) return <ArtistProfileSkeleton />;
