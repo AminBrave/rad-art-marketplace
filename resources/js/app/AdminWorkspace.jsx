@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { Badge, Button, EmptyState, ErrorState, FormField, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField, Textarea, Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../components/ui';
+import { Badge, Button, EmptyState, ErrorState, FormField, Pagination, Select, SkeletonLines, SuccessState, Textarea, Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../components/ui';
 
 const api = '/api/v1/admin';
 const statuses = [
@@ -20,7 +20,7 @@ const dateLabel = (value) => {
 };
 
 function SummaryCard({ label, value, description, to }) {
-    return <Link to={to} className="block border border-border bg-card p-5 transition-colors hover:border-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"><p className="text-sm text-muted-foreground">{label}</p><p className="mt-3 text-3xl font-semibold tabular-nums">{value ?? '—'}</p><p className="mt-2 text-xs leading-6 text-muted-foreground">{description}</p></Link>;
+    return <Link to={to} className="block border border-border bg-card p-5 transition-colors hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"><p className="text-sm text-muted-foreground">{label}</p><p className="mt-3 text-3xl font-semibold tabular-nums">{value ?? '—'}</p><p className="mt-2 text-xs leading-6 text-muted-foreground">{description}</p></Link>;
 }
 
 export function AdminDashboardHome() {
@@ -104,7 +104,7 @@ export function AdminArtworkModeration() {
                             {artwork.description && <p className="mt-4 line-clamp-4 text-sm leading-7 text-muted-foreground">{artwork.description}</p>}{artwork.rejection_note && <p className="mt-3 border-s-2 border-border bg-muted p-3 text-xs leading-6 text-muted-foreground">یادداشت ثبت‌شده: {artwork.rejection_note}</p>}
                         </div>
                     </div>
-                    {actionable && <div className="border-t border-border p-5"><FormField label="توضیح برای هنرمند" hint="برای رد اثر یا درخواست اصلاح الزامی است؛ حداکثر ۲۰۰۰ نویسه."><TextareaField value={notes[artwork.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [artwork.id]: event.target.value }))} maxLength={2000} rows={3} /></FormField><div className="mt-4 flex flex-wrap gap-2"><Button size="sm" onClick={() => moderate(artwork, 'approve')} loading={busyId === artwork.id} disabled={busyId !== null}>تأیید و انتشار</Button><Button size="sm" variant="outline" onClick={() => moderate(artwork, 'request_changes')} disabled={busyId !== null}>درخواست اصلاح</Button><Button size="sm" variant="danger" onClick={() => moderate(artwork, 'reject')} disabled={busyId !== null}>رد اثر</Button></div></div>}
+                    {actionable && <div className="border-t border-border p-5"><FormField label="توضیح برای هنرمند" hint="برای رد اثر یا درخواست اصلاح الزامی است؛ حداکثر ۲۰۰۰ نویسه."><Textarea value={notes[artwork.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [artwork.id]: event.target.value }))} maxLength={2000} rows={3} /></FormField><div className="mt-4 flex flex-wrap gap-2"><Button size="sm" onClick={() => moderate(artwork, 'approve')} loading={busyId === artwork.id} disabled={busyId !== null}>تأیید و انتشار</Button><Button size="sm" variant="outline" onClick={() => moderate(artwork, 'request_changes')} disabled={busyId !== null}>درخواست اصلاح</Button><Button size="sm" variant="danger" onClick={() => moderate(artwork, 'reject')} disabled={busyId !== null}>رد اثر</Button></div></div>}
                 </article>;
             })}</div>
             <Pagination currentPage={result.current_page ?? page} lastPage={result.last_page ?? 1} onPageChange={changePage} disabled={loading || busyId !== null} /><p className="text-center text-xs text-muted-foreground">{result.total ?? result.data.length} اثر در این فهرست</p>
@@ -153,7 +153,7 @@ export function AdminUsersPage() {
                 <TableBody>{result.data.map((item) => {
                     const selected = drafts[item.id] ?? (item.role === 'buyer' ? '' : item.role), selfAdmin = item.id === user?.id && item.role === 'admin';
                     return <TableRow key={item.id} className="border-t border-border"><TableCell className="px-4 py-4 font-semibold">{item.name}</TableCell><TableCell dir="ltr" className="px-4 py-4 text-left text-xs">{item.email}</TableCell><TableCell className="px-4 py-4"><Badge variant={item.role === 'admin' ? 'accent' : 'neutral'}>{roleLabels[item.role] ?? item.role}</Badge></TableCell><TableCell className="px-4 py-4">
-                        {selfAdmin ? <span className="text-xs text-muted-foreground">حساب مدیر فعلی</span> : <div className="flex items-center gap-2"><SelectField aria-label={'نقش جدید برای ' + item.name} value={selected} disabled={busyId === item.id} onChange={(event) => setDrafts((current) => ({ ...current, [item.id]: event.target.value }))} className="min-w-36 py-2">{item.role === 'buyer' && <option value="">انتخاب نقش</option>}<option value="artist">هنرمند</option><option value="admin">مدیر</option></SelectField><Button size="sm" variant="outline" disabled={busyId !== null || !selected || selected === item.role} loading={busyId === item.id} onClick={() => updateRole(item)}>ثبت</Button></div>}
+                        {selfAdmin ? <span className="text-xs text-muted-foreground">حساب مدیر فعلی</span> : <div className="flex items-center gap-2"><Select aria-label={'نقش جدید برای ' + item.name} value={selected} disabled={busyId === item.id} onChange={(event) => setDrafts((current) => ({ ...current, [item.id]: event.target.value }))} className="min-w-36 py-2">{item.role === 'buyer' && <option value="">انتخاب نقش</option>}<option value="artist">هنرمند</option><option value="admin">مدیر</option></Select><Button size="sm" variant="outline" disabled={busyId !== null || !selected || selected === item.role} loading={busyId === item.id} onClick={() => updateRole(item)}>ثبت</Button></div>}
                     </TableCell></TableRow>;
                 })}</TableBody>
             </Table></div>
