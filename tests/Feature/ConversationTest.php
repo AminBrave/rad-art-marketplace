@@ -104,7 +104,7 @@ class ConversationTest extends TestCase
 
         $this->getJson('/api/v1/conversations/'.$conversation->id.'/messages?after_id='.$newMessage->id.'&updated_after='.urlencode($syncCursor))
             ->assertOk()
-            ->assertJsonCount(1, 'data')
+            ->assertJsonCount(2, 'data')
             ->assertJsonPath('data.0.id', $firstMessage->id)
             ->assertJsonPath('data.0.body', 'پیام قدیمی ویرایش شد');
 
@@ -329,8 +329,8 @@ class ConversationTest extends TestCase
         [$buyer, $artist] = $this->participantsWithInquiry();
         $profile = $artist->artistProfile()->firstOrFail();
         $category = Category::query()->create([
-            'name' => 'نقاشی',
-            'slug' => 'painting',
+            'name' => 'نقاشی زمینه گفتگوی مستقیم',
+            'slug' => 'direct-artwork-context-painting',
             'is_active' => true,
         ]);
         $artwork = $profile->artworks()->create([
@@ -379,7 +379,7 @@ class ConversationTest extends TestCase
     {
         [$buyer, $artist] = $this->participantsWithInquiry('artwork-reply-buyer@example.test', 'artwork-reply-artist@example.test');
         $profile = $artist->artistProfile()->firstOrFail();
-        $category = Category::query()->create(['name' => 'نقاشی', 'slug' => 'artwork-reply-painting', 'is_active' => true]);
+        $category = Category::query()->create(['name' => 'نقاشی ارجاع پیام', 'slug' => 'artwork-reply-painting', 'is_active' => true]);
         $artwork = $profile->artworks()->create([
             'category_id' => $category->id,
             'slug' => 'message-artwork-reference',
@@ -467,7 +467,7 @@ class ConversationTest extends TestCase
             'artist_slug' => $profile->slug,
         ])->assertForbidden();
 
-        $category = Category::query()->create(['name' => 'مجسمه', 'slug' => 'sculpture', 'is_active' => true]);
+        $category = Category::query()->create(['name' => 'مجسمه ارجاع مستقیم', 'slug' => 'direct-pending-sculpture', 'is_active' => true]);
         $artwork = $profile->artworks()->create([
             'category_id' => $category->id,
             'slug' => 'pending-artwork-context',
