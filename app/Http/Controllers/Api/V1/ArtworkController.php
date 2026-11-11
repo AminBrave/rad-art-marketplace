@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ArtworkController extends Controller
 {
+
     private const PUBLIC_SORTS = ['newest', 'oldest', 'title_asc', 'title_desc', 'year_desc', 'year_asc', 'price_asc', 'price_desc'];
 
     public function categories(): JsonResponse
