@@ -65,16 +65,16 @@ export function DropdownMenuSeparator({ className = '', ...props }) {
 export function Breadcrumbs({ items = [], className = '' }) {
     return (
         <nav aria-label="مسیر صفحه" className={className}>
-            <ol className="flex flex-wrap items-center gap-2 text-sm text-muted">
+            <ol className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                 {items.map((item, index) => {
                     const current = index === items.length - 1;
                     return (
                         <li key={item.to ?? item.label} className="inline-flex items-center gap-2">
                             {index > 0 && <span aria-hidden="true" className="text-subtle">/</span>}
                             {current ? (
-                                <span aria-current="page" className="font-semibold text-ink">{item.label}</span>
+                                <span aria-current="page" className="font-semibold text-foreground">{item.label}</span>
                             ) : (
-                                <Link to={item.to} className="underline-offset-4 hover:text-terracotta-strong hover:underline">{item.label}</Link>
+                                <Link to={item.to} className="underline-offset-4 hover:text-primary hover:underline">{item.label}</Link>
                             )}
                         </li>
                     );
@@ -98,14 +98,14 @@ export function Pagination({ currentPage = 1, lastPage = 1, onPageChange, disabl
             <div className="flex flex-wrap items-center gap-1" dir="ltr">
                 {visiblePages.map((number, index) => (
                     <span key={number} className="inline-flex items-center gap-1">
-                        {index > 0 && number - visiblePages[index - 1] > 1 && <span aria-hidden="true" className="px-1 text-muted">…</span>}
+                        {index > 0 && number - visiblePages[index - 1] > 1 && <span aria-hidden="true" className="px-1 text-muted-foreground">…</span>}
                         <button
                             type="button"
                             aria-label={`صفحه ${number}`}
                             aria-current={number === page ? 'page' : undefined}
                             disabled={disabled}
                             onClick={() => onPageChange(number)}
-                            className={`h-9 min-w-9 rounded-sm px-2 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-terracotta-strong disabled:opacity-50 ${number === page ? 'bg-ink text-white' : 'text-ink hover:bg-surface-muted'}`}
+                            className={`h-9 min-w-9 rounded-sm px-2 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-terracotta-strong disabled:opacity-50 ${number === page ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-muted'}`}
                         >
                             {number}
                         </button>
