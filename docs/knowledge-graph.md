@@ -54,4 +54,4 @@ flowchart TD
 - [Coverage summarizer](../scripts/summarize-coverage.py): combines per-suite Clover reports into an overall line-coverage baseline and low-coverage priority list.
 
 ## Change propagation
-Schema/domain → data, domain, API, tests, security. API → API docs, backend tests, frontend consumers, browser E2E. UI/navigation → frontend docs and browser tests. Auth/moderation/messaging/uploads/privacy → threat review. Workflow/release → CI/CD and GitHub docs. Test architecture or coverage changes → testing strategy, coverage matrix, route test map, tests README, PHPUnit configuration, quality gates and CI workflow.
+Schema/domain → data, domain, API, tests, security. API → API docs, backend tests, frontend consumers, browser E2E. Feature availability → feature registry, backend route tests, frontend route/navigation tests and system/API/frontend docs. UI/navigation → frontend docs and browser tests. Auth/moderation/messaging/uploads/privacy → threat review. Workflow/release → CI/CD and GitHub docs. Test architecture or coverage changes → testing strategy, coverage matrix, route test map, tests README, PHPUnit configuration, quality gates and CI workflow.
