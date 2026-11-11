@@ -226,7 +226,7 @@ export function ArtistDashboardHome() {
             {profileLoading ? <p className="mt-5 text-sm text-muted-foreground">در حال دریافت پروفایل…</p> : (
                 <div className="mt-6 rounded-xl bg-background p-4">
                     <p className="font-semibold">{profile?.slug ? 'پروفایل هنرمند شما آماده است.' : 'برای شروع، پروفایل هنرمند خود را تکمیل کنید.'}</p>
-                    <Link to="/dashboard/artist/profile" className="mt-3 inline-block text-sm font-bold text-primary underline">مدیریت پروفایل</Link>
+                    <Link to="/dashboard/artist/profile" className="mt-3 text-sm font-bold text-primary underline">مدیریت پروفایل</Link>
                 </div>
             )}
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -337,7 +337,7 @@ export function ArtistInquiryPage() {
                 <h1 className="text-xl font-semibold">صندوق پیام‌های هنرمند</h1>
                 {profileError && <p role="alert" className="mt-3 text-sm text-warning">{profileError}</p>}
                 <p className="mt-3 text-sm leading-7 text-muted-foreground">برای دریافت و مدیریت درخواست‌های ارتباطی، ابتدا پروفایل هنرمند خود را تکمیل کنید.</p>
-                <Link to="/dashboard/artist/profile" className="mt-4 inline-block text-sm font-bold text-primary underline">تکمیل پروفایل</Link>
+                <Link to="/dashboard/artist/profile" className="mt-4 text-sm font-bold text-primary underline">تکمیل پروفایل</Link>
             </section>
         );
     }
@@ -382,7 +382,7 @@ export function UnauthorizedPage() {
             <p className="text-sm font-bold text-primary">۴۰۳</p>
             <h1 className="mt-3 text-3xl font-semibold">دسترسی به این بخش مجاز نیست</h1>
             <p className="mt-4 leading-8 text-muted-foreground">نقش این حساب اجازه ورود به این فضای کاربری را ندارد. مجوزهای واقعی همچنان در سمت سرور بررسی می‌شوند.</p>
-            <Button asChild variant="default" size="default" className="mt-7 inline-block"><Link to={user ? (user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist') : '/'}>بازگشت</Link></Button>
+            <Button asChild variant="default" size="default" className="mt-7"><Link to={user ? (user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist') : '/'}>بازگشت</Link></Button>
         </main>
     );
 }
@@ -393,7 +393,7 @@ export function NotFoundPage() {
             <p className="text-sm font-bold text-primary">۴۰۴</p>
             <h1 className="mt-3 text-3xl font-semibold">این صفحه پیدا نشد</h1>
             <p className="mt-4 leading-8 text-muted-foreground">نشانی واردشده معتبر نیست یا صفحه جابه‌جا شده است.</p>
-            <Button asChild variant="default" size="default" className="mt-7 inline-block"><Link to="/">بازگشت به صفحه اصلی</Link></Button>
+            <Button asChild variant="default" size="default" className="mt-7"><Link to="/">بازگشت به صفحه اصلی</Link></Button>
         </main>
     );
 }
