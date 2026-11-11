@@ -375,6 +375,69 @@ class ConversationTest extends TestCase
             ->assertJsonPath('data.0.contexts.0.artwork.slug', $artwork->slug);
     }
 
+    public function test_buyer_can_send_an_artwork_reply_card_that_the_artist_receives_with_full_context(): void
+    {
+        [$buyer, $artist] = $this->participantsWithInquiry('artwork-reply-buyer@example.test', 'artwork-reply-artist@example.test');
+        $profile = $artist->artistProfile()->firstOrFail();
+        $category = Category::query()->create(['name' => 'نقاشی', 'slug' => 'artwork-reply-painting', 'is_active' => true]);
+        $artwork = $profile->artworks()->create([
+            'category_id' => $category->id,
+            'slug' => 'message-artwork-reference',
+            'title' => 'پرتره در نور عصر',
+            'description' => 'شرح اثر',
+            'medium' => 'رنگ روغن',
+            'dimensions' => '۶۰ × ۸۰',
+            'year' => 2025,
+            'price' => 2500000,
+            'availability' => 'available',
+            'status' => Artwork::STATUS_APPROVED,
+            'image_path' => 'artworks/message-artwork-reference.jpg',
+        ]);
+
+        $conversationResponse = $this->actingAs($buyer)->postJson('/api/v1/conversations/direct', [
+            'artist_slug' => $profile->slug,
+            'artwork_slug' => $artwork->slug,
+        ])->assertCreated();
+        $conversationId = (int) $conversationResponse->json('data.id');
+
+        $sent = $this->postJson('/api/v1/conversations/'.$conversationId.'/messages', [
+            'body' => 'سلام، درباره این اثر و جزئیات اجرای آن سؤال دارم.',
+            'artwork_id' => $artwork->id,
+            'client_message_id' => 'artwork-reply-message-1',
+        ])->assertCreated()
+            ->assertJsonPath('data.body', 'سلام، درباره این اثر و جزئیات اجرای آن سؤال دارم.')
+            ->assertJsonPath('data.artwork.id', $artwork->id)
+            ->assertJsonPath('data.artwork.slug', $artwork->slug)
+            ->assertJsonPath('data.artwork.title', $artwork->title)
+            ->assertJsonPath('data.artwork.image_url', '/api/v1/artworks/'.$artwork->slug.'/image')
+            ->assertJsonPath('data.artwork.category', $category->name)
+            ->assertJsonPath('data.artwork.medium', $artwork->medium)
+            ->assertJsonPath('data.artwork.dimensions', $artwork->dimensions);
+
+        $this->assertDatabaseHas('messages', [
+            'conversation_id' => $conversationId,
+            'sender_user_id' => $buyer->id,
+            'artwork_id' => $artwork->id,
+            'client_message_id' => 'artwork-reply-message-1',
+        ]);
+
+        $this->actingAs($artist)
+            ->getJson('/api/v1/conversations/'.$conversationId.'/messages')
+            ->assertOk()
+            ->assertJsonPath('data.0.id', $sent->json('data.id'))
+            ->assertJsonPath('data.0.artwork.id', $artwork->id)
+            ->assertJsonPath('data.0.artwork.title', $artwork->title)
+            ->assertJsonPath('data.0.body', 'سلام، درباره این اثر و جزئیات اجرای آن سؤال دارم.');
+
+        $this->actingAs($artist)
+            ->postJson('/api/v1/conversations/'.$conversationId.'/messages', [
+                'body' => 'سلام، با کمال میل جزئیات این اثر را توضیح می‌دهم.',
+                'client_message_id' => 'artist-artwork-reply-1',
+            ])
+            ->assertCreated()
+            ->assertJsonPath('data.artwork', null);
+    }
+
     public function test_direct_artwork_conversation_rejects_non_buyers_and_unapproved_artworks(): void
     {
         [$buyer, $artist] = $this->participantsWithInquiry('buyer-direct@example.test', 'artist-direct@example.test');
