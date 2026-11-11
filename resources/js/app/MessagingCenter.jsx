@@ -55,6 +55,7 @@ export default function MessagingCenter({ role }) {
     const threadsRequestRef = useRef(null);
     const threadsPageRef = useRef(1);
     const threadsRef = useRef(threads);
+    const hasLoadedThreadsRef = useRef(false);
     const directStartKeyRef = useRef(null);
     const shouldStickToBottomRef = useRef(true);
     const endpoint = role === 'artist' ? '/api/v1/artist/conversations' : '/api/v1/buyer/conversations';
@@ -63,7 +64,10 @@ export default function MessagingCenter({ role }) {
         const controller = new AbortController();
         threadsRequestRef.current = controller;
         if (append) setLoadingMoreThreads(true);
-        else setLoading(true);
+        else {
+            setLoading(!hasLoadedThreadsRef.current);
+            setLoadingMoreThreads(false);
+        }
         const page = append ? threadsPageRef.current + 1 : 1;
         try {
             const query = { page };
@@ -81,6 +85,7 @@ export default function MessagingCenter({ role }) {
                     const known = new Set(current.map((thread) => Number(thread.id)));
                     return [...current, ...received.filter((thread) => !known.has(Number(thread.id)))];
                 });
+                hasLoadedThreadsRef.current = true;
                 threadsPageRef.current = Number(data.current_page ?? page);
                 setHasMoreThreads(Number(data.current_page ?? page) < Number(data.last_page ?? page));
             }
