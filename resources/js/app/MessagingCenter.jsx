@@ -37,6 +37,7 @@ export default function MessagingCenter({ role }) {
     const messagesContainerRef = useRef(null);
     const draftRef = useRef(null);
     const latestMessageIdRef = useRef(null);
+    const syncCursorRef = useRef(null);
     const activeConversationRef = useRef(null);
     const pollingRef = useRef(false);
     const shouldStickToBottomRef = useRef(true);
@@ -70,22 +71,28 @@ export default function MessagingCenter({ role }) {
         if (!id || (incremental && pollingRef.current)) return;
         if (incremental) pollingRef.current = true;
         try {
-            const params = incremental && latestMessageIdRef.current ? { after_id: latestMessageIdRef.current } : {};
+            const params = incremental ? {
+                after_id: latestMessageIdRef.current ?? 0,
+                ...(syncCursorRef.current ? { updated_after: syncCursorRef.current } : {}),
+            } : {};
             const { data } = await axios.get('/api/v1/conversations/' + id + '/messages', { params });
             if (Number(activeConversationRef.current) !== Number(id)) return;
             const incoming = data.data ?? [];
             if (incremental) {
                 setMessages((current) => {
+                    const updates = new Map(incoming.map((message) => [message.id, message]));
+                    const merged = current.map((message) => updates.get(message.id) ?? message);
                     const known = new Set(current.map((message) => message.id));
                     const next = incoming.filter((message) => !known.has(message.id));
-                    return next.length ? [...current, ...next] : current;
+                    return next.length ? [...merged, ...next].sort((left, right) => left.id - right.id) : merged;
                 });
             } else {
                 setMessages(incoming);
                 shouldStickToBottomRef.current = true;
             }
-            const newest = incoming[incoming.length - 1];
+            const newest = incoming.reduce((latest, message) => !latest || Number(message.id) > Number(latest.id) ? message : latest, null);
             if (newest?.id) latestMessageIdRef.current = Math.max(Number(latestMessageIdRef.current ?? 0), Number(newest.id));
+            if (data.sync_cursor) syncCursorRef.current = data.sync_cursor;
             if (!incremental || incoming.length > 0) {
                 await axios.patch('/api/v1/conversations/' + id + '/read');
                 loadThreadsRef.current();
@@ -100,6 +107,7 @@ export default function MessagingCenter({ role }) {
     useEffect(() => {
         activeConversationRef.current = active;
         latestMessageIdRef.current = null;
+        syncCursorRef.current = null;
         pollingRef.current = false;
         if (!active) { setSafety({ blocked_by_me: false, blocked_by_other: false }); setMessages([]); return; }
         let cancelled = false;
