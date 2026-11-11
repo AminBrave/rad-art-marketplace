@@ -621,7 +621,7 @@ a {
 }
 
 @media (max-width: 639px) {
-    :root {
+    html {
         --header-height: 4.5rem;
     }
 
