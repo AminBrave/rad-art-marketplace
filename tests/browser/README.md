@@ -9,7 +9,7 @@ The browser suite uses Python unittest and Playwright Chromium.
 - Accessibility smoke tests: document direction, landmarks, labels and image alt attributes. These are heuristics, not a replacement for axe-core or manual keyboard/screen-reader review.
 
 ## Conventions
-- File names use test_*.py and classes end in Tests.
+- File names use test_*.py and classes end in Tests. Nested discovery folders must include __init__.py so unittest discover recurses into them.
 - Test names describe the actor, behavior and observable outcome.
 - Use a new browser context per test and close it in finally.
 - Avoid fixed sleeps; wait for a role, locator, URL or network response.

@@ -136,7 +136,7 @@ Status vocabulary:
 | Query cache invalidation and account switch | React integration | Gap / expand |
 | Persian numerals, RTL, long text and mixed-direction content | Component + Browser | Browser evidence partial; expand |
 | Responsive navigation, forms, messaging and admin tables | Browser | Existing evidence; expand |
-| Automated accessibility scan and keyboard-only journeys | Browser | Planned |
+| Document direction, main landmarks, accessible control names and image alt smoke checks | Browser | Added smoke coverage; axe-core and manual keyboard/screen-reader audit remain planned |
 | Reduced motion, focus visibility and semantic landmarks | Component + Browser | Planned |
 
 ## Product boundary: intentionally not tested as implemented features
