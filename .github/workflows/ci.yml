@@ -1,12 +1,8 @@
 name: CI
 
+# CI is intentionally manual. Run it once after the PR has received all intended commits.
 on:
-  pull_request:
-    branches: [main]
-  push:
-    branches: [main]
-    paths-ignore:
-      - '**/*.md'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -146,3 +142,4 @@ jobs:
           name: laravel-e2e-log
           path: /tmp/rad-art-laravel.log
           if-no-files-found: ignore
+          retention-days: 14
