@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
-import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, SelectField, Button } from '../components/ui';
+import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, Select, Button } from '../components/ui';
 
 const emptyFilters = { mediums: [], availability: [], sorts: [] };
 
@@ -101,21 +101,21 @@ export default function ArtworkCatalogue() {
             <section aria-label="فیلتر و مرتب‌سازی آثار" className="mt-7 border border-border bg-card p-4 sm:p-5">
                 <div className="grid gap-3 lg:grid-cols-[minmax(15rem,1.5fr)_repeat(2,minmax(10rem,1fr))]">
                     <SearchField value={searchInput} onChange={(event) => setSearchInput(event.target.value)} onSearch={submitSearch} label="جست‌وجو در آثار و هنرمندان" placeholder="عنوان، توضیحات، تکنیک یا نام هنرمند…" />
-                    <SelectField value={category} onChange={(event) => updateFilters({ category: event.target.value })} aria-label="فیلتر دسته‌بندی">
+                    <Select value={category} onChange={(event) => updateFilters({ category: event.target.value })} aria-label="فیلتر دسته‌بندی">
                         <option value="">همه دسته‌ها</option>
                         {categories.map((item) => <option key={item.id} value={item.slug}>{item.name}</option>)}
-                    </SelectField>
-                    <SelectField value={medium} onChange={(event) => updateFilters({ medium: event.target.value })} aria-label="فیلتر تکنیک و مواد">
+                    </Select>
+                    <Select value={medium} onChange={(event) => updateFilters({ medium: event.target.value })} aria-label="فیلتر تکنیک و مواد">
                         <option value="">همه تکنیک‌ها</option>
                         {(filters.mediums ?? []).map((item) => <option key={item} value={item}>{item}</option>)}
-                    </SelectField>
-                    <SelectField value={availability} onChange={(event) => updateFilters({ availability: event.target.value })} aria-label="فیلتر وضعیت اثر">
+                    </Select>
+                    <Select value={availability} onChange={(event) => updateFilters({ availability: event.target.value })} aria-label="فیلتر وضعیت اثر">
                         <option value="">همه وضعیت‌ها</option>
                         {(filters.availability ?? []).map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
-                    </SelectField>
-                    <SelectField value={sort} onChange={(event) => updateFilters({ sort: event.target.value })} aria-label="مرتب‌سازی آثار">
+                    </Select>
+                    <Select value={sort} onChange={(event) => updateFilters({ sort: event.target.value })} aria-label="مرتب‌سازی آثار">
                         {(filters.sorts?.length ? filters.sorts : [{ value: 'newest', label: 'جدیدترین' }]).map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
-                    </SelectField>
+                    </Select>
                     <div className="flex items-center justify-between gap-3">
                         <p className="text-xs text-muted-foreground">{activeFilterCount ? activeFilterCount.toLocaleString('fa-IR') + ' فیلتر فعال' : 'بدون فیلتر'}</p>
                         {activeFilterCount > 0 && <Button type="button" onClick={clearFilters} variant="ghost" size="default">پاک‌کردن فیلترها</Button>}
