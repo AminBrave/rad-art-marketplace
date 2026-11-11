@@ -67,25 +67,25 @@ export default function ArtworkDetailPage() {
     return (
         <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl">
             <nav aria-label="مسیر صفحه" className="text-sm text-muted-foreground">
-                <Link to="/" className="hover:text-terracotta-strong">خانه</Link><span className="mx-2" aria-hidden="true">/</span>
-                <Link to="/artworks" className="hover:text-terracotta-strong">گالری آثار</Link><span className="mx-2" aria-hidden="true">/</span>
+                <Link to="/" className="hover:text-primary">خانه</Link><span className="mx-2" aria-hidden="true">/</span>
+                <Link to="/artworks" className="hover:text-primary">گالری آثار</Link><span className="mx-2" aria-hidden="true">/</span>
                 <span aria-current="page" className="text-foreground">جزئیات اثر</span>
             </nav>
             {!artwork ? (
                 <section className="mt-8 border border-border bg-card p-8">
-                    <h1 className="text-2xl font-black">{status === 403 ? 'دسترسی به این اثر مجاز نیست' : 'اثر در دسترس نیست'}</h1>
+                    <h1 className="text-2xl font-semibold">{status === 403 ? 'دسترسی به این اثر مجاز نیست' : 'اثر در دسترس نیست'}</h1>
                     <p className="mt-3 text-sm leading-7 text-muted-foreground">{status === 403 ? 'سرور اجازه مشاهده این اثر را صادر نکرد.' : 'این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.'}</p>
-                    {artworkQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-danger">ارتباط با سرور برقرار نشد. <Button type="button" onClick={() => artworkQuery.refetch()} variant="ghost" size="default">تلاش دوباره</Button></p>}
-                    <Link to="/artworks" className="mt-5 inline-block font-bold text-terracotta-strong underline">بازگشت به گالری</Link>
+                    {artworkQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-destructive">ارتباط با سرور برقرار نشد. <Button type="button" onClick={() => artworkQuery.refetch()} variant="ghost" size="default">تلاش دوباره</Button></p>}
+                    <Link to="/artworks" className="mt-5 inline-block font-bold text-primary underline">بازگشت به گالری</Link>
                 </section>
             ) : (
                 <>
                     <article className="mt-7 grid gap-8 lg:grid-cols-[1.15fr_.85fr]">
                         <ArtworkImage artwork={artwork} />
                         <div className="border border-border bg-card p-6 sm:p-9">
-                            <p className="text-sm font-bold text-terracotta-strong">{artwork.category?.name}</p>
-                            <h1 className="mt-3 text-3xl font-black leading-relaxed">{artwork.title}</h1>
-                            <Link to={'/artists/' + artwork.artist.slug} className="mt-3 inline-block text-sm font-semibold text-terracotta-strong underline">{artwork.artist.display_name}</Link>
+                            <p className="text-sm font-bold text-primary">{artwork.category?.name}</p>
+                            <h1 className="mt-3 text-3xl font-semibold leading-relaxed">{artwork.title}</h1>
+                            <Link to={'/artists/' + artwork.artist.slug} className="mt-3 inline-block text-sm font-semibold text-primary underline">{artwork.artist.display_name}</Link>
                             {artwork.description && <p className="mt-7 whitespace-pre-line text-sm leading-9 text-muted-foreground">{artwork.description}</p>}
                             <dl className="mt-7 grid grid-cols-2 gap-4 border-y border-border py-5 text-sm">
                                 {artwork.medium && <div><dt className="text-xs text-muted-foreground">تکنیک / مواد</dt><dd className="mt-1 font-semibold">{artwork.medium}</dd></div>}
@@ -95,18 +95,18 @@ export default function ArtworkDetailPage() {
                             </dl>
                             <p className="mt-5 text-sm text-muted-foreground">وضعیت: {availabilityLabel(artwork.availability)}</p>
                             {user?.role === 'buyer' && <div className="mt-7 flex flex-wrap gap-3">
-                                <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(artwork.artist.slug) + '&artwork=' + encodeURIComponent(artwork.slug)} className="inline-flex items-center bg-ink px-5 py-3 text-sm font-bold text-white hover:bg-terracotta">پیام مستقیم درباره این اثر</Link>
+                                <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(artwork.artist.slug) + '&artwork=' + encodeURIComponent(artwork.slug)} className="inline-flex items-center bg-brand-ink px-5 py-3 text-sm font-bold text-white hover:bg-primary">پیام مستقیم درباره این اثر</Link>
                                 {isFeatureEnabled('inquiries') && <ContactArtistForm artistSlug={artwork.artist.slug} artworkId={artwork.id} />}
                             </div>}
-                            {!user && <Link to="/login" state={{ from: { pathname: '/artworks/' + slug } }} className="mt-7 inline-block text-sm font-bold text-terracotta-strong underline">برای ارسال پیام مستقیم وارد شوید</Link>}
+                            {!user && <Link to="/login" state={{ from: { pathname: '/artworks/' + slug } }} className="mt-7 inline-block text-sm font-bold text-primary underline">برای ارسال پیام مستقیم وارد شوید</Link>}
                             {user && user.role !== 'buyer' && <p className="mt-7 text-xs leading-6 text-muted-foreground">ارسال پیام مستقیم از حساب خریدار امکان‌پذیر است.</p>}
                         </div>
                     </article>
                     {artwork.related_artworks?.length > 0 && (
                         <section className="mt-16 border-t border-border pt-10">
                             <div className="flex flex-wrap items-end justify-between gap-3">
-                                <div><p className="text-xs font-bold text-terracotta-strong">ادامه مسیر کشف</p><h2 className="mt-2 text-2xl font-black">آثار مرتبط</h2><p className="mt-2 text-sm text-muted-foreground">آثاری از همین دسته یا همین هنرمند</p></div>
-                                <Link to="/artworks" className="text-sm font-bold text-terracotta-strong underline">مشاهده همه آثار</Link>
+                                <div><p className="text-xs font-bold text-primary">ادامه مسیر کشف</p><h2 className="mt-2 text-2xl font-semibold">آثار مرتبط</h2><p className="mt-2 text-sm text-muted-foreground">آثاری از همین دسته یا همین هنرمند</p></div>
+                                <Link to="/artworks" className="text-sm font-bold text-primary underline">مشاهده همه آثار</Link>
                             </div>
                             <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{artwork.related_artworks.map((item) => <ArtworkCard key={item.id} artwork={item} />)}</div>
                         </section>
