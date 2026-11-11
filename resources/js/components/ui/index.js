@@ -21,7 +21,7 @@ export {
     Breadcrumbs,
     Pagination,
 } from './navigation';
-export { Dialog, DialogTrigger, DialogClose, DialogContent, DialogTitle, DialogDescription } from './Dialog';
+export { Dialog, DialogTrigger, DialogClose, DialogPortal, DialogOverlay, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from './Dialog';
 export { Skeleton, SkeletonLines, EmptyState, ErrorState, SuccessState, PermissionState, UploadFeedback, Toast } from './feedback';
 export { ArtworkCard, ArtistCard } from './cards';
 export { ArtworkCardSkeleton, ArtistCardSkeleton, ArtworkDetailSkeleton, ArtistProfileSkeleton } from './skeletons';
