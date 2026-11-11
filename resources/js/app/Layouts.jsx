@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Bell } from 'lucide-react';
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
@@ -15,6 +15,14 @@ export function PublicLayout() {
     };
 
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const { pathname } = useLocation();
+    useEffect(() => setMobileMenuOpen(false), [pathname]);
+    useEffect(() => {
+        if (!mobileMenuOpen) return undefined;
+        const closeOnEscape = (event) => { if (event.key === 'Escape') setMobileMenuOpen(false); };
+        window.addEventListener('keydown', closeOnEscape);
+        return () => window.removeEventListener('keydown', closeOnEscape);
+    }, [mobileMenuOpen]);
     const publicLinks = [
         { to: '/artworks', label: 'کشف آثار' },
         { to: '/artists', label: 'هنرمندان' },
@@ -38,7 +46,7 @@ export function PublicLayout() {
                     <button type="button" aria-label={mobileMenuOpen ? 'بستن منو' : 'باز کردن منو'} aria-expanded={mobileMenuOpen} aria-controls="public-mobile-navigation" onClick={() => setMobileMenuOpen((open) => !open)} className="grid h-10 w-10 place-items-center border border-border text-xl transition-colors hover:border-terracotta lg:hidden"><span aria-hidden="true">{mobileMenuOpen ? '×' : '☰'}</span></button>
                 </div>
             </div>
-            {mobileMenuOpen && <nav id="public-mobile-navigation" aria-label="ناوبری موبایل" className="border-t border-border bg-canvas px-5 py-4 lg:hidden"><div className="mx-auto grid max-w-7xl gap-1">{publicLinks.map((item) => <NavLink key={item.to} to={item.to} onClick={() => setMobileMenuOpen(false)} className={({isActive}) => (isActive ? 'bg-surface-muted font-bold text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink') + ' min-h-11 px-3 py-2.5 text-sm'}>{item.label}</NavLink>)}{user ? <><Link onClick={() => setMobileMenuOpen(false)} to={user.role==='admin'?'/admin':user.role==='buyer'?'/dashboard/buyer':'/dashboard/artist'} className="min-h-11 px-3 py-2.5 text-sm font-semibold text-terracotta-strong">فضای کاربری</Link><button type="button" onClick={handleLogout} className="min-h-11 px-3 py-2.5 text-right text-sm font-semibold text-muted">خروج</button></> : <Link onClick={() => setMobileMenuOpen(false)} to="/login" className="min-h-11 px-3 py-2.5 text-sm font-semibold text-muted">ورود</Link>}</div></nav>}
+            {mobileMenuOpen && <nav id="public-mobile-navigation" aria-label="ناوبری موبایل" className="border-t border-border bg-canvas px-5 py-4 lg:hidden"><div className="mx-auto grid max-w-7xl gap-1">{publicLinks.map((item) => <NavLink key={item.to} to={item.to} onClick={() => setMobileMenuOpen(false)} className={({isActive}) => (isActive ? 'bg-surface-muted font-bold text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink') + ' min-h-11 px-3 py-2.5 text-sm'}>{item.label}</NavLink>)}{user ? <><Link onClick={() => setMobileMenuOpen(false)} to={user.role==='admin'?'/admin':user.role==='buyer'?'/dashboard/buyer':'/dashboard/artist'} className="min-h-11 px-3 py-2.5 text-sm font-semibold text-terracotta-strong">فضای کاربری</Link><button type="button" onClick={handleLogout} className="min-h-11 px-3 py-2.5 text-right text-sm font-semibold text-muted">خروج</button></> : <><Link onClick={() => setMobileMenuOpen(false)} to="/login" className="min-h-11 px-3 py-2.5 text-sm font-semibold text-muted">ورود</Link><Link onClick={() => setMobileMenuOpen(false)} to="/register" className="min-h-11 px-3 py-2.5 text-sm font-semibold text-terracotta-strong">ساخت حساب کاربری</Link></>}</div></nav>}
             {logoutError && <p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-red-700 sm:px-8">{logoutError}</p>}
         </header>
         <Outlet />
@@ -68,28 +76,34 @@ function NotificationBell({ user }) {
     const [loading, setLoading] = useState(true);
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState('');
+    const requestRef = useRef(null);
 
     const load = useCallback(async () => {
+        requestRef.current?.abort();
+        const controller = new AbortController();
+        requestRef.current = controller;
         try {
             const [{ data }, preferenceResponse] = await Promise.all([
-                axios.get('/api/v1/notifications'),
-                axios.get('/api/v1/notifications/preferences'),
+                axios.get('/api/v1/notifications', { signal: controller.signal }),
+                axios.get('/api/v1/notifications/preferences', { signal: controller.signal }),
             ]);
-            setItems(data.data ?? []);
-            setUnreadCount(data.unread_count ?? 0);
-            setPreferences(preferenceResponse.data.data ?? { in_app_messages: true, email_available: false });
-            setError('');
+            if (!controller.signal.aborted) {
+                setItems(data.data ?? []);
+                setUnreadCount(data.unread_count ?? 0);
+                setPreferences(preferenceResponse.data.data ?? { in_app_messages: true, email_available: false });
+                setError('');
+            }
         } catch (requestError) {
-            if (requestError.response?.status !== 401) setError('دریافت اعلان‌ها انجام نشد.');
+            if (!axios.isCancel(requestError) && requestError.response?.status !== 401) setError('دریافت اعلان‌ها انجام نشد.');
         } finally {
-            setLoading(false);
+            if (requestRef.current === controller) { requestRef.current = null; setLoading(false); }
         }
     }, []);
 
     useEffect(() => {
         load();
         const poll = window.setInterval(load, 30000);
-        return () => window.clearInterval(poll);
+        return () => { window.clearInterval(poll); requestRef.current?.abort(); };
     }, [load]);
 
     const openNotification = async (item) => {
@@ -177,7 +191,14 @@ export function WorkspaceLayout({ title, links, outletContext }) {
     const [logoutError, setLogoutError] = useState('');
     const handleLogout = async () => { setLogoutError(''); try { await logout(); } catch { setLogoutError('خروج انجام نشد. اتصال را بررسی کنید.'); } };
     return <div className="min-h-screen bg-canvas text-ink" dir="rtl">
-        <header className="border-b border-border bg-white"><div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-8 lg:px-10"><div><Link to="/" className="text-lg font-black text-ink no-underline">راد<span className="text-terracotta-strong">آرت</span></Link><p className="mt-1 text-xs text-muted">{title}</p></div><div className="flex items-center gap-3 text-sm">{user?.role !== 'admin' && <NotificationBell user={user} />}<span className="font-semibold">{user?.name}</span><Link to="/" className="border border-border px-4 py-2 font-semibold hover:border-terracotta">مشاهده سایت</Link><button type="button" onClick={handleLogout} className="border border-border px-4 py-2 font-semibold hover:border-terracotta">خروج</button></div></div>{logoutError&&<p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-red-700 sm:px-8">{logoutError}</p>}</header>
-        <div className="mx-auto grid max-w-7xl gap-6 px-5 py-7 sm:px-8 lg:grid-cols-[220px_1fr] lg:px-10"><aside className="h-fit border border-border bg-white p-3"><nav aria-label="ناوبری فضای کاربری" className="flex flex-wrap gap-2 lg:flex-col">{links.map(item=><NavLink key={item.to} to={item.to} end={item.end} className={({isActive})=>isActive?'bg-ink px-4 py-3 text-sm font-bold text-white':'px-4 py-3 text-sm font-semibold text-muted hover:bg-surface-muted hover:text-ink'}>{item.label}</NavLink>)}</nav></aside><main className="min-w-0"><Outlet context={outletContext} /></main></div>
+        <header className="border-b border-border bg-white"><div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-8 lg:px-10"><div className="min-w-0"><Link to="/" className="text-lg font-black text-ink no-underline">راد<span className="text-terracotta-strong">آرت</span></Link><p className="mt-1 text-xs text-muted">{title}</p></div><div className="flex min-w-0 flex-wrap items-center justify-end gap-2 text-sm sm:gap-3">{user?.role !== 'admin' && <NotificationBell user={user} />}<span className="max-w-32 truncate font-semibold sm:max-w-none">{user?.name}</span><Link to="/" className="min-h-10 border border-border px-3 py-2 font-semibold hover:border-terracotta sm:px-4">مشاهده سایت</Link><button type="button" onClick={handleLogout} className="min-h-10 border border-border px-3 py-2 font-semibold hover:border-terracotta sm:px-4">خروج</button></div></div>{logoutError&&<p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-red-700 sm:px-8">{logoutError}</p>}</header>
+        <div className="mx-auto grid min-w-0 max-w-7xl gap-5 px-5 py-6 sm:px-8 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-6 lg:px-10 lg:py-7">
+            <aside className="min-w-0 overflow-hidden border border-border bg-white p-2 sm:p-3 lg:h-fit">
+                <nav aria-label="ناوبری فضای کاربری" className="flex w-full min-w-0 flex-nowrap gap-2 overflow-x-auto overscroll-x-contain pb-1 lg:flex-col lg:overflow-visible lg:pb-0">
+                    {links.map(item=><NavLink key={item.to} to={item.to} end={item.end} className={({isActive})=>(isActive?'bg-ink text-white':'text-muted hover:bg-surface-muted hover:text-ink')+' min-h-11 shrink-0 whitespace-nowrap px-4 py-3 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:w-full'}>{item.label}</NavLink>)}
+                </nav>
+            </aside>
+            <main className="min-w-0"><Outlet context={outletContext} /></main>
+        </div>
     </div>;
 }
