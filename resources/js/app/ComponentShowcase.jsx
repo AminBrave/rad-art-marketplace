@@ -23,7 +23,7 @@ import {
     IconButton,
     Pagination,
     SearchField,
-    SelectField,
+    Select,
     Skeleton,
     SkeletonLines,
     SuccessState,
@@ -31,8 +31,8 @@ import {
     TabsContent,
     TabsList,
     TabsTrigger,
-    TextInput,
-    TextareaField,
+    Input,
+    Textarea,
     Toast,
     UploadFeedback,
 } from '../components/ui';
@@ -96,16 +96,16 @@ export default function ComponentShowcase() {
                     <div className="grid content-start gap-4">
                         <h3 className="font-bold">فیلدهای فرم</h3>
                         <FormField label="عنوان اثر" hint="عنوانی کوتاه و روشن بنویسید." required>
-                            <TextInput placeholder="عنوان اثر هنری" />
+                            <Input placeholder="عنوان اثر هنری" />
                         </FormField>
                         <FormField label="توضیحات" error="این فیلد برای نمونه دارای خطاست.">
-                            <TextareaField defaultValue="شرح کوتاه اثر…" />
+                            <Textarea defaultValue="شرح کوتاه اثر…" />
                         </FormField>
                         <FormField label="دسته‌بندی">
-                            <SelectField defaultValue="painting">
+                            <Select defaultValue="painting">
                                 <option value="painting">نقاشی</option>
                                 <option value="photo">عکاسی</option>
-                            </SelectField>
+                            </Select>
                         </FormField>
                         <SearchField
                             value={search}
