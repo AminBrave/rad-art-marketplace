@@ -728,7 +728,7 @@ export default function MessagingCenter({ role }) {
                                 if (shouldStickToBottomRef.current) setNewMessageCount(0);
                                 if (node.scrollTop < 72 && hasOlderMessagesRef.current) loadOlderMessages();
                             }} className="relative flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain [scrollbar-gutter:stable] bg-[radial-gradient(circle_at_1px_1px,rgba(66,62,53,0.055)_1px,transparent_0)] [background-size:24px_24px] px-3 py-5 sm:gap-4 sm:px-6 sm:py-6" role="log" aria-label="پیام‌های گفتگو" aria-live="polite" aria-relevant="additions">
-                                {messagesLoading && messages.length === 0 && <p className="m-auto py-6 text-center text-sm text-muted" role="status">در حال دریافت پیام‌ها…</p>}
+                                {messagesLoading && messages.length === 0 && <MessageHistorySkeleton count={5} className="w-full" />}
                                 {!messagesLoading && messages.length === 0 && <p className="m-auto py-6 text-center text-sm text-muted">هنوز پیامی در این گفتگو وجود ندارد. می‌توانید گفتگو را با یک پیام شروع کنید.</p>}
                                 {loadingOlder && <p className="absolute inset-x-0 top-2 z-10 mx-auto w-fit rounded-full border border-border bg-white/95 px-3 py-1.5 text-xs text-muted shadow-soft" role="status">در حال دریافت پیام‌های قدیمی‌تر…</p>}
                                 {newMessageCount > 0 && <button type="button" onClick={() => {
