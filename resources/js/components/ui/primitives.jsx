@@ -1,4 +1,4 @@
-import { cloneElement, isValidElement, useId } from 'react';
+import { cloneElement, forwardRef, isValidElement, useId } from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cn } from '../../lib/utils';
 
@@ -17,12 +17,13 @@ const buttonSizes = {
     icon: 'h-9 w-9',
 };
 
-export function Button({ children, variant = 'default', size = 'default', asChild = false, loading = false, disabled = false, type = 'button', className = '', ...props }) {
+export const Button = forwardRef(function Button({ children, variant = 'default', size = 'default', asChild = false, loading = false, disabled = false, type = 'button', className = '', ...props }, ref) {
     const Comp = asChild ? Slot : 'button';
     const resolvedVariant = ({ primary: 'default', danger: 'destructive' })[variant] ?? variant;
     const resolvedSize = ({ md: 'default' })[size] ?? size;
     return (
         <Comp
+            ref={ref}
             type={asChild ? undefined : type}
             disabled={!asChild && (disabled || loading)}
             aria-busy={loading || undefined}
@@ -33,7 +34,8 @@ export function Button({ children, variant = 'default', size = 'default', asChil
             {children}
         </Comp>
     );
-}
+});
+Button.displayName = 'Button';
 
 export function IconButton({ children, label, size = 'icon', className = '', ...props }) {
     const iconSize = size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'icon';
