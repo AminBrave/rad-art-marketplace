@@ -3,12 +3,12 @@ import { auditColorAccessibility } from '../lib/colorAccessibility';
 import ComponentShowcase from './ComponentShowcase';
 
 const swatches = [
-    { name: 'Ivory', value: '#F7F5F0', token: 'canvas' },
-    { name: 'Charcoal', value: '#242320', token: 'ink' },
-    { name: 'Terracotta', value: '#A64F31', token: 'terracotta' },
-    { name: 'Sand', value: '#D8C9B7', token: 'sand' },
-    { name: 'Olive', value: '#536052', token: 'olive' },
-    { name: 'White', value: '#FFFFFF', token: 'paper' },
+    { name: 'Ivory', value: 'var(--color-canvas)', token: 'canvas' },
+    { name: 'Charcoal', value: 'var(--color-ink)', token: 'ink' },
+    { name: 'Terracotta', value: 'var(--color-terracotta)', token: 'terracotta' },
+    { name: 'Sand', value: 'var(--color-sand)', token: 'sand' },
+    { name: 'Olive', value: 'var(--color-olive)', token: 'olive' },
+    { name: 'White', value: 'var(--color-paper)', token: 'paper' },
 ];
 
 function ColorAccessibilityPanel() {
@@ -81,7 +81,7 @@ export default function DesignFoundation() {
                         {swatches.map((color) => (
                             <article key={color.token} className="overflow-hidden rounded-card border border-border bg-paper">
                                 <div className="h-20 border-b border-border" style={{ backgroundColor: color.value }} />
-                                <div className="p-3"><p className="text-sm font-bold" dir="ltr">{color.name}</p><p className="mt-1 text-xs text-muted" dir="ltr">{color.value}</p><p className="mt-1 text-[11px] text-subtle" dir="ltr">--{color.token}</p></div>
+                                <div className="p-3"><p className="text-sm font-bold" dir="ltr">{color.name}</p><p className="mt-1 text-xs text-muted" dir="ltr">var(--color-{color.token})</p><p className="mt-1 text-[11px] text-subtle" dir="ltr">--{color.token}</p></div>
                             </article>
                         ))}
                     </div>
