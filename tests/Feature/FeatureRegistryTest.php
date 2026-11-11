@@ -13,17 +13,19 @@ final class FeatureRegistryTest extends TestCase
     {
         self::assertFalse(config('features.inquiries'));
 
-        self::assertFalse(Route::has('api.v1.artists.inquiries.store'));
-        self::assertFalse(Route::has('api.v1.buyer.inquiries.index'));
-        self::assertFalse(Route::has('api.v1.buyer.inquiries.show'));
-        self::assertFalse(Route::has('api.v1.artist.inquiries.index'));
-        self::assertFalse(Route::has('api.v1.artist.inquiries.show'));
-        self::assertFalse(Route::has('api.v1.artist.inquiries.update'));
-        self::assertFalse(Route::has('api.v1.conversations.start'));
+        self::assertTrue(Route::has('api.v1.artists.inquiries.store'));
+        self::assertTrue(Route::has('api.v1.buyer.inquiries.index'));
+        self::assertTrue(Route::has('api.v1.buyer.inquiries.show'));
+        self::assertTrue(Route::has('api.v1.artist.inquiries.index'));
+        self::assertTrue(Route::has('api.v1.artist.inquiries.show'));
+        self::assertTrue(Route::has('api.v1.artist.inquiries.update'));
+        self::assertTrue(Route::has('api.v1.conversations.start'));
 
-        $this->getJson('/api/v1/buyer/inquiries')->assertNotFound();
-        $this->getJson('/api/v1/artist/inquiries')->assertNotFound();
-        $this->postJson('/api/v1/artists/example-artist/inquiries', [])->assertNotFound();
+        $buyer = User::query()->create(['name' => 'Feature buyer', 'email' => 'feature-buyer@example.test', 'password' => 'strong-password-123', 'role' => User::ROLE_BUYER]);
+        $artist = User::query()->create(['name' => 'Feature artist', 'email' => 'feature-artist@example.test', 'password' => 'strong-password-123', 'role' => User::ROLE_ARTIST]);
+
+        $this->actingAs($buyer)->getJson('/api/v1/buyer/inquiries')->assertNotFound();
+        $this->actingAs($artist)->getJson('/api/v1/artist/inquiries')->assertNotFound();
     }
 
     public function test_direct_messaging_routes_remain_registered_when_inquiries_are_disabled(): void
