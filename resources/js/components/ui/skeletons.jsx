@@ -116,10 +116,9 @@ export function DashboardMetricSkeleton({ count = 4, className = '' }) {
 
 export function ArtistRecentWorkSkeleton() {
     return (
-        <section aria-hidden="true" className="border border-border bg-paper p-5 sm:p-6">
-            <div className="flex items-center justify-between gap-3 border-b border-border pb-4"><div className="grid gap-2"><Skeleton className="h-3 w-20 rounded-sm" /><Skeleton className="h-5 w-28 rounded-sm" /></div><Skeleton className="h-4 w-24 rounded-sm" /></div>
-            <div className="divide-y divide-border">{[0, 1, 2, 3].map((item) => <div key={item} className="flex items-center justify-between gap-3 py-4"><div className="grid min-w-0 flex-1 gap-2"><Skeleton className="h-4 w-2/3 rounded-sm" /><Skeleton className="h-3 w-1/3 rounded-sm" /></div><Skeleton className="h-6 w-20 shrink-0 rounded-full" /></div>)}</div>
-        </section>
+        <div aria-hidden="true" className="divide-y divide-border">
+            {[0, 1, 2, 3].map((item) => <div key={item} className="flex items-center justify-between gap-3 py-4"><div className="grid min-w-0 flex-1 gap-2"><Skeleton className="h-4 w-2/3 rounded-sm" /><Skeleton className="h-3 w-1/3 rounded-sm" /></div><Skeleton className="h-6 w-20 shrink-0 rounded-full" /></div>)}
+        </div>
     );
 }
 
