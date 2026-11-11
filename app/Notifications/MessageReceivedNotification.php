@@ -4,15 +4,20 @@ declare(strict_types=1);
 
 namespace App\Notifications;
 
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 
-class MessageReceivedNotification extends Notification
+class MessageReceivedNotification extends Notification implements ShouldQueue
 {
+    use Queueable;
     public function __construct(
         public readonly int $conversationId,
         public readonly int $messageId,
         public readonly string $senderName,
-    ) {}
+    ) {
+        $this->afterCommit();
+    }
 
     /**
      * @return array<int, string>
