@@ -35,6 +35,8 @@ import {
     TextareaField,
     Toast,
     UploadFeedback,
+    WorkspaceHero,
+    DashboardMetricCard,
 } from '../components/ui';
 
 const sampleArtwork = {
@@ -68,6 +70,22 @@ export default function ComponentShowcase() {
                     <p className="mt-2 text-sm leading-7 text-muted">نمونه‌های تعاملی اجزای مشترک؛ همه اجزا با چیدمان راست‌به‌چپ سازگارند.</p>
                 </div>
                 <Badge variant="success">RTL ready</Badge>
+            </div>
+
+            <div className="mb-8 grid gap-5 lg:grid-cols-2">
+                <div className="grid content-start gap-3">
+                    <h3 className="font-bold">الگوی معرفی فضای کاربری</h3>
+                    <WorkspaceHero
+                        eyebrow="استودیوی هنرمند"
+                        title="همه چیز برای مدیریت حرفه‌ای"
+                        description="الگوی مشترک معرفی فضاهای هنرمند، خریدار و مدیر؛ با سلسله‌مراتب و رنگ‌های یکسان."
+                        actions={<Button variant="secondary" size="sm">اقدام نمونه</Button>}
+                    />
+                </div>
+                <div className="grid content-start gap-3">
+                    <h3 className="font-bold">کارت شاخص عملیاتی</h3>
+                    <DashboardMetricCard label="آثار منتشرشده" value="۱۲۴" detail="تعداد آثار تأییدشده و قابل مشاهده در گالری" eyebrow="پورتفولیو" />
+                </div>
             </div>
 
             <div className="grid gap-8">
