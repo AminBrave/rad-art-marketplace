@@ -1,6 +1,6 @@
 # AI Agent Tooling
 
-This repository uses a small, project-scoped toolset. The goal is better code understanding and specialist guidance without always-on hooks, duplicate instructions, background verification, or unnecessary context.
+This repository uses a small, project-scoped set of specialist skills. The goal is better task guidance without always-on hooks, duplicate instructions, background verification, or unnecessary context.
 
 ## Authority and precedence
 
@@ -8,7 +8,7 @@ This repository uses a small, project-scoped toolset. The goal is better code un
 2. AGENTS.md — authoritative repository contract.
 3. Relevant project architecture, product, API, security and operational documentation.
 4. Project skills under .agents/skills/ or .claude/skills/.
-5. Third-party agent frameworks and generated knowledge graphs.
+5. Third-party agent frameworks and imported skill material.
 
 Imported skills are advisory. They must not override project architecture, security rules, user instructions, or the opt-in verification policy. If a skill says to run tests, lint, type-check, build, start a server, install dependencies or execute a scanner, treat that as a recommendation and ask for explicit authorization before executing it.
 
@@ -17,41 +17,11 @@ Imported skills are advisory. They must not override project architecture, secur
 | Project | Use in Rademan | Integration approach | Reviewed source |
 |---|---|---|---|
 | [Everything Claude Code (ECC)](https://github.com/affaan-m/ECC) | Agent workflow patterns, specialist roles, context discipline and optional security tooling | Use selectively. Do not install the full bundle or enable hooks by default. | MIT; reviewed README commit d2ef268 |
-| [Graphify](https://github.com/Graphify-Labs/graphify) | Local code-relationship graph and graph queries for unfamiliar or cross-cutting changes | Install the official project-scoped skill when desired; build/update the graph only when it will save repeated exploration. | Apache-2.0; reviewed skill commit 59336ec |
 | [Jeffallan/claude-skills](https://github.com/Jeffallan/claude-skills) | Specialist skill patterns for Laravel, React, debugging, security and code review | Use the small project-specific skills in .agents/skills/ and .claude/skills/; they are adapted to Rademan rather than copied wholesale. | MIT; reviewed source commit 078a25c |
 
 Review upstream licenses and notices again before redistributing substantial copied material.
 
-## 1. Graphify — optional local knowledge graph
-
-Graphify parses code locally using tree-sitter and can build a persistent graph for repeated codebase questions. Its semantic pass over documentation and media may call a configured model/backend. Do not assume every extraction mode is offline or cost-free.
-
-Install the official package using the upstream instructions, then install the project-scoped skill from the repository root:
-
-    uv tool install graphifyy
-    graphify install --project
-
-If you use Codex and auto-detection does not select it, use the documented platform option:
-
-    graphify install --project --platform codex
-
-Review generated files before committing them. Graphify may create a platform skill under .agents/skills/graphify/ or .claude/skills/graphify/, including a references sidecar. Do not manually copy only the skill file and omit its references.
-
-Build the graph only when the task is broad, cross-cutting, or likely to require repeated architecture queries:
-
-    graphify . --no-viz
-    graphify query "Trace the artist artwork publishing flow"
-    graphify path "ArtworkController" "ArtworkPolicy"
-    graphify explain "Conversation"
-    graphify . --update
-
-Use --update for incremental refresh. Use a full rebuild only when files were removed or a stale graph must shrink. A graph is an index, not implementation truth: open referenced source files before changing code. Distinguish EXTRACTED edges from INFERRED edges and never present inferred links as proven behavior.
-
-**Privacy and scope:** Graphify's current skill uses repository gitignore rules and a sensitive-file detection pass, but neither replaces human review. Before the first graph build, inspect the detection summary and skipped-sensitive list. Confirm .env files, credentials, local databases, logs, private uploads, user-generated/private content, vendor/, node_modules/, build output and generated caches are excluded. Add any additional exclusions using the ignore mechanism supported by the installed Graphify version. Do not run semantic extraction over secrets or private user data. Do not upload graph artifacts to a hosted service unless the user explicitly approves.
-
-Graph outputs are local developer artifacts by default. Keep graphify-out/ untracked unless the team explicitly decides to review and share a sanitized graph.
-
-## 2. ECC — selective, no-hooks integration
+## 1. ECC — selective, no-hooks integration
 
 ECC is a broad agent harness, not a dependency of the Laravel application. Its workflows and hook runtime may add automatic tool actions that conflict with Rademan's no-automatic-verification rule.
 
@@ -69,7 +39,7 @@ For another supported harness, consult the current official README and select it
 
 ECC's MIT license permits use subject to its license notice. It is not necessary to vendor ECC into this application repository.
 
-## 3. Jeffallan skills — project-scoped specialist skills
+## 2. Jeffallan skills — project-scoped specialist skills
 
 The curated skills are deliberately limited to this stack and mirrored for the two common project-level skill locations:
 
@@ -92,7 +62,7 @@ Codex reads .agents/skills/. Claude Code reads .claude/skills/. The mirrored cop
 | Bug | debugging | one relevant implementation skill |
 | Auth, roles, uploads, messaging, moderation | security-review | Laravel/React specialist as applicable |
 | Review | code-review | security-review for sensitive paths |
-| Architecture change | relevant architecture docs and ADR process | Graphify if cross-file relationships are unclear |
+| Architecture change | relevant architecture docs and ADR process | focused source exploration and an ADR when warranted |
 
 Do not activate every skill for every task. Load one primary skill and only the supporting skills needed for the actual change.
 
@@ -103,4 +73,4 @@ Do not activate every skill for every task. Load one primary skill and only the 
 - Recheck platform compatibility, license, permissions and execution behavior.
 - Keep skill content short and link to project docs instead of duplicating them.
 - Do not add package dependencies to Laravel's Composer/npm manifests for agent-only tooling.
-- Do not run installation, graph generation, tests, lint, builds or scanners without explicit user authorization.
+- Do not run installation, tests, lint, builds or scanners without explicit user authorization.
