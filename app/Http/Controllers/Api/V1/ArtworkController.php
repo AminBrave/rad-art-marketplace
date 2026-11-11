@@ -195,6 +195,4 @@ class ArtworkController extends Controller
             'data' => (new ArtworkJsonResource($artwork->load('category')))->resolve(),
         ]);
     }
-
-
 }
