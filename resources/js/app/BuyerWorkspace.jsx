@@ -31,7 +31,7 @@ export function BuyerDashboardHome() {
             <article className="border border-border bg-card p-6 sm:p-8">
                 <h2 className="text-lg font-bold">صندوق پیام‌های شما</h2>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">گفت‌وگوهای فعال، پیوست‌ها و اعلان‌های پیام در بخش پیام‌های مستقیم در دسترس هستند.</p>
-                <Link to="/dashboard/buyer/messages" className="mt-5 inline-flex min-h-11 items-center bg-brand-ink px-5 py-3 text-sm font-bold text-white hover:bg-primary">رفتن به پیام‌های مستقیم</Link>
+                <Button asChild variant="default" size="default" className="mt-5 inline-flex min-h-11"><Link to="/dashboard/buyer/messages">رفتن به پیام‌های مستقیم</Link></Button>
             </article>
         </section>
     );
@@ -82,7 +82,7 @@ export function BuyerInquiryPage() {
                         <EmptyState
                             title="هنوز درخواستی ارسال نکرده‌اید"
                             description="پس از ارسال درخواست از صفحه یک هنرمند یا اثر، سوابق شما در اینجا نمایش داده می‌شود."
-                            action={<Link to="/artists" className="mt-2 inline-flex min-h-11 items-center bg-brand-ink px-5 py-3 text-sm font-bold text-white">مشاهده هنرمندان</Link>}
+                            action={<Button asChild variant="default" size="default" className="mt-2 inline-flex min-h-11"><Link to="/artists">مشاهده هنرمندان</Link></Button>}
                         />
                     ) : (
                         <div className="overflow-hidden border border-border bg-card">
