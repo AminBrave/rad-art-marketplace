@@ -37,7 +37,7 @@ final class PersianSearch
         $value = preg_replace('/[\x{064B}-\x{065F}\x{0670}]/u', '', $value) ?? $value;
         $value = preg_replace('/\s+/u', ' ', trim($value)) ?? trim($value);
 
-        return mb_strtolower($value, 'UTF-8');
+        return strtolower($value);
     }
 
     /**
