@@ -1,0 +1,31 @@
+name: RAD color accessibility
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, feat/editorial-ui-foundation]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  frontend-accessibility:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Verify RAD color contrast tokens
+        run: npm run a11y:colors
+      - name: Run frontend regression tests
+        run: npm run test:frontend
+      - name: Lint the complete frontend
+        run: npm run lint
