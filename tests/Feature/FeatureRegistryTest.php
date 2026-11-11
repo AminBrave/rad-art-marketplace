@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
 final class FeatureRegistryTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_inquiries_are_disabled_at_the_server_boundary_by_default(): void
     {
         self::assertFalse(config('features.inquiries'));
