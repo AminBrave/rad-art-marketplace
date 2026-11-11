@@ -30,6 +30,8 @@ export default function MessagingCenter({ role }) {
     const [loading, setLoading] = useState(true);
     const [loadingOlder, setLoadingOlder] = useState(false);
     const [hasOlderMessages, setHasOlderMessages] = useState(false);
+    const [hasMoreThreads, setHasMoreThreads] = useState(false);
+    const [loadingMoreThreads, setLoadingMoreThreads] = useState(false);
     const [sending, setSending] = useState(false);
     const [actionId, setActionId] = useState(null);
     const [error, setError] = useState('');
@@ -50,24 +52,42 @@ export default function MessagingCenter({ role }) {
     const draftsByConversationRef = useRef(new Map());
     const pendingIdsByConversationRef = useRef(new Map());
     const threadsRequestRef = useRef(null);
+    const threadsPageRef = useRef(1);
     const shouldStickToBottomRef = useRef(true);
     const endpoint = role === 'artist' ? '/api/v1/artist/conversations' : '/api/v1/buyer/conversations';
-    const loadThreads = useCallback(async () => {
+    const loadThreads = useCallback(async ({ append = false } = {}) => {
         threadsRequestRef.current?.abort();
         const controller = new AbortController();
         threadsRequestRef.current = controller;
+        if (append) setLoadingMoreThreads(true);
+        else setLoading(true);
+        const page = append ? threadsPageRef.current + 1 : 1;
         try {
-            const query = {};
+            const query = { page };
             if (search.trim()) query.search = search.trim();
             if (threadFilter !== 'all') query.filter = threadFilter;
             const { data } = await axios.get(endpoint, { params: query, signal: controller.signal });
-            if (!controller.signal.aborted) setThreads(data.data ?? []);
+            if (!controller.signal.aborted) {
+                const received = data.data ?? [];
+                setThreads((current) => {
+                    if (!append) {
+                        const activeThread = current.find((thread) => Number(thread.id) === Number(activeConversationRef.current));
+                        return activeThread && !received.some((thread) => Number(thread.id) === Number(activeThread.id))
+                            ? [activeThread, ...received] : received;
+                    }
+                    const known = new Set(current.map((thread) => Number(thread.id)));
+                    return [...current, ...received.filter((thread) => !known.has(Number(thread.id)))];
+                });
+                threadsPageRef.current = Number(data.current_page ?? page);
+                setHasMoreThreads(Number(data.current_page ?? page) < Number(data.last_page ?? page));
+            }
         } catch (requestError) {
             if (!axios.isCancel(requestError) && !controller.signal.aborted) setError('دریافت گفتگوها انجام نشد. دوباره تلاش کنید.');
         } finally {
             if (threadsRequestRef.current === controller) {
                 threadsRequestRef.current = null;
-                setLoading(false);
+                if (append) setLoadingMoreThreads(false);
+                else setLoading(false);
             }
         }
     }, [endpoint, search, threadFilter]);
@@ -451,6 +471,7 @@ export default function MessagingCenter({ role }) {
                             </li>)}
                         </ul>
                     )}
+                    {hasMoreThreads && <button type="button" disabled={loadingMoreThreads} onClick={() => loadThreads({ append: true })} className="mx-4 my-3 min-h-10 border border-border bg-white px-3 py-2 text-xs font-semibold text-terracotta-strong hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:opacity-50">{loadingMoreThreads ? 'در حال دریافت…' : 'گفتگوهای بیشتر'}</button>}
                 </aside>
                 <div dir="rtl" className={active ? 'flex h-full min-h-0 min-w-0 flex-col bg-canvas' : 'hidden h-full min-h-0 min-w-0 flex-col bg-canvas lg:flex'}>
                     {!active ? <div className="m-auto p-8 text-center text-sm text-muted">برای مشاهده پیام‌ها یک گفتگو را انتخاب کنید.</div> : (
