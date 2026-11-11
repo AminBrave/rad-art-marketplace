@@ -44,9 +44,9 @@ final class PersianSearch
         $query->whereRaw($expression." LIKE ? ESCAPE '!'", ['%'.$escaped.'%'], $boolean);
     }
 
-    public static function normalize(string $value): string
+    public static function normalize(?string $value): string
     {
-        $value = strtr($value, self::characterMap());
+        $value = strtr($value ?? '', self::characterMap());
         $value = preg_replace('/[\x{064B}-\x{065F}\x{0670}]/u', '', $value) ?? $value;
         $value = preg_replace('/\s+/u', ' ', trim($value)) ?? trim($value);
 
