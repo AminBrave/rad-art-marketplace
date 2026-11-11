@@ -126,7 +126,8 @@ class ConversationController extends Controller
             'after_id' => ['nullable', 'integer', 'min:0'],
             'updated_after' => ['nullable', 'date'],
         ]);
-        // Keep a one-second overlap for databases with second-precision timestamps; clients merge by message ID.\n        $syncCursor = now()->subSecond();
+        // Keep a one-second overlap for databases with second-precision timestamps; clients merge by message ID.
+        $syncCursor = now()->subSecond();
 
         $query = $conversation->messages()
             ->withTrashed()
