@@ -10,6 +10,7 @@ flowchart TD
  D --> S[System overview]
  S --> M[Data model]
  S --> F[Frontend]
+ F --> DS[shadcn New York design system]
  S --> API[API contracts]
  S --> FR[Feature registry]
  FR --> F
@@ -41,6 +42,7 @@ flowchart TD
 - [Feature registry](architecture/feature-registry.md): centralized feature switches and enforcement boundaries.
 - [Data](architecture/data-model.md): entities and persistence invariants.
 - [Frontend](architecture/frontend-and-ui.md): routes, state and UI rules.
+- [shadcn New York](architecture/shadcn-new-york-design-system.md): component foundations, compositions, RTL and migration acceptance.
 - [API](architecture/api-contracts.md): endpoint groups and contracts.
 - [Security](security/security-model.md): trust boundaries and threats.
 - [Testing](engineering/testing-strategy.md): test layers and commands.
