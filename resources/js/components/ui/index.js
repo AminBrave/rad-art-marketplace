@@ -22,3 +22,5 @@ export { Input } from './input';
 export { Textarea } from './textarea';
 export { Select } from './select';
 export { Label } from './label';
+
+export { Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption } from './table';
