@@ -4,7 +4,7 @@ The application is designed for Laravel on Apache/LiteSpeed with MySQL and compi
 
 ## cPanel runtime
 
-- Build frontend assets in CI or on a trusted build machine with `npm ci && npm run build:cpanel`; Node.js is not required on production.
+- Build frontend assets in CI or on a trusted build machine with Node.js 20+ and `npm ci && npm run build:cpanel`; Node.js is not required on production.
 - Configure MySQL credentials and SMTP values as hosting environment variables. Keep `APP_DEBUG=false`, a unique `APP_KEY`, and `SESSION_SECURE_COOKIE=true` in production HTTPS.
 - Keep `storage/app/private` outside the public document root and writable only by the application user. Never expose private attachments through a public symlink.
 - Use the database queue driver. Run migrations during a controlled deploy after a database backup.
