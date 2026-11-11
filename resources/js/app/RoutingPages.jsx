@@ -23,7 +23,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
     if (isArtistProfile) return <ArtistProfileSkeleton />;
 
     return (
-        <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-10 sm:px-8 lg:px-10" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
+        <div className="mx-auto min-h-[65vh] max-w-7xl px-5 py-10 sm:px-8 lg:px-10" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
             <span className="sr-only">{label}</span>
             <div className="mb-8 flex items-center justify-between gap-5 border-b border-border pb-6">
                 <div className="grid min-w-0 flex-1 gap-3">
@@ -79,7 +79,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                         {[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}
                     </section>
                 </>
-            ) : /^\\/(dashboard\\/(artist|buyer)\\/messages)$/.test(pathname) ? (
+            ) : /^\/(dashboard\/(artist|buyer)\/messages)$/.test(pathname) ? (
                 <section className="grid min-h-[34rem] overflow-hidden border border-border bg-paper md:grid-cols-[minmax(16rem,.36fr)_minmax(0,.64fr)]">
                     <div className="border-b border-border p-4 md:border-b-0 md:border-l">
                         <LoadingBlock className="mb-4 h-10 w-full" />
@@ -175,7 +175,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                     </div>
                 </>
             )}
-        </main>
+        </div>
     );
 }
 
