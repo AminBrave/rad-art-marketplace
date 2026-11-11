@@ -95,7 +95,7 @@ export default function ArtworkDetailPage() {
                             </dl>
                             <p className="mt-5 text-sm text-muted-foreground">وضعیت: {availabilityLabel(artwork.availability)}</p>
                             {user?.role === 'buyer' && <div className="mt-7 flex flex-wrap gap-3">
-                                <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(artwork.artist.slug) + '&artwork=' + encodeURIComponent(artwork.slug)} className="inline-flex items-center bg-brand-ink px-5 py-3 text-sm font-bold text-white hover:bg-primary">پیام مستقیم درباره این اثر</Link>
+                                <Button asChild variant="default" size="default" className="inline-flex"><Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(artwork.artist.slug) + '&artwork=' + encodeURIComponent(artwork.slug)}>پیام مستقیم درباره این اثر</Link></Button>
                                 {isFeatureEnabled('inquiries') && <ContactArtistForm artistSlug={artwork.artist.slug} artworkId={artwork.id} />}
                             </div>}
                             {!user && <Link to="/login" state={{ from: { pathname: '/artworks/' + slug } }} className="mt-7 inline-block text-sm font-bold text-primary underline">برای ارسال پیام مستقیم وارد شوید</Link>}
