@@ -621,7 +621,14 @@ export default function MessagingCenter({ role }) {
                                 { value: 'all', label: 'همه', Icon: Inbox },
                                 { value: 'unread', label: 'خوانده‌نشده', Icon: MailOpen },
                                 { value: 'archived', label: 'بایگانی', Icon: Archive },
-                            ].map(({ value, label, Icon }) => <button key={value} type="button" role="tab" aria-selected={threadFilter === value} onClick={() => setThreadFilter(value)} className={'flex min-w-0 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-[11px] font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-1 ' + (threadFilter === value ? 'bg-ink text-white shadow-sm' : 'text-muted hover:bg-surface-muted hover:text-ink')}><Icon size={14} aria-hidden="true" /><span className="truncate">{label}</span></button>)}
+                            ].map(({ value, label, Icon }, index, filters) => <button key={value} id={'conversation-filter-' + value} type="button" role="tab" tabIndex={threadFilter === value ? 0 : -1} aria-selected={threadFilter === value} onClick={() => setThreadFilter(value)} onKeyDown={(event) => {
+                                if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight' && event.key !== 'Home' && event.key !== 'End') return;
+                                event.preventDefault();
+                                const nextIndex = event.key === 'Home' ? 0 : event.key === 'End' ? filters.length - 1 : event.key === 'ArrowLeft' ? (index + 1) % filters.length : (index - 1 + filters.length) % filters.length;
+                                const nextFilter = filters[nextIndex].value;
+                                setThreadFilter(nextFilter);
+                                document.getElementById('conversation-filter-' + nextFilter)?.focus();
+                            }} className={'flex min-w-0 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-[11px] font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-1 ' + (threadFilter === value ? 'bg-ink text-white shadow-sm' : 'text-muted hover:bg-surface-muted hover:text-ink')}><Icon size={14} aria-hidden="true" /><span className="truncate">{label}</span></button>)}
                         </div>
                     </div>
                     {loading ? <p className="p-5 text-sm text-muted">در حال دریافت…</p> : threads.length === 0 ? <p className="p-5 text-sm leading-7 text-muted">هنوز گفتگویی ندارید. از صفحه هنرمند یا یک اثر، گزینه «پیام مستقیم» را انتخاب کنید.</p> : (
