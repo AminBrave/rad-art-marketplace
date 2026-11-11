@@ -12,6 +12,7 @@ const cards = read('../../resources/js/components/ui/cards.jsx');
 const feedback = read('../../resources/js/components/ui/feedback.jsx');
 const themeProvider = read('../../resources/js/components/theme-provider.jsx');
 const input = read('../../resources/js/components/ui/input.jsx');
+const select = read('../../resources/js/components/ui/select.jsx');
 const table = read('../../resources/js/components/ui/table.jsx');
 const uiIndex = read('../../resources/js/components/ui/index.js');
 
@@ -41,7 +42,10 @@ test('Tailwind and shadcn configuration use standard semantic colors and class-b
 test('shared primitives follow shadcn component contracts and preserve accessible form states', () => {
     assert.ok(primitives.includes('@radix-ui/react-slot'));
     assert.match(primitives, /import \{ Slot, Slottable \} from '@radix-ui\/react-slot'/);
-    assert.match(primitives, /asChild \? <Slottable>\{children\}<\/Slottable>/);
+    assert.match(primitives, /<Slottable>\{children\}<\/Slottable>/);
+    assert.match(primitives, /\{loading && <span/);
+    assert.match(primitives, /aria-disabled=\{asChild && \(disabled \|\| loading\)/);
+    assert.doesNotMatch(primitives, /\b(?:TextInput|TextareaField|SelectField)\b/);
     assert.ok(primitives.includes('focus-visible:ring-ring'));
     assert.ok(primitives.includes('aria-busy={loading || undefined}'));
     assert.ok(primitives.includes("'aria-describedby':"));
@@ -49,6 +53,10 @@ test('shared primitives follow shadcn component contracts and preserve accessibl
     assert.ok(input.includes('focus-visible:ring-ring'));
     assert.ok(input.includes("type === 'checkbox'"));
     assert.ok(input.includes('forwardRef'));
+    assert.ok(select.includes('appearance-none'));
+    assert.ok(select.includes('ChevronDown'));
+    assert.ok(select.includes('focus-visible:ring-2'));
+    assert.doesNotMatch(uiIndex, /\b(?:TextInput|TextareaField|SelectField)\b/);
     assert.ok(table.includes('caption-bottom text-sm'));
     for (const component of ['Input', 'Textarea', 'Select', 'Label', 'Table', 'TableRow', 'TableCell', 'Card', 'Alert']) {
         assert.ok(uiIndex.includes(component), `Missing shared component export: ${component}`);
@@ -70,6 +78,10 @@ test('theme provider persists the selected mode and applies the root class', () 
     assert.ok(themeProvider.includes('localStorage.setItem(STORAGE_KEY, theme)'));
     assert.ok(themeProvider.includes('meta[name="theme-color"]'));
     const messaging = read('../../resources/js/app/MessagingCenter.jsx');
+    const admin = read('../../resources/js/app/AdminWorkspace.jsx');
+    const artistOverview = read('../../resources/js/app/ArtistWorkspaceOverview.jsx');
+    const buyerWorkspace = read('../../resources/js/app/BuyerWorkspace.jsx');
+    assert.doesNotMatch([admin, artistOverview, buyerWorkspace].join('\\n'), /(?:outline-focus|text-success)/);
     assert.doesNotMatch(messaging, /window\.(?:confirm|prompt|alert)\(/);
 });
 
