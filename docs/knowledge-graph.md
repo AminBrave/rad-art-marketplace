@@ -11,6 +11,9 @@ flowchart TD
  S --> M[Data model]
  S --> F[Frontend]
  S --> API[API contracts]
+ S --> FR[Feature registry]
+ FR --> F
+ FR --> API
  M --> SEC[Security]
  API --> SEC
  F --> T[Testing]
@@ -35,6 +38,7 @@ flowchart TD
 - [Vision](product/vision-and-scope.md): user value and boundaries.
 - [Domain](product/domain-workflows.md): actor workflows and invariants.
 - [System](architecture/system-overview.md): runtime and stack.
+- [Feature registry](architecture/feature-registry.md): centralized feature switches and enforcement boundaries.
 - [Data](architecture/data-model.md): entities and persistence invariants.
 - [Frontend](architecture/frontend-and-ui.md): routes, state and UI rules.
 - [API](architecture/api-contracts.md): endpoint groups and contracts.
