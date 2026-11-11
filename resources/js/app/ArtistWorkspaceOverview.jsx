@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useOutletContext } from 'react-router-dom';
 import { isFeatureEnabled } from './features';
-import { EmptyState, ErrorState, SkeletonLines } from '../components/ui';
+import { Card, EmptyState, ErrorState, SkeletonLines } from '../components/ui';
 
 const statusLabels = {
     pending_review: 'در انتظار بررسی', approved: 'منتشرشده', rejected: 'ردشده',
@@ -10,10 +10,10 @@ const statusLabels = {
 };
 
 function SummaryCard({ label, value, detail, to }) {
-    return <Link to={to} className="block border border-border bg-card p-5 transition-colors hover:border-ring focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
-        <p className="text-sm text-muted-foreground">{label}</p><p className="mt-3 text-3xl font-black tabular-nums text-foreground">{value}</p>
+    return <Card className="transition-all hover:-translate-y-0.5 hover:shadow-md"><Link to={to} className="block rounded-xl p-5 outline-none focus-visible:ring-2 focus-visible:ring-ring">
+        <p className="text-sm text-muted-foreground">{label}</p><p className="mt-3 text-3xl font-bold tabular-nums text-card-foreground">{value}</p>
         <p className="mt-2 text-xs leading-6 text-muted-foreground">{detail}</p>
-    </Link>;
+    </Link></Card>;
 }
 
 export default function ArtistWorkspaceOverview() {
