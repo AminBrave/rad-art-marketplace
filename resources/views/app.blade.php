@@ -21,6 +21,7 @@
     <meta name="description" content="{{ $seoDescription }}">
     <meta name="robots" content="{{ $seoRobots }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script>window.__RAD_FEATURES__ = @json(config('features'));</script>
     @if ($seoCanonical)
         <link rel="canonical" href="{{ $seoCanonical }}">
     @endif

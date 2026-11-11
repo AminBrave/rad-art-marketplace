@@ -1,10 +1,11 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { AuthProvider } from './AuthContext';
+import { isFeatureEnabled } from './features';
 import { PublicLayout } from './Layouts';
 import {
-    AdminWorkspaceLayout, ArtistArtworkPage,
-    ArtistInquiryPage, ArtistProfileSettings, ArtistWorkspaceLayout,
+    AdminWorkspaceLayout, ArtistArtworkPage, ArtistInquiryPage,
+    ArtistProfileSettings, ArtistWorkspaceLayout,
     BuyerWorkspaceLayout, DashboardIndex,
     NotFoundPage, RequireAuth, RequireRole, RouteLoading, UnauthorizedPage,
 } from './RoutingPages';
@@ -74,14 +75,16 @@ function AppRoutes() {
                     <Route index element={withRouteFallback(<ArtistWorkspaceOverview />)} />
                     <Route path="profile" element={<ArtistProfileSettings />} />
                     <Route path="artworks" element={<ArtistArtworkPage />} />
-                    <Route path="inquiries" element={<ArtistInquiryPage />} />
+                    {isFeatureEnabled('inquiries') && <Route path="inquiries" element={<ArtistInquiryPage />} />}
                     <Route path="messages" element={withRouteFallback(<MessagingCenter role="artist" />)} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
                 <Route path="/dashboard/buyer" element={<RequireRole roles={['buyer']}><BuyerWorkspaceLayout /></RequireRole>}>
                     <Route index element={withRouteFallback(<BuyerDashboardHome />)} />
-                    <Route path="inquiries" element={withRouteFallback(<BuyerInquiryPage />)} />
-                    <Route path="inquiries/:id" element={withRouteFallback(<BuyerInquiryDetailPage />)} />
+                    {isFeatureEnabled('inquiries') && <>
+                        <Route path="inquiries" element={withRouteFallback(<BuyerInquiryPage />)} />
+                        <Route path="inquiries/:id" element={withRouteFallback(<BuyerInquiryDetailPage />)} />
+                    </>}
                     <Route path="messages" element={withRouteFallback(<MessagingCenter role="buyer" />)} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>

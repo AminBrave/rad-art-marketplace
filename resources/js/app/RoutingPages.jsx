@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import { isFeatureEnabled } from './features';
 import { WorkspaceLayout } from './Layouts';
 import { ArtworkDetailSkeleton, ArtistProfileSkeleton } from '../components/ui';
 const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
@@ -207,7 +208,7 @@ export function ArtistWorkspaceLayout() {
         { to: '/dashboard/artist', label: 'نمای کلی', end: true },
         { to: '/dashboard/artist/profile', label: 'پروفایل هنرمند' },
         { to: '/dashboard/artist/artworks', label: 'مدیریت آثار' },
-        { to: '/dashboard/artist/inquiries', label: 'صندوق درخواست‌ها' },
+        ...(isFeatureEnabled('inquiries') ? [{ to: '/dashboard/artist/inquiries', label: 'صندوق درخواست‌ها' }] : []),
         { to: '/dashboard/artist/messages', label: 'پیام‌های مستقیم' },
     ];
 
@@ -220,7 +221,7 @@ export function ArtistDashboardHome() {
         <section className="rounded-2xl border border-stone-200 bg-white p-6 sm:p-8" dir="rtl">
             <p className="text-sm font-bold text-[#9a452b]">فضای هنرمند</p>
             <h1 className="mt-2 text-2xl font-black">خوش آمدید، {user.name}</h1>
-            <p className="mt-3 text-sm leading-7 text-stone-500">پروفایل، آثار ارسالی و درخواست‌های ارتباطی خود را از این بخش مدیریت کنید.</p>
+            <p className="mt-3 text-sm leading-7 text-stone-500">پروفایل و آثار ارسالی خود را مدیریت کنید و از بخش پیام‌های مستقیم با خریداران در ارتباط باشید.</p>
             {profileError && <p role="alert" className="mt-5 text-sm text-amber-800">{profileError}</p>}
             {profileLoading ? <p className="mt-5 text-sm text-stone-500">در حال دریافت پروفایل…</p> : (
                 <div className="mt-6 rounded-xl bg-[#f7f5f0] p-4">
@@ -230,7 +231,7 @@ export function ArtistDashboardHome() {
             )}
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
                 <Link to="/dashboard/artist/artworks" className="rounded-xl border border-stone-200 p-5 font-bold hover:border-[#b65c3a]">مدیریت آثار</Link>
-                <Link to="/dashboard/artist/inquiries" className="rounded-xl border border-stone-200 p-5 font-bold hover:border-[#b65c3a]">صندوق پیام‌ها</Link>
+                <Link to="/dashboard/artist/messages" className="rounded-xl border border-stone-200 p-5 font-bold hover:border-[#b65c3a]">پیام‌های مستقیم</Link>
             </div>
         </section>
     );
@@ -326,6 +327,7 @@ export function ArtistArtworkPage() {
     return <Suspense fallback={<RouteLoading label="در حال آماده‌سازی فضای آثار…" />}><ArtworkStudio user={user} hasProfile={Boolean(profile?.slug)} /></Suspense>;
 }
 
+
 export function ArtistInquiryPage() {
     const { user, profile, profileLoading, profileError } = useOutletContext();
     if (profileLoading) return <RouteLoading label="در حال آماده‌سازی صندوق پیام‌ها…" />;
@@ -346,7 +348,6 @@ export function BuyerWorkspaceLayout() {
     const { user } = useAuth();
     const links = [
         { to: '/dashboard/buyer', label: 'نمای کلی', end: true },
-        { to: '/dashboard/buyer/inquiries', label: 'درخواست‌های من' },
         { to: '/dashboard/buyer/messages', label: 'پیام‌های مستقیم' },
     ];
     return <WorkspaceLayout title="فضای خریدار" links={links} outletContext={{ user }} />;

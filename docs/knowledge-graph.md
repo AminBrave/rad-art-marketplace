@@ -11,6 +11,9 @@ flowchart TD
  S --> M[Data model]
  S --> F[Frontend]
  S --> API[API contracts]
+ S --> FR[Feature registry]
+ FR --> F
+ FR --> API
  M --> SEC[Security]
  API --> SEC
  F --> T[Testing]
@@ -35,6 +38,7 @@ flowchart TD
 - [Vision](product/vision-and-scope.md): user value and boundaries.
 - [Domain](product/domain-workflows.md): actor workflows and invariants.
 - [System](architecture/system-overview.md): runtime and stack.
+- [Feature registry](architecture/feature-registry.md): centralized feature switches and enforcement boundaries.
 - [Data](architecture/data-model.md): entities and persistence invariants.
 - [Frontend](architecture/frontend-and-ui.md): routes, state and UI rules.
 - [API](architecture/api-contracts.md): endpoint groups and contracts.
@@ -54,4 +58,4 @@ flowchart TD
 - [Coverage summarizer](../scripts/summarize-coverage.py): combines per-suite Clover reports into an overall line-coverage baseline and low-coverage priority list.
 
 ## Change propagation
-Schema/domain → data, domain, API, tests, security. API → API docs, backend tests, frontend consumers, browser E2E. UI/navigation → frontend docs and browser tests. Auth/moderation/messaging/uploads/privacy → threat review. Workflow/release → CI/CD and GitHub docs. Test architecture or coverage changes → testing strategy, coverage matrix, route test map, tests README, PHPUnit configuration, quality gates and CI workflow.
+Schema/domain → data, domain, API, tests, security. API → API docs, backend tests, frontend consumers, browser E2E. Feature availability → feature registry, backend route tests, frontend route/navigation tests and system/API/frontend docs. UI/navigation → frontend docs and browser tests. Auth/moderation/messaging/uploads/privacy → threat review. Workflow/release → CI/CD and GitHub docs. Test architecture or coverage changes → testing strategy, coverage matrix, route test map, tests README, PHPUnit configuration, quality gates and CI workflow.

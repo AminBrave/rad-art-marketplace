@@ -1,4 +1,4 @@
-"""Unmocked buyer inquiry submission and artist-side privacy journey."""
+"""Verify Inquiry is disabled while direct messaging remains operational."""
 
 import unittest
 
@@ -7,7 +7,7 @@ from playwright.sync_api import sync_playwright
 from config import BASE_URL, IGNORE_HTTPS_ERRORS
 
 
-class FullStackBuyerInquiryTests(unittest.TestCase):
+class InquiryDisabledFullStackTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.playwright = sync_playwright().start()
@@ -22,69 +22,48 @@ class FullStackBuyerInquiryTests(unittest.TestCase):
         context = self.browser.new_context(
             viewport={"width": 1280, "height": 900},
             ignore_https_errors=IGNORE_HTTPS_ERRORS,
-            extra_http_headers={"X-Forwarded-For": "198.51.100.12"},
         )
         page = context.new_page()
         page.set_default_timeout(20000)
         page.set_default_navigation_timeout(20000)
         return context, page
 
-    def login(self, page, email):
+    def login_buyer(self, page):
         page.goto(BASE_URL + "/login")
-        page.locator('input[name="email"]').fill(email)
+        page.locator('input[name="email"]').fill("buyer-empty@rademan.test")
         page.locator('input[name="password"]').fill("Demo@12345")
         page.get_by_role("button", name="ورود به حساب").click()
+        page.wait_for_url("**/dashboard/buyer")
 
-    def test_buyer_inquiry_is_visible_to_artist_without_disclosing_buyer_email(self):
-        buyer_context, buyer_page = self.new_page()
-        artist_context, artist_page = self.new_page()
-
+    def test_inquiry_api_is_closed_and_direct_conversation_can_still_start(self):
+        context, page = self.new_page()
         try:
-            self.login(buyer_page, "buyer-empty@rademan.test")
-            buyer_page.wait_for_url("**/dashboard/buyer")
-            buyer_page.goto(BASE_URL + "/artists/arman-rezaei")
-            buyer_page.get_by_role("heading", name="آرمان رضایی").wait_for()
+            self.login_buyer(page)
+            page.goto(BASE_URL + "/artists/arman-rezaei")
+            page.get_by_role("heading", name="آرمان رضایی").wait_for()
 
-            subject = "پرسش درباره روند خلق اثر"
-            message = "سلام، لطفاً درباره روند خلق این آثار و شرایط تهیه آن توضیح دهید."
+            self.assertEqual(page.get_by_label("موضوع").count(), 0)
+            self.assertEqual(page.get_by_label("متن پیام").count(), 0)
 
-            buyer_page.get_by_label("موضوع").fill(subject)
-            buyer_page.get_by_label("متن پیام").fill(message)
-
-            with buyer_page.expect_response(
-                lambda response: response.url.endswith("/api/v1/artists/arman-rezaei/inquiries")
-                and response.request.method == "POST"
-            ) as inquiry_response:
-                buyer_page.get_by_role("button", name="ارسال پیام", exact=True).click()
-
-            self.assertEqual(inquiry_response.value.status, 201)
-            inquiry_id = inquiry_response.value.json()["data"]["id"]
-            buyer_page.get_by_role("status").filter(has_text="با موفقیت").wait_for()
-
-            buyer_page.goto(BASE_URL + "/dashboard/buyer/inquiries")
-            buyer_page.get_by_role("heading", name="درخواست‌های ارسال‌شده").wait_for()
-            buyer_page.get_by_text(subject, exact=True).wait_for()
-
-            self.login(artist_page, "artist@rademan.test")
-            artist_page.wait_for_url("**/dashboard/artist")
-            artist_page.goto(BASE_URL + "/dashboard/artist/inquiries")
-            artist_page.get_by_role("heading", name="صندوق درخواست‌ها").wait_for()
-            artist_page.get_by_role("heading", name=subject).wait_for()
-
-            artist_view = artist_page.evaluate("""async (id) => {
-                const response = await fetch('/api/v1/artist/inquiries/' + id, {
+            inquiry_response = page.evaluate("""async () => {
+                const response = await fetch('/api/v1/buyer/inquiries', {
                     headers: { Accept: 'application/json' }, credentials: 'same-origin'
                 });
-                const result = await response.json();
-                return { status: response.status, buyer: result.data?.buyer };
-            }""", inquiry_id)
+                return response.status;
+            }""")
+            self.assertEqual(inquiry_response, 404)
 
-            self.assertEqual(artist_view["status"], 200)
-            self.assertEqual(artist_view["buyer"], {"name": "خریدار بدون درخواست"})
-            self.assertNotIn("email", artist_view["buyer"])
+            with page.expect_response(
+                lambda response: response.url.endswith("/api/v1/conversations/direct")
+                and response.request.method == "POST"
+            ) as direct_response:
+                page.get_by_role("link", name="پیام مستقیم").click()
+
+            self.assertEqual(direct_response.value.status, 201)
+            page.wait_for_url("**/dashboard/buyer/messages*")
+            page.get_by_label("متن پیام").wait_for()
         finally:
-            buyer_context.close()
-            artist_context.close()
+            context.close()
 
 
 if __name__ == "__main__":

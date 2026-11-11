@@ -60,7 +60,7 @@ class DemoDatabaseSeederTest extends TestCase
         Storage::disk('local')->assertMissing($missingImage->image_path);
     }
 
-    public function test_seeded_accounts_exercise_admin_and_buyer_pagination(): void
+    public function test_seeded_inquiry_records_are_preserved_but_buyer_api_is_disabled(): void
     {
         Storage::fake('local');
         $this->seed(DemoDatabaseSeeder::class);
@@ -77,14 +77,9 @@ class DemoDatabaseSeederTest extends TestCase
             ->assertJsonPath('current_page', 2);
 
         $buyer = User::query()->where('email', 'buyer@rademan.test')->firstOrFail();
-        $this->actingAs($buyer)->getJson('/api/v1/buyer/inquiries')
-            ->assertOk()
-            ->assertJsonCount(10, 'data')
-            ->assertJsonPath('total', 12);
-        $this->actingAs($buyer)->getJson('/api/v1/buyer/inquiries?page=2')
-            ->assertOk()
-            ->assertJsonCount(2, 'data')
-            ->assertJsonPath('current_page', 2);
+        $this->assertSame(12, ArtistInquiry::query()->where('sender_user_id', $buyer->id)->count());
+        $this->actingAs($buyer)->getJson('/api/v1/buyer/inquiries')->assertNotFound();
+        $this->actingAs($buyer)->getJson('/api/v1/buyer/inquiries?page=2')->assertNotFound();
     }
 
     public function test_seeded_editorial_variations_are_filtered_from_public_endpoints(): void
@@ -113,14 +108,13 @@ class DemoDatabaseSeederTest extends TestCase
             ->assertOk()->assertJsonCount(6, 'data');
     }
 
-    public function test_seeded_empty_and_partial_artist_and_buyer_states_are_available(): void
+    public function test_seeded_empty_accounts_keep_inquiry_api_disabled(): void
     {
         Storage::fake('local');
         $this->seed(DemoDatabaseSeeder::class);
 
         $emptyBuyer = User::query()->where('email', 'buyer-empty@rademan.test')->firstOrFail();
-        $this->actingAs($emptyBuyer)->getJson('/api/v1/buyer/inquiries')
-            ->assertOk()->assertJsonCount(0, 'data')->assertJsonPath('total', 0);
+        $this->actingAs($emptyBuyer)->getJson('/api/v1/buyer/inquiries')->assertNotFound();
 
         $privateStarter = User::query()->where('email', 'new-artist-01@rademan.test')->firstOrFail();
         $this->actingAs($privateStarter)->getJson('/api/v1/artist-profile/me')
@@ -131,8 +125,7 @@ class DemoDatabaseSeederTest extends TestCase
         $publicStarter = User::query()->where('email', 'new-artist-02@rademan.test')->firstOrFail();
         $this->actingAs($publicStarter)->getJson('/api/v1/artist/artworks')
             ->assertOk()->assertJsonCount(0, 'data')->assertJsonPath('total', 0);
-        $this->getJson('/api/v1/artist/inquiries')
-            ->assertOk()->assertJsonCount(0, 'data')->assertJsonPath('total', 0);
+        $this->actingAs($publicStarter)->getJson('/api/v1/artist/inquiries')->assertNotFound();
 
         $this->get('/api/v1/artworks/demo-broken-image/image')->assertNotFound();
     }

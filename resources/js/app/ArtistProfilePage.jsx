@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import ContactArtistForm from './ContactArtistForm';
+import { isFeatureEnabled } from './features';
 import { ArtworkCard, EmptyState, ErrorState, ArtistProfileSkeleton } from '../components/ui';
 
 export default function ArtistProfilePage() {
@@ -99,9 +100,9 @@ export default function ArtistProfilePage() {
                             <div className="flex flex-wrap items-center gap-3 lg:flex-col lg:items-stretch">
                                 {user?.role === 'buyer' && <>
                                     <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(profile.slug)} className="bg-ink px-5 py-3 text-center text-sm font-bold text-white hover:bg-terracotta">پیام مستقیم</Link>
-                                    <ContactArtistForm artistSlug={profile.slug} />
+                                    {isFeatureEnabled('inquiries') && <ContactArtistForm artistSlug={profile.slug} />}
                                 </>}
-                                {!user && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className="bg-ink px-5 py-3 text-center text-sm font-bold text-white">درخواست ارتباط با هنرمند</Link>}
+                                {!user && isFeatureEnabled('inquiries') && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className="bg-ink px-5 py-3 text-center text-sm font-bold text-white">درخواست ارتباط با هنرمند</Link>}
                             </div>
                         </div>
                     </section>

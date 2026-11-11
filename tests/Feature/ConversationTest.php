@@ -15,6 +15,13 @@ class ConversationTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        config(['features.inquiries' => true]);
+    }
+
     public function test_buyer_can_open_a_private_conversation_from_their_inquiry(): void
     {
         [$buyer, $artist, $inquiry] = $this->participantsWithInquiry();

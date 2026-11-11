@@ -22,7 +22,7 @@ git push -u origin HEAD
 
 ## Verification policy (important)
 - Do not configure or trigger GitHub Actions for feature, fix, docs, chore or other non-main branches.
-- Do not run Actions on pull requests. Feature branches are intentionally CI-silent to conserve runner resources and avoid returning workflow results to agents for every small task.
+- Pull requests targeting main automatically trigger the configured CI workflow in .github/workflows/ci.yml. Do not manually dispatch or re-run Actions on PRs unless explicitly requested. Feature-branch pushes remain CI-silent.
 - The user runs the relevant tests locally on the feature branch before merging. Agents should provide exact commands, not run the full suite automatically. A narrow diagnostic check is appropriate only when explicitly requested or needed to resolve a concrete failure.
 - GitHub Actions runs automated test/lint/build jobs only on pushes to `main`, which normally means after a PR is merged. Direct pushes to main should be restricted by repository policy.
 - Because PR checks are intentionally disabled, require human review and the user's local test confirmation before merge. Do not describe a PR as CI-green; main CI is the post-merge verification gate. If main CI fails, fix forward on a new branch and merge the repair.
@@ -43,7 +43,7 @@ git push -u origin HEAD
 3. Use Projects for status/iteration/dependencies and Milestones for release outcomes.
 4. Branch from current main; reference issue in commits/PR.
 5. Open a draft PR early when it helps review; describe local test commands and require user confirmation.
-6. Require human review, resolved blocking threads and local verification confirmation. PR CI is intentionally not configured.
+6. Require human review, resolved blocking threads, green PR checks and local verification confirmation.
 7. Merge using repository policy; delete merged branches.
 8. Main-branch Actions must pass after merge. If not, prioritize a fix-forward repair.
 9. Tag the verified commit and publish GitHub Release notes.
@@ -60,7 +60,7 @@ The repository connection used for this change cannot administer branch-protecti
 - Require a pull request before merging; do not allow direct pushes.
 - Require at least one approval when an independent reviewer is available; resolve conversations before merging.
 - Block force pushes and branch deletion; restrict bypass to a deliberate emergency path.
-- Do **not** require GitHub Actions status checks on PRs: this project intentionally has no PR workflow, so required CI checks would block every merge.
-- Keep the PR template's local-verification evidence as the pre-merge test gate; verify main-branch Actions after merge.
+- Require the relevant GitHub Actions status checks on PRs when branch protection is configured; .github/workflows/ci.yml runs for pull requests targeting main.
+- Keep the PR template's local-verification evidence as a complementary pre-merge test gate; verify the post-merge main-branch Actions run.
 
 If this repository is maintained by one person, a mandatory independent approval may make merging impossible. Keep PR-only merges and explicit local verification, and enable required approval when another reviewer is available.

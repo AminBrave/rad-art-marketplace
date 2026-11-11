@@ -61,7 +61,7 @@ The Node-based task runner is exposed through npm scripts and works in PowerShel
 
 ## CI policy
 
-The current GitHub Actions workflow runs for pull requests targeting main and pushes to main (with configured Markdown path-ignore behavior for push events). Required CI checks must be green on the PR head before merge. A post-merge run validates the merged main commit. Documentation must reflect .github/workflows/ci.yml, not historical process assumptions.
+The current .github/workflows/ci.yml runs for pull requests targeting main and pushes to main. Markdown path-ignore rules apply only to push events; pull-request events still run the workflow. Required CI checks must be green on the PR head before merge, and a post-merge run validates the merged main commit. Feature-branch pushes do not trigger this workflow.
 
 ## Test design checklist
 
