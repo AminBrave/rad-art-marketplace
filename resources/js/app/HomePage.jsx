@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { ArtworkCard, ArtistCard, ArtworkCardSkeleton, ArtistCardSkeleton, EmptyState, ErrorState } from '../components/ui';
+import { ArtworkCard, ArtistCard, ArtworkCardSkeleton, ArtistCardSkeleton, EmptyState, ErrorState, Button } from '../components/ui';
 
 export default function HomePage() {
     const [heroImageFailed, setHeroImageFailed] = useState(false);
@@ -72,8 +72,8 @@ export default function HomePage() {
                     <h1 className="text-4xl font-semibold leading-[1.55] tracking-tight sm:text-5xl lg:text-6xl">هنر را کشف کنید؛ <span className="text-primary">فراتر از قاب.</span></h1>
                     <p className="mt-6 max-w-xl text-base leading-9 text-muted-foreground sm:text-lg">راد آرت فضایی برای دیدن آثار تأییدشده، شناخت جهان هنرمندان مستقل و آغاز ارتباطی مستقیم درباره هنر است.</p>
                     <div className="mt-9 flex flex-wrap gap-3">
-                        <Link to="/artworks" className="bg-brand-ink px-7 py-3.5 text-sm font-bold text-white transition-colors hover:bg-primary">ورود به گالری آثار</Link>
-                        <Link to="/artists" className="border border-border px-7 py-3.5 text-sm font-bold transition-colors hover:border-primary">شناخت هنرمندان</Link>
+                        <Button asChild variant="default" size="default"><Link to="/artworks">ورود به گالری آثار</Link></Button>
+                        <Button asChild variant="outline" size="default"><Link to="/artists">شناخت هنرمندان</Link></Button>
                     </div>
                     <p className="mt-8 text-xs leading-6 text-muted-foreground">نمایش عمومی فقط برای آثار تأییدشده و پروفایل‌های عمومی فعال است.</p>
                 </div>
