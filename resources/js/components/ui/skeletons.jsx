@@ -100,7 +100,7 @@ export function AdminRecordListSkeleton({ count = 5, columns = 3, className = ''
         <div aria-hidden="true" className={`overflow-hidden border border-border bg-paper ${className}`}>
             <div className="flex items-center justify-between gap-4 border-b border-border p-5"><Skeleton className="h-6 w-40 rounded-sm" /><Skeleton className="h-9 w-28 rounded-sm" /></div>
             <div className="grid gap-0 px-5">
-                {Array.from({ length: count }, (_, index) => <div key={index} className="grid items-center gap-3 border-b border-border py-4 sm:grid-cols-2 lg:grid-cols-[repeat(var(--skeleton-columns),minmax(0,1fr))]" style={{ '--skeleton-columns': columns }}>{Array.from({ length: columns }, (_, cell) => <Skeleton key={cell} className={cell === 0 ? 'h-5 w-4/5 rounded-sm' : 'h-4 w-3/4 rounded-sm'} />)}</div>)}
+                {Array.from({ length: count }, (_, index) => <div key={index} className="grid items-center gap-3 border-b border-border py-4 sm:grid-cols-2 lg:grid-cols-3">{Array.from({ length: columns }, (_, cell) => <Skeleton key={cell} className={cell === 0 ? 'h-5 w-4/5 rounded-sm' : 'h-4 w-3/4 rounded-sm'} />)}</div>)}
             </div>
         </div>
     );
