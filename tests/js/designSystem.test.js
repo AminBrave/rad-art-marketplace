@@ -20,6 +20,8 @@ const artistWorkspace = readFileSync(new URL('../../resources/js/app/ArtistWorks
 const messaging = readFileSync(new URL('../../resources/js/app/MessagingCenter.jsx', import.meta.url), 'utf8');
 const artworkDetail = readFileSync(new URL('../../resources/js/app/ArtworkDetailPage.jsx', import.meta.url), 'utf8');
 const artworkStudio = readFileSync(new URL('../../resources/js/app/ArtworkStudio.jsx', import.meta.url), 'utf8');
+const conversationApi = readFileSync(new URL('../../app/Http/Controllers/Api/V1/ConversationController.php', import.meta.url), 'utf8');
+const messageModel = readFileSync(new URL('../../app/Models/Message.php', import.meta.url), 'utf8');
 const adminWorkspace = readFileSync(new URL('../../resources/js/app/AdminWorkspace.jsx', import.meta.url), 'utf8');
 
 test('semantic palette, typography, spacing and layout tokens have one CSS source', () => {
@@ -181,4 +183,19 @@ test('loading skeletons mirror the main structures of the major project surfaces
     assert.ok(skeletons.includes('aspect-[4/5]'));
     assert.ok(skeletons.includes('aria-label="در حال آماده‌سازی صفحه اصلی"'));
     assert.ok(skeletons.includes('sm:min-h-64'));
+});
+
+
+test('artwork-origin messages persist and render a reply-style artwork reference for both participants', () => {
+    assert.ok(messaging.includes('artwork_id: pendingArtwork?.id ?? null'));
+    assert.ok(messaging.includes('message.artwork &&'));
+    assert.ok(messaging.includes("to={'/artworks/' + message.artwork.slug}"));
+    assert.ok(messaging.includes('setPendingArtwork(artwork)'));
+    assert.ok(messaging.includes('پاسخ درباره این اثر'));
+    assert.ok(messaging.includes('اثر مورد گفتگو'));
+    assert.ok(conversationApi.includes("'artwork_id' => ['nullable', 'integer'"));
+    assert.ok(conversationApi.includes("'image_url' => '/api/v1/artworks/'.$message->artwork->slug.'/image'"));
+    assert.ok(conversationApi.includes("$artwork->artistProfile?->user_id"));
+    assert.ok(messageModel.includes("'artwork_id'"));
+    assert.ok(messageModel.includes('function artwork(): BelongsTo'));
 });
