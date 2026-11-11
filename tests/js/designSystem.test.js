@@ -15,7 +15,7 @@ test('semantic palette, typography, spacing and layout tokens have one CSS sourc
         '--color-canvas', '--color-ink', '--color-terracotta', '--color-terracotta-strong',
         '--color-sand', '--color-olive', '--color-paper', '--color-text-muted',
         '--color-border', '--color-success', '--color-danger', '--color-warning', '--color-info',
-        '--color-success-surface', '--color-danger-surface', '--color-warning-surface', '--color-info-surface', '--color-accent-surface', '--color-message-own', '--color-message-peer',
+        '--color-success-surface', '--color-danger-surface', '--color-warning-surface', '--color-info-surface', '--color-accent-surface', '--color-inverse-text', '--color-message-own', '--color-message-peer',
         '--font-persian', '--font-latin', '--text-base', '--leading-copy',
         '--space-1', '--space-4', '--space-8', '--radius-md', '--content-width',
         '--page-gutter', '--control-height-md', '--artwork-ratio',
@@ -25,7 +25,7 @@ test('semantic palette, typography, spacing and layout tokens have one CSS sourc
 });
 
 test('Tailwind semantic aliases reference CSS variables rather than duplicate literal values', () => {
-    for (const alias of ['canvas:', 'terracotta:', 'muted:', 'warning:', 'info:', 'fontSize:', 'lineHeight:', 'spacing:']) {
+    for (const alias of ['canvas:', 'terracotta:', 'muted:', 'warning:', 'info:', 'success.surface:', 'danger.surface:', 'warning.surface:', 'info.surface:', 'accent.surface:', 'inverse:', 'fontSize:', 'lineHeight:', 'spacing:']) {
         assert.ok(tailwind.includes(alias), `Missing Tailwind alias: ${alias}`);
     }
     assert.ok(tailwind.includes('var(--color-canvas)'));
