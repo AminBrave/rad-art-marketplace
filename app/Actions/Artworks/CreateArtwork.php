@@ -15,7 +15,7 @@ use Throwable;
 class CreateArtwork
 {
     /**
-     * @param array<string, mixed> $attributes Validated StoreArtworkRequest data.
+     * @param  array<string, mixed>  $attributes  Validated StoreArtworkRequest data.
      */
     public function handle(ArtistProfile $profile, array $attributes): Artwork
     {
