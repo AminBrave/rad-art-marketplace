@@ -96,13 +96,13 @@ export function PageHeader({ eyebrow, title, description, actions, level = 1, cl
     );
 }
 
-export function SectionHeader({ eyebrow, title, description, actions, className = '', level = 2 }) {
+export function SectionHeader({ id, eyebrow, title, description, actions, className = '', level = 2 }) {
     const Heading = level === 3 ? 'h3' : 'h2';
     return (
         <header className={cn('ra-section-header', className)}>
             <div className="ra-section-header__copy">
                 {eyebrow && <p className="ra-section-header__eyebrow">{eyebrow}</p>}
-                <Heading className="ra-section-header__title">{title}</Heading>
+                <Heading id={id} className="ra-section-header__title">{title}</Heading>
                 {description && <p className="ra-section-header__description">{description}</p>}
             </div>
             {actions && <div className="ra-section-header__actions">{actions}</div>}
