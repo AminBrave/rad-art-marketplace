@@ -474,3 +474,36 @@ a {
         flex-direction: column;
     }
 }
+
+
+/* Editorial public experience refinements */
+:root {
+    --content-width: 84rem;
+    --radius-card: 0.625rem;
+    --shadow-soft: 0 12px 32px rgb(36 35 32 / 5%);
+}
+
+.ra-artwork-frame {
+    aspect-ratio: 4 / 5;
+    background: var(--color-surface-muted);
+}
+
+.ra-artwork-frame img {
+    transition: transform 420ms cubic-bezier(.2,.7,.2,1);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .ra-artwork-frame img:hover {
+        transform: scale(1.025);
+    }
+}
+
+@media (max-width: 639px) {
+    :root {
+        --header-height: 4.5rem;
+    }
+
+    body {
+        font-size: 0.9375rem;
+    }
+}
