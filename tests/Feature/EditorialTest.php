@@ -108,4 +108,108 @@ class EditorialTest extends TestCase
         $this->getJson('/api/v1/featured-artists')->assertOk()->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.artist.slug', $public->slug);
     }
+
+    public function test_admin_editorial_options_only_include_public_artists_and_approved_public_artworks(): void
+    {
+        $admin = $this->admin();
+        $publicArtist = $this->artist();
+        $privateArtist = $this->artist('options-private@example.com', false);
+        $approved = $this->artwork($publicArtist, 'options-approved');
+        $this->artwork($publicArtist, 'options-pending', Artwork::STATUS_PENDING_REVIEW);
+        $this->artwork($privateArtist, 'options-private-work');
+
+        $this->actingAs($admin)
+            ->getJson('/api/v1/admin/editorial/options')
+            ->assertOk()
+            ->assertJsonCount(1, 'data.artworks')
+            ->assertJsonPath('data.artworks.0.id', $approved->id)
+            ->assertJsonCount(1, 'data.artists')
+            ->assertJsonPath('data.artists.0.id', $publicArtist->id);
+    }
+
+    public function test_admin_can_update_collection_items_and_reorder_collections_atomically(): void
+    {
+        $admin = $this->admin();
+        $artist = $this->artist();
+        $firstArtwork = $this->artwork($artist, 'reorder-first');
+        $secondArtwork = $this->artwork($artist, 'reorder-second');
+        $pendingArtwork = $this->artwork($artist, 'reorder-pending', Artwork::STATUS_PENDING_REVIEW);
+
+        $first = $this->actingAs($admin)->postJson('/api/v1/admin/editorial/collections', [
+            'title' => 'First collection',
+            'artwork_ids' => [$firstArtwork->id],
+        ])->assertCreated();
+        $second = $this->postJson('/api/v1/admin/editorial/collections', [
+            'title' => 'Second collection',
+            'artwork_ids' => [$secondArtwork->id],
+        ])->assertCreated();
+
+        $firstId = $first->json('data.id');
+        $secondId = $second->json('data.id');
+
+        $this->patchJson('/api/v1/admin/editorial/collections/'.$firstId, [
+            'title' => 'Updated first collection',
+            'intro' => 'Updated editorial introduction',
+            'artwork_ids' => [$secondArtwork->id],
+        ])->assertOk()
+            ->assertJsonPath('data.title', 'Updated first collection');
+
+        $this->patchJson('/api/v1/admin/editorial/collections/'.$firstId, [
+            'artwork_ids' => [$pendingArtwork->id],
+        ])->assertUnprocessable();
+
+        self::assertSame(
+            [$secondArtwork->id],
+            CuratedCollection::query()->findOrFail($firstId)->artworks()->pluck('artworks.id')->all(),
+        );
+
+        $this->putJson('/api/v1/admin/editorial/collections/order', [
+            'collection_ids' => [$secondId, $firstId],
+        ])->assertOk();
+
+        $this->getJson('/api/v1/admin/editorial/collections')
+            ->assertOk()
+            ->assertJsonPath('data.0.id', $secondId)
+            ->assertJsonPath('data.1.id', $firstId);
+
+        $this->assertDatabaseHas('editorial_audits', [
+            'action' => 'collection.reordered',
+            'subject_id' => $secondId,
+        ]);
+    }
+
+    public function test_admin_can_save_featured_artists_and_private_profiles_are_rejected(): void
+    {
+        $admin = $this->admin();
+        $publicArtist = $this->artist();
+        $privateArtist = $this->artist('featured-private@example.com', false);
+
+        $this->actingAs($admin)
+            ->putJson('/api/v1/admin/editorial/featured-artists', [
+                'selections' => [[
+                    'artist_profile_id' => $publicArtist->id,
+                    'editorial_intro' => 'A selected public artist',
+                    'starts_at' => now()->subDay()->toISOString(),
+                    'ends_at' => now()->addDay()->toISOString(),
+                ]],
+            ])
+            ->assertOk();
+
+        $this->getJson('/api/v1/admin/editorial/featured-artists')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.artist.slug', $publicArtist->slug)
+            ->assertJsonPath('data.0.editorial_intro', 'A selected public artist');
+
+        $this->putJson('/api/v1/admin/editorial/featured-artists', [
+            'selections' => [['artist_profile_id' => $privateArtist->id]],
+        ])->assertUnprocessable();
+
+        $this->assertDatabaseCount('featured_artist_selections', 1);
+        $this->assertDatabaseHas('editorial_audits', [
+            'action' => 'featured_artist.saved',
+            'subject_id' => FeaturedArtistSelection::query()->value('id'),
+        ]);
+    }
+
 }
