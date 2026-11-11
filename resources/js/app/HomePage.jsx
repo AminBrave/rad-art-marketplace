@@ -58,7 +58,7 @@ export default function HomePage() {
     const featuredArtists = featuredArtistsQuery.data ?? [];
     const loading = artworksQuery.isPending || categoriesQuery.isPending || artistsQuery.isPending
         || (artworksQuery.isFetching && !artworksQuery.data);
-    const error = artworksQuery.isError && !artworksQuery.data && !artworksQuery.isFetching;
+    const error = artworksQuery.isError && !artworksQuery.data && !loading && !artworksQuery.isFetching;
     const hero = artworks[0];
     useEffect(() => setHeroImageFailed(false), [hero?.id]);
     const recentWorks = artworks.slice(1, 7);
