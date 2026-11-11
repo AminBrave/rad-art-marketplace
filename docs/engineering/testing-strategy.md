@@ -14,6 +14,7 @@ Organize testing around product behavior, domain boundaries and risk—not file 
 | Frontend unit | tests/js | Node test runner | Pure JS utilities and deterministic state/query behavior |
 | React component rendering | tests/js | Node test runner + Vite SSR + React DOM server | Shared component markup, semantic roles, labels, ARIA and accessible state contracts |
 | Frontend interaction / E2E | tests/browser | Python Playwright | User interactions, loading/error/empty states, route behavior and full browser journeys |
+| Test reporting | CI artifacts | PHPUnit Clover/JUnit, Node JUnit, browser JUnit | Inspectable test results and backend line-coverage baselines per layer |
 | Quality / build | CI | Pint, ESLint, Vite | Style, static hygiene and deployable builds |
 
 Do not mock the boundary a test intends to verify. Unit tests should not boot Laravel or use a database. Feature tests should use the real Laravel container, middleware and test database. Integration tests exercise the actual adapter. Critical browser journeys remain unmocked.

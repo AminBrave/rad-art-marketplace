@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   backend:
-    name: Backend feature tests and PHP style
+    name: Backend unit, feature, integration, coverage and PHP style
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,7 +25,7 @@ jobs:
         with:
           php-version: '8.3'
           extensions: mbstring, pdo_sqlite, sqlite3
-          coverage: none
+          coverage: pcov
       - uses: actions/cache@v4
         with:
           path: ~/.composer/cache/files
@@ -34,8 +34,23 @@ jobs:
       - run: composer install --no-interaction --prefer-dist --no-progress --optimize-autoloader
       - run: cp .env.example .env
       - run: php artisan key:generate
-      - run: composer test
+      - name: Prepare backend test report directory
+        run: mkdir -p build/test-reports
+      - name: Run unit tests and collect line coverage
+        run: vendor/bin/phpunit --testsuite=Unit --coverage-clover=build/test-reports/backend-unit-clover.xml --log-junit=build/test-reports/backend-unit-junit.xml
+      - name: Run feature tests and collect line coverage
+        run: vendor/bin/phpunit --testsuite=Feature --coverage-clover=build/test-reports/backend-feature-clover.xml --log-junit=build/test-reports/backend-feature-junit.xml
+      - name: Run integration tests and collect line coverage
+        run: vendor/bin/phpunit --testsuite=Integration --coverage-clover=build/test-reports/backend-integration-clover.xml --log-junit=build/test-reports/backend-integration-junit.xml
       - run: composer lint
+      - name: Upload backend test and coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-and-coverage-reports
+          path: build/test-reports/
+          if-no-files-found: ignore
+          retention-days: 14
 
   frontend:
     name: Frontend unit tests, lint and production build
@@ -48,9 +63,20 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
       - run: npm ci --no-audit --no-fund
-      - run: npm run test:frontend
+      - name: Prepare frontend test report directory
+        run: mkdir -p build/test-reports
+      - name: Run frontend tests with JUnit output
+        run: node --test --test-reporter=junit --test-reporter-destination=build/test-reports/frontend-junit.xml tests/js/*.test.js
       - run: npm run lint
       - run: npm run build
+      - name: Upload frontend test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-test-report
+          path: build/test-reports/frontend-junit.xml
+          if-no-files-found: ignore
+          retention-days: 14
 
   browser-e2e:
     name: Playwright browser and full-stack E2E
@@ -102,7 +128,15 @@ jobs:
       - name: Run browser regressions and full-stack E2E
         env:
           RAD_ART_BASE_URL: http://127.0.0.1:8000
-        run: python -m unittest discover -s tests/browser -p 'test_*.py' -v
+        run: python tests/browser/run_tests.py
+      - name: Upload browser test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-test-report
+          path: build/test-reports/browser-junit.xml
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Upload Laravel log on failure
         if: failure()
         uses: actions/upload-artifact@v4

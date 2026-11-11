@@ -29,6 +29,8 @@ php artisan test --testsuite=Unit
 php artisan test --testsuite=Feature
 php artisan test --testsuite=Integration
 npm run test:frontend
+node --test --test-reporter=junit --test-reporter-destination=build/test-reports/frontend-junit.xml tests/js/*.test.js
+python tests/browser/run_tests.py
 ./scripts/verify browser
 ~~~
 

@@ -57,7 +57,7 @@ Follow [Testing Strategy](docs/engineering/testing-strategy.md) and [Test Covera
 - [ ] S7 Close: issue, milestone, affected docs and release notes updated.
 
 ## GitHub delivery
-Follow [Git/GitHub workflow](engineering/git-and-github.md). Pull requests targeting main run the configured CI workflow. Require relevant checks and human review before merge. After merge, verify the main-branch workflow. Merge is not production deployment.
+Follow [Git/GitHub workflow](docs/engineering/git-and-github.md). Pull requests targeting main run the configured CI workflow. Require relevant checks and human review before merge. After merge, verify the main-branch workflow. Merge is not production deployment.
 
 ## Definition of done
 Acceptance criteria met; appropriate tests exist; auth/privacy/failure paths are covered; migrations are safe; focused diff reviewed; affected docs and graph updated; verification evidence accurately recorded; merge and deployment status clearly communicated.

@@ -16,6 +16,7 @@ The browser suite uses Python unittest and Playwright Chromium.
 - Never target production or store real user data in test fixtures.
 - Use unique account identifiers for tests that create users.
 - Do not intercept API calls in tests labelled full-stack.
+- Full-stack actor classes use reserved TEST-NET forwarded IPs to keep their request-throttle counters isolated while still exercising the real throttle middleware. The application trusts forwarded headers only from loopback proxies.
 
 ## Running
 Start the full local stack with npm run dev:local, then run:

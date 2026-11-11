@@ -69,7 +69,7 @@ class FullStackBuyerInquiryTests(unittest.TestCase):
             artist_page.wait_for_url("**/dashboard/artist")
             artist_page.goto(BASE_URL + "/dashboard/artist/inquiries")
             artist_page.get_by_role("heading", name="صندوق درخواست‌ها").wait_for()
-            artist_page.get_by_text(subject, exact=True).wait_for()
+            artist_page.get_by_role("heading", name=subject).wait_for()
 
             artist_view = artist_page.evaluate("""async (id) => {
                 const response = await fetch('/api/v1/artist/inquiries/' + id, {

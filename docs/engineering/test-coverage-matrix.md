@@ -10,6 +10,23 @@ Status vocabulary:
 
 ## Current test inventory
 
+The initial inventory below records the repository before this overhaul. The following coverage has since been added in this branch.
+
+## Coverage added by this overhaul
+
+| Layer | Added tests | Behavior asserted |
+|---|---|---|
+| Unit | PersianSearchTest, ConversationTest | Arabic/Persian normalization, null/empty handling, digit mapping, participant identity |
+| Feature | ArtworkSearchNormalizationTest, ArtistDirectorySearchNormalizationTest, InquiryRateLimitTest | SQLite search normalization, nullable columns, literal LIKE wildcard escaping, inquiry throttling |
+| Integration | CanonicalConversationConstraintTest, ArtworkStorageRollbackTest | Database uniqueness for canonical conversations; uploaded file cleanup and original-image preservation on write failure |
+| React component rendering | reactComponents.test.js | Button busy/disabled semantics, FormField label/error wiring, SearchField landmark, ErrorState alert, upload progress bounds, EmptyState semantics |
+| Browser full-stack | FullStackBuyerArtistMessagingTests | Buyer starts a direct conversation, artist replies, buyer receives the reply |
+| Browser full-stack | FullStackBuyerInquiryTests | Buyer submits inquiry, artist receives it, private buyer email is not serialized |
+| Browser full-stack | FullStackArtistArtworkTests | Artist uploads artwork; pending work remains absent from public search |
+| Browser full-stack | FullStackAdminModerationTests | Admin approves pending work; buyer is denied at UI and API |
+| Browser accessibility | AccessibilitySmokeTests | Persian document direction, main landmark, accessible names and image alt attributes |
+
+
 | Layer | Current location | Existing files / scope |
 |---|---|---|
 | Backend feature | tests/Feature | Authentication, authorization, artist inquiry/profile, artwork, moderation, admin pagination, conversation/direct conversation/inbox settings, attachments, safety, notifications, editorial, SEO, health, frontend routing and demo seeders |
