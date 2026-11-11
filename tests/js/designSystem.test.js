@@ -17,6 +17,10 @@ const buyerWorkspace = readFileSync(new URL('../../resources/js/app/BuyerWorkspa
 const routeLoading = readFileSync(new URL('../../resources/js/app/RoutingPages.jsx', import.meta.url), 'utf8');
 const queryClient = readFileSync(new URL('../../resources/js/lib/queryClient.js', import.meta.url), 'utf8');
 const artistWorkspace = readFileSync(new URL('../../resources/js/app/ArtistWorkspaceOverview.jsx', import.meta.url), 'utf8');
+const messaging = readFileSync(new URL('../../resources/js/app/MessagingCenter.jsx', import.meta.url), 'utf8');
+const artworkDetail = readFileSync(new URL('../../resources/js/app/ArtworkDetailPage.jsx', import.meta.url), 'utf8');
+const artworkStudio = readFileSync(new URL('../../resources/js/app/ArtworkStudio.jsx', import.meta.url), 'utf8');
+const adminWorkspace = readFileSync(new URL('../../resources/js/app/AdminWorkspace.jsx', import.meta.url), 'utf8');
 
 test('semantic palette, typography, spacing and layout tokens have one CSS source', () => {
     for (const token of [
@@ -136,4 +140,38 @@ test('shared query cache keeps recently visited data warm and supports stale-whi
     assert.ok(artistWorkspace.includes('enabled: !profileLoading && Boolean(profile?.slug)'));
     assert.ok(routeLoading.includes("queryKey: profileKey"));
     assert.ok(routeLoading.includes('queryClient.setQueryData(profileKey, nextProfile)'));
+});
+
+
+test('artwork-origin direct messaging loads the canonical conversation context before consuming the deep link', () => {
+    const startIndex = messaging.indexOf("axios.post('/api/v1/conversations/direct'");
+    const detailIndex = messaging.indexOf("axios.get('/api/v1/conversations/' + conversationId");
+    const consumeIndex = messaging.indexOf("next.delete('artist')");
+    assert.ok(startIndex >= 0 && detailIndex > startIndex && consumeIndex > detailIndex);
+    assert.ok(messaging.includes("selected?.contexts?.some((context) => context.artwork?.slug)"));
+    assert.ok(messaging.includes("setDirectStartAttempt((attempt) => attempt + 1)"));
+    assert.ok(artworkDetail.includes("'&artwork=' + encodeURIComponent(artwork.slug)"));
+});
+
+test('loading skeletons mirror the main structures of the major project surfaces', () => {
+    for (const component of [
+        'ArtworkStudioListSkeleton',
+        'ConversationInboxSkeleton',
+        'MessageHistorySkeleton',
+        'AdminRecordListSkeleton',
+        'AdminUserCardsSkeleton',
+        'ArtworkModerationSkeleton',
+        'MessageReportsSkeleton',
+        'DashboardMetricSkeleton',
+        'ArtistRecentWorkSkeleton',
+        'WorkspaceIdentitySkeleton',
+    ]) assert.ok(skeletons.includes('export function ' + component), 'Missing skeleton: ' + component);
+    assert.ok(artworkStudio.includes('<ArtworkStudioListSkeleton count={3} />'));
+    assert.ok(adminWorkspace.includes('<ArtworkModerationSkeleton count={4} />'));
+    assert.ok(adminWorkspace.includes('<AdminUserCardsSkeleton count={4} />'));
+    assert.ok(adminWorkspace.includes('<MessageReportsSkeleton count={3} />'));
+    assert.ok(messaging.includes('<ConversationInboxSkeleton count={6} />'));
+    assert.ok(messaging.includes('<MessageHistorySkeleton count={5}'));
+    assert.ok(skeletons.includes('aspect-[4/3]'));
+    assert.ok(skeletons.includes('sm:min-h-64'));
 });
