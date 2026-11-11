@@ -1,6 +1,6 @@
 # API and Route Test Map
 
-This inventory is derived from the current route declarations in routes/web.php and routes/api.php. It links endpoint groups to existing test files and identifies the next coverage work. "Existing evidence" means a test exercises part of the contract, not necessarily every method, role or failure branch.
+This inventory is derived from routes/web.php and routes/api.php, including feature-gated routes. Inquiry endpoints remain declared but return 404 while config/features.inquiries is false; ArtistInquiryTest and InquiryRateLimitTest explicitly enable the flag to cover the retained implementation. "Existing evidence" means a test exercises part of the contract, not necessarily every method, role or failure branch.
 
 ## Authentication
 
@@ -25,7 +25,7 @@ This inventory is derived from the current route declarations in routes/web.php 
 | GET /api/v1/collections | Public published content | EditorialTest, test_m03_editorial.py | Pagination and publication-time boundaries |
 | GET /api/v1/collections/{collection:slug} | Public published content | EditorialTest, test_m03_editorial.py | Missing/draft collection and ineligible artwork |
 | GET /api/v1/featured-artists | Public eligible artists | EditorialTest | Publication windows and private/unapproved content |
-| POST /api/v1/artists/{artistProfile:slug}/inquiries | Authenticated buyer, throttled | ArtistInquiryTest, InquiryRateLimitTest, test_full_stack_buyer_inquiry.py | Retry/idempotency expectations and per-actor/IP policy |
+| POST /api/v1/artists/{artistProfile:slug}/inquiries | Feature-disabled by default (404); authenticated buyer when enabled | ArtistInquiryTest and InquiryRateLimitTest explicitly enable the flag | Disabled response and enabled submission are covered; retry/idempotency expectations remain |
 
 ## Artist workspace
 
@@ -38,20 +38,20 @@ This inventory is derived from the current route declarations in routes/web.php 
 | GET /api/v1/artist/artworks | Artist | ArtworkTest | Empty state, pagination boundaries and private fields |
 | POST /api/v1/artist/artworks | Artist, throttled | ArtworkTest, ArtworkStorageRollbackTest, test_full_stack_artist_artwork.py | MIME spoofing and size boundaries |
 | PATCH /api/v1/artist/artworks/{artwork} | Owner/admin, throttled | ArtworkTest, ArtworkModerationTest, ArtworkStorageRollbackTest | Foreign ownership and successful replacement lifecycle |
-| GET /api/v1/artist/inquiries | Artist | ArtistInquiryTest | Pagination and status filters |
-| GET /api/v1/artist/inquiries/{inquiry} | Owning artist | ArtistInquiryTest | Private buyer-field contract |
-| PATCH /api/v1/artist/inquiries/{inquiry} | Owning artist | ArtistInquiryTest | Invalid transitions and repeated updates |
+| GET /api/v1/artist/inquiries | Feature-disabled by default (404); artist when enabled | FeatureRegistryTest; ArtistInquiryTest explicitly enables the flag | Pagination and status filters |
+| GET /api/v1/artist/inquiries/{inquiry} | Feature-disabled by default (404); owning artist when enabled | FeatureRegistryTest; ArtistInquiryTest explicitly enables the flag | Private buyer-field contract |
+| PATCH /api/v1/artist/inquiries/{inquiry} | Feature-disabled by default (404); owning artist when enabled | FeatureRegistryTest; ArtistInquiryTest explicitly enables the flag | Invalid transitions and repeated updates |
 | GET /api/v1/artist/conversations | Artist participant | ConversationTest, DirectConversationTest, ConversationInboxSettingsTest | Pagination, private participant fields and unread counts |
 
 ## Buyer workspace
 
 | Method and route | Access | Existing evidence | Remaining checks |
 |---|---|---|---|
-| GET /api/v1/buyer/inquiries | Buyer | ArtistInquiryTest | Pagination and ordering |
-| GET /api/v1/buyer/inquiries/{inquiry} | Owning buyer | ArtistInquiryTest | Deleted artist/artwork relationships |
+| GET /api/v1/buyer/inquiries | Feature-disabled by default (404); buyer when enabled | FeatureRegistryTest; ArtistInquiryTest explicitly enables the flag | Pagination and ordering |
+| GET /api/v1/buyer/inquiries/{inquiry} | Feature-disabled by default (404); owning buyer when enabled | FeatureRegistryTest; ArtistInquiryTest explicitly enables the flag | Deleted artist/artwork relationships |
 | GET /api/v1/buyer/conversations | Buyer participant | ConversationInboxSettingsTest, ConversationTest | Pagination and all filters |
 | POST /api/v1/conversations/direct | Buyer, throttled | DirectConversationTest, full-stack messaging E2E | Concurrent creation/retry behavior and rate limit |
-| POST /api/v1/inquiries/{inquiry}/conversation | Authenticated inquiry owner | ConversationTest | Repeated start and cross-buyer denial |
+| POST /api/v1/inquiries/{inquiry}/conversation | Feature-disabled by default (404); inquiry owner when enabled | FeatureRegistryTest; ConversationTest | Repeated start and cross-buyer denial |
 
 ## Conversations and messages
 
@@ -125,12 +125,14 @@ This inventory is derived from the current route declarations in routes/web.php 
 | /collections, /collections/:slug | Visitor | test_m03_editorial.py |
 | /login, /register | Guest | test_full_stack_auth.py, accessibility smoke tests |
 | /dashboard | Authenticated | test_full_stack_auth.py |
-| /dashboard/buyer, /dashboard/buyer/inquiries, /dashboard/buyer/inquiries/:id | Buyer | test_buyer_inquiry.py, test_full_stack_buyer_inquiry.py |
+| /dashboard/buyer | Buyer | test_full_stack_buyer_artist_messaging.py |
+| /dashboard/buyer/inquiries, /dashboard/buyer/inquiries/:id | Feature-disabled by default; client renders not-found | test_buyer_inquiry.py |
 | /dashboard/buyer/messages | Buyer | full-stack messaging and notification browser tests |
-| /dashboard/artist, /dashboard/artist/profile, /dashboard/artist/artworks, /dashboard/artist/inquiries | Artist | test_m04_artist_experience.py, test_full_stack_artist_artwork.py, test_full_stack_buyer_inquiry.py |
+| /dashboard/artist, /dashboard/artist/profile, /dashboard/artist/artworks | Artist | test_m04_artist_experience.py, test_full_stack_artist_artwork.py |
+| /dashboard/artist/inquiries | Feature-disabled by default; client renders not-found | test_m04_artist_experience.py, test_buyer_inquiry.py |
 | /dashboard/artist/messages | Artist | full-stack messaging and notification browser tests |
 | /admin, /admin/users, /admin/artworks, /admin/message-reports, /admin/editorial | Admin | test_full_stack_admin_moderation.py, test_m03_editorial.py, responsive RTL suite |
 
 ## Maintenance rule
 
-When a route is added, removed or changes authorization, update this map and add the corresponding API contract tests. Route existence is not coverage: include success, validation, role/ownership denial, private-data serialization and relevant failure cases.
+When a route is added, removed or changes authorization/feature availability, update this map and add the corresponding API contract tests. FeatureRegistryTest proves disabled Inquiry endpoints return 404 while messaging endpoints remain registered. Route existence is not coverage: include success, validation, role/ownership denial, private-data serialization and relevant failure cases.
