@@ -346,7 +346,7 @@ export default function App() {
                             </label>
                             <label className="block text-sm font-semibold">
                                 درباره هنرمند
-                                <Textarea name="bio" value={profile.bio ?? ''} onChange={updateProfileForm} rows="4" maxLength="2000" placeholder="درباره مسیر هنری و زمینه فعالیت خود بنویسید…"  className="w-full">
+                                <Textarea name="bio" value={profile.bio ?? ''} onChange={updateProfileForm} rows="4" maxLength="2000" placeholder="درباره مسیر هنری و زمینه فعالیت خود بنویسید…"  className="w-full"/>
                                 {profileErrors.bio?.map((message) => <span key={message} className="mt-1 block text-xs text-destructive">{message}</span>)}
                             </label>
                             <div className="grid gap-4 sm:grid-cols-2">
