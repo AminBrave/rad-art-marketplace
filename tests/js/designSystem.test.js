@@ -14,6 +14,9 @@ const showcase = readFileSync(new URL('../../resources/js/app/ComponentShowcase.
 const publicPages = ['ArtworkCatalogue.jsx', 'ArtistDirectoryPage.jsx', 'ArtworkDetailPage.jsx'].map((file) => readFileSync(new URL('../../resources/js/app/' + file, import.meta.url), 'utf8'));
 const layouts = readFileSync(new URL('../../resources/js/app/Layouts.jsx', import.meta.url), 'utf8');
 const buyerWorkspace = readFileSync(new URL('../../resources/js/app/BuyerWorkspace.jsx', import.meta.url), 'utf8');
+const routeLoading = readFileSync(new URL('../../resources/js/app/RoutingPages.jsx', import.meta.url), 'utf8');
+const queryClient = readFileSync(new URL('../../resources/js/lib/queryClient.js', import.meta.url), 'utf8');
+const artistWorkspace = readFileSync(new URL('../../resources/js/app/ArtistWorkspaceOverview.jsx', import.meta.url), 'utf8');
 
 test('semantic palette, typography, spacing and layout tokens have one CSS source', () => {
     for (const token of [
@@ -112,4 +115,23 @@ test('shared UI component source does not introduce arbitrary hex or raw palette
         assert.equal(arbitraryHex.test(source), false, 'Shared components must use semantic color tokens, not hex literals.');
         assert.equal(rawPalette.test(source), false, 'Shared components must use semantic color roles, not raw palette utilities.');
     }
+});
+
+
+test('route fallbacks preserve page-specific geometry for catalogues, artists and messaging', () => {
+    assert.ok(routeLoading.includes("pathname === '/artworks'"));
+    assert.ok(routeLoading.includes("pathname === '/artists'"));
+    assert.ok(routeLoading.includes('ArtworkCardSkeleton'));
+    assert.ok(routeLoading.includes('ArtistCardSkeleton'));
+    assert.ok(routeLoading.includes('min-h-[34rem]'));
+    assert.ok(routeLoading.includes('role="status"'));
+    assert.ok(routeLoading.includes('aria-busy="true"'));
+});
+
+test('shared query cache keeps recently visited data warm and supports stale-while-revalidate screens', () => {
+    assert.ok(queryClient.includes('staleTime: 60_000'));
+    assert.ok(queryClient.includes('gcTime: 10 * 60_000'));
+    assert.ok(queryClient.includes('refetchOnReconnect: true'));
+    assert.ok(artistWorkspace.includes("queryKey: ['artist-workspace', 'artworks', user?.id]"));
+    assert.ok(artistWorkspace.includes('enabled: !profileLoading && Boolean(profile?.slug)'));
 });
