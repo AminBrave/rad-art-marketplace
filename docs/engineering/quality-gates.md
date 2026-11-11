@@ -12,7 +12,7 @@
 - [ ] Focused diff reviewed.
 
 ## Before merge (human gate)
-- [ ] User confirms relevant local tests pass on the feature branch.
+- [ ] User confirms relevant local tests pass on the feature branch (`npm run verify` for the full non-browser gate; `npm run verify:all` when browser journeys are in scope).
 - [ ] PR includes why/what/risk/migrations/local test evidence/rollback.
 - [ ] Human review approved and blocking threads resolved.
 - [ ] Branch current with base; no bypass or shared force-push.
