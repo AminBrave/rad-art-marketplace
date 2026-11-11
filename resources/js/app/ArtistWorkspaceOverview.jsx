@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useOutletContext } from 'react-router-dom';
 import { isFeatureEnabled } from './features';
-import { EmptyState, ErrorState, SkeletonLines } from '../components/ui';
+import { EmptyState, ErrorState, SkeletonLines, Button } from '../components/ui';
 
 const statusLabels = {
     pending_review: 'در انتظار بررسی', approved: 'منتشرشده', rejected: 'ردشده',
@@ -74,7 +74,7 @@ export default function ArtistWorkspaceOverview() {
         {profileLoading ? <SkeletonLines lines={3} /> : <div className="flex flex-wrap items-center justify-between gap-4 border border-border bg-card p-5">
             <div><p className="text-sm font-bold text-foreground">{complete ? 'پروفایل هنرمند شما ثبت شده است.' : 'برای شروع، پروفایل هنری خود را تکمیل کنید.'}</p>
                 <p className="mt-1 text-xs leading-6 text-muted-foreground">{complete ? (profile.is_public ? 'پروفایل شما برای بازدیدکنندگان قابل مشاهده است.' : 'پروفایل شما خصوصی است و در فهرست عمومی نمایش داده نمی‌شود.') : 'با تکمیل نام نمایشی می‌توانید پروفایل و آثار هنری خود را مدیریت کنید.'}</p></div>
-            <Link to="/dashboard/artist/profile" className="shrink-0 bg-brand-ink px-5 py-3 text-sm font-bold text-white hover:bg-primary">{complete ? 'ویرایش پروفایل' : 'تکمیل پروفایل'}</Link>
+            <Button asChild variant="default" size="default" className="shrink-0"><Link to="/dashboard/artist/profile">{complete ? 'ویرایش پروفایل' : 'تکمیل پروفایل'}</Link></Button>
         </div>}
         {!profileLoading && <section className="border border-border bg-card p-5 sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
@@ -96,9 +96,9 @@ export default function ArtistWorkspaceOverview() {
                 </li>
             </ol>
             <div className="mt-5 flex flex-wrap gap-3">
-                <Link to="/dashboard/artist/profile" className="bg-brand-ink px-4 py-2.5 text-sm font-bold text-white hover:bg-primary">{profile?.slug ? 'تکمیل یا ویرایش پروفایل' : 'ساخت پروفایل هنری'}</Link>
-                <Link to="/dashboard/artist/artworks" className="border border-border px-4 py-2.5 text-sm font-semibold text-foreground hover:border-primary">رفتن به مدیریت آثار</Link>
-                {profile?.slug && <Link to={'/artists/' + profile.slug} className="border border-border px-4 py-2.5 text-sm font-semibold text-primary hover:border-primary">پیش‌نمایش پروفایل</Link>}
+                <Button asChild variant="default" size="default"><Link to="/dashboard/artist/profile">{profile?.slug ? 'تکمیل یا ویرایش پروفایل' : 'ساخت پروفایل هنری'}</Link></Button>
+                <Button asChild variant="outline" size="default"><Link to="/dashboard/artist/artworks">رفتن به مدیریت آثار</Link></Button>
+                {profile?.slug && <Button asChild variant="outline" size="default"><Link to={'/artists/' + profile.slug}>پیش‌نمایش پروفایل</Link></Button>}
             </div>
             {profile?.slug && !profile.is_public && <p className="mt-3 text-xs leading-6 text-muted-foreground">پروفایل خصوصی در پیش‌نمایش فقط برای شما قابل مشاهده است و در فهرست عمومی نمایش داده نمی‌شود.</p>}
         </section>}
