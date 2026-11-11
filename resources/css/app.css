@@ -389,6 +389,13 @@ a {
     }
 }
 
+@media (prefers-reduced-motion: reduce) {
+    .app-skeleton {
+        animation: none;
+        background-position: 0 0;
+    }
+}
+
 .app-boot {
     width: min(100% - 2.5rem, 80rem);
     min-height: 100vh;
