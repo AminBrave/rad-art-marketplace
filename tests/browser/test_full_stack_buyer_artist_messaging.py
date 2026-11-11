@@ -63,7 +63,7 @@ class FullStackBuyerArtistMessagingTests(unittest.TestCase):
             ) as direct_response:
                 buyer_page.get_by_role("link", name="پیام مستقیم").click()
 
-            buyer_page.wait_for_url("**/dashboard/buyer/messages")
+            buyer_page.wait_for_url("**/dashboard/buyer/messages*")
             self.assertEqual(direct_response.value.status, 201)
             conversation_id = direct_response.value.json()["data"]["id"]
 
@@ -94,6 +94,7 @@ class FullStackBuyerArtistMessagingTests(unittest.TestCase):
             artist_page.get_by_text(reply, exact=True).wait_for()
 
             buyer_page.reload()
+            buyer_page.get_by_role("button", name="آرمان رضایی").click()
             buyer_page.get_by_text(reply, exact=True).wait_for()
 
             buyer_identity = buyer_page.evaluate("""async () => {
