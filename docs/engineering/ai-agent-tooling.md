@@ -52,6 +52,10 @@ The curated skills are deliberately limited to this stack and mirrored for the t
 
 Codex reads .agents/skills/. Claude Code reads .claude/skills/. The mirrored copies should be kept in sync. These skills are adapted from patterns in Jeffallan/claude-skills and intentionally remove incompatible assumptions (for example React 19/TypeScript defaults and mandatory test execution). They are not a substitute for reading current project source and contracts.
 
+### ChatGPT integration
+
+ChatGPT's repository workflow is documented separately in [ChatGPT Project Integration](chatgpt-project-integration.md), with a root entry point in [CHATGPT.md](../../CHATGPT.md). When the GitHub repository is connected and accessible, ChatGPT should read CHATGPT.md, then retrieve the full relevant skill SKILL.md files from .agents/skills/ before performing repository work. Merely committing skill files does not automatically load them into ChatGPT; the user must connect the repository and add the entry-point instruction to the ChatGPT Project Instructions. If access is unavailable, ChatGPT must disclose that limitation rather than claim the skills were loaded.
+
 ## Task routing
 
 | Task | Start with | Add when needed |
