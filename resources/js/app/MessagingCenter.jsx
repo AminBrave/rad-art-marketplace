@@ -243,19 +243,15 @@ export default function MessagingCenter({ role }) {
             next.delete('artwork');
             return next;
         }, { replace: true });
-        let cancelled = false;
         axios.post('/api/v1/conversations/direct', { artist_slug: artistSlug, artwork_slug: artworkSlug || null })
             .then(async ({ data }) => {
-                await loadThreads();
-                if (!cancelled) setActive(data.data.id);
+                await loadThreadsRef.current();
+                setActive(data.data.id);
             })
             .catch(() => {
-                if (!cancelled) {
-                    directStartKeyRef.current = null;
-                    setError('شروع گفتگوی مستقیم ممکن نشد. ممکن است پروفایل یا اثر دیگر عمومی نباشد.');
-                }
+                directStartKeyRef.current = null;
+                setError('شروع گفتگوی مستقیم ممکن نشد. ممکن است پروفایل یا اثر دیگر عمومی نباشد.');
             });
-        return () => { cancelled = true; };
     }, [artistSlug, artworkSlug, role, setParams]);
 
     useEffect(() => {
