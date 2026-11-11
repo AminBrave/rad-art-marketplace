@@ -7,12 +7,15 @@ const tailwind = readFileSync(new URL('../../tailwind.config.js', import.meta.ur
 const primitives = readFileSync(new URL('../../resources/js/components/ui/primitives.jsx', import.meta.url), 'utf8');
 const cards = readFileSync(new URL('../../resources/js/components/ui/cards.jsx', import.meta.url), 'utf8');
 const feedback = readFileSync(new URL('../../resources/js/components/ui/feedback.jsx', import.meta.url), 'utf8');
+const publicPages = ['ArtworkCatalogue.jsx', 'ArtistDirectoryPage.jsx', 'ArtworkDetailPage.jsx'].map((file) => readFileSync(new URL('../../resources/js/app/' + file, import.meta.url), 'utf8'));
+const layouts = readFileSync(new URL('../../resources/js/app/Layouts.jsx', import.meta.url), 'utf8');
 
 test('semantic palette, typography, spacing and layout tokens have one CSS source', () => {
     for (const token of [
         '--color-canvas', '--color-ink', '--color-terracotta', '--color-terracotta-strong',
         '--color-sand', '--color-olive', '--color-paper', '--color-text-muted',
         '--color-border', '--color-success', '--color-danger', '--color-warning', '--color-info',
+        '--color-success-surface', '--color-danger-surface', '--color-warning-surface', '--color-info-surface', '--color-accent-surface', '--color-message-own', '--color-message-peer',
         '--font-persian', '--font-latin', '--text-base', '--leading-copy',
         '--space-1', '--space-4', '--space-8', '--radius-md', '--content-width',
         '--page-gutter', '--control-height-md', '--artwork-ratio',
@@ -48,4 +51,36 @@ test('shared content and feedback components use semantic surface and state cont
     assert.ok(feedback.includes('ra-state--empty'));
     assert.ok(feedback.includes('ra-state--error'));
     assert.ok(feedback.includes('ra-state--success'));
+});
+
+test('RAD visual tokens are declared in one canonical root block', () => {
+    assert.equal((css.match(/:root\\s*\\{/g) ?? []).length, 1);
+    assert.ok(css.includes('--color-message-own:'));
+    assert.ok(css.includes('--color-success-surface:'));
+});
+
+test('shared layout, surface, button, badge and form contracts are defined centrally', () => {
+    for (const contract of [
+        '.ra-page--wide', '.ra-page--reading', '.ra-page-header__title',
+        '.ra-section-header__title', '.ra-surface--muted', '.ra-surface--interactive',
+        '.ra-badge--success', '.ra-badge--danger', '.ra-form-field__error',
+        '.ra-control--textarea', '.ra-workspace-content',
+    ]) {
+        assert.ok(css.includes(contract), 'Missing component contract: ' + contract);
+    }
+    for (const component of ['PageContainer', 'PageHeader', 'SectionHeader', 'Surface', 'StatusBadge']) {
+        assert.ok(primitives.includes('function ' + component), 'Missing shared component: ' + component);
+    }
+});
+
+test('public catalogue, artist directory and artwork detail use shared page layout primitives', () => {
+    assert.ok(publicPages[0].includes('PageContainer') && publicPages[0].includes('PageHeader'));
+    assert.ok(publicPages[1].includes('PageContainer') && publicPages[1].includes('SectionHeader'));
+    assert.ok(publicPages[2].includes('PageContainer'));
+});
+
+test('public and role-based workspaces expose the shared application shell contracts', () => {
+    for (const contract of ['ra-public-shell', 'ra-public-header', 'ra-workspace-shell', 'ra-workspace-header', 'ra-workspace-sidebar', 'ra-workspace-content']) {
+        assert.ok(layouts.includes(contract), 'Missing application shell contract: ' + contract);
+    }
 });
