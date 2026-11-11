@@ -29,11 +29,11 @@ php artisan test --testsuite=Unit
 php artisan test --testsuite=Feature
 php artisan test --testsuite=Integration
 npm run test:frontend
-mkdir -p build/test-reports
-node --test --test-reporter=junit --test-reporter-destination=build/test-reports/frontend-junit.xml tests/js/*.test.js
-python scripts/summarize-coverage.py --output build/test-reports/backend-coverage-summary.md build/test-reports/backend-unit-clover.xml build/test-reports/backend-feature-clover.xml build/test-reports/backend-integration-clover.xml
+npm run lint
+npm run build
+npm run build:cpanel
 python tests/browser/run_tests.py
 ./scripts/verify browser
 ~~~
 
-Do not run browser tests against production. Browser tests require a local disposable application and database.
+Do not run browser tests against production. Browser tests require a local disposable application and database. The Playwright runner creates its JUnit report directory automatically. GitHub Actions publishes backend Clover/JUnit, frontend JUnit and browser JUnit reports as downloadable artifacts. Backend coverage summarization requires the three Clover XML files produced by PHPUnit with PCOV enabled; it is not part of the ordinary local test command.

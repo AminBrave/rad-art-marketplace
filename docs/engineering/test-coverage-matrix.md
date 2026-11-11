@@ -17,7 +17,7 @@ The initial inventory below records the repository before this overhaul. The fol
 - Initial baseline on PR head c1e0f4c: **1,491 / 1,631 statements (91.4%)**.
 - Latest verified baseline on PR head 286a906: **1,560 / 1,631 statements (95.6%)**.
 - Improvement: **+4.2 percentage points** after targeted domain and integration tests.
-- Latest test inventory: **114 backend tests** (7 Unit, 104 Feature, 3 Integration), 992 assertions, plus **36 Playwright browser tests** with zero failures/errors.
+- Latest test inventory: **114 backend tests** (7 Unit, 104 Feature, 3 Integration), 992 assertions, plus **20 frontend tests** and **36 Playwright browser tests** with zero failures/errors.
 
 Latest per-suite figures: Feature 1,544/1,626 (95.0%); Unit 34/1,631 (2.1%); Integration 49/1,631 (3.0%). These suite percentages are not additive. The combined figure is a union of covered statement lines across the three reports. PCOV measures line/statement coverage here; branch/condition coverage is not measured. These are diagnostic baselines, not correctness guarantees or enforced thresholds.
 
