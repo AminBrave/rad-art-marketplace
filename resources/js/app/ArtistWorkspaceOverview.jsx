@@ -10,7 +10,7 @@ const statusLabels = {
 };
 
 function SummaryCard({ label, value, detail, to }) {
-    return <Link to={to} className="block border border-border bg-card p-5 transition-colors hover:border-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
+    return <Link to={to} className="block border border-border bg-card p-5 transition-colors hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
         <p className="text-sm text-muted-foreground">{label}</p><p className="mt-3 text-3xl font-semibold tabular-nums text-foreground">{value}</p>
         <p className="mt-2 text-xs leading-6 text-muted-foreground">{detail}</p>
     </Link>;
@@ -87,11 +87,11 @@ export default function ArtistWorkspaceOverview() {
             </div>
             <ol className="mt-4 grid gap-3 sm:grid-cols-2">
                 {profileSteps.map((step) => <li key={step.label} className="flex items-center gap-3 text-sm">
-                    <span aria-hidden="true" className={step.done ? 'text-success' : 'text-muted-foreground'}>{step.done ? '✓' : '○'}</span>
+                    <span aria-hidden="true" className={step.done ? 'text-accent' : 'text-muted-foreground'}>{step.done ? '✓' : '○'}</span>
                     <span className={step.done ? 'text-muted-foreground line-through' : 'font-semibold text-foreground'}>{step.label}</span>
                 </li>)}
                 <li className="flex items-center gap-3 text-sm">
-                    <span aria-hidden="true" className={hasArtwork ? 'text-success' : 'text-muted-foreground'}>{hasArtwork ? '✓' : '○'}</span>
+                    <span aria-hidden="true" className={hasArtwork ? 'text-accent' : 'text-muted-foreground'}>{hasArtwork ? '✓' : '○'}</span>
                     <span className={hasArtwork ? 'text-muted-foreground line-through' : 'font-semibold text-foreground'}>ثبت اولین اثر برای بررسی</span>
                 </li>
             </ol>
