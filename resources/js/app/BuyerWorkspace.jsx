@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { WorkspaceHero } from '../components/ui';
+import { WorkspaceHero, Surface } from '../components/ui';
 
 export function BuyerDashboardHome() {
     return (
@@ -14,7 +14,7 @@ export function BuyerDashboardHome() {
                 </>}
             />
 
-            <section className="border border-border bg-paper p-5 sm:p-7">
+            <Surface className="p-5 sm:p-7">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                     <div>
                         <p className="text-xs font-bold text-terracotta-strong">ارتباط‌های شما</p>
@@ -24,7 +24,7 @@ export function BuyerDashboardHome() {
                     <span aria-hidden="true" className="grid h-12 w-12 shrink-0 place-items-center bg-surface-muted text-xl text-terracotta-strong">✉</span>
                 </div>
                 <Link to="/dashboard/buyer/messages" className="mt-6 inline-flex min-h-11 items-center bg-ink px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-terracotta">ورود به صندوق پیام <span aria-hidden="true" className="mr-3">←</span></Link>
-            </section>
+            </Surface>
 
             <section className="border-t border-border pt-6">
                 <div className="flex flex-wrap items-end justify-between gap-3">
