@@ -42,10 +42,6 @@ export default function MessagingCenter({ role }) {
     const pollingRef = useRef(false);
     const shouldStickToBottomRef = useRef(true);
     const endpoint = role === 'artist' ? '/api/v1/artist/conversations' : '/api/v1/buyer/conversations';
-    const loadThreadsRef = useRef(loadThreads);
-
-    useEffect(() => { loadThreadsRef.current = loadThreads; }, [loadThreads]);
-
     const loadThreads = useCallback(async () => {
         try {
             const query = {};
@@ -57,6 +53,9 @@ export default function MessagingCenter({ role }) {
             setError('دریافت گفتگوها انجام نشد. دوباره تلاش کنید.');
         } finally { setLoading(false); }
     }, [endpoint, search, threadFilter]);
+
+    const loadThreadsRef = useRef(loadThreads);
+    useEffect(() => { loadThreadsRef.current = loadThreads; }, [loadThreads]);
 
     const updateThreadSetting = async (thread, setting, value) => {
         try {
