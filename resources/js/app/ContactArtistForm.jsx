@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Alert, AlertDescription, Button, FormField, TextInput, Textarea } from '../components/ui';
+import { Button, FormField, TextInput, Textarea } from '../components/ui';
 
 export default function ContactArtistForm({ artistSlug, artworkId = null }) {
     const [subject, setSubject] = useState('');
