@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
-import { ArtworkCard, EmptyState, ErrorState, SkeletonLines, Button, FormField, TextareaField, SuccessState, Input } from '../components/ui';
+import { ArtworkCard, EmptyState, ErrorState, SkeletonLines, Button, FormField, Textarea, SuccessState, Input } from '../components/ui';
 
 export function CollectionIndexPage() {
     const collectionsQuery = useQuery({
