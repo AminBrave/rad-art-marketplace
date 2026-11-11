@@ -1,21 +1,18 @@
 import { Link } from 'react-router-dom';
+import { WorkspaceHero } from '../components/ui';
 
 export function BuyerDashboardHome() {
     return (
         <section className="space-y-7" dir="rtl">
-            <header className="relative overflow-hidden bg-ink px-6 py-8 text-white sm:px-9 sm:py-10">
-                <div aria-hidden="true" className="pointer-events-none absolute -left-12 -top-20 h-64 w-64 rounded-full border border-white/10" />
-                <div aria-hidden="true" className="pointer-events-none absolute -left-2 -top-10 h-44 w-44 rounded-full border border-white/10" />
-                <div className="relative max-w-2xl">
-                    <p className="text-xs font-bold tracking-wide text-sand">فضای اختصاصی خریدار</p>
-                    <h1 className="mt-3 text-2xl font-black leading-relaxed sm:text-3xl">هنر مورد علاقه‌تان را کشف کنید و گفت‌وگو را ادامه دهید.</h1>
-                    <p className="mt-3 max-w-xl text-sm leading-8 text-white/70">از میان آثار و هنرمندان مستقل جست‌وجو کنید و گفت‌وگوهای مستقیم خود را با هنرمندان در یک فضای منظم دنبال کنید.</p>
-                    <div className="mt-6 flex flex-wrap gap-3">
-                        <Link to="/artworks" className="inline-flex min-h-11 items-center bg-white px-5 py-3 text-sm font-bold text-ink transition-colors hover:bg-sand">کشف آثار هنری <span aria-hidden="true" className="mr-3">←</span></Link>
-                        <Link to="/artists" className="inline-flex min-h-11 items-center border border-white/30 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10">آشنایی با هنرمندان</Link>
-                    </div>
-                </div>
-            </header>
+            <WorkspaceHero
+                eyebrow="فضای اختصاصی خریدار"
+                title="هنر مورد علاقه‌تان را کشف کنید و گفت‌وگو را ادامه دهید."
+                description="از میان آثار و هنرمندان مستقل جست‌وجو کنید و گفت‌وگوهای مستقیم خود را با هنرمندان در یک فضای منظم دنبال کنید."
+                actions={<>
+                    <Link to="/artworks" className="ra-workspace-hero__action ra-workspace-hero__action--primary">کشف آثار هنری</Link>
+                    <Link to="/artists" className="ra-workspace-hero__action">آشنایی با هنرمندان</Link>
+                </>}
+            />
 
             <section className="border border-border bg-paper p-5 sm:p-7">
                 <div className="flex flex-wrap items-start justify-between gap-4">
