@@ -24,6 +24,7 @@ class FullStackArtistArtworkTests(unittest.TestCase):
         context = self.browser.new_context(
             viewport={"width": 1280, "height": 1000},
             ignore_https_errors=IGNORE_HTTPS_ERRORS,
+            extra_http_headers={"X-Forwarded-For": "198.51.100.11"},
         )
         page = context.new_page()
         page.set_default_timeout(20000)
