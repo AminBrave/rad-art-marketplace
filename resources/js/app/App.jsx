@@ -164,7 +164,7 @@ export default function App() {
                             {publicProfile.city && <p className="mt-3 text-sm text-muted-foreground">{publicProfile.city}</p>}
                             {publicProfile.bio && <p className="mt-8 whitespace-pre-line leading-9 text-foreground">{publicProfile.bio}</p>}
                             {user?.role === 'buyer' && createElement(ContactArtistForm, { artistSlug: publicProfile.slug })}
-                            {!user && <a href="/#account" className="mt-8 inline-block rounded-full bg-brand-ink px-5 py-3 text-sm font-bold text-white">برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید</a>}
+                            {!user && <Button asChild variant="default" size="default" className="mt-8 inline-block"><a href="/#account">برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید</a></Button>}
                             <div className="mt-8 flex flex-wrap gap-4 text-sm font-semibold">
                                 {publicProfile.website_url && <a href={publicProfile.website_url} target="_blank" rel="noreferrer" className="text-primary underline">وب‌سایت</a>}
                                 {publicProfile.instagram_handle && <a href={`https://instagram.com/${publicProfile.instagram_handle}`} target="_blank" rel="noreferrer" className="text-primary underline">اینستاگرام</a>}
@@ -203,9 +203,9 @@ export default function App() {
                         </Button>
                     </div>
                 ) : (
-                    <a href="#account" className="rounded-full border border-border px-5 py-2.5 text-sm font-semibold transition hover:border-primary hover:text-primary">
+                    <Button asChild variant="outline" size="default"><a href="#account">
                         ورود / ثبت‌نام
-                    </a>
+                    </a></Button>
                 )}
             </header>
 
@@ -222,12 +222,12 @@ export default function App() {
                         راد آرت فضایی برای کشف آثار هنری مستقل، شناخت هنرمندان و ارتباط مستقیم با خالقان هر اثر است.
                     </p>
                     <div className="mt-9 flex flex-wrap gap-3">
-                        <a href="#artworks" className="rounded-full bg-brand-ink px-7 py-3.5 text-sm font-bold text-white transition hover:bg-primary">
+                        <Button asChild variant="default" size="default"><a href="#artworks">
                             به تماشای آثار
-                        </a>
-                        <a href="#account" className="rounded-full border border-border px-7 py-3.5 text-sm font-bold transition hover:border-foreground">
+                        </a></Button>
+                        <Button asChild variant="outline" size="default"><a href="#account">
                             برای هنرمندان
-                        </a>
+                        </a></Button>
                     </div>
                 </div>
 
