@@ -91,15 +91,15 @@ export default function ArtworkCatalogue() {
     };
 
     return (
-        <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl">
-            <header className="border-b border-border pb-8">
+        <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-10 sm:px-8 lg:px-10 lg:py-14" dir="rtl">
+            <header className="border-b border-border pb-8 sm:pb-10">
                 <p className="text-xs font-bold tracking-wide text-terracotta-strong">آرشیو عمومی راد آرت</p>
-                <h1 className="mt-2 text-3xl font-black sm:text-4xl">گالری آثار</h1>
+                <h1 className="mt-2 text-4xl font-black tracking-tight sm:text-5xl">گالری آثار</h1>
                 <p className="mt-3 max-w-2xl text-sm leading-8 text-muted">در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید.</p>
             </header>
 
-            <section aria-label="فیلتر و مرتب‌سازی آثار" className="mt-7 border border-border bg-white p-4 sm:p-5">
-                <div className="grid gap-3 lg:grid-cols-[minmax(15rem,1.5fr)_repeat(2,minmax(10rem,1fr))]">
+            <section aria-label="فیلتر و مرتب‌سازی آثار" className="mt-7 border border-border bg-surface-muted p-4 sm:p-5 lg:p-6">
+                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(18rem,1.5fr)_repeat(2,minmax(11rem,1fr))]">
                     <SearchField value={searchInput} onChange={(event) => setSearchInput(event.target.value)} onSearch={submitSearch} label="جست‌وجو در آثار و هنرمندان" placeholder="عنوان، توضیحات، تکنیک یا نام هنرمند…" />
                     <SelectField value={category} onChange={(event) => updateFilters({ category: event.target.value })} aria-label="فیلتر دسته‌بندی">
                         <option value="">همه دسته‌ها</option>
@@ -125,7 +125,7 @@ export default function ArtworkCatalogue() {
                 {filtersLoading && <p className="mt-3 text-xs text-muted">در حال آماده‌سازی گزینه‌های فیلتر…</p>}
             </section>
 
-            <div className="mt-7 flex flex-wrap items-center justify-between gap-3">
+            <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
                 <p aria-live="polite" className="text-sm text-muted">{loading ? 'در حال دریافت آثار…' : meta.total.toLocaleString('fa-IR') + ' اثر'}</p>
                 <p className="text-xs text-muted">نمایش آثار عمومی و تأییدشده</p>
             </div>
@@ -134,7 +134,7 @@ export default function ArtworkCatalogue() {
             ) : error ? (
                 <ErrorState className="mt-8" title="دریافت گالری با خطا روبه‌رو شد" description="اتصال را بررسی کنید و دوباره تلاش کنید." onRetry={() => artworksQuery.refetch()} />
             ) : artworks.length ? (
-                <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{artworks.map((artwork) => <ArtworkCard key={artwork.id} artwork={artwork} />)}</div>
+                <div className="mt-6 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{artworks.map((artwork) => <ArtworkCard key={artwork.id} artwork={artwork} />)}</div>
             ) : (
                 <EmptyState className="mt-8" title="اثری با این مشخصات پیدا نشد" description="عبارت جست‌وجو یا گزینه‌های فیلتر را تغییر دهید." />
             )}
