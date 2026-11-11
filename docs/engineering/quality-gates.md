@@ -21,7 +21,7 @@
 ## After merge
 - [ ] No GitHub Actions application verification is expected after merge.
 - [ ] If the user explicitly requested local verification, report the exact checks actually run.
-- [ ] If main CI fails, create a fix branch, repair, validate, then merge the fix.
+- [ ] No main-branch application CI exists; if user-requested local checks fail, report and address the failure before claiming verification.
 - [ ] Deployment/health and smoke paths verified separately where a release is intended.
 
 ## Test-specific gates
