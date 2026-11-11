@@ -12,7 +12,7 @@ export default function ArtistProfilePage() {
     const [categoryFilter, setCategoryFilter] = useState('');
 
     const profileQuery = useInfiniteQuery({
-        queryKey: ['artist-profile', slug],
+        queryKey: ['artist-profile', slug, user?.id ?? 'guest'],
         queryFn: async ({ pageParam, signal }) => {
             const { data } = await axios.get('/api/v1/artists/' + encodeURIComponent(slug), {
                 params: { artworks_page: pageParam },
