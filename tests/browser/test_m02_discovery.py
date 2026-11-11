@@ -97,14 +97,24 @@ class DiscoveryBrowserTests(unittest.TestCase):
             page.route("**/api/v1/artworks?**", artworks)
             page.goto(BASE_URL + "/artworks")
             page.get_by_role("heading", name="گالری آثار").wait_for()
+            def matches_artwork_query(response, expected):
+                if response.request.method != "GET" or "/api/v1/artworks" not in response.url:
+                    return False
+                actual = parse_qs(urlparse(response.url).query)
+                return all(actual.get(key) == [value] for key, value in expected.items())
+
             search = page.get_by_label("جست‌وجو در آثار و هنرمندان")
             search.fill("آبرنگ")
-            page.get_by_role("button", name="جست‌وجو").click()
-            page.wait_for_function("new URL(location.href).searchParams.get('q') === 'آبرنگ'")
-            page.get_by_label("فیلتر دسته‌بندی").select_option("painting")
-            page.get_by_label("فیلتر تکنیک و مواد").select_option("آبرنگ")
-            page.get_by_label("فیلتر وضعیت اثر").select_option("available")
-            page.get_by_label("مرتب‌سازی آثار", exact=True).select_option("year_desc")
+            with page.expect_response(lambda response: matches_artwork_query(response, {"q": "آبرنگ"})):
+                page.get_by_role("button", name="جست‌وجو").click()
+            with page.expect_response(lambda response: matches_artwork_query(response, {"q": "آبرنگ", "category": "painting"})):
+                page.get_by_label("فیلتر دسته‌بندی").select_option("painting")
+            with page.expect_response(lambda response: matches_artwork_query(response, {"q": "آبرنگ", "category": "painting", "medium": "آبرنگ"})):
+                page.get_by_label("فیلتر تکنیک و مواد").select_option("آبرنگ")
+            with page.expect_response(lambda response: matches_artwork_query(response, {"q": "آبرنگ", "category": "painting", "medium": "آبرنگ", "availability": "available"})):
+                page.get_by_label("فیلتر وضعیت اثر").select_option("available")
+            with page.expect_response(lambda response: matches_artwork_query(response, {"q": "آبرنگ", "category": "painting", "medium": "آبرنگ", "availability": "available", "sort": "year_desc"})):
+                page.get_by_label("مرتب‌سازی آثار", exact=True).select_option("year_desc")
             self.assertEqual(page.evaluate("new URL(location.href).searchParams.get('q')"), "آبرنگ")
             self.assertIn("category=painting", page.url)
             self.assertIn("medium=", page.url)
