@@ -68,18 +68,8 @@ export function ArtworkStudioListSkeleton({ count = 3 }) {
 
 export function ConversationInboxSkeleton({ count = 6, className = '' }) {
     return (
-        <div aria-hidden="true" className={`min-h-0 overflow-hidden ${className}`}>
-            <div className="shrink-0 border-b border-border bg-white px-5 py-5">
-                <Skeleton className="h-3 w-28 rounded-sm" />
-                <Skeleton className="mt-2 h-6 w-32 rounded-sm" />
-            </div>
-            <div className="shrink-0 space-y-3 border-b border-border bg-surface-muted p-4">
-                <Skeleton className="h-11 w-full rounded-xl" />
-                <div className="grid grid-cols-3 gap-1 rounded-xl border border-border bg-white p-1">{[0, 1, 2].map((item) => <Skeleton key={item} className="h-8 w-full rounded-lg" />)}</div>
-            </div>
-            <div className="divide-y divide-border">
-                {Array.from({ length: count }, (_, index) => <div key={index} className="flex items-center gap-3 px-4 py-4"><Skeleton className="h-11 w-11 shrink-0 rounded-full" /><div className="grid min-w-0 flex-1 gap-2"><div className="flex items-center justify-between gap-3"><Skeleton className="h-4 w-2/5 rounded-sm" /><Skeleton className="h-3 w-12 rounded-sm" /></div><Skeleton className="h-3 w-4/5 rounded-sm" /></div></div>)}
-            </div>
+        <div aria-hidden="true" className={`min-h-0 flex-1 divide-y divide-border overflow-hidden ${className}`}>
+            {Array.from({ length: count }, (_, index) => <div key={index} className="flex items-center gap-3 px-4 py-4"><Skeleton className="h-11 w-11 shrink-0 rounded-full" /><div className="grid min-w-0 flex-1 gap-2"><div className="flex items-center justify-between gap-3"><Skeleton className="h-4 w-2/5 rounded-sm" /><Skeleton className="h-3 w-12 rounded-sm" /></div><Skeleton className="h-3 w-4/5 rounded-sm" /></div></div>)}
         </div>
     );
 }
