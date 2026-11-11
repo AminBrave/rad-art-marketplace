@@ -82,9 +82,9 @@ export function AdminDashboardHome() {
 
             <section aria-label="شاخص‌های عملیاتی" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                 {loading ? <><div className="border border-border bg-white p-6"><SkeletonLines lines={3} /></div><div className="border border-border bg-white p-6"><SkeletonLines lines={3} /></div><div className="border border-border bg-white p-6"><SkeletonLines lines={3} /></div></> : <>
-                    <DashboardMetricCard label="آثار در انتظار بررسی" value={summary.pending?.toLocaleString('fa-IR')} detail="تعداد کل آثار منتظر تصمیم انتشار" to="/admin/artworks" eyebrow="انتشار" />
-                    <DashboardMetricCard label="حساب‌های کاربری" value={summary.users?.toLocaleString('fa-IR')} detail="تعداد کل حساب‌های ثبت‌شده" to="/admin/users" eyebrow="جامعه" />
-                    <DashboardMetricCard label="گزارش‌های پیام" value={summary.reports?.toLocaleString('fa-IR')} detail="مجموع گزارش‌های ثبت‌شده برای رسیدگی" to="/admin/message-reports" eyebrow="ایمنی" />
+                    <DashboardMetricCard as={Link} label="آثار در انتظار بررسی" value={summary.pending?.toLocaleString('fa-IR')} detail="تعداد کل آثار منتظر تصمیم انتشار" to="/admin/artworks" eyebrow="انتشار" />
+                    <DashboardMetricCard as={Link} label="حساب‌های کاربری" value={summary.users?.toLocaleString('fa-IR')} detail="تعداد کل حساب‌های ثبت‌شده" to="/admin/users" eyebrow="جامعه" />
+                    <DashboardMetricCard as={Link} label="گزارش‌های پیام" value={summary.reports?.toLocaleString('fa-IR')} detail="مجموع گزارش‌های ثبت‌شده برای رسیدگی" to="/admin/message-reports" eyebrow="ایمنی" />
                 </>}
             </section>
 
