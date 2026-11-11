@@ -14,6 +14,10 @@ Routes/middleware → controllers → focused actions and Form Requests → poli
 ## Frontend
 Entry/bootstrap: app.jsx/bootstrap.js. Shared server-state cache: `lib/queryClient.js` (TanStack Query) with Axios as the transport; cache is cleared when the authenticated account identity changes. Auth: AuthContext. Route/layout/access UX: AppRouter, RoutingPages, Layouts. Screens: HomePage, ArtworkCatalogue/Detail/Studio, ArtistDirectory/Profile, BuyerWorkspace, ArtistWorkspaceOverview, InquiryCenter, MessagingCenter, AdminWorkspace, EditorialPages. Shared UI in `resources/js/components/ui/`.
 
+## Feature availability
+
+Deployment-level feature switches live in `config/features.php`. Laravel exposes the same registry to React through `window.__RAD_FEATURES__` and `resources/js/app/features.js`; backend route registration is authoritative, while frontend gates control navigation and entry points. Inquiry is currently disabled without deleting its code or data. Direct messaging remains enabled independently. See [Feature Registry](feature-registry.md) for enforcement and reactivation rules.
+
 ## Constraints
 Server-side authorization is mandatory; React guards are UX only. Preserve Laravel session/CSRF behavior and API pagination/response shape. Avoid synchronous dependencies on unconfigured mail/realtime providers. Keep routes inventory in sync with tests/docs.
 
