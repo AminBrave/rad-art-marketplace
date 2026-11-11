@@ -7,6 +7,9 @@ const tailwind = readFileSync(new URL('../../tailwind.config.js', import.meta.ur
 const primitives = readFileSync(new URL('../../resources/js/components/ui/primitives.jsx', import.meta.url), 'utf8');
 const cards = readFileSync(new URL('../../resources/js/components/ui/cards.jsx', import.meta.url), 'utf8');
 const feedback = readFileSync(new URL('../../resources/js/components/ui/feedback.jsx', import.meta.url), 'utf8');
+const navigation = readFileSync(new URL('../../resources/js/components/ui/navigation.jsx', import.meta.url), 'utf8');
+const dialog = readFileSync(new URL('../../resources/js/components/ui/Dialog.jsx', import.meta.url), 'utf8');
+const showcase = readFileSync(new URL('../../resources/js/app/ComponentShowcase.jsx', import.meta.url), 'utf8');
 const publicPages = ['ArtworkCatalogue.jsx', 'ArtistDirectoryPage.jsx', 'ArtworkDetailPage.jsx'].map((file) => readFileSync(new URL('../../resources/js/app/' + file, import.meta.url), 'utf8'));
 const layouts = readFileSync(new URL('../../resources/js/app/Layouts.jsx', import.meta.url), 'utf8');
 const buyerWorkspace = readFileSync(new URL('../../resources/js/app/BuyerWorkspace.jsx', import.meta.url), 'utf8');
@@ -64,7 +67,7 @@ test('shared layout, surface, button, badge and form contracts are defined centr
     for (const contract of [
         '.ra-page--wide', '.ra-page--reading', '.ra-page-header__title',
         '.ra-section-header__title', '.ra-surface--muted', '.ra-surface--interactive',
-        '.ra-badge--success', '.ra-badge--danger', '.ra-form-field__error', '.ra-workspace-hero', '.ra-metric-card',
+        '.ra-badge--success', '.ra-badge--danger', '.ra-form-field__error', '.ra-workspace-hero', '.ra-metric-card', '.ra-tabs-list', '.ra-tabs-trigger', '.ra-menu-content', '.ra-menu-item', '.ra-dialog-content', '.ra-dialog-title', '.ra-breadcrumbs', '.ra-pagination__page',
         '.ra-control--textarea', '.ra-workspace-content',
     ]) {
         assert.ok(css.includes(contract), 'Missing component contract: ' + contract);
@@ -85,4 +88,15 @@ test('public and role-based workspaces expose the shared application shell contr
     for (const contract of ['ra-public-shell', 'ra-public-header', 'ra-workspace-shell', 'ra-workspace-header', 'ra-workspace-sidebar', 'ra-workspace-content']) {
         assert.ok(layouts.includes(contract), 'Missing application shell contract: ' + contract);
     }
+});
+
+test('navigation, dialog and design-system showcase use shared contracts', () => {
+    for (const contract of ['ra-tabs-list', 'ra-tabs-trigger', 'ra-menu-content', 'ra-menu-item', 'ra-breadcrumbs', 'ra-pagination']) {
+        assert.ok(navigation.includes(contract), 'Missing navigation contract: ' + contract);
+    }
+    for (const contract of ['ra-dialog-overlay', 'ra-dialog-content', 'ra-dialog-title', 'ra-dialog-description']) {
+        assert.ok(dialog.includes(contract), 'Missing dialog contract: ' + contract);
+    }
+    assert.ok(showcase.includes('WorkspaceHero'));
+    assert.ok(showcase.includes('DashboardMetricCard'));
 });
