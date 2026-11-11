@@ -10,7 +10,7 @@ export function SkeletonLines({ lines = 3, className = '' }) {
     return <div aria-label="در حال بارگذاری" role="status" className={`grid gap-3 ${className}`}>{Array.from({ length: lines }, (_, index) => <Skeleton key={index} width={index === lines - 1 ? '68%' : '100%'} height="0.8rem" />)}<span className="sr-only">در حال بارگذاری…</span></div>;
 }
 export function EmptyState({ title, description, action, className = '' }) {
-    return <Card className={`grid justify-items-center gap-3 px-6 py-12 text-center ${className}`} dir="rtl">
+    return <section className={`rounded-xl border bg-card px-6 py-12 text-center text-card-foreground shadow-sm grid justify-items-center gap-3 ${className}`} dir="rtl">
         <span aria-hidden="true" className="grid size-10 place-items-center rounded-full bg-muted text-lg text-muted-foreground">◇</span>
         <h2 className="text-base font-semibold text-card-foreground">{title}</h2>
         {description && <p className="max-w-lg text-sm leading-7 text-muted-foreground">{description}</p>}{action}
