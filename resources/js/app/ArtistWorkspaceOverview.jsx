@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useOutletContext } from 'react-router-dom';
-import { EmptyState, ErrorState, SkeletonLines, StatusBadge, Badge } from '../components/ui';
+import { EmptyState, ErrorState, SkeletonLines, StatusBadge, Badge, WorkspaceHero, DashboardMetricCard } from '../components/ui';
 
 const statusLabels = {
     pending_review: 'در انتظار بررسی', approved: 'منتشرشده', rejected: 'ردشده',
@@ -9,21 +9,6 @@ const statusLabels = {
 };
 
 
-
-function MetricCard({ label, value, detail, to, eyebrow }) {
-    return (
-        <Link to={to} className="group flex min-h-36 flex-col justify-between border border-border bg-white p-5 transition duration-200 hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus sm:p-6">
-            <div className="flex items-center justify-between gap-3">
-                <span className="text-sm font-semibold text-muted">{label}</span>
-                <span className="text-[10px] font-bold tracking-wide text-terracotta-strong">{eyebrow}</span>
-            </div>
-            <div className="mt-5">
-                <p className="text-3xl font-black tabular-nums text-ink">{value}</p>
-                <p className="mt-2 text-xs leading-6 text-muted">{detail}</p>
-            </div>
-        </Link>
-    );
-}
 
 function formatCount(value) {
     return typeof value === 'number' ? value.toLocaleString('fa-IR') : (value ?? '—');
@@ -75,18 +60,12 @@ export default function ArtistWorkspaceOverview() {
 
     return (
         <section className="space-y-8" dir="rtl">
-            <header className="relative overflow-hidden border border-border bg-ink px-6 py-8 text-white sm:px-9 sm:py-10">
-                <div aria-hidden="true" className="absolute -left-16 -top-20 h-64 w-64 rounded-full border border-white/10" />
-                <div aria-hidden="true" className="absolute -left-7 -top-11 h-44 w-44 rounded-full border border-white/10" />
-                <div className="relative flex flex-wrap items-end justify-between gap-6">
-                    <div className="max-w-2xl">
-                        <p className="text-xs font-bold tracking-wide text-[#e6b19a]">استودیوی هنرمند / نمای کلی</p>
-                        <h1 className="mt-3 text-2xl font-black leading-tight sm:text-3xl">خوش آمدید، {user?.name}</h1>
-                        <p className="mt-3 text-sm leading-8 text-white/70">اینجا نقطه شروع مدیریت حضور هنری شماست؛ پروفایل را کامل کنید، آثار را برای بررسی بفرستید و ارتباط‌ها را دنبال کنید.</p>
-                    </div>
-                    <Link to="/dashboard/artist/artworks" className="inline-flex min-h-11 items-center justify-center bg-white px-5 py-3 text-sm font-bold text-ink transition-colors hover:bg-[#f2ded3]">ثبت یا مدیریت اثر <span aria-hidden="true" className="ms-3">←</span></Link>
-                </div>
-            </header>
+            <WorkspaceHero
+                eyebrow="استودیوی هنرمند / نمای کلی"
+                title={<>خوش آمدید، {user?.name}</>}
+                description="اینجا نقطه شروع مدیریت حضور هنری شماست؛ پروفایل را کامل کنید، آثار را برای بررسی بفرستید و ارتباط‌ها را دنبال کنید."
+                actions={<Link to="/dashboard/artist/artworks" className="ra-workspace-hero__action ra-workspace-hero__action--primary">ثبت یا مدیریت اثر</Link>}
+            />
 
             {profileError && <ErrorState title="پروفایل دریافت نشد" description={profileError} />}
             {profileLoading ? <div className="border border-border bg-white p-6"><SkeletonLines lines={3} /></div> : (
@@ -143,10 +122,10 @@ export default function ArtistWorkspaceOverview() {
                 <>
                     <section aria-label="آمار فضای هنرمند" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                         {loading ? <><div className="border border-border bg-white p-5"><SkeletonLines lines={3} /></div><div className="border border-border bg-white p-5"><SkeletonLines lines={3} /></div><div className="border border-border bg-white p-5"><SkeletonLines lines={3} /></div><div className="border border-border bg-white p-5"><SkeletonLines lines={3} /></div></> : <>
-                            <MetricCard label="مجموع آثار" value={formatCount(counts.artworks)} detail="تمام آثار ثبت‌شده در استودیوی شما" to="/dashboard/artist/artworks" eyebrow="پورتفولیو" />
-                            <MetricCard label="منتشرشده" value={published.toLocaleString('fa-IR')} detail="آثاری که در گالری عمومی نمایش داده می‌شوند" to="/dashboard/artist/artworks" eyebrow="عمومی" />
-                            <MetricCard label="در انتظار بررسی" value={pending.toLocaleString('fa-IR')} detail="آثاری که هنوز بررسی نهایی نشده‌اند" to="/dashboard/artist/artworks" eyebrow="بررسی" />
-                            <MetricCard label="پیام‌های مستقیم" value="صندوق پیام‌ها" detail="گفت‌وگو با خریداران" to="/dashboard/artist/messages" eyebrow="ارتباط" />
+                            <DashboardMetricCard label="مجموع آثار" value={formatCount(counts.artworks)} detail="تمام آثار ثبت‌شده در استودیوی شما" to="/dashboard/artist/artworks" eyebrow="پورتفولیو" />
+                            <DashboardMetricCard label="منتشرشده" value={published.toLocaleString('fa-IR')} detail="آثاری که در گالری عمومی نمایش داده می‌شوند" to="/dashboard/artist/artworks" eyebrow="عمومی" />
+                            <DashboardMetricCard label="در انتظار بررسی" value={pending.toLocaleString('fa-IR')} detail="آثاری که هنوز بررسی نهایی نشده‌اند" to="/dashboard/artist/artworks" eyebrow="بررسی" />
+                            <DashboardMetricCard label="پیام‌های مستقیم" value="صندوق پیام‌ها" detail="گفت‌وگو با خریداران" to="/dashboard/artist/messages" eyebrow="ارتباط" />
                         </>}
                     </section>
                     {errors.length > 0 && <ErrorState title="بخشی از اطلاعات بارگذاری نشد" description={errors.join(' ')} />}
