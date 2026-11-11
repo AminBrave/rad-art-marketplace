@@ -4,7 +4,7 @@ import { AuthProvider } from './AuthContext';
 import { isFeatureEnabled } from './features';
 import { PublicLayout } from './Layouts';
 import {
-    AdminWorkspaceLayout, ArtistArtworkPage,
+    AdminWorkspaceLayout, ArtistArtworkPage, ArtistInquiryPage,
     ArtistProfileSettings, ArtistWorkspaceLayout,
     BuyerWorkspaceLayout, DashboardIndex,
     NotFoundPage, RequireAuth, RequireRole, RouteLoading, UnauthorizedPage,
