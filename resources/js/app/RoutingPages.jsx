@@ -286,23 +286,23 @@ export function ArtistProfileSettings() {
             {profileError && <p role="alert" className="mt-4 text-sm text-warning">{profileError}</p>}
             <form onSubmit={save} className="mt-6 grid gap-4 sm:grid-cols-2">
                 <label className="text-sm font-semibold sm:col-span-2">نام نمایشی
-                    <Input name="display_name" value={form.display_name ?? ''} onChange={update} required maxLength="120" / className="w-full" />
+                    <Input name="display_name" value={form.display_name ?? ''} onChange={update} required maxLength="120"  className="w-full" />
                     {errors.display_name?.map((item) => <span key={item} className="mt-1 block text-xs text-destructive">{item}</span>)}
                 </label>
                 <label className="text-sm font-semibold sm:col-span-2">درباره هنرمند
-                    <Textarea name="bio" value={form.bio ?? ''} onChange={update} rows="4" maxLength="2000" / className="w-full">
+                    <Textarea name="bio" value={form.bio ?? ''} onChange={update} rows="4" maxLength="2000"  className="w-full">
                     {errors.bio?.map((item) => <span key={item} className="mt-1 block text-xs text-destructive">{item}</span>)}
                 </label>
                 <label className="text-sm font-semibold">شهر
-                    <Input name="city" value={form.city ?? ''} onChange={update} maxLength="120" / className="w-full" />
+                    <Input name="city" value={form.city ?? ''} onChange={update} maxLength="120"  className="w-full" />
                     {errors.city?.map((item) => <span key={item} className="mt-1 block text-xs text-destructive">{item}</span>)}
                 </label>
                 <label className="text-sm font-semibold">شناسه اینستاگرام
-                    <Input name="instagram_handle" value={form.instagram_handle ?? ''} onChange={update} maxLength="30" dir="ltr" / className="w-full" />
+                    <Input name="instagram_handle" value={form.instagram_handle ?? ''} onChange={update} maxLength="30" dir="ltr"  className="w-full" />
                     {errors.instagram_handle?.map((item) => <span key={item} className="mt-1 block text-xs text-destructive">{item}</span>)}
                 </label>
                 <label className="text-sm font-semibold sm:col-span-2">وب‌سایت
-                    <Input name="website_url" type="url" value={form.website_url ?? ''} onChange={update} dir="ltr" placeholder="https://example.com" / className="w-full" />
+                    <Input name="website_url" type="url" value={form.website_url ?? ''} onChange={update} dir="ltr" placeholder="https://example.com"  className="w-full" />
                     {errors.website_url?.map((item) => <span key={item} className="mt-1 block text-xs text-destructive">{item}</span>)}
                 </label>
                 <label className="flex items-center gap-3 text-sm font-semibold sm:col-span-2">
