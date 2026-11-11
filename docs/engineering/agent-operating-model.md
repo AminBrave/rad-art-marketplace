@@ -9,7 +9,7 @@ Optimize for fast delivery, low token/tool consumption and small, reviewable, re
 - Prefer existing conventions and the smallest viable implementation. Avoid speculative abstractions, unrelated cleanup and unnecessary dependencies.
 - Delegate only independent work with explicit file ownership; integration overhead often costs more than parallelism on small tasks.
 - Keep agent handoffs and final reports concise: changed paths, key decisions, risks, local commands for the user, and documentation updates.
-- Do not launch expensive/full test suites or GitHub Actions for feature-branch tasks unless the user explicitly asks. The user owns local test execution on non-main branches.
+- Do not run any tests, lint, builds or verification commands on any branch unless the user explicitly asks. GitHub Actions must not run application verification on any branch, PR, main push or schedule.
 
 ## Discovery packet
 For non-trivial tasks, capture outcome, actor, relevant graph/source paths, current behavior/evidence, acceptance and negative cases, security/data impact, compatibility and rollback. Keep it proportionate; skip ceremony for trivial edits.
@@ -25,7 +25,7 @@ Parallelize only independent tasks with explicit file ownership and interfaces. 
 
 ## Review and verification
 Review intent vs diff, auth/privacy, race conditions, migration safety, query cost, accessibility and test quality. Treat generated code as untrusted until inspected.
-Feature-branch checks are performed by the user locally. Supply exact commands and prerequisites; do not claim they passed unless the user provides results or they were actually run. GitHub Actions is reserved for `main` after merge.
+Local checks are performed only when the user explicitly requests them. Supply exact commands and prerequisites when useful; do not claim they passed unless they were actually run. There is no application CI workflow.
 
 ## Progress
-GitHub issue checklists and milestones are authoritative. Tick stages only with commit, user-supplied local test result, review or main-branch CI evidence.
+GitHub issue checklists and milestones are authoritative. Tick stages only with commit, user-supplied local test result when requested, or review evidence; no main-branch CI evidence exists.
