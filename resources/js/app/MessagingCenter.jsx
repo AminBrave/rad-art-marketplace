@@ -61,6 +61,9 @@ export default function MessagingCenter({ role }) {
     const [actionId, setActionId] = useState(null);
     const [error, setError] = useState('');
     const [notice, setNotice] = useState('');
+    const [directStartLoading, setDirectStartLoading] = useState(false);
+    const [directStartAttempt, setDirectStartAttempt] = useState(0);
+    const [directStartError, setDirectStartError] = useState('');
     const [safety, setSafety] = useState({ blocked_by_me: false, blocked_by_other: false });
     const [safetyLoading, setSafetyLoading] = useState(true);
     const messagesContainerRef = useRef(null);
@@ -335,39 +338,71 @@ export default function MessagingCenter({ role }) {
         const requestKey = artistSlug + ':' + (artworkSlug || '');
         if (directStartKeyRef.current === requestKey) return undefined;
         directStartKeyRef.current = requestKey;
-        // Remove the one-shot deep link immediately so unrelated renders/search changes
-        // cannot accidentally create the same direct conversation more than once.
-        setParams((current) => {
-            const next = new URLSearchParams(current);
-            next.delete('artist');
-            next.delete('artwork');
-            return next;
-        }, { replace: true });
+        setDirectStartLoading(true);
+        setDirectStartError('');
+        setError('');
         const controller = new AbortController();
         directStartRequestRef.current = controller;
-        axios.post('/api/v1/conversations/direct', { artist_slug: artistSlug, artwork_slug: artworkSlug || null }, { signal: controller.signal })
-            .then(async ({ data }) => {
+
+        const startConversation = async () => {
+            try {
+                const { data } = await axios.post('/api/v1/conversations/direct', {
+                    artist_slug: artistSlug,
+                    artwork_slug: artworkSlug || null,
+                }, { signal: controller.signal });
                 if (controller.signal.aborted) return;
-                await loadThreadsRef.current();
+
+                // Fetch the canonical thread payload so the artwork context is available
+                // immediately, even if the paginated inbox refresh is still in flight.
+                const conversationId = Number(data.data.id);
+                const { data: conversationResponse } = await axios.get('/api/v1/conversations/' + conversationId, {
+                    signal: controller.signal,
+                });
                 if (controller.signal.aborted) return;
-                setActive(data.data.id);
+
+                const conversation = conversationResponse.data;
+                setThreads((current) => [
+                    conversation,
+                    ...current.filter((thread) => Number(thread.id) !== conversationId),
+                ]);
+                setActive(conversationId);
+                activeConversationRef.current = conversationId;
                 setParams((current) => {
                     const next = new URLSearchParams(current);
-                    next.set('conversation', String(data.data.id));
+                    next.delete('artist');
+                    next.delete('artwork');
+                    next.set('conversation', String(conversationId));
                     return next;
                 }, { replace: true });
+
                 directStartKeyRef.current = null;
-            })
-            .catch((requestError) => {
+                loadThreadsRef.current();
+            } catch (requestError) {
                 if (!axios.isCancel(requestError) && !controller.signal.aborted) {
                     directStartKeyRef.current = null;
-                    setError('شروع گفتگوی مستقیم ممکن نشد. ممکن است پروفایل یا اثر دیگر عمومی نباشد.');
+                    setDirectStartError(
+                        requestError.response?.status === 403
+                            ? 'شروع گفتگو به‌دلیل محدودیت دسترسی یا تنظیمات ایمنی ممکن نیست.'
+                            : requestError.response?.status === 404
+                                ? 'این هنرمند یا اثر دیگر برای نمایش عمومی در دسترس نیست.'
+                                : 'شروع گفتگوی مستقیم انجام نشد. اتصال را بررسی کنید و دوباره تلاش کنید.',
+                    );
                 }
-            })
-            .finally(() => {
-                if (directStartRequestRef.current === controller) directStartRequestRef.current = null;
-            });
-    }, [artistSlug, artworkSlug, role, setParams]);
+            } finally {
+                if (directStartRequestRef.current === controller) {
+                    directStartRequestRef.current = null;
+                    setDirectStartLoading(false);
+                }
+            }
+        };
+
+        startConversation();
+        return () => {
+            controller.abort();
+            if (directStartRequestRef.current === controller) directStartRequestRef.current = null;
+            if (directStartKeyRef.current === requestKey) directStartKeyRef.current = null;
+        };
+    }, [artistSlug, artworkSlug, role, setParams, directStartAttempt]);
 
     useEffect(() => {
         if (!active) return undefined;
@@ -616,6 +651,8 @@ export default function MessagingCenter({ role }) {
             </header>
             {notice && <p role="status" className="border border-border bg-surface-muted p-3 text-sm">{notice}</p>}
             {error && <p role="alert" className="border border-red-200 bg-red-50 p-3 text-sm text-red-800">{error}</p>}
+            {directStartLoading && <div role="status" className="flex items-center gap-3 border border-border bg-surface-muted p-3 text-sm text-muted"><LoaderCircle size={16} className="animate-spin" aria-hidden="true" />در حال آماده‌سازی گفتگوی مستقیم و اتصال آن به اثر…</div>}
+            {directStartError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 border border-danger/30 bg-danger-surface p-3 text-sm text-ink"><span>{directStartError}</span><button type="button" onClick={() => setDirectStartAttempt((attempt) => attempt + 1)} className="shrink-0 font-bold text-terracotta-strong underline underline-offset-4">تلاش دوباره</button></div>}
             <div className="grid h-[calc(100dvh-14rem)] min-h-[min(420px,calc(100dvh-14rem))] max-h-[900px] grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden rounded-2xl border border-border bg-white shadow-[0_18px_55px_rgba(36,35,32,0.07)] lg:h-[min(82dvh,900px)] lg:min-h-[min(620px,calc(100dvh-14rem))] lg:grid-cols-[360px_minmax(0,1fr)]">
                 <aside className={active ? 'hidden h-full min-h-0 flex-col border-l border-border bg-white lg:flex' : 'flex h-full min-h-0 flex-col border-l border-border bg-white'}>
                     <div className="shrink-0 border-b border-border bg-white px-5 py-5">
