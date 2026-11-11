@@ -45,14 +45,14 @@ export default function ArtistDirectoryPage() {
     return (
         <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl">
             <header className="border-b border-border pb-8">
-                <p className="text-xs font-bold text-terracotta-strong">جامعه خلاق راد آرت</p>
+                <p className="text-xs font-bold text-primary">جامعه خلاق راد آرت</p>
                 <h1 className="mt-2 text-3xl font-black sm:text-4xl">هنرمندان</h1>
-                <p className="mt-3 max-w-2xl text-sm leading-7 text-muted">با هنرمندان دارای پروفایل عمومی آشنا شوید و مسیر هنری و آثار تأییدشده آن‌ها را دنبال کنید.</p>
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">با هنرمندان دارای پروفایل عمومی آشنا شوید و مسیر هنری و آثار تأییدشده آن‌ها را دنبال کنید.</p>
             </header>
             <div className="mt-7 max-w-2xl">
                 <SearchField value={input} onChange={(event) => setInput(event.target.value)} onSearch={(value) => setParams(value.trim() ? { q: value.trim() } : {})} label="جست‌وجوی هنرمند" placeholder="نام هنرمند یا شهر…" />
             </div>
-            <p className="mt-6 text-xs text-muted">{loading ? 'در حال دریافت هنرمندان…' : meta.total.toLocaleString('fa-IR') + ' هنرمند'}</p>
+            <p className="mt-6 text-xs text-muted-foreground">{loading ? 'در حال دریافت هنرمندان…' : meta.total.toLocaleString('fa-IR') + ' هنرمند'}</p>
             {loading ? (
                 <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((item) => <ArtistCardSkeleton key={item} />)}</div>
             ) : error ? (
@@ -65,7 +65,7 @@ export default function ArtistDirectoryPage() {
             {!loading && !error && meta.last_page > 1 && (
                 <nav aria-label="صفحه‌بندی هنرمندان" className="mt-10 flex items-center justify-center gap-4">
                     <button type="button" disabled={page <= 1} onClick={() => updatePage(page - 1)} className="border border-border px-4 py-2 text-sm font-semibold disabled:opacity-40">قبلی</button>
-                    <span className="text-sm text-muted">صفحه {meta.current_page.toLocaleString('fa-IR')} از {meta.last_page.toLocaleString('fa-IR')}</span>
+                    <span className="text-sm text-muted-foreground">صفحه {meta.current_page.toLocaleString('fa-IR')} از {meta.last_page.toLocaleString('fa-IR')}</span>
                     <button type="button" disabled={page >= meta.last_page} onClick={() => updatePage(page + 1)} className="border border-border px-4 py-2 text-sm font-semibold disabled:opacity-40">بعدی</button>
                 </nav>
             )}
