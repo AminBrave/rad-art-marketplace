@@ -41,7 +41,7 @@ class FullStackAuthenticationTests(unittest.TestCase):
 
             response = page.reload()
             self.assertEqual(response.status, 200)
-            page.get_by_role("heading", name="پیگیری ارتباط‌های شما").wait_for()
+            page.get_by_role("heading", name="ارتباط مستقیم با هنرمندان").wait_for()
             auth = page.evaluate("""async () => {
                 const response = await fetch('/api/v1/auth/me', {
                     headers: { Accept: 'application/json' }, credentials: 'same-origin'
