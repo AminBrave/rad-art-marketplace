@@ -67,6 +67,7 @@ export default function ArtistDirectoryPage() {
 
             <section className="mt-10" aria-labelledby="artist-directory-heading">
                 <SectionHeader
+                    id="artist-directory-heading"
                     eyebrow="جامعه هنرمندان"
                     title={query ? 'نتایج جست‌وجو' : 'چهره‌های خلاق'}
                     actions={<p className="text-xs text-muted" aria-live="polite">{loading ? 'در حال دریافت هنرمندان…' : meta.total.toLocaleString('fa-IR') + ' هنرمند'}{artistsQuery.isFetching && !loading ? ' · به‌روزرسانی…' : ''}</p>}
