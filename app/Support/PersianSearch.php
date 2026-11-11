@@ -18,11 +18,24 @@ final class PersianSearch
             throw new \InvalidArgumentException('Unsupported boolean operator.');
         }
 
+        $connection = $query->getQuery()->getConnection();
         $wrappedColumn = $query->getQuery()->getGrammar()->wrap($column);
-        $expression = 'LOWER('.$wrappedColumn.')';
 
-        foreach (self::characterMap() as $from => $to) {
-            $expression = "REPLACE({$expression}, '{$from}', '{$to}')";
+        if ($connection->getDriverName() === 'sqlite') {
+            // Keep SQLite's parser from overflowing on a deeply nested REPLACE chain.
+            // The callback runs in PHP and uses the exact same normalization as the input.
+            $connection->getPdo()->sqliteCreateFunction(
+                'rad_persian_normalize',
+                [self::class, 'normalize'],
+                1,
+            );
+            $expression = 'rad_persian_normalize('.$wrappedColumn.')';
+        } else {
+            $expression = 'LOWER('.$wrappedColumn.')';
+
+            foreach (self::characterMap() as $from => $to) {
+                $expression = "REPLACE({$expression}, '{$from}', '{$to}')";
+            }
         }
 
         $normalized = self::normalize($term);
