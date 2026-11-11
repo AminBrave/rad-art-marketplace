@@ -404,7 +404,10 @@ export default function MessagingCenter({ role }) {
                 client_message_id: messageClientId,
             });
             let savedMessage = data.data;
-            if (selectedFile) {
+            const attachmentAlreadySaved = selectedFile && savedMessage.attachments?.some((attachment) =>
+                attachment.name === selectedFile.name && Number(attachment.size_bytes) === Number(selectedFile.size)
+            );
+            if (selectedFile && !attachmentAlreadySaved) {
                 const formData = new FormData();
                 formData.append('file', selectedFile);
                 const uploaded = await axios.post('/api/v1/conversations/' + conversationId + '/messages/' + savedMessage.id + '/attachments', formData, {
