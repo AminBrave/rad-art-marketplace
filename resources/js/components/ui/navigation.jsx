@@ -63,7 +63,7 @@ export function DropdownMenuSeparator({ className = '', ...props }) {
 
 export function Breadcrumbs({ items = [], className = '' }) {
     return (
-        <nav aria-label="مسیر صفحه" className={className}>
+        <nav aria-label="مسیر صفحه" className={`ra-breadcrumbs ${className}`}>
             <ol className="flex flex-wrap items-center gap-2 text-sm text-muted">
                 {items.map((item, index) => {
                     const current = index === items.length - 1;
@@ -104,7 +104,7 @@ export function Pagination({ currentPage = 1, lastPage = 1, onPageChange, disabl
                             aria-current={number === page ? 'page' : undefined}
                             disabled={disabled}
                             onClick={() => onPageChange(number)}
-                            className={`h-9 min-w-9 rounded-sm px-2 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-terracotta-strong disabled:opacity-50 ${number === page ? 'bg-ink text-white' : 'text-ink hover:bg-surface-muted'}`}
+                            className={`ra-pagination__page h-9 min-w-9 rounded-sm px-2 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-terracotta-strong disabled:opacity-50 ${number === page ? 'ra-pagination__page--active bg-ink text-white' : 'text-ink hover:bg-surface-muted'}`}
                         >
                             {number}
                         </button>
