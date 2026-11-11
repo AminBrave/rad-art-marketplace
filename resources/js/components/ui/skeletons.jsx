@@ -43,7 +43,7 @@ export function FormFieldSkeleton({ className = '', controlClassName = 'h-11' })
 
 export function ArtworkStudioListSkeleton({ count = 3 }) {
     return (
-        <section aria-hidden="true" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <section role="status" aria-live="polite" aria-busy="true" aria-label="در حال دریافت آثار هنرمند" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {Array.from({ length: count }, (_, index) => (
                 <article key={index} className="min-w-0 overflow-hidden border border-border bg-paper">
                     <Skeleton className="aspect-[4/3] w-full rounded-none" />
@@ -134,7 +134,7 @@ export function ArtworkModerationSkeleton({ count = 4 }) {
 
 export function WorkspaceIdentitySkeleton() {
     return (
-        <section aria-hidden="true" className="grid gap-5 border border-border bg-paper p-5 sm:p-7 lg:grid-cols-[1fr_15rem] lg:items-center">
+        <section role="status" aria-live="polite" aria-busy="true" aria-label="در حال دریافت اطلاعات پروفایل هنرمند" className="grid gap-5 border border-border bg-paper p-5 sm:p-7 lg:grid-cols-[1fr_15rem] lg:items-center">
             <div className="grid gap-3"><div className="flex items-center gap-3"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-6 w-24 rounded-full" /></div><Skeleton className="h-7 w-2/3 max-w-sm rounded-sm" /><Skeleton className="h-4 w-full max-w-2xl rounded-sm" /><Skeleton className="h-4 w-4/5 max-w-xl rounded-sm" /><div className="mt-2 flex gap-3"><Skeleton className="h-10 w-32 rounded-sm" /><Skeleton className="h-10 w-28 rounded-sm" /></div></div>
             <div className="grid justify-items-center gap-3 border-t border-border pt-5 lg:border-r lg:border-t-0 lg:pt-0"><Skeleton className="h-3 w-20 rounded-sm" /><Skeleton className="h-10 w-20 rounded-sm" /><Skeleton className="h-2 w-full rounded-full" /></div>
         </section>
@@ -170,7 +170,7 @@ export function CollectionCardSkeleton({ count = 3 }) {
 
 export function AdminEditorialSkeleton() {
     return (
-        <div aria-hidden="true" className="grid gap-8">
+        <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال دریافت محتوای سردبیری" className="grid gap-8">
             <section className="grid gap-4 border border-border bg-paper p-5 sm:p-7">
                 <Skeleton className="h-7 w-44 rounded-sm" />
                 <div className="grid gap-2"><Skeleton className="h-4 w-28 rounded-sm" /><Skeleton className="h-11 w-full rounded-sm" /></div>
