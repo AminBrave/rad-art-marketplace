@@ -21,11 +21,11 @@ export {
     Breadcrumbs,
     Pagination,
 } from './navigation';
-export { Dialog, DialogTrigger, DialogClose, DialogPortal, DialogOverlay, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from './Dialog';
+export { Dialog, DialogTrigger, DialogClose, DialogPortal, DialogOverlay, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription, Dialog as AlertDialog, DialogTrigger as AlertDialogTrigger, DialogContent as AlertDialogContent, DialogTitle as AlertDialogTitle, DialogDescription as AlertDialogDescription } from './Dialog';
 export { Skeleton, SkeletonLines, EmptyState, ErrorState, SuccessState, PermissionState, UploadFeedback, Toast } from './feedback';
 export { ArtworkCard, ArtistCard } from './cards';
 export { ArtworkCardSkeleton, ArtistCardSkeleton, ArtworkDetailSkeleton, ArtistProfileSkeleton } from './skeletons';
 
 export { Label, NativeSelect, Checkbox, Radio, Switch, RadioGroup, RadioGroupItem } from './form-controls';
-export { Avatar, AvatarImage, AvatarFallback, Progress, Spinner, Kbd, Toggle, AspectRatio } from './misc';
+export { Avatar, AvatarImage, AvatarFallback, Progress, Spinner, Kbd, Toggle, AspectRatio, ButtonGroup } from './misc';
 export { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarInset, SidebarFooter } from './sidebar';
