@@ -20,7 +20,7 @@ const dateLabel = (value) => {
 };
 
 function SummaryCard({ label, value, description, to }) {
-    return <Link to={to} className="block border border-border bg-card p-5 transition-colors hover:border-ring focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"><p className="text-sm text-muted-foreground">{label}</p><p className="mt-3 text-3xl font-black tabular-nums">{value ?? '—'}</p><p className="mt-2 text-xs leading-6 text-muted-foreground">{description}</p></Link>;
+    return <Card className="transition-all hover:-translate-y-0.5 hover:shadow-md"><Link to={to} className="block rounded-xl p-5 outline-none focus-visible:ring-2 focus-visible:ring-ring"><p className="text-sm text-muted-foreground">{label}</p><p className="mt-3 text-3xl font-bold tabular-nums text-card-foreground">{value ?? '—'}</p><p className="mt-2 text-xs leading-6 text-muted-foreground">{description}</p></Link></Card>;
 }
 
 export function AdminDashboardHome() {
