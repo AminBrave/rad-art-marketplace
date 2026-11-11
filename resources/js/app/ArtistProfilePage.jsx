@@ -5,7 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import ContactArtistForm from './ContactArtistForm';
 import { isFeatureEnabled } from './features';
-import { ArtworkCard, EmptyState, ErrorState, ArtistProfileSkeleton } from '../components/ui';
+import { ArtworkCard, EmptyState, ErrorState, ArtistProfileSkeleton, Button } from '../components/ui';
 
 export default function ArtistProfilePage() {
     const { slug } = useParams();
@@ -112,19 +112,19 @@ export default function ArtistProfilePage() {
                             <span className="text-xs text-muted-foreground">{allArtworks.length.toLocaleString('fa-IR')} اثر بارگذاری‌شده</span>
                         </div>
                         {portfolioCategories.length > 1 && <div className="mt-6 flex flex-wrap gap-2" aria-label="فیلتر آثار بر اساس دسته">
-                            <button type="button" aria-pressed={!categoryFilter} onClick={() => setCategoryFilter('')} className={`border px-4 py-2 text-sm font-semibold ${!categoryFilter ? 'border-ink bg-ink text-white' : 'border-border bg-card text-foreground'}`}>همه دسته‌ها</button>
-                            {portfolioCategories.map((category) => <button type="button" key={category.slug} aria-pressed={categoryFilter === category.slug} onClick={() => setCategoryFilter(category.slug)} className={`border px-4 py-2 text-sm font-semibold ${categoryFilter === category.slug ? 'border-ink bg-ink text-white' : 'border-border bg-card text-foreground'}`}>{category.name}</button>)}
+                            <Button type="button" aria-pressed={!categoryFilter} onClick={() => setCategoryFilter('')} variant="ghost" size="default">همه دسته‌ها</Button>
+                            {portfolioCategories.map((category) => <Button type="button" key={category.slug} aria-pressed={categoryFilter === category.slug} onClick={() => setCategoryFilter(category.slug)} variant="ghost" size="default">{category.name}</Button>)}
                         </div>}
                         {visibleArtworks.length ? <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{visibleArtworks.map((item) => <ArtworkCard key={item.id} artwork={{ ...item, artist: { display_name: profile.display_name, slug: profile.slug } }} />)}</div> : <EmptyState className="mt-6" title={categoryFilter ? 'در این دسته اثری بارگذاری نشده' : 'هنوز اثری برای نمایش وجود ندارد'} description="آثار تأییدشده این هنرمند در این بخش نمایش داده می‌شوند." />}
                         {profileQuery.isFetchNextPageError && <ErrorState className="mt-6" title="دریافت آثار بیشتر ناموفق بود" description="دریافت آثار بیشتر انجام نشد. دوباره تلاش کنید." onRetry={() => profileQuery.fetchNextPage()} />}
-                        {pagination?.has_more && <div className="mt-8 flex justify-center"><button type="button" onClick={() => profileQuery.fetchNextPage()} disabled={profileQuery.isFetchingNextPage} className="border border-border px-6 py-3 text-sm font-bold text-foreground transition-colors hover:border-terracotta disabled:cursor-wait disabled:opacity-60">{profileQuery.isFetchingNextPage ? 'در حال دریافت…' : 'نمایش آثار بیشتر'}</button></div>}
+                        {pagination?.has_more && <div className="mt-8 flex justify-center"><Button type="button" onClick={() => profileQuery.fetchNextPage()} disabled={profileQuery.isFetchingNextPage} variant="outline" size="default">{profileQuery.isFetchingNextPage ? 'در حال دریافت…' : 'نمایش آثار بیشتر'}</Button></div>}
                     </section>
                 </>
             ) : (
                 <section className="mt-8 border border-border bg-card p-8">
                     <h1 className="text-2xl font-black">{status === 403 ? 'دسترسی به پروفایل مجاز نیست' : 'پروفایل در دسترس نیست'}</h1>
                     <p className="mt-3 text-sm leading-7 text-muted-foreground">این پروفایل وجود ندارد یا نمایش عمومی آن غیرفعال شده است.</p>
-                    {profileQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-danger">ارتباط با سرور برقرار نشد. <button type="button" onClick={() => profileQuery.refetch()} className="font-bold underline">تلاش دوباره</button></p>}
+                    {profileQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-danger">ارتباط با سرور برقرار نشد. <Button type="button" onClick={() => profileQuery.refetch()} variant="ghost" size="default">تلاش دوباره</Button></p>}
                 </section>
             )}
         </main>
