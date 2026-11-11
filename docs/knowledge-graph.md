@@ -1,6 +1,6 @@
 # Rademan Documentation Knowledge Graph
 
-This graph maps documentation dependencies and change propagation. It is not a graph of runtime code relationships; use Graphify for code-level exploration when useful.
+This graph maps documentation dependencies and change propagation. It is a human-maintained map of documentation, not a graph of runtime code relationships.
 
 ~~~mermaid
 flowchart TD
@@ -36,7 +36,7 @@ flowchart TD
 ## Nodes
 
 - [AGENTS](../AGENTS.md): authoritative agent contract.
-- [AI agent tooling](engineering/ai-agent-tooling.md): selected frameworks, project skills, Graphify and execution boundaries.
+- [AI agent tooling](engineering/ai-agent-tooling.md): selected frameworks, project skills and execution boundaries.
 - [Vision](product/vision-and-scope.md): user value and boundaries.
 - [Domain](product/domain-workflows.md): actor workflows and invariants.
 - [System](architecture/system-overview.md): runtime and stack.
