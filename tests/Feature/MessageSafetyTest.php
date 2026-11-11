@@ -122,7 +122,6 @@ class MessageSafetyTest extends TestCase
         ]);
     }
 
-
     public function test_conversation_report_is_idempotent_and_block_status_is_viewer_relative(): void
     {
         [$buyer, $artist, $conversation, , $outsider] = $this->fixture();

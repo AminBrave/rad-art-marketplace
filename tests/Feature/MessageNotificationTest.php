@@ -145,7 +145,6 @@ class MessageNotificationTest extends TestCase
         $this->assertSame(0, $buyer->unreadNotifications()->count());
     }
 
-
     public function test_notification_preferences_endpoint_returns_safe_defaults_and_validates_updates(): void
     {
         [$buyer] = $this->conversation();
