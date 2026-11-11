@@ -19,6 +19,7 @@ export default {
    surface:{DEFAULT:'var(--color-surface)',muted:'var(--color-surface-muted)'},
    success:'var(--color-success)',danger:'var(--color-danger)',warning:'var(--color-warning)',info:'var(--color-info)',focus:'var(--color-focus)'
   },
+  textColor:{muted:'var(--color-text-muted)',subtle:'var(--color-text-subtle)'},
   fontFamily:{sans:['var(--font-sans)'],persian:['var(--font-persian)'],latin:['var(--font-latin)']},
   fontSize:{xs:'var(--text-xs)',sm:'var(--text-sm)',base:'var(--text-base)',lg:'var(--text-lg)',xl:'var(--text-xl)','2xl':'var(--text-2xl)','3xl':'var(--text-3xl)','4xl':'var(--text-4xl)','5xl':'var(--text-5xl)'},
   lineHeight:{copy:'var(--leading-copy)',heading:'var(--leading-heading)',tight:'var(--leading-tight)',relaxed:'var(--leading-relaxed)'},
