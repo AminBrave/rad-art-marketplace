@@ -28,9 +28,9 @@ Copy this checklist into the issue/PR and tick each stage only with evidence.
 - [ ] Keep commits atomic and update graph.
 
 ## S4 Verify
-- [ ] Backend tests and Pint.
-- [ ] JS tests, ESLint and Vite build.
-- [ ] Relevant Playwright including unmocked full-stack path.
+- [ ] Run backend tests/Pint only when the user explicitly requests verification.
+- [ ] Run JS tests, ESLint or Vite build only when explicitly requested.
+- [ ] Optional Playwright E2E only when explicitly requested; never part of the default workflow.
 - [ ] Auth/privacy/validation/race/idempotency/failure checks.
 - [ ] Query count, payload size, RTL/mobile accessibility review.
 
@@ -41,9 +41,9 @@ Copy this checklist into the issue/PR and tick each stage only with evidence.
 - [ ] Review requested; blocking threads resolved.
 
 ## S6 Release
-- [ ] Merge after required checks/review.
+- [ ] Merge after applicable human review; there are no automated application test checks.
 - [ ] Deploy via approved environment and migration order.
-- [ ] Run smoke tests and observe logs/metrics.
+- [ ] Run smoke tests only when explicitly requested; observe logs/metrics as part of an approved release.
 - [ ] Roll back or forward-fix if health fails.
 
 ## S7 Close
