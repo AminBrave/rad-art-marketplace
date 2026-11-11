@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { Children, cloneElement, forwardRef, isValidElement } from 'react';
 import { cn } from '../../lib/utils';
 
 export const Label = forwardRef(({ className, ...props }, ref) => (
@@ -60,10 +60,15 @@ Switch.displayName = 'Switch';
 
 export function RadioGroup({ value, onValueChange, name, children, className, 'aria-label': ariaLabel, ...props }) {
     return <div role="radiogroup" aria-label={ariaLabel} className={cn('grid gap-3', className)} {...props}>
-        {typeof children === 'function' ? children({ value, onValueChange, name }) : children}
+        {Children.map(children, (child) => isValidElement(child)
+            ? cloneElement(child, { selected: value, onSelect: onValueChange, name })
+            : child)}
     </div>;
 }
 
-export function RadioGroupItem({ value, selected, onSelect, name, className, ...props }) {
-    return <Radio name={name} value={value} checked={selected === undefined ? undefined : selected === value} onChange={() => onSelect?.(value)} className={className} {...props} />;
+export function RadioGroupItem({ value, selected, onSelect, name, children, className, ...props }) {
+    return <label className={cn('inline-flex cursor-pointer items-center gap-2 text-sm', className)}>
+        <Radio name={name} value={value} checked={selected === value} onChange={() => onSelect?.(value)} {...props} />
+        {children && <span>{children}</span>}
+    </label>;
 }
