@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Bell } from 'lucide-react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import ThemeSwitcher from '../design-system/ThemeSwitcher';
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
 
@@ -26,6 +27,7 @@ export function PublicLayout() {
                     <NavLink to="/help" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>راهنما</NavLink>
                 </nav>
                 <div className="flex items-center gap-3 text-sm">
+                    <ThemeSwitcher />
                     {user ? <><span className="hidden font-semibold sm:inline">{user.name}</span><span className="bg-surface-muted px-3 py-2 text-xs font-bold text-terracotta-strong">{roleLabels[user.role] ?? user.role}</span><Link to={user.role==='admin'?'/admin':user.role==='buyer'?'/dashboard/buyer':'/dashboard/artist'} className="font-semibold text-terracotta-strong underline">فضای کاربری</Link><button type="button" onClick={handleLogout} className="border border-border px-4 py-2 font-semibold hover:border-terracotta">خروج</button></> : <><Link to="/login" className="font-semibold hover:text-terracotta-strong">ورود</Link><Link to="/register" className="bg-ink px-4 py-2.5 font-semibold text-white hover:bg-terracotta">ثبت‌نام</Link></>}
                 </div>
             </div>
@@ -167,7 +169,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
     const [logoutError, setLogoutError] = useState('');
     const handleLogout = async () => { setLogoutError(''); try { await logout(); } catch { setLogoutError('خروج انجام نشد. اتصال را بررسی کنید.'); } };
     return <div className="min-h-screen bg-canvas text-ink" dir="rtl">
-        <header className="border-b border-border bg-white"><div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-8 lg:px-10"><div><Link to="/" className="text-lg font-black text-ink no-underline">راد<span className="text-terracotta-strong">آرت</span></Link><p className="mt-1 text-xs text-muted">{title}</p></div><div className="flex items-center gap-3 text-sm">{user?.role !== 'admin' && <NotificationBell user={user} />}<span className="font-semibold">{user?.name}</span><Link to="/" className="border border-border px-4 py-2 font-semibold hover:border-terracotta">مشاهده سایت</Link><button type="button" onClick={handleLogout} className="border border-border px-4 py-2 font-semibold hover:border-terracotta">خروج</button></div></div>{logoutError&&<p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-red-700 sm:px-8">{logoutError}</p>}</header>
+        <header className="border-b border-border bg-white"><div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-8 lg:px-10"><div><Link to="/" className="text-lg font-black text-ink no-underline">راد<span className="text-terracotta-strong">آرت</span></Link><p className="mt-1 text-xs text-muted">{title}</p></div><div className="flex items-center gap-3 text-sm"><ThemeSwitcher />{user?.role !== 'admin' && <NotificationBell user={user} />}<span className="font-semibold">{user?.name}</span><Link to="/" className="border border-border px-4 py-2 font-semibold hover:border-terracotta">مشاهده سایت</Link><button type="button" onClick={handleLogout} className="border border-border px-4 py-2 font-semibold hover:border-terracotta">خروج</button></div></div>{logoutError&&<p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-red-700 sm:px-8">{logoutError}</p>}</header>
         <div className="mx-auto grid max-w-7xl gap-6 px-5 py-7 sm:px-8 lg:grid-cols-[220px_1fr] lg:px-10"><aside className="h-fit border border-border bg-white p-3"><nav aria-label="ناوبری فضای کاربری" className="flex flex-wrap gap-2 lg:flex-col">{links.map(item=><NavLink key={item.to} to={item.to} end={item.end} className={({isActive})=>isActive?'bg-ink px-4 py-3 text-sm font-bold text-white':'px-4 py-3 text-sm font-semibold text-muted hover:bg-surface-muted hover:text-ink'}>{item.label}</NavLink>)}</nav></aside><main className="min-w-0"><Outlet context={outletContext} /></main></div>
     </div>;
 }
