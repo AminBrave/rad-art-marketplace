@@ -81,11 +81,29 @@ function effectiveBackground(element, getStyle) {
     for (const node of ancestors.reverse()) {
         const style = getStyle(node);
         if (style.backgroundImage && style.backgroundImage !== 'none') hasImage = true;
+        const previousBackground = background;
         const layer = parseColor(style.backgroundColor);
-        if (layer && layer.a > 0) background = composite(layer, background);
+        if (layer && layer.a > 0) background = composite(layer, previousBackground);
+        const opacity = Math.min(1, Math.max(0, Number.parseFloat(style.opacity || '1')));
+        if (opacity < 1) background = composite({ ...background, a: opacity }, previousBackground);
     }
 
     return { background, hasImage };
+}
+
+function effectiveOpacity(element, getStyle) {
+    let opacity = 1;
+    for (let node = element; node && node.nodeType === 1; node = node.parentElement) {
+        opacity *= Math.min(1, Math.max(0, Number.parseFloat(getStyle(node).opacity || '1')));
+    }
+    return opacity;
+}
+
+function isDisabled(element) {
+    for (let node = element; node && node.nodeType === 1; node = node.parentElement) {
+        if (node.matches?.(':disabled') || node.getAttribute('aria-disabled') === 'true') return true;
+    }
+    return false;
 }
 
 function hasOwnText(element) {
@@ -133,7 +151,8 @@ export function auditColorAccessibility(root = globalThis.document) {
 
     for (const element of elements) {
         const style = getStyle(element);
-        if (!isVisible(style)) continue;
+        const opacity = effectiveOpacity(element, getStyle);
+        if (!isVisible(style) || opacity <= 0 || isDisabled(element)) continue;
         const resolved = effectiveBackground(element, getStyle);
         const background = resolved.background;
 
@@ -144,6 +163,7 @@ export function auditColorAccessibility(root = globalThis.document) {
         if (hasOwnText(element)) {
             const foreground = parseColor(style.color);
             if (foreground && foreground.a > 0) {
+                foreground.a *= opacity;
                 const fontSize = Number.parseFloat(style.fontSize) || 16;
                 const isBold = Number.parseInt(style.fontWeight, 10) >= 700;
                 const isLarge = fontSize >= 24 || (isBold && fontSize >= 18.66);
@@ -155,6 +175,7 @@ export function auditColorAccessibility(root = globalThis.document) {
         if (element.tagName?.toLowerCase() === 'svg') {
             const foreground = parseColor(style.color);
             if (foreground && foreground.a > 0) {
+                foreground.a *= opacity;
                 nonTextChecks += 1;
                 addCheck(element, foreground, background, 3, 'icon');
             }
@@ -164,8 +185,19 @@ export function auditColorAccessibility(root = globalThis.document) {
             const borderWidth = Number.parseFloat(style.borderTopWidth) || 0;
             const border = parseColor(style.borderTopColor);
             if (style.borderTopStyle !== 'none' && borderWidth > 0 && border && border.a > 0) {
+                border.a *= opacity;
                 nonTextChecks += 1;
                 addCheck(element, border, background, 3, 'control-boundary');
+            }
+
+            if (element.getAttribute('placeholder')) {
+                const placeholderStyle = view.getComputedStyle(element, '::placeholder');
+                const placeholder = parseColor(placeholderStyle.color);
+                if (placeholder && placeholder.a > 0) {
+                    placeholder.a *= opacity;
+                    textChecks += 1;
+                    addCheck(element, placeholder, background, 4.5, 'placeholder');
+                }
             }
         }
 
