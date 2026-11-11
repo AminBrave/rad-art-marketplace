@@ -16,7 +16,7 @@ This is a linked knowledge system. Start with [AGENTS.md](../AGENTS.md), then fo
 
 New agent: AGENTS → graph → relevant product/architecture nodes → agent model → Git/GitHub → relevant tests. Avoid reading every document for a small task.
 
-**Execution policy:** feature-branch pushes are CI-silent; pull requests targeting `main` and pushes to `main` run the configured application CI. Markdown-only push events are ignored, but PR events still run CI. A separate hourly maintenance workflow deletes completed Actions runs older than 24 hours. The exact `#FORCE_MODE` suffix is documented in [AGENTS.md](../AGENTS.md) as a bounded override for explicitly authorized work; it does not waive security, truthfulness, or platform protections. See [testing strategy](engineering/testing-strategy.md) and [CI/CD](operations/ci-cd-and-release.md).
+**Execution policy:** no GitHub Actions workflow runs application tests, lint, builds or E2E. AI agents must not run local verification unless the user explicitly asks. Development is localhost-first; Playwright E2E is optional and user-triggered. See [testing strategy](engineering/testing-strategy.md), [Git/GitHub](engineering/git-and-github.md) and [CI/CD](operations/ci-cd-and-release.md).
 
 **Documentation is part of the change:** whenever a user-requested or user-approved code change affects documented behavior, contracts, architecture, tests, security, operations or workflows, update the related documents and graph links in the same change.
 
