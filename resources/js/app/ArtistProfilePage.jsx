@@ -103,10 +103,9 @@ export default function ArtistProfilePage() {
                                     <p className="mt-1 text-xs text-muted">اثر دریافت‌شده در این صفحه</p>
                                 </div>
                                 <div className="grid gap-3">
-                                    {user?.role === 'buyer' && <>
-                                        <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(profile.slug)} className="flex min-h-12 items-center justify-center bg-ink px-5 py-3 text-center text-sm font-bold text-white transition-colors hover:bg-terracotta">ارسال پیام به هنرمند</Link>
-                                    </>}
-                                    {user?.role !== 'buyer' && user && <p className="text-xs leading-6 text-muted">برای ارتباط با این هنرمند، از حساب خریدار استفاده کنید.</p>}
+                                    {user?.role === 'buyer' && <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(profile.slug)} className="flex min-h-12 items-center justify-center bg-ink px-5 py-3 text-center text-sm font-bold text-white transition-colors hover:bg-terracotta">ارسال پیام به هنرمند</Link>}
+                                    {!user && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className="flex min-h-12 items-center justify-center bg-ink px-5 py-3 text-center text-sm font-bold text-white transition-colors hover:bg-terracotta">ورود برای ارسال پیام مستقیم</Link>}
+                                    {user && user.role !== 'buyer' && <p className="text-xs leading-6 text-muted">برای ارسال پیام مستقیم، از حساب خریدار استفاده کنید.</p>}
                                 </div>
                             </aside>
                         </div>
