@@ -85,19 +85,20 @@ class ConversationTest extends TestCase
 
         $newMessage = $conversation->messages()->where('client_message_id', 'incremental-message-1')->firstOrFail();
 
-        $this->actingAs($buyer)
+        $incremental = $this->actingAs($buyer)
             ->getJson('/api/v1/conversations/'.$conversation->id.'/messages?after_id='.$firstMessage->id)
             ->assertOk()
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.body', 'پیام جدید برای دریافت افزایشی')
             ->assertJsonPath('current_page', 1)
             ->assertJsonStructure(['sync_cursor']);
+        $syncCursor = $incremental->json('sync_cursor');
 
-        $this->actingAs($buyer)->patchJson('/api/v1/conversations/'.$conversation->id.'/messages/'.$firstMessage->id, [
+        $this->patchJson('/api/v1/conversations/'.$conversation->id.'/messages/'.$firstMessage->id, [
             'body' => 'پیام قدیمی ویرایش شد',
         ])->assertOk();
 
-        $this->getJson('/api/v1/conversations/'.$conversation->id.'/messages?after_id='.$newMessage->id.'&updated_after='.urlencode(now()->subMinute()->toISOString()))
+        $this->getJson('/api/v1/conversations/'.$conversation->id.'/messages?after_id='.$newMessage->id.'&updated_after='.urlencode($syncCursor))
             ->assertOk()
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.id', $firstMessage->id)
