@@ -100,18 +100,9 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                 </section>
             ) : pathname === '/dashboard/buyer' ? (
                 <>
-                    <section className="grid gap-4 sm:grid-cols-2"><LoadingBlock className="h-32 w-full" /><LoadingBlock className="h-32 w-full" /></section>
-                    <section className="mt-6 border border-border bg-paper p-5"><LoadingBlock className="h-5 w-48" /><LoadingBlock className="mt-5 h-16 w-full" /><LoadingBlock className="mt-4 h-4 w-28" /></section>
+                    <section className="border border-border bg-paper p-6"><LoadingBlock className="h-5 w-40" /><LoadingBlock className="mt-4 h-7 w-2/3" /><LoadingBlock className="mt-3 h-4 w-full" /><LoadingBlock className="mt-6 h-11 w-40" /></section>
+                    <section className="mt-6 grid gap-4 md:grid-cols-3">{[0, 1, 2].map((item) => <div key={item} className="border-r-2 border-sand bg-surface-muted p-4"><LoadingBlock className="h-3 w-20" /><LoadingBlock className="mt-3 h-5 w-3/4" /><LoadingBlock className="mt-3 h-3 w-full" /></div>)}</section>
                 </>
-            ) : pathname === '/dashboard/buyer/inquiries' ? (
-                <section className="overflow-hidden border border-border bg-paper">
-                    {[0, 1, 2, 3, 4].map((item) => <div key={item} className="grid gap-3 border-b border-border p-5"><LoadingBlock className="h-5 w-2/3" /><LoadingBlock className="h-4 w-1/3" /><LoadingBlock className="h-3 w-1/4" /></div>)}
-                </section>
-            ) : pathname === '/dashboard/artist/inquiries' ? (
-                <div className="grid gap-4 lg:grid-cols-[minmax(260px,0.85fr)_minmax(0,1.5fr)]">
-                    <section className="border border-border bg-paper p-4">{[0, 1, 2, 3, 4].map((item) => <div key={item} className="grid gap-2 border-b border-border p-3"><LoadingBlock className="h-4 w-4/5" /><LoadingBlock className="h-3 w-1/2" /></div>)}</section>
-                    <section className="border border-border bg-paper p-6"><LoadingBlock className="h-6 w-2/3" /><LoadingBlock className="mt-6 h-4 w-1/3" /><LoadingBlock className="mt-8 h-32 w-full" /></section>
-                </div>
             ) : pathname === '/dashboard/artist' ? (
                 <>
                     <section className="border border-border bg-paper p-6"><LoadingBlock className="h-5 w-40" /><LoadingBlock className="mt-4 h-8 w-2/3" /><LoadingBlock className="mt-4 h-4 w-full" /><LoadingBlock className="mt-3 h-4 w-3/4" /></section>
