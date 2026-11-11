@@ -540,6 +540,10 @@ a {
     outline: 2px solid var(--color-focus);
     outline-offset: 2px;
 }
+.rad-messaging .message-edit-shell:has(textarea:focus-visible) {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+}
 @media (prefers-reduced-motion: reduce) {
     .rad-messaging *,
     .rad-messaging *::before,
