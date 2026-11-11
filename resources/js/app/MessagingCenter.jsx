@@ -299,6 +299,11 @@ export default function MessagingCenter({ role }) {
         const previousHeight = container?.scrollHeight ?? 0;
         const previousTop = container?.scrollTop ?? 0;
         const beforeId = messagesRef.current?.[0]?.id;
+        if (!beforeId) {
+            historyLoadingRef.current = false;
+            setLoadingOlder(false);
+            return;
+        }
         try {
             const { data } = await axios.get('/api/v1/conversations/' + conversationId + '/messages', {
                 params: { before_id: beforeId }, signal: controller.signal,
@@ -523,8 +528,8 @@ export default function MessagingCenter({ role }) {
                                 const node = event.currentTarget;
                                 shouldStickToBottomRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 120;
                                 if (node.scrollTop < 72 && hasOlderMessagesRef.current) loadOlderMessages();
-                            }} className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain [scrollbar-gutter:stable] bg-[radial-gradient(circle_at_1px_1px,rgba(66,62,53,0.055)_1px,transparent_0)] [background-size:24px_24px] px-3 py-5 sm:gap-4 sm:px-6 sm:py-6" role="log" aria-label="پیام‌های گفتگو" aria-live="polite" aria-relevant="additions">
-                                {loadingOlder && <p className="py-2 text-center text-xs text-muted" role="status">در حال دریافت پیام‌های قدیمی‌تر…</p>}
+                            }} className="relative flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain [scrollbar-gutter:stable] bg-[radial-gradient(circle_at_1px_1px,rgba(66,62,53,0.055)_1px,transparent_0)] [background-size:24px_24px] px-3 py-5 sm:gap-4 sm:px-6 sm:py-6" role="log" aria-label="پیام‌های گفتگو" aria-live="polite" aria-relevant="additions">
+                                {loadingOlder && <p className="absolute inset-x-0 top-2 z-10 mx-auto w-fit rounded-full border border-border bg-white/95 px-3 py-1.5 text-xs text-muted shadow-soft" role="status">در حال دریافت پیام‌های قدیمی‌تر…</p>}
                                 {messages.map((message) => {
                                     const own = Number(message.sender_id) === Number(user?.id);
                                     const deleted = Boolean(message.deleted_at);
@@ -534,7 +539,7 @@ export default function MessagingCenter({ role }) {
                                                 {message.attachments?.length > 0 && <ul className="mb-3 space-y-2">{message.attachments.map((attachment) => <li key={attachment.id}><a href={attachment.download_url} className="inline-flex max-w-full items-center gap-2 border border-border bg-surface-muted px-3 py-2 text-xs font-semibold underline" rel="noreferrer"><span aria-hidden="true">📎</span><span className="truncate">{attachment.name}</span><span className="text-muted">({Math.max(1, Math.round(attachment.size_bytes / 1024))} KB)</span></a></li>)}</ul>}
                                                 {message.reply_to && <div className="mb-3 border-r-2 border-terracotta bg-surface-muted px-3 py-2 text-xs"><strong>{message.reply_to.sender_name ?? 'پیام قبلی'}</strong><p className="mt-1 line-clamp-2 text-muted">{message.reply_to.body ?? 'این پیام حذف شده است.'}</p></div>}
                                                 {editingId === message.id ? (
-                                                    <form onSubmit={(event) => saveEdit(event, message)} className="space-y-2">
+                                                    <form onSubmit={(event) => saveEdit(event, message)} className="message-edit-shell space-y-2 rounded-lg">
                                                         <textarea aria-label="متن ویرایش‌شده پیام" autoFocus value={editDraft} onChange={(event) => setEditDraft(event.target.value)} rows={3} maxLength={5000} className="w-full border border-border bg-canvas p-2 text-sm outline-none focus:border-border focus:outline-none focus-visible:outline-none focus:ring-0" />
                                                         <div className="flex gap-2"><button disabled={!editDraft.trim() || actionId === message.id} className="bg-ink px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50">ذخیره</button><button type="button" onClick={() => setEditingId(null)} className="px-3 py-1.5 text-xs text-muted">انصراف</button></div>
                                                     </form>
