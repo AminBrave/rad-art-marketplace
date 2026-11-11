@@ -326,8 +326,8 @@ a {
         text-decoration: none;
         transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
     }
-    .ra-metric-card:hover { transform: translateY(-2px); border-color: var(--color-action); box-shadow: var(--shadow-soft); }
-    .ra-metric-card:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+    .ra-metric-card--interactive:hover { transform: translateY(-2px); border-color: var(--color-action); box-shadow: var(--shadow-soft); }
+    .ra-metric-card--interactive:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
     .ra-metric-card__top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
     .ra-metric-card__label { color: var(--color-text-muted); font-size: var(--text-sm); font-weight: var(--weight-semibold); }
     .ra-metric-card__eyebrow { color: var(--color-action-text); font-size: 10px; font-weight: var(--weight-bold); }
