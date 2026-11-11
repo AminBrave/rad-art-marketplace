@@ -211,5 +211,4 @@ class EditorialTest extends TestCase
             'subject_id' => FeaturedArtistSelection::query()->value('id'),
         ]);
     }
-
 }
