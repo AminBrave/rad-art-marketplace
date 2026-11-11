@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { WorkspaceLayout } from './Layouts';
-import { ArtworkDetailSkeleton, ArtistProfileSkeleton } from '../components/ui';
+import { ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton } from '../components/ui';
 const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
 
 const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
@@ -34,6 +34,64 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                 {isWorkspace && <LoadingBlock className="h-10 w-28 shrink-0" />}
             </div>
             {pathname === '/' ? (
+                <section className="grid items-center gap-8 lg:grid-cols-2">
+                    <div className="grid gap-4">
+                        <LoadingBlock className="h-3 w-28" />
+                        <LoadingBlock className="h-12 w-11/12" />
+                        <LoadingBlock className="h-12 w-3/4" />
+                        <LoadingBlock className="mt-3 h-4 w-full max-w-xl" />
+                        <LoadingBlock className="h-4 w-4/5" />
+                        <LoadingBlock className="mt-4 h-12 w-36" />
+                    </div>
+                    <LoadingBlock className="aspect-[4/5] w-full max-w-xl justify-self-center" />
+                </section>
+            ) : pathname === '/artworks' ? (
+                <>
+                    <section className="mb-7 grid gap-3 border border-border bg-surface-muted p-4 sm:grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))] sm:p-5">
+                        <LoadingBlock className="h-11 w-full" />
+                        <LoadingBlock className="h-11 w-full" />
+                        <LoadingBlock className="h-11 w-full" />
+                    </section>
+                    <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                        {[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}
+                    </section>
+                </>
+            ) : pathname === '/artists' ? (
+                <>
+                    <section className="mb-8 grid gap-4 border-y border-border bg-surface-muted px-6 py-10 sm:px-10">
+                        <LoadingBlock className="h-3 w-28" />
+                        <LoadingBlock className="h-10 w-2/3 max-w-lg" />
+                        <LoadingBlock className="h-4 w-full max-w-2xl" />
+                        <LoadingBlock className="h-11 w-full max-w-2xl" />
+                    </section>
+                    <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                        {[0, 1, 2, 3, 4, 5].map((item) => <ArtistCardSkeleton key={item} />)}
+                    </section>
+                </>
+            ) : pathname === '/collections' || /^\\/collections\\//.test(pathname) ? (
+                <>
+                    <section className="mb-8 grid gap-3 border-b border-border pb-6">
+                        <LoadingBlock className="h-3 w-24" />
+                        <LoadingBlock className="h-10 w-2/3 max-w-lg" />
+                        <LoadingBlock className="h-4 w-full max-w-2xl" />
+                    </section>
+                    <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                        {[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}
+                    </section>
+                </>
+            ) : /^\\/(dashboard\\/(artist|buyer)\\/messages)$/.test(pathname) ? (
+                <section className="grid min-h-[34rem] overflow-hidden border border-border bg-paper md:grid-cols-[minmax(16rem,.36fr)_minmax(0,.64fr)]">
+                    <div className="border-b border-border p-4 md:border-b-0 md:border-l">
+                        <LoadingBlock className="mb-4 h-10 w-full" />
+                        {[0, 1, 2, 3, 4, 5].map((item) => <div key={item} className="flex items-center gap-3 border-b border-border py-4"><LoadingBlock className="h-11 w-11 shrink-0 rounded-full" /><div className="grid min-w-0 flex-1 gap-2"><LoadingBlock className="h-4 w-2/3" /><LoadingBlock className="h-3 w-full" /></div></div>)}
+                    </div>
+                    <div className="hidden min-w-0 flex-col justify-between p-5 md:flex">
+                        <div className="flex items-center gap-3 border-b border-border pb-4"><LoadingBlock className="h-10 w-10 rounded-full" /><LoadingBlock className="h-4 w-40" /></div>
+                        <div className="grid gap-4 py-8"><LoadingBlock className="h-14 w-3/5 justify-self-start" /><LoadingBlock className="h-14 w-2/5 justify-self-end" /><LoadingBlock className="h-14 w-1/2 justify-self-start" /></div>
+                        <LoadingBlock className="h-12 w-full rounded-full" />
+                    </div>
+                </section>
+            ) : pathname === '/admin' ? (
                 <section className="grid items-center gap-8 lg:grid-cols-2">
                     <div className="grid gap-4">
                         <LoadingBlock className="h-3 w-28" />
