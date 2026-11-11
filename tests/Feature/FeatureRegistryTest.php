@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Models\ArtistInquiry;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
@@ -32,10 +33,21 @@ final class FeatureRegistryTest extends TestCase
             'display_name' => 'Feature artist',
             'is_public' => true,
         ]);
+        $inquiry = ArtistInquiry::query()->create([
+            'artist_profile_id' => $profile->id,
+            'sender_user_id' => $buyer->id,
+            'subject' => 'Feature gate test',
+            'message' => 'This inquiry is retained but unavailable.',
+            'status' => ArtistInquiry::STATUS_NEW,
+        ]);
 
         $this->actingAs($buyer)->getJson('/api/v1/buyer/inquiries')->assertNotFound();
+        $this->actingAs($buyer)->getJson('/api/v1/buyer/inquiries/'.$inquiry->id)->assertNotFound();
         $this->actingAs($artist)->getJson('/api/v1/artist/inquiries')->assertNotFound();
+        $this->actingAs($artist)->getJson('/api/v1/artist/inquiries/'.$inquiry->id)->assertNotFound();
+        $this->actingAs($artist)->patchJson('/api/v1/artist/inquiries/'.$inquiry->id, ['status' => ArtistInquiry::STATUS_READ])->assertNotFound();
         $this->actingAs($buyer)->postJson('/api/v1/artists/'.$profile->slug.'/inquiries', [])->assertNotFound();
+        $this->actingAs($buyer)->postJson('/api/v1/inquiries/'.$inquiry->id.'/conversation')->assertNotFound();
     }
 
     public function test_direct_messaging_routes_remain_registered_when_inquiries_are_disabled(): void
