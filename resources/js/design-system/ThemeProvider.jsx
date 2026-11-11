@@ -1,8 +1,7 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { getThemeConfig } from './theme-config.js';
+import { ThemeContext } from './theme-context.js';
 import { getInitialTheme, isThemeEnabled, persistThemePreference, resolveTheme } from './theme-utils.js';
-
-const ThemeContext = createContext(null);
 
 function getBrowserStorage() {
     try {
@@ -22,7 +21,7 @@ export function ThemeProvider({ children }) {
     }, [config]);
 
     const resetTheme = useCallback(() => {
-        setTheme(config.defaultTheme);
+        setTheme(resolveTheme(config.defaultTheme, config));
     }, [config.defaultTheme, setTheme]);
 
     useEffect(() => {
@@ -45,12 +44,3 @@ export function ThemeProvider({ children }) {
     return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
 
-export function useTheme() {
-    const context = useContext(ThemeContext);
-
-    if (!context) {
-        throw new Error('useTheme must be used within a ThemeProvider.');
-    }
-
-    return context;
-}
