@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { Badge, Button, EmptyState, ErrorState, FormField, SkeletonLines, UploadFeedback } from '../components/ui';
+import { Badge, Button, EmptyState, ErrorState, FormField, SkeletonLines, UploadFeedback, Input, Textarea, Select } from '../components/ui';
 
 const emptyArtwork = { title: '', description: '', category_id: '', medium: '', dimensions: '', year: '', price: '', availability: 'available' };
 const statusLabels = { pending_review: 'در انتظار بررسی', approved: 'تأیید و منتشرشده', rejected: 'ردشده', changes_requested: 'نیازمند اصلاح' };
@@ -11,7 +11,6 @@ const statusGuidance = {
     rejected: 'این اثر رد شده است. بازخورد مدیر را بخوانید و در صورت امکان با ویرایش اثر دوباره ارسال کنید.',
     changes_requested: 'مدیر برای این اثر اصلاحاتی درخواست کرده است. بازخورد را بررسی کنید، اثر را ویرایش و دوباره برای بررسی ارسال کنید.',
 };
-const inputClass = 'mt-2 w-full border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-terracotta focus-visible:ring-2 focus-visible:ring-focus';
 
 export default function ArtworkStudio({ user, hasProfile }) {
     const [categories, setCategories] = useState([]);
@@ -157,17 +156,17 @@ export default function ArtworkStudio({ user, hasProfile }) {
         <section id="artwork-editor" className="border border-border bg-card p-5 sm:p-7">
             <div className="mb-6 flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-lg font-bold">{editingId ? 'ویرایش اثر' : 'ثبت اثر جدید'}</h2><p className="mt-1 text-xs text-muted-foreground">فیلدهای الزامی با علامت * مشخص شده‌اند.</p></div>{editingId && <Button variant="outline" size="sm" onClick={resetForm}>انصراف از ویرایش</Button>}</div>
             <form onSubmit={saveArtwork} className="grid gap-5 sm:grid-cols-2">
-                <FormField label="عنوان اثر" required error={errors.title?.[0]}><input name="title" value={form.title} onChange={updateForm} required maxLength={160} className={inputClass} /></FormField>
-                <FormField label="دسته‌بندی" required error={errors.category_id?.[0]}><select name="category_id" value={form.category_id} onChange={updateForm} required className={inputClass}><option value="">انتخاب دسته‌بندی</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select></FormField>
-                <FormField label="تکنیک / متریال" error={errors.medium?.[0]}><input name="medium" value={form.medium} onChange={updateForm} maxLength={120} className={inputClass} placeholder="مثلاً رنگ روغن، آبرنگ…" /></FormField>
-                <FormField label="ابعاد" error={errors.dimensions?.[0]}><input name="dimensions" value={form.dimensions} onChange={updateForm} maxLength={120} className={inputClass} placeholder="مثلاً ۵۰ × ۷۰ سانتی‌متر" /></FormField>
-                <FormField label="سال خلق اثر" error={errors.year?.[0]}><input name="year" type="number" value={form.year} onChange={updateForm} min="1000" max={new Date().getFullYear() + 1} className={inputClass} /></FormField>
-                <FormField label="قیمت (ریال)" error={errors.price?.[0]}><input name="price" type="number" value={form.price} onChange={updateForm} min="0" step="1" className={inputClass} /></FormField>
-                <FormField label="وضعیت دسترس‌پذیری" required><select name="availability" value={form.availability} onChange={updateForm} className={inputClass}><option value="available">موجود</option><option value="sold">فروخته‌شده</option><option value="not_for_sale">برای فروش نیست</option></select></FormField>
-                <FormField label="توضیحات اثر" error={errors.description?.[0]} className="sm:col-span-2"><textarea name="description" value={form.description} onChange={updateForm} rows={4} maxLength={3000} className={inputClass} /></FormField>
+                <FormField label="عنوان اثر" required error={errors.title?.[0]}><Input name="title" value={form.title} onChange={updateForm} required maxLength={160} /></FormField>
+                <FormField label="دسته‌بندی" required error={errors.category_id?.[0]}><Select name="category_id" value={form.category_id} onChange={updateForm} required><option value="">انتخاب دسته‌بندی</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</Select></FormField>
+                <FormField label="تکنیک / متریال" error={errors.medium?.[0]}><Input name="medium" value={form.medium} onChange={updateForm} maxLength={120} placeholder="مثلاً رنگ روغن، آبرنگ…" /></FormField>
+                <FormField label="ابعاد" error={errors.dimensions?.[0]}><Input name="dimensions" value={form.dimensions} onChange={updateForm} maxLength={120} placeholder="مثلاً ۵۰ × ۷۰ سانتی‌متر" /></FormField>
+                <FormField label="سال خلق اثر" error={errors.year?.[0]}><Input name="year" type="number" value={form.year} onChange={updateForm} min="1000" max={new Date().getFullYear() + 1} /></FormField>
+                <FormField label="قیمت (ریال)" error={errors.price?.[0]}><Input name="price" type="number" value={form.price} onChange={updateForm} min="0" step="1" /></FormField>
+                <FormField label="وضعیت دسترس‌پذیری" required><Select name="availability" value={form.availability} onChange={updateForm}><option value="available">موجود</option><option value="sold">فروخته‌شده</option><option value="not_for_sale">برای فروش نیست</option></Select></FormField>
+                <FormField label="توضیحات اثر" error={errors.description?.[0]} className="sm:col-span-2"><Textarea name="description" value={form.description} onChange={updateForm} rows={4} maxLength={3000} /></FormField>
                 <div className="sm:col-span-2">
                     <label htmlFor="artwork-image" className="block text-sm font-semibold text-foreground">تصویر اثر {editingId ? '(اختیاری؛ برای جایگزینی تصویر)' : '*'}</label>
-                    <input id="artwork-image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required={!editingId} onChange={chooseImage} aria-describedby="artwork-image-help" className="mt-2 block w-full border border-border bg-background px-3 py-3 text-sm file:ml-3 file:border-0 file:bg-muted file:px-3 file:py-2 file:font-semibold" />
+                    <Input id="artwork-image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required={!editingId} onChange={chooseImage} aria-describedby="artwork-image-help" className="mt-2 block w-full border border-border bg-background px-3 py-3 text-sm file:ml-3 file:border-0 file:bg-muted file:px-3 file:py-2 file:font-semibold" />
                     <p id="artwork-image-help" className="mt-2 text-xs leading-6 text-muted-foreground">JPG، JPEG، PNG یا WebP؛ حداکثر ۵ مگابایت و ۶۰۰۰ × ۶۰۰۰ پیکسل. ابعاد تصویر پیش از ارسال بررسی می‌شود.</p>
                     {fieldError('image')}{imageError && <p role="alert" className="mt-1 text-xs text-danger">{imageError}</p>}
                     {imagePreview && <div className="mt-4 max-w-sm border border-border p-2"><img src={imagePreview} alt="پیش‌نمایش تصویر انتخاب‌شده" className="max-h-64 w-full object-contain" /></div>}
