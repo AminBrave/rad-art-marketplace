@@ -124,10 +124,11 @@ export function WorkspaceHero({ eyebrow, title, description, actions, className 
     );
 }
 
-export function DashboardMetricCard({ as: Element = 'a', label, value, detail, to, eyebrow, className = '' }) {
-    const destinationProps = Element === 'a' ? { href: to } : { to };
+export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, className = '' }) {
+    const Element = as ?? (to ? 'a' : 'article');
+    const destinationProps = to ? (Element === 'a' ? { href: to } : { to }) : {};
     return (
-        <Element {...destinationProps} className={cn('ra-metric-card', className)}>
+        <Element {...destinationProps} className={cn('ra-metric-card', to && 'ra-metric-card--interactive', className)}>
             <span className="ra-metric-card__top">
                 <span className="ra-metric-card__label">{label}</span>
                 {eyebrow && <span className="ra-metric-card__eyebrow">{eyebrow}</span>}
