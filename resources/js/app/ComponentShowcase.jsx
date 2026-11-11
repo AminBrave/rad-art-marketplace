@@ -1,7 +1,31 @@
 import { useState } from 'react';
 import ThemeSwitcher from '../design-system/ThemeSwitcher';
 import {
+    Alert,
+    AlertDescription,
+    AlertTitle,
     ArtistCard,
+    Card,
+    CardAction,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+    Field,
+    FieldDescription,
+    FieldError,
+    FieldGroup,
+    FieldLabel,
+    Input,
+    Separator,
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
     ArtworkCard,
     Badge,
     Breadcrumbs,
@@ -194,6 +218,71 @@ export default function ComponentShowcase() {
                         <Toast open={toastOpen} title="نمونه اعلان" description="اعلان قابل بستن با ناحیه زنده دسترس‌پذیر." onDismiss={() => setToastOpen(false)} />
                         {!toastOpen && <Button variant="outline" size="sm" onClick={() => setToastOpen(true)}>نمایش دوباره اعلان</Button>}
                     </div>
+                </div>
+                <div className="grid gap-5 border-b border-border pb-8 lg:grid-cols-2">
+                    <div className="grid content-start gap-4">
+                        <h3 className="font-semibold">ساختار کارت New York</h3>
+                        <Card>
+                            <CardHeader>
+                                <CardAction><Badge variant="secondary">نمونه</Badge></CardAction>
+                                <CardTitle>جزئیات اثر هنری</CardTitle>
+                                <CardDescription>کارت ترکیبی با بخش‌های مستقل و قابل جایگزینی.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-sm leading-7 text-muted-foreground">اجزای کارت از یک API ترکیبی استفاده می‌کنند تا ساختار محتوا، عنوان و اقدامات از هم جدا بمانند.</p>
+                            </CardContent>
+                            <CardFooter className="justify-between">
+                                <span className="text-xs text-muted-foreground">به‌روزرسانی امروز</span>
+                                <Button size="sm">مشاهده جزئیات</Button>
+                            </CardFooter>
+                        </Card>
+                        <Alert>
+                            <AlertTitle>وضعیت ثبت</AlertTitle>
+                            <AlertDescription>این اثر برای بررسی اولیه آماده است.</AlertDescription>
+                        </Alert>
+                        <Alert variant="destructive">
+                            <AlertTitle>نیازمند اصلاح</AlertTitle>
+                            <AlertDescription>یک فیلد ضروری هنوز تکمیل نشده است.</AlertDescription>
+                        </Alert>
+                    </div>
+                    <div className="grid content-start gap-4">
+                        <h3 className="font-semibold">Field و ورودی‌های New York</h3>
+                        <FieldGroup>
+                            <Field>
+                                <FieldLabel htmlFor="ny-title">عنوان اثر</FieldLabel>
+                                <Input id="ny-title" placeholder="عنوان اثر هنری" />
+                                <FieldDescription>عنوانی روشن و قابل جست‌وجو انتخاب کنید.</FieldDescription>
+                            </Field>
+                            <Field data-invalid="true">
+                                <FieldLabel htmlFor="ny-email">ایمیل تماس</FieldLabel>
+                                <Input id="ny-email" type="email" aria-invalid="true" placeholder="name@example.com" dir="ltr" />
+                                <FieldError>قالب نشانی ایمیل معتبر نیست.</FieldError>
+                            </Field>
+                        </FieldGroup>
+                        <Separator />
+                        <p className="text-xs text-muted-foreground">کنترل‌ها از توکن‌های semantic استفاده می‌کنند و وضعیت خطا با aria-invalid قابل تشخیص است.</p>
+                    </div>
+                </div>
+
+                <div className="grid gap-4 border-b border-border pb-8">
+                    <div>
+                        <h3 className="font-semibold">جدول داده و واکنش‌گرایی</h3>
+                        <p className="mt-1 text-sm text-muted-foreground">جدول پایه برای ترکیب با مرتب‌سازی، فیلتر و صفحه‌بندی متناسب با هر دامنه.</p>
+                    </div>
+                    <Table>
+                        <TableCaption>فهرست نمونه آثار در انتظار بررسی</TableCaption>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>اثر</TableHead>
+                                <TableHead>هنرمند</TableHead>
+                                <TableHead>وضعیت</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            <TableRow><TableCell className="font-medium">روایت رنگ و سکوت</TableCell><TableCell>هنرمند نمونه</TableCell><TableCell><Badge variant="warning">در انتظار</Badge></TableCell></TableRow>
+                            <TableRow><TableCell className="font-medium">باغ بی‌صدا</TableCell><TableCell>هنرمند دوم</TableCell><TableCell><Badge variant="success">تأییدشده</Badge></TableCell></TableRow>
+                        </TableBody>
+                    </Table>
                 </div>
             </div>
         </section>
