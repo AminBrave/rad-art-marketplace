@@ -2,11 +2,9 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { isFeatureEnabled } from './features';
 import { WorkspaceLayout } from './Layouts';
 import { ArtworkDetailSkeleton, ArtistProfileSkeleton } from '../components/ui';
 const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
-const InquiryCenter = lazy(() => import('./InquiryCenter'));
 
 const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
 
@@ -208,7 +206,6 @@ export function ArtistWorkspaceLayout() {
         { to: '/dashboard/artist', label: 'نمای کلی', end: true },
         { to: '/dashboard/artist/profile', label: 'پروفایل هنرمند' },
         { to: '/dashboard/artist/artworks', label: 'مدیریت آثار' },
-        ...(isFeatureEnabled('inquiries') ? [{ to: '/dashboard/artist/inquiries', label: 'صندوق درخواست‌ها' }] : []),
         { to: '/dashboard/artist/messages', label: 'پیام‌های مستقیم' },
     ];
 
@@ -327,22 +324,6 @@ export function ArtistArtworkPage() {
     return <Suspense fallback={<RouteLoading label="در حال آماده‌سازی فضای آثار…" />}><ArtworkStudio user={user} hasProfile={Boolean(profile?.slug)} /></Suspense>;
 }
 
-
-export function ArtistInquiryPage() {
-    const { user, profile, profileLoading, profileError } = useOutletContext();
-    if (profileLoading) return <RouteLoading label="در حال آماده‌سازی صندوق پیام‌ها…" />;
-    if (!profile?.slug) {
-        return (
-            <section className="rounded-2xl border border-stone-200 bg-white p-6" dir="rtl">
-                <h1 className="text-xl font-black">صندوق پیام‌های هنرمند</h1>
-                {profileError && <p role="alert" className="mt-3 text-sm text-amber-800">{profileError}</p>}
-                <p className="mt-3 text-sm leading-7 text-stone-500">برای دریافت و مدیریت درخواست‌های ارتباطی، ابتدا پروفایل هنرمند خود را تکمیل کنید.</p>
-                <Link to="/dashboard/artist/profile" className="mt-4 inline-block text-sm font-bold text-[#9a452b] underline">تکمیل پروفایل</Link>
-            </section>
-        );
-    }
-    return <Suspense fallback={<RouteLoading label="در حال آماده‌سازی صندوق پیام‌ها…" />}><InquiryCenter user={user} hasProfile /></Suspense>;
-}
 
 export function BuyerWorkspaceLayout() {
     const { user } = useAuth();
