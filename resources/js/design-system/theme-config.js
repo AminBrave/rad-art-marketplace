@@ -1,5 +1,5 @@
 export const DEFAULT_THEME_CONFIG = {
-    defaultTheme: 'editorial',
+    defaultTheme: 'new-york',
     allowRuntimeSwitching: true,
     persistSelection: true,
     storageKey: 'rad-art-theme',
