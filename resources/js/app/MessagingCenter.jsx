@@ -53,6 +53,7 @@ export default function MessagingCenter({ role }) {
     const pendingIdsByConversationRef = useRef(new Map());
     const threadsRequestRef = useRef(null);
     const threadsPageRef = useRef(1);
+    const threadsRef = useRef(threads);
     const shouldStickToBottomRef = useRef(true);
     const endpoint = role === 'artist' ? '/api/v1/artist/conversations' : '/api/v1/buyer/conversations';
     const loadThreads = useCallback(async ({ append = false } = {}) => {
@@ -94,6 +95,7 @@ export default function MessagingCenter({ role }) {
 
     const loadThreadsRef = useRef(loadThreads);
     useEffect(() => { loadThreadsRef.current = loadThreads; }, [loadThreads]);
+    useEffect(() => { threadsRef.current = threads; }, [threads]);
 
     const updateThreadSetting = async (thread, setting, value) => {
         try {
@@ -158,7 +160,7 @@ export default function MessagingCenter({ role }) {
         } finally {
             if (messageRequestRef.current === controller) messageRequestRef.current = null;
         }
-    }, [user?.id]););
+    }, [user?.id]);
 
     useEffect(() => {
         const previousConversation = activeConversationRef.current;
@@ -193,7 +195,7 @@ export default function MessagingCenter({ role }) {
         axios.get('/api/v1/conversations/' + active + '/safety')
             .then(({ data }) => { if (!cancelled) setSafety(data.data ?? { blocked_by_me: false, blocked_by_other: false }); })
             .catch((requestError) => { if (!cancelled && !axios.isCancel(requestError)) setError('وضعیت ایمنی گفتگو دریافت نشد.'); });
-        if (!threads.some((thread) => Number(thread.id) === Number(active))) {
+        if (!threadsRef.current.some((thread) => Number(thread.id) === Number(active))) {
             axios.get('/api/v1/conversations/' + active)
                 .then(({ data }) => {
                     if (!cancelled && data.data) setThreads((current) => [
@@ -331,12 +333,14 @@ export default function MessagingCenter({ role }) {
                     headers: { 'Content-Type': 'multipart/form-data' },
                     onUploadProgress: (event) => setUploadProgress(event.total ? Math.round((event.loaded * 100) / event.total) : 0),
                 });
-                savedMessage = { ...savedMessage, attachments: [...(savedMessage.attachments ?? []), { ...uploaded.data.data, download_url: '/api/v1/conversations/' + active + '/messages/' + savedMessage.id + '/attachments/' + uploaded.data.data.id }] };
+                savedMessage = { ...savedMessage, attachments: [...(savedMessage.attachments ?? []), { ...uploaded.data.data, download_url: '/api/v1/conversations/' + conversationId + '/messages/' + savedMessage.id + '/attachments/' + uploaded.data.data.id }] };
             }
             if (Number(activeConversationRef.current) === Number(conversationId)) setMessages((current) => current.some((item) => item.id === savedMessage.id) ? current.map((item) => item.id === savedMessage.id ? savedMessage : item) : [...current, savedMessage]);
-            latestMessageIdRef.current = Math.max(Number(latestMessageIdRef.current ?? 0), Number(savedMessage.id));
-            shouldStickToBottomRef.current = true;
+            pendingIdsByConversationRef.current.delete(Number(conversationId));
+            draftsByConversationRef.current.delete(Number(conversationId));
             if (Number(activeConversationRef.current) === Number(conversationId)) {
+                latestMessageIdRef.current = Math.max(Number(latestMessageIdRef.current ?? 0), Number(savedMessage.id));
+                shouldStickToBottomRef.current = true;
                 draftsByConversationRef.current.delete(Number(conversationId));
                 setDraft('');
                 if (draftRef.current) draftRef.current.style.height = 'auto';
@@ -530,8 +534,8 @@ export default function MessagingCenter({ role }) {
                             {safety.blocked_by_me || safety.blocked_by_other ? <p role="status" className="border-t border-border bg-surface-muted p-4 text-sm text-muted">{safety.blocked_by_me ? 'این کاربر را مسدود کرده‌اید؛ برای ادامه گفتگو ابتدا مسدودسازی را بردارید.' : 'این گفتگو به‌دلیل تنظیمات ایمنی امکان ارسال پیام ندارد.'}</p> : <form onSubmit={send} className="shrink-0 border-t border-border bg-white px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 sm:px-5 sm:py-4">
                                 {replyTo && <div className="mb-3 flex items-start justify-between gap-3 border-r-2 border-terracotta bg-surface-muted p-3 text-xs"><div><strong>پاسخ به {replyTo.sender_name ?? 'پیام'}</strong><p className="mt-1 line-clamp-2 text-muted">{replyTo.body}</p></div><button type="button" onClick={() => setReplyTo(null)} aria-label="لغو پاسخ">×</button></div>}
                                 <div className="flex items-end gap-2 rounded-[26px] border border-border bg-surface-muted p-2 shadow-soft">
-                                    <div className="min-w-0 flex-1"><textarea aria-label="متن پیام" ref={draftRef} value={draft} onChange={(event) => { setDraft(event.target.value); event.currentTarget.style.height = 'auto'; event.currentTarget.style.height = Math.min(event.currentTarget.scrollHeight, 144) + 'px'; }} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); event.currentTarget.form?.requestSubmit(); } }} rows={1} maxLength={5000} placeholder="پیام بنویسید…" className="max-h-36 min-h-11 w-full resize-none overflow-y-auto border-0 bg-transparent px-3 py-2.5 text-[14px] leading-7 text-ink outline-none placeholder:text-subtle focus:outline-none focus-visible:outline-none focus:ring-0" />
-                                        <div className="mt-2 flex flex-wrap items-center gap-2"><label className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-xl text-muted transition hover:bg-border" title="افزودن تصویر یا PDF"><span aria-hidden="true">＋</span><input ref={fileInputRef} type="file" aria-label="انتخاب تصویر یا فایل PDF" accept="image/jpeg,image/png,image/webp,application/pdf" className="sr-only" onChange={(event) => {
+                                    <div className="min-w-0 flex-1"><textarea aria-label="متن پیام" ref={draftRef} value={draft} disabled={sending} onChange={(event) => { setDraft(event.target.value); event.currentTarget.style.height = 'auto'; event.currentTarget.style.height = Math.min(event.currentTarget.scrollHeight, 144) + 'px'; }} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); event.currentTarget.form?.requestSubmit(); } }} rows={1} maxLength={5000} placeholder="پیام بنویسید…" className="max-h-36 min-h-11 w-full resize-none overflow-y-auto border-0 bg-transparent px-3 py-2.5 text-[14px] leading-7 text-ink outline-none placeholder:text-subtle focus:outline-none focus-visible:outline-none focus:ring-0" />
+                                        <div className="mt-2 flex flex-wrap items-center gap-2"><label className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-xl text-muted transition hover:bg-border" title="افزودن تصویر یا PDF"><span aria-hidden="true">＋</span><input ref={fileInputRef} type="file" aria-label="انتخاب تصویر یا فایل PDF" disabled={sending} accept="image/jpeg,image/png,image/webp,application/pdf" className="sr-only" onChange={(event) => {
                                                 const file = event.target.files?.[0] ?? null;
                                                 if (file && file.size > 10 * 1024 * 1024) {
                                                     setError('حجم فایل نباید بیشتر از ۱۰ مگابایت باشد.');
