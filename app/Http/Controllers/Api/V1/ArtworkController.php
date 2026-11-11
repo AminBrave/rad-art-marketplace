@@ -7,6 +7,8 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreArtworkRequest;
 use App\Http\Requests\UpdateArtworkRequest;
+use App\Http\Resources\ArtworkResource as ArtworkJsonResource;
+use App\Http\Resources\PublicArtworkResource;
 use App\Models\Artwork;
 use App\Models\Category;
 use App\Support\PersianSearch;
@@ -112,7 +114,7 @@ class ArtworkController extends Controller
         };
 
         $artworks = $query->paginate($perPage)
-            ->through(fn (Artwork $artwork): array => $this->publicPayload($artwork));
+            ->through(fn (Artwork $artwork): array => (new PublicArtworkResource($artwork))->resolve());
 
         return response()->json($artworks);
     }
@@ -135,12 +137,12 @@ class ArtworkController extends Controller
             ->latest()
             ->limit(4)
             ->get()
-            ->map(fn (Artwork $item): array => $this->publicPayload($item))
+            ->map(fn (Artwork $item): array => (new PublicArtworkResource($item))->resolve())
             ->values();
 
         return response()->json([
             'data' => [
-                ...$this->publicPayload($artwork),
+                ...(new PublicArtworkResource($artwork))->resolve(),
                 'related_artworks' => $related,
             ],
         ]);
@@ -168,7 +170,7 @@ class ArtworkController extends Controller
                 ->latest()
                 ->orderByDesc('id')
                 ->paginate(12)
-                ->through(fn (Artwork $artwork): array => $this->payload($artwork)),
+                ->through(fn (Artwork $artwork): array => (new ArtworkJsonResource($artwork))->resolve()),
         );
     }
 
@@ -189,7 +191,7 @@ class ArtworkController extends Controller
 
         return response()->json([
             'message' => 'اثر برای بررسی مدیر ثبت شد.',
-            'data' => $this->payload($artwork->load('category')),
+            'data' => (new ArtworkJsonResource($artwork->load('category')))->resolve(),
         ], 201);
     }
 
@@ -217,42 +219,9 @@ class ArtworkController extends Controller
 
         return response()->json([
             'message' => 'اثر ویرایش شد و دوباره در صف بررسی قرار گرفت.',
-            'data' => $this->payload($artwork->refresh()->load('category')),
+            'data' => (new ArtworkJsonResource($artwork->refresh()->load('category')))->resolve(),
         ]);
     }
 
-    /** @return array<string, mixed> */
-    private function publicPayload(Artwork $artwork): array
-    {
-        $payload = $this->payload($artwork);
-        unset($payload['status'], $payload['rejection_note']);
 
-        return $payload;
-    }
-
-    /** @return array<string, mixed> */
-    private function payload(Artwork $artwork): array
-    {
-        $artwork->loadMissing(['category', 'artistProfile']);
-
-        return [
-            'id' => $artwork->id,
-            'slug' => $artwork->slug,
-            'title' => $artwork->title,
-            'description' => $artwork->description,
-            'medium' => $artwork->medium,
-            'dimensions' => $artwork->dimensions,
-            'year' => $artwork->year,
-            'price' => $artwork->price,
-            'availability' => $artwork->availability,
-            'status' => $artwork->status,
-            'rejection_note' => $artwork->rejection_note,
-            'image_url' => route('api.v1.artworks.image', $artwork->slug),
-            'category' => ['id' => $artwork->category->id, 'name' => $artwork->category->name, 'slug' => $artwork->category->slug],
-            'artist' => [
-                'display_name' => $artwork->artistProfile->display_name,
-                'slug' => $artwork->artistProfile->slug,
-            ],
-        ];
-    }
 }
