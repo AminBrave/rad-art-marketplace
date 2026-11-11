@@ -72,7 +72,7 @@ a {
 /* Shared loading treatment. Intrinsic skeleton dimensions mirror the first viewport. */
 .app-skeleton {
     display: block;
-    background: linear-gradient(100deg, hsl(var(--muted)) 25%, hsl(var(--card)) 42%, var(--color-surface-muted) 62%);
+    background: linear-gradient(100deg, hsl(var(--muted)) 25%, hsl(var(--card)) 42%, hsl(var(--muted)) 62%);
     background-size: 200% 100%;
     animation: app-skeleton-shimmer 1.35s ease-in-out infinite;
 }
@@ -233,8 +233,8 @@ a {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 2rem;
-    border-block: 1px solid var(--color-border);
-    background: var(--color-surface-muted);
+    border-block: 1px solid hsl(var(--border));
+    background: hsl(var(--muted));
     padding: 3rem 0;
 }
 
@@ -266,8 +266,8 @@ a {
 
 .app-boot__gallery-card {
     min-width: 0;
-    border: 1px solid var(--color-border);
-    background: var(--color-paper);
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--card));
 }
 
 .app-boot__card {
@@ -276,7 +276,7 @@ a {
 }
 
 .app-boot__categories {
-    border-block: 1px solid var(--color-border);
+    border-block: 1px solid hsl(var(--border));
     background: hsl(var(--card));
     padding-block: 3.5rem;
 }
