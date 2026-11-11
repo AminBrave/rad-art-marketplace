@@ -4,7 +4,7 @@ import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-rou
 import { useAuth } from './AuthContext';
 import { isFeatureEnabled } from './features';
 import { WorkspaceLayout } from './Layouts';
-import { ArtworkDetailSkeleton, ArtistProfileSkeleton } from '../components/ui';
+import { ArtworkDetailSkeleton, ArtistProfileSkeleton, Button, Input, Textarea } from '../components/ui';
 const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
 const InquiryCenter = lazy(() => import('./InquiryCenter'));
 
@@ -150,7 +150,7 @@ function AuthUnavailable() {
         <div className="mx-auto max-w-xl px-6 py-20 text-center" dir="rtl">
             <h1 className="text-2xl font-black">ارتباط با حساب کاربری برقرار نشد</h1>
             <p className="mt-3 text-sm leading-7 text-muted-foreground">{authError}</p>
-            <button type="button" onClick={refreshUser} className="mt-6 rounded-full bg-[#20201e] px-5 py-3 text-sm font-bold text-white">تلاش دوباره</button>
+            <Button type="button" onClick={refreshUser} variant="default" size="default" className="mt-6">تلاش دوباره</Button>
         </div>
     );
 }
@@ -286,31 +286,31 @@ export function ArtistProfileSettings() {
             {profileError && <p role="alert" className="mt-4 text-sm text-amber-800">{profileError}</p>}
             <form onSubmit={save} className="mt-6 grid gap-4 sm:grid-cols-2">
                 <label className="text-sm font-semibold sm:col-span-2">نام نمایشی
-                    <input name="display_name" value={form.display_name ?? ''} onChange={update} required maxLength="120" className="mt-2 w-full rounded-xl border border-border bg-[#fcfbf9] px-4 py-3" />
+                    <Input name="display_name" value={form.display_name ?? ''} onChange={update} required maxLength="120" / className="w-full" />
                     {errors.display_name?.map((item) => <span key={item} className="mt-1 block text-xs text-destructive">{item}</span>)}
                 </label>
                 <label className="text-sm font-semibold sm:col-span-2">درباره هنرمند
-                    <textarea name="bio" value={form.bio ?? ''} onChange={update} rows="4" maxLength="2000" className="mt-2 w-full rounded-xl border border-border bg-[#fcfbf9] px-4 py-3 leading-7" />
+                    <Textarea name="bio" value={form.bio ?? ''} onChange={update} rows="4" maxLength="2000" / className="w-full">
                     {errors.bio?.map((item) => <span key={item} className="mt-1 block text-xs text-destructive">{item}</span>)}
                 </label>
                 <label className="text-sm font-semibold">شهر
-                    <input name="city" value={form.city ?? ''} onChange={update} maxLength="120" className="mt-2 w-full rounded-xl border border-border bg-[#fcfbf9] px-4 py-3" />
+                    <Input name="city" value={form.city ?? ''} onChange={update} maxLength="120" / className="w-full" />
                     {errors.city?.map((item) => <span key={item} className="mt-1 block text-xs text-destructive">{item}</span>)}
                 </label>
                 <label className="text-sm font-semibold">شناسه اینستاگرام
-                    <input name="instagram_handle" value={form.instagram_handle ?? ''} onChange={update} maxLength="30" dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-[#fcfbf9] px-4 py-3 text-left" />
+                    <Input name="instagram_handle" value={form.instagram_handle ?? ''} onChange={update} maxLength="30" dir="ltr" / className="w-full" />
                     {errors.instagram_handle?.map((item) => <span key={item} className="mt-1 block text-xs text-destructive">{item}</span>)}
                 </label>
                 <label className="text-sm font-semibold sm:col-span-2">وب‌سایت
-                    <input name="website_url" type="url" value={form.website_url ?? ''} onChange={update} dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-[#fcfbf9] px-4 py-3 text-left" placeholder="https://example.com" />
+                    <Input name="website_url" type="url" value={form.website_url ?? ''} onChange={update} dir="ltr" placeholder="https://example.com" / className="w-full" />
                     {errors.website_url?.map((item) => <span key={item} className="mt-1 block text-xs text-destructive">{item}</span>)}
                 </label>
                 <label className="flex items-center gap-3 text-sm font-semibold sm:col-span-2">
-                    <input type="checkbox" name="is_public" checked={Boolean(form.is_public)} onChange={update} className="h-4 w-4 accent-[#b65c3a]" />
+                    <Input type="checkbox" name="is_public" checked={Boolean(form.is_public)} onChange={update} />
                     نمایش عمومی پروفایل
                 </label>
                 <div className="sm:col-span-2">
-                    <button disabled={busy} className="rounded-xl bg-[#20201e] px-6 py-3 font-bold text-white disabled:opacity-60">{busy ? 'در حال ذخیره…' : 'ذخیره پروفایل'}</button>
+                    <Button disabled={busy} variant="default" size="default" type="submit">{busy ? 'در حال ذخیره…' : 'ذخیره پروفایل'}</Button>
                     {profile?.slug && <Link to={'/artists/' + profile.slug} className="mr-4 text-sm font-semibold text-[#9a452b] underline">{profile.is_public ? 'پیش‌نمایش پروفایل عمومی' : 'پیش‌نمایش خصوصی پروفایل'}</Link>}
                     {profile?.slug && !profile.is_public && <p className="mt-3 text-xs leading-6 text-muted-foreground sm:col-span-2">این پیش‌نمایش فقط برای شما و مدیران مجاز قابل مشاهده است؛ بازدیدکنندگان عمومی به پروفایل خصوصی دسترسی ندارند.</p>}
                     <p className="mt-2 text-xs text-muted-foreground sm:col-span-2">{(form.bio?.length ?? 0).toLocaleString('fa-IR')} از ۲۰۰۰ نویسه برای معرفی هنری استفاده شده است.</p>
