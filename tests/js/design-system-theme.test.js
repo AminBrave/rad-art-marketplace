@@ -9,7 +9,7 @@ import {
 } from '../../resources/js/design-system/theme-utils.js';
 
 const config = {
-    defaultTheme: 'editorial',
+    defaultTheme: 'new-york',
     allowRuntimeSwitching: true,
     persistSelection: true,
     storageKey: 'rad-art-theme',
@@ -29,33 +29,33 @@ function createStorage(initial = {}) {
     };
 }
 
-test('defaults to Editorial when there is no saved preference', () => {
-    assert.equal(getInitialTheme(createStorage(), config), 'editorial');
+test('defaults to New York when there is no saved preference', () => {
+    assert.equal(getInitialTheme(createStorage(), config), 'new-york');
 });
 
 test('restores an enabled saved theme', () => {
-    assert.equal(getInitialTheme(createStorage({ 'rad-art-theme': 'new-york' }), config), 'new-york');
+    assert.equal(getInitialTheme(createStorage({ 'rad-art-theme': 'editorial' }), config), 'editorial');
 });
 
 test('invalid and disabled preferences safely fall back to the configured default', () => {
-    assert.equal(getInitialTheme(createStorage({ 'rad-art-theme': 'unknown' }), config), 'editorial');
-    assert.equal(getInitialTheme(createStorage({ 'rad-art-theme': 'disabled' }), config), 'editorial');
-    assert.equal(resolveTheme('disabled', config), 'editorial');
+    assert.equal(getInitialTheme(createStorage({ 'rad-art-theme': 'unknown' }), config), 'new-york');
+    assert.equal(getInitialTheme(createStorage({ 'rad-art-theme': 'disabled' }), config), 'new-york');
+    assert.equal(resolveTheme('disabled', config), 'new-york');
 });
 
 test('theme persistence writes only enabled themes', () => {
     const storage = createStorage();
-    assert.equal(persistThemePreference(storage, 'new-york', config), true);
-    assert.equal(storage.getItem('rad-art-theme'), 'new-york');
+    assert.equal(persistThemePreference(storage, 'editorial', config), true);
+    assert.equal(storage.getItem('rad-art-theme'), 'editorial');
     assert.equal(persistThemePreference(storage, 'disabled', config), false);
 });
 
 test('switching and persistence flags are respected', () => {
-    const storage = createStorage({ 'rad-art-theme': 'new-york' });
+    const storage = createStorage({ 'rad-art-theme': 'editorial' });
     const locked = { ...config, allowRuntimeSwitching: false };
     assert.equal(readThemePreference(storage, locked), null);
-    assert.equal(persistThemePreference(storage, 'editorial', locked), false);
-    assert.equal(getInitialTheme(storage, locked), 'editorial');
+    assert.equal(persistThemePreference(storage, 'new-york', locked), false);
+    assert.equal(getInitialTheme(storage, locked), 'new-york');
 });
 
 test('storage exceptions fail safely', () => {
@@ -64,7 +64,7 @@ test('storage exceptions fail safely', () => {
         setItem() { throw new Error('blocked'); },
     };
     assert.equal(readThemePreference(brokenStorage, config), null);
-    assert.equal(persistThemePreference(brokenStorage, 'new-york', config), false);
+    assert.equal(persistThemePreference(brokenStorage, 'editorial', config), false);
 });
 
 test('theme validation rejects unknown identifiers', () => {
