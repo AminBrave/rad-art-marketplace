@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\ArtistInquiry;
+use App\Models\Artwork;
+use App\Models\Category;
 use App\Models\Conversation;
 use App\Models\MessageAttachment;
 use App\Models\User;
@@ -320,6 +322,82 @@ class ConversationTest extends TestCase
             ->assertCreated()
             ->assertJsonPath('data.reply_to.id', $original->id)
             ->assertJsonPath('data.reply_to.body', $inquiry->message);
+    }
+
+    public function test_buyer_can_start_direct_conversation_from_approved_artwork_and_keep_artwork_context(): void
+    {
+        [$buyer, $artist] = $this->participantsWithInquiry();
+        $profile = $artist->artistProfile()->firstOrFail();
+        $category = Category::query()->create([
+            'name' => 'نقاشی',
+            'slug' => 'painting',
+            'is_active' => true,
+        ]);
+        $artwork = $profile->artworks()->create([
+            'category_id' => $category->id,
+            'slug' => 'approved-artwork-context',
+            'title' => 'اثر آزمایشی',
+            'description' => 'توضیح اثر',
+            'medium' => 'رنگ روغن',
+            'dimensions' => '۵۰ × ۷۰',
+            'year' => 2025,
+            'price' => 1000000,
+            'availability' => 'available',
+            'status' => Artwork::STATUS_APPROVED,
+            'image_path' => 'artworks/approved-artwork-context.jpg',
+        ]);
+
+        $response = $this->actingAs($buyer)->postJson('/api/v1/conversations/direct', [
+            'artist_slug' => $profile->slug,
+            'artwork_slug' => $artwork->slug,
+        ])->assertCreated()->assertJsonStructure(['data' => ['id']]);
+
+        $conversationId = (int) $response->json('data.id');
+        $this->assertDatabaseHas('conversations', [
+            'id' => $conversationId,
+            'buyer_user_id' => $buyer->id,
+            'artist_user_id' => $artist->id,
+        ]);
+        $this->assertDatabaseHas('conversation_contexts', [
+            'conversation_id' => $conversationId,
+            'artwork_id' => $artwork->id,
+            'inquiry_id' => null,
+            'added_by_user_id' => $buyer->id,
+        ]);
+
+        $this->getJson('/api/v1/conversations/'.$conversationId)
+            ->assertOk()
+            ->assertJsonPath('data.contexts.0.artwork.slug', $artwork->slug)
+            ->assertJsonPath('data.contexts.0.artwork.title', $artwork->title);
+
+        $this->actingAs($artist)->getJson('/api/v1/artist/conversations')
+            ->assertOk()
+            ->assertJsonPath('data.0.contexts.0.artwork.slug', $artwork->slug);
+    }
+
+    public function test_direct_artwork_conversation_rejects_non_buyers_and_unapproved_artworks(): void
+    {
+        [$buyer, $artist] = $this->participantsWithInquiry('buyer-direct@example.test', 'artist-direct@example.test');
+        $profile = $artist->artistProfile()->firstOrFail();
+
+        $this->actingAs($artist)->postJson('/api/v1/conversations/direct', [
+            'artist_slug' => $profile->slug,
+        ])->assertForbidden();
+
+        $category = Category::query()->create(['name' => 'مجسمه', 'slug' => 'sculpture', 'is_active' => true]);
+        $artwork = $profile->artworks()->create([
+            'category_id' => $category->id,
+            'slug' => 'pending-artwork-context',
+            'title' => 'اثر در انتظار',
+            'availability' => 'available',
+            'status' => Artwork::STATUS_PENDING_REVIEW,
+            'image_path' => 'artworks/pending-artwork-context.jpg',
+        ]);
+
+        $this->actingAs($buyer)->postJson('/api/v1/conversations/direct', [
+            'artist_slug' => $profile->slug,
+            'artwork_slug' => $artwork->slug,
+        ])->assertNotFound();
     }
 
     public function test_other_conversation_participant_can_preview_and_download_private_image_attachments(): void
