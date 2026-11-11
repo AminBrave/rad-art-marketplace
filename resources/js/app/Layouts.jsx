@@ -14,21 +14,31 @@ export function PublicLayout() {
         try { await logout(); } catch { setLogoutError('خروج انجام نشد. اتصال را بررسی کنید.'); }
     };
 
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const publicLinks = [
+        { to: '/artworks', label: 'کشف آثار' },
+        { to: '/artists', label: 'هنرمندان' },
+        { to: '/collections', label: 'مجموعه‌های منتخب' },
+        { to: '/about', label: 'درباره ما' },
+        { to: '/help', label: 'راهنما' },
+    ];
+    const navClass = ({ isActive }) => isActive
+        ? 'font-bold text-terracotta-strong'
+        : 'text-muted transition-colors hover:text-terracotta-strong';
+
     return <div className="min-h-screen bg-canvas text-ink" dir="rtl">
-        <header className="border-b border-border bg-canvas">
-            <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-5 sm:px-8 lg:px-10">
-                <Link to="/" className="shrink-0 text-2xl font-black tracking-tight text-ink no-underline" aria-label="راد آرت، صفحه اصلی">راد<span className="text-terracotta-strong">آرت</span></Link>
-                <nav aria-label="ناوبری اصلی" className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted">
-                    <NavLink to="/artworks" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>کشف آثار</NavLink>
-                    <NavLink to="/artists" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>هنرمندان</NavLink>
-                    <NavLink to="/collections" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>مجموعه‌های منتخب</NavLink>
-                    <NavLink to="/about" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>درباره ما</NavLink>
-                    <NavLink to="/help" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>راهنما</NavLink>
+        <header className="sticky top-0 z-40 border-b border-border bg-canvas/95 backdrop-blur supports-[backdrop-filter]:bg-canvas/90">
+            <div className="mx-auto flex min-h-[4.5rem] max-w-7xl items-center justify-between gap-4 px-5 sm:px-8 lg:min-h-20 lg:px-10">
+                <Link to="/" className="shrink-0 text-2xl font-black tracking-tight text-ink no-underline" aria-label="راد آرت، صفحه اصلی">راد<span className="text-terracotta-strong">آرت</span><span className="ms-2 hidden align-middle text-[10px] font-medium tracking-[.18em] text-muted sm:inline">ART MARKETPLACE</span></Link>
+                <nav aria-label="ناوبری اصلی" className="hidden items-center gap-7 text-sm md:flex">
+                    {publicLinks.map((item) => <NavLink key={item.to} to={item.to} className={navClass}>{item.label}</NavLink>)}
                 </nav>
-                <div className="flex items-center gap-3 text-sm">
-                    {user ? <><span className="hidden font-semibold sm:inline">{user.name}</span><span className="bg-surface-muted px-3 py-2 text-xs font-bold text-terracotta-strong">{roleLabels[user.role] ?? user.role}</span><Link to={user.role==='admin'?'/admin':user.role==='buyer'?'/dashboard/buyer':'/dashboard/artist'} className="font-semibold text-terracotta-strong underline">فضای کاربری</Link><button type="button" onClick={handleLogout} className="border border-border px-4 py-2 font-semibold hover:border-terracotta">خروج</button></> : <><Link to="/login" className="font-semibold hover:text-terracotta-strong">ورود</Link><Link to="/register" className="bg-ink px-4 py-2.5 font-semibold text-white hover:bg-terracotta">ثبت‌نام</Link></>}
+                <div className="flex items-center gap-2 text-sm sm:gap-3">
+                    {user ? <><span className="hidden max-w-28 truncate font-semibold lg:inline">{user.name}</span><span className="hidden bg-surface-muted px-3 py-2 text-xs font-bold text-terracotta-strong sm:inline-flex">{roleLabels[user.role] ?? user.role}</span><Link to={user.role==='admin'?'/admin':user.role==='buyer'?'/dashboard/buyer':'/dashboard/artist'} className="hidden font-semibold text-terracotta-strong underline underline-offset-4 sm:inline">فضای کاربری</Link><button type="button" onClick={handleLogout} className="hidden min-h-10 border border-border px-4 py-2 font-semibold transition-colors hover:border-terracotta sm:inline-flex">خروج</button></> : <><Link to="/login" className="hidden font-semibold transition-colors hover:text-terracotta-strong sm:inline">ورود</Link><Link to="/register" className="min-h-10 bg-ink px-4 py-2.5 font-semibold text-white transition-colors hover:bg-terracotta">ثبت‌نام</Link></>}
+                    <button type="button" aria-label={mobileMenuOpen ? 'بستن منو' : 'باز کردن منو'} aria-expanded={mobileMenuOpen} aria-controls="public-mobile-navigation" onClick={() => setMobileMenuOpen((open) => !open)} className="grid h-10 w-10 place-items-center border border-border text-xl transition-colors hover:border-terracotta md:hidden"><span aria-hidden="true">{mobileMenuOpen ? '×' : '☰'}</span></button>
                 </div>
             </div>
+            {mobileMenuOpen && <nav id="public-mobile-navigation" aria-label="ناوبری موبایل" className="border-t border-border bg-canvas px-5 py-4 md:hidden"><div className="mx-auto grid max-w-7xl gap-1">{publicLinks.map((item) => <NavLink key={item.to} to={item.to} onClick={() => setMobileMenuOpen(false)} className={({isActive}) => (isActive ? 'bg-surface-muted font-bold text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink') + ' min-h-11 px-3 py-2.5 text-sm'}>{item.label}</NavLink>)}{user ? <><Link onClick={() => setMobileMenuOpen(false)} to={user.role==='admin'?'/admin':user.role==='buyer'?'/dashboard/buyer':'/dashboard/artist'} className="min-h-11 px-3 py-2.5 text-sm font-semibold text-terracotta-strong">فضای کاربری</Link><button type="button" onClick={handleLogout} className="min-h-11 px-3 py-2.5 text-right text-sm font-semibold text-muted">خروج</button></> : <Link onClick={() => setMobileMenuOpen(false)} to="/login" className="min-h-11 px-3 py-2.5 text-sm font-semibold text-muted">ورود</Link>}</div></nav>}
             {logoutError && <p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-red-700 sm:px-8">{logoutError}</p>}
         </header>
         <Outlet />
