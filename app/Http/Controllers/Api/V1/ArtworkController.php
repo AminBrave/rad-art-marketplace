@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Actions\Artworks\CreateArtwork;
+use App\Actions\Artworks\UpdateArtwork;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreArtworkRequest;
 use App\Http\Requests\UpdateArtworkRequest;
@@ -14,8 +16,6 @@ use App\Models\Category;
 use App\Support\PersianSearch;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -174,20 +174,10 @@ class ArtworkController extends Controller
         );
     }
 
-    public function store(StoreArtworkRequest $request): JsonResponse
+    public function store(StoreArtworkRequest $request, CreateArtwork $createArtwork): JsonResponse
     {
         $profile = $request->user()->artistProfile()->firstOrFail();
-        $validated = $request->validated();
-        $imagePath = $validated['image']->store('artworks', 'local');
-        unset($validated['image']);
-
-        $baseSlug = Str::slug($validated['title']) ?: 'artwork';
-        $artwork = $profile->artworks()->create([
-            ...$validated,
-            'slug' => $baseSlug.'-'.Str::lower(Str::random(10)),
-            'image_path' => $imagePath,
-            'status' => Artwork::STATUS_PENDING_REVIEW,
-        ]);
+        $artwork = $createArtwork->handle($profile, $request->validated());
 
         return response()->json([
             'message' => 'اثر برای بررسی مدیر ثبت شد.',
@@ -195,31 +185,13 @@ class ArtworkController extends Controller
         ], 201);
     }
 
-    public function update(UpdateArtworkRequest $request, Artwork $artwork): JsonResponse
+    public function update(UpdateArtworkRequest $request, Artwork $artwork, UpdateArtwork $updateArtwork): JsonResponse
     {
-        $validated = $request->validated();
-        $oldImagePath = $artwork->image_path;
-        $newImagePath = isset($validated['image'])
-            ? $validated['image']->store('artworks', 'local')
-            : null;
-        unset($validated['image']);
-
-        $artwork->update([
-            ...$validated,
-            'status' => Artwork::STATUS_PENDING_REVIEW,
-            'rejection_note' => null,
-            'reviewed_by' => null,
-            'reviewed_at' => null,
-            ...($newImagePath ? ['image_path' => $newImagePath] : []),
-        ]);
-
-        if ($newImagePath) {
-            Storage::disk('local')->delete($oldImagePath);
-        }
+        $artwork = $updateArtwork->handle($artwork, $request->validated());
 
         return response()->json([
             'message' => 'اثر ویرایش شد و دوباره در صف بررسی قرار گرفت.',
-            'data' => (new ArtworkJsonResource($artwork->refresh()->load('category')))->resolve(),
+            'data' => (new ArtworkJsonResource($artwork->load('category')))->resolve(),
         ]);
     }
 
