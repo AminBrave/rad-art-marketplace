@@ -1,5 +1,5 @@
 import { cloneElement, forwardRef, isValidElement, useId } from 'react';
-import { Slot } from '@radix-ui/react-slot';
+import { Slot, Slottable } from '@radix-ui/react-slot';
 import { cn } from '../../lib/utils';
 
 const buttonVariants = {
@@ -30,8 +30,7 @@ export const Button = forwardRef(function Button({ children, variant = 'default'
             className={cn('inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50', buttonVariants[resolvedVariant] ?? buttonVariants.default, buttonSizes[resolvedSize] ?? buttonSizes.default, className)}
             {...props}
         >
-            {loading && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-current border-e-transparent" />}
-            {children}
+            {asChild ? <Slottable>{children}</Slottable> : <>{loading && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-current border-e-transparent" />}{children}</>}
         </Comp>
     );
 });
