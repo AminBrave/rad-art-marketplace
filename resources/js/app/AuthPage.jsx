@@ -51,9 +51,9 @@ export default function AuthPage({ initialMode = 'login' }) {
 
     return (
         <main className="mx-auto max-w-xl px-5 py-12 sm:px-8" dir="rtl">
-            <section className="rounded-3xl border border-border bg-card p-6 shadow-sm sm:p-9">
-                <Link to="/" className="text-sm font-bold text-[#9a452b]">بازگشت به راد آرت</Link>
-                <h1 className="mt-5 text-2xl font-black">{mode === 'register' ? 'ساخت حساب کاربری' : 'ورود به حساب'}</h1>
+            <section className="rounded-lg border border-border bg-card p-6 shadow-sm sm:p-9">
+                <Link to="/" className="text-sm font-bold text-primary">بازگشت به راد آرت</Link>
+                <h1 className="mt-5 text-2xl font-semibold">{mode === 'register' ? 'ساخت حساب کاربری' : 'ورود به حساب'}</h1>
                 <div className="mt-6 flex gap-5 border-b border-border pb-4">
                     <Button type="button" onClick={() => { setMode('login'); setErrors({}); setMessage(''); }} variant="ghost" size="default">ورود</Button>
                     <Button type="button" onClick={() => { setMode('register'); setErrors({}); setMessage(''); }} variant="ghost" size="default">ثبت‌نام</Button>
@@ -82,7 +82,7 @@ export default function AuthPage({ initialMode = 'login' }) {
                         <Input type="password" name="password_confirmation" value={form.password_confirmation} onChange={update} required minLength="10" autoComplete="new-password" dir="ltr" / className="w-full" />
                     </label>}
                     {errors.form?.map((item) => <p key={item} role="alert" className="text-sm text-destructive">{item}</p>)}
-                    {message && <p role="status" className="text-sm text-[#80513d]">{message}</p>}
+                    {message && <p role="status" className="text-sm text-muted-foreground">{message}</p>}
                     <Button disabled={busy} variant="default" size="default" type="submit" className="w-full">{busy ? 'لطفاً صبر کنید…' : mode === 'register' ? 'ایجاد حساب' : 'ورود به حساب'}</Button>
                 </form>
                 <p className="mt-5 text-xs leading-6 text-muted-foreground">ثبت‌نام عمومی فقط برای خریدار و هنرمند فعال است. حساب مدیر باید از سمت سرور ایجاد شود.</p>
