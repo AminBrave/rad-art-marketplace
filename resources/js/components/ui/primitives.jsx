@@ -1,5 +1,6 @@
 import { cloneElement, isValidElement, useId } from 'react';
 import { cn } from '../../lib/utils';
+import { Field, FieldLabel, FieldDescription, FieldError } from './field';
 import { Button } from './button';
 
 export { Button };
@@ -64,62 +65,12 @@ export function FormField({ id, label, hint, error, required = false, children, 
         : children;
 
     return (
-        <div className={`grid gap-2 ${className}`} data-slot="field">
-            <label htmlFor={fieldId} className="text-sm font-medium leading-none">
-                {label}
-                {required && <span aria-hidden="true" className="ms-1 text-destructive">*</span>}
-            </label>
+        <Field className={cn('gap-2', className)} data-invalid={Boolean(error)}>
+            <FieldLabel htmlFor={fieldId}>{label}{required && <span aria-hidden="true" className="ms-1 text-destructive">*</span>}</FieldLabel>
             {control}
-            {hint && <p id={`${fieldId}-hint`} className="text-sm text-muted-foreground">{hint}</p>}
-            {error && <p id={`${fieldId}-error`} role="alert" className="text-sm font-medium text-destructive">{error}</p>}
-        </div>
+            {hint && <FieldDescription id={`${fieldId}-hint`}>{hint}</FieldDescription>}
+            {error && <FieldError id={`${fieldId}-error`}>{error}</FieldError>}
+        </Field>
     );
 }
 
-export function TextInput({ className = '', ...props }) {
-    return <input className={cn(controlClass, className)} {...props} />;
-}
-
-export function TextareaField({ className = '', rows = 4, ...props }) {
-    return <textarea rows={rows} className={cn(controlClass, 'min-h-20 resize-y', className)} {...props} />;
-}
-
-export function SelectField({ className = '', children, ...props }) {
-    return (
-        <select className={cn(controlClass, className)} {...props}>
-            {children}
-        </select>
-    );
-}
-
-export function SearchField({
-    value,
-    onChange,
-    onSearch,
-    placeholder = 'جست‌وجو…',
-    label = 'جست‌وجو',
-    buttonLabel = 'جست‌وجو',
-    disabled = false,
-    className = '',
-}) {
-    const searchId = useId();
-    const submit = (event) => {
-        event.preventDefault();
-        onSearch?.(value);
-    };
-
-    return (
-        <form onSubmit={submit} role="search" className={cn('flex min-w-0 flex-col gap-2 sm:flex-row', className)}>
-            <label className="sr-only" htmlFor={searchId}>{label}</label>
-            <TextInput
-                id={searchId}
-                type="search"
-                value={value}
-                onChange={onChange}
-                placeholder={placeholder}
-                disabled={disabled}
-            />
-            <Button type="submit" size="md" disabled={disabled}>{buttonLabel}</Button>
-        </form>
-    );
-}
