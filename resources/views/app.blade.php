@@ -18,7 +18,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#F7F5F0">
-    <script>(() => { try { if (localStorage.getItem("rad-theme") === "dark") document.documentElement.classList.add("dark"); } catch {} })();</script>
+    <script>(() => { try { if (localStorage.getItem("rad-theme") === "dark") { document.documentElement.classList.add("dark"); const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute("content", "#242320"); } } catch {} })();</script>
     <meta name="description" content="{{ $seoDescription }}">
     <meta name="robots" content="{{ $seoRobots }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
