@@ -37,6 +37,14 @@
                 // Storage can be unavailable in private browsing; use the configured default.
             }
             document.documentElement.setAttribute('data-theme', themes[selected]?.enabled ? selected : (config.defaultTheme || 'new-york'));
+            var colorScheme = 'system';
+            try {
+                colorScheme = window.localStorage.getItem('rad-art-color-scheme') || 'system';
+            } catch (error) {
+                // Use the operating system preference when storage is unavailable.
+            }
+            var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.classList.toggle('dark', colorScheme === 'dark' || (colorScheme === 'system' && prefersDark));
         })();
     </script>
     @if ($seoCanonical)
