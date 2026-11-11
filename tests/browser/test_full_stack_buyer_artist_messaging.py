@@ -76,11 +76,11 @@ class FullStackBuyerArtistMessagingTests(unittest.TestCase):
                 buyer_page.get_by_role("button", name="ارسال", exact=True).click()
 
             self.assertEqual(buyer_send.value.status, 201)
-            buyer_page.get_by_text(first_message, exact=True).wait_for()
+            buyer_page.get_by_role("paragraph").filter(has_text=first_message).wait_for()
 
             self.login_artist(artist_page)
             artist_page.goto(BASE_URL + f"/dashboard/artist/messages?conversation={conversation_id}")
-            artist_page.get_by_text(first_message, exact=True).wait_for()
+            artist_page.get_by_role("paragraph").filter(has_text=first_message).wait_for()
 
             reply = "سلام، خوشحال می‌شوم جزئیات بیشتری درباره اثر ارائه کنم."
             artist_page.get_by_label("متن پیام").fill(reply)
@@ -91,11 +91,11 @@ class FullStackBuyerArtistMessagingTests(unittest.TestCase):
                 artist_page.get_by_role("button", name="ارسال", exact=True).click()
 
             self.assertEqual(artist_send.value.status, 201)
-            artist_page.get_by_text(reply, exact=True).wait_for()
+            artist_page.get_by_role("paragraph").filter(has_text=reply).wait_for()
 
             buyer_page.reload()
             buyer_page.get_by_role("button", name="آرمان رضایی").click()
-            buyer_page.get_by_text(reply, exact=True).wait_for()
+            buyer_page.get_by_role("paragraph").filter(has_text=reply).wait_for()
 
             buyer_identity = buyer_page.evaluate("""async () => {
                 const response = await fetch('/api/v1/auth/me', {
