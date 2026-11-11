@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { Badge, Button, EmptyState, ErrorState, FormField, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField, WorkspaceHero, DashboardMetricCard } from '../components/ui';
+import { Badge, Button, EmptyState, ErrorState, FormField, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField, WorkspaceHero, DashboardMetricCard, DashboardMetricSkeleton, ArtworkModerationSkeleton, AdminRecordListSkeleton, MessageReportsSkeleton } from '../components/ui';
 
 const api = '/api/v1/admin';
 const statuses = [
@@ -81,7 +81,7 @@ export function AdminDashboardHome() {
             {errors.length > 0 && <ErrorState title="بخشی از اطلاعات دریافت نشد" description={errors.join(' ')} onRetry={load} />}
 
             <section aria-label="شاخص‌های عملیاتی" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                {loading ? <><div className="border border-border bg-white p-6"><SkeletonLines lines={3} /></div><div className="border border-border bg-white p-6"><SkeletonLines lines={3} /></div><div className="border border-border bg-white p-6"><SkeletonLines lines={3} /></div></> : <>
+                {loading ? <DashboardMetricSkeleton count={3} /> : <>
                     <DashboardMetricCard as={Link} label="آثار در انتظار بررسی" value={summary.pending?.toLocaleString('fa-IR')} detail="تعداد کل آثار منتظر تصمیم انتشار" to="/admin/artworks" eyebrow="انتشار" />
                     <DashboardMetricCard as={Link} label="حساب‌های کاربری" value={summary.users?.toLocaleString('fa-IR')} detail="تعداد کل حساب‌های ثبت‌شده" to="/admin/users" eyebrow="جامعه" />
                     <DashboardMetricCard as={Link} label="گزارش‌های پیام" value={summary.reports?.toLocaleString('fa-IR')} detail="مجموع گزارش‌های ثبت‌شده برای رسیدگی" to="/admin/message-reports" eyebrow="ایمنی" />
@@ -170,7 +170,7 @@ export function AdminArtworkModeration() {
         <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6"><div><p className="text-sm font-bold text-terracotta-strong">مدیریت آثار</p><h1 className="mt-2 text-2xl font-black">صف بررسی و انتشار</h1><p className="mt-2 text-sm leading-7 text-muted">فقط آثار در انتظار بررسی قابل تصمیم‌گیری‌اند. رد اثر یا درخواست اصلاح به توضیح نیاز دارد.</p></div><Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button></header>
         <div className="flex flex-wrap gap-2" aria-label="فیلتر وضعیت آثار">{statuses.map((item) => <Button key={item.value} size="sm" variant={status === item.value ? 'primary' : 'outline'} aria-pressed={status === item.value} onClick={() => chooseStatus(item.value)}>{item.label}</Button>)}</div>
         {message && <SuccessState title={message} />}{error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
-        {loading ? <SkeletonLines lines={7} /> : !result?.data?.length ? <EmptyState title="اثری در این وضعیت وجود ندارد" description="با انتخاب وضعیت دیگر می‌توانید سوابق تصمیم‌ها را مرور کنید." /> : <>
+        {loading ? <ArtworkModerationSkeleton count={4} /> : !result?.data?.length ? <EmptyState title="اثری در این وضعیت وجود ندارد" description="با انتخاب وضعیت دیگر می‌توانید سوابق تصمیم‌ها را مرور کنید." /> : <>
             <div className="grid gap-4 xl:grid-cols-2">{result.data.map((artwork) => {
                 const actionable = artwork.status === 'pending_review';
                 return <article key={artwork.id} className="overflow-hidden border border-border bg-paper">
@@ -243,7 +243,7 @@ export function AdminUsersPage() {
         </div>
         <p className="border-s-2 border-sand bg-surface-muted p-4 text-xs leading-7 text-muted">نقش‌های قابل انتخاب «هنرمند» و «مدیر» هستند. ایجاد خریدار از مسیر ثبت‌نام انجام می‌شود و حذف یا تعلیق حساب پشتیبانی نمی‌شود. مدیر نمی‌تواند نقش مدیریتی حساب خودش را حذف کند.</p>
         {message && <SuccessState title={message} />}{error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
-        {loading ? <div className="grid gap-3 sm:grid-cols-2"><div className="border border-border bg-white p-5"><SkeletonLines lines={4} /></div><div className="border border-border bg-white p-5"><SkeletonLines lines={4} /></div></div> : !result?.data?.length ? <EmptyState title="کاربری برای نمایش وجود ندارد" /> : <>
+        {loading ? <AdminRecordListSkeleton count={5} /> : !result?.data?.length ? <EmptyState title="کاربری برای نمایش وجود ندارد" /> : <>
             <div className="grid gap-3 xl:grid-cols-2">{result.data.map((item) => {
                 const selected = drafts[item.id] ?? (item.role === 'buyer' ? '' : item.role);
                 const selfAdmin = item.id === user?.id && item.role === 'admin';
@@ -325,7 +325,7 @@ export function AdminMessageReportsPage() {
             <div className="border border-border bg-white p-4"><p className="text-xs text-muted">کل گزارش‌ها</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</p></div>
         </div>
         {message && <SuccessState title={message} />}{error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
-        {loading ? <div className="space-y-3"><div className="border border-border bg-white p-5"><SkeletonLines lines={5} /></div><div className="border border-border bg-white p-5"><SkeletonLines lines={5} /></div></div> : !result?.data?.length ? <EmptyState title="گزارش بازی وجود ندارد" description="گزارش‌های جدید پس از ثبت از سوی یکی از طرفین گفتگو در اینجا نمایش داده می‌شوند." /> : <>
+        {loading ? <MessageReportsSkeleton count={3} /> : !result?.data?.length ? <EmptyState title="گزارش بازی وجود ندارد" description="گزارش‌های جدید پس از ثبت از سوی یکی از طرفین گفتگو در اینجا نمایش داده می‌شوند." /> : <>
             <div className="space-y-4">{result.data.map((report) => {
                 const isOpen = report.status === 'open';
                 const confirmingRemoval = confirmRemovalId === report.id;
