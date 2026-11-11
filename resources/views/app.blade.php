@@ -21,7 +21,24 @@
     <meta name="description" content="{{ $seoDescription }}">
     <meta name="robots" content="{{ $seoRobots }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <script>window.__RAD_FEATURES__ = @json(config('features'));</script>
+    <script>
+        window.__RAD_FEATURES__ = @json(config('features'));
+        window.__RAD_THEME_CONFIG__ = @json(config('design-system'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
+        (function () {
+            var config = window.__RAD_THEME_CONFIG__ || {};
+            var themes = config.themes || {};
+            var selected = config.defaultTheme || 'editorial';
+            try {
+                var saved = window.localStorage.getItem(config.storageKey || 'rad-art-theme');
+                if (config.allowRuntimeSwitching && config.persistSelection && themes[saved] && themes[saved].enabled) {
+                    selected = saved;
+                }
+            } catch (error) {
+                // Storage can be unavailable in private browsing; use the configured default.
+            }
+            document.documentElement.setAttribute('data-theme', themes[selected]?.enabled ? selected : 'editorial');
+        })();
+    </script>
     @if ($seoCanonical)
         <link rel="canonical" href="{{ $seoCanonical }}">
     @endif
