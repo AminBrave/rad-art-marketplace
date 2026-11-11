@@ -1,19 +1,14 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useOutletContext } from 'react-router-dom';
-import { EmptyState, ErrorState, SkeletonLines } from '../components/ui';
+import { EmptyState, ErrorState, SkeletonLines, StatusBadge, Badge } from '../components/ui';
 
 const statusLabels = {
     pending_review: 'در انتظار بررسی', approved: 'منتشرشده', rejected: 'ردشده',
     changes_requested: 'نیازمند اصلاح',
 };
 
-const statusStyles = {
-    pending_review: 'bg-amber-50 text-amber-800',
-    approved: 'bg-emerald-50 text-emerald-800',
-    rejected: 'bg-red-50 text-red-700',
-    changes_requested: 'bg-orange-50 text-orange-800',
-};
+
 
 function MetricCard({ label, value, detail, to, eyebrow }) {
     return (
@@ -35,7 +30,7 @@ function formatCount(value) {
 }
 
 function StatusLabel({ status }) {
-    return <span className={`shrink-0 px-2.5 py-1 text-[11px] font-semibold ${statusStyles[status] ?? 'bg-surface-muted text-muted'}`}>{statusLabels[status] ?? status ?? 'نامشخص'}</span>;
+    return <StatusBadge status={status} label={statusLabels[status] ?? status ?? 'نامشخص'} className="shrink-0" />;
 }
 
 export default function ArtistWorkspaceOverview() {
@@ -99,7 +94,7 @@ export default function ArtistWorkspaceOverview() {
                     <div>
                         <div className="flex flex-wrap items-center gap-3">
                             <p className="text-xs font-bold text-terracotta-strong">هویت هنری شما</p>
-                            <span className={profile?.is_public ? 'bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-800' : 'bg-surface-muted px-2.5 py-1 text-[11px] font-semibold text-muted'}>{profile?.is_public ? 'پروفایل عمومی' : 'پروفایل خصوصی'}</span>
+                            <Badge variant={profile?.is_public ? 'success' : 'neutral'}>{profile?.is_public ? 'پروفایل عمومی' : 'پروفایل خصوصی'}</Badge>
                         </div>
                         <h2 className="mt-2 text-xl font-black text-ink">{profileReady ? profile.display_name : 'پروفایل هنری خود را بسازید'}</h2>
                         <p className="mt-2 max-w-2xl text-sm leading-7 text-muted">{profileReady ? (profile.is_public ? 'پروفایل شما برای بازدیدکنندگان قابل مشاهده است. آن را به‌روز نگه دارید تا مخاطبان با مسیر هنری شما آشنا شوند.' : 'پروفایل شما هنوز عمومی نیست. اطلاعات را تکمیل و وضعیت نمایش آن را بررسی کنید.') : 'با معرفی خود و افزودن اطلاعات حرفه‌ای، حضور عمومی‌تان در راد آرت را شکل دهید.'}</p>
@@ -133,7 +128,7 @@ export default function ArtistWorkspaceOverview() {
                     </div>
                     <ol className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                         {profileSteps.map((step) => <li key={step.label} className="flex items-center gap-3 border border-border bg-white px-4 py-3 text-sm">
-                            <span aria-hidden="true" className={step.done ? 'text-emerald-700' : 'text-muted'}>{step.done ? '✓' : '○'}</span>
+                            <span aria-hidden="true" className={step.done ? 'text-success' : 'text-muted'}>{step.done ? '✓' : '○'}</span>
                             <span className={step.done ? 'text-muted line-through' : 'font-semibold text-ink'}>{step.label}</span>
                         </li>)}
                         <li className="flex items-center gap-3 border border-border bg-white px-4 py-3 text-sm">
