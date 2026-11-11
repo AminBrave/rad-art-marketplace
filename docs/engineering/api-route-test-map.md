@@ -25,7 +25,7 @@ This inventory is derived from the current route declarations in routes/web.php 
 | GET /api/v1/collections | Public published content | EditorialTest, test_m03_editorial.py | Pagination and publication-time boundaries |
 | GET /api/v1/collections/{collection:slug} | Public published content | EditorialTest, test_m03_editorial.py | Missing/draft collection and ineligible artwork |
 | GET /api/v1/featured-artists | Public eligible artists | EditorialTest | Publication windows and private/unapproved content |
-| POST /api/v1/artists/{artistProfile:slug}/inquiries | Authenticated buyer, throttled | ArtistInquiryTest, buyer inquiry browser tests | Throttle boundary and retry/idempotency expectations |
+| POST /api/v1/artists/{artistProfile:slug}/inquiries | Authenticated buyer, throttled | ArtistInquiryTest, InquiryRateLimitTest, buyer inquiry browser tests | Retry/idempotency expectations and per-actor/IP policy |
 
 ## Artist workspace
 

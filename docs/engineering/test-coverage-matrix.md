@@ -61,7 +61,7 @@ Status vocabulary:
 | Category/filter/sort combinations and malformed filters | Feature | Gap / expand |
 | Approve/reject/request changes with required notes | Feature | Existing evidence; verify transition matrix |
 | Rejected/changes-requested resubmission | Feature | Gap / expand |
-| File cleanup after failed update/delete and private image access | Integration + Feature | Gap / expand |
+| File cleanup after failed create/update and private image access | Integration + Feature | Storage rollback integration tests added; private image access remains to expand |
 | Moderation audit integrity and public serializer privacy | Feature | Gap / expand |
 
 ### Buyer inquiries and canonical conversations
@@ -72,7 +72,7 @@ Status vocabulary:
 | Private artist and invalid/unapproved artwork target | Feature | Existing evidence |
 | Buyer sees own inquiry; other buyer denied | Feature | Existing evidence |
 | Artist sees/manages only addressed inquiries | Feature | Existing evidence |
-| Honeypot and throttling | Feature | Existing evidence; expand |
+| Honeypot and throttling | Feature | Existing honeypot evidence; five-per-minute buyer throttle regression added |
 | Start conversation from inquiry | Feature + Browser | Existing evidence |
 | Direct conversation without inquiry | Feature | Existing evidence |
 | One canonical conversation per buyer/artist pair across entry points | Feature + Integration | Existing evidence; database uniqueness test added |
@@ -107,7 +107,7 @@ Status vocabulary:
 | Collection create/edit/publish/unpublish/order | Feature | Existing evidence |
 | Public visibility respects publication and eligible content | Feature | Existing evidence; expand time windows |
 | Featured artist curation and public eligibility | Feature | Existing evidence; expand |
-| Admin routes denied for guest/non-admin across all endpoints | Feature | Gap / expand |
+| Admin routes denied for guest/non-admin across all endpoints | Feature + E2E | Existing API authorization evidence; unmocked buyer-to-admin denial journey added; full endpoint matrix remains to expand |
 | Audit fields and invalid/deleted references | Feature | Gap / expand |
 
 ### Public pages, SEO and infrastructure
@@ -129,7 +129,8 @@ Status vocabulary:
 | Scenario | Layer | Baseline |
 |---|---|---|
 | Price formatting, class merge, query retry defaults | JS unit | Existing evidence |
-| Shared component keyboard/focus/dialog behavior | React component | Planned |
+| Button, FormField, SearchField, EmptyState, ErrorState and UploadFeedback semantic markup/ARIA | React SSR component | Added in tests/js/reactComponents.test.js |
+| Shared component keyboard/focus/dialog interaction | Browser | Gap / expand |
 | Feature form validation and API errors | React component | Planned |
 | Loading, empty and error states across screens | React component | Planned |
 | Route guards and unauthorized redirects | React integration + Browser | Browser evidence partial; expand |
