@@ -19,6 +19,7 @@ class Message extends Model
         'client_message_id',
         'body',
         'reply_to_id',
+        'artwork_id',
         'delivered_at',
         'read_at',
         'edited_at',
