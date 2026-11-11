@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
-import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, SelectField } from '../components/ui';
+import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, SelectField, PageContainer, PageHeader } from '../components/ui';
 
 const emptyFilters = { mediums: [], availability: [], sorts: [] };
 
@@ -91,12 +91,8 @@ export default function ArtworkCatalogue() {
     };
 
     return (
-        <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-10 sm:px-8 lg:px-10 lg:py-14" dir="rtl">
-            <header className="border-b border-border pb-8 sm:pb-10">
-                <p className="text-xs font-bold tracking-wide text-terracotta-strong">آرشیو عمومی راد آرت</p>
-                <h1 className="mt-2 text-4xl font-black tracking-tight sm:text-5xl">گالری آثار</h1>
-                <p className="mt-3 max-w-2xl text-sm leading-8 text-muted">در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید.</p>
-            </header>
+        <PageContainer as="main" className="min-h-[65vh] py-10 lg:py-14" dir="rtl">
+            <PageHeader eyebrow="آرشیو عمومی راد آرت" title="گالری آثار" description="در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید." />
 
             <section aria-label="فیلتر و مرتب‌سازی آثار" className="mt-7 border border-border bg-surface-muted p-4 sm:p-5 lg:p-6">
                 <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(18rem,1.5fr)_repeat(2,minmax(11rem,1fr))]">
@@ -145,6 +141,6 @@ export default function ArtworkCatalogue() {
                     <button type="button" disabled={page >= meta.last_page} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page + 1)]]))} className="border border-border px-4 py-2 text-sm font-semibold disabled:opacity-40">بعدی</button>
                 </nav>
             )}
-        </main>
+        </PageContainer>
     );
 }
