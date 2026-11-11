@@ -34,7 +34,12 @@ export default function MessagingCenter({ role }) {
     const [notice, setNotice] = useState('');
     const [safety, setSafety] = useState({ blocked_by_me: false, blocked_by_other: false });
     const bottomRef = useRef(null);
+    const messagesContainerRef = useRef(null);
     const draftRef = useRef(null);
+    const latestMessageIdRef = useRef(null);
+    const activeConversationRef = useRef(null);
+    const pollingRef = useRef(false);
+    const shouldStickToBottomRef = useRef(true);
     const endpoint = role === 'artist' ? '/api/v1/artist/conversations' : '/api/v1/buyer/conversations';
 
     const loadThreads = useCallback(async () => {
@@ -58,19 +63,40 @@ export default function MessagingCenter({ role }) {
         }
     };
 
-    const loadMessages = useCallback(async (id) => {
-        if (!id) return;
+    const loadMessages = useCallback(async (id, { incremental = false } = {}) => {
+        if (!id || (incremental && pollingRef.current)) return;
+        if (incremental) pollingRef.current = true;
         try {
-            const { data } = await axios.get('/api/v1/conversations/' + id + '/messages');
-            setMessages(data.data ?? []);
+            const params = incremental && latestMessageIdRef.current ? { after_id: latestMessageIdRef.current } : {};
+            const { data } = await axios.get('/api/v1/conversations/' + id + '/messages', { params });
+            if (Number(activeConversationRef.current) !== Number(id)) return;
+            const incoming = data.data ?? [];
+            if (incremental) {
+                setMessages((current) => {
+                    const known = new Set(current.map((message) => message.id));
+                    const next = incoming.filter((message) => !known.has(message.id));
+                    return next.length ? [...current, ...next] : current;
+                });
+            } else {
+                setMessages(incoming);
+                shouldStickToBottomRef.current = true;
+            }
+            const newest = incoming[incoming.length - 1];
+            if (newest?.id) latestMessageIdRef.current = Math.max(Number(latestMessageIdRef.current ?? 0), Number(newest.id));
             await axios.patch('/api/v1/conversations/' + id + '/read');
+            loadThreads();
         } catch {
-            setError('دریافت پیام‌ها انجام نشد.');
+            if (Number(activeConversationRef.current) === Number(id)) setError('دریافت پیام‌ها انجام نشد.');
+        } finally {
+            if (incremental) pollingRef.current = false;
         }
-    }, []);
+    }, [loadThreads]);
 
     useEffect(() => {
-        if (!active) { setSafety({ blocked_by_me: false, blocked_by_other: false }); return; }
+        activeConversationRef.current = active;
+        latestMessageIdRef.current = null;
+        pollingRef.current = false;
+        if (!active) { setSafety({ blocked_by_me: false, blocked_by_other: false }); setMessages([]); return; }
         let cancelled = false;
         axios.get('/api/v1/conversations/' + active + '/safety')
             .then(({ data }) => { if (!cancelled) setSafety(data.data ?? { blocked_by_me: false, blocked_by_other: false }); })
@@ -109,11 +135,13 @@ export default function MessagingCenter({ role }) {
     useEffect(() => {
         if (!active) return undefined;
         loadMessages(active);
-        const poll = window.setInterval(() => loadMessages(active), 5000);
+        const poll = window.setInterval(() => loadMessages(active, { incremental: true }), 5000);
         return () => window.clearInterval(poll);
     }, [active, loadMessages]);
 
-    useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
+    useEffect(() => {
+        if (shouldStickToBottomRef.current) bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }, [messages]);
 
     const replaceMessage = (updated) => {
         setMessages((current) => current.map((message) => message.id === updated.id ? updated : message));
@@ -144,6 +172,8 @@ export default function MessagingCenter({ role }) {
                 savedMessage = { ...savedMessage, attachments: [...(savedMessage.attachments ?? []), { ...uploaded.data.data, download_url: '/api/v1/conversations/' + active + '/messages/' + savedMessage.id + '/attachments/' + uploaded.data.data.id }] };
             }
             setMessages((current) => current.some((item) => item.id === savedMessage.id) ? current.map((item) => item.id === savedMessage.id ? savedMessage : item) : [...current, savedMessage]);
+            latestMessageIdRef.current = Math.max(Number(latestMessageIdRef.current ?? 0), Number(savedMessage.id));
+            shouldStickToBottomRef.current = true;
             setDraft('');
             setSelectedFile(null);
             setPendingMessageId(null);
@@ -245,21 +275,23 @@ export default function MessagingCenter({ role }) {
             </header>
             {notice && <p role="status" className="border border-border bg-surface-muted p-3 text-sm">{notice}</p>}
             {error && <p role="alert" className="border border-red-200 bg-red-50 p-3 text-sm text-red-800">{error}</p>}
-            <div className="grid min-h-[620px] overflow-hidden border border-border bg-white lg:grid-cols-[320px_minmax(0,1fr)]">
-                <aside className={active ? 'hidden border-l border-border lg:block' : 'border-l border-border'}>
-                    <div className="border-b border-border p-4 font-bold">گفتگوها</div>
-                    <div className="space-y-2 border-b border-border p-3">
-                        <input aria-label="جستجوی گفتگوها" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="جستجو در گفتگوها…" className="w-full border border-border bg-canvas px-3 py-2 text-xs focus:border-terracotta" />
-                        <select aria-label="فیلتر گفتگوها" value={threadFilter} onChange={(event) => setThreadFilter(event.target.value)} className="w-full border border-border bg-white px-3 py-2 text-xs">
+            <div className="grid min-h-[min(78vh,860px)] overflow-hidden rounded-2xl border border-border bg-white shadow-[0_18px_55px_rgba(36,35,32,0.07)] lg:grid-cols-[360px_minmax(0,1fr)]">
+                <aside className={active ? 'hidden min-h-0 border-l border-border bg-white lg:block' : 'min-h-0 border-l border-border bg-white'}>
+                    <div className="border-b border-border bg-white px-5 py-5">
+                        <div className="flex items-center justify-between gap-3"><div><p className="text-[11px] font-bold tracking-wide text-terracotta-strong">RAD / MESSAGES</p><h2 className="mt-1 text-lg font-black">گفتگوها</h2></div><span className="rounded-full bg-surface-muted px-3 py-1 text-[11px] font-bold text-muted">{threads.length} گفتگو</span></div>
+                    </div>
+                    <div className="space-y-3 border-b border-border bg-canvas/70 p-4">
+                        <input aria-label="جستجوی گفتگوها" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="جستجو در گفتگوها…" className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm outline-none transition focus:border-terracotta focus:ring-2 focus:ring-terracotta/10" />
+                        <select aria-label="فیلتر گفتگوها" value={threadFilter} onChange={(event) => setThreadFilter(event.target.value)} className="w-full rounded-xl border border-border bg-white px-4 py-2.5 text-sm outline-none focus:border-terracotta">
                             <option value="all">گفتگوهای فعال</option><option value="unread">خوانده‌نشده‌ها</option><option value="archived">بایگانی‌شده‌ها</option>
                         </select>
                     </div>
                     {loading ? <p className="p-5 text-sm text-muted">در حال دریافت…</p> : threads.length === 0 ? <p className="p-5 text-sm leading-7 text-muted">هنوز گفتگویی ندارید. از صفحه هنرمند یا یک اثر، گزینه «پیام مستقیم» را انتخاب کنید.</p> : (
-                        <ul className="divide-y divide-border">
+                        <ul className="max-h-[calc(78vh-150px)] divide-y divide-border overflow-y-auto">
                             {threads.map((thread) => <li key={thread.id}>
-                                <button type="button" onClick={() => { setActive(thread.id); setReplyTo(null); setEditingId(null); if (requestedConversation) setParams({}, { replace: true }); }} className={'w-full p-4 text-right transition hover:bg-surface-muted ' + (active === thread.id ? 'bg-surface-muted' : '')}>
-                                    <span className="flex items-center justify-between gap-2"><strong className="truncate text-sm">{thread.participant?.name ?? 'گفتگو'}</strong>{thread.unread_count > 0 && <span className="rounded-full bg-terracotta px-2 py-1 text-xs text-white">{thread.unread_count}</span>}</span>
-                                    <span className="mt-2 block truncate text-xs text-muted">{thread.last_message?.body ?? (thread.last_message?.deleted_at ? 'پیام حذف شده است' : 'گفتگوی جدید')}</span>
+                                <button type="button" onClick={() => { setActive(thread.id); setReplyTo(null); setEditingId(null); if (requestedConversation) setParams({}, { replace: true }); }} aria-current={active === thread.id ? 'true' : undefined} className={'w-full px-4 py-4 text-right transition hover:bg-surface-muted/80 ' + (active === thread.id ? 'bg-surface-muted shadow-[inset_-3px_0_0_var(--color-action)]' : '')}>
+                                    <span className="flex items-center justify-between gap-2"><strong className="truncate text-sm font-extrabold">{thread.participant?.name ?? 'گفتگو'}</strong>{thread.unread_count > 0 && <span className="rounded-full bg-terracotta px-2 py-1 text-xs text-white">{thread.unread_count}</span>}</span>
+                                    <span className="mt-2 block truncate text-xs leading-6 text-muted">{thread.last_message?.body ?? (thread.last_message?.deleted_at ? 'پیام حذف شده است' : 'برای شروع گفتگو پیام بفرستید')}</span>
                                     <span className="mt-1 block text-[11px] text-muted">{dateLabel(thread.last_message_at)}</span>
                                 </button>
                                 <div className="flex gap-3 px-4 pb-3 text-[11px] text-muted">
@@ -270,21 +302,21 @@ export default function MessagingCenter({ role }) {
                         </ul>
                     )}
                 </aside>
-                <div className={active ? 'flex min-w-0 flex-col' : 'hidden min-w-0 flex-col lg:flex'}>
+                <div className={active ? 'flex min-h-0 min-w-0 flex-col bg-[#F5F3EF]' : 'hidden min-w-0 flex-col bg-[#F5F3EF] lg:flex'}>
                     {!active ? <div className="m-auto p-8 text-center text-sm text-muted">برای مشاهده پیام‌ها یک گفتگو را انتخاب کنید.</div> : (
                         <>
-                            <header className="flex flex-wrap items-center gap-3 border-b border-border p-4">
+                            <header className="sticky top-0 z-10 flex flex-wrap items-center gap-3 border-b border-border bg-white/95 p-4 shadow-sm backdrop-blur">
                                 <button type="button" className="text-sm font-bold lg:hidden" onClick={() => setActive(null)}>بازگشت</button>
-                                <div className="min-w-0"><h2 className="font-bold">{selected?.participant?.name ?? 'گفتگوی خصوصی'}</h2><p className="mt-1 text-xs text-muted">گفتگوی مستقیم</p></div><button type="button" onClick={reportConversation} className="text-xs font-semibold text-muted underline">گزارش گفتگو</button><button type="button" onClick={toggleBlock} className="mr-auto text-xs font-semibold text-red-700 underline">{safety.blocked_by_me ? 'رفع مسدودسازی' : 'مسدودسازی کاربر'}</button>
+                                <div className="min-w-0"><h2 className="truncate font-extrabold">{selected?.participant?.name ?? 'گفتگوی خصوصی'}</h2><p className="mt-1 flex items-center gap-1.5 text-xs text-muted"><span className="h-1.5 w-1.5 rounded-full bg-olive" />گفتگوی خصوصی مستقیم</p></div><button type="button" onClick={reportConversation} className="text-xs font-semibold text-muted underline">گزارش گفتگو</button><button type="button" onClick={toggleBlock} className="mr-auto text-xs font-semibold text-red-700 underline">{safety.blocked_by_me ? 'رفع مسدودسازی' : 'مسدودسازی کاربر'}</button>
                                 {selected?.contexts?.some((context) => context.artwork?.slug) && <div className="flex w-full flex-wrap gap-2 border-t border-border pt-3"><span className="text-xs text-muted">آثار مرتبط:</span>{selected.contexts.filter((context) => context.artwork?.slug).map((context) => <Link key={context.artwork.slug} to={'/artworks/' + context.artwork.slug} className="border border-border bg-surface-muted px-3 py-1.5 text-xs font-semibold underline">{context.artwork.title}</Link>)}</div>}
                             </header>
-                            <div className="flex-1 space-y-4 overflow-y-auto bg-canvas p-4 sm:p-6" aria-live="polite">
+                            <div ref={messagesContainerRef} onScroll={(event) => { const node = event.currentTarget; shouldStickToBottomRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 120; }} className="flex-1 space-y-4 overflow-y-auto bg-[radial-gradient(circle_at_1px_1px,rgba(36,35,32,0.045)_1px,transparent_0)] [background-size:22px_22px] p-4 sm:p-6" aria-live="polite" aria-relevant="additions text">
                                 {messages.map((message) => {
                                     const own = Number(message.sender_id) === Number(user?.id);
                                     const deleted = Boolean(message.deleted_at);
                                     return (
                                         <div key={message.id} className={'flex ' + (own ? 'justify-end' : 'justify-start')}>
-                                            <article className="max-w-[90%] border border-border bg-white px-4 py-3 shadow-sm sm:max-w-[85%]">
+                                            <article className={'max-w-[90%] rounded-2xl border px-4 py-3 shadow-sm sm:max-w-[78%] ' + (own ? 'rounded-bl-md border-ink bg-ink text-white' : 'rounded-br-md border-border bg-white text-ink')}>
                                                 {message.attachments?.length > 0 && <ul className="mb-3 space-y-2">{message.attachments.map((attachment) => <li key={attachment.id}><a href={attachment.download_url} className="inline-flex max-w-full items-center gap-2 border border-border bg-surface-muted px-3 py-2 text-xs font-semibold underline" rel="noreferrer"><span aria-hidden="true">📎</span><span className="truncate">{attachment.name}</span><span className="text-muted">({Math.max(1, Math.round(attachment.size_bytes / 1024))} KB)</span></a></li>)}</ul>}
                                                 {message.reply_to && <div className="mb-3 border-r-2 border-terracotta bg-surface-muted px-3 py-2 text-xs"><strong>{message.reply_to.sender_name ?? 'پیام قبلی'}</strong><p className="mt-1 line-clamp-2 text-muted">{message.reply_to.body ?? 'این پیام حذف شده است.'}</p></div>}
                                                 {editingId === message.id ? (
@@ -294,8 +326,8 @@ export default function MessagingCenter({ role }) {
                                                     </form>
                                                 ) : <p className={'whitespace-pre-wrap break-words text-sm leading-7 ' + (deleted ? 'italic text-muted' : '')}>{message.body ?? 'این پیام حذف شده است.'}</p>}
                                                 <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[10px] text-muted">
-                                                    <span>{dateLabel(message.created_at)} {message.edited_at && !deleted ? '· ویرایش‌شده' : ''}</span>
-                                                    {own && !deleted && <span>{message.read_at ? 'خوانده‌شده' : message.delivered_at ? 'ثبت‌شده' : 'ارسال‌شده'}</span>}
+                                                    <span className={own ? 'text-white/65' : 'text-muted'}>{dateLabel(message.created_at)} {message.edited_at && !deleted ? '· ویرایش‌شده' : ''}</span>
+                                                    {own && !deleted && <span className={own ? 'text-white/75' : 'text-muted'}>{message.read_at ? '✓✓ خوانده‌شده' : message.delivered_at ? '✓ تحویل‌شده' : 'ارسال‌شده'}</span>}
                                                 </div>
                                                 {!deleted && (
                                                     <>
@@ -319,13 +351,13 @@ export default function MessagingCenter({ role }) {
                                 })}
                                 <div ref={bottomRef} />
                             </div>
-                            {safety.blocked_by_me || safety.blocked_by_other ? <p role="status" className="border-t border-border bg-surface-muted p-4 text-sm text-muted">{safety.blocked_by_me ? 'این کاربر را مسدود کرده‌اید؛ برای ادامه گفتگو ابتدا مسدودسازی را بردارید.' : 'این گفتگو به‌دلیل تنظیمات ایمنی امکان ارسال پیام ندارد.'}</p> : <form onSubmit={send} className="border-t border-border bg-white p-3 sm:p-4">
+                            {safety.blocked_by_me || safety.blocked_by_other ? <p role="status" className="border-t border-border bg-surface-muted p-4 text-sm text-muted">{safety.blocked_by_me ? 'این کاربر را مسدود کرده‌اید؛ برای ادامه گفتگو ابتدا مسدودسازی را بردارید.' : 'این گفتگو به‌دلیل تنظیمات ایمنی امکان ارسال پیام ندارد.'}</p> : <form onSubmit={send} className="border-t border-border bg-white p-3 shadow-[0_-8px_28px_rgba(36,35,32,0.04)] sm:p-4">
                                 {replyTo && <div className="mb-3 flex items-start justify-between gap-3 border-r-2 border-terracotta bg-surface-muted p-3 text-xs"><div><strong>پاسخ به {replyTo.sender_name ?? 'پیام'}</strong><p className="mt-1 line-clamp-2 text-muted">{replyTo.body}</p></div><button type="button" onClick={() => setReplyTo(null)} aria-label="لغو پاسخ">×</button></div>}
                                 <div className="flex items-end gap-3">
-                                    <div className="min-w-0 flex-1 space-y-2"><textarea aria-label="متن پیام" ref={draftRef} value={draft} onChange={(event) => setDraft(event.target.value)} rows={2} maxLength={5000} placeholder="پیام خود را بنویسید…" className="min-h-12 w-full resize-y border border-border bg-canvas p-3 text-sm outline-none focus:border-terracotta" />
+                                    <div className="min-w-0 flex-1 space-y-2"><textarea aria-label="متن پیام" ref={draftRef} value={draft} onChange={(event) => setDraft(event.target.value)} rows={2} maxLength={5000} placeholder="پیام خود را بنویسید…" className="min-h-12 w-full resize-y rounded-2xl border border-border bg-canvas px-4 py-3 text-sm outline-none transition placeholder:text-muted focus:border-terracotta focus:ring-2 focus:ring-terracotta/10" />
                                         <div className="flex flex-wrap items-center gap-3"><label className="cursor-pointer text-xs font-semibold text-muted underline">افزودن تصویر یا PDF<input type="file" accept="image/jpeg,image/png,image/webp,application/pdf" className="sr-only" onChange={(event) => setSelectedFile(event.target.files?.[0] ?? null)} /></label>{selectedFile && <><span className="max-w-48 truncate text-xs text-muted">{selectedFile.name}</span><button type="button" onClick={() => setSelectedFile(null)} className="text-xs text-red-700 underline">حذف پیوست</button></>}{sending && selectedFile && <span role="status" className="text-xs text-muted">بارگذاری {uploadProgress}%</span>}</div>{filePreview && <img src={filePreview} alt="پیش‌نمایش فایل پیوست" className="mt-2 max-h-24 max-w-32 border border-border object-contain" />}
                                     </div>
-                                    <button type="submit" disabled={(!draft.trim() && !selectedFile) || sending || safety.blocked_by_me || safety.blocked_by_other} className="min-h-12 bg-ink px-5 text-sm font-bold text-white disabled:opacity-50">{sending ? '…' : 'ارسال'}</button>
+                                    <button type="submit" disabled={(!draft.trim() && !selectedFile) || sending || safety.blocked_by_me || safety.blocked_by_other} className="min-h-12 rounded-xl bg-terracotta px-6 text-sm font-extrabold text-white shadow-sm transition hover:bg-terracotta-strong disabled:cursor-not-allowed disabled:opacity-50">{sending ? '…' : 'ارسال'}</button>
                                 </div>
                             </form>}
                         </>
