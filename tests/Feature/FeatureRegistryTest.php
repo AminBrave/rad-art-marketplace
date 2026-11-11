@@ -27,9 +27,15 @@ final class FeatureRegistryTest extends TestCase
 
         $buyer = User::query()->create(['name' => 'Feature buyer', 'email' => 'feature-buyer@example.test', 'password' => 'strong-password-123', 'role' => User::ROLE_BUYER]);
         $artist = User::query()->create(['name' => 'Feature artist', 'email' => 'feature-artist@example.test', 'password' => 'strong-password-123', 'role' => User::ROLE_ARTIST]);
+        $profile = $artist->artistProfile()->create([
+            'slug' => 'feature-artist',
+            'display_name' => 'Feature artist',
+            'is_public' => true,
+        ]);
 
         $this->actingAs($buyer)->getJson('/api/v1/buyer/inquiries')->assertNotFound();
         $this->actingAs($artist)->getJson('/api/v1/artist/inquiries')->assertNotFound();
+        $this->actingAs($buyer)->postJson('/api/v1/artists/'.$profile->slug.'/inquiries', [])->assertNotFound();
     }
 
     public function test_direct_messaging_routes_remain_registered_when_inquiries_are_disabled(): void
