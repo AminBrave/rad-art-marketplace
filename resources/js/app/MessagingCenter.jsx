@@ -55,7 +55,6 @@ export default function MessagingCenter({ role }) {
     const [loadingOlder, setLoadingOlder] = useState(false);
     const [messagesLoading, setMessagesLoading] = useState(false);
     const [newMessageCount, setNewMessageCount] = useState(0);
-    const [hasOlderMessages, setHasOlderMessages] = useState(false);
     const [hasMoreThreads, setHasMoreThreads] = useState(false);
     const [loadingMoreThreads, setLoadingMoreThreads] = useState(false);
     const [sending, setSending] = useState(false);
@@ -66,7 +65,9 @@ export default function MessagingCenter({ role }) {
     const [safetyLoading, setSafetyLoading] = useState(true);
     const messagesContainerRef = useRef(null);
     const messagesRef = useRef(messages);
+    const selectedFileRef = useRef(selectedFile);
     useEffect(() => { messagesRef.current = messages; }, [messages]);
+    useEffect(() => { selectedFileRef.current = selectedFile; }, [selectedFile]);
     const draftRef = useRef(null);
     const fileInputRef = useRef(null);
     const latestMessageIdRef = useRef(null);
@@ -198,7 +199,6 @@ export default function MessagingCenter({ role }) {
             } else {
                 setMessages(incoming);
                 hasOlderMessagesRef.current = Number(firstPage.current_page ?? 1) < Number(firstPage.last_page ?? 1);
-                setHasOlderMessages(hasOlderMessagesRef.current);
                 shouldStickToBottomRef.current = true;
             }
             if (incremental && !shouldStickToBottomRef.current) {
@@ -241,15 +241,14 @@ export default function MessagingCenter({ role }) {
         if (previousConversation && previousConversation !== active && draftRef.current) {
             draftsByConversationRef.current.set(Number(previousConversation), draftRef.current.value);
         }
-        if (previousConversation && previousConversation !== active && selectedFile) {
-            filesByConversationRef.current.set(Number(previousConversation), selectedFile);
+        if (previousConversation && previousConversation !== active && selectedFileRef.current) {
+            filesByConversationRef.current.set(Number(previousConversation), selectedFileRef.current);
         }
         messageRequestRef.current?.abort();
         historyRequestRef.current?.abort();
         historyLoadingRef.current = false;
         setLoadingOlder(false);
         hasOlderMessagesRef.current = false;
-        setHasOlderMessages(false);
         pendingScrollRestoreRef.current = null;
         activeConversationRef.current = active;
         setMessages([]);
@@ -438,7 +437,6 @@ export default function MessagingCenter({ role }) {
                 });
             }
             hasOlderMessagesRef.current = Number(data.current_page ?? 1) < Number(data.last_page ?? 1);
-            setHasOlderMessages(hasOlderMessagesRef.current);
         } catch (requestError) {
             if (!axios.isCancel(requestError) && !controller.signal.aborted
                 && Number(activeConversationRef.current) === Number(conversationId)) setError('دریافت پیام‌های قدیمی‌تر انجام نشد. دوباره تلاش کنید.');
