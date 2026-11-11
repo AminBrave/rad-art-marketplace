@@ -1,4 +1,5 @@
 import { cn } from '../../lib/utils';
+import { NavLink } from 'react-router-dom';
 
 export function SidebarProvider({ children, className, ...props }) {
     return <div data-slot="sidebar-provider" className={cn('group/sidebar-wrapper flex min-h-svh w-full bg-background', className)} {...props}>{children}</div>;
