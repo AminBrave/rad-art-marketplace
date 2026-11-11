@@ -521,3 +521,32 @@ a {
 .rad-messaging select { font-family: var(--font-persian); font-synthesis: none; }
 .rad-messaging textarea:focus,
 .rad-messaging textarea:focus-visible { outline: none !important; box-shadow: none !important; }
+
+/* RAD messaging: keep Persian-first typography while using Inter in LTR rails. */
+.rad-messaging {
+    font-family: var(--font-persian), var(--font-latin), sans-serif;
+}
+.rad-messaging [dir='ltr'] {
+    font-family: var(--font-latin), var(--font-persian), sans-serif;
+}
+.rad-messaging [dir='rtl'] {
+    font-family: var(--font-persian), var(--font-latin), sans-serif;
+}
+.rad-messaging :is(button, a, input, select, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+}
+.rad-messaging textarea:focus,
+.rad-messaging textarea:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+    .rad-messaging *,
+    .rad-messaging *::before,
+    .rad-messaging *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
