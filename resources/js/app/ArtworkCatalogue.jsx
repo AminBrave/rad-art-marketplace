@@ -93,8 +93,8 @@ export default function ArtworkCatalogue() {
     return (
         <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl">
             <header className="border-b border-border pb-8">
-                <p className="text-xs font-bold tracking-wide text-terracotta-strong">آرشیو عمومی راد آرت</p>
-                <h1 className="mt-2 text-3xl font-black sm:text-4xl">گالری آثار</h1>
+                <p className="text-xs font-bold tracking-wide text-primary">آرشیو عمومی راد آرت</p>
+                <h1 className="mt-2 text-3xl font-semibold sm:text-4xl">گالری آثار</h1>
                 <p className="mt-3 max-w-2xl text-sm leading-8 text-muted-foreground">در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید.</p>
             </header>
 
