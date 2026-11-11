@@ -3,11 +3,15 @@
 Versioned prefix is `/api/v1`; JSON resources generally use `data` and pagination metadata. Authentication is Laravel session-based; guest bootstrap returns `{data:null}`. Validation uses Laravel 422 responses.
 
 ## Endpoint groups
-Auth; public artists/artworks/categories/filters; collections/featured artists; artist profile/artworks/inquiries/conversations; buyer inquiries/conversations/direct start; conversation messages/read/settings/reactions/attachments/safety; notifications/preferences; admin users/roles/artwork moderation/reports/editorial; health at `/api/v1/health`.
+Auth; public artists/artworks/categories/filters; collections/featured artists; artist profile/artworks/conversations; buyer conversations/direct start; conversation messages/read/settings/reactions/attachments/safety; notifications/preferences; admin users/roles/artwork moderation/reports/editorial; health at `/api/v1/health`. Inquiry submission, inbox/detail/status and inquiry-to-conversation endpoints are not registered while `features.inquiries` is false. Existing inquiry data and implementation are retained. Direct messaging routes remain registered under the independent `features.messaging` flag.
 
 ## Artwork response resources
 
 Artwork API payloads are serialized through `ArtworkResource`; public catalogue/detail responses use `PublicArtworkResource`, which removes moderation status and rejection notes. The existing pagination envelope and `data` field are preserved for current React callers.
+
+## Feature availability
+
+Feature routes are conditionally registered from `config/features.php`; a disabled endpoint is absent and responds with 404. Frontend visibility is not an authorization boundary. Role middleware and policies remain required for every enabled protected endpoint. See [Feature Registry](feature-registry.md).
 
 ## Validation and authorization
 
