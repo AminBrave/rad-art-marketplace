@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { getThemeConfig } from './theme-config';
-import { getInitialTheme, isThemeEnabled, persistThemePreference, resolveTheme } from './theme-utils';
+import { getThemeConfig } from './theme-config.js';
+import { getInitialTheme, isThemeEnabled, persistThemePreference, resolveTheme } from './theme-utils.js';
 
 const ThemeContext = createContext(null);
 
