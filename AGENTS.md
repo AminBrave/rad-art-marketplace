@@ -7,7 +7,7 @@ Mandatory entrypoint for every AI coding agent. Follow before exploring or editi
 - Minimize token, tool, compute and CI usage. Avoid broad repository scans, repeated file reads, speculative refactors, redundant summaries and unnecessary agent delegation.
 - Start from this contract and the knowledge graph; read only the nodes and source files relevant to the task. Expand scope only when evidence requires it.
 - Prefer existing patterns and dependencies. Do not redesign unrelated systems.
-- Run relevant local tests for requested code changes when the execution environment supports the repository. Never claim checks passed without execution evidence. If local execution is unavailable, record exact commands and mark them not run.
+- Do not run tests, lint, builds, browser checks or other verification commands unless the user explicitly asks. This applies even when local execution is available. When asked, run only the requested scope; never claim checks passed without execution evidence.
 
 ## Explicit force mode override
 - **Trigger:** when the exact token #FORCE_MODE appears at the very end of a user's command, treat it as explicit authorization to prioritize completing the requested in-scope repository work over ordinary project process gates.
@@ -51,13 +51,13 @@ Follow [Testing Strategy](docs/engineering/testing-strategy.md) and [Test Covera
 - [ ] S1 Specify: acceptance, edge cases and security/data impact defined.
 - [ ] S2 Design: necessary API/data/UI contract decisions recorded.
 - [ ] S3 Implement: smallest coherent vertical slice completed.
-- [ ] S4 Verify: relevant tests actually run; unrun commands explicitly documented.
+- [ ] S4 Verify: run checks only when the user explicitly requests testing; otherwise record verification as intentionally not run.
 - [ ] S5 Review: focused diff inspected; review threads resolved.
 - [ ] S6 Release: main-branch CI, deployment/health and rollback verified where applicable.
 - [ ] S7 Close: issue, milestone, affected docs and release notes updated.
 
 ## GitHub delivery
-Follow [Git/GitHub workflow](docs/engineering/git-and-github.md). Pull requests targeting main run the configured CI workflow. Require relevant checks and human review before merge. After merge, verify the main-branch workflow. Merge is not production deployment.
+Follow [Git/GitHub workflow](docs/engineering/git-and-github.md). GitHub Actions must not run application tests, lint, builds or E2E. AI agents must not execute local verification unless explicitly instructed by the user. When requested, run selected checks locally. Merge is not production deployment.
 
 ## Definition of done
 Acceptance criteria met; appropriate tests exist; auth/privacy/failure paths are covered; migrations are safe; focused diff reviewed; affected docs and graph updated; verification evidence accurately recorded; merge and deployment status clearly communicated.
