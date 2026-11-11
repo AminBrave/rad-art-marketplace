@@ -1,4 +1,4 @@
-import { DEFAULT_THEME_CONFIG } from './theme-config';
+import { DEFAULT_THEME_CONFIG } from './theme-config.js';
 
 export function isThemeEnabled(themeId, config = DEFAULT_THEME_CONFIG) {
     return Boolean(themeId && config.themes?.[themeId]?.enabled);
