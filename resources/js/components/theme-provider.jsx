@@ -1,6 +1,6 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { ThemeContext } from './theme-context';
 
-const ThemeContext = createContext(null);
 const STORAGE_KEY = 'rad-theme';
 
 function readInitialTheme() {
@@ -33,10 +33,4 @@ export function ThemeProvider({ children, defaultTheme = 'light' }) {
     }), [theme]);
 
     return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
-}
-
-export function useTheme() {
-    const context = useContext(ThemeContext);
-    if (!context) throw new Error('useTheme must be used within ThemeProvider');
-    return context;
 }
