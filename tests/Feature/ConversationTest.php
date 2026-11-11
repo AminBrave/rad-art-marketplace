@@ -429,6 +429,26 @@ class ConversationTest extends TestCase
             ->assertJsonPath('data.0.artwork.title', $artwork->title)
             ->assertJsonPath('data.0.body', 'سلام، درباره این اثر و جزئیات اجرای آن سؤال دارم.');
 
+        $otherArtist = $this->makeUser('unrelated-artwork-artist@example.test', User::ROLE_ARTIST);
+        $otherProfile = $otherArtist->artistProfile()->create([
+            'slug' => 'unrelated-artwork-artist',
+            'display_name' => 'هنرمند دیگر',
+            'is_public' => true,
+        ]);
+        $otherArtwork = $otherProfile->artworks()->create([
+            'category_id' => $category->id,
+            'slug' => 'unrelated-artwork',
+            'title' => 'اثر هنرمند دیگر',
+            'status' => Artwork::STATUS_APPROVED,
+            'image_path' => 'artworks/unrelated-artwork.jpg',
+        ]);
+        $this->actingAs($buyer)
+            ->postJson('/api/v1/conversations/'.$conversationId.'/messages', [
+                'body' => 'ارجاع غیرمجاز به اثر هنرمند دیگر',
+                'artwork_id' => $otherArtwork->id,
+                'client_message_id' => 'invalid-artwork-reference',
+            ])->assertUnprocessable();
+
         $this->actingAs($artist)
             ->postJson('/api/v1/conversations/'.$conversationId.'/messages', [
                 'body' => 'سلام، با کمال میل جزئیات این اثر را توضیح می‌دهم.',
