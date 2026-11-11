@@ -36,7 +36,8 @@ export function Button({ children, variant = 'default', size = 'default', asChil
 }
 
 export function IconButton({ children, label, size = 'icon', className = '', ...props }) {
-    return <Button type="button" variant="outline" size={size} aria-label={label} title={label} className={cn('shrink-0 p-0', className)} {...props}>{children}</Button>;
+    const iconSize = size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'icon';
+    return <Button type="button" variant="outline" size={iconSize} aria-label={label} title={label} className={cn('aspect-square shrink-0 p-0', className)} {...props}>{children}</Button>;
 }
 
 const badgeVariants = {
