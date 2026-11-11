@@ -50,8 +50,6 @@ export function Badge({ children, variant = 'neutral', className = '' }) {
     );
 }
 
-const controlClass = 'ra-control';
-
 export function FormField({ id, label, hint, error, required = false, children, className = '' }) {
     const generatedId = useId();
     const fieldId = id ?? generatedId;
