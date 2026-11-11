@@ -1,5 +1,4 @@
 import { cloneElement, isValidElement, useId } from 'react';
-import { Link } from 'react-router-dom';
 import { cn } from '../../lib/utils';
 
 const buttonVariants = {
@@ -125,16 +124,17 @@ export function WorkspaceHero({ eyebrow, title, description, actions, className 
     );
 }
 
-export function DashboardMetricCard({ label, value, detail, to, eyebrow, className = '' }) {
+export function DashboardMetricCard({ as: Element = 'a', label, value, detail, to, eyebrow, className = '' }) {
+    const destinationProps = Element === 'a' ? { href: to } : { to };
     return (
-        <Link to={to} className={cn('ra-metric-card', className)}>
+        <Element {...destinationProps} className={cn('ra-metric-card', className)}>
             <span className="ra-metric-card__top">
                 <span className="ra-metric-card__label">{label}</span>
                 {eyebrow && <span className="ra-metric-card__eyebrow">{eyebrow}</span>}
             </span>
             <span className="ra-metric-card__value">{value ?? '—'}</span>
             {detail && <span className="ra-metric-card__detail">{detail}</span>}
-        </Link>
+        </Element>
     );
 }
 
