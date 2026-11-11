@@ -2,7 +2,7 @@ import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Archive, ArchiveRestore, ArrowDown, Ban, Bell, BellOff, ChevronRight, Download, FileText, Flag, Image as ImageIcon, Inbox, LoaderCircle, MailOpen, Paperclip, Pencil, Reply, Search, Send, ShieldCheck, Trash2, X } from 'lucide-react';
+import { Archive, ArchiveRestore, ArrowDown, Ban, Bell, BellOff, ChevronRight, Download, FileText, Flag, Image as ImageIcon, Inbox, LoaderCircle, MailOpen, MoreVertical, Paperclip, Pencil, Reply, Search, Send, ShieldCheck, Trash2, X } from 'lucide-react';
 
 const reactionOptions = ['👍', '❤️', '😂', '😮', '🙏', '🎨'];
 const avatarTones = ['bg-sand/65 text-ink', 'bg-olive/10 text-olive', 'bg-terracotta/10 text-terracotta-strong', 'bg-surface-muted text-ink'];
@@ -661,10 +661,30 @@ export default function MessagingCenter({ role }) {
                 <div dir="rtl" className={active ? 'flex h-full min-h-0 min-w-0 flex-col bg-canvas' : 'hidden h-full min-h-0 min-w-0 flex-col bg-canvas lg:flex'}>
                     {!active ? <div className="m-auto p-8 text-center text-sm text-muted">برای مشاهده پیام‌ها یک گفتگو را انتخاب کنید.</div> : (
                         <>
-                            <header className="relative z-10 flex shrink-0 flex-wrap items-center gap-3 border-b border-border bg-white px-4 py-3 shadow-soft sm:px-5">
-                                <button type="button" aria-label="بازگشت به گفتگوها" title="بازگشت به گفتگوها" className="flex h-9 w-9 items-center justify-center rounded-full bg-canvas text-ink transition hover:bg-surface-muted lg:hidden" onClick={() => { setActive(null); setParams((current) => { const next = new URLSearchParams(current); next.delete('conversation'); return next; }, { replace: true }); }}><ChevronRight size={19} aria-hidden="true" /></button>
-                                <div aria-hidden="true" className={'flex h-10 w-10 aspect-square shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-inset ring-border text-sm font-black shadow-sm ' + avatarTone(selected?.participant?.name)}>{avatarInitial(selected?.participant?.name)}</div><div className="min-w-0 flex-1"><h2 className="truncate text-sm font-extrabold text-ink">{selected?.participant?.name ?? 'گفتگوی خصوصی'}</h2><p className="mt-1 text-[11px] text-muted">گفتگوی خصوصی مستقیم</p></div><button type="button" onClick={reportConversation} title="گزارش گفتگو" aria-label="گزارش گفتگو" className="inline-flex min-h-9 items-center gap-1.5 rounded-lg px-2.5 text-[11px] font-semibold text-muted transition hover:bg-surface-muted"><Flag size={14} aria-hidden="true" /><span>گزارش</span></button><button type="button" onClick={toggleBlock} title={safety.blocked_by_me ? 'رفع مسدودسازی' : 'مسدودسازی کاربر'} aria-label={safety.blocked_by_me ? 'رفع مسدودسازی' : 'مسدودسازی کاربر'} className="inline-flex min-h-9 items-center gap-1.5 rounded-lg px-2.5 text-[11px] font-semibold text-red-700 transition hover:bg-red-50">{safety.blocked_by_me ? <ShieldCheck size={14} aria-hidden="true" /> : <Ban size={14} aria-hidden="true" />}<span>{safety.blocked_by_me ? 'رفع مسدودسازی' : 'مسدودسازی'}</span></button>
-                                {selected?.contexts?.some((context) => context.artwork?.slug) && <div className="flex w-full flex-wrap gap-2 border-t border-border pt-3"><span className="text-xs text-muted">آثار مرتبط:</span>{selected.contexts.filter((context) => context.artwork?.slug).map((context) => <Link key={context.artwork.slug} to={'/artworks/' + context.artwork.slug} className="border border-border bg-surface-muted px-3 py-1.5 text-xs font-semibold underline">{context.artwork.title}</Link>)}</div>}
+                            <header className="relative z-20 shrink-0 border-b border-border bg-white shadow-soft">
+                                <div className="flex min-w-0 items-center gap-2.5 px-3 py-3 sm:gap-3 sm:px-5">
+                                    <button type="button" aria-label="بازگشت به گفتگوها" title="بازگشت به گفتگوها" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-canvas text-ink transition hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:hidden" onClick={() => { setActive(null); setParams((current) => { const next = new URLSearchParams(current); next.delete('conversation'); return next; }, { replace: true }); }}><ChevronRight size={19} aria-hidden="true" /></button>
+                                    <div aria-hidden="true" className={'flex h-11 w-11 aspect-square shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-inset ring-border text-sm font-black shadow-sm ' + avatarTone(selected?.participant?.name)}>{avatarInitial(selected?.participant?.name)}</div>
+                                    <div className="min-w-0 flex-1">
+                                        <h2 dir="auto" title={selected?.participant?.name ?? 'گفتگوی خصوصی'} className="truncate text-sm font-extrabold leading-6 text-ink sm:text-base">{selected?.participant?.name ?? 'گفتگوی خصوصی'}</h2>
+                                        <p className="truncate text-[11px] leading-5 text-muted">گفتگوی خصوصی مستقیم</p>
+                                    </div>
+                                    <details className="group relative shrink-0">
+                                        <summary aria-label="گزینه‌های بیشتر گفتگو" title="گزینه‌های بیشتر" className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-border bg-white text-muted transition hover:border-terracotta/40 hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus [&::-webkit-details-marker]:hidden">
+                                            <MoreVertical size={19} aria-hidden="true" />
+                                        </summary>
+                                        <div dir="rtl" className="absolute left-0 top-full z-50 mt-2 w-52 overflow-hidden rounded-xl border border-border bg-white p-1.5 shadow-xl">
+                                            <button type="button" onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open'); reportConversation(); }} className="flex min-h-10 w-full items-center gap-2.5 rounded-lg px-3 text-right text-xs font-semibold text-ink transition hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
+                                                <Flag size={15} className="shrink-0 text-muted" aria-hidden="true" /><span>گزارش گفتگو</span>
+                                            </button>
+                                            <button type="button" onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open'); toggleBlock(); }} className="flex min-h-10 w-full items-center gap-2.5 rounded-lg px-3 text-right text-xs font-semibold text-danger transition hover:bg-red-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
+                                                {safety.blocked_by_me ? <ShieldCheck size={15} className="shrink-0" aria-hidden="true" /> : <Ban size={15} className="shrink-0" aria-hidden="true" />}
+                                                <span>{safety.blocked_by_me ? 'رفع مسدودسازی کاربر' : 'مسدودسازی کاربر'}</span>
+                                            </button>
+                                        </div>
+                                    </details>
+                                </div>
+                                {selected?.contexts?.some((context) => context.artwork?.slug) && <div className="flex min-w-0 flex-wrap items-center gap-2 border-t border-border px-4 py-2.5 sm:px-5"><span className="shrink-0 text-[11px] font-semibold text-muted">آثار مرتبط:</span>{selected.contexts.filter((context) => context.artwork?.slug).map((context) => <Link key={context.artwork.slug} to={'/artworks/' + context.artwork.slug} className="max-w-full truncate rounded-lg border border-border bg-surface-muted px-3 py-1.5 text-xs font-semibold text-ink transition hover:border-terracotta/40 hover:bg-white">{context.artwork.title}</Link>)}</div>}
                             </header>
                             <div dir="ltr" ref={messagesContainerRef} onScroll={(event) => {
                                 const node = event.currentTarget;
