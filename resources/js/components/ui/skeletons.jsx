@@ -113,6 +113,7 @@ export function AdminDashboardSkeleton() {
                 <div className="border border-border bg-paper p-5 sm:p-7"><div className="border-b border-border pb-4"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="mt-2 h-6 w-40 rounded-sm" /></div>{[0, 1, 2, 3].map((item) => <div key={item} className="flex items-center justify-between gap-4 border-b border-border py-5"><div className="grid flex-1 gap-2"><Skeleton className="h-4 w-2/3 rounded-sm" /><Skeleton className="h-3 w-1/3 rounded-sm" /></div><Skeleton className="h-8 w-24 rounded-sm" /></div>)}</div>
                 <div className="border border-border bg-paper p-5 sm:p-7"><Skeleton className="h-5 w-36 rounded-sm" /><div className="mt-5 grid gap-4">{[0, 1, 2].map((item) => <div key={item} className="grid gap-2"><Skeleton className="h-4 w-3/4 rounded-sm" /><Skeleton className="h-3 w-full rounded-sm" /></div>)}</div></div>
             </div>
+            <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><div className="sm:col-span-2 xl:col-span-4"><Skeleton className="h-6 w-40 rounded-sm" /></div>{[0, 1, 2, 3].map((item) => <article key={item} className="grid min-h-44 content-start gap-4 border border-border bg-paper p-5"><div className="flex items-center justify-between gap-3"><Skeleton className="h-10 w-10 rounded-sm" /><Skeleton className="h-3 w-20 rounded-sm" /></div><Skeleton className="h-5 w-2/3 rounded-sm" /><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></article>)}</section>
         </section>
     );
 }
