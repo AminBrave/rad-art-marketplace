@@ -42,7 +42,8 @@ test('shared primitives use centralized component contracts and expose accessibl
 });
 
 test('shared content and feedback components use semantic surface and state contracts', () => {
-    assert.ok(cards.includes('ra-surface'));
+    assert.ok(cards.includes('bg-surface-muted'));
+    assert.ok(cards.includes('border border-border'));
     assert.ok(cards.includes('ra-artwork-frame'));
     assert.ok(feedback.includes('ra-state--empty'));
     assert.ok(feedback.includes('ra-state--error'));
