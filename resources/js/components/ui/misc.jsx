@@ -1,18 +1,27 @@
-import { forwardRef } from 'react';
+import { createContext, forwardRef, useContext, useState } from 'react';
 import { cn } from '../../lib/utils';
 
+const AvatarContext = createContext({ imageLoaded: false, setImageLoaded: () => {} });
+
 export function Avatar({ className, children, ...props }) {
-    return <span data-slot="avatar" className={cn('relative flex size-10 shrink-0 overflow-hidden rounded-full bg-muted', className)} {...props}>{children}</span>;
+    const [imageLoaded, setImageLoaded] = useState(false);
+    return <AvatarContext.Provider value={{ imageLoaded, setImageLoaded }}>
+        <span data-slot="avatar" className={cn('relative flex size-10 shrink-0 overflow-hidden rounded-full bg-muted', className)} {...props}>{children}</span>
+    </AvatarContext.Provider>;
 }
 
-export const AvatarImage = forwardRef(({ className, alt = '', ...props }, ref) => (
-    <img ref={ref} alt={alt} className={cn('aspect-square size-full object-cover', className)} {...props} />
-));
+export const AvatarImage = forwardRef(({ className, alt = '', onLoad, onError, ...props }, ref) => {
+    const { imageLoaded, setImageLoaded } = useContext(AvatarContext);
+    return <img ref={ref} alt={alt} onLoad={(event) => { setImageLoaded(true); onLoad?.(event); }} onError={(event) => { setImageLoaded(false); onError?.(event); }}
+        className={cn('aspect-square size-full object-cover', imageLoaded ? 'block' : 'hidden', className)} {...props} />;
+});
 AvatarImage.displayName = 'AvatarImage';
 
-export const AvatarFallback = forwardRef(({ className, ...props }, ref) => (
-    <span className={cn('flex size-full items-center justify-center rounded-full bg-muted text-sm font-medium text-muted-foreground', className)} {...props} />
-));
+export const AvatarFallback = forwardRef(({ className, ...props }, ref) => {
+    const { imageLoaded } = useContext(AvatarContext);
+    if (imageLoaded) return null;
+    return <span ref={ref} className={cn('flex size-full items-center justify-center rounded-full bg-muted text-sm font-medium text-muted-foreground', className)} {...props} />;
+});
 AvatarFallback.displayName = 'AvatarFallback';
 
 export const Progress = forwardRef(({ className, value = 0, max = 100, ...props }, ref) => {
