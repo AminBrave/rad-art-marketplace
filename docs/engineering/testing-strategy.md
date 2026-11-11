@@ -21,7 +21,7 @@ Run the full suite locally before merge when the change is broad or high-risk. B
 1. Laravel PHPUnit feature suite in `tests/Feature`: HTTP routes, middleware, validation, DB, policies, notifications and persistence; SQLite in-memory from phpunit.xml.
 2. Node built-in tests in `tests/js/*.test.js`: deterministic frontend utilities/logic.
 3. Python Playwright in `tests/browser`: route, RTL, responsive and user journeys. Existing tests include isolated API-mocked UI regressions; `test_full_stack_auth.py` is unmocked and crosses React, Laravel session and SQLite.
-4. Pint, ESLint and Vite production build.
+4. Pint, ESLint, the standard Vite production build and the cPanel-specific production build (`npm run build:cpanel`).
 
 ## Risk-based test selection
 - **Low — docs, copy, non-functional styling:** inspect rendered result/diff; no full suite. Docs-only main pushes skip CI.
