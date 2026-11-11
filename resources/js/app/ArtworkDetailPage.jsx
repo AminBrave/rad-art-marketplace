@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { ArtworkCard, ArtworkDetailSkeleton } from '../components/ui';
+import { ArtworkCard, ArtworkDetailSkeleton, PageContainer } from '../components/ui';
 import { formatArtworkPrice } from '../utils/formatArtworkPrice';
 
 function ArtworkImage({ artwork }) {
@@ -63,7 +63,7 @@ export default function ArtworkDetailPage() {
     if (loading) return <ArtworkDetailSkeleton />;
 
     return (
-        <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-10 sm:px-8 lg:px-10 lg:py-14" dir="rtl">
+        <PageContainer as="main" className="min-h-[65vh] py-10 lg:py-14" dir="rtl">
             <nav aria-label="مسیر صفحه" className="text-sm text-muted">
                 <Link to="/" className="hover:text-terracotta-strong">خانه</Link><span className="mx-2" aria-hidden="true">/</span>
                 <Link to="/artworks" className="hover:text-terracotta-strong">گالری آثار</Link><span className="mx-2" aria-hidden="true">/</span>
@@ -110,6 +110,6 @@ export default function ArtworkDetailPage() {
                     )}
                 </>
             )}
-        </main>
+        </PageContainer>
     );
 }
