@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { WorkspaceLayout } from './Layouts';
-import { ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, FormFieldSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton } from '../components/ui';
+import { ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, FormFieldSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton } from '../components/ui';
 const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
 
 const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
@@ -69,16 +69,16 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                         {[0, 1, 2, 3, 4, 5].map((item) => <ArtistCardSkeleton key={item} />)}
                     </section>
                 </>
-            ) : pathname === '/collections' || /^\/collections\//.test(pathname) ? (
+            ) : /^\/collections\/[^/]+/.test(pathname) ? (
+                <CollectionDetailSkeleton />
+            ) : pathname === '/collections' ? (
                 <>
                     <section className="mb-8 grid gap-3 border-b border-border pb-6">
                         <LoadingBlock className="h-3 w-24" />
                         <LoadingBlock className="h-10 w-2/3 max-w-lg" />
                         <LoadingBlock className="h-4 w-full max-w-2xl" />
                     </section>
-                    <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                        {[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}
-                    </section>
+                    <CollectionCardSkeleton count={6} />
                 </>
             ) : /^\/(dashboard\/(artist|buyer)\/messages)$/.test(pathname) ? (
                 <section className="grid min-h-[34rem] overflow-hidden border border-border bg-paper md:grid-cols-[minmax(16rem,.36fr)_minmax(0,.64fr)]">
