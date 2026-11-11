@@ -1,99 +1,8 @@
+@import './rademan-theme.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Rad Art — Contemporary Art Editorial design tokens. */
-:root {
-    color-scheme: light;
-    font-family: 'Vazirmatn', 'Inter', sans-serif;
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-
-    /* Core palette */
-    --color-canvas: #F7F5F0;
-    --color-ink: #242320;
-    --color-terracotta: #B65C3A;
-    --color-terracotta-strong: #9A452B;
-    --color-sand: #D8C9B7;
-    --color-olive: #536052;
-    --color-paper: #FFFFFF;
-
-    /* Semantic roles */
-    --color-text: var(--color-ink);
-    --color-text-muted: #625E56;
-    --color-text-subtle: #777168;
-    --color-border: #DED8CF;
-    --color-border-strong: #BDB3A6;
-    --color-surface: var(--color-paper);
-    --color-surface-muted: #F0EDE6;
-    --color-action: var(--color-terracotta);
-    --color-action-text: var(--color-terracotta-strong);
-    --color-focus: var(--color-terracotta-strong);
-    --color-success: var(--color-olive);
-    --color-danger: #A33D32;
-    --color-warning: #8A5A12;
-    --color-info: #315F78;
-    --color-overlay: rgb(36 35 32 / 56%);
-    --color-focus-soft: rgb(154 69 43 / 16%);
-
-    /* Typography */
-    --font-persian: 'Vazirmatn', sans-serif;
-    --font-latin: 'Inter', sans-serif;
-    --font-sans: 'Vazirmatn', 'Inter', sans-serif;
-    --text-xs: 0.75rem;
-    --text-sm: 0.875rem;
-    --text-base: 1rem;
-    --text-lg: 1.125rem;
-    --text-xl: 1.25rem;
-    --text-2xl: 1.5rem;
-    --text-3xl: 1.875rem;
-    --text-4xl: 2.25rem;
-    --text-5xl: 3rem;
-    --leading-copy: 1.9;
-    --leading-heading: 1.35;
-    --leading-tight: 1.25;
-    --leading-relaxed: 1.75;
-    --weight-regular: 400;
-    --weight-medium: 500;
-    --weight-semibold: 600;
-    --weight-bold: 700;
-    --weight-extrabold: 800;
-
-    /* 4px spacing rhythm */
-    --space-1: 0.25rem;
-    --space-2: 0.5rem;
-    --space-3: 0.75rem;
-    --space-4: 1rem;
-    --space-5: 1.25rem;
-    --space-6: 1.5rem;
-    --space-8: 2rem;
-    --space-10: 2.5rem;
-    --space-12: 3rem;
-    --space-16: 4rem;
-    --space-20: 5rem;
-    --space-24: 6rem;
-
-    /* Shape, elevation, and layout */
-    --radius-sm: 0.25rem;
-    --radius-md: 0.5rem;
-    --radius-lg: 0.75rem;
-    --radius-xl: 1rem;
-    --radius-pill: 9999px;
-    --shadow-soft: 0 8px 24px rgb(36 35 32 / 6%);
-    --shadow-raised: 0 16px 40px rgb(36 35 32 / 10%);
-    --content-width: 80rem;
-    --page-gutter: clamp(1.25rem, 4vw, 3rem);
-    --header-height: 5rem;
-    --control-height-sm: 2.25rem;
-    --control-height-md: 2.75rem;
-    --control-height-lg: 3rem;
-    --content-reading-width: 48rem;
-    --content-wide-width: 80rem;
-    --artwork-ratio: 4 / 3;
-    --portrait-ratio: 4 / 5;
-}
 
 html {
     scroll-behavior: smooth;
@@ -157,67 +66,8 @@ a {
 }
 
 
-/* Shared component contracts. Keep visual decisions here; JSX owns structure and behavior. */
 @layer components {
-    .ra-button {
-        display: inline-flex;
-        min-height: var(--control-height-md);
-        align-items: center;
-        justify-content: center;
-        gap: var(--space-2);
-        border: 1px solid transparent;
-        border-radius: var(--radius-md);
-        padding: var(--space-2) var(--space-4);
-        color: var(--color-ink);
-        font-size: var(--text-sm);
-        font-weight: var(--weight-bold);
-        line-height: 1.4;
-        text-decoration: none;
-        transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
-    }
-
-    .ra-button:disabled,
-    .ra-button[aria-disabled='true'] {
-        cursor: not-allowed;
-        opacity: 0.52;
-    }
-
-    .ra-button--primary { background: var(--color-action); color: white; }
-    .ra-button--primary:hover:not(:disabled) { background: var(--color-terracotta-strong); }
-    .ra-button--secondary { background: var(--color-surface-muted); }
-    .ra-button--secondary:hover:not(:disabled) { background: var(--color-border); }
-    .ra-button--outline { border-color: var(--color-border-strong); background: var(--color-paper); }
-    .ra-button--outline:hover:not(:disabled) { border-color: var(--color-action); color: var(--color-action-text); }
-    .ra-button--ghost { background: transparent; }
-    .ra-button--ghost:hover:not(:disabled) { background: var(--color-surface-muted); }
-    .ra-button--danger { background: var(--color-danger); color: white; }
-    .ra-button--danger:hover:not(:disabled) { filter: brightness(.92); }
-    .ra-button--sm { min-height: var(--control-height-sm); padding: var(--space-1) var(--space-3); font-size: var(--text-xs); }
-    .ra-button--lg { min-height: var(--control-height-lg); padding: var(--space-3) var(--space-6); font-size: var(--text-base); }
-
-    .ra-control {
-        width: 100%;
-        min-height: var(--control-height-md);
-        border: 1px solid var(--color-border-strong);
-        border-radius: var(--radius-md);
-        background: var(--color-paper);
-        padding: var(--space-2) .875rem;
-        color: var(--color-text);
-        font: inherit;
-        font-size: var(--text-sm);
-        transition: border-color 160ms ease, box-shadow 160ms ease;
-    }
-    .ra-control::placeholder { color: var(--color-text-subtle); }
-    .ra-control:focus-visible { border-color: var(--color-focus); outline: 2px solid var(--color-focus-soft); outline-offset: 1px; }
-    .ra-control:disabled { cursor: not-allowed; background: var(--color-surface-muted); opacity: .65; }
-    .ra-control[aria-invalid='true'] { border-color: var(--color-danger); }
-
-    .ra-surface { border: 1px solid var(--color-border); background: var(--color-surface); }
-    .ra-artwork-frame { display: flex; aspect-ratio: var(--artwork-ratio); align-items: center; justify-content: center; overflow: hidden; background: var(--color-surface-muted); }
-    .ra-state { border: 1px solid var(--color-border); background: var(--color-surface); padding: var(--space-5); }
-    .ra-state--empty { border-style: dashed; text-align: center; }
-    .ra-state--error { border-color: color-mix(in srgb, var(--color-danger) 30%, transparent); }
-    .ra-state--success { border-inline-start: 2px solid var(--color-success); }
+    .ra-artwork-frame { display:flex; aspect-ratio:var(--artwork-ratio); align-items:center; justify-content:center; overflow:hidden; background:hsl(var(--muted)); }
 }
 
 :focus-visible {
