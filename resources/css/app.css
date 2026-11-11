@@ -365,6 +365,10 @@ a {
     .ra-state--empty { border-style: dashed; text-align: center; }
     .ra-state--error { border-color: color-mix(in srgb, var(--color-danger) 30%, transparent); }
     .ra-state--success { border-inline-start: 2px solid var(--color-success); }
+    .ra-toast { border-inline-start: 4px solid; background: var(--color-paper); padding: var(--space-4); box-shadow: var(--shadow-soft); }
+    .ra-toast--success { border-inline-start-color: var(--color-success); }
+    .ra-toast--danger { border-inline-start-color: var(--color-danger); }
+    .ra-toast--info { border-inline-start-color: var(--color-action); }
 }
 
 :focus-visible {
