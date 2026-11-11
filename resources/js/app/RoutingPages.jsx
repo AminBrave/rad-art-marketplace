@@ -290,7 +290,7 @@ export function ArtistProfileSettings() {
                     {errors.display_name?.map((item) => <span key={item} className="mt-1 block text-xs text-destructive">{item}</span>)}
                 </label>
                 <label className="text-sm font-semibold sm:col-span-2">درباره هنرمند
-                    <Textarea name="bio" value={form.bio ?? ''} onChange={update} rows="4" maxLength="2000"  className="w-full">
+                    <Textarea name="bio" value={form.bio ?? ''} onChange={update} rows="4" maxLength="2000"  className="w-full"/>
                     {errors.bio?.map((item) => <span key={item} className="mt-1 block text-xs text-destructive">{item}</span>)}
                 </label>
                 <label className="text-sm font-semibold">شهر
