@@ -152,31 +152,23 @@ Requirements:
 
 If you only need HTTP, use `npm run dev`; Caddy is not required.
 
-## 5. Test and verify
+## 5. Manual local verification (opt-in)
 
-### Quick tests
+Testing is not part of the default development loop. Start the local application with npm run dev, work against localhost, and keep the feedback loop focused on implementation. AI agents must not run tests, lint, builds or verification commands unless you explicitly ask them to do so. GitHub Actions does not run application verification.
 
-~~~bash
-npm test
-~~~
+When you explicitly request testing, select only the relevant commands.
 
-Runs the backend PHPUnit suite and frontend Node tests.
-
-### Run one backend layer
+### Backend
 
 ~~~bash
 npm run test:unit
 npm run test:feature
 npm run test:integration
-~~~
-
-Or run all backend tests directly:
-
-~~~bash
+# or the complete backend suite
 npm run test:backend
 ~~~
 
-### Frontend tests and static checks
+### Frontend and static checks
 
 ~~~bash
 npm run test:frontend
@@ -184,55 +176,36 @@ npm run lint
 composer lint
 ~~~
 
-### Full local verification (without browser tests)
+### Optional production build check
 
 ~~~bash
-npm run verify
+npm run build
+# Optional cPanel target
+npm run build:cpanel
 ~~~
 
-This runs, in sequence:
-1. All Laravel tests.
-2. PHP formatting/style validation.
-3. Frontend tests.
-4. ESLint.
-5. Standard Vite production build.
-6. cPanel-targeted production build.
+### Optional browser / E2E tests
 
-### Browser / Playwright tests
-
-Install the pinned Python test dependency and Chromium once:
+Playwright is a separate opt-in layer, not a default test gate. Run it only when explicitly requested. It requires a running local application, Python dependencies and Chromium:
 
 ~~~bash
 python -m pip install -r requirements-dev.txt
 python -m playwright install chromium
-~~~
-
-Start the local app in one terminal. For HTTPS, run `npm run dev:https`. For HTTP, run `npm run dev`.
-
-In a second terminal, run the browser suite.
-
-PowerShell:
-
-~~~powershell
-$env:RAD_ART_BASE_URL = "http://127.0.0.1:8000"
-npm run test:browser
-~~~
-
-Git Bash / macOS / Linux:
-
-~~~bash
 RAD_ART_BASE_URL=http://127.0.0.1:8000 npm run test:browser
 ~~~
 
-For the HTTPS profile, omit `RAD_ART_BASE_URL`; the runner defaults to `https://rad.localhost`.
+In PowerShell, set the environment variable with $env:RAD_ART_BASE_URL = "http://127.0.0.1:8000" before running npm run test:browser. For HTTPS, omit RAD_ART_BASE_URL when using the default https://rad.localhost profile.
 
-To run every verification layer, including Playwright:
+Browser tests require an isolated disposable local/test database. Never point them at production. The browser suite contains API-mocked UI regressions and unmocked full-stack journeys; preserve and label that distinction.
+
+### Full verification (only when explicitly requested)
 
 ~~~bash
+npm run verify
 npm run verify:all
 ~~~
 
-The browser suite requires a running local application and a disposable local/test database. Never point it at production. Browser tests include both API-mocked UI regressions and unmocked full-stack journeys; they are intentionally separate from the backend and frontend unit suites.
+These are convenience commands, not automatic gates. verify:all includes optional Playwright browser tests and therefore requires the local app and browser dependencies. Do not run either command unless the user explicitly asks for full verification.
 
 ## 6. Build assets
 
@@ -367,11 +340,11 @@ See [Deployment and Recovery](deployment-and-recovery.md) for cPanel cron config
 | `npm run db:seed` | Run the default local/testing seeder |
 | `npm run db:seed:demo` | Seed demo data in local/testing only |
 | `npm run db:fresh` | Destructive reset, migrate and seed |
-| `npm test` | Backend + frontend tests |
+| `npm test` | Backend + frontend tests (explicit request only) |
 | `npm run test:unit` / `test:feature` / `test:integration` | Individual backend test suites |
 | `npm run test:browser` | Playwright browser suite |
-| `npm run verify` | Tests, lint and both production builds |
-| `npm run verify:all` | Full verification including browser tests |
+| `npm run verify` | Full non-browser verification (explicit request only) |
+| `npm run verify:all` | Full verification including optional browser tests (explicit request only) |
 | `npm run build` | Standard Laravel production assets |\n| `npm run preview` | Serve standard compiled assets locally through Laravel |
 | `npm run build:cpanel` | cPanel-specific production assets |
 | `npm run prod:optimize` | Cache Laravel production metadata |
