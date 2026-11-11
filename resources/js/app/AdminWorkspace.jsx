@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { Badge, Button, EmptyState, ErrorState, FormField, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField, Textarea } from '../components/ui';
+import { Badge, Button, EmptyState, ErrorState, FormField, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField, Textarea, Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../components/ui';
 
 const api = '/api/v1/admin';
 const statuses = [
@@ -148,15 +148,15 @@ export function AdminUsersPage() {
         <p className="border-s-2 border-border bg-muted p-4 text-xs leading-7 text-muted-foreground">نقش‌های قابل انتخاب «هنرمند» و «مدیر» هستند. ایجاد خریدار از مسیر ثبت‌نام انجام می‌شود و حذف یا تعلیق حساب پشتیبانی نمی‌شود. مدیر نمی‌تواند نقش مدیریتی حساب خودش را حذف کند.</p>
         {message && <SuccessState title={message} />}{error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
         {loading ? <SkeletonLines lines={7} /> : !result?.data?.length ? <EmptyState title="کاربری برای نمایش وجود ندارد" /> : <>
-            <div className="overflow-x-auto border border-border bg-card"><table className="w-full min-w-[680px] text-right text-sm"><caption className="sr-only">فهرست کاربران و نقش‌های سامانه</caption>
-                <thead className="bg-muted text-xs text-muted-foreground"><tr><th scope="col" className="px-4 py-3">نام</th><th scope="col" className="px-4 py-3">ایمیل</th><th scope="col" className="px-4 py-3">نقش فعلی</th><th scope="col" className="px-4 py-3">تغییر نقش</th></tr></thead>
-                <tbody>{result.data.map((item) => {
+            <div className="overflow-x-auto border border-border bg-card"><Table className="w-full min-w-[680px] text-right text-sm"><caption className="sr-only">فهرست کاربران و نقش‌های سامانه</caption>
+                <TableHeader className="bg-muted text-xs text-muted-foreground"><TableRow><TableHead scope="col" className="px-4 py-3">نام</TableHead><TableHead scope="col" className="px-4 py-3">ایمیل</TableHead><TableHead scope="col" className="px-4 py-3">نقش فعلی</TableHead><TableHead scope="col" className="px-4 py-3">تغییر نقش</TableHead></TableRow></TableHeader>
+                <TableBody>{result.data.map((item) => {
                     const selected = drafts[item.id] ?? (item.role === 'buyer' ? '' : item.role), selfAdmin = item.id === user?.id && item.role === 'admin';
-                    return <tr key={item.id} className="border-t border-border"><td className="px-4 py-4 font-semibold">{item.name}</td><td dir="ltr" className="px-4 py-4 text-left text-xs">{item.email}</td><td className="px-4 py-4"><Badge variant={item.role === 'admin' ? 'accent' : 'neutral'}>{roleLabels[item.role] ?? item.role}</Badge></td><td className="px-4 py-4">
+                    return <TableRow key={item.id} className="border-t border-border"><TableCell className="px-4 py-4 font-semibold">{item.name}</TableCell><TableCell dir="ltr" className="px-4 py-4 text-left text-xs">{item.email}</TableCell><TableCell className="px-4 py-4"><Badge variant={item.role === 'admin' ? 'accent' : 'neutral'}>{roleLabels[item.role] ?? item.role}</Badge></TableCell><TableCell className="px-4 py-4">
                         {selfAdmin ? <span className="text-xs text-muted-foreground">حساب مدیر فعلی</span> : <div className="flex items-center gap-2"><SelectField aria-label={'نقش جدید برای ' + item.name} value={selected} disabled={busyId === item.id} onChange={(event) => setDrafts((current) => ({ ...current, [item.id]: event.target.value }))} className="min-w-36 py-2">{item.role === 'buyer' && <option value="">انتخاب نقش</option>}<option value="artist">هنرمند</option><option value="admin">مدیر</option></SelectField><Button size="sm" variant="outline" disabled={busyId !== null || !selected || selected === item.role} loading={busyId === item.id} onClick={() => updateRole(item)}>ثبت</Button></div>}
-                    </td></tr>;
-                })}</tbody>
-            </table></div>
+                    </TableCell></TableRow>;
+                })}</TableBody>
+            </Table></div>
             <Pagination currentPage={result.current_page ?? page} lastPage={result.last_page ?? 1} onPageChange={changePage} disabled={loading || busyId !== null} /><p className="text-center text-xs text-muted-foreground">{result.total ?? result.data.length} حساب کاربری</p>
         </>}
     </section>;
