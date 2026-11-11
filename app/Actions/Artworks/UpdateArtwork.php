@@ -13,7 +13,7 @@ use Throwable;
 class UpdateArtwork
 {
     /**
-     * @param array<string, mixed> $attributes Validated UpdateArtworkRequest data.
+     * @param  array<string, mixed>  $attributes  Validated UpdateArtworkRequest data.
      */
     public function handle(Artwork $artwork, array $attributes): Artwork
     {
