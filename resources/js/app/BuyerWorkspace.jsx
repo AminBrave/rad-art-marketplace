@@ -22,17 +22,43 @@ function InquiryStatus({ status }) {
 
 export function BuyerDashboardHome() {
     return (
-        <section className="space-y-6" dir="rtl">
-            <header className="border-b border-border pb-6">
-                <p className="text-sm font-bold text-terracotta-strong">فضای خریدار</p>
-                <h1 className="mt-2 text-2xl font-black">ارتباط مستقیم با هنرمندان</h1>
-                <p className="mt-3 max-w-2xl text-sm leading-7 text-muted">از صفحه هنرمند یا اثر هنری، گفت‌وگوی مستقیمی آغاز کنید و پیام‌های خود را در این بخش پیگیری کنید.</p>
+        <section className="space-y-7" dir="rtl">
+            <header className="relative overflow-hidden bg-ink px-6 py-8 text-white sm:px-9 sm:py-10">
+                <div aria-hidden="true" className="pointer-events-none absolute -left-12 -top-20 h-64 w-64 rounded-full border border-white/10" />
+                <div aria-hidden="true" className="pointer-events-none absolute -left-2 -top-10 h-44 w-44 rounded-full border border-white/10" />
+                <div className="relative max-w-2xl">
+                    <p className="text-xs font-bold tracking-wide text-sand">فضای اختصاصی خریدار</p>
+                    <h1 className="mt-3 text-2xl font-black leading-relaxed sm:text-3xl">هنر مورد علاقه‌تان را پیدا کنید؛ گفت‌وگو را از همین‌جا ادامه دهید.</h1>
+                    <p className="mt-3 max-w-xl text-sm leading-8 text-white/70">از میان آثار و هنرمندان مستقل جست‌وجو کنید، درباره جزئیات آثار سؤال بپرسید و مسیر ارتباط‌تان را در یک فضای منظم دنبال کنید.</p>
+                    <div className="mt-6 flex flex-wrap gap-3">
+                        <Link to="/artworks" className="inline-flex min-h-11 items-center bg-white px-5 py-3 text-sm font-bold text-ink transition-colors hover:bg-sand">کشف آثار هنری <span aria-hidden="true" className="mr-3">←</span></Link>
+                        <Link to="/artists" className="inline-flex min-h-11 items-center border border-white/30 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10">آشنایی با هنرمندان</Link>
+                    </div>
+                </div>
             </header>
-            <article className="border border-border bg-paper p-6 sm:p-8">
-                <h2 className="text-lg font-bold">صندوق پیام‌های شما</h2>
-                <p className="mt-2 text-sm leading-7 text-muted">گفت‌وگوهای فعال، پیوست‌ها و اعلان‌های پیام در بخش پیام‌های مستقیم در دسترس هستند.</p>
-                <Link to="/dashboard/buyer/messages" className="mt-5 inline-flex min-h-11 items-center bg-ink px-5 py-3 text-sm font-bold text-white hover:bg-terracotta">رفتن به پیام‌های مستقیم</Link>
-            </article>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+                <Link to="/dashboard/buyer/messages" className="group flex min-h-44 flex-col justify-between border border-border bg-paper p-5 transition-all hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft sm:p-6">
+                    <div className="flex items-start justify-between gap-4"><span className="grid h-11 w-11 place-items-center bg-surface-muted text-lg text-terracotta-strong" aria-hidden="true">✉</span><span className="text-xs font-semibold text-subtle">ارتباط مستقیم</span></div>
+                    <div><h2 className="text-lg font-black">پیام‌های مستقیم</h2><p className="mt-2 text-sm leading-7 text-muted">گفت‌وگوها، پاسخ‌ها و پیوست‌های خود را پیگیری کنید.</p><span className="mt-3 inline-block text-sm font-bold text-terracotta-strong">ورود به صندوق پیام <span aria-hidden="true">←</span></span></div>
+                </Link>
+                <Link to="/dashboard/buyer/inquiries" className="group flex min-h-44 flex-col justify-between border border-border bg-paper p-5 transition-all hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft sm:p-6">
+                    <div className="flex items-start justify-between gap-4"><span className="grid h-11 w-11 place-items-center bg-surface-muted text-lg text-terracotta-strong" aria-hidden="true">☷</span><span className="text-xs font-semibold text-subtle">سوابق ارتباط</span></div>
+                    <div><h2 className="text-lg font-black">درخواست‌های ارسال‌شده</h2><p className="mt-2 text-sm leading-7 text-muted">درخواست‌های ارتباطی قبلی و وضعیت ثبت‌شده آن‌ها را ببینید.</p><span className="mt-3 inline-block text-sm font-bold text-terracotta-strong">مشاهده درخواست‌ها <span aria-hidden="true">←</span></span></div>
+                </Link>
+            </div>
+
+            <section className="border-t border-border pt-6">
+                <div className="flex flex-wrap items-end justify-between gap-3">
+                    <div><p className="text-xs font-bold text-terracotta-strong">شروع یک تجربه تازه</p><h2 className="mt-2 text-xl font-black">از کجا شروع کنید؟</h2></div>
+                    <Link to="/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">رفتن به گالری</Link>
+                </div>
+                <ol className="mt-5 grid gap-4 md:grid-cols-3">
+                    <li className="border-r-2 border-sand bg-surface-muted p-4"><span className="text-xs font-bold text-terracotta-strong">۰۱ / کشف</span><h3 className="mt-2 font-bold">آثار و سبک‌ها را ببینید</h3><p className="mt-2 text-sm leading-7 text-muted">در گالری جست‌وجو کنید و جزئیات هر اثر را بخوانید.</p></li>
+                    <li className="border-r-2 border-sand bg-surface-muted p-4"><span className="text-xs font-bold text-terracotta-strong">۰۲ / ارتباط</span><h3 className="mt-2 font-bold">با هنرمند تماس بگیرید</h3><p className="mt-2 text-sm leading-7 text-muted">از صفحه اثر یا پروفایل هنرمند درخواست خود را بفرستید.</p></li>
+                    <li className="border-r-2 border-sand bg-surface-muted p-4"><span className="text-xs font-bold text-terracotta-strong">۰۳ / پیگیری</span><h3 className="mt-2 font-bold">گفت‌وگو را ادامه دهید</h3><p className="mt-2 text-sm leading-7 text-muted">پاسخ‌ها و اعلان‌های جدید را در پیام‌های مستقیم دنبال کنید.</p></li>
+                </ol>
+            </section>
         </section>
     );
 }
@@ -85,25 +111,24 @@ export function BuyerInquiryPage() {
                             action={<Link to="/artists" className="mt-2 inline-flex min-h-11 items-center bg-ink px-5 py-3 text-sm font-bold text-white">مشاهده هنرمندان</Link>}
                         />
                     ) : (
-                        <div className="overflow-hidden border border-border bg-paper">
-                            <ul className="divide-y divide-border">
-                                {result.data.map((item) => (
-                                    <li key={item.id}>
-                                        <Link to={inquiriesUrl + '/' + item.id + (page > 1 ? '?page=' + page : '')} className="block p-5 transition-colors hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus sm:p-6">
-                                            <div className="flex flex-wrap items-start justify-between gap-3">
-                                                <div className="min-w-0">
-                                                    <h2 className="truncate font-bold text-ink">{item.subject}</h2>
-                                                    <p className="mt-2 text-sm text-muted">هنرمند: {item.artist?.display_name ?? '—'}</p>
-                                                    {item.artwork && <p className="mt-1 text-xs text-muted">اثر مرتبط: {item.artwork.title}</p>}
-                                                </div>
-                                                <InquiryStatus status={item.status} />
-                                            </div>
-                                            <p className="mt-3 text-xs text-muted">{formatDate(item.created_at)}</p>
-                                            <span className="mt-3 inline-block text-sm font-bold text-terracotta-strong underline underline-offset-4">مشاهده جزئیات</span>
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
+                        <div className="grid gap-3">
+                            {result.data.map((item) => (
+                                <Link key={item.id} to={inquiriesUrl + '/' + item.id + (page > 1 ? '?page=' + page : '')} className="group block border border-border bg-paper p-5 transition-all hover:border-terracotta hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus sm:p-6">
+                                    <div className="flex flex-wrap items-start justify-between gap-3">
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-[11px] font-bold text-terracotta-strong">درخواست ارتباطی</p>
+                                            <h2 className="mt-2 truncate text-base font-black text-ink transition-colors group-hover:text-terracotta-strong">{item.subject}</h2>
+                                            <p className="mt-2 text-sm text-muted">هنرمند: {item.artist?.display_name ?? '—'}</p>
+                                            {item.artwork && <p className="mt-1 text-xs text-muted">اثر مرتبط: {item.artwork.title}</p>}
+                                        </div>
+                                        <InquiryStatus status={item.status} />
+                                    </div>
+                                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
+                                        <span className="text-xs text-muted">ثبت‌شده در {formatDate(item.created_at)}</span>
+                                        <span className="text-sm font-bold text-terracotta-strong">مشاهده جزئیات <span aria-hidden="true" className="inline-block transition-transform group-hover:-translate-x-1">←</span></span>
+                                    </div>
+                                </Link>
+                            ))}
                         </div>
                     )}
                     <Pagination currentPage={result?.current_page ?? page} lastPage={result?.last_page ?? 1} onPageChange={changePage} disabled={loading} />
