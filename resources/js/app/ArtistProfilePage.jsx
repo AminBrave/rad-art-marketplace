@@ -77,7 +77,7 @@ export default function ArtistProfilePage() {
 
     return (
         <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl">
-            <nav aria-label="مسیر صفحه" className="text-sm text-muted-foreground">
+            <nav aria-label="مسیر صفحه" className="text-sm text-muted-foreground-foreground">
                 <Link to="/" className="hover:text-primary">خانه</Link><span className="mx-2" aria-hidden="true">/</span>
                 <Link to="/artists" className="hover:text-primary">هنرمندان</Link><span className="mx-2" aria-hidden="true">/</span>
                 <span aria-current="page" className="text-foreground">پروفایل هنرمند</span>
@@ -90,8 +90,8 @@ export default function ArtistProfilePage() {
                             <div>
                                 <p className="text-xs font-bold tracking-wide text-primary">پرونده هنرمند</p>
                                 <h1 className="mt-3 text-4xl font-black leading-tight">{profile.display_name}</h1>
-                                {profile.city && <p className="mt-3 text-sm text-muted-foreground">{profile.city}</p>}
-                                {profile.bio && <p className="mt-7 max-w-3xl whitespace-pre-line text-sm leading-9 text-muted-foreground">{profile.bio}</p>}
+                                {profile.city && <p className="mt-3 text-sm text-muted-foreground-foreground">{profile.city}</p>}
+                                {profile.bio && <p className="mt-7 max-w-3xl whitespace-pre-line text-sm leading-9 text-muted-foreground-foreground">{profile.bio}</p>}
                                 <div className="mt-7 flex flex-wrap gap-4 text-sm font-semibold">
                                     {profile.website_url && <a href={profile.website_url} target="_blank" rel="noreferrer" className="text-primary underline">وب‌سایت هنرمند</a>}
                                     {profile.instagram_handle && <a href={'https://instagram.com/' + profile.instagram_handle} target="_blank" rel="noreferrer" className="text-primary underline">اینستاگرام</a>}
@@ -108,8 +108,8 @@ export default function ArtistProfilePage() {
                     </section>
                     <section className="mt-12">
                         <div className="flex flex-wrap items-end justify-between gap-3">
-                            <div><p className="text-xs font-bold text-primary">پورتفولیو</p><h2 className="mt-2 text-2xl font-black">آثار تأییدشده این هنرمند</h2><p className="mt-2 text-sm text-muted-foreground">نمونه‌کارهای عمومی؛ تازه‌ترین آثار در ابتدای فهرست قرار دارند.</p></div>
-                            <span className="text-xs text-muted-foreground">{allArtworks.length.toLocaleString('fa-IR')} اثر بارگذاری‌شده</span>
+                            <div><p className="text-xs font-bold text-primary">پورتفولیو</p><h2 className="mt-2 text-2xl font-black">آثار تأییدشده این هنرمند</h2><p className="mt-2 text-sm text-muted-foreground-foreground">نمونه‌کارهای عمومی؛ تازه‌ترین آثار در ابتدای فهرست قرار دارند.</p></div>
+                            <span className="text-xs text-muted-foreground-foreground">{allArtworks.length.toLocaleString('fa-IR')} اثر بارگذاری‌شده</span>
                         </div>
                         {portfolioCategories.length > 1 && <div className="mt-6 flex flex-wrap gap-2" aria-label="فیلتر آثار بر اساس دسته">
                             <button type="button" aria-pressed={!categoryFilter} onClick={() => setCategoryFilter('')} className={`border px-4 py-2 text-sm font-semibold ${!categoryFilter ? 'border-ink bg-primary text-primary-foreground' : 'border-border bg-card text-foreground'}`}>همه دسته‌ها</button>
@@ -123,7 +123,7 @@ export default function ArtistProfilePage() {
             ) : (
                 <section className="mt-8 border border-border bg-card p-8">
                     <h1 className="text-2xl font-black">{status === 403 ? 'دسترسی به پروفایل مجاز نیست' : 'پروفایل در دسترس نیست'}</h1>
-                    <p className="mt-3 text-sm leading-7 text-muted-foreground">این پروفایل وجود ندارد یا نمایش عمومی آن غیرفعال شده است.</p>
+                    <p className="mt-3 text-sm leading-7 text-muted-foreground-foreground">این پروفایل وجود ندارد یا نمایش عمومی آن غیرفعال شده است.</p>
                     {profileQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-destructive">ارتباط با سرور برقرار نشد. <button type="button" onClick={() => profileQuery.refetch()} className="font-bold underline">تلاش دوباره</button></p>}
                 </section>
             )}
