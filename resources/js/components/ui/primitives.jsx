@@ -2,11 +2,11 @@ import { cloneElement, isValidElement, useId } from 'react';
 import { cn } from '../../lib/utils';
 
 const buttonVariants = {
-    primary: 'bg-terracotta text-white hover:bg-terracotta-strong',
-    secondary: 'bg-surface-muted text-ink hover:bg-border',
-    outline: 'border border-border-strong bg-paper text-ink hover:border-terracotta hover:text-terracotta-strong',
-    ghost: 'bg-transparent text-ink hover:bg-surface-muted',
-    danger: 'bg-danger text-white hover:brightness-90',
+    primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
+    secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+    outline: 'border border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground',
+    ghost: 'bg-transparent text-foreground hover:bg-accent/10',
+    danger: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
 };
 
 const buttonSizes = {
