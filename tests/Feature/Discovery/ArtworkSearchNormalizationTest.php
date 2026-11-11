@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Discovery;
 
 use App\Models\Artwork;
+use App\Models\ArtistProfile;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -60,7 +61,7 @@ final class ArtworkSearchNormalizationTest extends TestCase
             ->assertJsonMissing(['slug' => $ordinary->slug]);
     }
 
-    private function publicArtistProfile(): \App\Models\ArtistProfile
+    private function publicArtistProfile(): ArtistProfile
     {
         $user = User::query()->create([
             'name' => 'هنرمند جست‌وجو',
