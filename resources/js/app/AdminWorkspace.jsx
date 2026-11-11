@@ -218,49 +218,82 @@ export function AdminUsersPage() {
     const [result, setResult] = useState(null), [drafts, setDrafts] = useState({});
     const [loading, setLoading] = useState(true), [busyId, setBusyId] = useState(null);
     const [error, setError] = useState(''), [message, setMessage] = useState('');
+    const [confirmAdminId, setConfirmAdminId] = useState(null);
     const controllerRef = useRef(null);
     const load = useCallback(async () => {
         controllerRef.current?.abort();
         const controller = new AbortController();
         controllerRef.current = controller;
         setLoading(true); setError('');
-        try { const { data } = await axios.get(api + '/users', { params: { page }, signal: controller.signal }); if (!controller.signal.aborted) setResult(data); }
-        catch (e) { if (!axios.isCancel(e)) setError(e.response?.status === 403 ? 'این حساب اجازه مشاهده کاربران را ندارد.' : 'دریافت فهرست کاربران انجام نشد. دوباره تلاش کنید.'); }
-        finally { if (controllerRef.current === controller) { controllerRef.current = null; setLoading(false); } }
+        try {
+            const { data } = await axios.get(api + '/users', { params: { page }, signal: controller.signal });
+            if (!controller.signal.aborted) setResult(data);
+        } catch (e) {
+            if (!axios.isCancel(e)) setError(e.response?.status === 403 ? 'این حساب اجازه مشاهده کاربران را ندارد.' : 'دریافت فهرست کاربران انجام نشد. دوباره تلاش کنید.');
+        } finally {
+            if (controllerRef.current === controller) { controllerRef.current = null; setLoading(false); }
+        }
     }, [page]);
     useEffect(() => { load(); return () => controllerRef.current?.abort(); }, [load]);
     const changePage = (next) => setParams(next > 1 ? { page: String(next) } : {});
     const updateRole = async (item) => {
         const role = drafts[item.id] ?? (item.role === 'buyer' ? '' : item.role);
         if (!['artist', 'admin'].includes(role)) { setError('یکی از نقش‌های پشتیبانی‌شده را انتخاب کنید.'); return; }
+        if (role === 'admin' && item.role !== 'admin' && confirmAdminId !== item.id) {
+            setConfirmAdminId(item.id);
+            return;
+        }
         setBusyId(item.id); setError(''); setMessage('');
         try {
             const { data } = await axios.patch(api + '/users/' + item.id + '/role', { role });
             setResult((current) => ({ ...current, data: current.data.map((row) => row.id === item.id ? data.data : row) }));
             setDrafts((current) => { const next = { ...current }; delete next[item.id]; return next; });
+            setConfirmAdminId(null);
             setMessage(data.message ?? 'نقش کاربر به‌روزرسانی شد.');
-        } catch (e) { setError(e.response?.status === 403 ? 'سرور اجازه تغییر نقش این حساب را نداد.' : e.response?.data?.errors?.role?.[0] ?? e.response?.data?.message ?? 'تغییر نقش کاربر انجام نشد.'); }
-        finally { setBusyId(null); }
+        } catch (e) {
+            setError(e.response?.status === 403 ? 'سرور اجازه تغییر نقش این حساب را نداد.' : e.response?.data?.errors?.role?.[0] ?? e.response?.data?.message ?? 'تغییر نقش کاربر انجام نشد.');
+        } finally { setBusyId(null); }
     };
     return <section className="space-y-6" dir="rtl">
-        <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6"><div><p className="text-sm font-bold text-terracotta-strong">مدیریت حساب‌ها</p><h1 className="mt-2 text-2xl font-black">کاربران</h1><p className="mt-2 text-sm leading-7 text-muted">فهرست صفحه‌بندی‌شده حساب‌ها و تغییر نقش‌های مجاز در سمت سرور.</p></div><Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button></header>
+        <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
+            <div><p className="text-sm font-bold text-terracotta-strong">مدیریت حساب‌ها</p><h1 className="mt-2 text-2xl font-black">کاربران</h1><p className="mt-2 max-w-2xl text-sm leading-7 text-muted">فهرست حساب‌ها و مدیریت نقش‌های مجاز. ارتقای هر حساب به مدیر، مرحله تأیید جداگانه دارد.</p></div>
+            <Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>
+        </header>
+        <div className="grid gap-3 sm:grid-cols-2">
+            <div className="border border-border bg-white p-4"><p className="text-xs text-muted">حساب‌های این صفحه</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</p></div>
+            <div className="border border-border bg-white p-4"><p className="text-xs text-muted">کل حساب‌ها</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</p></div>
+        </div>
         <p className="border-s-2 border-sand bg-surface-muted p-4 text-xs leading-7 text-muted">نقش‌های قابل انتخاب «هنرمند» و «مدیر» هستند. ایجاد خریدار از مسیر ثبت‌نام انجام می‌شود و حذف یا تعلیق حساب پشتیبانی نمی‌شود. مدیر نمی‌تواند نقش مدیریتی حساب خودش را حذف کند.</p>
         {message && <SuccessState title={message} />}{error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
-        {loading ? <SkeletonLines lines={7} /> : !result?.data?.length ? <EmptyState title="کاربری برای نمایش وجود ندارد" /> : <>
-            <div className="overflow-x-auto border border-border bg-paper"><table className="w-full min-w-[680px] text-right text-sm"><caption className="sr-only">فهرست کاربران و نقش‌های سامانه</caption>
-                <thead className="bg-surface-muted text-xs text-muted"><tr><th scope="col" className="px-4 py-3">نام</th><th scope="col" className="px-4 py-3">ایمیل</th><th scope="col" className="px-4 py-3">نقش فعلی</th><th scope="col" className="px-4 py-3">تغییر نقش</th></tr></thead>
-                <tbody>{result.data.map((item) => {
-                    const selected = drafts[item.id] ?? (item.role === 'buyer' ? '' : item.role), selfAdmin = item.id === user?.id && item.role === 'admin';
-                    return <tr key={item.id} className="border-t border-border"><td className="px-4 py-4 font-semibold">{item.name}</td><td dir="ltr" className="px-4 py-4 text-left text-xs">{item.email}</td><td className="px-4 py-4"><Badge variant={item.role === 'admin' ? 'accent' : 'neutral'}>{roleLabels[item.role] ?? item.role}</Badge></td><td className="px-4 py-4">
-                        {selfAdmin ? <span className="text-xs text-muted">حساب مدیر فعلی</span> : <div className="flex items-center gap-2"><SelectField aria-label={'نقش جدید برای ' + item.name} value={selected} disabled={busyId === item.id} onChange={(event) => setDrafts((current) => ({ ...current, [item.id]: event.target.value }))} className="min-w-36 py-2">{item.role === 'buyer' && <option value="">انتخاب نقش</option>}<option value="artist">هنرمند</option><option value="admin">مدیر</option></SelectField><Button size="sm" variant="outline" disabled={busyId !== null || !selected || selected === item.role} loading={busyId === item.id} onClick={() => updateRole(item)}>ثبت</Button></div>}
-                    </td></tr>;
-                })}</tbody>
-            </table></div>
-            <Pagination currentPage={result.current_page ?? page} lastPage={result.last_page ?? 1} onPageChange={changePage} disabled={loading || busyId !== null} /><p className="text-center text-xs text-muted">{result.total ?? result.data.length} حساب کاربری</p>
+        {loading ? <div className="grid gap-3 sm:grid-cols-2"><div className="border border-border bg-white p-5"><SkeletonLines lines={4} /></div><div className="border border-border bg-white p-5"><SkeletonLines lines={4} /></div></div> : !result?.data?.length ? <EmptyState title="کاربری برای نمایش وجود ندارد" /> : <>
+            <div className="grid gap-3 xl:grid-cols-2">{result.data.map((item) => {
+                const selected = drafts[item.id] ?? (item.role === 'buyer' ? '' : item.role);
+                const selfAdmin = item.id === user?.id && item.role === 'admin';
+                const needsAdminConfirmation = confirmAdminId === item.id && selected === 'admin' && item.role !== 'admin';
+                return <article key={item.id} className="min-w-0 border border-border bg-white p-5">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div className="min-w-0"><h2 className="break-words font-bold">{item.name}</h2><p dir="ltr" className="mt-1 break-all text-left text-xs text-muted">{item.email}</p></div>
+                        <Badge variant={item.role === 'admin' ? 'accent' : item.role === 'artist' ? 'info' : 'neutral'}>{roleLabels[item.role] ?? item.role}</Badge>
+                    </div>
+                    <div className="mt-5 border-t border-border pt-4">
+                        {selfAdmin ? <p className="text-xs leading-6 text-muted">این حساب مدیر فعلی است؛ تغییر نقش حساب خودتان از این صفحه امکان‌پذیر نیست.</p> : <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+                            <SelectField aria-label={'نقش جدید برای ' + item.name} value={selected} disabled={busyId === item.id} onChange={(event) => { setDrafts((current) => ({ ...current, [item.id]: event.target.value })); setConfirmAdminId(null); }} className="w-full">
+                                {item.role === 'buyer' && <option value="">انتخاب نقش</option>}
+                                <option value="artist">هنرمند</option><option value="admin">مدیر</option>
+                            </SelectField>
+                            <Button size="sm" variant="outline" disabled={busyId !== null || !selected || selected === item.role} loading={busyId === item.id} onClick={() => updateRole(item)}>ثبت تغییر</Button>
+                        </div>}
+                        {needsAdminConfirmation && <div className="mt-4 border border-warning/30 bg-warning/5 p-3">
+                            <p className="text-xs leading-6 text-ink">این تغییر دسترسی مدیریتی می‌دهد و امکان مدیریت کاربران و محتوای سامانه را فعال می‌کند. آیا ارتقا را تأیید می‌کنید؟</p>
+                            <div className="mt-3 flex flex-wrap gap-2"><Button size="sm" onClick={() => updateRole(item)} loading={busyId === item.id}>تأیید ارتقا به مدیر</Button><Button size="sm" variant="ghost" onClick={() => setConfirmAdminId(null)} disabled={busyId !== null}>انصراف</Button></div>
+                        </div>}
+                    </div>
+                </article>;
+            })}</div>
+            <Pagination currentPage={result.current_page ?? page} lastPage={result.last_page ?? 1} onPageChange={changePage} disabled={loading || busyId !== null} />
         </>}
     </section>;
 }
-
 
 export function AdminMessageReportsPage() {
     const [params, setParams] = useSearchParams();
