@@ -89,7 +89,7 @@ export function BuyerInquiryPage() {
                             <ul className="divide-y divide-border">
                                 {result.data.map((item) => (
                                     <li key={item.id}>
-                                        <Link to={inquiriesUrl + '/' + item.id + (page > 1 ? '?page=' + page : '')} className="block p-5 transition-colors hover:bg-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus sm:p-6">
+                                        <Link to={inquiriesUrl + '/' + item.id + (page > 1 ? '?page=' + page : '')} className="block p-5 transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:p-6">
                                             <div className="flex flex-wrap items-start justify-between gap-3">
                                                 <div className="min-w-0">
                                                     <h2 className="truncate font-bold text-foreground">{item.subject}</h2>
