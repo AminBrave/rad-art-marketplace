@@ -174,7 +174,7 @@ class ConversationTest extends TestCase
             ->assertJsonPath('current_page', 1)
             ->assertJsonPath('last_page', 1);
 
-        $this->assertSame($beforeId - 5, $olderPage->json('data.4.id'));
+        $this->assertSame($beforeId - 5, $olderPage->json('data.0.id'));
         $this->assertSame($beforeId - 1, $olderPage->json('data.4.id'));
         $this->assertSame(
             collect($olderPage->json('data'))->pluck('id')->sort()->values()->all(),
