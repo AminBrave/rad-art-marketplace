@@ -41,7 +41,31 @@ frontend() {
 
 browser() {
   require_command python
-  python -m unittest discover -s tests/browser -p 'test_*.py' -v
+  local base_url="${RAD_ART_BASE_URL:-https://rad.localhost}"
+
+  # Fail once with a useful hint instead of producing a cascade of Playwright
+  # connection-refused errors when the local stack is not running.
+  python - "$base_url" <<'PY'
+import sys
+import ssl
+from urllib.error import HTTPError, URLError
+from urllib.request import urlopen
+
+url = sys.argv[1]
+try:
+    urlopen(url, timeout=5, context=ssl._create_unverified_context())
+except HTTPError:
+    pass  # Any HTTP response proves that the server is reachable.
+except (URLError, OSError) as error:
+    raise SystemExit(
+        f"Browser-test server is unreachable at {url}. "
+        "Start the full local stack with 'npm run dev:local', or set "
+        "RAD_ART_BASE_URL to the URL your Laravel app serves. "
+        f"Underlying error: {error}"
+    )
+PY
+
+  RAD_ART_BASE_URL="$base_url" python -m unittest discover -s tests/browser -p 'test_*.py' -v
 }
 
 case "${1:-}" in
