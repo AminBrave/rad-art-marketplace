@@ -7,7 +7,7 @@ export const Card = forwardRef(({ className, ...props }, ref) => (
 Card.displayName = 'Card';
 
 export const CardHeader = forwardRef(({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('flex flex-col gap-1.5 p-6', className)} {...props} />
+    <div ref={ref} className={cn('grid grid-cols-[1fr_auto] items-start gap-x-4 gap-y-1.5 p-6', className)} {...props} />
 ));
 CardHeader.displayName = 'CardHeader';
 
