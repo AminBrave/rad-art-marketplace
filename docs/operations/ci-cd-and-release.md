@@ -13,7 +13,7 @@ Verification is local and opt-in:
 
 ## Other GitHub Actions workflows
 
-Any future non-test maintenance or deployment automation must have a separate explicit purpose, minimum permissions, reviewed action versions and clear ownership. It must not invoke application verification implicitly. Do not assume that a cleanup workflow exists or is required.
+The existing .github/workflows/cleanup-workflow-runs.yml is a maintenance-only workflow. It runs hourly or by manual dispatch and deletes completed Actions runs older than 24 hours; it does not build or test the application. Any future non-test maintenance or deployment automation must have a separate explicit purpose, minimum permissions, reviewed action versions and clear ownership. It must not invoke application verification implicitly.
 
 ## Release
 
