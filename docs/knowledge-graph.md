@@ -27,6 +27,7 @@ flowchart TD
  V[Local verification script] --> T
  V --> Q
  CM[Test coverage matrix] --> T
+ RM[API route test map] --> T
 ~~~
 
 ## Nodes
@@ -40,6 +41,7 @@ flowchart TD
 - [Security](security/security-model.md): trust boundaries and threats.
 - [Testing](engineering/testing-strategy.md): test layers and commands.
 - [Coverage matrix](engineering/test-coverage-matrix.md): route/domain/scenario evidence and gaps.
+- [API route map](engineering/api-route-test-map.md): endpoint access, existing test evidence and remaining checks.
 - [Quality](engineering/quality-gates.md): merge blockers and DoD.
 - [Lifecycle](delivery/feature-lifecycle.md): stages from issue to release.
 - [GitHub](engineering/git-and-github.md): branching, commits, collaboration.
@@ -49,4 +51,4 @@ flowchart TD
 - [Local verification](../scripts/verify): selective local checks; see [testing strategy](engineering/testing-strategy.md).
 
 ## Change propagation
-Schema/domain → data, domain, API, tests, security. API → API docs, backend tests, frontend consumers, browser E2E. UI/navigation → frontend docs and browser tests. Auth/moderation/messaging/uploads/privacy → threat review. Workflow/release → CI/CD and GitHub docs. Test architecture or coverage changes → testing strategy, coverage matrix, tests README, phpunit configuration, quality gates and CI workflow.
+Schema/domain → data, domain, API, tests, security. API → API docs, backend tests, frontend consumers, browser E2E. UI/navigation → frontend docs and browser tests. Auth/moderation/messaging/uploads/privacy → threat review. Workflow/release → CI/CD and GitHub docs. Test architecture or coverage changes → testing strategy, coverage matrix, route test map, tests README, PHPUnit configuration, quality gates and CI workflow.
