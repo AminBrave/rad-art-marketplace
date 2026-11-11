@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\ArtistInquiry;
+use App\Models\Artwork;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\User;
@@ -132,7 +133,7 @@ class ConversationController extends Controller
 
         $query = $conversation->messages()
             ->withTrashed()
-            ->with(['sender', 'replyTo.sender', 'reactions', 'attachments']);
+            ->with(['sender', 'replyTo.sender', 'artwork.category', 'artwork.artistProfile', 'reactions', 'attachments']);
 
         if (isset($filters['before_id'])) {
             // Keyset pagination keeps older history stable while new messages arrive.
@@ -175,7 +176,15 @@ class ConversationController extends Controller
                 'integer',
                 Rule::exists('messages', 'id')->where('conversation_id', $conversation->id),
             ],
+            'artwork_id' => ['nullable', 'integer', Rule::exists('artworks', 'id')->where('status', Artwork::STATUS_APPROVED)],
         ]);
+
+        if (! empty($validated['artwork_id'])) {
+            abort_unless((int) $request->user()->id === (int) $conversation->buyer_user_id, 403);
+            $artwork = Artwork::query()->with('artistProfile')->findOrFail($validated['artwork_id']);
+            abort_unless((int) $artwork->artistProfile?->user_id === (int) $conversation->artist_user_id, 422, 'این اثر متعلق به هنرمند این گفتگو نیست.');
+            abort_unless($artwork->status === Artwork::STATUS_APPROVED, 404);
+        }
 
         $message = DB::transaction(function () use ($conversation, $request, $validated): Message {
             $lockedConversation = Conversation::query()->lockForUpdate()->findOrFail($conversation->id);
@@ -188,7 +197,7 @@ class ConversationController extends Controller
                     ->first();
 
                 if ($existing) {
-                    return $existing->load(['sender', 'replyTo.sender', 'reactions', 'attachments']);
+                    return $existing->load(['sender', 'replyTo.sender', 'artwork.category', 'artwork.artistProfile', 'reactions', 'attachments']);
                 }
             }
 
@@ -197,6 +206,7 @@ class ConversationController extends Controller
                 'client_message_id' => $validated['client_message_id'] ?? null,
                 'body' => trim($validated['body']),
                 'reply_to_id' => $validated['reply_to_id'] ?? null,
+                'artwork_id' => $validated['artwork_id'] ?? null,
                 'delivered_at' => now(),
             ]);
 
@@ -418,7 +428,21 @@ class ConversationController extends Controller
                     $inquiry = $context->inquiry_id ? DB::table('artist_inquiries')->where('id', $context->inquiry_id)->first() : null;
 
                     return [
-                        'artwork' => $artwork ? ['title' => $artwork->title, 'slug' => $artwork->slug] : null,
+                        'artwork' => $artwork ? (function () use ($artwork): array {
+                            $record = Artwork::query()->with(['category', 'artistProfile'])->find($artwork->id);
+                            return [
+                                'id' => $record?->id,
+                                'title' => $record?->title ?? $artwork->title,
+                                'slug' => $record?->slug ?? $artwork->slug,
+                                'image_url' => $record?->slug ? '/api/v1/artworks/'.$record->slug.'/image' : null,
+                                'category' => $record?->category?->name,
+                                'medium' => $record?->medium,
+                                'dimensions' => $record?->dimensions,
+                                'year' => $record?->year,
+                                'price' => $record?->price,
+                                'artist_name' => $record?->artistProfile?->display_name,
+                            ];
+                        })() : null,
                         'inquiry' => $inquiry ? ['subject' => $inquiry->subject, 'id' => $inquiry->id] : null,
                     ];
                 })->all(),
@@ -464,6 +488,18 @@ class ConversationController extends Controller
             'sender_id' => $message->sender_user_id,
             'sender_name' => $message->sender?->name,
             'body' => $message->trashed() ? null : $message->body,
+            'artwork' => $message->artwork ? [
+                'id' => $message->artwork->id,
+                'title' => $message->artwork->title,
+                'slug' => $message->artwork->slug,
+                'image_url' => '/api/v1/artworks/'.$message->artwork->slug.'/image',
+                'category' => $message->artwork->category?->name,
+                'medium' => $message->artwork->medium,
+                'dimensions' => $message->artwork->dimensions,
+                'year' => $message->artwork->year,
+                'price' => $message->artwork->price,
+                'artist_name' => $message->artwork->artistProfile?->display_name,
+            ] : null,
             'reply_to' => $message->replyTo ? [
                 'id' => $message->replyTo->id,
                 'sender_name' => $message->replyTo->sender?->name,
