@@ -21,7 +21,7 @@ A feature switch must be enforced at every relevant boundary:
 2. **Frontend navigation and routes mirror availability.** Gate route registration, navigation items, public entry points and dashboard content with isFeatureEnabled('<key>').
 3. **Keep permissions separate.** Feature availability answers whether a capability exists in this deployment. Policies, role middleware and ownership checks still decide which user may perform an enabled capability.
 4. **Preserve unrelated modules.** A feature should not own shared infrastructure routes unless those routes are exclusive to it. Direct messaging remains independently enabled even while the inquiry-to-conversation bridge is disabled.
-5. **Test both sides of the switch.** Cover disabled route absence, disabled UI entry points, enabled behavior, and regressions in dependent but independent features.
+5. **Test both sides of the switch.** Cover disabled endpoint 404 responses, disabled UI entry points, enabled behavior, and regressions in dependent but independent features.
 
 ## Disabling and re-enabling Inquiry
 
