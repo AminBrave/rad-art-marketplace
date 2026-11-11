@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useOutletContext } from 'react-router-dom';
-import { isFeatureEnabled } from './features';
 import { EmptyState, ErrorState, SkeletonLines } from '../components/ui';
 
 const statusLabels = {
     pending_review: 'در انتظار بررسی', approved: 'منتشرشده', rejected: 'ردشده',
-    changes_requested: 'نیازمند اصلاح', new: 'جدید', read: 'خوانده‌شده', archived: 'بایگانی‌شده',
+    changes_requested: 'نیازمند اصلاح',
 };
 
 const statusStyles = {
@@ -14,9 +13,6 @@ const statusStyles = {
     approved: 'bg-emerald-50 text-emerald-800',
     rejected: 'bg-red-50 text-red-700',
     changes_requested: 'bg-orange-50 text-orange-800',
-    new: 'bg-amber-50 text-amber-800',
-    read: 'bg-surface-muted text-muted',
-    archived: 'bg-surface-muted text-muted',
 };
 
 function MetricCard({ label, value, detail, to, eyebrow }) {
@@ -44,10 +40,8 @@ function StatusLabel({ status }) {
 
 export default function ArtistWorkspaceOverview() {
     const { user, profile, profileLoading, profileError } = useOutletContext();
-    const inquiriesEnabled = isFeatureEnabled('inquiries');
     const [artworks, setArtworks] = useState([]);
-    const [inquiries, setInquiries] = useState([]);
-    const [counts, setCounts] = useState({ artworks: null, inquiries: null });
+    const [counts, setCounts] = useState({ artworks: null });
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState([]);
 
@@ -55,28 +49,20 @@ export default function ArtistWorkspaceOverview() {
         if (profileLoading || !profile?.slug) return undefined;
         let active = true;
         setLoading(true);
-        const requests = [axios.get('/api/v1/artist/artworks')];
-        if (inquiriesEnabled) requests.push(axios.get('/api/v1/artist/inquiries'));
-        Promise.allSettled(requests)
-            .then((results) => {
+        axios.get('/api/v1/artist/artworks')
+            .then(({ data }) => {
                 if (!active) return;
-                const nextErrors = [];
-                if (results[0].status === 'fulfilled') {
-                    const response = results[0].value.data;
-                    const rows = response.data ?? [];
-                    setArtworks(rows);
-                    setCounts((current) => ({ ...current, artworks: response.total ?? rows.length }));
-                } else nextErrors.push('آمار آثار دریافت نشد.');
-                if (inquiriesEnabled && results[1]?.status === 'fulfilled') {
-                    const response = results[1].value.data;
-                    setInquiries(response.data ?? []);
-                    setCounts((current) => ({ ...current, inquiries: response.meta?.total ?? response.total ?? response.data?.length ?? 0 }));
-                } else if (inquiriesEnabled) nextErrors.push('آمار درخواست‌های ارتباطی دریافت نشد.');
-                setErrors(nextErrors);
+                const rows = data.data ?? [];
+                setArtworks(rows);
+                setCounts({ artworks: data.total ?? rows.length });
+                setErrors([]);
+            })
+            .catch(() => {
+                if (active) setErrors(['آمار آثار دریافت نشد.']);
             })
             .finally(() => { if (active) setLoading(false); });
         return () => { active = false; };
-    }, [profile?.slug, profileLoading, inquiriesEnabled]);
+    }, [profile?.slug, profileLoading]);
 
     const profileSteps = [
         { label: 'نام نمایشی حرفه‌ای', done: Boolean(profile?.display_name?.trim()) },
@@ -165,7 +151,7 @@ export default function ArtistWorkspaceOverview() {
                             <MetricCard label="مجموع آثار" value={formatCount(counts.artworks)} detail="تمام آثار ثبت‌شده در استودیوی شما" to="/dashboard/artist/artworks" eyebrow="پورتفولیو" />
                             <MetricCard label="منتشرشده" value={published.toLocaleString('fa-IR')} detail="آثاری که در گالری عمومی نمایش داده می‌شوند" to="/dashboard/artist/artworks" eyebrow="عمومی" />
                             <MetricCard label="در انتظار بررسی" value={pending.toLocaleString('fa-IR')} detail="آثاری که هنوز بررسی نهایی نشده‌اند" to="/dashboard/artist/artworks" eyebrow="بررسی" />
-                            {inquiriesEnabled ? <MetricCard label="درخواست‌های دریافتی" value={formatCount(counts.inquiries)} detail="درخواست‌های ارتباطی ثبت‌شده" to="/dashboard/artist/inquiries" eyebrow="ارتباط" /> : <MetricCard label="پیام‌های مستقیم" value="صندوق پیام‌ها" detail="گفت‌وگو با خریداران" to="/dashboard/artist/messages" eyebrow="ارتباط" />}
+                            <MetricCard label="پیام‌های مستقیم" value="صندوق پیام‌ها" detail="گفت‌وگو با خریداران" to="/dashboard/artist/messages" eyebrow="ارتباط" />
                         </>}
                     </section>
                     {errors.length > 0 && <ErrorState title="بخشی از اطلاعات بارگذاری نشد" description={errors.join(' ')} />}
@@ -186,17 +172,10 @@ export default function ArtistWorkspaceOverview() {
                         </div>
                         <div className="border border-border bg-white p-5 sm:p-6">
                             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
-                                <div><p className="text-[11px] font-bold text-terracotta-strong">ارتباط با خریداران</p><h2 className="mt-1 font-black">{inquiriesEnabled ? 'آخرین درخواست‌ها' : 'پیام‌های مستقیم'}</h2></div>
-                                <Link to={inquiriesEnabled ? '/dashboard/artist/inquiries' : '/dashboard/artist/messages'} className="text-xs font-bold text-terracotta-strong underline underline-offset-4">{inquiriesEnabled ? 'صندوق درخواست‌ها' : 'رفتن به پیام‌ها'}</Link>
+                                <div><p className="text-[11px] font-bold text-terracotta-strong">ارتباط با خریداران</p><h2 className="mt-1 font-black">پیام‌های مستقیم</h2></div>
+                                <Link to="/dashboard/artist/messages" className="text-xs font-bold text-terracotta-strong underline underline-offset-4">رفتن به پیام‌ها</Link>
                             </div>
-                            {!inquiriesEnabled ? <div className="py-7"><p className="text-sm leading-7 text-muted">گفت‌وگوهای مستقیم با خریداران را از صندوق پیام‌ها مدیریت کنید.</p><Link to="/dashboard/artist/messages" className="mt-3 inline-flex text-sm font-bold text-terracotta-strong underline">بازکردن صندوق پیام‌ها</Link></div> : loading ? <div className="mt-5"><SkeletonLines lines={4} /></div> : inquiries.length === 0 ? <EmptyState className="mt-5" title="درخواستی دریافت نشده" description="درخواست‌های ارسال‌شده از طریق پروفایل عمومی شما در اینجا نمایش داده می‌شوند." action={<Link to="/artists" className="text-sm font-bold text-terracotta-strong underline">مشاهده هنرمندان</Link>} /> : (
-                                <ul className="divide-y divide-border">
-                                    {inquiries.slice(0, 4).map((item) => <li key={item.id} className="flex items-center justify-between gap-3 py-4">
-                                        <div className="min-w-0"><p className="truncate text-sm font-bold text-ink">{item.subject}</p><p className="mt-1 text-xs text-muted">{item.buyer?.name ?? item.sender?.name ?? 'درخواست ارتباطی'}</p></div>
-                                        <StatusLabel status={item.status} />
-                                    </li>)}
-                                </ul>
-                            )}
+                            <div className="py-7"><p className="text-sm leading-7 text-muted">گفت‌وگوهای مستقیم با خریداران را از صندوق پیام‌ها مدیریت کنید.</p><Link to="/dashboard/artist/messages" className="mt-3 inline-flex text-sm font-bold text-terracotta-strong underline">بازکردن صندوق پیام‌ها</Link></div>
                         </div>
                     </section>
                 </>
