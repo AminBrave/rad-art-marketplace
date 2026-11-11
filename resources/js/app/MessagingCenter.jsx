@@ -189,6 +189,9 @@ export default function MessagingCenter({ role }) {
         setEditingId(null);
         setEditDraft('');
         setPendingMessageId(active ? (pendingIdsByConversationRef.current.get(Number(active)) ?? null) : null);
+        setActionId(null);
+        setError('');
+        setNotice('');
         if (fileInputRef.current) fileInputRef.current.value = '';
         if (draftRef.current) draftRef.current.style.height = 'auto';
         if (!active) {
@@ -251,6 +254,7 @@ export default function MessagingCenter({ role }) {
             .then(async ({ data }) => {
                 await loadThreadsRef.current();
                 setActive(data.data.id);
+                directStartKeyRef.current = null;
             })
             .catch(() => {
                 directStartKeyRef.current = null;
@@ -378,80 +382,92 @@ export default function MessagingCenter({ role }) {
 
     const saveEdit = async (event, message) => {
         event.preventDefault();
+        const conversationId = active;
         const body = editDraft.trim();
         if (!body || actionId) return;
         setActionId(message.id);
         try {
-            const { data } = await axios.patch('/api/v1/conversations/' + active + '/messages/' + message.id, { body });
-            replaceMessage(data.data);
-            setEditingId(null);
-            setEditDraft('');
+            const { data } = await axios.patch('/api/v1/conversations/' + conversationId + '/messages/' + message.id, { body });
+            if (Number(activeConversationRef.current) === Number(conversationId)) {
+                replaceMessage(data.data);
+                setEditingId(null);
+                setEditDraft('');
+            }
         } catch {
-            setError('ویرایش پیام انجام نشد. دوباره تلاش کنید.');
+            if (Number(activeConversationRef.current) === Number(conversationId)) setError('ویرایش پیام انجام نشد. دوباره تلاش کنید.');
         } finally { setActionId(null); }
     };
 
     const deleteMessage = async (message) => {
+        const conversationId = active;
         if (actionId || !window.confirm('این پیام برای هر دو طرف حذف شود؟')) return;
         setActionId(message.id);
         try {
-            const { data } = await axios.delete('/api/v1/conversations/' + active + '/messages/' + message.id);
-            replaceMessage(data.data);
+            const { data } = await axios.delete('/api/v1/conversations/' + conversationId + '/messages/' + message.id);
+            if (Number(activeConversationRef.current) === Number(conversationId)) replaceMessage(data.data);
         } catch {
-            setError('حذف پیام انجام نشد. دوباره تلاش کنید.');
+            if (Number(activeConversationRef.current) === Number(conversationId)) setError('حذف پیام انجام نشد. دوباره تلاش کنید.');
         } finally { setActionId(null); }
     };
 
     const reportMessage = async (message) => {
+        const conversationId = active;
         const details = window.prompt('دلیل گزارش این پیام را کوتاه توضیح دهید:');
         if (details === null) return;
         try {
-            await axios.post('/api/v1/conversations/' + active + '/messages/' + message.id + '/report', { reason: 'other', details });
-            setNotice('گزارش شما برای بررسی ثبت شد.');
+            await axios.post('/api/v1/conversations/' + conversationId + '/messages/' + message.id + '/report', { reason: 'other', details });
+            if (Number(activeConversationRef.current) === Number(conversationId)) setNotice('گزارش شما برای بررسی ثبت شد.');
         } catch {
-            setError('ثبت گزارش انجام نشد. دوباره تلاش کنید.');
+            if (Number(activeConversationRef.current) === Number(conversationId)) setError('ثبت گزارش انجام نشد. دوباره تلاش کنید.');
         }
     };
 
     const reportConversation = async () => {
+        const conversationId = active;
         const details = window.prompt('دلیل گزارش این گفتگو را کوتاه توضیح دهید:');
         if (details === null) return;
         try {
-            await axios.post('/api/v1/conversations/' + active + '/report', { reason: 'other', details });
-            setNotice('گزارش گفتگو برای بررسی ثبت شد.');
+            await axios.post('/api/v1/conversations/' + conversationId + '/report', { reason: 'other', details });
+            if (Number(activeConversationRef.current) === Number(conversationId)) setNotice('گزارش گفتگو برای بررسی ثبت شد.');
         } catch {
-            setError('ثبت گزارش گفتگو انجام نشد.');
+            if (Number(activeConversationRef.current) === Number(conversationId)) setError('ثبت گزارش گفتگو انجام نشد.');
         }
     };
 
     const toggleBlock = async () => {
+        const conversationId = active;
         try {
             if (safety.blocked_by_me) {
-                await axios.delete('/api/v1/conversations/' + active + '/block');
-                setSafety((current) => ({ ...current, blocked_by_me: false }));
-                setNotice('مسدودسازی برداشته شد.');
+                await axios.delete('/api/v1/conversations/' + conversationId + '/block');
+                if (Number(activeConversationRef.current) === Number(conversationId)) {
+                    setSafety((current) => ({ ...current, blocked_by_me: false }));
+                    setNotice('مسدودسازی برداشته شد.');
+                }
             } else if (window.confirm('با مسدودسازی این کاربر، ارسال پیام در این گفتگو برای هر دو طرف متوقف می‌شود. ادامه می‌دهید؟')) {
-                await axios.post('/api/v1/conversations/' + active + '/block');
-                setSafety((current) => ({ ...current, blocked_by_me: true }));
-                setNotice('کاربر مسدود شد.');
+                await axios.post('/api/v1/conversations/' + conversationId + '/block');
+                if (Number(activeConversationRef.current) === Number(conversationId)) {
+                    setSafety((current) => ({ ...current, blocked_by_me: true }));
+                    setNotice('کاربر مسدود شد.');
+                }
             }
         } catch {
-            setError('به‌روزرسانی وضعیت مسدودسازی انجام نشد.');
+            if (Number(activeConversationRef.current) === Number(conversationId)) setError('به‌روزرسانی وضعیت مسدودسازی انجام نشد.');
         }
     };
 
     const toggleReaction = async (message, emoji) => {
+        const conversationId = active;
         if (actionId || message.deleted_at) return;
         const existing = message.reactions?.find((reaction) => reaction.emoji === emoji);
         setActionId(message.id);
         try {
-            const { data } = await axios.post('/api/v1/conversations/' + active + '/messages/' + message.id + '/reactions', {
+            const { data } = await axios.post('/api/v1/conversations/' + conversationId + '/messages/' + message.id + '/reactions', {
                 emoji,
                 action: existing?.reacted_by_me ? 'remove' : 'add',
             });
-            replaceMessage(data.data);
+            if (Number(activeConversationRef.current) === Number(conversationId)) replaceMessage(data.data);
         } catch {
-            setError('ثبت واکنش انجام نشد. دوباره تلاش کنید.');
+            if (Number(activeConversationRef.current) === Number(conversationId)) setError('ثبت واکنش انجام نشد. دوباره تلاش کنید.');
         } finally { setActionId(null); }
     };
 
@@ -480,7 +496,7 @@ export default function MessagingCenter({ role }) {
                     {loading ? <p className="p-5 text-sm text-muted">در حال دریافت…</p> : threads.length === 0 ? <p className="p-5 text-sm leading-7 text-muted">هنوز گفتگویی ندارید. از صفحه هنرمند یا یک اثر، گزینه «پیام مستقیم» را انتخاب کنید.</p> : (
                         <ul className="min-h-0 flex-1 divide-y divide-border overflow-y-auto overscroll-contain [scrollbar-gutter:stable]">
                             {threads.map((thread) => <li key={thread.id}>
-                                <button type="button" onClick={() => { setActive(thread.id); setReplyTo(null); setEditingId(null); if (requestedConversation) setParams({}, { replace: true }); }} aria-current={Number(active) === Number(thread.id) ? 'true' : undefined} className={'flex w-full items-center gap-3 px-4 py-4 text-right transition hover:bg-surface-muted ' + (Number(active) === Number(thread.id) ? 'bg-surface-muted shadow-[inset_-3px_0_0_var(--color-terracotta)]' : '')}><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sand/50 text-sm font-black text-ink">{(thread.participant?.name ?? 'گ').trim().slice(0, 1)}</span><span className="min-w-0 flex-1">
+                                <button type="button" onClick={() => { setActive(thread.id); setReplyTo(null); setEditingId(null); setParams((current) => { const next = new URLSearchParams(current); next.delete('artist'); next.delete('artwork'); next.set('conversation', String(thread.id)); return next; }, { replace: true }); }} aria-current={Number(active) === Number(thread.id) ? 'true' : undefined} className={'flex w-full items-center gap-3 px-4 py-4 text-right transition hover:bg-surface-muted ' + (Number(active) === Number(thread.id) ? 'bg-surface-muted shadow-[inset_-3px_0_0_var(--color-terracotta)]' : '')}><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sand/50 text-sm font-black text-ink">{(thread.participant?.name ?? 'گ').trim().slice(0, 1)}</span><span className="min-w-0 flex-1">
                                     <span className="flex items-center justify-between gap-2"><strong className="truncate text-sm font-extrabold">{thread.participant?.name ?? 'گفتگو'}</strong>{thread.unread_count > 0 && <span aria-label={`${Number(thread.unread_count).toLocaleString('fa-IR')} پیام خوانده‌نشده`} className={thread.unread_count < 10 ? 'flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-terracotta text-[11px] font-bold tabular-nums text-white' : 'flex h-6 min-w-8 max-w-12 shrink-0 items-center justify-center rounded-full bg-terracotta px-2 text-[11px] font-bold tabular-nums text-white'}>{thread.unread_count > 99 ? '۹۹+' : Number(thread.unread_count).toLocaleString('fa-IR')}</span>}</span>
                                     <span className="mt-2 block truncate text-xs leading-6 text-muted">{thread.last_message?.body ?? (thread.last_message?.deleted_at ? 'پیام حذف شده است' : 'برای شروع گفتگو پیام بفرستید')}</span>
                                     <span className="mt-1 block text-[11px] text-muted">{dateLabel(thread.last_message_at)}</span>
@@ -499,7 +515,7 @@ export default function MessagingCenter({ role }) {
                     {!active ? <div className="m-auto p-8 text-center text-sm text-muted">برای مشاهده پیام‌ها یک گفتگو را انتخاب کنید.</div> : (
                         <>
                             <header className="relative z-10 flex shrink-0 flex-wrap items-center gap-3 border-b border-border bg-white px-4 py-3 shadow-soft sm:px-5">
-                                <button type="button" aria-label="بازگشت به گفتگوها" className="flex h-9 w-9 items-center justify-center rounded-full bg-canvas text-lg text-ink lg:hidden" onClick={() => { setActive(null); setParams({}, { replace: true }); }}>‹</button>
+                                <button type="button" aria-label="بازگشت به گفتگوها" className="flex h-9 w-9 items-center justify-center rounded-full bg-canvas text-lg text-ink lg:hidden" onClick={() => { setActive(null); setParams((current) => { const next = new URLSearchParams(current); next.delete('conversation'); return next; }, { replace: true }); }}>‹</button>
                                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sand/50 text-sm font-black text-ink">{(selected?.participant?.name ?? 'گ').trim().slice(0, 1)}</div><div className="min-w-0 flex-1"><h2 className="truncate text-sm font-extrabold text-ink">{selected?.participant?.name ?? 'گفتگوی خصوصی'}</h2><p className="mt-1 text-[11px] text-muted">گفتگوی خصوصی مستقیم</p></div><button type="button" onClick={reportConversation} className="rounded-full px-2 py-1 text-[11px] font-semibold text-muted transition hover:bg-surface-muted">گزارش</button><button type="button" onClick={toggleBlock} className="rounded-full px-2 py-1 text-[11px] font-semibold text-red-700 transition hover:bg-red-50">{safety.blocked_by_me ? 'رفع مسدودسازی' : 'مسدودسازی کاربر'}</button>
                                 {selected?.contexts?.some((context) => context.artwork?.slug) && <div className="flex w-full flex-wrap gap-2 border-t border-border pt-3"><span className="text-xs text-muted">آثار مرتبط:</span>{selected.contexts.filter((context) => context.artwork?.slug).map((context) => <Link key={context.artwork.slug} to={'/artworks/' + context.artwork.slug} className="border border-border bg-surface-muted px-3 py-1.5 text-xs font-semibold underline">{context.artwork.title}</Link>)}</div>}
                             </header>
@@ -525,7 +541,7 @@ export default function MessagingCenter({ role }) {
                                                 ) : <p className={'whitespace-pre-wrap break-words text-sm leading-7 ' + (deleted ? 'italic text-muted' : '')}>{message.body ?? 'این پیام حذف شده است.'}</p>}
                                                 <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[10px] text-muted">
                                                     <span className={own ? 'text-muted' : 'text-muted'}>{dateLabel(message.created_at)} {message.edited_at && !deleted ? '· ویرایش‌شده' : ''}</span>
-                                                    {own && !deleted && <span className={own ? 'text-muted' : 'text-muted'}>{message.read_at ? '✓✓ خوانده‌شده' : message.delivered_at ? '✓ تحویل‌شده' : 'ارسال‌شده'}</span>}
+                                                    {own && !deleted && <span aria-label={message.read_at ? 'پیام خوانده شده' : 'پیام ارسال شده'} className="text-muted">{message.read_at ? '✓✓ خوانده‌شده' : '✓ ارسال‌شده'}</span>}
                                                 </div>
                                                 {!deleted && (
                                                     <>
