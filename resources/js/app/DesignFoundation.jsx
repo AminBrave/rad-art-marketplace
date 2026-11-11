@@ -14,23 +14,23 @@ export default function DesignFoundation() {
         <main dir="rtl" className="min-h-screen bg-background px-5 py-12 text-foreground sm:px-8 lg:px-12">
             <div className="mx-auto max-w-content">
                 <header className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
-                    <a href="/" className="text-xl font-extrabold text-foreground no-underline">راد<span className="text-terracotta">آرت</span></a>
+                    <a href="/" className="text-xl font-semibold text-foreground no-underline">راد<span className="text-primary">آرت</span></a>
                     <span className="text-xs font-semibold tracking-[0.16em] text-muted-foreground-foreground" dir="ltr">DESIGN SYSTEM / 01</span>
                 </header>
                 <section className="grid gap-10 py-16 lg:grid-cols-[1.15fr_.85fr] lg:items-end">
                     <div>
-                        <p className="mb-4 text-sm font-bold text-terracotta-strong">بنیان‌های بصری راد آرت</p>
-                        <h1 className="max-w-3xl text-4xl font-extrabold leading-tight sm:text-5xl">هنر، با فضای کافی برای دیده‌شدن.</h1>
+                        <p className="mb-4 text-sm font-bold text-primary">بنیان‌های بصری راد آرت</p>
+                        <h1 className="max-w-3xl text-4xl font-semibold leading-tight sm:text-5xl">هنر، با فضای کافی برای دیده‌شدن.</h1>
                         <p className="mt-6 max-w-2xl text-lg leading-loose text-muted-foreground-foreground">زبان بصری معاصر و تحریریه‌ای؛ آرام، دقیق و متکی بر آثار هنری. این صفحه نمونه‌ای از رنگ، تایپوگرافی، فرم‌ها و سطوح پایه است.</p>
                     </div>
-                    <div className="border-s-2 border-sand ps-6">
+                    <div className="border-s-2 border-border ps-6">
                         <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground-foreground" dir="ltr">EDITORIAL PRINCIPLE</p>
                         <p className="mt-3 text-xl font-semibold leading-relaxed">کمتر تزئین، بیشتر توجه به اثر.</p>
                     </div>
                 </section>
                 <section aria-labelledby="palette-title" className="border-t border-border py-10">
                     <div className="mb-6 flex items-end justify-between gap-4">
-                        <div><p className="text-xs font-bold text-terracotta-strong">01 / COLOR</p><h2 id="palette-title" className="mt-2 text-2xl font-bold">پالت رنگ</h2></div>
+                        <div><p className="text-xs font-bold text-primary">01 / COLOR</p><h2 id="palette-title" className="mt-2 text-2xl font-bold">پالت رنگ</h2></div>
                         <p className="text-xs text-muted-foreground-foreground" dir="ltr">CORE PALETTE</p>
                     </div>
                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
@@ -44,8 +44,8 @@ export default function DesignFoundation() {
                 </section>
                 <section aria-labelledby="type-title" className="grid gap-8 border-t border-border py-10 lg:grid-cols-2">
                     <div>
-                        <p className="text-xs font-bold text-terracotta-strong">02 / TYPOGRAPHY</p><h2 id="type-title" className="mt-2 text-2xl font-bold">تایپوگرافی فارسی</h2>
-                        <p className="mt-6 text-4xl font-extrabold leading-tight">روایت هر اثر، یگانه است.</p>
+                        <p className="text-xs font-bold text-primary">02 / TYPOGRAPHY</p><h2 id="type-title" className="mt-2 text-2xl font-bold">تایپوگرافی فارسی</h2>
+                        <p className="mt-6 text-4xl font-semibold leading-tight">روایت هر اثر، یگانه است.</p>
                         <p className="mt-4 max-w-xl leading-loose text-muted-foreground-foreground">وزیرمتن برای خوانایی فارسی و رابط راست‌به‌چپ؛ وزن‌های متنوع برای ساخت سلسله‌مراتب روشن، بدون شلوغی بصری.</p>
                     </div>
                     <div dir="ltr" className="border-s border-border ps-6">
@@ -55,26 +55,26 @@ export default function DesignFoundation() {
                     </div>
                 </section>
                 <section aria-labelledby="controls-title" className="border-t border-border py-10">
-                    <p className="text-xs font-bold text-terracotta-strong">03 / INTERACTION</p><h2 id="controls-title" className="mt-2 text-2xl font-bold">کنترل‌ها و سطوح</h2>
+                    <p className="text-xs font-bold text-primary">03 / INTERACTION</p><h2 id="controls-title" className="mt-2 text-2xl font-bold">کنترل‌ها و سطوح</h2>
                     <div className="mt-6 grid gap-8 lg:grid-cols-2">
                         <div className="flex flex-wrap items-center gap-3">
-                            <button type="button" className="rounded-md bg-terracotta px-5 py-3 text-sm font-bold text-white transition hover:bg-terracotta-strong">دکمه اصلی</button>
-                            <button type="button" className="rounded-md border border-border-strong bg-card px-5 py-3 text-sm font-bold text-foreground transition hover:border-terracotta">دکمه ثانویه</button>
-                            <a href="#palette-title" className="text-sm font-bold text-terracotta-strong underline">پیوند متنی</a>
+                            <button type="button" className="rounded-md bg-primary px-5 py-3 text-sm font-bold text-white transition hover:bg-primary-strong">دکمه اصلی</button>
+                            <button type="button" className="rounded-md border border-border-strong bg-card px-5 py-3 text-sm font-bold text-foreground transition hover:border-primary">دکمه ثانویه</button>
+                            <a href="#palette-title" className="text-sm font-bold text-primary underline">پیوند متنی</a>
                         </div>
                         <form className="rounded-lg border border-border bg-card p-5 shadow-soft" onSubmit={(event) => event.preventDefault()}>
                             <label htmlFor="foundation-email" className="block text-sm font-semibold">نشانی ایمیل</label>
-                            <input id="foundation-email" type="email" placeholder="name@example.com" dir="ltr" className="mt-2 w-full rounded-md border border-border-strong bg-background px-4 py-3 text-left text-sm outline-none transition placeholder:text-muted-foreground-foreground focus:border-terracotta" />
+                            <input id="foundation-email" type="email" placeholder="name@example.com" dir="ltr" className="mt-2 w-full rounded-md border border-border-strong bg-background px-4 py-3 text-left text-sm outline-none transition placeholder:text-muted-foreground-foreground focus:border-primary" />
                             <p className="mt-2 text-xs text-muted-foreground-foreground">نمونه فیلد ورودی با حالت تمرکز قابل مشاهده.</p>
                         </form>
                     </div>
                 </section>
                 <section aria-labelledby="surface-title" className="border-t border-border py-10">
-                    <p className="text-xs font-bold text-terracotta-strong">04 / SURFACES</p><h2 id="surface-title" className="mt-2 text-2xl font-bold">مرزها و سطوح</h2>
+                    <p className="text-xs font-bold text-primary">04 / SURFACES</p><h2 id="surface-title" className="mt-2 text-2xl font-bold">مرزها و سطوح</h2>
                     <div className="mt-6 grid gap-4 sm:grid-cols-3">
                         <div className="border border-border bg-card p-5"><p className="font-bold">سطح اصلی</p><p className="mt-2 text-sm text-muted-foreground-foreground">سفید روی زمینه عاجی</p></div>
-                        <div className="border border-sand bg-muted p-5"><p className="font-bold">سطح خنثی</p><p className="mt-2 text-sm text-muted-foreground-foreground">برای گروه‌بندی آرام محتوا</p></div>
-                        <div className="border-s border-2 border-olive bg-card p-5"><p className="font-bold">نشانگر معنایی</p><p className="mt-2 text-sm text-muted-foreground-foreground">استفاده محدود از زیتونی</p></div>
+                        <div className="border border-border bg-muted p-5"><p className="font-bold">سطح خنثی</p><p className="mt-2 text-sm text-muted-foreground-foreground">برای گروه‌بندی آرام محتوا</p></div>
+                        <div className="border-s border-2 border-accent bg-card p-5"><p className="font-bold">نشانگر معنایی</p><p className="mt-2 text-sm text-muted-foreground-foreground">استفاده محدود از زیتونی</p></div>
                     </div>
                 </section>
                 <ComponentShowcase />
