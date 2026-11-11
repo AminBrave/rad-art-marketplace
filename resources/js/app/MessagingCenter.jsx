@@ -50,6 +50,7 @@ export default function MessagingCenter({ role }) {
     const [pendingMessageId, setPendingMessageId] = useState(null);
     const [uploadProgress, setUploadProgress] = useState(0);
     const [replyTo, setReplyTo] = useState(null);
+    const [pendingArtwork, setPendingArtwork] = useState(null);
     const [editingId, setEditingId] = useState(null);
     const [editDraft, setEditDraft] = useState('');
     const [loading, setLoading] = useState(true);
@@ -362,6 +363,8 @@ export default function MessagingCenter({ role }) {
                 if (controller.signal.aborted) return;
 
                 const conversation = conversationResponse.data;
+                const artworkContext = conversation.contexts?.find((context) => context.artwork?.slug === artworkSlug)?.artwork;
+                if (artworkContext) setPendingArtwork(artworkContext);
                 setThreads((current) => [
                     conversation,
                     ...current.filter((thread) => Number(thread.id) !== conversationId),
@@ -371,7 +374,7 @@ export default function MessagingCenter({ role }) {
                 setParams((current) => {
                     const next = new URLSearchParams(current);
                     next.delete('artist');
-                    next.delete('artwork');
+                    if (artworkSlug) next.set('artwork', artworkSlug);
                     next.set('conversation', String(conversationId));
                     return next;
                 }, { replace: true });
@@ -503,6 +506,7 @@ export default function MessagingCenter({ role }) {
             const { data } = await axios.post('/api/v1/conversations/' + conversationId + '/messages', {
                 body: body || 'فایل پیوست',
                 reply_to_id: replyTo?.id ?? null,
+                artwork_id: pendingArtwork?.id ?? null,
                 client_message_id: messageClientId,
             });
             let savedMessage = data.data;
@@ -538,6 +542,8 @@ export default function MessagingCenter({ role }) {
                 pendingIdsByConversationRef.current.delete(Number(conversationId));
                 setUploadProgress(0);
                 setReplyTo(null);
+                setPendingArtwork(null);
+                setParams((current) => { const next = new URLSearchParams(current); next.delete('artwork'); return next; }, { replace: true });
                 shouldStickToBottomRef.current = true;
             }
             loadThreads();
@@ -643,6 +649,12 @@ export default function MessagingCenter({ role }) {
 
     const selected = threads.find((item) => Number(item.id) === Number(active));
 
+    useEffect(() => {
+        if (role !== 'buyer' || !artworkSlug || !selected?.contexts) return;
+        const artwork = selected.contexts.find((context) => context.artwork?.slug === artworkSlug)?.artwork;
+        if (artwork) setPendingArtwork(artwork);
+    }, [role, artworkSlug, selected]);
+
     return (
         <section className="rad-messaging space-y-5 font-sans" dir="rtl">
             <header className="border-b border-border pb-5">
@@ -679,7 +691,7 @@ export default function MessagingCenter({ role }) {
                     {loading ? <ConversationInboxSkeleton count={6} /> : threads.length === 0 ? <p className="p-5 text-sm leading-7 text-muted">هنوز گفتگویی ندارید. از صفحه هنرمند یا یک اثر، گزینه «پیام مستقیم» را انتخاب کنید.</p> : (
                         <ul className="min-h-0 flex-1 divide-y divide-border overflow-y-auto overscroll-contain [scrollbar-gutter:stable]">
                             {threads.map((thread) => <li key={thread.id} className={'transition-colors hover:bg-surface-muted focus-within:bg-surface-muted ' + (Number(active) === Number(thread.id) ? 'bg-surface-muted shadow-[inset_-3px_0_0_var(--color-terracotta)]' : '')}>
-                                <button type="button" onClick={() => { setActive(thread.id); setReplyTo(null); setEditingId(null); setParams((current) => { const next = new URLSearchParams(current); next.delete('artist'); next.delete('artwork'); next.set('conversation', String(thread.id)); return next; }, { replace: true }); }} aria-current={Number(active) === Number(thread.id) ? 'true' : undefined} className="flex w-full items-center gap-3 bg-transparent px-4 py-4 text-right transition"><span aria-hidden="true" className={'flex h-11 w-11 aspect-square shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-inset ring-border text-sm font-black shadow-sm ' + avatarTone(thread.participant?.name)}>{avatarInitial(thread.participant?.name)}</span><span className="min-w-0 flex-1">
+                                <button type="button" onClick={() => { setActive(thread.id); setReplyTo(null); setPendingArtwork(null); setEditingId(null); setParams((current) => { const next = new URLSearchParams(current); next.delete('artist'); next.delete('artwork'); next.set('conversation', String(thread.id)); return next; }, { replace: true }); }} aria-current={Number(active) === Number(thread.id) ? 'true' : undefined} className="flex w-full items-center gap-3 bg-transparent px-4 py-4 text-right transition"><span aria-hidden="true" className={'flex h-11 w-11 aspect-square shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-inset ring-border text-sm font-black shadow-sm ' + avatarTone(thread.participant?.name)}>{avatarInitial(thread.participant?.name)}</span><span className="min-w-0 flex-1">
                                     <span className="flex items-center justify-between gap-2"><strong className="truncate text-sm font-extrabold">{thread.participant?.name ?? 'گفتگو'}</strong>{thread.unread_count > 0 && <span aria-label={`${Number(thread.unread_count).toLocaleString('fa-IR')} پیام خوانده‌نشده`} className={thread.unread_count < 10 ? 'flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-terracotta text-[11px] font-bold tabular-nums text-white' : 'flex h-6 min-w-8 max-w-12 shrink-0 items-center justify-center rounded-full bg-terracotta px-2 text-[11px] font-bold tabular-nums text-white'}>{thread.unread_count > 99 ? '۹۹+' : Number(thread.unread_count).toLocaleString('fa-IR')}</span>}</span>
                                     <span className="mt-2 block truncate text-xs leading-6 text-muted">{thread.last_message?.body ?? (thread.last_message?.deleted_at ? 'پیام حذف شده است' : 'برای شروع گفتگو پیام بفرستید')}</span>
                                     <span className="mt-1 block text-[11px] text-muted">{dateLabel(thread.last_message_at)}</span>
@@ -699,7 +711,7 @@ export default function MessagingCenter({ role }) {
                         <>
                             <header className="relative z-20 shrink-0 border-b border-border bg-white shadow-soft">
                                 <div className="flex min-w-0 items-center gap-2.5 px-3 py-3 sm:gap-3 sm:px-5">
-                                    <button type="button" aria-label="بازگشت به گفتگوها" title="بازگشت به گفتگوها" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-canvas text-ink transition hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:hidden" onClick={() => { setActive(null); setParams((current) => { const next = new URLSearchParams(current); next.delete('conversation'); return next; }, { replace: true }); }}><ChevronRight size={19} aria-hidden="true" /></button>
+                                    <button type="button" aria-label="بازگشت به گفتگوها" title="بازگشت به گفتگوها" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-canvas text-ink transition hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:hidden" onClick={() => { setActive(null); setPendingArtwork(null); setParams((current) => { const next = new URLSearchParams(current); next.delete('conversation'); next.delete('artwork'); return next; }, { replace: true }); }}><ChevronRight size={19} aria-hidden="true" /></button>
                                     <div aria-hidden="true" className={'flex h-11 w-11 aspect-square shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-inset ring-border text-sm font-black shadow-sm ' + avatarTone(selected?.participant?.name)}>{avatarInitial(selected?.participant?.name)}</div>
                                     <div className="min-w-0 flex-1">
                                         <h2 dir="auto" title={selected?.participant?.name ?? 'گفتگوی خصوصی'} className="truncate text-sm font-extrabold leading-6 text-ink sm:text-base">{selected?.participant?.name ?? 'گفتگوی خصوصی'}</h2>
@@ -748,6 +760,7 @@ export default function MessagingCenter({ role }) {
                                             {showDayDivider && <div dir="rtl" className="flex justify-center py-1"><span className="rounded-full border border-border bg-white/90 px-3 py-1 text-[10px] font-semibold text-muted shadow-soft">{dayLabel(message.created_at)}</span></div>}
                                             <div dir="ltr" className={'flex w-full ' + (own ? 'justify-end' : 'justify-start')}>
                                             <article dir="rtl" className={'min-w-0 max-w-[88%] rounded-[20px] px-4 py-3 shadow-[0_2px_5px_rgba(31,30,27,0.055)] sm:max-w-[min(72%,680px)] ' + (own ? 'rounded-bl-[7px] bg-[var(--color-message-own)] text-ink' : 'rounded-br-[7px] border border-border bg-[var(--color-message-peer)] text-ink')}>
+                                                {message.artwork && <Link to={'/artworks/' + message.artwork.slug} className="mb-3 block overflow-hidden rounded-xl border border-border bg-white/90 transition hover:border-terracotta/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"><div className="flex items-stretch gap-3"><img src={message.artwork.image_url} alt={message.artwork.title} loading="lazy" decoding="async" className="h-24 w-24 shrink-0 bg-surface-muted object-cover sm:h-28 sm:w-28" /><div className="min-w-0 flex-1 py-3 pl-3"><span className="text-[10px] font-bold text-terracotta-strong">اثر مورد گفتگو</span><strong className="mt-1 block line-clamp-2 text-xs leading-6 text-ink">{message.artwork.title}</strong><span className="mt-1 block truncate text-[10px] text-muted">{[message.artwork.category, message.artwork.medium, message.artwork.dimensions, message.artwork.year?.toLocaleString?.('fa-IR')].filter(Boolean).join(' · ')}</span><span className="mt-2 inline-block text-[10px] font-bold text-terracotta-strong">مشاهده جزئیات اثر ←</span></div></div></Link>}
                                                 {message.attachments?.length > 0 && <ul className="mb-3 space-y-3">{message.attachments.map((attachment) => {
                                                     const isImage = attachment.mime_type?.startsWith('image/');
                                                     return <li key={attachment.id} className="max-w-full overflow-hidden rounded-xl border border-border bg-white/80">
@@ -790,6 +803,7 @@ export default function MessagingCenter({ role }) {
                                 
                             </div>
                             {safetyLoading ? <p role="status" className="border-t border-border bg-surface-muted p-4 text-sm text-muted">در حال بررسی وضعیت ایمنی گفتگو…</p> : safety.blocked_by_me || safety.blocked_by_other ? <p role="status" className="border-t border-border bg-surface-muted p-4 text-sm text-muted">{safety.blocked_by_me ? 'این کاربر را مسدود کرده‌اید؛ برای ادامه گفتگو ابتدا مسدودسازی را بردارید.' : 'این گفتگو به‌دلیل تنظیمات ایمنی امکان ارسال پیام ندارد.'}</p> : <form onSubmit={send} className="shrink-0 border-t border-border bg-white px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 sm:px-5 sm:py-4">
+                                {pendingArtwork && <div className="mb-3 flex min-w-0 items-center gap-3 rounded-xl border border-terracotta/30 bg-surface-muted p-2.5"><Link to={'/artworks/' + pendingArtwork.slug} className="flex min-w-0 flex-1 items-center gap-3 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"><img src={pendingArtwork.image_url} alt={pendingArtwork.title} className="h-16 w-16 shrink-0 rounded-lg bg-white object-cover" /><span className="min-w-0"><span className="block text-[10px] font-bold text-terracotta-strong">پاسخ درباره این اثر</span><strong className="mt-1 block truncate text-xs text-ink">{pendingArtwork.title}</strong><span className="mt-1 block truncate text-[10px] text-muted">{[pendingArtwork.category, pendingArtwork.medium, pendingArtwork.dimensions].filter(Boolean).join(' · ')}</span></span></Link><button type="button" onClick={() => { setPendingArtwork(null); setParams((current) => { const next = new URLSearchParams(current); next.delete('artwork'); return next; }, { replace: true }); }} aria-label="حذف ارجاع به اثر" title="حذف ارجاع به اثر" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted hover:bg-white hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"><X size={16} aria-hidden="true" /></button></div>}
                                 {replyTo && <div className="mb-3 flex items-start justify-between gap-3 border-r-2 border-terracotta bg-surface-muted p-3 text-xs"><div><strong>پاسخ به {replyTo.sender_name ?? 'پیام'}</strong><p className="mt-1 line-clamp-2 text-muted">{replyTo.body}</p></div><button type="button" onClick={() => setReplyTo(null)} aria-label="لغو پاسخ" title="لغو پاسخ" className="rounded-full p-1 text-muted hover:bg-border"><X size={16} aria-hidden="true" /></button></div>}
                                 <div className="composer-shell flex items-end gap-2 rounded-[26px] border border-border bg-surface-muted p-2 shadow-soft">
                                     <div className="min-w-0 flex-1"><textarea aria-label="متن پیام" ref={draftRef} value={draft} disabled={sending || safetyLoading || safety.blocked_by_me || safety.blocked_by_other} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); event.currentTarget.form?.requestSubmit(); } }} rows={1} maxLength={5000} placeholder="پیام بنویسید…" className="max-h-36 min-h-11 w-full resize-none overflow-y-auto border-0 bg-transparent px-3 py-2.5 text-[14px] leading-7 text-ink outline-none placeholder:text-subtle focus:outline-none focus-visible:outline-none focus:ring-0" />
