@@ -71,7 +71,7 @@ export default function ThemeSwitcher({ className = '' }) {
                     </select>
                 </label>
             )}
-            <ColorSchemeControl />
+            {theme === 'new-york' && <ColorSchemeControl />}
         </div>
     );
 }
