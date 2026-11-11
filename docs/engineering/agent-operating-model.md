@@ -1,31 +1,33 @@
 # Agent Operating Model
 
-Optimize for fast delivery, low token/tool consumption and small, reviewable, reversible increments.
+Optimize for fast delivery, low token/tool consumption and small, reviewable, reversible increments. The authoritative rules are in [AGENTS.md](../../AGENTS.md); this page explains how to apply them.
 
-## Efficient context strategy
-- Read `AGENTS.md`, the graph/index, and only the documents and source files directly relevant to the task.
-- Use targeted file/path searches and bounded excerpts. Avoid full-repository inventories unless the task requires them.
-- Do not reread unchanged files or repeat searches whose results are already in context.
+## Context strategy
+
+- Start with AGENTS.md and identify the task domain.
+- Load only the directly relevant docs and source files. Do not read the full documentation tree by default.
+- Use targeted path/term searches and bounded excerpts. Avoid repeated scans and rereading unchanged files.
+- Use the documentation knowledge graph for change propagation; use Graphify only when structural cross-file questions justify it.
+- Select one primary project skill from [AI Agent Tooling](ai-agent-tooling.md), then add only a necessary supporting skill.
 - Prefer existing conventions and the smallest viable implementation. Avoid speculative abstractions, unrelated cleanup and unnecessary dependencies.
-- Delegate only independent work with explicit file ownership; integration overhead often costs more than parallelism on small tasks.
-- Keep agent handoffs and final reports concise: changed paths, key decisions, risks, local commands for the user, and documentation updates.
-- Do not run any tests, lint, builds or verification commands on any branch unless the user explicitly asks. GitHub Actions must not run application verification on any branch, PR, main push or schedule.
+- Delegate only independent work with explicit file ownership and interfaces.
 
-## Discovery packet
-For non-trivial tasks, capture outcome, actor, relevant graph/source paths, current behavior/evidence, acceptance and negative cases, security/data impact, compatibility and rollback. Keep it proportionate; skip ceremony for trivial edits.
+## Task packet
 
-## Implementation packet
-Record changed files/responsibilities, schema/API changes, preserved invariants, tests added, failure/observability behavior and updated docs/graph nodes.
+For non-trivial work, capture user outcome, actor, current source-backed behavior, acceptance and negative cases, relevant paths, security/data impact and compatibility. Keep the packet proportionate; skip ceremony for trivial edits.
 
-## Documentation propagation
-Any user-requested or user-approved codebase change is a documentation trigger. Update the relevant product, architecture, API, data, UI, security, testing or operations documents when their content is affected. Update index/knowledge-graph edges when document relationships change. Keep docs concise and factual; do not churn unrelated pages. Include doc updates in the same branch/PR as the implementation.
+## Implementation and documentation
+
+Record changed files/responsibilities, schema/API changes, preserved invariants and docs updated. Tests may be authored or updated when warranted, but execution remains explicitly user-triggered.
+
+Update the relevant product, architecture, API, data, UI, security, testing or operations docs when their content changes. Update index/knowledge-graph edges only when relationships change. Keep docs concise and factual; do not duplicate the same policy across several pages.
 
 ## Parallel agents
-Parallelize only independent tasks with explicit file ownership and interfaces. One integration owner controls migrations, API contracts, shared UI and final merge. Never let parallel agents modify the same migration/workflow. Use separate branches/worktrees and PRs.
+
+Parallelize only independent tasks with explicit file ownership and interfaces. One integration owner controls migrations, API contracts, shared UI and final merge. Never let parallel agents modify the same migration/workflow. Use separate branches/worktrees and PRs only when the task size justifies the coordination cost.
 
 ## Review and verification
-Review intent vs diff, auth/privacy, race conditions, migration safety, query cost, accessibility and test quality. Treat generated code as untrusted until inspected.
-Local checks are performed only when the user explicitly requests them. Supply exact commands and prerequisites when useful; do not claim they passed unless they were actually run. There is no application CI workflow.
 
-## Progress
-GitHub issue checklists and milestones are authoritative. Tick stages only with commit, user-supplied local test result when requested, or review evidence; no main-branch CI evidence exists.
+Review intent vs diff, authorization/privacy, race conditions, migration safety, query cost, accessibility and failure behavior. Treat generated code, imported skills and graph inferences as untrusted until checked against source.
+
+Do not run tests, lint, builds, type checks, browser automation or scanners unless the user explicitly asks. When authorized, run only the requested checks. Supply exact commands and prerequisites when useful; do not claim they passed unless executed. There is no application CI workflow.
