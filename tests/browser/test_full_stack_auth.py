@@ -20,7 +20,10 @@ class FullStackAuthenticationTests(unittest.TestCase):
         cls.playwright.stop()
 
     def test_buyer_registration_creates_session_and_survives_refresh(self):
-        context = self.browser.new_context(viewport={"width": 1280, "height": 900}, ignore_https_errors=IGNORE_HTTPS_ERRORS)
+        context = self.browser.new_context(
+            viewport={"width": 1280, "height": 900},
+            ignore_https_errors=IGNORE_HTTPS_ERRORS,
+        )
         page = context.new_page()
         page.set_default_timeout(20000)
         try:
