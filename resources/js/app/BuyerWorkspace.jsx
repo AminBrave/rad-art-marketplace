@@ -21,75 +21,18 @@ function InquiryStatus({ status }) {
 }
 
 export function BuyerDashboardHome() {
-    const [summary, setSummary] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-
-    const load = useCallback(async (signal) => {
-        setLoading(true);
-        setError('');
-        try {
-            const { data } = await axios.get(apiUrl, { signal });
-            setSummary({ total: data.total ?? data.meta?.total ?? data.data?.length ?? 0, latest: data.data?.[0] ?? null });
-        } catch (requestError) {
-            if (axios.isCancel(requestError)) return;
-            setError(requestError.response?.status === 403
-                ? 'این حساب اجازه مشاهده درخواست‌های خریدار را ندارد.'
-                : 'دریافت خلاصه درخواست‌ها انجام نشد. دوباره تلاش کنید.');
-        } finally {
-            if (!signal?.aborted) setLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        const controller = new AbortController();
-        load(controller.signal);
-        return () => controller.abort();
-    }, [load]);
-
     return (
         <section className="space-y-6" dir="rtl">
             <header className="border-b border-border pb-6">
                 <p className="text-sm font-bold text-terracotta-strong">فضای خریدار</p>
-                <h1 className="mt-2 text-2xl font-black">پیگیری ارتباط‌های شما</h1>
-                <p className="mt-3 max-w-2xl text-sm leading-7 text-muted">درخواست‌هایی را که برای هنرمندان فرستاده‌اید مرور کنید و وضعیت ثبت‌شده آن‌ها را ببینید.</p>
+                <h1 className="mt-2 text-2xl font-black">ارتباط مستقیم با هنرمندان</h1>
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-muted">از صفحه هنرمند یا اثر هنری، گفت‌وگوی مستقیمی آغاز کنید و پیام‌های خود را در این بخش پیگیری کنید.</p>
             </header>
-            {error && <ErrorState title="خلاصه درخواست‌ها در دسترس نیست" description={error} onRetry={() => load()} />}
-            {loading ? <SkeletonLines lines={4} /> : !error && (
-                <>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                        <article className="border border-border bg-paper p-5">
-                            <p className="text-sm text-muted">تعداد کل درخواست‌های ثبت‌شده</p>
-                            <p className="mt-3 text-3xl font-black tabular-nums">{summary?.total ?? 0}</p>
-                        </article>
-                        <article className="border border-border bg-paper p-5">
-                            <p className="text-sm text-muted">آخرین درخواست</p>
-                            <p className="mt-3 text-lg font-bold">{summary?.latest?.subject ?? 'هنوز درخواستی ثبت نشده'}</p>
-                            {summary?.latest && <p className="mt-2 text-xs text-muted">{formatDate(summary.latest.created_at)} · {summary.latest.artist?.display_name}</p>}
-                        </article>
-                    </div>
-                    {summary?.latest ? (
-                        <article className="border border-border bg-white p-5 sm:p-6">
-                            <div className="flex flex-wrap items-center justify-between gap-3">
-                                <div><p className="text-xs font-bold text-terracotta-strong">آخرین پیگیری</p><h2 className="mt-2 font-bold">{summary.latest.subject}</h2></div>
-                                <InquiryStatus status={summary.latest.status} />
-                            </div>
-                            <p className="mt-2 text-sm text-muted">هنرمند: {summary.latest.artist?.display_name ?? '—'}</p>
-                            <Link to={inquiriesUrl + '/' + summary.latest.id} className="mt-4 inline-block text-sm font-bold text-terracotta-strong underline underline-offset-4">مشاهده جزئیات</Link>
-                        </article>
-                    ) : (
-                        <EmptyState
-                            title="هنوز درخواستی ارسال نکرده‌اید"
-                            description="از صفحه هنرمندان یا جزئیات یک اثر می‌توانید درخواست ارتباطی ارسال کنید. پس از ثبت، پیگیری آن در همین بخش نمایش داده می‌شود."
-                            action={<Link to="/artists" className="mt-2 inline-flex min-h-11 items-center bg-ink px-5 py-3 text-sm font-bold text-white">کشف هنرمندان</Link>}
-                        />
-                    )}
-                    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-5">
-                        <div><h2 className="font-bold">درخواست‌های من</h2><p className="mt-1 text-xs text-muted">تاریخچه و وضعیت درخواست‌های ارسالی</p></div>
-                        <Link to={inquiriesUrl} className="text-sm font-bold text-terracotta-strong underline underline-offset-4">مشاهده همه درخواست‌ها</Link>
-                    </div>
-                </>
-            )}
+            <article className="border border-border bg-paper p-6 sm:p-8">
+                <h2 className="text-lg font-bold">صندوق پیام‌های شما</h2>
+                <p className="mt-2 text-sm leading-7 text-muted">گفت‌وگوهای فعال، پیوست‌ها و اعلان‌های پیام در بخش پیام‌های مستقیم در دسترس هستند.</p>
+                <Link to="/dashboard/buyer/messages" className="mt-5 inline-flex min-h-11 items-center bg-ink px-5 py-3 text-sm font-bold text-white hover:bg-terracotta">رفتن به پیام‌های مستقیم</Link>
+            </article>
         </section>
     );
 }
