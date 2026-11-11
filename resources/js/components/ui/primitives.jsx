@@ -1,6 +1,9 @@
 import { cloneElement, isValidElement, useId } from 'react';
 import { cn } from '../../lib/utils';
 import { Field, FieldLabel, FieldDescription, FieldError } from './field';
+import { Input } from './input';
+import { Textarea } from './textarea';
+import { NativeSelect } from './form-controls';
 import { Button } from './button';
 
 export { Button };
@@ -74,3 +77,40 @@ export function FormField({ id, label, hint, error, required = false, children, 
     );
 }
 
+
+export function TextInput({ className = '', ...props }) {
+    return <Input className={cn('w-full', className)} {...props} />;
+}
+
+export function TextareaField({ className = '', rows = 4, ...props }) {
+    return <Textarea rows={rows} className={className} {...props} />;
+}
+
+export function SelectField({ className = '', children, ...props }) {
+    return <NativeSelect className={className} {...props}>{children}</NativeSelect>;
+}
+
+export function SearchField({
+    value,
+    onChange,
+    onSearch,
+    placeholder = 'جست‌وجو…',
+    label = 'جست‌وجو',
+    buttonLabel = 'جست‌وجو',
+    disabled = false,
+    className = '',
+}) {
+    const searchId = useId();
+    const submit = (event) => {
+        event.preventDefault();
+        onSearch?.(value);
+    };
+
+    return (
+        <form onSubmit={submit} role="search" className={cn('flex min-w-0 flex-col gap-2 sm:flex-row', className)}>
+            <label className="sr-only" htmlFor={searchId}>{label}</label>
+            <TextInput id={searchId} type="search" value={value} onChange={onChange} placeholder={placeholder} disabled={disabled} />
+            <Button type="submit" size="md" disabled={disabled}>{buttonLabel}</Button>
+        </form>
+    );
+}
