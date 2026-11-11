@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'defaultTheme' => 'editorial',
+    'defaultTheme' => 'new-york',
     'allowRuntimeSwitching' => true,
     'persistSelection' => true,
     'storageKey' => 'rad-art-theme',
@@ -9,13 +9,13 @@ return [
         'editorial' => [
             'id' => 'editorial',
             'name' => 'Editorial',
-            'description' => 'سامانه طراحی اصیل راد آرت',
+            'description' => 'پوسته کلاسیک راد آرت',
             'enabled' => true,
         ],
         'new-york' => [
             'id' => 'new-york',
             'name' => 'New York',
-            'description' => 'سبک New York از shadcn/ui با هویت راد آرت',
+            'description' => 'سامانه طراحی کامل مبتنی بر shadcn/ui New York',
             'enabled' => true,
         ],
     ],
