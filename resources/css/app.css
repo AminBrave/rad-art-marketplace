@@ -508,29 +508,23 @@ a {
     }
 }
 
-/* Messaging typography and RAD-native conversation surfaces. */
+/* RAD messaging: Telegram-inspired rhythm and controls, expressed in RAD tokens. */
 :root {
     --color-message-own: color-mix(in srgb, var(--color-terracotta) 12%, white);
     --color-message-peer: var(--color-paper);
 }
-.rad-messaging { font-family: var(--font-persian); }
-.rad-messaging [dir='ltr'] { font-family: inherit; }
-.rad-messaging [dir='rtl'] { font-family: var(--font-persian); }
-.rad-messaging input,
-.rad-messaging textarea,
-.rad-messaging select { font-family: var(--font-persian); font-synthesis: none; }
-.rad-messaging textarea:focus,
-.rad-messaging textarea:focus-visible { outline: none !important; box-shadow: none !important; }
-
-/* RAD messaging: keep Persian-first typography while using Inter in LTR rails. */
 .rad-messaging {
     font-family: var(--font-persian), var(--font-latin), sans-serif;
 }
 .rad-messaging [dir='ltr'] {
     font-family: var(--font-latin), var(--font-persian), sans-serif;
 }
-.rad-messaging [dir='rtl'] {
+.rad-messaging [dir='rtl'],
+.rad-messaging input,
+.rad-messaging textarea,
+.rad-messaging select {
     font-family: var(--font-persian), var(--font-latin), sans-serif;
+    font-synthesis: none;
 }
 .rad-messaging :is(button, a, input, select, [tabindex]):focus-visible {
     outline: 2px solid var(--color-focus);
@@ -540,6 +534,11 @@ a {
 .rad-messaging textarea:focus-visible {
     outline: none !important;
     box-shadow: none !important;
+}
+/* Keep the composer visually calm while still exposing keyboard focus. */
+.rad-messaging .composer-shell:has(textarea:focus-visible) {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
 }
 @media (prefers-reduced-motion: reduce) {
     .rad-messaging *,
