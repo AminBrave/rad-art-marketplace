@@ -124,6 +124,29 @@ export function AdminDashboardSkeleton() {
     );
 }
 
+export function ArtworkModerationSkeleton({ count = 4 }) {
+    return (
+        <div aria-hidden="true" className="grid gap-4 xl:grid-cols-2">
+            {Array.from({ length: count }, (_, index) => <article key={index} className="overflow-hidden border border-border bg-paper">
+                <div className="grid sm:grid-cols-[minmax(0,.85fr)_minmax(0,1.15fr)]">
+                    <Skeleton className="h-56 w-full rounded-none sm:h-full sm:min-h-64" />
+                    <div className="grid content-start gap-3 p-5"><div className="flex items-start justify-between gap-3"><Skeleton className="h-5 w-2/3 rounded-sm" /><Skeleton className="h-6 w-20 rounded-full" /></div><Skeleton className="h-3 w-1/2 rounded-sm" /><div className="grid grid-cols-2 gap-3"><Skeleton className="h-8 w-full rounded-sm" /><Skeleton className="h-8 w-full rounded-sm" /><Skeleton className="h-8 w-full rounded-sm" /><Skeleton className="h-8 w-full rounded-sm" /></div><div className="grid gap-2"><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-11/12 rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div></div>
+                </div>
+                <div className="grid gap-3 border-t border-border p-5"><Skeleton className="h-4 w-36 rounded-sm" /><Skeleton className="h-20 w-full rounded-sm" /><div className="flex gap-2"><Skeleton className="h-9 w-24 rounded-sm" /><Skeleton className="h-9 w-24 rounded-sm" /><Skeleton className="h-9 w-20 rounded-sm" /></div></div>
+            </article>)}
+        </div>
+    );
+}
+
+export function WorkspaceIdentitySkeleton() {
+    return (
+        <section aria-hidden="true" className="grid gap-5 border border-border bg-paper p-5 sm:p-7 lg:grid-cols-[1fr_15rem] lg:items-center">
+            <div className="grid gap-3"><div className="flex items-center gap-3"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-6 w-24 rounded-full" /></div><Skeleton className="h-7 w-2/3 max-w-sm rounded-sm" /><Skeleton className="h-4 w-full max-w-2xl rounded-sm" /><Skeleton className="h-4 w-4/5 max-w-xl rounded-sm" /><div className="mt-2 flex gap-3"><Skeleton className="h-10 w-32 rounded-sm" /><Skeleton className="h-10 w-28 rounded-sm" /></div></div>
+            <div className="grid justify-items-center gap-3 border-t border-border pt-5 lg:border-r lg:border-t-0 lg:pt-0"><Skeleton className="h-3 w-20 rounded-sm" /><Skeleton className="h-10 w-20 rounded-sm" /><Skeleton className="h-2 w-full rounded-full" /></div>
+        </section>
+    );
+}
+
 export function ArtworkDetailSkeleton() {
     return (
         <PageContainer as="main" className="min-h-[65vh] py-12" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت اثر هنری">
