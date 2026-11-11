@@ -27,7 +27,7 @@ export function PublicLayout() {
     return (
         <div className="min-h-screen bg-background text-foreground" dir="rtl">
             <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-                <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+                <div className="mx-auto flex min-h-16 max-w-7xl flex-wrap items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
                     <Link to="/" className="shrink-0 text-xl font-black tracking-tight text-foreground" aria-label="راد آرت، صفحه اصلی">
                         راد<span className="text-primary">آرت</span>
                     </Link>
