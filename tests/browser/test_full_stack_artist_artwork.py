@@ -73,7 +73,7 @@ class FullStackArtistArtworkTests(unittest.TestCase):
                     headers: { Accept: 'application/json' }, credentials: 'same-origin'
                 });
                 const result = await response.json();
-                return (result.data ?? []).some((item) => item.slug === slug);
+                return (result.data ?? []).some((item) => item.title === title);
             }""", title)
             self.assertFalse(is_public, "Pending artwork must not appear in the public catalogue.")
         finally:
