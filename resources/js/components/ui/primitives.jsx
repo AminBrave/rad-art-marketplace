@@ -121,6 +121,24 @@ export function Surface({ as: Element = 'section', variant = 'default', classNam
     return <Element className={cn(surfaceVariants[variant] ?? surfaceVariants.default, className)} {...props}>{children}</Element>;
 }
 
+
+const statusVariants = {
+    pending_review: 'warning',
+    changes_requested: 'info',
+    approved: 'success',
+    published: 'success',
+    available: 'success',
+    rejected: 'danger',
+    sold: 'neutral',
+    not_for_sale: 'neutral',
+    private: 'neutral',
+    public: 'success',
+};
+
+export function StatusBadge({ status, label, className = '' }) {
+    return <Badge variant={statusVariants[status] ?? 'neutral'} className={className}>{label ?? status ?? 'نامشخص'}</Badge>;
+}
+
 const controlClass = 'ra-control';
 
 export function FormField({ id, label, hint, error, required = false, children, className = '' }) {
