@@ -21,7 +21,10 @@ This inventory is derived from the current route declarations in routes/web.php 
 | GET /api/v1/artwork-filters | Public | Discovery browser tests | Eligible public content only and stable ordering |
 | GET /api/v1/artworks | Public approved/public-profile content only | ArtworkTest, ArtworkSearchNormalizationTest | All sort modes, filter combinations, invalid query boundaries |
 | GET /api/v1/artworks/{artwork:slug} | Public if policy allows | ArtworkTest | Related-work eligibility and serializer privacy |
-| GET /api/v1/artworks/{artwork:slug}/image | Policy-controlled | ArtworkTest, MessageAttachmentTest (separate attachment contract) | Missing file, private profile, cache headers and content sniffing |
+| GET /api/v1/artworks/{artwork:slug}/image | Policy-controlled | ArtworkTest | Missing file, private profile, cache headers and content sniffing |
+| GET /api/v1/collections | Public published content | EditorialTest, test_m03_editorial.py | Pagination and publication-time boundaries |
+| GET /api/v1/collections/{collection:slug} | Public published content | EditorialTest, test_m03_editorial.py | Missing/draft collection and ineligible artwork |
+| GET /api/v1/featured-artists | Public eligible artists | EditorialTest | Publication windows and private/unapproved content |
 | POST /api/v1/artists/{artistProfile:slug}/inquiries | Authenticated buyer, throttled | ArtistInquiryTest, buyer inquiry browser tests | Throttle boundary and retry/idempotency expectations |
 
 ## Artist workspace
@@ -116,6 +119,8 @@ This inventory is derived from the current route declarations in routes/web.php 
 | Client route | Actor | Existing browser evidence |
 |---|---|---|
 | /, /artworks, /artworks/:slug | Visitor | test_m02_discovery.py |
+| /about, /help, /contact | Visitor | FrontendRoutingTest; browser smoke coverage to expand |
+| /unauthorized | Authenticated user with insufficient role | test_buyer_inquiry.py role-boundary scenario |
 | /artists, /artists/:slug | Visitor / buyer | test_m02_discovery.py, test_full_stack_buyer_artist_messaging.py |
 | /collections, /collections/:slug | Visitor | test_m03_editorial.py |
 | /login, /register | Guest | test_full_stack_auth.py, accessibility smoke tests |
