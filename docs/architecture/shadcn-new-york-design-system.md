@@ -50,7 +50,7 @@ Implemented reusable components and compositions include:
 - **Foundations:** Button variants/sizes/loading/full-width, ButtonGroup, Badge, Card anatomy and action slot, Separator, Skeleton, Avatar, AspectRatio, Spinner, Kbd, Progress and Toggle.
 - **Forms:** FieldSet, FieldLegend, FieldGroup, Field, FieldLabel, FieldDescription, FieldError, FieldSeparator, Input, InputGroup, Textarea, NativeSelect, Checkbox, Radio, controlled RadioGroup and Switch.
 - **Navigation:** Tabs, Breadcrumbs, Pagination, DropdownMenu and Sidebar anatomy.
-- **Overlays and feedback:** Dialog/AlertDialog composition, Alert, EmptyState, ErrorState, SuccessState, PermissionState, Toast and upload progress feedback.
+- **Overlays and feedback:** Dialog composition, Alert, EmptyState, ErrorState, SuccessState, PermissionState, Toast and upload progress feedback.
 - **Data/domain:** semantic Table anatomy, artwork card, artist card and their loading skeletons.
 
 These are local React 18 components using the installed Radix Dialog, DropdownMenu and Tabs primitives where appropriate. The design system follows shadcn's open-code philosophy: components are owned and edited in this repository.
