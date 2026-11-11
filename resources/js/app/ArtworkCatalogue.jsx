@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
-import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, SelectField } from '../components/ui';
+import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, SelectField, Button } from '../components/ui';
 
 const emptyFilters = { mediums: [], availability: [], sorts: [] };
 
@@ -118,7 +118,7 @@ export default function ArtworkCatalogue() {
                     </SelectField>
                     <div className="flex items-center justify-between gap-3">
                         <p className="text-xs text-muted-foreground">{activeFilterCount ? activeFilterCount.toLocaleString('fa-IR') + ' فیلتر فعال' : 'بدون فیلتر'}</p>
-                        {activeFilterCount > 0 && <button type="button" onClick={clearFilters} className="text-sm font-bold text-terracotta-strong underline underline-offset-4">پاک‌کردن فیلترها</button>}
+                        {activeFilterCount > 0 && <Button type="button" onClick={clearFilters} variant="ghost" size="default">پاک‌کردن فیلترها</Button>}
                     </div>
                 </div>
                 {filtersError && <p role="status" className="mt-3 text-xs text-muted-foreground">برخی گزینه‌های فیلتر بارگذاری نشدند؛ می‌توانید با جست‌وجو و دسته‌بندی ادامه دهید.</p>}
@@ -140,9 +140,9 @@ export default function ArtworkCatalogue() {
             )}
             {!loading && !error && meta.last_page > 1 && (
                 <nav aria-label="صفحه‌بندی آثار" className="mt-10 flex items-center justify-center gap-4">
-                    <button type="button" disabled={page <= 1} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page - 1)]]))} className="border border-border px-4 py-2 text-sm font-semibold disabled:opacity-40">قبلی</button>
+                    <Button type="button" disabled={page <= 1} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page - 1)]]))} variant="outline" size="default">قبلی</Button>
                     <span className="text-sm text-muted-foreground">صفحه {meta.current_page.toLocaleString('fa-IR')} از {meta.last_page.toLocaleString('fa-IR')}</span>
-                    <button type="button" disabled={page >= meta.last_page} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page + 1)]]))} className="border border-border px-4 py-2 text-sm font-semibold disabled:opacity-40">بعدی</button>
+                    <Button type="button" disabled={page >= meta.last_page} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page + 1)]]))} variant="outline" size="default">بعدی</Button>
                 </nav>
             )}
         </main>
