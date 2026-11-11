@@ -1,0 +1,65 @@
+/* Rademan brand theme — configuration only. shadcn/ui owns component structure and behavior. */
+:root {
+ color-scheme: light;
+ --background:43 30% 95%; --foreground:45 6% 13%;
+ --card:0 0% 100%; --card-foreground:45 6% 13%;
+ --popover:0 0% 100%; --popover-foreground:45 6% 13%;
+ --primary:16 52% 47%; --primary-foreground:0 0% 100%;
+ --secondary:33 30% 88%; --secondary-foreground:45 6% 13%;
+ --muted:40 22% 92%; --muted-foreground:40 7% 36%;
+ --accent:33 30% 88%; --accent-foreground:45 6% 13%;
+ --destructive:6 53% 42%; --destructive-foreground:0 0% 100%;
+ --border:36 19% 84%; --input:36 19% 78%; --ring:14 56% 39%; --radius:.5rem;
+
+ /* Rademan brand palette and editorial extensions */
+ --rademan-canvas:#F7F5F0; --rademan-ink:#242320;
+ --rademan-terracotta:#B65C3A; --rademan-terracotta-strong:#9A452B;
+ --rademan-sand:#D8C9B7; --rademan-olive:#536052; --rademan-paper:#FFFFFF;
+ --rademan-text-muted:#625E56; --rademan-text-subtle:#777168;
+ --rademan-border-strong:#BDB3A6; --rademan-success:#536052;
+ --rademan-danger:#A33D32; --rademan-warning:#8A5A12; --rademan-info:#315F78;
+ --rademan-overlay:rgb(36 35 32 / 56%); --rademan-focus-soft:rgb(154 69 43 / 16%);
+ --font-persian:'Vazirmatn',sans-serif; --font-latin:'Inter',sans-serif;
+ --font-sans:'Vazirmatn','Inter',sans-serif;
+ --text-xs:.75rem; --text-sm:.875rem; --text-base:1rem; --text-lg:1.125rem;
+ --text-xl:1.25rem; --text-2xl:1.5rem; --text-3xl:1.875rem; --text-4xl:2.25rem; --text-5xl:3rem;
+ --leading-copy:1.9; --leading-heading:1.35; --leading-tight:1.25; --leading-relaxed:1.75;
+ --weight-regular:400; --weight-medium:500; --weight-semibold:600; --weight-bold:700; --weight-extrabold:800;
+ --space-1:.25rem; --space-2:.5rem; --space-3:.75rem; --space-4:1rem; --space-5:1.25rem;
+ --space-6:1.5rem; --space-8:2rem; --space-10:2.5rem; --space-12:3rem;
+ --space-16:4rem; --space-20:5rem; --space-24:6rem;
+ --radius-sm:.25rem; --radius-md:.5rem; --radius-lg:.75rem; --radius-xl:1rem; --radius-pill:9999px;
+ --shadow-soft:0 8px 24px rgb(36 35 32 / 6%); --shadow-raised:0 16px 40px rgb(36 35 32 / 10%);
+ --content-width:80rem; --page-gutter:clamp(1.25rem,4vw,3rem); --header-height:5rem;
+ --control-height-sm:2.25rem; --control-height-md:2.5rem; --control-height-lg:2.75rem;
+ --content-reading-width:48rem; --content-wide-width:80rem; --artwork-ratio:4 / 3; --portrait-ratio:4 / 5;
+
+ /* Temporary aliases for existing feature screens; new code uses shadcn tokens above. */
+ --color-canvas:var(--rademan-canvas); --color-ink:var(--rademan-ink);
+ --color-terracotta:var(--rademan-terracotta); --color-terracotta-strong:var(--rademan-terracotta-strong);
+ --color-sand:var(--rademan-sand); --color-olive:var(--rademan-olive); --color-paper:var(--rademan-paper);
+ --color-text:var(--rademan-ink); --color-text-muted:var(--rademan-text-muted); --color-text-subtle:var(--rademan-text-subtle);
+ --color-border:hsl(var(--border)); --color-border-strong:var(--rademan-border-strong);
+ --color-surface:var(--rademan-paper); --color-surface-muted:hsl(var(--muted));
+ --color-action:var(--rademan-terracotta); --color-action-text:var(--rademan-terracotta-strong);
+ --color-focus:var(--rademan-terracotta-strong); --color-success:var(--rademan-success);
+ --color-danger:var(--rademan-danger); --color-warning:var(--rademan-warning); --color-info:var(--rademan-info);
+ --color-overlay:var(--rademan-overlay); --color-focus-soft:var(--rademan-focus-soft);
+}
+.dark {
+ color-scheme:dark;
+ --background:45 6% 10%; --foreground:43 20% 94%;
+ --card:45 6% 13%; --card-foreground:43 20% 94%;
+ --popover:45 6% 13%; --popover-foreground:43 20% 94%;
+ --primary:16 52% 55%; --primary-foreground:45 6% 10%;
+ --secondary:40 7% 21%; --secondary-foreground:43 20% 94%;
+ --muted:40 7% 18%; --muted-foreground:36 12% 68%;
+ --accent:40 7% 21%; --accent-foreground:43 20% 94%;
+ --destructive:6 53% 48%; --destructive-foreground:0 0% 100%;
+ --border:40 7% 25%; --input:40 7% 30%; --ring:16 52% 62%;
+ --color-canvas:hsl(var(--background)); --color-ink:hsl(var(--foreground));
+ --color-paper:hsl(var(--card)); --color-text:hsl(var(--foreground));
+ --color-text-muted:hsl(var(--muted-foreground)); --color-border:hsl(var(--border));
+ --color-surface:hsl(var(--card)); --color-surface-muted:hsl(var(--muted));
+ --color-action:hsl(var(--primary)); --color-action-text:hsl(var(--primary)); --color-focus:hsl(var(--ring));
+}
