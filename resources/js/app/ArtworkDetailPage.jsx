@@ -33,7 +33,7 @@ export default function ArtworkDetailPage() {
     const { slug } = useParams();
     const { user } = useAuth();
     const artworkQuery = useQuery({
-        queryKey: ['artwork', slug],
+        queryKey: ['artwork', slug, user?.id ?? 'guest'],
         queryFn: async ({ signal }) => {
             const { data } = await axios.get('/api/v1/artworks/' + encodeURIComponent(slug), { signal });
             return data.data;
