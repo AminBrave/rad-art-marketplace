@@ -72,6 +72,9 @@ export default {
                 tight: 'var(--leading-tight)', relaxed: 'var(--leading-relaxed)',
             },
             borderRadius: {
+                lg: 'var(--radius)',
+                md: 'calc(var(--radius) - 2px)',
+                sm: 'calc(var(--radius) - 4px)',
                 editorial: 'var(--radius-md)',
                 card: 'var(--radius-lg)',
                 panel: 'var(--radius-xl)',
