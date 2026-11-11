@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useOutletContext } from 'react-router-dom';
-import { EmptyState, ErrorState, StatusBadge, Badge, WorkspaceHero, DashboardMetricCard, DashboardMetricSkeleton, ArtistRecentWorkSkeleton } from '../components/ui';
+import { EmptyState, ErrorState, StatusBadge, Badge, WorkspaceHero, DashboardMetricCard, DashboardMetricSkeleton, ArtistRecentWorkSkeleton, WorkspaceIdentitySkeleton } from '../components/ui';
 
 const statusLabels = {
     pending_review: 'در انتظار بررسی', approved: 'منتشرشده', rejected: 'ردشده',
@@ -58,7 +58,7 @@ export default function ArtistWorkspaceOverview() {
             />
 
             {profileError && <ErrorState title="پروفایل دریافت نشد" description={profileError} />}
-            {profileLoading ? <div className="border border-border bg-white p-6"><SkeletonLines lines={3} /></div> : (
+            {profileLoading ? <WorkspaceIdentitySkeleton /> : (
                 <section className="grid gap-5 border border-border bg-white p-5 sm:p-7 lg:grid-cols-[1fr_15rem] lg:items-center">
                     <div>
                         <div className="flex flex-wrap items-center gap-3">
