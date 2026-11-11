@@ -67,7 +67,7 @@ class FullStackArtistArtworkTests(unittest.TestCase):
             page.get_by_role("heading", name=title).wait_for()
             page.get_by_text("در انتظار بررسی", exact=True).wait_for()
 
-            is_public = page.evaluate("""async (slug) => {
+            is_public = page.evaluate("""async (title) => {
                 const response = await fetch('/api/v1/artworks?q=' + encodeURIComponent(title), {
                     headers: { Accept: 'application/json' }, credentials: 'same-origin'
                 });
