@@ -224,13 +224,13 @@ export function ArtistDashboardHome() {
             <p className="mt-3 text-sm leading-7 text-muted-foreground">پروفایل و آثار ارسالی خود را مدیریت کنید و از بخش پیام‌های مستقیم با خریداران در ارتباط باشید.</p>
             {profileError && <p role="alert" className="mt-5 text-sm text-amber-800">{profileError}</p>}
             {profileLoading ? <p className="mt-5 text-sm text-muted-foreground">در حال دریافت پروفایل…</p> : (
-                <div className="mt-6 rounded-xl bg-[#f7f5f0] p-4">
+                <div className="mt-6 rounded-xl bg-muted p-4">
                     <p className="font-semibold">{profile?.slug ? 'پروفایل هنرمند شما آماده است.' : 'برای شروع، پروفایل هنرمند خود را تکمیل کنید.'}</p>
                     <Link to="/dashboard/artist/profile" className="mt-3 inline-block text-sm font-bold text-primary underline">مدیریت پروفایل</Link>
                 </div>
             )}
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                <Link to="/dashboard/artist/artworks" className="rounded-xl border border-border p-5 font-bold hover:border-[#b65c3a]">مدیریت آثار</Link>
+                <Link to="/dashboard/artist/artworks" className="rounded-xl border border-border p-5 font-bold hover:border-ring">مدیریت آثار</Link>
                 <Link to="/dashboard/artist/messages" className="rounded-xl border border-border p-5 font-bold hover:border-[#b65c3a]">پیام‌های مستقیم</Link>
             </div>
         </section>
@@ -306,7 +306,7 @@ export function ArtistProfileSettings() {
                     {errors.website_url?.map((item) => <span key={item} className="mt-1 block text-xs text-red-700">{item}</span>)}
                 </label>
                 <label className="flex items-center gap-3 text-sm font-semibold sm:col-span-2">
-                    <input type="checkbox" name="is_public" checked={Boolean(form.is_public)} onChange={update} className="h-4 w-4 accent-[#b65c3a]" />
+                    <input type="checkbox" name="is_public" checked={Boolean(form.is_public)} onChange={update} className="h-4 w-4 accent-primary" />
                     نمایش عمومی پروفایل
                 </label>
                 <div className="sm:col-span-2">
@@ -369,7 +369,7 @@ export function PublicInfoPage({ title, description }) {
         <main className="mx-auto max-w-4xl px-6 py-16 sm:px-8" dir="rtl">
             <p className="text-sm font-bold text-primary">راد آرت</p>
             <h1 className="mt-3 text-3xl font-black">{title}</h1>
-            <p className="mt-5 leading-8 text-stone-600">{description}</p>
+            <p className="mt-5 leading-8 text-muted-foreground">{description}</p>
             <p className="mt-6 rounded-xl border border-border bg-card p-5 text-sm text-muted-foreground">این صفحه در نقشه مسیرهای MVP 2 ثبت شده و محتوای کامل آن در مرحله محتوای عمومی تکمیل می‌شود.</p>
         </main>
     );
