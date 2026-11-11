@@ -444,6 +444,8 @@ class ArtworkTest extends TestCase
             ->assertJsonFragment(['slug' => $sameArtist->slug])
             ->assertJsonFragment(['slug' => $sameCategory->slug])
             ->assertJsonMissing(['slug' => $privateRelated->slug])
+            ->assertJsonMissingPath('data.status')
+            ->assertJsonMissingPath('data.rejection_note')
             ->assertJsonMissingPath('data.related_artworks.0.status');
     }
 
