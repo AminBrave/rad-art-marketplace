@@ -1,4 +1,4 @@
-# Developer Workflow: Install, Run, Test, Build and Release
+# Developer Workflow: Install, Run, Manual Verification, Build and Release
 
 This guide is the operational entry point for Rademan. It covers local development on Windows, macOS and Linux; database setup; test layers; production builds; and the controlled release process.
 
@@ -223,9 +223,9 @@ Builds Vite assets into Laravel's standard `public/build` directory. Use this pr
 npm run build:cpanel
 ~~~
 
-Builds the cPanel-specific asset layout using `vite.config.cpanel.js`. It writes the Vite build to the repository-level `build/` directory. Run `npm run lint` separately as a quality gate; `npm run verify` runs both. Use it only with the reviewed cPanel deployment layout described in [Deployment and Recovery](deployment-and-recovery.md). Do not assume that changing the Vite build profile makes exposing the Laravel repository root as a document root safe.
+Builds the cPanel-specific asset layout using `vite.config.cpanel.js`. It writes the Vite build to the repository-level `build/` directory. Run `npm run lint` separately only when verification is explicitly requested; `npm run verify` runs both. Use it only with the reviewed cPanel deployment layout described in [Deployment and Recovery](deployment-and-recovery.md). Do not assume that changing the Vite build profile makes exposing the Laravel repository root as a document root safe.
 
-Builds should be produced on a trusted development/CI machine. Node.js and npm are not required on the production server when the compiled assets are deployed.
+Builds should be produced on a trusted development machine. Node.js and npm are not required on the production server when the compiled assets are deployed.
 
 ### Preview the standard production build locally
 
