@@ -9,7 +9,7 @@ export const DialogPortal = DialogPrimitive.Portal;
 export function DialogOverlay({ className, ...props }) {
     return (
         <DialogPrimitive.Overlay
-            className={cn('fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out', className)}
+            className={cn('fixed inset-0 z-50 bg-black/80 opacity-0 transition-opacity data-[state=open]:opacity-100 data-[state=closed]:opacity-0', className)}
             {...props}
         />
     );
@@ -24,9 +24,7 @@ export function DialogContent({ children, className, overlayClassName, ...props 
                 className={cn(
                     'fixed start-1/2 top-1/2 z-50 grid w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4',
                     'border bg-background p-6 shadow-lg duration-200 sm:rounded-lg',
-                    'data-[state=open]:animate-in data-[state=closed]:animate-out',
-                    'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
-                    'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+                    'scale-95 opacity-0 transition-[opacity,transform] data-[state=open]:scale-100 data-[state=open]:opacity-100 data-[state=closed]:scale-95 data-[state=closed]:opacity-0',
                     'max-h-[85vh] overflow-y-auto outline-none',
                     className,
                 )}
