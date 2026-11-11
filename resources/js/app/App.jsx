@@ -155,12 +155,12 @@ export default function App() {
                 <article className="mx-auto max-w-3xl rounded-3xl border border-stone-200 bg-card p-8 shadow-sm sm:p-12">
                     <a href="/" className="text-xl font-black">راد<span className="text-primary">آرت</span></a>
                     {publicProfileLoading ? (
-                        <p className="mt-10 text-muted-foreground-foreground">در حال دریافت پروفایل…</p>
+                        <p className="mt-10 text-muted-foreground">در حال دریافت پروفایل…</p>
                     ) : publicProfile ? (
                         <>
                             <p className="mt-10 text-sm font-bold text-primary">پروفایل هنرمند</p>
                             <h1 className="mt-3 text-4xl font-black">{publicProfile.display_name}</h1>
-                            {publicProfile.city && <p className="mt-3 text-sm text-muted-foreground-foreground">{publicProfile.city}</p>}
+                            {publicProfile.city && <p className="mt-3 text-sm text-muted-foreground">{publicProfile.city}</p>}
                             {publicProfile.bio && <p className="mt-8 whitespace-pre-line leading-9 text-stone-700">{publicProfile.bio}</p>}
                             {user?.role === 'buyer' && createElement(ContactArtistForm, { artistSlug: publicProfile.slug })}
                             {!user && <a href="/#account" className="mt-8 inline-block rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground">برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید</a>}
@@ -172,7 +172,7 @@ export default function App() {
                     ) : (
                         <div className="mt-10">
                             <h1 className="text-2xl font-black">پروفایل در دسترس نیست</h1>
-                            <p className="mt-3 leading-8 text-muted-foreground-foreground">این پروفایل وجود ندارد یا نمایش عمومی آن غیرفعال شده است.</p>
+                            <p className="mt-3 leading-8 text-muted-foreground">این پروفایل وجود ندارد یا نمایش عمومی آن غیرفعال شده است.</p>
                         </div>
                     )}
                 </article>
@@ -241,7 +241,7 @@ export default function App() {
                         <div className="absolute bottom-7 left-8 text-xs font-semibold tracking-[0.3em] text-[#4b4038]">ART / PEOPLE / STORIES</div>
                     </div>
                     <div className="absolute -bottom-5 -left-4 rounded-2xl bg-card px-5 py-4 shadow-xl shadow-stone-900/10">
-                        <p className="text-xs text-muted-foreground-foreground">نگاهی تازه به هنر معاصر</p>
+                        <p className="text-xs text-muted-foreground">نگاهی تازه به هنر معاصر</p>
                         <p className="mt-1 text-sm font-bold">از نگاه هنرمندان مستقل</p>
                     </div>
                 </div>
@@ -269,7 +269,7 @@ export default function App() {
                     {user && (
                         <div className="mt-6 rounded-2xl border border-[#d7b5a2] bg-card p-5">
                             <p className="font-bold">خوش آمدید، {user.name}</p>
-                            <p className="mt-2 text-sm text-muted-foreground-foreground">{user.email}</p>
+                            <p className="mt-2 text-sm text-muted-foreground">{user.email}</p>
                             <p className="mt-3 text-sm text-primary">{user.role === 'admin' ? 'دسترسی مدیریت فعال است.' : user.role === 'buyer' ? 'می‌توانید به هنرمندان پیام خصوصی ارسال کنید.' : 'حساب هنرمندی شما فعال است.'}</p>
                         </div>
                     )}
@@ -278,10 +278,10 @@ export default function App() {
                 {!user ? (
                     <div className="rounded-3xl border border-stone-200 bg-card p-6 shadow-sm sm:p-9">
                         <div className="flex gap-5 border-b border-stone-100 pb-4">
-                            <button onClick={() => { setAuthMode('login'); setAuthErrors({}); }} className={authMode === 'login' ? 'font-extrabold text-primary' : 'text-muted-foreground-foreground'}>
+                            <button onClick={() => { setAuthMode('login'); setAuthErrors({}); }} className={authMode === 'login' ? 'font-extrabold text-primary' : 'text-muted-foreground'}>
                                 ورود
                             </button>
-                            <button onClick={() => { setAuthMode('register'); setAuthErrors({}); }} className={authMode === 'register' ? 'font-extrabold text-primary' : 'text-muted-foreground-foreground'}>
+                            <button onClick={() => { setAuthMode('register'); setAuthErrors({}); }} className={authMode === 'register' ? 'font-extrabold text-primary' : 'text-muted-foreground'}>
                                 ثبت‌نام
                             </button>
                         </div>
@@ -324,18 +324,18 @@ export default function App() {
                             </button>
                         </form>
                         {authMessage && <p role="status" className="mt-4 text-sm text-primary">{authMessage}</p>}
-                        <p className="mt-5 text-xs leading-6 text-muted-foreground-foreground">با ثبت‌نام می‌توانید نقش خریدار یا هنرمند را انتخاب کنید. ایجاد حساب مدیر فقط از طریق دستور مدیریتی سرور امکان‌پذیر است.</p>
+                        <p className="mt-5 text-xs leading-6 text-muted-foreground">با ثبت‌نام می‌توانید نقش خریدار یا هنرمند را انتخاب کنید. ایجاد حساب مدیر فقط از طریق دستور مدیریتی سرور امکان‌پذیر است.</p>
                     </div>
                 ) : user.role === 'buyer' ? (
                     <div className="rounded-3xl border border-stone-200 bg-card p-6 shadow-sm sm:p-8">
                         <h3 className="text-xl font-extrabold">حساب خریدار</h3>
-                        <p className="mt-3 text-sm leading-7 text-muted-foreground-foreground">برای ارتباط با هنرمندان، صفحه اثر یا پروفایل عمومی آن‌ها را باز کنید. پیام‌های ارسالی شما در همین صفحه قابل پیگیری هستند.</p>
+                        <p className="mt-3 text-sm leading-7 text-muted-foreground">برای ارتباط با هنرمندان، صفحه اثر یا پروفایل عمومی آن‌ها را باز کنید. پیام‌های ارسالی شما در همین صفحه قابل پیگیری هستند.</p>
                     </div>
                 ) : (
                     <div className="rounded-3xl border border-stone-200 bg-card p-6 shadow-sm sm:p-8">
                         <div className="mb-6">
                             <h3 className="text-xl font-extrabold">پروفایل هنرمند</h3>
-                            <p className="mt-2 text-sm leading-7 text-muted-foreground-foreground">اطلاعات معرفی خود را تکمیل کنید. ایمیل و نقش حساب از بخش پروفایل قابل تغییر نیستند.</p>
+                            <p className="mt-2 text-sm leading-7 text-muted-foreground">اطلاعات معرفی خود را تکمیل کنید. ایمیل و نقش حساب از بخش پروفایل قابل تغییر نیستند.</p>
                         </div>
                         <form onSubmit={saveProfile} className="space-y-4">
                             <label className="block text-sm font-semibold">
@@ -390,10 +390,10 @@ export default function App() {
                 <section className="mx-auto max-w-7xl px-6 pb-20 lg:px-10">
                     <div className="rounded-3xl border border-stone-200 bg-card p-6 sm:p-8">
                         <h2 className="text-2xl font-black">مدیریت کاربران</h2>
-                        <p className="mt-2 text-sm text-muted-foreground-foreground">تغییر نقش کاربران؛ این عملیات فقط از سمت سرور برای مدیر مجاز است.</p>
+                        <p className="mt-2 text-sm text-muted-foreground">تغییر نقش کاربران؛ این عملیات فقط از سمت سرور برای مدیر مجاز است.</p>
                         <div className="mt-6 overflow-x-auto">
                             <table className="w-full min-w-[560px] text-right text-sm">
-                                <thead><tr className="border-b border-stone-200 text-muted-foreground-foreground"><th className="py-3">نام</th><th>ایمیل</th><th>نقش</th><th>عملیات</th></tr></thead>
+                                <thead><tr className="border-b border-stone-200 text-muted-foreground"><th className="py-3">نام</th><th>ایمیل</th><th>نقش</th><th>عملیات</th></tr></thead>
                                 <tbody>
                                     {adminUsers.map((item) => (
                                         <tr key={item.id} className="border-b border-stone-100">
