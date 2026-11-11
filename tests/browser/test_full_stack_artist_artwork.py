@@ -51,6 +51,7 @@ class FullStackArtistArtworkTests(unittest.TestCase):
                     "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jq2kAAAAASUVORK5CYII="
                 ),
             })
+            page.get_by_alt_text("پیش‌نمایش تصویر انتخاب‌شده").wait_for()
 
             with page.expect_response(
                 lambda response: response.url.endswith("/api/v1/artist/artworks")
@@ -67,12 +68,12 @@ class FullStackArtistArtworkTests(unittest.TestCase):
             page.get_by_text("در انتظار بررسی", exact=True).wait_for()
 
             is_public = page.evaluate("""async (slug) => {
-                const response = await fetch('/api/v1/artworks', {
+                const response = await fetch('/api/v1/artworks?q=' + encodeURIComponent(title), {
                     headers: { Accept: 'application/json' }, credentials: 'same-origin'
                 });
                 const result = await response.json();
                 return (result.data ?? []).some((item) => item.slug === slug);
-            }""", artwork["slug"])
+            }""", title)
             self.assertFalse(is_public, "Pending artwork must not appear in the public catalogue.")
         finally:
             context.close()
