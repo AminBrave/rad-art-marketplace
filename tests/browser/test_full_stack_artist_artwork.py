@@ -66,7 +66,8 @@ class FullStackArtistArtworkTests(unittest.TestCase):
             self.assertEqual(artwork["status"], "pending_review")
 
             page.get_by_role("heading", name=title).wait_for()
-            page.get_by_text("در انتظار بررسی", exact=True).wait_for()
+            artwork_card = page.locator("article").filter(has=page.get_by_role("heading", name=title))
+            artwork_card.get_by_text("در انتظار بررسی", exact=True).wait_for()
 
             is_public = page.evaluate("""async (title) => {
                 const response = await fetch('/api/v1/artworks?q=' + encodeURIComponent(title), {
