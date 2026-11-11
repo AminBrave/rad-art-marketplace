@@ -54,7 +54,7 @@ test('shared content and feedback components use semantic surface and state cont
 });
 
 test('RAD visual tokens are declared in one canonical root block', () => {
-    assert.equal((css.match(/:root\\s*\\{/g) ?? []).length, 1);
+    assert.equal((css.match(/:root\s*\{/g) ?? []).length, 1);
     assert.ok(css.includes('--color-message-own:'));
     assert.ok(css.includes('--color-success-surface:'));
 });
