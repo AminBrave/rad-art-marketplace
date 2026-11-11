@@ -1,4 +1,4 @@
-import { useTheme } from './ThemeProvider';
+import { useTheme } from './useTheme.js';
 
 export default function ThemeSwitcher({ className = '' }) {
     const { theme, setTheme, availableThemes, isThemeSwitchingEnabled } = useTheme();
