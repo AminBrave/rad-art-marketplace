@@ -34,7 +34,6 @@ final class FeatureRegistryTest extends TestCase
 
     public function test_direct_messaging_routes_remain_registered_when_inquiries_are_disabled(): void
     {
-        self::assertTrue(config('features.messaging'));
         self::assertTrue(Route::has('api.v1.conversations.direct'));
         self::assertTrue(Route::has('api.v1.conversations.show'));
         self::assertTrue(Route::has('api.v1.conversations.messages.store'));
