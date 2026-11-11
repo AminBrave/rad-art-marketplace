@@ -74,11 +74,15 @@ class InquiryDisabledBrowserTests(unittest.TestCase):
             ))
             page.route("**/api/v1/artist/artworks", lambda route: route.fulfill(
                 status=200, content_type="application/json",
-                body='{"data":[],"total":0,"current_page":1,"last_page":1}',
+                body=json.dumps({
+                    "data": [{"id": i, "title": f"اثر {i}", "status": "approved"} for i in range(1, 13)],
+                    "total": 15, "current_page": 1, "last_page": 2,
+                }, ensure_ascii=False),
             ))
             page.goto(BASE_URL + "/dashboard/artist")
             page.get_by_role("heading", name="خوش آمدید، Artist QA").wait_for()
             page.get_by_role("link", name="پیام‌های مستقیم").first.wait_for()
+            page.get_by_text("15", exact=True).wait_for()
             self.assertEqual(inquiry_requests, [])
         finally:
             context.close()
@@ -138,6 +142,36 @@ class InquiryDisabledBrowserTests(unittest.TestCase):
             self.assertEqual(page.get_by_label("متن پیام").count(), 0)
         finally:
             context.close()
+
+
+    def test_artwork_detail_distinguishes_undisclosed_zero_and_positive_prices(self):
+        cases = [
+            ("price-undisclosed", None, "قیمت اعلام نشده"),
+            ("price-zero", 0, "۰ ریال"),
+            ("price-positive", 12500, "۱۲٬۵۰۰ ریال"),
+        ]
+        for slug, price, expected in cases:
+            with self.subTest(slug=slug):
+                context, page = self.new_page(user=None)
+                try:
+                    artwork = {
+                        "id": 500, "slug": slug, "title": "اثر آزمایشی",
+                        "price": price, "image_url": "https://example.test/artwork.png",
+                        "category": {"name": "نقاشی"},
+                        "artist": {"slug": "qa-artist", "display_name": "هنرمند آزمایشی"},
+                        "availability": "available", "medium": "رنگ روغن",
+                        "dimensions": "۴۰ × ۶۰ سانتی‌متر", "year": 2024,
+                        "related_artworks": [],
+                    }
+                    page.route(f"**/api/v1/artworks/{slug}", lambda route, request, item=artwork: route.fulfill(
+                        status=200, content_type="application/json",
+                        body=json.dumps({"data": item}, ensure_ascii=False),
+                    ))
+                    page.goto(BASE_URL + "/artworks/" + slug)
+                    page.get_by_role("heading", name="اثر آزمایشی").wait_for()
+                    page.get_by_text(expected, exact=True).wait_for()
+                finally:
+                    context.close()
 
 
 if __name__ == "__main__":
