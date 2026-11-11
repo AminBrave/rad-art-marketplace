@@ -25,7 +25,7 @@ test('semantic palette, typography, spacing and layout tokens have one CSS sourc
 });
 
 test('Tailwind semantic aliases reference CSS variables rather than duplicate literal values', () => {
-    for (const alias of ['canvas:', 'terracotta:', 'muted:', 'warning:', 'info:', 'success.surface:', 'danger.surface:', 'warning.surface:', 'info.surface:', 'accent.surface:', 'inverse:', 'fontSize:', 'lineHeight:', 'spacing:']) {
+    for (const alias of ['canvas:', 'terracotta:', 'muted:', 'warning:', 'info:', 'success: {', 'danger: {', 'warning: {', 'info: {', 'accent: {', 'inverse:', 'fontSize:', 'lineHeight:', 'spacing:']) {
         assert.ok(tailwind.includes(alias), `Missing Tailwind alias: ${alias}`);
     }
     assert.ok(tailwind.includes('var(--color-canvas)'));
