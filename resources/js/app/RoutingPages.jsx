@@ -68,7 +68,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                         {[0, 1, 2, 3, 4, 5].map((item) => <ArtistCardSkeleton key={item} />)}
                     </section>
                 </>
-            ) : pathname === '/collections' || /^\\/collections\\//.test(pathname) ? (
+            ) : pathname === '/collections' || /^\/collections\//.test(pathname) ? (
                 <>
                     <section className="mb-8 grid gap-3 border-b border-border pb-6">
                         <LoadingBlock className="h-3 w-24" />
@@ -90,18 +90,6 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                         <div className="grid gap-4 py-8"><LoadingBlock className="h-14 w-3/5 justify-self-start" /><LoadingBlock className="h-14 w-2/5 justify-self-end" /><LoadingBlock className="h-14 w-1/2 justify-self-start" /></div>
                         <LoadingBlock className="h-12 w-full rounded-full" />
                     </div>
-                </section>
-            ) : pathname === '/admin' ? (
-                <section className="grid items-center gap-8 lg:grid-cols-2">
-                    <div className="grid gap-4">
-                        <LoadingBlock className="h-3 w-28" />
-                        <LoadingBlock className="h-12 w-11/12" />
-                        <LoadingBlock className="h-12 w-3/4" />
-                        <LoadingBlock className="mt-3 h-4 w-full max-w-xl" />
-                        <LoadingBlock className="h-4 w-4/5" />
-                        <LoadingBlock className="mt-4 h-12 w-36" />
-                    </div>
-                    <LoadingBlock className="aspect-[4/5] w-full max-w-xl justify-self-center" />
                 </section>
             ) : isArtworkDetail ? (
                 <div className="grid gap-8 lg:grid-cols-[1.15fr_.85fr]">
