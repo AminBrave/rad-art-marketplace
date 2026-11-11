@@ -50,12 +50,12 @@ export default function AuthPage({ initialMode = 'login' }) {
 
     return (
         <main className="mx-auto max-w-xl px-5 py-12 sm:px-8" dir="rtl">
-            <section className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm sm:p-9">
-                <Link to="/" className="text-sm font-bold text-[#9a452b]">بازگشت به راد آرت</Link>
+            <section className="rounded-3xl border border-stone-200 bg-card p-6 shadow-sm sm:p-9">
+                <Link to="/" className="text-sm font-bold text-primary">بازگشت به راد آرت</Link>
                 <h1 className="mt-5 text-2xl font-black">{mode === 'register' ? 'ساخت حساب کاربری' : 'ورود به حساب'}</h1>
                 <div className="mt-6 flex gap-5 border-b border-stone-100 pb-4">
-                    <button type="button" onClick={() => { setMode('login'); setErrors({}); setMessage(''); }} className={mode === 'login' ? 'font-extrabold text-[#9a452b]' : 'text-stone-500'}>ورود</button>
-                    <button type="button" onClick={() => { setMode('register'); setErrors({}); setMessage(''); }} className={mode === 'register' ? 'font-extrabold text-[#9a452b]' : 'text-stone-500'}>ثبت‌نام</button>
+                    <button type="button" onClick={() => { setMode('login'); setErrors({}); setMessage(''); }} className={mode === 'login' ? 'font-extrabold text-primary' : 'text-muted-foreground'}>ورود</button>
+                    <button type="button" onClick={() => { setMode('register'); setErrors({}); setMessage(''); }} className={mode === 'register' ? 'font-extrabold text-primary' : 'text-muted-foreground'}>ثبت‌نام</button>
                 </div>
                 <form onSubmit={submit} className="mt-6 space-y-4">
                     {mode === 'register' && <>
@@ -82,9 +82,9 @@ export default function AuthPage({ initialMode = 'login' }) {
                     </label>}
                     {errors.form?.map((item) => <p key={item} role="alert" className="text-sm text-red-700">{item}</p>)}
                     {message && <p role="status" className="text-sm text-[#80513d]">{message}</p>}
-                    <button disabled={busy} className="w-full rounded-xl bg-[#20201e] px-6 py-3.5 font-bold text-white transition hover:bg-[#b65c3a] disabled:cursor-wait disabled:opacity-60">{busy ? 'لطفاً صبر کنید…' : mode === 'register' ? 'ایجاد حساب' : 'ورود به حساب'}</button>
+                    <button disabled={busy} className="w-full rounded-xl bg-primary px-6 py-3.5 font-bold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-wait disabled:opacity-60">{busy ? 'لطفاً صبر کنید…' : mode === 'register' ? 'ایجاد حساب' : 'ورود به حساب'}</button>
                 </form>
-                <p className="mt-5 text-xs leading-6 text-stone-400">ثبت‌نام عمومی فقط برای خریدار و هنرمند فعال است. حساب مدیر باید از سمت سرور ایجاد شود.</p>
+                <p className="mt-5 text-xs leading-6 text-muted-foreground">ثبت‌نام عمومی فقط برای خریدار و هنرمند فعال است. حساب مدیر باید از سمت سرور ایجاد شود.</p>
             </section>
         </main>
     );
