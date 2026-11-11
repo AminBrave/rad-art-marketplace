@@ -476,6 +476,9 @@ class ConversationController extends Controller
                 'mime_type' => $attachment->mime_type,
                 'size_bytes' => $attachment->size_bytes,
                 'download_url' => '/api/v1/conversations/'.$message->conversation_id.'/messages/'.$message->id.'/attachments/'.$attachment->id,
+                'preview_url' => str_starts_with((string) $attachment->mime_type, 'image/')
+                    ? '/api/v1/conversations/'.$message->conversation_id.'/messages/'.$message->id.'/attachments/'.$attachment->id.'/preview'
+                    : null,
             ])->values()->all(),
             'delivered_at' => $message->delivered_at?->toISOString(),
             'read_at' => $message->read_at?->toISOString(),
