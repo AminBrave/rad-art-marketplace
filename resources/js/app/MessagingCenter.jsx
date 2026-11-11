@@ -1,4 +1,4 @@
-import { Button, Input, Textarea, Select } from '../components/ui';
+import { Button, Input, Textarea, Select, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../components/ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
@@ -34,6 +34,9 @@ export default function MessagingCenter({ role }) {
     const [error, setError] = useState('');
     const [notice, setNotice] = useState('');
     const [safety, setSafety] = useState({ blocked_by_me: false, blocked_by_other: false });
+    const [confirmAction, setConfirmAction] = useState(null);
+    const [promptAction, setPromptAction] = useState(null);
+    const [promptValue, setPromptValue] = useState('');
     const bottomRef = useRef(null);
     const draftRef = useRef(null);
     const endpoint = role === 'artist' ? '/api/v1/artist/conversations' : '/api/v1/buyer/conversations';
@@ -171,50 +174,77 @@ export default function MessagingCenter({ role }) {
         } finally { setActionId(null); }
     };
 
-    const deleteMessage = async (message) => {
-        if (actionId || !window.confirm('این پیام برای هر دو طرف حذف شود؟')) return;
-        setActionId(message.id);
-        try {
-            const { data } = await axios.delete('/api/v1/conversations/' + active + '/messages/' + message.id);
-            replaceMessage(data.data);
-        } catch {
-            setError('حذف پیام انجام نشد. دوباره تلاش کنید.');
-        } finally { setActionId(null); }
+    const deleteMessage = (message) => {
+        if (actionId) return;
+        setConfirmAction({ type: 'delete-message', message });
     };
 
-    const reportMessage = async (message) => {
-        const details = window.prompt('دلیل گزارش این پیام را کوتاه توضیح دهید:');
-        if (details === null) return;
-        try {
-            await axios.post('/api/v1/conversations/' + active + '/messages/' + message.id + '/report', { reason: 'other', details });
-            setNotice('گزارش شما برای بررسی ثبت شد.');
-        } catch {
-            setError('ثبت گزارش انجام نشد. دوباره تلاش کنید.');
-        }
+
+    const reportMessage = (message) => {
+        setPromptAction({ type: 'message', message });
+        setPromptValue('');
     };
 
-    const reportConversation = async () => {
-        const details = window.prompt('دلیل گزارش این گفتگو را کوتاه توضیح دهید:');
-        if (details === null) return;
+    const reportConversation = () => {
+        setPromptAction({ type: 'conversation' });
+        setPromptValue('');
+    };
+
+    const submitPrompt = async (event) => {
+        event.preventDefault();
+        const details = promptValue.trim();
+        if (!details || !promptAction) return;
+        const action = promptAction;
+        setPromptAction(null);
+        setPromptValue('');
         try {
-            await axios.post('/api/v1/conversations/' + active + '/report', { reason: 'other', details });
-            setNotice('گزارش گفتگو برای بررسی ثبت شد.');
+            if (action.type === 'message') {
+                await axios.post('/api/v1/conversations/' + active + '/messages/' + action.message.id + '/report', { reason: 'other', details });
+                setNotice('گزارش شما برای بررسی ثبت شد.');
+            } else {
+                await axios.post('/api/v1/conversations/' + active + '/report', { reason: 'other', details });
+                setNotice('گزارش گفتگو برای بررسی ثبت شد.');
+            }
         } catch {
-            setError('ثبت گزارش گفتگو انجام نشد.');
+            setError(action.type === 'message' ? 'ثبت گزارش انجام نشد. دوباره تلاش کنید.' : 'ثبت گزارش گفتگو انجام نشد.');
         }
     };
 
     const toggleBlock = async () => {
-        try {
-            if (safety.blocked_by_me) {
+        if (safety.blocked_by_me) {
+            try {
                 await axios.delete('/api/v1/conversations/' + active + '/block');
                 setSafety((current) => ({ ...current, blocked_by_me: false }));
                 setNotice('مسدودسازی برداشته شد.');
-            } else if (window.confirm('با مسدودسازی این کاربر، ارسال پیام در این گفتگو برای هر دو طرف متوقف می‌شود. ادامه می‌دهید؟')) {
-                await axios.post('/api/v1/conversations/' + active + '/block');
-                setSafety((current) => ({ ...current, blocked_by_me: true }));
-                setNotice('کاربر مسدود شد.');
+            } catch {
+                setError('به‌روزرسانی وضعیت مسدودسازی انجام نشد.');
             }
+            return;
+        }
+        setConfirmAction({ type: 'block' });
+    };
+
+    const confirmPendingAction = async () => {
+        const action = confirmAction;
+        if (!action) return;
+        setConfirmAction(null);
+        if (action.type === 'delete-message') {
+            const message = action.message;
+            setActionId(message.id);
+            try {
+                const { data } = await axios.delete('/api/v1/conversations/' + active + '/messages/' + message.id);
+                replaceMessage(data.data);
+            } catch {
+                setError('حذف پیام انجام نشد. دوباره تلاش کنید.');
+            } finally {
+                setActionId(null);
+            }
+            return;
+        }
+        try {
+            await axios.post('/api/v1/conversations/' + active + '/block');
+            setSafety((current) => ({ ...current, blocked_by_me: true }));
+            setNotice('کاربر مسدود شد.');
         } catch {
             setError('به‌روزرسانی وضعیت مسدودسازی انجام نشد.');
         }
@@ -333,6 +363,33 @@ export default function MessagingCenter({ role }) {
                     )}
                 </div>
             </div>
+            <Dialog open={Boolean(confirmAction)} onOpenChange={(open) => { if (!open) setConfirmAction(null); }}>
+                <DialogContent dir="rtl">
+                    <DialogHeader>
+                        <DialogTitle>{confirmAction?.type === 'delete-message' ? 'حذف پیام' : 'مسدودسازی کاربر'}</DialogTitle>
+                        <DialogDescription>{confirmAction?.type === 'delete-message' ? 'این پیام برای هر دو طرف گفتگو حذف می‌شود. این عملیات قابل بازگشت نیست.' : 'با مسدودسازی این کاربر، ارسال پیام در این گفتگو برای هر دو طرف متوقف می‌شود.'}</DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button type="button" variant="outline" onClick={() => setConfirmAction(null)}>انصراف</Button>
+                        <Button type="button" variant="destructive" onClick={confirmPendingAction}>تأیید</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+            <Dialog open={Boolean(promptAction)} onOpenChange={(open) => { if (!open) { setPromptAction(null); setPromptValue(''); } }}>
+                <DialogContent dir="rtl">
+                    <DialogHeader>
+                        <DialogTitle>گزارش {promptAction?.type === 'message' ? 'پیام' : 'گفتگو'}</DialogTitle>
+                        <DialogDescription>دلیل گزارش را کوتاه و روشن توضیح دهید تا برای بررسی ثبت شود.</DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={submitPrompt} className="space-y-4">
+                        <Textarea aria-label="دلیل گزارش" value={promptValue} onChange={(event) => setPromptValue(event.target.value)} rows={4} maxLength={2000} required placeholder="دلیل گزارش…" />
+                        <DialogFooter>
+                            <Button type="button" variant="outline" onClick={() => { setPromptAction(null); setPromptValue(''); }}>انصراف</Button>
+                            <Button type="submit" disabled={!promptValue.trim()}>ثبت گزارش</Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </section>
     );
 }
