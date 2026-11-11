@@ -4,7 +4,7 @@ import { Bell } from 'lucide-react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import ThemeSwitcher from '../design-system/ThemeSwitcher';
-import { Badge } from '../components/ui';
+import { Badge, Checkbox } from '../components/ui';
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
 
@@ -167,11 +167,11 @@ function NotificationBell({ user }) {
 
     return (
         <div className="relative">
-            <button type="button" aria-label="اعلان‌ها" aria-expanded={open} onClick={() => setOpen((value) => !value)} className="relative inline-flex min-h-10 items-center gap-2 border border-border px-3 py-2 font-semibold hover:border-ring">
+            <button type="button" aria-label="اعلان‌ها" aria-expanded={open} onClick={() => setOpen((value) => !value)} className="relative inline-flex h-9 items-center gap-2 rounded-md border border-input bg-background px-3 text-sm font-medium shadow-sm hover:bg-accent hover:text-accent-foreground">
                 <Bell aria-hidden="true" size={16} strokeWidth={1.8} /><span className="hidden sm:inline">اعلان‌ها</span>
                 {unreadCount > 0 && <span className="min-w-5 rounded-full bg-primary px-1.5 py-0.5 text-[10px] text-primary-foreground" aria-live="polite">{unreadCount > 99 ? '۹۹+' : unreadCount.toLocaleString('fa-IR')}</span>}
             </button>
-            {open && <section role="dialog" aria-label="اعلان‌های پیام" className="absolute left-0 top-full z-50 mt-2 w-[min(22rem,calc(100vw-2rem))] border border-border bg-card p-4 text-right shadow-xl">
+            {open && <section role="dialog" aria-label="اعلان‌های پیام" className="absolute left-0 top-full z-50 mt-2 w-[min(22rem,calc(100vw-2rem))] rounded-lg border bg-popover p-4 text-right text-popover-foreground shadow-md">
                 <div className="flex items-center justify-between gap-3">
                     <h2 className="font-bold">اعلان‌های پیام</h2>
                     <button type="button" onClick={markAllRead} disabled={busy || unreadCount === 0} className="text-xs font-semibold text-primary disabled:opacity-40">خواندن همه</button>
@@ -179,7 +179,7 @@ function NotificationBell({ user }) {
                 {error && <p role="alert" className="mt-3 text-xs text-red-700">{error}</p>}
                 {loading ? <p className="py-5 text-sm text-muted-foreground">در حال دریافت…</p> : items.length === 0 ? <p className="py-5 text-sm text-muted-foreground">هنوز اعلانی ندارید.</p> : <ul className="mt-3 max-h-72 divide-y divide-border overflow-y-auto">
                     {items.map((item) => <li key={item.id}>
-                        <button type="button" disabled={busy} onClick={() => openNotification(item)} className="w-full py-3 text-right hover:bg-muted disabled:opacity-50">
+                        <button type="button" disabled={busy} onClick={() => openNotification(item)} className="w-full rounded-md px-2 py-3 text-right hover:bg-accent hover:text-accent-foreground disabled:opacity-50">
                             <span className="flex items-start gap-2"><span aria-hidden="true" className={item.read_at ? 'mt-1.5 h-2 w-2 shrink-0 rounded-full bg-border' : 'mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary'} />
                                 <span className="min-w-0"><strong className="block text-sm">{item.sender_name} پیام جدیدی فرستاد</strong><span className="mt-1 block text-[11px] text-muted-foreground">{notificationDate(item.created_at)}</span></span>
                             </span>
@@ -187,7 +187,7 @@ function NotificationBell({ user }) {
                     </li>)}
                 </ul>}
                 <div className="mt-3 border-t border-border pt-3">
-                    <label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={Boolean(preferences.in_app_messages)} disabled={busy} onChange={(event) => updatePreference(event.target.checked)} /><span>اعلان پیام‌های جدید در این بخش</span></label>
+                    <label className="flex items-center gap-2 text-xs"><Checkbox checked={Boolean(preferences.in_app_messages)} disabled={busy} onChange={(event) => updatePreference(event.target.checked)} /><span>اعلان پیام‌های جدید در این بخش</span></label>
                     <p className="mt-2 text-[11px] leading-5 text-muted-foreground">اعلان ایمیلی تا تأیید صف ارسال و تنظیمات میزبان غیرفعال است.</p>
                 </div>
             </section>}
