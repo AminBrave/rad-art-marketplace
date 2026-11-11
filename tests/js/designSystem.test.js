@@ -40,6 +40,8 @@ test('Tailwind and shadcn configuration use standard semantic colors and class-b
 
 test('shared primitives follow shadcn component contracts and preserve accessible form states', () => {
     assert.ok(primitives.includes('@radix-ui/react-slot'));
+    assert.match(primitives, /import \{ Slot, Slottable \} from '@radix-ui\/react-slot'/);
+    assert.match(primitives, /asChild \? <Slottable>\{children\}<\/Slottable>/);
     assert.ok(primitives.includes('focus-visible:ring-ring'));
     assert.ok(primitives.includes('aria-busy={loading || undefined}'));
     assert.ok(primitives.includes("'aria-describedby':"));
