@@ -31,6 +31,7 @@ export default function MessagingCenter({ role }) {
     const [loading, setLoading] = useState(true);
     const [loadingOlder, setLoadingOlder] = useState(false);
     const [messagesLoading, setMessagesLoading] = useState(false);
+    const [newMessageCount, setNewMessageCount] = useState(0);
     const [hasOlderMessages, setHasOlderMessages] = useState(false);
     const [hasMoreThreads, setHasMoreThreads] = useState(false);
     const [loadingMoreThreads, setLoadingMoreThreads] = useState(false);
@@ -156,6 +157,13 @@ export default function MessagingCenter({ role }) {
                 setHasOlderMessages(hasOlderMessagesRef.current);
                 shouldStickToBottomRef.current = true;
             }
+            if (incremental && !shouldStickToBottomRef.current) {
+                const newIncomingCount = incoming.filter((message) =>
+                    Number(message.id) > Number(latestMessageIdRef.current ?? 0)
+                    && Number(message.sender_id) !== Number(user?.id)
+                ).length;
+                if (newIncomingCount) setNewMessageCount((count) => count + newIncomingCount);
+            }
             const newest = incoming.reduce((latest, message) =>
                 !latest || Number(message.id) > Number(latest.id) ? message : latest, null);
             if (newest?.id) latestMessageIdRef.current = Math.max(Number(latestMessageIdRef.current ?? 0), Number(newest.id));
@@ -196,6 +204,7 @@ export default function MessagingCenter({ role }) {
         pendingScrollRestoreRef.current = null;
         activeConversationRef.current = active;
         setMessages([]);
+        setNewMessageCount(0);
         setMessagesLoading(Boolean(active));
         shouldStickToBottomRef.current = true;
         latestMessageIdRef.current = null;
@@ -554,11 +563,18 @@ export default function MessagingCenter({ role }) {
                             <div dir="ltr" ref={messagesContainerRef} onScroll={(event) => {
                                 const node = event.currentTarget;
                                 shouldStickToBottomRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 120;
+                                if (shouldStickToBottomRef.current) setNewMessageCount(0);
                                 if (node.scrollTop < 72 && hasOlderMessagesRef.current) loadOlderMessages();
                             }} className="relative flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain [scrollbar-gutter:stable] bg-[radial-gradient(circle_at_1px_1px,rgba(66,62,53,0.055)_1px,transparent_0)] [background-size:24px_24px] px-3 py-5 sm:gap-4 sm:px-6 sm:py-6" role="log" aria-label="پیام‌های گفتگو" aria-live="polite" aria-relevant="additions">
                                 {messagesLoading && messages.length === 0 && <p className="m-auto py-6 text-center text-sm text-muted" role="status">در حال دریافت پیام‌ها…</p>}
                                 {!messagesLoading && messages.length === 0 && <p className="m-auto py-6 text-center text-sm text-muted">هنوز پیامی در این گفتگو وجود ندارد. می‌توانید گفتگو را با یک پیام شروع کنید.</p>}
                                 {loadingOlder && <p className="absolute inset-x-0 top-2 z-10 mx-auto w-fit rounded-full border border-border bg-white/95 px-3 py-1.5 text-xs text-muted shadow-soft" role="status">در حال دریافت پیام‌های قدیمی‌تر…</p>}
+                                {newMessageCount > 0 && <button type="button" onClick={() => {
+                                    shouldStickToBottomRef.current = true;
+                                    setNewMessageCount(0);
+                                    const node = messagesContainerRef.current;
+                                    node?.scrollTo({ top: node.scrollHeight, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+                                }} className="absolute bottom-4 left-1/2 z-20 -translate-x-1/2 rounded-full border border-border bg-white px-4 py-2 text-xs font-bold text-terracotta-strong shadow-soft hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus" aria-label={`${newMessageCount} پیام جدید؛ رفتن به آخر گفتگو`}>{Number(newMessageCount).toLocaleString('fa-IR')} پیام جدید ↓</button>}
                                 {messages.map((message) => {
                                     const own = Number(message.sender_id) === Number(user?.id);
                                     const deleted = Boolean(message.deleted_at);
