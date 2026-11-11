@@ -108,7 +108,7 @@ export function AdminRecordListSkeleton({ count = 5, className = '' }) {
 
 export function DashboardMetricSkeleton({ count = 4, className = '' }) {
     return (
-        <div aria-hidden="true" className={`grid gap-3 sm:grid-cols-2 xl:grid-cols-4 ${className}`}>
+        <div aria-hidden="true" className={`grid gap-3 sm:grid-cols-2 ${count === 3 ? 'xl:grid-cols-3' : 'xl:grid-cols-4'} ${className}`}>
             {Array.from({ length: count }, (_, index) => <article key={index} className="grid min-h-32 content-between gap-4 border border-border bg-paper p-5"><div className="flex items-center justify-between gap-3"><Skeleton className="h-4 w-28 rounded-sm" /><Skeleton className="h-3 w-16 rounded-sm" /></div><Skeleton className="h-8 w-2/5 rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></article>)}
         </div>
     );
@@ -125,7 +125,7 @@ export function ArtistRecentWorkSkeleton() {
 export function AdminDashboardSkeleton() {
     return (
         <section aria-hidden="true" className="grid gap-5">
-            <DashboardMetricSkeleton count={3} className="xl:grid-cols-3" />
+            <DashboardMetricSkeleton count={3} />
             <div className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,.8fr)]">
                 <div className="border border-border bg-paper p-5 sm:p-7"><div className="border-b border-border pb-4"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="mt-2 h-6 w-40 rounded-sm" /></div>{[0, 1, 2, 3].map((item) => <div key={item} className="flex items-center justify-between gap-4 border-b border-border py-5"><div className="grid flex-1 gap-2"><Skeleton className="h-4 w-2/3 rounded-sm" /><Skeleton className="h-3 w-1/3 rounded-sm" /></div><Skeleton className="h-8 w-24 rounded-sm" /></div>)}</div>
                 <div className="border border-border bg-paper p-5 sm:p-7"><Skeleton className="h-5 w-36 rounded-sm" /><div className="mt-5 grid gap-4">{[0, 1, 2].map((item) => <div key={item} className="grid gap-2"><Skeleton className="h-4 w-3/4 rounded-sm" /><Skeleton className="h-3 w-full rounded-sm" /></div>)}</div></div>
