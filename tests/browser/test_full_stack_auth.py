@@ -4,7 +4,7 @@ import uuid
 
 from playwright.sync_api import sync_playwright
 
-BASE_URL = os.environ.get("RAD_ART_BASE_URL", "http://127.0.0.1:8000")
+from config import BASE_URL, IGNORE_HTTPS_ERRORS
 
 
 class FullStackAuthenticationTests(unittest.TestCase):
@@ -21,7 +21,7 @@ class FullStackAuthenticationTests(unittest.TestCase):
         cls.playwright.stop()
 
     def test_buyer_registration_creates_session_and_survives_refresh(self):
-        context = self.browser.new_context(viewport={"width": 1280, "height": 900})
+        context = self.browser.new_context(viewport={"width": 1280, "height": 900}, ignore_https_errors=IGNORE_HTTPS_ERRORS)
         page = context.new_page()
         page.set_default_timeout(20000)
         try:
@@ -53,7 +53,7 @@ class FullStackAuthenticationTests(unittest.TestCase):
             context.close()
 
     def test_guest_cannot_access_buyer_api_without_a_session(self):
-        context = self.browser.new_context()
+        context = self.browser.new_context(ignore_https_errors=IGNORE_HTTPS_ERRORS)
         page = context.new_page()
         try:
             page.goto(BASE_URL + "/login")
