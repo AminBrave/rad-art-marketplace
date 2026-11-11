@@ -1,4 +1,4 @@
-export { Button as ShadcnButton, buttonVariants } from './button';
+export { Button as ShadcnButton } from './button';
 export { Badge as ShadcnBadge } from './badge';
 export { Input } from './input';
 export { Textarea } from './textarea';
