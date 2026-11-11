@@ -165,6 +165,11 @@ test('loading skeletons mirror the main structures of the major project surfaces
         'DashboardMetricSkeleton',
         'ArtistRecentWorkSkeleton',
         'WorkspaceIdentitySkeleton',
+        'CollectionCardSkeleton',
+        'CollectionDetailSkeleton',
+        'AdminEditorialSkeleton',
+        'NotificationListSkeleton',
+        'HomePageSkeleton',
     ]) assert.ok(skeletons.includes('export function ' + component), 'Missing skeleton: ' + component);
     assert.ok(artworkStudio.includes('<ArtworkStudioListSkeleton count={3} />'));
     assert.ok(adminWorkspace.includes('<ArtworkModerationSkeleton count={4} />'));
@@ -173,5 +178,7 @@ test('loading skeletons mirror the main structures of the major project surfaces
     assert.ok(messaging.includes('<ConversationInboxSkeleton count={6} />'));
     assert.ok(messaging.includes('<MessageHistorySkeleton count={5}'));
     assert.ok(skeletons.includes('aspect-[4/3]'));
+    assert.ok(skeletons.includes('aspect-[4/5]'));
+    assert.ok(skeletons.includes('aria-label="در حال آماده‌سازی صفحه اصلی"'));
     assert.ok(skeletons.includes('sm:min-h-64'));
 });
