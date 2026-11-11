@@ -40,3 +40,11 @@ export function Toggle({ pressed = false, onPressedChange, variant = 'default', 
 export function AspectRatio({ ratio = 1, className, children, ...props }) {
     return <div className={cn('relative w-full', className)} style={{ aspectRatio: ratio }} {...props}>{children}</div>;
 }
+
+export function ButtonGroup({ className, orientation = 'horizontal', ...props }) {
+    return <div role="group" data-orientation={orientation} className={cn(
+        'inline-flex items-center [&>button]:rounded-none [&>button:first-child]:rounded-s-md [&>button:last-child]:rounded-e-md [&>button:not(:first-child)]:-ms-px',
+        orientation === 'vertical' && 'flex-col [&>button]:w-full [&>button:first-child]:rounded-s-none [&>button:first-child]:rounded-t-md [&>button:last-child]:rounded-e-none [&>button:last-child]:rounded-b-md [&>button:not(:first-child)]:-mt-px [&>button:not(:first-child)]:-ms-0',
+        className,
+    )} {...props} />;
+}
