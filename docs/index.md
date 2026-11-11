@@ -5,6 +5,7 @@ Start with [AGENTS.md](../AGENTS.md), then follow only the path relevant to the 
 | Need | Read |
 |---|---|
 | AI agent setup and specialist skills | [AI Agent Tooling](engineering/ai-agent-tooling.md) |
+| ChatGPT Project connection and skill retrieval | [ChatGPT Project Integration](engineering/chatgpt-project-integration.md), [root ChatGPT entry point](../CHATGPT.md) |
 | Product | [Vision and scope](product/vision-and-scope.md), [domain workflows](product/domain-workflows.md) |
 | Code | [System overview](architecture/system-overview.md), [feature registry](architecture/feature-registry.md), [data model](architecture/data-model.md), [frontend](architecture/frontend-and-ui.md), [API](architecture/api-contracts.md) |
 | Feature delivery | [Feature lifecycle](delivery/feature-lifecycle.md), [agent operating model](engineering/agent-operating-model.md) |
