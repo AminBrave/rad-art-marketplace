@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useOutletContext } from 'react-router-dom';
 import { EmptyState, ErrorState, SkeletonLines, StatusBadge, Badge, WorkspaceHero, DashboardMetricCard } from '../components/ui';
@@ -20,29 +20,19 @@ function StatusLabel({ status }) {
 
 export default function ArtistWorkspaceOverview() {
     const { user, profile, profileLoading, profileError } = useOutletContext();
-    const [artworks, setArtworks] = useState([]);
-    const [counts, setCounts] = useState({ artworks: null });
-    const [loading, setLoading] = useState(false);
-    const [errors, setErrors] = useState([]);
-
-    useEffect(() => {
-        if (profileLoading || !profile?.slug) return undefined;
-        let active = true;
-        setLoading(true);
-        axios.get('/api/v1/artist/artworks')
-            .then(({ data }) => {
-                if (!active) return;
-                const rows = data.data ?? [];
-                setArtworks(rows);
-                setCounts({ artworks: data.total ?? rows.length });
-                setErrors([]);
-            })
-            .catch(() => {
-                if (active) setErrors(['آمار آثار دریافت نشد.']);
-            })
-            .finally(() => { if (active) setLoading(false); });
-        return () => { active = false; };
-    }, [profile?.slug, profileLoading]);
+    const artworksQuery = useQuery({
+        queryKey: ['artist-workspace', 'artworks', user?.id],
+        queryFn: async ({ signal }) => {
+            const { data } = await axios.get('/api/v1/artist/artworks', { signal });
+            return data;
+        },
+        enabled: !profileLoading && Boolean(profile?.slug),
+        staleTime: 60_000,
+    });
+    const artworks = artworksQuery.data?.data ?? [];
+    const counts = { artworks: artworksQuery.data?.total ?? (artworksQuery.data ? artworks.length : null) };
+    const loading = artworksQuery.isPending;
+    const errors = artworksQuery.isError ? ['آمار آثار دریافت نشد.'] : [];
 
     const profileSteps = [
         { label: 'نام نمایشی حرفه‌ای', done: Boolean(profile?.display_name?.trim()) },
