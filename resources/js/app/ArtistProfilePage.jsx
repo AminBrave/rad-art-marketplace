@@ -76,48 +76,70 @@ export default function ArtistProfilePage() {
     const status = profileQuery.error?.response?.status ?? 0;
 
     return (
-        <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl">
-            <nav aria-label="مسیر صفحه" className="text-sm text-muted">
+        <main className="mx-auto min-h-[65vh] max-w-7xl px-5 pb-16 pt-8 sm:px-8 sm:pt-12 lg:px-10" dir="rtl">
+            <nav aria-label="مسیر صفحه" className="text-xs text-muted">
                 <Link to="/" className="hover:text-terracotta-strong">خانه</Link><span className="mx-2" aria-hidden="true">/</span>
                 <Link to="/artists" className="hover:text-terracotta-strong">هنرمندان</Link><span className="mx-2" aria-hidden="true">/</span>
                 <span aria-current="page" className="text-ink">پروفایل هنرمند</span>
             </nav>
+
             {profile ? (
                 <>
-                    <section className="relative mt-7 overflow-hidden border border-border bg-white">
-                        <div aria-hidden="true" className="absolute inset-x-0 top-0 h-2 bg-terracotta" />
-                        <div className="grid gap-7 p-7 pt-10 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-end">
-                            <div>
+                    <section className="relative mt-6 overflow-hidden border border-border bg-white">
+                        <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1.5 bg-terracotta" />
+                        <div className="grid lg:grid-cols-[minmax(0,1fr)_18rem]">
+                            <div className="relative px-6 pb-8 pt-9 sm:px-10 sm:pb-10 sm:pt-12 lg:px-12">
                                 <p className="text-xs font-bold tracking-wide text-terracotta-strong">پرونده هنرمند</p>
-                                <h1 className="mt-3 text-4xl font-black leading-tight">{profile.display_name}</h1>
-                                {profile.city && <p className="mt-3 text-sm text-muted">{profile.city}</p>}
-                                {profile.bio && <p className="mt-7 max-w-3xl whitespace-pre-line text-sm leading-9 text-muted">{profile.bio}</p>}
-                                <div className="mt-7 flex flex-wrap gap-4 text-sm font-semibold">
-                                    {profile.website_url && <a href={profile.website_url} target="_blank" rel="noreferrer" className="text-terracotta-strong underline">وب‌سایت هنرمند</a>}
-                                    {profile.instagram_handle && <a href={'https://instagram.com/' + profile.instagram_handle} target="_blank" rel="noreferrer" className="text-terracotta-strong underline">اینستاگرام</a>}
+                                <h1 className="mt-4 max-w-3xl text-4xl font-black leading-tight sm:text-5xl">{profile.display_name}</h1>
+                                {profile.city && <p className="mt-4 flex items-center gap-2 text-sm font-medium text-muted"><span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-terracotta" />{profile.city}</p>}
+                                {profile.bio && <p className="mt-7 max-w-3xl whitespace-pre-line border-r-2 border-sand pr-5 text-sm leading-9 text-muted sm:text-base">{profile.bio}</p>}
+                                <div className="mt-7 flex flex-wrap gap-x-5 gap-y-3 text-sm font-semibold">
+                                    {profile.website_url && <a href={profile.website_url} target="_blank" rel="noreferrer" className="text-terracotta-strong underline underline-offset-4">وب‌سایت هنرمند ↗</a>}
+                                    {profile.instagram_handle && <a href={'https://instagram.com/' + profile.instagram_handle} target="_blank" rel="noreferrer" className="text-terracotta-strong underline underline-offset-4">اینستاگرام ↗</a>}
                                 </div>
                             </div>
-                            <div className="flex flex-wrap items-center gap-3 lg:flex-col lg:items-stretch">
-                                {user?.role === 'buyer' && <>
-                                    <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(profile.slug)} className="bg-ink px-5 py-3 text-center text-sm font-bold text-white hover:bg-terracotta">پیام مستقیم</Link>
-                                    {isFeatureEnabled('inquiries') && <ContactArtistForm artistSlug={profile.slug} />}
-                                </>}
-                                {!user && isFeatureEnabled('inquiries') && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className="bg-ink px-5 py-3 text-center text-sm font-bold text-white">درخواست ارتباط با هنرمند</Link>}
-                            </div>
+                            <aside className="flex flex-col justify-between gap-6 border-t border-border bg-surface-muted p-6 sm:p-8 lg:border-r lg:border-t-0">
+                                <div>
+                                    <p className="text-[11px] font-bold tracking-wide text-muted">پورتفولیوی عمومی</p>
+                                    <p className="mt-3 text-3xl font-black tabular-nums text-ink">{allArtworks.length.toLocaleString('fa-IR')}</p>
+                                    <p className="mt-1 text-xs text-muted">اثر دریافت‌شده در این صفحه</p>
+                                </div>
+                                <div className="grid gap-3">
+                                    {user?.role === 'buyer' && <>
+                                        <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(profile.slug)} className="flex min-h-12 items-center justify-center bg-ink px-5 py-3 text-center text-sm font-bold text-white transition-colors hover:bg-terracotta">ارسال پیام به هنرمند</Link>
+                                        {isFeatureEnabled('inquiries') && <ContactArtistForm artistSlug={profile.slug} />}
+                                    </>}
+                                    {!user && isFeatureEnabled('inquiries') && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className="flex min-h-12 items-center justify-center bg-ink px-5 py-3 text-center text-sm font-bold text-white transition-colors hover:bg-terracotta">درخواست ارتباط با هنرمند</Link>}
+                                    {user?.role !== 'buyer' && user && <p className="text-xs leading-6 text-muted">برای ارتباط با این هنرمند، از حساب خریدار استفاده کنید.</p>}
+                                </div>
+                            </aside>
                         </div>
                     </section>
-                    <section className="mt-12">
-                        <div className="flex flex-wrap items-end justify-between gap-3">
-                            <div><p className="text-xs font-bold text-terracotta-strong">پورتفولیو</p><h2 className="mt-2 text-2xl font-black">آثار تأییدشده این هنرمند</h2><p className="mt-2 text-sm text-muted">نمونه‌کارهای عمومی؛ تازه‌ترین آثار در ابتدای فهرست قرار دارند.</p></div>
+
+                    <section className="mt-12" aria-labelledby="artist-portfolio-heading">
+                        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-5">
+                            <div>
+                                <p className="text-[11px] font-bold tracking-wide text-terracotta-strong">منتخب آثار</p>
+                                <h2 id="artist-portfolio-heading" className="mt-2 text-2xl font-black sm:text-3xl">آثار تأییدشده</h2>
+                                <p className="mt-2 text-sm leading-7 text-muted">نگاهی به آثار عمومی و تازه‌ترین تجربه‌های هنری این هنرمند.</p>
+                            </div>
                             <span className="text-xs text-muted">{allArtworks.length.toLocaleString('fa-IR')} اثر بارگذاری‌شده</span>
                         </div>
+
                         {portfolioCategories.length > 1 && <div className="mt-6 flex flex-wrap gap-2" aria-label="فیلتر آثار بر اساس دسته">
-                            <button type="button" aria-pressed={!categoryFilter} onClick={() => setCategoryFilter('')} className={`border px-4 py-2 text-sm font-semibold ${!categoryFilter ? 'border-ink bg-ink text-white' : 'border-border bg-white text-ink'}`}>همه دسته‌ها</button>
-                            {portfolioCategories.map((category) => <button type="button" key={category.slug} aria-pressed={categoryFilter === category.slug} onClick={() => setCategoryFilter(category.slug)} className={`border px-4 py-2 text-sm font-semibold ${categoryFilter === category.slug ? 'border-ink bg-ink text-white' : 'border-border bg-white text-ink'}`}>{category.name}</button>)}
+                            <button type="button" aria-pressed={!categoryFilter} onClick={() => setCategoryFilter('')} className={`min-h-10 border px-4 py-2 text-sm font-semibold transition-colors ${!categoryFilter ? 'border-ink bg-ink text-white' : 'border-border bg-white text-ink hover:border-terracotta'}`}>همه دسته‌ها</button>
+                            {portfolioCategories.map((category) => <button type="button" key={category.slug} aria-pressed={categoryFilter === category.slug} onClick={() => setCategoryFilter(category.slug)} className={`min-h-10 border px-4 py-2 text-sm font-semibold transition-colors ${categoryFilter === category.slug ? 'border-ink bg-ink text-white' : 'border-border bg-white text-ink hover:border-terracotta'}`}>{category.name}</button>)}
                         </div>}
-                        {visibleArtworks.length ? <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{visibleArtworks.map((item) => <ArtworkCard key={item.id} artwork={{ ...item, artist: { display_name: profile.display_name, slug: profile.slug } }} />)}</div> : <EmptyState className="mt-6" title={categoryFilter ? 'در این دسته اثری بارگذاری نشده' : 'هنوز اثری برای نمایش وجود ندارد'} description="آثار تأییدشده این هنرمند در این بخش نمایش داده می‌شوند." />}
-                        {profileQuery.isFetchNextPageError && <ErrorState className="mt-6" title="دریافت آثار بیشتر ناموفق بود" description="دریافت آثار بیشتر انجام نشد. دوباره تلاش کنید." onRetry={() => profileQuery.fetchNextPage()} />}
-                        {pagination?.has_more && <div className="mt-8 flex justify-center"><button type="button" onClick={() => profileQuery.fetchNextPage()} disabled={profileQuery.isFetchingNextPage} className="border border-border px-6 py-3 text-sm font-bold text-ink transition-colors hover:border-terracotta disabled:cursor-wait disabled:opacity-60">{profileQuery.isFetchingNextPage ? 'در حال دریافت…' : 'نمایش آثار بیشتر'}</button></div>}
+
+                        {visibleArtworks.length ? (
+                            <div className="mt-7 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                                {visibleArtworks.map((item) => <ArtworkCard key={item.id} artwork={{ ...item, artist: { display_name: profile.display_name, slug: profile.slug } }} />)}
+                            </div>
+                        ) : (
+                            <EmptyState className="mt-7" title={categoryFilter ? 'در این دسته اثری بارگذاری نشده' : 'هنوز اثری برای نمایش وجود ندارد'} description="آثار تأییدشده این هنرمند در این بخش نمایش داده می‌شوند." />
+                        )}
+                        {profileQuery.isFetchNextPageError && <ErrorState className="mt-7" title="دریافت آثار بیشتر ناموفق بود" description="دریافت آثار بیشتر انجام نشد. دوباره تلاش کنید." onRetry={() => profileQuery.fetchNextPage()} />}
+                        {pagination?.has_more && <div className="mt-9 flex justify-center"><button type="button" onClick={() => profileQuery.fetchNextPage()} disabled={profileQuery.isFetchingNextPage} className="min-h-12 border border-border px-7 py-3 text-sm font-bold text-ink transition-colors hover:border-terracotta disabled:cursor-wait disabled:opacity-60">{profileQuery.isFetchingNextPage ? 'در حال دریافت…' : 'نمایش آثار بیشتر'}</button></div>}
                     </section>
                 </>
             ) : (
