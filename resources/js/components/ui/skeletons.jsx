@@ -159,6 +159,30 @@ export function AdminUserCardsSkeleton({ count = 4 }) {
     );
 }
 
+export function CollectionCardSkeleton({ count = 3 }) {
+    return (
+        <div aria-hidden="true" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: count }, (_, index) => <article key={index} className="grid content-start gap-3 border border-border bg-paper p-6"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="mt-1 h-7 w-4/5 rounded-sm" /><div className="mt-1 grid gap-2"><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-11/12 rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div><Skeleton className="mt-3 h-4 w-28 rounded-sm" /></article>)}
+        </div>
+    );
+}
+
+export function AdminEditorialSkeleton() {
+    return (
+        <div aria-hidden="true" className="grid gap-8">
+            <section className="grid gap-4 border border-border bg-paper p-5 sm:p-7">
+                <Skeleton className="h-7 w-44 rounded-sm" />
+                <div className="grid gap-2"><Skeleton className="h-4 w-28 rounded-sm" /><Skeleton className="h-11 w-full rounded-sm" /></div>
+                <div className="grid gap-2"><Skeleton className="h-4 w-32 rounded-sm" /><Skeleton className="h-28 w-full rounded-sm" /><Skeleton className="h-3 w-2/3 rounded-sm" /></div>
+                <div className="grid gap-2"><Skeleton className="h-4 w-48 rounded-sm" /><div className="grid max-h-72 gap-3 overflow-hidden border border-border p-3">{[0, 1, 2, 3, 4, 5].map((item) => <div key={item} className="flex items-center gap-3"><Skeleton className="h-4 w-4 rounded-sm" /><div className="grid flex-1 gap-2"><Skeleton className="h-4 w-2/3 rounded-sm" /><Skeleton className="h-3 w-1/3 rounded-sm" /></div></div>)}</div></div>
+                <div className="flex gap-2"><Skeleton className="h-10 w-32 rounded-sm" /><Skeleton className="h-10 w-32 rounded-sm" /></div>
+            </section>
+            <section className="grid gap-4"><div className="flex items-center justify-between gap-3"><Skeleton className="h-6 w-40 rounded-sm" /><Skeleton className="h-9 w-28 rounded-sm" /></div>{[0, 1, 2].map((item) => <article key={item} className="grid gap-4 border border-border bg-paper p-5"><div className="flex items-start justify-between gap-3"><div className="grid flex-1 gap-2"><Skeleton className="h-5 w-2/3 rounded-sm" /><Skeleton className="h-3 w-1/3 rounded-sm" /><Skeleton className="h-3 w-1/2 rounded-sm" /></div><Skeleton className="h-4 w-16 rounded-sm" /></div><div className="flex flex-wrap gap-2 border-t border-border pt-4"><Skeleton className="h-9 w-24 rounded-sm" /><Skeleton className="h-9 w-24 rounded-sm" /><Skeleton className="h-9 w-24 rounded-sm" /><Skeleton className="h-9 w-24 rounded-sm" /></div></article>)}</section>
+            <section className="grid gap-4 border border-border bg-paper p-5 sm:p-7"><Skeleton className="h-6 w-40 rounded-sm" /><Skeleton className="h-4 w-full max-w-xl rounded-sm" /><div className="grid gap-3 sm:grid-cols-2">{[0, 1, 2, 3].map((item) => <div key={item} className="grid gap-3 border border-border p-3"><div className="flex items-center gap-3"><Skeleton className="h-4 w-4 rounded-sm" /><Skeleton className="h-4 w-2/3 rounded-sm" /></div><Skeleton className="h-10 w-full rounded-sm" /></div>)}</div><Skeleton className="h-10 w-40 rounded-sm" /></section>
+        </div>
+    );
+}
+
 export function ArtworkDetailSkeleton() {
     return (
         <PageContainer as="main" className="min-h-[65vh] py-10 lg:py-14" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت اثر هنری">
