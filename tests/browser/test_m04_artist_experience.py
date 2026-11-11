@@ -111,34 +111,26 @@ class ArtistExperienceBrowserTests(unittest.TestCase):
         finally:
             context.close()
 
-    def test_empty_artist_inbox_has_a_relevant_next_step(self):
+    def test_artist_overview_hides_inquiries_and_keeps_direct_messaging(self):
+        context, page = self.new_page()
+        inquiry_requests = []
+        page.on("request", lambda request: inquiry_requests.append(request.url)
+                if "/api/v1/artist/inquiries" in request.url else None)
+        try:
+            self.mock_workspace(page, inquiries=[])
+            page.goto(BASE_URL + "/dashboard/artist")
+            page.get_by_role("heading", name="خوش آمدید، Artist QA").wait_for()
+            page.get_by_role("link", name="پیام‌های مستقیم").first.wait_for()
+            self.assertEqual(inquiry_requests, [])
+            self.assertNotIn("آخرین درخواست‌ها", page.locator("body").inner_text())
+        finally:
+            context.close()
+
+    def test_artist_inquiry_deep_link_returns_not_found(self):
         context, page = self.new_page()
         try:
             self.mock_workspace(page, inquiries=[])
             page.goto(BASE_URL + "/dashboard/artist/inquiries")
-            page.get_by_role("heading", name="صندوق درخواست‌ها").wait_for()
-            page.get_by_role("link", name="بررسی و به‌روزرسانی پروفایل هنری").click()
-            page.get_by_role("heading", name="پروفایل هنرمند").wait_for()
-            self.assertTrue(page.url.endswith("/dashboard/artist/profile"))
-        finally:
-            context.close()
-
-    def test_inquiry_status_lifecycle_is_explained_and_updates_from_server(self):
-        context, page = self.new_page()
-        try:
-            self.mock_workspace(page, inquiries=[INQUIRY])
-            def update(route):
-                self.assertEqual(route.request.post_data_json["status"], "read")
-                route.fulfill(status=200, content_type="application/json", body=json.dumps({
-                    "message": "وضعیت پیام به‌روزرسانی شد.", "data": {**INQUIRY, "status": "read", "read_at": "2026-11-10T11:00:00Z"}
-                }, ensure_ascii=False))
-            page.route("**/api/v1/artist/inquiries/51", lambda route: update(route) if route.request.method == "PATCH" else route.fulfill(
-                status=200, content_type="application/json", body=json.dumps({"data": INQUIRY}, ensure_ascii=False)
-            ))
-            page.goto(BASE_URL + "/dashboard/artist/inquiries")
-            page.get_by_role("button", name="پرسش درباره اثر").click()
-            page.get_by_text("هنوز رسیدگی به این درخواست را ثبت نکرده‌اید.").wait_for()
-            page.get_by_role("button", name="علامت‌گذاری به‌عنوان خوانده‌شده").click()
-            page.get_by_text("این درخواست به‌عنوان خوانده‌شده ثبت شده است").wait_for()
+            page.get_by_role("heading", name="این صفحه پیدا نشد").wait_for()
         finally:
             context.close()
