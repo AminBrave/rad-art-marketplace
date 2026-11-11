@@ -31,6 +31,44 @@ Official references:
 
 The repository currently uses the classic `new-york` style with Radix primitives. The current RTL guide notes that automatic CLI RTL migration applies to newer styles, not classic New York. Therefore classic New York components must be reviewed and adapted manually with logical CSS properties, explicit portal direction and RTL browser tests. Do not set an RTL config flag and assume the existing component source was transformed.
 
+## Implementation status
+
+The current adoption branch applies the New York semantic language across the route tree and shared shells. This section records what is implemented so the design inventory is not confused with a claim that every component published by shadcn is installed.
+
+### Foundations and runtime
+
+- `components.json` uses `style: new-york`, Stone base color, CSS variables and the project's existing aliases.
+- Tailwind maps background, foreground, card, popover, primary, secondary, muted, accent, destructive, border, input, ring, chart and sidebar roles to semantic CSS variables.
+- Light and dark New York token sets share the same roles; the radius scale is derived from `--radius`.
+- New York supports light/dark preference persistence and system preference at first paint. Editorial remains a compatibility theme; the color-scheme control is scoped to New York.
+- Existing page utility aliases are mapped to semantic roles during migration, rather than preserving a separate Editorial component API.
+
+### Locally owned component source
+
+Implemented reusable components and compositions include:
+
+- **Foundations:** Button variants/sizes/loading/full-width, ButtonGroup, Badge, Card anatomy and action slot, Separator, Skeleton, Avatar, AspectRatio, Spinner, Kbd, Progress and Toggle.
+- **Forms:** FieldSet, FieldLegend, FieldGroup, Field, FieldLabel, FieldDescription, FieldError, FieldSeparator, Input, InputGroup, Textarea, NativeSelect, Checkbox, Radio, controlled RadioGroup and Switch.
+- **Navigation:** Tabs, Breadcrumbs, Pagination, DropdownMenu and Sidebar anatomy.
+- **Overlays and feedback:** Dialog/AlertDialog composition, Alert, EmptyState, ErrorState, SuccessState, PermissionState, Toast and upload progress feedback.
+- **Data/domain:** semantic Table anatomy, artwork card, artist card and their loading skeletons.
+
+These are local React 18 components using the installed Radix Dialog, DropdownMenu and Tabs primitives where appropriate. The design system follows shadcn's open-code philosophy: components are owned and edited in this repository.
+
+### Route and page adoption
+
+The New York semantic system and shared patterns have been applied to the public shell and homepage, artwork catalogue/detail, artist directory/profile, collections and public information, login/register, artist workspace and artwork studio, buyer workspace, direct messaging, inquiry screens, admin dashboard/user management/moderation/reporting, notification surfaces and route/loading/error states.
+
+Domain-specific artwork and artist compositions retain their marketplace information architecture; they use shared Card, Badge, Button, Field, Table and feedback patterns instead of being forced into generic dashboard blocks.
+
+### Intentional omissions
+
+The design inventory is a coverage map, not an instruction to install every available shadcn component. Calendar/Date Picker, Input OTP, charting, carousel, resizable panels, command palette, combobox, menubar, context menu, tooltip, drawer/sheet and hover card are not installed because current Rad Art workflows do not require them. Add one when a real route needs it, with the matching official API and tests; do not ship unused dependencies.
+
+### Verification
+
+The browser suite includes saved light/dark preference, live color-scheme switching, semantic token availability, New York authentication field rendering and a 320px overflow sweep across public routes. Final status is determined by the CI run on this exact PR head, not by earlier theme-only CI results.
+
 ## Design principles
 
 1. New York is the component language, not merely a color theme: compact controls, clear borders, restrained radius, precise spacing, deliberate elevation, clear focus states and consistent composition.
@@ -111,5 +149,5 @@ Only components that serve an evidenced product workflow should be installed and
 - React 18, Vite 6 and Tailwind 3.4 are the current project constraints. Do not paste Tailwind v4-only configuration or React 19-only APIs from current docs without an explicit migration decision.
 - Keep Radix UI as the classic New York primitive layer unless an individual component has a documented compatibility reason to use another primitive.
 - Do not replace Vazirmatn/Inter without a separate typography decision.
-- Existing theme-switching code is only a runtime shell; it is not evidence that component or page adoption is complete.
-- Do not claim "all shadcn components" are implemented unless each component in the inventory is present, documented and tested. Record intentional omissions.
+- The theme preference mechanism is only one part of the adoption; use the component and route coverage above to assess the actual implementation.
+- Do not claim all shadcn components are implemented: use the intentional-omissions list above, and add further components only when supported by a product workflow.
