@@ -53,7 +53,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                         <LoadingBlock className="h-11 w-full" />
                         <LoadingBlock className="h-11 w-full" />
                     </section>
-                    <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}
                     </section>
                 </>
