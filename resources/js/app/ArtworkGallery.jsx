@@ -55,9 +55,9 @@ export default function ArtworkGallery({ user }) {
                                 {detail.description && <p className="mt-6 whitespace-pre-line leading-8 text-foreground">{detail.description}</p>}
                                 <p className="mt-6 font-bold">{formatArtworkPrice(detail.price)}</p>
                                 <p className="mt-2 text-sm text-muted-foreground">{detail.availability === 'available' ? 'موجود' : detail.availability === 'sold' ? 'فروخته‌شده' : 'برای فروش نیست'}</p>
-                                <Button asChild variant="default" size="default" className="mt-8 inline-block"><a href={'/artists/' + detail.artist.slug}>مشاهده پروفایل هنرمند: {detail.artist.display_name}</a></Button>
+                                <Button asChild variant="default" size="default" className="mt-8"><a href={'/artists/' + detail.artist.slug}>مشاهده پروفایل هنرمند: {detail.artist.display_name}</a></Button>
                                 {user?.role === 'buyer' && createElement(ContactArtistForm, { artistSlug: detail.artist.slug, artworkId: detail.id })}
-                                {!user && <a href="/#account" className="mt-6 inline-block text-sm font-bold text-primary underline">برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید</a>}
+                                {!user && <a href="/#account" className="mt-6 text-sm font-bold text-primary underline">برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید</a>}
                             </div>
                         </div>
                     )}
