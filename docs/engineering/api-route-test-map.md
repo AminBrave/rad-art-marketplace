@@ -36,8 +36,8 @@ This inventory is derived from the current route declarations in routes/web.php 
 | GET /api/v1/artist-profiles/{artistProfile} | Artist/admin policy | ArtistProfileTest | Full role/ownership matrix |
 | PATCH /api/v1/artist-profiles/{artistProfile} | Owner/admin policy | ArtistProfileTest | Invalid fields and non-owner denial |
 | GET /api/v1/artist/artworks | Artist | ArtworkTest | Empty state, pagination boundaries and private fields |
-| POST /api/v1/artist/artworks | Artist, throttled | ArtworkTest | Upload failure cleanup, MIME spoofing and size boundaries |
-| PATCH /api/v1/artist/artworks/{artwork} | Owner/admin, throttled | ArtworkTest, ArtworkModerationTest | Replacement-image rollback and foreign ownership |
+| POST /api/v1/artist/artworks | Artist, throttled | ArtworkTest, ArtworkStorageRollbackTest | MIME spoofing and size boundaries |
+| PATCH /api/v1/artist/artworks/{artwork} | Owner/admin, throttled | ArtworkTest, ArtworkModerationTest, ArtworkStorageRollbackTest | Foreign ownership and successful replacement lifecycle |
 | GET /api/v1/artist/inquiries | Artist | ArtistInquiryTest | Pagination and status filters |
 | GET /api/v1/artist/inquiries/{inquiry} | Owning artist | ArtistInquiryTest | Private buyer-field contract |
 | PATCH /api/v1/artist/inquiries/{inquiry} | Owning artist | ArtistInquiryTest | Invalid transitions and repeated updates |
@@ -90,7 +90,7 @@ This inventory is derived from the current route declarations in routes/web.php 
 | GET /api/v1/admin/users | Admin | AuthorizationTest, AdminPaginationTest | Search/filter boundaries and private fields |
 | PATCH /api/v1/admin/users/{user}/role | Admin | AuthorizationTest | Invalid role, self-demotion and last-admin invariant |
 | GET /api/v1/admin/artworks | Admin | ArtworkModerationTest | Filters and pagination |
-| PATCH /api/v1/admin/artworks/{artwork}/moderation | Admin | ArtworkModerationTest | Complete transition matrix and audit integrity |
+| PATCH /api/v1/admin/artworks/{artwork}/moderation | Admin | ArtworkModerationTest, unmocked admin moderation E2E | Complete transition matrix and audit integrity |
 | GET /api/v1/admin/message-reports | Admin | MessageSafetyTest | Report filters, pagination and privacy |
 | PATCH /api/v1/admin/message-reports/{report} | Admin | MessageSafetyTest | Every moderation action and invalid transition |
 | GET /api/v1/admin/editorial/options | Admin | EditorialTest | Excludes ineligible content |
@@ -129,7 +129,7 @@ This inventory is derived from the current route declarations in routes/web.php 
 | /dashboard/buyer/messages | Buyer | full-stack messaging and notification browser tests |
 | /dashboard/artist, /dashboard/artist/profile, /dashboard/artist/artworks, /dashboard/artist/inquiries | Artist | test_m04_artist_experience.py |
 | /dashboard/artist/messages | Artist | full-stack messaging and notification browser tests |
-| /admin, /admin/users, /admin/artworks, /admin/message-reports, /admin/editorial | Admin | test_m03_editorial.py, test_m05_notifications.py, responsive RTL suite |
+| /admin, /admin/users, /admin/artworks, /admin/message-reports, /admin/editorial | Admin | test_full_stack_admin_moderation.py, test_m03_editorial.py, responsive RTL suite |
 
 ## Maintenance rule
 
