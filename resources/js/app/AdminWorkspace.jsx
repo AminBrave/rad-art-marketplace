@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { Badge, Button, EmptyState, ErrorState, FormField, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField } from '../components/ui';
+import { Badge, Button, EmptyState, ErrorState, FormField, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField, WorkspaceHero, DashboardMetricCard } from '../components/ui';
 
 const api = '/api/v1/admin';
 const statuses = [
@@ -18,22 +18,6 @@ const dateLabel = (value) => {
     const date = new Date(value);
     return Number.isNaN(date.getTime()) ? '—' : date.toLocaleDateString('fa-IR', { dateStyle: 'medium' });
 };
-
-function SummaryCard({ label, value, description, to, eyebrow }) {
-    return (
-        <Link to={to} className="group flex min-h-40 flex-col justify-between border border-border bg-white p-5 transition-all hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus sm:p-6">
-            <div className="flex items-center justify-between gap-3">
-                <span className="text-sm font-semibold text-muted">{label}</span>
-                <span className="text-[10px] font-bold text-terracotta-strong">{eyebrow}</span>
-            </div>
-            <div className="mt-5">
-                <p className="text-3xl font-black tabular-nums text-ink">{value ?? '—'}</p>
-                <p className="mt-2 text-xs leading-6 text-muted">{description}</p>
-            </div>
-            <span className="mt-4 text-xs font-bold text-terracotta-strong">مشاهده بخش <span aria-hidden="true">←</span></span>
-        </Link>
-    );
-}
 
 export function AdminDashboardHome() {
     const { user } = useAuth();
@@ -87,26 +71,20 @@ export function AdminDashboardHome() {
 
     return (
         <section className="space-y-8" dir="rtl">
-            <header className="relative overflow-hidden bg-ink px-6 py-8 text-white sm:px-9 sm:py-10">
-                <div aria-hidden="true" className="pointer-events-none absolute -left-16 -top-24 h-72 w-72 rounded-full border border-white/10" />
-                <div aria-hidden="true" className="pointer-events-none absolute -left-5 -top-12 h-48 w-48 rounded-full border border-white/10" />
-                <div className="relative flex flex-wrap items-end justify-between gap-6">
-                    <div className="max-w-2xl">
-                        <p className="text-xs font-bold tracking-wide text-sand">مرکز کنترل راد آرت</p>
-                        <h1 className="mt-3 text-2xl font-black leading-relaxed sm:text-3xl">خوش آمدید، {user?.name ?? 'مدیر'}</h1>
-                        <p className="mt-3 text-sm leading-8 text-white/70">از اینجا صف انتشار، حساب‌های کاربری، مجموعه‌های سردبیری و گزارش‌های ایمنی را مدیریت کنید. شاخص‌ها از داده‌های واقعی سامانه دریافت می‌شوند.</p>
-                    </div>
-                    <Button variant="secondary" onClick={load} loading={loading}>به‌روزرسانی آمار</Button>
-                </div>
-            </header>
+            <WorkspaceHero
+                eyebrow="مرکز کنترل راد آرت"
+                title={<>خوش آمدید، {user?.name ?? 'مدیر'}</>}
+                description="از اینجا صف انتشار، حساب‌های کاربری، مجموعه‌های سردبیری و گزارش‌های ایمنی را مدیریت کنید. شاخص‌ها از داده‌های واقعی سامانه دریافت می‌شوند."
+                actions={<Button variant="secondary" onClick={load} loading={loading}>به‌روزرسانی آمار</Button>}
+            />
 
             {errors.length > 0 && <ErrorState title="بخشی از اطلاعات دریافت نشد" description={errors.join(' ')} onRetry={load} />}
 
             <section aria-label="شاخص‌های عملیاتی" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                 {loading ? <><div className="border border-border bg-white p-6"><SkeletonLines lines={3} /></div><div className="border border-border bg-white p-6"><SkeletonLines lines={3} /></div><div className="border border-border bg-white p-6"><SkeletonLines lines={3} /></div></> : <>
-                    <SummaryCard label="آثار در انتظار بررسی" value={summary.pending?.toLocaleString('fa-IR')} description="تعداد کل آثار منتظر تصمیم انتشار" to="/admin/artworks" eyebrow="انتشار" />
-                    <SummaryCard label="حساب‌های کاربری" value={summary.users?.toLocaleString('fa-IR')} description="تعداد کل حساب‌های ثبت‌شده" to="/admin/users" eyebrow="جامعه" />
-                    <SummaryCard label="گزارش‌های پیام" value={summary.reports?.toLocaleString('fa-IR')} description="مجموع گزارش‌های ثبت‌شده برای رسیدگی" to="/admin/message-reports" eyebrow="ایمنی" />
+                    <DashboardMetricCard label="آثار در انتظار بررسی" value={summary.pending?.toLocaleString('fa-IR')} detail="تعداد کل آثار منتظر تصمیم انتشار" to="/admin/artworks" eyebrow="انتشار" />
+                    <DashboardMetricCard label="حساب‌های کاربری" value={summary.users?.toLocaleString('fa-IR')} detail="تعداد کل حساب‌های ثبت‌شده" to="/admin/users" eyebrow="جامعه" />
+                    <DashboardMetricCard label="گزارش‌های پیام" value={summary.reports?.toLocaleString('fa-IR')} detail="مجموع گزارش‌های ثبت‌شده برای رسیدگی" to="/admin/message-reports" eyebrow="ایمنی" />
                 </>}
             </section>
 
