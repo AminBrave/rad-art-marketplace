@@ -1,23 +1,32 @@
 # Documentation Index
 
-This is a linked knowledge system. Start with [AGENTS.md](../AGENTS.md), then follow only the path relevant to the task.
+Start with [AGENTS.md](../AGENTS.md), then follow only the path relevant to the task. Do not read every document at startup.
 
 | Need | Read |
 |---|---|
+| AI agent setup and specialist skills | [AI Agent Tooling](engineering/ai-agent-tooling.md) |
 | Product | [Vision and scope](product/vision-and-scope.md), [domain workflows](product/domain-workflows.md) |
 | Code | [System overview](architecture/system-overview.md), [feature registry](architecture/feature-registry.md), [data model](architecture/data-model.md), [frontend](architecture/frontend-and-ui.md), [API](architecture/api-contracts.md) |
 | Feature delivery | [Feature lifecycle](delivery/feature-lifecycle.md), [agent operating model](engineering/agent-operating-model.md) |
 | GitHub | [Git and GitHub](engineering/git-and-github.md) |
 | Tests and gates | [Testing strategy](engineering/testing-strategy.md), [quality gates](engineering/quality-gates.md), [local verification script](../scripts/verify) |
-| Planning | Use GitHub Issues, Milestones and Projects; see [Git and GitHub](engineering/git-and-github.md). |
+| Planning | GitHub Issues, Milestones and Projects; see [Git and GitHub](engineering/git-and-github.md) |
 | Security | [Security model](security/security-model.md) |
 | Operations | [Developer workflow](operations/developer-workflow.md), [CI/CD and workflow cleanup](operations/ci-cd-and-release.md), [deployment/recovery](operations/deployment-and-recovery.md) |
 | Decisions | [ADR index](decisions/index.md), [ADR template](decisions/adr-template.md) |
 
-New agent: AGENTS → graph → relevant product/architecture nodes → agent model → Git/GitHub → relevant tests. Avoid reading every document for a small task.
+## New-agent path
 
-**Execution policy:** no GitHub Actions workflow runs application tests, lint, builds or E2E. AI agents must not run local verification unless the user explicitly asks. Development is localhost-first; Playwright E2E is optional and user-triggered. See [testing strategy](engineering/testing-strategy.md), [Git/GitHub](engineering/git-and-github.md) and [CI/CD](operations/ci-cd-and-release.md).
+AGENTS.md → identify task domain → read only relevant docs/source → select one primary skill if useful → implement → inspect focused diff.
 
-**Documentation is part of the change:** whenever a user-requested or user-approved code change affects documented behavior, contracts, architecture, tests, security, operations or workflows, update the related documents and graph links in the same change.
+Use the documentation knowledge graph for change propagation. Use Graphify only when code relationships are broad, cross-cutting or likely to be queried repeatedly.
+
+## Execution policy
+
+No GitHub Actions workflow runs application tests, lint, builds or E2E. AI agents must not run local verification unless the user explicitly asks. Development is localhost-first; Playwright E2E is optional and user-triggered. See [testing strategy](engineering/testing-strategy.md), [Git/GitHub](engineering/git-and-github.md), [CI/CD](operations/ci-cd-and-release.md) and [AI Agent Tooling](engineering/ai-agent-tooling.md).
+
+## Documentation maintenance
+
+When a change affects documented behavior, contracts, architecture, tests, security, operations or workflows, update only the directly affected documents and graph/index links in the same change. Avoid duplicating policy text across documents; link to the authoritative page instead.
 
 See [knowledge graph](knowledge-graph.md) for dependencies and update propagation.
