@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useOutletContext } from 'react-router-dom';
-import { EmptyState, ErrorState, SkeletonLines, StatusBadge, Badge, WorkspaceHero, DashboardMetricCard } from '../components/ui';
+import { EmptyState, ErrorState, StatusBadge, Badge, WorkspaceHero, DashboardMetricCard, DashboardMetricSkeleton, ArtistRecentWorkSkeleton } from '../components/ui';
 
 const statusLabels = {
     pending_review: 'در انتظار بررسی', approved: 'منتشرشده', rejected: 'ردشده',
@@ -111,7 +111,7 @@ export default function ArtistWorkspaceOverview() {
             {!profileLoading && profileReady && (
                 <>
                     <section aria-label="آمار فضای هنرمند" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                        {loading ? <><div className="border border-border bg-white p-5"><SkeletonLines lines={3} /></div><div className="border border-border bg-white p-5"><SkeletonLines lines={3} /></div><div className="border border-border bg-white p-5"><SkeletonLines lines={3} /></div><div className="border border-border bg-white p-5"><SkeletonLines lines={3} /></div></> : <>
+                        {loading ? <DashboardMetricSkeleton count={4} /> : <>
                             <DashboardMetricCard as={Link} label="مجموع آثار" value={formatCount(counts.artworks)} detail="تمام آثار ثبت‌شده در استودیوی شما" to="/dashboard/artist/artworks" eyebrow="پورتفولیو" />
                             <DashboardMetricCard as={Link} label="منتشرشده" value={published.toLocaleString('fa-IR')} detail="آثاری که در گالری عمومی نمایش داده می‌شوند" to="/dashboard/artist/artworks" eyebrow="عمومی" />
                             <DashboardMetricCard as={Link} label="در انتظار بررسی" value={pending.toLocaleString('fa-IR')} detail="آثاری که هنوز بررسی نهایی نشده‌اند" to="/dashboard/artist/artworks" eyebrow="بررسی" />
@@ -125,7 +125,7 @@ export default function ArtistWorkspaceOverview() {
                                 <div><p className="text-[11px] font-bold text-terracotta-strong">پورتفولیو</p><h2 className="mt-1 font-black">آخرین آثار</h2></div>
                                 <Link to="/dashboard/artist/artworks" className="text-xs font-bold text-terracotta-strong underline underline-offset-4">مدیریت همه آثار</Link>
                             </div>
-                            {loading ? <div className="mt-5"><SkeletonLines lines={4} /></div> : artworks.length === 0 ? <EmptyState className="mt-5" title="هنوز اثری ثبت نشده" description="اولین اثر خود را ثبت کنید تا برای بررسی ارسال شود." action={<Link to="/dashboard/artist/artworks" className="text-sm font-bold text-terracotta-strong underline">ثبت اثر</Link>} /> : (
+                            {loading ? <div className="mt-5"><ArtistRecentWorkSkeleton /></div> : artworks.length === 0 ? <EmptyState className="mt-5" title="هنوز اثری ثبت نشده" description="اولین اثر خود را ثبت کنید تا برای بررسی ارسال شود." action={<Link to="/dashboard/artist/artworks" className="text-sm font-bold text-terracotta-strong underline">ثبت اثر</Link>} /> : (
                                 <ul className="divide-y divide-border">
                                     {artworks.slice(0, 4).map((item) => <li key={item.id} className="flex items-center justify-between gap-3 py-4">
                                         <div className="min-w-0"><p className="truncate text-sm font-bold text-ink">{item.title}</p>{item.category?.name && <p className="mt-1 text-xs text-muted">{item.category.name}</p>}</div>
