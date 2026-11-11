@@ -38,6 +38,8 @@ export default function MessagingCenter({ role }) {
     const [notice, setNotice] = useState('');
     const [safety, setSafety] = useState({ blocked_by_me: false, blocked_by_other: false });
     const messagesContainerRef = useRef(null);
+    const messagesRef = useRef(messages);
+    useEffect(() => { messagesRef.current = messages; }, [messages]);
     const draftRef = useRef(null);
     const fileInputRef = useRef(null);
     const latestMessageIdRef = useRef(null);
@@ -46,7 +48,6 @@ export default function MessagingCenter({ role }) {
     const messageRequestRef = useRef(null);
     const historyRequestRef = useRef(null);
     const historyLoadingRef = useRef(false);
-    const historyPageRef = useRef(1);
     const hasOlderMessagesRef = useRef(false);
     const pendingScrollRestoreRef = useRef(null);
     const draftsByConversationRef = useRef(new Map());
@@ -138,7 +139,6 @@ export default function MessagingCenter({ role }) {
                 });
             } else {
                 setMessages(incoming);
-                historyPageRef.current = Number(firstPage.current_page ?? 1);
                 hasOlderMessagesRef.current = Number(firstPage.current_page ?? 1) < Number(firstPage.last_page ?? 1);
                 setHasOlderMessages(hasOlderMessagesRef.current);
                 shouldStickToBottomRef.current = true;
@@ -172,7 +172,6 @@ export default function MessagingCenter({ role }) {
         historyRequestRef.current?.abort();
         historyLoadingRef.current = false;
         setLoadingOlder(false);
-        historyPageRef.current = 1;
         hasOlderMessagesRef.current = false;
         setHasOlderMessages(false);
         pendingScrollRestoreRef.current = null;
@@ -290,10 +289,10 @@ export default function MessagingCenter({ role }) {
         const container = messagesContainerRef.current;
         const previousHeight = container?.scrollHeight ?? 0;
         const previousTop = container?.scrollTop ?? 0;
-        const page = historyPageRef.current + 1;
+        const beforeId = messagesRef.current?.[0]?.id;
         try {
             const { data } = await axios.get('/api/v1/conversations/' + conversationId + '/messages', {
-                params: { page }, signal: controller.signal,
+                params: { before_id: beforeId }, signal: controller.signal,
             });
             if (controller.signal.aborted || Number(activeConversationRef.current) !== Number(conversationId)) return;
             const older = data.data ?? [];
@@ -306,8 +305,7 @@ export default function MessagingCenter({ role }) {
                         .sort((left, right) => Number(left.id) - Number(right.id));
                 });
             }
-            historyPageRef.current = Number(data.current_page ?? page);
-            hasOlderMessagesRef.current = Number(data.current_page ?? page) < Number(data.last_page ?? page);
+            hasOlderMessagesRef.current = Number(data.current_page ?? 1) < Number(data.last_page ?? 1);
             setHasOlderMessages(hasOlderMessagesRef.current);
         } catch (requestError) {
             if (!axios.isCancel(requestError) && !controller.signal.aborted) setError('دریافت پیام‌های قدیمی‌تر انجام نشد. دوباره تلاش کنید.');
