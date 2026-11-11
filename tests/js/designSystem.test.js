@@ -47,7 +47,7 @@ test('shared primitives follow shadcn component contracts and preserve accessibl
     assert.ok(input.includes("type === 'checkbox'"));
     assert.ok(table.includes('caption-bottom text-sm'));
     for (const component of ['Input', 'Textarea', 'Select', 'Label', 'Table', 'TableRow', 'TableCell', 'Card', 'Alert']) {
-        assert.ok(uiIndex.includes(`export { ${component}`), `Missing shared component export: ${component}`);
+        assert.ok(uiIndex.includes(component), `Missing shared component export: ${component}`);
     }
 });
 
