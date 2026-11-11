@@ -3,17 +3,16 @@ import { PageContainer } from './primitives';
 
 export function ArtworkCardSkeleton({ className = '' }) {
     return (
-        <article aria-hidden="true" className={`group min-w-0 overflow-hidden border border-border bg-paper ${className}`}>
-            <div className="block">
-                <div className="flex aspect-[4/3] items-center justify-center overflow-hidden bg-surface-muted p-3">
-                    <Skeleton className="h-full w-full rounded-none" />
-                </div>
-                <div className="grid gap-2 p-4">
-                    <Skeleton className="h-5 w-20 rounded-full" />
-                    <Skeleton className="h-6 w-4/5 rounded-sm" />
-                    <Skeleton className="h-4 w-2/5 rounded-sm" />
-                    <Skeleton className="h-4 w-1/3 rounded-sm" />
-                </div>
+        <article aria-hidden="true" className={`group min-w-0 ${className}`}>
+            <div className="relative overflow-hidden bg-surface-muted">
+                <Skeleton className="aspect-[4/5] w-full rounded-none" />
+                <span aria-hidden="true" className="pointer-events-none absolute inset-0 border border-ink/5" />
+            </div>
+            <div className="grid gap-1.5 px-0.5 pb-2 pt-4">
+                <div className="flex min-h-5 items-center justify-between gap-3"><Skeleton className="h-3 w-20 rounded-sm" /><Skeleton className="h-3 w-3 rounded-full" /></div>
+                <div className="grid gap-1.5"><Skeleton className="h-5 w-4/5 rounded-sm" /><Skeleton className="h-5 w-3/5 rounded-sm" /></div>
+                <Skeleton className="mt-1 h-4 w-2/5 rounded-sm" />
+                <Skeleton className="mt-1 h-4 w-1/3 rounded-sm" />
             </div>
         </article>
     );
@@ -21,20 +20,14 @@ export function ArtworkCardSkeleton({ className = '' }) {
 
 export function ArtistCardSkeleton({ className = '' }) {
     return (
-        <article aria-hidden="true" className={`grid gap-3 border border-border bg-paper p-5 ${className}`} dir="rtl">
-            <div className="flex items-start gap-3">
-                <Skeleton className="h-12 w-12 shrink-0 rounded-full" />
-                <div className="grid min-w-0 flex-1 content-start gap-2 pt-1">
-                    <Skeleton className="h-5 w-2/3 rounded-sm" />
-                    <Skeleton className="h-3 w-1/3 rounded-sm" />
-                </div>
+        <article aria-hidden="true" className={`grid min-w-0 content-start gap-3 border border-border bg-paper p-5 sm:p-6 ${className}`} dir="rtl">
+            <div className="flex items-start justify-between gap-4">
+                <Skeleton className="h-14 w-14 shrink-0 rounded-full" />
+                <Skeleton className="mt-1 h-3 w-24 rounded-sm" />
             </div>
-            <div className="grid gap-2">
-                <Skeleton className="h-3 w-full rounded-sm" />
-                <Skeleton className="h-3 w-11/12 rounded-sm" />
-                <Skeleton className="h-3 w-3/4 rounded-sm" />
-            </div>
-            <div className="mt-1 block"><Skeleton className="h-4 w-28 rounded-sm" /></div>
+            <div className="mt-2 grid gap-2"><Skeleton className="h-7 w-2/3 rounded-sm" /><Skeleton className="h-3 w-1/3 rounded-sm" /></div>
+            <div className="mt-1 grid gap-2"><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-11/12 rounded-sm" /><Skeleton className="h-3 w-3/4 rounded-sm" /></div>
+            <div className="mt-3 flex items-center justify-between border-t border-border pt-4"><Skeleton className="h-4 w-28 rounded-sm" /><Skeleton className="h-3 w-3 rounded-full" /></div>
         </article>
     );
 }
