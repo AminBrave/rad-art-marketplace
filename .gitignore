@@ -46,7 +46,9 @@ Thumbs.db
 /coverage/
 /.phpunit.cache/
 
+# Local agent / knowledge graph artifacts
+/graphify-out/
+
 # Local tooling
 .phpactor.json
 .phpstorm.meta.php
-
