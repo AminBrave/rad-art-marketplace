@@ -122,13 +122,25 @@ class ConversationController extends Controller
     {
         $this->authorizeParticipant($request->user(), $conversation, 'view');
 
-        $messages = $conversation->messages()
-            ->withTrashed()
-            ->with(['sender', 'replyTo.sender', 'reactions', 'attachments'])
-            ->latest('id')
-            ->paginate(30);
+        $filters = $request->validate([
+            'after_id' => ['nullable', 'integer', 'min:1'],
+        ]);
 
-        $messages->setCollection($messages->getCollection()->reverse()->values()->map(
+        $query = $conversation->messages()
+            ->withTrashed()
+            ->with(['sender', 'replyTo.sender', 'reactions', 'attachments']);
+
+        if (isset($filters['after_id'])) {
+            // Incremental polling returns only newer messages and avoids reloading the whole window.
+            $messages = $query->where('id', '>', (int) $filters['after_id'])
+                ->oldest('id')
+                ->paginate(100);
+        } else {
+            $messages = $query->latest('id')->paginate(30);
+            $messages->setCollection($messages->getCollection()->reverse()->values());
+        }
+
+        $messages->setCollection($messages->getCollection()->map(
             fn (Message $message): array => $this->messagePayload($message, $request->user())
         ));
 
