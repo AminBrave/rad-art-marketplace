@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
-import { ArtistCard, ArtistCardSkeleton, EmptyState, ErrorState, SearchField } from '../components/ui';
+import { ArtistCard, ArtistCardSkeleton, EmptyState, ErrorState, SearchField, Button } from '../components/ui';
 
 export default function ArtistDirectoryPage() {
     const [params, setParams] = useSearchParams();
@@ -64,9 +64,9 @@ export default function ArtistDirectoryPage() {
             )}
             {!loading && !error && meta.last_page > 1 && (
                 <nav aria-label="صفحه‌بندی هنرمندان" className="mt-10 flex items-center justify-center gap-4">
-                    <button type="button" disabled={page <= 1} onClick={() => updatePage(page - 1)} className="border border-border px-4 py-2 text-sm font-semibold disabled:opacity-40">قبلی</button>
+                    <Button type="button" disabled={page <= 1} onClick={() => updatePage(page - 1)} variant="outline" size="default">قبلی</Button>
                     <span className="text-sm text-muted-foreground">صفحه {meta.current_page.toLocaleString('fa-IR')} از {meta.last_page.toLocaleString('fa-IR')}</span>
-                    <button type="button" disabled={page >= meta.last_page} onClick={() => updatePage(page + 1)} className="border border-border px-4 py-2 text-sm font-semibold disabled:opacity-40">بعدی</button>
+                    <Button type="button" disabled={page >= meta.last_page} onClick={() => updatePage(page + 1)} variant="outline" size="default">بعدی</Button>
                 </nav>
             )}
         </main>
