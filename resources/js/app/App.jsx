@@ -299,24 +299,24 @@ export default function App() {
                             {authMode === 'register' && (
                                 <label className="block text-sm font-semibold">
                                     نام و نام خانوادگی
-                                    <Input name="name" value={form.name} onChange={updateForm} required maxLength="120" autoComplete="name" / className="w-full" />
+                                    <Input name="name" value={form.name} onChange={updateForm} required maxLength="120" autoComplete="name"  className="w-full" />
                                     {authErrors.name?.map((message) => <span key={message} className="mt-1 block text-xs text-destructive">{message}</span>)}
                                 </label>
                             )}
                             <label className="block text-sm font-semibold">
                                 ایمیل
-                                <Input type="email" name="email" value={form.email} onChange={updateForm} required autoComplete="email" dir="ltr" / className="w-full" />
+                                <Input type="email" name="email" value={form.email} onChange={updateForm} required autoComplete="email" dir="ltr"  className="w-full" />
                                 {authErrors.email?.map((message) => <span key={message} className="mt-1 block text-xs text-destructive">{message}</span>)}
                             </label>
                             <label className="block text-sm font-semibold">
                                 گذرواژه
-                                <Input type="password" name="password" value={form.password} onChange={updateForm} required minLength="10" autoComplete={authMode === 'register' ? 'new-password' : 'current-password'} dir="ltr" / className="w-full" />
+                                <Input type="password" name="password" value={form.password} onChange={updateForm} required minLength="10" autoComplete={authMode === 'register' ? 'new-password' : 'current-password'} dir="ltr"  className="w-full" />
                                 {authErrors.password?.map((message) => <span key={message} className="mt-1 block text-xs text-destructive">{message}</span>)}
                             </label>
                             {authMode === 'register' && (
                                 <label className="block text-sm font-semibold">
                                     تکرار گذرواژه
-                                    <Input type="password" name="password_confirmation" value={form.password_confirmation} onChange={updateForm} required minLength="10" autoComplete="new-password" dir="ltr" / className="w-full" />
+                                    <Input type="password" name="password_confirmation" value={form.password_confirmation} onChange={updateForm} required minLength="10" autoComplete="new-password" dir="ltr"  className="w-full" />
                                 </label>
                             )}
                             {authErrors.form?.map((message) => <p key={message} role="alert" className="text-sm text-destructive">{message}</p>)}
@@ -341,29 +341,29 @@ export default function App() {
                         <form onSubmit={saveProfile} className="space-y-4">
                             <label className="block text-sm font-semibold">
                                 نام نمایشی
-                                <Input name="display_name" value={profile.display_name} onChange={updateProfileForm} required maxLength="120" / className="w-full" />
+                                <Input name="display_name" value={profile.display_name} onChange={updateProfileForm} required maxLength="120"  className="w-full" />
                                 {profileErrors.display_name?.map((message) => <span key={message} className="mt-1 block text-xs text-destructive">{message}</span>)}
                             </label>
                             <label className="block text-sm font-semibold">
                                 درباره هنرمند
-                                <Textarea name="bio" value={profile.bio ?? ''} onChange={updateProfileForm} rows="4" maxLength="2000" placeholder="درباره مسیر هنری و زمینه فعالیت خود بنویسید…" / className="w-full">
+                                <Textarea name="bio" value={profile.bio ?? ''} onChange={updateProfileForm} rows="4" maxLength="2000" placeholder="درباره مسیر هنری و زمینه فعالیت خود بنویسید…"  className="w-full">
                                 {profileErrors.bio?.map((message) => <span key={message} className="mt-1 block text-xs text-destructive">{message}</span>)}
                             </label>
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <label className="block text-sm font-semibold">
                                     شهر
-                                    <Input name="city" value={profile.city ?? ''} onChange={updateProfileForm} maxLength="120" / className="w-full" />
+                                    <Input name="city" value={profile.city ?? ''} onChange={updateProfileForm} maxLength="120"  className="w-full" />
                                     {profileErrors.city?.map((message) => <span key={message} className="mt-1 block text-xs text-destructive">{message}</span>)}
                                 </label>
                                 <label className="block text-sm font-semibold">
                                     شناسه اینستاگرام
-                                    <Input name="instagram_handle" value={profile.instagram_handle ?? ''} onChange={updateProfileForm} maxLength="30" dir="ltr" placeholder="your.handle" / className="w-full" />
+                                    <Input name="instagram_handle" value={profile.instagram_handle ?? ''} onChange={updateProfileForm} maxLength="30" dir="ltr" placeholder="your.handle"  className="w-full" />
                                     {profileErrors.instagram_handle?.map((message) => <span key={message} className="mt-1 block text-xs text-destructive">{message}</span>)}
                                 </label>
                             </div>
                             <label className="block text-sm font-semibold">
                                 وب‌سایت
-                                <Input name="website_url" type="url" value={profile.website_url ?? ''} onChange={updateProfileForm} dir="ltr" placeholder="https://example.com" / className="w-full" />
+                                <Input name="website_url" type="url" value={profile.website_url ?? ''} onChange={updateProfileForm} dir="ltr" placeholder="https://example.com"  className="w-full" />
                                 {profileErrors.website_url?.map((message) => <span key={message} className="mt-1 block text-xs text-destructive">{message}</span>)}
                             </label>
                             <label className="flex items-center gap-3 text-sm font-semibold">
