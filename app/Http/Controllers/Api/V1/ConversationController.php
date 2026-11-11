@@ -126,7 +126,7 @@ class ConversationController extends Controller
             'after_id' => ['nullable', 'integer', 'min:0'],
             'updated_after' => ['nullable', 'date'],
         ]);
-        $syncCursor = now();
+        // Keep a one-second overlap for databases with second-precision timestamps; clients merge by message ID.\n        $syncCursor = now()->subSecond();
 
         $query = $conversation->messages()
             ->withTrashed()
@@ -140,7 +140,7 @@ class ConversationController extends Controller
                 }
                 if (isset($filters['updated_after'])) {
                     $method = isset($filters['after_id']) ? 'orWhere' : 'where';
-                    $nested->{$method}('updated_at', '>', $filters['updated_after']);
+                    $nested->{$method}('updated_at', '>=', $filters['updated_after']);
                 }
             })->oldest('id')->paginate(100);
         } else {
