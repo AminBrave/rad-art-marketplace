@@ -186,22 +186,12 @@ class DiscoveryBrowserTests(unittest.TestCase):
             context.close()
 
 
-    def test_discovery_to_artwork_to_artist_to_inquiry_journey(self):
-        buyer = {"id": 42, "name": "Buyer QA", "email": "buyer@example.test", "role": "buyer"}
-        context, page = self.new_page(user=buyer)
-        submissions = []
+    def test_discovery_to_artwork_to_artist_keeps_direct_messaging_without_inquiry(self):
+        context, page = self.new_page()
         try:
-            page.route("**/api/v1/artworks**", lambda route: route.fulfill(
-                status=200, content_type="application/json",
-                body=json.dumps({"data": [ARTWORK], "current_page": 1, "last_page": 1, "total": 1}, ensure_ascii=False)
-            ))
-            page.route("**/api/v1/categories", lambda route: route.fulfill(
-                status=200, content_type="application/json",
-                body=json.dumps({"data": [{"id": 1, "name": "نقاشی", "slug": "painting"}]}, ensure_ascii=False)
-            ))
-            page.route("**/api/v1/artists**", lambda route: route.fulfill(
-                status=200, content_type="application/json",
-                body=json.dumps({"data": [{"id": 84, "slug": "qa-artist", "display_name": "هنرمند آزمایشی", "bio": "روایت هنری", "city": "تهران"}]}, ensure_ascii=False)
+            page.route("**/api/v1/artworks/*/image", lambda route: route.fulfill(
+                status=200, content_type="image/png",
+                body=base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jq2kAAAAASUVORK5CYII=")
             ))
             page.route("**/api/v1/artworks/blue-study", lambda route: route.fulfill(
                 status=200, content_type="application/json",
@@ -216,58 +206,35 @@ class DiscoveryBrowserTests(unittest.TestCase):
                 status=200, content_type="application/json",
                 body=json.dumps(profile, ensure_ascii=False)
             ))
-            def submit_inquiry(route):
-                submissions.append(route.request.post_data_json)
-                route.fulfill(status=201, content_type="application/json", body=json.dumps({"message": "درخواست شما ثبت شد."}, ensure_ascii=False))
-            page.route("**/api/v1/artists/qa-artist/inquiries", submit_inquiry)
 
             page.goto(BASE_URL + "/")
             page.get_by_role("heading", name="هنر را کشف کنید؛ فراتر از قاب.").wait_for()
-            page.evaluate("document.documentElement.style.minHeight = '2000px'")
-            page.evaluate("window.scrollTo(0, 900)")
-            page.wait_for_function("window.scrollY > 0")
-            self.assertGreater(page.evaluate("window.scrollY"), 0)
             page.get_by_role("link", name="مطالعه آبی").first.click()
             page.get_by_role("heading", name="مطالعه آبی").wait_for()
-            page.wait_for_function("window.scrollY === 0")
-            self.assertEqual(page.evaluate("window.scrollY"), 0)
-            page.evaluate("window.scrollTo(0, 700)")
-            page.wait_for_function("window.scrollY > 0")
-            self.assertGreater(page.evaluate("window.scrollY"), 0)
+            self.assertEqual(page.get_by_label("موضوع").count(), 0)
+            self.assertEqual(page.get_by_label("متن پیام").count(), 0)
+            page.get_by_role("link", name="پیام مستقیم درباره این اثر").wait_for()
             page.get_by_role("link", name="هنرمند آزمایشی", exact=True).click()
             page.get_by_role("heading", name="هنرمند آزمایشی").wait_for()
-            page.wait_for_function("window.scrollY === 0")
-            self.assertEqual(page.evaluate("window.scrollY"), 0)
-            page.get_by_label("موضوع").fill("پرسش درباره آثار")
-            page.get_by_label("متن پیام").fill("سلام، مایلم درباره مسیر هنری و آثار شما بیشتر بدانم.")
-            page.get_by_role("button", name="ارسال پیام").click()
-            page.get_by_text("درخواست شما ثبت شد.").wait_for()
-            self.assertEqual(len(submissions), 1)
-            self.assertEqual(submissions[0]["subject"], "پرسش درباره آثار")
-            self.assertEqual(submissions[0]["artwork_id"], None)
+            self.assertEqual(page.get_by_label("موضوع").count(), 0)
+            self.assertEqual(page.get_by_label("متن پیام").count(), 0)
+            page.get_by_role("link", name="پیام مستقیم").wait_for()
         finally:
             context.close()
 
-    def test_artwork_detail_inquiry_preserves_artwork_context(self):
+    def test_artwork_detail_hides_inquiry_form_but_keeps_direct_message_link(self):
         buyer = {"id": 42, "name": "Buyer QA", "email": "buyer@example.test", "role": "buyer"}
         context, page = self.new_page(user=buyer)
-        submissions = []
         try:
             page.route("**/api/v1/artworks/blue-study", lambda route: route.fulfill(
                 status=200, content_type="application/json",
                 body=json.dumps({"data": {**ARTWORK, "related_artworks": []}}, ensure_ascii=False)
             ))
-            def submit_inquiry(route):
-                submissions.append(route.request.post_data_json)
-                route.fulfill(status=201, content_type="application/json", body=json.dumps({"message": "درخواست شما ثبت شد."}, ensure_ascii=False))
-            page.route("**/api/v1/artists/qa-artist/inquiries", submit_inquiry)
             page.goto(BASE_URL + "/artworks/blue-study")
             page.get_by_role("heading", name="مطالعه آبی").wait_for()
-            page.get_by_label("موضوع").fill("پرسش درباره این اثر")
-            page.get_by_label("متن پیام").fill("سلام، لطفاً اطلاعات بیشتری درباره این اثر ارائه کنید.")
-            page.get_by_role("button", name="ارسال پیام").click()
-            page.get_by_text("درخواست شما ثبت شد.").wait_for()
-            self.assertEqual(submissions[0]["artwork_id"], ARTWORK["id"])
+            self.assertEqual(page.get_by_label("موضوع").count(), 0)
+            self.assertEqual(page.get_by_label("متن پیام").count(), 0)
+            page.get_by_role("link", name="پیام مستقیم درباره این اثر").wait_for()
         finally:
             context.close()
 
