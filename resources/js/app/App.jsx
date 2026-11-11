@@ -156,12 +156,12 @@ export default function App() {
                 <article className="mx-auto max-w-3xl rounded-lg border border-border bg-card p-8 shadow-sm sm:p-12">
                     <a href="/" className="text-xl font-semibold">راد<span className="text-primary">آرت</span></a>
                     {publicProfileLoading ? (
-                        <p className="mt-10 text-muted-foreground-foreground">در حال دریافت پروفایل…</p>
+                        <p className="mt-10 text-muted-foreground">در حال دریافت پروفایل…</p>
                     ) : publicProfile ? (
                         <>
                             <p className="mt-10 text-sm font-bold text-primary">پروفایل هنرمند</p>
                             <h1 className="mt-3 text-4xl font-semibold">{publicProfile.display_name}</h1>
-                            {publicProfile.city && <p className="mt-3 text-sm text-muted-foreground-foreground">{publicProfile.city}</p>}
+                            {publicProfile.city && <p className="mt-3 text-sm text-muted-foreground">{publicProfile.city}</p>}
                             {publicProfile.bio && <p className="mt-8 whitespace-pre-line leading-9 text-foreground">{publicProfile.bio}</p>}
                             {user?.role === 'buyer' && createElement(ContactArtistForm, { artistSlug: publicProfile.slug })}
                             {!user && <a href="/#account" className="mt-8 inline-block rounded-full bg-brand-ink px-5 py-3 text-sm font-bold text-white">برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید</a>}
@@ -173,7 +173,7 @@ export default function App() {
                     ) : (
                         <div className="mt-10">
                             <h1 className="text-2xl font-semibold">پروفایل در دسترس نیست</h1>
-                            <p className="mt-3 leading-8 text-muted-foreground-foreground">این پروفایل وجود ندارد یا نمایش عمومی آن غیرفعال شده است.</p>
+                            <p className="mt-3 leading-8 text-muted-foreground">این پروفایل وجود ندارد یا نمایش عمومی آن غیرفعال شده است.</p>
                         </div>
                     )}
                 </article>
@@ -187,7 +187,7 @@ export default function App() {
                 <a href="/" className="shrink-0 text-2xl font-semibold tracking-tight" aria-label="راد آرت، صفحه اصلی">
                     راد<span className="text-primary">آرت</span>
                 </a>
-                <nav aria-label="ناوبری اصلی" className="hidden items-center gap-8 text-sm text-muted-foreground-foreground md:flex">
+                <nav aria-label="ناوبری اصلی" className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
                     <a className="transition hover:text-primary" href="#artworks">کشف آثار</a>
                     <a className="transition hover:text-primary" href="#artists">هنرمندان</a>
                     <a className="transition hover:text-primary" href="#about">درباره ما</a>
@@ -218,7 +218,7 @@ export default function App() {
                     <h1 className="text-5xl font-semibold leading-[1.35] tracking-tight sm:text-6xl lg:text-7xl">
                         هر اثر، روایت یک <span className="text-primary">جهان</span> است.
                     </h1>
-                    <p className="mt-7 max-w-xl text-base leading-9 text-muted-foreground-foreground sm:text-lg">
+                    <p className="mt-7 max-w-xl text-base leading-9 text-muted-foreground sm:text-lg">
                         راد آرت فضایی برای کشف آثار هنری مستقل، شناخت هنرمندان و ارتباط مستقیم با خالقان هر اثر است.
                     </p>
                     <div className="mt-9 flex flex-wrap gap-3">
@@ -242,7 +242,7 @@ export default function App() {
                         <div className="absolute bottom-7 left-8 text-xs font-semibold tracking-[0.3em] text-foreground">ART / PEOPLE / STORIES</div>
                     </div>
                     <div className="absolute -bottom-5 -left-4 rounded-lg bg-card px-5 py-4 shadow-md shadow-sm">
-                        <p className="text-xs text-muted-foreground-foreground">نگاهی تازه به هنر معاصر</p>
+                        <p className="text-xs text-muted-foreground">نگاهی تازه به هنر معاصر</p>
                         <p className="mt-1 text-sm font-bold">از نگاه هنرمندان مستقل</p>
                     </div>
                 </div>
@@ -254,7 +254,7 @@ export default function App() {
                         <article key={item.number} className="border-r-2 border-border pr-5">
                             <span className="text-xs font-bold tracking-widest text-primary">{item.number}</span>
                             <h2 className="mt-4 text-xl font-semibold">{item.title}</h2>
-                            <p className="mt-3 leading-8 text-muted-foreground-foreground">{item.description}</p>
+                            <p className="mt-3 leading-8 text-muted-foreground">{item.description}</p>
                         </article>
                     ))}
                 </div>
@@ -266,11 +266,11 @@ export default function App() {
                 <div>
                     <p className="text-sm font-bold text-primary">حساب کاربری راد آرت</p>
                     <h2 className="mt-3 text-3xl font-semibold leading-relaxed sm:text-4xl">به جامعه راد آرت بپیوندید.</h2>
-                    <p className="mt-4 leading-8 text-muted-foreground-foreground">به‌عنوان خریدار با هنرمندان ارتباط بگیرید یا به‌عنوان هنرمند پروفایل و آثار خود را مدیریت کنید.</p>
+                    <p className="mt-4 leading-8 text-muted-foreground">به‌عنوان خریدار با هنرمندان ارتباط بگیرید یا به‌عنوان هنرمند پروفایل و آثار خود را مدیریت کنید.</p>
                     {user && (
                         <div className="mt-6 rounded-lg border border-border bg-card p-5">
                             <p className="font-bold">خوش آمدید، {user.name}</p>
-                            <p className="mt-2 text-sm text-muted-foreground-foreground">{user.email}</p>
+                            <p className="mt-2 text-sm text-muted-foreground">{user.email}</p>
                             <p className="mt-3 text-sm text-primary">{user.role === 'admin' ? 'دسترسی مدیریت فعال است.' : user.role === 'buyer' ? 'می‌توانید به هنرمندان پیام خصوصی ارسال کنید.' : 'حساب هنرمندی شما فعال است.'}</p>
                         </div>
                     )}
@@ -325,18 +325,18 @@ export default function App() {
                             </Button>
                         </form>
                         {authMessage && <p role="status" className="mt-4 text-sm text-primary">{authMessage}</p>}
-                        <p className="mt-5 text-xs leading-6 text-muted-foreground-foreground">با ثبت‌نام می‌توانید نقش خریدار یا هنرمند را انتخاب کنید. ایجاد حساب مدیر فقط از طریق دستور مدیریتی سرور امکان‌پذیر است.</p>
+                        <p className="mt-5 text-xs leading-6 text-muted-foreground">با ثبت‌نام می‌توانید نقش خریدار یا هنرمند را انتخاب کنید. ایجاد حساب مدیر فقط از طریق دستور مدیریتی سرور امکان‌پذیر است.</p>
                     </div>
                 ) : user.role === 'buyer' ? (
                     <div className="rounded-lg border border-border bg-card p-6 shadow-sm sm:p-8">
                         <h3 className="text-xl font-semibold">حساب خریدار</h3>
-                        <p className="mt-3 text-sm leading-7 text-muted-foreground-foreground">برای ارتباط با هنرمندان، صفحه اثر یا پروفایل عمومی آن‌ها را باز کنید. پیام‌های ارسالی شما در همین صفحه قابل پیگیری هستند.</p>
+                        <p className="mt-3 text-sm leading-7 text-muted-foreground">برای ارتباط با هنرمندان، صفحه اثر یا پروفایل عمومی آن‌ها را باز کنید. پیام‌های ارسالی شما در همین صفحه قابل پیگیری هستند.</p>
                     </div>
                 ) : (
                     <div className="rounded-lg border border-border bg-card p-6 shadow-sm sm:p-8">
                         <div className="mb-6">
                             <h3 className="text-xl font-semibold">پروفایل هنرمند</h3>
-                            <p className="mt-2 text-sm leading-7 text-muted-foreground-foreground">اطلاعات معرفی خود را تکمیل کنید. ایمیل و نقش حساب از بخش پروفایل قابل تغییر نیستند.</p>
+                            <p className="mt-2 text-sm leading-7 text-muted-foreground">اطلاعات معرفی خود را تکمیل کنید. ایمیل و نقش حساب از بخش پروفایل قابل تغییر نیستند.</p>
                         </div>
                         <form onSubmit={saveProfile} className="space-y-4">
                             <label className="block text-sm font-semibold">
@@ -391,10 +391,10 @@ export default function App() {
                 <section className="mx-auto max-w-7xl px-6 pb-20 lg:px-10">
                     <div className="rounded-lg border border-border bg-card p-6 sm:p-8">
                         <h2 className="text-2xl font-semibold">مدیریت کاربران</h2>
-                        <p className="mt-2 text-sm text-muted-foreground-foreground">تغییر نقش کاربران؛ این عملیات فقط از سمت سرور برای مدیر مجاز است.</p>
+                        <p className="mt-2 text-sm text-muted-foreground">تغییر نقش کاربران؛ این عملیات فقط از سمت سرور برای مدیر مجاز است.</p>
                         <div className="mt-6 overflow-x-auto">
                             <table className="w-full min-w-[560px] text-right text-sm">
-                                <thead><tr className="border-b border-border text-muted-foreground-foreground"><th className="py-3">نام</th><th>ایمیل</th><th>نقش</th><th>عملیات</th></tr></thead>
+                                <thead><tr className="border-b border-border text-muted-foreground"><th className="py-3">نام</th><th>ایمیل</th><th>نقش</th><th>عملیات</th></tr></thead>
                                 <tbody>
                                     {adminUsers.map((item) => (
                                         <tr key={item.id} className="border-b border-border">
@@ -420,7 +420,7 @@ export default function App() {
             <section id="artists" className="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-16 lg:px-10">
                 <p className="text-sm font-bold text-primary">برای جامعه هنری</p>
                 <h2 className="max-w-2xl text-3xl font-semibold leading-relaxed sm:text-4xl">هنرمند هستید؟ جای شما در راد آرت خالی است.</h2>
-                <p className="max-w-2xl leading-8 text-muted-foreground-foreground">پروفایل هنرمندی خود را تکمیل کنید تا در مرحله بعد آثار هنری‌تان را در راد آرت منتشر کنید.</p>
+                <p className="max-w-2xl leading-8 text-muted-foreground">پروفایل هنرمندی خود را تکمیل کنید تا در مرحله بعد آثار هنری‌تان را در راد آرت منتشر کنید.</p>
             </section>
 
             <footer id="about" className="bg-brand-ink px-6 py-8 text-center text-sm text-muted-foreground">
