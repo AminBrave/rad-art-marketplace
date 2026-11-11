@@ -115,6 +115,21 @@
     --border: 36 18.5% 84.1%;
     --input: 33.9 14.8% 69.6%;
     --ring: 14.1 56.3% 38.6%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 45 5.9% 13.3%;
+    --chart-1: 16.5 51.7% 47.1%;
+    --chart-2: 142 30% 35%;
+    --chart-3: 201 90% 38%;
+    --chart-4: 38 92% 50%;
+    --chart-5: 5.8 53.1% 41.8%;
+    --sidebar: 42 25% 92.2%;
+    --sidebar-foreground: 45 5.9% 13.3%;
+    --sidebar-primary: 16.5 51.7% 47.1%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 42 25% 92.2%;
+    --sidebar-accent-foreground: 45 5.9% 13.3%;
+    --sidebar-border: 36 18.5% 84.1%;
+    --sidebar-ring: 14.1 56.3% 38.6%;
     --radius: 0.5rem;
 }
 
