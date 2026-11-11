@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
 final class FeatureRegistryTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_inquiries_are_disabled_at_the_server_boundary_by_default(): void
     {
         self::assertFalse(config('features.inquiries'));
@@ -26,6 +23,7 @@ final class FeatureRegistryTest extends TestCase
 
         $this->getJson('/api/v1/buyer/inquiries')->assertNotFound();
         $this->getJson('/api/v1/artist/inquiries')->assertNotFound();
+        $this->postJson('/api/v1/artists/example-artist/inquiries', [])->assertNotFound();
     }
 
     public function test_direct_messaging_routes_remain_registered_when_inquiries_are_disabled(): void
