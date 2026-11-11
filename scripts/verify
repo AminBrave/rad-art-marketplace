@@ -9,7 +9,7 @@ usage() {
 Usage: ./scripts/verify <backend|frontend|browser|all>
 
   backend   Laravel feature tests and PHP style check
-  frontend  JavaScript unit tests, ESLint and production build
+  frontend  JavaScript unit tests, ESLint, standard and cPanel production builds
   browser   Playwright browser and full-stack tests (requires a prepared app)
   all       Run every verification layer in sequence
 
@@ -34,8 +34,8 @@ backend() {
 frontend() {
   require_command npm
   npm run test:frontend
-  npm run lint
   npm run build
+  npm run build:cpanel
 }
 
 browser() {
