@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
@@ -8,65 +9,46 @@ import { ArtworkCard, EmptyState, ErrorState, ArtistProfileSkeleton } from '../c
 export default function ArtistProfilePage() {
     const { slug } = useParams();
     const { user } = useAuth();
-    const [profile, setProfile] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [loadingMore, setLoadingMore] = useState(false);
-    const [status, setStatus] = useState(0);
-    const [moreError, setMoreError] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('');
-    const loadMoreController = useRef(null);
 
-    useEffect(() => {
-        let active = true;
-        const controller = new AbortController();
-        setLoading(true);
-        setProfile(null);
-        setStatus(0);
-        setMoreError('');
-        setCategoryFilter('');
-
-        axios.get('/api/v1/artists/' + encodeURIComponent(slug), { params: { artworks_page: 1 }, signal: controller.signal })
-            .then(({ data }) => { if (active) setProfile(data.data); })
-            .catch((error) => { if (active && !axios.isCancel(error)) setStatus(error.response?.status ?? 0); })
-            .finally(() => { if (active) setLoading(false); });
-
-        return () => { active = false; controller.abort(); loadMoreController.current?.abort(); };
-    }, [slug]);
-
-    const loadMore = useCallback(async () => {
-        if (!profile?.artworks_pagination?.has_more || loadingMore) return;
-        const controller = new AbortController();
-        loadMoreController.current = controller;
-        setLoadingMore(true);
-        setMoreError('');
-        try {
-            const nextPage = profile.artworks_pagination.next_page;
+    const profileQuery = useInfiniteQuery({
+        queryKey: ['artist-profile', slug],
+        queryFn: async ({ pageParam, signal }) => {
             const { data } = await axios.get('/api/v1/artists/' + encodeURIComponent(slug), {
-                params: { artworks_page: nextPage }, signal: controller.signal,
+                params: { artworks_page: pageParam },
+                signal,
             });
-            setProfile((current) => {
-                if (!current || current.slug !== slug) return current;
-                const existingIds = new Set(current.artworks.map((artwork) => artwork.id));
-                const nextArtworks = data.data.artworks.filter((artwork) => !existingIds.has(artwork.id));
-                return { ...current, artworks: [...current.artworks, ...nextArtworks], artworks_pagination: data.data.artworks_pagination };
-            });
-        } catch (error) {
-            if (!axios.isCancel(error)) setMoreError('دریافت آثار بیشتر انجام نشد. دوباره تلاش کنید.');
-        } finally {
-            if (loadMoreController.current === controller) {
-                loadMoreController.current = null;
-                setLoadingMore(false);
-            }
-        }
-    }, [loadingMore, profile, slug]);
+
+            return data.data;
+        },
+        initialPageParam: 1,
+        getNextPageParam: (lastPage) => (
+            lastPage.artworks_pagination?.has_more
+                ? lastPage.artworks_pagination.next_page
+                : undefined
+        ),
+        enabled: Boolean(slug),
+        staleTime: 60_000,
+    });
+
+    const pages = profileQuery.data?.pages ?? [];
+    const profile = pages[0] ?? null;
+    const pagination = pages[pages.length - 1]?.artworks_pagination;
+    const allArtworks = useMemo(() => {
+        const unique = new Map();
+        pages.forEach((page) => (page.artworks ?? []).forEach((artwork) => unique.set(artwork.id, artwork)));
+        return [...unique.values()];
+    }, [pages]);
+
+    useEffect(() => setCategoryFilter(''), [slug]);
 
     useEffect(() => {
         if (!profile) return undefined;
         const previousTitle = document.title;
         const descriptionTag = document.querySelector('meta[name="description"]');
         const previousDescription = descriptionTag?.getAttribute('content');
-        document.title = `${profile.display_name} | هنرمندان راد آرت`;
-        if (descriptionTag) descriptionTag.setAttribute('content', profile.bio || `پورتفولیوی عمومی ${profile.display_name} در راد آرت؛ آثار تأییدشده و راه ارتباط با هنرمند.`);
+        document.title = profile.display_name + ' | هنرمندان راد آرت';
+        if (descriptionTag) descriptionTag.setAttribute('content', profile.bio || ('پورتفولیوی عمومی ' + profile.display_name + ' در راد آرت؛ آثار تأییدشده و راه ارتباط با هنرمند.'));
         return () => {
             document.title = previousTitle;
             if (descriptionTag) {
@@ -78,21 +60,27 @@ export default function ArtistProfilePage() {
 
     const portfolioCategories = useMemo(() => {
         const seen = new Map();
-        (profile?.artworks ?? []).forEach((artwork) => {
+        allArtworks.forEach((artwork) => {
             if (artwork.category?.slug && !seen.has(artwork.category.slug)) seen.set(artwork.category.slug, artwork.category);
         });
         return [...seen.values()];
-    }, [profile?.artworks]);
+    }, [allArtworks]);
     const visibleArtworks = useMemo(
-        () => categoryFilter ? (profile?.artworks ?? []).filter((artwork) => artwork.category?.slug === categoryFilter) : (profile?.artworks ?? []),
-        [categoryFilter, profile?.artworks],
+        () => categoryFilter ? allArtworks.filter((artwork) => artwork.category?.slug === categoryFilter) : allArtworks,
+        [allArtworks, categoryFilter],
     );
 
-    if (loading) return <ArtistProfileSkeleton />;
+    if (profileQuery.isPending) return <ArtistProfileSkeleton />;
+
+    const status = profileQuery.error?.response?.status ?? 0;
 
     return (
         <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl">
-            <nav aria-label="مسیر صفحه" className="text-sm text-muted"><Link to="/" className="hover:text-terracotta-strong">خانه</Link><span className="mx-2" aria-hidden="true">/</span><Link to="/artists" className="hover:text-terracotta-strong">هنرمندان</Link><span className="mx-2" aria-hidden="true">/</span><span aria-current="page" className="text-ink">پروفایل هنرمند</span></nav>
+            <nav aria-label="مسیر صفحه" className="text-sm text-muted">
+                <Link to="/" className="hover:text-terracotta-strong">خانه</Link><span className="mx-2" aria-hidden="true">/</span>
+                <Link to="/artists" className="hover:text-terracotta-strong">هنرمندان</Link><span className="mx-2" aria-hidden="true">/</span>
+                <span aria-current="page" className="text-ink">پروفایل هنرمند</span>
+            </nav>
             {profile ? (
                 <>
                     <section className="relative mt-7 overflow-hidden border border-border bg-white">
@@ -118,15 +106,25 @@ export default function ArtistProfilePage() {
                         </div>
                     </section>
                     <section className="mt-12">
-                        <div className="flex flex-wrap items-end justify-between gap-3"><div><p className="text-xs font-bold text-terracotta-strong">پورتفولیو</p><h2 className="mt-2 text-2xl font-black">آثار تأییدشده این هنرمند</h2><p className="mt-2 text-sm text-muted">نمونه‌کارهای عمومی؛ تازه‌ترین آثار در ابتدای فهرست قرار دارند.</p></div><span className="text-xs text-muted">{profile.artworks?.length?.toLocaleString('fa-IR') ?? '۰'} اثر بارگذاری‌شده</span></div>
-                        {portfolioCategories.length > 1 && <div className="mt-6 flex flex-wrap gap-2" aria-label="فیلتر آثار بر اساس دسته"><button type="button" aria-pressed={!categoryFilter} onClick={() => setCategoryFilter('')} className={`border px-4 py-2 text-sm font-semibold ${!categoryFilter ? 'border-ink bg-ink text-white' : 'border-border bg-white text-ink'}`}>همه دسته‌ها</button>{portfolioCategories.map((category) => <button type="button" key={category.slug} aria-pressed={categoryFilter === category.slug} onClick={() => setCategoryFilter(category.slug)} className={`border px-4 py-2 text-sm font-semibold ${categoryFilter === category.slug ? 'border-ink bg-ink text-white' : 'border-border bg-white text-ink'}`}>{category.name}</button>)}</div>}
+                        <div className="flex flex-wrap items-end justify-between gap-3">
+                            <div><p className="text-xs font-bold text-terracotta-strong">پورتفولیو</p><h2 className="mt-2 text-2xl font-black">آثار تأییدشده این هنرمند</h2><p className="mt-2 text-sm text-muted">نمونه‌کارهای عمومی؛ تازه‌ترین آثار در ابتدای فهرست قرار دارند.</p></div>
+                            <span className="text-xs text-muted">{allArtworks.length.toLocaleString('fa-IR')} اثر بارگذاری‌شده</span>
+                        </div>
+                        {portfolioCategories.length > 1 && <div className="mt-6 flex flex-wrap gap-2" aria-label="فیلتر آثار بر اساس دسته">
+                            <button type="button" aria-pressed={!categoryFilter} onClick={() => setCategoryFilter('')} className={`border px-4 py-2 text-sm font-semibold ${!categoryFilter ? 'border-ink bg-ink text-white' : 'border-border bg-white text-ink'}`}>همه دسته‌ها</button>
+                            {portfolioCategories.map((category) => <button type="button" key={category.slug} aria-pressed={categoryFilter === category.slug} onClick={() => setCategoryFilter(category.slug)} className={`border px-4 py-2 text-sm font-semibold ${categoryFilter === category.slug ? 'border-ink bg-ink text-white' : 'border-border bg-white text-ink'}`}>{category.name}</button>)}
+                        </div>}
                         {visibleArtworks.length ? <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{visibleArtworks.map((item) => <ArtworkCard key={item.id} artwork={{ ...item, artist: { display_name: profile.display_name, slug: profile.slug } }} />)}</div> : <EmptyState className="mt-6" title={categoryFilter ? 'در این دسته اثری بارگذاری نشده' : 'هنوز اثری برای نمایش وجود ندارد'} description="آثار تأییدشده این هنرمند در این بخش نمایش داده می‌شوند." />}
-                        {moreError && <ErrorState className="mt-6" title="دریافت آثار بیشتر ناموفق بود" description={moreError} onRetry={loadMore} />}
-                        {profile.artworks_pagination?.has_more && <div className="mt-8 flex justify-center"><button type="button" onClick={loadMore} disabled={loadingMore} className="border border-border px-6 py-3 text-sm font-bold text-ink transition-colors hover:border-terracotta disabled:cursor-wait disabled:opacity-60">{loadingMore ? 'در حال دریافت…' : 'نمایش آثار بیشتر'}</button></div>}
+                        {profileQuery.isFetchNextPageError && <ErrorState className="mt-6" title="دریافت آثار بیشتر ناموفق بود" description="دریافت آثار بیشتر انجام نشد. دوباره تلاش کنید." onRetry={() => profileQuery.fetchNextPage()} />}
+                        {pagination?.has_more && <div className="mt-8 flex justify-center"><button type="button" onClick={() => profileQuery.fetchNextPage()} disabled={profileQuery.isFetchingNextPage} className="border border-border px-6 py-3 text-sm font-bold text-ink transition-colors hover:border-terracotta disabled:cursor-wait disabled:opacity-60">{profileQuery.isFetchingNextPage ? 'در حال دریافت…' : 'نمایش آثار بیشتر'}</button></div>}
                     </section>
                 </>
             ) : (
-                <section className="mt-8 border border-border bg-white p-8"><h1 className="text-2xl font-black">{status === 403 ? 'دسترسی به پروفایل مجاز نیست' : 'پروفایل در دسترس نیست'}</h1><p className="mt-3 text-sm leading-7 text-muted">این پروفایل وجود ندارد یا نمایش عمومی آن غیرفعال شده است.</p></section>
+                <section className="mt-8 border border-border bg-white p-8">
+                    <h1 className="text-2xl font-black">{status === 403 ? 'دسترسی به پروفایل مجاز نیست' : 'پروفایل در دسترس نیست'}</h1>
+                    <p className="mt-3 text-sm leading-7 text-muted">این پروفایل وجود ندارد یا نمایش عمومی آن غیرفعال شده است.</p>
+                    {profileQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-danger">ارتباط با سرور برقرار نشد. <button type="button" onClick={() => profileQuery.refetch()} className="font-bold underline">تلاش دوباره</button></p>}
+                </section>
             )}
         </main>
     );
