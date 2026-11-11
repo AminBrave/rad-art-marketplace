@@ -1,18 +1,25 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
+import { queryClient } from '../lib/queryClient';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
     const [user, setUserState] = useState(null);
+    const [userIdentity, setUserIdentity] = useState(null);
     const [status, setStatus] = useState('loading');
     const [authError, setAuthError] = useState('');
 
     const setUser = useCallback((nextUser) => {
+        const nextIdentity = nextUser ? String(nextUser.id) + ':' + String(nextUser.role) : null;
+        if (userIdentity !== nextIdentity) {
+            queryClient.clear();
+            setUserIdentity(nextIdentity);
+        }
         setUserState(nextUser);
         setStatus(nextUser ? 'authenticated' : 'guest');
         setAuthError('');
-    }, []);
+    }, [userIdentity]);
 
     const refreshUser = useCallback(async () => {
         setStatus('loading');
