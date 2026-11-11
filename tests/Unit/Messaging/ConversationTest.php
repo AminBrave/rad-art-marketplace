@@ -6,7 +6,7 @@ namespace Tests\Unit\Messaging;
 
 use App\Models\Conversation;
 use App\Models\User;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 final class ConversationTest extends TestCase
 {

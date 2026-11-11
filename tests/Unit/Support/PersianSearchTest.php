@@ -30,9 +30,14 @@ final class PersianSearchTest extends TestCase
         self::assertSame('hello world', PersianSearch::normalize("  HELLO\t\n  WORLD  "));
     }
 
-    public function test_empty_and_plain_latin_values_are_stable(): void
+    public function test_null_and_empty_values_normalize_to_an_empty_string(): void
     {
+        self::assertSame('', PersianSearch::normalize(null));
         self::assertSame('', PersianSearch::normalize('  '));
+    }
+
+    public function test_plain_latin_values_are_lowercased(): void
+    {
         self::assertSame('rademan', PersianSearch::normalize('RADEMAN'));
     }
 }
