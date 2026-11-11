@@ -22,7 +22,6 @@ const React = reactModule.default ?? reactModule;
 const serverModule = await vite.ssrLoadModule('react-dom/server');
 const { renderToStaticMarkup } = serverModule;
 const primitives = await vite.ssrLoadModule('/resources/js/components/ui/primitives.jsx');
-const input = await vite.ssrLoadModule('/resources/js/components/ui/input.jsx');
 const feedback = await vite.ssrLoadModule('/resources/js/components/ui/feedback.jsx');
 
 after(async () => {
@@ -44,7 +43,7 @@ test('FormField associates its label, hint and validation error with the control
         React.createElement(
             primitives.FormField,
             { id: 'email', label: 'ایمیل', hint: 'نشانی ورود', error: 'ایمیل معتبر نیست', required: true },
-            React.createElement(input.Input, { type: 'email', name: 'email' }),
+            React.createElement('input', { type: 'email', name: 'email' }),
         ),
     );
 
