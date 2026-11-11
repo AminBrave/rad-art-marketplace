@@ -1,12 +1,12 @@
 import ComponentShowcase from './ComponentShowcase';
 
 const swatches = [
-    { name: 'Ivory', value: '#F7F5F0', token: 'canvas' },
-    { name: 'Charcoal', value: '#242320', token: 'ink' },
-    { name: 'Terracotta', value: '#B65C3A', token: 'terracotta' },
-    { name: 'Sand', value: '#D8C9B7', token: 'sand' },
-    { name: 'Olive', value: '#536052', token: 'olive' },
-    { name: 'White', value: '#FFFFFF', token: 'paper' },
+    { name: 'Background', value: 'hsl(0 0% 100%)', token: 'background' },
+    { name: 'Foreground', value: 'hsl(20 14.3% 4.1%)', token: 'foreground' },
+    { name: 'Primary', value: 'hsl(24 9.8% 10%)', token: 'primary' },
+    { name: 'Secondary', value: 'hsl(60 4.8% 95.9%)', token: 'secondary' },
+    { name: 'Muted', value: 'hsl(60 4.8% 95.9%)', token: 'muted' },
+    { name: 'Border', value: 'hsl(20 5.9% 90%)', token: 'border' },
 ];
 
 export default function DesignFoundation() {
@@ -49,7 +49,7 @@ export default function DesignFoundation() {
                         <p className="mt-4 max-w-xl leading-loose text-muted-foreground">وزیرمتن برای خوانایی فارسی و رابط راست‌به‌چپ؛ وزن‌های متنوع برای ساخت سلسله‌مراتب روشن، بدون شلوغی بصری.</p>
                     </div>
                     <div dir="ltr" className="border-s border-border ps-6">
-                        <h3 className="font-latin text-2xl font-bold">Inter — Editorial type</h3>
+                        <h3 className="font-latin text-2xl font-bold">Inter — New York type</h3>
                         <p className="mt-4 font-latin text-sm leading-7 text-muted-foreground">A considered typographic system for Latin names, metadata, numbers, and mixed-language content.</p>
                         <p className="mt-5 font-latin text-xs tracking-widest text-subtle">ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789</p>
                     </div>
@@ -58,7 +58,7 @@ export default function DesignFoundation() {
                     <p className="text-xs font-bold text-primary">03 / INTERACTION</p><h2 id="controls-title" className="mt-2 text-2xl font-bold">کنترل‌ها و سطوح</h2>
                     <div className="mt-6 grid gap-8 lg:grid-cols-2">
                         <div className="flex flex-wrap items-center gap-3">
-                            <button type="button" className="rounded-md bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition hover:bg-primary-strong">دکمه اصلی</button>
+                            <button type="button" className="rounded-md bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition hover:bg-primary/90">دکمه اصلی</button>
                             <button type="button" className="rounded-md border border-border-strong bg-card px-5 py-3 text-sm font-bold text-foreground transition hover:border-ring">دکمه ثانویه</button>
                             <a href="#palette-title" className="text-sm font-bold text-primary underline">پیوند متنی</a>
                         </div>
@@ -72,9 +72,9 @@ export default function DesignFoundation() {
                 <section aria-labelledby="surface-title" className="border-t border-border py-10">
                     <p className="text-xs font-bold text-primary">04 / SURFACES</p><h2 id="surface-title" className="mt-2 text-2xl font-bold">مرزها و سطوح</h2>
                     <div className="mt-6 grid gap-4 sm:grid-cols-3">
-                        <div className="border border-border bg-card p-5"><p className="font-bold">سطح اصلی</p><p className="mt-2 text-sm text-muted-foreground">سفید روی زمینه عاجی</p></div>
+                        <div className="border border-border bg-card p-5"><p className="font-bold">سطح اصلی</p><p className="mt-2 text-sm text-muted-foreground">سطح پایه با کنتراست معنایی</p></div>
                         <div className="border border-border bg-muted p-5"><p className="font-bold">سطح خنثی</p><p className="mt-2 text-sm text-muted-foreground">برای گروه‌بندی آرام محتوا</p></div>
-                        <div className="border-s border-2 border-olive bg-card p-5"><p className="font-bold">نشانگر معنایی</p><p className="mt-2 text-sm text-muted-foreground">استفاده محدود از زیتونی</p></div>
+                        <div className="border-s border-2 border-olive bg-card p-5"><p className="font-bold">نشانگر معنایی</p><p className="mt-2 text-sm text-muted-foreground">رنگ‌ها از نقش معنایی خود پیروی می‌کنند</p></div>
                     </div>
                 </section>
                 <ComponentShowcase />
