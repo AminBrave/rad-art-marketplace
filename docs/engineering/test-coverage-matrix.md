@@ -30,9 +30,10 @@ The current lowest-covered meaningful application files are CuratedCollection (8
 | Unit | PersianSearchTest, ConversationTest | Arabic/Persian normalization, null/empty handling, digit mapping, participant identity |
 | Feature | ArtworkSearchNormalizationTest, ArtistDirectorySearchNormalizationTest, InquiryRateLimitTest | SQLite search normalization, nullable columns, literal LIKE wildcard escaping, inquiry throttling |
 | Integration | CanonicalConversationConstraintTest, ArtworkStorageRollbackTest | Database uniqueness for canonical conversations; uploaded file cleanup and original-image preservation on write failure |
+| Feature + frontend unit | FeatureRegistryTest, features.test.js | Inquiry endpoints return 404 when disabled; direct messaging routes remain available; browser feature registry fails closed for missing flags |
 | React component rendering | reactComponents.test.js | Button busy/disabled semantics, FormField label/error wiring, SearchField landmark, ErrorState alert, upload progress bounds, EmptyState semantics |
 | Browser full-stack | FullStackBuyerArtistMessagingTests | Buyer starts a direct conversation, artist replies, buyer receives the reply |
-| Browser full-stack | FullStackBuyerInquiryTests | Buyer submits inquiry, artist receives it, private buyer email is not serialized |
+| Browser full-stack | InquiryDisabledFullStackTests | Inquiry API returns 404 and public inquiry form is absent while a buyer can still start a direct conversation |
 | Browser full-stack | FullStackArtistArtworkTests | Artist uploads artwork; pending work remains absent from public search |
 | Browser full-stack | FullStackAdminModerationTests | Admin approves pending work; buyer is denied at UI and API |
 | Browser accessibility | AccessibilitySmokeTests | Persian document direction, main landmark, accessible names and image alt attributes |
@@ -96,13 +97,13 @@ The current lowest-covered meaningful application files are CuratedCollection (8
 
 | Scenario | Layer | Baseline |
 |---|---|---|
-| Buyer-only inquiry submission and validation | Feature + unmocked E2E | Existing API evidence plus buyer submission and artist receipt journey added |
+| Buyer-only inquiry submission and validation | Feature + unmocked E2E | Retained backend behavior is tested with the flag explicitly enabled; Inquiry is disabled by default and browser coverage verifies the 404/UI-hidden behavior |
 | Private artist and invalid/unapproved artwork target | Feature | Existing evidence |
 | Buyer sees own inquiry; other buyer denied | Feature | Existing evidence |
 | Artist sees/manages only addressed inquiries | Feature | Existing evidence |
 | Honeypot and throttling | Feature | Existing honeypot evidence; five-per-minute buyer throttle regression added |
-| Start conversation from inquiry | Feature + Browser | Existing evidence |
-| Direct conversation without inquiry | Feature | Existing evidence |
+| Start conversation from inquiry | Feature | Existing ConversationTest evidence; route is disabled with Inquiry by default |
+| Direct conversation without inquiry | Feature + unmocked E2E | Existing evidence; regression journey confirms direct messaging works with Inquiry disabled |
 | One canonical conversation per buyer/artist pair across entry points | Feature + Integration | Existing evidence; database uniqueness test added |
 | Pair key ordering and database uniqueness under retries | Unit + Integration | Gap / expand |
 | Invalid actor, role and context relationships | Feature | Gap / expand |
