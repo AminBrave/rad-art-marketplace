@@ -1,8 +1,7 @@
-import os
 import unittest
 from playwright.sync_api import sync_playwright
 
-BASE_URL = os.environ.get("RAD_ART_BASE_URL", "http://127.0.0.1:8000")
+from config import BASE_URL, IGNORE_HTTPS_ERRORS
 BUYER = {"id": 42, "name": "Buyer QA", "email": "buyer@example.test", "role": "buyer"}
 ARTIST = {"id": 84, "name": "Artist QA", "email": "artist@example.test", "role": "artist"}
 INQUIRY = {
@@ -27,7 +26,10 @@ class BuyerInquiryBrowserTests(unittest.TestCase):
         cls.playwright.stop()
 
     def new_page(self, user=BUYER, viewport=None):
-        context = self.browser.new_context(viewport=viewport or {"width": 1280, "height": 900})
+        context = self.browser.new_context(
+            viewport=viewport or {"width": 1280, "height": 900},
+            ignore_https_errors=IGNORE_HTTPS_ERRORS,
+        )
         page = context.new_page()
         page.set_default_timeout(15000)
         page.set_default_navigation_timeout(15000)
@@ -66,7 +68,8 @@ class BuyerInquiryBrowserTests(unittest.TestCase):
             page.goto(BASE_URL + "/dashboard/buyer/inquiries")
             page.get_by_role("heading", name="درخواست‌های ارسال‌شده").wait_for()
             page.get_by_role("link", name="مشاهده جزئیات").click()
-            page.get_by_role("heading", name=INQUIRY["subject"]).wait_for()
+            page.wait_for_url("**/dashboard/buyer/inquiries/101")
+            page.get_by_role("heading", name=INQUIRY["subject"], level=1).wait_for()
             self.assertIn(INQUIRY["message"], page.locator("body").inner_text())
             self.assertIn("درخواست اولیه", page.locator("body").inner_text())
             self.assertNotIn("buyer@example.test", page.locator("body").inner_text())

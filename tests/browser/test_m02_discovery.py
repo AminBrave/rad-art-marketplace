@@ -1,11 +1,10 @@
 import base64
 import json
-import os
 import unittest
 from urllib.parse import urlparse, parse_qs
 from playwright.sync_api import sync_playwright
 
-BASE_URL = os.environ.get("RAD_ART_BASE_URL", "http://127.0.0.1:8000")
+from config import BASE_URL, IGNORE_HTTPS_ERRORS
 
 ARTIST = {"id": 84, "name": "Artist QA", "email": "artist@example.test", "role": "artist"}
 ARTWORK = {
@@ -33,7 +32,10 @@ class DiscoveryBrowserTests(unittest.TestCase):
         cls.playwright.stop()
 
     def new_page(self, viewport=None, user=None):
-        context = self.browser.new_context(viewport=viewport or {"width": 1280, "height": 900})
+        context = self.browser.new_context(
+            viewport=viewport or {"width": 1280, "height": 900},
+            ignore_https_errors=IGNORE_HTTPS_ERRORS,
+        )
         page = context.new_page()
         page.set_default_timeout(15000)
         page.set_default_navigation_timeout(15000)
@@ -98,11 +100,12 @@ class DiscoveryBrowserTests(unittest.TestCase):
             search = page.get_by_label("جست‌وجو در آثار و هنرمندان")
             search.fill("آبرنگ")
             page.get_by_role("button", name="جست‌وجو").click()
+            page.wait_for_function("new URL(location.href).searchParams.get('q') === 'آبرنگ'")
             page.get_by_label("فیلتر دسته‌بندی").select_option("painting")
             page.get_by_label("فیلتر تکنیک و مواد").select_option("آبرنگ")
             page.get_by_label("فیلتر وضعیت اثر").select_option("available")
             page.get_by_label("مرتب‌سازی آثار", exact=True).select_option("year_desc")
-            self.assertIn("q=%D8%A2%D8%A8%D8%B1%D9%86%DA%AF", page.url)
+            self.assertEqual(page.evaluate("new URL(location.href).searchParams.get('q')"), "آبرنگ")
             self.assertIn("category=painting", page.url)
             self.assertIn("medium=", page.url)
             self.assertIn("availability=available", page.url)

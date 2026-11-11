@@ -15,13 +15,15 @@ Use the repository script to select the smallest relevant layer; it does not ins
 ./scripts/verify all
 ```
 
-Run the full suite locally before merge when the change is broad or high-risk. Browser tests may require the application/database and Playwright Chromium to be prepared. See script help with `./scripts/verify --help`.
+Run the full suite locally before merge when the change is broad or high-risk. Browser tests require the local application/database and Playwright Chromium. For this repository, start the complete local stack in one terminal with `npm run dev:local`; it starts Laravel on `127.0.0.1:8000`, Vite in HTTPS mode on `127.0.0.1:5173`, and Caddy at `https://rad.localhost`. The browser suite defaults to `https://rad.localhost` and ignores the locally generated Caddy certificate. Do not start `npm run dev:https` separately while `dev:local` is running: `dev:local` already starts it. `dev:https` by itself only starts Vite, not Laravel or the Caddy application entry point.
+
+Run `./scripts/verify browser` in a second terminal. It checks server reachability first and reports a single actionable error if the stack is not available. Override the browser target with `RAD_ART_BASE_URL` when needed, for example `RAD_ART_BASE_URL=http://127.0.0.1:8000 ./scripts/verify browser` (PowerShell: `$env:RAD_ART_BASE_URL='http://127.0.0.1:8000'; ./scripts/verify browser`). Set `RAD_ART_IGNORE_HTTPS_ERRORS=false` only when using a certificate trusted by the test browser. See script help with `./scripts/verify --help`.
 
 ## Test pyramid
 1. Laravel PHPUnit feature suite in `tests/Feature`: HTTP routes, middleware, validation, DB, policies, notifications and persistence; SQLite in-memory from phpunit.xml.
 2. Node built-in tests in `tests/js/*.test.js`: deterministic frontend utilities/logic.
 3. Python Playwright in `tests/browser`: route, RTL, responsive and user journeys. Existing tests include isolated API-mocked UI regressions; `test_full_stack_auth.py` is unmocked and crosses React, Laravel session and SQLite.
-4. Pint, ESLint and Vite production build.
+4. Pint, ESLint, the standard Vite production build and the cPanel-specific production build (`npm run build:cpanel`).
 
 ## Risk-based test selection
 - **Low — docs, copy, non-functional styling:** inspect rendered result/diff; no full suite. Docs-only main pushes skip CI.

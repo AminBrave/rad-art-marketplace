@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, SelectField } from '../components/ui';
+
+const emptyFilters = { mediums: [], availability: [], sorts: [] };
 
 export default function ArtworkCatalogue() {
     const [params, setParams] = useSearchParams();
@@ -11,65 +14,59 @@ export default function ArtworkCatalogue() {
     const availability = params.get('availability') ?? '';
     const sort = params.get('sort') ?? 'newest';
     const page = Math.max(1, Number.parseInt(params.get('page') ?? '1', 10) || 1);
-
     const [searchInput, setSearchInput] = useState(search);
-    const [categories, setCategories] = useState([]);
-    const [filters, setFilters] = useState({ mediums: [], availability: [], sorts: [] });
-    const [artworks, setArtworks] = useState([]);
-    const [meta, setMeta] = useState({ current_page: 1, last_page: 1, total: 0 });
-    const [loading, setLoading] = useState(true);
-    const [filtersLoading, setFiltersLoading] = useState(true);
-    const [error, setError] = useState(false);
-    const [filtersError, setFiltersError] = useState(false);
-    const [retry, setRetry] = useState(0);
 
     useEffect(() => setSearchInput(search), [search]);
 
-    useEffect(() => {
-        let active = true;
-        const controller = new AbortController();
-        Promise.all([
-            axios.get('/api/v1/categories', { signal: controller.signal }),
-            axios.get('/api/v1/artwork-filters', { signal: controller.signal }),
-        ]).then(([categoryResponse, filterResponse]) => {
-            if (!active) return;
-            setCategories(categoryResponse.data.data ?? []);
-            setFilters(filterResponse.data.data ?? { mediums: [], availability: [], sorts: [] });
-        }).catch((requestError) => {
-            if (active && !axios.isCancel(requestError)) setFiltersError(true);
-        }).finally(() => {
-            if (active) setFiltersLoading(false);
-        });
-        return () => { active = false; controller.abort(); };
-    }, []);
+    const filtersQuery = useQuery({
+        queryKey: ['artwork-catalogue', 'filters'],
+        queryFn: async ({ signal }) => {
+            const [categoryResponse, filterResponse] = await Promise.all([
+                axios.get('/api/v1/categories', { signal }),
+                axios.get('/api/v1/artwork-filters', { signal }),
+            ]);
 
-    useEffect(() => {
-        let active = true;
-        const controller = new AbortController();
-        setLoading(true);
-        setError(false);
-        axios.get('/api/v1/artworks', {
-            params: {
-                q: search || undefined,
-                category: category || undefined,
-                medium: medium || undefined,
-                availability: availability || undefined,
-                sort: sort === 'newest' ? undefined : sort,
-                page,
-            },
-            signal: controller.signal,
-        }).then(({ data }) => {
-            if (active) {
-                setArtworks(data.data ?? []);
-                setMeta({ current_page: data.current_page ?? page, last_page: data.last_page ?? 1, total: data.total ?? 0 });
-            }
-        }).catch((requestError) => {
-            if (active && !axios.isCancel(requestError)) setError(true);
-        }).finally(() => {
-            if (active) setLoading(false);
-        });
-        return () => { active = false; controller.abort(); };
-    }, [search, category, medium, availability, sort, page, retry]);
+            return {
+                categories: categoryResponse.data.data ?? [],
+                filters: filterResponse.data.data ?? emptyFilters,
+            };
+        },
+        staleTime: 5 * 60_000,
+    });
+
+    const artworksQuery = useQuery({
+        queryKey: ['artworks', { search, category, medium, availability, sort, page }],
+        queryFn: async ({ signal }) => {
+            const { data } = await axios.get('/api/v1/artworks', {
+                params: {
+                    q: search || undefined,
+                    category: category || undefined,
+                    medium: medium || undefined,
+                    availability: availability || undefined,
+                    sort: sort === 'newest' ? undefined : sort,
+                    page,
+                },
+                signal,
+            });
+
+            return data;
+        },
+        placeholderData: (previousData) => previousData,
+        staleTime: 30_000,
+    });
+
+    const categories = filtersQuery.data?.categories ?? [];
+    const filters = filtersQuery.data?.filters ?? emptyFilters;
+    const artworks = artworksQuery.data?.data ?? [];
+    const meta = {
+        current_page: artworksQuery.data?.current_page ?? page,
+        last_page: artworksQuery.data?.last_page ?? 1,
+        total: artworksQuery.data?.total ?? 0,
+    };
+    const loading = artworksQuery.isPending;
+    const error = artworksQuery.isError;
+    const filtersLoading = filtersQuery.isPending;
+    const filtersError = filtersQuery.isError;
 
     const activeFilterCount = useMemo(
         () => [search, category, medium, availability, sort !== 'newest' ? sort : ''].filter(Boolean).length,
@@ -120,7 +117,7 @@ export default function ArtworkCatalogue() {
                         {(filters.sorts?.length ? filters.sorts : [{ value: 'newest', label: 'جدیدترین' }]).map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
                     </SelectField>
                     <div className="flex items-center justify-between gap-3">
-                        <p className="text-xs text-muted">{activeFilterCount ? `${activeFilterCount.toLocaleString('fa-IR')} فیلتر فعال` : 'بدون فیلتر'}</p>
+                        <p className="text-xs text-muted">{activeFilterCount ? activeFilterCount.toLocaleString('fa-IR') + ' فیلتر فعال' : 'بدون فیلتر'}</p>
                         {activeFilterCount > 0 && <button type="button" onClick={clearFilters} className="text-sm font-bold text-terracotta-strong underline underline-offset-4">پاک‌کردن فیلترها</button>}
                     </div>
                 </div>
@@ -129,13 +126,13 @@ export default function ArtworkCatalogue() {
             </section>
 
             <div className="mt-7 flex flex-wrap items-center justify-between gap-3">
-                <p aria-live="polite" className="text-sm text-muted">{loading ? 'در حال دریافت آثار…' : `${meta.total.toLocaleString('fa-IR')} اثر`}</p>
+                <p aria-live="polite" className="text-sm text-muted">{loading ? 'در حال دریافت آثار…' : meta.total.toLocaleString('fa-IR') + ' اثر'}</p>
                 <p className="text-xs text-muted">نمایش آثار عمومی و تأییدشده</p>
             </div>
             {loading ? (
                 <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}</div>
             ) : error ? (
-                <ErrorState className="mt-8" title="دریافت گالری با خطا روبه‌رو شد" description="اتصال را بررسی کنید و دوباره تلاش کنید." onRetry={() => setRetry((value) => value + 1)} />
+                <ErrorState className="mt-8" title="دریافت گالری با خطا روبه‌رو شد" description="اتصال را بررسی کنید و دوباره تلاش کنید." onRetry={() => artworksQuery.refetch()} />
             ) : artworks.length ? (
                 <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{artworks.map((artwork) => <ArtworkCard key={artwork.id} artwork={artwork} />)}</div>
             ) : (

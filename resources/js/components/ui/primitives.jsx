@@ -1,4 +1,5 @@
 import { cloneElement, isValidElement, useId } from 'react';
+import { cn } from '../../lib/utils';
 
 const buttonVariants = {
     primary: 'bg-terracotta text-white hover:bg-terracotta-strong',
@@ -29,7 +30,7 @@ export function Button({
             type={type}
             disabled={disabled || loading}
             aria-busy={loading || undefined}
-            className={`ra-button ${buttonVariants[variant] ?? buttonVariants.primary} ${buttonSizes[size] ?? buttonSizes.md} ${className}`}
+            className={cn('ra-button', buttonVariants[variant] ?? buttonVariants.primary, buttonSizes[size] ?? buttonSizes.md, className)}
             {...props}
         >
             {loading && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-current border-e-transparent" />}
@@ -45,7 +46,7 @@ export function IconButton({ children, label, size = 'md', className = '', ...pr
             type="button"
             aria-label={label}
             title={label}
-            className={`ra-button ra-button--outline shrink-0 ${dimensions[size] ?? dimensions.md} !p-0 ${className}`}
+            className={cn('ra-button ra-button--outline shrink-0 !p-0', dimensions[size] ?? dimensions.md, className)}
             {...props}
         >
             {children}
@@ -64,7 +65,7 @@ const badgeVariants = {
 
 export function Badge({ children, variant = 'neutral', className = '' }) {
     return (
-        <span className={`inline-flex items-center rounded-sm px-2.5 py-1 text-xs font-bold ${badgeVariants[variant] ?? badgeVariants.neutral} ${className}`}>
+        <span className={cn('inline-flex items-center rounded-sm px-2.5 py-1 text-xs font-bold', badgeVariants[variant] ?? badgeVariants.neutral, className)}>
             {children}
         </span>
     );

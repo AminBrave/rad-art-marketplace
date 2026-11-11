@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import react from '@vitejs/plugin-react';
+import { fileURLToPath, URL } from 'node:url';
 
 // This build profile targets cPanel accounts that serve the repository root
 // (the entire Laravel project) as the domain document root.

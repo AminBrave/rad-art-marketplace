@@ -1,5 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from './lib/queryClient';
 import AppRouter from './app/AppRouter';
 import './bootstrap';
 
@@ -12,5 +14,5 @@ const RootApp = isDesignSystemPreview
     : <AppRouter />;
 
 createRoot(document.getElementById('app')).render(
-    <React.StrictMode>{RootApp}</React.StrictMode>,
+    <React.StrictMode><QueryClientProvider client={queryClient}>{RootApp}</QueryClientProvider></React.StrictMode>,
 );
