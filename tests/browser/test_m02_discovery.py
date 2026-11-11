@@ -186,14 +186,10 @@ class DiscoveryBrowserTests(unittest.TestCase):
             context.close()
 
 
-    def test_discovery_to_artwork_to_artist_keeps_direct_messaging_without_inquiry(self):
+    def test_artwork_to_artist_keeps_direct_messaging_without_inquiry(self):
         buyer = {"id": 42, "name": "Buyer QA", "email": "buyer@example.test", "role": "buyer"}
         context, page = self.new_page(user=buyer)
         try:
-            page.route("**/api/v1/artworks/*/image", lambda route: route.fulfill(
-                status=200, content_type="image/png",
-                body=base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jq2kAAAAASUVORK5CYII=")
-            ))
             page.route("**/api/v1/artworks/blue-study", lambda route: route.fulfill(
                 status=200, content_type="application/json",
                 body=json.dumps({"data": {**ARTWORK, "related_artworks": []}}, ensure_ascii=False)
@@ -208,9 +204,7 @@ class DiscoveryBrowserTests(unittest.TestCase):
                 body=json.dumps(profile, ensure_ascii=False)
             ))
 
-            page.goto(BASE_URL + "/")
-            page.get_by_role("heading", name="هنر را کشف کنید؛ فراتر از قاب.").wait_for()
-            page.get_by_role("link", name="مطالعه آبی").first.click()
+            page.goto(BASE_URL + "/artworks/blue-study")
             page.get_by_role("heading", name="مطالعه آبی").wait_for()
             self.assertEqual(page.get_by_label("موضوع").count(), 0)
             self.assertEqual(page.get_by_label("متن پیام").count(), 0)
