@@ -68,7 +68,7 @@ test('theme provider persists the selected mode and applies the root class', () 
     assert.ok(themeProvider.includes('localStorage.setItem(STORAGE_KEY, theme)'));
     assert.ok(themeProvider.includes('meta[name="theme-color"]'));
     const messaging = read('../../resources/js/app/MessagingCenter.jsx');
-    assert.doesNotMatch(messaging, /window\\.(?:confirm|prompt|alert)\\(/);
+    assert.doesNotMatch(messaging, /window\.(?:confirm|prompt|alert)\(/);
 });
 
 test('application screens use shared shadcn controls instead of raw interactive HTML controls', () => {
