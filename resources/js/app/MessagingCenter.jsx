@@ -30,6 +30,7 @@ export default function MessagingCenter({ role }) {
     const [editDraft, setEditDraft] = useState('');
     const [loading, setLoading] = useState(true);
     const [loadingOlder, setLoadingOlder] = useState(false);
+    const [messagesLoading, setMessagesLoading] = useState(false);
     const [hasOlderMessages, setHasOlderMessages] = useState(false);
     const [hasMoreThreads, setHasMoreThreads] = useState(false);
     const [loadingMoreThreads, setLoadingMoreThreads] = useState(false);
@@ -170,7 +171,10 @@ export default function MessagingCenter({ role }) {
             if (!axios.isCancel(requestError) && !controller.signal.aborted
                 && Number(activeConversationRef.current) === Number(id)) setError('دریافت پیام‌ها انجام نشد. دوباره تلاش کنید.');
         } finally {
-            if (messageRequestRef.current === controller) messageRequestRef.current = null;
+            if (messageRequestRef.current === controller) {
+                messageRequestRef.current = null;
+                if (Number(activeConversationRef.current) === Number(id)) setMessagesLoading(false);
+            }
         }
     }, [user?.id]);
 
@@ -187,6 +191,9 @@ export default function MessagingCenter({ role }) {
         setHasOlderMessages(false);
         pendingScrollRestoreRef.current = null;
         activeConversationRef.current = active;
+        setMessages([]);
+        setMessagesLoading(Boolean(active));
+        shouldStickToBottomRef.current = true;
         latestMessageIdRef.current = null;
         syncCursorRef.current = null;
         setDraft(active ? (draftsByConversationRef.current.get(Number(active)) ?? '') : '');
@@ -202,7 +209,6 @@ export default function MessagingCenter({ role }) {
         if (draftRef.current) draftRef.current.style.height = 'auto';
         if (!active) {
             setSafety({ blocked_by_me: false, blocked_by_other: false });
-            setMessages([]);
             return undefined;
         }
         let cancelled = false;
@@ -535,13 +541,15 @@ export default function MessagingCenter({ role }) {
                                 shouldStickToBottomRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 120;
                                 if (node.scrollTop < 72 && hasOlderMessagesRef.current) loadOlderMessages();
                             }} className="relative flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain [scrollbar-gutter:stable] bg-[radial-gradient(circle_at_1px_1px,rgba(66,62,53,0.055)_1px,transparent_0)] [background-size:24px_24px] px-3 py-5 sm:gap-4 sm:px-6 sm:py-6" role="log" aria-label="پیام‌های گفتگو" aria-live="polite" aria-relevant="additions">
+                                {messagesLoading && messages.length === 0 && <p className="m-auto py-6 text-center text-sm text-muted" role="status">در حال دریافت پیام‌ها…</p>}
+                                {!messagesLoading && messages.length === 0 && <p className="m-auto py-6 text-center text-sm text-muted">هنوز پیامی در این گفتگو وجود ندارد. می‌توانید گفتگو را با یک پیام شروع کنید.</p>}
                                 {loadingOlder && <p className="absolute inset-x-0 top-2 z-10 mx-auto w-fit rounded-full border border-border bg-white/95 px-3 py-1.5 text-xs text-muted shadow-soft" role="status">در حال دریافت پیام‌های قدیمی‌تر…</p>}
                                 {messages.map((message) => {
                                     const own = Number(message.sender_id) === Number(user?.id);
                                     const deleted = Boolean(message.deleted_at);
                                     return (
                                         <div dir="ltr" key={message.id} className={'flex w-full ' + (own ? 'justify-end' : 'justify-start')}>
-                                            <article dir="rtl" className={'min-w-0 max-w-[88%] rounded-[20px] px-4 py-3 shadow-[0_2px_5px_rgba(31,30,27,0.055)] sm:max-w-[min(72%,680px)] ' + (own ? 'rounded-bl-[7px] bg-[var(--color-message-own)] text-ink' : 'rounded-br-[7px] border border-border bg-white text-ink')}>
+                                            <article dir="rtl" className={'min-w-0 max-w-[88%] rounded-[20px] px-4 py-3 shadow-[0_2px_5px_rgba(31,30,27,0.055)] sm:max-w-[min(72%,680px)] ' + (own ? 'rounded-bl-[7px] bg-[var(--color-message-own)] text-ink' : 'rounded-br-[7px] border border-border bg-[var(--color-message-peer)] text-ink')}>
                                                 {message.attachments?.length > 0 && <ul className="mb-3 space-y-2">{message.attachments.map((attachment) => <li key={attachment.id}><a href={attachment.download_url} className="inline-flex max-w-full items-center gap-2 border border-border bg-surface-muted px-3 py-2 text-xs font-semibold underline" rel="noreferrer"><span aria-hidden="true">📎</span><span className="truncate">{attachment.name}</span><span className="text-muted">({Math.max(1, Math.round(attachment.size_bytes / 1024))} KB)</span></a></li>)}</ul>}
                                                 {message.reply_to && <div className="mb-3 border-r-2 border-terracotta bg-surface-muted px-3 py-2 text-xs"><strong>{message.reply_to.sender_name ?? 'پیام قبلی'}</strong><p className="mt-1 line-clamp-2 text-muted">{message.reply_to.body ?? 'این پیام حذف شده است.'}</p></div>}
                                                 {editingId === message.id ? (
