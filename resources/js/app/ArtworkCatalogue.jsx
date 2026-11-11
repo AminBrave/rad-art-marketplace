@@ -95,7 +95,7 @@ export default function ArtworkCatalogue() {
             <header className="border-b border-border pb-8">
                 <p className="text-xs font-bold tracking-wide text-primary">آرشیو عمومی راد آرت</p>
                 <h1 className="mt-2 text-3xl font-black sm:text-4xl">گالری آثار</h1>
-                <p className="mt-3 max-w-2xl text-sm leading-8 text-muted-foreground-foreground">در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید.</p>
+                <p className="mt-3 max-w-2xl text-sm leading-8 text-muted-foreground">در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید.</p>
             </header>
 
             <section aria-label="فیلتر و مرتب‌سازی آثار" className="mt-7 border border-border bg-card p-4 sm:p-5">
@@ -117,17 +117,17 @@ export default function ArtworkCatalogue() {
                         {(filters.sorts?.length ? filters.sorts : [{ value: 'newest', label: 'جدیدترین' }]).map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
                     </SelectField>
                     <div className="flex items-center justify-between gap-3">
-                        <p className="text-xs text-muted-foreground-foreground">{activeFilterCount ? activeFilterCount.toLocaleString('fa-IR') + ' فیلتر فعال' : 'بدون فیلتر'}</p>
+                        <p className="text-xs text-muted-foreground">{activeFilterCount ? activeFilterCount.toLocaleString('fa-IR') + ' فیلتر فعال' : 'بدون فیلتر'}</p>
                         {activeFilterCount > 0 && <button type="button" onClick={clearFilters} className="text-sm font-bold text-primary underline underline-offset-4">پاک‌کردن فیلترها</button>}
                     </div>
                 </div>
-                {filtersError && <p role="status" className="mt-3 text-xs text-muted-foreground-foreground">برخی گزینه‌های فیلتر بارگذاری نشدند؛ می‌توانید با جست‌وجو و دسته‌بندی ادامه دهید.</p>}
-                {filtersLoading && <p className="mt-3 text-xs text-muted-foreground-foreground">در حال آماده‌سازی گزینه‌های فیلتر…</p>}
+                {filtersError && <p role="status" className="mt-3 text-xs text-muted-foreground">برخی گزینه‌های فیلتر بارگذاری نشدند؛ می‌توانید با جست‌وجو و دسته‌بندی ادامه دهید.</p>}
+                {filtersLoading && <p className="mt-3 text-xs text-muted-foreground">در حال آماده‌سازی گزینه‌های فیلتر…</p>}
             </section>
 
             <div className="mt-7 flex flex-wrap items-center justify-between gap-3">
-                <p aria-live="polite" className="text-sm text-muted-foreground-foreground">{loading ? 'در حال دریافت آثار…' : meta.total.toLocaleString('fa-IR') + ' اثر'}</p>
-                <p className="text-xs text-muted-foreground-foreground">نمایش آثار عمومی و تأییدشده</p>
+                <p aria-live="polite" className="text-sm text-muted-foreground">{loading ? 'در حال دریافت آثار…' : meta.total.toLocaleString('fa-IR') + ' اثر'}</p>
+                <p className="text-xs text-muted-foreground">نمایش آثار عمومی و تأییدشده</p>
             </div>
             {loading ? (
                 <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}</div>
@@ -141,7 +141,7 @@ export default function ArtworkCatalogue() {
             {!loading && !error && meta.last_page > 1 && (
                 <nav aria-label="صفحه‌بندی آثار" className="mt-10 flex items-center justify-center gap-4">
                     <button type="button" disabled={page <= 1} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page - 1)]]))} className="border border-border px-4 py-2 text-sm font-semibold disabled:opacity-40">قبلی</button>
-                    <span className="text-sm text-muted-foreground-foreground">صفحه {meta.current_page.toLocaleString('fa-IR')} از {meta.last_page.toLocaleString('fa-IR')}</span>
+                    <span className="text-sm text-muted-foreground">صفحه {meta.current_page.toLocaleString('fa-IR')} از {meta.last_page.toLocaleString('fa-IR')}</span>
                     <button type="button" disabled={page >= meta.last_page} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page + 1)]]))} className="border border-border px-4 py-2 text-sm font-semibold disabled:opacity-40">بعدی</button>
                 </nav>
             )}
