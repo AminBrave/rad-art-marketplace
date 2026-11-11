@@ -7,7 +7,7 @@ config/features.php is the server-side source of truth for feature availability.
 | Feature | Default | Purpose |
 |---|---:|---|
 | inquiries | false | Artist inquiry submission, buyer/artist inquiry inboxes, and inquiry-to-conversation entry point |
-| messaging | true | Direct conversations, messages, attachments, safety controls and message notifications |
+
 
 Change a feature's boolean in this file rather than scattering environment checks or duplicated constants through the application.
 
@@ -29,7 +29,7 @@ Inquiry is disabled by default. Its controllers, React screens, model, migration
 
 The Inquiry endpoints remain declared but are blocked by feature middleware, returning 404 while disabled. This includes submission, buyer and artist inbox/detail/status endpoints, and the endpoint that creates a conversation from an inquiry. Public artist profiles no longer render the inquiry form. Buyer dashboards direct users to the direct-message inbox instead.
 
-Direct messaging remains enabled: buyer-initiated conversations and the conversation, message, attachment, safety, notification and inbox endpoints continue to be registered. Do not remove or gate these shared messaging routes when changing the Inquiry flag.
+Direct messaging remains enabled independently: buyer-initiated conversations and the conversation, message, attachment, safety, notification and inbox endpoints continue to be registered. Do not remove or gate these shared messaging routes when changing the Inquiry flag.
 
 To re-enable Inquiry, set inquiries to true, rebuild/clear Laravel's cached configuration as appropriate for the deployment, and run the feature-registry and inquiry test suites before release. Existing inquiry data becomes available again because it was not deleted.
 
