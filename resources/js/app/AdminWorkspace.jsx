@@ -302,23 +302,36 @@ export function AdminMessageReportsPage() {
     const [notes, setNotes] = useState({});
     const [loading, setLoading] = useState(true);
     const [busyId, setBusyId] = useState(null);
+    const [confirmRemovalId, setConfirmRemovalId] = useState(null);
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
+    const controllerRef = useRef(null);
     const load = useCallback(async () => {
+        controllerRef.current?.abort();
+        const controller = new AbortController();
+        controllerRef.current = controller;
         setLoading(true); setError('');
         try {
-            const { data } = await axios.get(api + '/message-reports', { params: { page } });
-            setResult(data);
+            const { data } = await axios.get(api + '/message-reports', { params: { page }, signal: controller.signal });
+            if (!controller.signal.aborted) setResult(data);
         } catch (e) {
-            setError(e.response?.status === 403 ? 'دسترسی به گزارش‌های پیام مجاز نیست.' : 'دریافت گزارش‌ها انجام نشد.');
-        } finally { setLoading(false); }
+            if (!axios.isCancel(e)) setError(e.response?.status === 403 ? 'دسترسی به گزارش‌های پیام مجاز نیست.' : 'دریافت گزارش‌ها انجام نشد.');
+        } finally {
+            if (controllerRef.current === controller) { controllerRef.current = null; setLoading(false); }
+        }
     }, [page]);
-    useEffect(() => { load(); }, [load]);
+    useEffect(() => { load(); return () => controllerRef.current?.abort(); }, [load]);
     const review = async (report, action) => {
+        if (action === 'remove_message' && confirmRemovalId !== report.id) {
+            setConfirmRemovalId(report.id);
+            return;
+        }
         setBusyId(report.id); setError(''); setMessage('');
         try {
             const { data } = await axios.patch(api + '/message-reports/' + report.id, { action, note: (notes[report.id] ?? '').trim() || null });
             setMessage(data.message ?? 'تصمیم ثبت شد.');
+            setConfirmRemovalId(null);
+            setNotes((current) => { const next = { ...current }; delete next[report.id]; return next; });
             await load();
         } catch (e) {
             setError(e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.');
@@ -326,18 +339,43 @@ export function AdminMessageReportsPage() {
     };
     return <section className="space-y-6" dir="rtl">
         <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
-            <div><p className="text-sm font-bold text-terracotta-strong">ایمنی گفتگوها</p><h1 className="mt-2 text-2xl font-black">گزارش‌های پیام</h1><p className="mt-2 text-sm leading-7 text-muted">محتوای گزارش فقط برای مدیران مجاز قابل مشاهده است. هر تصمیم در سابقه رسیدگی ثبت می‌شود.</p></div>
+            <div><p className="text-sm font-bold text-terracotta-strong">ایمنی گفتگوها</p><h1 className="mt-2 text-2xl font-black">گزارش‌های پیام</h1><p className="mt-2 max-w-2xl text-sm leading-7 text-muted">گزارش‌ها را با توجه به زمینه گفتگو بررسی کنید. حذف پیام یک اقدام برگشت‌ناپذیر در این پنل است و پیش از اجرا تأیید جداگانه می‌خواهد.</p></div>
             <Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>
         </header>
+        <div className="grid gap-3 sm:grid-cols-2">
+            <div className="border border-border bg-white p-4"><p className="text-xs text-muted">گزارش‌های این صفحه</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</p></div>
+            <div className="border border-border bg-white p-4"><p className="text-xs text-muted">کل گزارش‌ها</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</p></div>
+        </div>
         {message && <SuccessState title={message} />}{error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
-        {loading ? <SkeletonLines lines={8} /> : !result?.data?.length ? <EmptyState title="گزارش بازی وجود ندارد" description="گزارش‌های جدید پس از ثبت از سوی یکی از طرفین گفتگو در اینجا نمایش داده می‌شوند." /> : <>
-            <div className="space-y-4">{result.data.map((report) => <article key={report.id} className="space-y-4 border border-border bg-paper p-5">
-                <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-bold">گزارش #{report.id} · {report.reason}</h2><p className="mt-1 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? 'کاربر'} · {dateLabel(report.created_at)}</p></div><Badge variant={report.status === 'open' ? 'warning' : 'neutral'}>{report.status === 'open' ? 'در انتظار بررسی' : report.status === 'dismissed' ? 'رد گزارش' : 'بررسی‌شده'}</Badge></div>
-                {report.details && <p className="text-sm leading-7">{report.details}</p>}
-                {report.message && <blockquote className="border-r-2 border-terracotta bg-surface-muted p-4 text-sm leading-7">{report.message.body ?? 'متن پیام حذف شده است.'}</blockquote>}
-                {report.status === 'open' && <><label className="block text-xs font-semibold text-muted">یادداشت رسیدگی (اختیاری)<textarea value={notes[report.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [report.id]: event.target.value }))} maxLength={1000} rows={2} className="mt-2 w-full border border-border bg-white p-3 text-sm focus:border-terracotta" /></label><div className="flex flex-wrap gap-2"><Button size="sm" variant="outline" disabled={busyId !== null} loading={busyId === report.id} onClick={() => review(report, 'reviewed')}>ثبت بررسی</Button><Button size="sm" variant="outline" disabled={busyId !== null} onClick={() => review(report, 'dismissed')}>رد گزارش</Button>{report.message && <Button size="sm" variant="danger" disabled={busyId !== null} onClick={() => review(report, 'remove_message')}>حذف پیام</Button>}</div></>}
-            </article>)}</div>
-            <Pagination currentPage={result.current_page ?? page} lastPage={result.last_page ?? 1} onPageChange={(next) => setParams(next > 1 ? { page: String(next) } : {})} disabled={loading || busyId !== null} />
+        {loading ? <div className="space-y-3"><div className="border border-border bg-white p-5"><SkeletonLines lines={5} /></div><div className="border border-border bg-white p-5"><SkeletonLines lines={5} /></div></div> : !result?.data?.length ? <EmptyState title="گزارش بازی وجود ندارد" description="گزارش‌های جدید پس از ثبت از سوی یکی از طرفین گفتگو در اینجا نمایش داده می‌شوند." /> : <>
+            <div className="space-y-4">{result.data.map((report) => {
+                const isOpen = report.status === 'open';
+                const confirmingRemoval = confirmRemovalId === report.id;
+                return <article key={report.id} className="overflow-hidden border border-border bg-white">
+                    <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border bg-surface-muted/70 p-4 sm:p-5">
+                        <div><p className="text-xs font-bold text-terracotta-strong">گزارش شماره {report.id}</p><h2 className="mt-1 font-black">{report.reason}</h2><p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? 'کاربر'} · {dateLabel(report.created_at)}</p></div>
+                        <Badge variant={isOpen ? 'warning' : report.status === 'dismissed' ? 'neutral' : 'success'}>{isOpen ? 'در انتظار بررسی' : report.status === 'dismissed' ? 'رد گزارش' : 'بررسی‌شده'}</Badge>
+                    </div>
+                    <div className="space-y-4 p-4 sm:p-5">
+                        {report.details && <div><p className="text-xs font-bold text-muted">شرح گزارش</p><p className="mt-2 whitespace-pre-line text-sm leading-7">{report.details}</p></div>}
+                        {report.message ? <div className="border-s-2 border-terracotta bg-surface-muted p-4"><p className="text-[11px] font-bold text-muted">پیام علامت‌گذاری‌شده</p><blockquote className="mt-2 whitespace-pre-line text-sm leading-7">{report.message.body ?? 'متن پیام حذف شده است.'}</blockquote></div> : <p className="text-xs text-muted">متن پیام مرتبط در دسترس نیست.</p>}
+                        {isOpen && <>
+                            <label className="block text-xs font-semibold text-muted">یادداشت رسیدگی (اختیاری)<textarea value={notes[report.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [report.id]: event.target.value }))} maxLength={1000} rows={2} className="ra-control mt-2 w-full" placeholder="خلاصه تصمیم یا زمینه بررسی…" /></label>
+                            <div className="flex flex-wrap gap-2">
+                                <Button size="sm" variant="primary" disabled={busyId !== null} loading={busyId === report.id} onClick={() => review(report, 'reviewed')}>ثبت بررسی</Button>
+                                <Button size="sm" variant="outline" disabled={busyId !== null} onClick={() => review(report, 'dismissed')}>رد گزارش</Button>
+                                {report.message && <Button size="sm" variant="danger" disabled={busyId !== null} onClick={() => review(report, 'remove_message')}>حذف پیام</Button>}
+                            </div>
+                            {confirmingRemoval && <div className="border border-danger/30 bg-danger/5 p-4">
+                                <p className="text-sm font-bold text-ink">حذف پیام را تأیید می‌کنید؟</p>
+                                <p className="mt-1 text-xs leading-6 text-muted">این اقدام پیام گزارش‌شده را حذف می‌کند. فقط در صورت احراز تخلف آن را ادامه دهید.</p>
+                                <div className="mt-3 flex flex-wrap gap-2"><Button size="sm" variant="danger" disabled={busyId !== null} loading={busyId === report.id} onClick={() => review(report, 'remove_message')}>بله، حذف پیام</Button><Button size="sm" variant="ghost" disabled={busyId !== null} onClick={() => setConfirmRemovalId(null)}>انصراف</Button></div>
+                            </div>}
+                        </>}
+                    </div>
+                </article>;
+            })}</div>
+            <Pagination currentPage={result.current_page ?? page} lastPage={result.last_page ?? 1} onPageChange={(next) => { setConfirmRemovalId(null); setParams(next > 1 ? { page: String(next) } : {}); }} disabled={loading || busyId !== null} />
         </>}
     </section>;
 }
