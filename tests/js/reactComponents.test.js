@@ -1,7 +1,5 @@
 import assert from 'node:assert/strict';
 import { after, test } from 'node:test';
-import React from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
 import { createServer } from 'vite';
 import react from '@vitejs/plugin-react';
 
@@ -16,6 +14,13 @@ const vite = await createServer({
     logLevel: 'error',
 });
 
+// Load React and the components through the same Vite SSR module graph. This avoids
+// mixing React elements created by Node's direct import with components transformed
+// and evaluated by Vite's SSR runtime.
+const reactModule = await vite.ssrLoadModule('react');
+const React = reactModule.default ?? reactModule;
+const serverModule = await vite.ssrLoadModule('react-dom/server');
+const { renderToStaticMarkup } = serverModule;
 const primitives = await vite.ssrLoadModule('/resources/js/components/ui/primitives.jsx');
 const input = await vite.ssrLoadModule('/resources/js/components/ui/input.jsx');
 const feedback = await vite.ssrLoadModule('/resources/js/components/ui/feedback.jsx');
