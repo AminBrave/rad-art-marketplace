@@ -98,8 +98,8 @@ export default function InquiryCenter({ user, hasProfile }) {
     return (
         <section className="space-y-6" dir="rtl">
             <header>
-                <p className="text-sm font-bold text-terracotta-strong">{isArtist ? 'ارتباط با مخاطبان' : 'پیام‌های ارسال‌شده'}</p>
-                <h1 className="mt-2 text-2xl font-black">{isArtist ? 'صندوق درخواست‌ها' : 'پیگیری درخواست‌ها'}</h1>
+                <p className="text-sm font-bold text-primary">{isArtist ? 'ارتباط با مخاطبان' : 'پیام‌های ارسال‌شده'}</p>
+                <h1 className="mt-2 text-2xl font-semibold">{isArtist ? 'صندوق درخواست‌ها' : 'پیگیری درخواست‌ها'}</h1>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">{isArtist ? 'درخواست‌های دریافتی را بخوانید و وضعیت رسیدگی را ثبت کنید. اطلاعات تماس خصوصی در این بخش نمایش داده نمی‌شود.' : 'جزئیات و وضعیت درخواست‌هایی را که برای هنرمندان فرستاده‌اید مشاهده کنید.'}</p>
                 {isArtist && <p className="mt-3 border-s-2 border-border bg-muted px-4 py-3 text-xs leading-6 text-muted-foreground">«جدید» یعنی هنوز وضعیت رسیدگی ثبت نشده؛ «خوانده‌شده» یعنی درخواست را بررسی کرده‌اید؛ «بایگانی‌شده» یعنی آن را از صندوق فعال خارج کرده‌اید. این وضعیت‌ها پاسخ یا اعلان برای فرستنده ارسال نمی‌کنند.</p>}
             </header>
@@ -110,8 +110,8 @@ export default function InquiryCenter({ user, hasProfile }) {
                     title={isArtist ? 'هنوز درخواستی دریافت نکرده‌اید' : 'هنوز درخواستی ارسال نکرده‌اید'}
                     description={isArtist ? 'درخواست‌های ارسال‌شده از طریق پروفایل عمومی شما در اینجا نمایش داده می‌شوند.' : 'از صفحه هنرمندان یا جزئیات یک اثر می‌توانید درخواست ارتباطی ارسال کنید.'}
                     action={isArtist
-                        ? <Link to="/dashboard/artist/profile" className="text-sm font-bold text-terracotta-strong underline">بررسی و به‌روزرسانی پروفایل هنری</Link>
-                        : <Link to="/artists" className="text-sm font-bold text-terracotta-strong underline">مشاهده هنرمندان</Link>}
+                        ? <Link to="/dashboard/artist/profile" className="text-sm font-bold text-primary underline">بررسی و به‌روزرسانی پروفایل هنری</Link>
+                        : <Link to="/artists" className="text-sm font-bold text-primary underline">مشاهده هنرمندان</Link>}
                 />
             ) : (
                 <div className="grid gap-4 lg:grid-cols-[minmax(260px,0.85fr)_minmax(0,1.5fr)]">
@@ -137,7 +137,7 @@ export default function InquiryCenter({ user, hasProfile }) {
                         {!selected ? <EmptyState title="یک درخواست را انتخاب کنید" /> : detailLoading ? <SkeletonLines lines={5} /> : detailError ? <ErrorState title="جزئیات در دسترس نیست" description={detailError} onRetry={() => loadDetail(selected)} /> : (
                             <>
                                 <div className="flex flex-wrap items-start justify-between gap-3">
-                                    <div><p className="text-xs font-bold text-terracotta-strong">{isArtist ? 'درخواست دریافتی' : 'درخواست ارسالی'}</p><h2 className="mt-2 text-xl font-black">{selected.subject}</h2></div>
+                                    <div><p className="text-xs font-bold text-primary">{isArtist ? 'درخواست دریافتی' : 'درخواست ارسالی'}</p><h2 className="mt-2 text-xl font-semibold">{selected.subject}</h2></div>
                                     <Badge variant={selected.status === 'new' ? 'accent' : selected.status === 'archived' ? 'neutral' : 'success'}>{statusLabels[selected.status] ?? selected.status}</Badge>
                                 </div>
                                 <dl className="mt-5 grid gap-3 border-y border-border py-4 text-sm sm:grid-cols-2">
