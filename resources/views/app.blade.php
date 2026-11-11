@@ -44,7 +44,9 @@
                 // Use the operating system preference when storage is unavailable.
             }
             var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            document.documentElement.classList.toggle('dark', colorScheme === 'dark' || (colorScheme === 'system' && prefersDark));
+            var useDark = selected === 'new-york' && (colorScheme === 'dark' || (colorScheme === 'system' && prefersDark));
+            document.documentElement.classList.toggle('dark', useDark);
+            document.documentElement.style.colorScheme = useDark ? 'dark' : 'light';
         })();
     </script>
     @if ($seoCanonical)
