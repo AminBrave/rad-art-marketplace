@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { Alert, AlertDescription, Button, FormField, TextInput, Textarea } from '../components/ui';
 
 export default function ContactArtistForm({ artistSlug, artworkId = null }) {
     const [subject, setSubject] = useState('');
@@ -14,13 +15,9 @@ export default function ContactArtistForm({ artistSlug, artworkId = null }) {
         setBusy(true);
         setErrors({});
         setFeedback('');
-
         try {
             const { data } = await axios.post('/api/v1/artists/' + encodeURIComponent(artistSlug) + '/inquiries', {
-                subject,
-                message,
-                artwork_id: artworkId,
-                honeypot,
+                subject, message, artwork_id: artworkId, honeypot,
             });
             setSubject('');
             setMessage('');
@@ -40,27 +37,24 @@ export default function ContactArtistForm({ artistSlug, artworkId = null }) {
     };
 
     return (
-        <form onSubmit={submit} className="mt-8 rounded-2xl border border-border bg-muted p-5" dir="rtl">
-            <h2 className="text-lg font-extrabold">ارسال پیام به هنرمند</h2>
-            <p className="mt-2 text-xs leading-6 text-muted-foreground">اطلاعات تماس خصوصی شما در اختیار هنرمند قرار نمی‌گیرد. پیام در صندوق ورودی حساب او ثبت می‌شود.</p>
-            <label className="mt-4 block text-sm font-semibold">
-                موضوع
-                <input value={subject} onChange={(event) => setSubject(event.target.value)} required minLength="4" maxLength="160" className="mt-2 w-full rounded-xl border border-stone-200 bg-card px-4 py-3 outline-none focus:border-ring" />
-                {errors.subject?.map((item) => <span key={item} className="mt-1 block text-xs text-red-700">{item}</span>)}
-            </label>
-            <label className="mt-4 block text-sm font-semibold">
-                متن پیام
-                <textarea value={message} onChange={(event) => setMessage(event.target.value)} required minLength="20" maxLength="3000" rows="5" className="mt-2 w-full rounded-xl border border-stone-200 bg-card px-4 py-3 leading-7 outline-none focus:border-ring" />
-                <span className="mt-1 block text-xs font-normal text-muted-foreground">حداقل ۲۰ و حداکثر ۳۰۰۰ نویسه</span>
-                {errors.message?.map((item) => <span key={item} className="mt-1 block text-xs text-red-700">{item}</span>)}
-            </label>
+        <form onSubmit={submit} className="mt-8 grid gap-5 rounded-xl border bg-card p-5 sm:p-6" dir="rtl">
+            <div>
+                <h2 className="text-lg font-semibold">ارسال پیام به هنرمند</h2>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">اطلاعات تماس خصوصی شما در اختیار هنرمند قرار نمی‌گیرد. پیام در صندوق ورودی حساب او ثبت می‌شود.</p>
+            </div>
+            <FormField label="موضوع" required error={errors.subject?.[0]}>
+                <TextInput value={subject} onChange={(event) => setSubject(event.target.value)} required minLength="4" maxLength="160" />
+            </FormField>
+            <FormField label="متن پیام" required error={errors.message?.[0]} hint="حداقل ۲۰ و حداکثر ۳۰۰۰ نویسه">
+                <Textarea value={message} onChange={(event) => setMessage(event.target.value)} required minLength="20" maxLength="3000" rows="5" className="leading-7" />
+            </FormField>
             <div className="hidden" aria-hidden="true">
                 <label>وب‌سایت<input tabIndex="-1" autoComplete="off" value={honeypot} onChange={(event) => setHoneypot(event.target.value)} /></label>
             </div>
-            <button disabled={busy} className="mt-4 rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground hover:bg-primary disabled:opacity-60">
-                {busy ? 'در حال ارسال…' : 'ارسال پیام'}
-            </button>
-            {feedback && <p role="status" className="mt-3 text-sm text-primary">{feedback}</p>}
+            <div className="flex flex-wrap items-center gap-3">
+                <Button type="submit" loading={busy}>ارسال پیام</Button>
+                {feedback && <span role="status" className="text-sm text-muted-foreground">{feedback}</span>}
+            </div>
         </form>
     );
 }
