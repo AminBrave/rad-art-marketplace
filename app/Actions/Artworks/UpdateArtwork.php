@@ -24,6 +24,10 @@ class UpdateArtwork
             /** @var UploadedFile $image */
             $image = $attributes['image'];
             $newImagePath = $image->store('artworks', 'local');
+
+            if (! is_string($newImagePath) || $newImagePath === '') {
+                throw new RuntimeException('The replacement artwork image could not be stored.');
+            }
             unset($attributes['image']);
         }
 
