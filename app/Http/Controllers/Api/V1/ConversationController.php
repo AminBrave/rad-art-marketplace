@@ -124,6 +124,7 @@ class ConversationController extends Controller
 
         $filters = $request->validate([
             'after_id' => ['nullable', 'integer', 'min:0'],
+            'before_id' => ['nullable', 'integer', 'min:1'],
             'updated_after' => ['nullable', 'date'],
         ]);
         // Keep a one-second overlap for databases with second-precision timestamps; clients merge by message ID.
@@ -133,7 +134,11 @@ class ConversationController extends Controller
             ->withTrashed()
             ->with(['sender', 'replyTo.sender', 'reactions', 'attachments']);
 
-        if (isset($filters['after_id']) || isset($filters['updated_after'])) {
+        if (isset($filters['before_id'])) {
+            // Keyset pagination keeps older history stable while new messages arrive.
+            $messages = $query->where('id', '<', (int) $filters['before_id'])->latest('id')->paginate(30);
+            $messages->setCollection($messages->getCollection()->reverse()->values());
+        } elseif (isset($filters['after_id']) || isset($filters['updated_after'])) {
             // Include new messages and changed existing messages (e.g. edits, deletes and read receipts).
             $messages = $query->where(function ($nested) use ($filters): void {
                 if (isset($filters['after_id'])) {
