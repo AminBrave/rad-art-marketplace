@@ -53,7 +53,7 @@ Follow [Testing Strategy](docs/engineering/testing-strategy.md) and [Test Covera
 - [ ] S3 Implement: smallest coherent vertical slice completed.
 - [ ] S4 Verify: run checks only when the user explicitly requests testing; otherwise record verification as intentionally not run.
 - [ ] S5 Review: focused diff inspected; review threads resolved.
-- [ ] S6 Release: main-branch CI, deployment/health and rollback verified where applicable.
+- [ ] S6 Release: deployment/health and rollback verified where applicable; no application CI is expected.
 - [ ] S7 Close: issue, milestone, affected docs and release notes updated.
 
 ## GitHub delivery
