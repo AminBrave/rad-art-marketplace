@@ -4,6 +4,7 @@ import { Bell } from 'lucide-react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import ThemeSwitcher from '../design-system/ThemeSwitcher';
+import { Badge } from '../components/ui';
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
 
@@ -14,35 +15,65 @@ export function PublicLayout() {
         setLogoutError('');
         try { await logout(); } catch { setLogoutError('خروج انجام نشد. اتصال را بررسی کنید.'); }
     };
+    const links = [
+        ['/artworks', 'کشف آثار'],
+        ['/artists', 'هنرمندان'],
+        ['/collections', 'مجموعه‌ها'],
+        ['/about', 'درباره ما'],
+        ['/help', 'راهنما'],
+    ];
+    const workspace = user?.role === 'admin' ? '/admin' : user?.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist';
 
-    return <div className="min-h-screen bg-canvas text-ink" dir="rtl">
-        <header className="border-b border-border bg-canvas">
-            <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-5 sm:px-8 lg:px-10">
-                <Link to="/" className="shrink-0 text-2xl font-black tracking-tight text-ink no-underline" aria-label="راد آرت، صفحه اصلی">راد<span className="text-terracotta-strong">آرت</span></Link>
-                <nav aria-label="ناوبری اصلی" className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted">
-                    <NavLink to="/artworks" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>کشف آثار</NavLink>
-                    <NavLink to="/artists" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>هنرمندان</NavLink>
-                    <NavLink to="/collections" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>مجموعه‌های منتخب</NavLink>
-                    <NavLink to="/about" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>درباره ما</NavLink>
-                    <NavLink to="/help" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>راهنما</NavLink>
-                </nav>
-                <div className="flex items-center gap-3 text-sm">
-                    <ThemeSwitcher />
-                    {user ? <><span className="hidden font-semibold sm:inline">{user.name}</span><span className="bg-surface-muted px-3 py-2 text-xs font-bold text-terracotta-strong">{roleLabels[user.role] ?? user.role}</span><Link to={user.role==='admin'?'/admin':user.role==='buyer'?'/dashboard/buyer':'/dashboard/artist'} className="font-semibold text-terracotta-strong underline">فضای کاربری</Link><button type="button" onClick={handleLogout} className="border border-border px-4 py-2 font-semibold hover:border-terracotta">خروج</button></> : <><Link to="/login" className="font-semibold hover:text-terracotta-strong">ورود</Link><Link to="/register" className="bg-ink px-4 py-2.5 font-semibold text-white hover:bg-terracotta">ثبت‌نام</Link></>}
+    return (
+        <div className="min-h-screen bg-background text-foreground" dir="rtl">
+            <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+                <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+                    <Link to="/" className="shrink-0 text-xl font-black tracking-tight text-foreground" aria-label="راد آرت، صفحه اصلی">
+                        راد<span className="text-primary">آرت</span>
+                    </Link>
+                    <nav aria-label="ناوبری اصلی" className="hidden items-center gap-1 text-sm md:flex">
+                        {links.map(([to, label]) => <NavLink key={to} to={to} className={({ isActive }) => isActive
+                            ? 'rounded-md bg-accent px-3 py-2 font-medium text-accent-foreground'
+                            : 'rounded-md px-3 py-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'}>{label}</NavLink>)}
+                    </nav>
+                    <div className="flex items-center gap-2">
+                        <ThemeSwitcher />
+                        {user ? (
+                            <>
+                                <span className="hidden text-sm font-medium text-muted-foreground sm:inline">{user.name}</span>
+                                <Badge variant="secondary" className="hidden sm:inline-flex">{roleLabels[user.role] ?? user.role}</Badge>
+                                <Link to={workspace} className="inline-flex h-9 items-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90">فضای کاربری</Link>
+                                <button type="button" onClick={handleLogout} className="hidden h-9 rounded-md border border-input px-3 text-sm font-medium shadow-sm hover:bg-accent hover:text-accent-foreground sm:inline-flex">خروج</button>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/login" className="inline-flex h-9 items-center rounded-md px-3 text-sm font-medium hover:bg-accent">ورود</Link>
+                                <Link to="/register" className="inline-flex h-9 items-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground shadow-sm hover:bg-primary/90">ثبت‌نام</Link>
+                            </>
+                        )}
+                        <details className="relative md:hidden">
+                            <summary className="grid size-9 cursor-pointer list-none place-items-center rounded-md border border-input text-sm font-medium hover:bg-accent" aria-label="بازکردن منو">☰</summary>
+                            <nav aria-label="ناوبری موبایل" className="absolute end-0 top-11 z-50 grid min-w-48 gap-1 rounded-lg border bg-popover p-2 text-popover-foreground shadow-lg">
+                                {links.map(([to, label]) => <NavLink key={to} to={to} className={({ isActive }) => isActive ? 'rounded-md bg-accent px-3 py-2 text-sm font-medium' : 'rounded-md px-3 py-2 text-sm hover:bg-muted'}>{label}</NavLink>)}
+                                {user && <Link to={workspace} className="rounded-md px-3 py-2 text-sm hover:bg-muted">فضای کاربری</Link>}
+                                {user && <button type="button" onClick={handleLogout} className="rounded-md px-3 py-2 text-start text-sm hover:bg-muted">خروج</button>}
+                            </nav>
+                        </details>
+                    </div>
                 </div>
-            </div>
-            {logoutError && <p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-red-700 sm:px-8">{logoutError}</p>}
-        </header>
-        <Outlet />
-        <footer className="border-t border-border bg-surface-muted">
-            <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 sm:grid-cols-2 sm:px-8 lg:grid-cols-[1.3fr_1fr_1fr] lg:px-10">
-                <div><Link to="/" className="text-xl font-black text-ink">راد<span className="text-terracotta-strong">آرت</span></Link><p className="mt-3 max-w-sm text-sm leading-7 text-muted">فضایی برای کشف آثار هنری مستقل، شناخت هنرمندان و ارتباط درباره هنر.</p></div>
-                <div><h2 className="text-sm font-bold">کشف</h2><div className="mt-3 flex flex-col items-start gap-3 text-sm text-muted"><Link to="/artworks">گالری آثار</Link><Link to="/artists">هنرمندان</Link><Link to="/collections">مجموعه‌های منتخب</Link></div></div>
-                <div><h2 className="text-sm font-bold">راد آرت</h2><div className="mt-3 flex flex-col items-start gap-3 text-sm text-muted"><Link to="/about">درباره ما</Link><Link to="/help">راهنما</Link><Link to="/contact">تماس با ما</Link></div></div>
-            </div>
-            <div className="border-t border-border py-4 text-center text-xs text-muted">راد آرت — گالری هنر مستقل معاصر</div>
-        </footer>
-    </div>;
+                {logoutError && <p role="alert" className="mx-auto max-w-7xl px-4 pb-3 text-sm text-destructive sm:px-6">{logoutError}</p>}
+            </header>
+            <Outlet />
+            <footer className="mt-16 border-t bg-muted/30">
+                <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:grid-cols-2 sm:px-6 lg:grid-cols-[1.3fr_1fr_1fr] lg:px-8">
+                    <div><Link to="/" className="text-xl font-black text-foreground">راد<span className="text-primary">آرت</span></Link><p className="mt-3 max-w-sm text-sm leading-7 text-muted-foreground">فضایی برای کشف آثار هنری مستقل، شناخت هنرمندان و ارتباط درباره هنر.</p></div>
+                    <div><h2 className="text-sm font-semibold">کشف</h2><div className="mt-3 flex flex-col items-start gap-3 text-sm text-muted-foreground"><Link to="/artworks">گالری آثار</Link><Link to="/artists">هنرمندان</Link><Link to="/collections">مجموعه‌های منتخب</Link></div></div>
+                    <div><h2 className="text-sm font-semibold">راد آرت</h2><div className="mt-3 flex flex-col items-start gap-3 text-sm text-muted-foreground"><Link to="/about">درباره ما</Link><Link to="/help">راهنما</Link><Link to="/contact">تماس با ما</Link></div></div>
+                </div>
+                <div className="border-t py-4 text-center text-xs text-muted-foreground">راد آرت — گالری هنر مستقل معاصر</div>
+            </footer>
+        </div>
+    );
 }
 
 function notificationDate(value) {
@@ -167,9 +198,46 @@ function NotificationBell({ user }) {
 export function WorkspaceLayout({ title, links, outletContext }) {
     const { user, logout } = useAuth();
     const [logoutError, setLogoutError] = useState('');
-    const handleLogout = async () => { setLogoutError(''); try { await logout(); } catch { setLogoutError('خروج انجام نشد. اتصال را بررسی کنید.'); } };
-    return <div className="min-h-screen bg-canvas text-ink" dir="rtl">
-        <header className="border-b border-border bg-white"><div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-8 lg:px-10"><div><Link to="/" className="text-lg font-black text-ink no-underline">راد<span className="text-terracotta-strong">آرت</span></Link><p className="mt-1 text-xs text-muted">{title}</p></div><div className="flex min-w-0 flex-wrap items-center justify-end gap-3 text-sm"><ThemeSwitcher />{user?.role !== 'admin' && <NotificationBell user={user} />}<span className="font-semibold">{user?.name}</span><Link to="/" className="border border-border px-4 py-2 font-semibold hover:border-terracotta">مشاهده سایت</Link><button type="button" onClick={handleLogout} className="border border-border px-4 py-2 font-semibold hover:border-terracotta">خروج</button></div></div>{logoutError&&<p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-red-700 sm:px-8">{logoutError}</p>}</header>
-        <div className="mx-auto grid max-w-7xl gap-6 px-5 py-7 sm:px-8 lg:grid-cols-[220px_1fr] lg:px-10"><aside className="h-fit border border-border bg-white p-3"><nav aria-label="ناوبری فضای کاربری" className="flex flex-wrap gap-2 lg:flex-col">{links.map(item=><NavLink key={item.to} to={item.to} end={item.end} className={({isActive})=>isActive?'bg-ink px-4 py-3 text-sm font-bold text-white':'px-4 py-3 text-sm font-semibold text-muted hover:bg-surface-muted hover:text-ink'}>{item.label}</NavLink>)}</nav></aside><main className="min-w-0"><Outlet context={outletContext} /></main></div>
-    </div>;
+    const handleLogout = async () => {
+        setLogoutError('');
+        try { await logout(); } catch { setLogoutError('خروج انجام نشد. اتصال را بررسی کنید.'); }
+    };
+
+    return (
+        <div className="min-h-screen bg-background text-foreground" dir="rtl">
+            <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
+                <div className="mx-auto flex min-h-16 max-w-[1600px] flex-wrap items-center justify-between gap-3 px-4 sm:px-6">
+                    <div className="flex items-center gap-3">
+                        <Link to="/" className="text-lg font-bold tracking-tight text-foreground">راد<span className="text-primary">آرت</span></Link>
+                        <span aria-hidden="true" className="h-5 w-px bg-border" />
+                        <p className="text-sm text-muted-foreground">{title}</p>
+                    </div>
+                    <div className="flex min-w-0 flex-wrap items-center justify-end gap-2 text-sm">
+                        <ThemeSwitcher />
+                        {user?.role !== 'admin' && <NotificationBell user={user} />}
+                        <span className="hidden font-medium sm:inline">{user?.name}</span>
+                        <Link to="/" className="inline-flex h-9 items-center rounded-md border border-input px-3 text-sm font-medium shadow-sm hover:bg-accent">مشاهده سایت</Link>
+                        <button type="button" onClick={handleLogout} className="inline-flex h-9 items-center rounded-md px-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground">خروج</button>
+                    </div>
+                </div>
+                {logoutError && <p role="alert" className="mx-auto max-w-[1600px] px-4 pb-3 text-sm text-destructive sm:px-6">{logoutError}</p>}
+            </header>
+            <div className="mx-auto grid max-w-[1600px] gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-7 lg:py-7">
+                <aside className="h-fit rounded-xl border bg-sidebar p-3 text-sidebar-foreground shadow-sm">
+                    <div className="mb-3 flex items-center justify-between px-2 py-2">
+                        <span className="text-xs font-semibold text-sidebar-foreground/70">ناوبری فضای کاربری</span>
+                        <span className="text-xs text-sidebar-foreground/50">{roleLabels[user?.role] ?? ''}</span>
+                    </div>
+                    <nav aria-label="ناوبری فضای کاربری" className="grid gap-1">
+                        {links.map((item) => <NavLink key={item.to} to={item.to} end={item.end} className={({ isActive }) => isActive
+                            ? 'flex min-h-10 items-center rounded-md bg-sidebar-primary px-3 text-sm font-medium text-sidebar-primary-foreground shadow-sm'
+                            : 'flex min-h-10 items-center rounded-md px-3 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'}>{item.label}</NavLink>)}
+                    </nav>
+                </aside>
+                <main className="min-w-0">
+                    <Outlet context={outletContext} />
+                </main>
+            </div>
+        </div>
+    );
 }
