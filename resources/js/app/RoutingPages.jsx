@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { WorkspaceLayout } from './Layouts';
-import { ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, FormFieldSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton } from '../components/ui';
+import { ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, FormFieldSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton } from '../components/ui';
 const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
 
 const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
@@ -135,16 +135,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                     <LoadingBlock className="h-11 w-36" />
                 </section>
             ) : pathname === '/admin' ? (
-                <>
-                    <section className="grid gap-3 sm:grid-cols-2">
-                        <LoadingBlock className="h-36 w-full" />
-                        <LoadingBlock className="h-36 w-full" />
-                    </section>
-                    <section className="mt-7 border border-border bg-paper p-5">
-                        <LoadingBlock className="h-5 w-48" />
-                        <div className="mt-5 flex items-center justify-between gap-4 border-t border-border pt-5"><div className="grid flex-1 gap-3"><LoadingBlock className="h-5 w-2/3" /><LoadingBlock className="h-3 w-1/3" /></div><LoadingBlock className="h-8 w-24" /></div>
-                    </section>
-                </>
+                <AdminDashboardSkeleton />
             ) : /^\/admin\/(users|artworks)$/.test(pathname) ? (
                 <section className="overflow-hidden border border-border bg-paper">
                     <div className="flex justify-between gap-4 border-b border-border p-5"><LoadingBlock className="h-6 w-40" /><LoadingBlock className="h-9 w-28" /></div>
