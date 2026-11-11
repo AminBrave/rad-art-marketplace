@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Request;
+use App\Models\Artwork;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Request;
 
 /**
- * @mixin \App\Models\Artwork
+ * @mixin Artwork
  */
 class ArtworkResource extends JsonResource
 {
