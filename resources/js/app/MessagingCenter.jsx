@@ -41,6 +41,9 @@ export default function MessagingCenter({ role }) {
     const pollingRef = useRef(false);
     const shouldStickToBottomRef = useRef(true);
     const endpoint = role === 'artist' ? '/api/v1/artist/conversations' : '/api/v1/buyer/conversations';
+    const loadThreadsRef = useRef(loadThreads);
+
+    useEffect(() => { loadThreadsRef.current = loadThreads; }, [loadThreads]);
 
     const loadThreads = useCallback(async () => {
         try {
@@ -83,14 +86,16 @@ export default function MessagingCenter({ role }) {
             }
             const newest = incoming[incoming.length - 1];
             if (newest?.id) latestMessageIdRef.current = Math.max(Number(latestMessageIdRef.current ?? 0), Number(newest.id));
-            await axios.patch('/api/v1/conversations/' + id + '/read');
-            loadThreads();
+            if (!incremental || incoming.length > 0) {
+                await axios.patch('/api/v1/conversations/' + id + '/read');
+                loadThreadsRef.current();
+            }
         } catch {
             if (Number(activeConversationRef.current) === Number(id)) setError('دریافت پیام‌ها انجام نشد.');
         } finally {
             if (incremental) pollingRef.current = false;
         }
-    }, [loadThreads]);
+    }, []);
 
     useEffect(() => {
         activeConversationRef.current = active;
