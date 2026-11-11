@@ -4,6 +4,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './lib/queryClient';
 import AppRouter from './app/AppRouter';
 import './bootstrap';
+import { ThemeProvider } from './components/theme-provider';
 
 // Keep the development-only specimen out of the normal production entry bundle.
 const LegacyApp = lazy(() => import('./app/App'));
@@ -14,5 +15,5 @@ const RootApp = isDesignSystemPreview
     : <AppRouter />;
 
 createRoot(document.getElementById('app')).render(
-    <React.StrictMode><QueryClientProvider client={queryClient}>{RootApp}</QueryClientProvider></React.StrictMode>,
+    <React.StrictMode><ThemeProvider><QueryClientProvider client={queryClient}>{RootApp}</QueryClientProvider></ThemeProvider></React.StrictMode>,
 );

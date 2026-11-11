@@ -40,19 +40,19 @@ export default function ContactArtistForm({ artistSlug, artworkId = null }) {
     };
 
     return (
-        <form onSubmit={submit} className="mt-8 rounded-2xl border border-border bg-surface-muted p-5" dir="rtl">
+        <form onSubmit={submit} className="mt-8 rounded-2xl border border-border bg-muted p-5" dir="rtl">
             <h2 className="text-lg font-extrabold">ارسال پیام به هنرمند</h2>
-            <p className="mt-2 text-xs leading-6 text-stone-500">اطلاعات تماس خصوصی شما در اختیار هنرمند قرار نمی‌گیرد. پیام در صندوق ورودی حساب او ثبت می‌شود.</p>
+            <p className="mt-2 text-xs leading-6 text-muted-foreground">اطلاعات تماس خصوصی شما در اختیار هنرمند قرار نمی‌گیرد. پیام در صندوق ورودی حساب او ثبت می‌شود.</p>
             <label className="mt-4 block text-sm font-semibold">
                 موضوع
-                <input value={subject} onChange={(event) => setSubject(event.target.value)} required minLength="4" maxLength="160" className="mt-2 w-full rounded-xl border border-stone-200 bg-white px-4 py-3 outline-none focus:border-terracotta" />
-                {errors.subject?.map((item) => <span key={item} className="mt-1 block text-xs text-red-700">{item}</span>)}
+                <input value={subject} onChange={(event) => setSubject(event.target.value)} required minLength="4" maxLength="160" className="mt-2 w-full rounded-xl border border-border bg-card px-4 py-3 outline-none focus:border-terracotta" />
+                {errors.subject?.map((item) => <span key={item} className="mt-1 block text-xs text-destructive">{item}</span>)}
             </label>
             <label className="mt-4 block text-sm font-semibold">
                 متن پیام
-                <textarea value={message} onChange={(event) => setMessage(event.target.value)} required minLength="20" maxLength="3000" rows="5" className="mt-2 w-full rounded-xl border border-stone-200 bg-white px-4 py-3 leading-7 outline-none focus:border-terracotta" />
-                <span className="mt-1 block text-xs font-normal text-stone-400">حداقل ۲۰ و حداکثر ۳۰۰۰ نویسه</span>
-                {errors.message?.map((item) => <span key={item} className="mt-1 block text-xs text-red-700">{item}</span>)}
+                <textarea value={message} onChange={(event) => setMessage(event.target.value)} required minLength="20" maxLength="3000" rows="5" className="mt-2 w-full rounded-xl border border-border bg-card px-4 py-3 leading-7 outline-none focus:border-terracotta" />
+                <span className="mt-1 block text-xs font-normal text-muted-foreground">حداقل ۲۰ و حداکثر ۳۰۰۰ نویسه</span>
+                {errors.message?.map((item) => <span key={item} className="mt-1 block text-xs text-destructive">{item}</span>)}
             </label>
             <div className="hidden" aria-hidden="true">
                 <label>وب‌سایت<input tabIndex="-1" autoComplete="off" value={honeypot} onChange={(event) => setHoneypot(event.target.value)} /></label>

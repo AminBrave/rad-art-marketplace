@@ -4,47 +4,51 @@ import test from 'node:test';
 
 const css = readFileSync(new URL('../../resources/css/app.css', import.meta.url), 'utf8');
 const tailwind = readFileSync(new URL('../../tailwind.config.js', import.meta.url), 'utf8');
+const components = readFileSync(new URL('../../components.json', import.meta.url), 'utf8');
 const primitives = readFileSync(new URL('../../resources/js/components/ui/primitives.jsx', import.meta.url), 'utf8');
+const dialog = readFileSync(new URL('../../resources/js/components/ui/Dialog.jsx', import.meta.url), 'utf8');
 const cards = readFileSync(new URL('../../resources/js/components/ui/cards.jsx', import.meta.url), 'utf8');
 const feedback = readFileSync(new URL('../../resources/js/components/ui/feedback.jsx', import.meta.url), 'utf8');
+const themeProvider = readFileSync(new URL('../../resources/js/components/theme-provider.jsx', import.meta.url), 'utf8');
 
-test('semantic palette, typography, spacing and layout tokens have one CSS source', () => {
-    for (const token of [
-        '--color-canvas', '--color-ink', '--color-terracotta', '--color-terracotta-strong',
-        '--color-sand', '--color-olive', '--color-paper', '--color-text-muted',
-        '--color-border', '--color-success', '--color-danger', '--color-warning', '--color-info',
-        '--font-persian', '--font-latin', '--text-base', '--leading-copy',
-        '--space-1', '--space-4', '--space-8', '--radius-md', '--content-width',
-        '--page-gutter', '--control-height-md', '--artwork-ratio',
-    ]) {
-        assert.match(css, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Missing design token: ${token}`);
+test('shadcn semantic color tokens are defined for RAD light and dark modes', () => {
+    for (const token of ['--background:', '--foreground:', '--card:', '--popover:', '--primary:', '--secondary:', '--muted:', '--accent:', '--destructive:', '--border:', '--input:', '--ring:']) {
+        assert.ok(css.includes(token), `Missing semantic token: ${token}`);
     }
+    assert.match(css, /\.dark\s*\{/);
+    assert.match(css, /--background:\s*45 4% 14%/);
+    assert.match(css, /--primary:\s*16 51% 47%/);
 });
 
-test('Tailwind semantic aliases reference CSS variables rather than duplicate literal values', () => {
-    for (const alias of ['canvas:', 'terracotta:', 'muted:', 'warning:', 'info:', 'fontSize:', 'lineHeight:', 'spacing:']) {
-        assert.ok(tailwind.includes(alias), `Missing Tailwind alias: ${alias}`);
+test('Tailwind and shadcn configuration use class-based dark mode and CSS variables', () => {
+    assert.ok(tailwind.includes("darkMode: ['class']"));
+    for (const token of ['background:', 'foreground:', 'card:', 'primary:', 'secondary:', 'muted:', 'accent:', 'destructive:', 'ring:']) {
+        assert.ok(tailwind.includes(token), `Missing Tailwind semantic color: ${token}`);
     }
-    assert.ok(tailwind.includes('var(--color-canvas)'));
-    assert.ok(tailwind.includes('var(--text-base)'));
-    assert.ok(tailwind.includes('var(--space-4)'));
+    const config = JSON.parse(components);
+    assert.equal(config.tailwind.cssVariables, true);
+    assert.equal(config.tsx, false);
 });
 
-test('shared primitives use centralized component contracts and expose accessible states', () => {
-    assert.ok(css.includes('.ra-button--primary'));
-    assert.ok(css.includes('.ra-button--danger'));
-    assert.ok(css.includes('.ra-control:focus-visible'));
-    assert.ok(css.includes('.ra-control[aria-invalid='));
-    assert.ok(primitives.includes('ra-button'));
+test('shared primitives follow shadcn component contracts and preserve accessible form states', () => {
+    assert.ok(primitives.includes("@radix-ui/react-slot"));
+    assert.ok(primitives.includes('focus-visible:ring-ring'));
     assert.ok(primitives.includes('aria-busy={loading || undefined}'));
-    assert.ok(primitives.includes("'aria-describedby': describedBy"));
+    assert.ok(primitives.includes("'aria-describedby':"));
     assert.ok(primitives.includes("'aria-invalid': error ? true"));
 });
 
-test('shared content and feedback components use semantic surface and state contracts', () => {
-    assert.ok(cards.includes('ra-surface'));
-    assert.ok(cards.includes('ra-artwork-frame'));
-    assert.ok(feedback.includes('ra-state--empty'));
-    assert.ok(feedback.includes('ra-state--error'));
-    assert.ok(feedback.includes('ra-state--success'));
+test('Radix interaction primitives and product cards consume semantic tokens', () => {
+    assert.ok(dialog.includes('@radix-ui/react-dialog'));
+    assert.ok(dialog.includes('bg-background'));
+    assert.ok(cards.includes('bg-card'));
+    assert.ok(cards.includes('bg-muted'));
+    assert.ok(feedback.includes('role="alert"'));
+    assert.ok(feedback.includes('bg-card'));
+});
+
+test('theme provider persists the selected mode and applies the root class', () => {
+    assert.ok(themeProvider.includes("const STORAGE_KEY = 'rad-theme'"));
+    assert.ok(themeProvider.includes("root.classList.toggle('dark', theme === 'dark')"));
+    assert.ok(themeProvider.includes('localStorage.setItem(STORAGE_KEY, theme)'));
 });

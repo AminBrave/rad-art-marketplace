@@ -151,17 +151,17 @@ export default function App() {
 
     if (window.location.pathname.startsWith('/artists/')) {
         return (
-            <main className="min-h-screen bg-canvas px-6 py-16 text-ink" dir="rtl">
-                <article className="mx-auto max-w-3xl rounded-3xl border border-stone-200 bg-white p-8 shadow-sm sm:p-12">
+            <main className="min-h-screen bg-background px-6 py-16 text-foreground" dir="rtl">
+                <article className="mx-auto max-w-3xl rounded-3xl border border-border bg-card p-8 shadow-sm sm:p-12">
                     <a href="/" className="text-xl font-black">راد<span className="text-terracotta-strong">آرت</span></a>
                     {publicProfileLoading ? (
-                        <p className="mt-10 text-stone-500">در حال دریافت پروفایل…</p>
+                        <p className="mt-10 text-muted-foreground">در حال دریافت پروفایل…</p>
                     ) : publicProfile ? (
                         <>
                             <p className="mt-10 text-sm font-bold text-terracotta-strong">پروفایل هنرمند</p>
                             <h1 className="mt-3 text-4xl font-black">{publicProfile.display_name}</h1>
-                            {publicProfile.city && <p className="mt-3 text-sm text-stone-500">{publicProfile.city}</p>}
-                            {publicProfile.bio && <p className="mt-8 whitespace-pre-line leading-9 text-stone-700">{publicProfile.bio}</p>}
+                            {publicProfile.city && <p className="mt-3 text-sm text-muted-foreground">{publicProfile.city}</p>}
+                            {publicProfile.bio && <p className="mt-8 whitespace-pre-line leading-9 text-foreground">{publicProfile.bio}</p>}
                             {user?.role === 'buyer' && createElement(ContactArtistForm, { artistSlug: publicProfile.slug })}
                             {!user && <a href="/#account" className="mt-8 inline-block rounded-full bg-ink px-5 py-3 text-sm font-bold text-white">برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید</a>}
                             <div className="mt-8 flex flex-wrap gap-4 text-sm font-semibold">
@@ -172,7 +172,7 @@ export default function App() {
                     ) : (
                         <div className="mt-10">
                             <h1 className="text-2xl font-black">پروفایل در دسترس نیست</h1>
-                            <p className="mt-3 leading-8 text-stone-500">این پروفایل وجود ندارد یا نمایش عمومی آن غیرفعال شده است.</p>
+                            <p className="mt-3 leading-8 text-muted-foreground">این پروفایل وجود ندارد یا نمایش عمومی آن غیرفعال شده است.</p>
                         </div>
                     )}
                 </article>
@@ -181,12 +181,12 @@ export default function App() {
     }
 
     return (
-        <main className="min-h-screen overflow-hidden bg-canvas text-ink">
+        <main className="min-h-screen overflow-hidden bg-background text-foreground">
             <header className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-6 py-6 lg:px-10">
                 <a href="/" className="shrink-0 text-2xl font-black tracking-tight" aria-label="راد آرت، صفحه اصلی">
                     راد<span className="text-terracotta-strong">آرت</span>
                 </a>
-                <nav aria-label="ناوبری اصلی" className="hidden items-center gap-8 text-sm text-stone-600 md:flex">
+                <nav aria-label="ناوبری اصلی" className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
                     <a className="transition hover:text-terracotta-strong" href="#artworks">کشف آثار</a>
                     <a className="transition hover:text-terracotta-strong" href="#artists">هنرمندان</a>
                     <a className="transition hover:text-terracotta-strong" href="#about">درباره ما</a>
@@ -194,15 +194,15 @@ export default function App() {
                 {user ? (
                     <div className="flex items-center gap-3 text-sm">
                         <span className="hidden font-semibold sm:inline">{user.name}</span>
-                        <span className="rounded-full bg-surface-muted px-3 py-2 text-xs font-bold text-terracotta-strong">
+                        <span className="rounded-full bg-muted px-3 py-2 text-xs font-bold text-terracotta-strong">
                             {user.role === 'admin' ? 'مدیر' : user.role === 'buyer' ? 'خریدار' : 'هنرمند'}
                         </span>
-                        <button onClick={logout} className="rounded-full border border-stone-300 px-4 py-2.5 font-semibold transition hover:border-terracotta hover:text-terracotta-strong">
+                        <button onClick={logout} className="rounded-full border border-border px-4 py-2.5 font-semibold transition hover:border-terracotta hover:text-terracotta-strong">
                             خروج
                         </button>
                     </div>
                 ) : (
-                    <a href="#account" className="rounded-full border border-stone-300 px-5 py-2.5 text-sm font-semibold transition hover:border-terracotta hover:text-terracotta-strong">
+                    <a href="#account" className="rounded-full border border-border px-5 py-2.5 text-sm font-semibold transition hover:border-terracotta hover:text-terracotta-strong">
                         ورود / ثبت‌نام
                     </a>
                 )}
@@ -210,21 +210,21 @@ export default function App() {
 
             <section className="mx-auto grid max-w-7xl gap-12 px-6 pb-24 pt-12 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:px-10 lg:pb-32 lg:pt-20">
                 <div className="max-w-2xl">
-                    <p className="mb-6 inline-flex items-center gap-2 rounded-full bg-surface-muted px-4 py-2 text-xs font-semibold text-terracotta-strong">
+                    <p className="mb-6 inline-flex items-center gap-2 rounded-full bg-muted px-4 py-2 text-xs font-semibold text-terracotta-strong">
                         <span className="h-2 w-2 rounded-full bg-terracotta" />
                         جهان هنر، نزدیک‌تر از همیشه
                     </p>
                     <h1 className="text-5xl font-black leading-[1.35] tracking-tight sm:text-6xl lg:text-7xl">
                         هر اثر، روایت یک <span className="text-terracotta-strong">جهان</span> است.
                     </h1>
-                    <p className="mt-7 max-w-xl text-base leading-9 text-stone-600 sm:text-lg">
+                    <p className="mt-7 max-w-xl text-base leading-9 text-muted-foreground sm:text-lg">
                         راد آرت فضایی برای کشف آثار هنری مستقل، شناخت هنرمندان و ارتباط مستقیم با خالقان هر اثر است.
                     </p>
                     <div className="mt-9 flex flex-wrap gap-3">
                         <a href="#artworks" className="rounded-full bg-ink px-7 py-3.5 text-sm font-bold text-white transition hover:bg-terracotta">
                             به تماشای آثار
                         </a>
-                        <a href="#account" className="rounded-full border border-stone-300 px-7 py-3.5 text-sm font-bold transition hover:border-ink">
+                        <a href="#account" className="rounded-full border border-border px-7 py-3.5 text-sm font-bold transition hover:border-ink">
                             برای هنرمندان
                         </a>
                     </div>
@@ -240,20 +240,20 @@ export default function App() {
                         <div className="absolute right-[17%] top-[13%] h-20 w-20 rounded-full border-[14px] border-[#f2e8d9]" />
                         <div className="absolute bottom-7 left-8 text-xs font-semibold tracking-[0.3em] text-[#4b4038]">ART / PEOPLE / STORIES</div>
                     </div>
-                    <div className="absolute -bottom-5 -left-4 rounded-2xl bg-white px-5 py-4 shadow-xl shadow-stone-900/10">
-                        <p className="text-xs text-stone-500">نگاهی تازه به هنر معاصر</p>
+                    <div className="absolute -bottom-5 -left-4 rounded-2xl bg-card px-5 py-4 shadow-xl shadow-stone-900/10">
+                        <p className="text-xs text-muted-foreground">نگاهی تازه به هنر معاصر</p>
                         <p className="mt-1 text-sm font-bold">از نگاه هنرمندان مستقل</p>
                     </div>
                 </div>
             </section>
 
-            <section id="discover" className="border-y border-stone-200 bg-white/70">
+            <section id="discover" className="border-y border-border bg-card/70">
                 <div className="mx-auto grid max-w-7xl gap-8 px-6 py-16 md:grid-cols-3 lg:px-10">
                     {highlights.map((item) => (
                         <article key={item.number} className="border-r-2 border-[#d7b5a2] pr-5">
                             <span className="text-xs font-bold tracking-widest text-terracotta-strong">{item.number}</span>
                             <h2 className="mt-4 text-xl font-extrabold">{item.title}</h2>
-                            <p className="mt-3 leading-8 text-stone-600">{item.description}</p>
+                            <p className="mt-3 leading-8 text-muted-foreground">{item.description}</p>
                         </article>
                     ))}
                 </div>
@@ -265,23 +265,23 @@ export default function App() {
                 <div>
                     <p className="text-sm font-bold text-terracotta-strong">حساب کاربری راد آرت</p>
                     <h2 className="mt-3 text-3xl font-black leading-relaxed sm:text-4xl">به جامعه راد آرت بپیوندید.</h2>
-                    <p className="mt-4 leading-8 text-stone-600">به‌عنوان خریدار با هنرمندان ارتباط بگیرید یا به‌عنوان هنرمند پروفایل و آثار خود را مدیریت کنید.</p>
+                    <p className="mt-4 leading-8 text-muted-foreground">به‌عنوان خریدار با هنرمندان ارتباط بگیرید یا به‌عنوان هنرمند پروفایل و آثار خود را مدیریت کنید.</p>
                     {user && (
-                        <div className="mt-6 rounded-2xl border border-[#d7b5a2] bg-white p-5">
+                        <div className="mt-6 rounded-2xl border border-[#d7b5a2] bg-card p-5">
                             <p className="font-bold">خوش آمدید، {user.name}</p>
-                            <p className="mt-2 text-sm text-stone-500">{user.email}</p>
+                            <p className="mt-2 text-sm text-muted-foreground">{user.email}</p>
                             <p className="mt-3 text-sm text-terracotta-strong">{user.role === 'admin' ? 'دسترسی مدیریت فعال است.' : user.role === 'buyer' ? 'می‌توانید به هنرمندان پیام خصوصی ارسال کنید.' : 'حساب هنرمندی شما فعال است.'}</p>
                         </div>
                     )}
                 </div>
 
                 {!user ? (
-                    <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm sm:p-9">
-                        <div className="flex gap-5 border-b border-stone-100 pb-4">
-                            <button onClick={() => { setAuthMode('login'); setAuthErrors({}); }} className={authMode === 'login' ? 'font-extrabold text-terracotta-strong' : 'text-stone-500'}>
+                    <div className="rounded-3xl border border-border bg-card p-6 shadow-sm sm:p-9">
+                        <div className="flex gap-5 border-b border-border pb-4">
+                            <button onClick={() => { setAuthMode('login'); setAuthErrors({}); }} className={authMode === 'login' ? 'font-extrabold text-terracotta-strong' : 'text-muted-foreground'}>
                                 ورود
                             </button>
-                            <button onClick={() => { setAuthMode('register'); setAuthErrors({}); }} className={authMode === 'register' ? 'font-extrabold text-terracotta-strong' : 'text-stone-500'}>
+                            <button onClick={() => { setAuthMode('register'); setAuthErrors({}); }} className={authMode === 'register' ? 'font-extrabold text-terracotta-strong' : 'text-muted-foreground'}>
                                 ثبت‌نام
                             </button>
                         </div>
@@ -289,7 +289,7 @@ export default function App() {
                             {authMode === 'register' && (
                                 <label className="block text-sm font-semibold">
                                     نوع حساب
-                                    <select name="role" value={form.role} onChange={updateForm} className="mt-2 w-full rounded-xl border border-stone-200 bg-surface-muted px-4 py-3">
+                                    <select name="role" value={form.role} onChange={updateForm} className="mt-2 w-full rounded-xl border border-border bg-muted px-4 py-3">
                                         <option value="buyer">خریدار</option>
                                         <option value="artist">هنرمند</option>
                                     </select>
@@ -298,72 +298,72 @@ export default function App() {
                             {authMode === 'register' && (
                                 <label className="block text-sm font-semibold">
                                     نام و نام خانوادگی
-                                    <input name="name" value={form.name} onChange={updateForm} required maxLength="120" autoComplete="name" className="mt-2 w-full rounded-xl border border-stone-200 bg-surface-muted px-4 py-3 outline-none focus:border-terracotta" />
-                                    {authErrors.name?.map((message) => <span key={message} className="mt-1 block text-xs text-red-700">{message}</span>)}
+                                    <input name="name" value={form.name} onChange={updateForm} required maxLength="120" autoComplete="name" className="mt-2 w-full rounded-xl border border-border bg-muted px-4 py-3 outline-none focus:border-terracotta" />
+                                    {authErrors.name?.map((message) => <span key={message} className="mt-1 block text-xs text-destructive">{message}</span>)}
                                 </label>
                             )}
                             <label className="block text-sm font-semibold">
                                 ایمیل
-                                <input type="email" name="email" value={form.email} onChange={updateForm} required autoComplete="email" dir="ltr" className="mt-2 w-full rounded-xl border border-stone-200 bg-surface-muted px-4 py-3 text-left outline-none focus:border-terracotta" />
-                                {authErrors.email?.map((message) => <span key={message} className="mt-1 block text-xs text-red-700">{message}</span>)}
+                                <input type="email" name="email" value={form.email} onChange={updateForm} required autoComplete="email" dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-muted px-4 py-3 text-left outline-none focus:border-terracotta" />
+                                {authErrors.email?.map((message) => <span key={message} className="mt-1 block text-xs text-destructive">{message}</span>)}
                             </label>
                             <label className="block text-sm font-semibold">
                                 گذرواژه
-                                <input type="password" name="password" value={form.password} onChange={updateForm} required minLength="10" autoComplete={authMode === 'register' ? 'new-password' : 'current-password'} dir="ltr" className="mt-2 w-full rounded-xl border border-stone-200 bg-surface-muted px-4 py-3 text-left outline-none focus:border-terracotta" />
-                                {authErrors.password?.map((message) => <span key={message} className="mt-1 block text-xs text-red-700">{message}</span>)}
+                                <input type="password" name="password" value={form.password} onChange={updateForm} required minLength="10" autoComplete={authMode === 'register' ? 'new-password' : 'current-password'} dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-muted px-4 py-3 text-left outline-none focus:border-terracotta" />
+                                {authErrors.password?.map((message) => <span key={message} className="mt-1 block text-xs text-destructive">{message}</span>)}
                             </label>
                             {authMode === 'register' && (
                                 <label className="block text-sm font-semibold">
                                     تکرار گذرواژه
-                                    <input type="password" name="password_confirmation" value={form.password_confirmation} onChange={updateForm} required minLength="10" autoComplete="new-password" dir="ltr" className="mt-2 w-full rounded-xl border border-stone-200 bg-surface-muted px-4 py-3 text-left outline-none focus:border-terracotta" />
+                                    <input type="password" name="password_confirmation" value={form.password_confirmation} onChange={updateForm} required minLength="10" autoComplete="new-password" dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-muted px-4 py-3 text-left outline-none focus:border-terracotta" />
                                 </label>
                             )}
-                            {authErrors.form?.map((message) => <p key={message} role="alert" className="text-sm text-red-700">{message}</p>)}
+                            {authErrors.form?.map((message) => <p key={message} role="alert" className="text-sm text-destructive">{message}</p>)}
                             <button disabled={busy} className="w-full rounded-xl bg-ink px-6 py-3.5 font-bold text-white transition hover:bg-terracotta disabled:cursor-wait disabled:opacity-60">
                                 {busy ? 'لطفاً صبر کنید…' : authMode === 'register' ? (form.role === 'buyer' ? 'ایجاد حساب خریدار' : 'ایجاد حساب هنرمند') : 'ورود به حساب'}
                             </button>
                         </form>
                         {authMessage && <p role="status" className="mt-4 text-sm text-terracotta-strong">{authMessage}</p>}
-                        <p className="mt-5 text-xs leading-6 text-stone-400">با ثبت‌نام می‌توانید نقش خریدار یا هنرمند را انتخاب کنید. ایجاد حساب مدیر فقط از طریق دستور مدیریتی سرور امکان‌پذیر است.</p>
+                        <p className="mt-5 text-xs leading-6 text-muted-foreground">با ثبت‌نام می‌توانید نقش خریدار یا هنرمند را انتخاب کنید. ایجاد حساب مدیر فقط از طریق دستور مدیریتی سرور امکان‌پذیر است.</p>
                     </div>
                 ) : user.role === 'buyer' ? (
-                    <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
+                    <div className="rounded-3xl border border-border bg-card p-6 shadow-sm sm:p-8">
                         <h3 className="text-xl font-extrabold">حساب خریدار</h3>
-                        <p className="mt-3 text-sm leading-7 text-stone-500">برای ارتباط با هنرمندان، صفحه اثر یا پروفایل عمومی آن‌ها را باز کنید. پیام‌های ارسالی شما در همین صفحه قابل پیگیری هستند.</p>
+                        <p className="mt-3 text-sm leading-7 text-muted-foreground">برای ارتباط با هنرمندان، صفحه اثر یا پروفایل عمومی آن‌ها را باز کنید. پیام‌های ارسالی شما در همین صفحه قابل پیگیری هستند.</p>
                     </div>
                 ) : (
-                    <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
+                    <div className="rounded-3xl border border-border bg-card p-6 shadow-sm sm:p-8">
                         <div className="mb-6">
                             <h3 className="text-xl font-extrabold">پروفایل هنرمند</h3>
-                            <p className="mt-2 text-sm leading-7 text-stone-500">اطلاعات معرفی خود را تکمیل کنید. ایمیل و نقش حساب از بخش پروفایل قابل تغییر نیستند.</p>
+                            <p className="mt-2 text-sm leading-7 text-muted-foreground">اطلاعات معرفی خود را تکمیل کنید. ایمیل و نقش حساب از بخش پروفایل قابل تغییر نیستند.</p>
                         </div>
                         <form onSubmit={saveProfile} className="space-y-4">
                             <label className="block text-sm font-semibold">
                                 نام نمایشی
-                                <input name="display_name" value={profile.display_name} onChange={updateProfileForm} required maxLength="120" className="mt-2 w-full rounded-xl border border-stone-200 bg-surface-muted px-4 py-3 outline-none focus:border-terracotta" />
-                                {profileErrors.display_name?.map((message) => <span key={message} className="mt-1 block text-xs text-red-700">{message}</span>)}
+                                <input name="display_name" value={profile.display_name} onChange={updateProfileForm} required maxLength="120" className="mt-2 w-full rounded-xl border border-border bg-muted px-4 py-3 outline-none focus:border-terracotta" />
+                                {profileErrors.display_name?.map((message) => <span key={message} className="mt-1 block text-xs text-destructive">{message}</span>)}
                             </label>
                             <label className="block text-sm font-semibold">
                                 درباره هنرمند
-                                <textarea name="bio" value={profile.bio ?? ''} onChange={updateProfileForm} rows="4" maxLength="2000" className="mt-2 w-full rounded-xl border border-stone-200 bg-surface-muted px-4 py-3 leading-7 outline-none focus:border-terracotta" placeholder="درباره مسیر هنری و زمینه فعالیت خود بنویسید…" />
-                                {profileErrors.bio?.map((message) => <span key={message} className="mt-1 block text-xs text-red-700">{message}</span>)}
+                                <textarea name="bio" value={profile.bio ?? ''} onChange={updateProfileForm} rows="4" maxLength="2000" className="mt-2 w-full rounded-xl border border-border bg-muted px-4 py-3 leading-7 outline-none focus:border-terracotta" placeholder="درباره مسیر هنری و زمینه فعالیت خود بنویسید…" />
+                                {profileErrors.bio?.map((message) => <span key={message} className="mt-1 block text-xs text-destructive">{message}</span>)}
                             </label>
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <label className="block text-sm font-semibold">
                                     شهر
-                                    <input name="city" value={profile.city ?? ''} onChange={updateProfileForm} maxLength="120" className="mt-2 w-full rounded-xl border border-stone-200 bg-surface-muted px-4 py-3 outline-none focus:border-terracotta" />
-                                    {profileErrors.city?.map((message) => <span key={message} className="mt-1 block text-xs text-red-700">{message}</span>)}
+                                    <input name="city" value={profile.city ?? ''} onChange={updateProfileForm} maxLength="120" className="mt-2 w-full rounded-xl border border-border bg-muted px-4 py-3 outline-none focus:border-terracotta" />
+                                    {profileErrors.city?.map((message) => <span key={message} className="mt-1 block text-xs text-destructive">{message}</span>)}
                                 </label>
                                 <label className="block text-sm font-semibold">
                                     شناسه اینستاگرام
-                                    <input name="instagram_handle" value={profile.instagram_handle ?? ''} onChange={updateProfileForm} maxLength="30" dir="ltr" className="mt-2 w-full rounded-xl border border-stone-200 bg-surface-muted px-4 py-3 text-left outline-none focus:border-terracotta" placeholder="your.handle" />
-                                    {profileErrors.instagram_handle?.map((message) => <span key={message} className="mt-1 block text-xs text-red-700">{message}</span>)}
+                                    <input name="instagram_handle" value={profile.instagram_handle ?? ''} onChange={updateProfileForm} maxLength="30" dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-muted px-4 py-3 text-left outline-none focus:border-terracotta" placeholder="your.handle" />
+                                    {profileErrors.instagram_handle?.map((message) => <span key={message} className="mt-1 block text-xs text-destructive">{message}</span>)}
                                 </label>
                             </div>
                             <label className="block text-sm font-semibold">
                                 وب‌سایت
-                                <input name="website_url" type="url" value={profile.website_url ?? ''} onChange={updateProfileForm} dir="ltr" className="mt-2 w-full rounded-xl border border-stone-200 bg-surface-muted px-4 py-3 text-left outline-none focus:border-terracotta" placeholder="https://example.com" />
-                                {profileErrors.website_url?.map((message) => <span key={message} className="mt-1 block text-xs text-red-700">{message}</span>)}
+                                <input name="website_url" type="url" value={profile.website_url ?? ''} onChange={updateProfileForm} dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-muted px-4 py-3 text-left outline-none focus:border-terracotta" placeholder="https://example.com" />
+                                {profileErrors.website_url?.map((message) => <span key={message} className="mt-1 block text-xs text-destructive">{message}</span>)}
                             </label>
                             <label className="flex items-center gap-3 text-sm font-semibold">
                                 <input type="checkbox" name="is_public" checked={Boolean(profile.is_public)} onChange={updateProfileForm} className="h-4 w-4 accent-terracotta" />
@@ -388,21 +388,21 @@ export default function App() {
 
             {user?.role === 'admin' && (
                 <section className="mx-auto max-w-7xl px-6 pb-20 lg:px-10">
-                    <div className="rounded-3xl border border-stone-200 bg-white p-6 sm:p-8">
+                    <div className="rounded-3xl border border-border bg-card p-6 sm:p-8">
                         <h2 className="text-2xl font-black">مدیریت کاربران</h2>
-                        <p className="mt-2 text-sm text-stone-500">تغییر نقش کاربران؛ این عملیات فقط از سمت سرور برای مدیر مجاز است.</p>
+                        <p className="mt-2 text-sm text-muted-foreground">تغییر نقش کاربران؛ این عملیات فقط از سمت سرور برای مدیر مجاز است.</p>
                         <div className="mt-6 overflow-x-auto">
                             <table className="w-full min-w-[560px] text-right text-sm">
-                                <thead><tr className="border-b border-stone-200 text-stone-500"><th className="py-3">نام</th><th>ایمیل</th><th>نقش</th><th>عملیات</th></tr></thead>
+                                <thead><tr className="border-b border-border text-muted-foreground"><th className="py-3">نام</th><th>ایمیل</th><th>نقش</th><th>عملیات</th></tr></thead>
                                 <tbody>
                                     {adminUsers.map((item) => (
-                                        <tr key={item.id} className="border-b border-stone-100">
+                                        <tr key={item.id} className="border-b border-border">
                                             <td className="py-4 font-semibold">{item.name}</td>
                                             <td dir="ltr" className="text-left">{item.email}</td>
                                             <td>{item.role === 'admin' ? 'مدیر' : item.role === 'buyer' ? 'خریدار' : 'هنرمند'}</td>
                                             <td>
                                                 {item.id !== user.id && (
-                                                    <button onClick={() => changeRole(item, item.role === 'admin' ? 'artist' : 'admin')} className="rounded-full border border-stone-300 px-3 py-1.5 text-xs font-semibold hover:border-terracotta">
+                                                    <button onClick={() => changeRole(item, item.role === 'admin' ? 'artist' : 'admin')} className="rounded-full border border-border px-3 py-1.5 text-xs font-semibold hover:border-terracotta">
                                                         {item.role === 'admin' ? 'تبدیل به هنرمند' : 'ارتقا به مدیر'}
                                                     </button>
                                                 )}
@@ -419,7 +419,7 @@ export default function App() {
             <section id="artists" className="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-16 lg:px-10">
                 <p className="text-sm font-bold text-terracotta-strong">برای جامعه هنری</p>
                 <h2 className="max-w-2xl text-3xl font-black leading-relaxed sm:text-4xl">هنرمند هستید؟ جای شما در راد آرت خالی است.</h2>
-                <p className="max-w-2xl leading-8 text-stone-600">پروفایل هنرمندی خود را تکمیل کنید تا در مرحله بعد آثار هنری‌تان را در راد آرت منتشر کنید.</p>
+                <p className="max-w-2xl leading-8 text-muted-foreground">پروفایل هنرمندی خود را تکمیل کنید تا در مرحله بعد آثار هنری‌تان را در راد آرت منتشر کنید.</p>
             </section>
 
             <footer id="about" className="bg-ink px-6 py-8 text-center text-sm text-stone-300">

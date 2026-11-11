@@ -65,7 +65,7 @@ export default function ComponentShowcase() {
                 <div>
                     <p className="text-xs font-bold text-terracotta-strong">05 / COMPONENT LIBRARY</p>
                     <h2 id="shared-components-title" className="mt-2 text-2xl font-bold">کتابخانه اجزای رابط</h2>
-                    <p className="mt-2 text-sm leading-7 text-muted">نمونه‌های تعاملی اجزای مشترک؛ همه اجزا با چیدمان راست‌به‌چپ سازگارند.</p>
+                    <p className="mt-2 text-sm leading-7 text-muted-foreground">نمونه‌های تعاملی اجزای مشترک؛ همه اجزا با چیدمان راست‌به‌چپ سازگارند.</p>
                 </div>
                 <Badge variant="success">RTL ready</Badge>
             </div>
@@ -154,9 +154,9 @@ export default function ComponentShowcase() {
                                 <TabsTrigger value="details">جزئیات</TabsTrigger>
                                 <TabsTrigger value="history">تاریخچه</TabsTrigger>
                             </TabsList>
-                            <TabsContent value="overview"><p className="text-sm leading-7 text-muted">محتوای هر تب با کلیدهای جهت‌دار قابل پیمایش است.</p></TabsContent>
-                            <TabsContent value="details"><p className="text-sm leading-7 text-muted">جزئیات نمونه برای بررسی حالت فعال تب.</p></TabsContent>
-                            <TabsContent value="history"><p className="text-sm leading-7 text-muted">تاریخچه نمونه.</p></TabsContent>
+                            <TabsContent value="overview"><p className="text-sm leading-7 text-muted-foreground">محتوای هر تب با کلیدهای جهت‌دار قابل پیمایش است.</p></TabsContent>
+                            <TabsContent value="details"><p className="text-sm leading-7 text-muted-foreground">جزئیات نمونه برای بررسی حالت فعال تب.</p></TabsContent>
+                            <TabsContent value="history"><p className="text-sm leading-7 text-muted-foreground">تاریخچه نمونه.</p></TabsContent>
                         </Tabs>
                         <h3 className="mt-3 font-bold">صفحه‌بندی</h3>
                         <Pagination currentPage={page} lastPage={6} onPageChange={setPage} />

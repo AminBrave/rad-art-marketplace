@@ -7,7 +7,7 @@
     "config": "tailwind.config.js",
     "css": "resources/css/app.css",
     "baseColor": "stone",
-    "cssVariables": false,
+    "cssVariables": true,
     "prefix": ""
   },
   "iconLibrary": "lucide",

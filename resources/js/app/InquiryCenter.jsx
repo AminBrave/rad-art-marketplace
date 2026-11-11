@@ -100,8 +100,8 @@ export default function InquiryCenter({ user, hasProfile }) {
             <header>
                 <p className="text-sm font-bold text-terracotta-strong">{isArtist ? 'ارتباط با مخاطبان' : 'پیام‌های ارسال‌شده'}</p>
                 <h1 className="mt-2 text-2xl font-black">{isArtist ? 'صندوق درخواست‌ها' : 'پیگیری درخواست‌ها'}</h1>
-                <p className="mt-2 text-sm leading-7 text-muted">{isArtist ? 'درخواست‌های دریافتی را بخوانید و وضعیت رسیدگی را ثبت کنید. اطلاعات تماس خصوصی در این بخش نمایش داده نمی‌شود.' : 'جزئیات و وضعیت درخواست‌هایی را که برای هنرمندان فرستاده‌اید مشاهده کنید.'}</p>
-                {isArtist && <p className="mt-3 border-s-2 border-border bg-surface-muted px-4 py-3 text-xs leading-6 text-muted">«جدید» یعنی هنوز وضعیت رسیدگی ثبت نشده؛ «خوانده‌شده» یعنی درخواست را بررسی کرده‌اید؛ «بایگانی‌شده» یعنی آن را از صندوق فعال خارج کرده‌اید. این وضعیت‌ها پاسخ یا اعلان برای فرستنده ارسال نمی‌کنند.</p>}
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">{isArtist ? 'درخواست‌های دریافتی را بخوانید و وضعیت رسیدگی را ثبت کنید. اطلاعات تماس خصوصی در این بخش نمایش داده نمی‌شود.' : 'جزئیات و وضعیت درخواست‌هایی را که برای هنرمندان فرستاده‌اید مشاهده کنید.'}</p>
+                {isArtist && <p className="mt-3 border-s-2 border-border bg-muted px-4 py-3 text-xs leading-6 text-muted-foreground">«جدید» یعنی هنوز وضعیت رسیدگی ثبت نشده؛ «خوانده‌شده» یعنی درخواست را بررسی کرده‌اید؛ «بایگانی‌شده» یعنی آن را از صندوق فعال خارج کرده‌اید. این وضعیت‌ها پاسخ یا اعلان برای فرستنده ارسال نمی‌کنند.</p>}
             </header>
 
             {error && <ErrorState title="عملیات انجام نشد" description={error} />}
@@ -115,14 +115,14 @@ export default function InquiryCenter({ user, hasProfile }) {
                 />
             ) : (
                 <div className="grid gap-4 lg:grid-cols-[minmax(260px,0.85fr)_minmax(0,1.5fr)]">
-                    <nav aria-label={isArtist ? 'فهرست درخواست‌های دریافتی' : 'فهرست درخواست‌های ارسالی'} className="min-w-0 border border-border bg-paper">
+                    <nav aria-label={isArtist ? 'فهرست درخواست‌های دریافتی' : 'فهرست درخواست‌های ارسالی'} className="min-w-0 border border-border bg-card">
                         <ul className="divide-y divide-border">
                             {items.map((item) => (
                                 <li key={item.id}>
-                                    <button type="button" onClick={() => loadDetail(item)} aria-current={selected?.id === item.id ? 'true' : undefined} className={`block w-full p-4 text-right transition-colors hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus ${selected?.id === item.id ? 'border-s-4 border-terracotta bg-surface-muted' : ''}`}>
-                                        <span className="flex items-start justify-between gap-2"><span className="min-w-0 truncate text-sm font-bold text-ink">{item.subject}</span><Badge variant={item.status === 'new' ? 'accent' : item.status === 'archived' ? 'neutral' : 'success'}>{statusLabels[item.status] ?? item.status}</Badge></span>
-                                        <span className="mt-2 block text-xs text-muted">{isArtist ? item.buyer?.name : item.artist?.display_name}</span>
-                                        <span className="mt-1 block text-xs text-muted">{new Date(item.created_at).toLocaleDateString('fa-IR')}</span>
+                                    <button type="button" onClick={() => loadDetail(item)} aria-current={selected?.id === item.id ? 'true' : undefined} className={`block w-full p-4 text-right transition-colors hover:bg-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus ${selected?.id === item.id ? 'border-s-4 border-terracotta bg-muted' : ''}`}>
+                                        <span className="flex items-start justify-between gap-2"><span className="min-w-0 truncate text-sm font-bold text-foreground">{item.subject}</span><Badge variant={item.status === 'new' ? 'accent' : item.status === 'archived' ? 'neutral' : 'success'}>{statusLabels[item.status] ?? item.status}</Badge></span>
+                                        <span className="mt-2 block text-xs text-muted-foreground">{isArtist ? item.buyer?.name : item.artist?.display_name}</span>
+                                        <span className="mt-1 block text-xs text-muted-foreground">{new Date(item.created_at).toLocaleDateString('fa-IR')}</span>
                                     </button>
                                 </li>
                             ))}
@@ -133,7 +133,7 @@ export default function InquiryCenter({ user, hasProfile }) {
                         </div>
                     </nav>
 
-                    <article className="min-w-0 border border-border bg-paper p-5 sm:p-7">
+                    <article className="min-w-0 border border-border bg-card p-5 sm:p-7">
                         {!selected ? <EmptyState title="یک درخواست را انتخاب کنید" /> : detailLoading ? <SkeletonLines lines={5} /> : detailError ? <ErrorState title="جزئیات در دسترس نیست" description={detailError} onRetry={() => loadDetail(selected)} /> : (
                             <>
                                 <div className="flex flex-wrap items-start justify-between gap-3">
@@ -141,17 +141,17 @@ export default function InquiryCenter({ user, hasProfile }) {
                                     <Badge variant={selected.status === 'new' ? 'accent' : selected.status === 'archived' ? 'neutral' : 'success'}>{statusLabels[selected.status] ?? selected.status}</Badge>
                                 </div>
                                 <dl className="mt-5 grid gap-3 border-y border-border py-4 text-sm sm:grid-cols-2">
-                                    <div><dt className="text-xs text-muted">{isArtist ? 'فرستنده' : 'هنرمند'}</dt><dd className="mt-1 font-semibold">{isArtist ? selected.buyer?.name : selected.artist?.display_name}</dd></div>
-                                    <div><dt className="text-xs text-muted">تاریخ ثبت</dt><dd className="mt-1 font-semibold">{new Date(selected.created_at).toLocaleString('fa-IR')}</dd></div>
-                                    {selected.artwork && <div className="sm:col-span-2"><dt className="text-xs text-muted">اثر مرتبط</dt><dd className="mt-1 font-semibold">{selected.artwork.title}</dd></div>}
+                                    <div><dt className="text-xs text-muted-foreground">{isArtist ? 'فرستنده' : 'هنرمند'}</dt><dd className="mt-1 font-semibold">{isArtist ? selected.buyer?.name : selected.artist?.display_name}</dd></div>
+                                    <div><dt className="text-xs text-muted-foreground">تاریخ ثبت</dt><dd className="mt-1 font-semibold">{new Date(selected.created_at).toLocaleString('fa-IR')}</dd></div>
+                                    {selected.artwork && <div className="sm:col-span-2"><dt className="text-xs text-muted-foreground">اثر مرتبط</dt><dd className="mt-1 font-semibold">{selected.artwork.title}</dd></div>}
                                 </dl>
-                                <p className="whitespace-pre-wrap py-6 text-sm leading-9 text-ink">{selected.message}</p>
-                                {isArtist && <p className="mb-3 text-xs leading-6 text-muted">{selected.status === 'new' ? 'هنوز رسیدگی به این درخواست را ثبت نکرده‌اید.' : selected.status === 'read' ? 'این درخواست به‌عنوان خوانده‌شده ثبت شده است؛ در صورت نیاز می‌توانید آن را بایگانی کنید.' : 'این درخواست بایگانی شده و از فهرست فعال خارج است.'}</p>}
+                                <p className="whitespace-pre-wrap py-6 text-sm leading-9 text-foreground">{selected.message}</p>
+                                {isArtist && <p className="mb-3 text-xs leading-6 text-muted-foreground">{selected.status === 'new' ? 'هنوز رسیدگی به این درخواست را ثبت نکرده‌اید.' : selected.status === 'read' ? 'این درخواست به‌عنوان خوانده‌شده ثبت شده است؛ در صورت نیاز می‌توانید آن را بایگانی کنید.' : 'این درخواست بایگانی شده و از فهرست فعال خارج است.'}</p>}
                                 {isArtist && <div className="flex flex-wrap gap-2 border-t border-border pt-4">
                                     {selected.status !== 'read' && <Button size="sm" variant="outline" disabled={busyId === selected.id} onClick={() => updateStatus(selected, 'read')}>علامت‌گذاری به‌عنوان خوانده‌شده</Button>}
                                     {selected.status !== 'archived' && <Button size="sm" variant="secondary" disabled={busyId === selected.id} onClick={() => updateStatus(selected, 'archived')}>بایگانی درخواست</Button>}
                                 </div>}
-                                <p className="mt-4 text-xs leading-6 text-muted">این بخش برای مشاهده و پیگیری وضعیت درخواست است؛ امکان پاسخ‌گویی، گفت‌وگو یا مشاهده ایمیل طرفین در سامانه وجود ندارد.</p>
+                                <p className="mt-4 text-xs leading-6 text-muted-foreground">این بخش برای مشاهده و پیگیری وضعیت درخواست است؛ امکان پاسخ‌گویی، گفت‌وگو یا مشاهده ایمیل طرفین در سامانه وجود ندارد.</p>
                             </>
                         )}
                     </article>

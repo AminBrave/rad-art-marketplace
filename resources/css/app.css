@@ -5,7 +5,7 @@
 /* Rad Art — Contemporary Art Editorial design tokens. */
 :root {
     color-scheme: light;
-    font-family: 'Vazirmatn', 'Inter', sans-serif;
+    font-family: ui-sans-serif, system-ui, sans-serif;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -106,9 +106,9 @@ body {
     margin: 0;
     background: var(--color-canvas);
     color: var(--color-text);
-    font-family: var(--font-sans);
-    font-size: var(--text-base);
-    line-height: var(--leading-copy);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
 }
 
 button,
@@ -127,14 +127,9 @@ textarea {
 }
 
 a {
-    color: var(--color-action-text);
-    text-underline-offset: 0.2em;
+    color: inherit;
 }
 
-:focus-visible {
-    outline: 3px solid var(--color-focus);
-    outline-offset: 3px;
-}
 
 ::selection {
     background: rgb(182 92 58 / 20%);
@@ -157,77 +152,12 @@ a {
 }
 
 
-/* Shared component contracts. Keep visual decisions here; JSX owns structure and behavior. */
-@layer components {
-    .ra-button {
-        display: inline-flex;
-        min-height: var(--control-height-md);
-        align-items: center;
-        justify-content: center;
-        gap: var(--space-2);
-        border: 1px solid transparent;
-        border-radius: var(--radius-md);
-        padding: var(--space-2) var(--space-4);
-        color: var(--color-ink);
-        font-size: var(--text-sm);
-        font-weight: var(--weight-bold);
-        line-height: 1.4;
-        text-decoration: none;
-        transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
-    }
 
-    .ra-button:disabled,
-    .ra-button[aria-disabled='true'] {
-        cursor: not-allowed;
-        opacity: 0.52;
-    }
-
-    .ra-button--primary { background: var(--color-action); color: white; }
-    .ra-button--primary:hover:not(:disabled) { background: var(--color-terracotta-strong); }
-    .ra-button--secondary { background: var(--color-surface-muted); }
-    .ra-button--secondary:hover:not(:disabled) { background: var(--color-border); }
-    .ra-button--outline { border-color: var(--color-border-strong); background: var(--color-paper); }
-    .ra-button--outline:hover:not(:disabled) { border-color: var(--color-action); color: var(--color-action-text); }
-    .ra-button--ghost { background: transparent; }
-    .ra-button--ghost:hover:not(:disabled) { background: var(--color-surface-muted); }
-    .ra-button--danger { background: var(--color-danger); color: white; }
-    .ra-button--danger:hover:not(:disabled) { filter: brightness(.92); }
-    .ra-button--sm { min-height: var(--control-height-sm); padding: var(--space-1) var(--space-3); font-size: var(--text-xs); }
-    .ra-button--lg { min-height: var(--control-height-lg); padding: var(--space-3) var(--space-6); font-size: var(--text-base); }
-
-    .ra-control {
-        width: 100%;
-        min-height: var(--control-height-md);
-        border: 1px solid var(--color-border-strong);
-        border-radius: var(--radius-md);
-        background: var(--color-paper);
-        padding: var(--space-2) .875rem;
-        color: var(--color-text);
-        font: inherit;
-        font-size: var(--text-sm);
-        transition: border-color 160ms ease, box-shadow 160ms ease;
-    }
-    .ra-control::placeholder { color: var(--color-text-subtle); }
-    .ra-control:focus-visible { border-color: var(--color-focus); outline: 2px solid var(--color-focus-soft); outline-offset: 1px; }
-    .ra-control:disabled { cursor: not-allowed; background: var(--color-surface-muted); opacity: .65; }
-    .ra-control[aria-invalid='true'] { border-color: var(--color-danger); }
-
-    .ra-surface { border: 1px solid var(--color-border); background: var(--color-surface); }
-    .ra-artwork-frame { display: flex; aspect-ratio: var(--artwork-ratio); align-items: center; justify-content: center; overflow: hidden; background: var(--color-surface-muted); }
-    .ra-state { border: 1px solid var(--color-border); background: var(--color-surface); padding: var(--space-5); }
-    .ra-state--empty { border-style: dashed; text-align: center; }
-    .ra-state--error { border-color: color-mix(in srgb, var(--color-danger) 30%, transparent); }
-    .ra-state--success { border-inline-start: 2px solid var(--color-success); }
-}
-
-:focus-visible {
-    outline-color: var(--color-focus);
-}
 
 /* Shared loading treatment. Intrinsic skeleton dimensions mirror the first viewport. */
 .app-skeleton {
     display: block;
-    background: linear-gradient(100deg, #eeeae3 25%, #f8f6f2 42%, #eeeae3 62%);
+    background: linear-gradient(100deg, var(--color-surface-muted) 25%, var(--color-paper) 42%, var(--color-surface-muted) 62%);
     background-size: 200% 100%;
     animation: app-skeleton-shimmer 1.35s ease-in-out infinite;
 }
@@ -422,7 +352,7 @@ a {
 .app-boot__gallery-card {
     min-width: 0;
     border: 1px solid var(--color-border);
-    background: white;
+    background: var(--color-paper);
 }
 
 .app-boot__card {
@@ -454,7 +384,7 @@ a {
     align-items: center;
     justify-content: space-between;
     gap: 2rem;
-    background: #242320;
+    background: var(--color-ink);
     padding: 3.5rem 0;
 }
 
@@ -473,4 +403,86 @@ a {
         align-items: flex-start;
         flex-direction: column;
     }
+}
+
+/* shadcn/ui semantic theme tokens. RAD contributes color only. */
+:root {
+    --background: 40 29% 95%;
+    --brand-ink: 45 4% 14%;
+    --foreground: 45 4% 14%;
+    --card: 0 0% 100%;
+    --card-foreground: 45 4% 14%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 45 4% 14%;
+    --primary: 16 51% 47%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 31 29% 78%;
+    --secondary-foreground: 45 4% 14%;
+    --muted: 40 23% 92%;
+    --muted-foreground: 35 7% 36%;
+    --accent: 120 7% 35%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 5 53% 42%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 35 17% 84%;
+    --input: 35 13% 74%;
+    --ring: 16 51% 47%;
+    --warning: 38 76% 30%;
+    --info: 201 42% 34%;
+    --radius: 0.5rem;
+}
+.dark {
+    color-scheme: dark;
+    --background: 45 4% 14%;
+    --brand-ink: 45 4% 9%;
+    --foreground: 40 29% 95%;
+    --card: 45 6% 17%;
+    --card-foreground: 40 29% 95%;
+    --popover: 45 6% 17%;
+    --popover-foreground: 40 29% 95%;
+    --primary: 16 51% 42%;
+    --primary-foreground: 45 4% 14%;
+    --secondary: 43 8% 26%;
+    --secondary-foreground: 40 29% 95%;
+    --muted: 45 5% 20%;
+    --muted-foreground: 36 13% 71%;
+    --accent: 112 9% 47%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 5 58% 60%;
+    --destructive-foreground: 45 4% 14%;
+    --border: 43 7% 26%;
+    --input: 40 8% 31%;
+    --ring: 17 57% 59%;
+    --warning: 38 75% 65%;
+    --info: 201 52% 67%;
+
+    /* Compatibility variables for screens being migrated in later batches. */
+    --color-canvas: hsl(var(--background));
+    --color-ink: hsl(var(--brand-ink));
+    --color-terracotta: hsl(var(--primary));
+    --color-terracotta-strong: hsl(var(--primary));
+    --color-sand: hsl(var(--secondary));
+    --color-olive: hsl(var(--accent));
+    --color-paper: hsl(var(--card));
+    --color-text: hsl(var(--foreground));
+    --color-text-muted: hsl(var(--muted-foreground));
+    --color-text-subtle: hsl(var(--muted-foreground));
+    --color-border: hsl(var(--border));
+    --color-border-strong: hsl(var(--input));
+    --color-surface: hsl(var(--card));
+    --color-surface-muted: hsl(var(--muted));
+    --color-action: hsl(var(--primary));
+    --color-action-text: hsl(var(--primary));
+    --color-focus: hsl(var(--ring));
+    --color-success: hsl(var(--accent));
+    --color-danger: hsl(var(--destructive));
+    --color-warning: hsl(var(--warning));
+    --color-info: hsl(var(--info));
+    --color-overlay: rgb(0 0 0 / 68%);
+    --color-focus-soft: hsl(var(--ring) / 16%);
+}
+html.dark, .dark body {
+    color-scheme: dark;
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
 }
