@@ -25,7 +25,7 @@ export const Button = forwardRef(function Button({ children, variant = 'default'
         <Comp
             ref={ref}
             type={asChild ? undefined : type}
-            disabled={!asChild && (disabled || loading)}
+            disabled={asChild ? undefined : disabled || loading}
             aria-busy={loading || undefined}
             className={cn('inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50', buttonVariants[resolvedVariant] ?? buttonVariants.default, buttonSizes[resolvedSize] ?? buttonSizes.default, className)}
             {...props}
