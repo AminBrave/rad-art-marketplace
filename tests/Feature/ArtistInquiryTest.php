@@ -16,6 +16,13 @@ class ArtistInquiryTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        config(['features.inquiries' => true]);
+    }
+
     public function test_only_authenticated_buyers_can_send_artist_inquiries(): void
     {
         [$artist, $profile] = $this->artistWithProfile();
