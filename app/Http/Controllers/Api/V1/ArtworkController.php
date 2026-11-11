@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreArtworkRequest;
+use App\Http\Requests\UpdateArtworkRequest;
 use App\Models\Artwork;
 use App\Models\Category;
 use App\Support\PersianSearch;
@@ -170,12 +172,10 @@ class ArtworkController extends Controller
         );
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreArtworkRequest $request): JsonResponse
     {
-        $this->authorize('create', Artwork::class);
-
         $profile = $request->user()->artistProfile()->firstOrFail();
-        $validated = $this->validatedArtwork($request, true);
+        $validated = $request->validated();
         $imagePath = $validated['image']->store('artworks', 'local');
         unset($validated['image']);
 
@@ -193,11 +193,9 @@ class ArtworkController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, Artwork $artwork): JsonResponse
+    public function update(UpdateArtworkRequest $request, Artwork $artwork): JsonResponse
     {
-        $this->authorize('update', $artwork);
-
-        $validated = $this->validatedArtwork($request, false);
+        $validated = $request->validated();
         $oldImagePath = $artwork->image_path;
         $newImagePath = isset($validated['image'])
             ? $validated['image']->store('artworks', 'local')
@@ -220,28 +218,6 @@ class ArtworkController extends Controller
         return response()->json([
             'message' => 'اثر ویرایش شد و دوباره در صف بررسی قرار گرفت.',
             'data' => $this->payload($artwork->refresh()->load('category')),
-        ]);
-    }
-
-    /** @return array<string, mixed> */
-    private function validatedArtwork(Request $request, bool $imageRequired): array
-    {
-        return $request->validate([
-            'title' => ['required', 'string', 'max:160'],
-            'description' => ['nullable', 'string', 'max:3000'],
-            'category_id' => ['required', 'integer', Rule::exists('categories', 'id')->where('is_active', true)],
-            'medium' => ['nullable', 'string', 'max:120'],
-            'dimensions' => ['nullable', 'string', 'max:120'],
-            'year' => ['nullable', 'integer', 'min:1000', 'max:'.(now()->year + 1)],
-            'price' => ['nullable', 'numeric', 'min:0', 'max:999999999999.99'],
-            'availability' => ['required', Rule::in(['available', 'sold', 'not_for_sale'])],
-            'image' => [
-                $imageRequired ? 'required' : 'sometimes',
-                'image',
-                'mimes:jpg,jpeg,png,webp',
-                'dimensions:max_width=6000,max_height=6000',
-                'max:5120',
-            ],
         ]);
     }
 
