@@ -147,6 +147,17 @@ export function WorkspaceIdentitySkeleton() {
     );
 }
 
+export function MessageReportsSkeleton({ count = 3 }) {
+    return (
+        <div aria-hidden="true" className="grid gap-4">
+            {Array.from({ length: count }, (_, index) => <article key={index} className="overflow-hidden border border-border bg-paper">
+                <div className="flex items-start justify-between gap-3 border-b border-border bg-surface-muted p-4 sm:p-5"><div className="grid flex-1 gap-2"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-5 w-2/3 rounded-sm" /><Skeleton className="h-3 w-1/2 rounded-sm" /></div><Skeleton className="h-6 w-24 rounded-full" /></div>
+                <div className="grid gap-3 p-5"><Skeleton className="h-4 w-28 rounded-sm" /><Skeleton className="h-16 w-full rounded-sm" /><Skeleton className="h-4 w-36 rounded-sm" /><Skeleton className="h-20 w-full rounded-sm" /><div className="flex flex-wrap gap-2"><Skeleton className="h-9 w-24 rounded-sm" /><Skeleton className="h-9 w-24 rounded-sm" /></div></div>
+            </article>)}
+        </div>
+    );
+}
+
 export function ArtworkDetailSkeleton() {
     return (
         <PageContainer as="main" className="min-h-[65vh] py-12" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت اثر هنری">
