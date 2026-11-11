@@ -6,9 +6,11 @@ namespace Tests\Feature;
 
 use App\Models\ArtistInquiry;
 use App\Models\Conversation;
+use App\Models\MessageAttachment;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ConversationTest extends TestCase
@@ -318,6 +320,42 @@ class ConversationTest extends TestCase
             ->assertCreated()
             ->assertJsonPath('data.reply_to.id', $original->id)
             ->assertJsonPath('data.reply_to.body', $inquiry->message);
+    }
+
+    public function test_other_conversation_participant_can_preview_and_download_private_image_attachments(): void
+    {
+        Storage::fake('local');
+
+        [$buyer, $artist, $inquiry] = $this->participantsWithInquiry();
+        $conversation = $this->openConversationAsBuyer($buyer, $inquiry);
+        $message = $conversation->messages()->firstOrFail();
+        $path = 'message-attachments/'.$conversation->id.'/preview-test.jpg';
+        Storage::disk('local')->put($path, 'private-image-bytes');
+
+        $attachment = MessageAttachment::query()->create([
+            'message_id' => $message->id,
+            'uploaded_by_user_id' => $buyer->id,
+            'storage_path' => $path,
+            'original_name' => 'اثر.jpg',
+            'mime_type' => 'image/jpeg',
+            'size_bytes' => 19,
+        ]);
+
+        $base = '/api/v1/conversations/'.$conversation->id.'/messages/'.$message->id.'/attachments/'.$attachment->id;
+
+        $this->actingAs($artist)
+            ->get($base.'/preview')
+            ->assertOk()
+            ->assertHeader('Content-Type', 'image/jpeg')
+            ->assertHeader('Content-Disposition');
+
+        $this->get($base)
+            ->assertOk()
+            ->assertHeader('Content-Disposition');
+
+        $outsider = $this->makeUser('outsider@example.test', User::ROLE_BUYER);
+        $this->actingAs($outsider)->get($base)->assertNotFound();
+        $this->get($base.'/preview')->assertNotFound();
     }
 
     private function participantsWithInquiry(
