@@ -2,13 +2,14 @@ import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import { Link } from 'react-router-dom';
 import { Button } from './primitives';
+import { cn } from '../../lib/utils';
 
 export const Tabs = TabsPrimitive.Root;
 
 export function TabsList({ className = '', ...props }) {
     return (
         <TabsPrimitive.List
-            className={`inline-flex max-w-full flex-wrap gap-1 border-b border-border ${className}`}
+            className={cn('inline-flex h-9 max-w-full items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground', className)}
             {...props}
         />
     );
@@ -17,14 +18,14 @@ export function TabsList({ className = '', ...props }) {
 export function TabsTrigger({ className = '', ...props }) {
     return (
         <TabsPrimitive.Trigger
-            className={`min-h-11 border-b-2 border-transparent px-4 py-2 text-sm font-semibold text-muted outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-terracotta-strong data-[state=active]:border-terracotta data-[state=active]:text-ink disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+            className={cn('inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm', className)}
             {...props}
         />
     );
 }
 
 export function TabsContent({ className = '', ...props }) {
-    return <TabsPrimitive.Content className={`pt-5 outline-none focus-visible:ring-2 focus-visible:ring-terracotta-strong ${className}`} {...props} />;
+    return <TabsPrimitive.Content className={cn('mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2', className)} {...props} />;
 }
 
 export const DropdownMenu = DropdownMenuPrimitive.Root;
@@ -37,7 +38,7 @@ export function DropdownMenuContent({ className = '', sideOffset = 6, ...props }
                 sideOffset={sideOffset}
                 align="end"
                 dir="rtl"
-                className={`z-50 min-w-44 rounded-md border border-border bg-paper p-1.5 text-ink shadow-raised outline-none ${className}`}
+                className={cn('z-50 min-w-32 overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md', className)}
                 {...props}
             />
         </DropdownMenuPrimitive.Portal>
@@ -47,18 +48,18 @@ export function DropdownMenuContent({ className = '', sideOffset = 6, ...props }
 export function DropdownMenuItem({ className = '', ...props }) {
     return (
         <DropdownMenuPrimitive.Item
-            className={`flex min-h-10 cursor-pointer items-center rounded-sm px-3 py-2 text-sm outline-none focus:bg-surface-muted focus:text-ink data-[disabled]:pointer-events-none data-[disabled]:opacity-40 ${className}`}
+            className={cn('relative flex min-h-8 cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50', className)}
             {...props}
         />
     );
 }
 
 export function DropdownMenuLabel({ className = '', ...props }) {
-    return <DropdownMenuPrimitive.Label className={`px-3 py-2 text-xs font-bold text-muted ${className}`} {...props} />;
+    return <DropdownMenuPrimitive.Label className={cn('px-2 py-1.5 text-xs font-semibold text-muted-foreground', className)} {...props} />;
 }
 
 export function DropdownMenuSeparator({ className = '', ...props }) {
-    return <DropdownMenuPrimitive.Separator className={`my-1 h-px bg-border ${className}`} {...props} />;
+    return <DropdownMenuPrimitive.Separator className={cn('-mx-1 my-1 h-px bg-muted', className)} {...props} />;
 }
 
 export function Breadcrumbs({ items = [], className = '' }) {
