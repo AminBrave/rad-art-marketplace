@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\ArtistProfile;
 use App\Models\Artwork;
+use App\Support\PersianSearch;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -18,10 +19,10 @@ class ArtistProfileController extends Controller
         $profiles = ArtistProfile::query()
             ->where('is_public', true)
             ->when($request->filled('q'), function ($query) use ($request): void {
-                $term = '%'.(string) $request->string('q').'%';
+                $term = (string) $request->string('q');
                 $query->where(function ($nested) use ($term): void {
-                    $nested->where('display_name', 'like', $term)
-                        ->orWhere('city', 'like', $term);
+                    PersianSearch::whereLike($nested, 'display_name', $term);
+                    PersianSearch::whereLike($nested, 'city', $term, 'or');
                 });
             })
             ->orderBy('display_name')

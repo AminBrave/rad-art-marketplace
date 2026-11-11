@@ -145,6 +145,22 @@ class MessageNotificationTest extends TestCase
         $this->assertSame(0, $buyer->unreadNotifications()->count());
     }
 
+    public function test_notification_preferences_endpoint_returns_safe_defaults_and_validates_updates(): void
+    {
+        [$buyer] = $this->conversation();
+
+        $this->actingAs($buyer)
+            ->getJson('/api/v1/notifications/preferences')
+            ->assertOk()
+            ->assertJsonPath('data.in_app_messages', true)
+            ->assertJsonPath('data.email_messages', false)
+            ->assertJsonPath('data.email_available', false);
+
+        $this->patchJson('/api/v1/notifications/preferences', [
+            'in_app_messages' => 'enabled',
+        ])->assertUnprocessable();
+    }
+
     private function conversation(): array
     {
         $buyer = User::query()->create([
