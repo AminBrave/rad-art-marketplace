@@ -1,4 +1,5 @@
 import { cloneElement, isValidElement, useId } from 'react';
+import { Link } from 'react-router-dom';
 import { cn } from '../../lib/utils';
 
 const buttonVariants = {
@@ -107,6 +108,33 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
             </div>
             {actions && <div className="ra-section-header__actions">{actions}</div>}
         </header>
+    );
+}
+
+
+export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
+    return (
+        <header className={cn('ra-workspace-hero', className)} dir="rtl">
+            <div className="ra-workspace-hero__copy">
+                {eyebrow && <p className="ra-workspace-hero__eyebrow">{eyebrow}</p>}
+                <h1 className="ra-workspace-hero__title">{title}</h1>
+                {description && <p className="ra-workspace-hero__description">{description}</p>}
+            </div>
+            {actions && <div className="ra-workspace-hero__actions">{actions}</div>}
+        </header>
+    );
+}
+
+export function DashboardMetricCard({ label, value, detail, to, eyebrow, className = '' }) {
+    return (
+        <Link to={to} className={cn('ra-metric-card', className)}>
+            <span className="ra-metric-card__top">
+                <span className="ra-metric-card__label">{label}</span>
+                {eyebrow && <span className="ra-metric-card__eyebrow">{eyebrow}</span>}
+            </span>
+            <span className="ra-metric-card__value">{value ?? '—'}</span>
+            {detail && <span className="ra-metric-card__detail">{detail}</span>}
+        </Link>
     );
 }
 
