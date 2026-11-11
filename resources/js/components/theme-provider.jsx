@@ -19,6 +19,8 @@ export function ThemeProvider({ children, defaultTheme = 'light' }) {
         const root = document.documentElement;
         root.classList.toggle('dark', theme === 'dark');
         root.style.colorScheme = theme;
+        const themeColor = document.querySelector('meta[name="theme-color"]');
+        if (themeColor) themeColor.setAttribute('content', theme === 'dark' ? '#242320' : '#F7F5F0');
         try {
             window.localStorage.setItem(STORAGE_KEY, theme);
         } catch {
