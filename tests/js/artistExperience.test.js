@@ -13,7 +13,7 @@ test('artist onboarding progress is derived from named profile fields and actual
         assert.ok(overview.includes(field), `Missing profile completion input: ${field}`);
     }
     assert.ok(overview.includes('counts.artworks'));
-    assert.ok(overview.includes('aria-valuenow={completedProfileSteps}'));
+    assert.ok(overview.includes('aria-valuenow={progress}'));
     assert.ok(overview.includes('ثبت اولین اثر برای بررسی'));
     assert.ok(!/analytics|engagement|reach|impressions/i.test(overview));
 });
