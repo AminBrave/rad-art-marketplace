@@ -22,6 +22,7 @@ import {
     NativeSelect,
     Checkbox,
     Radio,
+    ButtonGroup,
     Switch,
     Avatar,
     AvatarFallback,
@@ -245,6 +246,44 @@ export default function ComponentShowcase() {
                         {!toastOpen && <Button variant="outline" size="sm" onClick={() => setToastOpen(true)}>نمایش دوباره اعلان</Button>}
                     </div>
                 </div>
+                <div className="grid gap-5 border-b border-border pb-8 lg:grid-cols-2">
+                    <div className="grid content-start gap-4">
+                        <h3 className="font-semibold">کنترل‌های انتخاب و تنظیم</h3>
+                        <label className="flex items-center gap-3 text-sm"><Checkbox defaultChecked /> دریافت خبرنامه هنری</label>
+                        <div className="flex items-center justify-between gap-4 rounded-lg border p-3">
+                            <div><Label htmlFor="showcase-switch">اعلان‌های پیام</Label><p className="mt-1 text-xs text-muted-foreground">کنترل وضعیت با نقش switch</p></div>
+                            <Switch id="showcase-switch" checked={notificationsEnabled} onCheckedChange={setNotificationsEnabled} />
+                        </div>
+                        <fieldset className="grid gap-3">
+                            <legend className="text-sm font-medium">نوع حساب</legend>
+                            <label className="flex items-center gap-2 text-sm"><Radio name="showcase-role" value="artist" checked={selectedRole === 'artist'} onChange={() => setSelectedRole('artist')} />هنرمند</label>
+                            <label className="flex items-center gap-2 text-sm"><Radio name="showcase-role" value="buyer" checked={selectedRole === 'buyer'} onChange={() => setSelectedRole('buyer')} />خریدار</label>
+                        </fieldset>
+                        <div className="grid gap-2"><Label htmlFor="showcase-native-select">انتخاب دسته</Label><NativeSelect id="showcase-native-select" defaultValue="painting"><option value="painting">نقاشی</option><option value="photo">عکاسی</option></NativeSelect></div>
+                        <div className="flex flex-wrap items-center gap-2"><ButtonGroup><Button variant="outline" size="sm">قبلی</Button><Button variant="outline" size="sm">بعدی</Button></ButtonGroup><Toggle pressed={togglePressed} onPressedChange={setTogglePressed} variant="outline">حالت {togglePressed ? 'فعال' : 'عادی'}</Toggle><Kbd>⌘ K</Kbd><Spinner label="نمونه بارگذاری" /></div>
+                    </div>
+                    <div className="grid content-start gap-4">
+                        <h3 className="font-semibold">هویت، نسبت تصویر و پیشرفت</h3>
+                        <div className="flex items-center gap-3 rounded-lg border p-3">
+                            <Avatar className="size-12"><AvatarImage alt="هنرمند نمونه" /><AvatarFallback>هن</AvatarFallback></Avatar>
+                            <div><p className="text-sm font-medium">هنرمند نمونه</p><p className="text-xs text-muted-foreground">پروفایل عمومی</p></div>
+                        </div>
+                        <div className="grid gap-2"><div className="flex justify-between text-xs"><span>تکمیل پروفایل</span><span>۷۲٪</span></div><Progress value={72} /></div>
+                        <AspectRatio ratio={16 / 9} className="overflow-hidden rounded-lg border bg-muted"><div className="grid h-full place-items-center text-sm text-muted-foreground">قاب رسانه‌ای ۱۶:۹</div></AspectRatio>
+                    </div>
+                </div>
+
+                <div className="grid gap-4 border-b border-border pb-8">
+                    <h3 className="font-semibold">الگوی Sidebar برای محیط‌های کاری</h3>
+                    <SidebarProvider className="min-h-64 overflow-hidden rounded-xl border">
+                        <Sidebar className="w-52">
+                            <SidebarHeader><span className="text-sm font-semibold">فضای هنرمند</span></SidebarHeader>
+                            <SidebarContent><SidebarGroup><SidebarGroupLabel>مدیریت</SidebarGroupLabel><SidebarMenu><SidebarMenuItem><SidebarMenuButton>نمای کلی</SidebarMenuButton></SidebarMenuItem><SidebarMenuItem><SidebarMenuButton>آثار من</SidebarMenuButton></SidebarMenuItem><SidebarMenuItem><SidebarMenuButton>پیام‌ها</SidebarMenuButton></SidebarMenuItem></SidebarMenu></SidebarGroup></SidebarContent>
+                        </Sidebar>
+                        <SidebarInset className="grid content-start gap-3 p-5"><p className="font-semibold">عنوان صفحه</p><p className="text-sm text-muted-foreground">فضای محتوا با عرض منعطف در کنار ناوبری ثابت.</p><div className="grid gap-2 sm:grid-cols-2"><div className="rounded-lg border p-3 text-xs">کارت خلاصه</div><div className="rounded-lg border p-3 text-xs">فعالیت اخیر</div></div></SidebarInset>
+                    </SidebarProvider>
+                </div>
+
                 <div className="grid gap-5 border-b border-border pb-8 lg:grid-cols-2">
                     <div className="grid content-start gap-4">
                         <h3 className="font-semibold">ساختار کارت New York</h3>
