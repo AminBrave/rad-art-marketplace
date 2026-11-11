@@ -385,6 +385,7 @@ export default function MessagingCenter({ role }) {
         const previousTop = container?.scrollTop ?? 0;
         const beforeId = messagesRef.current?.[0]?.id;
         if (!beforeId) {
+            historyRequestRef.current = null;
             historyLoadingRef.current = false;
             setLoadingOlder(false);
             return;
@@ -407,7 +408,8 @@ export default function MessagingCenter({ role }) {
             hasOlderMessagesRef.current = Number(data.current_page ?? 1) < Number(data.last_page ?? 1);
             setHasOlderMessages(hasOlderMessagesRef.current);
         } catch (requestError) {
-            if (!axios.isCancel(requestError) && !controller.signal.aborted) setError('دریافت پیام‌های قدیمی‌تر انجام نشد. دوباره تلاش کنید.');
+            if (!axios.isCancel(requestError) && !controller.signal.aborted
+                && Number(activeConversationRef.current) === Number(conversationId)) setError('دریافت پیام‌های قدیمی‌تر انجام نشد. دوباره تلاش کنید.');
         } finally {
             if (historyRequestRef.current === controller) historyRequestRef.current = null;
             if (Number(activeConversationRef.current) === Number(conversationId)) {
@@ -493,7 +495,9 @@ export default function MessagingCenter({ role }) {
             }
         } catch {
             if (Number(activeConversationRef.current) === Number(conversationId)) setError('ویرایش پیام انجام نشد. دوباره تلاش کنید.');
-        } finally { setActionId(null); }
+        } finally {
+            if (Number(activeConversationRef.current) === Number(conversationId)) setActionId(null);
+        }
     };
 
     const deleteMessage = async (message) => {
