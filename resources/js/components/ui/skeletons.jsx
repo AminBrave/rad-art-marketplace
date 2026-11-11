@@ -43,7 +43,7 @@ export function ArtworkDetailSkeleton() {
     return (
         <PageContainer as="main" className="min-h-[65vh] py-12" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت اثر هنری">
             <span className="sr-only">در حال دریافت اثر هنری…</span>
-            <div className="mb-7"><a href="/artworks" tabIndex={-1} className="block"><Skeleton className="h-4 w-28 rounded-sm" /></a></div>
+            <div className="mb-7"><Skeleton className="h-4 w-28 rounded-sm" /></div>
             <article className="grid gap-8 lg:grid-cols-[1.15fr_.85fr]">
                 <div className="flex aspect-[4/3] items-center justify-center overflow-hidden bg-paper p-4 sm:p-8 lg:aspect-[4/5]">
                     <Skeleton className="h-full w-full rounded-none" />
