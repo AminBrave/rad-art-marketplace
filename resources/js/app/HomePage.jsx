@@ -1,47 +1,64 @@
 import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { ArtworkCard, ArtistCard, ArtworkCardSkeleton, ArtistCardSkeleton, EmptyState, ErrorState } from '../components/ui';
 
 export default function HomePage() {
-    const [artworks, setArtworks] = useState([]);
-    const [categories, setCategories] = useState([]);
-    const [artists, setArtists] = useState([]);
-    const [collections, setCollections] = useState([]);
-    const [featuredArtists, setFeaturedArtists] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
-    const [retry, setRetry] = useState(0);
     const [heroImageFailed, setHeroImageFailed] = useState(false);
 
-    useEffect(() => {
-        let active = true;
-        const controller = new AbortController();
-        Promise.all([
-            axios.get('/api/v1/artworks', { params: { per_page: 7, sort: 'newest' }, signal: controller.signal })
-                .then(({ data }) => { if (active) setArtworks(data.data ?? []); })
-                .catch((requestError) => { if (active && !axios.isCancel(requestError)) setError(true); }),
-            axios.get('/api/v1/categories', { signal: controller.signal })
-                .then(({ data }) => { if (active) setCategories(data.data ?? []); })
-                .catch((requestError) => { if (active && !axios.isCancel(requestError)) setCategories([]); }),
-            axios.get('/api/v1/artists', { params: { per_page: 3 }, signal: controller.signal })
-                .then(({ data }) => { if (active) setArtists(data.data ?? []); })
-                .catch((requestError) => { if (active && !axios.isCancel(requestError)) setArtists([]); }),
-        ]).finally(() => {
-            if (active) setLoading(false);
-        });
-        return () => { active = false; controller.abort(); };
-    }, [retry]);
+    const artworksQuery = useQuery({
+        queryKey: ['home', 'artworks'],
+        queryFn: async ({ signal }) => {
+            const { data } = await axios.get('/api/v1/artworks', {
+                params: { per_page: 7, sort: 'newest' },
+                signal,
+            });
+            return data.data ?? [];
+        },
+        staleTime: 60_000,
+    });
+    const categoriesQuery = useQuery({
+        queryKey: ['home', 'categories'],
+        queryFn: async ({ signal }) => {
+            const { data } = await axios.get('/api/v1/categories', { signal });
+            return data.data ?? [];
+        },
+        staleTime: 5 * 60_000,
+    });
+    const artistsQuery = useQuery({
+        queryKey: ['home', 'artists'],
+        queryFn: async ({ signal }) => {
+            const { data } = await axios.get('/api/v1/artists', { params: { per_page: 3 }, signal });
+            return data.data ?? [];
+        },
+        staleTime: 60_000,
+    });
+    const collectionsQuery = useQuery({
+        queryKey: ['home', 'collections'],
+        queryFn: async ({ signal }) => {
+            const { data } = await axios.get('/api/v1/collections', { params: { per_page: 3 }, signal });
+            return data.data ?? [];
+        },
+        staleTime: 60_000,
+    });
+    const featuredArtistsQuery = useQuery({
+        queryKey: ['home', 'featured-artists'],
+        queryFn: async ({ signal }) => {
+            const { data } = await axios.get('/api/v1/featured-artists', { signal });
+            return data.data ?? [];
+        },
+        staleTime: 60_000,
+    });
 
-    useEffect(() => {
-        const controller = new AbortController();
-        Promise.all([
-            axios.get('/api/v1/collections', { params: { per_page: 3 }, signal: controller.signal }).then(({ data }) => setCollections(data.data ?? [])).catch(() => setCollections([])),
-            axios.get('/api/v1/featured-artists', { signal: controller.signal }).then(({ data }) => setFeaturedArtists(data.data ?? [])).catch(() => setFeaturedArtists([])),
-        ]);
-        return () => controller.abort();
-    }, []);
-
+    const artworks = artworksQuery.data ?? [];
+    const categories = categoriesQuery.data ?? [];
+    const artists = artistsQuery.data ?? [];
+    const collections = collectionsQuery.data ?? [];
+    const featuredArtists = featuredArtistsQuery.data ?? [];
+    const loading = artworksQuery.isPending || categoriesQuery.isPending || artistsQuery.isPending
+        || (artworksQuery.isFetching && !artworksQuery.data);
+    const error = artworksQuery.isError && !artworksQuery.data && !artworksQuery.isFetching;
     const hero = artworks[0];
     useEffect(() => setHeroImageFailed(false), [hero?.id]);
     const recentWorks = artworks.slice(1, 7);
@@ -88,7 +105,7 @@ export default function HomePage() {
 
             <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10">
                 <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-bold text-terracotta-strong">تازه‌رسیده‌ها</p><h2 className="mt-2 text-3xl font-black">تازه در گالری</h2><p className="mt-2 text-sm text-muted">آخرین آثاری که برای نمایش عمومی تأیید شده‌اند.</p></div><Link to="/artworks" className="text-sm font-bold text-terracotta-strong underline">همه آثار</Link></div>
-                {error ? <ErrorState className="mt-8" title="دریافت محتوای گالری ممکن نشد" description="برای دریافت دوباره تلاش کنید." onRetry={() => { setLoading(true); setRetry((value) => value + 1); }} /> : loading ? <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}</div> : recentWorks.length ? <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{recentWorks.map((item) => <ArtworkCard key={item.id} artwork={item} />)}</div> : <EmptyState className="mt-8" title="هنوز اثر دیگری برای نمایش نیست" description="آثار تازه پس از تأیید در این بخش قرار می‌گیرند." />}
+                {error ? <ErrorState className="mt-8" title="دریافت محتوای گالری ممکن نشد" description="برای دریافت دوباره تلاش کنید." onRetry={() => artworksQuery.refetch()} /> : loading ? <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}</div> : recentWorks.length ? <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{recentWorks.map((item) => <ArtworkCard key={item.id} artwork={item} />)}</div> : <EmptyState className="mt-8" title="هنوز اثر دیگری برای نمایش نیست" description="آثار تازه پس از تأیید در این بخش قرار می‌گیرند." />}
             </section>
 
             <section className="border-y border-border bg-white">
