@@ -65,10 +65,10 @@ This inventory is derived from the current route declarations in routes/web.php 
 | POST /api/v1/conversations/{conversation}/messages/{message}/reactions | Participant | ConversationTest | Invalid emoji and removal/re-add behavior |
 | PATCH /api/v1/conversations/{conversation}/read | Participant | ConversationTest | Read timestamps for mixed sender/read states |
 | PATCH /api/v1/conversations/{conversation}/settings | Participant | ConversationInboxSettingsTest | Invalid settings and concurrent participant isolation |
-| GET /api/v1/conversations/{conversation}/safety | Participant | MessageSafetyTest | Both block directions and outsider denial |
+| GET /api/v1/conversations/{conversation}/safety | Participant | MessageSafetyTest | Covered: viewer-relative block state and outsider denial |
 | POST /api/v1/conversations/{conversation}/block | Participant, throttled | MessageSafetyTest | Duplicate block and reverse-block behavior |
 | DELETE /api/v1/conversations/{conversation}/block | Participant, throttled | MessageSafetyTest | Repeated unblock and reverse-block behavior |
-| POST /api/v1/conversations/{conversation}/report | Participant, throttled | MessageSafetyTest | Duplicate reports and validation |
+| POST /api/v1/conversations/{conversation}/report | Participant, throttled | MessageSafetyTest | Covered: idempotent conversation reports; throttle and invalid reason boundary remain |
 | POST /api/v1/conversations/{conversation}/messages/{message}/report | Participant, throttled | MessageSafetyTest | Report lifecycle and deleted message behavior |
 | POST /api/v1/conversations/{conversation}/messages/{message}/attachments | Sender, unblocked, throttled | MessageAttachmentTest | Size, MIME spoofing, storage failure and rollback |
 | GET /api/v1/conversations/{conversation}/messages/{message}/attachments/{attachment} | Participant | MessageAttachmentTest | Cross-message attachment ID, deleted message and private storage headers |
@@ -79,8 +79,8 @@ This inventory is derived from the current route declarations in routes/web.php 
 |---|---|---|---|
 | GET /api/v1/notifications | Authenticated | MessageNotificationTest, notification browser tests | Pagination and cross-user isolation |
 | PATCH /api/v1/notifications/read-all | Authenticated | MessageNotificationTest | Already-read and empty states |
-| GET /api/v1/notifications/preferences | Authenticated | MessageNotificationTest, notification browser tests | Defaults for newly created users |
-| PATCH /api/v1/notifications/preferences | Authenticated | MessageNotificationTest, notification browser tests | Invalid preference payloads |
+| GET /api/v1/notifications/preferences | Authenticated | MessageNotificationTest | Covered: safe defaults and email disabled |
+| PATCH /api/v1/notifications/preferences | Authenticated | MessageNotificationTest | Covered: boolean validation and email remains disabled |
 | PATCH /api/v1/notifications/{notification}/read | Owner only | MessageNotificationTest | Foreign notification denial and repeated read |
 
 ## Administration and editorial
@@ -92,15 +92,15 @@ This inventory is derived from the current route declarations in routes/web.php 
 | GET /api/v1/admin/artworks | Admin | ArtworkModerationTest | Filters and pagination |
 | PATCH /api/v1/admin/artworks/{artwork}/moderation | Admin | ArtworkModerationTest, unmocked admin moderation E2E | Complete transition matrix and audit integrity |
 | GET /api/v1/admin/message-reports | Admin | MessageSafetyTest | Report filters, pagination and privacy |
-| PATCH /api/v1/admin/message-reports/{report} | Admin | MessageSafetyTest | Every moderation action and invalid transition |
-| GET /api/v1/admin/editorial/options | Admin | EditorialTest | Excludes ineligible content |
-| GET /api/v1/admin/editorial/featured-artists | Admin | EditorialTest | Publication windows and ordering |
-| PUT /api/v1/admin/editorial/featured-artists | Admin | EditorialTest | Duplicate artist and invalid window handling |
-| GET /api/v1/admin/editorial/collections | Admin | EditorialTest | Pagination and drafts |
+| PATCH /api/v1/admin/message-reports/{report} | Admin | MessageSafetyTest | Covered: dismissed and remove_message actions; reviewed and invalid-transition cases remain |
+| GET /api/v1/admin/editorial/options | Admin | EditorialTest | Covered: only public artists and approved public artworks |
+| GET /api/v1/admin/editorial/featured-artists | Admin | EditorialTest | Covered: saved selections and ordering; date-window edge cases remain |
+| PUT /api/v1/admin/editorial/featured-artists | Admin | EditorialTest | Covered: save and reject private profiles; duplicate/date-window boundaries remain |
+| GET /api/v1/admin/editorial/collections | Admin | EditorialTest | Covered: admin listing and order; pagination boundary remains |
 | POST /api/v1/admin/editorial/collections | Admin | EditorialTest | Validation and transactional rollback |
-| PATCH /api/v1/admin/editorial/collections/{collection} | Admin | EditorialTest | Membership replacement and invalid references |
+| PATCH /api/v1/admin/editorial/collections/{collection} | Admin | EditorialTest | Covered: update and preserve membership on ineligible artwork |
 | PATCH /api/v1/admin/editorial/collections/{collection}/publication | Admin | EditorialTest | Scheduled/publication boundary behavior |
-| PUT /api/v1/admin/editorial/collections/order | Admin | EditorialTest | Duplicate/missing IDs and atomic reorder |
+| PUT /api/v1/admin/editorial/collections/order | Admin | EditorialTest | Covered: reorder and audit; duplicate/missing IDs remain |
 
 ## Public pages and infrastructure
 

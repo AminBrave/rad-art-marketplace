@@ -89,11 +89,11 @@ For each critical journey, test the real actor sequence and verify persisted or 
 - Parallel execution is allowed only after database, storage and browser fixture isolation is demonstrated.
 
 ## Coverage and quality gates
-Coverage is a diagnostic and trend signal, not a correctness guarantee. Prioritize branches enforcing authorization, privacy, moderation, validation, idempotency and state transitions. Introduce reporting only when the runner produces a trustworthy CI report. Do not set a repository-wide threshold before collecting a baseline; use changed-code and critical-domain gates first.
+Coverage is a diagnostic and trend signal, not a correctness guarantee. CI publishes separate PHPUnit Clover line-coverage reports for Unit, Feature and Integration suites, plus JUnit test reports for backend, frontend and browser runs. The first combined PCOV baseline was 91.4% statement-line coverage (1,491/1,631) on PR head c1e0f4c; branch/condition coverage is not measured. Prioritize branches enforcing authorization, privacy, moderation, validation, idempotency and state transitions. Do not enforce a global threshold from a single baseline; use changed-code and critical-domain gates first.
 
-Proposed targets after a measured baseline:
-- 90%+ line/branch coverage for isolated domain rules where practical;
-- 80%+ backend coverage as a directional target, with exclusions documented;
+Proposed targets after several stable baselines:
+- 90%+ line coverage for isolated domain rules where practical;
+- maintain or improve the 91.4% initial combined backend line-coverage baseline, with exclusions documented;
 - meaningful branch and interaction coverage for critical frontend components;
 - every critical buyer, artist and admin journey represented by at least one unmocked browser scenario.
 

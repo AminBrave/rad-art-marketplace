@@ -122,6 +122,73 @@ class MessageSafetyTest extends TestCase
         ]);
     }
 
+
+    public function test_conversation_report_is_idempotent_and_block_status_is_viewer_relative(): void
+    {
+        [$buyer, $artist, $conversation, , $outsider] = $this->fixture();
+
+        $this->actingAs($buyer)
+            ->getJson("/api/v1/conversations/{$conversation->id}/safety")
+            ->assertOk()
+            ->assertJsonPath('data.blocked_by_me', false)
+            ->assertJsonPath('data.blocked_by_other', false);
+
+        $report = $this->postJson("/api/v1/conversations/{$conversation->id}/report", [
+            'reason' => 'spam',
+            'details' => 'گزارش تکراری گفتگو',
+        ])->assertCreated();
+
+        $this->postJson("/api/v1/conversations/{$conversation->id}/report", [
+            'reason' => 'harassment',
+        ])->assertOk();
+
+        $this->assertDatabaseCount('message_reports', 1);
+
+        $this->actingAs($artist)
+            ->postJson("/api/v1/conversations/{$conversation->id}/block")
+            ->assertOk();
+
+        $this->actingAs($buyer)
+            ->getJson("/api/v1/conversations/{$conversation->id}/safety")
+            ->assertOk()
+            ->assertJsonPath('data.blocked_by_me', false)
+            ->assertJsonPath('data.blocked_by_other', true);
+
+        $this->actingAs($artist)
+            ->getJson("/api/v1/conversations/{$conversation->id}/safety")
+            ->assertOk()
+            ->assertJsonPath('data.blocked_by_me', true)
+            ->assertJsonPath('data.blocked_by_other', false);
+
+        $this->actingAs($outsider)
+            ->getJson("/api/v1/conversations/{$conversation->id}/safety")
+            ->assertNotFound();
+
+        $admin = $this->user('safety-dismiss-admin@example.test', User::ROLE_ADMIN);
+        $this->actingAs($admin)
+            ->getJson('/api/v1/admin/message-reports')
+            ->assertOk()
+            ->assertJsonPath('data.0.id', $report->json('data.id'))
+            ->assertJsonPath('data.0.message', null);
+
+        $this->patchJson('/api/v1/admin/message-reports/'.$report->json('data.id'), [
+            'action' => 'dismissed',
+            'note' => 'گزارش بررسی و رد شد.',
+        ])->assertOk();
+
+        $this->assertDatabaseHas('message_reports', [
+            'id' => $report->json('data.id'),
+            'status' => 'dismissed',
+            'reviewed_by_user_id' => $admin->id,
+        ]);
+        $this->assertDatabaseHas('message_moderation_audits', [
+            'report_id' => $report->json('data.id'),
+            'admin_user_id' => $admin->id,
+            'action' => 'dismissed',
+            'note' => 'گزارش بررسی و رد شد.',
+        ]);
+    }
+
     private function fixture(): array
     {
         $buyer = $this->user('safety-buyer@example.test', User::ROLE_BUYER);

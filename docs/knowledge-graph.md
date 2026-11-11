@@ -49,6 +49,7 @@ flowchart TD
 - [Operations](operations/deployment-and-recovery.md): deployment and recovery.
 - [ADRs](decisions/index.md): durable decisions; use [ADR template](decisions/adr-template.md).
 - [Local verification](../scripts/verify): selective local checks; see [testing strategy](engineering/testing-strategy.md).
+- [Coverage summarizer](../scripts/summarize-coverage.py): combines per-suite Clover reports into an overall line-coverage baseline and low-coverage priority list.
 
 ## Change propagation
 Schema/domain → data, domain, API, tests, security. API → API docs, backend tests, frontend consumers, browser E2E. UI/navigation → frontend docs and browser tests. Auth/moderation/messaging/uploads/privacy → threat review. Workflow/release → CI/CD and GitHub docs. Test architecture or coverage changes → testing strategy, coverage matrix, route test map, tests README, PHPUnit configuration, quality gates and CI workflow.

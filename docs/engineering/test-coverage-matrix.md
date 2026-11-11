@@ -12,6 +12,19 @@ Status vocabulary:
 
 The initial inventory below records the repository before this overhaul. The following coverage has since been added in this branch.
 
+## Initial measured backend line-coverage baseline
+
+Measured from the first complete PCOV run on PR head c1e0f4c:
+
+- Combined across Unit + Feature + Integration: **1,491 / 1,631 statements (91.4%)**.
+- Feature suite: 1,475 / 1,626 statements (90.7%).
+- Unit suite: 34 / 1,631 statements (2.1%).
+- Integration suite: 49 / 1,631 statements (3.0%).
+
+The combined number is a union of covered statement lines across the three reports. Per-suite percentages are not additive. PCOV measures line/statement coverage here; branch/condition coverage is not measured. These are diagnostic baselines, not correctness guarantees or enforced thresholds.
+
+The clearest next backend targets from this baseline are EditorialController (68.3%), CuratedCollection (80.0%), MessageReport (80.0%), ArtworkPolicy (85.7%), User (85.7%) and MessageSafetyController (85.8%). Several tiny model classes have no direct statement coverage and should be assessed for whether they contain meaningful behavior worth testing.
+
 ## Coverage added by this overhaul
 
 | Layer | Added tests | Behavior asserted |

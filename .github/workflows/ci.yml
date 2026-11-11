@@ -42,6 +42,8 @@ jobs:
         run: vendor/bin/phpunit --testsuite=Feature --coverage-clover=build/test-reports/backend-feature-clover.xml --log-junit=build/test-reports/backend-feature-junit.xml
       - name: Run integration tests and collect line coverage
         run: vendor/bin/phpunit --testsuite=Integration --coverage-clover=build/test-reports/backend-integration-clover.xml --log-junit=build/test-reports/backend-integration-junit.xml
+      - name: Summarize combined backend line coverage
+        run: python scripts/summarize-coverage.py --output build/test-reports/backend-coverage-summary.md build/test-reports/backend-unit-clover.xml build/test-reports/backend-feature-clover.xml build/test-reports/backend-integration-clover.xml
       - run: composer lint
       - name: Upload backend test and coverage reports
         if: always()

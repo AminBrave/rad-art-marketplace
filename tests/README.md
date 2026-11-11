@@ -29,7 +29,9 @@ php artisan test --testsuite=Unit
 php artisan test --testsuite=Feature
 php artisan test --testsuite=Integration
 npm run test:frontend
+mkdir -p build/test-reports
 node --test --test-reporter=junit --test-reporter-destination=build/test-reports/frontend-junit.xml tests/js/*.test.js
+python scripts/summarize-coverage.py --output build/test-reports/backend-coverage-summary.md build/test-reports/backend-unit-clover.xml build/test-reports/backend-feature-clover.xml build/test-reports/backend-integration-clover.xml
 python tests/browser/run_tests.py
 ./scripts/verify browser
 ~~~
