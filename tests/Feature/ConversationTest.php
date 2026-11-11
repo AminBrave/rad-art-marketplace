@@ -108,6 +108,40 @@ class ConversationTest extends TestCase
             ->assertUnprocessable();
     }
 
+    public function test_conversation_history_can_be_loaded_in_older_pages_without_losing_order(): void
+    {
+        [$buyer, $artist, $inquiry] = $this->participantsWithInquiry();
+        $conversation = $this->openConversationAsBuyer($buyer, $inquiry);
+        $initialMessage = $conversation->messages()->firstOrFail();
+
+        for ($index = 1; $index <= 34; $index++) {
+            $conversation->messages()->create([
+                'sender_user_id' => $artist->id,
+                'body' => 'پیام تاریخی '.$index,
+                'delivered_at' => now()->addSeconds($index),
+            ]);
+        }
+
+        $firstPage = $this->actingAs($buyer)
+            ->getJson('/api/v1/conversations/'.$conversation->id.'/messages')
+            ->assertOk()
+            ->assertJsonCount(30, 'data')
+            ->assertJsonPath('current_page', 1)
+            ->assertJsonPath('last_page', 2);
+
+        $secondPage = $this->getJson('/api/v1/conversations/'.$conversation->id.'/messages?page=2')
+            ->assertOk()
+            ->assertJsonCount(5, 'data')
+            ->assertJsonPath('current_page', 2);
+
+        $this->assertSame($initialMessage->id, $secondPage->json('data.0.id'));
+        $this->assertSame($secondPage->json('data.4.id') + 1, $firstPage->json('data.0.id'));
+        $this->assertSame(
+            collect($firstPage->json('data'))->pluck('id')->sort()->values()->all(),
+            collect($firstPage->json('data'))->pluck('id')->values()->all(),
+        );
+    }
+
     public function test_message_sending_is_idempotent_for_a_client_message_id(): void
     {
         [$buyer, , $inquiry] = $this->participantsWithInquiry();
