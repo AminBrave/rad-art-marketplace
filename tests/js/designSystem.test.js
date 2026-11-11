@@ -9,6 +9,7 @@ const cards = readFileSync(new URL('../../resources/js/components/ui/cards.jsx',
 const feedback = readFileSync(new URL('../../resources/js/components/ui/feedback.jsx', import.meta.url), 'utf8');
 const publicPages = ['ArtworkCatalogue.jsx', 'ArtistDirectoryPage.jsx', 'ArtworkDetailPage.jsx'].map((file) => readFileSync(new URL('../../resources/js/app/' + file, import.meta.url), 'utf8'));
 const layouts = readFileSync(new URL('../../resources/js/app/Layouts.jsx', import.meta.url), 'utf8');
+const buyerWorkspace = readFileSync(new URL('../../resources/js/app/BuyerWorkspace.jsx', import.meta.url), 'utf8');
 
 test('semantic palette, typography, spacing and layout tokens have one CSS source', () => {
     for (const token of [
@@ -63,12 +64,12 @@ test('shared layout, surface, button, badge and form contracts are defined centr
     for (const contract of [
         '.ra-page--wide', '.ra-page--reading', '.ra-page-header__title',
         '.ra-section-header__title', '.ra-surface--muted', '.ra-surface--interactive',
-        '.ra-badge--success', '.ra-badge--danger', '.ra-form-field__error',
+        '.ra-badge--success', '.ra-badge--danger', '.ra-form-field__error', '.ra-workspace-hero', '.ra-metric-card',
         '.ra-control--textarea', '.ra-workspace-content',
     ]) {
         assert.ok(css.includes(contract), 'Missing component contract: ' + contract);
     }
-    for (const component of ['PageContainer', 'PageHeader', 'SectionHeader', 'Surface', 'StatusBadge']) {
+    for (const component of ['PageContainer', 'PageHeader', 'SectionHeader', 'Surface', 'StatusBadge', 'WorkspaceHero', 'DashboardMetricCard']) {
         assert.ok(primitives.includes('function ' + component), 'Missing shared component: ' + component);
     }
 });
@@ -77,6 +78,7 @@ test('public catalogue, artist directory and artwork detail use shared page layo
     assert.ok(publicPages[0].includes('PageContainer') && publicPages[0].includes('PageHeader'));
     assert.ok(publicPages[1].includes('PageContainer') && publicPages[1].includes('SectionHeader'));
     assert.ok(publicPages[2].includes('PageContainer'));
+    assert.ok(buyerWorkspace.includes('WorkspaceHero') && buyerWorkspace.includes('<Surface'));
 });
 
 test('public and role-based workspaces expose the shared application shell contracts', () => {
