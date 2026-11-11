@@ -25,3 +25,7 @@ export { Dialog, DialogTrigger, DialogClose, DialogPortal, DialogOverlay, Dialog
 export { Skeleton, SkeletonLines, EmptyState, ErrorState, SuccessState, PermissionState, UploadFeedback, Toast } from './feedback';
 export { ArtworkCard, ArtistCard } from './cards';
 export { ArtworkCardSkeleton, ArtistCardSkeleton, ArtworkDetailSkeleton, ArtistProfileSkeleton } from './skeletons';
+
+export { Label, NativeSelect, Checkbox, Radio, Switch, RadioGroup, RadioGroupItem } from './form-controls';
+export { Avatar, AvatarImage, AvatarFallback, Progress, Spinner, Kbd, Toggle, AspectRatio } from './misc';
+export { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarInset, SidebarFooter } from './sidebar';
