@@ -142,6 +142,46 @@ class ConversationTest extends TestCase
         );
     }
 
+    public function test_older_message_cursor_remains_stable_when_new_messages_arrive(): void
+    {
+        [$buyer, $artist, $inquiry] = $this->participantsWithInquiry();
+        $conversation = $this->openConversationAsBuyer($buyer, $inquiry);
+
+        for ($index = 1; $index <= 34; $index++) {
+            $conversation->messages()->create([
+                'sender_user_id' => $artist->id,
+                'body' => 'پیام تاریخی '.$index,
+                'delivered_at' => now(),
+            ]);
+        }
+
+        $latestPage = $this->actingAs($buyer)
+            ->getJson('/api/v1/conversations/'.$conversation->id.'/messages')
+            ->assertOk()
+            ->assertJsonCount(30, 'data');
+        $beforeId = $latestPage->json('data.0.id');
+
+        $this->actingAs($artist)
+            ->postJson('/api/v1/conversations/'.$conversation->id.'/messages', [
+                'body' => 'پیامی که هنگام مرور تاریخچه رسید',
+                'client_message_id' => 'during-history-load',
+            ])->assertCreated();
+
+        $olderPage = $this->actingAs($buyer)
+            ->getJson('/api/v1/conversations/'.$conversation->id.'/messages?before_id='.$beforeId)
+            ->assertOk()
+            ->assertJsonCount(5, 'data')
+            ->assertJsonPath('current_page', 1)
+            ->assertJsonPath('last_page', 1);
+
+        $this->assertSame($beforeId - 5, $olderPage->json('data.4.id'));
+        $this->assertSame($beforeId - 1, $olderPage->json('data.4.id'));
+        $this->assertSame(
+            collect($olderPage->json('data'))->pluck('id')->sort()->values()->all(),
+            collect($olderPage->json('data'))->pluck('id')->values()->all(),
+        );
+    }
+
     public function test_message_sending_is_idempotent_for_a_client_message_id(): void
     {
         [$buyer, , $inquiry] = $this->participantsWithInquiry();
