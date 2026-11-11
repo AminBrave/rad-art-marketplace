@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -9,6 +9,18 @@ function dateLabel(value) {
     if (!value) return '';
     const date = new Date(value);
     return Number.isNaN(date.getTime()) ? '' : date.toLocaleString('fa-IR', { dateStyle: 'short', timeStyle: 'short' });
+}
+
+function timeLabel(value) {
+    if (!value) return '';
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? '' : date.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+}
+
+function dayLabel(value) {
+    if (!value) return '';
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? '' : date.toLocaleDateString('fa-IR', { dateStyle: 'medium' });
 }
 
 export default function MessagingCenter({ role }) {
@@ -638,11 +650,16 @@ export default function MessagingCenter({ role }) {
                                     const node = messagesContainerRef.current;
                                     node?.scrollTo({ top: node.scrollHeight, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
                                 }} className="absolute bottom-4 left-1/2 z-20 -translate-x-1/2 rounded-full border border-border bg-white px-4 py-2 text-xs font-bold text-terracotta-strong shadow-soft hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus" aria-label={`${newMessageCount} پیام جدید؛ رفتن به آخر گفتگو`}>{Number(newMessageCount).toLocaleString('fa-IR')} پیام جدید ↓</button>}
-                                {messages.map((message) => {
+                                {messages.map((message, index) => {
                                     const own = Number(message.sender_id) === Number(user?.id);
                                     const deleted = Boolean(message.deleted_at);
+                                    const previousMessage = messages[index - 1];
+                                    const showDayDivider = !previousMessage
+                                        || new Date(previousMessage.created_at).toDateString() !== new Date(message.created_at).toDateString();
                                     return (
-                                        <div dir="ltr" key={message.id} className={'flex w-full ' + (own ? 'justify-end' : 'justify-start')}>
+                                        <Fragment key={message.id}>
+                                            {showDayDivider && <div dir="rtl" className="flex justify-center py-1"><span className="rounded-full border border-border bg-white/90 px-3 py-1 text-[10px] font-semibold text-muted shadow-soft">{dayLabel(message.created_at)}</span></div>}
+                                            <div dir="ltr" className={'flex w-full ' + (own ? 'justify-end' : 'justify-start')}>
                                             <article dir="rtl" className={'min-w-0 max-w-[88%] rounded-[20px] px-4 py-3 shadow-[0_2px_5px_rgba(31,30,27,0.055)] sm:max-w-[min(72%,680px)] ' + (own ? 'rounded-bl-[7px] bg-[var(--color-message-own)] text-ink' : 'rounded-br-[7px] border border-border bg-[var(--color-message-peer)] text-ink')}>
                                                 {message.attachments?.length > 0 && <ul className="mb-3 space-y-2">{message.attachments.map((attachment) => <li key={attachment.id}><a href={attachment.download_url} className="inline-flex max-w-full items-center gap-2 border border-border bg-surface-muted px-3 py-2 text-xs font-semibold underline" rel="noreferrer"><span aria-hidden="true">📎</span><span className="truncate">{attachment.name}</span><span className="text-muted">({Math.max(1, Math.round(attachment.size_bytes / 1024))} KB)</span></a></li>)}</ul>}
                                                 {message.reply_to && <div className="mb-3 border-r-2 border-terracotta bg-surface-muted px-3 py-2 text-xs"><strong>{message.reply_to.sender_name ?? 'پیام قبلی'}</strong><p className="mt-1 line-clamp-2 text-muted">{message.reply_to.body ?? 'این پیام حذف شده است.'}</p></div>}
@@ -653,7 +670,7 @@ export default function MessagingCenter({ role }) {
                                                     </form>
                                                 ) : <p className={'whitespace-pre-wrap break-words text-sm leading-7 ' + (deleted ? 'italic text-muted' : '')}>{message.body ?? 'این پیام حذف شده است.'}</p>}
                                                 <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[10px] text-muted">
-                                                    <span className={own ? 'text-muted' : 'text-muted'}>{dateLabel(message.created_at)} {message.edited_at && !deleted ? '· ویرایش‌شده' : ''}</span>
+                                                    <span className={own ? 'text-muted' : 'text-muted'}>{timeLabel(message.created_at)} {message.edited_at && !deleted ? '· ویرایش‌شده' : ''}</span>
                                                     {own && !deleted && <span aria-label={message.read_at ? 'پیام خوانده شده' : 'پیام ارسال شده'} className="text-muted">{message.read_at ? '✓✓ خوانده‌شده' : '✓ ارسال‌شده'}</span>}
                                                 </div>
                                                 {!deleted && (
@@ -673,7 +690,8 @@ export default function MessagingCenter({ role }) {
                                                     </>
                                                 )}
                                             </article>
-                                        </div>
+                                            </div>
+                                        </Fragment>
                                     );
                                 })}
                                 
