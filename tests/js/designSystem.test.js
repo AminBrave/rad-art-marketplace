@@ -35,6 +35,7 @@ test('Tailwind and shadcn configuration use standard semantic colors and class-b
     assert.equal(config.tailwind.cssVariables, true);
     assert.equal(config.tsx, false);
     assert.equal(config.style, 'new-york');
+    assert.equal(config.rtl, true);
 });
 
 test('shared primitives follow shadcn component contracts and preserve accessible form states', () => {
@@ -45,6 +46,7 @@ test('shared primitives follow shadcn component contracts and preserve accessibl
     assert.ok(primitives.includes("'aria-invalid': error ? true"));
     assert.ok(input.includes('focus-visible:ring-ring'));
     assert.ok(input.includes("type === 'checkbox'"));
+    assert.ok(input.includes('forwardRef'));
     assert.ok(table.includes('caption-bottom text-sm'));
     for (const component of ['Input', 'Textarea', 'Select', 'Label', 'Table', 'TableRow', 'TableCell', 'Card', 'Alert']) {
         assert.ok(uiIndex.includes(component), `Missing shared component export: ${component}`);
@@ -65,6 +67,8 @@ test('theme provider persists the selected mode and applies the root class', () 
     assert.ok(themeProvider.includes("root.classList.toggle('dark', theme === 'dark')"));
     assert.ok(themeProvider.includes('localStorage.setItem(STORAGE_KEY, theme)'));
     assert.ok(themeProvider.includes('meta[name="theme-color"]'));
+    const messaging = read('../../resources/js/app/MessagingCenter.jsx');
+    assert.doesNotMatch(messaging, /window\\.(?:confirm|prompt|alert)\\(/);
 });
 
 test('application screens use shared shadcn controls instead of raw interactive HTML controls', () => {
