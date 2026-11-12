@@ -148,7 +148,7 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
                 "id": 73100 + index,
                 "conversation_id": conversation_id,
                 "sender_id": 73102,
-                "body": f"پیام قدیمی {index + 1} " + ("متن قدیمی برای حفظ جایگاه پیمایش " * 3),
+                "body": f"پیام قدیمی {index} " + ("متن قدیمی برای حفظ جایگاه پیمایش " * 3),
                 "created_at": f"2026-11-09T10:0{index}:00Z",
                 "read_at": "2026-11-12T10:00:00Z",
                 "attachments": [],
