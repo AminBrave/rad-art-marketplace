@@ -236,6 +236,15 @@ function resetBrowserRuntime() {
     ensureBrowserRuntimeDirectories();
 }
 
+function resetBrowserVolatileRuntime() {
+    const runtimeDir = resolve(root, 'storage', 'framework', 'browser-testing');
+    for (const directory of ['cache', 'sessions', 'views']) {
+        rmSync(resolve(runtimeDir, directory), { recursive: true, force: true });
+    }
+    clearBrowserBootstrapCaches();
+    ensureBrowserRuntimeDirectories();
+}
+
 async function prepareBrowserEnvironment() {
     ensureBrowserDatabase();
     resetBrowserRuntime();
@@ -337,8 +346,7 @@ async function startBrowserDevelopment() {
         throw new Error('Browser test database is empty. Run npm run browser:prepare first.');
     }
 
-    clearBrowserBootstrapCaches();
-    ensureBrowserRuntimeDirectories();
+    resetBrowserVolatileRuntime();
     const services = [
         {
             label: 'Laravel browser-test application (isolated SQLite)',
