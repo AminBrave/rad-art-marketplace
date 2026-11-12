@@ -141,12 +141,26 @@ async function verifyFrontend() {
     ]);
 }
 
+async function clearTestCaches() {
+    // Clear only Laravel's compiled bootstrap/view caches. Do not flush the
+    // application cache store: it may contain local developer data.
+    await runSteps([
+        ['Clear cached configuration', php, ['artisan', 'config:clear']],
+        ['Clear cached routes', php, ['artisan', 'route:clear']],
+        ['Clear cached events', php, ['artisan', 'event:clear']],
+        ['Clear compiled views', php, ['artisan', 'view:clear']],
+    ]);
+}
+
 async function verify(includeBrowser = false) {
+    await clearTestCaches();
     await verifyBackend();
     await verifyFrontend();
     if (includeBrowser) {
-        console.log('\n[project] Browser tests require the local app to be running.\n');
-        await run(python, pythonArgs(['tests/browser/run_tests.py']));
+        console.log('\n[project] Browser tests require the local development stack and a disposable local test database.\n');
+        await run(python, pythonArgs(['tests/browser/run_tests.py']), {
+            env: { ...process.env, RAD_ART_TEST_MODE: '1' },
+        });
     }
 }
 
@@ -207,8 +221,8 @@ Quality
   backend            Backend tests + PHP style (legacy verify alias)
   frontend           Frontend tests + lint + both builds (legacy verify alias)
   verify             Run tests, PHP/JS lint and both production builds
-  verify:all         Run verify plus Playwright (requires a running local app)
-  browser            Run Playwright browser tests against RAD_ART_BASE_URL or http://127.0.0.1:8000
+  verify:all         Run the full quality suite plus Playwright (requires local stack)
+  browser            Run guarded Playwright tests against a local RAD_ART_BASE_URL
 
 Build
   build              Standard Vite production build
@@ -252,6 +266,7 @@ try {
             await artisan('migrate:fresh', '--seed');
             break;
         case 'test':
+            await clearTestCaches();
             await runSteps([
                 ['Backend tests', php, ['artisan', 'test']],
                 ['Frontend tests', npm, ['run', 'test:frontend']],
@@ -273,7 +288,9 @@ try {
             await verify(true);
             break;
         case 'browser':
-            await run(python, pythonArgs(['tests/browser/run_tests.py']));
+            await run(python, pythonArgs(['tests/browser/run_tests.py']), {
+                env: { ...process.env, RAD_ART_TEST_MODE: '1' },
+            });
             break;
         case 'build':
             await run(npm, ['run', 'build']);
