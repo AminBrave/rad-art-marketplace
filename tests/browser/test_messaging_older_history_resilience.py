@@ -152,7 +152,7 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
             older_alert.wait_for()
             self.assertEqual(older_attempts["count"], 1)
             self.assertEqual(log.locator("article").count(), len(initial_messages))
-            self.assertTrue(page.get_by_text("پیام موجود 1", exact=False).is_visible())
+            self.assertTrue(page.get_by_text(re.compile(r"^پیام موجود 1 ")).first.is_visible())
 
             with page.expect_response(
                 lambda response: urlparse(response.url).path.endswith(f"/api/v1/conversations/{conversation_id}/messages")
@@ -165,7 +165,7 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
             page.get_by_text("پیام قدیمی 1", exact=False).wait_for()
             self.assertEqual(older_attempts["count"], 2)
             self.assertEqual(log.locator("article").count(), len(initial_messages) + 3)
-            self.assertEqual(page.get_by_text("پیام موجود 1", exact=False).count(), 1)
+            self.assertEqual(page.get_by_text(re.compile(r"^پیام موجود 1 ")).count(), 1)
             self.assertGreater(log.evaluate("(node) => node.scrollTop"), 0)
             self.assertTrue(page.get_by_text("پیام موجود 1", exact=False).is_visible())
             self.assertFalse(older_alert.is_visible())
