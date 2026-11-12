@@ -29,7 +29,7 @@ class RealUserBrowserFlowTests(unittest.TestCase):
             locale="fa-IR",
             viewport={"width": 1440, "height": 1000},
             ignore_https_errors=IGNORE_HTTPS_ERRORS,
-            extra_http_headers={"X-Forwarded-For": "198.51.100.42"},
+            extra_http_headers={"X-Forwarded-For": f"198.51.100.{1 + (uuid.uuid4().int % 253)}"},
         )
         self.page: Page = self.context.new_page()
         self.page_errors: list[str] = []
