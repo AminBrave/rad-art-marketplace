@@ -190,6 +190,13 @@ function ensureBrowserDatabase() {
 
 function ensureBrowserRuntimeDirectories() {
     const runtimeDir = resolve(root, 'storage', 'framework', 'browser-testing');
+    const appRuntimeDir = resolve(root, 'storage', 'app', 'browser-testing');
+    for (const baseDirectory of [runtimeDir, appRuntimeDir]) {
+        if (existsSync(baseDirectory) && lstatSync(baseDirectory).isSymbolicLink()) {
+            throw new Error(`Refusing to use a symbolic link for isolated browser-test runtime path: ${baseDirectory}`);
+        }
+    }
+
     for (const directory of [
         resolve(runtimeDir, 'cache'),
         resolve(runtimeDir, 'sessions'),
