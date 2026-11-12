@@ -126,6 +126,38 @@ class MessageAttachmentTest extends TestCase
             ->assertHeader('X-Content-Type-Options', 'nosniff');
     }
 
+    public function test_image_previews_remain_private_and_missing_storage_is_not_exposed(): void
+    {
+        Storage::fake('local');
+        [$buyer, $artist, $conversation, $message, $outsider] = $this->fixture();
+        $path = 'message-attachments/'.$conversation->id.'/private-preview.png';
+        Storage::disk('local')->put($path, 'private image bytes');
+
+        $attachment = MessageAttachment::query()->create([
+            'message_id' => $message->id,
+            'uploaded_by_user_id' => $buyer->id,
+            'storage_path' => $path,
+            'original_name' => 'private-preview.png',
+            'mime_type' => 'image/png',
+            'size_bytes' => 19,
+        ]);
+        $previewUrl = "/api/v1/conversations/{$conversation->id}/messages/{$message->id}/attachments/{$attachment->id}/preview";
+
+        $this->actingAs($outsider)
+            ->get($previewUrl)
+            ->assertNotFound();
+
+        $this->actingAs($artist)
+            ->get($previewUrl)
+            ->assertOk()
+            ->assertHeader('Content-Type', 'image/png')
+            ->assertHeader('Cache-Control', 'no-store, private')
+            ->assertHeader('X-Content-Type-Options', 'nosniff');
+
+        Storage::disk('local')->delete($path);
+        $this->get($previewUrl)->assertNotFound();
+    }
+
     public function test_a_message_cannot_receive_more_than_five_attachments(): void
     {
         Storage::fake('local');
