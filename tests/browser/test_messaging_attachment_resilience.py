@@ -26,6 +26,12 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
         )
         page = context.new_page()
         page.set_default_timeout(15000)
+        browser_errors = []
+        api_responses = []
+        page.on("pageerror", lambda error: browser_errors.append(str(error)))
+        page.on("response", lambda response: api_responses.append(
+            f"{response.request.method} {response.url} -> {response.status}"
+        ) if "/api/v1/" in response.url else None)
         conversation_id = 73020
         message_id = 73021
         message_attempts = []
@@ -200,7 +206,15 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
                 send_button.wait_for(state="visible")
                 send_button.evaluate("(button) => button.form.requestSubmit()")
 
-            page.get_by_text("ارسال پیام یا پیوست انجام نشد", exact=False).wait_for()
+            try:
+                page.get_by_text("ارسال پیام یا پیوست انجام نشد", exact=False).wait_for()
+            except Exception as failure:
+                raise AssertionError(
+                    "Attachment failure response completed but the UI error was not rendered. "
+                    f"URL={page.url}; title={page.title()}; "
+                    f"body={page.locator('body').inner_text()[:2000]!r}; "
+                    f"browser_errors={browser_errors!r}; api_responses={api_responses[-20:]!r}"
+                ) from failure
             self.assertEqual(composer.input_value(), "لطفاً این فایل را بررسی کنید.")
             page.get_by_text("reference.pdf", exact=True).wait_for()
             self.assertEqual(len(message_attempts), 1)
