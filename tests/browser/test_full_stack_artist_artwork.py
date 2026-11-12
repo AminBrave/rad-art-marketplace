@@ -103,7 +103,7 @@ class FullStackArtistArtworkTests(unittest.TestCase):
                 page.get_by_role("button", name="ورود به حساب").click()
             self.assertEqual(200, login_response.value.status)
 
-            page.goto(BASE_URL + "/", wait_until="domcontentloaded")
+            page.goto(BASE_URL + "/dashboard/artist/profile", wait_until="domcontentloaded")
             profile_form = page.locator("form").filter(has=page.get_by_label("نام نمایشی"))
             profile_form.wait_for()
             page.get_by_label("نام نمایشی").fill("هنرمند آزمون تکرار")
