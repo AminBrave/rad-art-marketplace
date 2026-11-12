@@ -153,6 +153,7 @@ async function verify(includeBrowser = false) {
 async function startDevelopment(secure = false) {
     // Local development must not inherit stale production config from a previous optimize run.
     await artisan('config:clear');
+    await artisan('route:clear');
 
     const services = [
         {
