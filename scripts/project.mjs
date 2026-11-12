@@ -409,40 +409,53 @@ function usage() {
 Usage: npm run <task>  (or node scripts/project.mjs <task>)
 
 Setup
-  setup                 Install Composer/npm packages and create .env if missing
-  db:sqlite:init        Create database/database.sqlite if it does not exist
+  setup                 Install Composer/npm dependencies and create .env if missing
 
 Development
   dev                   Start Laravel + Vite over local HTTP
-  dev:https             Start regular local Laravel + Vite + Caddy
-  browser:prepare       Stop dev:browser first; reset only isolated browser-testing.sqlite and browser-test storage
-  dev:browser           Start Laravel + Vite + Caddy against the isolated browser-test environment
+  dev:https             Start Laravel + Vite + Caddy over local HTTPS
+  dev:local             Alias for dev:https
+  preview               Start Laravel's local PHP preview server
 
 Database (review .env before running)
+  db:sqlite:init        Create database/database.sqlite if it does not exist
+  db:status             Show migration status (runs Artisan directly via npm)
   db:migrate            Apply pending migrations
-  db:seed               Run DatabaseSeeder (demo data; local/testing only)
-  db:seed:demo           Run DemoDatabaseSeeder (local/testing only)
+  db:seed               Run DatabaseSeeder
+  db:seed:demo           Run DemoDatabaseSeeder
   db:fresh              DESTRUCTIVE: drop all tables, migrate and seed
 
-Quality (all commands below execute checks; invoke only when authorized)
+Quality — tests (execute tests; run only when authorized)
   test                  Run backend and frontend tests
-  backend:test          Run backend tests in isolated SQLite in-memory environment
-  unit                  Run the Unit PHPUnit suite in isolated SQLite memory
-  feature               Run the Feature PHPUnit suite in isolated SQLite memory
-  integration           Run the Integration PHPUnit suite in isolated SQLite memory
-  backend               Backend tests + PHP style
-  frontend              Frontend tests (including color accessibility) + lint + both builds
+  backend:test          Run backend tests with isolated in-memory SQLite
+  unit                  Run the Unit PHPUnit suite
+  feature               Run the Feature PHPUnit suite
+  integration           Run the Integration PHPUnit suite
+  frontend:test         Run frontend Node tests and write a JUnit report
+  browser               Run guarded Playwright tests against RAD_ART_BASE_URL
+  browser:prepare       DESTRUCTIVE to isolated browser-testing.sqlite and browser-test storage; migrate + seed it
+  dev:browser           Start the isolated browser-test application + Vite + Caddy
+
+Quality — lint and repair
+  lint                  Run ESLint
+  lint:fix              Apply ESLint autofixes
   fix:style             Apply PHP Pint and ESLint formatting fixes only
+
+Quality — verification (execute tests/lint/builds; run only when authorized)
+  backend               Backend tests + PHP style
+  frontend              Frontend tests + lint + both production builds
   verify                Run backend and frontend quality checks
   verify:all            Run verify plus Playwright against the prepared isolated browser-test app
-  frontend:test         Run frontend tests and write a JUnit report
-  browser               Run guarded Playwright tests against local RAD_ART_BASE_URL
+
+Build
   build                 Standard Vite production build
   build:cpanel          cPanel-targeted production build
 
 Production
   prod:optimize         Cache Laravel configuration, routes, events and views
   prod:clear            Clear Laravel optimization caches
+
+See scripts/README.md for the complete npm script reference and workflow guidance.
 `);
 }
 
