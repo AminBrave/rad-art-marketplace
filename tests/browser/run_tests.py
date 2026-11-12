@@ -137,6 +137,7 @@ def write_junit_report(result: TimedTextTestResult, destination: Path) -> None:
 
 def main() -> int:
     report_dir = Path(os.environ.get("RAD_ART_TEST_REPORT_DIR", "build/test-reports"))
+    report_dir.mkdir(parents=True, exist_ok=True)
     report_path = report_dir / "browser-junit.xml"
     report_path.unlink(missing_ok=True)
 
