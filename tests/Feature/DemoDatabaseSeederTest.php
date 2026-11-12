@@ -13,8 +13,8 @@ use App\Models\FeaturedArtistSelection;
 use App\Models\User;
 use Database\Seeders\DemoDatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
