@@ -1,10 +1,10 @@
 import json
-import os
 import re
 import unittest
 from playwright.sync_api import sync_playwright
 
-BASE_URL = os.environ.get("RAD_ART_BASE_URL", "http://127.0.0.1:8000")
+from config import BASE_URL, IGNORE_HTTPS_ERRORS
+
 BUYER = {"id": 42, "name": "Buyer QA", "email": "buyer@example.test", "role": "buyer"}
 NOTIFICATION = {
     "id": "notification-uuid-1",
@@ -51,7 +51,7 @@ class MessageNotificationBrowserTests(unittest.TestCase):
         cls.playwright.stop()
 
     def new_page(self):
-        context = self.browser.new_context(viewport={"width": 1280, "height": 900})
+        context = self.browser.new_context(viewport={"width": 1280, "height": 900}, ignore_https_errors=IGNORE_HTTPS_ERRORS)
         page = context.new_page()
         page.set_default_timeout(15000)
         page.set_default_navigation_timeout(15000)
