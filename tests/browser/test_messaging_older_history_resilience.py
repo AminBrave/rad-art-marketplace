@@ -193,10 +193,31 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
                 "() => { const node = document.querySelector('[role=log][aria-label=\"پیام‌های گفتگو\"]');"
                 "return node && node.scrollHeight > node.clientHeight + 100; }"
             )
-            log.evaluate("(node) => { node.scrollTop = 0; node.dispatchEvent(new Event('scroll')); }")
+            # Move away from the top and back so the scroll listener observes
+            # a genuine position transition before requesting older history.
+            log.evaluate("(node) => { node.scrollTop = 120; node.dispatchEvent(new Event('scroll')); node.scrollTop = 0; node.dispatchEvent(new Event('scroll')); }")
 
             older_alert = page.get_by_role("alert").filter(has_text="دریافت پیام‌های قدیمی‌تر انجام نشد")
-            older_alert.wait_for()
+            try:
+                with page.expect_response(
+                    lambda response: urlparse(response.url).path.endswith(f"/api/v1/conversations/{conversation_id}/messages")
+                    and "before_id" in parse_qs(urlparse(response.url).query)
+                    and response.request.method == "GET"
+                    and response.status == 503
+                ):
+                    page.wait_for_function(
+                        "() => { const node = document.querySelector('[role=log][aria-label=\"پیام‌های گفتگو\"]');"
+                        "return node && node.scrollTop < 72; }"
+                    )
+                older_alert.wait_for()
+            except Exception as failure:
+                metrics = log.evaluate("(node) => ({scrollTop: node.scrollTop, scrollHeight: node.scrollHeight, clientHeight: node.clientHeight})")
+                raise AssertionError(
+                    "Older-history pagination did not reach its expected failure state. "
+                    f"scroll_metrics={metrics!r}; older_attempts={older_attempts['count']}; "
+                    f"browser_errors={browser_errors!r}; api_responses={api_responses[-25:]!r}; "
+                    f"body={page.locator('body').inner_text()[-1200:]!r}"
+                ) from failure
             self.assertEqual(older_attempts["count"], 1)
             self.assertEqual(log.locator("article").count(), len(initial_messages))
             self.assertTrue(page.get_by_text(re.compile(r"^پیام موجود 1 ")).first.is_visible())
