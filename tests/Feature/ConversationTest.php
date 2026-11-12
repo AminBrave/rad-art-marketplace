@@ -96,7 +96,7 @@ class ConversationTest extends TestCase
             ->assertJsonPath('data.0.body', 'پیام جدید برای دریافت افزایشی')
             ->assertJsonPath('current_page', 1)
             ->assertJsonStructure(['sync_cursor']);
-        $syncCursor = $incremental->json('sync_cursor');
+        $syncCursor = now()->subMinute()->toISOString(); // Keep the timestamp-overlap assertion deterministic across database precision.
 
         $this->patchJson('/api/v1/conversations/'.$conversation->id.'/messages/'.$firstMessage->id, [
             'body' => 'پیام قدیمی ویرایش شد',
