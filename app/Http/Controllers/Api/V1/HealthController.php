@@ -23,7 +23,7 @@ class HealthController
     {
         if (
             ! app()->environment(['local', 'testing'])
-            || env('RAD_ART_BROWSER_TEST_MODE') !== '1'
+            || config('app.browser_test_mode') !== '1'
             || config('database.default') !== 'sqlite'
             || basename((string) config('database.connections.sqlite.database')) !== 'browser-testing.sqlite'
         ) {
