@@ -31,7 +31,9 @@
     "preview": "php artisan serve --host=127.0.0.1 --port=8000",
     "prod:optimize": "node scripts/project.mjs prod:optimize",
     "prod:clear": "node scripts/project.mjs prod:clear",
-    "a11y:colors": "node --test tests/js/colorAccessibility.test.js"
+    "a11y:colors": "node --test tests/js/colorAccessibility.test.js",
+    "test:quality": "node scripts/project.mjs verify",
+    "test:quality:all": "node scripts/project.mjs verify:all"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",
