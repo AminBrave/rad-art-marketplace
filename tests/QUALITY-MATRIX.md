@@ -24,7 +24,7 @@ This matrix maps real product behavior to actors, risk and the tests that should
 | Authorization | Admin user-management role gate, self-demotion protection, artist artwork ownership and conversation participant checks | Good targeted cases; complete route/role matrix still needed |
 | Artwork | Upload validation, private storage, owner/admin editing, pending/public visibility, public artist-profile filtering across review states, filters, sort, pagination and price nullability | Broad; malformed image content/size and deeper media-integrity failure cases remain |
 | Moderation | Admin-only queue, approve/reject/request-changes, required notes, repeat decision rejection, artist edit resets review metadata, owner-only review feedback, resubmission cleanup and public artist-profile visibility across review states | Stronger lifecycle coverage; simultaneous admin decision and notification failure still need integration coverage |
-| Messaging | Participant isolation, idempotent client message IDs, reply context, reactions, edit/delete, read state and inbox settings | Broad; queue/notification retry and simultaneous duplicate requests remain gaps |
+| Messaging | Participant isolation, idempotent client message IDs scoped to sender and conversation, changed-payload replay, deleted-message tombstones, reply context, reactions, edit/delete, read state and inbox settings | Broad; true simultaneous duplicate requests and database/queue failure recovery remain gaps |
 | Attachments | Private PDF upload/download, sender-only upload, unsupported extension rejection, deletion cleanup and participant download | Expanded in this phase; route-binding, guest, preview-type and count boundaries now have regression cases |
 | Safety | Report idempotency, block/unblock, viewer-relative state, admin moderation and audit record | Good; abuse/rate-limit and attachment cleanup failure paths deserve deeper integration coverage |
 | Editorial/SEO | Editorial API and public SEO tests exist | Validate atomic reorder/publication rollback and missing/unpublished slug behavior more deeply |
@@ -41,7 +41,7 @@ For every protected route family, keep at least one success case for the authori
 | `/auth/*` | Register/login; guest `me` | Own session only | Own session only | Own session only | Role cannot be self-assigned to admin |
 | Public artists/artworks/collections | Read published/public data | Same | Same | Same | Private profiles and pending/rejected artwork stay private |
 | Artist profile/artwork mutation | Deny | Deny | Own profile/artworks | Explicit admin exceptions only | Another artist's records are inaccessible |
-| Direct conversation creation | Deny | Allow | Deny | Deny unless product contract changes | Only public artist + approved artwork |
+| Direct conversation creation | Deny | Allow | Deny | Deny unless product contract changes | Only public artist + approved artwork; repeated artwork-context requests remain deduplicated |
 | Conversation/message/attachment | Deny | Participant only | Participant only | No implicit access from admin role | Non-participant, wrong message and wrong attachment all denied |
 | Buyer inbox | Deny | Own inbox | Deny | Deny | Per-user archive/mute/read state does not leak |
 | Artist inbox | Deny | Deny | Own inbox | Deny | Only conversations where user is artist |
@@ -58,8 +58,8 @@ This is a target coverage contract, not a claim that every cell has a dedicated 
 - Authorization: table-driven coverage for all protected route families; guest, wrong role, wrong owner and non-participant cases.
 - Private media: wrong conversation/message/attachment combinations, missing files, private cache headers, unsupported preview types, upload size/MIME/content mismatch and attachment count.
 - Artwork lifecycle: only pending work can be moderated; artist resubmission clears review metadata; review feedback is visible only to the owner; public artist profiles expose approved work only across all review states. Stale concurrent decisions cannot overwrite each other.
-- Messaging: duplicate client ID retry, duplicate conversation creation, cross-conversation reply/artwork references, blocked send and read-state isolation.
-- Notifications: account isolation, preference enforcement, duplicate delivery/retry semantics and no private message leakage.
+- Messaging: client message IDs are scoped to sender and conversation; changed-payload retries return the original message; deleted-message retries preserve tombstones and do not re-notify; direct conversation/artwork-context retries remain deduplicated. True concurrent duplicate requests and database/queue failure recovery remain follow-up work.
+- Notifications: account isolation, preference enforcement, muted-recipient suppression, message retry does not duplicate notifications and private message bodies are not exposed. Queue worker retry/failure recovery and dead-letter observability remain follow-up work.
 - Transaction boundaries: storage/database rollback and cleanup failure behavior.
 
 ### P1 — Product UX, accessibility and RTL
