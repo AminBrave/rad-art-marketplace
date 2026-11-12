@@ -64,6 +64,11 @@ def validate_local_target() -> None:
             payload = json.loads(response.read().decode("utf-8"))
             if response.status != 200 or payload.get("status") != "ok":
                 raise RuntimeError(f"Local app health check returned an unexpected response: {health_url}")
+            if payload.get("browser_test_ready") is not True:
+                raise RuntimeError(
+                    "The local app is not using the isolated browser-test environment. "
+                    "Run npm run browser:prepare, then npm run dev:browser."
+                )
     except (URLError, HTTPError, TimeoutError, json.JSONDecodeError) as error:
         raise RuntimeError(
             f"Local RAD app is not ready at {health_url}. Start it with npm run dev:local first. "
