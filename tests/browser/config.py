@@ -1,8 +1,9 @@
 """Shared configuration for local Playwright browser tests.
 
-The dev:local command starts Laravel, Vite (HTTPS mode), and Caddy. Caddy
-exposes the complete app at https://rad.localhost and proxies requests to
-Laravel/Vite. Override RAD_ART_BASE_URL when testing another local URL.
+Prepare the disposable browser database with npm run browser:prepare, then
+start the isolated Laravel/Vite/Caddy stack with npm run dev:browser. The app
+is exposed at https://rad.localhost. Override RAD_ART_BASE_URL only for another
+local URL backed by the same isolated browser-test environment.
 """
 import os
 
