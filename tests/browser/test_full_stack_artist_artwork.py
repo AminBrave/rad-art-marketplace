@@ -1,6 +1,7 @@
 """Unmocked artist artwork submission and publication-boundary journey."""
 
 import base64
+import json
 import unittest
 import uuid
 
@@ -84,6 +85,58 @@ class FullStackArtistArtworkTests(unittest.TestCase):
                 return (result.data ?? []).some((item) => item.title === title);
             }""", title)
             self.assertFalse(is_public, "Pending artwork must not appear in the public catalogue.")
+        finally:
+            context.close()
+
+    def test_artist_profile_save_ignores_rapid_duplicate_submissions(self):
+        context = self.browser.new_context(ignore_https_errors=IGNORE_HTTPS_ERRORS)
+        page = context.new_page()
+        page.set_default_timeout(20000)
+        try:
+            page.goto(BASE_URL + "/login", wait_until="domcontentloaded")
+            page.locator('input[name="email"]').fill("artist@rademan.test")
+            page.locator('input[name="password"]').fill("Demo@12345")
+            with page.expect_response(
+                lambda response: response.url.endswith("/api/v1/auth/login")
+                and response.request.method == "POST"
+            ) as login_response:
+                page.get_by_role("button", name="ورود به حساب").click()
+            self.assertEqual(200, login_response.value.status)
+
+            page.goto(BASE_URL + "/", wait_until="domcontentloaded")
+            profile_form = page.locator("form").filter(has=page.get_by_label("نام نمایشی"))
+            profile_form.wait_for()
+            page.get_by_label("نام نمایشی").fill("هنرمند آزمون تکرار")
+
+            profile_requests = []
+
+            def save_profile(route):
+                profile_requests.append(route.request)
+                route.fulfill(
+                    status=200,
+                    content_type="application/json",
+                    body=json.dumps({
+                        "data": {
+                            "display_name": "هنرمند آزمون تکرار",
+                            "bio": "", "city": "", "website_url": "",
+                            "instagram_handle": "", "is_public": True,
+                            "slug": "artist-duplicate-submit-test",
+                        },
+                        "message": "پروفایل ذخیره شد.",
+                    }),
+                )
+
+            page.route("**/api/v1/artist-profile/me", save_profile)
+            with page.expect_response(
+                lambda response: response.url.endswith("/api/v1/artist-profile/me")
+                and response.request.method == "PUT"
+            ):
+                profile_form.evaluate("(form) => { form.requestSubmit(); form.requestSubmit(); }")
+
+            self.assertEqual(
+                len(profile_requests), 1,
+                "Rapid duplicate profile saves must create one update request.",
+            )
         finally:
             context.close()
 
