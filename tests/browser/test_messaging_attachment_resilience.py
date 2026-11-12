@@ -188,12 +188,16 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
             })
             page.get_by_text("reference.pdf", exact=True).wait_for()
 
+            # Submit through the form's native API to avoid a pointer-action race
+            # with the composer's asynchronous preview/state updates.
             with page.expect_response(
                 lambda response: response.url.endswith(
                     f"/api/v1/conversations/{conversation_id}/messages/{message_id}/attachments"
                 ) and response.request.method == "POST" and response.status == 503
             ):
-                page.get_by_role("button", name="ارسال پیام").click()
+                page.get_by_label("متن پیام").evaluate(
+                    "(textarea) => textarea.form.requestSubmit()"
+                )
 
             page.get_by_role("alert").filter(has_text="ارسال پیام یا پیوست انجام نشد").wait_for()
             self.assertEqual(composer.input_value(), "لطفاً این فایل را بررسی کنید.")
@@ -206,7 +210,9 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
                     f"/api/v1/conversations/{conversation_id}/messages/{message_id}/attachments"
                 ) and response.request.method == "POST" and response.status == 201
             ):
-                page.get_by_role("button", name="ارسال پیام").click()
+                page.get_by_label("متن پیام").evaluate(
+                    "(textarea) => textarea.form.requestSubmit()"
+                )
 
             page.get_by_role("paragraph").filter(
                 has_text="لطفاً این فایل را بررسی کنید."
