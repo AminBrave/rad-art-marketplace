@@ -26,6 +26,7 @@ tests/
 │   ├── accessibility/             # Browser accessibility checks and helpers
 │   ├── test_artist_directory_resilience.py # Empty/error/retry and keyboard search journeys
 │   ├── test_artwork_catalogue_resilience.py # Catalogue retry and filter-metadata degradation
+│   ├── test_artist_workspace_resilience.py  # Authenticated artist workspace artwork retry
 │   ├── test_auth_session_resilience.py     # Session expiry and duplicate registration
 │   ├── test_full_stack_artist_artwork.py   # Artwork publishing and duplicate profile/artwork submissions
 │   └── test_full_stack_buyer_artist_messaging.py # Cross-role messaging and duplicate message sends
