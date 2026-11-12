@@ -93,6 +93,7 @@ export default function MessagingCenter({ role }) {
     const directStartKeyRef = useRef(null);
     const directStartRequestRef = useRef(null);
     const shouldStickToBottomRef = useRef(true);
+    const sendingMessageRef = useRef(false);
 
     useEffect(() => {
         return () => {
@@ -496,7 +497,8 @@ export default function MessagingCenter({ role }) {
         event.preventDefault();
         const conversationId = active;
         const body = draft.trim();
-        if ((!body && !selectedFile) || !active || sending || safetyLoading || safety.blocked_by_me || safety.blocked_by_other) return;
+        if ((!body && !selectedFile) || !active || sendingMessageRef.current || safetyLoading || safety.blocked_by_me || safety.blocked_by_other) return;
+        sendingMessageRef.current = true;
         setSending(true);
         setError('');
         const messageClientId = pendingMessageId || (window.crypto?.randomUUID?.() ?? ('msg-' + Date.now() + '-' + Math.random().toString(36).slice(2)));
@@ -553,7 +555,10 @@ export default function MessagingCenter({ role }) {
                     ? 'برای ارسال کارت اثر، پایگاه داده هنوز به‌روزرسانی نشده است. کارت اثر را حذف کنید تا پیام عادی ارسال شود؛ سپس مدیر فنی باید مهاجرت پایگاه داده را اجرا کند.'
                     : 'ارسال پیام یا پیوست انجام نشد. وضعیت اتصال و پاسخ سرور را بررسی و دوباره تلاش کنید.');
             }
-        } finally { setSending(false); }
+        } finally {
+            sendingMessageRef.current = false;
+            setSending(false);
+        }
     };
 
     const saveEdit = async (event, message) => {
