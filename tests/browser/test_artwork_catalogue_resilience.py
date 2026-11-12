@@ -60,7 +60,7 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
 
         def artworks(route):
             attempts["count"] += 1
-            if attempts["count"] == 1:
+            if attempts["count"] <= 2:
                 route.fulfill(
                     status=503,
                     content_type="application/json",
@@ -90,7 +90,7 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
                 page.get_by_role("button", name="تلاش دوباره").click()
 
             page.get_by_role("heading", name="اثر آزمایشی کاتالوگ").wait_for()
-            self.assertEqual(attempts["count"], 2)
+            self.assertEqual(attempts["count"], 3)
             self.assertIn("هنرمند آزمایشی", page.locator("main").inner_text())
         finally:
             context.close()
