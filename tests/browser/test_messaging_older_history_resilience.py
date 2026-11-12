@@ -88,8 +88,8 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
                     content_type="application/json",
                     body=json.dumps({
                         "data": initial_messages,
-                        "current_page": 2,
-                        "last_page": 3,
+                        "current_page": 1,
+                        "last_page": 2,
                         "sync_cursor": "2026-11-12T10:00:00Z",
                     }),
                 )
