@@ -175,7 +175,7 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
         try:
             page.goto(
                 BASE_URL + f"/dashboard/buyer/messages?conversation={conversation_id}",
-                wait_until="domcontentloaded",
+                wait_until="commit",
             )
             page.get_by_role("heading", name="پیام‌ها").wait_for()
             page.get_by_role("heading", name="هنرمند گفتگو").wait_for()
@@ -211,9 +211,9 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
                     f"/api/v1/conversations/{conversation_id}/messages/{message_id}/attachments"
                 ) and response.request.method == "POST" and response.status == 201
             ):
-                page.get_by_label("متن پیام").evaluate(
-                    "(textarea) => textarea.form.requestSubmit()"
-                )
+                send_button = page.get_by_role("button", name="ارسال پیام")
+                send_button.wait_for(state="visible")
+                send_button.evaluate("(button) => button.form.requestSubmit()")
 
             page.get_by_role("paragraph").filter(
                 has_text="لطفاً این فایل را بررسی کنید."
