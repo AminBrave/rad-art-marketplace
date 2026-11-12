@@ -1,4 +1,4 @@
-"""Unmocked artist artwork submission and publication-boundary journey."""
+"""Artist artwork publishing and duplicate mutation-submission journeys."""
 
 import base64
 import json
