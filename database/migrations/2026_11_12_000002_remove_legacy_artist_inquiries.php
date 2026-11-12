@@ -47,7 +47,11 @@ return new class extends Migration
 
             if ($this->hasForeignKey('conversation_contexts', 'conversation_contexts_inquiry_id_foreign')) {
                 Schema::table('conversation_contexts', function (Blueprint $table): void {
-                    $table->dropForeign('conversation_contexts_inquiry_id_foreign');
+                    $table->dropForeign(
+                        DB::connection()->getDriverName() === 'sqlite'
+                            ? ['inquiry_id']
+                            : 'conversation_contexts_inquiry_id_foreign'
+                    );
                 });
             }
 
@@ -67,7 +71,11 @@ return new class extends Migration
         if (Schema::hasTable('conversations') && Schema::hasColumn('conversations', 'inquiry_id')) {
             if ($this->hasForeignKey('conversations', 'conversations_inquiry_id_foreign')) {
                 Schema::table('conversations', function (Blueprint $table): void {
-                    $table->dropForeign('conversations_inquiry_id_foreign');
+                    $table->dropForeign(
+                        DB::connection()->getDriverName() === 'sqlite'
+                            ? ['inquiry_id']
+                            : 'conversations_inquiry_id_foreign'
+                    );
                 });
             }
 
@@ -96,7 +104,8 @@ return new class extends Migration
     private function hasForeignKey(string $table, string $constraint): bool
     {
         return collect(Schema::getForeignKeys($table))
-            ->contains(fn (array $definition): bool => ($definition['name'] ?? null) === $constraint);
+            ->contains(fn (array $definition): bool => ($definition['name'] ?? null) === $constraint
+                || in_array('inquiry_id', $definition['columns'] ?? [], true));
     }
 
     public function down(): void
