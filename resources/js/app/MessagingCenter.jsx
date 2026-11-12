@@ -62,6 +62,7 @@ export default function MessagingCenter({ role }) {
     const [sending, setSending] = useState(false);
     const [actionId, setActionId] = useState(null);
     const [error, setError] = useState('');
+    const [threadsError, setThreadsError] = useState('');
     const [notice, setNotice] = useState('');
     const [directStartLoading, setDirectStartLoading] = useState(false);
     const [directStartAttempt, setDirectStartAttempt] = useState(0);
@@ -115,6 +116,7 @@ export default function MessagingCenter({ role }) {
             setLoadingMoreThreads(false);
         }
         const page = append ? threadsPageRef.current + 1 : 1;
+        setThreadsError('');
         try {
             const query = { page };
             if (debouncedSearch) query.search = debouncedSearch;
@@ -136,7 +138,7 @@ export default function MessagingCenter({ role }) {
                 setHasMoreThreads(Number(data.current_page ?? page) < Number(data.last_page ?? page));
             }
         } catch (requestError) {
-            if (!axios.isCancel(requestError) && !controller.signal.aborted) setError('دریافت گفتگوها انجام نشد. دوباره تلاش کنید.');
+            if (!axios.isCancel(requestError) && !controller.signal.aborted) setThreadsError('دریافت گفتگوها انجام نشد. دوباره تلاش کنید.');
         } finally {
             if (threadsRequestRef.current === controller) {
                 threadsRequestRef.current = null;
@@ -673,6 +675,7 @@ export default function MessagingCenter({ role }) {
             </header>
             {notice && <p role="status" className="border border-border bg-surface-muted p-3 text-sm">{notice}</p>}
             {error && <p role="alert" className="border border-red-200 bg-red-50 p-3 text-sm text-red-800">{error}</p>}
+            {threadsError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 border border-red-200 bg-red-50 p-3 text-sm text-red-800"><span>{threadsError}</span><button type="button" onClick={() => loadThreads()} className="shrink-0 font-bold underline underline-offset-4">تلاش دوباره</button></div>}
             {directStartLoading && <div role="status" className="flex items-center gap-3 border border-border bg-surface-muted p-3 text-sm text-muted"><LoaderCircle size={16} className="animate-spin" aria-hidden="true" />در حال آماده‌سازی گفتگوی مستقیم و اتصال آن به اثر…</div>}
             {directStartError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 border border-danger/30 bg-danger-surface p-3 text-sm text-ink"><span>{directStartError}</span><button type="button" onClick={() => setDirectStartAttempt((attempt) => attempt + 1)} className="shrink-0 font-bold text-terracotta-strong underline underline-offset-4">تلاش دوباره</button></div>}
             <div className="grid h-[calc(100dvh-14rem)] min-h-[min(420px,calc(100dvh-14rem))] max-h-[900px] grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden rounded-2xl border border-border bg-white shadow-[0_18px_55px_rgba(36,35,32,0.07)] lg:h-[min(82dvh,900px)] lg:min-h-[min(620px,calc(100dvh-14rem))] lg:grid-cols-[360px_minmax(0,1fr)]">
@@ -697,7 +700,7 @@ export default function MessagingCenter({ role }) {
                             }} className={'flex min-w-0 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-[11px] font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-1 ' + (threadFilter === value ? 'bg-ink text-white shadow-sm' : 'text-muted hover:bg-surface-muted hover:text-ink')}><Icon size={14} aria-hidden="true" /><span className="truncate">{label}</span></button>)}
                         </div>
                     </div>
-                    {loading ? <ConversationInboxSkeleton count={6} /> : threads.length === 0 ? <p className="p-5 text-sm leading-7 text-muted">هنوز گفتگویی ندارید. از صفحه هنرمند یا یک اثر، گزینه «پیام مستقیم» را انتخاب کنید.</p> : (
+                    {loading ? <ConversationInboxSkeleton count={6} /> : threads.length === 0 ? (threadsError ? null : <p className="p-5 text-sm leading-7 text-muted">هنوز گفتگویی ندارید. از صفحه هنرمند یا یک اثر، گزینه «پیام مستقیم» را انتخاب کنید.</p>) : (
                         <ul className="min-h-0 flex-1 divide-y divide-border overflow-y-auto overscroll-contain [scrollbar-gutter:stable]">
                             {threads.map((thread) => <li key={thread.id} className={'transition-colors hover:bg-surface-muted focus-within:bg-surface-muted ' + (Number(active) === Number(thread.id) ? 'bg-surface-muted shadow-[inset_-3px_0_0_var(--color-terracotta)]' : '')}>
                                 <button type="button" onClick={() => { setActive(thread.id); setReplyTo(null); setPendingArtwork(null); setEditingId(null); setParams((current) => { const next = new URLSearchParams(current); next.delete('artist'); next.delete('artwork'); next.set('conversation', String(thread.id)); return next; }, { replace: true }); }} aria-current={Number(active) === Number(thread.id) ? 'true' : undefined} className="flex w-full items-center gap-3 bg-transparent px-4 py-4 text-right transition"><span aria-hidden="true" className={'flex h-11 w-11 aspect-square shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-inset ring-border text-sm font-black shadow-sm ' + avatarTone(thread.participant?.name)}>{avatarInitial(thread.participant?.name)}</span><span className="min-w-0 flex-1">
