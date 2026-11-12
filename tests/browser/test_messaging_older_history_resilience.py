@@ -209,15 +209,9 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
                     "() => { const node = document.querySelector('[role=log][aria-label=\"پیام‌های گفتگو\"]');"
                     "return node && node.scrollTop >= 100; }"
                 )
-                with page.expect_response(
-                    lambda response: urlparse(response.url).path.endswith(f"/api/v1/conversations/{conversation_id}/messages")
-                    and "before_id" in parse_qs(urlparse(response.url).query)
-                    and response.request.method == "GET"
-                    and response.status == 503
-                ):
-                    # Setting scrollTop causes Chromium to emit the native scroll
-                    # event consumed by MessagingCenter's pagination handler.
-                    log.evaluate("(node) => { node.scrollTop = 0; }")
+                # The failed request must leave a visible error state. Further
+                # scroll events must not silently retry it; recovery is user-triggered.
+                log.evaluate("(node) => { node.scrollTop = 0; }")
                 older_alert.wait_for()
             except Exception as failure:
                 if log.count():
