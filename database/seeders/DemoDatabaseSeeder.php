@@ -105,6 +105,8 @@ class DemoDatabaseSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
+        $this->removeRetiredInquiryFixtures($emptyBuyer);
+
         // Include artists who have registered but have not completed their profiles yet.
         foreach (range(1, 3) as $number) {
             User::query()->updateOrCreate(['email' => sprintf('new-artist-%02d@rademan.test', $number)], [
@@ -340,7 +342,6 @@ class DemoDatabaseSeeder extends Seeder
                     $profile,
                     $artworks,
                     $firstMessage,
-                    $artistMessage,
                     $admin,
                     $scenario,
                 );
@@ -351,6 +352,60 @@ class DemoDatabaseSeeder extends Seeder
         }
     }
 
+
+
+    private function removeRetiredInquiryFixtures(User $emptyBuyer): void
+    {
+        $demoBuyerIds = User::query()
+            ->where('role', User::ROLE_BUYER)
+            ->where('email', 'like', '%@rademan.test')
+            ->pluck('id');
+
+        $retiredInquiryIds = DB::table('artist_inquiries')
+            ->whereIn('sender_user_id', $demoBuyerIds)
+            ->where('subject', 'like', 'پرسش نمایشی شماره %')
+            ->pluck('id');
+
+        $demoArtistIds = User::query()
+            ->where('role', User::ROLE_ARTIST)
+            ->where('email', 'like', '%@rademan.test')
+            ->pluck('id');
+
+        $conversationIds = Conversation::query()
+            ->where('buyer_user_id', $emptyBuyer->id)
+            ->whereIn('artist_user_id', $demoArtistIds)
+            ->pluck('id');
+
+        if ($conversationIds->isNotEmpty()) {
+            $messageIds = DB::table('messages')->whereIn('conversation_id', $conversationIds)->pluck('id');
+            $reportIds = DB::table('message_reports')->whereIn('conversation_id', $conversationIds)->pluck('id');
+
+            DB::table('message_moderation_audits')->whereIn('report_id', $reportIds)->delete();
+            DB::table('message_reports')->whereIn('conversation_id', $conversationIds)->delete();
+            DB::table('message_reactions')->whereIn('message_id', $messageIds)->delete();
+
+            $attachmentPaths = DB::table('message_attachments')
+                ->whereIn('message_id', $messageIds)
+                ->pluck('storage_path');
+            foreach ($attachmentPaths as $attachmentPath) {
+                Storage::disk('local')->delete($attachmentPath);
+            }
+            DB::table('message_attachments')->whereIn('message_id', $messageIds)->delete();
+            DB::table('conversation_contexts')->whereIn('conversation_id', $conversationIds)->delete();
+            DB::table('messages')->whereIn('conversation_id', $conversationIds)->delete();
+            DB::table('conversations')->whereIn('id', $conversationIds)->delete();
+        }
+
+        if ($retiredInquiryIds->isNotEmpty()) {
+            DB::table('conversation_contexts')->whereIn('inquiry_id', $retiredInquiryIds)->delete();
+            DB::table('artist_inquiries')->whereIn('id', $retiredInquiryIds)->delete();
+        }
+
+        DB::table('user_blocks')
+            ->where('blocker_user_id', $emptyBuyer->id)
+            ->orWhere('blocked_user_id', $emptyBuyer->id)
+            ->delete();
+    }
 
     /**
      * Seed deterministic conversation states that exercise the currently enabled messaging workflows.
@@ -364,7 +419,6 @@ class DemoDatabaseSeeder extends Seeder
         ArtistProfile $profile,
         array $artworks,
         Message $buyerMessage,
-        Message $artistMessage,
         User $admin,
         int $scenario,
     ): void {
@@ -388,10 +442,10 @@ class DemoDatabaseSeeder extends Seeder
                     'sender_user_id' => $buyer->id,
                     'body' => 'سلام، درباره این اثر و جزئیات ساخت آن پرسشی دارم.',
                     'artwork_id' => $relatedArtwork->id,
-                    'delivered_at' => now()->subMinutes(4),
-                    'read_at' => $scenario % 2 === 0 ? null : now()->subMinutes(2),
-                    'created_at' => now()->subMinutes(4),
-                    'updated_at' => now()->subMinutes(4),
+                    'delivered_at' => now()->subSeconds(40),
+                    'read_at' => $scenario % 2 === 0 ? null : now()->subSeconds(35),
+                    'created_at' => now()->subSeconds(40),
+                    'updated_at' => now()->subSeconds(40),
                 ],
             );
 
@@ -414,10 +468,10 @@ class DemoDatabaseSeeder extends Seeder
                     'sender_user_id' => $artist->id,
                     'body' => 'با کمال میل. این اثر با دقت و در چند مرحله ساخته شده است.',
                     'reply_to_id' => $contextMessage->id,
-                    'delivered_at' => now()->subMinutes(3),
-                    'read_at' => $scenario % 2 === 0 ? null : now()->subMinute(),
-                    'created_at' => now()->subMinutes(3),
-                    'updated_at' => now()->subMinutes(3),
+                    'delivered_at' => now()->subSeconds(30),
+                    'read_at' => $scenario % 2 === 0 ? null : now()->subSeconds(25),
+                    'created_at' => now()->subSeconds(30),
+                    'updated_at' => now()->subSeconds(30),
                 ],
             );
         }
