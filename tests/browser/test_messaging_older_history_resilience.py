@@ -195,8 +195,9 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
                 "return node && node.querySelectorAll('article').length === 30"
                 " && node.scrollHeight > node.clientHeight + 100; }"
             )
-            # Let the component's initial request and automatic scroll-to-bottom
-            # effect settle before exercising the real browser scroll event.
+            # Start from the bottom explicitly, then exercise native browser
+            # scroll events to reach the older-history threshold deterministically.
+            log.evaluate("(node) => { node.scrollTop = node.scrollHeight; }")
             page.wait_for_function(
                 "() => { const node = document.querySelector('[role=log][aria-label=\"پیام‌های گفتگو\"]');"
                 "return node && node.scrollTop > 72; }"
