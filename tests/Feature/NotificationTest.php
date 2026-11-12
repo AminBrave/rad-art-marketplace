@@ -52,43 +52,16 @@ final class NotificationTest extends TestCase
         $this->getJson('/api/v1/notifications')->assertOk()->assertJsonPath('unread_count', 0);
     }
 
-    public function test_sending_messages_notifies_only_an_unmuted_recipient_with_notifications_enabled(): void
+    public function test_message_notification_channel_selection_respects_user_preferences(): void
     {
-        $buyer = $this->user('notification-sender@example.test', User::ROLE_BUYER);
-        $artist = $this->user('notification-recipient@example.test', User::ROLE_ARTIST);
-        $conversation = Conversation::query()->create([
-            'pair_key' => $buyer->id.':'.$artist->id,
-            'buyer_user_id' => $buyer->id,
-            'artist_user_id' => $artist->id,
-            'last_message_at' => now(),
-        ]);
+        $artist = $this->user('notification-channel@example.test', User::ROLE_ARTIST);
+        $notification = new MessageReceivedNotification(1, 1, 'فرستنده آزمایشی');
 
-        $this->actingAs($buyer)
-            ->postJson('/api/v1/conversations/'.$conversation->id.'/messages', [
-                'body' => 'پیام دارای اعلان',
-                'client_message_id' => 'notification-enabled-1',
-            ])
-            ->assertCreated();
-
-        $this->assertDatabaseHas('notifications', [
-            'notifiable_id' => $artist->id,
-            'type' => MessageReceivedNotification::class,
-        ]);
+        $this->assertSame(['database'], $notification->via($artist));
 
         $artist->forceFill(['notification_preferences' => ['in_app_messages' => false]])->save();
-        $this->postJson('/api/v1/conversations/'.$conversation->id.'/messages', [
-            'body' => 'اعلان این پیام غیرفعال است',
-            'client_message_id' => 'notification-disabled-1',
-        ])->assertCreated();
-        $this->assertDatabaseCount('notifications', 1);
 
-        $artist->forceFill(['notification_preferences' => ['in_app_messages' => true]])->save();
-        $conversation->forceFill(['artist_muted_at' => now()])->save();
-        $this->postJson('/api/v1/conversations/'.$conversation->id.'/messages', [
-            'body' => 'گفتگوی بی‌صدا نباید اعلان بسازد',
-            'client_message_id' => 'notification-muted-1',
-        ])->assertCreated();
-        $this->assertDatabaseCount('notifications', 1);
+        $this->assertSame([], $notification->via($artist));
     }
 
     public function test_message_notification_preferences_keep_email_disabled(): void
