@@ -260,7 +260,7 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
             self.assertEqual(log.locator("article").count(), len(initial_messages) + 3)
             self.assertEqual(page.get_by_text(re.compile(r"^پیام موجود 1 ")).count(), 1)
             self.assertGreater(log.evaluate("(node) => node.scrollTop"), 0)
-            self.assertTrue(page.get_by_text("پیام موجود 1", exact=False).is_visible())
+            self.assertTrue(page.get_by_text(re.compile(r"^پیام موجود 1 "), exact=False).first.is_visible())
             self.assertFalse(older_alert.is_visible())
             self.assertIn(f"conversation={conversation_id}", page.url)
         finally:
