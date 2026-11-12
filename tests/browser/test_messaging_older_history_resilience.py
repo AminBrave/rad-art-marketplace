@@ -233,10 +233,29 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
                 and "before_id" in parse_qs(urlparse(response.url).query)
                 and response.request.method == "GET"
                 and response.status == 200
-            ):
+            ) as retry_response:
                 older_alert.get_by_role("button", name="تلاش دوباره").evaluate("(button) => button.click()")
 
-            page.get_by_text("پیام قدیمی 1", exact=False).wait_for()
+            response_payload = retry_response.value.json()
+            self.assertTrue(
+                any(message.get("body", "").startswith("پیام قدیمی 1") for message in response_payload.get("data", [])),
+                f"Retry endpoint did not return the expected older message: {response_payload!r}",
+            )
+            try:
+                page.wait_for_function(
+                    "() => { const node = document.querySelector('[role=log][aria-label=\"پیام‌های گفتگو\"]');"
+                    "return node && node.querySelectorAll('article').length === 33"
+                    " && node.innerText.includes('پیام قدیمی 1'); }"
+                )
+            except Exception as failure:
+                metrics = log.evaluate("(node) => ({scrollTop: node.scrollTop, articleCount: node.querySelectorAll('article').length, text: node.innerText.slice(0, 1200)})")
+                raise AssertionError(
+                    "The retry returned older messages but the conversation UI did not merge/render them. "
+                    f"payload={response_payload!r}; attempts={older_attempts['count']}; "
+                    f"metrics={metrics!r}; browser_errors={browser_errors!r}; "
+                    f"api_responses={api_responses[-20:]!r}"
+                ) from failure
+
             self.assertEqual(older_attempts["count"], 2)
             self.assertEqual(log.locator("article").count(), len(initial_messages) + 3)
             self.assertEqual(page.get_by_text(re.compile(r"^پیام موجود 1 ")).count(), 1)
