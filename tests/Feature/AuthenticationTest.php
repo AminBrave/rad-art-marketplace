@@ -19,8 +19,11 @@ class AuthenticationTest extends TestCase
             ->assertExactJson(['data' => null]);
     }
 
-    public function test_registration_creates_an_artist_and_authenticates_them(): void
+    public function test_registration_creates_an_artist_and_rotates_the_session(): void
     {
+        $this->withSession(['pre_registration_marker' => 'present']);
+        $beforeRegistration = session()->getId();
+
         $response = $this->postJson('/api/v1/auth/register', [
             'name' => 'هنرمند آزمایشی',
             'email' => 'artist@example.com',
@@ -38,6 +41,7 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
+        $this->assertNotSame($beforeRegistration, session()->getId());
     }
 
     public function test_buyer_can_register_without_receiving_artist_permissions(): void
