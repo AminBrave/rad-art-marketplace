@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
@@ -10,6 +10,7 @@ export default function AuthPage({ initialMode = 'login' }) {
     const [errors, setErrors] = useState({});
     const [message, setMessage] = useState('');
     const [busy, setBusy] = useState(false);
+    const submittingRef = useRef(false);
     const { user, status, setUser } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
@@ -24,6 +25,9 @@ export default function AuthPage({ initialMode = 'login' }) {
 
     const submit = async (event) => {
         event.preventDefault();
+        if (submittingRef.current) return;
+
+        submittingRef.current = true;
         setBusy(true);
         setErrors({});
         setMessage('');
@@ -44,6 +48,7 @@ export default function AuthPage({ initialMode = 'login' }) {
                 setMessage('ورود یا ثبت‌نام انجام نشد. اتصال را بررسی و دوباره تلاش کنید.');
             }
         } finally {
+            submittingRef.current = false;
             setBusy(false);
         }
     };
