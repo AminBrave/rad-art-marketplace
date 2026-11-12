@@ -55,13 +55,19 @@ class FullStackArtistArtworkTests(unittest.TestCase):
             })
             page.get_by_alt_text("پیش‌نمایش تصویر انتخاب‌شده").wait_for()
 
+            artwork_requests = []
+            page.on("request", lambda request: artwork_requests.append(request)
+                    if request.url.endswith("/api/v1/artist/artworks") and request.method == "POST" else None)
             with page.expect_response(
                 lambda response: response.url.endswith("/api/v1/artist/artworks")
                 and response.request.method == "POST"
             ) as submission:
-                page.get_by_role("button", name="ثبت اثر برای بررسی").click()
+                page.locator("#artwork-editor form").evaluate(
+                    "(form) => { form.requestSubmit(); form.requestSubmit(); }"
+                )
 
             self.assertEqual(submission.value.status, 201)
+            self.assertEqual(len(artwork_requests), 1, "Rapid duplicate submits must create one artwork request.")
             artwork = submission.value.json()["data"]
             self.assertEqual(artwork["title"], title)
             self.assertEqual(artwork["status"], "pending_review")
