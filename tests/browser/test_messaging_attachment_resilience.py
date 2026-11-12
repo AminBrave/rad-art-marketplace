@@ -179,7 +179,8 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
             )
             page.get_by_role("heading", name="پیام‌ها").wait_for()
             page.get_by_role("heading", name="هنرمند گفتگو").wait_for()
-            composer = page.get_by_label("متن پیام")
+            composer = page.locator('textarea[aria-label="متن پیام"]')
+            composer.wait_for(state="visible")
             composer.fill("لطفاً این فایل را بررسی کنید.")
             page.get_by_label("انتخاب تصویر یا فایل PDF").set_input_files({
                 "name": "reference.pdf",
@@ -195,9 +196,9 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
                     f"/api/v1/conversations/{conversation_id}/messages/{message_id}/attachments"
                 ) and response.request.method == "POST" and response.status == 503
             ):
-                page.get_by_label("متن پیام").evaluate(
-                    "(textarea) => textarea.form.requestSubmit()"
-                )
+                send_button = page.get_by_role("button", name="ارسال پیام")
+                send_button.wait_for(state="visible")
+                send_button.evaluate("(button) => button.form.requestSubmit()")
 
             page.get_by_role("alert").filter(has_text="ارسال پیام یا پیوست انجام نشد").wait_for()
             self.assertEqual(composer.input_value(), "لطفاً این فایل را بررسی کنید.")
