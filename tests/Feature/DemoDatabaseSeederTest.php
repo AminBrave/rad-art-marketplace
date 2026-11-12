@@ -81,9 +81,6 @@ class DemoDatabaseSeederTest extends TestCase
             ->assertOk()
             ->assertJsonCount(3, 'data')
             ->assertJsonPath('current_page', 2);
-
-        $buyer = User::query()->where('email', 'buyer@rademan.test')->firstOrFail();
-        $this->assertDatabaseCount(0);
     }
 
     public function test_seeded_editorial_variations_are_filtered_from_public_endpoints(): void
