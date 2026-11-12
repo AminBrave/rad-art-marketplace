@@ -389,6 +389,7 @@ Quality (all commands below execute checks; invoke only when authorized)
   integration           Run the Integration PHPUnit suite in isolated SQLite memory
   backend               Backend tests + PHP style
   frontend              Frontend tests (including color accessibility) + lint + both builds
+  fix:style             Apply PHP Pint and ESLint formatting fixes only
   verify                Run backend and frontend quality checks
   verify:all            Run verify plus Playwright against the prepared isolated browser-test app
   frontend:test         Run frontend tests and write a JUnit report
@@ -458,6 +459,12 @@ try {
             break;
         case 'frontend':
             await verifyFrontend();
+            break;
+        case 'fix:style':
+            await runSteps([
+                ['Apply PHP Pint fixes', composer, ['lint:fix']],
+                ['Apply ESLint fixes', npm, ['run', 'lint:fix']],
+            ]);
             break;
         case 'all':
         case 'verify:all':
