@@ -153,8 +153,8 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
             self.assertTrue(page.get_by_text("پیام موجود 1", exact=False).is_visible())
 
             with page.expect_response(
-                lambda response: response.url.endswith(f"/api/v1/conversations/{conversation_id}/messages")
-                and "before_id=" in response.url
+                lambda response: urlparse(response.url).path.endswith(f"/api/v1/conversations/{conversation_id}/messages")
+                and "before_id" in parse_qs(urlparse(response.url).query)
                 and response.request.method == "GET"
                 and response.status == 200
             ):
