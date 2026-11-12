@@ -188,9 +188,7 @@ function ensureBrowserRuntimeDirectories() {
     }
 }
 
-function resetBrowserRuntime() {
-    rmSync(resolve(root, 'storage', 'app', 'browser-testing'), { recursive: true, force: true });
-    rmSync(resolve(root, 'storage', 'framework', 'browser-testing'), { recursive: true, force: true });
+function clearBrowserBootstrapCaches() {
     for (const cacheFile of [
         'config.browser-testing.php',
         'routes.browser-testing.php',
@@ -200,6 +198,12 @@ function resetBrowserRuntime() {
     ]) {
         rmSync(resolve(root, 'bootstrap', 'cache', cacheFile), { force: true });
     }
+}
+
+function resetBrowserRuntime() {
+    rmSync(resolve(root, 'storage', 'app', 'browser-testing'), { recursive: true, force: true });
+    rmSync(resolve(root, 'storage', 'framework', 'browser-testing'), { recursive: true, force: true });
+    clearBrowserBootstrapCaches();
     ensureBrowserRuntimeDirectories();
 }
 
@@ -293,6 +297,7 @@ async function startBrowserDevelopment() {
         throw new Error('Browser test database is empty. Run npm run browser:prepare first.');
     }
 
+    clearBrowserBootstrapCaches();
     ensureBrowserRuntimeDirectories();
     const services = [
         {
