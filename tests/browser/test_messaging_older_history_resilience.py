@@ -188,30 +188,46 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
                 ) from failure
             page.get_by_role("heading", name="هنرمند صفحه‌بندی").wait_for()
             page.get_by_text(re.compile(r"^پیام موجود 1 ")).first.wait_for()
-            log = page.get_by_role("log", name="پیام‌های گفتگو")
+            log = page.locator('[role="log"][aria-label="پیام‌های گفتگو"]')
+            log.wait_for(state="visible")
             page.wait_for_function(
                 "() => { const node = document.querySelector('[role=log][aria-label=\"پیام‌های گفتگو\"]');"
-                "return node && node.scrollHeight > node.clientHeight + 100; }"
+                "return node && node.querySelectorAll('article').length === 30"
+                " && node.scrollHeight > node.clientHeight + 100; }"
             )
-            # Move away from the top and back so the scroll listener observes
-            # a position transition before requesting older history.
+            # Let the component's initial request and automatic scroll-to-bottom
+            # effect settle before exercising the real browser scroll event.
+            page.wait_for_function(
+                "() => { const node = document.querySelector('[role=log][aria-label=\"پیام‌های گفتگو\"]');"
+                "return node && node.scrollTop > 72; }"
+            )
             older_alert = page.get_by_role("alert").filter(has_text="دریافت پیام‌های قدیمی‌تر انجام نشد")
             try:
+                log.evaluate("(node) => { node.scrollTop = 120; }")
+                page.wait_for_function(
+                    "() => { const node = document.querySelector('[role=log][aria-label=\"پیام‌های گفتگو\"]');"
+                    "return node && node.scrollTop >= 100; }"
+                )
                 with page.expect_response(
                     lambda response: urlparse(response.url).path.endswith(f"/api/v1/conversations/{conversation_id}/messages")
                     and "before_id" in parse_qs(urlparse(response.url).query)
                     and response.request.method == "GET"
                     and response.status == 503
                 ):
-                    log.evaluate("(node) => { node.scrollTop = 120; node.dispatchEvent(new Event('scroll')); node.scrollTop = 0; node.dispatchEvent(new Event('scroll')); }")
+                    # Setting scrollTop causes Chromium to emit the native scroll
+                    # event consumed by MessagingCenter's pagination handler.
+                    log.evaluate("(node) => { node.scrollTop = 0; }")
                 older_alert.wait_for()
             except Exception as failure:
-                metrics = log.evaluate("(node) => ({scrollTop: node.scrollTop, scrollHeight: node.scrollHeight, clientHeight: node.clientHeight})")
+                if log.count():
+                    metrics = log.evaluate("(node) => ({scrollTop: node.scrollTop, scrollHeight: node.scrollHeight, clientHeight: node.clientHeight, articleCount: node.querySelectorAll('article').length})")
+                else:
+                    metrics = {"log_count": 0}
                 raise AssertionError(
                     "Older-history pagination did not reach its expected failure state. "
                     f"scroll_metrics={metrics!r}; older_attempts={older_attempts['count']}; "
                     f"browser_errors={browser_errors!r}; api_responses={api_responses[-25:]!r}; "
-                    f"body={page.locator('body').inner_text()[-1200:]!r}"
+                    f"URL={page.url}; body={page.locator('body').inner_text()[-1200:]!r}"
                 ) from failure
             self.assertEqual(older_attempts["count"], 1)
             self.assertEqual(log.locator("article").count(), len(initial_messages))
