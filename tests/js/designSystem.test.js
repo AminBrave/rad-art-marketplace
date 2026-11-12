@@ -197,7 +197,7 @@ test('artwork-origin messages persist and render a reply-style artwork reference
     assert.ok(conversationApi.includes("Schema::hasColumn('messages', 'artwork_id')"));
     assert.ok(conversationApi.includes("'artwork_id' => $supportsArtworkReferences"));
     assert.ok(conversationApi.includes("$message->relationLoaded('artwork')"));
-    assert.ok(conversationApi.includes("'image_url' => '/api/v1/artworks/'.$message->artwork->slug.'/image'"));
+    assert.ok(conversationApi.includes("'image_url' => '/api/v1/artworks/'.$artwork->slug.'/image'"));
     assert.ok(conversationApi.includes("$artwork->artistProfile?->user_id"));
     assert.ok(messageModel.includes("'artwork_id'"));
     assert.ok(messageModel.includes('function artwork(): BelongsTo'));
