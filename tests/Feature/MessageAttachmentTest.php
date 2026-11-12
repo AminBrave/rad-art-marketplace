@@ -122,7 +122,7 @@ class MessageAttachmentTest extends TestCase
         $this->get($validBase.'/preview')->assertNotFound();
         $this->get($validBase)
             ->assertOk()
-            ->assertHeader('Cache-Control', 'private, no-store')
+            ->assertHeader('Cache-Control', 'no-store, private')
             ->assertHeader('X-Content-Type-Options', 'nosniff');
     }
 
