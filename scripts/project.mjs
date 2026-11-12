@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
-import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -130,6 +130,73 @@ function ensureReportDirectory() {
     mkdirSync(resolve(root, 'storage', 'framework', 'testing', 'views'), { recursive: true });
 }
 
+function browserTestEnvironment() {
+    const cacheDir = resolve(root, 'bootstrap', 'cache');
+    const runtimeDir = resolve(root, 'storage', 'framework', 'browser-testing');
+    return {
+        ...process.env,
+        APP_ENV: 'testing',
+        APP_KEY: 'base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
+        APP_DEBUG: 'true',
+        DB_CONNECTION: 'sqlite',
+        DB_DATABASE: resolve(root, 'database', 'browser-testing.sqlite'),
+        DB_URL: '',
+        CACHE_STORE: 'file',
+        CACHE_PREFIX: 'rad_browser_test_',
+        RAD_ART_CACHE_PATH: resolve(runtimeDir, 'cache'),
+        SESSION_DRIVER: 'file',
+        SESSION_FILES: resolve(runtimeDir, 'sessions'),
+        MAIL_MAILER: 'array',
+        QUEUE_CONNECTION: 'sync',
+        LOG_CHANNEL: 'stderr',
+        FILESYSTEM_DISK: 'local',
+        RAD_ART_LOCAL_STORAGE_PATH: resolve(root, 'storage', 'app', 'browser-testing', 'private'),
+        RAD_ART_PUBLIC_STORAGE_PATH: resolve(root, 'storage', 'app', 'browser-testing', 'public'),
+        VIEW_COMPILED_PATH: resolve(runtimeDir, 'views'),
+        RAD_ART_BROWSER_TEST_MODE: '1',
+        APP_CONFIG_CACHE: resolve(cacheDir, 'config.browser-testing.php'),
+        APP_ROUTES_CACHE: resolve(cacheDir, 'routes.browser-testing.php'),
+        APP_EVENTS_CACHE: resolve(cacheDir, 'events.browser-testing.php'),
+        APP_SERVICES_CACHE: resolve(cacheDir, 'services.browser-testing.php'),
+        APP_PACKAGES_CACHE: resolve(cacheDir, 'packages.browser-testing.php'),
+    };
+}
+
+function ensureBrowserDatabase() {
+    const databasePath = resolve(root, 'database', 'browser-testing.sqlite');
+    mkdirSync(dirname(databasePath), { recursive: true });
+    if (existsSync(databasePath) && lstatSync(databasePath).isSymbolicLink()) {
+        throw new Error('Refusing to use a symbolic link for the isolated browser-test database.');
+    }
+    if (!existsSync(databasePath)) {
+        writeFileSync(databasePath, '');
+    }
+
+    return databasePath;
+}
+
+function resetBrowserRuntime() {
+    rmSync(resolve(root, 'storage', 'app', 'browser-testing'), { recursive: true, force: true });
+    rmSync(resolve(root, 'storage', 'framework', 'browser-testing'), { recursive: true, force: true });
+    const runtimeDir = resolve(root, 'storage', 'framework', 'browser-testing');
+    for (const directory of [
+        resolve(runtimeDir, 'cache'),
+        resolve(runtimeDir, 'sessions'),
+        resolve(runtimeDir, 'views'),
+        resolve(root, 'storage', 'app', 'browser-testing', 'private'),
+        resolve(root, 'storage', 'app', 'browser-testing', 'public'),
+    ]) {
+        mkdirSync(directory, { recursive: true });
+    }
+}
+
+async function prepareBrowserEnvironment() {
+    ensureBrowserDatabase();
+    resetBrowserRuntime();
+    console.log('[project] Rebuilding only database/browser-testing.sqlite and isolated browser-test storage.');
+    await run(php, ['artisan', 'migrate:fresh', '--seed'], { env: browserTestEnvironment() });
+}
+
 function testEnvironment() {
     const cacheDir = resolve(root, 'bootstrap', 'cache');
     return {
@@ -207,6 +274,38 @@ async function verify(includeBrowser = false) {
     }
 }
 
+async function startBrowserDevelopment() {
+    const databasePath = ensureBrowserDatabase();
+    if (!existsSync(databasePath) || lstatSync(databasePath).size === 0) {
+        throw new Error('Browser test database is empty. Run npm run browser:prepare first.');
+    }
+
+    resetBrowserRuntime();
+    const services = [
+        {
+            label: 'Laravel browser-test application (isolated SQLite)',
+            command: php,
+            args: ['artisan', 'serve', '--host=127.0.0.1', '--port=8000'],
+            env: browserTestEnvironment(),
+        },
+        {
+            label: 'Vite',
+            command: npm,
+            args: ['exec', '--', 'vite', '--mode', 'https'],
+        },
+        {
+            label: 'Caddy local HTTPS proxy',
+            command: 'caddy',
+            args: ['run', '--config', 'Caddyfile.dev'],
+        },
+    ];
+
+    console.log('[project] Browser test environment: https://rad.localhost');
+    console.log('[project] Database: database/browser-testing.sqlite');
+    console.log('[project] Cache, sessions, compiled views and uploaded files are isolated under storage/*/browser-testing.');
+    return startServices(services);
+}
+
 async function startDevelopment(secure = false) {
     // Local development must not inherit stale production config from a previous optimize run.
     await artisan('config:clear');
@@ -251,7 +350,9 @@ Setup
 
 Development
   dev                   Start Laravel + Vite over local HTTP
-  dev:https             Start Laravel + Vite + Caddy at https://rad.localhost
+  dev:https             Start regular local Laravel + Vite + Caddy
+  browser:prepare       DESTRUCTIVE only to isolated browser-testing.sqlite and browser-test storage
+  dev:browser           Start Laravel + Vite + Caddy against the isolated browser-test environment
 
 Database (review .env before running)
   db:migrate            Apply pending migrations
@@ -268,7 +369,7 @@ Quality (all commands below execute checks; invoke only when authorized)
   backend               Backend tests + PHP style
   frontend              Frontend tests (including color accessibility) + lint + both builds
   verify                Run backend and frontend quality checks
-  verify:all            Run verify plus Playwright against a disposable local database
+  verify:all            Run verify plus Playwright against the prepared isolated browser-test app
   frontend:test         Run frontend tests and write a JUnit report
   browser               Run guarded Playwright tests against local RAD_ART_BASE_URL
   build                 Standard Vite production build
@@ -297,6 +398,12 @@ try {
         case 'dev:https':
         case 'dev:local':
             await startDevelopment(true);
+            break;
+        case 'browser:prepare':
+            await prepareBrowserEnvironment();
+            break;
+        case 'dev:browser':
+            await startBrowserDevelopment();
             break;
         case 'db:migrate':
             await artisan('migrate');
