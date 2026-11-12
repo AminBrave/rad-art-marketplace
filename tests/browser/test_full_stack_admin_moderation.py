@@ -1,6 +1,7 @@
 """Unmocked admin moderation and role-boundary journeys."""
 
 import unittest
+import uuid
 
 from playwright.sync_api import sync_playwright
 
@@ -22,7 +23,7 @@ class FullStackAdminModerationTests(unittest.TestCase):
         context = self.browser.new_context(
             viewport={"width": 1440, "height": 1000},
             ignore_https_errors=IGNORE_HTTPS_ERRORS,
-            extra_http_headers={"X-Forwarded-For": "198.51.100.10"},
+            extra_http_headers={"X-Forwarded-For": f"198.51.100.{1 + (uuid.uuid4().int % 253)}"},
         )
         page = context.new_page()
         page.set_default_timeout(20000)
