@@ -108,6 +108,14 @@ class RealUserBrowserFlowTests(unittest.TestCase):
         self.page.get_by_text(message, exact=True).wait_for(timeout=20_000)
         self.assert_no_uncaught_page_errors()
 
+        self.context.clear_cookies()
+        self.login("artist@rademan.test", "/dashboard/artist")
+        self.page.goto(BASE_URL + "/dashboard/artist/messages", wait_until="domcontentloaded")
+        self.page.get_by_text("مینا خریدار", exact=True).click()
+        self.page.get_by_text(message, exact=True).wait_for(timeout=20_000)
+        self.page.get_by_text("روایت رنگ‌ها 1", exact=True).wait_for(timeout=20_000)
+        self.assert_no_uncaught_page_errors()
+
     def test_artist_and_admin_can_open_their_role_workspaces(self) -> None:
         self.login("artist@rademan.test", "/dashboard/artist")
         self.page.goto(BASE_URL + "/dashboard/artist/artworks", wait_until="domcontentloaded")
