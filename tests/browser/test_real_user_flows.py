@@ -66,6 +66,20 @@ class RealUserBrowserFlowTests(unittest.TestCase):
                 self.assertTrue(self.page.locator("body").inner_text().strip())
                 self.assert_no_uncaught_page_errors()
 
+    def test_mobile_catalogue_and_buyer_inbox_fit_the_viewport(self) -> None:
+        self.page.set_viewport_size({"width": 390, "height": 844})
+        self.page.goto(BASE_URL + "/artworks", wait_until="domcontentloaded")
+        self.page.locator("main").first.wait_for(timeout=20_000)
+        catalogue_overflow = self.page.evaluate("document.documentElement.scrollWidth > window.innerWidth")
+        self.assertFalse(catalogue_overflow, "The mobile catalogue must not introduce horizontal page overflow.")
+
+        self.login("buyer@rademan.test", "/dashboard/buyer")
+        self.page.goto(BASE_URL + "/dashboard/buyer/messages", wait_until="domcontentloaded")
+        self.page.get_by_text("گفتگوها", exact=True).wait_for(timeout=20_000)
+        inbox_overflow = self.page.evaluate("document.documentElement.scrollWidth > window.innerWidth")
+        self.assertFalse(inbox_overflow, "The mobile inbox must fit the viewport without horizontal page overflow.")
+        self.assert_no_uncaught_page_errors()
+
     def test_anonymous_user_cannot_open_admin_workspace(self) -> None:
         self.page.goto(BASE_URL + "/admin", wait_until="domcontentloaded")
         self.page.get_by_label("ایمیل").wait_for(timeout=15_000)
