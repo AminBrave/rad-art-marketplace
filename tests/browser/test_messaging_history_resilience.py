@@ -26,6 +26,12 @@ class MessagingHistoryResilienceTests(unittest.TestCase):
         )
         page = context.new_page()
         page.set_default_timeout(15000)
+        browser_errors = []
+        api_responses = []
+        page.on("pageerror", lambda error: browser_errors.append(str(error)))
+        page.on("response", lambda response: api_responses.append(
+            f"{response.request.method} {response.url} -> {response.status}"
+        ) if "/api/v1/" in response.url else None)
         message_attempts = {"count": 0}
         conversation_id = 73010
 
@@ -133,7 +139,15 @@ class MessagingHistoryResilienceTests(unittest.TestCase):
                 BASE_URL + f"/dashboard/buyer/messages?conversation={conversation_id}",
                 wait_until="commit",
             )
-            page.get_by_role("heading", name="پیام‌ها").wait_for()
+            try:
+                page.get_by_role("heading", name="پیام‌ها").wait_for()
+            except Exception as failure:
+                raise AssertionError(
+                    "Messaging route did not render its heading. "
+                    f"URL={page.url}; title={page.title()}; "
+                    f"body={page.locator('body').inner_text()[:2000]!r}; "
+                    f"browser_errors={browser_errors!r}; api_responses={api_responses[-20:]!r}"
+                ) from failure
             page.get_by_role("heading", name="هنرمند گفتگو").wait_for()
             history_alert = page.get_by_role("alert").filter(has_text="دریافت پیام‌ها انجام نشد")
             history_alert.wait_for()
