@@ -12,6 +12,10 @@ class HealthController
             'status' => 'ok',
             'service' => 'rad-art-marketplace-api',
             'version' => 'v1',
+            'browser_test_ready' => app()->environment('testing')
+                && env('RAD_ART_BROWSER_TEST_MODE') === '1'
+                && config('database.default') === 'sqlite'
+                && basename((string) config('database.connections.sqlite.database')) === 'browser-testing.sqlite',
         ]);
     }
 }
