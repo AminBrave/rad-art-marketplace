@@ -131,7 +131,6 @@ function ensureReportDirectory() {
 }
 
 function browserTestEnvironment() {
-    const cacheDir = resolve(root, 'bootstrap', 'cache');
     const runtimeDir = resolve(root, 'storage', 'framework', 'browser-testing');
     return {
         ...process.env,
@@ -164,11 +163,11 @@ function browserTestEnvironment() {
         RAD_ART_PUBLIC_STORAGE_PATH: resolve(root, 'storage', 'app', 'browser-testing', 'public'),
         VIEW_COMPILED_PATH: resolve(runtimeDir, 'views'),
         RAD_ART_BROWSER_TEST_MODE: '1',
-        APP_CONFIG_CACHE: resolve(cacheDir, 'config.browser-testing.php'),
-        APP_ROUTES_CACHE: resolve(cacheDir, 'routes.browser-testing.php'),
-        APP_EVENTS_CACHE: resolve(cacheDir, 'events.browser-testing.php'),
-        APP_SERVICES_CACHE: resolve(cacheDir, 'services.browser-testing.php'),
-        APP_PACKAGES_CACHE: resolve(cacheDir, 'packages.browser-testing.php'),
+        APP_CONFIG_CACHE: 'bootstrap/cache/config.browser-testing.php',
+        APP_ROUTES_CACHE: 'bootstrap/cache/routes.browser-testing.php',
+        APP_EVENTS_CACHE: 'bootstrap/cache/events.browser-testing.php',
+        APP_SERVICES_CACHE: 'bootstrap/cache/services.browser-testing.php',
+        APP_PACKAGES_CACHE: 'bootstrap/cache/packages.browser-testing.php',
     };
 }
 
@@ -254,7 +253,6 @@ async function prepareBrowserEnvironment() {
 }
 
 function testEnvironment() {
-    const cacheDir = resolve(root, 'bootstrap', 'cache');
     return {
         ...process.env,
         APP_ENV: 'testing',
@@ -280,11 +278,11 @@ function testEnvironment() {
         RAD_ART_PUBLIC_STORAGE_PATH: resolve(root, 'storage', 'framework', 'testing', 'storage', 'public'),
         RAD_ART_BROWSER_TEST_MODE: '0',
         VIEW_COMPILED_PATH: resolve(root, 'storage', 'framework', 'testing', 'views'),
-        APP_CONFIG_CACHE: resolve(cacheDir, 'config.testing.php'),
-        APP_ROUTES_CACHE: resolve(cacheDir, 'routes.testing.php'),
-        APP_EVENTS_CACHE: resolve(cacheDir, 'events.testing.php'),
-        APP_SERVICES_CACHE: resolve(cacheDir, 'services.testing.php'),
-        APP_PACKAGES_CACHE: resolve(cacheDir, 'packages.testing.php'),
+        APP_CONFIG_CACHE: 'bootstrap/cache/config.testing.php',
+        APP_ROUTES_CACHE: 'bootstrap/cache/routes.testing.php',
+        APP_EVENTS_CACHE: 'bootstrap/cache/events.testing.php',
+        APP_SERVICES_CACHE: 'bootstrap/cache/services.testing.php',
+        APP_PACKAGES_CACHE: 'bootstrap/cache/packages.testing.php',
     };
 }
 
