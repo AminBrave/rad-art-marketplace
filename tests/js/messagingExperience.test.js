@@ -30,7 +30,7 @@ test('artwork deep links become validated message references and persistent conv
     assert.ok(messaging.includes('artwork_id: pendingArtwork?.id ?? null'));
     assert.ok(messaging.includes('setPendingArtwork(artwork)'));
     assert.ok(messaging.includes('پاسخ درباره این اثر'));
-    assert.ok(messaging.includes('relatedArtwork'));
+    assert.ok(messaging.includes('selected.contexts.filter((context) => context.artwork?.slug)'));
     assert.ok(directStart.includes("'artwork_slug' => ['nullable', 'string', 'max:180']"));
     assert.ok(directStart.includes("->where('status', Artwork::STATUS_APPROVED)"));
     assert.ok(directStart.includes("DB::table('conversation_contexts')->updateOrInsert"));
