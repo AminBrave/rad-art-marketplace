@@ -98,23 +98,17 @@ class ArtistWorkspaceResilienceTests(unittest.TestCase):
             page.get_by_role("heading", name="خوش آمدید، هنرمند آزمون").wait_for()
             page.get_by_role("link", name="ویرایش پروفایل").wait_for()
 
-            # Wait for the query's initial request and its configured single retry
-            # to fail before asserting the user-visible recovery state.
-            for _ in range(2):
-                page.wait_for_response(
-                    lambda response: response.url.startswith(BASE_URL + "/api/v1/artist/artworks")
-                    and response.request.method == "GET"
-                    and response.status == 503
-                )
-
+            # TanStack Query performs one automatic retry for this transient 503.
+            # The visible error state is the stable synchronization point.
             page.get_by_role("heading", name="بخشی از اطلاعات بارگذاری نشد").wait_for()
+            self.assertEqual(attempts["count"], 2)
             retry_button = page.get_by_role("alert").get_by_role(
                 "button", name="تلاش دوباره"
             )
             retry_button.wait_for()
 
             with page.expect_response(
-                lambda response: response.url.endswith("/api/v1/artist/artworks")
+                lambda response: response.url.split("?")[0].endswith("/api/v1/artist/artworks")
                 and response.request.method == "GET"
                 and response.status == 200
             ):
