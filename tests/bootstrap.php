@@ -11,6 +11,10 @@ $root = dirname(__DIR__);
 $cacheDirectory = $root.'/bootstrap/cache';
 $runtimeDirectory = $root.'/storage/framework/testing';
 
+if (is_link($cacheDirectory) || is_link($runtimeDirectory)) {
+    throw new RuntimeException('Isolated PHPUnit cache/runtime paths must not be symbolic links.');
+}
+
 $environment = [
     'APP_ENV' => 'testing',
     'APP_KEY' => 'base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
@@ -66,6 +70,10 @@ foreach ([
     $runtimeDirectory.'/storage/private',
     $runtimeDirectory.'/storage/public',
 ] as $directory) {
+    if (is_link($directory)) {
+        throw new RuntimeException('Isolated PHPUnit runtime directory must not be a symbolic link: '.$directory);
+    }
+
     if (! is_dir($directory) && ! mkdir($directory, 0775, true) && ! is_dir($directory)) {
         throw new RuntimeException('Unable to create isolated test runtime directory: '.$directory);
     }
