@@ -24,7 +24,8 @@ tests/
 ├── js/                            # Node test runner, React SSR and frontend contracts
 ├── browser/                       # Playwright end-to-end journeys
 │   ├── accessibility/             # Browser accessibility checks and helpers
-│   └── test_artist_directory_resilience.py # Empty/error/retry and keyboard search journeys
+│   ├── test_artist_directory_resilience.py # Empty/error/retry and keyboard search journeys
+│   └── test_auth_session_resilience.py     # Session expiry and duplicate registration
 ├── bootstrap.php                  # Isolated PHPUnit runtime
 └── README.md                      # This guide
 ```
