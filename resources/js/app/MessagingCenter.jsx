@@ -182,7 +182,10 @@ export default function MessagingCenter({ role }) {
         const controller = new AbortController();
         messageRequestRef.current = controller;
         const url = '/api/v1/conversations/' + id + '/messages';
-        if (!incremental) setMessagesError('');
+        if (!incremental) {
+            setMessagesError('');
+            setMessagesLoading(true);
+        }
         try {
             const query = incremental ? {
                 after_id: latestMessageIdRef.current ?? 0,
