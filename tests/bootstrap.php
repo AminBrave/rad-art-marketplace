@@ -26,6 +26,7 @@ $environment = [
     'DB_URL' => '',
     'CACHE_STORE' => 'array',
     'SESSION_DRIVER' => 'array',
+    'SESSION_DOMAIN' => '',
     'MAIL_MAILER' => 'array',
     'QUEUE_CONNECTION' => 'sync',
     'LOG_CHANNEL' => 'stderr',
