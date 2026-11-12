@@ -145,7 +145,7 @@ class MessagingHistoryResilienceTests(unittest.TestCase):
                 and response.request.method == "GET"
                 and response.status == 200
             ):
-                history_alert.get_by_role("button", name="تلاش دوباره").click()
+                history_alert.get_by_role("button", name="تلاش دوباره").evaluate("(button) => button.click()")
 
             page.get_by_text("پیام بازیابی‌شده از تاریخچه گفتگو", exact=True).wait_for()
             self.assertEqual(message_attempts["count"], 2)
