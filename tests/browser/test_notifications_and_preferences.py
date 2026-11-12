@@ -123,6 +123,39 @@ class MessageNotificationBrowserTests(unittest.TestCase):
         self.assertIsNotNone(MESSAGES_ROUTE.match("http://localhost/api/v1/conversations/101/messages?page=2"))
         self.assertIsNone(MESSAGES_ROUTE.match("http://localhost/api/v1/conversations/101/messages/attachments"))
 
+    def test_conversation_filter_tabs_support_rtl_arrow_home_and_end_keys(self):
+        context, page = self.new_page()
+        try:
+            page.goto(BASE_URL + "/dashboard/buyer/messages", wait_until="domcontentloaded")
+            page.get_by_role("heading", name="پیام‌ها").wait_for()
+
+            tabs = page.get_by_role("tablist", name="فیلتر گفتگوها")
+            all_tab = tabs.get_by_role("tab", name="همه")
+            unread_tab = tabs.get_by_role("tab", name="خوانده‌نشده")
+            archived_tab = tabs.get_by_role("tab", name="بایگانی")
+
+            all_tab.focus()
+            self.assertEqual(page.evaluate("document.activeElement.id"), "conversation-filter-all")
+            page.keyboard.press("ArrowLeft")
+            self.assertEqual(page.evaluate("document.activeElement.id"), "conversation-filter-unread")
+            self.assertEqual(unread_tab.get_attribute("aria-selected"), "true")
+            self.assertEqual(unread_tab.get_attribute("tabindex"), "0")
+            self.assertEqual(all_tab.get_attribute("tabindex"), "-1")
+
+            page.keyboard.press("ArrowRight")
+            self.assertEqual(page.evaluate("document.activeElement.id"), "conversation-filter-all")
+            self.assertEqual(all_tab.get_attribute("aria-selected"), "true")
+
+            page.keyboard.press("End")
+            self.assertEqual(page.evaluate("document.activeElement.id"), "conversation-filter-archived")
+            self.assertEqual(archived_tab.get_attribute("aria-selected"), "true")
+
+            page.keyboard.press("Home")
+            self.assertEqual(page.evaluate("document.activeElement.id"), "conversation-filter-all")
+            self.assertEqual(all_tab.get_attribute("aria-selected"), "true")
+        finally:
+            context.close()
+
     def test_notification_opens_its_conversation_and_marks_it_read(self):
         context, page = self.new_page()
         try:
