@@ -103,7 +103,7 @@ class ArtistWorkspaceResilienceTests(unittest.TestCase):
             page.get_by_role("heading", name="بخشی از اطلاعات بارگذاری نشد").wait_for()
             self.assertEqual(attempts["count"], 2)
             retry_button = page.get_by_role("alert").filter(
-                has=page.get_by_role("heading", name="بخشی از اطلاعات بارگذاری نشد")
+                has_text="بخشی از اطلاعات بارگذاری نشد"
             ).get_by_role("button", name="تلاش دوباره")
             retry_button.wait_for()
 
