@@ -103,6 +103,19 @@ class FullStackArtistArtworkTests(unittest.TestCase):
                 page.get_by_role("button", name="ورود به حساب").click()
             self.assertEqual(200, login_response.value.status)
 
+            page.route(
+                "**/api/v1/artist-profile/me",
+                lambda route: route.fulfill(
+                    status=200,
+                    content_type="application/json",
+                    body=json.dumps({"data": {
+                        "display_name": "هنرمند آزمایشی",
+                        "bio": "", "city": "", "website_url": "",
+                        "instagram_handle": "", "is_public": True,
+                        "slug": "artist-profile-duplicate-test",
+                    }}),
+                ) if route.request.method == "GET" else route.continue_(),
+            )
             page.goto(BASE_URL + "/dashboard/artist/profile", wait_until="domcontentloaded")
             profile_form = page.locator("form").filter(has=page.get_by_label("نام نمایشی", exact=True))
             profile_form.wait_for()
