@@ -31,7 +31,8 @@ class FullStackBuyerArtistMessagingTests(unittest.TestCase):
 
     def register_buyer(self, page):
         email = f"buyer-e2e-{uuid.uuid4().hex}@example.test"
-        page.goto(BASE_URL + "/register")
+        page.goto(BASE_URL + "/register", wait_until="domcontentloaded")
+        page.get_by_role("heading", name="ساخت حساب کاربری").wait_for()
         page.locator('select[name="role"]').select_option("buyer")
         page.locator('input[name="name"]').fill("خریدار آزمون کامل")
         page.locator('input[name="email"]').fill(email)
