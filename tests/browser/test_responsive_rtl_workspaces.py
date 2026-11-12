@@ -1,9 +1,9 @@
-import os
 import unittest
 
 from playwright.sync_api import sync_playwright
 
-BASE_URL = os.environ.get("RAD_ART_BASE_URL", "http://127.0.0.1:8000")
+from config import BASE_URL, IGNORE_HTTPS_ERRORS
+
 VIEWPORTS = (320, 375, 768, 1024, 1440)
 PUBLIC_ROUTES = ("/", "/artworks", "/artists", "/login")
 
@@ -25,6 +25,7 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
         context = self.browser.new_context(
             viewport={"width": 375, "height": 812},
             reduced_motion="reduce",
+            ignore_https_errors=IGNORE_HTTPS_ERRORS,
         )
         page = context.new_page()
         page.set_default_timeout(15000)
@@ -92,6 +93,7 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
             context = self.browser.new_context(
                 viewport={"width": 375, "height": 812},
                 reduced_motion="reduce",
+                ignore_https_errors=IGNORE_HTTPS_ERRORS,
             )
             page = context.new_page()
             page.set_default_timeout(15000)
