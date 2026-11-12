@@ -401,6 +401,11 @@ class DemoDatabaseSeeder extends Seeder
             DB::table('artist_inquiries')->whereIn('id', $retiredInquiryIds)->delete();
         }
 
+        DB::table('notifications')
+            ->where('type', MessageReceivedNotification::class)
+            ->whereIn('notifiable_id', [...$demoArtistIds, $emptyBuyer->id])
+            ->delete();
+
         DB::table('user_blocks')
             ->where('blocker_user_id', $emptyBuyer->id)
             ->orWhere('blocked_user_id', $emptyBuyer->id)
