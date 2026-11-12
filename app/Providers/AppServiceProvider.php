@@ -24,7 +24,8 @@ class AppServiceProvider extends ServiceProvider
 
             return [
                 Limit::perMinute(10)->by('auth-identity:'.$request->ip().':'.$identityKey),
-                Limit::perMinute(60)->by('auth-ip:'.$request->ip()),
+                Limit::perHour(20)->by('auth-email:'.$identityKey),
+                Limit::perMinute(300)->by('auth-ip:'.$request->ip()),
             ];
         });
     }
