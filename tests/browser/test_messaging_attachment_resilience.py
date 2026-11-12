@@ -83,6 +83,14 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
             ),
         )
         page.route(
+            f"**/api/v1/conversations/{conversation_id}/read",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({"data": []}),
+            ),
+        )
+        page.route(
             f"**/api/v1/conversations/{conversation_id}/messages",
             lambda route: route.fulfill(
                 status=200,
