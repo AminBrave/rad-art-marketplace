@@ -175,9 +175,7 @@ function ensureBrowserDatabase() {
     return databasePath;
 }
 
-function resetBrowserRuntime() {
-    rmSync(resolve(root, 'storage', 'app', 'browser-testing'), { recursive: true, force: true });
-    rmSync(resolve(root, 'storage', 'framework', 'browser-testing'), { recursive: true, force: true });
+function ensureBrowserRuntimeDirectories() {
     const runtimeDir = resolve(root, 'storage', 'framework', 'browser-testing');
     for (const directory of [
         resolve(runtimeDir, 'cache'),
@@ -188,6 +186,21 @@ function resetBrowserRuntime() {
     ]) {
         mkdirSync(directory, { recursive: true });
     }
+}
+
+function resetBrowserRuntime() {
+    rmSync(resolve(root, 'storage', 'app', 'browser-testing'), { recursive: true, force: true });
+    rmSync(resolve(root, 'storage', 'framework', 'browser-testing'), { recursive: true, force: true });
+    for (const cacheFile of [
+        'config.browser-testing.php',
+        'routes.browser-testing.php',
+        'events.browser-testing.php',
+        'services.browser-testing.php',
+        'packages.browser-testing.php',
+    ]) {
+        rmSync(resolve(root, 'bootstrap', 'cache', cacheFile), { force: true });
+    }
+    ensureBrowserRuntimeDirectories();
 }
 
 async function prepareBrowserEnvironment() {
@@ -280,7 +293,7 @@ async function startBrowserDevelopment() {
         throw new Error('Browser test database is empty. Run npm run browser:prepare first.');
     }
 
-    resetBrowserRuntime();
+    ensureBrowserRuntimeDirectories();
     const services = [
         {
             label: 'Laravel browser-test application (isolated SQLite)',
