@@ -149,6 +149,7 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
 
             older_alert = page.get_by_role("alert").filter(has_text="دریافت پیام‌های قدیمی‌تر انجام نشد")
             older_alert.wait_for()
+            self.assertEqual(older_attempts["count"], 1)
             self.assertEqual(log.locator("article").count(), len(initial_messages))
             self.assertTrue(page.get_by_text("پیام موجود 1", exact=False).is_visible())
 
