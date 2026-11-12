@@ -62,6 +62,9 @@ export default function MessagingCenter({ role }) {
     const [sending, setSending] = useState(false);
     const [actionId, setActionId] = useState(null);
     const [error, setError] = useState('');
+    const [threadsError, setThreadsError] = useState('');
+    const [messagesError, setMessagesError] = useState('');
+    const [olderMessagesError, setOlderMessagesError] = useState('');
     const [notice, setNotice] = useState('');
     const [directStartLoading, setDirectStartLoading] = useState(false);
     const [directStartAttempt, setDirectStartAttempt] = useState(0);
@@ -93,6 +96,7 @@ export default function MessagingCenter({ role }) {
     const directStartKeyRef = useRef(null);
     const directStartRequestRef = useRef(null);
     const shouldStickToBottomRef = useRef(true);
+    const sendingMessageRef = useRef(false);
 
     useEffect(() => {
         return () => {
@@ -114,6 +118,7 @@ export default function MessagingCenter({ role }) {
             setLoadingMoreThreads(false);
         }
         const page = append ? threadsPageRef.current + 1 : 1;
+        setThreadsError('');
         try {
             const query = { page };
             if (debouncedSearch) query.search = debouncedSearch;
@@ -135,7 +140,7 @@ export default function MessagingCenter({ role }) {
                 setHasMoreThreads(Number(data.current_page ?? page) < Number(data.last_page ?? page));
             }
         } catch (requestError) {
-            if (!axios.isCancel(requestError) && !controller.signal.aborted) setError('دریافت گفتگوها انجام نشد. دوباره تلاش کنید.');
+            if (!axios.isCancel(requestError) && !controller.signal.aborted) setThreadsError('دریافت گفتگوها انجام نشد. دوباره تلاش کنید.');
         } finally {
             if (threadsRequestRef.current === controller) {
                 threadsRequestRef.current = null;
@@ -178,6 +183,10 @@ export default function MessagingCenter({ role }) {
         const controller = new AbortController();
         messageRequestRef.current = controller;
         const url = '/api/v1/conversations/' + id + '/messages';
+        if (!incremental) {
+            setMessagesError('');
+            setMessagesLoading(true);
+        }
         try {
             const query = incremental ? {
                 after_id: latestMessageIdRef.current ?? 0,
@@ -232,7 +241,7 @@ export default function MessagingCenter({ role }) {
             if (!incremental || incoming.length > 0) loadThreadsRef.current();
         } catch (requestError) {
             if (!axios.isCancel(requestError) && !controller.signal.aborted
-                && Number(activeConversationRef.current) === Number(id)) setError('دریافت پیام‌ها انجام نشد. دوباره تلاش کنید.');
+                && Number(activeConversationRef.current) === Number(id)) setMessagesError('دریافت پیام‌ها انجام نشد. دوباره تلاش کنید.');
         } finally {
             if (messageRequestRef.current === controller) {
                 messageRequestRef.current = null;
@@ -257,6 +266,8 @@ export default function MessagingCenter({ role }) {
         pendingScrollRestoreRef.current = null;
         activeConversationRef.current = active;
         setMessages([]);
+        setMessagesError('');
+        setOlderMessagesError('');
         setNewMessageCount(0);
         setMessagesLoading(Boolean(active));
         shouldStickToBottomRef.current = true;
@@ -448,6 +459,7 @@ export default function MessagingCenter({ role }) {
         if (!conversationId || !hasOlderMessagesRef.current || historyLoadingRef.current) return;
         historyLoadingRef.current = true;
         setLoadingOlder(true);
+        setOlderMessagesError('');
         const controller = new AbortController();
         historyRequestRef.current = controller;
         const container = messagesContainerRef.current;
@@ -478,7 +490,7 @@ export default function MessagingCenter({ role }) {
             hasOlderMessagesRef.current = Number(data.current_page ?? 1) < Number(data.last_page ?? 1);
         } catch (requestError) {
             if (!axios.isCancel(requestError) && !controller.signal.aborted
-                && Number(activeConversationRef.current) === Number(conversationId)) setError('دریافت پیام‌های قدیمی‌تر انجام نشد. دوباره تلاش کنید.');
+                && Number(activeConversationRef.current) === Number(conversationId)) setOlderMessagesError('دریافت پیام‌های قدیمی‌تر انجام نشد. دوباره تلاش کنید.');
         } finally {
             if (historyRequestRef.current === controller) historyRequestRef.current = null;
             if (Number(activeConversationRef.current) === Number(conversationId)) {
@@ -496,7 +508,8 @@ export default function MessagingCenter({ role }) {
         event.preventDefault();
         const conversationId = active;
         const body = draft.trim();
-        if ((!body && !selectedFile) || !active || sending || safetyLoading || safety.blocked_by_me || safety.blocked_by_other) return;
+        if ((!body && !selectedFile) || !active || sendingMessageRef.current || safetyLoading || safety.blocked_by_me || safety.blocked_by_other) return;
+        sendingMessageRef.current = true;
         setSending(true);
         setError('');
         const messageClientId = pendingMessageId || (window.crypto?.randomUUID?.() ?? ('msg-' + Date.now() + '-' + Math.random().toString(36).slice(2)));
@@ -553,7 +566,10 @@ export default function MessagingCenter({ role }) {
                     ? 'برای ارسال کارت اثر، پایگاه داده هنوز به‌روزرسانی نشده است. کارت اثر را حذف کنید تا پیام عادی ارسال شود؛ سپس مدیر فنی باید مهاجرت پایگاه داده را اجرا کند.'
                     : 'ارسال پیام یا پیوست انجام نشد. وضعیت اتصال و پاسخ سرور را بررسی و دوباره تلاش کنید.');
             }
-        } finally { setSending(false); }
+        } finally {
+            sendingMessageRef.current = false;
+            setSending(false);
+        }
     };
 
     const saveEdit = async (event, message) => {
@@ -668,6 +684,7 @@ export default function MessagingCenter({ role }) {
             </header>
             {notice && <p role="status" className="border border-border bg-surface-muted p-3 text-sm">{notice}</p>}
             {error && <p role="alert" className="border border-red-200 bg-red-50 p-3 text-sm text-red-800">{error}</p>}
+            {threadsError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 border border-red-200 bg-red-50 p-3 text-sm text-red-800"><span>{threadsError}</span><button type="button" onClick={() => loadThreads()} className="shrink-0 font-bold underline underline-offset-4">تلاش دوباره</button></div>}
             {directStartLoading && <div role="status" className="flex items-center gap-3 border border-border bg-surface-muted p-3 text-sm text-muted"><LoaderCircle size={16} className="animate-spin" aria-hidden="true" />در حال آماده‌سازی گفتگوی مستقیم و اتصال آن به اثر…</div>}
             {directStartError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 border border-danger/30 bg-danger-surface p-3 text-sm text-ink"><span>{directStartError}</span><button type="button" onClick={() => setDirectStartAttempt((attempt) => attempt + 1)} className="shrink-0 font-bold text-terracotta-strong underline underline-offset-4">تلاش دوباره</button></div>}
             <div className="grid h-[calc(100dvh-14rem)] min-h-[min(420px,calc(100dvh-14rem))] max-h-[900px] grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden rounded-2xl border border-border bg-white shadow-[0_18px_55px_rgba(36,35,32,0.07)] lg:h-[min(82dvh,900px)] lg:min-h-[min(620px,calc(100dvh-14rem))] lg:grid-cols-[360px_minmax(0,1fr)]">
@@ -692,7 +709,7 @@ export default function MessagingCenter({ role }) {
                             }} className={'flex min-w-0 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-[11px] font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-1 ' + (threadFilter === value ? 'bg-ink text-white shadow-sm' : 'text-muted hover:bg-surface-muted hover:text-ink')}><Icon size={14} aria-hidden="true" /><span className="truncate">{label}</span></button>)}
                         </div>
                     </div>
-                    {loading ? <ConversationInboxSkeleton count={6} /> : threads.length === 0 ? <p className="p-5 text-sm leading-7 text-muted">هنوز گفتگویی ندارید. از صفحه هنرمند یا یک اثر، گزینه «پیام مستقیم» را انتخاب کنید.</p> : (
+                    {loading ? <ConversationInboxSkeleton count={6} /> : threads.length === 0 ? (threadsError ? null : <p className="p-5 text-sm leading-7 text-muted">هنوز گفتگویی ندارید. از صفحه هنرمند یا یک اثر، گزینه «پیام مستقیم» را انتخاب کنید.</p>) : (
                         <ul className="min-h-0 flex-1 divide-y divide-border overflow-y-auto overscroll-contain [scrollbar-gutter:stable]">
                             {threads.map((thread) => <li key={thread.id} className={'transition-colors hover:bg-surface-muted focus-within:bg-surface-muted ' + (Number(active) === Number(thread.id) ? 'bg-surface-muted shadow-[inset_-3px_0_0_var(--color-terracotta)]' : '')}>
                                 <button type="button" onClick={() => { setActive(thread.id); setReplyTo(null); setPendingArtwork(null); setEditingId(null); setParams((current) => { const next = new URLSearchParams(current); next.delete('artist'); next.delete('artwork'); next.set('conversation', String(thread.id)); return next; }, { replace: true }); }} aria-current={Number(active) === Number(thread.id) ? 'true' : undefined} className="flex w-full items-center gap-3 bg-transparent px-4 py-4 text-right transition"><span aria-hidden="true" className={'flex h-11 w-11 aspect-square shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-inset ring-border text-sm font-black shadow-sm ' + avatarTone(thread.participant?.name)}>{avatarInitial(thread.participant?.name)}</span><span className="min-w-0 flex-1">
@@ -742,10 +759,12 @@ export default function MessagingCenter({ role }) {
                                 const node = event.currentTarget;
                                 shouldStickToBottomRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 120;
                                 if (shouldStickToBottomRef.current) setNewMessageCount(0);
-                                if (node.scrollTop < 72 && hasOlderMessagesRef.current) loadOlderMessages();
+                                if (node.scrollTop < 72 && hasOlderMessagesRef.current && !olderMessagesError) loadOlderMessages();
                             }} className="relative flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain [scrollbar-gutter:stable] bg-[radial-gradient(circle_at_1px_1px,rgba(66,62,53,0.055)_1px,transparent_0)] [background-size:24px_24px] px-3 py-5 sm:gap-4 sm:px-6 sm:py-6" role="log" aria-label="پیام‌های گفتگو" aria-live="polite" aria-relevant="additions">
                                 {messagesLoading && messages.length === 0 && <MessageHistorySkeleton count={5} className="w-full" />}
-                                {!messagesLoading && messages.length === 0 && <p className="m-auto py-6 text-center text-sm text-muted">هنوز پیامی در این گفتگو وجود ندارد. می‌توانید گفتگو را با یک پیام شروع کنید.</p>}
+                                {messagesError && <div role="alert" className="m-auto flex max-w-md flex-col items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-5 text-center text-sm text-red-800"><p>{messagesError}</p><button type="button" onClick={() => loadMessages(active)} className="rounded-lg px-4 py-2 font-bold underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">تلاش دوباره</button></div>}
+                                {!messagesLoading && !messagesError && messages.length === 0 && <p className="m-auto py-6 text-center text-sm text-muted">هنوز پیامی در این گفتگو وجود ندارد. می‌توانید گفتگو را با یک پیام شروع کنید.</p>}
+                                {olderMessagesError && <div role="alert" className="absolute inset-x-3 top-2 z-20 mx-auto flex w-fit max-w-full items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-xs text-red-800 shadow-soft"><span>{olderMessagesError}</span><button type="button" onClick={loadOlderMessages} className="shrink-0 rounded-lg px-2 py-1 font-bold underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">تلاش دوباره</button></div>}
                                 {loadingOlder && <p className="absolute inset-x-0 top-2 z-10 mx-auto w-fit rounded-full border border-border bg-white/95 px-3 py-1.5 text-xs text-muted shadow-soft" role="status">در حال دریافت پیام‌های قدیمی‌تر…</p>}
                                 {newMessageCount > 0 && <button type="button" onClick={() => {
                                     shouldStickToBottomRef.current = true;

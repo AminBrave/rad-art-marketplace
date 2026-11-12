@@ -4,7 +4,9 @@ These checks catch missing document direction, landmarks and accessible names.
 They complement—not replace—a full axe-core audit and manual keyboard testing.
 """
 
+import json
 import unittest
+import uuid
 
 from playwright.sync_api import sync_playwright
 
@@ -82,7 +84,7 @@ class AccessibilitySmokeTests(unittest.TestCase):
         context, page = self.new_page()
         try:
             for route in ("/login", "/register"):
-                response = page.goto(BASE_URL + route)
+                response = page.goto(BASE_URL + route, wait_until="domcontentloaded")
                 self.assertIsNotNone(response)
                 self.assertLess(response.status, 400)
                 page.get_by_role("main").wait_for()
@@ -93,10 +95,97 @@ class AccessibilitySmokeTests(unittest.TestCase):
         finally:
             context.close()
 
+    def test_registration_can_be_completed_with_keyboard_and_keeps_focus_visible(self):
+        context, page = self.new_page()
+        email = f"keyboard-{uuid.uuid4().hex}@example.test"
+        attempts = {"count": 0}
+        user = {
+            "id": 71003,
+            "name": "ثبت‌نام صفحه‌کلید",
+            "email": email,
+            "role": "buyer",
+        }
+
+        page.route(
+            "**/api/v1/auth/me",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body='{"data":null}',
+            ),
+        )
+
+        def register(route):
+            attempts["count"] += 1
+            route.fulfill(
+                status=201,
+                content_type="application/json",
+                body=json.dumps({"data": user}),
+            )
+
+        page.route("**/api/v1/auth/register", register)
+
+        try:
+            response = page.goto(BASE_URL + "/register", wait_until="domcontentloaded")
+            self.assertIsNotNone(response)
+            self.assertLess(response.status, 400)
+            page.get_by_role("heading", name="ساخت حساب کاربری").wait_for()
+
+            # The shared public header precedes the auth form in DOM/tab order.
+            # Traverse with Tab only until the role selector receives focus.
+            focused_control = ""
+            for _ in range(20):
+                page.keyboard.press("Tab")
+                focused_control = page.evaluate("document.activeElement.name")
+                if focused_control == "role":
+                    break
+            self.assertEqual(
+                focused_control,
+                "role",
+                "Keyboard navigation should reach the account-role selector after the shared header and auth controls.",
+            )
+            page.keyboard.press("Home")
+            page.keyboard.press("Tab")
+            page.keyboard.type(user["name"])
+            page.keyboard.press("Tab")
+            page.keyboard.type(email)
+            page.keyboard.press("Tab")
+            page.keyboard.type("strong-password-123")
+            page.keyboard.press("Tab")
+            page.keyboard.type("strong-password-123")
+            page.keyboard.press("Tab")
+
+            self.assertEqual(
+                page.evaluate("document.activeElement.textContent.trim()"),
+                "ایجاد حساب",
+            )
+            focus_style = page.evaluate("""() => {
+                const style = getComputedStyle(document.activeElement);
+                return { outlineStyle: style.outlineStyle, outlineWidth: style.outlineWidth };
+            }""")
+            self.assertEqual(focus_style["outlineStyle"], "solid")
+            self.assertGreaterEqual(float(focus_style["outlineWidth"].replace("px", "")), 2)
+
+            with page.expect_response(
+                lambda result: result.url.endswith("/api/v1/auth/register")
+                and result.request.method == "POST"
+                and result.status == 201
+            ):
+                page.keyboard.press("Enter")
+
+            page.wait_for_url("**/dashboard/buyer")
+            page.get_by_role(
+                "heading",
+                name="هنر مورد علاقه‌تان را کشف کنید و گفت‌وگو را ادامه دهید.",
+            ).wait_for()
+            self.assertEqual(attempts["count"], 1)
+        finally:
+            context.close()
+
     def test_artwork_catalogue_has_accessible_search_and_filter_controls(self):
         context, page = self.new_page()
         try:
-            response = page.goto(BASE_URL + "/artworks")
+            response = page.goto(BASE_URL + "/artworks", wait_until="domcontentloaded")
             self.assertIsNotNone(response)
             self.assertLess(response.status, 400)
             page.get_by_role("heading", name="گالری آثار").wait_for()
