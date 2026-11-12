@@ -70,6 +70,115 @@ class MessageAttachmentTest extends TestCase
             ->assertJsonValidationErrors('file');
     }
 
+    public function test_guests_cannot_upload_or_download_private_attachments(): void
+    {
+        Storage::fake('local');
+        [$buyer, , $conversation, $message] = $this->fixture();
+        $base = "/api/v1/conversations/{$conversation->id}/messages/{$message->id}/attachments";
+
+        $this->postJson($base, [
+            'file' => UploadedFile::fake()->createWithContent('guest.pdf', "%PDF-1.4\n%%EOF"),
+        ])->assertUnauthorized();
+
+        $path = 'message-attachments/'.$conversation->id.'/guest-private.pdf';
+        Storage::disk('local')->put($path, "%PDF-1.4\n%%EOF");
+        $attachment = MessageAttachment::query()->create([
+            'message_id' => $message->id,
+            'uploaded_by_user_id' => $buyer->id,
+            'storage_path' => $path,
+            'original_name' => 'private.pdf',
+            'mime_type' => 'application/pdf',
+            'size_bytes' => 12,
+        ]);
+
+        $this->getJson($base.'/'.$attachment->id)->assertUnauthorized();
+    }
+
+    public function test_attachment_routes_enforce_message_binding_and_pdf_is_not_previewable(): void
+    {
+        Storage::fake('local');
+        [$buyer, , $conversation, $message] = $this->fixture();
+        $otherMessage = $conversation->messages()->create([
+            'sender_user_id' => $buyer->id,
+            'body' => 'پیام دیگر',
+            'delivered_at' => now(),
+        ]);
+        $path = 'message-attachments/'.$conversation->id.'/document.pdf';
+        Storage::disk('local')->put($path, "%PDF-1.4\n%%EOF");
+        $attachment = MessageAttachment::query()->create([
+            'message_id' => $message->id,
+            'uploaded_by_user_id' => $buyer->id,
+            'storage_path' => $path,
+            'original_name' => 'document.pdf',
+            'mime_type' => 'application/pdf',
+            'size_bytes' => 12,
+        ]);
+
+        $mismatchedBase = "/api/v1/conversations/{$conversation->id}/messages/{$otherMessage->id}/attachments/{$attachment->id}";
+        $this->actingAs($buyer)->get($mismatchedBase)->assertNotFound();
+        $this->get($mismatchedBase.'/preview')->assertNotFound();
+
+        $validBase = "/api/v1/conversations/{$conversation->id}/messages/{$message->id}/attachments/{$attachment->id}";
+        $this->get($validBase.'/preview')->assertNotFound();
+        $this->get($validBase)
+            ->assertOk()
+            ->assertHeader('Cache-Control', 'no-store, private')
+            ->assertHeader('X-Content-Type-Options', 'nosniff');
+    }
+
+    public function test_image_previews_remain_private_and_missing_storage_is_not_exposed(): void
+    {
+        Storage::fake('local');
+        [$buyer, $artist, $conversation, $message, $outsider] = $this->fixture();
+        $path = 'message-attachments/'.$conversation->id.'/private-preview.png';
+        Storage::disk('local')->put($path, 'private image bytes');
+
+        $attachment = MessageAttachment::query()->create([
+            'message_id' => $message->id,
+            'uploaded_by_user_id' => $buyer->id,
+            'storage_path' => $path,
+            'original_name' => 'private-preview.png',
+            'mime_type' => 'image/png',
+            'size_bytes' => 19,
+        ]);
+        $previewUrl = "/api/v1/conversations/{$conversation->id}/messages/{$message->id}/attachments/{$attachment->id}/preview";
+
+        $this->actingAs($outsider)
+            ->get($previewUrl)
+            ->assertNotFound();
+
+        $this->actingAs($artist)
+            ->get($previewUrl)
+            ->assertOk()
+            ->assertHeader('Content-Type', 'image/png')
+            ->assertHeader('Cache-Control', 'no-store, private')
+            ->assertHeader('X-Content-Type-Options', 'nosniff');
+
+        Storage::disk('local')->delete($path);
+        $this->get($previewUrl)->assertNotFound();
+    }
+
+    public function test_a_message_cannot_receive_more_than_five_attachments(): void
+    {
+        Storage::fake('local');
+        [$buyer, , $conversation, $message] = $this->fixture();
+        $url = "/api/v1/conversations/{$conversation->id}/messages/{$message->id}/attachments";
+
+        foreach (range(1, 5) as $index) {
+            $this->actingAs($buyer)
+                ->postJson($url, [
+                    'file' => UploadedFile::fake()->createWithContent("reference-{$index}.pdf", "%PDF-1.4\n%%EOF"),
+                ])
+                ->assertCreated();
+        }
+
+        $this->postJson($url, [
+            'file' => UploadedFile::fake()->createWithContent('reference-6.pdf', "%PDF-1.4\n%%EOF"),
+        ])->assertUnprocessable();
+
+        $this->assertDatabaseCount('message_attachments', 5);
+    }
+
     private function fixture(): array
     {
         $buyer = $this->user('attachment-buyer@example.test', User::ROLE_BUYER);

@@ -114,6 +114,69 @@ class ArtworkModerationTest extends TestCase
         ]);
     }
 
+
+    public function test_artist_can_read_review_feedback_and_resubmission_clears_it(): void
+    {
+        [$profile, $artwork] = $this->makeArtwork('feedback-resubmission', Artwork::STATUS_REJECTED);
+        $admin = $this->makeUser('reviewer@example.com', User::ROLE_ADMIN);
+        $artwork->update([
+            'rejection_note' => 'لطفاً تصویر واضح‌تری بارگذاری کنید.',
+            'reviewed_by' => $admin->id,
+            'reviewed_at' => now(),
+        ]);
+
+        $this->actingAs($profile->user)
+            ->getJson('/api/v1/artist/artworks')
+            ->assertOk()
+            ->assertJsonPath('data.0.slug', $artwork->slug)
+            ->assertJsonPath('data.0.status', Artwork::STATUS_REJECTED)
+            ->assertJsonPath('data.0.rejection_note', 'لطفاً تصویر واضح‌تری بارگذاری کنید.');
+
+        [$anotherArtist] = $this->makeArtwork('another-artists-work');
+        $this->actingAs($anotherArtist->user)
+            ->getJson('/api/v1/artist/artworks')
+            ->assertOk()
+            ->assertJsonMissing(['slug' => $artwork->slug])
+            ->assertJsonMissing(['rejection_note' => 'لطفاً تصویر واضح‌تری بارگذاری کنید.']);
+
+        $this->actingAs($profile->user)
+            ->patchJson('/api/v1/artist/artworks/'.$artwork->id, [
+                ...$this->validArtwork(),
+                'title' => 'نسخه اصلاح‌شده',
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.status', Artwork::STATUS_PENDING_REVIEW)
+            ->assertJsonPath('data.rejection_note', null);
+
+        $this->assertDatabaseHas('artworks', [
+            'id' => $artwork->id,
+            'status' => Artwork::STATUS_PENDING_REVIEW,
+            'rejection_note' => null,
+            'reviewed_by' => null,
+            'reviewed_at' => null,
+        ]);
+    }
+
+    public function test_public_artist_profile_only_exposes_approved_artworks(): void
+    {
+        [$profile, $approved] = $this->makeArtwork('profile-approved', Artwork::STATUS_APPROVED);
+        [, $pending] = $this->makeArtwork('profile-pending', Artwork::STATUS_PENDING_REVIEW);
+        [, $rejected] = $this->makeArtwork('profile-rejected', Artwork::STATUS_REJECTED);
+        [, $changesRequested] = $this->makeArtwork('profile-changes', Artwork::STATUS_CHANGES_REQUESTED);
+
+        $this->getJson('/api/v1/artists/'.$profile->slug)
+            ->assertOk()
+            ->assertJsonCount(1, 'data.artworks')
+            ->assertJsonPath('data.artworks.0.slug', $approved->slug)
+            ->assertJsonMissing(['slug' => $pending->slug])
+            ->assertJsonMissing(['slug' => $rejected->slug])
+            ->assertJsonMissing(['slug' => $changesRequested->slug]);
+
+        $this->getJson('/api/v1/artworks/'.$pending->slug)->assertForbidden();
+        $this->getJson('/api/v1/artworks/'.$rejected->slug)->assertForbidden();
+        $this->getJson('/api/v1/artworks/'.$changesRequested->slug)->assertForbidden();
+    }
+
     private function makeArtwork(string $slug, string $status = Artwork::STATUS_PENDING_REVIEW): array
     {
         $artist = $this->makeUser('artist-'.$slug.'@example.com');

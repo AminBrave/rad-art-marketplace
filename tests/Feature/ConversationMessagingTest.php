@@ -479,6 +479,75 @@ class ConversationMessagingTest extends TestCase
         $this->get($base.'/preview')->assertNotFound();
     }
 
+
+    public function test_client_message_id_is_scoped_to_sender_and_conversation_and_replay_keeps_original_content(): void
+    {
+        [$buyer, $artist, $conversation] = $this->participantsWithConversation();
+        $payload = [
+            'body' => 'پیام اصلی با شناسه پایدار',
+            'client_message_id' => 'stable-client-id',
+        ];
+
+        $first = $this->actingAs($buyer)
+            ->postJson('/api/v1/conversations/'.$conversation->id.'/messages', $payload)
+            ->assertCreated()
+            ->assertJsonPath('data.body', $payload['body']);
+        $firstId = $first->json('data.id');
+
+        $this->postJson('/api/v1/conversations/'.$conversation->id.'/messages', [
+            ...$payload,
+            'body' => 'محتوای متفاوت در تلاش مجدد',
+        ])->assertOk()
+            ->assertJsonPath('data.id', $firstId)
+            ->assertJsonPath('data.body', $payload['body']);
+
+        $this->actingAs($artist)
+            ->postJson('/api/v1/conversations/'.$conversation->id.'/messages', $payload)
+            ->assertCreated()
+            ->assertJsonPath('data.body', $payload['body']);
+
+        [$otherBuyer, , $otherConversation] = $this->participantsWithConversation(
+            'other-idempotency-buyer@example.test',
+            'other-idempotency-artist@example.test',
+        );
+
+        $this->actingAs($otherBuyer)
+            ->postJson('/api/v1/conversations/'.$otherConversation->id.'/messages', $payload)
+            ->assertCreated()
+            ->assertJsonPath('data.body', $payload['body']);
+
+        $this->assertDatabaseCount('messages', 5);
+        $this->assertDatabaseCount('conversations', 2);
+    }
+
+    public function test_retrying_a_deleted_message_id_returns_the_tombstone_without_restoring_content(): void
+    {
+        [$buyer, , $conversation] = $this->participantsWithConversation();
+        $payload = [
+            'body' => 'پیامی که بعداً حذف می‌شود',
+            'client_message_id' => 'deleted-message-retry',
+        ];
+
+        $created = $this->actingAs($buyer)
+            ->postJson('/api/v1/conversations/'.$conversation->id.'/messages', $payload)
+            ->assertCreated();
+        $messageId = $created->json('data.id');
+
+        $this->deleteJson('/api/v1/conversations/'.$conversation->id.'/messages/'.$messageId)
+            ->assertOk()
+            ->assertJsonPath('data.body', null);
+
+        $retried = $this->postJson('/api/v1/conversations/'.$conversation->id.'/messages', $payload)
+            ->assertOk()
+            ->assertJsonPath('data.id', $messageId)
+            ->assertJsonPath('data.body', null);
+
+        $this->assertIsString($retried->json('data.deleted_at'));
+        $this->assertDatabaseCount('messages', 2);
+        $this->assertSoftDeleted('messages', ['id' => $messageId]);
+        $this->assertDatabaseHas('messages', ['id' => $messageId, 'body' => '']);
+    }
+
     private function participants(
         string $buyerEmail = 'buyer@example.test',
         string $artistEmail = 'artist@example.test'

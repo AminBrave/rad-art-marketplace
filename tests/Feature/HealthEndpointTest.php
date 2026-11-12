@@ -14,6 +14,7 @@ class HealthEndpointTest extends TestCase
                 'status' => 'ok',
                 'service' => 'rad-art-marketplace-api',
                 'version' => 'v1',
+                'browser_test_ready' => false,
             ]);
     }
 }

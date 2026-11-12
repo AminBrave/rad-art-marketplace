@@ -19,8 +19,11 @@ class AuthenticationTest extends TestCase
             ->assertExactJson(['data' => null]);
     }
 
-    public function test_registration_creates_an_artist_and_authenticates_them(): void
+    public function test_registration_creates_an_artist_and_rotates_the_session(): void
     {
+        $this->withSession(['pre_registration_marker' => 'present']);
+        $beforeRegistration = session()->getId();
+
         $response = $this->postJson('/api/v1/auth/register', [
             'name' => 'هنرمند آزمایشی',
             'email' => 'artist@example.com',
@@ -38,6 +41,7 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
+        $this->assertNotSame($beforeRegistration, session()->getId());
     }
 
     public function test_buyer_can_register_without_receiving_artist_permissions(): void
@@ -99,6 +103,49 @@ class AuthenticationTest extends TestCase
         $this->postJson('/api/v1/auth/logout')->assertOk();
         $this->getJson('/api/v1/auth/me')->assertOk()->assertExactJson(['data' => null]);
         $this->assertGuest();
+    }
+
+    public function test_login_rotates_the_session_id_and_logout_invalidates_the_authenticated_session(): void
+    {
+        $user = User::create([
+            'name' => 'Session Artist',
+            'email' => 'session-artist@example.com',
+            'password' => 'strong-password-123',
+            'role' => User::ROLE_ARTIST,
+        ]);
+
+        $this->withSession(['pre_authentication_marker' => 'present']);
+        $beforeLogin = session()->getId();
+
+        $this->postJson('/api/v1/auth/login', [
+            'email' => $user->email,
+            'password' => 'strong-password-123',
+        ])->assertOk();
+
+        $afterLogin = session()->getId();
+        $this->assertNotSame($beforeLogin, $afterLogin);
+        $this->assertAuthenticated();
+
+        $this->postJson('/api/v1/auth/logout')->assertOk();
+
+        $this->assertNotSame($afterLogin, session()->getId());
+        $this->assertGuest();
+        $this->getJson('/api/v1/auth/me')->assertOk()->assertExactJson(['data' => null]);
+    }
+
+    public function test_guest_login_attempts_are_rate_limited(): void
+    {
+        for ($attempt = 1; $attempt <= 10; $attempt++) {
+            $this->postJson('/api/v1/auth/login', [
+                'email' => 'rate-limit@example.com',
+                'password' => 'incorrect-password',
+            ])->assertUnprocessable();
+        }
+
+        $this->postJson('/api/v1/auth/login', [
+            'email' => 'rate-limit@example.com',
+            'password' => 'incorrect-password',
+        ])->assertTooManyRequests();
     }
 
     public function test_invalid_credentials_are_rejected(): void
