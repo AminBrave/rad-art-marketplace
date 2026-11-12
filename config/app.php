@@ -4,6 +4,7 @@ return [
     'name' => env('APP_NAME', 'Rad Art Marketplace'),
     'env' => env('APP_ENV', 'production'),
     'debug' => (bool) env('APP_DEBUG', false),
+    'browser_test_mode' => env('RAD_ART_BROWSER_TEST_MODE', '0'),
     'url' => env('APP_URL', 'http://localhost'),
     'timezone' => env('APP_TIMEZONE', 'Asia/Tehran'),
     'locale' => env('APP_LOCALE', 'fa'),

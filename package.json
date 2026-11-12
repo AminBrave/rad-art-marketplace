@@ -8,9 +8,11 @@
     "dev": "node scripts/project.mjs dev",
     "dev:https": "node scripts/project.mjs dev:https",
     "dev:local": "npm run dev:https",
+    "dev:browser": "node scripts/project.mjs dev:browser",
+    "preview": "php artisan serve --host=127.0.0.1 --port=8000",
     "db:sqlite:init": "node scripts/project.mjs db:sqlite:init",
-    "db:migrate": "node scripts/project.mjs db:migrate",
     "db:status": "php artisan migrate:status",
+    "db:migrate": "node scripts/project.mjs db:migrate",
     "db:seed": "node scripts/project.mjs db:seed",
     "db:seed:demo": "node scripts/project.mjs db:seed:demo",
     "db:fresh": "node scripts/project.mjs db:fresh",
@@ -19,21 +21,26 @@
     "test:unit": "node scripts/project.mjs unit",
     "test:feature": "node scripts/project.mjs feature",
     "test:integration": "node scripts/project.mjs integration",
-    "test:frontend": "node --test tests/js/*.test.js",
+    "test:frontend": "node scripts/project.mjs frontend:test",
     "test:browser": "node scripts/project.mjs browser",
-    "lint": "eslint resources/js --max-warnings=0",
+    "browser:prepare": "node scripts/project.mjs browser:prepare",
     "verify:backend": "node scripts/project.mjs backend",
     "verify:frontend": "node scripts/project.mjs frontend",
     "verify": "node scripts/project.mjs verify",
     "verify:all": "node scripts/project.mjs verify:all",
+    "test:quality": "node scripts/project.mjs verify",
+    "test:quality:backend": "node scripts/project.mjs backend",
+    "test:quality:frontend": "node scripts/project.mjs frontend",
+    "test:quality:browser": "node scripts/project.mjs browser",
+    "test:quality:all": "node scripts/project.mjs verify:all",
+    "lint": "eslint resources/js --max-warnings=0",
+    "lint:fix": "eslint resources/js --fix",
+    "fix:style": "node scripts/project.mjs fix:style",
+    "a11y:colors": "node --test tests/js/colorAccessibility.test.js",
     "build": "vite build",
     "build:cpanel": "vite build --config vite.config.cpanel.js",
-    "preview": "php artisan serve --host=127.0.0.1 --port=8000",
     "prod:optimize": "node scripts/project.mjs prod:optimize",
-    "prod:clear": "node scripts/project.mjs prod:clear",
-    "a11y:colors": "node --test tests/js/colorAccessibility.test.js",
-    "test:quality": "node scripts/project.mjs verify",
-    "test:quality:all": "node scripts/project.mjs verify:all"
+    "prod:clear": "node scripts/project.mjs prod:clear"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",
@@ -61,6 +68,6 @@
     "eslint-plugin-react": "^7.37.5"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=20.13.0"
   }
 }

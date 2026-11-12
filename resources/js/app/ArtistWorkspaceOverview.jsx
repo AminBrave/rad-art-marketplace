@@ -118,7 +118,11 @@ export default function ArtistWorkspaceOverview() {
                             <DashboardMetricCard as={Link} label="پیام‌های مستقیم" value="صندوق پیام‌ها" detail="گفت‌وگو با خریداران" to="/dashboard/artist/messages" eyebrow="ارتباط" />
                         </>}
                     </section>
-                    {errors.length > 0 && <ErrorState title="بخشی از اطلاعات بارگذاری نشد" description={errors.join(' ')} />}
+                    {errors.length > 0 && <ErrorState
+                        title="بخشی از اطلاعات بارگذاری نشد"
+                        description={errors.join(' ')}
+                        onRetry={() => artworksQuery.refetch()}
+                    />}
                     <section className="grid gap-5 xl:grid-cols-2">
                         <div className="border border-border bg-white p-5 sm:p-6">
                             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">

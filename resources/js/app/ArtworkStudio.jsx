@@ -30,6 +30,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
     const [imageError, setImageError] = useState('');
     const [imagePreview, setImagePreview] = useState('');
     const artworkController = useRef(null);
+    const savingArtworkRef = useRef(false);
 
     useEffect(() => {
         if (!image) { setImagePreview(''); return undefined; }
@@ -129,7 +130,10 @@ export default function ArtworkStudio({ user, hasProfile }) {
         }
     };
     const saveArtwork = async (event) => {
-        event.preventDefault(); setBusy(true); setErrors({}); setMessage(''); setUploadProgress(0);
+        event.preventDefault();
+        if (savingArtworkRef.current) return;
+        savingArtworkRef.current = true;
+        setBusy(true); setErrors({}); setMessage(''); setUploadProgress(0);
         const payload = new FormData();
         Object.entries(form).forEach(([key, value]) => { if (value !== '') payload.append(key, value); });
         if (image) payload.append('image', image);
@@ -147,7 +151,10 @@ export default function ArtworkStudio({ user, hasProfile }) {
                 setErrors(error.response.data.errors ?? {}); setMessage('لطفاً خطاهای مشخص‌شده را اصلاح کنید.');
             } else if (error.response?.status === 403) setMessage('سرور اجازه انجام این عملیات را نداد.');
             else setMessage('ذخیره اثر انجام نشد. اطلاعات فرم حفظ شده است؛ دوباره تلاش کنید.');
-        } finally { setBusy(false); }
+        } finally {
+            savingArtworkRef.current = false;
+            setBusy(false);
+        }
     };
     const fieldError = (name) => errors[name]?.map((item) => <span key={item} className="mt-1 block text-xs font-normal text-danger">{item}</span>);
 

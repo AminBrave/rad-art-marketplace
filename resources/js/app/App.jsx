@@ -1,4 +1,4 @@
-import { createElement, useEffect, useState } from 'react';
+import { createElement, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import ArtworkGallery from './ArtworkGallery';
 import ArtworkStudio from './ArtworkStudio';
@@ -27,6 +27,7 @@ export default function App() {
     const [profileBusy, setProfileBusy] = useState(false);
     const [publicProfile, setPublicProfile] = useState(null);
     const [publicProfileLoading, setPublicProfileLoading] = useState(window.location.pathname.startsWith('/artists/'));
+    const savingProfileRef = useRef(false);
 
     useEffect(() => {
         axios.get('/api/v1/auth/me')
@@ -119,6 +120,8 @@ export default function App() {
 
     const saveProfile = async (event) => {
         event.preventDefault();
+        if (savingProfileRef.current) return;
+        savingProfileRef.current = true;
         setProfileBusy(true);
         setProfileErrors({});
         setProfileMessage('');
@@ -135,6 +138,7 @@ export default function App() {
                 setProfileMessage('ذخیره پروفایل انجام نشد. دوباره تلاش کنید.');
             }
         } finally {
+            savingProfileRef.current = false;
             setProfileBusy(false);
         }
     };

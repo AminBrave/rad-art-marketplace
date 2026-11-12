@@ -66,7 +66,7 @@ class ArtistExperienceBrowserTests(unittest.TestCase):
                 status=200, content_type="application/json",
                 body=json.dumps({"data": {**PRIVATE_PROFILE, "artworks": [], "artworks_pagination": {"current_page": 1, "per_page": 12, "has_more": False, "next_page": None}}}, ensure_ascii=False)
             ))
-            page.goto(BASE_URL + "/dashboard/artist")
+            page.goto(BASE_URL + "/dashboard/artist", wait_until="domcontentloaded")
             page.get_by_role("heading", name="خوش آمدید، Artist QA").wait_for()
             page.get_by_text("۳ از ۵ بخش تکمیل شده").wait_for()
             page.get_by_text("ثبت اولین اثر برای بررسی").wait_for()
@@ -88,7 +88,7 @@ class ArtistExperienceBrowserTests(unittest.TestCase):
             page.route("**/api/v1/categories", lambda route: route.fulfill(
                 status=200, content_type="application/json", body=json.dumps({"data": [{"id": 1, "name": "نقاشی"}]}, ensure_ascii=False)
             ))
-            page.goto(BASE_URL + "/dashboard/artist/artworks")
+            page.goto(BASE_URL + "/dashboard/artist/artworks", wait_until="domcontentloaded")
             page.get_by_role("heading", name="مدیریت آثار").wait_for()
             page.get_by_text("مدیر برای این اثر اصلاحاتی درخواست کرده است.", exact=False).wait_for()
             page.get_by_text("لطفاً تصویر واضح‌تری بارگذاری کنید.").wait_for()
