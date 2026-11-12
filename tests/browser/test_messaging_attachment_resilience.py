@@ -73,6 +73,14 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
             ),
         )
         page.route(
+            f"**/api/v1/conversations/{conversation_id}",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({"data": thread}),
+            ) if route.request.method == "GET" else route.continue_(),
+        )
+        page.route(
             f"**/api/v1/conversations/{conversation_id}/safety",
             lambda route: route.fulfill(
                 status=200,
@@ -212,7 +220,7 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
                 f"/api/v1/conversations/{conversation_id}/messages/{message_id}/attachments/73022",
             )
             self.assertEqual(composer.input_value(), "")
-            self.assertFalse(page.get_by_text("reference.pdf", exact=True).is_visible())
+            self.assertFalse(page.get_by_role("button", name="حذف پیوست").is_visible())
         finally:
             context.close()
 
