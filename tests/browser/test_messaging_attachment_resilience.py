@@ -90,24 +90,6 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
                 body=json.dumps({"data": []}),
             ),
         )
-        page.route(
-            f"**/api/v1/conversations/{conversation_id}/messages",
-            lambda route: route.fulfill(
-                status=200,
-                content_type="application/json",
-                body=json.dumps({
-                    "data": [],
-                    "current_page": 1,
-                    "last_page": 1,
-                    "sync_cursor": "2026-11-12T10:00:00Z",
-                }),
-            ) if route.request.method == "GET" else route.fulfill(
-                status=200,
-                content_type="application/json",
-                body=json.dumps({"data": []}),
-            ),
-        )
-
         def create_message(route):
             payload = route.request.post_data_json
             message_attempts.append(payload.get("client_message_id"))
@@ -128,9 +110,30 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
                 }),
             )
 
+        def messages_endpoint(route):
+            if route.request.method == "GET":
+                route.fulfill(
+                    status=200,
+                    content_type="application/json",
+                    body=json.dumps({
+                        "data": [],
+                        "current_page": 1,
+                        "last_page": 1,
+                        "sync_cursor": "2026-11-12T10:00:00Z",
+                    }),
+                )
+            elif route.request.method == "POST":
+                create_message(route)
+            else:
+                route.fulfill(
+                    status=200,
+                    content_type="application/json",
+                    body=json.dumps({"data": []}),
+                )
+
         page.route(
             f"**/api/v1/conversations/{conversation_id}/messages",
-            lambda route: create_message(route) if route.request.method == "POST" else route.continue_(),
+            messages_endpoint,
         )
 
         def upload_attachment(route):
