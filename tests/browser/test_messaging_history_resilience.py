@@ -71,6 +71,14 @@ class MessagingHistoryResilienceTests(unittest.TestCase):
             ),
         )
         page.route(
+            f"**/api/v1/conversations/{conversation_id}",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({"data": thread}),
+            ) if route.request.method == "GET" else route.continue_(),
+        )
+        page.route(
             f"**/api/v1/conversations/{conversation_id}/safety",
             lambda route: route.fulfill(
                 status=200,
@@ -123,7 +131,7 @@ class MessagingHistoryResilienceTests(unittest.TestCase):
         try:
             page.goto(
                 BASE_URL + f"/dashboard/buyer/messages?conversation={conversation_id}",
-                wait_until="domcontentloaded",
+                wait_until="commit",
             )
             page.get_by_role("heading", name="پیام‌ها").wait_for()
             page.get_by_role("heading", name="هنرمند گفتگو").wait_for()
