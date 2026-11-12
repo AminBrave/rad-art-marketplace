@@ -352,8 +352,6 @@ class DemoDatabaseSeeder extends Seeder
         }
     }
 
-
-
     private function removeRetiredInquiryFixtures(User $emptyBuyer): void
     {
         $demoBuyerIds = User::query()
@@ -512,7 +510,7 @@ class DemoDatabaseSeeder extends Seeder
             }
         }
 
-        if ($scenario % 3 === 0 && $artist->messageNotificationPreferences()['in_app_messages']) {
+        if ($scenario % 3 === 0 && $conversation->artist_muted_at === null && $artist->messageNotificationPreferences()['in_app_messages']) {
             $hash = sha1('rademan-demo-notification:'.$conversation->pair_key);
             $notificationId = substr($hash, 0, 8).'-'.substr($hash, 8, 4).'-4'.substr($hash, 13, 3).'-8'.substr($hash, 17, 3).'-'.substr($hash, 20, 12);
             DatabaseNotification::query()->updateOrCreate(
