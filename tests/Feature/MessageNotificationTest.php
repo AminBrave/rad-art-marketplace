@@ -39,6 +39,35 @@ class MessageNotificationTest extends TestCase
         $this->assertArrayNotHasKey('email', $notification->data);
     }
 
+
+    public function test_deleted_message_retry_does_not_create_a_second_notification(): void
+    {
+        [$buyer, $artist, $conversation] = $this->conversation();
+        $payload = [
+            'body' => 'پیام برای حذف و تلاش مجدد',
+            'client_message_id' => 'notification-delete-retry',
+        ];
+
+        $created = $this->actingAs($buyer)
+            ->postJson('/api/v1/conversations/'.$conversation->id.'/messages', $payload)
+            ->assertCreated();
+        $messageId = $created->json('data.id');
+
+        $this->deleteJson('/api/v1/conversations/'.$conversation->id.'/messages/'.$messageId)
+            ->assertOk();
+
+        $retried = $this->postJson('/api/v1/conversations/'.$conversation->id.'/messages', $payload)
+            ->assertOk()
+            ->assertJsonPath('data.id', $messageId)
+            ->assertJsonPath('data.body', null);
+
+        $this->assertIsString($retried->json('data.deleted_at'));
+        $this->assertSame(1, $artist->notifications()->count());
+        $this->assertSame(0, $buyer->notifications()->count());
+        $this->assertDatabaseCount('notifications', 1);
+        $this->assertDatabaseCount('messages', 1);
+    }
+
     public function test_notification_list_and_read_actions_are_scoped_to_the_recipient(): void
     {
         [$buyer, $artist, $conversation, $outsider] = $this->conversation();
