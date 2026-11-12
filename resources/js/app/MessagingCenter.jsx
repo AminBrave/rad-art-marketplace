@@ -64,6 +64,7 @@ export default function MessagingCenter({ role }) {
     const [error, setError] = useState('');
     const [threadsError, setThreadsError] = useState('');
     const [messagesError, setMessagesError] = useState('');
+    const [olderMessagesError, setOlderMessagesError] = useState('');
     const [notice, setNotice] = useState('');
     const [directStartLoading, setDirectStartLoading] = useState(false);
     const [directStartAttempt, setDirectStartAttempt] = useState(0);
@@ -266,6 +267,7 @@ export default function MessagingCenter({ role }) {
         activeConversationRef.current = active;
         setMessages([]);
         setMessagesError('');
+        setOlderMessagesError('');
         setNewMessageCount(0);
         setMessagesLoading(Boolean(active));
         shouldStickToBottomRef.current = true;
@@ -457,6 +459,7 @@ export default function MessagingCenter({ role }) {
         if (!conversationId || !hasOlderMessagesRef.current || historyLoadingRef.current) return;
         historyLoadingRef.current = true;
         setLoadingOlder(true);
+        setOlderMessagesError('');
         const controller = new AbortController();
         historyRequestRef.current = controller;
         const container = messagesContainerRef.current;
@@ -487,7 +490,7 @@ export default function MessagingCenter({ role }) {
             hasOlderMessagesRef.current = Number(data.current_page ?? 1) < Number(data.last_page ?? 1);
         } catch (requestError) {
             if (!axios.isCancel(requestError) && !controller.signal.aborted
-                && Number(activeConversationRef.current) === Number(conversationId)) setError('دریافت پیام‌های قدیمی‌تر انجام نشد. دوباره تلاش کنید.');
+                && Number(activeConversationRef.current) === Number(conversationId)) setOlderMessagesError('دریافت پیام‌های قدیمی‌تر انجام نشد. دوباره تلاش کنید.');
         } finally {
             if (historyRequestRef.current === controller) historyRequestRef.current = null;
             if (Number(activeConversationRef.current) === Number(conversationId)) {
@@ -761,6 +764,7 @@ export default function MessagingCenter({ role }) {
                                 {messagesLoading && messages.length === 0 && <MessageHistorySkeleton count={5} className="w-full" />}
                                 {messagesError && <div role="alert" className="m-auto flex max-w-md flex-col items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-5 text-center text-sm text-red-800"><p>{messagesError}</p><button type="button" onClick={() => loadMessages(active)} className="rounded-lg px-4 py-2 font-bold underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">تلاش دوباره</button></div>}
                                 {!messagesLoading && !messagesError && messages.length === 0 && <p className="m-auto py-6 text-center text-sm text-muted">هنوز پیامی در این گفتگو وجود ندارد. می‌توانید گفتگو را با یک پیام شروع کنید.</p>}
+                                {olderMessagesError && <div role="alert" className="sticky top-0 z-20 mx-auto flex w-fit max-w-full items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-xs text-red-800 shadow-soft"><span>{olderMessagesError}</span><button type="button" onClick={loadOlderMessages} className="shrink-0 rounded-lg px-2 py-1 font-bold underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">تلاش دوباره</button></div>}
                                 {loadingOlder && <p className="absolute inset-x-0 top-2 z-10 mx-auto w-fit rounded-full border border-border bg-white/95 px-3 py-1.5 text-xs text-muted shadow-soft" role="status">در حال دریافت پیام‌های قدیمی‌تر…</p>}
                                 {newMessageCount > 0 && <button type="button" onClick={() => {
                                     shouldStickToBottomRef.current = true;
