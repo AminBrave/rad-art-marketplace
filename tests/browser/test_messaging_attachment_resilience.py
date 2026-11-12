@@ -206,7 +206,15 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
                 BASE_URL + f"/dashboard/buyer/messages?conversation={conversation_id}",
                 wait_until="commit",
             )
-            page.get_by_role("heading", name="پیام‌ها").wait_for()
+            try:
+                page.get_by_role("heading", name="پیام‌ها").wait_for()
+            except Exception as failure:
+                raise AssertionError(
+                    "Messaging route did not render its heading in the attachment journey. "
+                    f"URL={page.url}; title={page.title()}; "
+                    f"body={page.locator('body').inner_text()[:2000]!r}; "
+                    f"browser_errors={browser_errors!r}; api_responses={api_responses[-25:]!r}"
+                ) from failure
             page.get_by_role("heading", name="هنرمند گفتگو").wait_for()
             composer = page.locator('textarea[aria-label="متن پیام"]')
             composer.wait_for(state="visible")
