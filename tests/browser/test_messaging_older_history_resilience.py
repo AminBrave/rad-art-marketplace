@@ -137,7 +137,7 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
             ),
         )
         try:
-            page.goto(BASE_URL + f"/dashboard/buyer/messages?conversation={conversation_id}", wait_until="domcontentloaded")
+            page.goto(BASE_URL + f"/dashboard/buyer/messages?conversation={conversation_id}", wait_until="commit")
             page.get_by_role("heading", name="پیام‌ها").wait_for()
             page.get_by_role("heading", name="هنرمند صفحه‌بندی").wait_for()
             page.get_by_text(re.compile(r"^پیام موجود 1 ")).first.wait_for()
