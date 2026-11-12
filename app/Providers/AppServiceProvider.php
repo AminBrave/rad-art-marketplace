@@ -20,9 +20,10 @@ class AppServiceProvider extends ServiceProvider
     {
         RateLimiter::for('auth-guest', function (Request $request): array {
             $email = mb_strtolower(trim((string) $request->input('email')));
+            $identityKey = hash('sha256', $email);
 
             return [
-                Limit::perMinute(10)->by('auth-email:'.$email),
+                Limit::perMinute(10)->by('auth-identity:'.$request->ip().':'.$identityKey),
                 Limit::perMinute(60)->by('auth-ip:'.$request->ip()),
             ];
         });
