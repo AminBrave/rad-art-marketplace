@@ -14,6 +14,7 @@ def validate_local_target() -> None:
     from urllib.parse import urlparse
     from urllib.request import urlopen
     from urllib.error import URLError, HTTPError
+    import ssl
 
     raw_url = os.environ.get("RAD_ART_BASE_URL", "https://rad.localhost").rstrip("/")
     parsed = urlparse(raw_url)
@@ -33,7 +34,8 @@ def validate_local_target() -> None:
 
     health_url = f"{raw_url}/api/v1/health"
     try:
-        with urlopen(health_url, timeout=8) as response:
+        ssl_context = ssl._create_unverified_context() if parsed.scheme == "https" and os.environ.get("RAD_ART_IGNORE_HTTPS_ERRORS", "true").lower() in {"1", "true", "yes", "on"} else None
+        with urlopen(health_url, timeout=8, context=ssl_context) as response:
             if response.status != 200:
                 raise RuntimeError(f"Local app health check returned HTTP {response.status}: {health_url}")
     except (URLError, HTTPError, TimeoutError) as error:
