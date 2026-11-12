@@ -28,7 +28,7 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
     Route::prefix('auth')->name('auth.')->group(function (): void {
         Route::get('/me', [AuthController::class, 'me'])->name('me');
 
-        Route::middleware(['guest', 'throttle:5,1'])->group(function (): void {
+        Route::middleware(['guest', 'throttle:10,1'])->group(function (): void {
             Route::post('/register', [AuthController::class, 'register'])->name('register');
             Route::post('/login', [AuthController::class, 'login'])->name('login');
         });
