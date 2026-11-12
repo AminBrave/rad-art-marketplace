@@ -91,7 +91,7 @@ class MessageAttachmentTest extends TestCase
             'size_bytes' => 12,
         ]);
 
-        $this->get($base.'/'.$attachment->id)->assertUnauthorized();
+        $this->getJson($base.'/'.$attachment->id)->assertUnauthorized();
     }
 
     public function test_attachment_routes_enforce_message_binding_and_pdf_is_not_previewable(): void
