@@ -71,7 +71,7 @@ def write_junit_report(result: TimedTextTestResult, destination: Path) -> None:
 
 def main() -> int:
     try:
-        import playwright.sync_api  # noqa: F401
+        import playwright.sync_api
     except ImportError:
         print(
             "Playwright is required for local browser tests. Install requirements-test.txt "
