@@ -175,8 +175,11 @@ function browserTestEnvironment() {
 function ensureBrowserDatabase() {
     const databasePath = resolve(root, 'database', 'browser-testing.sqlite');
     mkdirSync(dirname(databasePath), { recursive: true });
-    if (existsSync(databasePath) && lstatSync(databasePath).isSymbolicLink()) {
-        throw new Error('Refusing to use a symbolic link for the isolated browser-test database.');
+    if (existsSync(databasePath)) {
+        const databaseStats = lstatSync(databasePath);
+        if (databaseStats.isSymbolicLink() || !databaseStats.isFile()) {
+            throw new Error('The isolated browser-test database path must be a regular file, not a link or directory.');
+        }
     }
     if (!existsSync(databasePath)) {
         writeFileSync(databasePath, '');
@@ -194,6 +197,10 @@ function ensureBrowserRuntimeDirectories() {
         resolve(root, 'storage', 'app', 'browser-testing', 'private'),
         resolve(root, 'storage', 'app', 'browser-testing', 'public'),
     ]) {
+        mkdirSync(dirname(directory), { recursive: true });
+        if (existsSync(directory) && lstatSync(directory).isSymbolicLink()) {
+            throw new Error(`Refusing to use a symbolic link for isolated browser-test runtime path: ${directory}`);
+        }
         mkdirSync(directory, { recursive: true });
     }
 }
