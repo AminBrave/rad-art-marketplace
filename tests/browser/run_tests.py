@@ -12,7 +12,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
-from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener
+from urllib.request import HTTPRedirectHandler, HTTPSHandler, ProxyHandler, Request, build_opener
 
 
 class RejectRedirects(HTTPRedirectHandler):
@@ -57,10 +57,10 @@ def validate_local_target() -> None:
         and os.environ.get("RAD_ART_IGNORE_HTTPS_ERRORS", "true").lower() in {"1", "true", "yes", "on"}
         else ssl.create_default_context()
     )
-    opener = build_opener(ProxyHandler({}), RejectRedirects(),)
+    opener = build_opener(ProxyHandler({}), RejectRedirects(), HTTPSHandler(context=ssl_context))
     request = Request(health_url, headers={"Accept": "application/json"})
     try:
-        with opener.open(request, timeout=8, context=ssl_context) as response:
+        with opener.open(request, timeout=8) as response:
             payload = json.loads(response.read().decode("utf-8"))
             if response.status != 200 or payload.get("status") != "ok":
                 raise RuntimeError(f"Local app health check returned an unexpected response: {health_url}")
