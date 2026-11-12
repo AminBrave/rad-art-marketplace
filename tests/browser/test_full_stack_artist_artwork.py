@@ -104,9 +104,9 @@ class FullStackArtistArtworkTests(unittest.TestCase):
             self.assertEqual(200, login_response.value.status)
 
             page.goto(BASE_URL + "/dashboard/artist/profile", wait_until="domcontentloaded")
-            profile_form = page.locator("form").filter(has=page.get_by_label("نام نمایشی"))
+            profile_form = page.locator("form").filter(has=page.get_by_label("نام نمایشی", exact=True))
             profile_form.wait_for()
-            page.get_by_label("نام نمایشی").fill("هنرمند آزمون تکرار")
+            page.get_by_label("نام نمایشی", exact=True).fill("هنرمند آزمون تکرار")
 
             profile_requests = []
 
