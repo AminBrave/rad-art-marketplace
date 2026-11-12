@@ -2,17 +2,17 @@ import { cloneElement, isValidElement, useId } from 'react';
 import { cn } from '../../lib/utils';
 
 const buttonVariants = {
-    primary: 'bg-terracotta text-white hover:bg-terracotta-strong',
-    secondary: 'bg-surface-muted text-ink hover:bg-border',
-    outline: 'border border-border-strong bg-paper text-ink hover:border-terracotta hover:text-terracotta-strong',
-    ghost: 'bg-transparent text-ink hover:bg-surface-muted',
-    danger: 'bg-danger text-white hover:brightness-90',
+    primary: 'ra-button--primary',
+    secondary: 'ra-button--secondary',
+    outline: 'ra-button--outline',
+    ghost: 'ra-button--ghost',
+    danger: 'ra-button--danger',
 };
 
 const buttonSizes = {
-    sm: 'min-h-9 px-3 text-xs',
-    md: 'min-h-11 px-4 py-2.5 text-sm',
-    lg: 'min-h-12 px-6 py-3 text-base',
+    sm: 'ra-button--sm',
+    md: 'ra-button--md',
+    lg: 'ra-button--lg',
 };
 
 export function Button({
@@ -46,7 +46,7 @@ export function IconButton({ children, label, size = 'md', className = '', ...pr
             type="button"
             aria-label={label}
             title={label}
-            className={cn('ra-button ra-button--outline shrink-0 !p-0', dimensions[size] ?? dimensions.md, className)}
+            className={cn('ra-button ra-button--outline ra-icon-button shrink-0', dimensions[size] ?? dimensions.md, className)}
             {...props}
         >
             {children}
@@ -55,20 +55,117 @@ export function IconButton({ children, label, size = 'md', className = '', ...pr
 }
 
 const badgeVariants = {
-    neutral: 'bg-surface-muted text-muted',
-    success: 'bg-olive/10 text-olive',
-    warning: 'bg-warning/10 text-warning',
-    danger: 'bg-danger/10 text-danger',
-    info: 'bg-info/10 text-info',
-    accent: 'bg-terracotta/10 text-terracotta-strong',
+    neutral: 'ra-badge--neutral',
+    success: 'ra-badge--success',
+    warning: 'ra-badge--warning',
+    danger: 'ra-badge--danger',
+    info: 'ra-badge--info',
+    accent: 'ra-badge--accent',
 };
 
 export function Badge({ children, variant = 'neutral', className = '' }) {
     return (
-        <span className={cn('inline-flex items-center rounded-sm px-2.5 py-1 text-xs font-bold', badgeVariants[variant] ?? badgeVariants.neutral, className)}>
+        <span className={cn('ra-badge', badgeVariants[variant] ?? badgeVariants.neutral, className)}>
             {children}
         </span>
     );
+}
+
+
+const pageWidths = {
+    wide: 'ra-page--wide',
+    reading: 'ra-page--reading',
+    full: 'ra-page--full',
+};
+
+export function PageContainer({ as: Element = 'div', width = 'wide', className = '', children, ...props }) {
+    return <Element className={cn('ra-page', pageWidths[width] ?? pageWidths.wide, className)} {...props}>{children}</Element>;
+}
+
+export function PageHeader({ eyebrow, title, description, actions, level = 1, className = '', titleClassName = '', descriptionClassName = '' }) {
+    const Heading = level === 2 ? 'h2' : 'h1';
+    return (
+        <header className={cn('ra-page-header', className)}>
+            <div className="ra-page-header__copy">
+                {eyebrow && <p className="ra-page-header__eyebrow">{eyebrow}</p>}
+                <Heading className={cn('ra-page-header__title', titleClassName)}>{title}</Heading>
+                {description && <p className={cn('ra-page-header__description', descriptionClassName)}>{description}</p>}
+            </div>
+            {actions && <div className="ra-page-header__actions">{actions}</div>}
+        </header>
+    );
+}
+
+export function SectionHeader({ id, eyebrow, title, description, actions, className = '', level = 2 }) {
+    const Heading = level === 3 ? 'h3' : 'h2';
+    return (
+        <header className={cn('ra-section-header', className)}>
+            <div className="ra-section-header__copy">
+                {eyebrow && <p className="ra-section-header__eyebrow">{eyebrow}</p>}
+                <Heading id={id} className="ra-section-header__title">{title}</Heading>
+                {description && <p className="ra-section-header__description">{description}</p>}
+            </div>
+            {actions && <div className="ra-section-header__actions">{actions}</div>}
+        </header>
+    );
+}
+
+
+export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
+    return (
+        <header className={cn('ra-workspace-hero', className)} dir="rtl">
+            <div className="ra-workspace-hero__copy">
+                {eyebrow && <p className="ra-workspace-hero__eyebrow">{eyebrow}</p>}
+                <h1 className="ra-workspace-hero__title">{title}</h1>
+                {description && <p className="ra-workspace-hero__description">{description}</p>}
+            </div>
+            {actions && <div className="ra-workspace-hero__actions">{actions}</div>}
+        </header>
+    );
+}
+
+export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, className = '' }) {
+    const Element = as ?? (to ? 'a' : 'article');
+    const destinationProps = to ? (Element === 'a' ? { href: to } : { to }) : {};
+    return (
+        <Element {...destinationProps} className={cn('ra-metric-card', to && 'ra-metric-card--interactive', className)}>
+            <span className="ra-metric-card__top">
+                <span className="ra-metric-card__label">{label}</span>
+                {eyebrow && <span className="ra-metric-card__eyebrow">{eyebrow}</span>}
+            </span>
+            <span className="ra-metric-card__value">{value ?? '—'}</span>
+            {detail && <span className="ra-metric-card__detail">{detail}</span>}
+        </Element>
+    );
+}
+
+const surfaceVariants = {
+    default: 'ra-surface',
+    muted: 'ra-surface ra-surface--muted',
+    raised: 'ra-surface ra-surface--raised',
+    interactive: 'ra-surface ra-surface--interactive',
+};
+
+export function Surface({ as: Element = 'section', variant = 'default', className = '', children, ...props }) {
+    return <Element className={cn(surfaceVariants[variant] ?? surfaceVariants.default, className)} {...props}>{children}</Element>;
+}
+
+
+const statusVariants = {
+    pending_review: 'warning',
+    changes_requested: 'info',
+    approved: 'success',
+    published: 'success',
+    available: 'success',
+    rejected: 'danger',
+    sold: 'neutral',
+    not_for_sale: 'neutral',
+    private: 'neutral',
+    public: 'success',
+};
+
+export function StatusBadge({ status, label, className = '' }) {
+    return <Badge variant={statusVariants[status] ?? 'neutral'} className={className}>{label ?? status ?? 'نامشخص'}</Badge>;
 }
 
 const controlClass = 'ra-control';
@@ -89,14 +186,14 @@ export function FormField({ id, label, hint, error, required = false, children, 
         : children;
 
     return (
-        <div className={`grid gap-2 ${className}`}>
-            <label htmlFor={fieldId} className="text-sm font-semibold text-ink">
+        <div className={`ra-form-field ${className}`}>
+            <label htmlFor={fieldId} className="ra-form-field__label">
                 {label}
                 {required && <span aria-hidden="true" className="ms-1 text-danger">*</span>}
             </label>
             {control}
-            {hint && <p id={`${fieldId}-hint`} className="text-xs leading-6 text-muted">{hint}</p>}
-            {error && <p id={`${fieldId}-error`} role="alert" className="text-xs leading-6 text-danger">{error}</p>}
+            {hint && <p id={`${fieldId}-hint`} className="ra-form-field__hint">{hint}</p>}
+            {error && <p id={`${fieldId}-error`} role="alert" className="ra-form-field__error">{error}</p>}
         </div>
     );
 }
@@ -106,7 +203,7 @@ export function TextInput({ className = '', ...props }) {
 }
 
 export function TextareaField({ className = '', rows = 4, ...props }) {
-    return <textarea rows={rows} className={`${controlClass} min-h-28 resize-y leading-7 ${className}`} {...props} />;
+    return <textarea rows={rows} className={`${controlClass} ra-control--textarea ${className}`} {...props} />;
 }
 
 export function SelectField({ className = '', children, ...props }) {
@@ -134,7 +231,7 @@ export function SearchField({
     };
 
     return (
-        <form onSubmit={submit} role="search" className={`flex min-w-0 flex-col gap-2 sm:flex-row ${className}`}>
+        <form onSubmit={submit} role="search" className={`ra-search-field ${className}`}>
             <label className="sr-only" htmlFor={searchId}>{label}</label>
             <TextInput
                 id={searchId}

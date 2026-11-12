@@ -8,7 +8,7 @@ use App\Models\Conversation;
 use App\Models\User;
 use PHPUnit\Framework\TestCase;
 
-final class ConversationTest extends TestCase
+final class ConversationParticipantIdentityTest extends TestCase
 {
     public function test_participant_id_is_returned_only_for_the_buyer_or_artist(): void
     {

@@ -55,7 +55,6 @@ class DirectConversationController extends Controller
 
             if (! $conversation) {
                 $conversation = Conversation::query()->create([
-                    'inquiry_id' => null,
                     'pair_key' => $pairKey,
                     'buyer_user_id' => $buyer->id,
                     'artist_user_id' => $artistId,
@@ -67,7 +66,6 @@ class DirectConversationController extends Controller
                 DB::table('conversation_contexts')->updateOrInsert([
                     'conversation_id' => $conversation->id,
                     'artwork_id' => $artwork->id,
-                    'inquiry_id' => null,
                 ], [
                     'added_by_user_id' => $buyer->id,
                     'created_at' => now(),

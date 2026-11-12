@@ -93,6 +93,27 @@ class MessageAttachmentController extends Controller
         );
     }
 
+    public function preview(Request $request, Conversation $conversation, Message $message, MessageAttachment $attachment): StreamedResponse
+    {
+        abort_unless($this->isParticipant($request->user(), $conversation), 404);
+        abort_unless((int) $message->conversation_id === (int) $conversation->id, 404);
+        abort_unless((int) $attachment->message_id === (int) $message->id, 404);
+        abort_if($message->trashed(), 404);
+        abort_unless(str_starts_with((string) $attachment->mime_type, 'image/'), 404);
+        abort_unless(Storage::disk('local')->exists($attachment->storage_path), 404);
+
+        return Storage::disk('local')->response(
+            $attachment->storage_path,
+            $attachment->original_name,
+            [
+                'Content-Type' => $attachment->mime_type,
+                'X-Content-Type-Options' => 'nosniff',
+                'Cache-Control' => 'private, no-store',
+            ],
+            'inline',
+        );
+    }
+
     public function payload(MessageAttachment $attachment): array
     {
         return [

@@ -4,7 +4,7 @@ export function Skeleton({ className = '', width, height = '1rem', rounded = 'md
     return (
         <span
             aria-hidden="true"
-            className={`block animate-pulse bg-surface-muted ${rounded === 'full' ? 'rounded-full' : rounded === 'lg' ? 'rounded-lg' : 'rounded-md'} ${className}`}
+            className={`app-skeleton ${rounded === 'full' ? 'rounded-full' : rounded === 'lg' ? 'rounded-lg' : 'rounded-md'} ${className}`}
             style={{ width, height }}
         />
     );
@@ -97,15 +97,15 @@ export function UploadFeedback({ fileName, status = 'idle', progress = 0, messag
 export function Toast({ open = true, title, description, variant = 'info', onDismiss }) {
     if (!open) return null;
     const variants = {
-        success: 'border-olive',
-        error: 'border-danger',
-        info: 'border-terracotta',
+        success: 'ra-toast--success',
+        error: 'ra-toast--danger',
+        info: 'ra-toast--info',
     };
     return (
         <div
             role={variant === 'error' ? 'alert' : 'status'}
             aria-live={variant === 'error' ? 'assertive' : 'polite'}
-            className={`flex items-start justify-between gap-4 border-s-4 bg-paper p-4 shadow-soft ${variants[variant] ?? variants.info}`}
+            className={`ra-toast flex items-start justify-between gap-4 ${variants[variant] ?? variants.info}`}
             dir="rtl"
         >
             <div>

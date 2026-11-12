@@ -1,0 +1,47 @@
+name: RAD accessibility and regression checks
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  frontend-accessibility:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Verify RAD color contrast tokens
+        run: npm run a11y:colors
+      - name: Run frontend regression tests
+        run: npm run test:frontend
+      - name: Lint the complete frontend
+        run: npm run lint
+      - name: Build the production frontend
+        run: npm run build
+
+  backend-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, dom, fileinfo, pdo_sqlite, sqlite3, xml, curl, zip
+          coverage: none
+      - name: Install backend dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+      - name: Run Laravel feature and unit tests
+        run: php artisan test
+      - name: Verify PHP formatting
+        run: vendor/bin/pint --test

@@ -23,7 +23,6 @@ class FullStackBuyerArtistMessagingTests(unittest.TestCase):
         context = self.browser.new_context(
             viewport={"width": 1280, "height": 900},
             ignore_https_errors=IGNORE_HTTPS_ERRORS,
-            extra_http_headers={"X-Forwarded-For": "198.51.100.13"},
         )
         page = context.new_page()
         page.set_default_timeout(20000)
@@ -38,16 +37,50 @@ class FullStackBuyerArtistMessagingTests(unittest.TestCase):
         page.locator('input[name="email"]').fill(email)
         page.locator('input[name="password"]').fill("strong-password-123")
         page.locator('input[name="password_confirmation"]').fill("strong-password-123")
-        page.get_by_role("button", name="ایجاد حساب").click()
-        page.wait_for_url("**/dashboard/buyer")
+        with page.expect_response(
+            lambda response: response.url.endswith("/api/v1/auth/register")
+            and response.request.method == "POST",
+            timeout=20_000,
+        ) as registration_response:
+            page.get_by_role("button", name="ایجاد حساب").click()
+
+        self.assertEqual(
+            201,
+            registration_response.value.status,
+            f"Buyer registration failed with HTTP {registration_response.value.status}. "
+            f"Page: {page.url}. "
+            f"Messages: {page.locator('[role="status"], [role="alert"]').all_inner_texts()}",
+        )
+        page.wait_for_function(
+            "() => window.location.pathname === '/dashboard/buyer' "
+            "|| window.location.pathname.startsWith('/dashboard/buyer/')",
+            timeout=20_000,
+        )
         return email
 
     def login_artist(self, page):
-        page.goto(BASE_URL + "/login")
+        page.goto(BASE_URL + "/login", wait_until="domcontentloaded")
         page.locator('input[name="email"]').fill("artist@rademan.test")
         page.locator('input[name="password"]').fill("Demo@12345")
-        page.get_by_role("button", name="ورود به حساب").click()
-        page.wait_for_url("**/dashboard/artist")
+        with page.expect_response(
+            lambda response: response.url.endswith("/api/v1/auth/login")
+            and response.request.method == "POST",
+            timeout=20_000,
+        ) as login_response:
+            page.get_by_role("button", name="ورود به حساب").click()
+
+        self.assertEqual(
+            200,
+            login_response.value.status,
+            f"Artist login failed with HTTP {login_response.value.status}. "
+            f"Page: {page.url}. "
+            f"Messages: {page.locator('[role="status"], [role="alert"]').all_inner_texts()}",
+        )
+        page.wait_for_function(
+            "() => window.location.pathname === '/dashboard/artist' "
+            "|| window.location.pathname.startsWith('/dashboard/artist/')",
+            timeout=20_000,
+        )
 
     def test_buyer_starts_direct_conversation_artist_replies_and_buyer_receives_reply(self):
         buyer_context, buyer_page = self.new_page()
@@ -62,7 +95,7 @@ class FullStackBuyerArtistMessagingTests(unittest.TestCase):
                 lambda response: response.url.endswith("/api/v1/conversations/direct")
                 and response.request.method == "POST"
             ) as direct_response:
-                buyer_page.get_by_role("link", name="پیام مستقیم").click()
+                buyer_page.get_by_role("link", name="ارسال پیام به هنرمند").click()
 
             buyer_page.wait_for_url("**/dashboard/buyer/messages*")
             self.assertEqual(direct_response.value.status, 201)
@@ -74,7 +107,7 @@ class FullStackBuyerArtistMessagingTests(unittest.TestCase):
                 lambda response: response.url.endswith(f"/api/v1/conversations/{conversation_id}/messages")
                 and response.request.method == "POST"
             ) as buyer_send:
-                buyer_page.get_by_role("button", name="ارسال", exact=True).click()
+                buyer_page.get_by_role("button", name="ارسال پیام", exact=True).click()
 
             self.assertEqual(buyer_send.value.status, 201)
             buyer_page.get_by_role("paragraph").filter(has_text=first_message).wait_for()
@@ -89,7 +122,7 @@ class FullStackBuyerArtistMessagingTests(unittest.TestCase):
                 lambda response: response.url.endswith(f"/api/v1/conversations/{conversation_id}/messages")
                 and response.request.method == "POST"
             ) as artist_send:
-                artist_page.get_by_role("button", name="ارسال", exact=True).click()
+                artist_page.get_by_role("button", name="ارسال پیام", exact=True).click()
 
             self.assertEqual(artist_send.value.status, 201)
             artist_page.get_by_role("paragraph").filter(has_text=reply).wait_for()

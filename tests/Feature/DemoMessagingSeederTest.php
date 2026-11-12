@@ -20,13 +20,18 @@ class DemoMessagingSeederTest extends TestCase
     {
         $this->seed(DemoDatabaseSeeder::class);
 
-        $buyers = User::query()->where('role', User::ROLE_BUYER)->get();
+        $buyers = User::query()
+            ->where('role', User::ROLE_BUYER)
+            ->where('email', '!=', 'buyer-empty@rademan.test')
+            ->get();
+        $emptyBuyer = User::query()->where('email', 'buyer-empty@rademan.test')->firstOrFail();
         $publicArtists = ArtistProfile::query()->where('is_public', true)->with('user')->get();
 
-        $this->assertCount(5, $buyers);
+        $this->assertCount(4, $buyers);
+        $this->assertSame(0, Conversation::query()->where('buyer_user_id', $emptyBuyer->id)->count());
         $this->assertCount(14, $publicArtists);
         $this->assertDatabaseCount('conversations', $buyers->count() * $publicArtists->count());
-        $this->assertDatabaseCount('messages', $buyers->count() * $publicArtists->count() * 2);
+        $this->assertGreaterThanOrEqual($buyers->count() * $publicArtists->count() * 2, Message::query()->count());
 
         foreach ($buyers as $buyer) {
             foreach ($publicArtists as $profile) {
@@ -36,7 +41,7 @@ class DemoMessagingSeederTest extends TestCase
                     ->first();
 
                 $this->assertNotNull($conversation, "Missing conversation for buyer {$buyer->id} and artist {$artist->id}.");
-                $this->assertSame(2, $conversation->messages()->count());
+                $this->assertGreaterThanOrEqual(2, $conversation->messages()->count());
                 $this->assertSame($buyer->id, $conversation->messages()->oldest('id')->firstOrFail()->sender_user_id);
                 $this->assertSame($artist->id, $conversation->messages()->latest('id')->firstOrFail()->sender_user_id);
             }

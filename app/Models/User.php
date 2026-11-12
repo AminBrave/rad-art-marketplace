@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -55,11 +54,6 @@ class User extends Authenticatable
     public function isBuyer(): bool
     {
         return $this->role === self::ROLE_BUYER;
-    }
-
-    public function inquiries(): HasMany
-    {
-        return $this->hasMany(ArtistInquiry::class, 'sender_user_id');
     }
 
     public function isAdmin(): bool

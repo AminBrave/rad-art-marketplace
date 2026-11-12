@@ -4,6 +4,16 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './lib/queryClient';
 import AppRouter from './app/AppRouter';
 import './bootstrap';
+import { auditColorAccessibility } from './lib/colorAccessibility';
+
+if (import.meta.env.DEV && typeof window !== 'undefined') {
+    window.__RAD_COLOR_A11Y_CHECK__ = (root = document) => {
+        const report = auditColorAccessibility(root);
+        console.table(report.failures);
+        if (report.manualReview.length) console.table(report.manualReview);
+        return report;
+    };
+}
 
 // Keep the development-only specimen out of the normal production entry bundle.
 const LegacyApp = lazy(() => import('./app/App'));

@@ -2,8 +2,6 @@ import { createElement, useEffect, useState } from 'react';
 import axios from 'axios';
 import ArtworkGallery from './ArtworkGallery';
 import ArtworkStudio from './ArtworkStudio';
-import ContactArtistForm from './ContactArtistForm';
-import InquiryCenter from './InquiryCenter';
 import DesignFoundation from './DesignFoundation';
 
 const highlights = [
@@ -162,7 +160,6 @@ export default function App() {
                             <h1 className="mt-3 text-4xl font-black">{publicProfile.display_name}</h1>
                             {publicProfile.city && <p className="mt-3 text-sm text-stone-500">{publicProfile.city}</p>}
                             {publicProfile.bio && <p className="mt-8 whitespace-pre-line leading-9 text-stone-700">{publicProfile.bio}</p>}
-                            {user?.role === 'buyer' && createElement(ContactArtistForm, { artistSlug: publicProfile.slug })}
                             {!user && <a href="/#account" className="mt-8 inline-block rounded-full bg-ink px-5 py-3 text-sm font-bold text-white">برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید</a>}
                             <div className="mt-8 flex flex-wrap gap-4 text-sm font-semibold">
                                 {publicProfile.website_url && <a href={publicProfile.website_url} target="_blank" rel="noreferrer" className="text-terracotta-strong underline">وب‌سایت</a>}
@@ -384,7 +381,6 @@ export default function App() {
             </section>
 
             {createElement(ArtworkStudio, { user, hasProfile: Boolean(profile.slug) })}
-            {createElement(InquiryCenter, { user, hasProfile: Boolean(profile.slug) })}
 
             {user?.role === 'admin' && (
                 <section className="mx-auto max-w-7xl px-6 pb-20 lg:px-10">

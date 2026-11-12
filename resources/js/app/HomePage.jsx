@@ -66,10 +66,10 @@ export default function HomePage() {
 
     return (
         <main className="overflow-hidden" dir="rtl">
-            <section className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[1fr_.9fr] lg:gap-16 lg:px-10 lg:py-24">
+            <section className="ra-editorial-hero mx-auto grid max-w-7xl items-center gap-10 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[1fr_.9fr] lg:gap-16 lg:px-10 lg:py-24">
                 <div className="max-w-2xl">
-                    <p className="mb-6 inline-flex items-center gap-3 text-xs font-bold tracking-wide text-terracotta-strong"><span className="h-px w-10 bg-terracotta" />گالری هنر مستقل معاصر</p>
-                    <h1 className="text-4xl font-black leading-[1.55] tracking-tight sm:text-5xl lg:text-6xl">هنر را کشف کنید؛ <span className="text-terracotta-strong">فراتر از قاب.</span></h1>
+                    <p className="mb-6 inline-flex items-center gap-3 text-xs font-bold tracking-[.08em] text-terracotta-strong"><span className="h-px w-10 bg-terracotta" />گالری هنر مستقل معاصر <span className="text-subtle">/</span> ART &amp; CULTURE</p>
+                    <h1 className="max-w-2xl text-4xl font-black leading-[1.5] tracking-tight sm:text-5xl lg:text-[4.25rem]">هنر را کشف کنید؛ <span className="relative inline-block text-terracotta-strong">فراتر از قاب.</span></h1>
                     <p className="mt-6 max-w-xl text-base leading-9 text-muted sm:text-lg">راد آرت فضایی برای دیدن آثار تأییدشده، شناخت جهان هنرمندان مستقل و آغاز ارتباطی مستقیم درباره هنر است.</p>
                     <div className="mt-9 flex flex-wrap gap-3">
                         <Link to="/artworks" className="bg-ink px-7 py-3.5 text-sm font-bold text-white transition-colors hover:bg-terracotta">ورود به گالری آثار</Link>
@@ -77,10 +77,10 @@ export default function HomePage() {
                     </div>
                     <p className="mt-8 text-xs leading-6 text-muted">نمایش عمومی فقط برای آثار تأییدشده و پروفایل‌های عمومی فعال است.</p>
                 </div>
-                <div className="relative mx-auto w-full max-w-xl">
+                <div className="relative mx-auto w-full max-w-xl lg:me-0">
                     <div aria-hidden="true" className="absolute -left-4 -top-4 h-24 w-24 border border-sand" />
                     {hero ? (
-                        <Link to={'/artworks/' + hero.slug} className="group relative block bg-surface-muted p-3">
+                        <Link to={'/artworks/' + hero.slug} className="group relative block bg-surface-muted p-2 sm:p-3">
                             <div className="aspect-[4/5] overflow-hidden bg-paper">
                                 {heroImageFailed ? <div role="img" aria-label={`تصویر اثر ${hero.title} در دسترس نیست`} className="grid h-full w-full place-items-center bg-surface-muted p-8 text-center text-sm leading-7 text-muted">تصویر این اثر در حال حاضر در دسترس نیست.</div> : <img src={hero.image_url} alt={hero.title} onError={() => setHeroImageFailed(true)} loading="eager" fetchpriority="high" decoding="async" className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]" />}
                             </div>
@@ -105,7 +105,7 @@ export default function HomePage() {
 
             <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10">
                 <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-bold text-terracotta-strong">تازه‌رسیده‌ها</p><h2 className="mt-2 text-3xl font-black">تازه در گالری</h2><p className="mt-2 text-sm text-muted">آخرین آثاری که برای نمایش عمومی تأیید شده‌اند.</p></div><Link to="/artworks" className="text-sm font-bold text-terracotta-strong underline">همه آثار</Link></div>
-                {error ? <ErrorState className="mt-8" title="دریافت محتوای گالری ممکن نشد" description="برای دریافت دوباره تلاش کنید." onRetry={() => artworksQuery.refetch()} /> : loading ? <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}</div> : recentWorks.length ? <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{recentWorks.map((item) => <ArtworkCard key={item.id} artwork={item} />)}</div> : <EmptyState className="mt-8" title="هنوز اثر دیگری برای نمایش نیست" description="آثار تازه پس از تأیید در این بخش قرار می‌گیرند." />}
+                {error ? <ErrorState className="mt-8" title="دریافت محتوای گالری ممکن نشد" description="برای دریافت دوباره تلاش کنید." onRetry={() => artworksQuery.refetch()} /> : loading ? <div className="mt-8 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}</div> : recentWorks.length ? <div className="mt-8 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">{recentWorks.map((item) => <ArtworkCard key={item.id} artwork={item} />)}</div> : <EmptyState className="mt-8" title="هنوز اثر دیگری برای نمایش نیست" description="آثار تازه پس از تأیید در این بخش قرار می‌گیرند." />}
             </section>
 
             <section className="border-y border-border bg-white">

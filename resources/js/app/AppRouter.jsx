@@ -1,10 +1,9 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { AuthProvider } from './AuthContext';
-import { isFeatureEnabled } from './features';
 import { PublicLayout } from './Layouts';
 import {
-    AdminWorkspaceLayout, ArtistArtworkPage, ArtistInquiryPage,
+    AdminWorkspaceLayout, ArtistArtworkPage,
     ArtistProfileSettings, ArtistWorkspaceLayout,
     BuyerWorkspaceLayout, DashboardIndex,
     NotFoundPage, RequireAuth, RequireRole, RouteLoading, UnauthorizedPage,
@@ -20,8 +19,6 @@ const PublicInfoPage = lazy(() => import('./PublicInfoPages'));
 const AuthPage = lazy(() => import('./AuthPage'));
 const ArtistWorkspaceOverview = lazy(() => import('./ArtistWorkspaceOverview'));
 const BuyerDashboardHome = lazy(() => import('./BuyerWorkspace').then((module) => ({ default: module.BuyerDashboardHome })));
-const BuyerInquiryPage = lazy(() => import('./BuyerWorkspace').then((module) => ({ default: module.BuyerInquiryPage })));
-const BuyerInquiryDetailPage = lazy(() => import('./BuyerWorkspace').then((module) => ({ default: module.BuyerInquiryDetailPage })));
 const AdminDashboardHome = lazy(() => import('./AdminWorkspace').then((module) => ({ default: module.AdminDashboardHome })));
 const AdminArtworkModeration = lazy(() => import('./AdminWorkspace').then((module) => ({ default: module.AdminArtworkModeration })));
 const AdminUsersPage = lazy(() => import('./AdminWorkspace').then((module) => ({ default: module.AdminUsersPage })));
@@ -75,16 +72,11 @@ function AppRoutes() {
                     <Route index element={withRouteFallback(<ArtistWorkspaceOverview />)} />
                     <Route path="profile" element={<ArtistProfileSettings />} />
                     <Route path="artworks" element={<ArtistArtworkPage />} />
-                    {isFeatureEnabled('inquiries') && <Route path="inquiries" element={<ArtistInquiryPage />} />}
                     <Route path="messages" element={withRouteFallback(<MessagingCenter role="artist" />)} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
                 <Route path="/dashboard/buyer" element={<RequireRole roles={['buyer']}><BuyerWorkspaceLayout /></RequireRole>}>
                     <Route index element={withRouteFallback(<BuyerDashboardHome />)} />
-                    {isFeatureEnabled('inquiries') && <>
-                        <Route path="inquiries" element={withRouteFallback(<BuyerInquiryPage />)} />
-                        <Route path="inquiries/:id" element={withRouteFallback(<BuyerInquiryDetailPage />)} />
-                    </>}
                     <Route path="messages" element={withRouteFallback(<MessagingCenter role="buyer" />)} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>

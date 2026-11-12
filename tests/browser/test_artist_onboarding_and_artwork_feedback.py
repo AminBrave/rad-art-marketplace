@@ -1,25 +1,18 @@
 import binascii
 import json
-import os
 import struct
 import unittest
 import zlib
 from playwright.sync_api import sync_playwright
 
-BASE_URL = os.environ.get("RAD_ART_BASE_URL", "http://127.0.0.1:8000")
+from config import BASE_URL, IGNORE_HTTPS_ERRORS
+
 ARTIST = {"id": 84, "name": "Artist QA", "email": "artist@example.test", "role": "artist"}
 PRIVATE_PROFILE = {
     "id": 84, "slug": "private-qa", "display_name": "هنرمند خصوصی آزمایشی",
     "bio": "معرفی هنری برای آزمون پیش‌نمایش خصوصی.", "city": "",
     "website_url": None, "instagram_handle": "qa.artist", "is_public": False,
 }
-INQUIRY = {
-    "id": 51, "subject": "پرسش درباره اثر", "message": "مایلم درباره جزئیات این اثر بیشتر بدانم.",
-    "status": "new", "read_at": None, "created_at": "2026-11-10T10:00:00Z",
-    "artist": {"display_name": "هنرمند آزمایشی", "slug": "qa-artist"},
-    "buyer": {"name": "خریدار آزمایشی"}, "artwork": None,
-}
-
 def png_bytes(width, height):
     def chunk(kind, data):
         payload = kind + data
@@ -40,7 +33,7 @@ class ArtistExperienceBrowserTests(unittest.TestCase):
         cls.playwright.stop()
 
     def new_page(self):
-        context = self.browser.new_context(viewport={"width": 1280, "height": 900})
+        context = self.browser.new_context(viewport={"width": 1280, "height": 900}, ignore_https_errors=IGNORE_HTTPS_ERRORS)
         page = context.new_page()
         page.set_default_timeout(15000)
         page.route("**/api/v1/auth/me", lambda route: route.fulfill(
@@ -56,17 +49,13 @@ class ArtistExperienceBrowserTests(unittest.TestCase):
         ))
         return context, page
 
-    def mock_workspace(self, page, profile=PRIVATE_PROFILE, artworks=None, inquiries=None):
+    def mock_workspace(self, page, profile=PRIVATE_PROFILE, artworks=None):
         page.route("**/api/v1/artist-profile/me", lambda route: route.fulfill(
             status=200, content_type="application/json", body=json.dumps({"data": profile}, ensure_ascii=False)
         ))
         artwork_payload = {"data": artworks or [], "current_page": 1, "last_page": 1, "total": len(artworks or []), "next_page_url": None}
         page.route("**/api/v1/artist/artworks**", lambda route: route.fulfill(
             status=200, content_type="application/json", body=json.dumps(artwork_payload, ensure_ascii=False)
-        ))
-        inquiry_payload = {"data": inquiries or [], "current_page": 1, "last_page": 1, "total": len(inquiries or []), "next_page_url": None, "prev_page_url": None}
-        page.route("**/api/v1/artist/inquiries**", lambda route: route.fulfill(
-            status=200, content_type="application/json", body=json.dumps(inquiry_payload, ensure_ascii=False)
         ))
 
     def test_guided_onboarding_and_private_profile_preview(self):
@@ -78,10 +67,10 @@ class ArtistExperienceBrowserTests(unittest.TestCase):
                 body=json.dumps({"data": {**PRIVATE_PROFILE, "artworks": [], "artworks_pagination": {"current_page": 1, "per_page": 12, "has_more": False, "next_page": None}}}, ensure_ascii=False)
             ))
             page.goto(BASE_URL + "/dashboard/artist")
-            page.get_by_role("heading", name="پروفایل و اولین اثر خود را آماده کنید").wait_for()
-            page.get_by_text("۳ از ۵ مورد پروفایل").wait_for()
+            page.get_by_role("heading", name="خوش آمدید، Artist QA").wait_for()
+            page.get_by_text("۳ از ۵ بخش تکمیل شده").wait_for()
             page.get_by_text("ثبت اولین اثر برای بررسی").wait_for()
-            page.get_by_role("link", name="پیش‌نمایش پروفایل").click()
+            page.get_by_role("link", name="پیش‌نمایش خصوصی").click()
             page.get_by_role("heading", name="هنرمند خصوصی آزمایشی").wait_for()
             self.assertIn("/artists/private-qa", page.url)
         finally:
@@ -111,26 +100,4 @@ class ArtistExperienceBrowserTests(unittest.TestCase):
         finally:
             context.close()
 
-    def test_artist_overview_hides_inquiries_and_keeps_direct_messaging(self):
-        context, page = self.new_page()
-        inquiry_requests = []
-        page.on("request", lambda request: inquiry_requests.append(request.url)
-                if "/api/v1/artist/inquiries" in request.url else None)
-        try:
-            self.mock_workspace(page, inquiries=[])
-            page.goto(BASE_URL + "/dashboard/artist")
-            page.get_by_role("heading", name="خوش آمدید، Artist QA").wait_for()
-            page.get_by_role("link", name="پیام‌های مستقیم").first.wait_for()
-            self.assertEqual(inquiry_requests, [])
-            self.assertNotIn("آخرین درخواست‌ها", page.locator("body").inner_text())
-        finally:
-            context.close()
 
-    def test_artist_inquiry_deep_link_returns_not_found(self):
-        context, page = self.new_page()
-        try:
-            self.mock_workspace(page, inquiries=[])
-            page.goto(BASE_URL + "/dashboard/artist/inquiries")
-            page.get_by_role("heading", name="این صفحه پیدا نشد").wait_for()
-        finally:
-            context.close()

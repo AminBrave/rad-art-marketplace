@@ -24,7 +24,6 @@ class FullStackArtistArtworkTests(unittest.TestCase):
         context = self.browser.new_context(
             viewport={"width": 1280, "height": 1000},
             ignore_https_errors=IGNORE_HTTPS_ERRORS,
-            extra_http_headers={"X-Forwarded-For": "198.51.100.11"},
         )
         page = context.new_page()
         page.set_default_timeout(20000)
@@ -33,10 +32,12 @@ class FullStackArtistArtworkTests(unittest.TestCase):
         title = f"آزمون ثبت اثر {uuid.uuid4().hex[:8]}"
 
         try:
-            page.goto(BASE_URL + "/login")
+            page.goto(BASE_URL + "/login", wait_until="domcontentloaded")
             page.locator('input[name="email"]').fill("artist@rademan.test")
             page.locator('input[name="password"]').fill("Demo@12345")
-            page.get_by_role("button", name="ورود به حساب").click()
+            with page.expect_response(lambda response: response.url.endswith("/api/v1/auth/login") and response.request.method == "POST") as login_response:
+                page.get_by_role("button", name="ورود به حساب").click()
+            self.assertEqual(200, login_response.value.status, f"Artist login failed with HTTP {login_response.value.status}.")
             page.wait_for_url("**/dashboard/artist")
 
             page.goto(BASE_URL + "/dashboard/artist/artworks")

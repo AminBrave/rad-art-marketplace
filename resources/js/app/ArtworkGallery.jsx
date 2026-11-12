@@ -1,6 +1,5 @@
-import { createElement, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-import ContactArtistForm from './ContactArtistForm';
 import { formatArtworkPrice } from '../utils/formatArtworkPrice';
 
 export default function ArtworkGallery({ user }) {
@@ -55,7 +54,7 @@ export default function ArtworkGallery({ user }) {
                                 <p className="mt-6 font-bold">{formatArtworkPrice(detail.price)}</p>
                                 <p className="mt-2 text-sm text-stone-500">{detail.availability === 'available' ? 'موجود' : detail.availability === 'sold' ? 'فروخته‌شده' : 'برای فروش نیست'}</p>
                                 <a href={'/artists/' + detail.artist.slug} className="mt-8 inline-block rounded-full bg-ink px-5 py-3 text-sm font-bold text-white">مشاهده پروفایل هنرمند: {detail.artist.display_name}</a>
-                                {user?.role === 'buyer' && createElement(ContactArtistForm, { artistSlug: detail.artist.slug, artworkId: detail.id })}
+                                {user?.role === 'buyer' && <a href={'/dashboard/buyer/messages?artist=' + encodeURIComponent(detail.artist.slug) + '&artwork=' + encodeURIComponent(detail.slug)} className="mt-7 inline-flex bg-ink px-5 py-3 text-sm font-bold text-white transition hover:bg-terracotta">پیام مستقیم درباره این اثر</a>}
                                 {!user && <a href="/#account" className="mt-6 inline-block text-sm font-bold text-terracotta-strong underline">برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید</a>}
                             </div>
                         </div>

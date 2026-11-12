@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Bell } from 'lucide-react';
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import { NotificationListSkeleton } from '../components/ui';
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
 
@@ -14,21 +15,39 @@ export function PublicLayout() {
         try { await logout(); } catch { setLogoutError('خروج انجام نشد. اتصال را بررسی کنید.'); }
     };
 
-    return <div className="min-h-screen bg-canvas text-ink" dir="rtl">
-        <header className="border-b border-border bg-canvas">
-            <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-5 sm:px-8 lg:px-10">
-                <Link to="/" className="shrink-0 text-2xl font-black tracking-tight text-ink no-underline" aria-label="راد آرت، صفحه اصلی">راد<span className="text-terracotta-strong">آرت</span></Link>
-                <nav aria-label="ناوبری اصلی" className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted">
-                    <NavLink to="/artworks" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>کشف آثار</NavLink>
-                    <NavLink to="/artists" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>هنرمندان</NavLink>
-                    <NavLink to="/collections" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>مجموعه‌های منتخب</NavLink>
-                    <NavLink to="/about" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>درباره ما</NavLink>
-                    <NavLink to="/help" className={({isActive})=>isActive?'font-bold text-terracotta-strong':'hover:text-terracotta-strong'}>راهنما</NavLink>
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const { pathname } = useLocation();
+    useEffect(() => setMobileMenuOpen(false), [pathname]);
+    useEffect(() => {
+        if (!mobileMenuOpen) return undefined;
+        const closeOnEscape = (event) => { if (event.key === 'Escape') setMobileMenuOpen(false); };
+        window.addEventListener('keydown', closeOnEscape);
+        return () => window.removeEventListener('keydown', closeOnEscape);
+    }, [mobileMenuOpen]);
+    const publicLinks = [
+        { to: '/artworks', label: 'کشف آثار' },
+        { to: '/artists', label: 'هنرمندان' },
+        { to: '/collections', label: 'مجموعه‌های منتخب' },
+        { to: '/about', label: 'درباره ما' },
+        { to: '/help', label: 'راهنما' },
+    ];
+    const navClass = ({ isActive }) => isActive
+        ? 'font-bold text-terracotta-strong'
+        : 'text-muted transition-colors hover:text-terracotta-strong';
+
+    return <div className="ra-public-shell min-h-screen bg-canvas text-ink" dir="rtl">
+        <header className="ra-public-header sticky top-0 z-40 border-b border-border bg-canvas/95 backdrop-blur supports-[backdrop-filter]:bg-canvas/90">
+            <div className="mx-auto flex min-h-[4.5rem] max-w-7xl items-center justify-between gap-4 px-5 sm:px-8 lg:min-h-20 lg:px-10">
+                <Link to="/" className="shrink-0 text-2xl font-black tracking-tight text-ink no-underline" aria-label="راد آرت، صفحه اصلی">راد<span className="text-terracotta-strong">آرت</span><span className="ms-2 hidden align-middle text-[10px] font-medium tracking-[.18em] text-muted sm:inline">ART MARKETPLACE</span></Link>
+                <nav aria-label="ناوبری اصلی" className="hidden items-center gap-6 text-sm lg:flex">
+                    {publicLinks.map((item) => <NavLink key={item.to} to={item.to} className={navClass}>{item.label}</NavLink>)}
                 </nav>
-                <div className="flex items-center gap-3 text-sm">
-                    {user ? <><span className="hidden font-semibold sm:inline">{user.name}</span><span className="bg-surface-muted px-3 py-2 text-xs font-bold text-terracotta-strong">{roleLabels[user.role] ?? user.role}</span><Link to={user.role==='admin'?'/admin':user.role==='buyer'?'/dashboard/buyer':'/dashboard/artist'} className="font-semibold text-terracotta-strong underline">فضای کاربری</Link><button type="button" onClick={handleLogout} className="border border-border px-4 py-2 font-semibold hover:border-terracotta">خروج</button></> : <><Link to="/login" className="font-semibold hover:text-terracotta-strong">ورود</Link><Link to="/register" className="bg-ink px-4 py-2.5 font-semibold text-white hover:bg-terracotta">ثبت‌نام</Link></>}
+                <div className="flex items-center gap-2 text-sm sm:gap-3">
+                    {user ? <><span className="hidden max-w-28 truncate font-semibold lg:inline">{user.name}</span><span className="hidden bg-surface-muted px-3 py-2 text-xs font-bold text-terracotta-strong sm:inline-flex">{roleLabels[user.role] ?? user.role}</span><Link to={user.role==='admin'?'/admin':user.role==='buyer'?'/dashboard/buyer':'/dashboard/artist'} className="hidden font-semibold text-terracotta-strong underline underline-offset-4 sm:inline">فضای کاربری</Link><button type="button" onClick={handleLogout} className="hidden min-h-10 border border-border px-4 py-2 font-semibold transition-colors hover:border-terracotta sm:inline-flex">خروج</button></> : <><Link to="/login" className="hidden font-semibold transition-colors hover:text-terracotta-strong sm:inline">ورود</Link><Link to="/register" className="min-h-10 bg-ink px-4 py-2.5 font-semibold text-white transition-colors hover:bg-terracotta">ثبت‌نام</Link></>}
+                    <button type="button" aria-label={mobileMenuOpen ? 'بستن منو' : 'باز کردن منو'} aria-expanded={mobileMenuOpen} aria-controls="public-mobile-navigation" onClick={() => setMobileMenuOpen((open) => !open)} className="grid h-10 w-10 place-items-center border border-border text-xl transition-colors hover:border-terracotta lg:hidden"><span aria-hidden="true">{mobileMenuOpen ? '×' : '☰'}</span></button>
                 </div>
             </div>
+            {mobileMenuOpen && <nav id="public-mobile-navigation" aria-label="ناوبری موبایل" className="border-t border-border bg-canvas px-5 py-4 lg:hidden"><div className="mx-auto grid max-w-7xl gap-1">{publicLinks.map((item) => <NavLink key={item.to} to={item.to} onClick={() => setMobileMenuOpen(false)} className={({isActive}) => (isActive ? 'bg-surface-muted font-bold text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink') + ' min-h-11 px-3 py-2.5 text-sm'}>{item.label}</NavLink>)}{user ? <><Link onClick={() => setMobileMenuOpen(false)} to={user.role==='admin'?'/admin':user.role==='buyer'?'/dashboard/buyer':'/dashboard/artist'} className="min-h-11 px-3 py-2.5 text-sm font-semibold text-terracotta-strong">فضای کاربری</Link><button type="button" onClick={handleLogout} className="min-h-11 px-3 py-2.5 text-right text-sm font-semibold text-muted">خروج</button></> : <><Link onClick={() => setMobileMenuOpen(false)} to="/login" className="min-h-11 px-3 py-2.5 text-sm font-semibold text-muted">ورود</Link><Link onClick={() => setMobileMenuOpen(false)} to="/register" className="min-h-11 px-3 py-2.5 text-sm font-semibold text-terracotta-strong">ساخت حساب کاربری</Link></>}</div></nav>}
             {logoutError && <p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-red-700 sm:px-8">{logoutError}</p>}
         </header>
         <Outlet />
@@ -58,28 +77,34 @@ function NotificationBell({ user }) {
     const [loading, setLoading] = useState(true);
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState('');
+    const requestRef = useRef(null);
 
     const load = useCallback(async () => {
+        requestRef.current?.abort();
+        const controller = new AbortController();
+        requestRef.current = controller;
         try {
             const [{ data }, preferenceResponse] = await Promise.all([
-                axios.get('/api/v1/notifications'),
-                axios.get('/api/v1/notifications/preferences'),
+                axios.get('/api/v1/notifications', { signal: controller.signal }),
+                axios.get('/api/v1/notifications/preferences', { signal: controller.signal }),
             ]);
-            setItems(data.data ?? []);
-            setUnreadCount(data.unread_count ?? 0);
-            setPreferences(preferenceResponse.data.data ?? { in_app_messages: true, email_available: false });
-            setError('');
+            if (!controller.signal.aborted) {
+                setItems(data.data ?? []);
+                setUnreadCount(data.unread_count ?? 0);
+                setPreferences(preferenceResponse.data.data ?? { in_app_messages: true, email_available: false });
+                setError('');
+            }
         } catch (requestError) {
-            if (requestError.response?.status !== 401) setError('دریافت اعلان‌ها انجام نشد.');
+            if (!axios.isCancel(requestError) && requestError.response?.status !== 401) setError('دریافت اعلان‌ها انجام نشد.');
         } finally {
-            setLoading(false);
+            if (requestRef.current === controller) { requestRef.current = null; setLoading(false); }
         }
     }, []);
 
     useEffect(() => {
         load();
         const poll = window.setInterval(load, 30000);
-        return () => window.clearInterval(poll);
+        return () => { window.clearInterval(poll); requestRef.current?.abort(); };
     }, [load]);
 
     const openNotification = async (item) => {
@@ -144,7 +169,7 @@ function NotificationBell({ user }) {
                     <button type="button" onClick={markAllRead} disabled={busy || unreadCount === 0} className="text-xs font-semibold text-terracotta-strong disabled:opacity-40">خواندن همه</button>
                 </div>
                 {error && <p role="alert" className="mt-3 text-xs text-red-700">{error}</p>}
-                {loading ? <p className="py-5 text-sm text-muted">در حال دریافت…</p> : items.length === 0 ? <p className="py-5 text-sm text-muted">هنوز اعلانی ندارید.</p> : <ul className="mt-3 max-h-72 divide-y divide-border overflow-y-auto">
+                {loading ? <div className="py-2"><NotificationListSkeleton count={3} /></div> : items.length === 0 ? <p className="py-5 text-sm text-muted">هنوز اعلانی ندارید.</p> : <ul className="mt-3 max-h-72 divide-y divide-border overflow-y-auto">
                     {items.map((item) => <li key={item.id}>
                         <button type="button" disabled={busy} onClick={() => openNotification(item)} className="w-full py-3 text-right hover:bg-surface-muted disabled:opacity-50">
                             <span className="flex items-start gap-2"><span aria-hidden="true" className={item.read_at ? 'mt-1.5 h-2 w-2 shrink-0 rounded-full bg-border' : 'mt-1.5 h-2 w-2 shrink-0 rounded-full bg-terracotta'} />
@@ -166,8 +191,15 @@ export function WorkspaceLayout({ title, links, outletContext }) {
     const { user, logout } = useAuth();
     const [logoutError, setLogoutError] = useState('');
     const handleLogout = async () => { setLogoutError(''); try { await logout(); } catch { setLogoutError('خروج انجام نشد. اتصال را بررسی کنید.'); } };
-    return <div className="min-h-screen bg-canvas text-ink" dir="rtl">
-        <header className="border-b border-border bg-white"><div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-8 lg:px-10"><div><Link to="/" className="text-lg font-black text-ink no-underline">راد<span className="text-terracotta-strong">آرت</span></Link><p className="mt-1 text-xs text-muted">{title}</p></div><div className="flex items-center gap-3 text-sm">{user?.role !== 'admin' && <NotificationBell user={user} />}<span className="font-semibold">{user?.name}</span><Link to="/" className="border border-border px-4 py-2 font-semibold hover:border-terracotta">مشاهده سایت</Link><button type="button" onClick={handleLogout} className="border border-border px-4 py-2 font-semibold hover:border-terracotta">خروج</button></div></div>{logoutError&&<p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-red-700 sm:px-8">{logoutError}</p>}</header>
-        <div className="mx-auto grid max-w-7xl gap-6 px-5 py-7 sm:px-8 lg:grid-cols-[220px_1fr] lg:px-10"><aside className="h-fit border border-border bg-white p-3"><nav aria-label="ناوبری فضای کاربری" className="flex flex-wrap gap-2 lg:flex-col">{links.map(item=><NavLink key={item.to} to={item.to} end={item.end} className={({isActive})=>isActive?'bg-ink px-4 py-3 text-sm font-bold text-white':'px-4 py-3 text-sm font-semibold text-muted hover:bg-surface-muted hover:text-ink'}>{item.label}</NavLink>)}</nav></aside><main className="min-w-0"><Outlet context={outletContext} /></main></div>
+    return <div className="ra-workspace-shell min-h-screen bg-canvas text-ink" dir="rtl">
+        <header className="ra-workspace-header border-b border-border bg-white"><div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-8 lg:px-10"><div className="min-w-0"><Link to="/" className="text-lg font-black text-ink no-underline">راد<span className="text-terracotta-strong">آرت</span></Link><p className="mt-1 text-xs text-muted">{title}</p></div><div className="flex min-w-0 flex-wrap items-center justify-end gap-2 text-sm sm:gap-3">{user?.role !== 'admin' && <NotificationBell user={user} />}<span className="max-w-32 truncate font-semibold sm:max-w-none">{user?.name}</span><Link to="/" className="min-h-10 border border-border px-3 py-2 font-semibold hover:border-terracotta sm:px-4">مشاهده سایت</Link><button type="button" onClick={handleLogout} className="min-h-10 border border-border px-3 py-2 font-semibold hover:border-terracotta sm:px-4">خروج</button></div></div>{logoutError&&<p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-red-700 sm:px-8">{logoutError}</p>}</header>
+        <div className="ra-workspace-grid mx-auto grid min-w-0 max-w-7xl gap-5 px-5 py-6 sm:px-8 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-6 lg:px-10 lg:py-7">
+            <aside className="ra-workspace-sidebar min-w-0 overflow-hidden border border-border bg-white p-2 sm:p-3 lg:h-fit">
+                <nav aria-label="ناوبری فضای کاربری" className="flex w-full min-w-0 flex-nowrap gap-2 overflow-x-auto overscroll-x-contain pb-1 lg:flex-col lg:overflow-visible lg:pb-0">
+                    {links.map(item=><NavLink key={item.to} to={item.to} end={item.end} className={({isActive})=>(isActive?'bg-ink text-white':'text-muted hover:bg-surface-muted hover:text-ink')+' min-h-11 shrink-0 whitespace-nowrap px-4 py-3 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:w-full'}>{item.label}</NavLink>)}
+                </nav>
+            </aside>
+            <main className="ra-workspace-content min-w-0"><Outlet context={outletContext} /></main>
+        </div>
     </div>;
 }

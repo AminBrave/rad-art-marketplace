@@ -1,13 +1,57 @@
+import { useState } from 'react';
+import { auditColorAccessibility } from '../lib/colorAccessibility';
 import ComponentShowcase from './ComponentShowcase';
 
 const swatches = [
-    { name: 'Ivory', value: '#F7F5F0', token: 'canvas' },
-    { name: 'Charcoal', value: '#242320', token: 'ink' },
-    { name: 'Terracotta', value: '#B65C3A', token: 'terracotta' },
-    { name: 'Sand', value: '#D8C9B7', token: 'sand' },
-    { name: 'Olive', value: '#536052', token: 'olive' },
-    { name: 'White', value: '#FFFFFF', token: 'paper' },
+    { name: 'Ivory', value: 'var(--color-canvas)', token: 'canvas' },
+    { name: 'Charcoal', value: 'var(--color-ink)', token: 'ink' },
+    { name: 'Terracotta', value: 'var(--color-terracotta)', token: 'terracotta' },
+    { name: 'Sand', value: 'var(--color-sand)', token: 'sand' },
+    { name: 'Olive', value: 'var(--color-olive)', token: 'olive' },
+    { name: 'White', value: 'var(--color-paper)', token: 'paper' },
 ];
+
+function ColorAccessibilityPanel() {
+    const [report, setReport] = useState(null);
+
+    return (
+        <section aria-labelledby="color-audit-title" className="border-t border-border py-10">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <p className="text-xs font-bold text-terracotta-strong">05 / ACCESSIBILITY</p>
+                    <h2 id="color-audit-title" className="mt-2 text-2xl font-bold">بررسی دسترس‌پذیری رنگ</h2>
+                    <p className="mt-2 max-w-2xl text-sm leading-7 text-muted">تمام عناصر قابل مشاهده در این صفحه، از جمله نمونه‌های کتابخانه اجزا، از نظر کنتراست متن، آیکون، مرز کنترل و نشانگر فوکوس بررسی می‌شوند.</p>
+                </div>
+                <button type="button" onClick={() => setReport(auditColorAccessibility(document.documentElement))} className="min-h-11 rounded-md bg-terracotta px-5 py-3 text-sm font-bold text-white transition hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2">اجرای بررسی کنتراست</button>
+            </div>
+            {report && (
+                <div className="mt-6 border border-border bg-paper p-5" aria-live="polite">
+                    <p role="status" className={report.passed ? 'font-bold text-olive' : 'font-bold text-danger'}>
+                        {report.passed ? 'کنتراست عناصر بررسی‌شده با آستانه‌ها مطابقت دارد.' : 'موارد نیازمند اصلاح پیدا شد.'}
+                    </p>
+                    <p className="mt-2 text-sm leading-7 text-muted">
+                        {report.checkedElements.toLocaleString('fa-IR')} عنصر بررسی شد؛ {report.textChecks.toLocaleString('fa-IR')} بررسی متن و {report.nonTextChecks.toLocaleString('fa-IR')} بررسی آیکون، مرز و فوکوس انجام شد.
+                    </p>
+                    {report.failures.length > 0 && (
+                        <ul className="mt-4 space-y-2 text-sm">
+                            {report.failures.map((failure, index) => (
+                                <li key={failure.element + failure.kind + index} className="border-s-2 border-danger ps-3">
+                                    <strong dir="ltr" className="font-mono text-xs">{failure.element}</strong>
+                                    <span className="ms-2 text-danger">{failure.ratio}:1 / حداقل {failure.minimum}:1</span>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                    {report.manualReview.length > 0 && (
+                        <p className="mt-4 text-xs leading-6 text-warning">
+                            {report.manualReview.length.toLocaleString('fa-IR')} مورد دارای تصویر یا گرادیان پس‌زمینه است و باید به‌صورت بصری بازبینی شود.
+                        </p>
+                    )}
+                </div>
+            )}
+        </section>
+    );
+}
 
 export default function DesignFoundation() {
     return (
@@ -37,7 +81,7 @@ export default function DesignFoundation() {
                         {swatches.map((color) => (
                             <article key={color.token} className="overflow-hidden rounded-card border border-border bg-paper">
                                 <div className="h-20 border-b border-border" style={{ backgroundColor: color.value }} />
-                                <div className="p-3"><p className="text-sm font-bold" dir="ltr">{color.name}</p><p className="mt-1 text-xs text-muted" dir="ltr">{color.value}</p><p className="mt-1 text-[11px] text-subtle" dir="ltr">--{color.token}</p></div>
+                                <div className="p-3"><p className="text-sm font-bold" dir="ltr">{color.name}</p><p className="mt-1 text-xs text-muted" dir="ltr">var(--color-{color.token})</p><p className="mt-1 text-[11px] text-subtle" dir="ltr">--{color.token}</p></div>
                             </article>
                         ))}
                     </div>
@@ -77,6 +121,7 @@ export default function DesignFoundation() {
                         <div className="border-s border-2 border-olive bg-paper p-5"><p className="font-bold">نشانگر معنایی</p><p className="mt-2 text-sm text-muted">استفاده محدود از زیتونی</p></div>
                     </div>
                 </section>
+                <ColorAccessibilityPanel />
                 <ComponentShowcase />
                 <footer className="border-t border-border pt-6 text-xs text-muted">Rad Art · Contemporary Art Editorial · MVP 2</footer>
             </div>

@@ -1,10 +1,10 @@
 import json
-import os
 import re
 import unittest
 from playwright.sync_api import sync_playwright
 
-BASE_URL = os.environ.get("RAD_ART_BASE_URL", "http://127.0.0.1:8000")
+from config import BASE_URL, IGNORE_HTTPS_ERRORS
+
 BUYER = {"id": 42, "name": "Buyer QA", "email": "buyer@example.test", "role": "buyer"}
 NOTIFICATION = {
     "id": "notification-uuid-1",
@@ -51,7 +51,7 @@ class MessageNotificationBrowserTests(unittest.TestCase):
         cls.playwright.stop()
 
     def new_page(self):
-        context = self.browser.new_context(viewport={"width": 1280, "height": 900})
+        context = self.browser.new_context(viewport={"width": 1280, "height": 900}, ignore_https_errors=IGNORE_HTTPS_ERRORS)
         page = context.new_page()
         page.set_default_timeout(15000)
         page.set_default_navigation_timeout(15000)
@@ -131,9 +131,11 @@ class MessageNotificationBrowserTests(unittest.TestCase):
             api_requests = []
             page.on("request", lambda request: api_requests.append(request.url))
             page.get_by_role("button", name="اعلان‌ها").click()
-            page.get_by_role("button", name="هنرمند آزمایشی پیام جدیدی فرستاد").click()
+            with page.expect_response(lambda response: "/api/v1/conversations/101/messages" in response.url and response.request.method == "GET", timeout=15_000) as messages_response:
+                page.get_by_role("button", name="هنرمند آزمایشی پیام جدیدی فرستاد").click()
             page.wait_for_url("**/dashboard/buyer/messages?conversation=101")
             page.get_by_role("heading", name="هنرمند آزمایشی").wait_for()
+            self.assertEqual(200, messages_response.value.status)
             self.assertTrue(
                 any("/api/v1/conversations/101/messages" in url for url in api_requests),
                 f"Conversation message endpoint was not requested. Requests: {api_requests}",

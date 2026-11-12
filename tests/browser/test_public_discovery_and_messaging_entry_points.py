@@ -186,7 +186,7 @@ class DiscoveryBrowserTests(unittest.TestCase):
             context.close()
 
 
-    def test_artwork_to_artist_keeps_direct_messaging_without_inquiry(self):
+    def test_artwork_to_artist_keeps_direct_messaging_entry_points(self):
         buyer = {"id": 42, "name": "Buyer QA", "email": "buyer@example.test", "role": "buyer"}
         context, page = self.new_page(user=buyer)
         try:
@@ -213,11 +213,11 @@ class DiscoveryBrowserTests(unittest.TestCase):
             page.get_by_role("heading", name="هنرمند آزمایشی").wait_for()
             self.assertEqual(page.get_by_label("موضوع").count(), 0)
             self.assertEqual(page.get_by_label("متن پیام").count(), 0)
-            page.get_by_role("link", name="پیام مستقیم").wait_for()
+            page.get_by_role("link", name="ارسال پیام به هنرمند").wait_for()
         finally:
             context.close()
 
-    def test_artwork_detail_hides_inquiry_form_but_keeps_direct_message_link(self):
+    def test_artwork_detail_keeps_direct_message_link(self):
         buyer = {"id": 42, "name": "Buyer QA", "email": "buyer@example.test", "role": "buyer"}
         context, page = self.new_page(user=buyer)
         try:

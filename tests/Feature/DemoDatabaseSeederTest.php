@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Models\ArtistInquiry;
 use App\Models\ArtistProfile;
 use App\Models\Artwork;
 use App\Models\Category;
-use App\Models\CuratedCollection;
-use App\Models\EditorialAudit;
-use App\Models\FeaturedArtistSelection;
+use App\Models\Conversation;
 use App\Models\User;
 use Database\Seeders\DemoDatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -47,20 +45,28 @@ class DemoDatabaseSeederTest extends TestCase
         foreach (['available', 'sold', 'not_for_sale'] as $availability) {
             $this->assertDatabaseHas('artworks', ['availability' => $availability]);
         }
-        foreach ([ArtistInquiry::STATUS_NEW, ArtistInquiry::STATUS_READ, ArtistInquiry::STATUS_ARCHIVED] as $status) {
-            $this->assertDatabaseHas('artist_inquiries', ['status' => $status]);
-        }
-
-        $this->assertSame(48, ArtistInquiry::query()->count());
-        $this->assertGreaterThan(0, ArtistInquiry::query()->whereNull('artwork_id')->count());
-        $this->assertGreaterThan(0, ArtistInquiry::query()->whereNotNull('artwork_id')->count());
+        $this->assertGreaterThan(0, DB::table('conversations')->count());
+        $this->assertGreaterThan(0, DB::table('messages')->whereNotNull('artwork_id')->count());
+        $this->assertGreaterThan(0, DB::table('conversation_contexts')->whereNotNull('artwork_id')->count());
+        $this->assertGreaterThan(0, DB::table('message_reactions')->count());
+        $this->assertGreaterThan(0, DB::table('message_attachments')->count());
+        $this->assertGreaterThan(0, DB::table('notifications')->count());
+        $this->assertGreaterThan(0, DB::table('message_reports')->count());
+        $this->assertGreaterThan(0, DB::table('message_moderation_audits')->count());
+        $this->assertGreaterThan(0, DB::table('user_blocks')->count());
+        $this->assertGreaterThan(0, DB::table('conversations')->whereNotNull('buyer_archived_at')->count());
+        $this->assertGreaterThan(0, DB::table('conversations')->whereNotNull('artist_archived_at')->count());
+        $this->assertGreaterThan(0, DB::table('conversations')->whereNotNull('buyer_muted_at')->count());
+        $this->assertGreaterThan(0, DB::table('conversations')->whereNotNull('artist_muted_at')->count());
+        $this->assertGreaterThan(0, DB::table('messages')->whereNull('read_at')->count());
+        $this->assertGreaterThan(0, DB::table('messages')->whereNotNull('read_at')->count());
         $sample = Artwork::query()->where('slug', 'demo-01-01')->firstOrFail();
         Storage::disk('local')->assertExists($sample->image_path);
         $missingImage = Artwork::query()->where('slug', 'demo-broken-image')->firstOrFail();
         Storage::disk('local')->assertMissing($missingImage->image_path);
     }
 
-    public function test_seeded_inquiry_records_are_preserved_but_buyer_api_is_disabled(): void
+    public function test_seeded_accounts_support_admin_pagination(): void
     {
         Storage::fake('local');
         $this->seed(DemoDatabaseSeeder::class);
@@ -75,11 +81,6 @@ class DemoDatabaseSeederTest extends TestCase
             ->assertOk()
             ->assertJsonCount(3, 'data')
             ->assertJsonPath('current_page', 2);
-
-        $buyer = User::query()->where('email', 'buyer@rademan.test')->firstOrFail();
-        $this->assertSame(12, ArtistInquiry::query()->where('sender_user_id', $buyer->id)->count());
-        $this->actingAs($buyer)->getJson('/api/v1/buyer/inquiries')->assertNotFound();
-        $this->actingAs($buyer)->getJson('/api/v1/buyer/inquiries?page=2')->assertNotFound();
     }
 
     public function test_seeded_editorial_variations_are_filtered_from_public_endpoints(): void
@@ -108,13 +109,13 @@ class DemoDatabaseSeederTest extends TestCase
             ->assertOk()->assertJsonCount(6, 'data');
     }
 
-    public function test_seeded_empty_accounts_keep_inquiry_api_disabled(): void
+    public function test_seeded_empty_buyer_has_no_conversations(): void
     {
         Storage::fake('local');
         $this->seed(DemoDatabaseSeeder::class);
 
         $emptyBuyer = User::query()->where('email', 'buyer-empty@rademan.test')->firstOrFail();
-        $this->actingAs($emptyBuyer)->getJson('/api/v1/buyer/inquiries')->assertNotFound();
+        $this->assertSame(0, DB::table('conversations')->where('buyer_user_id', $emptyBuyer->id)->count());
 
         $privateStarter = User::query()->where('email', 'new-artist-01@rademan.test')->firstOrFail();
         $this->actingAs($privateStarter)->getJson('/api/v1/artist-profile/me')
@@ -125,19 +126,57 @@ class DemoDatabaseSeederTest extends TestCase
         $publicStarter = User::query()->where('email', 'new-artist-02@rademan.test')->firstOrFail();
         $this->actingAs($publicStarter)->getJson('/api/v1/artist/artworks')
             ->assertOk()->assertJsonCount(0, 'data')->assertJsonPath('total', 0);
-        $this->actingAs($publicStarter)->getJson('/api/v1/artist/inquiries')->assertNotFound();
 
         $this->get('/api/v1/artworks/demo-broken-image/image')->assertNotFound();
+    }
+
+    public function test_demo_seeder_removes_empty_buyer_demo_threads_without_touching_unrelated_threads(): void
+    {
+        Storage::fake('local');
+        $emptyBuyer = User::query()->create([
+            'name' => 'خریدار بدون گفتگو',
+            'email' => 'buyer-empty@rademan.test',
+            'password' => 'Demo@12345',
+            'role' => User::ROLE_BUYER,
+        ]);
+        $artist = User::query()->create([
+            'name' => 'هنرمند نمونه',
+            'email' => 'artist@rademan.test',
+            'password' => 'Demo@12345',
+            'role' => User::ROLE_ARTIST,
+        ]);
+        $externalArtist = User::query()->create([
+            'name' => 'هنرمند خارج از داده نمایشی',
+            'email' => 'external-artist@example.test',
+            'password' => 'strong-password-123',
+            'role' => User::ROLE_ARTIST,
+        ]);
+        $retiredThread = Conversation::query()->create([
+            'pair_key' => $emptyBuyer->id.':'.$artist->id,
+            'buyer_user_id' => $emptyBuyer->id,
+            'artist_user_id' => $artist->id,
+        ]);
+        $unrelatedThread = Conversation::query()->create([
+            'pair_key' => $emptyBuyer->id.':'.$externalArtist->id,
+            'buyer_user_id' => $emptyBuyer->id,
+            'artist_user_id' => $externalArtist->id,
+        ]);
+
+        app(DemoDatabaseSeeder::class)->run();
+
+        $this->assertDatabaseMissing('conversations', ['id' => $retiredThread->id]);
+        $this->assertDatabaseHas('conversations', ['id' => $unrelatedThread->id]);
     }
 
     public function test_demo_seeder_is_repeatable_without_duplicate_records(): void
     {
         Storage::fake('local');
         $this->seed(DemoDatabaseSeeder::class);
-        $counts = [User::count(), ArtistProfile::count(), Category::count(), Artwork::count(), ArtistInquiry::count(), CuratedCollection::count(), FeaturedArtistSelection::count(), EditorialAudit::count()];
+        $tables = ['users', 'artist_profiles', 'categories', 'artworks', 'conversations', 'messages', 'conversation_contexts', 'message_reactions', 'message_attachments', 'notifications', 'message_reports', 'message_moderation_audits', 'user_blocks', 'curated_collections', 'featured_artist_selections', 'editorial_audits'];
+        $counts = array_map(fn (string $table): int => DB::table($table)->count(), $tables);
 
         $this->seed(DemoDatabaseSeeder::class);
 
-        $this->assertSame($counts, [User::count(), ArtistProfile::count(), Category::count(), Artwork::count(), ArtistInquiry::count(), CuratedCollection::count(), FeaturedArtistSelection::count(), EditorialAudit::count()]);
+        $this->assertSame($counts, array_map(fn (string $table): int => DB::table($table)->count(), $tables));
     }
 }

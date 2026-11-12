@@ -15,10 +15,10 @@
     "db:seed:demo": "node scripts/project.mjs db:seed:demo",
     "db:fresh": "node scripts/project.mjs db:fresh",
     "test": "node scripts/project.mjs test",
-    "test:backend": "php artisan test",
-    "test:unit": "php artisan test --testsuite=Unit",
-    "test:feature": "php artisan test --testsuite=Feature",
-    "test:integration": "php artisan test --testsuite=Integration",
+    "test:backend": "node scripts/project.mjs backend:test",
+    "test:unit": "node scripts/project.mjs unit",
+    "test:feature": "node scripts/project.mjs feature",
+    "test:integration": "node scripts/project.mjs integration",
     "test:frontend": "node --test tests/js/*.test.js",
     "test:browser": "node scripts/project.mjs browser",
     "lint": "eslint resources/js --max-warnings=0",
@@ -30,7 +30,10 @@
     "build:cpanel": "vite build --config vite.config.cpanel.js",
     "preview": "php artisan serve --host=127.0.0.1 --port=8000",
     "prod:optimize": "node scripts/project.mjs prod:optimize",
-    "prod:clear": "node scripts/project.mjs prod:clear"
+    "prod:clear": "node scripts/project.mjs prod:clear",
+    "a11y:colors": "node --test tests/js/colorAccessibility.test.js",
+    "test:quality": "node scripts/project.mjs verify",
+    "test:quality:all": "node scripts/project.mjs verify:all"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",

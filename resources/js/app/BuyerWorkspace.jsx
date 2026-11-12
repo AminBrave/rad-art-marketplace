@@ -1,176 +1,42 @@
-import { useCallback, useEffect, useState } from 'react';
-import axios from 'axios';
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Badge, Button, EmptyState, ErrorState, Pagination, SkeletonLines } from '../components/ui';
-
-const statusLabels = { new: 'در انتظار بررسی', read: 'دیده‌شده', archived: 'بایگانی‌شده' };
-const statusVariants = { new: 'accent', read: 'success', archived: 'neutral' };
-const inquiriesUrl = '/dashboard/buyer/inquiries';
-const apiUrl = '/api/v1/buyer/inquiries';
-
-function formatDate(value, withTime = false) {
-    if (!value) return '—';
-    const date = new Date(value);
-    return Number.isNaN(date.getTime())
-        ? '—'
-        : date.toLocaleString('fa-IR', withTime ? {} : { dateStyle: 'medium' });
-}
-
-function InquiryStatus({ status }) {
-    return <Badge variant={statusVariants[status] ?? 'neutral'}>{statusLabels[status] ?? 'وضعیت نامشخص'}</Badge>;
-}
+import { Link } from 'react-router-dom';
+import { WorkspaceHero, Surface } from '../components/ui';
 
 export function BuyerDashboardHome() {
     return (
-        <section className="space-y-6" dir="rtl">
-            <header className="border-b border-border pb-6">
-                <p className="text-sm font-bold text-terracotta-strong">فضای خریدار</p>
-                <h1 className="mt-2 text-2xl font-black">ارتباط مستقیم با هنرمندان</h1>
-                <p className="mt-3 max-w-2xl text-sm leading-7 text-muted">از صفحه هنرمند یا اثر هنری، گفت‌وگوی مستقیمی آغاز کنید و پیام‌های خود را در این بخش پیگیری کنید.</p>
-            </header>
-            <article className="border border-border bg-paper p-6 sm:p-8">
-                <h2 className="text-lg font-bold">صندوق پیام‌های شما</h2>
-                <p className="mt-2 text-sm leading-7 text-muted">گفت‌وگوهای فعال، پیوست‌ها و اعلان‌های پیام در بخش پیام‌های مستقیم در دسترس هستند.</p>
-                <Link to="/dashboard/buyer/messages" className="mt-5 inline-flex min-h-11 items-center bg-ink px-5 py-3 text-sm font-bold text-white hover:bg-terracotta">رفتن به پیام‌های مستقیم</Link>
-            </article>
-        </section>
-    );
-}
+        <section className="space-y-7" dir="rtl">
+            <WorkspaceHero
+                eyebrow="فضای اختصاصی خریدار"
+                title="هنر مورد علاقه‌تان را کشف کنید و گفت‌وگو را ادامه دهید."
+                description="از میان آثار و هنرمندان مستقل جست‌وجو کنید و گفت‌وگوهای مستقیم خود را با هنرمندان در یک فضای منظم دنبال کنید."
+                actions={<>
+                    <Link to="/artworks" className="ra-workspace-hero__action ra-workspace-hero__action--primary">کشف آثار هنری</Link>
+                    <Link to="/artists" className="ra-workspace-hero__action">آشنایی با هنرمندان</Link>
+                </>}
+            />
 
-export function BuyerInquiryPage() {
-    const [searchParams, setSearchParams] = useSearchParams();
-    const page = Math.max(1, Number(searchParams.get('page')) || 1);
-    const [result, setResult] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-
-    const load = useCallback(async (signal) => {
-        setLoading(true);
-        setError('');
-        try {
-            const { data } = await axios.get(apiUrl, { params: { page }, signal });
-            setResult(data);
-        } catch (requestError) {
-            if (axios.isCancel(requestError)) return;
-            setError(requestError.response?.status === 403
-                ? 'این حساب اجازه مشاهده این فهرست را ندارد.'
-                : 'دریافت فهرست درخواست‌ها انجام نشد. دوباره تلاش کنید.');
-        } finally {
-            if (!signal?.aborted) setLoading(false);
-        }
-    }, [page]);
-
-    useEffect(() => {
-        const controller = new AbortController();
-        load(controller.signal);
-        return () => controller.abort();
-    }, [load]);
-
-    const changePage = (nextPage) => setSearchParams(nextPage > 1 ? { page: String(nextPage) } : {});
-
-    return (
-        <section className="space-y-6" dir="rtl">
-            <header>
-                <p className="text-sm font-bold text-terracotta-strong">فضای خریدار</p>
-                <h1 className="mt-2 text-2xl font-black">درخواست‌های ارسال‌شده</h1>
-                <p className="mt-2 text-sm leading-7 text-muted">فهرست درخواست‌های ارتباطی شما و وضعیت فعلی هرکدام.</p>
-            </header>
-            {error && <ErrorState title="دریافت درخواست‌ها انجام نشد" description={error} onRetry={() => load()} />}
-            {loading ? <SkeletonLines lines={6} /> : !error && (
-                <>
-                    {!result?.data?.length ? (
-                        <EmptyState
-                            title="هنوز درخواستی ارسال نکرده‌اید"
-                            description="پس از ارسال درخواست از صفحه یک هنرمند یا اثر، سوابق شما در اینجا نمایش داده می‌شود."
-                            action={<Link to="/artists" className="mt-2 inline-flex min-h-11 items-center bg-ink px-5 py-3 text-sm font-bold text-white">مشاهده هنرمندان</Link>}
-                        />
-                    ) : (
-                        <div className="overflow-hidden border border-border bg-paper">
-                            <ul className="divide-y divide-border">
-                                {result.data.map((item) => (
-                                    <li key={item.id}>
-                                        <Link to={inquiriesUrl + '/' + item.id + (page > 1 ? '?page=' + page : '')} className="block p-5 transition-colors hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus sm:p-6">
-                                            <div className="flex flex-wrap items-start justify-between gap-3">
-                                                <div className="min-w-0">
-                                                    <h2 className="truncate font-bold text-ink">{item.subject}</h2>
-                                                    <p className="mt-2 text-sm text-muted">هنرمند: {item.artist?.display_name ?? '—'}</p>
-                                                    {item.artwork && <p className="mt-1 text-xs text-muted">اثر مرتبط: {item.artwork.title}</p>}
-                                                </div>
-                                                <InquiryStatus status={item.status} />
-                                            </div>
-                                            <p className="mt-3 text-xs text-muted">{formatDate(item.created_at)}</p>
-                                            <span className="mt-3 inline-block text-sm font-bold text-terracotta-strong underline underline-offset-4">مشاهده جزئیات</span>
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                    <Pagination currentPage={result?.current_page ?? page} lastPage={result?.last_page ?? 1} onPageChange={changePage} disabled={loading} />
-                    <p className="text-center text-xs text-muted">{result?.total ?? 0} درخواست ثبت‌شده</p>
-                </>
-            )}
-        </section>
-    );
-}
-
-export function BuyerInquiryDetailPage() {
-    const { id } = useParams();
-    const [searchParams] = useSearchParams();
-    const page = Math.max(1, Number(searchParams.get('page')) || 1);
-    const [inquiry, setInquiry] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
-
-    const load = useCallback(async (signal) => {
-        setLoading(true);
-        setError('');
-        setInquiry(null);
-        try {
-            const { data } = await axios.get(apiUrl + '/' + id, { signal });
-            setInquiry(data.data);
-        } catch (requestError) {
-            if (axios.isCancel(requestError)) return;
-            setError(requestError.response?.status === 404
-                ? 'این درخواست در حساب شما پیدا نشد.'
-                : requestError.response?.status === 403
-                    ? 'دسترسی به این درخواست مجاز نیست.'
-                    : 'دریافت جزئیات درخواست انجام نشد. دوباره تلاش کنید.');
-        } finally {
-            if (!signal?.aborted) setLoading(false);
-        }
-    }, [id]);
-
-    useEffect(() => {
-        const controller = new AbortController();
-        load(controller.signal);
-        return () => controller.abort();
-    }, [load]);
-
-    return (
-        <section className="space-y-6" dir="rtl">
-            <Button variant="outline" size="sm" onClick={() => navigate(inquiriesUrl + (page > 1 ? '?page=' + page : ''))}>بازگشت به فهرست درخواست‌ها</Button>
-            {loading ? <SkeletonLines lines={6} /> : error ? (
-                <ErrorState title="جزئیات درخواست در دسترس نیست" description={error} onRetry={() => load()} />
-            ) : inquiry && (
-                <article className="border border-border bg-paper p-5 sm:p-8">
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div><p className="text-xs font-bold text-terracotta-strong">جزئیات درخواست ارسالی</p><h1 className="mt-2 text-2xl font-black">{inquiry.subject}</h1></div>
-                        <InquiryStatus status={inquiry.status} />
+            <Surface className="p-5 sm:p-7">
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                        <p className="text-xs font-bold text-terracotta-strong">ارتباط‌های شما</p>
+                        <h2 className="mt-2 text-xl font-black">پیام‌های مستقیم</h2>
+                        <p className="mt-2 max-w-2xl text-sm leading-7 text-muted">گفت‌وگوها، پاسخ‌ها و پیوست‌های خود را از یک صندوق پیام پیگیری کنید. برای شروع گفت‌وگو، از صفحه یک اثر یا پروفایل هنرمند اقدام کنید.</p>
                     </div>
-                    <dl className="mt-6 grid gap-4 border-y border-border py-5 text-sm sm:grid-cols-2">
-                        <div><dt className="text-xs text-muted">هنرمند</dt><dd className="mt-1 font-semibold">{inquiry.artist?.display_name ?? '—'}</dd></div>
-                        <div><dt className="text-xs text-muted">تاریخ ثبت</dt><dd className="mt-1 font-semibold">{formatDate(inquiry.created_at, true)}</dd></div>
-                        {inquiry.artwork && <div className="sm:col-span-2"><dt className="text-xs text-muted">اثر مرتبط</dt><dd className="mt-1 font-semibold">{inquiry.artwork.title}</dd></div>}
-                    </dl>
-                    <h2 className="mt-6 text-sm font-bold">متن درخواست شما</h2>
-                    <p className="whitespace-pre-wrap py-4 text-sm leading-9 text-ink">{inquiry.message}</p>
-                    {inquiry.artist?.slug && <Link to={'/artists/' + inquiry.artist.slug} className="inline-block text-sm font-bold text-terracotta-strong underline underline-offset-4">مشاهده پروفایل هنرمند</Link>}
-                    {inquiry.artwork?.slug && <Link to={'/artworks/' + inquiry.artwork.slug} className="mr-5 inline-block text-sm font-bold text-terracotta-strong underline underline-offset-4">مشاهده اثر مرتبط</Link>}
-                    <p className="mt-6 border-t border-border pt-4 text-xs leading-7 text-muted">این صفحه فقط درخواست اولیه و وضعیت ثبت‌شده آن را نمایش می‌دهد. امکان پاسخ‌گویی، گفت‌وگو یا ارسال ایمیل در سامانه وجود ندارد.</p>
-                </article>
-            )}
+                    <span aria-hidden="true" className="grid h-12 w-12 shrink-0 place-items-center bg-surface-muted text-xl text-terracotta-strong">✉</span>
+                </div>
+                <Link to="/dashboard/buyer/messages" className="mt-6 inline-flex min-h-11 items-center bg-ink px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-terracotta">ورود به صندوق پیام <span aria-hidden="true" className="mr-3">←</span></Link>
+            </Surface>
+
+            <section className="border-t border-border pt-6">
+                <div className="flex flex-wrap items-end justify-between gap-3">
+                    <div><p className="text-xs font-bold text-terracotta-strong">شروع یک تجربه تازه</p><h2 className="mt-2 text-xl font-black">از کجا شروع کنید؟</h2></div>
+                    <Link to="/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">رفتن به گالری</Link>
+                </div>
+                <ol className="mt-5 grid gap-4 md:grid-cols-3">
+                    <li className="border-r-2 border-sand bg-surface-muted p-4"><span className="text-xs font-bold text-terracotta-strong">۰۱ / کشف</span><h3 className="mt-2 font-bold">آثار و سبک‌ها را ببینید</h3><p className="mt-2 text-sm leading-7 text-muted">در گالری جست‌وجو کنید و جزئیات هر اثر را بخوانید.</p></li>
+                    <li className="border-r-2 border-sand bg-surface-muted p-4"><span className="text-xs font-bold text-terracotta-strong">۰۲ / ارتباط</span><h3 className="mt-2 font-bold">به هنرمند پیام بدهید</h3><p className="mt-2 text-sm leading-7 text-muted">از صفحه اثر یا پروفایل عمومی هنرمند، گفت‌وگوی مستقیم را آغاز کنید.</p></li>
+                    <li className="border-r-2 border-sand bg-surface-muted p-4"><span className="text-xs font-bold text-terracotta-strong">۰۳ / ادامه</span><h3 className="mt-2 font-bold">گفت‌وگو را پیگیری کنید</h3><p className="mt-2 text-sm leading-7 text-muted">پاسخ‌ها و پیوست‌های جدید را در صندوق پیام‌ها دنبال کنید.</p></li>
+                </ol>
+            </section>
         </section>
     );
 }

@@ -19,6 +19,7 @@ class Message extends Model
         'client_message_id',
         'body',
         'reply_to_id',
+        'artwork_id',
         'delivered_at',
         'read_at',
         'edited_at',
@@ -42,6 +43,11 @@ class Message extends Model
     public function sender(): BelongsTo
     {
         return $this->belongsTo(User::class, 'sender_user_id');
+    }
+
+    public function artwork(): BelongsTo
+    {
+        return $this->belongsTo(Artwork::class);
     }
 
     public function replyTo(): BelongsTo

@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Conversation extends Model
 {
     protected $fillable = [
-        'inquiry_id',
         'pair_key',
         'buyer_user_id',
         'artist_user_id',
@@ -32,11 +31,6 @@ class Conversation extends Model
             'buyer_muted_at' => 'datetime',
             'artist_muted_at' => 'datetime',
         ];
-    }
-
-    public function inquiry(): BelongsTo
-    {
-        return $this->belongsTo(ArtistInquiry::class);
     }
 
     public function buyer(): BelongsTo

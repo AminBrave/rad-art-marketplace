@@ -22,7 +22,6 @@ class FullStackAdminModerationTests(unittest.TestCase):
         context = self.browser.new_context(
             viewport={"width": 1440, "height": 1000},
             ignore_https_errors=IGNORE_HTTPS_ERRORS,
-            extra_http_headers={"X-Forwarded-For": "198.51.100.10"},
         )
         page = context.new_page()
         page.set_default_timeout(20000)
@@ -33,13 +32,28 @@ class FullStackAdminModerationTests(unittest.TestCase):
         page.goto(BASE_URL + "/login")
         page.locator('input[name="email"]').fill(email)
         page.locator('input[name="password"]').fill("Demo@12345")
-        page.get_by_role("button", name="ورود به حساب").click()
+        with page.expect_response(
+            lambda response: response.url.endswith("/api/v1/auth/login")
+            and response.request.method == "POST"
+        ) as login_response:
+            page.get_by_role("button", name="ورود به حساب").click()
+        self.assertEqual(
+            200,
+            login_response.value.status,
+            f"Admin login failed with HTTP {login_response.value.status}. "
+            f"Current page: {page.url}. "
+            f"Message: {page.locator('[role=\"status\"], [role=\"alert\"]').all_inner_texts()}",
+        )
 
     def test_admin_can_approve_a_pending_artwork_through_the_real_application(self):
         context, page = self.new_page()
         try:
             self.login(page, "admin@rademan.test")
-            page.wait_for_url("**/admin")
+            page.wait_for_function(
+                "() => window.location.pathname === '/admin' "
+                "|| window.location.pathname.startsWith('/admin/')",
+                timeout=20_000,
+            )
             page.goto(BASE_URL + "/admin/artworks")
             page.get_by_role("heading", name="صف بررسی و انتشار").wait_for()
 

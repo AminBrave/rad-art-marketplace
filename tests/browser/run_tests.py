@@ -10,6 +10,41 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 
+def validate_local_target() -> None:
+    from urllib.parse import urlparse
+    from urllib.request import urlopen
+    from urllib.error import URLError, HTTPError
+    import ssl
+
+    raw_url = os.environ.get("RAD_ART_BASE_URL", "https://rad.localhost").rstrip("/")
+    parsed = urlparse(raw_url)
+    hostname = (parsed.hostname or "").lower()
+    is_loopback_name = (
+        hostname == "localhost"
+        or hostname.endswith(".localhost")
+        or hostname == "127.0.0.1"
+        or hostname == "::1"
+    )
+
+    if parsed.scheme not in {"http", "https"} or not is_loopback_name:
+        raise RuntimeError(
+            "Browser tests are restricted to localhost/loopback URLs. "
+            "Set RAD_ART_BASE_URL to your local RAD development URL; production and remote hosts are refused."
+        )
+
+    health_url = f"{raw_url}/api/v1/health"
+    try:
+        ssl_context = ssl._create_unverified_context() if parsed.scheme == "https" and os.environ.get("RAD_ART_IGNORE_HTTPS_ERRORS", "true").lower() in {"1", "true", "yes", "on"} else None
+        with urlopen(health_url, timeout=8, context=ssl_context) as response:
+            if response.status != 200:
+                raise RuntimeError(f"Local app health check returned HTTP {response.status}: {health_url}")
+    except (URLError, HTTPError, TimeoutError) as error:
+        raise RuntimeError(
+            f"Local RAD app is not ready at {health_url}. Start it with npm run dev:local first. "
+            f"Underlying error: {error}"
+        ) from error
+
+
 class TimedTextTestResult(unittest.TextTestResult):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -70,6 +105,22 @@ def write_junit_report(result: TimedTextTestResult, destination: Path) -> None:
 
 
 def main() -> int:
+    try:
+        validate_local_target()
+    except RuntimeError as error:
+        print(f\"Browser test preflight failed: {error}\", file=sys.stderr)
+        return 2
+
+    try:
+        import playwright.sync_api
+    except ImportError:
+        print(
+            "Playwright is required for local browser tests. Install requirements-test.txt "
+            "and run 'python -m playwright install chromium'.",
+            file=sys.stderr,
+        )
+        return 2
+
     browser_dir = Path(__file__).resolve().parent
     sys.path.insert(0, str(browser_dir))
     suite = unittest.defaultTestLoader.discover(

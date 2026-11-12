@@ -3,9 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import ContactArtistForm from './ContactArtistForm';
-import { isFeatureEnabled } from './features';
-import { ArtworkCard, ArtworkDetailSkeleton } from '../components/ui';
+import { ArtworkCard, ArtworkDetailSkeleton, PageContainer } from '../components/ui';
 import { formatArtworkPrice } from '../utils/formatArtworkPrice';
 
 function ArtworkImage({ artwork }) {
@@ -13,7 +11,7 @@ function ArtworkImage({ artwork }) {
     useEffect(() => setFailed(false), [artwork?.slug]);
 
     return (
-        <div className="flex aspect-[4/3] items-center justify-center overflow-hidden bg-white p-4 sm:p-8 lg:aspect-[4/5]">
+        <div className="flex aspect-[4/3] items-center justify-center overflow-hidden border border-border bg-surface-muted p-3 sm:p-6 lg:aspect-[4/5] lg:p-8">
             {failed ? (
                 <div role="img" aria-label={'تصویر اثر ' + artwork.title + ' در دسترس نیست'} className="grid h-full w-full place-items-center border border-border bg-surface-muted p-8 text-center text-sm leading-7 text-muted">تصویر این اثر در حال حاضر در دسترس نیست.</div>
             ) : (
@@ -65,7 +63,7 @@ export default function ArtworkDetailPage() {
     if (loading) return <ArtworkDetailSkeleton />;
 
     return (
-        <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl">
+        <PageContainer as="main" className="min-h-[65vh] py-10 lg:py-14" dir="rtl">
             <nav aria-label="مسیر صفحه" className="text-sm text-muted">
                 <Link to="/" className="hover:text-terracotta-strong">خانه</Link><span className="mx-2" aria-hidden="true">/</span>
                 <Link to="/artworks" className="hover:text-terracotta-strong">گالری آثار</Link><span className="mx-2" aria-hidden="true">/</span>
@@ -80,30 +78,29 @@ export default function ArtworkDetailPage() {
                 </section>
             ) : (
                 <>
-                    <article className="mt-7 grid gap-8 lg:grid-cols-[1.15fr_.85fr]">
+                    <article className="mt-7 grid items-start gap-8 lg:grid-cols-[1.15fr_.85fr] lg:gap-10">
                         <ArtworkImage artwork={artwork} />
-                        <div className="border border-border bg-white p-6 sm:p-9">
+                        <div className="border-y border-border bg-transparent py-6 sm:py-9 lg:sticky lg:top-28 lg:border-y-0 lg:py-2">
                             <p className="text-sm font-bold text-terracotta-strong">{artwork.category?.name}</p>
-                            <h1 className="mt-3 text-3xl font-black leading-relaxed">{artwork.title}</h1>
+                            <h1 className="mt-3 text-3xl font-black leading-relaxed tracking-tight sm:text-4xl">{artwork.title}</h1>
                             <Link to={'/artists/' + artwork.artist.slug} className="mt-3 inline-block text-sm font-semibold text-terracotta-strong underline">{artwork.artist.display_name}</Link>
                             {artwork.description && <p className="mt-7 whitespace-pre-line text-sm leading-9 text-muted">{artwork.description}</p>}
-                            <dl className="mt-7 grid grid-cols-2 gap-4 border-y border-border py-5 text-sm">
+                            <dl className="mt-7 grid grid-cols-2 gap-x-5 gap-y-6 border-y border-border py-6 text-sm">
                                 {artwork.medium && <div><dt className="text-xs text-muted">تکنیک / مواد</dt><dd className="mt-1 font-semibold">{artwork.medium}</dd></div>}
                                 {artwork.dimensions && <div><dt className="text-xs text-muted">ابعاد</dt><dd className="mt-1 font-semibold">{artwork.dimensions}</dd></div>}
                                 {artwork.year && <div><dt className="text-xs text-muted">سال خلق</dt><dd className="mt-1 font-semibold">{artwork.year.toLocaleString('fa-IR')}</dd></div>}
                                 <div><dt className="text-xs text-muted">قیمت</dt><dd className="mt-1 font-semibold">{formatArtworkPrice(artwork.price)}</dd></div>
                             </dl>
-                            <p className="mt-5 text-sm text-muted">وضعیت: {availabilityLabel(artwork.availability)}</p>
+                            <p className="mt-5 inline-flex items-center gap-2 text-sm text-muted"><span aria-hidden="true" className="h-2 w-2 rounded-full bg-olive" />وضعیت: {availabilityLabel(artwork.availability)}</p>
                             {user?.role === 'buyer' && <div className="mt-7 flex flex-wrap gap-3">
                                 <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(artwork.artist.slug) + '&artwork=' + encodeURIComponent(artwork.slug)} className="inline-flex items-center bg-ink px-5 py-3 text-sm font-bold text-white hover:bg-terracotta">پیام مستقیم درباره این اثر</Link>
-                                {isFeatureEnabled('inquiries') && <ContactArtistForm artistSlug={artwork.artist.slug} artworkId={artwork.id} />}
                             </div>}
                             {!user && <Link to="/login" state={{ from: { pathname: '/artworks/' + slug } }} className="mt-7 inline-block text-sm font-bold text-terracotta-strong underline">برای ارسال پیام مستقیم وارد شوید</Link>}
                             {user && user.role !== 'buyer' && <p className="mt-7 text-xs leading-6 text-muted">ارسال پیام مستقیم از حساب خریدار امکان‌پذیر است.</p>}
                         </div>
                     </article>
                     {artwork.related_artworks?.length > 0 && (
-                        <section className="mt-16 border-t border-border pt-10">
+                        <section className="mt-16 border-t border-border pt-10 lg:mt-20 lg:pt-14">
                             <div className="flex flex-wrap items-end justify-between gap-3">
                                 <div><p className="text-xs font-bold text-terracotta-strong">ادامه مسیر کشف</p><h2 className="mt-2 text-2xl font-black">آثار مرتبط</h2><p className="mt-2 text-sm text-muted">آثاری از همین دسته یا همین هنرمند</p></div>
                                 <Link to="/artworks" className="text-sm font-bold text-terracotta-strong underline">مشاهده همه آثار</Link>
@@ -113,6 +110,6 @@ export default function ArtworkDetailPage() {
                     )}
                 </>
             )}
-        </main>
+        </PageContainer>
     );
 }

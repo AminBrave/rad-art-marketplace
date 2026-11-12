@@ -6,14 +6,14 @@ const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
 const overview = read('../../resources/js/app/ArtistWorkspaceOverview.jsx');
 const profile = read('../../resources/js/app/RoutingPages.jsx');
 const artwork = read('../../resources/js/app/ArtworkStudio.jsx');
-const inquiries = read('../../resources/js/app/InquiryCenter.jsx');
+const router = read('../../resources/js/app/AppRouter.jsx');
 
 test('artist onboarding progress is derived from named profile fields and actual artwork totals', () => {
     for (const field of ['display_name', 'bio', 'city', 'website_url', 'instagram_handle', 'is_public']) {
         assert.ok(overview.includes(field), `Missing profile completion input: ${field}`);
     }
     assert.ok(overview.includes('counts.artworks'));
-    assert.ok(overview.includes('aria-valuenow={completedProfileSteps}'));
+    assert.ok(overview.includes('aria-valuenow={progress}'));
     assert.ok(overview.includes('ثبت اولین اثر برای بررسی'));
     assert.ok(!/analytics|engagement|reach|impressions/i.test(overview));
 });
@@ -35,10 +35,9 @@ test('artwork submission explains moderation outcomes and validates image dimens
     assert.ok(artwork.includes('بازخورد مدیر'));
 });
 
-test('artist inquiry workspace explains the actual read and archive lifecycle', () => {
-    assert.ok(inquiries.includes('خوانده‌شده'));
-    assert.ok(inquiries.includes('بایگانی‌شده'));
-    assert.ok(inquiries.includes('این وضعیت‌ها پاسخ یا اعلان برای فرستنده ارسال نمی‌کنند'));
-    assert.ok(inquiries.includes('بررسی و به‌روزرسانی پروفایل هنری'));
-    assert.ok(inquiries.includes('مشاهده هنرمندان'));
+test('direct messaging remains available in the artist workspace without a legacy inbox section', () => {
+    assert.ok(router.includes('MessagingCenter'));
+    assert.ok(router.includes('path="messages"'));
+    assert.equal(router.includes('InquiryCenter'), false);
+    assert.equal(router.includes('path="inquiries"'), false);
 });
