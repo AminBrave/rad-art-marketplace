@@ -103,6 +103,47 @@ class DirectConversationTest extends TestCase
             ->assertForbidden();
     }
 
+
+    public function test_reopening_a_direct_conversation_with_the_same_artwork_does_not_duplicate_its_context(): void
+    {
+        $buyer = $this->makeUser('buyer-context-retry@example.test', User::ROLE_BUYER);
+        $artist = $this->makeUser('artist-context-retry@example.test', User::ROLE_ARTIST);
+        $profile = $artist->artistProfile()->create([
+            'slug' => 'artist-context-retry',
+            'display_name' => 'هنرمند زمینه گفتگو',
+            'is_public' => true,
+        ]);
+        $artwork = $profile->artworks()->create([
+            'category_id' => Category::query()->where('slug', 'painting')->firstOrFail()->id,
+            'slug' => 'context-retry-artwork',
+            'title' => 'اثر برای زمینه گفتگو',
+            'status' => Artwork::STATUS_APPROVED,
+            'image_path' => 'artworks/context-retry.jpg',
+            'availability' => 'available',
+        ]);
+        $payload = [
+            'artist_slug' => $profile->slug,
+            'artwork_slug' => $artwork->slug,
+        ];
+
+        $first = $this->actingAs($buyer)
+            ->postJson('/api/v1/conversations/direct', $payload)
+            ->assertCreated();
+        $conversationId = $first->json('data.id');
+
+        $this->postJson('/api/v1/conversations/direct', $payload)
+            ->assertCreated()
+            ->assertJsonPath('data.id', $conversationId);
+
+        $this->assertDatabaseCount('conversations', 1);
+        $this->assertDatabaseCount('conversation_contexts', 1);
+        $this->assertDatabaseHas('conversation_contexts', [
+            'conversation_id' => $conversationId,
+            'artwork_id' => $artwork->id,
+            'added_by_user_id' => $buyer->id,
+        ]);
+    }
+
     private function makeUser(string $email, string $role): User
     {
         return User::query()->create([
