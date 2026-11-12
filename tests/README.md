@@ -29,7 +29,8 @@ tests/
 │   ├── test_artist_workspace_resilience.py  # Authenticated artist workspace artwork retry
 │   ├── test_messaging_inbox_resilience.py   # Authenticated buyer/artist inbox failure and retry recovery
 │   ├── test_messaging_history_resilience.py # Selected conversation message-history retry recovery
-│   ├── test_messaging_older_history_resilience.py # Older-message pagination retry, de-duplication and scroll preservation\n│   ├── test_messaging_attachment_resilience.py # Attachment upload retry preserves draft and idempotent message identity
+│   ├── test_messaging_older_history_resilience.py # Older-message pagination retry, de-duplication and scroll preservation
+│   ├── test_messaging_attachment_resilience.py # Attachment upload retry preserves draft and idempotent message identity
 │   ├── test_auth_session_resilience.py     # Session expiry and duplicate registration
 │   ├── test_full_stack_artist_artwork.py   # Artwork publishing and duplicate profile/artwork submissions
 │   └── test_full_stack_buyer_artist_messaging.py # Cross-role messaging and duplicate message sends
