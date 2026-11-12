@@ -23,7 +23,7 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
 
     def test_older_message_failure_can_retry_without_losing_messages_or_scroll_context(self):
         context = self.browser.new_context(
-            viewport={"width": 1280, "height": 900},
+            viewport={"width": 1280, "height": 600},
             ignore_https_errors=IGNORE_HTTPS_ERRORS,
         )
         page = context.new_page()
@@ -34,12 +34,12 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
             "id": 73110 + index,
             "conversation_id": conversation_id,
             "sender_id": 73102,
-            "body": f"پیام موجود {index + 1} " + ("متن بلند برای ایجاد ارتفاع قابل پیمایش در تاریخچه گفتگو " * 4),
+            "body": f"پیام موجود {index + 1} " + ("متن بلند برای ایجاد ارتفاع قابل پیمایش در تاریخچه گفتگو " * 10),
             "created_at": f"2026-11-{10 + (index // 5):02d}T10:{index % 60:02d}:00Z",
             "read_at": "2026-11-12T10:00:00Z",
             "attachments": [],
             "reactions": [],
-        } for index in range(12)]
+        } for index in range(30)]
 
         page.route(
             "**/api/v1/auth/me",
@@ -140,7 +140,7 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
             page.goto(BASE_URL + f"/dashboard/buyer/messages?conversation={conversation_id}", wait_until="domcontentloaded")
             page.get_by_role("heading", name="پیام‌ها").wait_for()
             page.get_by_role("heading", name="هنرمند صفحه‌بندی").wait_for()
-            page.get_by_text(re.compile(r"^پیام موجود 1 ")).wait_for()
+            page.get_by_text(re.compile(r"^پیام موجود 1 ")).first.wait_for()
             log = page.get_by_role("log", name="پیام‌های گفتگو")
             page.wait_for_function(
                 "() => { const node = document.querySelector('[role=log][aria-label=\"پیام‌های گفتگو\"]');"
