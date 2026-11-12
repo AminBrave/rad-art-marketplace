@@ -491,7 +491,8 @@ class DemoDatabaseSeeder extends Seeder
         }
 
         if ($scenario % 7 === 0) {
-            $path = 'message-attachments/demo/'.$conversation->pair_key.'/sample.png';
+            $attachmentKey = str_replace(':', '-', $conversation->pair_key);
+            $path = 'message-attachments/demo/'.$attachmentKey.'/sample.png';
             $image = base64_decode(
                 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l0sAAAAASUVORK5CYII=',
                 true,
