@@ -169,7 +169,7 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
                 and response.request.method == "GET"
                 and response.status == 200
             ):
-                older_alert.get_by_role("button", name="تلاش دوباره").click()
+                older_alert.get_by_role("button", name="تلاش دوباره").evaluate("(button) => button.click()")
 
             page.get_by_text("پیام قدیمی 1", exact=False).wait_for()
             self.assertEqual(older_attempts["count"], 2)
