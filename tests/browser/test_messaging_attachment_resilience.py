@@ -162,7 +162,7 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
                     "data": {
                         "id": 73022,
                         "name": "reference.pdf",
-                        "mime_type": "application/pdf",
+                        "mimeType": "application/pdf",
                         "size_bytes": 1024,
                     }
                 }),
