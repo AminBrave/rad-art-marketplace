@@ -74,7 +74,7 @@ class FullStackBuyerArtistMessagingTests(unittest.TestCase):
                 lambda response: response.url.endswith(f"/api/v1/conversations/{conversation_id}/messages")
                 and response.request.method == "POST"
             ) as buyer_send:
-                buyer_page.get_by_role("button", name="ارسال", exact=True).click()
+                buyer_page.get_by_role("button", name="ارسال پیام", exact=True).click()
 
             self.assertEqual(buyer_send.value.status, 201)
             buyer_page.get_by_role("paragraph").filter(has_text=first_message).wait_for()
@@ -89,7 +89,7 @@ class FullStackBuyerArtistMessagingTests(unittest.TestCase):
                 lambda response: response.url.endswith(f"/api/v1/conversations/{conversation_id}/messages")
                 and response.request.method == "POST"
             ) as artist_send:
-                artist_page.get_by_role("button", name="ارسال", exact=True).click()
+                artist_page.get_by_role("button", name="ارسال پیام", exact=True).click()
 
             self.assertEqual(artist_send.value.status, 201)
             artist_page.get_by_role("paragraph").filter(has_text=reply).wait_for()
