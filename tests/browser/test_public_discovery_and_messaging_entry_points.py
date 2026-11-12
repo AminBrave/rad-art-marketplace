@@ -213,7 +213,7 @@ class DiscoveryBrowserTests(unittest.TestCase):
             page.get_by_role("heading", name="هنرمند آزمایشی").wait_for()
             self.assertEqual(page.get_by_label("موضوع").count(), 0)
             self.assertEqual(page.get_by_label("متن پیام").count(), 0)
-            page.get_by_role("link", name="پیام مستقیم").wait_for()
+            page.get_by_role("link", name="ارسال پیام به هنرمند").wait_for()
         finally:
             context.close()
 
