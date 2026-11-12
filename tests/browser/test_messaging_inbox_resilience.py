@@ -1,4 +1,4 @@
-"""Authenticated messaging inbox loading and recovery journeys."""
+"""Authenticated buyer and artist messaging inbox loading and recovery journeys."""
 
 import json
 import unittest
@@ -19,7 +19,7 @@ class MessagingInboxResilienceTests(unittest.TestCase):
         cls.browser.close()
         cls.playwright.stop()
 
-    def test_buyer_inbox_failure_can_be_retried_into_empty_state(self):
+    def assert_inbox_failure_recovers(self, role):
         context = self.browser.new_context(
             viewport={"width": 1280, "height": 900},
             ignore_https_errors=IGNORE_HTTPS_ERRORS,
@@ -27,6 +27,7 @@ class MessagingInboxResilienceTests(unittest.TestCase):
         page = context.new_page()
         page.set_default_timeout(15000)
         attempts = {"count": 0}
+        endpoint = f"/api/v1/{role}/conversations"
 
         page.route(
             "**/api/v1/auth/me",
@@ -35,10 +36,10 @@ class MessagingInboxResilienceTests(unittest.TestCase):
                 content_type="application/json",
                 body=json.dumps({
                     "data": {
-                        "id": 73001,
-                        "name": "خریدار آزمون",
-                        "email": "buyer-inbox@example.test",
-                        "role": "buyer",
+                        "id": 73001 if role == "buyer" else 73002,
+                        "name": "کاربر آزمون",
+                        "email": f"{role}-inbox@example.test",
+                        "role": role,
                     }
                 }),
             ),
@@ -66,16 +67,16 @@ class MessagingInboxResilienceTests(unittest.TestCase):
                 }),
             )
 
-        page.route("**/api/v1/buyer/conversations**", conversations)
+        page.route(f"**{endpoint}**", conversations)
         try:
-            page.goto(BASE_URL + "/dashboard/buyer/messages", wait_until="domcontentloaded")
+            page.goto(BASE_URL + f"/dashboard/{role}/messages", wait_until="domcontentloaded")
             page.get_by_role("heading", name="پیام‌ها").wait_for()
             inbox_alert = page.get_by_role("alert").filter(has_text="دریافت گفتگوها انجام نشد")
             inbox_alert.wait_for()
             self.assertFalse(page.get_by_text("هنوز گفتگویی ندارید.", exact=False).is_visible())
 
             with page.expect_response(
-                lambda response: "/api/v1/buyer/conversations" in response.url
+                lambda response: endpoint in response.url
                 and response.request.method == "GET"
                 and response.status == 200
             ):
@@ -86,6 +87,12 @@ class MessagingInboxResilienceTests(unittest.TestCase):
             self.assertFalse(inbox_alert.is_visible())
         finally:
             context.close()
+
+    def test_buyer_inbox_failure_can_be_retried_into_empty_state(self):
+        self.assert_inbox_failure_recovers("buyer")
+
+    def test_artist_inbox_failure_can_be_retried_into_empty_state(self):
+        self.assert_inbox_failure_recovers("artist")
 
 
 if __name__ == "__main__":
