@@ -69,7 +69,7 @@ export default function ArtistWorkspaceOverview() {
                         <p className="mt-2 max-w-2xl text-sm leading-7 text-muted">{profileReady ? (profile.is_public ? 'پروفایل شما برای بازدیدکنندگان قابل مشاهده است. آن را به‌روز نگه دارید تا مخاطبان با مسیر هنری شما آشنا شوند.' : 'پروفایل شما هنوز عمومی نیست. اطلاعات را تکمیل و وضعیت نمایش آن را بررسی کنید.') : 'با معرفی خود و افزودن اطلاعات حرفه‌ای، حضور عمومی‌تان در راد آرت را شکل دهید.'}</p>
                         <div className="mt-5 flex flex-wrap gap-3">
                             <Link to="/dashboard/artist/profile" className="inline-flex min-h-11 items-center bg-ink px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-terracotta">{profileReady ? 'ویرایش پروفایل' : 'تکمیل پروفایل'}</Link>
-                            {profile?.slug && <Link to={'/artists/' + profile.slug} className="inline-flex min-h-11 items-center border border-border px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-terracotta">پیش‌نمایش عمومی</Link>}
+                            {profile?.slug && <Link to={'/artists/' + profile.slug} className="inline-flex min-h-11 items-center border border-border px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-terracotta">{profile.is_public ? 'پیش‌نمایش عمومی' : 'پیش‌نمایش خصوصی'}</Link>}
                         </div>
                     </div>
                     <div className="border-t border-border pt-5 lg:border-r lg:border-t-0 lg:pr-6 lg:pt-0">
