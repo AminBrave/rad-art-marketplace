@@ -19,7 +19,7 @@ function run(command, args = [], options = {}) {
         const child = spawn(command, args, {
             cwd: root,
             stdio: 'inherit',
-            shell: isWindows,
+            shell: isWindows && /\.(cmd|bat)$/i.test(command),
             env: process.env,
             ...options,
         });
@@ -73,7 +73,7 @@ async function startServices(services) {
         const child = spawn(service.command, service.args, {
             cwd: root,
             stdio: 'inherit',
-            shell: isWindows,
+            shell: isWindows && /\.(cmd|bat)$/i.test(service.command),
             env: service.env ?? process.env,
         });
         children.push(child);
@@ -288,7 +288,7 @@ function testEnvironment() {
 
 async function runBackendTests(suite = 'backend') {
     ensureReportDirectory();
-    const reportPath = resolve(root, 'build', 'test-reports', `${suite}-junit.xml`);
+    const reportPath = `build/test-reports/${suite}-junit.xml`; // Keep PHPUnit's CLI path relative on Windows.
     rmSync(reportPath, { force: true });
     const args = ['vendor/bin/phpunit', '--do-not-cache-result', `--log-junit=${reportPath}`];
     if (suite !== 'backend') {
