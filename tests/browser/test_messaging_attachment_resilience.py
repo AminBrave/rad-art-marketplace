@@ -183,7 +183,7 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
             composer.fill("لطفاً این فایل را بررسی کنید.")
             page.get_by_label("انتخاب تصویر یا فایل PDF").set_input_files({
                 "name": "reference.pdf",
-                "mime_type": "application/pdf",
+                "mimeType": "application/pdf",
                 "buffer": b"%PDF-1.4\\n%%EOF",
             })
             page.get_by_text("reference.pdf", exact=True).wait_for()
