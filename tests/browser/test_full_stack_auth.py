@@ -35,8 +35,22 @@ class FullStackAuthenticationTests(unittest.TestCase):
             page.locator('input[name="email"]').fill(email)
             page.locator('input[name="password"]').fill("strong-password-123")
             page.locator('input[name="password_confirmation"]').fill("strong-password-123")
-            page.get_by_role("button", name="ایجاد حساب").click()
-            page.wait_for_url("**/dashboard/buyer")
+            with page.expect_response(
+                lambda response: response.url.endswith("/api/v1/auth/register")
+                and response.request.method == "POST",
+                timeout=20_000,
+            ) as registration_response:
+                page.get_by_role("button", name="ایجاد حساب").click()
+            self.assertEqual(
+                201,
+                registration_response.value.status,
+                f"Registration failed with HTTP {registration_response.value.status}.",
+            )
+            page.wait_for_function(
+                "() => window.location.pathname === '/dashboard/buyer' "
+                "|| window.location.pathname.startsWith('/dashboard/buyer/')",
+                timeout=20_000,
+            )
             page.get_by_role("heading", name="هنر مورد علاقه‌تان را کشف کنید و گفت‌وگو را ادامه دهید.").wait_for()
 
             response = page.reload()
