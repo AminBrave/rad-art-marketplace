@@ -89,21 +89,14 @@ return new class extends Migration
 
     private function hasIndex(string $table, string $index): bool
     {
-        return DB::table('information_schema.statistics')
-            ->whereRaw('table_schema = DATABASE()')
-            ->where('table_name', $table)
-            ->where('index_name', $index)
-            ->exists();
+        return collect(Schema::getIndexes($table))
+            ->contains(fn (array $definition): bool => ($definition['name'] ?? null) === $index);
     }
 
     private function hasForeignKey(string $table, string $constraint): bool
     {
-        return DB::table('information_schema.table_constraints')
-            ->whereRaw('constraint_schema = DATABASE()')
-            ->where('table_name', $table)
-            ->where('constraint_name', $constraint)
-            ->where('constraint_type', 'FOREIGN KEY')
-            ->exists();
+        return collect(Schema::getForeignKeys($table))
+            ->contains(fn (array $definition): bool => ($definition['name'] ?? null) === $constraint);
     }
 
     public function down(): void
