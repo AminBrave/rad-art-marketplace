@@ -94,7 +94,7 @@ class RealUserBrowserFlowTests(unittest.TestCase):
         self.page.get_by_text("مدیریت آثار", exact=True).wait_for(timeout=20_000)
         self.assert_no_uncaught_page_errors()
 
-        self.page.goto(BASE_URL + "/api/v1/auth/logout", wait_until="domcontentloaded")
+        self.context.clear_cookies()
         self.login("admin@rademan.test", "/admin")
         self.page.goto(BASE_URL + "/admin/artworks", wait_until="domcontentloaded")
         self.page.locator("main").first.wait_for(timeout=20_000)
