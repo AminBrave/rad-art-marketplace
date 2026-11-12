@@ -29,7 +29,6 @@ class RealUserBrowserFlowTests(unittest.TestCase):
             locale="fa-IR",
             viewport={"width": 1440, "height": 1000},
             ignore_https_errors=IGNORE_HTTPS_ERRORS,
-            extra_http_headers={"X-Forwarded-For": f"198.51.100.{1 + (uuid.uuid4().int % 253)}"},
         )
         self.page: Page = self.context.new_page()
         self.page_errors: list[str] = []
@@ -121,8 +120,17 @@ class RealUserBrowserFlowTests(unittest.TestCase):
         self.page.get_by_text("پاسخ درباره این اثر").wait_for(timeout=20_000)
         message = f"پیام آزمایشی مرورگر برای بررسی ارتباط مستقیم درباره اثر {uuid.uuid4().hex[:8]}"
         composer.fill(message)
-        composer.press("Enter")
-        self.page.get_by_role("log", name="پیام‌های گفتگو").get_by_text(message, exact=True).wait_for(timeout=20_000)
+        with self.page.expect_response(
+            lambda response: response.url.endswith("/messages")
+            and "/api/v1/conversations/" in response.url
+            and response.request.method == "POST",
+            timeout=20_000,
+        ) as sent_message:
+            composer.press("Enter")
+        self.assertEqual(201, sent_message.value.status)
+        self.assertEqual("demo-01-01", sent_message.value.json()["data"]["artwork"]["slug"])
+        message_log = self.page.get_by_role("log", name="پیام‌های گفتگو")
+        message_log.get_by_text(message, exact=True).wait_for(timeout=20_000)
         self.assert_no_uncaught_page_errors()
 
         self.context.clear_cookies()
@@ -130,7 +138,9 @@ class RealUserBrowserFlowTests(unittest.TestCase):
         self.page.goto(BASE_URL + "/dashboard/artist/messages", wait_until="domcontentloaded")
         self.page.get_by_text("مینا خریدار", exact=True).click()
         self.page.get_by_role("log", name="پیام‌های گفتگو").get_by_text(message, exact=True).wait_for(timeout=20_000)
-        self.page.get_by_role("log", name="پیام‌های گفتگو").get_by_role("link", name="روایت رنگ‌ها 1", exact=True).first.wait_for(timeout=20_000)
+        self.page.get_by_role("log", name="پیام‌های گفتگو").locator(
+            'a[href="/artworks/demo-01-01"]'
+        ).wait_for(timeout=20_000)
         self.assert_no_uncaught_page_errors()
 
     def test_artist_and_admin_can_open_their_role_workspaces(self) -> None:
