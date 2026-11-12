@@ -159,7 +159,7 @@ async function runBackendTests(suite = 'backend') {
     ensureReportDirectory();
     const reportPath = resolve(root, 'build', 'test-reports', `${suite}-junit.xml`);
     rmSync(reportPath, { force: true });
-    const args = ['artisan', 'test', '--do-not-cache-result', `--log-junit=${reportPath}`];
+    const args = ['vendor/bin/phpunit', '--do-not-cache-result', `--log-junit=${reportPath}`];
     if (suite !== 'backend') {
         const suiteName = suite[0].toUpperCase() + suite.slice(1);
         args.push(`--testsuite=${suiteName}`);
@@ -266,7 +266,7 @@ Quality (all commands below execute checks; invoke only when authorized)
   feature               Run the Feature PHPUnit suite in isolated SQLite memory
   integration           Run the Integration PHPUnit suite in isolated SQLite memory
   backend               Backend tests + PHP style
-  frontend              Frontend tests + color accessibility + lint + both builds
+  frontend              Frontend tests (including color accessibility) + lint + both builds
   verify                Run backend and frontend quality checks
   verify:all            Run verify plus Playwright against a disposable local database
   frontend:test         Run frontend tests and write a JUnit report
