@@ -65,7 +65,7 @@ This is a target coverage contract, not a claim that every cell has a dedicated 
 ### P1 — Product UX, accessibility and RTL
 
 - Artist-directory browser coverage verifies API failure with explicit retry into an empty result, a stable empty state and Enter-key search with URL query persistence. Authenticated browser coverage now verifies a 401-triggered session expiry redirects to login and successful reauthentication returns to the requested buyer workspace.
-- Registration browser coverage verifies rapid duplicate activation sends only one registration request. Extend duplicate-submit protection coverage to artwork publishing, profile saves and messaging.
+- Registration browser coverage verifies rapid duplicate activation sends only one registration request; the form now guards the submit handler synchronously with an in-flight ref, closing the gap before React can render the disabled state. Extend duplicate-submit protection coverage to artwork publishing, profile saves and messaging.
 - Exercise loading, validation, disabled/submitting states and expired-session recovery on additional critical React pages.
 - Keyboard-only navigation, visible focus, dialog focus trap/restore, escape behavior and live-region announcements.
 - RTL at 320, 375, 768, 1024 and desktop widths; mixed Persian/Latin names, email, URLs, numbers and long text.
