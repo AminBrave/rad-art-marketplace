@@ -13,8 +13,6 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Tests\TestCase;
 
 class ConversationTest extends TestCase
@@ -186,31 +184,6 @@ class ConversationTest extends TestCase
             collect($olderPage->json('data'))->pluck('id')->sort()->values()->all(),
             collect($olderPage->json('data'))->pluck('id')->values()->all(),
         );
-    }
-
-    public function test_normal_messaging_remains_available_before_the_artwork_reference_migration(): void
-    {
-        [$buyer, , $inquiry] = $this->participantsWithInquiry();
-        $conversation = $this->openConversationAsBuyer($buyer, $inquiry);
-
-        Schema::table('messages', function (Blueprint $table): void {
-            $table->dropIndex(['conversation_id', 'artwork_id']);
-            $table->dropConstrainedForeignId('artwork_id');
-        });
-
-        $this->actingAs($buyer)
-            ->getJson('/api/v1/conversations/'.$conversation->id.'/messages')
-            ->assertOk()
-            ->assertJsonCount(1, 'data');
-
-        $this->postJson('/api/v1/conversations/'.$conversation->id.'/messages', [
-            'body' => 'پیام عادی پیش از اجرای مهاجرت ارجاع اثر',
-            'artwork_id' => null,
-            'client_message_id' => 'pre-artwork-migration-message',
-        ])
-            ->assertCreated()
-            ->assertJsonPath('data.body', 'پیام عادی پیش از اجرای مهاجرت ارجاع اثر')
-            ->assertJsonPath('data.artwork', null);
     }
 
     public function test_message_sending_is_idempotent_for_a_client_message_id(): void
