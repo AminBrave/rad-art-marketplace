@@ -2,19 +2,30 @@
 
 from __future__ import annotations
 
+import json
 import os
+import ssl
 import sys
 import time
 import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlparse
+from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener
+
+
+class RejectRedirects(HTTPRedirectHandler):
+    def redirect_request(self, request, file_pointer, code, message, headers, new_url):
+        return None
 
 
 def validate_local_target() -> None:
-    from urllib.parse import urlparse
-    from urllib.request import urlopen
-    from urllib.error import URLError, HTTPError
-    import ssl
+    if os.environ.get("RAD_ART_TEST_MODE") != "1":
+        raise RuntimeError(
+            "Browser tests must be started through the guarded project runner "
+            "(npm run test:browser or npm run verify:all)."
+        )
 
     raw_url = os.environ.get("RAD_ART_BASE_URL", "https://rad.localhost").rstrip("/")
     parsed = urlparse(raw_url)
@@ -22,23 +33,38 @@ def validate_local_target() -> None:
     is_loopback_name = (
         hostname == "localhost"
         or hostname.endswith(".localhost")
-        or hostname == "127.0.0.1"
-        or hostname == "::1"
+        or hostname in {"127.0.0.1", "::1"}
     )
 
-    if parsed.scheme not in {"http", "https"} or not is_loopback_name:
+    if (
+        parsed.scheme not in {"http", "https"}
+        or not is_loopback_name
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.query
+        or parsed.fragment
+        or parsed.path not in {"", "/"}
+    ):
         raise RuntimeError(
-            "Browser tests are restricted to localhost/loopback URLs. "
-            "Set RAD_ART_BASE_URL to your local RAD development URL; production and remote hosts are refused."
+            "Browser tests are restricted to a root localhost/loopback URL without credentials, "
+            "query strings or fragments. Production and remote hosts are refused."
         )
 
     health_url = f"{raw_url}/api/v1/health"
+    ssl_context = (
+        ssl._create_unverified_context()
+        if parsed.scheme == "https"
+        and os.environ.get("RAD_ART_IGNORE_HTTPS_ERRORS", "true").lower() in {"1", "true", "yes", "on"}
+        else ssl.create_default_context()
+    )
+    opener = build_opener(ProxyHandler({}), RejectRedirects(),)
+    request = Request(health_url, headers={"Accept": "application/json"})
     try:
-        ssl_context = ssl._create_unverified_context() if parsed.scheme == "https" and os.environ.get("RAD_ART_IGNORE_HTTPS_ERRORS", "true").lower() in {"1", "true", "yes", "on"} else None
-        with urlopen(health_url, timeout=8, context=ssl_context) as response:
-            if response.status != 200:
-                raise RuntimeError(f"Local app health check returned HTTP {response.status}: {health_url}")
-    except (URLError, HTTPError, TimeoutError) as error:
+        with opener.open(request, timeout=8, context=ssl_context) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+            if response.status != 200 or payload.get("status") != "ok":
+                raise RuntimeError(f"Local app health check returned an unexpected response: {health_url}")
+    except (URLError, HTTPError, TimeoutError, json.JSONDecodeError) as error:
         raise RuntimeError(
             f"Local RAD app is not ready at {health_url}. Start it with npm run dev:local first. "
             f"Underlying error: {error}"
@@ -108,7 +134,7 @@ def main() -> int:
     try:
         validate_local_target()
     except RuntimeError as error:
-        print(f\"Browser test preflight failed: {error}\", file=sys.stderr)
+        print(f"Browser test preflight failed: {error}", file=sys.stderr)
         return 2
 
     try:
