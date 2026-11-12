@@ -1,139 +1,194 @@
-# NPM Scripts Reference
+# NPM and project scripts reference
 
-This file documents every command exposed by the root `package.json` `scripts` object.
-Run commands from the repository root with `npm run <script>`.
+This document covers every root `package.json` script, every task handled by
+`scripts/project.mjs`, and the Composer scripts in `composer.json`.
 
-The `package.json` entries are ordered by workflow: setup, development, database,
-quality, build and production. Keep new scripts in the relevant group and keep this
-reference and the `scripts/project.mjs` help output in sync.
+Run commands from the repository root. Prefer the npm aliases: they provide a
+consistent cross-platform entry point.
+
+## Ordering convention
+
+The `scripts` object in `package.json` is intentionally grouped in this order:
+
+1. Setup
+2. Development servers
+3. Database operations
+4. Focused tests and browser-test lifecycle
+5. Combined verification
+6. Lint and style repair
+7. Accessibility-focused test
+8. Asset builds
+9. Production cache maintenance
+
+Keep new entries in their matching group and keep this guide synchronized. Related
+aliases are adjacent to their underlying workflows. JSON does not support comments,
+so this guide provides the section labels.
 
 ## Quick start
 
 | Goal | Command |
 |---|---|
-| Install/configure project dependencies | `npm run setup` |
+| Install dependencies and create local environment file | `npm run setup` |
 | Start local HTTP development | `npm run dev` |
 | Start local HTTPS development | `npm run dev:https` |
-| Apply database migrations | `npm run db:migrate` |
-| Run backend and frontend tests | `npm run test` |
-| Run the full non-browser quality workflow | `npm run verify` |
+| Apply local database migrations | `npm run db:migrate` |
+| Run backend and frontend tests | `npm test` |
+| Run backend + frontend quality workflow | `npm run verify` |
 | Build production assets | `npm run build` |
 
 ## Setup
 
-| Script | What it does |
-|---|---|
-| `setup` | Creates `.env` from `.env.example` if needed, installs Composer and npm dependencies, and generates an application key only when missing. Review `.env` before using the application. |
+| npm script | Implementation | Description |
+|---|---|---|
+| `setup` | `project.mjs setup` | Creates `.env` from `.env.example` if missing, installs Composer and npm dependencies, and generates an application key only when missing. Review `.env` before using the app. |
 
 ## Development
 
-| Script | What it does |
-|---|---|
-| `dev` | Starts Laravel and Vite over local HTTP. |
-| `dev:https` | Starts Laravel, Vite HTTPS mode and Caddy for `https://rad.localhost`. Caddy must be installed and its local certificate trusted. |
-| `dev:local` | Alias for `dev:https`. |
-| `preview` | Starts Laravel's PHP development server at `http://127.0.0.1:8000`; it does not start Vite. |
-
-## Database
-
-Review the active `.env` database settings before running database commands.
-
-| Script | What it does | Caution |
+| npm script | Implementation | Description |
 |---|---|---|
-| `db:sqlite:init` | Creates `database/database.sqlite` only if it does not already exist. | Existing database is left unchanged. |
-| `db:status` | Runs Laravel's `migrate:status` command directly. | Reads the configured database. |
-| `db:migrate` | Applies pending migrations through the project runner. | Changes the configured database schema. |
-| `db:seed` | Runs `DatabaseSeeder`. | Inserts seed data into the configured database. |
-| `db:seed:demo` | Runs `DemoDatabaseSeeder`. | Inserts demo data into the configured database. |
-| `db:fresh` | Runs `migrate:fresh --seed`. | **Destructive:** drops all tables in the configured database before rebuilding and seeding it. |
+| `dev` | `project.mjs dev` | Starts Laravel and Vite over local HTTP. |
+| `dev:https` | `project.mjs dev:https` | Starts Laravel, Vite HTTPS mode and Caddy at `https://rad.localhost`. Requires Caddy and trusted local certificates. |
+| `dev:local` | Alias of `dev:https` | Compatibility alias for the HTTPS local stack. |
+| `dev:browser` | `project.mjs dev:browser` | Starts Laravel, Vite and Caddy using the isolated browser-test database and storage. Requires `browser:prepare`. |
+| `preview` | Direct Artisan server command | Starts Laravel's PHP server at `127.0.0.1:8000`; does not start Vite. |
 
-## Quality: tests
+## Database operations
 
-These commands execute tests. Run them only when execution has been explicitly authorized.
-Backend PHPUnit commands use the isolated in-memory SQLite test environment. Browser tests
-use a separate persistent SQLite database and isolated storage.
+Review the active `.env` database configuration before using these commands.
 
-| Script | What it does |
-|---|---|
-| `test` | Runs backend PHPUnit tests followed by frontend Node tests. |
-| `test:backend` | Runs the complete backend PHPUnit suite with isolated in-memory SQLite. |
-| `test:unit` | Runs only the PHPUnit Unit suite. |
-| `test:feature` | Runs only the PHPUnit Feature suite. |
-| `test:integration` | Runs only the PHPUnit Integration suite. |
-| `test:frontend` | Runs the frontend Node test files and writes `build/test-reports/frontend-junit.xml`. |
-| `test:browser` | Runs the guarded Playwright suite against `RAD_ART_BASE_URL` (defaults are defined in browser test configuration). |
-| `browser:prepare` | Rebuilds and seeds only `database/browser-testing.sqlite` and the isolated browser-test runtime. | **Destructive to browser-test data only.** Stop `dev:browser` first. Never point this environment at a normal, staging or production database. |
-| `dev:browser` | Starts Laravel, Vite and Caddy against the prepared isolated browser-test environment at `https://rad.localhost`. | Requires a successful `browser:prepare`; keeps the browser-test database and uploaded fixtures separate from normal development data. |
+| npm script | Implementation | Description / caution |
+|---|---|---|
+| `db:sqlite:init` | `project.mjs db:sqlite:init` | Creates `database/database.sqlite` only if absent; leaves an existing file unchanged. |
+| `db:status` | Direct Artisan command | Displays migration status. |
+| `db:migrate` | `project.mjs db:migrate` | Applies pending migrations to the configured database. |
+| `db:seed` | `project.mjs db:seed` | Runs `DatabaseSeeder`; writes seed data. |
+| `db:seed:demo` | `project.mjs db:seed:demo` | Runs `DemoDatabaseSeeder`; writes demo data. |
+| `db:fresh` | `project.mjs db:fresh` | **Destructive:** drops every table, then migrates and seeds the configured database. |
+| `browser:prepare` | `project.mjs browser:prepare` | **Destructive only to isolated browser-test data:** rebuilds `database/browser-testing.sqlite`, resets isolated browser storage/runtime, then migrates and seeds. Stop `dev:browser` first. |
 
-### Browser-test sequence
+Never use the browser-test environment with a personal, staging or production database.
+
+## Focused test commands
+
+All commands in this section execute tests. Execute them only when explicitly
+authorized. Backend tests use isolated in-memory SQLite. Browser tests use a
+separate persistent SQLite database and isolated storage.
+
+| npm script | Dispatcher task | Description |
+|---|---|---|
+| `test` | `test` | Runs backend PHPUnit tests followed by frontend Node tests. |
+| `test:backend` | `backend:test` | Runs all PHPUnit suites with isolated in-memory SQLite. |
+| `test:unit` | `unit` | Runs the PHPUnit Unit suite. |
+| `test:feature` | `feature` | Runs the PHPUnit Feature suite. |
+| `test:integration` | `integration` | Runs the PHPUnit Integration suite. |
+| `test:frontend` | `frontend:test` | Runs `tests/js/*.test.js` with Node's test runner. |
+| `test:browser` | `browser` | Runs guarded Playwright tests against `RAD_ART_BASE_URL`. Requires the prepared and running isolated browser app. |
+
+### Browser-test lifecycle
 
 1. Stop any running `dev:browser` process.
-2. Run `npm run browser:prepare` to rebuild the isolated browser-test database and fixtures.
+2. Run `npm run browser:prepare` to recreate the dedicated database and isolated runtime.
 3. Run `npm run dev:browser` in a dedicated terminal and leave it running.
-4. In another terminal, run `npm run test:browser` when browser execution is authorized.
+4. In a second terminal, run `npm run test:browser` when browser-test execution is authorized.
+5. Stop the browser development stack with Ctrl+C.
 
-Do not use `db:fresh` as a substitute for `browser:prepare`.
+The browser runner restricts targets to local hosts and checks the health endpoint's
+browser-test readiness flag. Do not use `db:fresh` as a substitute for
+`browser:prepare`.
 
-## Quality: accessibility, lint and repair
+## Combined quality workflows
 
-| Script | What it does |
-|---|---|
-| `a11y:colors` | Runs the focused color-accessibility Node test file. |
-| `lint` | Runs ESLint against `resources/js` with warnings treated as errors. |
-| `lint:fix` | Runs ESLint autofixes against `resources/js`. Review the resulting diff. |
-| `fix:style` | Runs PHP Pint fixes and ESLint autofixes through the project runner. Intended for deterministic style repairs only; review the resulting diff. |
+These commands run tests, lint and/or production builds; they are not passive status
+checks. Use the narrowest suitable workflow.
 
-## Quality: combined verification
-
-These are broader workflows. They execute tests and/or lint/build commands; they are not
-documentation-only or dry-run commands.
-
-| Script | What it does |
-|---|---|
-| `verify:backend` | Backend PHPUnit suite followed by PHP Pint style checks. |
-| `verify:frontend` | Frontend Node tests, ESLint and both production builds. |
-| `verify` | Runs backend and frontend quality workflows. Does not run Playwright. |
-| `verify:all` | Runs `verify` and then the guarded Playwright suite against the prepared browser-test app. |
-
-### Compatibility aliases
-
-The `test:quality*` scripts are retained for compatibility with existing local workflows.
-Prefer the shorter `verify*` names for new documentation and automation.
-
-| Script | Equivalent workflow |
-|---|---|
-| `test:quality` | `verify` |
-| `test:quality:backend` | `verify:backend` |
-| `test:quality:frontend` | `verify:frontend` |
-| `test:quality:browser` | `test:browser` |
-| `test:quality:all` | `verify:all` |
-
-## Build
-
-| Script | What it does |
-|---|---|
-| `build` | Creates the standard Vite production build. |
-| `build:cpanel` | Creates the cPanel-targeted Vite production build using `vite.config.cpanel.js`. |
-
-## Production maintenance
-
-| Script | What it does | Caution |
+| npm script | Dispatcher task | Workflow |
 |---|---|---|
-| `prod:optimize` | Runs Laravel's `optimize` command to cache configuration, routes, events and views. | Changes generated Laravel cache files. |
-| `prod:clear` | Runs Laravel's `optimize:clear` command. | Clears Laravel optimization caches; do not run against a live environment without an operational plan. |
+| `verify:backend` | `backend` | Backend PHPUnit tests, then PHP Pint check. |
+| `verify:frontend` | `frontend` | Frontend tests, ESLint and both production builds. |
+| `verify` | `verify` | Backend workflow followed by frontend workflow. Does not run Playwright. |
+| `verify:all` | `verify:all` | `verify` plus Playwright; requires the prepared/running browser environment. |
+| `test:quality` | Alias of `verify` | Compatibility alias. |
+| `test:quality:backend` | Alias of `verify:backend` | Compatibility alias. |
+| `test:quality:frontend` | Alias of `verify:frontend` | Compatibility alias. |
+| `test:quality:browser` | Alias of `test:browser` | Compatibility alias. |
+| `test:quality:all` | Alias of `verify:all` | Compatibility alias. |
 
-## Script ownership and conventions
+## Lint, repair and accessibility test
 
-- Prefer adding new task implementations to `scripts/project.mjs` when they need shared
-  environment setup, cross-platform process handling or a multi-step workflow.
-- Keep simple one-command tools as direct npm scripts when no shared setup is needed
-  (for example, `lint`, `build` and `db:status`).
-- Use consistent prefixes: `dev:` for development environments, `db:` for database
-  operations, `test:` for focused test execution, `verify:` for combined quality
-  workflows, `build` for asset builds and `prod:` for production maintenance.
-- Keep related entries adjacent in `package.json` so the manifest remains easy to scan
-  in editors and script explorers.
-- When changing a script, update this reference and the `scripts/project.mjs` usage
-  output when applicable.
-- Do not add scripts that run tests, builds, migrations, seeders, cache clearing or
-  other side-effecting checks to automatic editor tasks without explicit approval.
+| npm script | Implementation | Description |
+|---|---|---|
+| `lint` | Direct ESLint command | Checks `resources/js`; warnings are errors. |
+| `lint:fix` | Direct ESLint command | Applies ESLint autofixes; review modified source. |
+| `fix:style` | `project.mjs fix:style` | Runs Pint fixer then ESLint autofix. Intended for deterministic style changes only; review the diff. |
+| `a11y:colors` | Direct Node test command | Runs the focused color-accessibility test file. Executes a test. |
+
+## Builds
+
+| npm script | Implementation | Description |
+|---|---|---|
+| `build` | Direct Vite command | Creates the standard production asset build. |
+| `build:cpanel` | Direct Vite command | Creates the cPanel-targeted build using `vite.config.cpanel.js`. |
+
+## Production cache maintenance
+
+| npm script | Dispatcher task | Description / caution |
+|---|---|---|
+| `prod:optimize` | `project.mjs prod:optimize` | Runs Laravel `optimize` to cache config, routes, events and views. |
+| `prod:clear` | `project.mjs prod:clear` | Runs Laravel `optimize:clear`; clears optimization caches and can affect a live deployment. |
+
+Use production cache commands only in the intended environment and deployment
+procedure.
+
+## Project dispatcher task reference
+
+Most multi-step or environment-sensitive npm scripts delegate to
+`node scripts/project.mjs <task>`.
+
+| Dispatcher task | Called by |
+|---|---|
+| `setup` | `npm run setup` |
+| `dev`, `dev:https`, `dev:local` | Development scripts |
+| `db:sqlite:init`, `db:migrate`, `db:seed`, `db:seed:demo`, `db:fresh` | Database scripts |
+| `test`, `backend:test`, `unit`, `feature`, `integration`, `frontend:test`, `browser` | Test scripts |
+| `browser:prepare`, `dev:browser` | Browser lifecycle scripts |
+| `backend`, `frontend`, `verify`, `verify:all` | Combined quality scripts |
+| `fix:style` | Style repair script |
+| `build`, `build:cpanel` | Build scripts |
+| `prod:optimize`, `prod:clear` | Production cache scripts |
+| `--help` / `-h` | Prints dispatcher help |
+
+Run `node scripts/project.mjs --help` for the concise task summary.
+
+## Composer scripts
+
+These are defined in `composer.json`, separately from npm:
+
+| Composer command | Description |
+|---|---|
+| `composer test` | Runs PHPUnit using the isolated `tests/bootstrap.php` bootstrap. |
+| `composer lint` | Runs Laravel Pint in check-only mode. |
+| `composer lint:fix` | Applies Laravel Pint formatting fixes. |
+
+## JUnit reports
+
+| Report file | Producer |
+|---|---|
+| `build/test-reports/backend-junit.xml` | Backend test command / backend verification |
+| `build/test-reports/unit-junit.xml` | Unit suite |
+| `build/test-reports/feature-junit.xml` | Feature suite |
+| `build/test-reports/integration-junit.xml` | Integration suite |
+| `build/test-reports/frontend-junit.xml` | Frontend tests / frontend verification |
+| `build/test-reports/browser-junit.xml` | Browser runner |
+
+Reports are generated artifacts. Do not commit them unless they are explicitly required
+as project deliverables.
+
+## Maintenance conventions
+
+- Put new npm scripts in the matching group in `package.json`.
+- Use `dev:`, `db:`, `test:`, `verify:`, `build` and `prod:` consistently.
+- Keep direct one-command tools direct when no shared environment handling is needed.
+- Put multi-step or environment-sensitive orchestration in `scripts/project.mjs`.
+- Update this guide and the dispatcher's help text when adding or changing tasks.
+- Do not silently add tests, builds, migrations, seeders or cache mutation to automatic
+  editor tasks.
