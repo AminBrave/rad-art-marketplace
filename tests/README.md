@@ -25,7 +25,9 @@ tests/
 ├── browser/                       # Playwright end-to-end journeys
 │   ├── accessibility/             # Browser accessibility checks and helpers
 │   ├── test_artist_directory_resilience.py # Empty/error/retry and keyboard search journeys
-│   └── test_auth_session_resilience.py     # Session expiry and duplicate registration
+│   ├── test_auth_session_resilience.py     # Session expiry and duplicate registration
+│   ├── test_full_stack_artist_artwork.py   # Artwork publishing and duplicate profile/artwork submissions
+│   └── test_full_stack_buyer_artist_messaging.py # Cross-role messaging and duplicate message sends
 ├── bootstrap.php                  # Isolated PHPUnit runtime
 └── README.md                      # This guide
 ```
