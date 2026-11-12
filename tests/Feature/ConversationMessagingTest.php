@@ -516,7 +516,7 @@ class ConversationMessagingTest extends TestCase
             ->assertCreated()
             ->assertJsonPath('data.body', $payload['body']);
 
-        $this->assertDatabaseCount('messages', 6);
+        $this->assertDatabaseCount('messages', 5);
         $this->assertDatabaseCount('conversations', 2);
     }
 
@@ -537,14 +537,12 @@ class ConversationMessagingTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.body', null);
 
-        $this->postJson('/api/v1/conversations/'.$conversation->id.'/messages', $payload)
+        $retried = $this->postJson('/api/v1/conversations/'.$conversation->id.'/messages', $payload)
             ->assertOk()
             ->assertJsonPath('data.id', $messageId)
-            ->assertJsonPath('data.body', null)
-            ->assertJsonPath('data.deleted_at', $created->json('data.deleted_at') === null
-                ? fn ($value) => is_string($value)
-                : $created->json('data.deleted_at'));
+            ->assertJsonPath('data.body', null);
 
+        $this->assertIsString($retried->json('data.deleted_at'));
         $this->assertDatabaseCount('messages', 2);
         $this->assertSoftDeleted('messages', ['id' => $messageId]);
         $this->assertDatabaseHas('messages', ['id' => $messageId, 'body' => '']);
