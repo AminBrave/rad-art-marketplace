@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import unittest
+import uuid
 
 from playwright.sync_api import Browser, Page, sync_playwright
 
@@ -118,7 +119,7 @@ class RealUserBrowserFlowTests(unittest.TestCase):
         composer = self.page.get_by_label("متن پیام")
         composer.wait_for(timeout=20_000)
         self.page.get_by_text("پاسخ درباره این اثر").wait_for(timeout=20_000)
-        message = "پیام آزمایشی مرورگر برای بررسی ارتباط مستقیم درباره اثر"
+        message = f"پیام آزمایشی مرورگر برای بررسی ارتباط مستقیم درباره اثر {uuid.uuid4().hex[:8]}"
         composer.fill(message)
         composer.press("Enter")
         self.page.get_by_role("log", name="پیام‌های گفتگو").get_by_text(message, exact=True).wait_for(timeout=20_000)
