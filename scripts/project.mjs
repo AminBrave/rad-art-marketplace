@@ -272,7 +272,18 @@ try {
                 ['Frontend tests', npm, ['run', 'test:frontend']],
             ]);
             break;
+        case 'backend:test':
+            await clearTestCaches();
+            await run(php, ['artisan', 'test']);
+            break;
+        case 'unit':
+        case 'feature':
+        case 'integration':
+            await clearTestCaches();
+            await run(php, ['artisan', 'test', `--testsuite=${task[0].toUpperCase()}${task.slice(1)}`]);
+            break;
         case 'backend':
+            await clearTestCaches();
             await verifyBackend();
             break;
         case 'frontend':
