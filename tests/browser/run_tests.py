@@ -71,7 +71,7 @@ def validate_local_target() -> None:
                 )
     except (URLError, HTTPError, TimeoutError, json.JSONDecodeError) as error:
         raise RuntimeError(
-            f"Local RAD app is not ready at {health_url}. Start it with npm run dev:local first. "
+            f"Local RAD app is not ready at {health_url}. Run npm run browser:prepare, then npm run dev:browser. "
             f"Underlying error: {error}"
         ) from error
 
