@@ -70,6 +70,16 @@ def write_junit_report(result: TimedTextTestResult, destination: Path) -> None:
 
 
 def main() -> int:
+    try:
+        import playwright.sync_api  # noqa: F401
+    except ImportError:
+        print(
+            "Playwright is required for local browser tests. Install requirements-test.txt "
+            "and run 'python -m playwright install chromium'.",
+            file=sys.stderr,
+        )
+        return 2
+
     browser_dir = Path(__file__).resolve().parent
     sys.path.insert(0, str(browser_dir))
     suite = unittest.defaultTestLoader.discover(
