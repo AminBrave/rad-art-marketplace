@@ -194,9 +194,7 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
                 "return node && node.scrollHeight > node.clientHeight + 100; }"
             )
             # Move away from the top and back so the scroll listener observes
-            # a genuine position transition before requesting older history.
-            log.evaluate("(node) => { node.scrollTop = 120; node.dispatchEvent(new Event('scroll')); node.scrollTop = 0; node.dispatchEvent(new Event('scroll')); }")
-
+            # a position transition before requesting older history.
             older_alert = page.get_by_role("alert").filter(has_text="دریافت پیام‌های قدیمی‌تر انجام نشد")
             try:
                 with page.expect_response(
@@ -205,10 +203,7 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
                     and response.request.method == "GET"
                     and response.status == 503
                 ):
-                    page.wait_for_function(
-                        "() => { const node = document.querySelector('[role=log][aria-label=\"پیام‌های گفتگو\"]');"
-                        "return node && node.scrollTop < 72; }"
-                    )
+                    log.evaluate("(node) => { node.scrollTop = 120; node.dispatchEvent(new Event('scroll')); node.scrollTop = 0; node.dispatchEvent(new Event('scroll')); }")
                 older_alert.wait_for()
             except Exception as failure:
                 metrics = log.evaluate("(node) => ({scrollTop: node.scrollTop, scrollHeight: node.scrollHeight, clientHeight: node.clientHeight})")
