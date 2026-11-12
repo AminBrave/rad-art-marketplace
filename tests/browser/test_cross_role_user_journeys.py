@@ -24,7 +24,12 @@ class RealUserBrowserFlowTests(unittest.TestCase):
         cls.playwright.stop()
 
     def setUp(self) -> None:
-        self.context = self.browser.new_context(locale="fa-IR", viewport={"width": 1440, "height": 1000}, ignore_https_errors=IGNORE_HTTPS_ERRORS)
+        self.context = self.browser.new_context(
+            locale="fa-IR",
+            viewport={"width": 1440, "height": 1000},
+            ignore_https_errors=IGNORE_HTTPS_ERRORS,
+            extra_http_headers={"X-Forwarded-For": "198.51.100.42"},
+        )
         self.page: Page = self.context.new_page()
         self.page_errors: list[str] = []
         self.page.on("pageerror", lambda error: self.page_errors.append(str(error)))
@@ -36,7 +41,18 @@ class RealUserBrowserFlowTests(unittest.TestCase):
         self.page.goto(BASE_URL + "/login", wait_until="domcontentloaded")
         self.page.get_by_label("ایمیل").fill(email)
         self.page.get_by_label("گذرواژه").fill(DEMO_PASSWORD)
-        self.page.get_by_role("button", name="ورود به حساب").click()
+        with self.page.expect_response(
+            lambda response: response.url.endswith("/api/v1/auth/login")
+            and response.request.method == "POST"
+        ) as login_response:
+            self.page.get_by_role("button", name="ورود به حساب").click()
+        self.assertEqual(
+            200,
+            login_response.value.status,
+            f"Demo login failed with HTTP {login_response.value.status}. "
+            f"Current page: {self.page.url}. "
+            f"Message: {self.page.locator('[role=\"status\"], [role=\"alert\"]').all_inner_texts()}",
+        )
         self.page.wait_for_function(
             "(path) => window.location.pathname === path || window.location.pathname.startsWith(path + '/')",
             arg=expected_path,
