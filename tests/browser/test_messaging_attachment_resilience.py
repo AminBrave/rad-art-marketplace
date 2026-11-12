@@ -98,6 +98,7 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
                 body=json.dumps({"data": []}),
             ),
         )
+
         def create_message(route):
             payload = route.request.post_data_json
             message_attempts.append(payload.get("client_message_id"))
@@ -211,6 +212,12 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
                 has_text="لطفاً این فایل را بررسی کنید."
             ).wait_for()
             page.get_by_role("link", name="دانلود reference.pdf").wait_for()
+            self.assertEqual(
+                page.get_by_role("article").filter(
+                    has_text="لطفاً این فایل را بررسی کنید."
+                ).count(),
+                1,
+            )
             self.assertEqual(len(message_attempts), 2)
             self.assertTrue(message_attempts[0])
             self.assertEqual(message_attempts[0], message_attempts[1])
