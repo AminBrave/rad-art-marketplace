@@ -1,28 +1,24 @@
 ---
 name: feature-planning
-description: Use when defining a new Rademan feature, clarifying scope, writing acceptance criteria, or planning a cross-layer change.
+description: Define Rademan feature scope, actors, acceptance criteria, cross-layer impact, risks and implementation sequence before coding.
 ---
 
-# Rademan Feature Planning
-
-Inspired by the Feature Forge skill in Jeffallan/claude-skills (MIT).
+# Feature Planning
 
 ## Workflow
-
-1. State the user outcome and the actor who needs it.
-2. Inspect the existing feature registry, domain workflow and relevant source before proposing a new abstraction.
-3. Record current behavior using source evidence; label assumptions and unknowns.
-4. Define scope, explicit non-goals, acceptance criteria and important failure/permission cases.
-5. Trace likely impact across Laravel routes/controllers/policies/models/migrations, API contracts, React routes/components/query state and operational behavior.
-6. Prefer one small vertical slice. Split independent work only when interfaces and file ownership are clear.
-7. Identify documentation and ADR updates required by the change.
+1. Describe the user problem, desired outcome and primary actor(s).
+2. Inspect the existing feature behavior and relevant source before proposing new abstractions.
+3. Define scope, explicit non-goals, assumptions, dependencies and unresolved decisions.
+4. Write observable acceptance criteria for success, empty, loading, validation, permission-denied, failure and edge states as applicable.
+5. Trace impact across Laravel routes, middleware, controllers, policies, models, migrations, resources, queues and storage; React routes, components, API clients and query state; plus tests and operations.
+6. Identify API compatibility, data migration, privacy, security, accessibility, performance and rollback risks.
+7. Prefer the smallest end-to-end vertical slice. Sequence work by dependencies and keep unrelated improvements separate.
+8. Specify test cases and verification commands without executing them unless authorized.
+9. State decisions that require user approval; otherwise proceed with clearly stated conservative assumptions.
 
 ## Rademan constraints
-
-- Rademan is a Persian-first artist discovery and artist-contact marketplace; do not assume checkout, orders, shipping or payouts exist.
-- Preserve established /api/v1 contracts unless a deliberate contract change is approved.
-- Laravel authorization is the security boundary; frontend guards are UX only.
-- Keep UI Persian-first, RTL, responsive and accessible.
-- Do not add a dependency or architecture layer without a concrete need.
-- Tests may be designed and updated, but do not execute tests, lint, builds, browser checks or verification commands unless the user explicitly asks.
-- Ask a question only when a missing decision blocks a safe implementation; otherwise state a conservative assumption and proceed.
+- Rademan is a Persian-first artist discovery and artist-contact marketplace. Do not assume checkout, orders, shipping, payouts or subscriptions exist without source evidence.
+- Preserve established /api/v1 contracts unless a deliberate contract change is part of the approved scope.
+- Laravel authorization is authoritative; frontend guards are UX only.
+- Preserve RTL, responsive behavior, accessible interactions and the shared RAD design system.
+- Do not add dependencies, architecture layers or abstractions without a demonstrated requirement.
