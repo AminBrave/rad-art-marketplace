@@ -96,18 +96,29 @@ class ArtistWorkspaceResilienceTests(unittest.TestCase):
         try:
             page.goto(BASE_URL + "/dashboard/artist", wait_until="domcontentloaded")
             page.get_by_role("heading", name="خوش آمدید، هنرمند آزمون").wait_for()
-            page.get_by_role("alert").get_by_role(
+            page.get_by_role("link", name="ویرایش پروفایل").wait_for()
+
+            # Wait for the query's initial request and its configured single retry
+            # to fail before asserting the user-visible recovery state.
+            for _ in range(2):
+                page.wait_for_response(
+                    lambda response: response.url.startswith(BASE_URL + "/api/v1/artist/artworks")
+                    and response.request.method == "GET"
+                    and response.status == 503
+                )
+
+            page.get_by_role("heading", name="بخشی از اطلاعات بارگذاری نشد").wait_for()
+            retry_button = page.get_by_role("alert").get_by_role(
                 "button", name="تلاش دوباره"
-            ).wait_for()
+            )
+            retry_button.wait_for()
 
             with page.expect_response(
                 lambda response: response.url.endswith("/api/v1/artist/artworks")
                 and response.request.method == "GET"
                 and response.status == 200
             ):
-                page.get_by_role("alert").get_by_role(
-                    "button", name="تلاش دوباره"
-                ).click()
+                retry_button.click()
 
             page.get_by_text("اثر بازیابی‌شده", exact=True).wait_for()
             self.assertEqual(attempts["count"], 3)
