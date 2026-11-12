@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
-final class FeatureRegistryTest extends TestCase
+final class InquiryRemovalRegressionTest extends TestCase
 {
     use RefreshDatabase;
 

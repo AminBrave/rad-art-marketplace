@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
-class ConversationTest extends TestCase
+class ConversationMessagingTest extends TestCase
 {
     use RefreshDatabase;
 
