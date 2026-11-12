@@ -220,6 +220,7 @@ function resetBrowserRuntime() {
 async function prepareBrowserEnvironment() {
     ensureBrowserDatabase();
     resetBrowserRuntime();
+    console.log('[project] Stop npm run dev:browser before preparing the test database.');
     console.log('[project] Rebuilding only database/browser-testing.sqlite and isolated browser-test storage.');
     await run(php, ['artisan', 'migrate:fresh', '--seed'], { env: browserTestEnvironment() });
 }
@@ -304,7 +305,7 @@ async function verify(includeBrowser = false) {
     await verifyBackend();
     await verifyFrontend();
     if (includeBrowser) {
-        console.log('\n[project] Browser tests require the local development stack and a disposable local test database. They mutate application data.\n');
+        console.log('\n[project] Browser tests require npm run browser:prepare and npm run dev:browser. They mutate only the isolated browser-test database and storage.\n');
         await run(python, pythonArgs(['tests/browser/run_tests.py']), {
             env: { ...process.env, RAD_ART_TEST_MODE: '1' },
         });
@@ -389,7 +390,7 @@ Setup
 Development
   dev                   Start Laravel + Vite over local HTTP
   dev:https             Start regular local Laravel + Vite + Caddy
-  browser:prepare       DESTRUCTIVE only to isolated browser-testing.sqlite and browser-test storage
+  browser:prepare       Stop dev:browser first; reset only isolated browser-testing.sqlite and browser-test storage
   dev:browser           Start Laravel + Vite + Caddy against the isolated browser-test environment
 
 Database (review .env before running)
