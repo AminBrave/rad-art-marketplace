@@ -11,7 +11,7 @@ $root = dirname(__DIR__);
 $cacheDirectory = $root.'/bootstrap/cache';
 $runtimeDirectory = $root.'/storage/framework/testing';
 
-if (is_link($cacheDirectory) || is_link($runtimeDirectory)) {
+if (is_link($cacheDirectory) || is_link($runtimeDirectory) || is_link($runtimeDirectory.'/storage')) {
     throw new RuntimeException('Isolated PHPUnit cache/runtime paths must not be symbolic links.');
 }
 
