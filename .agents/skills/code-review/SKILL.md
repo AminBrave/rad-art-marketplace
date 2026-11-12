@@ -1,25 +1,31 @@
 ---
 name: code-review
-description: Use to review a focused diff or implementation for correctness, security, performance, maintainability and project consistency without modifying files.
+description: Read-only review of a focused Rademan diff or implementation for correctness, security, data integrity, accessibility, performance and maintainability.
 ---
 
-# Rademan Code Review
+# Code Review
 
-Adapted from Code Reviewer in Jeffallan/claude-skills (MIT).
+## Purpose
+Find material defects and risks in the requested change. Review is read-only unless the user explicitly changes the task to implementation.
 
-## Review process
-
-1. Read the task and acceptance criteria; summarize the intended behavior.
-2. Inspect the focused diff and directly affected call sites/contracts.
-3. Look for correctness defects, authorization/privacy gaps, race conditions, unsafe migrations, N+1/unbounded queries, frontend state bugs, accessibility regressions and missing failure handling.
-4. Check whether docs, tests, API/data maps and feature registry need updates.
-5. Report only actionable findings, ordered by severity, with file/line evidence and concrete impact.
-6. Separate confirmed defects from questions, assumptions and optional improvements.
-7. If no findings are identified, say what was reviewed and state that review is not a guarantee of correctness.
+## Workflow
+1. Read the task, acceptance criteria and applicable AGENTS.md constraints.
+2. Identify the exact diff and inspect affected callers, contracts, tests and nearby established patterns.
+3. Trace behavior across relevant layers rather than reviewing changed lines in isolation.
+4. Evaluate:
+   - correctness, edge cases and failure handling;
+   - authentication, authorization, privacy and input/file handling;
+   - schema integrity, migration safety, transactions and concurrency;
+   - API compatibility and frontend/backend contract alignment;
+   - accessibility, keyboard/focus behavior, RTL and responsive states;
+   - query efficiency, rendering cost, caching and resource lifecycle;
+   - maintainability, duplication and unnecessary complexity.
+5. Check whether tests cover both expected behavior and important negative cases. Do not execute them without permission.
+6. Report actionable findings first, ordered Critical / High / Medium / Low. Include file and line evidence, impact, realistic preconditions and a focused remediation.
+7. Separate confirmed defects from uncertainty and optional suggestions. If no findings are identified, state scope and limitations; do not imply proof of correctness.
 
 ## Review rules
-
-- Read-only: do not edit files unless the user changes the task from review to implementation.
-- Do not block on personal style preferences when they conflict with project conventions.
-- Do not execute tests, lint, builds, browser checks or scanners unless explicitly authorized.
-- Do not infer that CI passed; this repository has no application CI checks.
+- Do not edit files, silently fix findings or broaden scope.
+- Do not report speculative style preferences as defects.
+- Do not claim tests, scanners, builds or CI passed unless direct evidence exists and execution was authorized.
+- Follow AGENTS.md for all execution and CI permissions.
