@@ -37,9 +37,9 @@ function run(command, args = [], options = {}) {
 }
 
 async function runSteps(steps) {
-    for (const [label, command, args] of steps) {
+    for (const [label, command, args, options = {}] of steps) {
         console.log(`\n[project] ${label}\n`);
-        await run(command, args);
+        await run(command, args, options);
     }
 }
 
@@ -125,9 +125,30 @@ function initializeSqlite() {
     }
 }
 
+function testEnvironment() {
+    const cacheDir = resolve(root, 'bootstrap', 'cache');
+    return {
+        ...process.env,
+        APP_ENV: 'testing',
+        APP_KEY: 'base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
+        APP_DEBUG: 'true',
+        DB_CONNECTION: 'sqlite',
+        DB_DATABASE: ':memory:',
+        CACHE_STORE: 'array',
+        SESSION_DRIVER: 'array',
+        MAIL_MAILER: 'array',
+        QUEUE_CONNECTION: 'sync',
+        APP_CONFIG_CACHE: resolve(cacheDir, 'config.testing.php'),
+        APP_ROUTES_CACHE: resolve(cacheDir, 'routes.testing.php'),
+        APP_EVENTS_CACHE: resolve(cacheDir, 'events.testing.php'),
+        APP_SERVICES_CACHE: resolve(cacheDir, 'services.testing.php'),
+        APP_PACKAGES_CACHE: resolve(cacheDir, 'packages.testing.php'),
+    };
+}
+
 async function verifyBackend() {
     await runSteps([
-        ['Backend tests', php, ['artisan', 'test']],
+        ['Backend tests (isolated SQLite in-memory environment)', php, ['artisan', 'test'], { env: testEnvironment() }],
         ['PHP style', composer, ['lint']],
     ]);
 }
@@ -135,29 +156,18 @@ async function verifyBackend() {
 async function verifyFrontend() {
     await runSteps([
         ['Frontend tests', npm, ['run', 'test:frontend']],
+        ['RAD design-token color accessibility', npm, ['run', 'a11y:colors']],
         ['Frontend lint', npm, ['run', 'lint']],
         ['Standard production build', npm, ['run', 'build']],
         ['cPanel production build', npm, ['run', 'build:cpanel']],
     ]);
 }
 
-async function clearTestCaches() {
-    // Clear only Laravel's compiled bootstrap/view caches. Do not flush the
-    // application cache store: it may contain local developer data.
-    await runSteps([
-        ['Clear cached configuration', php, ['artisan', 'config:clear']],
-        ['Clear cached routes', php, ['artisan', 'route:clear']],
-        ['Clear cached events', php, ['artisan', 'event:clear']],
-        ['Clear compiled views', php, ['artisan', 'view:clear']],
-    ]);
-}
-
 async function verify(includeBrowser = false) {
-    await clearTestCaches();
     await verifyBackend();
     await verifyFrontend();
     if (includeBrowser) {
-        console.log('\n[project] Browser tests require the local development stack and a disposable local test database.\n');
+        console.log('\n[project] Browser tests require the local development stack and a disposable local test database. They mutate application data.\n');
         await run(python, pythonArgs(['tests/browser/run_tests.py']), {
             env: { ...process.env, RAD_ART_TEST_MODE: '1' },
         });
@@ -203,35 +213,36 @@ function usage() {
 Usage: npm run <task>  (or node scripts/project.mjs <task>)
 
 Setup
-  setup             Install Composer/npm packages and create .env if missing
-  db:sqlite:init    Create database/database.sqlite if it does not exist
+  setup                 Install Composer/npm packages and create .env if missing
+  db:sqlite:init        Create database/database.sqlite if it does not exist
 
 Development
-  dev               Start Laravel + Vite over local HTTP
-  dev:https          Start Laravel + Vite + Caddy at https://rad.localhost
+  dev                   Start Laravel + Vite over local HTTP
+  dev:https             Start Laravel + Vite + Caddy at https://rad.localhost
 
 Database (review .env before running)
-  db:migrate         Apply pending migrations
-  db:seed            Run DatabaseSeeder (demo data; local/testing only)
-  db:seed:demo       Run DemoDatabaseSeeder (local/testing only)
-  db:fresh           DESTRUCTIVE: drop all tables, migrate and seed
+  db:migrate            Apply pending migrations
+  db:seed               Run DatabaseSeeder (demo data; local/testing only)
+  db:seed:demo           Run DemoDatabaseSeeder (local/testing only)
+  db:fresh              DESTRUCTIVE: drop all tables, migrate and seed
 
-Quality
-  test               Run backend and frontend tests
-  backend            Backend tests + PHP style (legacy verify alias)
-  frontend           Frontend tests + lint + both builds (legacy verify alias)
-  verify             Run tests, PHP/JS lint and both production builds
-  verify:all         Run the full quality suite plus Playwright (requires local stack)
-  browser            Run guarded Playwright tests against a local RAD_ART_BASE_URL
-
-Build
-  build              Standard Vite production build
-  build:cpanel       cPanel-targeted build
-  preview            Serve the standard production build locally (npm script)
+Quality (all commands below execute checks; invoke only when authorized)
+  test                  Run backend and frontend tests
+  backend:test          Run backend tests in isolated SQLite in-memory environment
+  unit                  Run the Unit PHPUnit suite in isolated SQLite memory
+  feature               Run the Feature PHPUnit suite in isolated SQLite memory
+  integration           Run the Integration PHPUnit suite in isolated SQLite memory
+  backend               Backend tests + PHP style
+  frontend              Frontend tests + color accessibility + lint + both builds
+  verify                Run backend and frontend quality checks
+  verify:all            Run verify plus Playwright against a disposable local database
+  browser               Run guarded Playwright tests against local RAD_ART_BASE_URL
+  build                 Standard Vite production build
+  build:cpanel          cPanel-targeted production build
 
 Production
-  prod:optimize      Cache Laravel configuration, routes, events and views
-  prod:clear         Clear Laravel optimization caches
+  prod:optimize         Cache Laravel configuration, routes, events and views
+  prod:clear            Clear Laravel optimization caches
 `);
 }
 
@@ -266,37 +277,31 @@ try {
             await artisan('migrate:fresh', '--seed');
             break;
         case 'test':
-            await clearTestCaches();
             await runSteps([
-                ['Backend tests', php, ['artisan', 'test']],
+                ['Backend tests (isolated SQLite in-memory environment)', php, ['artisan', 'test'], { env: testEnvironment() }],
                 ['Frontend tests', npm, ['run', 'test:frontend']],
             ]);
             break;
         case 'backend:test':
-            await clearTestCaches();
-            await run(php, ['artisan', 'test']);
+            await run(php, ['artisan', 'test'], { env: testEnvironment() });
             break;
         case 'unit':
         case 'feature':
         case 'integration':
-            await clearTestCaches();
-            await run(php, ['artisan', 'test', `--testsuite=${task[0].toUpperCase()}${task.slice(1)}`]);
+            await run(php, ['artisan', 'test', `--testsuite=${task[0].toUpperCase()}${task.slice(1)}`], { env: testEnvironment() });
             break;
         case 'backend':
-            await clearTestCaches();
             await verifyBackend();
             break;
         case 'frontend':
             await verifyFrontend();
             break;
         case 'all':
+        case 'verify:all':
             await verify(true);
             break;
         case 'verify':
             await verify(false);
-            break;
-        case 'verify:all':
-            await verify(true);
             break;
         case 'browser':
             await run(python, pythonArgs(['tests/browser/run_tests.py']), {
