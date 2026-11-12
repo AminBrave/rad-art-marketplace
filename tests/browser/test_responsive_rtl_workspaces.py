@@ -41,8 +41,9 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
 
         try:
             for route_path in PUBLIC_ROUTES:
-                response = page.goto(BASE_URL + route_path, wait_until="domcontentloaded")
+                response = page.goto(BASE_URL + route_path, wait_until="commit")
                 self.assertIsNotNone(response, f"No document response for {route_path}")
+                page.locator('html[lang="fa"][dir="rtl"]').wait_for(state="attached")
                 self.assertLess(response.status, 400, f"{route_path} returned HTTP {response.status}")
 
                 self.assertEqual(
