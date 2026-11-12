@@ -63,6 +63,7 @@ export default function MessagingCenter({ role }) {
     const [actionId, setActionId] = useState(null);
     const [error, setError] = useState('');
     const [threadsError, setThreadsError] = useState('');
+    const [messagesError, setMessagesError] = useState('');
     const [notice, setNotice] = useState('');
     const [directStartLoading, setDirectStartLoading] = useState(false);
     const [directStartAttempt, setDirectStartAttempt] = useState(0);
@@ -181,6 +182,7 @@ export default function MessagingCenter({ role }) {
         const controller = new AbortController();
         messageRequestRef.current = controller;
         const url = '/api/v1/conversations/' + id + '/messages';
+        if (!incremental) setMessagesError('');
         try {
             const query = incremental ? {
                 after_id: latestMessageIdRef.current ?? 0,
@@ -235,7 +237,7 @@ export default function MessagingCenter({ role }) {
             if (!incremental || incoming.length > 0) loadThreadsRef.current();
         } catch (requestError) {
             if (!axios.isCancel(requestError) && !controller.signal.aborted
-                && Number(activeConversationRef.current) === Number(id)) setError('دریافت پیام‌ها انجام نشد. دوباره تلاش کنید.');
+                && Number(activeConversationRef.current) === Number(id)) setMessagesError('دریافت پیام‌ها انجام نشد. دوباره تلاش کنید.');
         } finally {
             if (messageRequestRef.current === controller) {
                 messageRequestRef.current = null;
@@ -260,6 +262,7 @@ export default function MessagingCenter({ role }) {
         pendingScrollRestoreRef.current = null;
         activeConversationRef.current = active;
         setMessages([]);
+        setMessagesError('');
         setNewMessageCount(0);
         setMessagesLoading(Boolean(active));
         shouldStickToBottomRef.current = true;
@@ -753,7 +756,8 @@ export default function MessagingCenter({ role }) {
                                 if (node.scrollTop < 72 && hasOlderMessagesRef.current) loadOlderMessages();
                             }} className="relative flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain [scrollbar-gutter:stable] bg-[radial-gradient(circle_at_1px_1px,rgba(66,62,53,0.055)_1px,transparent_0)] [background-size:24px_24px] px-3 py-5 sm:gap-4 sm:px-6 sm:py-6" role="log" aria-label="پیام‌های گفتگو" aria-live="polite" aria-relevant="additions">
                                 {messagesLoading && messages.length === 0 && <MessageHistorySkeleton count={5} className="w-full" />}
-                                {!messagesLoading && messages.length === 0 && <p className="m-auto py-6 text-center text-sm text-muted">هنوز پیامی در این گفتگو وجود ندارد. می‌توانید گفتگو را با یک پیام شروع کنید.</p>}
+                                {messagesError && <div role="alert" className="m-auto flex max-w-md flex-col items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-5 text-center text-sm text-red-800"><p>{messagesError}</p><button type="button" onClick={() => loadMessages(active)} className="rounded-lg px-4 py-2 font-bold underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">تلاش دوباره</button></div>}
+                                {!messagesLoading && !messagesError && messages.length === 0 && <p className="m-auto py-6 text-center text-sm text-muted">هنوز پیامی در این گفتگو وجود ندارد. می‌توانید گفتگو را با یک پیام شروع کنید.</p>}
                                 {loadingOlder && <p className="absolute inset-x-0 top-2 z-10 mx-auto w-fit rounded-full border border-border bg-white/95 px-3 py-1.5 text-xs text-muted shadow-soft" role="status">در حال دریافت پیام‌های قدیمی‌تر…</p>}
                                 {newMessageCount > 0 && <button type="button" onClick={() => {
                                     shouldStickToBottomRef.current = true;
