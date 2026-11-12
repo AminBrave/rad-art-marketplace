@@ -70,7 +70,7 @@ export default function AuthPage({ initialMode = 'login' }) {
                             </select>
                         </label>
                         <label className="block text-sm font-semibold">نام و نام خانوادگی
-                            <input name="name" value={form.name} onChange={update} required maxLength="120" autoComplete="name" className="mt-2 w-full rounded-xl border border-stone-200 bg-[#fcfbf9] px-4 py-3" />
+                            <input name="name" value={form.name} onChange={update} required maxLength="120" autoComplete="name" className="mt-2 w-full rounded-xl border border-stone-200 bg-[#fcfbf9] px-4 py-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2" />
                             {errors.name?.map((item) => <span key={item} className="mt-1 block text-xs text-red-700">{item}</span>)}
                         </label>
                     </>}
@@ -79,11 +79,11 @@ export default function AuthPage({ initialMode = 'login' }) {
                         {errors.email?.map((item) => <span key={item} className="mt-1 block text-xs text-red-700">{item}</span>)}
                     </label>
                     <label className="block text-sm font-semibold">گذرواژه
-                        <input type="password" name="password" value={form.password} onChange={update} required minLength="10" autoComplete={mode === 'register' ? 'new-password' : 'current-password'} dir="ltr" className="mt-2 w-full rounded-xl border border-stone-200 bg-[#fcfbf9] px-4 py-3 text-left" />
+                        <input type="password" name="password" value={form.password} onChange={update} required minLength="10" autoComplete={mode === 'register' ? 'new-password' : 'current-password'} dir="ltr" className="mt-2 w-full rounded-xl border border-stone-200 bg-[#fcfbf9] px-4 py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2" />
                         {errors.password?.map((item) => <span key={item} className="mt-1 block text-xs text-red-700">{item}</span>)}
                     </label>
                     {mode === 'register' && <label className="block text-sm font-semibold">تکرار گذرواژه
-                        <input type="password" name="password_confirmation" value={form.password_confirmation} onChange={update} required minLength="10" autoComplete="new-password" dir="ltr" className="mt-2 w-full rounded-xl border border-stone-200 bg-[#fcfbf9] px-4 py-3 text-left" />
+                        <input type="password" name="password_confirmation" value={form.password_confirmation} onChange={update} required minLength="10" autoComplete="new-password" dir="ltr" className="mt-2 w-full rounded-xl border border-stone-200 bg-[#fcfbf9] px-4 py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2" />
                     </label>}
                     {errors.form?.map((item) => <p key={item} role="alert" className="text-sm text-red-700">{item}</p>)}
                     {message && <p role="status" className="text-sm text-[#80513d]">{message}</p>}
