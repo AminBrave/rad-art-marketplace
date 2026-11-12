@@ -86,6 +86,12 @@ class RealUserBrowserFlowTests(unittest.TestCase):
         self.assertTrue(self.page.get_by_role("button", name="ورود به حساب").is_visible())
         self.assert_no_uncaught_page_errors()
 
+    def test_empty_demo_buyer_sees_the_real_empty_inbox_state(self) -> None:
+        self.login("buyer-empty@rademan.test", "/dashboard/buyer")
+        self.page.goto(BASE_URL + "/dashboard/buyer/messages", wait_until="domcontentloaded")
+        self.page.get_by_text("هنوز گفتگویی ندارید.", exact=False).wait_for(timeout=20_000)
+        self.assert_no_uncaught_page_errors()
+
     def test_buyer_can_start_an_artwork_context_conversation_and_send_a_message(self) -> None:
         self.login("buyer@rademan.test", "/dashboard/buyer")
         self.page.goto(BASE_URL + "/artworks/demo-01-01", wait_until="domcontentloaded")
