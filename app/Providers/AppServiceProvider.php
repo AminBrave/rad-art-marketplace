@@ -23,10 +23,11 @@ class AppServiceProvider extends ServiceProvider
             $identityKey = hash('sha256', $email);
 
             if ($this->app->environment('local')) {
+                // Keep local browser-test traffic separate from counters created by earlier limiter policies.
                 return [
-                    Limit::perMinute(120)->by('auth-identity:'.$request->ip().':'.$identityKey),
-                    Limit::perHour(1200)->by('auth-email:'.$identityKey),
-                    Limit::perMinute(1200)->by('auth-ip:'.$request->ip()),
+                    Limit::perMinute(1000)->by('auth-local-identity:'.$request->ip().':'.$identityKey),
+                    Limit::perHour(10000)->by('auth-local-email:'.$identityKey),
+                    Limit::perMinute(10000)->by('auth-local-ip:'.$request->ip()),
                 ];
             }
 
