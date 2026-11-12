@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-import os
 import unittest
 
 from playwright.sync_api import Browser, Page, sync_playwright
 
+from config import BASE_URL, IGNORE_HTTPS_ERRORS
 
-BASE_URL = os.environ.get("RAD_ART_BASE_URL", "http://127.0.0.1:8000").rstrip("/")
+
 DEMO_PASSWORD = "Demo@12345"
 
 
@@ -24,7 +24,7 @@ class RealUserBrowserFlowTests(unittest.TestCase):
         cls.playwright.stop()
 
     def setUp(self) -> None:
-        self.context = self.browser.new_context(locale="fa-IR", viewport={"width": 1440, "height": 1000})
+        self.context = self.browser.new_context(locale="fa-IR", viewport={"width": 1440, "height": 1000}, ignore_https_errors=IGNORE_HTTPS_ERRORS)
         self.page: Page = self.context.new_page()
         self.page_errors: list[str] = []
         self.page.on("pageerror", lambda error: self.page_errors.append(str(error)))
