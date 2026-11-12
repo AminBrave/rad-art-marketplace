@@ -51,7 +51,6 @@ class MessagingHistoryResilienceTests(unittest.TestCase):
             ),
         )
 
-
         # WorkspaceLayout loads notifications for every authenticated workspace.
         # Keep these shared shell requests authenticated so they cannot trigger
         # AuthContext's global 401 session-expiry handler in an otherwise mocked journey.
