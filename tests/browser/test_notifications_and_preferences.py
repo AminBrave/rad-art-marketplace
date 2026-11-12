@@ -134,6 +134,7 @@ class MessageNotificationBrowserTests(unittest.TestCase):
             page.get_by_role("button", name="هنرمند آزمایشی پیام جدیدی فرستاد").click()
             page.wait_for_url("**/dashboard/buyer/messages?conversation=101")
             page.get_by_role("heading", name="هنرمند آزمایشی").wait_for()
+            page.wait_for_response(lambda response: "/api/v1/conversations/101/messages" in response.url and response.request.method == "GET", timeout=15_000)
             self.assertTrue(
                 any("/api/v1/conversations/101/messages" in url for url in api_requests),
                 f"Conversation message endpoint was not requested. Requests: {api_requests}",
