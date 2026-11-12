@@ -20,6 +20,7 @@ Use this file as the ChatGPT-specific entry point for repository work. It supple
 | Defect, exception, unexpected behavior | .agents/skills/debugging/SKILL.md |
 | Authentication, authorization, privacy, uploads, security-sensitive work | .agents/skills/security-review/SKILL.md |
 | Read-only implementation/diff review | .agents/skills/code-review/SKILL.md |
+| Quality suite, test strategy, reports, accessibility/performance checks | .agents/skills/quality-engineering/SKILL.md |
 | Branches, commits, remotes, pull requests, GitHub Actions | .agents/skills/git-github/SKILL.md |
 
 Load the primary skill and only the supporting skills needed. A cross-layer feature may need feature-planning, laravel-backend and react-frontend. Add security-review for trust boundaries, private data or authorization changes.
