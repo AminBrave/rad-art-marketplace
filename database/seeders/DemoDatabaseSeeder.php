@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\ArtistInquiry;
 use App\Models\ArtistProfile;
 use App\Models\Artwork;
 use App\Models\Category;
@@ -13,9 +12,18 @@ use App\Models\CuratedCollection;
 use App\Models\EditorialAudit;
 use App\Models\FeaturedArtistSelection;
 use App\Models\Message;
+use App\Models\MessageAttachment;
+use App\Models\MessageModerationAudit;
+use App\Models\MessageReaction;
+use App\Models\MessageReport;
 use App\Models\User;
+use App\Models\UserBlock;
+use App\Notifications\MessageReceivedNotification;
 use Illuminate\Database\Seeder;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
 class DemoDatabaseSeeder extends Seeder
@@ -89,7 +97,7 @@ class DemoDatabaseSeeder extends Seeder
             ]);
         }
 
-        // This buyer intentionally has no sent inquiries; direct-message seed data still exercises the buyer inbox.
+        // This buyer intentionally has no conversations so the empty inbox can be tested.
         $emptyBuyer = User::query()->updateOrCreate(['email' => 'buyer-empty@rademan.test'], [
             'name' => 'خریدار بدون درخواست',
             'password' => $passwordHash,
@@ -197,39 +205,10 @@ class DemoDatabaseSeeder extends Seeder
 
         // Seed one canonical direct conversation for every buyer and publicly contactable artist.
         // Private profiles and artists without a profile are intentionally excluded, matching the public start-chat flow.
-        $this->seedDirectConversations([...$buyers, $emptyBuyer]);
+        $this->seedDirectConversations($buyers, $artworks, $admin);
 
         $publicArtists = array_values(array_filter($artists, fn (ArtistProfile $p): bool => $p->is_public));
         $approved = array_values(array_filter($artworks, fn (Artwork $a): bool => $a->status === Artwork::STATUS_APPROVED));
-        for ($i = 1; $i <= 48; $i++) {
-            $profile = $publicArtists[($i - 1) % count($publicArtists)];
-            $buyer = $buyers[($i - 1) % count($buyers)];
-            $status = match ($i % 3) {
-                0 => ArtistInquiry::STATUS_ARCHIVED,
-                1 => ArtistInquiry::STATUS_NEW,
-                default => ArtistInquiry::STATUS_READ,
-            };
-            $relatedArtwork = null;
-            if ($i % 4 !== 0) {
-                foreach ($approved as $candidate) {
-                    if ($candidate->artist_profile_id === $profile->id) {
-                        $relatedArtwork = $candidate;
-                        break;
-                    }
-                }
-            }
-            ArtistInquiry::query()->updateOrCreate([
-                'artist_profile_id' => $profile->id,
-                'sender_user_id' => $buyer->id,
-                'subject' => 'پرسش نمایشی شماره '.$i,
-            ], [
-                'artwork_id' => $relatedArtwork?->id,
-                'message' => 'سلام، مایلم درباره جزئیات اثر، شیوه نگهداری و شرایط تهیه آن اطلاعات بیشتری دریافت کنم. سپاسگزارم.',
-                'status' => $status,
-                'read_at' => $status === ArtistInquiry::STATUS_NEW ? null : now()->subDays($i % 12),
-            ]);
-        }
-
         $publicApproved = array_values(array_filter(
             $approved,
             fn (Artwork $artwork): bool => $artwork->artist_profile_id !== $artists[13]->id,
@@ -301,7 +280,7 @@ class DemoDatabaseSeeder extends Seeder
     /**
      * @param  array<int, User>  $buyers
      */
-    private function seedDirectConversations(array $buyers): void
+    private function seedDirectConversations(array $buyers, array $artworks, User $admin): void
     {
         $profiles = ArtistProfile::query()
             ->where('is_public', true)
@@ -309,6 +288,8 @@ class DemoDatabaseSeeder extends Seeder
             ->with('user')
             ->orderBy('id')
             ->get();
+
+        $scenario = 0;
 
         foreach ($buyers as $buyer) {
             foreach ($profiles as $profile) {
@@ -333,25 +314,226 @@ class DemoDatabaseSeeder extends Seeder
                         'sender_user_id' => $buyer->id,
                         'body' => 'سلام، آثار شما را دیدم و مایلم درباره روند خلق و شرایط تهیه آثار بیشتر بدانم.',
                         'delivered_at' => now()->subMinutes(3),
-                        'read_at' => now()->subMinutes(2),
+                        'read_at' => $scenario % 4 === 0 ? null : now()->subMinutes(2),
                         'created_at' => now()->subMinutes(3),
                         'updated_at' => now()->subMinutes(3),
                     ],
                 );
 
-                $conversation->messages()->firstOrCreate(
+                $artistMessage = $conversation->messages()->firstOrCreate(
                     ['client_message_id' => 'demo-'.$pairKey.'-artist'],
                     [
                         'sender_user_id' => $artist->id,
                         'body' => 'سلام، خوش آمدید. با کمال میل پاسخ‌گوی پرسش‌های شما هستم. اگر اثر مشخصی مدنظرتان است بفرمایید.',
                         'delivered_at' => now()->subMinute(),
+                        'read_at' => $scenario % 3 === 0 ? null : now()->subSeconds(30),
                         'created_at' => now()->subMinute(),
                         'updated_at' => now()->subMinute(),
                     ],
                 );
 
+                $scenario++;
+                $this->seedConversationVariations(
+                    $conversation,
+                    $buyer,
+                    $artist,
+                    $profile,
+                    $artworks,
+                    $firstMessage,
+                    $artistMessage,
+                    $admin,
+                    $scenario,
+                );
+
                 $latestMessageAt = $conversation->messages()->max('created_at');
                 $conversation->forceFill(['last_message_at' => $latestMessageAt])->save();
+            }
+        }
+    }
+
+
+    /**
+     * Seed deterministic conversation states that exercise the currently enabled messaging workflows.
+     *
+     * @param  array<int, Artwork>  $artworks
+     */
+    private function seedConversationVariations(
+        Conversation $conversation,
+        User $buyer,
+        User $artist,
+        ArtistProfile $profile,
+        array $artworks,
+        Message $buyerMessage,
+        Message $artistMessage,
+        User $admin,
+        int $scenario,
+    ): void {
+        $conversation->forceFill([
+            'buyer_archived_at' => $scenario % 10 === 0 ? now()->subDays(2) : null,
+            'artist_archived_at' => $scenario % 17 === 0 ? now()->subDay() : null,
+            'buyer_muted_at' => $scenario % 8 === 0 ? now()->subDay() : null,
+            'artist_muted_at' => $scenario % 13 === 0 ? now()->subHours(4) : null,
+        ])->save();
+
+        $relatedArtwork = collect($artworks)->first(
+            fn (Artwork $artwork): bool => (int) $artwork->artist_profile_id === (int) $profile->id
+                && $artwork->status === Artwork::STATUS_APPROVED,
+        );
+        $contextMessage = $buyerMessage;
+
+        if ($scenario % 5 === 0 && $relatedArtwork && Schema::hasColumn('messages', 'artwork_id')) {
+            $contextMessage = $conversation->messages()->firstOrCreate(
+                ['client_message_id' => 'demo-'.$conversation->pair_key.'-artwork'],
+                [
+                    'sender_user_id' => $buyer->id,
+                    'body' => 'سلام، درباره این اثر و جزئیات ساخت آن پرسشی دارم.',
+                    'artwork_id' => $relatedArtwork->id,
+                    'delivered_at' => now()->subMinutes(4),
+                    'read_at' => $scenario % 2 === 0 ? null : now()->subMinutes(2),
+                    'created_at' => now()->subMinutes(4),
+                    'updated_at' => now()->subMinutes(4),
+                ],
+            );
+
+            DB::table('conversation_contexts')->updateOrInsert(
+                [
+                    'conversation_id' => $conversation->id,
+                    'artwork_id' => $relatedArtwork->id,
+                    'inquiry_id' => null,
+                ],
+                [
+                    'added_by_user_id' => $buyer->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+            );
+
+            $conversation->messages()->firstOrCreate(
+                ['client_message_id' => 'demo-'.$conversation->pair_key.'-artwork-reply'],
+                [
+                    'sender_user_id' => $artist->id,
+                    'body' => 'با کمال میل. این اثر با دقت و در چند مرحله ساخته شده است.',
+                    'reply_to_id' => $contextMessage->id,
+                    'delivered_at' => now()->subMinutes(3),
+                    'read_at' => $scenario % 2 === 0 ? null : now()->subMinute(),
+                    'created_at' => now()->subMinutes(3),
+                    'updated_at' => now()->subMinutes(3),
+                ],
+            );
+        }
+
+        if ($scenario % 2 === 0) {
+            MessageReaction::query()->updateOrCreate(
+                ['message_id' => $contextMessage->id, 'user_id' => $buyer->id, 'emoji' => '❤️'],
+                [],
+            );
+            MessageReaction::query()->updateOrCreate(
+                ['message_id' => $contextMessage->id, 'user_id' => $artist->id, 'emoji' => '🎨'],
+                [],
+            );
+        }
+
+        if ($scenario % 7 === 0) {
+            $path = 'message-attachments/demo/'.$conversation->pair_key.'/sample.png';
+            $image = base64_decode(
+                'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l0sAAAAASUVORK5CYII=',
+                true,
+            );
+            if ($image !== false) {
+                Storage::disk('local')->put($path, $image);
+                MessageAttachment::query()->updateOrCreate(
+                    ['message_id' => $buyerMessage->id, 'original_name' => 'نمونه-پیوست.png'],
+                    [
+                        'uploaded_by_user_id' => $buyer->id,
+                        'storage_path' => $path,
+                        'mime_type' => 'image/png',
+                        'size_bytes' => strlen($image),
+                    ],
+                );
+            }
+        }
+
+        if ($scenario % 3 === 0 && $artist->messageNotificationPreferences()['in_app_messages']) {
+            $hash = sha1('rademan-demo-notification:'.$conversation->pair_key);
+            $notificationId = substr($hash, 0, 8).'-'.substr($hash, 8, 4).'-4'.substr($hash, 13, 3).'-8'.substr($hash, 17, 3).'-'.substr($hash, 20, 12);
+            DatabaseNotification::query()->updateOrCreate(
+                ['id' => $notificationId],
+                [
+                    'type' => MessageReceivedNotification::class,
+                    'notifiable_type' => User::class,
+                    'notifiable_id' => $artist->id,
+                    'data' => [
+                        'kind' => 'message_received',
+                        'conversation_id' => $conversation->id,
+                        'message_id' => $buyerMessage->id,
+                        'sender_name' => $buyer->name,
+                    ],
+                    'read_at' => $scenario % 2 === 0 ? null : now()->subMinutes(2),
+                    'created_at' => now()->subMinutes($scenario),
+                    'updated_at' => now()->subMinutes($scenario),
+                ],
+            );
+        }
+
+        if ($scenario % 23 === 0) {
+            MessageReport::query()->updateOrCreate(
+                ['reporter_user_id' => $buyer->id, 'subject_key' => 'message:'.$buyerMessage->id],
+                [
+                    'conversation_id' => $conversation->id,
+                    'message_id' => $buyerMessage->id,
+                    'reason' => 'other',
+                    'details' => 'گزارش نمایشی برای بررسی گردش کار مدیریت پیام‌ها.',
+                    'status' => 'open',
+                    'reviewed_by_user_id' => null,
+                    'reviewed_at' => null,
+                ],
+            );
+        }
+
+        if ($scenario % 29 === 0) {
+            $report = MessageReport::query()->updateOrCreate(
+                ['reporter_user_id' => $buyer->id, 'subject_key' => 'conversation:'.$conversation->id],
+                [
+                    'conversation_id' => $conversation->id,
+                    'message_id' => null,
+                    'reason' => 'spam',
+                    'details' => 'گزارش نمایشی بررسی‌شده.',
+                    'status' => 'dismissed',
+                    'reviewed_by_user_id' => $admin->id,
+                    'reviewed_at' => now()->subHours(2),
+                ],
+            );
+
+            MessageModerationAudit::query()->updateOrCreate(
+                ['report_id' => $report->id],
+                [
+                    'admin_user_id' => $admin->id,
+                    'action' => 'dismissed',
+                    'note' => 'گزارش نمونه برای آزمون تاریخچه رسیدگی.',
+                ],
+            );
+
+            UserBlock::query()->updateOrCreate(
+                ['blocker_user_id' => $buyer->id, 'blocked_user_id' => $artist->id],
+                [],
+            );
+        }
+
+        if ($scenario % 31 === 0) {
+            $tombstone = $conversation->messages()->withTrashed()->firstOrCreate(
+                ['client_message_id' => 'demo-'.$conversation->pair_key.'-deleted'],
+                [
+                    'sender_user_id' => $artist->id,
+                    'body' => '',
+                    'delivered_at' => now()->subDays(3),
+                    'created_at' => now()->subDays(3),
+                    'updated_at' => now()->subDays(3),
+                ],
+            );
+
+            if (! $tombstone->trashed()) {
+                $tombstone->forceFill(['body' => ''])->save();
+                $tombstone->delete();
             }
         }
     }
