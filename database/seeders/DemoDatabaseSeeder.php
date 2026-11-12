@@ -389,6 +389,13 @@ class DemoDatabaseSeeder extends Seeder
                 Storage::disk('local')->delete($attachmentPath);
             }
             DB::table('message_attachments')->whereIn('message_id', $messageIds)->delete();
+            foreach ($conversationIds as $conversationId) {
+                DB::table('notifications')
+                    ->where('type', MessageReceivedNotification::class)
+                    ->where('data->conversation_id', (int) $conversationId)
+                    ->delete();
+            }
+
             DB::table('conversation_contexts')->whereIn('conversation_id', $conversationIds)->delete();
             DB::table('messages')->whereIn('conversation_id', $conversationIds)->delete();
             DB::table('conversations')->whereIn('id', $conversationIds)->delete();
@@ -398,11 +405,6 @@ class DemoDatabaseSeeder extends Seeder
             DB::table('conversation_contexts')->whereIn('inquiry_id', $retiredInquiryIds)->delete();
             DB::table('artist_inquiries')->whereIn('id', $retiredInquiryIds)->delete();
         }
-
-        DB::table('notifications')
-            ->where('type', MessageReceivedNotification::class)
-            ->whereIn('notifiable_id', [...$demoArtistIds->all(), $emptyBuyer->id])
-            ->delete();
 
         DB::table('user_blocks')
             ->where('blocker_user_id', $emptyBuyer->id)
