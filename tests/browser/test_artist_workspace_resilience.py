@@ -2,6 +2,7 @@
 
 import json
 import unittest
+from urllib.parse import urlparse
 
 from playwright.sync_api import sync_playwright
 
@@ -111,12 +112,19 @@ class ArtistWorkspaceResilienceTests(unittest.TestCase):
             ).get_by_role("button", name="تلاش دوباره")
             retry_button.wait_for()
 
-            with page.expect_response(
-                lambda response: response.url.split("?")[0].endswith("/api/v1/artist/artworks")
-                and response.request.method == "GET"
-                and response.status == 200
-            ):
-                retry_button.click()
+            try:
+                with page.expect_response(
+                    lambda response: urlparse(response.url).path.rstrip("/") == "/api/v1/artist/artworks"
+                    and response.request.method == "GET"
+                ) as retry_response:
+                    retry_button.evaluate("(button) => button.click()")
+                self.assertEqual(retry_response.value.status, 200)
+            except Exception as failure:
+                raise AssertionError(
+                    "Artist artwork retry did not produce a successful response. "
+                    f"attempts={attempts['count']}; URL={page.url}; "
+                    f"body={page.locator('body').inner_text()[-1200:]!r}"
+                ) from failure
 
             page.get_by_text("اثر بازیابی‌شده", exact=True).wait_for()
             self.assertEqual(attempts["count"], 2)
