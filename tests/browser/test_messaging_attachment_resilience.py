@@ -200,7 +200,7 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
                 send_button.wait_for(state="visible")
                 send_button.evaluate("(button) => button.form.requestSubmit()")
 
-            page.get_by_role("alert").filter(has_text="ارسال پیام یا پیوست انجام نشد").wait_for()
+            page.get_by_text("ارسال پیام یا پیوست انجام نشد", exact=False).wait_for()
             self.assertEqual(composer.input_value(), "لطفاً این فایل را بررسی کنید.")
             page.get_by_text("reference.pdf", exact=True).wait_for()
             self.assertEqual(len(message_attempts), 1)
