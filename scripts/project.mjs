@@ -74,7 +74,7 @@ async function startServices(services) {
             cwd: root,
             stdio: 'inherit',
             shell: isWindows,
-            env: process.env,
+            env: service.env ?? process.env,
         });
         children.push(child);
 
@@ -150,12 +150,16 @@ async function verify(includeBrowser = false) {
     }
 }
 
-function startDevelopment(secure = false) {
+async function startDevelopment(secure = false) {
+    // Local development must not inherit stale production config from a previous optimize run.
+    await artisan('config:clear');
+
     const services = [
         {
             label: 'Laravel',
             command: php,
             args: ['artisan', 'serve', '--host=127.0.0.1', '--port=8000'],
+            env: { ...process.env, APP_ENV: 'local' },
         },
         {
             label: 'Vite',
