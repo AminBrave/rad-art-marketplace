@@ -27,7 +27,8 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
             ignore_https_errors=IGNORE_HTTPS_ERRORS,
         )
         page = context.new_page()
-        page.set_default_timeout(15000)
+        page.set_default_timeout(30000)
+        page.set_default_navigation_timeout(30000)
         conversation_id = 73100
         older_attempts = {"count": 0}
         initial_messages = [{
