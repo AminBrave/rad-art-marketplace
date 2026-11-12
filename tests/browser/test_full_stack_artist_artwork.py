@@ -24,7 +24,7 @@ class FullStackArtistArtworkTests(unittest.TestCase):
         context = self.browser.new_context(
             viewport={"width": 1280, "height": 1000},
             ignore_https_errors=IGNORE_HTTPS_ERRORS,
-            extra_http_headers={"X-Forwarded-For": "198.51.100.11"},
+            extra_http_headers={"X-Forwarded-For": f"198.51.100.{1 + (uuid.uuid4().int % 253)}"},
         )
         page = context.new_page()
         page.set_default_timeout(20000)
@@ -33,7 +33,7 @@ class FullStackArtistArtworkTests(unittest.TestCase):
         title = f"آزمون ثبت اثر {uuid.uuid4().hex[:8]}"
 
         try:
-            page.goto(BASE_URL + "/login")
+            page.goto(BASE_URL + "/login", wait_until="domcontentloaded")
             page.locator('input[name="email"]').fill("artist@rademan.test")
             page.locator('input[name="password"]').fill("Demo@12345")
             page.get_by_role("button", name="ورود به حساب").click()
