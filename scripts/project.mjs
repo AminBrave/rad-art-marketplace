@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
-import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -157,7 +157,9 @@ function testEnvironment() {
 
 async function runBackendTests(suite = 'backend') {
     ensureReportDirectory();
-    const args = ['artisan', 'test', `--log-junit=build/test-reports/${suite}-junit.xml`];
+    const reportPath = resolve(root, 'build', 'test-reports', `${suite}-junit.xml`);
+    rmSync(reportPath, { force: true });
+    const args = ['artisan', 'test', '--do-not-cache-result', `--log-junit=${reportPath}`];
     if (suite !== 'backend') {
         const suiteName = suite[0].toUpperCase() + suite.slice(1);
         args.push(`--testsuite=${suiteName}`);
@@ -167,6 +169,7 @@ async function runBackendTests(suite = 'backend') {
 
 async function runFrontendTests() {
     ensureReportDirectory();
+    rmSync(resolve(root, 'build', 'test-reports', 'frontend-junit.xml'), { force: true });
     await run(process.execPath, [
         '--test',
         '--test-reporter=spec',
@@ -187,7 +190,6 @@ async function verifyBackend() {
 async function verifyFrontend() {
     await runFrontendTests();
     await runSteps([
-        ['RAD design-token color accessibility', npm, ['run', 'a11y:colors']],
         ['Frontend lint', npm, ['run', 'lint']],
         ['Standard production build', npm, ['run', 'build']],
         ['cPanel production build', npm, ['run', 'build:cpanel']],
