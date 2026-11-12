@@ -206,6 +206,11 @@ function ensureBrowserRuntimeDirectories() {
 }
 
 function clearBrowserBootstrapCaches() {
+    const cacheDirectory = resolve(root, 'bootstrap', 'cache');
+    if (existsSync(cacheDirectory) && lstatSync(cacheDirectory).isSymbolicLink()) {
+        throw new Error('Refusing to clear browser-test caches through a symbolic link.');
+    }
+
     for (const cacheFile of [
         'config.browser-testing.php',
         'routes.browser-testing.php',
