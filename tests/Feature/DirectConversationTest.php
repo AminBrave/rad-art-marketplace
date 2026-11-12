@@ -43,7 +43,6 @@ class DirectConversationTest extends TestCase
             'buyer_user_id' => $buyer->id,
             'artist_user_id' => $artist->id,
             'pair_key' => $buyer->id.':'.$artist->id,
-            'inquiry_id' => null,
         ]);
 
         $this->actingAs($artist)

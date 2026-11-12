@@ -54,13 +54,13 @@ class FullStackAuthenticationTests(unittest.TestCase):
         finally:
             context.close()
 
-    def test_guest_cannot_access_buyer_api_without_a_session(self):
+    def test_guest_cannot_access_buyer_conversations_without_a_session(self):
         context = self.browser.new_context(ignore_https_errors=IGNORE_HTTPS_ERRORS)
         page = context.new_page()
         try:
             page.goto(BASE_URL + "/login")
             status = page.evaluate("""async () => {
-                const response = await fetch('/api/v1/buyer/inquiries', {
+                const response = await fetch('/api/v1/buyer/conversations', {
                     headers: { Accept: 'application/json' }, credentials: 'same-origin'
                 });
                 return response.status;

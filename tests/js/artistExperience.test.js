@@ -7,7 +7,6 @@ const overview = read('../../resources/js/app/ArtistWorkspaceOverview.jsx');
 const profile = read('../../resources/js/app/RoutingPages.jsx');
 const artwork = read('../../resources/js/app/ArtworkStudio.jsx');
 const router = read('../../resources/js/app/AppRouter.jsx');
-const featureRegistry = read('../../config/features.php');
 
 test('artist onboarding progress is derived from named profile fields and actual artwork totals', () => {
     for (const field of ['display_name', 'bio', 'city', 'website_url', 'instagram_handle', 'is_public']) {
@@ -36,8 +35,7 @@ test('artwork submission explains moderation outcomes and validates image dimens
     assert.ok(artwork.includes('بازخورد مدیر'));
 });
 
-test('disabled inquiry workflows stay out of the user interface while direct messaging remains available', () => {
-    assert.ok(featureRegistry.includes("'inquiries' => false"));
+test('direct messaging remains available in the artist workspace without a legacy inbox section', () => {
     assert.ok(router.includes('MessagingCenter'));
     assert.ok(router.includes('path="messages"'));
     assert.equal(router.includes('InquiryCenter'), false);

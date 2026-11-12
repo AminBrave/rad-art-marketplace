@@ -59,9 +59,8 @@ test('attachment upload and private image preview enforce participant, type, siz
     assert.ok(attachments.includes("'X-Content-Type-Options' => 'nosniff'"));
 });
 
-test('direct messaging routes remain authenticated and inquiry routes stay behind the disabled feature gate', () => {
+test('direct messaging routes remain available in the authenticated workspace', () => {
     assert.ok(routes.includes("Route::post('/conversations/direct'"));
     assert.ok(routes.includes("Route::get('/conversations/{conversation}/messages'"));
     assert.ok(routes.includes("Route::post('/conversations/{conversation}/messages'"));
-    assert.ok(routes.includes("->middleware('feature:inquiries')"));
 });

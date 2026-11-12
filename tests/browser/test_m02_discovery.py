@@ -186,7 +186,7 @@ class DiscoveryBrowserTests(unittest.TestCase):
             context.close()
 
 
-    def test_artwork_to_artist_keeps_direct_messaging_without_inquiry(self):
+    def test_artwork_to_artist_keeps_direct_messaging_entry_points(self):
         buyer = {"id": 42, "name": "Buyer QA", "email": "buyer@example.test", "role": "buyer"}
         context, page = self.new_page(user=buyer)
         try:
@@ -217,7 +217,7 @@ class DiscoveryBrowserTests(unittest.TestCase):
         finally:
             context.close()
 
-    def test_artwork_detail_hides_inquiry_form_but_keeps_direct_message_link(self):
+    def test_artwork_detail_keeps_direct_message_link(self):
         buyer = {"id": 42, "name": "Buyer QA", "email": "buyer@example.test", "role": "buyer"}
         context, page = self.new_page(user=buyer)
         try:

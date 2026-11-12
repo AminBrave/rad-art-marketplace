@@ -56,11 +56,6 @@ class User extends Authenticatable
         return $this->role === self::ROLE_BUYER;
     }
 
-    public function inquiries(): HasMany
-    {
-        return $this->hasMany(ArtistInquiry::class, 'sender_user_id');
-    }
-
     public function isAdmin(): bool
     {
         return $this->role === self::ROLE_ADMIN;
