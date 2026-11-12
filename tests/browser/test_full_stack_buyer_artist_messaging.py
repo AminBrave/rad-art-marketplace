@@ -23,7 +23,6 @@ class FullStackBuyerArtistMessagingTests(unittest.TestCase):
         context = self.browser.new_context(
             viewport={"width": 1280, "height": 900},
             ignore_https_errors=IGNORE_HTTPS_ERRORS,
-            extra_http_headers={"X-Forwarded-For": f"198.51.100.{1 + (uuid.uuid4().int % 253)}"},
         )
         page = context.new_page()
         page.set_default_timeout(20000)
@@ -43,11 +42,28 @@ class FullStackBuyerArtistMessagingTests(unittest.TestCase):
         return email
 
     def login_artist(self, page):
-        page.goto(BASE_URL + "/login")
+        page.goto(BASE_URL + "/login", wait_until="domcontentloaded")
         page.locator('input[name="email"]').fill("artist@rademan.test")
         page.locator('input[name="password"]').fill("Demo@12345")
-        page.get_by_role("button", name="ورود به حساب").click()
-        page.wait_for_url("**/dashboard/artist")
+        with page.expect_response(
+            lambda response: response.url.endswith("/api/v1/auth/login")
+            and response.request.method == "POST",
+            timeout=20_000,
+        ) as login_response:
+            page.get_by_role("button", name="ورود به حساب").click()
+
+        self.assertEqual(
+            200,
+            login_response.value.status,
+            f"Artist login failed with HTTP {login_response.value.status}. "
+            f"Page: {page.url}. "
+            f"Messages: {page.locator('[role="status"], [role="alert"]').all_inner_texts()}",
+        )
+        page.wait_for_function(
+            "() => window.location.pathname === '/dashboard/artist' "
+            "|| window.location.pathname.startsWith('/dashboard/artist/')",
+            timeout=20_000,
+        )
 
     def test_buyer_starts_direct_conversation_artist_replies_and_buyer_receives_reply(self):
         buyer_context, buyer_page = self.new_page()
