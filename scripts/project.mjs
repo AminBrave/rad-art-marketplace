@@ -125,6 +125,10 @@ function initializeSqlite() {
     }
 }
 
+function ensureReportDirectory() {
+    mkdirSync(resolve(root, 'build', 'test-reports'), { recursive: true });
+}
+
 function testEnvironment() {
     const cacheDir = resolve(root, 'bootstrap', 'cache');
     return {
@@ -146,16 +150,38 @@ function testEnvironment() {
     };
 }
 
+async function runBackendTests(suite = 'backend') {
+    ensureReportDirectory();
+    const args = ['artisan', 'test', `--log-junit=build/test-reports/${suite}-junit.xml`];
+    if (suite !== 'backend') {
+        const suiteName = suite[0].toUpperCase() + suite.slice(1);
+        args.push(`--testsuite=${suiteName}`);
+    }
+    await run(php, args, { env: testEnvironment() });
+}
+
+async function runFrontendTests() {
+    ensureReportDirectory();
+    await run(process.execPath, [
+        '--test',
+        '--test-reporter=spec',
+        '--test-reporter-destination=stdout',
+        '--test-reporter=junit',
+        '--test-reporter-destination=build/test-reports/frontend-junit.xml',
+        'tests/js/*.test.js',
+    ]);
+}
+
 async function verifyBackend() {
+    await runBackendTests();
     await runSteps([
-        ['Backend tests (isolated SQLite in-memory environment)', php, ['artisan', 'test'], { env: testEnvironment() }],
         ['PHP style', composer, ['lint']],
     ]);
 }
 
 async function verifyFrontend() {
+    await runFrontendTests();
     await runSteps([
-        ['Frontend tests', npm, ['run', 'test:frontend']],
         ['RAD design-token color accessibility', npm, ['run', 'a11y:colors']],
         ['Frontend lint', npm, ['run', 'lint']],
         ['Standard production build', npm, ['run', 'build']],
@@ -277,18 +303,19 @@ try {
             await artisan('migrate:fresh', '--seed');
             break;
         case 'test':
-            await runSteps([
-                ['Backend tests (isolated SQLite in-memory environment)', php, ['artisan', 'test'], { env: testEnvironment() }],
-                ['Frontend tests', npm, ['run', 'test:frontend']],
-            ]);
+            await runBackendTests();
+            await runFrontendTests();
             break;
         case 'backend:test':
-            await run(php, ['artisan', 'test'], { env: testEnvironment() });
+            await runBackendTests();
             break;
         case 'unit':
         case 'feature':
         case 'integration':
-            await run(php, ['artisan', 'test', `--testsuite=${task[0].toUpperCase()}${task.slice(1)}`], { env: testEnvironment() });
+            await runBackendTests(task);
+            break;
+        case 'frontend:test':
+            await runFrontendTests();
             break;
         case 'backend':
             await verifyBackend();
