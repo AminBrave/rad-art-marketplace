@@ -58,7 +58,7 @@ class FullStackAuthenticationTests(unittest.TestCase):
         context = self.browser.new_context(ignore_https_errors=IGNORE_HTTPS_ERRORS)
         page = context.new_page()
         try:
-            page.goto(BASE_URL + "/login")
+            page.goto(BASE_URL + "/login", wait_until="domcontentloaded")
             status = page.evaluate("""async () => {
                 const response = await fetch('/api/v1/buyer/conversations', {
                     headers: { Accept: 'application/json' }, credentials: 'same-origin'
