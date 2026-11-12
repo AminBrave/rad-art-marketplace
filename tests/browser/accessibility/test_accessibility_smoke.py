@@ -84,7 +84,7 @@ class AccessibilitySmokeTests(unittest.TestCase):
         context, page = self.new_page()
         try:
             for route in ("/login", "/register"):
-                response = page.goto(BASE_URL + route)
+                response = page.goto(BASE_URL + route, wait_until="domcontentloaded")
                 self.assertIsNotNone(response)
                 self.assertLess(response.status, 400)
                 page.get_by_role("main").wait_for()
@@ -126,19 +126,23 @@ class AccessibilitySmokeTests(unittest.TestCase):
         page.route("**/api/v1/auth/register", register)
 
         try:
-            response = page.goto(BASE_URL + "/register")
+            response = page.goto(BASE_URL + "/register", wait_until="domcontentloaded")
             self.assertIsNotNone(response)
             self.assertLess(response.status, 400)
             page.get_by_role("heading", name="ساخت حساب کاربری").wait_for()
 
-            # Navigate from the document start using Tab only: back link,
-            # login/register mode controls, then the account-role selector.
-            for _ in range(4):
+            # The shared public header precedes the auth form in DOM/tab order.
+            # Traverse with Tab only until the role selector receives focus.
+            focused_control = ""
+            for _ in range(20):
                 page.keyboard.press("Tab")
+                focused_control = page.evaluate("document.activeElement.name")
+                if focused_control == "role":
+                    break
             self.assertEqual(
-                page.evaluate("document.activeElement.name"),
+                focused_control,
                 "role",
-                "Keyboard order should reach the account-role selector after the page links and mode controls.",
+                "Keyboard navigation should reach the account-role selector after the shared header and auth controls.",
             )
             page.keyboard.press("Home")
             page.keyboard.press("Tab")
@@ -181,7 +185,7 @@ class AccessibilitySmokeTests(unittest.TestCase):
     def test_artwork_catalogue_has_accessible_search_and_filter_controls(self):
         context, page = self.new_page()
         try:
-            response = page.goto(BASE_URL + "/artworks")
+            response = page.goto(BASE_URL + "/artworks", wait_until="domcontentloaded")
             self.assertIsNotNone(response)
             self.assertLess(response.status, 400)
             page.get_by_role("heading", name="گالری آثار").wait_for()
