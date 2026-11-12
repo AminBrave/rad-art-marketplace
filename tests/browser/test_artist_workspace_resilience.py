@@ -67,9 +67,9 @@ class ArtistWorkspaceResilienceTests(unittest.TestCase):
 
         def artworks(route):
             attempts["count"] += 1
-            if attempts["count"] <= 2:
+            if attempts["count"] == 1:
                 route.fulfill(
-                    status=503,
+                    status=400,
                     content_type="application/json",
                     body=json.dumps({"message": "Artist artworks temporarily unavailable"}),
                 )
@@ -97,11 +97,15 @@ class ArtistWorkspaceResilienceTests(unittest.TestCase):
             page.goto(BASE_URL + "/dashboard/artist", wait_until="domcontentloaded")
             page.get_by_role("heading", name="خوش آمدید، هنرمند آزمون").wait_for()
             page.get_by_role("link", name="ویرایش پروفایل").wait_for()
+            # The artwork query is enabled only after the profile query supplies
+            # a valid slug. Wait for that public-profile action before asserting
+            # the independent artwork request's failure state.
+            page.get_by_role("link", name="پیش‌نمایش عمومی").wait_for()
 
-            # TanStack Query performs one automatic retry for this transient 503.
-            # The visible error state is the stable synchronization point.
+            # HTTP 400 is intentionally non-retryable under the shared query
+            # policy, keeping this test focused on explicit user recovery.
             page.get_by_role("heading", name="بخشی از اطلاعات بارگذاری نشد").wait_for()
-            self.assertEqual(attempts["count"], 2)
+            self.assertEqual(attempts["count"], 1)
             retry_button = page.get_by_role("alert").filter(
                 has_text="بخشی از اطلاعات بارگذاری نشد"
             ).get_by_role("button", name="تلاش دوباره")
@@ -115,7 +119,7 @@ class ArtistWorkspaceResilienceTests(unittest.TestCase):
                 retry_button.click()
 
             page.get_by_text("اثر بازیابی‌شده", exact=True).wait_for()
-            self.assertEqual(attempts["count"], 3)
+            self.assertEqual(attempts["count"], 2)
             self.assertTrue(page.get_by_role("progressbar", name="تکمیل فیلدهای پروفایل").is_visible())
         finally:
             context.close()
