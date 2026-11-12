@@ -62,7 +62,7 @@ class FullStackBuyerArtistMessagingTests(unittest.TestCase):
                 lambda response: response.url.endswith("/api/v1/conversations/direct")
                 and response.request.method == "POST"
             ) as direct_response:
-                buyer_page.get_by_role("link", name="پیام مستقیم").click()
+                buyer_page.get_by_role("link", name="ارسال پیام به هنرمند").click()
 
             buyer_page.wait_for_url("**/dashboard/buyer/messages*")
             self.assertEqual(direct_response.value.status, 201)
