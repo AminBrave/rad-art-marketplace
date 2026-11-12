@@ -23,7 +23,7 @@ This matrix maps real product behavior to actors, risk and the tests that should
 | Authentication | Guest bootstrap, registration, buyer/artist role choice, admin-role rejection, password confirmation, login/logout and invalid credentials | Expanded in this phase with registration/login/logout session rotation and guest login throttling; registration throttling and broader abuse scenarios remain |
 | Authorization | Admin user-management role gate, self-demotion protection, artist artwork ownership and conversation participant checks | Good targeted cases; complete route/role matrix still needed |
 | Artwork | Upload validation, private storage, owner/admin editing, pending/public visibility, filters, sort, pagination and price nullability | Broad; add more malformed uploads, public profile visibility and lifecycle boundary cases |
-| Moderation | Admin-only queue, approve/reject/request-changes, required notes, repeat decision rejection, artist edit resets review metadata | Good; simultaneous admin decision and notification failure need integration coverage |
+| Moderation | Admin-only queue, approve/reject/request-changes, required notes, repeat decision rejection, artist edit resets review metadata, owner-only review feedback, resubmission cleanup and public artist-profile visibility across review states | Stronger lifecycle coverage; simultaneous admin decision and notification failure still need integration coverage |
 | Messaging | Participant isolation, idempotent client message IDs, reply context, reactions, edit/delete, read state and inbox settings | Broad; queue/notification retry and simultaneous duplicate requests remain gaps |
 | Attachments | Private PDF upload/download, sender-only upload, unsupported extension rejection, deletion cleanup and participant download | Expanded in this phase; route-binding, guest, preview-type and count boundaries now have regression cases |
 | Safety | Report idempotency, block/unblock, viewer-relative state, admin moderation and audit record | Good; abuse/rate-limit and attachment cleanup failure paths deserve deeper integration coverage |
@@ -57,7 +57,7 @@ This is a target coverage contract, not a claim that every cell has a dedicated 
 - Authentication: registration/login/logout session rotation and guest login throttling now have regression cases; add registration-throttle and broader abuse/lockout scenarios.
 - Authorization: table-driven coverage for all protected route families; guest, wrong role, wrong owner and non-participant cases.
 - Private media: wrong conversation/message/attachment combinations, missing files, private cache headers, unsupported preview types, upload size/MIME/content mismatch and attachment count.
-- Artwork lifecycle: only pending work can be moderated; artist resubmission clears review metadata; stale concurrent decisions cannot overwrite each other; public catalogue never reveals unpublished work.
+- Artwork lifecycle: only pending work can be moderated; artist resubmission clears review metadata; review feedback is visible only to the owner; public artist profiles expose approved work only across all review states. Stale concurrent decisions cannot overwrite each other.
 - Messaging: duplicate client ID retry, duplicate conversation creation, cross-conversation reply/artwork references, blocked send and read-state isolation.
 - Notifications: account isolation, preference enforcement, duplicate delivery/retry semantics and no private message leakage.
 - Transaction boundaries: storage/database rollback and cleanup failure behavior.
