@@ -4,7 +4,9 @@ These checks catch missing document direction, landmarks and accessible names.
 They complement—not replace—a full axe-core audit and manual keyboard testing.
 """
 
+import json
 import unittest
+import uuid
 
 from playwright.sync_api import sync_playwright
 
@@ -90,6 +92,89 @@ class AccessibilitySmokeTests(unittest.TestCase):
                 page.get_by_label("ایمیل").wait_for()
                 page.get_by_label("گذرواژه", exact=True).wait_for()
                 page.get_by_role("button", name="ایجاد حساب" if route == "/register" else "ورود به حساب").wait_for()
+        finally:
+            context.close()
+
+    def test_registration_can_be_completed_with_keyboard_and_keeps_focus_visible(self):
+        context, page = self.new_page()
+        email = f"keyboard-{uuid.uuid4().hex}@example.test"
+        attempts = {"count": 0}
+        user = {
+            "id": 71003,
+            "name": "ثبت‌نام صفحه‌کلید",
+            "email": email,
+            "role": "buyer",
+        }
+
+        page.route(
+            "**/api/v1/auth/me",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body='{"data":null}',
+            ),
+        )
+
+        def register(route):
+            attempts["count"] += 1
+            route.fulfill(
+                status=201,
+                content_type="application/json",
+                body=json.dumps({"data": user}),
+            )
+
+        page.route("**/api/v1/auth/register", register)
+
+        try:
+            response = page.goto(BASE_URL + "/register")
+            self.assertIsNotNone(response)
+            self.assertLess(response.status, 400)
+            page.get_by_role("heading", name="ساخت حساب کاربری").wait_for()
+
+            # Navigate from the document start using Tab only: back link,
+            # login/register mode controls, then the account-role selector.
+            for _ in range(4):
+                page.keyboard.press("Tab")
+            self.assertEqual(
+                page.evaluate("document.activeElement.name"),
+                "role",
+                "Keyboard order should reach the account-role selector after the page links and mode controls.",
+            )
+            page.keyboard.press("Home")
+            page.keyboard.press("Tab")
+            page.keyboard.type(user["name"])
+            page.keyboard.press("Tab")
+            page.keyboard.type(email)
+            page.keyboard.press("Tab")
+            page.keyboard.type("strong-password-123")
+            page.keyboard.press("Tab")
+            page.keyboard.type("strong-password-123")
+            page.keyboard.press("Tab")
+
+            self.assertEqual(
+                page.evaluate("document.activeElement.textContent.trim()"),
+                "ایجاد حساب",
+            )
+            focus_style = page.evaluate("""() => {
+                const style = getComputedStyle(document.activeElement);
+                return { outlineStyle: style.outlineStyle, outlineWidth: style.outlineWidth };
+            }""")
+            self.assertEqual(focus_style["outlineStyle"], "solid")
+            self.assertGreaterEqual(float(focus_style["outlineWidth"].replace("px", "")), 2)
+
+            with page.expect_response(
+                lambda result: result.url.endswith("/api/v1/auth/register")
+                and result.request.method == "POST"
+                and result.status == 201
+            ):
+                page.keyboard.press("Enter")
+
+            page.wait_for_url("**/dashboard/buyer")
+            page.get_by_role(
+                "heading",
+                name="هنر مورد علاقه‌تان را کشف کنید و گفت‌وگو را ادامه دهید.",
+            ).wait_for()
+            self.assertEqual(attempts["count"], 1)
         finally:
             context.close()
 
