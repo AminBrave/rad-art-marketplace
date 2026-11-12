@@ -144,6 +144,7 @@ class DemoDatabaseSeederTest extends TestCase
 
     public function test_demo_seeder_removes_only_retired_demo_inquiries_and_empty_buyer_threads(): void
     {
+        Storage::fake('local');
         $buyer = User::query()->create([
             'name' => 'خریدار نمونه',
             'email' => 'buyer@rademan.test',
