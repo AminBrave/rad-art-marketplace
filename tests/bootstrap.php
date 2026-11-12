@@ -39,11 +39,11 @@ $environment = [
     'RAD_ART_PUBLIC_STORAGE_PATH' => $runtimeDirectory.'/storage/public',
     'RAD_ART_BROWSER_TEST_MODE' => '0',
     'VIEW_COMPILED_PATH' => $runtimeDirectory.'/views',
-    'APP_CONFIG_CACHE' => $cacheDirectory.'/config.testing.php',
-    'APP_ROUTES_CACHE' => $cacheDirectory.'/routes.testing.php',
-    'APP_EVENTS_CACHE' => $cacheDirectory.'/events.testing.php',
-    'APP_SERVICES_CACHE' => $cacheDirectory.'/services.testing.php',
-    'APP_PACKAGES_CACHE' => $cacheDirectory.'/packages.testing.php',
+    'APP_CONFIG_CACHE' => 'bootstrap/cache/config.testing.php',
+    'APP_ROUTES_CACHE' => 'bootstrap/cache/routes.testing.php',
+    'APP_EVENTS_CACHE' => 'bootstrap/cache/events.testing.php',
+    'APP_SERVICES_CACHE' => 'bootstrap/cache/services.testing.php',
+    'APP_PACKAGES_CACHE' => 'bootstrap/cache/packages.testing.php',
 ];
 
 foreach ($environment as $name => $value) {
