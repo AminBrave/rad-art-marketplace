@@ -131,6 +131,10 @@ def write_junit_report(result: TimedTextTestResult, destination: Path) -> None:
 
 
 def main() -> int:
+    report_dir = Path(os.environ.get("RAD_ART_TEST_REPORT_DIR", "build/test-reports"))
+    report_path = report_dir / "browser-junit.xml"
+    report_path.unlink(missing_ok=True)
+
     try:
         validate_local_target()
     except RuntimeError as error:
@@ -157,8 +161,6 @@ def main() -> int:
     runner = unittest.TextTestRunner(verbosity=2, resultclass=TimedTextTestResult)
     result = runner.run(suite)
 
-    report_dir = Path(os.environ.get("RAD_ART_TEST_REPORT_DIR", "build/test-reports"))
-    report_path = report_dir / "browser-junit.xml"
     write_junit_report(result, report_path)
     print(f"JUnit browser report: {report_path}")
 
