@@ -2,7 +2,7 @@
 
 This directory contains the automated quality checks for Rademan, a Persian-first artist discovery, portfolio publishing, editorial curation and artist-contact marketplace.
 
-The suite is organized by the boundary being verified: Laravel domain/API behavior, database and storage integration, frontend logic and component contracts, and complete browser journeys. Browser coverage includes visitor-facing artist-directory empty/error/retry states and keyboard-submitted search. Test names should describe observable behavior and the user/security invariant—not the implementation detail.
+The suite is organized by the boundary being verified: Laravel domain/API behavior, database and storage integration, frontend logic and component contracts, and complete browser journeys. Browser coverage includes visitor-facing artist-directory empty/error/retry states and keyboard-submitted search, expired-session recovery to the originally requested workspace, and duplicate-registration submission protection. Test names should describe observable behavior and the user/security invariant—not the implementation detail.
 
 ## Start here
 
