@@ -66,7 +66,7 @@ class DemoDatabaseSeederTest extends TestCase
         Storage::disk('local')->assertMissing($missingImage->image_path);
     }
 
-    public function test_seeded_accounts_support_admin_pagination: void
+    public function test_seeded_accounts_support_admin_pagination(): void
     {
         Storage::fake('local');
         $this->seed(DemoDatabaseSeeder::class);
@@ -112,7 +112,7 @@ class DemoDatabaseSeederTest extends TestCase
             ->assertOk()->assertJsonCount(6, 'data');
     }
 
-    public function test_seeded_empty_buyer_has_no_conversations: void
+    public function test_seeded_empty_buyer_has_no_conversations(): void
     {
         Storage::fake('local');
         $this->seed(DemoDatabaseSeeder::class);
