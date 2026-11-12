@@ -51,6 +51,30 @@ class MessagingHistoryResilienceTests(unittest.TestCase):
             ),
         )
 
+
+        # WorkspaceLayout loads notifications for every authenticated workspace.
+        # Keep these shared shell requests authenticated so they cannot trigger
+        # AuthContext's global 401 session-expiry handler in an otherwise mocked journey.
+        page.route(
+            "**/api/v1/notifications",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({"data": [], "unread_count": 0}),
+            ),
+        )
+        page.route(
+            "**/api/v1/notifications/preferences",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({"data": {
+                    "in_app_messages": True,
+                    "email_available": False,
+                }}),
+            ),
+        )
+
         thread = {
             "id": conversation_id,
             "participant": {"id": 73002, "name": "هنرمند گفتگو"},
