@@ -104,13 +104,20 @@ class FullStackBuyerArtistMessagingTests(unittest.TestCase):
 
             first_message = "سلام، درباره روند خلق آثار شما پرسشی دارم."
             buyer_page.get_by_label("متن پیام").fill(first_message)
+            buyer_requests = []
+            buyer_page.on("request", lambda request: buyer_requests.append(request)
+                          if request.url.endswith(f"/api/v1/conversations/{conversation_id}/messages")
+                          and request.method == "POST" else None)
             with buyer_page.expect_response(
                 lambda response: response.url.endswith(f"/api/v1/conversations/{conversation_id}/messages")
                 and response.request.method == "POST"
             ) as buyer_send:
-                buyer_page.get_by_role("button", name="ارسال پیام", exact=True).click()
+                buyer_page.locator("form").filter(
+                    has=buyer_page.get_by_label("متن پیام")
+                ).evaluate("(form) => { form.requestSubmit(); form.requestSubmit(); }")
 
             self.assertEqual(buyer_send.value.status, 201)
+            self.assertEqual(len(buyer_requests), 1, "Rapid duplicate sends must create one message request.")
             buyer_page.get_by_role("paragraph").filter(has_text=first_message).wait_for()
 
             self.login_artist(artist_page)
@@ -119,13 +126,20 @@ class FullStackBuyerArtistMessagingTests(unittest.TestCase):
 
             reply = "سلام، خوشحال می‌شوم جزئیات بیشتری درباره اثر ارائه کنم."
             artist_page.get_by_label("متن پیام").fill(reply)
+            artist_requests = []
+            artist_page.on("request", lambda request: artist_requests.append(request)
+                           if request.url.endswith(f"/api/v1/conversations/{conversation_id}/messages")
+                           and request.method == "POST" else None)
             with artist_page.expect_response(
                 lambda response: response.url.endswith(f"/api/v1/conversations/{conversation_id}/messages")
                 and response.request.method == "POST"
             ) as artist_send:
-                artist_page.get_by_role("button", name="ارسال پیام", exact=True).click()
+                artist_page.locator("form").filter(
+                    has=artist_page.get_by_label("متن پیام")
+                ).evaluate("(form) => { form.requestSubmit(); form.requestSubmit(); }")
 
             self.assertEqual(artist_send.value.status, 201)
+            self.assertEqual(len(artist_requests), 1, "Rapid duplicate sends must create one message request.")
             artist_page.get_by_role("paragraph").filter(has_text=reply).wait_for()
 
             buyer_page.reload()
