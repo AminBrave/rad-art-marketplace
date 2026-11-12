@@ -166,7 +166,7 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
                 }),
             )
 
-        page.route(re.compile(rf".*/api/v1/conversations/{conversation_id}/messages(?:\\?.*)?$"), message_history)
+        page.route(re.compile(rf".*/api/v1/conversations/{conversation_id}/messages(?:\?.*)?$"), message_history)
         page.route(
             f"**/api/v1/conversations/{conversation_id}/read",
             lambda route: route.fulfill(
