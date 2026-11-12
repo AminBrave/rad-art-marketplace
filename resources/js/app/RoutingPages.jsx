@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
@@ -277,6 +277,7 @@ export function ArtistProfileSettings() {
     const [errors, setErrors] = useState({});
     const [message, setMessage] = useState('');
     const [busy, setBusy] = useState(false);
+    const savingRef = useRef(false);
 
     useEffect(() => {
         if (profile) setForm({ ...emptyProfile, ...profile });
@@ -289,6 +290,8 @@ export function ArtistProfileSettings() {
 
     const save = async (event) => {
         event.preventDefault();
+        if (savingRef.current) return;
+        savingRef.current = true;
         setBusy(true);
         setErrors({});
         setMessage('');
@@ -307,6 +310,7 @@ export function ArtistProfileSettings() {
                 setMessage('ذخیره پروفایل انجام نشد. دوباره تلاش کنید.');
             }
         } finally {
+            savingRef.current = false;
             setBusy(false);
         }
     };
