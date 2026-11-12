@@ -36,7 +36,9 @@
     "test:quality:all": "node scripts/project.mjs verify:all",
     "test:quality:backend": "node scripts/project.mjs backend",
     "test:quality:frontend": "node scripts/project.mjs frontend",
-    "test:quality:browser": "node scripts/project.mjs browser"
+    "test:quality:browser": "node scripts/project.mjs browser",
+    "browser:prepare": "node scripts/project.mjs browser:prepare",
+    "dev:browser": "node scripts/project.mjs dev:browser"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",
