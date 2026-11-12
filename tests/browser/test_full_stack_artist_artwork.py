@@ -36,7 +36,9 @@ class FullStackArtistArtworkTests(unittest.TestCase):
             page.goto(BASE_URL + "/login", wait_until="domcontentloaded")
             page.locator('input[name="email"]').fill("artist@rademan.test")
             page.locator('input[name="password"]').fill("Demo@12345")
-            page.get_by_role("button", name="ورود به حساب").click()
+            with page.expect_response(lambda response: response.url.endswith("/api/v1/auth/login") and response.request.method == "POST") as login_response:
+                page.get_by_role("button", name="ورود به حساب").click()
+            self.assertEqual(200, login_response.value.status, f"Artist login failed with HTTP {login_response.value.status}.")
             page.wait_for_url("**/dashboard/artist")
 
             page.goto(BASE_URL + "/dashboard/artist/artworks")
