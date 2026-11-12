@@ -140,7 +140,7 @@ class RealUserBrowserFlowTests(unittest.TestCase):
         self.page.get_by_role("log", name="پیام‌های گفتگو").get_by_text(message, exact=True).wait_for(timeout=20_000)
         self.page.get_by_role("log", name="پیام‌های گفتگو").locator(
             'a[href="/artworks/demo-01-01"]'
-        ).wait_for(timeout=20_000)
+        ).first.wait_for(timeout=20_000)
         self.assert_no_uncaught_page_errors()
 
     def test_artist_and_admin_can_open_their_role_workspaces(self) -> None:
