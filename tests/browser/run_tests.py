@@ -10,6 +10,39 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 
+def validate_local_target() -> None:
+    from urllib.parse import urlparse
+    from urllib.request import urlopen
+    from urllib.error import URLError, HTTPError
+
+    raw_url = os.environ.get("RAD_ART_BASE_URL", "https://rad.localhost").rstrip("/")
+    parsed = urlparse(raw_url)
+    hostname = (parsed.hostname or "").lower()
+    is_loopback_name = (
+        hostname == "localhost"
+        or hostname.endswith(".localhost")
+        or hostname == "127.0.0.1"
+        or hostname == "::1"
+    )
+
+    if parsed.scheme not in {"http", "https"} or not is_loopback_name:
+        raise RuntimeError(
+            "Browser tests are restricted to localhost/loopback URLs. "
+            "Set RAD_ART_BASE_URL to your local RAD development URL; production and remote hosts are refused."
+        )
+
+    health_url = f"{raw_url}/api/v1/health"
+    try:
+        with urlopen(health_url, timeout=8) as response:
+            if response.status != 200:
+                raise RuntimeError(f"Local app health check returned HTTP {response.status}: {health_url}")
+    except (URLError, HTTPError, TimeoutError) as error:
+        raise RuntimeError(
+            f"Local RAD app is not ready at {health_url}. Start it with npm run dev:local first. "
+            f"Underlying error: {error}"
+        ) from error
+
+
 class TimedTextTestResult(unittest.TextTestResult):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -70,6 +103,12 @@ def write_junit_report(result: TimedTextTestResult, destination: Path) -> None:
 
 
 def main() -> int:
+    try:
+        validate_local_target()
+    except RuntimeError as error:
+        print(f\"Browser test preflight failed: {error}\", file=sys.stderr)
+        return 2
+
     try:
         import playwright.sync_api
     except ImportError:
