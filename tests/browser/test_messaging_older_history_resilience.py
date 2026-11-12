@@ -2,6 +2,7 @@
 
 import json
 import unittest
+import re
 from urllib.parse import parse_qs, urlparse
 
 from playwright.sync_api import sync_playwright
@@ -139,7 +140,7 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
             page.goto(BASE_URL + f"/dashboard/buyer/messages?conversation={conversation_id}", wait_until="domcontentloaded")
             page.get_by_role("heading", name="پیام‌ها").wait_for()
             page.get_by_role("heading", name="هنرمند صفحه‌بندی").wait_for()
-            page.get_by_text("پیام موجود 1", exact=False).wait_for()
+            page.get_by_text(re.compile(r"^پیام موجود 1 ")).wait_for()
             log = page.get_by_role("log", name="پیام‌های گفتگو")
             page.wait_for_function(
                 "() => { const node = document.querySelector('[role=log][aria-label=\"پیام‌های گفتگو\"]');"
