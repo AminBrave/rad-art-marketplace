@@ -22,6 +22,14 @@ class AppServiceProvider extends ServiceProvider
             $email = mb_strtolower(trim((string) $request->input('email')));
             $identityKey = hash('sha256', $email);
 
+            if ($this->app->environment('local')) {
+                return [
+                    Limit::perMinute(120)->by('auth-identity:'.$request->ip().':'.$identityKey),
+                    Limit::perHour(1200)->by('auth-email:'.$identityKey),
+                    Limit::perMinute(1200)->by('auth-ip:'.$request->ip()),
+                ];
+            }
+
             return [
                 Limit::perMinute(10)->by('auth-identity:'.$request->ip().':'.$identityKey),
                 Limit::perHour(20)->by('auth-email:'.$identityKey),
