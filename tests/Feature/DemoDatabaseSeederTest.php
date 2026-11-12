@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Models\ArtistInquiry;
 use App\Models\ArtistProfile;
 use App\Models\Artwork;
 use App\Models\Category;
+use App\Models\Conversation;
 use App\Models\CuratedCollection;
 use App\Models\EditorialAudit;
 use App\Models\FeaturedArtistSelection;
@@ -138,6 +140,71 @@ class DemoDatabaseSeederTest extends TestCase
         $this->actingAs($publicStarter)->getJson('/api/v1/artist/inquiries')->assertNotFound();
 
         $this->get('/api/v1/artworks/demo-broken-image/image')->assertNotFound();
+    }
+
+    public function test_demo_seeder_removes_only_retired_demo_inquiries_and_empty_buyer_threads(): void
+    {
+        $buyer = User::query()->create([
+            'name' => 'خریدار نمونه',
+            'email' => 'buyer@rademan.test',
+            'password' => 'Demo@12345',
+            'role' => User::ROLE_BUYER,
+        ]);
+        $emptyBuyer = User::query()->create([
+            'name' => 'خریدار بدون گفتگو',
+            'email' => 'buyer-empty@rademan.test',
+            'password' => 'Demo@12345',
+            'role' => User::ROLE_BUYER,
+        ]);
+        $artist = User::query()->create([
+            'name' => 'هنرمند نمونه',
+            'email' => 'artist@rademan.test',
+            'password' => 'Demo@12345',
+            'role' => User::ROLE_ARTIST,
+        ]);
+        $externalArtist = User::query()->create([
+            'name' => 'هنرمند خارج از داده نمایشی',
+            'email' => 'external-artist@example.test',
+            'password' => 'strong-password-123',
+            'role' => User::ROLE_ARTIST,
+        ]);
+        $profile = $artist->artistProfile()->create([
+            'slug' => 'arman-rezaei',
+            'display_name' => $artist->name,
+            'is_public' => true,
+        ]);
+
+        $retired = ArtistInquiry::query()->create([
+            'artist_profile_id' => $profile->id,
+            'sender_user_id' => $buyer->id,
+            'subject' => 'پرسش نمایشی شماره 99',
+            'message' => 'داده قدیمی نمایشی',
+            'status' => ArtistInquiry::STATUS_NEW,
+        ]);
+        $manual = ArtistInquiry::query()->create([
+            'artist_profile_id' => $profile->id,
+            'sender_user_id' => $buyer->id,
+            'subject' => 'پرسش دستی که نباید حذف شود',
+            'message' => 'رکورد خارج از الگوی داده نمایشی',
+            'status' => ArtistInquiry::STATUS_NEW,
+        ]);
+        $retiredThread = Conversation::query()->create([
+            'pair_key' => $emptyBuyer->id.':'.$artist->id,
+            'buyer_user_id' => $emptyBuyer->id,
+            'artist_user_id' => $artist->id,
+        ]);
+        $unrelatedThread = Conversation::query()->create([
+            'pair_key' => $emptyBuyer->id.':'.$externalArtist->id,
+            'buyer_user_id' => $emptyBuyer->id,
+            'artist_user_id' => $externalArtist->id,
+        ]);
+
+        app(DemoDatabaseSeeder::class)->run();
+
+        $this->assertDatabaseMissing('artist_inquiries', ['id' => $retired->id]);
+        $this->assertDatabaseHas('artist_inquiries', ['id' => $manual->id]);
+        $this->assertDatabaseMissing('conversations', ['id' => $retiredThread->id]);
+        $this->assertDatabaseHas('conversations', ['id' => $unrelatedThread->id]);
     }
 
     public function test_demo_seeder_is_repeatable_without_duplicate_records(): void
