@@ -115,10 +115,10 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
 
             page.route("**/api/v1/**", api_fixture)
             try:
-                response = page.goto(BASE_URL + route_path, wait_until="domcontentloaded")
+                response = page.goto(BASE_URL + route_path, wait_until="commit")
                 self.assertIsNotNone(response, f"No document response for {route_path}")
                 self.assertLess(response.status, 400, f"{route_path} returned HTTP {response.status}")
-                page.wait_for_timeout(300)
+                page.locator("#app").get_by_role("heading").first.wait_for()
                 self.assertEqual(page.locator("html").get_attribute("lang"), "fa")
                 self.assertEqual(page.locator("html").get_attribute("dir"), "rtl")
                 for width in VIEWPORTS:
