@@ -322,7 +322,7 @@ class DemoDatabaseSeeder extends Seeder
                     ],
                 );
 
-                $artistMessage = $conversation->messages()->firstOrCreate(
+                $conversation->messages()->firstOrCreate(
                     ['client_message_id' => 'demo-'.$pairKey.'-artist'],
                     [
                         'sender_user_id' => $artist->id,
@@ -403,7 +403,7 @@ class DemoDatabaseSeeder extends Seeder
 
         DB::table('notifications')
             ->where('type', MessageReceivedNotification::class)
-            ->whereIn('notifiable_id', [...$demoArtistIds, $emptyBuyer->id])
+            ->whereIn('notifiable_id', [...$demoArtistIds->all(), $emptyBuyer->id])
             ->delete();
 
         DB::table('user_blocks')
