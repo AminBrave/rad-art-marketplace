@@ -19,7 +19,7 @@
     "test:unit": "node scripts/project.mjs unit",
     "test:feature": "node scripts/project.mjs feature",
     "test:integration": "node scripts/project.mjs integration",
-    "test:frontend": "node --test tests/js/*.test.js",
+    "test:frontend": "node scripts/project.mjs frontend:test",
     "test:browser": "node scripts/project.mjs browser",
     "lint": "eslint resources/js --max-warnings=0",
     "verify:backend": "node scripts/project.mjs backend",
@@ -64,6 +64,6 @@
     "eslint-plugin-react": "^7.37.5"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=20.13.0"
   }
 }
