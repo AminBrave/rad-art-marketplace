@@ -32,7 +32,13 @@ class HealthController
 
         try {
             return Schema::hasTable('users')
-                && DB::table('users')->where('email', 'admin@rademan.test')->exists();
+                && Schema::hasTable('artworks')
+                && DB::table('users')->whereIn('email', [
+                    'admin@rademan.test',
+                    'artist@rademan.test',
+                    'buyer-empty@rademan.test',
+                ])->count() === 3
+                && DB::table('artworks')->where('slug', 'demo-01-01')->exists();
         } catch (Throwable) {
             return false;
         }
