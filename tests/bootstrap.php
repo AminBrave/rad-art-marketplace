@@ -42,6 +42,19 @@ foreach ($environment as $name => $value) {
 }
 
 foreach ([
+    'config.testing.php',
+    'routes.testing.php',
+    'events.testing.php',
+    'services.testing.php',
+    'packages.testing.php',
+] as $cacheFile) {
+    $cachePath = $cacheDirectory.'/'.$cacheFile;
+    if (is_file($cachePath) && ! unlink($cachePath)) {
+        throw new RuntimeException('Unable to remove stale isolated test cache: '.$cachePath);
+    }
+}
+
+foreach ([
     $runtimeDirectory.'/views',
     $runtimeDirectory.'/storage/private',
     $runtimeDirectory.'/storage/public',
