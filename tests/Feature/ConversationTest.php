@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Models\ArtistInquiry;
 use App\Models\Artwork;
 use App\Models\Category;
 use App\Models\Conversation;
@@ -19,36 +18,9 @@ class ConversationTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        config(['features.inquiries' => true]);
-    }
-
-    public function test_buyer_can_open_a_private_conversation_from_their_inquiry(): void
-    {
-        [$buyer, $artist, $inquiry] = $this->participantsWithInquiry();
-
-        $this->actingAs($buyer)
-            ->postJson('/api/v1/inquiries/'.$inquiry->id.'/conversation')
-            ->assertOk()
-            ->assertJsonPath('data.inquiry_id', $inquiry->id)
-            ->assertJsonPath('data.last_message.body', $inquiry->message)
-            ->assertJsonPath('data.participant.name', $artist->name);
-
-        $this->assertDatabaseHas('conversations', [
-            'inquiry_id' => $inquiry->id,
-            'buyer_user_id' => $buyer->id,
-            'artist_user_id' => $artist->id,
-        ]);
-        $this->assertDatabaseCount('messages', 1);
-    }
-
     public function test_artist_can_reply_and_buyer_can_read_and_mark_the_reply_as_read(): void
     {
-        [$buyer, $artist, $inquiry] = $this->participantsWithInquiry();
-        $conversation = $this->openConversationAsBuyer($buyer, $inquiry);
+        [$buyer, $artist, $conversation] = $this->participantsWithConversation();
 
         $this->actingAs($artist)
             ->postJson('/api/v1/conversations/'.$conversation->id.'/messages', [
@@ -76,8 +48,7 @@ class ConversationTest extends TestCase
 
     public function test_incremental_message_fetch_returns_only_messages_after_the_cursor(): void
     {
-        [$buyer, $artist, $inquiry] = $this->participantsWithInquiry();
-        $conversation = $this->openConversationAsBuyer($buyer, $inquiry);
+        [$buyer, $artist, $conversation] = $this->participantsWithConversation();
         $firstMessage = $conversation->messages()->firstOrFail();
 
         $this->actingAs($artist)
@@ -114,8 +85,7 @@ class ConversationTest extends TestCase
 
     public function test_conversation_history_can_be_loaded_in_older_pages_without_losing_order(): void
     {
-        [$buyer, $artist, $inquiry] = $this->participantsWithInquiry();
-        $conversation = $this->openConversationAsBuyer($buyer, $inquiry);
+        [$buyer, $artist, $conversation] = $this->participantsWithConversation();
         $initialMessage = $conversation->messages()->firstOrFail();
 
         for ($index = 1; $index <= 34; $index++) {
@@ -148,8 +118,7 @@ class ConversationTest extends TestCase
 
     public function test_older_message_cursor_remains_stable_when_new_messages_arrive(): void
     {
-        [$buyer, $artist, $inquiry] = $this->participantsWithInquiry();
-        $conversation = $this->openConversationAsBuyer($buyer, $inquiry);
+        [$buyer, $artist, $conversation] = $this->participantsWithConversation();
 
         for ($index = 1; $index <= 34; $index++) {
             $conversation->messages()->create([
@@ -188,8 +157,7 @@ class ConversationTest extends TestCase
 
     public function test_message_sending_is_idempotent_for_a_client_message_id(): void
     {
-        [$buyer, , $inquiry] = $this->participantsWithInquiry();
-        $conversation = $this->openConversationAsBuyer($buyer, $inquiry);
+        [$buyer, , $conversation] = $this->participantsWithConversation();
         $payload = ['body' => 'پیام آزمایشی برای جلوگیری از ارسال تکراری.', 'client_message_id' => 'retry-001'];
 
         $this->actingAs($buyer)
@@ -205,8 +173,7 @@ class ConversationTest extends TestCase
 
     public function test_non_participants_cannot_read_or_mutate_a_conversation(): void
     {
-        [$buyer, , $inquiry] = $this->participantsWithInquiry();
-        $conversation = $this->openConversationAsBuyer($buyer, $inquiry);
+        [$buyer, , $conversation] = $this->participantsWithConversation();
         $outsider = $this->makeUser('outsider@example.test', User::ROLE_BUYER);
 
         $this->actingAs($outsider)
@@ -223,10 +190,8 @@ class ConversationTest extends TestCase
 
     public function test_users_cannot_reply_to_a_message_from_another_conversation(): void
     {
-        [$buyer, , $inquiry] = $this->participantsWithInquiry();
-        [, , $otherInquiry] = $this->participantsWithInquiry('other-buyer@example.test', 'other-artist@example.test');
-        $conversation = $this->openConversationAsBuyer($buyer, $inquiry);
-        $otherConversation = $this->openConversationAsBuyer($otherInquiry->sender, $otherInquiry);
+        [$buyer, , $conversation] = $this->participantsWithConversation();
+        [, , $otherConversation] = $this->participantsWithConversation('other-buyer@example.test', 'other-artist@example.test');
         $otherMessage = $otherConversation->messages()->firstOrFail();
 
         $this->actingAs($buyer)
@@ -240,8 +205,7 @@ class ConversationTest extends TestCase
 
     public function test_message_sender_can_edit_and_delete_own_message_without_retaining_deleted_body(): void
     {
-        [$buyer, $artist, $inquiry] = $this->participantsWithInquiry();
-        $conversation = $this->openConversationAsBuyer($buyer, $inquiry);
+        [$buyer, $artist, $conversation] = $this->participantsWithConversation();
         $message = $conversation->messages()->firstOrFail();
 
         $edited = $this->actingAs($buyer)
@@ -280,8 +244,7 @@ class ConversationTest extends TestCase
 
     public function test_participants_can_add_and_remove_idempotent_message_reactions(): void
     {
-        [$buyer, $artist, $inquiry] = $this->participantsWithInquiry();
-        $conversation = $this->openConversationAsBuyer($buyer, $inquiry);
+        [$buyer, $artist, $conversation] = $this->participantsWithConversation();
         $message = $conversation->messages()->firstOrFail();
 
         $payload = ['emoji' => '❤️', 'action' => 'add'];
@@ -309,8 +272,7 @@ class ConversationTest extends TestCase
 
     public function test_message_reply_returns_quoted_message_context(): void
     {
-        [$buyer, , $inquiry] = $this->participantsWithInquiry();
-        $conversation = $this->openConversationAsBuyer($buyer, $inquiry);
+        [$buyer, , $conversation] = $this->participantsWithConversation();
         $original = $conversation->messages()->firstOrFail();
 
         $this->actingAs($buyer)
@@ -321,12 +283,12 @@ class ConversationTest extends TestCase
             ])
             ->assertCreated()
             ->assertJsonPath('data.reply_to.id', $original->id)
-            ->assertJsonPath('data.reply_to.body', $inquiry->message);
+            ->assertJsonPath('data.reply_to.body', 'مایلم درباره جزئیات این اثر اطلاعات بیشتری دریافت کنم.');
     }
 
     public function test_buyer_can_start_direct_conversation_from_approved_artwork_and_keep_artwork_context(): void
     {
-        [$buyer, $artist] = $this->participantsWithInquiry();
+        [$buyer, $artist] = $this->participants();
         $profile = $artist->artistProfile()->firstOrFail();
         $category = Category::query()->create([
             'name' => 'نقاشی زمینه گفتگوی مستقیم',
@@ -361,7 +323,6 @@ class ConversationTest extends TestCase
         $this->assertDatabaseHas('conversation_contexts', [
             'conversation_id' => $conversationId,
             'artwork_id' => $artwork->id,
-            'inquiry_id' => null,
             'added_by_user_id' => $buyer->id,
         ]);
 
@@ -377,7 +338,7 @@ class ConversationTest extends TestCase
 
     public function test_buyer_can_send_an_artwork_reply_card_that_the_artist_receives_with_full_context(): void
     {
-        [$buyer, $artist] = $this->participantsWithInquiry('artwork-reply-buyer@example.test', 'artwork-reply-artist@example.test');
+        [$buyer, $artist] = $this->participants('artwork-reply-buyer@example.test', 'artwork-reply-artist@example.test');
         $profile = $artist->artistProfile()->firstOrFail();
         $category = Category::query()->create(['name' => 'نقاشی ارجاع پیام', 'slug' => 'artwork-reply-painting', 'is_active' => true]);
         $artwork = $profile->artworks()->create([
@@ -460,7 +421,7 @@ class ConversationTest extends TestCase
 
     public function test_direct_artwork_conversation_rejects_non_buyers_and_unapproved_artworks(): void
     {
-        [$buyer, $artist] = $this->participantsWithInquiry('buyer-direct@example.test', 'artist-direct@example.test');
+        [$buyer, $artist] = $this->participants('buyer-direct@example.test', 'artist-direct@example.test');
         $profile = $artist->artistProfile()->firstOrFail();
 
         $this->actingAs($artist)->postJson('/api/v1/conversations/direct', [
@@ -487,8 +448,7 @@ class ConversationTest extends TestCase
     {
         Storage::fake('local');
 
-        [$buyer, $artist, $inquiry] = $this->participantsWithInquiry();
-        $conversation = $this->openConversationAsBuyer($buyer, $inquiry);
+        [$buyer, $artist, $conversation] = $this->participantsWithConversation();
         $message = $conversation->messages()->firstOrFail();
         $path = 'message-attachments/'.$conversation->id.'/preview-test.jpg';
         Storage::disk('local')->put($path, 'private-image-bytes');
@@ -519,35 +479,40 @@ class ConversationTest extends TestCase
         $this->get($base.'/preview')->assertNotFound();
     }
 
-    private function participantsWithInquiry(
+    private function participants(
         string $buyerEmail = 'buyer@example.test',
         string $artistEmail = 'artist@example.test'
     ): array {
         $buyer = $this->makeUser($buyerEmail, User::ROLE_BUYER);
         $artist = $this->makeUser($artistEmail, User::ROLE_ARTIST);
-        $profile = $artist->artistProfile()->create([
+        $artist->artistProfile()->create([
             'slug' => 'profile-'.str_replace(['@', '.'], '-', $artistEmail),
             'display_name' => 'هنرمند آزمایشی',
             'is_public' => true,
         ]);
-        $inquiry = ArtistInquiry::query()->create([
-            'artist_profile_id' => $profile->id,
-            'sender_user_id' => $buyer->id,
-            'subject' => 'پرسش درباره اثر',
-            'message' => 'مایلم درباره جزئیات این اثر اطلاعات بیشتری دریافت کنم.',
-            'status' => ArtistInquiry::STATUS_NEW,
-        ]);
 
-        return [$buyer, $artist, $inquiry];
+        return [$buyer, $artist];
     }
 
-    private function openConversationAsBuyer(User $buyer, ArtistInquiry $inquiry): Conversation
-    {
-        $this->actingAs($buyer)
-            ->postJson('/api/v1/inquiries/'.$inquiry->id.'/conversation')
-            ->assertOk();
+    private function participantsWithConversation(
+        string $buyerEmail = 'buyer@example.test',
+        string $artistEmail = 'artist@example.test'
+    ): array {
+        [$buyer, $artist] = $this->participants($buyerEmail, $artistEmail);
+        $conversation = Conversation::query()->create([
+            'pair_key' => $buyer->id.':'.$artist->id,
+            'buyer_user_id' => $buyer->id,
+            'artist_user_id' => $artist->id,
+        ]);
+        $message = $conversation->messages()->create([
+            'sender_user_id' => $buyer->id,
+            'client_message_id' => 'initial-'.$buyer->id.'-'.$artist->id,
+            'body' => 'مایلم درباره جزئیات این اثر اطلاعات بیشتری دریافت کنم.',
+            'delivered_at' => now(),
+        ]);
+        $conversation->forceFill(['last_message_at' => $message->created_at])->save();
 
-        return Conversation::query()->where('inquiry_id', $inquiry->id)->firstOrFail();
+        return [$buyer, $artist, $conversation];
     }
 
     private function makeUser(string $email, string $role): User

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\ArtistInquiry;
 use App\Models\Artwork;
 use App\Models\Conversation;
 use App\Models\Message;
@@ -31,89 +30,12 @@ class ConversationController extends Controller
         return $this->indexFor($request, $request->user(), 'artist_user_id');
     }
 
-    public function startFromInquiry(Request $request, ArtistInquiry $inquiry): JsonResponse
-    {
-        $user = $request->user();
-        $artistUserId = (int) $inquiry->artistProfile()->value('user_id');
-
-        abort_unless(
-            (int) $inquiry->sender_user_id === (int) $user->id
-                || $artistUserId === (int) $user->id,
-            404
-        );
-        abort_unless(in_array($user->role, [User::ROLE_BUYER, User::ROLE_ARTIST], true), 403);
-        $buyerUserId = (int) $inquiry->sender_user_id;
-        $pairBlocked = DB::table('user_blocks')->where(function ($query) use ($buyerUserId, $artistUserId): void {
-            $query->where('blocker_user_id', $buyerUserId)->where('blocked_user_id', $artistUserId);
-        })->orWhere(function ($query) use ($buyerUserId, $artistUserId): void {
-            $query->where('blocker_user_id', $artistUserId)->where('blocked_user_id', $buyerUserId);
-        })->exists();
-        abort_if($pairBlocked, 403, 'شروع گفتگو در این وضعیت امکان‌پذیر نیست.');
-
-        $conversation = DB::transaction(function () use ($inquiry, $artistUserId): Conversation {
-            $pairKey = $inquiry->sender_user_id.':'.$artistUserId;
-            $conversation = Conversation::query()->firstOrCreate(
-                ['pair_key' => $pairKey],
-                [
-                    'inquiry_id' => $inquiry->id,
-                    'pair_key' => $pairKey,
-                    'buyer_user_id' => $inquiry->sender_user_id,
-                    'artist_user_id' => $artistUserId,
-                    'last_message_at' => $inquiry->created_at ?? now(),
-                ],
-            );
-
-            DB::table('conversation_contexts')->updateOrInsert([
-                'conversation_id' => $conversation->id,
-                'inquiry_id' => $inquiry->id,
-                'artwork_id' => $inquiry->artwork_id,
-            ], ['added_by_user_id' => $inquiry->sender_user_id, 'created_at' => now(), 'updated_at' => now()]);
-
-            $initialMessage = $conversation->messages()->firstOrCreate(
-                [
-                    'sender_user_id' => $inquiry->sender_user_id,
-                    'client_message_id' => 'inquiry-'.$inquiry->id,
-                ],
-                [
-                    'body' => $inquiry->message,
-                    'delivered_at' => $inquiry->created_at ?? now(),
-                    'created_at' => $inquiry->created_at ?? now(),
-                    'updated_at' => $inquiry->created_at ?? now(),
-                ],
-            );
-
-            if ($initialMessage->wasRecentlyCreated && (int) $inquiry->sender_user_id === (int) auth()->id() && $conversation->artist_muted_at === null) {
-                User::query()->find($artistUserId)?->notify(new MessageReceivedNotification(
-                    (int) $conversation->id,
-                    (int) $initialMessage->id,
-                    auth()->user()->name,
-                ));
-            }
-
-            return $conversation;
-        });
-
-        $this->authorizeParticipant($user, $conversation, 'view');
-
-        return response()->json([
-            'data' => $this->conversationPayload($conversation->load([
-                'inquiry.artistProfile',
-                'inquiry.artwork',
-                'buyer',
-                'artist.artistProfile',
-                'latestMessage.sender',
-            ]), $user),
-        ]);
-    }
-
     public function show(Request $request, Conversation $conversation): JsonResponse
     {
         $this->authorizeParticipant($request->user(), $conversation, 'view');
 
         return response()->json([
             'data' => $this->conversationPayload($conversation->load([
-                'inquiry.artistProfile',
-                'inquiry.artwork',
                 'buyer',
                 'artist.artistProfile',
                 'latestMessage.sender',
@@ -412,7 +334,7 @@ class ConversationController extends Controller
 
         $query = Conversation::query()
             ->where($participantColumn, $user->id)
-            ->with(['inquiry.artistProfile', 'inquiry.artwork', 'buyer', 'artist.artistProfile', 'latestMessage.sender', 'latestMessage.attachments'])
+            ->with(['buyer', 'artist.artistProfile', 'latestMessage.sender', 'latestMessage.attachments'])
             ->withCount([
                 'messages as unread_count' => fn ($messages) => $messages
                     ->where('sender_user_id', '!=', $user->id)
@@ -455,15 +377,12 @@ class ConversationController extends Controller
 
         return [
             'id' => $conversation->id,
-            'inquiry_id' => $conversation->inquiry_id,
-            'subject' => $conversation->inquiry?->subject,
             'participant' => ['name' => $other?->name],
             'contexts' => DB::table('conversation_contexts')
                 ->where('conversation_id', $conversation->id)
                 ->get()
                 ->map(function ($context): array {
                     $artwork = $context->artwork_id ? DB::table('artworks')->where('id', $context->artwork_id)->first() : null;
-                    $inquiry = $context->inquiry_id ? DB::table('artist_inquiries')->where('id', $context->inquiry_id)->first() : null;
 
                     return [
                         'artwork' => $artwork ? (function () use ($artwork): array {
@@ -482,17 +401,12 @@ class ConversationController extends Controller
                                 'artist_name' => $record?->artistProfile?->display_name,
                             ];
                         })() : null,
-                        'inquiry' => $inquiry ? ['subject' => $inquiry->subject, 'id' => $inquiry->id] : null,
                     ];
                 })->all(),
             'artist' => [
-                'display_name' => $conversation->inquiry?->artistProfile?->display_name ?? $conversation->artist?->artistProfile?->display_name,
-                'slug' => $conversation->inquiry?->artistProfile?->slug ?? $conversation->artist?->artistProfile?->slug,
+                'display_name' => $conversation->artist?->artistProfile?->display_name,
+                'slug' => $conversation->artist?->artistProfile?->slug,
             ],
-            'artwork' => $conversation->inquiry?->artwork ? [
-                'title' => $conversation->inquiry->artwork->title,
-                'slug' => $conversation->inquiry->artwork->slug,
-            ] : null,
             'last_message' => $conversation->latestMessage
                 ? $this->messagePayload($conversation->latestMessage, $viewer)
                 : null,

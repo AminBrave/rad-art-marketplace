@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Models\ArtistInquiry;
 use App\Models\ArtistProfile;
 use App\Models\Artwork;
 use App\Models\Category;
@@ -46,7 +45,6 @@ class DemoDatabaseSeederTest extends TestCase
         foreach (['available', 'sold', 'not_for_sale'] as $availability) {
             $this->assertDatabaseHas('artworks', ['availability' => $availability]);
         }
-        $this->assertDatabaseCount('artist_inquiries', 0);
         $this->assertGreaterThan(0, DB::table('conversations')->count());
         $this->assertGreaterThan(0, DB::table('messages')->whereNotNull('artwork_id')->count());
         $this->assertGreaterThan(0, DB::table('conversation_contexts')->whereNotNull('artwork_id')->count());
@@ -68,7 +66,7 @@ class DemoDatabaseSeederTest extends TestCase
         Storage::disk('local')->assertMissing($missingImage->image_path);
     }
 
-    public function test_seeded_accounts_have_empty_inquiry_views_and_admin_pagination(): void
+    public function test_seeded_accounts_support_admin_pagination: void
     {
         Storage::fake('local');
         $this->seed(DemoDatabaseSeeder::class);
@@ -85,9 +83,7 @@ class DemoDatabaseSeederTest extends TestCase
             ->assertJsonPath('current_page', 2);
 
         $buyer = User::query()->where('email', 'buyer@rademan.test')->firstOrFail();
-        $this->assertDatabaseCount('artist_inquiries', 0);
-        $this->actingAs($buyer)->getJson('/api/v1/buyer/inquiries')->assertNotFound();
-        $this->actingAs($buyer)->getJson('/api/v1/buyer/inquiries?page=2')->assertNotFound();
+        $this->assertDatabaseCount(0);
     }
 
     public function test_seeded_editorial_variations_are_filtered_from_public_endpoints(): void
@@ -116,13 +112,12 @@ class DemoDatabaseSeederTest extends TestCase
             ->assertOk()->assertJsonCount(6, 'data');
     }
 
-    public function test_seeded_empty_accounts_keep_inquiry_api_disabled(): void
+    public function test_seeded_empty_buyer_has_no_conversations: void
     {
         Storage::fake('local');
         $this->seed(DemoDatabaseSeeder::class);
 
         $emptyBuyer = User::query()->where('email', 'buyer-empty@rademan.test')->firstOrFail();
-        $this->actingAs($emptyBuyer)->getJson('/api/v1/buyer/inquiries')->assertNotFound();
         $this->assertSame(0, DB::table('conversations')->where('buyer_user_id', $emptyBuyer->id)->count());
 
         $privateStarter = User::query()->where('email', 'new-artist-01@rademan.test')->firstOrFail();
@@ -134,20 +129,13 @@ class DemoDatabaseSeederTest extends TestCase
         $publicStarter = User::query()->where('email', 'new-artist-02@rademan.test')->firstOrFail();
         $this->actingAs($publicStarter)->getJson('/api/v1/artist/artworks')
             ->assertOk()->assertJsonCount(0, 'data')->assertJsonPath('total', 0);
-        $this->actingAs($publicStarter)->getJson('/api/v1/artist/inquiries')->assertNotFound();
 
         $this->get('/api/v1/artworks/demo-broken-image/image')->assertNotFound();
     }
 
-    public function test_demo_seeder_removes_only_retired_demo_inquiries_and_empty_buyer_threads(): void
+    public function test_demo_seeder_removes_empty_buyer_demo_threads_without_touching_unrelated_threads(): void
     {
         Storage::fake('local');
-        $buyer = User::query()->create([
-            'name' => 'خریدار نمونه',
-            'email' => 'buyer@rademan.test',
-            'password' => 'Demo@12345',
-            'role' => User::ROLE_BUYER,
-        ]);
         $emptyBuyer = User::query()->create([
             'name' => 'خریدار بدون گفتگو',
             'email' => 'buyer-empty@rademan.test',
@@ -166,26 +154,6 @@ class DemoDatabaseSeederTest extends TestCase
             'password' => 'strong-password-123',
             'role' => User::ROLE_ARTIST,
         ]);
-        $profile = $artist->artistProfile()->create([
-            'slug' => 'arman-rezaei',
-            'display_name' => $artist->name,
-            'is_public' => true,
-        ]);
-
-        $retired = ArtistInquiry::query()->create([
-            'artist_profile_id' => $profile->id,
-            'sender_user_id' => $buyer->id,
-            'subject' => 'پرسش نمایشی شماره 99',
-            'message' => 'داده قدیمی نمایشی',
-            'status' => ArtistInquiry::STATUS_NEW,
-        ]);
-        $manual = ArtistInquiry::query()->create([
-            'artist_profile_id' => $profile->id,
-            'sender_user_id' => $buyer->id,
-            'subject' => 'پرسش دستی که نباید حذف شود',
-            'message' => 'رکورد خارج از الگوی داده نمایشی',
-            'status' => ArtistInquiry::STATUS_NEW,
-        ]);
         $retiredThread = Conversation::query()->create([
             'pair_key' => $emptyBuyer->id.':'.$artist->id,
             'buyer_user_id' => $emptyBuyer->id,
@@ -199,8 +167,6 @@ class DemoDatabaseSeederTest extends TestCase
 
         app(DemoDatabaseSeeder::class)->run();
 
-        $this->assertDatabaseMissing('artist_inquiries', ['id' => $retired->id]);
-        $this->assertDatabaseHas('artist_inquiries', ['id' => $manual->id]);
         $this->assertDatabaseMissing('conversations', ['id' => $retiredThread->id]);
         $this->assertDatabaseHas('conversations', ['id' => $unrelatedThread->id]);
     }
@@ -209,7 +175,7 @@ class DemoDatabaseSeederTest extends TestCase
     {
         Storage::fake('local');
         $this->seed(DemoDatabaseSeeder::class);
-        $tables = ['users', 'artist_profiles', 'categories', 'artworks', 'artist_inquiries', 'conversations', 'messages', 'conversation_contexts', 'message_reactions', 'message_attachments', 'notifications', 'message_reports', 'message_moderation_audits', 'user_blocks', 'curated_collections', 'featured_artist_selections', 'editorial_audits'];
+        $tables = ['users', 'artist_profiles', 'categories', 'artworks', 'conversations', 'messages', 'conversation_contexts', 'message_reactions', 'message_attachments', 'notifications', 'message_reports', 'message_moderation_audits', 'user_blocks', 'curated_collections', 'featured_artist_selections', 'editorial_audits'];
         $counts = array_map(fn (string $table): int => DB::table($table)->count(), $tables);
 
         $this->seed(DemoDatabaseSeeder::class);

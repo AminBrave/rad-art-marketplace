@@ -99,13 +99,13 @@ class DemoDatabaseSeeder extends Seeder
 
         // This buyer intentionally has no conversations so the empty inbox can be tested.
         $emptyBuyer = User::query()->updateOrCreate(['email' => 'buyer-empty@rademan.test'], [
-            'name' => 'خریدار بدون درخواست',
+            'name' => 'خریدار بدون گفتگو',
             'password' => $passwordHash,
             'role' => User::ROLE_BUYER,
             'email_verified_at' => now(),
         ]);
 
-        $this->removeRetiredInquiryFixtures($emptyBuyer);
+        $this->removeDemoEmptyBuyerThreads($emptyBuyer);
 
         // Include artists who have registered but have not completed their profiles yet.
         foreach (range(1, 3) as $number) {
@@ -304,7 +304,6 @@ class DemoDatabaseSeeder extends Seeder
                 $conversation = Conversation::query()->updateOrCreate(
                     ['pair_key' => $pairKey],
                     [
-                        'inquiry_id' => null,
                         'buyer_user_id' => $buyer->id,
                         'artist_user_id' => $artist->id,
                     ],
@@ -352,18 +351,8 @@ class DemoDatabaseSeeder extends Seeder
         }
     }
 
-    private function removeRetiredInquiryFixtures(User $emptyBuyer): void
+    private function removeDemoEmptyBuyerThreads(User $emptyBuyer): void
     {
-        $demoBuyerIds = User::query()
-            ->where('role', User::ROLE_BUYER)
-            ->where('email', 'like', '%@rademan.test')
-            ->pluck('id');
-
-        $retiredInquiryIds = DB::table('artist_inquiries')
-            ->whereIn('sender_user_id', $demoBuyerIds)
-            ->where('subject', 'like', 'پرسش نمایشی شماره %')
-            ->pluck('id');
-
         $demoArtistIds = User::query()
             ->where('role', User::ROLE_ARTIST)
             ->where('email', 'like', '%@rademan.test')
@@ -399,11 +388,6 @@ class DemoDatabaseSeeder extends Seeder
             DB::table('conversation_contexts')->whereIn('conversation_id', $conversationIds)->delete();
             DB::table('messages')->whereIn('conversation_id', $conversationIds)->delete();
             DB::table('conversations')->whereIn('id', $conversationIds)->delete();
-        }
-
-        if ($retiredInquiryIds->isNotEmpty()) {
-            DB::table('conversation_contexts')->whereIn('inquiry_id', $retiredInquiryIds)->delete();
-            DB::table('artist_inquiries')->whereIn('id', $retiredInquiryIds)->delete();
         }
 
         DB::table('user_blocks')
@@ -458,7 +442,6 @@ class DemoDatabaseSeeder extends Seeder
                 [
                     'conversation_id' => $conversation->id,
                     'artwork_id' => $relatedArtwork->id,
-                    'inquiry_id' => null,
                 ],
                 [
                     'added_by_user_id' => $buyer->id,

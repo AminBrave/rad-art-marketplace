@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Api\V1\AdminArtworkModerationController;
 use App\Http\Controllers\Api\V1\AdminUserController;
-use App\Http\Controllers\Api\V1\ArtistInquiryController;
 use App\Http\Controllers\Api\V1\ArtistProfileController;
 use App\Http\Controllers\Api\V1\ArtworkController;
 use App\Http\Controllers\Api\V1\AuthController;
@@ -40,7 +39,6 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
 
     Route::middleware('auth')->group(function (): void {
         Route::post('/conversations/direct', [DirectConversationController::class, 'start'])->middleware(['role:buyer', 'throttle:10,1'])->name('conversations.direct');
-        Route::post('/inquiries/{inquiry}/conversation', [ConversationController::class, 'startFromInquiry'])->middleware('feature:inquiries')->name('conversations.start');
         Route::get('/conversations/{conversation}', [ConversationController::class, 'show'])->name('conversations.show');
         Route::get('/conversations/{conversation}/messages', [ConversationController::class, 'messages'])->name('conversations.messages');
         Route::post('/conversations/{conversation}/messages', [ConversationController::class, 'storeMessage'])->middleware(['throttle:30,1', EnsureConversationNotBlocked::class])->name('conversations.messages.store');
@@ -66,11 +64,8 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
 
     Route::get('/artists', [ArtistProfileController::class, 'index'])->name('artists.index');
     Route::get('/artists/{artistProfile:slug}', [ArtistProfileController::class, 'publicShow'])->name('artists.show');
-    Route::post('/artists/{artistProfile:slug}/inquiries', [ArtistInquiryController::class, 'store'])->middleware(['feature:inquiries', 'auth', 'role:buyer', 'throttle:5,1'])->name('artists.inquiries.store');
 
     Route::middleware(['auth', 'role:buyer'])->prefix('buyer')->name('buyer.')->group(function (): void {
-        Route::get('/inquiries', [ArtistInquiryController::class, 'buyerIndex'])->middleware('feature:inquiries')->name('inquiries.index');
-        Route::get('/inquiries/{inquiry}', [ArtistInquiryController::class, 'buyerShow'])->middleware('feature:inquiries')->name('inquiries.show');
         Route::get('/conversations', [ConversationController::class, 'buyerIndex'])->name('conversations.index');
     });
 
@@ -91,9 +86,6 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
         Route::patch('/artist-profiles/{artistProfile}', [ArtistProfileController::class, 'update'])->name('artist-profiles.update');
         Route::prefix('artist')->name('artist.')->group(function (): void {
             Route::middleware('role:artist')->group(function (): void {
-                Route::get('/inquiries', [ArtistInquiryController::class, 'artistIndex'])->middleware('feature:inquiries')->name('inquiries.index');
-                Route::get('/inquiries/{inquiry}', [ArtistInquiryController::class, 'artistShow'])->middleware('feature:inquiries')->name('inquiries.show');
-                Route::patch('/inquiries/{inquiry}', [ArtistInquiryController::class, 'updateForArtist'])->middleware('feature:inquiries')->name('inquiries.update');
                 Route::get('/conversations', [ConversationController::class, 'artistIndex'])->name('conversations.index');
             });
             Route::get('/artworks', [ArtworkController::class, 'mine'])->name('artworks.index');
