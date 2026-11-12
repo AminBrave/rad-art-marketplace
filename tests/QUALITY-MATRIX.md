@@ -20,7 +20,7 @@ This matrix maps real product behavior to actors, risk and the tests that should
 
 | Area | Existing protection observed | Assessment |
 |---|---|---|
-| Authentication | Guest bootstrap, registration, buyer/artist role choice, admin-role rejection, password confirmation, login/logout and invalid credentials | Good foundation; session rotation and throttling deserve explicit regression tests |
+| Authentication | Guest bootstrap, registration, buyer/artist role choice, admin-role rejection, password confirmation, login/logout and invalid credentials | Expanded in this phase with registration/login/logout session rotation and guest login throttling; registration throttling and broader abuse scenarios remain |
 | Authorization | Admin user-management role gate, self-demotion protection, artist artwork ownership and conversation participant checks | Good targeted cases; complete route/role matrix still needed |
 | Artwork | Upload validation, private storage, owner/admin editing, pending/public visibility, filters, sort, pagination and price nullability | Broad; add more malformed uploads, public profile visibility and lifecycle boundary cases |
 | Moderation | Admin-only queue, approve/reject/request-changes, required notes, repeat decision rejection, artist edit resets review metadata | Good; simultaneous admin decision and notification failure need integration coverage |
@@ -54,7 +54,7 @@ This is a target coverage contract, not a claim that every cell has a dedicated 
 
 ### P0 — Security and data integrity
 
-- Authentication: explicit session ID rotation on login and registration; logout invalidates session; login/register throttling and lockout response contract.
+- Authentication: registration/login/logout session rotation and guest login throttling now have regression cases; add registration-throttle and broader abuse/lockout scenarios.
 - Authorization: table-driven coverage for all protected route families; guest, wrong role, wrong owner and non-participant cases.
 - Private media: wrong conversation/message/attachment combinations, missing files, private cache headers, unsupported preview types, upload size/MIME/content mismatch and attachment count.
 - Artwork lifecycle: only pending work can be moderated; artist resubmission clears review metadata; stale concurrent decisions cannot overwrite each other; public catalogue never reveals unpublished work.
