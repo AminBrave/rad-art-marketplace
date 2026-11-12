@@ -127,6 +127,7 @@ function initializeSqlite() {
 
 function ensureReportDirectory() {
     mkdirSync(resolve(root, 'build', 'test-reports'), { recursive: true });
+    mkdirSync(resolve(root, 'storage', 'framework', 'testing', 'views'), { recursive: true });
 }
 
 function testEnvironment() {
@@ -138,10 +139,14 @@ function testEnvironment() {
         APP_DEBUG: 'true',
         DB_CONNECTION: 'sqlite',
         DB_DATABASE: ':memory:',
+        DB_URL: '',
         CACHE_STORE: 'array',
         SESSION_DRIVER: 'array',
         MAIL_MAILER: 'array',
         QUEUE_CONNECTION: 'sync',
+        LOG_CHANNEL: 'stderr',
+        FILESYSTEM_DISK: 'local',
+        VIEW_COMPILED_PATH: resolve(root, 'storage', 'framework', 'testing', 'views'),
         APP_CONFIG_CACHE: resolve(cacheDir, 'config.testing.php'),
         APP_ROUTES_CACHE: resolve(cacheDir, 'routes.testing.php'),
         APP_EVENTS_CACHE: resolve(cacheDir, 'events.testing.php'),
@@ -262,6 +267,7 @@ Quality (all commands below execute checks; invoke only when authorized)
   frontend              Frontend tests + color accessibility + lint + both builds
   verify                Run backend and frontend quality checks
   verify:all            Run verify plus Playwright against a disposable local database
+  frontend:test         Run frontend tests and write a JUnit report
   browser               Run guarded Playwright tests against local RAD_ART_BASE_URL
   build                 Standard Vite production build
   build:cpanel          cPanel-targeted production build
