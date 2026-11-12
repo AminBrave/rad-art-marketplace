@@ -135,7 +135,7 @@ function browserTestEnvironment() {
     const runtimeDir = resolve(root, 'storage', 'framework', 'browser-testing');
     return {
         ...process.env,
-        APP_ENV: 'testing',
+        APP_ENV: 'local',
         APP_KEY: 'base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
         APP_DEBUG: 'true',
         DB_CONNECTION: 'sqlite',
