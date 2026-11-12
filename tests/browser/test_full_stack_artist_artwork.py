@@ -111,6 +111,9 @@ class FullStackArtistArtworkTests(unittest.TestCase):
             profile_requests = []
 
             def save_profile(route):
+                if route.request.method != "PUT":
+                    route.continue_()
+                    return
                 profile_requests.append(route.request)
                 route.fulfill(
                     status=200,
