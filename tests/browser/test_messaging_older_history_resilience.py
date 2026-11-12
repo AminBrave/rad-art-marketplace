@@ -73,6 +73,14 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
             ),
         )
         page.route(
+            f"**/api/v1/conversations/{conversation_id}",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({"data": thread}),
+            ) if route.request.method == "GET" else route.continue_(),
+        )
+        page.route(
             f"**/api/v1/conversations/{conversation_id}/safety",
             lambda route: route.fulfill(
                 status=200,
