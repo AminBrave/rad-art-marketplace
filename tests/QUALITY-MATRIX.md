@@ -28,8 +28,8 @@ This matrix maps real product behavior to actors, risk and the tests that should
 | Attachments | Private PDF upload/download, sender-only upload, unsupported extension rejection, deletion cleanup and participant download | Expanded in this phase; route-binding, guest, preview-type and count boundaries now have regression cases |
 | Safety | Report idempotency, block/unblock, viewer-relative state, admin moderation and audit record | Good; abuse/rate-limit and attachment cleanup failure paths deserve deeper integration coverage |
 | Editorial/SEO | Editorial API and public SEO tests exist | Validate atomic reorder/publication rollback and missing/unpublished slug behavior more deeply |
-| Frontend | Query client, UI utilities, design system, color accessibility, SSR component semantics, artist workspace and direct messaging | Useful component/logic coverage; async page loading/error/retry/cache behavior needs targeted tests |
-| Browser | Cross-role journeys, auth, artwork publishing, admin moderation, messaging, notifications, discovery, editorial and responsive RTL smoke | Strong breadth; add keyboard/focus and richer accessible interaction coverage |
+| Frontend | Query client retry policy, UI utilities, design system, color accessibility, SSR semantics for disabled/busy buttons, field errors, alert/retry and empty states, artist workspace and direct messaging | Component contracts are covered; page-level async states and auth expiry still need broader coverage |
+| Browser | Cross-role journeys, auth, artwork publishing, admin moderation, messaging, notifications, discovery, editorial, responsive RTL smoke, artist-directory error-to-empty retry, empty results and keyboard search submission | Stronger visitor discovery resilience; authenticated expiry, duplicate form submission, loading transitions and dialog focus management remain gaps |
 | Performance | No dedicated repeatable performance budget suite was identified | Not yet covered as a governed quality gate |
 
 ## Route-to-role security matrix
@@ -64,7 +64,8 @@ This is a target coverage contract, not a claim that every cell has a dedicated 
 
 ### P1 — Product UX, accessibility and RTL
 
-- Exercise loading, empty, validation, API failure, retry, disabled/submitting and expired-session states on critical React pages.
+- Artist-directory browser coverage now verifies API failure with explicit retry into an empty result, a stable empty state and Enter-key search with URL query persistence. Extend the same state coverage to artwork catalogue, workspace data and messaging.
+- Exercise loading, validation, disabled/submitting and expired-session states on critical React pages; test duplicate form submission and post-expiry recovery.
 - Keyboard-only navigation, visible focus, dialog focus trap/restore, escape behavior and live-region announcements.
 - RTL at 320, 375, 768, 1024 and desktop widths; mixed Persian/Latin names, email, URLs, numbers and long text.
 - Add axe-core/Playwright scans to key public and authenticated routes after a stable browser setup; automated checks supplement, not replace, manual assistive-technology review.
