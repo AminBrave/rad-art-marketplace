@@ -24,6 +24,9 @@ $environment = [
     'QUEUE_CONNECTION' => 'sync',
     'LOG_CHANNEL' => 'stderr',
     'FILESYSTEM_DISK' => 'local',
+    'RAD_ART_LOCAL_STORAGE_PATH' => $runtimeDirectory.'/storage/private',
+    'RAD_ART_PUBLIC_STORAGE_PATH' => $runtimeDirectory.'/storage/public',
+    'RAD_ART_BROWSER_TEST_MODE' => '0',
     'VIEW_COMPILED_PATH' => $runtimeDirectory.'/views',
     'APP_CONFIG_CACHE' => $cacheDirectory.'/config.testing.php',
     'APP_ROUTES_CACHE' => $cacheDirectory.'/routes.testing.php',
@@ -38,9 +41,14 @@ foreach ($environment as $name => $value) {
     $_SERVER[$name] = $value;
 }
 
-$viewCacheDirectory = $runtimeDirectory.'/views';
-if (! is_dir($viewCacheDirectory) && ! mkdir($viewCacheDirectory, 0775, true) && ! is_dir($viewCacheDirectory)) {
-    throw new RuntimeException('Unable to create isolated test view cache: '.$viewCacheDirectory);
+foreach ([
+    $runtimeDirectory.'/views',
+    $runtimeDirectory.'/storage/private',
+    $runtimeDirectory.'/storage/public',
+] as $directory) {
+    if (! is_dir($directory) && ! mkdir($directory, 0775, true) && ! is_dir($directory)) {
+        throw new RuntimeException('Unable to create isolated test runtime directory: '.$directory);
+    }
 }
 
 require $root.'/vendor/autoload.php';
