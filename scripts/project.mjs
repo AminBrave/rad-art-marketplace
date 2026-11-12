@@ -203,7 +203,7 @@ Quality
   frontend           Frontend tests + lint + both builds (legacy verify alias)
   verify             Run tests, PHP/JS lint and both production builds
   verify:all         Run verify plus Playwright (requires a running local app)
-  browser            Run Playwright browser tests against RAD_ART_BASE_URL or https://rad.localhost
+  browser            Run Playwright browser tests against RAD_ART_BASE_URL or http://127.0.0.1:8000
 
 Build
   build              Standard Vite production build
