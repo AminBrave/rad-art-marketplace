@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Notifications\MessageReceivedNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
@@ -141,14 +142,21 @@ class ConversationController extends Controller
             $messages = $query->where('id', '<', (int) $filters['before_id'])->latest('id')->paginate(30);
             $messages->setCollection($messages->getCollection()->reverse()->values());
         } elseif (isset($filters['after_id']) || isset($filters['updated_after'])) {
+            // Normalize ISO cursors to the database timestamp format (notably SQLite stores
+            // timestamps with a space separator, so comparing against an ISO "T" string
+            // lexically can silently omit every updated message).
+            $updatedAfter = isset($filters['updated_after'])
+                ? Carbon::parse($filters['updated_after'])->toDateTimeString()
+                : null;
+
             // Include new messages and changed existing messages (e.g. edits, deletes and read receipts).
-            $messages = $query->where(function ($nested) use ($filters): void {
+            $messages = $query->where(function ($nested) use ($filters, $updatedAfter): void {
                 if (isset($filters['after_id'])) {
                     $nested->where('id', '>', (int) $filters['after_id']);
                 }
-                if (isset($filters['updated_after'])) {
+                if ($updatedAfter !== null) {
                     $method = isset($filters['after_id']) ? 'orWhere' : 'where';
-                    $nested->{$method}('updated_at', '>=', $filters['updated_after']);
+                    $nested->{$method}('updated_at', '>=', $updatedAfter);
                 }
             })->oldest('id')->paginate(100);
         } else {
