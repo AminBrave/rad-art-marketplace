@@ -120,7 +120,7 @@ class ArtistWorkspaceResilienceTests(unittest.TestCase):
 
             page.get_by_text("اثر بازیابی‌شده", exact=True).wait_for()
             self.assertEqual(attempts["count"], 2)
-            self.assertTrue(page.get_by_role("progressbar", name="تکمیل فیلدهای پروفایل").is_visible())
+            self.assertTrue(page.get_by_role("link", name="پیش‌نمایش عمومی").is_visible())
         finally:
             context.close()
 
