@@ -14,10 +14,10 @@ Run commands from the repository root. **Use the npm commands in `package.json` 
 
 | Command | Purpose |
 |---|---|
-| `npm run ai:context -- --task "<task>"` | Print the project contract, brief, session handoff, skill index and only task-matched skills |
-| `npm run ai:context -- --task "<task>" --chatgpt` | Also include ChatGPT-specific repository guidance |
+| `npm run ai:context -- --task "<task>"` | Print the project contract, brief, session handoff, only task-matched skills |
 
-The context command reads repository Markdown and prints a bounded packet. It does not install dependencies, execute application code, inspect the network or run verification. With no task description, no task-specific skills are loaded.
+
+The context command reads `AGENTS.md`, the product brief, the current handoff and task-matched skill files. It does not install dependencies, execute application code, inspect the network or run verification. With no task description, no task-specific skills are loaded.
 
 ## Canonical npm commands
 
