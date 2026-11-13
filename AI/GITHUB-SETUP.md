@@ -1,57 +1,80 @@
-# GitHub repository setup checklist
+# GitHub task-management setup
 
-This file is an operator checklist, not a claim that GitHub metadata/settings are already configured.
+This is an operator checklist for the intended GitHub configuration. It is not evidence that the board, labels or repository settings already exist.
 
-## 1. Create milestones
+## 1. Create the single Kanban Project
 
-In GitHub: **Issues → Milestones → New milestone**. Create these in order and use the descriptions/exit criteria from `AI/ROADMAP.md`:
+Create one GitHub Project named **Rademan Workboard** (not “Rademan Roadmap”). Use the repository's Issues and Pull Requests as the source of truth.
 
-| Title | Description |
-|---|---|
-| M0 — AI-ready foundation | Free-chat startup contract, compact context command, resumable handoff, issue/PR conventions |
-| M1 — Product baseline | Evidence-backed product-flow audit, confirmed MVP scope, target segments and measurable outcomes |
-| M2 — Discovery experience | Product-owner-approved artist discovery requirements and verified vertical slices |
-| M3 — Artist identity and contact | Approved artist profile, contact, privacy, authorization and abuse-handling journeys |
-| M4 — Release readiness | Security/privacy review, quality evidence, operations notes and release/rollback readiness |
+Configure one Status field with these options, in order:
+1. Backlog
+2. Ready
+3. In progress
+4. In review
+5. Blocked
+6. Done
 
-Assign #149 to M0 and #150 to M1 once the milestones exist. Do not place future issues into a milestone until their scope is approved.
+Add these fields:
+- **Priority:** P0, P1, P2, P3.
+- **Type:** Epic, Feature, Bug, Chore, Security, QA, Docs, Spike.
+- **Area:** Backend, Frontend, Product, Design/RTL, Security, Tooling, Docs, Quality.
+- **Decision ID:** text; enter D01–D41 only when the task derives from a product decision.
 
-## 2. Create labels
+Do not add a Milestone field or create M0–M4 product milestones. Use linked parent/child issues for task breakdown and GitHub's native Assignees for ownership. Use saved views only when they help inspect the same board; do not create separate boards or duplicate status systems.
 
-In GitHub: **Issues → Labels**. Create the labels from the taxonomy in `AI/ROADMAP.md`:
-- Types: `type:epic`, `type:feature`, `type:bug`, `type:chore`, `type:security`, `type:qa`, `type:docs`, `type:spike`.
-- Priorities: `priority:p0`, `priority:p1`, `priority:p2`, `priority:p3`.
-- Status: `status:ready`, `status:blocked`, `status:needs-decision`.
-- Areas: `area:backend`, `area:frontend`, `area:product`, `area:design-rtl`, `area:security`, `area:tooling`, `area:docs`, `area:quality`.
+Add the repository's active issues to the Project as appropriate. Do not convert all 41 product decisions into work items. #150 remains a decision register, not a task backlog. Add #152 and #153 while this setup work is active.
 
-Use one type, one priority and one primary area per issue. Add status labels only when useful. The issue templates propose default type/priority labels; templates do not create missing labels by themselves.
+## 2. Create repository labels
 
-## 3. Protect main
+In **Issues → Labels**, create:
+- Types: type:epic, type:feature, type:bug, type:chore, type:security, type:qa, type:docs, type:spike.
+- Priorities: priority:p0, priority:p1, priority:p2, priority:p3.
+- Areas: area:backend, area:frontend, area:product, area:design-rtl, area:security, area:tooling, area:docs, area:quality.
+- Optional triage: status:needs-decision, status:blocked.
 
-In GitHub: **Settings → Branches → Add branch protection rule** for `main` (or the current ruleset UI):
+Use one type, one priority and one primary area per issue. Prefer the Project Status field over status labels; do not maintain conflicting states. Labels are filters, not permission grants.
+
+## 3. Operating rules
+
+- Backlog: captured but not yet authorized/ready.
+- Ready: explicit authorization, bounded MVP, acceptance criteria, owner and dependencies are clear.
+- In progress: work has actually started.
+- In review: a linked PR or investigation output is under review.
+- Blocked: the issue records the blocker and next action.
+- Done: acceptance criteria are met, required verification is recorded honestly, and implementation PRs are merged.
+
+A task linked to a product decision must include its decision ID and direct canonical comment link. A small decision may be one delivery issue; a larger decision may have a parent epic and child tasks. Each task states its own MVP boundary and out-of-scope work. Standalone bugs and maintenance tasks need no decision ID.
+
+## 4. Issue and branch conventions
+
+Use issue prefixes and titles defined in AI/TASK-MANAGEMENT.md. Examples:
+- [FEAT] D02 — Improve buyer discovery entry point
+- [EPIC] D06 — Deliver buyer personalization MVP
+- [BUG] Fix artwork visibility regression
+
+Use short-lived branches from the current main, named with the task type and GitHub issue number (for example feat/123-buyer-discovery or docs/153-decision-kanban). Link each PR to its issue. Never assume a branch is integrated until GitHub confirms the merge.
+
+## 5. Protect main
+
+In **Settings → Branches** or repository rulesets, consider:
 - Require a pull request before merging.
-- Require at least one approval when there are multiple collaborators; for a solo maintainer use a deliberate self-review checklist instead.
-- Dismiss stale approvals when new commits are pushed.
+- Require review when multiple collaborators are available; for solo work use a deliberate self-review checklist.
 - Require conversation resolution.
 - Block force pushes and branch deletion.
-- Require CI checks only after the project has stable, relevant workflows. Do not enable required checks that do not exist.
-- Prefer squash merging for one-issue/one-PR work; disable merge commits if not needed.
+- Require only stable CI checks that actually exist.
+- Prefer squash merging for one-task/one-PR work when suitable.
 
-## 4. Security and project hygiene
+Do not claim a rule is enabled without inspecting the live repository settings.
 
-Where available on the repository plan:
+## 6. Security and project hygiene
+
+Where available:
 - Enable Dependabot alerts and security updates.
 - Enable secret scanning and push protection.
-- Use least-privilege GitHub tokens and never commit `.env`, API keys or personal data.
+- Use least-privilege GitHub tokens and never commit .env, API keys or personal data.
 - Review Actions permissions and grant the minimum required token permissions.
 - Keep production deployment secrets in GitHub/Vercel environment secrets, not source files.
 
-## 5. Lightweight project board
+## 7. Capability boundary
 
-If using GitHub Projects, create one board named **Rademan Roadmap** with:
-- Status: Backlog, Ready, In progress, In review, Blocked, Done.
-- Priority: P0, P1, P2, P3.
-- Milestone: M0–M4.
-- Type and Area fields aligned with `AI/ROADMAP.md`.
-
-Do not duplicate the same workflow in several boards. Issues remain the source of truth; PRs link back to issues.
+The current connected GitHub workflow can manage repository files, issues, branches and pull requests, but it does not expose GitHub Projects board creation/configuration actions. If the board cannot be created from the available GitHub UI/integration, the repository owner must create the Project and fields manually using this checklist. Do not claim the Project exists until its live URL and fields have been verified.
