@@ -10,6 +10,15 @@ Run commands from the repository root. **Use the npm commands in `package.json` 
 - Update this reference and dispatcher help whenever a task changes.
 - Tests, lint, builds, migrations, seeders and cache mutation are opt-in. Follow `AGENTS.md`; never run them without explicit user authorization.
 
+## AI context (read-only)
+
+| Command | Purpose |
+|---|---|
+| `npm run ai:context -- --task "<task>"` | Print the project contract, brief, session handoff, skill index and only task-matched skills |
+| `npm run ai:context -- --task "<task>" --chatgpt` | Also include ChatGPT-specific repository guidance |
+
+The context command reads repository Markdown and prints a bounded packet. It does not install dependencies, execute application code, inspect the network or run verification. With no task description, no task-specific skills are loaded.
+
 ## Canonical npm commands
 
 | Area | Command | Purpose |
