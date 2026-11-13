@@ -26,4 +26,4 @@ Do not assume checkout, orders, shipping, payouts, subscriptions, commissions, b
 Inspect current implementation and product evidence first. Separate confirmed facts from assumptions. Ask one focused question only if a decision blocks safe implementation; otherwise state the smallest reversible assumption. Record approved durable decisions.
 
 ## Starting point
-Read `AGENTS.md`, this brief, `AI/SESSION.md`, then `.agents/skills/README.md` and only task-relevant skills. Inspect source before implementation and check open issues before creating duplicate work.
+Read `AGENTS.md` first. It selects this brief, the current handoff and only task-relevant skills. Inspect source before implementation and check open issues before creating duplicate work.
