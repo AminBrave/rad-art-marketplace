@@ -38,10 +38,10 @@ At the start of a task, read this file first. Then classify the task and select 
 - Authentication, authorization, privacy, uploads or abuse: load `.agents/skills/security-review/SKILL.md`.
 - PR or code review: load `.agents/skills/code-review/SKILL.md`.
 - Tests, accessibility, performance or verification planning: load `.agents/skills/quality-engineering/SKILL.md`.
-- Branches, commits, GitHub issues/PRs or repository workflow: load `.agents/skills/git-github/SKILL.md`; consult `AI/GIT-WORKFLOW.md` when detailed workflow conventions are needed.
+- Branches, commits, GitHub issues/PRs or repository workflow: load `.agents/skills/git-github/SKILL.md`.
 - Repository setup or settings: consult `AI/GITHUB-SETUP.md`.
 - A cross-layer task may require multiple skills. Load only those needed; do not load every skill by default.
-- If unsure which skill applies, inspect `.agents/skills/README.md` as the skill index, then load the closest relevant skill.
+- If unsure which skill applies, inspect the `name` and `description` in the frontmatter of available `.agents/skills/*/SKILL.md` files, then load the closest relevant skill.
 
 For local terminal use, `npm run ai:context -- --task "<one-sentence task>"` can print a compact context packet. This is optional. Do not claim to have run it unless it was actually run. In browser-only chats, read the selected files through authorized repository access or ask the user to provide them.
 
@@ -127,7 +127,7 @@ Do not state that a feature is missing until the relevant routes, screens, data 
 
 ## 8. Git and GitHub
 
-- Follow `.agents/skills/git-github/SKILL.md`; consult `AI/GIT-WORKFLOW.md` when detailed branch, commit, push, pull-request or release conventions are needed.
+- Follow `.agents/skills/git-github/SKILL.md` for branch, commit, push, pull-request and release conventions.
 - Use `AI/GITHUB-SETUP.md` for the repository settings checklist; never claim documented settings are enabled without checking GitHub.
 - Never force-push, rewrite shared history, delete remote branches, merge, close issues or change repository settings without explicit authorization.
 - Keep changes scoped to the requested task. Do not include unrelated formatting or generated files.
