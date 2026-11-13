@@ -41,7 +41,15 @@ Skills are task-specific procedures, not global policies. Load only the primary 
 - At the end of substantial work, update `AI/SESSION.md` with durable decisions, current blockers and the next 1–3 actions. Do not store transcripts or secrets.
 - Repository state is the memory source of truth. When a conversation is long or context is full, start a fresh chat and reload these files; do not depend on chat history or model memory.
 
-## 5. Efficient task workflow
+## 5. Focused chats and issue continuity
+
+- Prefer one chat per substantial GitHub issue or PR, not one chat per tiny follow-up. See `AI/CHAT-WORKFLOWS.md` for startup and resume prompts.
+- GitHub is the durable source of truth: keep bug reproduction evidence and dated investigation entries in the bug issue; feature scope, decisions and progress in the feature issue; review findings on the PR.
+- When resuming in a new chat, read the live issue/PR and latest comments, then summarize confirmed facts, assumptions, blockers and next steps. Never rely on an old chat transcript as authoritative.
+- Use `AI/BUG-HANDOFF.md` for bug investigation updates. Keep `AI/SESSION.md` for project-wide state, not detailed per-bug logs.
+- If repository or issue access is unavailable, state that limitation and ask for the minimum relevant files/content. Never pretend a link was read.
+
+## 6. Efficient task workflow
 
 ### Understand
 1. Identify the requested outcome, actor, scope and explicit constraints.
@@ -75,7 +83,7 @@ Skills are task-specific procedures, not global policies. Load only the primary 
 4. Clearly distinguish implemented, statically inspected, locally executed and CI-verified work.
 5. Do not create a PR, merge, deploy or release unless requested.
 
-## 6. Backend and data invariants
+## 7. Backend and data invariants
 
 - Laravel policies, middleware and explicit server-side ownership/participant checks are authoritative.
 - Validate request data, uploaded file type/size/content and access to stored files.
@@ -84,7 +92,7 @@ Skills are task-specific procedures, not global policies. Load only the primary 
 - Consider concurrency, duplicate requests, rollback, queue retries and external-service failures.
 - Preserve response shape, status codes, pagination and error semantics unless intentionally versioned.
 
-## 7. Frontend and product invariants
+## 8. Frontend and product invariants
 
 - Use installed React 18 APIs and existing React Router/TanStack Query patterns.
 - Keep server state in the existing query/cache approach; avoid introducing competing state systems.
@@ -94,7 +102,7 @@ Skills are task-specific procedures, not global policies. Load only the primary 
 - Do not rely on color alone. Respect keyboard interaction, visible focus and reduced-motion preferences.
 - Frontend authorization must never be treated as access control.
 
-## 8. Git and GitHub
+## 9. Git and GitHub
 
 - Follow .agents/skills/git-github/SKILL.md and AI/GIT-WORKFLOW.md for branch, commit, push, pull-request and GitHub workflow tasks.
 - Use AI/GITHUB-SETUP.md for the repository settings checklist; never claim documented settings are enabled without checking GitHub.
@@ -105,7 +113,7 @@ Skills are task-specific procedures, not global policies. Load only the primary 
 - Do not dispatch or rerun GitHub Actions without explicit user permission. Do not assume opening or updating a PR authorizes CI.
 - Workflow files may be inspected or edited when requested, but never manually execute them without permission.
 
-## 9. Verification and CI policy
+## 10. Verification and CI policy
 
 Verification is opt-in, not implied.
 
@@ -116,6 +124,6 @@ Verification is opt-in, not implied.
 - If a workflow starts automatically due to a GitHub event, do not initiate additional runs or reruns. Report the observed status accurately if it is visible.
 - If not authorized, mark verification as Not run (permission not granted).
 
-## 10. Completion standard
+## 11. Completion standard
 
 A task is complete when the requested change is implemented, affected contracts and invariants are preserved, the focused diff is reviewed, and the delivery report accurately states what was and was not verified. A green test suite is not a prerequisite when execution was not authorized.
