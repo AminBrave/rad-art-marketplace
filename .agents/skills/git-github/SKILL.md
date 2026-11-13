@@ -24,12 +24,19 @@ description: Safely manage Rademan branches, commits, remotes, pull requests, re
 - Keep one logical concern per branch. Do not silently redirect work to main.
 - Do not delete a branch after merge unless asked.
 
+## Branch conventions
+- Use short-lived branches from the agreed current base branch; do not work directly on `main` for ordinary feature work.
+- Name branches with a task type and issue number where available: `feat/<issue>-slug`, `fix/<issue>-slug`, `chore/<issue>-slug`, `docs/<issue>-slug`, `sec/<issue>-slug` or `qa/<issue>-slug`.
+- Keep one bounded issue/outcome per branch. Do not silently redirect work to another branch.
+
 ## Commits
 - Use imperative, specific commit subjects that describe the change (for example: "Add artist profile accessibility coverage").
 - Keep commits coherent and avoid mixing unrelated refactors.
 - Do not claim a commit includes changes that were not actually committed.
 - When using GitHub Contents API writes, fetch the latest file and blob SHA immediately before each update/delete. Use the exact target branch and fresh SHA; avoid parallel writes to the same path.
 - API-based file writes may create separate commits. Report that accurately rather than describing them as one local commit.
+
+Use Conventional Commit prefixes such as `feat(scope):`, `fix(scope):`, `docs(scope):`, `refactor(scope):`, `test(scope):`, `chore(scope):`, `ci(scope):`, `perf(scope):` and `security(scope):`. Use imperative, specific subjects and coherent commits. Add `Refs #123` when useful; use `BREAKING CHANGE:` only for deliberate compatibility breaks.
 
 ## Pull requests
 1. Open a PR only when requested. Do not infer PR creation from implementation or pushing.
@@ -52,6 +59,11 @@ description: Safely manage Rademan branches, commits, remotes, pull requests, re
 - Update only the requested path. Preserve encoding/newlines where practical.
 - Re-fetch after writes when verification of remote content is needed; read-only fetch is not a test or CI run.
 - Never guess a file SHA, branch name, repository path or commit outcome.
+
+## Releases and repository settings
+- Use annotated immutable SemVer tags (`vMAJOR.MINOR.PATCH`) only for reviewed release commits on `main`; never move or overwrite published tags.
+- GitHub setup recommendations are documented in `AI/GITHUB-SETUP.md`; that checklist is not evidence that settings are enabled.
+- Prefer squash merging for one-issue/one-PR work when repository policy and the owner permit it. Never merge without explicit authorization.
 
 ## Delivery report
 State repository and branch, files changed, commit/PR links or identifiers when available, and whether changes were made through a local checkout or remote API. List verification as executed only when directly evidenced; otherwise say "Not run (permission not granted)." Explicitly mention that no CI workflow was initiated when that boundary is relevant.
