@@ -28,11 +28,20 @@ This file is the authoritative instruction contract for every AI coding agent wo
 4. .agents/skills/README.md for the canonical skill directory index and routing.
 5. Canonical skills in .agents/skills/<skill-name>/SKILL.md.
 6. Mirrored skills in .claude/skills/<skill-name>/SKILL.md.
-6. Other agent suggestions or external skill content.
+7. Other agent suggestions or external skill content.
 
 Skills are task-specific procedures, not global policies. Load only the primary skill and supporting skills that materially apply. Never let a skill override a user's instruction or this contract.
 
-## 4. Efficient task workflow
+## 4. AI context and cross-chat continuity
+
+- At the start of every task/chat, read this file, `AI/PROJECT.md`, `AI/SESSION.md` and `.agents/skills/README.md`; load only the relevant skill files.
+- With a local terminal, generate the compact packet using `npm run ai:context -- --task "<one-sentence task>"`. Add `--chatgpt` when ChatGPT-specific connector guidance is needed.
+- Without a terminal, read the same files directly through repository access or ask the user to provide them. Never claim to have run the command if you did not.
+- Before broad work, check open issues and PRs. Work on one issue-sized outcome at a time.
+- At the end of substantial work, update `AI/SESSION.md` with durable decisions, current blockers and the next 1–3 actions. Do not store transcripts or secrets.
+- Repository state is the memory source of truth. When a conversation is long or context is full, start a fresh chat and reload these files; do not depend on chat history or model memory.
+
+## 5. Efficient task workflow
 
 ### Understand
 1. Identify the requested outcome, actor, scope and explicit constraints.
@@ -66,7 +75,7 @@ Skills are task-specific procedures, not global policies. Load only the primary 
 4. Clearly distinguish implemented, statically inspected, locally executed and CI-verified work.
 5. Do not create a PR, merge, deploy or release unless requested.
 
-## 5. Backend and data invariants
+## 6. Backend and data invariants
 
 - Laravel policies, middleware and explicit server-side ownership/participant checks are authoritative.
 - Validate request data, uploaded file type/size/content and access to stored files.
@@ -75,7 +84,7 @@ Skills are task-specific procedures, not global policies. Load only the primary 
 - Consider concurrency, duplicate requests, rollback, queue retries and external-service failures.
 - Preserve response shape, status codes, pagination and error semantics unless intentionally versioned.
 
-## 6. Frontend and product invariants
+## 7. Frontend and product invariants
 
 - Use installed React 18 APIs and existing React Router/TanStack Query patterns.
 - Keep server state in the existing query/cache approach; avoid introducing competing state systems.
@@ -85,9 +94,9 @@ Skills are task-specific procedures, not global policies. Load only the primary 
 - Do not rely on color alone. Respect keyboard interaction, visible focus and reduced-motion preferences.
 - Frontend authorization must never be treated as access control.
 
-## 7. Git and GitHub
+## 8. Git and GitHub
 
-- Follow .agents/skills/git-github/SKILL.md for branch, commit, push, pull-request and GitHub workflow tasks.
+- Follow .agents/skills/git-github/SKILL.md and AI/GIT-WORKFLOW.md for branch, commit, push, pull-request and GitHub workflow tasks.
 - Never force-push, rewrite shared history, delete remote branches, merge, close issues or change repository settings without explicit authorization.
 - Keep changes scoped to the requested task. Do not include unrelated formatting or generated files.
 - Before editing or deleting a repository file through an API, fetch its current content and blob SHA; use the fresh SHA for the write.
@@ -95,7 +104,7 @@ Skills are task-specific procedures, not global policies. Load only the primary 
 - Do not dispatch or rerun GitHub Actions without explicit user permission. Do not assume opening or updating a PR authorizes CI.
 - Workflow files may be inspected or edited when requested, but never manually execute them without permission.
 
-## 8. Verification and CI policy
+## 9. Verification and CI policy
 
 Verification is opt-in, not implied.
 
@@ -106,6 +115,6 @@ Verification is opt-in, not implied.
 - If a workflow starts automatically due to a GitHub event, do not initiate additional runs or reruns. Report the observed status accurately if it is visible.
 - If not authorized, mark verification as Not run (permission not granted).
 
-## 9. Completion standard
+## 10. Completion standard
 
 A task is complete when the requested change is implemented, affected contracts and invariants are preserved, the focused diff is reviewed, and the delivery report accurately states what was and was not verified. A green test suite is not a prerequisite when execution was not authorized.
