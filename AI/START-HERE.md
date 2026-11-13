@@ -1,5 +1,8 @@
 # Start here — free ChatGPT / Claude coding workflow
 
+> **Complete tutorial:** Read [`AI/README.md`](README.md) for the end-to-end guide to planning, coding, bug investigation, PRs and cross-chat continuity.
+
+
 ## Every new chat
 Tell the AI:
 
