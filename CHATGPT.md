@@ -45,7 +45,7 @@ Load the primary skill and only the supporting skills needed. A cross-layer feat
 
 ## GitHub workflow
 
-Follow `AI/GIT-WORKFLOW.md` for issue taxonomy, milestone sequencing, branch naming, Conventional Commits, PR sizing and release tags. GitHub issue numbers are assigned by GitHub; never invent numbering.
+Follow `AI/GIT-WORKFLOW.md` for issue taxonomy, milestone sequencing, branch naming, Conventional Commits, PR sizing and release tags. Use `AI/GITHUB-SETUP.md` as a manual checklist; do not claim settings or labels are configured unless verified. GitHub issue numbers are assigned by GitHub; never invent numbering.
 
 ## Cross-chat continuity
 
