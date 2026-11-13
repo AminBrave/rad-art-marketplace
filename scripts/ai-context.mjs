@@ -16,7 +16,7 @@ const routes = [
   ['security-review', /security|auth|permission|authorization|privacy|upload|file access|secret|threat/i],
   ['code-review', /review|inspect diff|pull request review|audit code/i],
   ['quality-engineering', /test|testing|quality|lint|build|accessibility|performance|coverage|ci/i],
-  ['git-github', /git|github|branch|commit|pull request|\\bpr\\b|merge|release|workflow|issue|milestone|label/i],
+  ['git-github', /git|github|branch|commit|pull request|\bpr\b|merge|release|workflow|issue|milestone|label/i],
 ];
 const selected = task ? routes.filter(([, pattern]) => pattern.test(task)).map(([name]) => name) : [];
 
@@ -27,7 +27,7 @@ function read(path) {
     process.exitCode = 1;
     return;
   }
-  console.log(`\\n========== ${path} ==========`);
+  console.log(`\n========== ${path} ==========`);
   console.log(readFileSync(absolute, 'utf8').trim());
 }
 
@@ -38,5 +38,5 @@ read('AGENTS.md');
 read('AI/PROJECT.md');
 read('AI/SESSION.md');
 for (const skill of selected) read(`.agents/skills/${skill}/SKILL.md`);
-console.log('\\n========== TASK HANDOFF ==========');
+console.log('\n========== TASK HANDOFF ==========');
 console.log('Work on one bounded task. Confirm the related issue and branch. State assumptions and acceptance criteria. Do not run verification or CI without explicit user permission. Update AI/SESSION.md only when durable project-wide decisions or handoff state change.');
