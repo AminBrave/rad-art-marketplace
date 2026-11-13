@@ -18,4 +18,4 @@ labels: "type:spike, priority:p2"
 - [ ] Risks, unknowns and owner decisions
 - [ ] Follow-up issues with acceptance criteria
 
-## Milestone and dependencies
+## Decision link (if applicable) and dependencies
