@@ -9,14 +9,14 @@ const taskFlag = args.indexOf('--task');
 const task = taskFlag >= 0 ? args.slice(taskFlag + 1).join(' ') : args.join(' ');
 
 const routes = [
-  ['feature-planning', /feature|product|scope|requirement|acceptance|roadmap|mvp|user flow|plan/i],
+  ['feature-planning', /feature|product|scope|requirement|acceptance|decision|task|mvp|user flow|plan/i],
   ['laravel-backend', /laravel|php|eloquent|api|backend|migration|database|controller|model|policy|middleware/i],
   ['react-frontend', /react|javascript|frontend|front-end|ui|ux|component|route|rtl|persian|css|vite/i],
   ['debugging', /bug|debug|error|exception|regression|broken|fails|failure/i],
   ['security-review', /security|auth|permission|authorization|privacy|upload|file access|secret|threat/i],
   ['code-review', /review|inspect diff|pull request review|audit code/i],
   ['quality-engineering', /test|testing|quality|lint|build|accessibility|performance|coverage|ci/i],
-  ['git-github', /git|github|branch|commit|pull request|\bpr\b|merge|release|workflow|issue|milestone|label/i],
+  ['git-github', /git|github|branch|commit|pull request|\bpr\b|merge|release|workflow|issue|kanban|label/i],
 ];
 const selected = task ? routes.filter(([, pattern]) => pattern.test(task)).map(([name]) => name) : [];
 
