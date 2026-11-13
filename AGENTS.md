@@ -97,6 +97,7 @@ Skills are task-specific procedures, not global policies. Load only the primary 
 ## 8. Git and GitHub
 
 - Follow .agents/skills/git-github/SKILL.md and AI/GIT-WORKFLOW.md for branch, commit, push, pull-request and GitHub workflow tasks.
+- Use AI/GITHUB-SETUP.md for the repository settings checklist; never claim documented settings are enabled without checking GitHub.
 - Never force-push, rewrite shared history, delete remote branches, merge, close issues or change repository settings without explicit authorization.
 - Keep changes scoped to the requested task. Do not include unrelated formatting or generated files.
 - Before editing or deleting a repository file through an API, fetch its current content and blob SHA; use the fresh SHA for the write.
