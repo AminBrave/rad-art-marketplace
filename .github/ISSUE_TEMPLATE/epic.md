@@ -1,9 +1,15 @@
 ---
 name: Epic
-about: Track a milestone-sized outcome and its child issues
+about: Track a decision-level outcome that requires multiple delivery issues
 title: "[EPIC] "
 labels: "type:epic, priority:p1"
 ---
+
+## Source decision(s)
+- Decision ID and canonical comment link:
+
+## Product-owner authorization
+- Authorization and link/date:
 
 ## Outcome
 
@@ -16,9 +22,9 @@ labels: "type:epic, priority:p1"
 ## Child issues
 - [ ] # 
 
-## Milestone exit criteria
+## MVP boundary and completion criteria
 - [ ]
 
 ## Risks / dependencies
 
-## Product-owner decisions needed
+## Product-owner decisions still needed

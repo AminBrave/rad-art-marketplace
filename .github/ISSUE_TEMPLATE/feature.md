@@ -1,17 +1,23 @@
 ---
 name: Feature
-about: Propose a user-visible capability
+about: Track an explicitly authorized user-visible delivery task
 title: "[FEAT] "
 labels: "type:feature, priority:p2"
 ---
+
+## Source decision(s)
+- Decision ID and canonical comment link, or “Standalone task”:
+
+## Product-owner authorization
+- Authorization and link/date:
 
 ## Context / problem
 
 ## Desired outcome
 
-## Scope
-### In scope
-### Out of scope
+## MVP scope
+### Included in this task
+### Explicitly out of scope / later
 
 ## Acceptance criteria
 - [ ] 
@@ -21,4 +27,4 @@ labels: "type:feature, priority:p2"
 ## Verification plan
 > A plan is not permission to run checks.
 
-## Milestone and related issues
+## Dependencies and related issues

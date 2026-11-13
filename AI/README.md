@@ -12,15 +12,15 @@ This is the human operating manual for developing Rademan with ordinary chat-bas
 |---|---|---|
 | Rules | Permissions, safety, coding and collaboration rules | `AGENTS.md` |
 | Product | Product intent, principles and unresolved product questions | `AI/PROJECT.md` |
-| Roadmap | Milestones, outcomes, dependencies and prioritization | `AI/ROADMAP.md` |
+| Task management | Authorized tasks, per-task MVP scope, priority and Kanban workflow | `AI/TASK-MANAGEMENT.md` |
 | Project handoff | Current project objective, cross-project decisions, blockers and next actions | `AI/SESSION.md` |
 | Task history | Requirements, bug evidence, decisions, progress and review discussion | GitHub issue or PR |
 | Implementation | What the application actually does | Source code, migrations, tests, configuration and observed runtime behavior |
 | Procedures | Focused instructions for feature, backend, frontend, debugging, security, review, quality and Git work | Relevant skill selected by `AGENTS.md` |
 
-**Authority order:** explicit user decisions → `AGENTS.md` → approved issue/PR requirements and recorded decisions → current source and runtime evidence for implementation facts → product brief and roadmap for intent → AI suggestions. An AI suggestion is never an approved requirement.
+**Authority order:** explicit user decisions → `AGENTS.md` → approved issue/PR requirements and recorded decisions → current source and runtime evidence for implementation facts → product brief and canonical decision records for intent → AI suggestions. An AI suggestion is never an approved requirement.
 
-The AI must not claim that a feature exists, is missing, works, is secure or is tested without suitable evidence. Documentation describes intent; source and runtime evidence establish implementation.
+The AI must not claim that a feature exists, is missing, works, is secure or is tested without suitable evidence. Documentation describes intent; source and runtime evidence establish implementation. Product decisions in #150 are not implementation permission. A named decision is retrieved independently; only explicitly authorized scope becomes a delivery issue.
 
 ## 2. One-time setup
 
@@ -59,7 +59,7 @@ Use the same loop for every substantial feature, bug, maintenance task or review
 10. **Update GitHub.** Keep durable findings and progress on the issue; put code review discussion on the PR. Link PR to issue.
 11. **Close the loop.** Record outcome, remaining work and next actions. Update the project handoff only for project-wide changes.
 
-For large initiatives, create an epic and split it into independently reviewable child issues. The roadmap is a planning tool, not a list of assumed missing features.
+For a large authorized decision, create a parent epic and split its task-specific MVP into independently reviewable child issues. Do not create product-phase milestones or infer a delivery sequence from the decision register.
 
 ## 4. Practical prompts for real development situations
 
@@ -183,36 +183,53 @@ Create or find a feature issue first. Ask the AI to investigate and plan, not im
 
 > Prepare the completion report for [issue/PR link]. State the delivered behavior, files changed, acceptance criteria satisfied or not satisfied, remaining risks, follow-up issues, and exact verification status. Distinguish static inspection, locally executed checks and CI evidence. Update the issue/PR and project handoff where appropriate. Do not mark the issue complete if acceptance criteria remain unmet.
 
-## 5. Roadmap and progress tracking
+## 5. Decision-driven task management
 
-The initial roadmap is deliberately staged. Its purpose is to prevent random feature development and keep the product direction visible—not to force the project to build every item in advance.
+Rademan does not use a product roadmap or M0–M4 product milestones. Product intent is recorded separately from approved delivery work.
 
-| Milestone | Goal | What must be true before moving on |
-|---|---|---|
-| M0 — AI-ready foundation | Stable instructions, task tracking and context recovery | Entry rules, issue/PR workflow and handoff are usable |
-| M1 — Product baseline | Establish what is already implemented and decide the first release scope | Evidence-backed inventory, confirmed target users, MVP scope and success measures |
-| M2 — Discovery experience | Improve the core artist discovery journey | Approved user problem, requirements and measurable acceptance criteria |
-| M3 — Artist identity and contact | Establish useful artist profiles and safe contact journeys | Approved profile/contact rules, server-side permissions and privacy/abuse handling |
-| M4 — Release readiness | Prepare the agreed MVP for safe operation | Security, quality, accessibility, operational and rollback evidence |
+### The model
 
-M1–M4 are planning containers, not statements that the feature areas are currently absent. Audit first. The product owner approves scope and priority.
+Product decision → authorized delivery issue → task-specific MVP → implementation PR
 
-### How to keep the roadmap accurate
+- **Product decision:** one of the 41 standalone intent records linked from #150. A decision may describe future direction and is not automatically a task.
+- **Delivery issue:** a bounded piece of work explicitly authorized by the product owner. It links to the one relevant decision (or records “Standalone task”).
+- **MVP:** the smallest useful, testable scope for that specific decision/task. It is written inside the issue, not treated as a platform-wide MVP roadmap.
+- **Child tasks:** if a decision is too large for one reviewable change, use a parent epic and split the MVP into linked, independently reviewable child issues.
 
-- Keep milestone goals and exit criteria in `AI/ROADMAP.md`.
-- Keep each deliverable as a GitHub issue with observable acceptance criteria.
-- Use epics for multi-issue outcomes and link child issues.
-- Use dependencies to show order; do not start a downstream feature while a required product decision is unresolved.
-- Update roadmap status only from live issue/PR evidence. Use statuses such as proposed, ready, in progress, blocked, done or deferred.
-- Do not mark a milestone complete because its issues were created or code was written. Check its exit criteria.
-- When priorities change, record who approved the change and why in the relevant issue and update the roadmap.
-- Keep `AI/SESSION.md` to the current project-wide objective, cross-project decisions, blockers and next 1–3 actions. It is not a second task tracker.
+A decision can remain only a vision record. Never create an issue for every decision automatically. When the user names a decision, retrieve only its canonical comment; do not reread unrelated decisions by default. Decision IDs (D01–D41) are not GitHub issue numbers.
 
-### Recommended lifecycle for one issue
+### One Kanban board
 
-`Proposed → Ready (scope approved) → In progress → In review → Done`
+Use one GitHub Project named **Rademan Workboard**:
 
-Use `Blocked` when progress depends on a decision, access or external condition. Do not move an issue to Done until acceptance criteria are met and verification status is honestly recorded.
+Backlog → Ready → In progress → In review → Done
+
+Use **Blocked** when a documented dependency prevents progress. The board also has Priority (P0–P3), Type, Area and Decision ID fields. Issues remain the source of truth; the board shows their current execution state.
+
+- **Backlog:** captured, not yet ready/authorized.
+- **Ready:** authorization, MVP boundary, acceptance criteria, dependencies and owner are clear.
+- **In progress:** work has actually started.
+- **In review:** a linked PR or investigation output is under review.
+- **Blocked:** blocker and next action are written on the issue.
+- **Done:** acceptance criteria and required verification are complete, and implementation PR is merged.
+
+### Required issue content
+
+Every authorized task records its source decision and direct link (or “Standalone task”), authorization, current source-backed baseline, MVP scope, exclusions, observable acceptance criteria, risks/dependencies and verification plan. A verification plan does not authorize execution. Use the issue templates and AI/TASK-MANAGEMENT.md.
+
+### Naming
+
+Use a type prefix and include the decision ID when applicable:
+- [FEAT] D02 — Improve buyer discovery entry point
+- [EPIC] D06 — Deliver buyer personalization MVP
+- [BUG] Fix artwork visibility regression
+- [CHORE] Simplify AI context bootstrap
+
+Do not put M0–M4 or product-phase labels in new tasks. Do not renumber existing GitHub issues or rewrite historical records.
+
+### Priority and completion
+
+P0 is urgent/critical, P1 high impact, P2 normal planned work, P3 low priority. Priority is not a product sequence. Move a task to Done only when its acceptance criteria are met, verification is accurately recorded and its PR is merged. Follow AI/TASK-MANAGEMENT.md for the full operating contract.
 
 ## 6. GitHub, branches and pull requests
 
@@ -225,9 +242,9 @@ For each substantial task:
 5. Open a PR linked to the issue; include behavior, risks and verification evidence.
 6. Review feedback and record decisions on the PR.
 7. Merge only after the required human approval and repository rules are satisfied.
-8. Update the issue and roadmap status from the actual result.
+8. Update the issue and Kanban Status from the actual result.
 
-Do not assume labels, milestones, branch protection or security settings are configured because documentation recommends them. Check the live GitHub settings. Follow `.agents/skills/git-github/SKILL.md` for Git and GitHub procedures. Use `AI/GITHUB-SETUP.md` only when configuring repository settings; you do not need to mention either file in prompts.
+Do not assume labels, Project fields, branch protection or security settings are configured because documentation recommends them. Check the live GitHub settings. Follow `.agents/skills/git-github/SKILL.md` for Git and GitHub procedures. Use `AI/GITHUB-SETUP.md` only when configuring repository settings; you do not need to mention either file in prompts.
 
 ## 7. Anti-hallucination rules to expect from the AI
 
