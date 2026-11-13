@@ -16,7 +16,7 @@ This is the human operating manual for developing Rademan with ordinary chat-bas
 | Project handoff | Current project objective, cross-project decisions, blockers and next actions | `AI/SESSION.md` |
 | Task history | Requirements, bug evidence, decisions, progress and review discussion | GitHub issue or PR |
 | Implementation | What the application actually does | Source code, migrations, tests, configuration and observed runtime behavior |
-| Procedures | Focused instructions for feature, backend, frontend, debugging, security, review, quality and Git work | Relevant skill selected by the AI |
+| Procedures | Focused instructions for feature, backend, frontend, debugging, security, review, quality and Git work | Relevant skill selected by `AGENTS.md` |
 
 **Authority order:** explicit user decisions → `AGENTS.md` → approved issue/PR requirements and recorded decisions → current source and runtime evidence for implementation facts → product brief and roadmap for intent → AI suggestions. An AI suggestion is never an approved requirement.
 
@@ -227,7 +227,7 @@ For each substantial task:
 7. Merge only after the required human approval and repository rules are satisfied.
 8. Update the issue and roadmap status from the actual result.
 
-Do not assume labels, milestones, branch protection or security settings are configured because documentation recommends them. Check the live GitHub settings. Follow `AI/GIT-WORKFLOW.md` and `AI/GITHUB-SETUP.md` when those operations are relevant; you do not need to mention those files in prompts.
+Do not assume labels, milestones, branch protection or security settings are configured because documentation recommends them. Check the live GitHub settings. Follow `.agents/skills/git-github/SKILL.md` for Git and GitHub procedures. Use `AI/GITHUB-SETUP.md` only when configuring repository settings; you do not need to mention either file in prompts.
 
 ## 7. Anti-hallucination rules to expect from the AI
 
