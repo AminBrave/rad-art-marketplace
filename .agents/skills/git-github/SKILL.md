@@ -19,15 +19,11 @@ description: Safely manage Rademan branches, commits, remotes, pull requests, re
 5. Never commit secrets, credentials, local environment files, generated artifacts, caches, dependencies or unrelated changes.
 
 ## Branch strategy
-- Use a short, descriptive branch name with a task-oriented prefix such as feat/, fix/, chore/, test/ or refactor/.
-- Branch from the explicitly requested base; otherwise inspect the repository's current default/target branch and existing task branch before assuming.
-- Keep one logical concern per branch. Do not silently redirect work to main.
-- Do not delete a branch after merge unless asked.
-
-## Branch conventions
 - Use short-lived branches from the agreed current base branch; do not work directly on `main` for ordinary feature work.
 - Name branches with a task type and issue number where available: `feat/<issue>-slug`, `fix/<issue>-slug`, `chore/<issue>-slug`, `docs/<issue>-slug`, `sec/<issue>-slug` or `qa/<issue>-slug`.
+- Branch from the explicitly requested base; otherwise inspect the repository's current default/target branch and existing task branch before assuming.
 - Keep one bounded issue/outcome per branch. Do not silently redirect work to another branch.
+- Do not delete a branch after merge unless asked.
 
 ## Commits
 - Use imperative, specific commit subjects that describe the change (for example: "Add artist profile accessibility coverage").
