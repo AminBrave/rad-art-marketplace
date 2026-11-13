@@ -1,381 +1,278 @@
-# Rademan development with ChatGPT Free or Claude Free
+# Rademan development guide — ChatGPT Free and Claude Free
 
-A practical guide for planning, implementing, debugging and maintaining Rademan with ordinary chat-based AI. It does not require Codex, a paid agent, an autonomous coding tool or a local IDE agent.
+This is the human operating manual for developing Rademan with ordinary chat-based AI. It is designed to work without Codex, paid agents, autonomous IDE agents or hidden model memory.
 
-**Core principle:** GitHub is the source of truth. Chats are focused workspaces. The repository instructions define how AI work must be done.
+**The simple rule:** In a new chat, point the AI to `AGENTS.md` and describe the task. The AI—not you—must select the relevant project documents, GitHub records and skills. You should not need to remember internal file paths.
 
-## 1. Understand the system
+> AI can still make mistakes. This workflow reduces hallucination and context loss by requiring evidence, explicit uncertainty, durable records and human approval at decision boundaries. It cannot guarantee a model will never be wrong.
 
-Rademan uses four layers of project memory and task tracking:
+## 1. The operating model
 
-| Layer | What belongs there | Source of truth |
+| Layer | Purpose | Where truth lives |
 |---|---|---|
-| Project rules | Safety, permissions, coding conventions and workflow rules | `AGENTS.md` |
-| Product context | What Rademan is, product goals, constraints and unresolved decisions | `AI/PROJECT.md` |
-| Project-wide handoff | Current objective, cross-project decisions, blockers and next steps | `AI/SESSION.md` |
-| Task state | Bug reports, feature requirements, investigation logs, review feedback and delivery status | GitHub issues and pull requests |
+| Rules | Permissions, safety, coding and collaboration rules | `AGENTS.md` |
+| Product | Product intent, principles and unresolved product questions | `AI/PROJECT.md` |
+| Roadmap | Milestones, outcomes, dependencies and prioritization | `AI/ROADMAP.md` |
+| Project handoff | Current project objective, cross-project decisions, blockers and next actions | `AI/SESSION.md` |
+| Task history | Requirements, bug evidence, decisions, progress and review discussion | GitHub issue or PR |
+| Implementation | What the application actually does | Source code, migrations, tests, configuration and observed runtime behavior |
+| Procedures | Focused instructions for feature, backend, frontend, debugging, security, review, quality and Git work | Relevant skill selected by the AI |
 
-Skills add task-specific procedures. They are not a replacement for the global rules. Read only the skills relevant to the current task.
+**Authority order:** explicit user decisions → `AGENTS.md` → approved issue/PR requirements and recorded decisions → current source and runtime evidence for implementation facts → product brief and roadmap for intent → AI suggestions. An AI suggestion is never an approved requirement.
 
-**Do not use chat history as the only record of important work.** A new conversation should be able to continue from the repository and the linked GitHub issue/PR.
+The AI must not claim that a feature exists, is missing, works, is secure or is tested without suitable evidence. Documentation describes intent; source and runtime evidence establish implementation.
 
 ## 2. One-time setup
 
-### 2.1 Get repository access
+1. Make sure your ChatGPT or Claude session can actually read the repository. A URL alone does not grant access to a private repository.
+2. Connect an authorized GitHub integration if available, or provide the relevant files and issue/PR content yourself.
+3. Open a new chat and use the single starter prompt below.
+4. Keep this guide bookmarked for the human workflow. You do not need to ask the AI to read this whole guide for every task.
 
-Choose the workflow that matches your tools:
+### Universal starter prompt
 
-- **Browser-only ChatGPT or Claude:** provide the repository and issue/PR links. The assistant must have an authorized GitHub connection or you must provide the relevant file contents. A URL alone does not grant private-repository access.
-- **Local repository workflow:** clone the repository and open its folder in your terminal/editor. The AI chat may still be browser-based; you can provide the generated context packet and relevant diffs/files.
-- **Connected GitHub integration:** ask the assistant to read the exact repository files and live issue/PR. It should tell you when it cannot access something.
+Copy this into a new chat and replace the task description:
 
-Never ask an assistant to pretend it read a file, issue, log or PR it could not access.
+> We are working on Rademan in `AminBrave/rad-art-marketplace`.
+> First read `AGENTS.md`. Follow it to choose the minimum relevant project context, current GitHub issue/PR and task-specific skills. Do not ask me to name internal files.
+>
+> **My task:** [describe the outcome in plain language]
+> **Issue/PR:** [number and link, or “find the existing one”]
+>
+> Before editing, inspect the live repository and GitHub state. Summarize confirmed facts, assumptions, unknowns, acceptance criteria and the smallest safe next step. If you cannot access something, say exactly what you could not read and ask for the minimum missing evidence. Never fill gaps by guessing. Do not modify files until I approve the plan.
 
-### 2.2 Read the starting documents
+For an already approved task where you want the AI to proceed, add: “The scope and plan are approved. Implement only the agreed work, following `AGENTS.md`.”
 
-Start with:
+## 3. The stable development loop
 
-1. `AGENTS.md` — mandatory operating rules and permissions.
-2. `AI/PROJECT.md` — product brief and known unknowns.
-3. `AI/SESSION.md` — current project-wide handoff.
-4. `.agents/skills/README.md` — skill index and routing.
-5. `AI/GIT-WORKFLOW.md` — branch, commit and PR process.
-6. `AI/GITHUB-SETUP.md` — GitHub settings and labels checklist.
+Use the same loop for every substantial feature, bug, maintenance task or review.
 
-For task-specific chat prompts, see `AI/CHAT-WORKFLOWS.md`. For bug investigation records, see `AI/BUG-HANDOFF.md`.
+1. **Frame the outcome.** State who is affected, what problem they have and what success means.
+2. **Find the task record.** Search open issues and PRs. Continue the existing issue when one exists; do not create duplicates.
+3. **Establish the baseline.** Read the live issue and comments, related PR, current branch/commit and relevant source. Summarize current behavior before proposing a change.
+4. **Separate certainty levels.** List confirmed facts, hypotheses, unknowns and decisions requiring your approval.
+5. **Agree on acceptance criteria.** Include success, failure, permission-denied, empty/loading states and compatibility constraints as relevant.
+6. **Plan the smallest coherent change.** Identify affected backend/frontend/data/API/security/RTL/accessibility areas. Avoid unrelated refactors.
+7. **Implement on a task branch.** Keep changes focused on one issue and preserve established contracts.
+8. **Review the diff.** Check callers, error paths, authorization, privacy, data integrity, performance and accessibility.
+9. **Verify only with permission.** A request to implement does not authorize tests, builds, lint, migrations or CI. Record exactly what was and was not run.
+10. **Update GitHub.** Keep durable findings and progress on the issue; put code review discussion on the PR. Link PR to issue.
+11. **Close the loop.** Record outcome, remaining work and next actions. Update the project handoff only for project-wide changes.
 
-### 2.3 Optional local context command
+For large initiatives, create an epic and split it into independently reviewable child issues. The roadmap is a planning tool, not a list of assumed missing features.
 
-From the repository root, run:
+## 4. Practical prompts for real development situations
 
-```bash
-npm run ai:context -- --task "Describe the task in one sentence"
-```
+You do not need to use every prompt. Describe the situation naturally and use the matching example when you need stronger guardrails.
 
-For ChatGPT-specific guidance:
+### A. Starting a new feature
 
-```bash
-npm run ai:context -- --task "Describe the task" --chatgpt
-```
+Create or find a feature issue first. Ask the AI to investigate and plan, not immediately code.
 
-This command is designed to print the global contract, product brief, project handoff, skill index and only the task-matched skills. It is read-only. It does not inspect GitHub, run tests or change files.
+> Work on the feature described in [issue link]. Read `AGENTS.md` and follow its routing rules. Inspect the current implementation and relevant user flow before proposing a solution.
+>
+> First report: (1) current behavior with source evidence, (2) user problem and target actor, (3) confirmed requirements versus assumptions, (4) explicit non-goals, (5) acceptance criteria including failure and permission cases, (6) affected files/API/database/security/RTL/accessibility areas, and (7) a small implementation sequence.
+>
+> Do not invent product requirements or assume proposed functionality is already implemented. Flag decisions that need my approval. Do not edit yet.
 
-If you are using a browser chat without terminal access, do not ask it to run this command. Ask it to read the same documents through an available repository connection, or provide their contents.
+### B. Implementing an approved feature
 
-## 3. The standard workflow for every task
+> The plan and acceptance criteria on [issue link] are approved. Re-check the live issue and current branch before editing. Implement only the agreed scope, using existing project patterns. Trace the full affected flow rather than changing a component in isolation. Preserve API contracts, server-side authorization, privacy, Persian/RTL and accessibility behavior.
+>
+> If the source contradicts the plan, an important requirement is missing, or the change needs broader scope, stop and explain the evidence and options before proceeding. Do not silently redesign the feature. Do not run verification or CI without my explicit permission.
 
-Use this sequence for bugs, features, maintenance and reviews.
+### C. Reporting a bug
 
-### Step 1 — Identify the outcome
+> Help me document this bug in Rademan. First search for an existing issue so we do not duplicate it.
+>
+> **Expected:** [what should happen]
+> **Actual:** [what happens]
+> **Steps:** [reproduction steps]
+> **Environment/commit:** [if known]
+> **Evidence:** [sanitized error, screenshot or log]
+>
+> Help classify impact and create a concise reproducible report. Mark missing details as unknown; do not invent reproduction steps, affected users or root cause. Do not include secrets or unnecessary personal data.
 
-Describe the user or engineering problem, not just the proposed code change.
+### D. Investigating a bug without guessing
 
-Good: "An artist can save a profile with an invalid public contact URL. Validate the URL and show a useful error."
+> Investigate [bug issue link] using the debugging procedure selected by `AGENTS.md`. Do not assume the reported cause is correct.
+>
+> Trace the narrowest relevant path and report:
+> - Confirmed facts with file paths, symbols, line references or actual log evidence.
+> - Hypotheses ranked by evidence, and what observation would falsify each.
+> - What has actually been reproduced or executed versus only inspected.
+> - The smallest next investigation step.
+>
+> Do not call a hypothesis the root cause. Do not change code until the root cause is supported and I approve the fix. Do not run commands or tests without permission.
 
-Less useful: "Change the profile form."
+### E. When a bug cannot be reproduced
 
-Define what success looks like and what must not change.
+> The bug in [issue link] is not currently reproducible. Do not invent a reproduction or claim it is fixed.
+>
+> Compare the report with the current source and environment evidence. List the missing conditions, possible explanations and the safest way to gather discriminating evidence. Suggest the smallest next step. Keep the issue open and record the status as “not reproduced” unless evidence supports another conclusion.
 
-### Step 2 — Find or create the GitHub issue
+### F. When logs or evidence are incomplete
 
-Search open issues and PRs before creating a duplicate.
+> The available evidence is incomplete. Tell me exactly which missing detail blocks diagnosis and why. Ask only for the smallest useful additional evidence. Do not infer unseen log entries, environment settings, database contents, user actions or network responses. If you can still make progress through read-only source inspection, do that and label its limits.
 
-Use the repository issue templates:
+### G. When repository or GitHub access fails
 
-- Bug: `.github/ISSUE_TEMPLATE/bug.md`
-- Feature: `.github/ISSUE_TEMPLATE/feature.md`
-- Chore: `.github/ISSUE_TEMPLATE/chore.md`
-- Epic: `.github/ISSUE_TEMPLATE/epic.md`
-- Security: `.github/ISSUE_TEMPLATE/security.md`
-- Investigation/spike: `.github/ISSUE_TEMPLATE/spike.md`
+> You do not appear to have access to [file/issue/PR/repository]. Do not pretend to have read it and do not infer its contents from the URL or an old chat summary.
+>
+> Identify the exact missing source and ask me for the minimum necessary file, diff, issue text or sanitized log. Continue only with facts you can verify.
 
-Use one issue for one bounded outcome. Use an epic to group a larger initiative into smaller issues. Link related issues rather than copying the same history into several places.
+### H. When source code contradicts the issue or documentation
 
-### Step 3 — Start the right chat
+> The current source appears to conflict with [issue/brief/document]. Stop before making changes. Show the exact conflicting evidence, explain which statements are confirmed and which are stale or ambiguous, and propose the smallest clarification needed. Do not choose a product behavior on my behalf.
 
-Prefer one chat per substantial issue or PR:
+### I. When the task grows beyond its original scope
 
-| Work | Chat arrangement | Canonical GitHub record |
+> This work appears to require changes outside the approved scope of [issue link]. Do not expand scope silently. Separate the original acceptance criteria from the newly discovered work. Explain whether the new work is a blocker, dependency or independent follow-up, and propose issue/PR boundaries. Wait for my decision before broadening implementation.
+
+### J. When a product or architecture decision is needed
+
+> This task requires a decision that is not established in the product brief or source. Do not present your preferred option as an existing requirement. Give me the viable options, trade-offs, user impact, security/privacy implications and recommendation. Mark the recommendation as a proposal until I approve it, then record the approved decision in the correct durable project or issue record.
+
+### K. When a test, build, lint or CI check fails
+
+> The check [exact command/workflow and result] failed. Do not hide, delete, skip or weaken the failing test just to get a green result.
+>
+> First determine whether the failure is relevant to this change, pre-existing, environmental or caused by the change. Cite the exact output and source evidence. Propose the smallest corrective action and any regression coverage. Do not run additional commands or rerun CI until I authorize the exact checks.
+
+### L. Before opening or updating a PR
+
+> Review the changes for [issue link] as if you were an independent reviewer. Inspect the full diff and relevant callers. Look for correctness, regressions, authorization, privacy, data integrity, API compatibility, performance, Persian/RTL, responsive behavior and accessibility.
+>
+> Report findings first, ordered by severity, with exact file/line evidence, impact and a suggested fix. Separate confirmed defects from questions and style preferences. State what you could not verify. Do not approve or merge the PR.
+
+### M. When review feedback arrives
+
+> Review the comments on [PR link] and group them into: confirmed defects, valid improvements, questions, and suggestions that conflict with project rules or approved scope. Check each comment against current source; do not accept or reject feedback blindly.
+>
+> Recommend a response and minimal change for each item. Do not resolve or dismiss review threads, push changes or change scope without my approval.
+
+### N. When requirements change mid-task
+
+> My requirement has changed: [describe change]. Compare it with the approved issue and current implementation. Explain which acceptance criteria change, what work becomes obsolete, what new risks/dependencies appear and whether the issue should be updated or split. Do not continue using outdated assumptions. Wait for confirmation if the change affects product behavior or data/API contracts.
+
+### O. When work is blocked
+
+> We are blocked on [issue link]. Summarize what is complete, the exact blocker, evidence that demonstrates it, what has already been tried and what is still unknown. Give me the smallest set of options to unblock it, including trade-offs. Do not claim progress on steps that were not completed.
+
+### P. When the AI proposes a dependency or major refactor
+
+> Before adding a package, service, abstraction, framework or broad refactor, show the concrete requirement that existing project patterns cannot satisfy. Compare the smallest existing-pattern solution with the proposed addition, including maintenance, security, compatibility and operational cost. Do not install or introduce it until I approve.
+
+### Q. Before any executable verification
+
+> I authorize only this verification: [exact command or named workflow], in [local/staging/CI environment]. Do not run any other checks, install packages, mutate data or start additional CI. Explain side effects first if any are possible, then report the exact command, environment and output. If the command cannot be run, say so.
+
+### R. Preparing a context-window handoff
+
+> We are nearing the context limit. Stop new work and prepare a factual handoff for [issue/PR link].
+>
+> Record: goal and acceptance criteria; confirmed findings; unresolved hypotheses and unknowns; decisions I approved; files changed; branch and commit/PR; commands actually run and exact results; checks not run; blockers; and the next 1–3 actions. Update the GitHub issue or PR if access permits; otherwise give me a ready-to-paste comment. Update `AI/SESSION.md` only if project-wide objective, decisions, blockers or priorities changed. Do not claim unfinished work is complete.
+
+### S. Resuming in a new chat after context is full
+
+> Continue [issue/PR link] in `AminBrave/rad-art-marketplace`. Read `AGENTS.md` first and follow its instructions to select the relevant context and skills. Inspect the live issue/PR, latest comments, current branch/commit and current source. Treat these as authoritative over the previous chat.
+>
+> Before doing anything, summarize completed work, confirmed facts, approved decisions, unresolved hypotheses, current verification status, blockers and next 1–3 actions. Identify any mismatch between the handoff and live repository state. Do not repeat completed work, create a duplicate issue or assume a previous chat's claims are true. Ask me only for evidence you cannot access.
+
+### T. When a task is complete
+
+> Prepare the completion report for [issue/PR link]. State the delivered behavior, files changed, acceptance criteria satisfied or not satisfied, remaining risks, follow-up issues, and exact verification status. Distinguish static inspection, locally executed checks and CI evidence. Update the issue/PR and project handoff where appropriate. Do not mark the issue complete if acceptance criteria remain unmet.
+
+## 5. Roadmap and progress tracking
+
+The initial roadmap is deliberately staged. Its purpose is to prevent random feature development and keep the product direction visible—not to force the project to build every item in advance.
+
+| Milestone | Goal | What must be true before moving on |
 |---|---|---|
-| One bug | One bug-focused chat; new chats can resume the same issue | Bug issue |
-| One feature | One feature-focused chat | Feature issue |
-| Larger initiative | Planning chat for the epic, then focused chats for child issues | Epic and child issues |
-| Product direction | One ongoing planning chat when useful | Product brief and decision issues |
-| Code review | One chat per PR | Pull request |
-| Security review | One chat per surface or finding set | Security issue(s) and remediation PR(s) |
-| Small question | Use an existing relevant chat; no issue needed unless work results | Issue only if a durable action is required |
+| M0 — AI-ready foundation | Stable instructions, task tracking and context recovery | Entry rules, issue/PR workflow and handoff are usable |
+| M1 — Product baseline | Establish what is already implemented and decide the first release scope | Evidence-backed inventory, confirmed target users, MVP scope and success measures |
+| M2 — Discovery experience | Improve the core artist discovery journey | Approved user problem, requirements and measurable acceptance criteria |
+| M3 — Artist identity and contact | Establish useful artist profiles and safe contact journeys | Approved profile/contact rules, server-side permissions and privacy/abuse handling |
+| M4 — Release readiness | Prepare the agreed MVP for safe operation | Security, quality, accessibility, operational and rollback evidence |
 
-Do not create a new chat for every tiny follow-up. Continue in the same chat while it remains focused and context is healthy. Start a fresh one when the context gets long, stale or confused.
+M1–M4 are planning containers, not statements that the feature areas are currently absent. Audit first. The product owner approves scope and priority.
 
-### Step 4 — Give the assistant a precise task pointer
+### How to keep the roadmap accurate
 
-Use the new-chat prompt in section 4. Include:
+- Keep milestone goals and exit criteria in `AI/ROADMAP.md`.
+- Keep each deliverable as a GitHub issue with observable acceptance criteria.
+- Use epics for multi-issue outcomes and link child issues.
+- Use dependencies to show order; do not start a downstream feature while a required product decision is unresolved.
+- Update roadmap status only from live issue/PR evidence. Use statuses such as proposed, ready, in progress, blocked, done or deferred.
+- Do not mark a milestone complete because its issues were created or code was written. Check its exit criteria.
+- When priorities change, record who approved the change and why in the relevant issue and update the roadmap.
+- Keep `AI/SESSION.md` to the current project-wide objective, cross-project decisions, blockers and next 1–3 actions. It is not a second task tracker.
 
-- Repository name.
-- GitHub issue or PR number and link.
-- Expected outcome.
-- Current branch/PR if one exists.
-- Important constraints or new evidence.
+### Recommended lifecycle for one issue
 
-Ask it to summarize the current state before editing. This catches stale assumptions and duplicate work.
+`Proposed → Ready (scope approved) → In progress → In review → Done`
 
-### Step 5 — Plan before implementation
+Use `Blocked` when progress depends on a decision, access or external condition. Do not move an issue to Done until acceptance criteria are met and verification status is honestly recorded.
 
-For meaningful changes, ask for:
+## 6. GitHub, branches and pull requests
 
-- Relevant files and call paths to inspect.
-- Confirmed facts versus assumptions.
-- Acceptance criteria and failure cases.
-- API/database/security/privacy/RTL/accessibility risks.
-- A small implementation plan.
-- Any product decision that requires your approval.
+For each substantial task:
 
-Do not let an AI-generated suggestion silently become an approved product requirement. You own product decisions.
+1. Search for an existing issue before creating one.
+2. Keep one bounded outcome per issue.
+3. Create a task branch from the agreed base branch.
+4. Keep commits focused and descriptive.
+5. Open a PR linked to the issue; include behavior, risks and verification evidence.
+6. Review feedback and record decisions on the PR.
+7. Merge only after the required human approval and repository rules are satisfied.
+8. Update the issue and roadmap status from the actual result.
 
-### Step 6 — Implement on a task branch
+Do not assume labels, milestones, branch protection or security settings are configured because documentation recommends them. Check the live GitHub settings. Follow `AI/GIT-WORKFLOW.md` and `AI/GITHUB-SETUP.md` when those operations are relevant; you do not need to mention those files in prompts.
 
-Follow `AI/GIT-WORKFLOW.md` and `.agents/skills/git-github/SKILL.md`.
+## 7. Anti-hallucination rules to expect from the AI
 
-- Use a branch linked to the task, not direct commits to `main`.
-- Keep the change focused on the issue.
-- Avoid unrelated refactors.
-- Preserve existing architecture and contracts unless the issue explicitly changes them.
-- Keep secrets and private data out of commits, issue comments and chat messages.
-- Do not merge or deploy unless you explicitly authorize it.
+A reliable assistant should consistently do the following:
 
-### Step 7 — Review the diff and record verification
+- **Cite evidence:** use repository paths, symbols, line references, issue comments, commit SHAs or actual command output.
+- **Admit access limits:** say “I could not access this file/issue/log,” not “it probably says…”.
+- **Label uncertainty:** distinguish facts, hypotheses, assumptions, unknowns and proposals.
+- **Avoid false completion:** do not claim implemented, reproduced, tested, reviewed, merged or deployed without direct evidence.
+- **Check current state:** inspect live source and GitHub before continuing old work.
+- **Prefer the smallest change:** do not invent abstractions, features or dependencies to fill gaps.
+- **Protect the product:** preserve existing API contracts, authorization, privacy, data integrity, Persian/RTL, responsive and accessibility requirements.
+- **Stop at decision boundaries:** ask before making unapproved product, data model, API or scope decisions.
+- **Preserve failures:** never hide failing checks or weaken tests just to get a green result.
+- **Keep history durable:** put task-specific evidence and decisions on the issue/PR, not only in chat.
 
-Ask for a focused review of changed files and their callers. Require the assistant to distinguish:
+If the AI violates these rules, stop the task. Ask it to identify unsupported claims, correct the record and continue only from verifiable evidence.
 
-- Implemented changes.
-- Static inspection only.
-- Commands actually run and their exact outcomes.
-- CI results with links, if any.
-- Checks not run.
+## 8. Permission and safety boundaries
 
-A proposed command is not a test result. A PR existing is not proof that CI passed.
+Unless you explicitly authorize the exact action, the AI must not run tests, lint, formatting, builds, type checks, browser automation, migrations, seeders, database changes, security scanners or CI. A request to implement or debug is not permission to run them.
 
-### Step 8 — Open/update the PR and link the issue
+Likewise, do not assume permission to install packages, start/stop services, deploy, release, merge, force-push, rewrite history, delete branches, close issues or change repository settings.
 
-Use the repository PR template. Include:
+Examples of narrow authorization:
 
-- The problem and intended outcome.
-- The issue link (use GitHub's closing keyword such as `Closes #123` when appropriate).
-- A concise change summary.
-- Risks and compatibility notes.
-- Verification status and evidence.
-- Screenshots for meaningful UI changes when useful.
+> I authorize running `npm run lint` locally in this checkout only. Do not run other commands or CI.
 
-Keep discussion about code changes on the PR. Keep bug reproduction and investigation history on the issue.
+> I authorize starting the named CI workflow for PR #123 once. Do not rerun it.
 
-### Step 9 — Close the loop
+Never put passwords, API keys, tokens, cookies, private keys, production credentials or unnecessary personal data into AI chats, issues or PRs. Sanitize logs and screenshots.
 
-After review and merge, make sure the issue reflects the actual outcome. Update `AI/SESSION.md` only if project-wide goals, decisions, blockers or priorities changed. Do not put every bug detail into the global session file.
+## 9. What a good final report looks like
 
-## 4. Copy-and-use chat prompts
+For substantial work, expect a concise report with:
 
-The complete prompt library is in `AI/CHAT-WORKFLOWS.md`. These are compact examples.
+- Issue and PR links; branch and commit when available.
+- What changed and observable behavior.
+- Acceptance criteria met, unmet or deferred.
+- Confirmed facts, remaining assumptions and risks.
+- Verification: **not run**, **static inspection only**, **locally run** (exact commands/results), or **CI-confirmed** (workflow link/status).
+- Blockers and next 1–3 actions.
 
-### 4.1 New chat — general task
-
-Replace the placeholders:
-
-> You are helping with the GitHub repository `AminBrave/rad-art-marketplace`.
-> Read `AGENTS.md`, `AI/PROJECT.md`, `AI/SESSION.md` and `.agents/skills/README.md`. Read only the skill files relevant to this task. Read the live GitHub issue below, including its latest comments, and inspect related open issues/PRs. Treat current repository files and GitHub state as authoritative, not another chat's memory.
-> Follow `AI/GIT-WORKFLOW.md`. Work only on this issue unless I expand scope. Separate confirmed facts from assumptions. Do not run tests, lint, builds, migrations, scanners or CI unless I explicitly authorize the exact execution. Do not merge, deploy, force-push or change repository settings without permission.
->
-> **Task:** [one-sentence outcome]
-> **Issue/PR:** [#number and URL]
-> **Branch:** [branch name or none]
->
-> First summarize current state, acceptance criteria, confirmed facts, unknowns and the next smallest safe step. Do not edit until the task is clear.
-
-### 4.2 Continue an existing task in a new chat
-
-> Continue Rademan issue #[NUMBER] ([URL]). Read the current repository instructions and the live issue and comments. Read the linked PR if one exists. Summarize what is confirmed, what changed, what remains, the current verification status and the next 1–3 actions. Do not repeat completed investigation. Do not rely on the previous chat transcript. Ask for missing evidence instead of guessing.
-
-### 4.3 Ask for a plan only
-
-> Do not edit files yet. Inspect the relevant source and propose a minimal plan for issue #[NUMBER]. Include affected files, acceptance criteria, risks, unknowns and how the result should be verified. Identify decisions that require my approval.
-
-### 4.4 Ask for a handoff
-
-> Prepare a concise handoff for issue #[NUMBER]. Record confirmed findings, unresolved hypotheses, files changed, branch/commit/PR links, exact verification status and next 1–3 actions in the GitHub issue or PR. If you cannot write to GitHub, give me a ready-to-paste comment. Update `AI/SESSION.md` only if project-wide state changed.
-
-## 5. Bug reporting and long-term bug maintenance
-
-A bug is not just an error message. Capture enough evidence that a different chat or developer can reproduce and continue it.
-
-### 5.1 Report the bug
-
-Include:
-
-- What happened and what should have happened.
-- Exact reproduction steps and reproduction frequency.
-- Affected page/flow, environment, version or commit.
-- User impact and severity.
-- Relevant sanitized logs, screenshots or request/response details.
-- What changed recently, if known.
-
-Use the bug issue template and `AI/BUG-HANDOFF.md`.
-
-### 5.2 Investigate in sessions
-
-For each meaningful investigation session, record a dated issue comment with:
-
-- Files, routes, logs and code paths inspected.
-- Confirmed findings.
-- Hypotheses that are not yet proven.
-- Experiments actually performed and outcomes.
-- Current diagnosis and confidence.
-- Next useful investigation step.
-
-Do not label a guess as a root cause. Prefer a small experiment that distinguishes competing hypotheses.
-
-### 5.3 Continue across different chats
-
-When the chat becomes long:
-
-1. Ask for an issue handoff.
-2. Ensure the latest findings are recorded on the GitHub issue.
-3. Open a new chat with the bug-resume prompt.
-4. Point it to the same issue and ask it to read all recent investigation entries.
-5. Confirm the summary before continuing.
-
-You do not need to create a new issue just because you created a new chat.
-
-### 5.4 Fix and close
-
-Link the fix PR to the bug issue. Record regression coverage and the verification result. Close only when the agreed acceptance criteria are met and the fix status is clear.
-
-### 5.5 Protect sensitive data
-
-Never paste passwords, API keys, access tokens, session cookies, private keys, production credentials or unnecessary personal data into AI chats or GitHub. Sanitize logs and screenshots. Share the smallest relevant excerpt rather than repeatedly pasting huge logs.
-
-## 6. Feature development and product decisions
-
-### 6.1 Separate product discovery from implementation
-
-For a feature, first answer:
-
-- Who has the problem?
-- What are they trying to achieve?
-- What is the current pain?
-- What is in scope and explicitly out of scope?
-- What is the expected user-visible behavior?
-- What are the acceptance criteria?
-- What privacy, moderation, authorization, accessibility and RTL requirements apply?
-
-Do not assume a feature exists just because it appears in a proposal or AI response. Verify the current codebase.
-
-### 6.2 Use epics for larger work
-
-Create an epic for a multi-stage feature. Break it into small issues that can each be implemented and reviewed independently. Record dependencies and the intended order.
-
-### 6.3 Keep decisions durable
-
-When you approve a product or architecture decision, record it in the appropriate place:
-
-- Product-wide intent or scope: `AI/PROJECT.md`.
-- Project-wide current objective or blocker: `AI/SESSION.md`.
-- Feature-specific requirements and decisions: feature issue.
-- Technical decision with long-term architectural impact: a dedicated decision record or linked issue, following repository conventions.
-
-Keep proposed ideas clearly marked as proposals until approved.
-
-## 7. Code review, security and quality
-
-For each PR, ask for a review that checks:
-
-- Correctness and edge cases.
-- Authorization and server-side validation.
-- Privacy and accidental data exposure.
-- Database integrity, concurrency and idempotency.
-- API compatibility and error handling.
-- Performance and query behavior.
-- Persian language, RTL, responsive behavior and accessibility.
-- Loading, empty, error, success and disabled UI states.
-- Tests and regression coverage, where appropriate.
-
-Ask for actionable findings with severity, file/line references, impact and a concrete fix. Distinguish confirmed defects from questions. Do not ask an assistant to approve or merge its own work.
-
-## 8. GitHub working agreements
-
-Follow `AI/GIT-WORKFLOW.md` for exact conventions. The intended loop is:
-
-1. Issue describes the outcome and acceptance criteria.
-2. A task branch contains only that work.
-3. Commits are small and descriptive.
-4. PR links the issue and explains the change.
-5. Review feedback is resolved or explicitly discussed.
-6. Verification status is evidence-based.
-7. Merge follows the repository's agreed review and protection rules.
-8. The issue and project handoff are updated.
-
-Do not assume labels, milestones, branch protection or security settings are configured merely because a checklist exists. Check the live repository settings and complete `AI/GITHUB-SETUP.md` manually where required.
-
-## 9. Permissions and verification safety
-
-The repository's `AGENTS.md` is strict: **implementation requests do not automatically authorize executable verification or CI.**
-
-Unless you explicitly authorize the specific action, the assistant must not run:
-
-- Tests, lint, formatters, builds, type checks or browser automation.
-- Migrations, seeders or database-mutating commands.
-- Security scanners or other executable verification.
-- GitHub Actions workflows or workflow reruns.
-
-Likewise, do not assume permission to install packages, deploy, release, merge, force-push, rewrite history or change repository settings.
-
-When you want a check performed, authorize it specifically, for example:
-
-> I authorize running `npm run lint` locally in this checkout. Do not run other commands or CI.
-
-For CI:
-
-> I authorize starting the named [workflow] for this PR once. Do not rerun it.
-
-The assistant must report exactly what was run and what the result proves. If nothing was run, the correct status is **Not run (permission not granted)**.
-
-## 10. Keeping token use low
-
-- One chat should have one main issue and one deliverable.
-- Do not paste the whole repository or all skill files.
-- Start with the mandatory context documents and only relevant skills.
-- Ask for focused source inspection, not a full-repository dump.
-- Share the issue/PR link and the latest relevant evidence.
-- Summarize long logs into a short excerpt with timestamps and correlation IDs.
-- Ask for concise plans and handoffs.
-- Move durable findings to GitHub; do not repeatedly retell the entire history.
-- Start a new chat when context is long, then resume from the issue/PR.
-
-## 11. End-of-session checklist
-
-Before you stop a substantial task, confirm:
-
-- [ ] The issue or PR contains the latest durable status.
-- [ ] Confirmed facts are separated from assumptions.
-- [ ] Relevant changes, branch, commit and PR are linked.
-- [ ] Verification is accurately marked as not run, locally run or CI-confirmed.
-- [ ] No secrets or sensitive data were exposed.
-- [ ] Blockers and next 1–3 actions are recorded.
-- [ ] `AI/SESSION.md` is updated only if project-wide state changed.
-
-## 12. Quick reference
-
-| I want to… | Start here |
-|---|---|
-| Start any new task | `AGENTS.md`, then `AI/CHAT-WORKFLOWS.md` |
-| Develop a feature | Feature issue + feature chat prompt |
-| Report or continue a bug | Bug issue + `AI/BUG-HANDOFF.md` |
-| Resume after context is full | Same issue/PR in a new chat |
-| Plan a larger initiative | Epic + product planning chat |
-| Review a PR | PR link + code-review chat prompt |
-| Load compact local context | `npm run ai:context -- --task "…"` |
-| Understand branch and PR rules | `AI/GIT-WORKFLOW.md` |
-| Configure repository settings | `AI/GITHUB-SETUP.md` |
-| Understand current project-wide work | `AI/SESSION.md` |
+A useful final report is factual—not a victory statement. “Implemented; tests not run because permission was not granted” is better than an unsupported “Everything works.”
 
 ---
 
-**The operating rule to remember:** Keep conversations focused, keep GitHub records complete, keep repository instructions authoritative, and require explicit permission for risky actions and verification.
+**The rule to remember:** Tell AI the task and point it to `AGENTS.md`. Make it prove what it knows, record what it learns, ask before consequential decisions, and resume every task from GitHub—not from memory.
