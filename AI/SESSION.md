@@ -25,6 +25,7 @@ AI-friendly repository workflow and roadmap bootstrap.
 - Implementation task: #149 — https://github.com/AminBrave/rad-art-marketplace/issues/149
 - Product baseline audit: #150 — https://github.com/AminBrave/rad-art-marketplace/issues/150
 - Draft PR: #151 — https://github.com/AminBrave/rad-art-marketplace/pull/151
+- GitHub labels, milestone objects/associations and branch protection are not yet configured; follow `AI/GITHUB-SETUP.md`.
 - Working branch: `docs/ai-ready-free-tier-workflow` (based on `main` at `797e15b3bdaeb2e7925bf935bc686bf4a7227112`).
 
 ## Decisions
