@@ -10,7 +10,7 @@ Explicit user instructions take precedence over this file, except that the AI mu
 - Recorded stack: PHP 8.3+ and Laravel 13; React 18, JavaScript, React Router 7, TanStack Query 5 and Vite. Confirm installed versions in manifests before relying on version-specific APIs.
 - Preserve the established RAD design system, shared tokens/primitives, responsive layouts, accessibility and RTL behavior.
 - Do not assume checkout, orders, shipping, payouts, subscriptions, commissions, booking, escrow or other commerce capabilities exist unless current source and approved product decisions prove they do.
-- Implementation facts come from current source, migrations, tests, configuration and observed runtime behavior. Product intent comes from approved decisions and `AI/PROJECT.md`. Roadmap status comes from live GitHub issues/PRs and `AI/ROADMAP.md`. Chat history and model memory are not authoritative.
+- Implementation facts come from current source, migrations, tests, configuration and observed runtime behavior. Product intent comes from the canonical decision records in #150 and `AI/PROJECT.md`. Task status comes from live GitHub issues/PRs and the Rademan Workboard Kanban Project. Chat history and model memory are not authoritative.
 
 ## 2. Non-negotiable permissions
 
@@ -29,7 +29,7 @@ At the start of a task, read this file first. Then classify the task and select 
 ### Context routing
 
 - Any task: inspect the live GitHub issue/PR if supplied; check for related open work before creating duplicates.
-- Product behavior, scope or user journey: read `AI/PROJECT.md`; read `AI/ROADMAP.md` when prioritization or milestones matter.
+- Product behavior, scope or user journey: read `AI/PROJECT.md`; when a specific product decision is named, retrieve only its canonical record from #150; read `AI/TASK-MANAGEMENT.md` for issue/MVP/Kanban rules.
 - Cross-chat continuation or project-wide planning: read `AI/SESSION.md` and the referenced live issue/PR.
 - Feature planning or product discovery: load `.agents/skills/feature-planning/SKILL.md`.
 - Laravel, API, database or backend work: load `.agents/skills/laravel-backend/SKILL.md`.
@@ -74,6 +74,18 @@ Do not state that a feature is missing until the relevant routes, screens, data 
 - Use `AI/SESSION.md` only for project-wide objective, cross-project decisions, blockers and next 1–3 actions. Do not turn it into a task transcript or duplicate issue tracker.
 - Before context is exhausted, prepare a factual handoff and update the relevant issue/PR. Update `AI/SESSION.md` only if project-wide state changed.
 - If repository or GitHub access is unavailable, state the limitation and ask for the minimum relevant files/content.
+
+
+## 5A. Decision-to-task authorization gate
+
+- The canonical product vision register is GitHub issue #150. Its numbered decision comments are standalone records; the index is only a lookup table.
+- When the user names a decision, retrieve only that decision's canonical comment. Do not reread all 41 decisions unless explicitly asked or a real dependency is evidenced.
+- A decision is product intent, not an implementation task, MVP commitment, architecture specification, priority or permission to build.
+- Convert a decision into a delivery issue only after explicit product-owner authorization. Link the issue to the selected decision comment and record the authorization.
+- Define an MVP boundary inside each authorized delivery issue. A small decision may be one issue; a large decision may use a parent epic and independently reviewable child issues. Keep later scope separate.
+- Standalone bugs, maintenance, QA and documentation tasks do not need a product decision ID.
+- Follow `AI/TASK-MANAGEMENT.md` for naming, issue structure, priority, Kanban status and completion rules. There is no active product-phase roadmap or M0–M4 milestone sequence.
+- Never infer task dependencies or implementation order from decision numbering or subject similarity.
 
 ## 6. Understand and plan before implementation
 
