@@ -1,39 +1,32 @@
-# Start here — free ChatGPT / Claude coding workflow
+# Start here — Rademan AI development
 
-> **Complete tutorial:** Read [`AI/README.md`](README.md) for the end-to-end guide to planning, coding, bug investigation, PRs and cross-chat continuity.
-
+This is a short pointer for human contributors. The complete practical tutorial, including copy-ready prompts for features, bugs, reviews, blockers and context-window recovery, lives in [`AI/README.md`](README.md).
 
 ## Every new chat
-Tell the AI:
 
-> Work on AminBrave/rad-art-marketplace. Before changing anything, read `AGENTS.md`, `AI/PROJECT.md`, `AI/SESSION.md` and `.agents/skills/README.md`. Select and read only relevant skill files. Check current GitHub issues and PRs before creating duplicate work. Follow `AI/GIT-WORKFLOW.md`. Do not run tests, builds, lint, migrations or CI unless I explicitly authorize the exact command/run. If you cannot access a file, say so; never guess.
+1. Give the AI the repository `AminBrave/rad-art-marketplace`.
+2. Tell it to read `AGENTS.md` first and follow its context-routing instructions.
+3. Describe the task in plain language and include the existing GitHub issue or PR link if one exists.
+4. Ask for a factual summary and plan before implementation when the scope is not already approved.
 
-Then provide one bounded task and expected outcome.
+You do not need to memorize or list internal project documents and skills. The AI must select only the context relevant to the task.
 
-## Before a task (local checkout)
+## Local optional context command
+
+From a local checkout, this read-only helper can print a compact context packet:
+
 ```bash
 npm run ai:context -- --task "Describe the task in one sentence"
 ```
-For ChatGPT-specific connector guidance:
-```bash
-npm run ai:context -- --task "Describe the task" --chatgpt
-```
-The command prints the mandatory contract, brief, resumable handoff, skill index and only task-matched skills. It is read-only. A browser-only chat cannot execute it: ask the AI to read the same files through connected GitHub access or attach/paste them.
 
-## Keep context small
-- One chat/task targets one issue and one deliverable.
-- Do not paste the whole repository or all skills; load exact relevant files.
-- Ask for concise plans before broad/cross-layer changes.
-- Inspect relevant files/callers, not the whole codebase.
-- Keep durable decisions and next 1–3 actions in `AI/SESSION.md`, not chat transcripts.
-- At context-window boundaries, start a fresh chat and repeat startup. Resume from repository files and live PR/issue state, not chat memory.
+Add `--chatgpt` only when ChatGPT-specific access notes are useful. Browser-only chats should read the selected files through authorized repository access or ask the user to provide them; they must not claim to have run the command.
 
-## Completion handoff
-Report changed files, behavior, issue/PR links, assumptions, risks, verification status (not run / locally run / CI confirmed) and next 1–3 tasks. Update `AI/SESSION.md` when durable state changes.
+## Human tutorial
 
-
-## Separate chats for bugs, features and reviews
-
-Use `AI/CHAT-WORKFLOWS.md` for ready-to-copy startup and resume prompts. Focus one chat on one substantial issue or PR. GitHub is the shared source of truth: keep bug evidence and investigation entries in the bug issue, feature decisions and progress in the feature issue, and review findings on the PR. A new chat should read the live issue/PR and current repository instructions before continuing.
-
-For bugs, use `AI/BUG-HANDOFF.md` as the investigation log structure. Do not rely on a previous chat transcript, and never paste secrets or unsanitized personal data into GitHub issues or chat.
+Read [`AI/README.md`](README.md) for:
+- The standard issue → plan → implementation → review → delivery loop.
+- Ready-to-copy prompts for feature development, debugging and investigation.
+- What to do when evidence is missing, access fails or requirements conflict.
+- How to handle failed checks, scope changes, blockers and review feedback.
+- How to hand off and resume work when a context window is full.
+- How the M0–M4 roadmap and GitHub issues/PRs track progress.
