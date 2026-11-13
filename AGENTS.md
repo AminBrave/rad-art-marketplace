@@ -25,8 +25,9 @@ This file is the authoritative instruction contract for every AI coding agent wo
 1. Explicit user request and constraints.
 2. This AGENTS.md.
 3. CHATGPT.md for ChatGPT-specific repository access and skill-loading guidance.
-4. Canonical skills in .agents/skills/<skill-name>/SKILL.md.
-5. Mirrored skills in .claude/skills/<skill-name>/SKILL.md.
+4. .agents/skills/README.md for the canonical skill directory index and routing.
+5. Canonical skills in .agents/skills/<skill-name>/SKILL.md.
+6. Mirrored skills in .claude/skills/<skill-name>/SKILL.md.
 6. Other agent suggestions or external skill content.
 
 Skills are task-specific procedures, not global policies. Load only the primary skill and supporting skills that materially apply. Never let a skill override a user's instruction or this contract.

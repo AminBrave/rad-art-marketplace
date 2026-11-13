@@ -404,9 +404,10 @@ async function startDevelopment(secure = false) {
 }
 
 function usage() {
-    console.log(`Rademan project tasks
+    console.log(`Rademan project task dispatcher
 
-Usage: npm run <task>  (or node scripts/project.mjs <task>)
+Usage: node scripts/project.mjs <task>
+Prefer the public npm commands documented in scripts/README.md.
 
 Setup
   setup                 Install Composer/npm dependencies and create .env if missing
@@ -414,48 +415,39 @@ Setup
 Development
   dev                   Start Laravel + Vite over local HTTP
   dev:https             Start Laravel + Vite + Caddy over local HTTPS
-  dev:local             Alias for dev:https
-  preview               Start Laravel's local PHP preview server
+  dev:browser           Start the isolated browser-test application + Vite + Caddy
 
-Database (review .env before running)
+Database
   db:sqlite:init        Create database/database.sqlite if it does not exist
-  db:status             Show migration status (runs Artisan directly via npm)
   db:migrate            Apply pending migrations
   db:seed               Run DatabaseSeeder
-  db:seed:demo           Run DemoDatabaseSeeder
+  db:seed:demo          Run DemoDatabaseSeeder
   db:fresh              DESTRUCTIVE: drop all tables, migrate and seed
 
-Quality — tests (execute tests; run only when authorized)
+Focused tests (execute only with explicit authorization)
   test                  Run backend and frontend tests
-  backend:test          Run backend tests with isolated in-memory SQLite
+  backend:test          Run backend PHPUnit tests with in-memory SQLite
   unit                  Run the Unit PHPUnit suite
   feature               Run the Feature PHPUnit suite
   integration           Run the Integration PHPUnit suite
-  frontend:test         Run frontend Node tests and write a JUnit report
-  browser               Run guarded Playwright tests against RAD_ART_BASE_URL
-  browser:prepare       DESTRUCTIVE to isolated browser-testing.sqlite and browser-test storage; migrate + seed it
-  dev:browser           Start the isolated browser-test application + Vite + Caddy
+  frontend:test         Run frontend Node tests
+  browser               Run guarded Playwright tests
+  browser:prepare       Rebuild the isolated browser database and storage
 
-Quality — lint and repair
-  lint                  Run ESLint
-  lint:fix              Apply ESLint autofixes
-  fix:style             Apply PHP Pint and ESLint formatting fixes only
+Quality workflows (execute only with explicit authorization)
+  backend               Backend tests + PHP Pint check
+  frontend              Frontend tests + ESLint + production builds
+  verify                Run backend and frontend quality workflows
+  verify:all            Run verify plus Playwright
 
-Quality — verification (execute tests/lint/builds; run only when authorized)
-  backend               Backend tests + PHP style
-  frontend              Frontend tests + lint + both production builds
-  verify                Run backend and frontend quality checks
-  verify:all            Run verify plus Playwright against the prepared isolated browser-test app
+Style repair
+  fix:style             Apply PHP Pint and ESLint fixes
 
-Build
-  build                 Standard Vite production build
-  build:cpanel          cPanel-targeted production build
-
-Production
+Production cache maintenance
   prod:optimize         Cache Laravel configuration, routes, events and views
   prod:clear            Clear Laravel optimization caches
 
-See scripts/README.md for the complete npm script reference and workflow guidance.
+Builds and one-command tools are exposed directly by package.json.
 `);
 }
 
@@ -474,7 +466,6 @@ try {
             await startDevelopment(false);
             break;
         case 'dev:https':
-        case 'dev:local':
             await startDevelopment(true);
             break;
         case 'browser:prepare':
@@ -522,7 +513,6 @@ try {
                 ['Apply ESLint fixes', npm, ['run', 'lint:fix']],
             ]);
             break;
-        case 'all':
         case 'verify:all':
             await verify(true);
             break;
@@ -533,12 +523,6 @@ try {
             await run(python, pythonArgs(['tests/browser/run_tests.py']), {
                 env: { ...process.env, RAD_ART_TEST_MODE: '1' },
             });
-            break;
-        case 'build':
-            await run(npm, ['run', 'build']);
-            break;
-        case 'build:cpanel':
-            await run(npm, ['run', 'build:cpanel']);
             break;
         case 'prod:optimize':
             await artisan('optimize');

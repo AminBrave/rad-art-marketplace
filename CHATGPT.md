@@ -5,7 +5,7 @@ Use this file as the ChatGPT-specific entry point for repository work. It supple
 ## Mandatory startup
 
 1. Read AGENTS.md first. It contains the authoritative project context, safety boundaries and delivery rules.
-2. Identify the task domain and load only the relevant canonical skill(s) from .agents/skills/.
+2. Read .agents/skills/README.md to discover the canonical skill set, then load only the relevant skill(s) from .agents/skills/.
 3. Inspect current source, configuration, migrations and tests relevant to the task. Do not rely on deleted documentation, stale conversation summaries or skill examples as implementation truth.
 4. Confirm the active branch and repository context before proposing or making changes when that information is available.
 5. If repository access or a required file is unavailable, state the limitation. Never imply that an unavailable file was read.
@@ -44,8 +44,9 @@ Load the primary skill and only the supporting skills needed. A cross-layer feat
 
 ## Skill maintenance
 
-- .agents/skills/ is canonical.
+- .agents/skills/ is the canonical skill source; use .agents/skills/README.md as its navigation index.
 - .claude/skills/ mirrors the canonical skill files byte-for-byte for Claude-compatible tooling.
+- Keep the two skill trees synchronized whenever a skill is added, changed, renamed or removed.
 - When adding, changing, renaming or removing a skill, update both locations and this routing table in the same task.
 - Keep skills concise, actionable, project-specific and explicit about permissions. Avoid duplicated global policy where a reference to AGENTS.md is clearer.
 - Skills are loaded on demand; placing them in GitHub does not guarantee that every AI product automatically reads them.
