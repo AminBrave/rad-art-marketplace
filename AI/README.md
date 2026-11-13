@@ -18,7 +18,7 @@ This is the human operating manual for developing Rademan with ordinary chat-bas
 | Implementation | What the application actually does | Source code, migrations, tests, configuration and observed runtime behavior |
 | Procedures | Focused instructions for feature, backend, frontend, debugging, security, review, quality and Git work | Relevant skill selected by `AGENTS.md` |
 
-**Authority order:** explicit user decisions → `AGENTS.md` → approved issue/PR requirements and recorded decisions → current source and runtime evidence for implementation facts → product brief and roadmap for intent → AI suggestions. An AI suggestion is never an approved requirement.
+**Authority order:** explicit user decisions → `AGENTS.md` → approved issue/PR requirements and recorded decisions → current source and runtime evidence for implementation facts → product brief and canonical decision records for intent → AI suggestions. An AI suggestion is never an approved requirement.
 
 The AI must not claim that a feature exists, is missing, works, is secure or is tested without suitable evidence. Documentation describes intent; source and runtime evidence establish implementation. Product decisions in #150 are not implementation permission. A named decision is retrieved independently; only explicitly authorized scope becomes a delivery issue.
 
@@ -59,7 +59,7 @@ Use the same loop for every substantial feature, bug, maintenance task or review
 10. **Update GitHub.** Keep durable findings and progress on the issue; put code review discussion on the PR. Link PR to issue.
 11. **Close the loop.** Record outcome, remaining work and next actions. Update the project handoff only for project-wide changes.
 
-For large initiatives, create an epic and split it into independently reviewable child issues. The roadmap is a planning tool, not a list of assumed missing features.
+For a large authorized decision, create a parent epic and split its task-specific MVP into independently reviewable child issues. Do not create product-phase milestones or infer a delivery sequence from the decision register.
 
 ## 4. Practical prompts for real development situations
 
@@ -244,7 +244,7 @@ For each substantial task:
 7. Merge only after the required human approval and repository rules are satisfied.
 8. Update the issue and Kanban Status from the actual result.
 
-Do not assume labels, milestones, branch protection or security settings are configured because documentation recommends them. Check the live GitHub settings. Follow `.agents/skills/git-github/SKILL.md` for Git and GitHub procedures. Use `AI/GITHUB-SETUP.md` only when configuring repository settings; you do not need to mention either file in prompts.
+Do not assume labels, Project fields, branch protection or security settings are configured because documentation recommends them. Check the live GitHub settings. Follow `.agents/skills/git-github/SKILL.md` for Git and GitHub procedures. Use `AI/GITHUB-SETUP.md` only when configuring repository settings; you do not need to mention either file in prompts.
 
 ## 7. Anti-hallucination rules to expect from the AI
 
