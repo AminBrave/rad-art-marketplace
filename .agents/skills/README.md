@@ -24,6 +24,13 @@ This directory is the canonical, tool-neutral skill library for AI agents workin
 | Tests, test architecture, browser checks, quality reports | `quality-engineering/SKILL.md` |
 | Branches, commits, GitHub, pull requests, GitHub Actions | `git-github/SKILL.md` |
 
+## Fast context loading
+
+- Local terminal: `npm run ai:context -- --task "<one-sentence task>"` prints the global contract, project brief, current handoff, this index and only matching skill files.
+- Add `--chatgpt` to include `CHATGPT.md`.
+- Browser-only ChatGPT/Claude chats must read `AGENTS.md`, `AI/PROJECT.md`, `AI/SESSION.md` and this index directly, then open only the matching skills.
+- Never load all skills just to begin a task.
+
 ## Directory contract
 
 Each skill is a self-contained folder containing one `SKILL.md` with YAML frontmatter:
