@@ -43,6 +43,6 @@ read('AI/PROJECT.md');
 read('AI/SESSION.md');
 read('.agents/skills/README.md');
 for (const skill of selected) read(`.agents/skills/${skill}/SKILL.md`);
-read('AI/GIT-WORKFLOW.md');
+if (selected.includes('git-github')) read('AI/GIT-WORKFLOW.md');
 console.log('\n========== TASK HANDOFF ==========');
 console.log('Work on one bounded task. Confirm the related issue and branch. State assumptions and acceptance criteria. Do not run verification or CI without explicit user permission. Update AI/SESSION.md only when durable decisions or handoff state change.');
