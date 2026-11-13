@@ -27,3 +27,10 @@ The command prints the mandatory contract, brief, resumable handoff, skill index
 
 ## Completion handoff
 Report changed files, behavior, issue/PR links, assumptions, risks, verification status (not run / locally run / CI confirmed) and next 1–3 tasks. Update `AI/SESSION.md` when durable state changes.
+
+
+## Separate chats for bugs, features and reviews
+
+Use `AI/CHAT-WORKFLOWS.md` for ready-to-copy startup and resume prompts. Focus one chat on one substantial issue or PR. GitHub is the shared source of truth: keep bug evidence and investigation entries in the bug issue, feature decisions and progress in the feature issue, and review findings on the PR. A new chat should read the live issue/PR and current repository instructions before continuing.
+
+For bugs, use `AI/BUG-HANDOFF.md` as the investigation log structure. Do not rely on a previous chat transcript, and never paste secrets or unsanitized personal data into GitHub issues or chat.
