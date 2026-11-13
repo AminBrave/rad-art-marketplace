@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "ai:context": "node scripts/ai-context.mjs",
     "setup": "node scripts/project.mjs setup",
     "dev": "node scripts/project.mjs dev",
     "dev:https": "node scripts/project.mjs dev:https",
