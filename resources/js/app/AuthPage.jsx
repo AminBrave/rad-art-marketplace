@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import { useMutation } from '@tanstack/react-query';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { RouteLoading } from './RoutingPages';
@@ -9,11 +10,15 @@ export default function AuthPage({ initialMode = 'login' }) {
     const [form, setForm] = useState({ name: '', email: '', password: '', password_confirmation: '', role: 'artist' });
     const [errors, setErrors] = useState({});
     const [message, setMessage] = useState('');
-    const [busy, setBusy] = useState(false);
     const submittingRef = useRef(false);
     const { user, status, setUser } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
+    const authMutation = useMutation({
+        mutationKey: ['auth', 'authenticate'],
+        mutationFn: ({ endpoint, payload }) => axios.post(endpoint, payload),
+    });
+    const busy = authMutation.isPending;
 
     useEffect(() => { setMode(initialMode); }, [initialMode]);
 
@@ -28,13 +33,12 @@ export default function AuthPage({ initialMode = 'login' }) {
         if (submittingRef.current) return;
 
         submittingRef.current = true;
-        setBusy(true);
         setErrors({});
         setMessage('');
         try {
             const endpoint = mode === 'register' ? '/api/v1/auth/register' : '/api/v1/auth/login';
             const payload = mode === 'register' ? form : { email: form.email, password: form.password };
-            const { data } = await axios.post(endpoint, payload);
+            const { data } = await authMutation.mutateAsync({ endpoint, payload });
             setUser(data.data);
             const target = location.state?.from?.pathname ?? (data.data.role === 'admin' ? '/admin' : data.data.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist');
             navigate(target, { replace: true });
@@ -49,7 +53,6 @@ export default function AuthPage({ initialMode = 'login' }) {
             }
         } finally {
             submittingRef.current = false;
-            setBusy(false);
         }
     };
 
