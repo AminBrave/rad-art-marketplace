@@ -129,7 +129,6 @@ test('boot shell uses Tailwind utilities and custom CSS stays scoped to tokens, 
 
 test('shared UI component source does not introduce arbitrary hex or raw palette colors', () => {
     const componentSources = [primitives, cards, feedback, navigation, dialog, skeletons];
-const applicationSources = [legacyApp, homePage, authPage, artistProfile, artworkGallery, artworkCatalogue, editorialPages, publicInfoPages, layouts, buyerWorkspace, routeLoading, artistWorkspace, messaging, artworkDetail, artworkStudio, adminWorkspace, ...publicPages];
     const arbitraryHex = /#[0-9a-fA-F]{3,8}\b/;
     const rawPalette = /\b(?:bg|text|border|ring)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\d{2,3}(?:\/\d{1,3})?\b/;
     for (const source of componentSources) {
@@ -140,6 +139,8 @@ const applicationSources = [legacyApp, homePage, authPage, artistProfile, artwor
 
 
 test('active frontend surfaces use semantic RAD colors and avoid raw palette utilities', () => {
+    const componentSources = [primitives, cards, feedback, navigation, dialog, skeletons];
+    const applicationSources = [legacyApp, homePage, authPage, artistProfile, artworkGallery, artworkCatalogue, editorialPages, publicInfoPages, layouts, buyerWorkspace, routeLoading, artistWorkspace, messaging, artworkDetail, artworkStudio, adminWorkspace, ...publicPages];
     const sources = [...componentSources, ...applicationSources];
     const rawPalette = /\b(?:bg|text|border|ring)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\d{2,3}(?:\/\d{1,3})?\b/;
     const tokenOpacity = /\b(?:bg|text|border|ring)-(?:paper|inverse|canvas|ink|terracotta|sand|olive|muted|subtle|border|surface|surface-muted|success|danger|warning|info|accent|focus)(?:-[\w-]+)?\/\d+\b/;
