@@ -274,7 +274,7 @@ export function AdminMessageReportsPage() {
     const [notes, setNotes] = useState({});
     const [busyId, setBusyId] = useState(null);
     const [confirmRemovalId, setConfirmRemovalId] = useState(null);
-    const [error, setError] = useState('');
+    const [actionError, setActionError] = useState('');
     const [message, setMessage] = useState('');
     const queryClient = useQueryClient();
     const queryKey = ['admin', 'message-reports', user?.id, page];
@@ -289,15 +289,15 @@ export function AdminMessageReportsPage() {
     const result = reportsQuery.data;
     const loading = reportsQuery.isPending;
     const load = () => reportsQuery.refetch();
-    if (reportsQuery.isError && !error) setError(reportsQuery.error.response?.status === 403
-        ? 'دسترسی به گزارش‌های پیام مجاز نیست.'
-        : 'دریافت گزارش‌ها انجام نشد.');
+    const error = actionError || (reportsQuery.isError
+        ? (reportsQuery.error.response?.status === 403 ? 'دسترسی به گزارش‌های پیام مجاز نیست.' : 'دریافت گزارش‌ها انجام نشد.')
+        : '');
     const review = async (report, action) => {
         if (action === 'remove_message' && confirmRemovalId !== report.id) {
             setConfirmRemovalId(report.id);
             return;
         }
-        setBusyId(report.id); setError(''); setMessage('');
+        setBusyId(report.id); setActionError(''); setMessage('');
         try {
             const { data } = await axios.patch(api + '/message-reports/' + report.id, { action, note: (notes[report.id] ?? '').trim() || null });
             setMessage(data.message ?? 'تصمیم ثبت شد.');
@@ -305,7 +305,7 @@ export function AdminMessageReportsPage() {
             setNotes((current) => { const next = { ...current }; delete next[report.id]; return next; });
             await queryClient.invalidateQueries({ queryKey: ['admin', 'message-reports', user?.id] });
         } catch (e) {
-            setError(e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.');
+            setActionError(e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.');
         } finally { setBusyId(null); }
     };
     return <section className="space-y-6" dir="rtl">
