@@ -76,17 +76,6 @@ export default function MessagingCenter({ role }) {
     const scrollDirectionRef = useRef({ direction: 0, distance: 0 });
     const ignoreScrollDirectionRef = useRef(false);
     const messagesContainerRef = useRef(null);
-    const inboxHeadingRef = useRef(null);
-    const [inboxHeadingHeight, setInboxHeadingHeight] = useState(0);
-    useLayoutEffect(() => {
-        const heading = inboxHeadingRef.current;
-        if (!heading) return undefined;
-        const measure = () => setInboxHeadingHeight(Math.ceil(heading.getBoundingClientRect().height));
-        measure();
-        const observer = new ResizeObserver(measure);
-        observer.observe(heading);
-        return () => observer.disconnect();
-    }, []);
     const messagesRef = useRef(messages);
     const selectedFileRef = useRef(selectedFile);
     useEffect(() => { messagesRef.current = messages; }, [messages]);
@@ -713,7 +702,7 @@ export default function MessagingCenter({ role }) {
             {directStartError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 border border-danger/30 bg-danger-surface p-3 text-sm text-ink"><span>{directStartError}</span><button type="button" onClick={() => setDirectStartAttempt((attempt) => attempt + 1)} className="shrink-0 font-bold text-terracotta-strong underline underline-offset-4">تلاش دوباره</button></div>}
             <div className="grid h-[100dvh] min-h-[100dvh] min-w-0 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-clip rounded-2xl border border-border bg-white shadow-[0_18px_55px_rgba(36,35,32,0.07)] lg:grid-cols-[360px_minmax(0,1fr)]">
                 <aside className={active ? 'hidden h-full min-h-0 flex-col border-l border-border bg-white lg:flex' : 'flex h-full min-h-0 flex-col border-l border-border bg-white'}>
-                    <div ref={inboxHeadingRef} className="shrink-0 border-b border-border bg-white px-5 py-5">
+                    <div className="shrink-0 border-b border-border bg-white px-5 py-5">
                         <div className="flex items-center justify-between gap-3"><div><p className="text-[11px] font-bold tracking-wide text-terracotta-strong">RAD / MESSAGES</p><h2 className="mt-1 text-lg font-black">گفتگوها</h2></div><span className="rounded-full bg-surface-muted px-3 py-1 text-[11px] font-bold text-muted">{threads.length} گفتگو</span></div>
                     </div>
                     <div className="shrink-0 space-y-3 border-b border-border bg-surface-muted p-4">
@@ -751,11 +740,11 @@ export default function MessagingCenter({ role }) {
                     )}
                     {hasMoreThreads && <button type="button" disabled={loadingMoreThreads} onClick={() => loadThreads({ append: true })} className="mx-4 my-3 min-h-10 border border-border bg-white px-3 py-2 text-xs font-semibold text-terracotta-strong hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:opacity-50">{loadingMoreThreads ? 'در حال دریافت…' : 'گفتگوهای بیشتر'}</button>}
                 </aside>
-                <div dir="rtl" style={{ "--inbox-heading-height": inboxHeadingHeight + "px" }} className={active ? 'flex h-full min-h-0 min-w-0 flex-col bg-canvas' : 'hidden h-full min-h-0 min-w-0 flex-col bg-canvas lg:flex'}>
+                <div dir="rtl" className={active ? 'flex h-full min-h-0 min-w-0 flex-col bg-canvas' : 'hidden h-full min-h-0 min-w-0 flex-col bg-canvas lg:flex'}>
                     {!active ? <div className="m-auto p-8 text-center text-sm text-muted">برای مشاهده پیام‌ها یک گفتگو را انتخاب کنید.</div> : (
                         <>
-                            <div className={'grid min-h-0 overflow-hidden transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none ' + (conversationHeaderVisible ? 'visible grid-rows-[1fr] opacity-100' : 'invisible pointer-events-none grid-rows-[0fr] opacity-0') + ' lg:visible lg:pointer-events-auto lg:grid-rows-[1fr] lg:overflow-visible lg:opacity-100 lg:transition-none'}>
-                            <header className={'min-h-0 relative z-30 border-b border-border bg-white shadow-soft transition-transform duration-200 ease-out motion-reduce:transition-none ' + (conversationHeaderVisible ? 'translate-y-0' : '-translate-y-full') + ' lg:translate-y-0 lg:sticky lg:top-[calc(var(--workspace-header-height,4.5rem)_+_var(--inbox-heading-height,5.5rem)_+_0.75rem)]'}>
+                            <div className={'grid min-h-0 overflow-hidden transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none ' + (conversationHeaderVisible ? 'visible grid-rows-[1fr] opacity-100' : 'invisible pointer-events-none grid-rows-[0fr] opacity-0') + ' lg:visible lg:pointer-events-auto lg:grid-rows-[1fr] lg:overflow-visible lg:opacity-100 lg:transition-none lg:sticky lg:top-[calc(var(--workspace-header-height,4.5rem)_+_0.75rem)] lg:z-30'}>
+                            <header className={'min-h-0 relative z-30 border-b border-border bg-white shadow-soft transition-transform duration-200 ease-out motion-reduce:transition-none ' + (conversationHeaderVisible ? 'translate-y-0' : '-translate-y-full') + ' lg:translate-y-0'}>
                                 <div className="flex min-w-0 items-center gap-2.5 px-3 py-3 sm:gap-3 sm:px-5">
                                     <button type="button" aria-label="بازگشت به گفتگوها" title="بازگشت به گفتگوها" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-canvas text-ink transition hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:hidden" onClick={() => { setActive(null); setPendingArtwork(null); setParams((current) => { const next = new URLSearchParams(current); next.delete('conversation'); next.delete('artwork'); return next; }, { replace: true }); }}><ChevronRight size={19} aria-hidden="true" /></button>
                                     <div aria-hidden="true" className={'flex h-11 w-11 aspect-square shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-inset ring-border text-sm font-black shadow-sm ' + avatarTone(selected?.participant?.name)}>{avatarInitial(selected?.participant?.name)}</div>
