@@ -207,6 +207,7 @@ a {
     }
 }
 
+/* Verified edge-case CSS: the live messaging workspace has nested, stateful Radix/DOM layouts, message bubbles and attachment cards. These scoped selectors preserve responsive and keyboard states that are not yet cleanly represented by shared component utilities. Keep this styling isolated to .rad-messaging; do not add page-wide presentation rules here. */
 /* RAD messaging: Telegram-inspired rhythm and controls, expressed in RAD tokens. */
 .rad-messaging {
     font-family: var(--font-persian), var(--font-latin), sans-serif;
