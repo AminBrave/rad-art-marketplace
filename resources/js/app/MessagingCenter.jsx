@@ -786,16 +786,21 @@ export default function MessagingCenter({ role }) {
                                 const node = event.currentTarget;
                                 const previousScrollTop = previousScrollTopRef.current;
                                 previousScrollTopRef.current = node.scrollTop;
-                                shouldStickToBottomRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 120;
+                                const distanceFromBottom = node.scrollHeight - node.scrollTop - node.clientHeight;
+                                shouldStickToBottomRef.current = distanceFromBottom < 120;
                                 if (shouldStickToBottomRef.current) setNewMessageCount(0);
 
-                                if (ignoreScrollDirectionRef.current) {
-                                    if (shouldStickToBottomRef.current) ignoreScrollDirectionRef.current = false;
-                                } else if (node.scrollTop <= 8) {
+                                const delta = previousScrollTop === null ? 0 : node.scrollTop - previousScrollTop;
+                                let trackScrollDirection = !ignoreScrollDirectionRef.current;
+                                if (ignoreScrollDirectionRef.current && (distanceFromBottom <= 2 || delta < 0)) {
+                                    ignoreScrollDirectionRef.current = false;
+                                    trackScrollDirection = distanceFromBottom > 2;
+                                }
+
+                                if (trackScrollDirection && node.scrollTop <= 8) {
                                     setConversationHeaderVisible(true);
                                     scrollDirectionRef.current = { direction: 0, distance: 0 };
-                                } else if (previousScrollTop !== null && window.matchMedia('(max-width: 1023px)').matches) {
-                                    const delta = node.scrollTop - previousScrollTop;
+                                } else if (trackScrollDirection && previousScrollTop !== null && window.matchMedia('(max-width: 1023px)').matches) {
                                     const direction = Math.sign(delta);
                                     const tracking = scrollDirectionRef.current;
                                     if (direction !== 0) {
