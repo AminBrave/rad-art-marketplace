@@ -59,7 +59,7 @@ test('messaging headers stay aligned and the composer and artwork thumbnails rem
     assert.ok(messaging.includes('const ignoreScrollDirectionRef = useRef(false)'));
     assert.ok(messaging.includes('distanceFromBottom <= 2 || delta < 0'));
     assert.ok(messaging.includes('const previousScrollTop = previousScrollTopRef.current'));
-    assert.ok(messaging.includes('const delta = node.scrollTop - previousScrollTop'));
+    assert.ok(messaging.includes('const delta = previousScrollTop === null ? 0 : node.scrollTop - previousScrollTop'));
     assert.ok(messaging.includes('const threshold = direction > 0 ? 18 : 10'));
     assert.ok(messaging.includes('setConversationHeaderVisible(direction < 0)'));
     assert.ok(messaging.includes('previousScrollTopRef.current = restoredScrollTop'));
@@ -68,7 +68,7 @@ test('messaging headers stay aligned and the composer and artwork thumbnails rem
     assert.ok(!messaging.includes('onTouchMove='));
     assert.ok(messaging.includes('translate-y-0'));
     assert.ok(messaging.includes('-translate-y-full'));
-    assert.ok(messaging.includes('lg:translate-y-0 lg:sticky'));
+    assert.ok(messaging.includes('lg:translate-y-0'));
     assert.ok(messaging.includes('px-3 py-3 sm:gap-3 sm:px-5 sm:py-5'));
 });
 
