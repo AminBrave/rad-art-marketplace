@@ -6,7 +6,7 @@ export function ArtworkCardSkeleton({ className = '' }) {
         <article aria-hidden="true" className={`group min-w-0 ${className}`}>
             <div className="relative overflow-hidden bg-surface-muted">
                 <Skeleton className="aspect-[4/5] w-full rounded-none" />
-                <span aria-hidden="true" className="pointer-events-none absolute inset-0 border border-ink/5" />
+                <span aria-hidden="true" className="pointer-events-none absolute inset-0 border border-[color:color-mix(in_srgb,var(--color-ink)_5%,transparent)]" />
             </div>
             <div className="grid gap-1.5 px-0.5 pb-2 pt-4">
                 <div className="flex min-h-5 items-center justify-between gap-3"><Skeleton className="h-3 w-20 rounded-sm" /><Skeleton className="h-3 w-3 rounded-full" /></div>
