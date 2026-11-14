@@ -248,5 +248,70 @@ class DiscoveryBrowserTests(unittest.TestCase):
                 finally:
                     context.close()
 
+
+    def test_public_artist_profile_initial_load_failure_can_be_retried(self):
+        context, page = self.new_page()
+        attempts = {"count": 0}
+
+        def artist_profile(route):
+            attempts["count"] += 1
+            if attempts["count"] == 1:
+                route.fulfill(
+                    status=422,
+                    content_type="application/json",
+                    body=json.dumps({"message": "Invalid profile query"}),
+                )
+                return
+
+            route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({"data": {
+                    "id": 84,
+                    "slug": "qa-artist",
+                    "display_name": "هنرمند بازیابی‌شده",
+                    "bio": "پروفایل عمومی پس از بازیابی بارگذاری شد.",
+                    "city": "تهران",
+                    "website_url": None,
+                    "instagram_handle": None,
+                    "artworks": [{
+                        "id": 301,
+                        "slug": "recovered-portfolio-work",
+                        "title": "اثر بازیابی‌شده",
+                        "price": None,
+                        "image_url": None,
+                        "category": {"id": 1, "name": "نقاشی", "slug": "painting"},
+                        "artist": {"display_name": "هنرمند بازیابی‌شده", "slug": "qa-artist"},
+                    }],
+                    "artworks_pagination": {
+                        "current_page": 1, "per_page": 12,
+                        "has_more": False, "next_page": None,
+                    },
+                }}, ensure_ascii=False),
+            )
+
+        page.route("**/api/v1/artists/qa-artist**", artist_profile)
+        try:
+            page.goto(BASE_URL + "/artists/qa-artist", wait_until="domcontentloaded")
+            page.get_by_role("heading", name="پروفایل در دسترس نیست").wait_for()
+            alert = page.get_by_role("alert")
+            alert.get_by_role("button", name="تلاش دوباره").wait_for()
+            self.assertEqual(attempts["count"], 1)
+
+            with page.expect_response(
+                lambda response: "/api/v1/artists/qa-artist" in response.url
+                and response.request.method == "GET"
+                and response.status == 200
+            ):
+                alert.get_by_role("button", name="تلاش دوباره").click()
+
+            page.get_by_role("heading", name="هنرمند بازیابی‌شده").wait_for()
+            page.get_by_role("heading", name="اثر بازیابی‌شده").wait_for()
+            self.assertEqual(attempts["count"], 2)
+            self.assertNotIn("ارتباط با سرور برقرار نشد", page.locator("main").inner_text())
+        finally:
+            context.close()
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
