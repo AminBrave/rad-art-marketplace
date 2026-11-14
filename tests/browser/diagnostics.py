@@ -154,6 +154,10 @@ def _finish_test(test_id: str, failed: bool) -> list[str]:
         for item in directory.iterdir():
             shutil.move(str(item), str(destination / item.name))
         shutil.rmtree(directory, ignore_errors=True)
+        try:
+            directory.parent.rmdir()
+        except OSError:
+            pass
         saved.append(str(destination))
     pending_root = _report_root() / "browser-artifacts" / ".pending"
     try:
