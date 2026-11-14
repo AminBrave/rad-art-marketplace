@@ -19,19 +19,15 @@ test('message composer supports accessible text entry, IME-safe Enter send and m
     assert.ok(messaging.includes('disabled={sending || safetyLoading || safety.blocked_by_me || safety.blocked_by_other}'));
 });
 
-test('messaging workspace fills the viewport and related artwork chips scroll horizontally in RTL', () => {
-    assert.ok(layouts.includes('ra-workspace-shell min-h-screen bg-canvas text-ink'));
-    assert.ok(!layouts.includes('h-[100dvh] min-h-0 flex-col overflow-hidden'));
-    assert.ok(!layouts.includes('ra-workspace-content min-w-0 h-full'));
-    assert.ok(!workspaceCss.includes('.ra-workspace-shell { min-height: 100vh'));
-    assert.ok(messaging.includes('flex min-h-0 flex-col gap-3 overflow-visible'));
-    assert.ok(messaging.includes('grid h-[100dvh] min-h-[100dvh] min-w-0 grid-cols-1 grid-rows-[minmax(0,1fr)]'));
-    assert.ok(!messaging.includes('grid min-h-0 min-w-0 flex-1'));
+test('dedicated chat fills the space below the site header and related artwork chips scroll horizontally in RTL', () => {
+    assert.ok(layouts.includes('ra-public-shell min-h-screen bg-canvas text-ink'));
+    assert.ok(layouts.includes('ra-public-header sticky top-0 z-40'));
+    assert.ok(messaging.includes('ra-chat-page'));
+    assert.ok(messaging.includes('ra-chat-layout grid min-h-0 min-w-0 flex-1'));
     assert.ok(messaging.includes('flex-nowrap items-center gap-2 overflow-x-auto overscroll-x-contain'));
     assert.ok(messaging.includes('role="group" aria-label="آثار مرتبط" tabIndex={0}'));
     assert.ok(messaging.includes('shrink-0 truncate rounded-lg border border-border'));
-    assert.ok(!messaging.includes('h-[calc(100dvh-14rem)]'));
-    assert.ok(!messaging.includes('lg:h-[min(82dvh,900px)]'));
+    assert.ok(workspaceCss.includes('height: calc(100dvh - var(--site-header-height, 4.5rem))'));
 });
 
 test('messaging uses a dedicated viewport page with only the main site header and independent chat panes', () => {
