@@ -71,7 +71,7 @@ test('shared content and feedback components use semantic utility classes', () =
     assert.ok(cards.includes('bg-surface-muted'));
     assert.ok(cards.includes('aspect-[4/5]'));
     assert.ok(feedback.includes('color-mix(in_srgb,var(--color-danger)_30%,transparent)'));
-    assert.ok(feedback.includes('app-skeleton'));
+    assert.ok(feedback.includes('animate-skeleton-shimmer'));
     assert.ok(feedback.includes('border-s-4'));
     assert.doesNotMatch(cards, /ra-[a-z]/);
     assert.doesNotMatch(feedback, /ra-[a-z]/);
@@ -118,13 +118,15 @@ test('navigation and dialog primitives use Tailwind state and focus utilities', 
     assert.doesNotMatch(dialog, /ra-[a-z]/);
 });
 
-test('boot shell uses Tailwind utilities and custom CSS stays scoped to tokens, base, skeleton and messaging edge cases', () => {
+test('boot shell and application presentation use Tailwind utilities with no component CSS selectors', () => {
     assert.ok(bootShell.includes('grid grid-cols-1 items-center gap-12'));
     assert.ok(bootShell.includes('lg:grid-cols-[minmax(0,1fr)_minmax(16rem,.9fr)]'));
     assert.doesNotMatch(bootShell, /app-boot__/);
     assert.doesNotMatch(css, /\.ra-[\w-]+|\.app-boot(?:__[\w-]+)?/);
-    assert.match(css, /Messaging workspace edge-case styles:/);
-    assert.match(css, /\.rad-messaging/);
+    assert.doesNotMatch(css, /\.rad-messaging|\.app-skeleton/);
+    assert.ok(tailwind.includes('skeleton-shimmer'));
+    assert.ok(feedback.includes('motion-reduce:animate-none'));
+    assert.doesNotMatch(messaging, /rad-messaging|composer-shell|message-edit-shell|message-artwork-card__|related-artworks-chip__|related-artworks-strip__|message-conversation-avatar-link/);
 });
 
 test('shared UI component source does not introduce arbitrary hex or raw palette colors', () => {
