@@ -42,6 +42,7 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Tests | `npm run test:frontend` | Frontend Node tests |
 | Browser | `npm run browser:prepare` | **Destructive to isolated browser-test data only:** rebuild browser SQLite and storage |
 | Browser | `npm run test:browser` | Guarded Playwright tests against the configured local browser app |
+| Browser | `npm run test:browser -- <unittest-name>` | Run one Playwright test by its Python unittest name |
 | Verification | `npm run verify:backend` | Backend tests + PHP Pint check |
 | Verification | `npm run verify:frontend` | Frontend tests + ESLint + standard and cPanel builds |
 | Verification | `npm run verify` | Backend and frontend quality workflows |
@@ -60,8 +61,21 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 1. Stop any existing `dev:browser` process.
 2. Run `npm run browser:prepare` to recreate only `database/browser-testing.sqlite` and isolated browser-test runtime/storage.
 3. Run `npm run dev:browser` in a dedicated terminal.
-4. Run `npm run test:browser` in a second terminal, only when authorized.
+4. Run `npm run test:browser` in a second terminal, only when authorized. For one test, append its unittest name after `--` (example below).
 5. Stop the development stack with Ctrl+C.
+
+Focused example (PowerShell, CMD or Bash):
+
+```bash
+npm run test:browser -- test_notifications_and_preferences.MessageNotificationBrowserTests.test_buyer_can_disable_in_app_message_notifications
+```
+
+The runner adds `tests/browser` to Python's import path, so direct `PYTHONPATH` setup is not needed. Each run refreshes these local reports under `build/test-reports/`:
+
+- `browser-junit.xml` — CI-compatible test results.
+- `browser-run.log` — terminal output and full unittest tracebacks.
+- `browser-debug.json` — Python/platform/Playwright metadata, selected tests, timings and structured failures.
+- `browser-artifacts/<test-name>/<run-id>/failure.png`, `trace.zip`, and `debug.json` — captured by the instrumented notification-preference regression test when it fails. Open a trace with `python -m playwright show-trace <path-to-trace.zip>`.
 
 Browser tests must use the isolated browser database and storage. Never point them at a normal developer, staging or production database. The browser runner's local-host and readiness guards are mandatory.
 
