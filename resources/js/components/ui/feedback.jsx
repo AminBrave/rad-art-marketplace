@@ -131,7 +131,6 @@ export function MediaImage({
     loading = 'lazy',
     decoding = 'async',
     fetchPriority,
-    sizes,
     width,
     height,
     fallback,
@@ -163,7 +162,6 @@ export function MediaImage({
                 loading={loading}
                 decoding={decoding}
                 fetchPriority={fetchPriority}
-                sizes={sizes}
                 width={width}
                 height={height}
                 onLoad={() => setLoadedSrc(src)}
