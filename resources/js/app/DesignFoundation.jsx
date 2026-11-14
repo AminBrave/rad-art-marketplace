@@ -22,7 +22,7 @@ function ColorAccessibilityPanel() {
                     <h2 id="color-audit-title" className="mt-2 text-2xl font-bold">بررسی دسترس‌پذیری رنگ</h2>
                     <p className="mt-2 max-w-2xl text-sm leading-7 text-muted">تمام عناصر قابل مشاهده در این صفحه، از جمله نمونه‌های کتابخانه اجزا، از نظر کنتراست متن، آیکون، مرز کنترل و نشانگر فوکوس بررسی می‌شوند.</p>
                 </div>
-                <button type="button" onClick={() => setReport(auditColorAccessibility(document.documentElement))} className="min-h-11 rounded-md bg-terracotta px-5 py-3 text-sm font-bold text-white transition hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2">اجرای بررسی کنتراست</button>
+                <button type="button" onClick={() => setReport(auditColorAccessibility(document.documentElement))} className="min-h-11 rounded-md bg-terracotta px-5 py-3 text-sm font-bold text-inverse transition hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2">اجرای بررسی کنتراست</button>
             </div>
             {report && (
                 <div className="mt-6 border border-border bg-paper p-5" aria-live="polite">
@@ -102,7 +102,7 @@ export default function DesignFoundation() {
                     <p className="text-xs font-bold text-terracotta-strong">03 / INTERACTION</p><h2 id="controls-title" className="mt-2 text-2xl font-bold">کنترل‌ها و سطوح</h2>
                     <div className="mt-6 grid gap-8 lg:grid-cols-2">
                         <div className="flex flex-wrap items-center gap-3">
-                            <button type="button" className="rounded-md bg-terracotta px-5 py-3 text-sm font-bold text-white transition hover:bg-terracotta-strong">دکمه اصلی</button>
+                            <button type="button" className="rounded-md bg-terracotta px-5 py-3 text-sm font-bold text-inverse transition hover:bg-terracotta-strong">دکمه اصلی</button>
                             <button type="button" className="rounded-md border border-border-strong bg-paper px-5 py-3 text-sm font-bold text-ink transition hover:border-terracotta">دکمه ثانویه</button>
                             <a href="#palette-title" className="text-sm font-bold text-terracotta-strong underline">پیوند متنی</a>
                         </div>
