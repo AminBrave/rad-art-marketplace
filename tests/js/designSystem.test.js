@@ -58,7 +58,7 @@ test('Tailwind semantic aliases reference CSS variables rather than duplicate li
 });
 
 test('shared primitives express accessible component contracts with semantic Tailwind utilities', () => {
-    assert.ok(primitives.includes('bg-terracotta text-white'));
+    assert.ok(primitives.includes('bg-terracotta text-inverse'));
     assert.ok(primitives.includes('focus-visible:outline'));
     assert.ok(primitives.includes('aria-[invalid=true]:border-danger'));
     assert.ok(primitives.includes('aria-busy={loading || undefined}'));
@@ -70,7 +70,7 @@ test('shared primitives express accessible component contracts with semantic Tai
 test('shared content and feedback components use semantic utility classes', () => {
     assert.ok(cards.includes('bg-surface-muted'));
     assert.ok(cards.includes('aspect-[4/5]'));
-    assert.ok(feedback.includes('border-danger/30'));
+    assert.ok(feedback.includes('color-mix(in_srgb,var(--color-danger)_30%,transparent)'));
     assert.ok(feedback.includes('app-skeleton'));
     assert.ok(feedback.includes('border-s-4'));
     assert.doesNotMatch(cards, /ra-[a-z]/);
@@ -112,7 +112,7 @@ test('navigation and dialog primitives use Tailwind state and focus utilities', 
     assert.ok(navigation.includes('data-[disabled]:pointer-events-none'));
     assert.ok(navigation.includes('focus-visible:ring-2'));
     assert.ok(navigation.includes('aria-current="page"'));
-    assert.ok(dialog.includes('bg-ink/55'));
+    assert.ok(dialog.includes('color-mix(in_srgb,var(--color-ink)_55%,transparent)'));
     assert.ok(dialog.includes('max-h-[85vh]'));
     assert.doesNotMatch(navigation, /ra-[a-z]/);
     assert.doesNotMatch(dialog, /ra-[a-z]/);
