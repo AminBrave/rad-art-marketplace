@@ -45,6 +45,7 @@ test('messaging headers stay aligned and the composer and artwork thumbnails rem
     assert.ok(messaging.includes('sticky top-[var(--workspace-header-height,4.5rem)] z-20 shrink-0 border-b border-border bg-white px-5 py-5 shadow-soft'));
     assert.ok(!messaging.includes('conversationHeaderVisible'));
     assert.ok(!messaging.includes('setConversationHeaderVisible'));
+    assert.ok(!messaging.includes('scrollDirectionRef'));
     assert.ok(!messaging.includes('translate-y-full'));
     assert.ok(!messaging.includes('grid-rows-[0fr]'));
     assert.ok(messaging.includes('const previousScrollTopRef = useRef(null)'));
