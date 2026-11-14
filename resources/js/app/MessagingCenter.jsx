@@ -74,6 +74,7 @@ export default function MessagingCenter({ role }) {
     const [conversationHeaderVisible, setConversationHeaderVisible] = useState(true);
     const previousScrollTopRef = useRef(null);
     const scrollDirectionRef = useRef({ direction: 0, distance: 0 });
+    const ignoreScrollDirectionRef = useRef(false);
     const messagesContainerRef = useRef(null);
     const inboxHeadingRef = useRef(null);
     const [inboxHeadingHeight, setInboxHeadingHeight] = useState(0);
@@ -280,6 +281,7 @@ export default function MessagingCenter({ role }) {
         pendingScrollRestoreRef.current = null;
         previousScrollTopRef.current = null;
         scrollDirectionRef.current = { direction: 0, distance: 0 };
+        ignoreScrollDirectionRef.current = false;
         setConversationHeaderVisible(true);
         activeConversationRef.current = active;
         setMessages([]);
@@ -463,10 +465,12 @@ export default function MessagingCenter({ role }) {
                 container.scrollTop = restoredScrollTop;
                 previousScrollTopRef.current = restoredScrollTop;
                 scrollDirectionRef.current = { direction: 0, distance: 0 };
+                ignoreScrollDirectionRef.current = false;
             });
             return () => window.cancelAnimationFrame(frame);
         }
         if (!shouldStickToBottomRef.current) return undefined;
+        ignoreScrollDirectionRef.current = true;
         const frame = window.requestAnimationFrame(() => container.scrollTo({
             top: container.scrollHeight,
             behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
@@ -785,10 +789,12 @@ export default function MessagingCenter({ role }) {
                                 shouldStickToBottomRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 120;
                                 if (shouldStickToBottomRef.current) setNewMessageCount(0);
 
-                                if (node.scrollTop <= 8) {
+                                if (ignoreScrollDirectionRef.current) {
+                                    if (shouldStickToBottomRef.current) ignoreScrollDirectionRef.current = false;
+                                } else if (node.scrollTop <= 8) {
                                     setConversationHeaderVisible(true);
                                     scrollDirectionRef.current = { direction: 0, distance: 0 };
-                                } else if (previousScrollTop !== null && !shouldStickToBottomRef.current && window.matchMedia('(max-width: 1023px)').matches) {
+                                } else if (previousScrollTop !== null && window.matchMedia('(max-width: 1023px)').matches) {
                                     const delta = node.scrollTop - previousScrollTop;
                                     const direction = Math.sign(delta);
                                     const tracking = scrollDirectionRef.current;
@@ -815,6 +821,7 @@ export default function MessagingCenter({ role }) {
                                 {loadingOlder && <p className="absolute inset-x-0 top-2 z-10 mx-auto w-fit rounded-full border border-border bg-white/95 px-3 py-1.5 text-xs text-muted shadow-soft" role="status">در حال دریافت پیام‌های قدیمی‌تر…</p>}
                                 {newMessageCount > 0 && <button type="button" onClick={() => {
                                     shouldStickToBottomRef.current = true;
+                                    ignoreScrollDirectionRef.current = true;
                                     setNewMessageCount(0);
                                     const node = messagesContainerRef.current;
                                     node?.scrollTo({ top: node.scrollHeight, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
