@@ -162,13 +162,14 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
                         nav_top = page.locator(".ra-workspace-bottom-nav").evaluate(
                             "(node) => node.getBoundingClientRect().top"
                         )
+                        nav_height = page.locator(".ra-workspace-bottom-nav").evaluate(
+                            "(node) => node.getBoundingClientRect().height"
+                        )
                         self.assertGreaterEqual(
                             chat_height, viewport_height - header_height - nav_height - 2,
                             f"Chat must fill the space between the site header and bottom navigation on {route_path} at {width}px",
                         )
-                        nav_height = page.locator(".ra-workspace-bottom-nav").evaluate(
-                            "(node) => node.getBoundingClientRect().height"
-                        )
+
                         self.assertLessEqual(
                             abs((header_height + chat_height + nav_height) - viewport_height), 3,
                             f"Chat viewport must reserve space for the site header and bottom navigation on {route_path} at {width}px",
