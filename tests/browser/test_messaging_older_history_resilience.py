@@ -123,6 +123,19 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
         def message_history(route):
             query = parse_qs(urlparse(route.request.url).query)
             if "before_id" not in query:
+                if "after_id" in query:
+                    route.fulfill(
+                        status=200,
+                        content_type="application/json",
+                        body=json.dumps({
+                            "data": [],
+                            "current_page": 1,
+                            "last_page": 1,
+                            "sync_cursor": "2026-11-12T10:00:00Z",
+                        }),
+                    )
+                    return
+
                 route.fulfill(
                     status=200,
                     content_type="application/json",
@@ -136,7 +149,7 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
                 return
 
             older_attempts["count"] += 1
-            if older_attempts["count"] == 1:
+            if older_attempts["count"] <= 2:
                 route.fulfill(
                     status=503,
                     content_type="application/json",
@@ -224,7 +237,7 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
                     f"browser_errors={browser_errors!r}; api_responses={api_responses[-25:]!r}; "
                     f"URL={page.url}; body={page.locator('body').inner_text()[-1200:]!r}"
                 ) from failure
-            self.assertEqual(older_attempts["count"], 1)
+            self.assertEqual(older_attempts["count"], 2)
             self.assertEqual(log.locator("article").count(), len(initial_messages))
             self.assertTrue(page.get_by_text(re.compile(r"^پیام موجود 1 ")).first.is_visible())
 
@@ -256,10 +269,23 @@ class MessagingOlderHistoryResilienceTests(unittest.TestCase):
                     f"api_responses={api_responses[-20:]!r}"
                 ) from failure
 
-            self.assertEqual(older_attempts["count"], 2)
+            self.assertEqual(older_attempts["count"], 3)
             self.assertEqual(log.locator("article").count(), len(initial_messages) + 3)
             self.assertEqual(page.get_by_text(re.compile(r"^پیام موجود 1 ")).count(), 1)
-            self.assertGreater(log.evaluate("(node) => node.scrollTop"), 0)
+            try:
+                # Scroll restoration runs in requestAnimationFrame after the merged
+                # messages render, so wait for the restoration before asserting.
+                page.wait_for_function(
+                    "() => { const node = document.querySelector('[role=log][aria-label=\"پیام‌های گفتگو\"]');"
+                    "return node && node.scrollTop > 0; }"
+                )
+            except Exception as failure:
+                metrics = log.evaluate("(node) => ({scrollTop: node.scrollTop, scrollHeight: node.scrollHeight, clientHeight: node.clientHeight, articleCount: node.querySelectorAll('article').length})")
+                raise AssertionError(
+                    "Older messages rendered, but scroll position was not restored after pagination. "
+                    f"metrics={metrics!r}; browser_errors={browser_errors!r}; "
+                    f"api_responses={api_responses[-20:]!r}"
+                ) from failure
             self.assertTrue(page.get_by_text(re.compile(r"^پیام موجود 1 "), exact=False).first.is_visible())
             self.assertFalse(older_alert.is_visible())
             self.assertIn(f"conversation={conversation_id}", page.url)

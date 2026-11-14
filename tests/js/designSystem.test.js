@@ -18,6 +18,7 @@ const routeLoading = readFileSync(new URL('../../resources/js/app/RoutingPages.j
 const queryClient = readFileSync(new URL('../../resources/js/lib/queryClient.js', import.meta.url), 'utf8');
 const artistWorkspace = readFileSync(new URL('../../resources/js/app/ArtistWorkspaceOverview.jsx', import.meta.url), 'utf8');
 const messaging = readFileSync(new URL('../../resources/js/app/MessagingCenter.jsx', import.meta.url), 'utf8');
+const messagingQueries = readFileSync(new URL('../../resources/js/app/useMessagingQueries.js', import.meta.url), 'utf8');
 const artworkDetail = readFileSync(new URL('../../resources/js/app/ArtworkDetailPage.jsx', import.meta.url), 'utf8');
 const artworkStudio = readFileSync(new URL('../../resources/js/app/ArtworkStudio.jsx', import.meta.url), 'utf8');
 const conversationApi = readFileSync(new URL('../../app/Http/Controllers/Api/V1/ConversationController.php', import.meta.url), 'utf8');
@@ -146,11 +147,12 @@ test('shared query cache keeps recently visited data warm and supports stale-whi
 
 
 test('artwork-origin direct messaging loads the canonical conversation context before consuming the deep link', () => {
-    const startIndex = messaging.indexOf("axios.post('/api/v1/conversations/direct'");
+    const startIndex = messaging.indexOf("request({ method: 'post', url: '/api/v1/conversations/direct'");
     const detailIndex = messaging.indexOf("axios.get('/api/v1/conversations/' + conversationId");
     const consumeIndex = messaging.indexOf("next.delete('artist')");
     assert.ok(startIndex >= 0 && detailIndex > startIndex && consumeIndex > detailIndex);
     assert.ok(messaging.includes("selected?.contexts?.some((context) => context.artwork?.slug)"));
+    assert.ok(messagingQueries.includes("queryKey: messagingKeys.detail(conversationId, userId)"));
     assert.ok(messaging.includes("setDirectStartAttempt((attempt) => attempt + 1)"));
     assert.ok(artworkDetail.includes("'&artwork=' + encodeURIComponent(artwork.slug)"));
 });
@@ -193,7 +195,7 @@ test('artwork-origin messages persist and render a reply-style artwork reference
     assert.ok(messaging.includes('setPendingArtwork(artwork)'));
     assert.ok(messaging.includes('پاسخ درباره این اثر'));
     assert.ok(messaging.includes('اثر مورد گفتگو'));
-    assert.ok(messaging.includes("ارسال پیام درباره ' + context.artwork.title"));
+    assert.ok(messaging.includes("aria-label={'ارسال پیام درباره ' + artwork.title}"));
     assert.ok(conversationApi.includes("Schema::hasColumn('messages', 'artwork_id')"));
     assert.ok(conversationApi.includes("'artwork_id' => $supportsArtworkReferences"));
     assert.ok(conversationApi.includes("$message->relationLoaded('artwork')"));

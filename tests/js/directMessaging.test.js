@@ -4,6 +4,8 @@ import test from 'node:test';
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
 const messaging = read('../../resources/js/app/MessagingCenter.jsx');
+const messagingQueries = read('../../resources/js/app/useMessagingQueries.js');
+const queryUtils = read('../../resources/js/app/messagingQueryUtils.js');
 const conversations = read('../../app/Http/Controllers/Api/V1/ConversationController.php');
 const directStart = read('../../app/Http/Controllers/Api/V1/DirectConversationController.php');
 const attachments = read('../../app/Http/Controllers/Api/V1/MessageAttachmentController.php');
@@ -18,9 +20,10 @@ test('message composer supports accessible text entry, IME-safe Enter send and m
 });
 
 test('conversation history uses incremental synchronization and stable older-message cursors', () => {
-    assert.ok(messaging.includes('after_id: latestMessageIdRef.current ?? 0'));
-    assert.ok(messaging.includes('updated_after: syncCursorRef.current'));
-    assert.ok(messaging.includes('before_id: beforeId'));
+    assert.ok(messagingQueries.includes('const params = buildMessageSyncParams(cached)'));
+    assert.ok(queryUtils.includes('after_id: cached.latestMessageId ?? 0'));
+    assert.ok(queryUtils.includes('updated_after: cached.syncCursor'));
+    assert.ok(messagingQueries.includes('params: { before_id: beforeId }'));
     assert.ok(conversations.includes("Carbon::parse($filters['updated_after'])->toDateTimeString()"));
     assert.ok(conversations.includes("where('id', '<', (int) $filters['before_id'])"));
     assert.ok(conversations.includes("'sync_cursor' => $syncCursor->toISOString()"));
@@ -36,6 +39,24 @@ test('artwork deep links become validated message references and persistent conv
     assert.ok(directStart.includes("DB::table('conversation_contexts')->updateOrInsert"));
     assert.ok(conversations.includes("Rule::exists('artworks', 'id')->where('status', Artwork::STATUS_APPROVED)"));
     assert.ok(conversations.includes("$artwork->artistProfile?->user_id"));
+});
+
+test('incremental sync restores the new-incoming-message indicator while scrolled up', () => {
+    assert.ok(messaging.includes('messageSyncSnapshotRef'));
+    assert.ok(messaging.includes('!snapshot.ids.has(Number(message.id))'));
+    assert.ok(messaging.includes('Number(message.sender_id) !== Number(user?.id)'));
+    assert.ok(messaging.includes('newIncomingCount > 0 && !shouldStickToBottomRef.current'));
+    assert.ok(messaging.includes('setNewMessageCount((count) => count + newIncomingCount)'));
+});
+
+test('read receipts only update the current user inbox and reconcile unread-filtered entries', () => {
+    assert.ok(messagingQueries.includes("const userInboxKey = [...messagingKeys.all, 'inbox', userId ?? 'anonymous']"));
+    assert.ok(messagingQueries.includes('findAll({ queryKey: userInboxKey })'));
+    assert.ok(messagingQueries.includes("query.queryKey[5] === 'unread'"));
+    assert.ok(messagingQueries.includes('markConversationReadInInboxPages(current, id, { remove: isUnreadInbox })'));
+    assert.ok(messagingQueries.includes('queryClient.setQueryData(messagingKeys.detail(id, userId)'));
+    assert.ok(messaging.includes("threadFilter === 'unread' && !Number(detailQuery.data.unread_count)"));
+    assert.ok(queryUtils.includes('return remove ? [] : [{ ...thread, unread_count: 0 }]'));
 });
 
 test('message replies, reactions, edit/delete and read receipts stay inside the selected conversation', () => {
