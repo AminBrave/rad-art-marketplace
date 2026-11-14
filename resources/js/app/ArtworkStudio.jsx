@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Badge, Button, EmptyState, ErrorState, FormField, ArtworkStudioListSkeleton, UploadFeedback } from '../components/ui';
@@ -14,22 +15,40 @@ const statusGuidance = {
 const inputClass = 'mt-2 w-full border border-border bg-canvas px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-terracotta focus-visible:ring-2 focus-visible:ring-focus';
 
 export default function ArtworkStudio({ user, hasProfile }) {
-    const [categories, setCategories] = useState([]);
-    const [artworks, setArtworks] = useState([]);
     const [artworkPage, setArtworkPage] = useState(1);
-    const [hasMoreArtworks, setHasMoreArtworks] = useState(false);
+    const queryClient = useQueryClient();
+    const categoriesQuery = useQuery({
+        queryKey: ['categories'],
+        queryFn: async ({ signal }) => {
+            const { data } = await axios.get('/api/v1/categories', { signal });
+            return data.data ?? [];
+        },
+        enabled: user?.role === 'artist' && Boolean(hasProfile),
+    });
+    const artworksQuery = useQuery({
+        queryKey: ['artist', 'artworks', user?.id, artworkPage],
+        queryFn: async ({ signal }) => {
+            const { data } = await axios.get('/api/v1/artist/artworks', { params: { page: artworkPage }, signal });
+            return data;
+        },
+        enabled: user?.role === 'artist' && Boolean(hasProfile) && Boolean(user?.id),
+    });
+    const categories = categoriesQuery.data ?? [];
+    const artworks = artworksQuery.data?.data ?? [];
+    const hasMoreArtworks = Boolean(artworksQuery.data?.next_page_url);
+    const loading = artworksQuery.isPending;
+    const loadError = artworksQuery.isError
+        ? (artworksQuery.error.response?.status === 403 ? 'این حساب اجازه مدیریت آثار را ندارد.' : 'دریافت آثار انجام نشد. دوباره تلاش کنید.')
+        : categoriesQuery.isError ? 'دریافت دسته‌بندی‌ها انجام نشد.' : '';
     const [form, setForm] = useState(emptyArtwork);
     const [image, setImage] = useState(null);
     const [editingId, setEditingId] = useState(null);
     const [busy, setBusy] = useState(false);
-    const [loading, setLoading] = useState(true);
     const [uploadProgress, setUploadProgress] = useState(0);
     const [errors, setErrors] = useState({});
     const [message, setMessage] = useState('');
-    const [loadError, setLoadError] = useState('');
     const [imageError, setImageError] = useState('');
     const [imagePreview, setImagePreview] = useState('');
-    const artworkController = useRef(null);
     const savingArtworkRef = useRef(false);
 
     useEffect(() => {
@@ -39,44 +58,6 @@ export default function ArtworkStudio({ user, hasProfile }) {
         return () => window.URL.revokeObjectURL(url);
     }, [image]);
 
-    const loadData = useCallback(async (page = 1) => {
-        artworkController.current?.abort();
-        const controller = new AbortController();
-        artworkController.current = controller;
-        setLoading(true);
-        setLoadError('');
-        try {
-            const { data } = await axios.get('/api/v1/artist/artworks', { params: { page }, signal: controller.signal });
-            setArtworks(data.data ?? []);
-            setArtworkPage(data.current_page ?? page);
-            setHasMoreArtworks(Boolean(data.next_page_url));
-        } catch (error) {
-            if (axios.isCancel(error)) return;
-            setLoadError(error.response?.status === 403 ? 'این حساب اجازه مدیریت آثار را ندارد.' : 'دریافت آثار انجام نشد. دوباره تلاش کنید.');
-        } finally {
-            if (artworkController.current === controller) {
-                artworkController.current = null;
-                setLoading(false);
-            }
-        }
-    }, []);
-
-    useEffect(() => {
-        if (user?.role !== 'artist' || !hasProfile) return undefined;
-
-        let active = true;
-        const controller = new AbortController();
-        axios.get('/api/v1/categories', { signal: controller.signal })
-            .then(({ data }) => { if (active) setCategories(data.data ?? []); })
-            .catch((error) => { if (active && !axios.isCancel(error)) setLoadError('دریافت دسته‌بندی‌ها انجام نشد.'); });
-
-        return () => { active = false; controller.abort(); };
-    }, [hasProfile, user?.role]);
-
-    useEffect(() => {
-        if (user?.role === 'artist' && hasProfile) loadData(1);
-        return () => artworkController.current?.abort();
-    }, [hasProfile, loadData, user?.role]);
 
     if (user?.role !== 'artist') return null;
     if (!hasProfile) return <EmptyState title="ابتدا پروفایل هنرمند را تکمیل کنید" description="برای ثبت و مدیریت اثر، نام نمایشی پروفایل خود را ذخیره کنید." action={<Link to="/dashboard/artist/profile" className="text-sm font-bold text-terracotta-strong underline">تکمیل پروفایل</Link>} />;
@@ -145,7 +126,8 @@ export default function ArtworkStudio({ user, hasProfile }) {
             });
             resetForm();
             setMessage(data.message ?? 'اثر ذخیره شد.');
-            await loadData(1);
+            await queryClient.invalidateQueries({ queryKey: ['artist', 'artworks', user?.id] });
+            setArtworkPage(1);
         } catch (error) {
             if (error.response?.status === 422) {
                 setErrors(error.response.data.errors ?? {}); setMessage('لطفاً خطاهای مشخص‌شده را اصلاح کنید.');
@@ -184,8 +166,8 @@ export default function ArtworkStudio({ user, hasProfile }) {
             </form>
         </section>
         <section className="space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-bold">آثار ثبت‌شده شما</h2><Button variant="outline" size="sm" onClick={() => loadData(1)} disabled={loading}>بروزرسانی</Button></div>
-            {loadError && <ErrorState title="دریافت آثار ناموفق بود" description={loadError} onRetry={() => loadData(1)} />}
+            <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-bold">آثار ثبت‌شده شما</h2><Button variant="outline" size="sm" onClick={() => artworksQuery.refetch()} disabled={loading}>بروزرسانی</Button></div>
+            {loadError && <ErrorState title="دریافت آثار ناموفق بود" description={loadError} onRetry={() => artworksQuery.refetch()} />}
             {loading ? <ArtworkStudioListSkeleton count={3} /> : artworks.length === 0 ? <EmptyState title="هنوز اثری ثبت نکرده‌اید" description="با فرم بالا اولین اثر خود را برای بررسی ارسال کنید." /> :
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{artworks.map((item) => <article key={item.id} className="overflow-hidden border border-border bg-paper">
                     <div className="flex aspect-[4/3] items-center justify-center bg-surface-muted p-3"><img src={item.image_url} alt={item.title} loading="lazy" decoding="async" className="h-full w-full object-contain" /></div>
@@ -197,9 +179,9 @@ export default function ArtworkStudio({ user, hasProfile }) {
                 </article>)}</div>}
             {artworks.length > 0 && !loading && (
                 <nav aria-label="صفحه‌بندی آثار ثبت‌شده" className="flex items-center justify-center gap-4">
-                    <Button variant="outline" size="sm" disabled={loading || artworkPage <= 1} onClick={() => loadData(artworkPage - 1)}>قبلی</Button>
-                    <span className="text-xs text-muted">صفحه {artworkPage.toLocaleString('fa-IR')}</span>
-                    <Button variant="outline" size="sm" disabled={loading || !hasMoreArtworks} onClick={() => loadData(artworkPage + 1)}>بعدی</Button>
+                    <Button variant="outline" size="sm" disabled={loading || artworkPage <= 1} onClick={() => setArtworkPage((current) => Math.max(1, current - 1))}>قبلی</Button>
+                    <span className="text-xs text-muted">صفحه {(artworksQuery.data?.current_page ?? artworkPage).toLocaleString('fa-IR')}</span>
+                    <Button variant="outline" size="sm" disabled={loading || !hasMoreArtworks} onClick={() => setArtworkPage((current) => current + 1)}>بعدی</Button>
                 </nav>
             )}
         </section>
