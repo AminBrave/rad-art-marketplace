@@ -189,7 +189,7 @@ a {
     }
 }
 
-/* RAD messaging: Telegram-inspired rhythm and controls, expressed in RAD tokens. */
+/* Messaging workspace edge-case styles: nested conversation states, :has() focus recovery, and scroll containers currently depend on structural selectors. Keep scoped here until the message panes are extracted into focused primitives. */
 .rad-messaging {
     font-family: var(--font-persian), var(--font-latin), sans-serif;
 }
