@@ -311,6 +311,23 @@ async function runFrontendTests() {
     ]);
 }
 
+async function generateQualityReport() {
+    ensureReportDirectory();
+    await run(python, pythonArgs(['scripts/summarize-test-reports.py']));
+}
+
+async function runReportingTests() {
+    await run(python, pythonArgs([
+        '-m',
+        'unittest',
+        'discover',
+        '-s',
+        'tests/python',
+        '-p',
+        'test_*.py',
+    ]));
+}
+
 async function verifyBackend() {
     await runBackendTests();
     await runSteps([
@@ -432,6 +449,8 @@ Focused tests (execute only with explicit authorization)
   integration           Run the Integration PHPUnit suite
   frontend:test         Run frontend Node tests
   browser [test-name]   Run all or selected guarded Playwright tests
+  report                Generate the cross-suite quality report from existing JUnit files
+  reporting:test        Run focused tests for the report generator
   browser:prepare       Rebuild the isolated browser database and storage
 
 Quality workflows (execute only with explicit authorization)
@@ -518,6 +537,12 @@ try {
             break;
         case 'verify':
             await verify(false);
+            break;
+        case 'report':
+            await generateQualityReport();
+            break;
+        case 'reporting:test':
+            await runReportingTests();
             break;
         case 'browser':
             await run(python, pythonArgs([
