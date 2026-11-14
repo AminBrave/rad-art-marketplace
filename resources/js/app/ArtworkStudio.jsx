@@ -126,7 +126,12 @@ export default function ArtworkStudio({ user, hasProfile }) {
             });
             resetForm();
             setMessage(data.message ?? 'اثر ذخیره شد.');
-            await queryClient.invalidateQueries({ queryKey: ['artist', 'artworks', user?.id] });
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: ['artist', 'artworks', user?.id] }),
+                queryClient.invalidateQueries({ queryKey: ['artist-workspace', 'artworks', user?.id] }),
+                queryClient.invalidateQueries({ queryKey: ['home', 'artworks'] }),
+                queryClient.invalidateQueries({ queryKey: ['artworks'] }),
+            ]);
             setArtworkPage(1);
         } catch (error) {
             if (error.response?.status === 422) {
