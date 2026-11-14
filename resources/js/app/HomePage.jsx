@@ -127,7 +127,7 @@ export default function HomePage() {
 
             <section className="bg-ink text-inverse">
                 <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-5 py-14 sm:px-8 md:flex-row md:items-center lg:px-10">
-                    <div><p className="text-xs font-bold text-[#d9a58f]">دعوت به مشارکت</p><h2 className="mt-2 text-2xl font-black">جهان هنری خود را با دیگران به اشتراک بگذارید.</h2><p className="mt-3 max-w-2xl text-sm leading-7 text-inverse">هنرمندان می‌توانند حساب بسازند، پروفایل خود را تکمیل کنند و آثارشان را برای بررسی ارسال کنند.</p></div>
+                    <div><p className="text-xs font-bold text-sand">دعوت به مشارکت</p><h2 className="mt-2 text-2xl font-black">جهان هنری خود را با دیگران به اشتراک بگذارید.</h2><p className="mt-3 max-w-2xl text-sm leading-7 text-inverse">هنرمندان می‌توانند حساب بسازند، پروفایل خود را تکمیل کنند و آثارشان را برای بررسی ارسال کنند.</p></div>
                     <Link to="/register" className="shrink-0 bg-paper px-6 py-3 font-bold text-ink">شروع به‌عنوان هنرمند</Link>
                 </div>
             </section>
