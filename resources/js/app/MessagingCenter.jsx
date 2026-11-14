@@ -286,10 +286,10 @@ export default function MessagingCenter({ role }) {
         historyRequestRef.current?.abort();
         historyLoadingRef.current = false;
         setLoadingOlder(false);
+        const cachedConversation = active ? messagesCacheRef.current.get(Number(active)) : null;
         hasOlderMessagesRef.current = Boolean(cachedConversation?.hasOlder);
         pendingScrollRestoreRef.current = null;
         activeConversationRef.current = active;
-        const cachedConversation = active ? messagesCacheRef.current.get(Number(active)) : null;
         setMessages(cachedConversation?.messages ?? []);
         setMessagesError('');
         setOlderMessagesError('');
