@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Button } from './primitives';
 
 export function Skeleton({ className = '', width, height = '1rem', rounded = 'md' }) {
@@ -118,5 +119,55 @@ export function Toast({ open = true, title, description, variant = 'info', onDis
                 </button>
             )}
         </div>
+    );
+}
+
+
+export function MediaImage({
+    src,
+    alt = '',
+    className = '',
+    imageClassName = '',
+    loading = 'lazy',
+    decoding = 'async',
+    fetchPriority,
+    width,
+    height,
+    fallback,
+}) {
+    const [loadedSrc, setLoadedSrc] = useState(null);
+    const [failedSrc, setFailedSrc] = useState(null);
+    const loaded = Boolean(src) && loadedSrc === src;
+    const failed = Boolean(src) && failedSrc === src;
+
+    if (!src || failed) {
+        return fallback ?? (
+            <span
+                role={alt ? 'img' : undefined}
+                aria-label={alt || undefined}
+                aria-hidden={alt ? undefined : 'true'}
+                className={`grid place-items-center bg-surface-muted px-4 text-center text-sm text-muted ${className}`}
+            >
+                تصویر در دسترس نیست
+            </span>
+        );
+    }
+
+    return (
+        <span className={`relative isolate block overflow-hidden bg-surface-muted ${className}`} aria-busy={!loaded}>
+            {!loaded && <span aria-hidden="true" className="app-skeleton absolute inset-0 block h-full w-full rounded-none" />}
+            <img
+                src={src}
+                alt={alt}
+                loading={loading}
+                decoding={decoding}
+                fetchpriority={fetchPriority}
+                width={width}
+                height={height}
+                onLoad={() => setLoadedSrc(src)}
+                onError={() => setFailedSrc(src)}
+                className={`absolute inset-0 block h-full w-full transition-opacity duration-200 ${loaded ? 'opacity-100' : 'opacity-0'} ${imageClassName}`}
+            />
+        </span>
     );
 }

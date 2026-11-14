@@ -1,12 +1,10 @@
-import { useEffect, useState } from 'react';
+
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { ArtworkCard, ArtistCard, ArtworkCardSkeleton, ArtistCardSkeleton, EmptyState, ErrorState } from '../components/ui';
+import { ArtworkCard, ArtistCard, ArtworkCardSkeleton, ArtistCardSkeleton, EmptyState, ErrorState, MediaImage } from '../components/ui';
 
 export default function HomePage() {
-    const [heroImageFailed, setHeroImageFailed] = useState(false);
-
     const artworksQuery = useQuery({
         queryKey: ['home', 'artworks'],
         queryFn: async ({ signal }) => {
@@ -60,7 +58,6 @@ export default function HomePage() {
         || (artworksQuery.isFetching && !artworksQuery.data);
     const error = artworksQuery.isError && !artworksQuery.data && !loading && !artworksQuery.isFetching;
     const hero = artworks[0];
-    useEffect(() => setHeroImageFailed(false), [hero?.id]);
     const recentWorks = artworks.slice(1, 7);
     const spotlight = artists[0];
 
@@ -82,7 +79,7 @@ export default function HomePage() {
                     {hero ? (
                         <Link to={'/artworks/' + hero.slug} className="group relative block bg-surface-muted p-2 sm:p-3">
                             <div className="aspect-[4/5] overflow-hidden bg-paper">
-                                {heroImageFailed ? <div role="img" aria-label={`تصویر اثر ${hero.title} در دسترس نیست`} className="grid h-full w-full place-items-center bg-surface-muted p-8 text-center text-sm leading-7 text-muted">تصویر این اثر در حال حاضر در دسترس نیست.</div> : <img src={hero.image_url} alt={hero.title} onError={() => setHeroImageFailed(true)} loading="eager" fetchpriority="high" decoding="async" className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]" />}
+                                <MediaImage src={hero.image_url} alt={hero.title} className="h-full w-full" imageClassName="object-contain transition-transform duration-500 group-hover:scale-[1.02]" loading="eager" fetchPriority="high" decoding="async" />
                             </div>
                             <div className="flex items-center justify-between gap-4 px-2 py-4">
                                 <div><p className="text-xs text-muted">تازه در گالری</p><p className="mt-1 font-bold">{hero.title}</p><p className="mt-1 text-xs text-muted">{hero.artist?.display_name}</p></div>

@@ -1,16 +1,6 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { formatArtworkPrice } from '../../utils/formatArtworkPrice';
-
-function ArtworkImage({ src, title }) {
-    const [failed, setFailed] = useState(false);
-
-    if (!src || failed) {
-        return <span role="img" aria-label={`تصویر اثر ${title} در دسترس نیست`} className="px-4 text-center text-sm text-muted">تصویر اثر در دسترس نیست</span>;
-    }
-
-    return <img src={src} alt={title} loading="lazy" decoding="async" onError={() => setFailed(true)} className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]" />;
-}
+import { MediaImage } from './feedback';
 
 export function ArtworkCard({ artwork, className = '' }) {
     if (!artwork) return null;
@@ -23,7 +13,7 @@ export function ArtworkCard({ artwork, className = '' }) {
             <Link to={`/artworks/${artwork.slug}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus">
                 <div className="relative overflow-hidden bg-surface-muted">
                     <div className="ra-artwork-frame aspect-[4/5] bg-surface-muted p-0">
-                        {artwork.image_url ? <ArtworkImage src={artwork.image_url} title={title} /> : <ArtworkImage src={null} title={title} />}
+                        <MediaImage src={artwork.image_url} alt={title} className="h-full w-full" imageClassName="object-contain transition-transform duration-300 group-hover:scale-[1.02]" />
                     </div>
                     <span aria-hidden="true" className="pointer-events-none absolute inset-0 border border-ink/5 transition-colors group-hover:border-terracotta/50" />
                 </div>

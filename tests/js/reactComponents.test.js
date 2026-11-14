@@ -99,6 +99,48 @@ test('UploadFeedback clamps progress to the valid accessible range', () => {
     assert.match(html, /width:100%/);
 });
 
+test('MediaImage reserves its frame and exposes the RAD skeleton while loading', () => {
+    const html = renderToStaticMarkup(
+        React.createElement(feedback.MediaImage, {
+            src: '/storage/artworks/sample.webp',
+            alt: 'اثر نمونه',
+            className: 'aspect-[4/5] w-full',
+            loading: 'lazy',
+            decoding: 'async',
+        }),
+    );
+
+    assert.match(html, /aria-busy="true"/);
+    assert.match(html, /app-skeleton/);
+    assert.match(html, /loading="lazy"/);
+    assert.match(html, /decoding="async"/);
+    assert.match(html, /alt="اثر نمونه"/);
+});
+
+test('MediaImage supports eager high-priority media and accessible missing-image fallback', () => {
+    const hero = renderToStaticMarkup(
+        React.createElement(feedback.MediaImage, {
+            src: '/storage/artworks/hero.webp',
+            alt: 'اثر شاخص',
+            loading: 'eager',
+            fetchPriority: 'high',
+        }),
+    );
+    const missing = renderToStaticMarkup(
+        React.createElement(feedback.MediaImage, {
+            src: null,
+            alt: 'تصویر اثر نمونه',
+            className: 'aspect-[4/5] w-full',
+        }),
+    );
+
+    assert.match(hero, /loading="eager"/);
+    assert.match(hero, /fetchpriority="high"/i);
+    assert.match(missing, /role="img"/);
+    assert.match(missing, /تصویر اثر نمونه/);
+    assert.doesNotMatch(missing, /app-skeleton/);
+});
+
 test('EmptyState renders a semantic heading and helpful description', () => {
     const html = renderToStaticMarkup(
         React.createElement(feedback.EmptyState, {

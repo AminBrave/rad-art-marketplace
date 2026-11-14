@@ -1,22 +1,23 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { ArtworkCard, ArtworkDetailSkeleton, PageContainer } from '../components/ui';
+import { ArtworkCard, ArtworkDetailSkeleton, MediaImage, PageContainer } from '../components/ui';
 import { formatArtworkPrice } from '../utils/formatArtworkPrice';
 
 function ArtworkImage({ artwork }) {
-    const [failed, setFailed] = useState(false);
-    useEffect(() => setFailed(false), [artwork?.slug]);
-
     return (
         <div className="flex aspect-[4/3] items-center justify-center overflow-hidden border border-border bg-surface-muted p-3 sm:p-6 lg:aspect-[4/5] lg:p-8">
-            {failed ? (
-                <div role="img" aria-label={'تصویر اثر ' + artwork.title + ' در دسترس نیست'} className="grid h-full w-full place-items-center border border-border bg-surface-muted p-8 text-center text-sm leading-7 text-muted">تصویر این اثر در حال حاضر در دسترس نیست.</div>
-            ) : (
-                <img src={artwork.image_url} alt={artwork.title} onError={() => setFailed(true)} loading="eager" fetchpriority="high" decoding="async" className="h-full max-h-[78vh] w-full object-contain" />
-            )}
+            <MediaImage
+                src={artwork.image_url}
+                alt={artwork.title}
+                className="h-full max-h-[78vh] w-full"
+                imageClassName="object-contain"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+            />
         </div>
     );
 }

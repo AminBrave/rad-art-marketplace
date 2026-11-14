@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { Badge, Button, EmptyState, ErrorState, FormField, ArtworkStudioListSkeleton, UploadFeedback } from '../components/ui';
+import { Badge, Button, EmptyState, ErrorState, FormField, ArtworkStudioListSkeleton, UploadFeedback, MediaImage } from '../components/ui';
 
 const emptyArtwork = { title: '', description: '', category_id: '', medium: '', dimensions: '', year: '', price: '', availability: 'available' };
 const statusLabels = { pending_review: 'در انتظار بررسی', approved: 'تأیید و منتشرشده', rejected: 'ردشده', changes_requested: 'نیازمند اصلاح' };
@@ -164,7 +164,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
                     <input id="artwork-image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required={!editingId} onChange={chooseImage} aria-describedby="artwork-image-help" className="mt-2 block w-full border border-border bg-canvas px-3 py-3 text-sm file:ml-3 file:border-0 file:bg-surface-muted file:px-3 file:py-2 file:font-semibold" />
                     <p id="artwork-image-help" className="mt-2 text-xs leading-6 text-muted">JPG، JPEG، PNG یا WebP؛ حداکثر ۵ مگابایت و ۶۰۰۰ × ۶۰۰۰ پیکسل. ابعاد تصویر پیش از ارسال بررسی می‌شود.</p>
                     {fieldError('image')}{imageError && <p role="alert" className="mt-1 text-xs text-danger">{imageError}</p>}
-                    {imagePreview && <div className="mt-4 max-w-sm border border-border p-2"><img src={imagePreview} alt="پیش‌نمایش تصویر انتخاب‌شده" className="max-h-64 w-full object-contain" /></div>}
+                    {imagePreview && <div className="mt-4 max-w-sm border border-border p-2"><MediaImage src={imagePreview} alt="پیش‌نمایش تصویر انتخاب‌شده" className="aspect-[4/3] max-h-64 w-full" imageClassName="object-contain" loading="eager" /></div>}
                     <UploadFeedback fileName={image?.name} status={busy ? 'uploading' : uploadProgress === 100 ? 'success' : 'idle'} progress={uploadProgress} />
                 </div>
                 <div className="flex flex-wrap items-center gap-3 sm:col-span-2"><Button type="submit" disabled={busy || Boolean(imageError)} loading={busy}>{editingId ? 'ذخیره و ارسال دوباره برای بررسی' : 'ثبت اثر برای بررسی'}</Button>{message && <p role="status" className="text-sm text-muted">{message}</p>}</div>
@@ -175,7 +175,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
             {loadError && <ErrorState title="دریافت آثار ناموفق بود" description={loadError} onRetry={() => { artworksQuery.refetch(); categoriesQuery.refetch(); }} />}
             {loading ? <ArtworkStudioListSkeleton count={3} /> : artworks.length === 0 ? <EmptyState title="هنوز اثری ثبت نکرده‌اید" description="با فرم بالا اولین اثر خود را برای بررسی ارسال کنید." /> :
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{artworks.map((item) => <article key={item.id} className="overflow-hidden border border-border bg-paper">
-                    <div className="flex aspect-[4/3] items-center justify-center bg-surface-muted p-3"><img src={item.image_url} alt={item.title} loading="lazy" decoding="async" className="h-full w-full object-contain" /></div>
+                    <div className="flex aspect-[4/3] items-center justify-center bg-surface-muted p-3"><MediaImage src={item.image_url} alt={item.title} className="h-full w-full" imageClassName="object-contain" loading="lazy" decoding="async" /></div>
                     <div className="space-y-3 p-4"><div className="flex flex-wrap items-start justify-between gap-2"><h3 className="font-bold">{item.title}</h3><Badge variant={item.status === 'approved' ? 'success' : item.status === 'rejected' ? 'danger' : item.status === 'changes_requested' ? 'warning' : 'neutral'}>{statusLabels[item.status] ?? item.status}</Badge></div>
                         <p className="text-xs text-muted">{item.category?.name}</p>
                         <p className="text-xs leading-6 text-muted">{statusGuidance[item.status] ?? 'وضعیت این اثر از سوی سرور تعیین شده است.'}</p>
