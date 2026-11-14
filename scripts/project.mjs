@@ -25,7 +25,7 @@ function requireLanHost() {
 }
 
 function lanEnvironment(host) {
-    return { ...process.env, APP_ENV: 'local', APP_URL: 'http://' + host + ':8000', VITE_DEV_LAN_HOST: host };
+    return { ...process.env, APP_ENV: 'local', APP_URL: 'http://' + host + ':8000', SESSION_DOMAIN: '', SESSION_SECURE_COOKIE: 'false', VITE_DEV_LAN_HOST: host };
 }
 
 function run(command, args = [], options = {}) {
@@ -406,6 +406,7 @@ async function startDevelopmentLan() {
     const host = requireLanHost();
     await artisan('config:clear');
     await artisan('route:clear');
+    console.log('[project] LAN development: http://' + host + ':8000 (Vite HMR: ' + host + ':5173)');
     return startServices([
         { label: 'Laravel (LAN)', command: php, args: ['artisan', 'serve', '--host=0.0.0.0', '--port=8000'], env: lanEnvironment(host) },
         { label: 'Vite (LAN)', command: npm, args: ['exec', '--', 'vite', '--mode', 'lan'], env: lanEnvironment(host) },
