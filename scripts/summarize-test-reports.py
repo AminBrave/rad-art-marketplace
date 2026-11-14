@@ -8,6 +8,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Dict, List, Optional, Tuple
 
 
 SUITES = (
@@ -17,7 +18,7 @@ SUITES = (
 )
 
 
-def git_snapshot(root: Path) -> tuple[int | None, bool, str | None]:
+def git_snapshot(root: Path) -> Tuple[Optional[int], bool, Optional[str]]:
     """Return HEAD commit time, dirty-worktree state and any inspection error."""
     try:
         head = subprocess.run(
@@ -46,7 +47,7 @@ def git_snapshot(root: Path) -> tuple[int | None, bool, str | None]:
         return None, True, str(error)
 
 
-def parse_junit(path: Path) -> dict[str, int]:
+def parse_junit(path: Path) -> Dict[str, int]:
     root = ET.parse(path).getroot()
     nodes = [root] if root.tag == "testsuite" else root.findall(".//testsuite")
 
@@ -65,10 +66,10 @@ def parse_junit(path: Path) -> dict[str, int]:
 
 def freshness(
     report_mtime: float,
-    head_timestamp: int | None,
+    head_timestamp: Optional[int],
     worktree_dirty: bool,
-    git_error: str | None,
-) -> tuple[str, str]:
+    git_error: Optional[str],
+) -> Tuple[str, str]:
     if git_error or head_timestamp is None:
         return "STALE", f"Git freshness could not be established: {git_error or 'unknown Git state'}"
     if worktree_dirty:
@@ -82,10 +83,10 @@ def summarize_suite(
     name: str,
     filename: str,
     report_dir: Path,
-    head_timestamp: int | None,
+    head_timestamp: Optional[int],
     worktree_dirty: bool,
-    git_error: str | None,
-) -> dict:
+    git_error: Optional[str],
+) -> Dict:
     path = report_dir / filename
     if not path.is_file():
         return {
@@ -137,7 +138,7 @@ def build_report(report_dir: Path, root: Path) -> str:
     for suite in suites:
         counts = suite["counts"]
         values = [str(counts[key]) for key in ("tests", "failures", "errors", "skipped")] if counts else ["—"] * 4
-        path_label = suite["path"].relative_to(root).as_posix() if suite["path"].is_relative_to(root) else suite["path"].as_posix()
+        path_label = suite["path"].name
         lines.append(
             f"| {suite['name']} | **{suite['status']}** | "
             + " | ".join(values)
