@@ -1,6 +1,7 @@
-# Local TLS entry point. Caddy serves HTTP/2 and HTTP/3 over HTTPS.
-# The Laravel and Vite development servers stay bound to loopback only.
-rad.localhost {
+# One HTTPS entry point for the normal development workflow.
+# RAD_LAN_HOST is resolved by scripts/project.mjs and must be this machine's private IPv4.
+# Laravel and Vite listen on loopback only; Caddy is the only LAN-facing process.
+rad.localhost, rad.home.arpa, {$RAD_LAN_HOST} {
     tls internal
 
     @vite path /@* /resources/* /node_modules/* /__vite_hmr
