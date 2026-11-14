@@ -79,7 +79,7 @@ export default function HomePage() {
                     {hero ? (
                         <Link to={'/artworks/' + hero.slug} className="group relative block bg-surface-muted p-2 sm:p-3">
                             <div className="aspect-[4/5] overflow-hidden bg-paper">
-                                <MediaImage src={hero.image_url} alt={hero.title} className="h-full w-full" imageClassName="object-contain transition-transform duration-500 group-hover:scale-[1.02]" loading="eager" fetchPriority="high" decoding="async" sizes="(min-width: 1024px) 45vw, 100vw" />
+                                <MediaImage src={hero.image_url} alt={hero.title} className="h-full w-full" imageClassName="object-contain transition-transform duration-500 group-hover:scale-[1.02]" loading="eager" fetchPriority="high" decoding="async" />
                             </div>
                             <div className="flex items-center justify-between gap-4 px-2 py-4">
                                 <div><p className="text-xs text-muted">تازه در گالری</p><p className="mt-1 font-bold">{hero.title}</p><p className="mt-1 text-xs text-muted">{hero.artist?.display_name}</p></div>
