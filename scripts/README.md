@@ -43,6 +43,8 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Browser | `npm run browser:prepare` | **Destructive to isolated browser-test data only:** rebuild browser SQLite and storage |
 | Browser | `npm run test:browser` | Guarded Playwright tests against the configured local browser app |
 | Browser | `npm run test:browser -- <unittest-name>` | Run one Playwright test by its Python unittest name |
+| Reports | `npm run test:report` | Generate the cross-suite quality summary from existing JUnit files; does not run tests |
+| Reports | `npm run test:reporting` | Run focused Python unit tests for report parsing and freshness classification |
 | Verification | `npm run verify:backend` | Backend tests + PHP Pint check |
 | Verification | `npm run verify:frontend` | Frontend tests + ESLint + standard and cPanel builds |
 | Verification | `npm run verify` | Backend and frontend quality workflows |
@@ -98,6 +100,10 @@ Use `node scripts/project.mjs --help` for the concise internal task list. Build,
 ## Reports
 
 Test reports are generated under `build/test-reports/`. They are local artifacts and should not be committed unless explicitly requested. Each runner must remove its own stale report before writing a new one.
+
+Run `npm run test:report` to create `build/test-reports/quality-summary.md`. The report summarizes backend, frontend and browser JUnit counts and links to the detailed reports and browser diagnostics. It labels a suite `MISSING` when no JUnit file exists and `STALE` when XML is invalid, the report predates the current Git HEAD, the worktree has project changes, or Git freshness cannot be established. `CURRENT` means the report was generated at or after HEAD with a clean worktree; it is evidence for that checked-out snapshot, not proof that lint, builds, accessibility, performance or manual review were completed. Missing suites are never counted as passing. The command reads existing files and Git metadata only.
+
+Run `npm run test:reporting` for the focused unit tests of this report generator. These tests are separate from the backend, frontend and browser suites.
 
 ## Composer scripts
 
