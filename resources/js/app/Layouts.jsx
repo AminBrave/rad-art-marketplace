@@ -96,6 +96,7 @@ function NotificationBell({ user }) {
     });
 
     const markOneRead = useMutation({
+        mutationKey: ['notifications', 'mark-read', user?.id],
         mutationFn: (item) => axios.patch('/api/v1/notifications/' + item.id + '/read'),
         onSuccess: (_, item) => {
             queryClient.setQueryData(notificationKey, (current) => current ? {
@@ -108,6 +109,7 @@ function NotificationBell({ user }) {
         },
     });
     const markAllRead = useMutation({
+        mutationKey: ['notifications', 'mark-all-read', user?.id],
         mutationFn: () => axios.patch('/api/v1/notifications/read-all'),
         onSuccess: () => {
             queryClient.setQueryData(notificationKey, (current) => current ? {
@@ -118,6 +120,7 @@ function NotificationBell({ user }) {
         },
     });
     const updatePreference = useMutation({
+        mutationKey: ['notifications', 'update-preference', user?.id],
         mutationFn: (enabled) => axios.patch('/api/v1/notifications/preferences', { in_app_messages: enabled }),
         onMutate: async (enabled) => {
             await queryClient.cancelQueries({ queryKey: preferenceKey });
