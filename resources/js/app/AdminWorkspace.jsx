@@ -144,11 +144,11 @@ export function AdminArtworkModeration() {
     });
     const result = artworksQuery.data;
     const loading = artworksQuery.isPending;
-    const load = () => artworksQuery.refetch();
+    const load = () => { setActionError(''); return artworksQuery.refetch(); };
     const error = actionError || (artworksQuery.isError
         ? (artworksQuery.error.response?.status === 403 ? 'این حساب اجازه مشاهده صف بررسی آثار را ندارد.' : 'دریافت آثار انجام نشد. دوباره تلاش کنید.')
         : '');
-    const chooseStatus = (value) => { setMessage(''); setParams(value === 'pending_review' ? {} : { status: value }); };
+    const chooseStatus = (value) => { setActionError(''); setMessage(''); setParams(value === 'pending_review' ? {} : { status: value }); };
     const changePage = (next) => setParams({ ...(status !== 'pending_review' ? { status } : {}), ...(next > 1 ? { page: String(next) } : {}) });
     const moderate = async (artwork, action) => {
         const note = (notes[artwork.id] ?? '').trim();
@@ -209,7 +209,7 @@ export function AdminUsersPage() {
     });
     const result = usersQuery.data;
     const loading = usersQuery.isPending;
-    const load = () => usersQuery.refetch();
+    const load = () => { setActionError(''); return usersQuery.refetch(); };
     const error = actionError || (usersQuery.isError
         ? (usersQuery.error.response?.status === 403 ? 'این حساب اجازه مشاهده کاربران را ندارد.' : 'دریافت فهرست کاربران انجام نشد. دوباره تلاش کنید.')
         : '');
@@ -294,7 +294,7 @@ export function AdminMessageReportsPage() {
     });
     const result = reportsQuery.data;
     const loading = reportsQuery.isPending;
-    const load = () => reportsQuery.refetch();
+    const load = () => { setActionError(''); return reportsQuery.refetch(); };
     const error = actionError || (reportsQuery.isError
         ? (reportsQuery.error.response?.status === 403 ? 'دسترسی به گزارش‌های پیام مجاز نیست.' : 'دریافت گزارش‌ها انجام نشد.')
         : '');
