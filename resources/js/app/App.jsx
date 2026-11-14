@@ -108,7 +108,6 @@ export default function App() {
             } else {
                 setAuthErrors({ form: ['ارتباط با سرور برقرار نشد. دوباره تلاش کنید.'] });
             }
-        } finally {
         }
     };
 
