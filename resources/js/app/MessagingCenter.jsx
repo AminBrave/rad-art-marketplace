@@ -449,7 +449,6 @@ export default function MessagingCenter({ role }) {
                 const restoredScrollTop = previous.scrollTop + (container.scrollHeight - previous.scrollHeight);
                 container.scrollTop = restoredScrollTop;
                 previousScrollTopRef.current = restoredScrollTop;
-                scrollDirectionRef.current = { direction: 0, distance: 0 };
                 ignoreScrollDirectionRef.current = false;
             });
             return () => window.cancelAnimationFrame(frame);
