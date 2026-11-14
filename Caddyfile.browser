@@ -1,6 +1,6 @@
 # Isolated browser-test app: deliberately loopback-only.
 rad.localhost {
-    bind 127.0.0.1
+    bind 127.0.0.1 ::1
     tls internal
 
     @vite path /@* /resources/* /node_modules/* /__vite_hmr
