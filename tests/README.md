@@ -52,7 +52,7 @@ Run these steps from the repository root.
    - PHP 8.3 or newer and Composer.
    - Node.js 20.13 or newer and npm.
    - Python 3 for the browser suite.
-   - Caddy for the HTTPS browser-test app.
+   - Caddy for HTTPS development, production-build preview and the loopback-only browser-test app.
 
 3. For browser tests, install the Python test requirement and Chromium browser:
 
