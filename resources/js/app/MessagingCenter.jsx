@@ -257,7 +257,7 @@ export default function MessagingCenter({ role }) {
             if (directStartRequestRef.current === controller) directStartRequestRef.current = null;
             if (directStartKeyRef.current === requestKey) directStartKeyRef.current = null;
         };
-    }, [artistSlug, artworkSlug, role, setParams, directStartAttempt, request]);
+    }, [artistSlug, artworkSlug, role, setParams, directStartAttempt, request, setThreads]);
 
     useEffect(() => {
         hasOlderMessagesRef.current = Boolean(messagesQuery.data?.hasOlder);
