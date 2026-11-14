@@ -485,7 +485,7 @@ async function startDevelopment() {
 
 async function startPreview() {
     const host = requireLanHost();
-    const env = lanEnvironment(host);
+    const env = httpsDevelopmentEnvironment(host);
 
     await artisan('config:clear');
 
