@@ -240,6 +240,13 @@ export default function MessagingCenter({ role }) {
                 !latest || Number(message.id) > Number(latest.id) ? message : latest, null);
             if (newest?.id) latestMessageIdRef.current = Math.max(Number(latestMessageIdRef.current ?? 0), Number(newest.id));
             if (firstPage.sync_cursor) syncCursorRef.current = firstPage.sync_cursor;
+            const cachedState = messagesCacheRef.current.get(Number(id)) ?? {};
+            messagesCacheRef.current.set(Number(id), {
+                ...cachedState,
+                latestMessageId: latestMessageIdRef.current,
+                syncCursor: syncCursorRef.current,
+                hasOlder: hasOlderMessagesRef.current,
+            });
             const hasUnreadIncoming = incoming.some((message) =>
                 Number(message.sender_id) !== Number(user?.id) && !message.read_at
             );
