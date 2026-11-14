@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Button } from './primitives';
 
+const skeletonClasses = 'block bg-[linear-gradient(100deg,var(--color-skeleton-base)_25%,var(--color-skeleton-highlight)_42%,var(--color-skeleton-base)_62%)] [background-size:200%_100%] animate-skeleton-shimmer motion-reduce:animate-none';
+
 export function Skeleton({ className = '', width, height = '1rem', rounded = 'md' }) {
     return (
         <span
             aria-hidden="true"
-            className={`app-skeleton ${rounded === 'full' ? 'rounded-full' : rounded === 'lg' ? 'rounded-lg' : 'rounded-md'} ${className}`}
+            className={`${skeletonClasses} ${rounded === 'full' ? 'rounded-full' : rounded === 'lg' ? 'rounded-lg' : 'rounded-md'} ${className}`}
             style={{ width, height }}
         />
     );
@@ -155,7 +157,7 @@ export function MediaImage({
 
     return (
         <span className={`relative isolate block overflow-hidden bg-surface-muted ${className}`} aria-busy={!loaded}>
-            {!loaded && <span aria-hidden="true" className="app-skeleton absolute inset-0 block h-full w-full rounded-none" />}
+            {!loaded && <span aria-hidden="true" className={`${skeletonClasses} absolute inset-0 h-full w-full rounded-none`} />}
             <img
                 src={src}
                 alt={alt}
