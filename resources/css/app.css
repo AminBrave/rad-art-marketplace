@@ -272,6 +272,7 @@ a {
         min-height: 4rem;
     }
     .ra-workspace-shell {
+        min-height: calc(100dvh - var(--site-header-height, 4rem));
         background: var(--color-canvas);
         color: var(--color-text);
         padding-bottom: calc(var(--workspace-nav-height, 4.25rem) + env(safe-area-inset-bottom, 0px));
