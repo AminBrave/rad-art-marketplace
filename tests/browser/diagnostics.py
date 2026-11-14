@@ -76,11 +76,11 @@ def save_failure_diagnostics(context, page, diagnostics: dict, error: BaseExcept
     except Exception as trace_error:  # Preserve the original test failure.
         diagnostics["trace_error"] = str(trace_error)
 
+    diagnostics["saved"] = True
     (destination / "debug.json").write_text(
         json.dumps(diagnostics, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
-    diagnostics["saved"] = True
     return destination
 
 
