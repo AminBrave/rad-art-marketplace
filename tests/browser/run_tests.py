@@ -232,7 +232,7 @@ def main() -> int:
         for test, detail in result.errors
     ]
     summary = {
-        "started_at_utc": datetime.now(timezone.utc).isoformat(),
+        "completed_at_utc": datetime.now(timezone.utc).isoformat(),
         "python": sys.version,
         "platform": platform.platform(),
         "playwright": playwright_version,
