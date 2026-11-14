@@ -292,7 +292,7 @@ function workspaceNavigationIcon(path) {
 function WorkspaceBottomNavigation({ links }) {
     if (!links?.length) return null;
     return (
-        <nav className="ra-workspace-bottom-nav" aria-label="ناوبری فضای کاربری">
+        <nav className="ra-workspace-bottom-nav" aria-label="ناوبری فضای کاربری" data-count={links.length}>
             <div className="ra-workspace-bottom-nav__items">
                 {links.map((item) => {
                     const Icon = workspaceNavigationIcon(item.to);
