@@ -59,7 +59,7 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 
 ## Default HTTPS development and LAN access
 
-The normal development command serves the same running Laravel + Vite application through Caddy. Install Caddy and make its executable available on PATH before starting either development or preview: 
+The normal development command serves the same running Laravel + Vite application through Caddy. Install Caddy and make its executable available on PATH before starting either development or preview.
 
     npm run dev
 
