@@ -268,40 +268,41 @@ a {
     .ra-surface--interactive:focus-within { outline: 2px solid var(--color-focus-soft); outline-offset: 2px; }
 
     .ra-public-shell { min-height: 100vh; background: var(--color-canvas); color: var(--color-text); }
-    .ra-public-header { min-height: var(--header-height); }
-    .ra-workspace-shell { background: var(--color-canvas); color: var(--color-text); }
-    .ra-workspace-header { min-height: var(--header-height); }
-    .ra-workspace-grid { align-items: start; }
-    .ra-workspace-sidebar { border-radius: var(--radius-md); box-shadow: var(--shadow-soft); }
+    .ra-public-header {
+        min-height: 4rem;
+    }
+    .ra-workspace-shell {
+        background: var(--color-canvas);
+        color: var(--color-text);
+        padding-bottom: calc(var(--workspace-nav-height, 4.25rem) + env(safe-area-inset-bottom, 0px));
+    }
     .ra-workspace-content { min-width: 0; }
     .ra-workspace-content > :first-child { min-width: 0; }
 
-    /* Persistent workspace navigation remains available across dashboard and chat routes. */
-    .ra-workspace-shell {
-        padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
-    }
+    /* One quiet, role-aware workspace navigation shared by every authenticated workspace route. */
     .ra-workspace-bottom-nav {
         position: fixed;
         z-index: 60;
         inset-inline: 0;
         bottom: 0;
-        height: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+        box-sizing: border-box;
+        height: calc(var(--workspace-nav-height, 4.25rem) + env(safe-area-inset-bottom, 0px));
         padding-bottom: env(safe-area-inset-bottom, 0px);
         border-top: 1px solid var(--color-border);
-        background: color-mix(in srgb, var(--color-surface, #fff) 94%, transparent);
-        -webkit-backdrop-filter: blur(16px);
-        backdrop-filter: blur(16px);
-        box-shadow: 0 -8px 28px rgb(32 32 30 / 7%);
+        background: color-mix(in srgb, var(--color-surface, #fff) 96%, transparent);
+        -webkit-backdrop-filter: blur(18px);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 -5px 22px rgb(32 32 30 / 5%);
     }
     .ra-workspace-bottom-nav__items {
         display: flex;
-        width: min(100%, 58rem);
-        height: 4.5rem;
+        width: min(100%, 44rem);
+        height: var(--workspace-nav-height, 4.25rem);
         align-items: stretch;
         justify-content: center;
-        gap: .25rem;
+        gap: .375rem;
         margin-inline: auto;
-        padding-inline: .5rem;
+        padding-inline: .75rem;
     }
     .ra-workspace-bottom-nav__link {
         position: relative;
@@ -312,12 +313,12 @@ a {
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: .3rem;
+        gap: .25rem;
         border-radius: .75rem;
         color: var(--color-muted);
         font-size: .75rem;
-        font-weight: 650;
-        line-height: 1.25;
+        font-weight: 600;
+        line-height: 1.2;
         text-align: center;
         text-decoration: none;
         transition: color 160ms ease, background-color 160ms ease;
@@ -334,13 +335,13 @@ a {
     }
     .ra-workspace-bottom-nav__link.is-active {
         color: var(--color-terracotta-strong);
-        background: color-mix(in srgb, var(--color-terracotta) 9%, white);
+        background: color-mix(in srgb, var(--color-terracotta) 8%, white);
     }
     .ra-workspace-bottom-nav__link.is-active::before {
         position: absolute;
         top: 0;
-        inset-inline: 28%;
-        height: 3px;
+        inset-inline: 32%;
+        height: 2px;
         border-radius: 0 0 4px 4px;
         background: var(--color-terracotta);
         content: '';
@@ -354,18 +355,16 @@ a {
         .ra-workspace-bottom-nav__link { transition: none; }
     }
 
-    /* Dedicated messaging surface: reserve space for both persistent navigation bars. */
+    /* The chat viewport ends immediately above the persistent workspace navigation. */
     .ra-chat-page {
-        height: calc(100vh - var(--site-header-height, 4.5rem) - 4.5rem);
-        height: calc(100dvh - var(--site-header-height, 4.5rem) - 4.5rem - env(safe-area-inset-bottom, 0px));
+        height: calc(100vh - var(--site-header-height, 4rem) - var(--workspace-nav-height, 4.25rem));
+        height: calc(100dvh - var(--site-header-height, 4rem) - var(--workspace-nav-height, 4.25rem) - env(safe-area-inset-bottom, 0px));
         min-height: 0;
         background: var(--color-canvas);
     }
     .ra-chat-layout,
     .ra-chat-layout > aside,
-    .ra-chat-layout > div {
-        min-height: 0;
-    }
+    .ra-chat-layout > div { min-height: 0; }
     @media (max-width: 639px) {
         .ra-chat-layout { border-radius: 0; }
     }
