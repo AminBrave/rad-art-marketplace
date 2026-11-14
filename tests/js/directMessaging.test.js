@@ -35,6 +35,17 @@ test('messaging uses a dedicated viewport page with only the main site header an
     assert.ok(layouts.includes('publicHeaderRef'));
     assert.ok(layouts.includes("'--site-header-height': publicHeaderHeight + 'px'"));
     assert.ok(layouts.includes('{!isChatPage && <footer'));
+    assert.ok(layouts.includes('function WorkspaceBottomNavigation({ links })'));
+    assert.ok(layouts.includes('aria-label="ناوبری فضای کاربری"'));
+    assert.ok(layouts.includes('workspaceLinksForRole(user.role)'));
+    assert.ok(layouts.includes('MessageCircle'));
+    assert.ok(layouts.includes('<WorkspaceBottomNavigation links={links} />'));
+    assert.ok(!layouts.includes('ra-workspace-sidebar'));
+    assert.ok(workspaceCss.includes('.ra-workspace-bottom-nav {'));
+    assert.ok(workspaceCss.includes('position: fixed;'));
+    assert.ok(workspaceCss.includes('env(safe-area-inset-bottom, 0px)'));
+    assert.ok(workspaceCss.includes('.ra-workspace-bottom-nav__link:focus-visible'));
+
     assert.ok(read('../../resources/js/app/AppRouter.jsx').includes('MessagingCenter role="artist" standalone'));
     assert.ok(read('../../resources/js/app/AppRouter.jsx').includes('MessagingCenter role="buyer" standalone'));
     assert.ok(read('../../resources/js/app/AppRouter.jsx').includes('withRouteFallback(<MessagingCenter role="artist" standalone />)'));
