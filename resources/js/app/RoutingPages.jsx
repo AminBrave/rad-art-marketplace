@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { WorkspaceLayout } from './Layouts';
@@ -276,8 +276,12 @@ export function ArtistProfileSettings() {
     const [form, setForm] = useState(emptyProfile);
     const [errors, setErrors] = useState({});
     const [message, setMessage] = useState('');
-    const [busy, setBusy] = useState(false);
     const savingRef = useRef(false);
+    const profileMutation = useMutation({
+        mutationKey: ['artist-profile', 'update'],
+        mutationFn: (nextProfile) => axios.put('/api/v1/artist-profile/me', nextProfile),
+    });
+    const busy = profileMutation.isPending;
 
     useEffect(() => {
         if (profile) setForm({ ...emptyProfile, ...profile });
@@ -292,11 +296,10 @@ export function ArtistProfileSettings() {
         event.preventDefault();
         if (savingRef.current) return;
         savingRef.current = true;
-        setBusy(true);
         setErrors({});
         setMessage('');
         try {
-            const { data } = await axios.put('/api/v1/artist-profile/me', form);
+            const { data } = await profileMutation.mutateAsync(form);
             setProfile(data.data);
             setForm({ ...emptyProfile, ...data.data });
             setMessage(data.message);
@@ -311,7 +314,6 @@ export function ArtistProfileSettings() {
             }
         } finally {
             savingRef.current = false;
-            setBusy(false);
         }
     };
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
@@ -70,7 +70,6 @@ export function AdminEditorialPage() {
     const [editing, setEditing] = useState(null);
     const [title, setTitle] = useState(''), [intro, setIntro] = useState(''), [artworkIds, setArtworkIds] = useState([]);
     const [featuredIds, setFeaturedIds] = useState([]), [featuredIntros, setFeaturedIntros] = useState({});
-    const [busy, setBusy] = useState(false);
     const [confirmUnpublishId, setConfirmUnpublishId] = useState(null);
     const [actionError, setActionError] = useState(''), [message, setMessage] = useState('');
     const loading = editorialQuery.isPending;
@@ -78,6 +77,28 @@ export function AdminEditorialPage() {
         ? (editorialQuery.error.response?.data?.message || 'دریافت اطلاعات مدیریت محتوای منتخب انجام نشد.')
         : '');
     const load = () => { setActionError(''); return editorialQuery.refetch(); };
+    const saveCollectionMutation = useMutation({
+        mutationKey: ['admin', 'editorial', 'save-collection', user?.id],
+        mutationFn: ({ editing, payload, publish }) => editing
+            ? axios.patch('/api/v1/admin/editorial/collections/' + editing, payload)
+            : axios.post('/api/v1/admin/editorial/collections', { ...payload, publish }),
+    });
+    const publishCollectionMutation = useMutation({
+        mutationKey: ['admin', 'editorial', 'publish-collection', user?.id],
+        mutationFn: ({ collection, next }) => axios.patch('/api/v1/admin/editorial/collections/' + collection.id + '/publication', { publish: next }),
+    });
+    const saveCollectionOrderMutation = useMutation({
+        mutationKey: ['admin', 'editorial', 'collection-order', user?.id],
+        mutationFn: (collectionIds) => axios.put('/api/v1/admin/editorial/collections/order', { collection_ids: collectionIds }),
+    });
+    const saveFeaturedMutation = useMutation({
+        mutationKey: ['admin', 'editorial', 'featured-artists', user?.id],
+        mutationFn: (selections) => axios.put('/api/v1/admin/editorial/featured-artists', { selections }),
+    });
+    const busy = saveCollectionMutation.isPending
+        || publishCollectionMutation.isPending
+        || saveCollectionOrderMutation.isPending
+        || saveFeaturedMutation.isPending;
     const refreshEditorialQueries = () => Promise.all([
         queryClient.invalidateQueries({ queryKey: editorialKey }),
         queryClient.invalidateQueries({ queryKey: ['collections'] }),
@@ -101,24 +122,20 @@ export function AdminEditorialPage() {
     const edit = (collection) => { setEditing(collection.id); setTitle(collection.title); setIntro(collection.intro || ''); setArtworkIds(collection.artwork_ids || []); };
     const saveCollection = async (publish = false) => {
         if (!title.trim()) { setActionError('عنوان مجموعه الزامی است.'); return; }
-        setBusy(true); setActionError(''); setMessage('');
+        setActionError(''); setMessage('');
         try {
             const payload = { title, intro, artwork_ids: artworkIds };
-            const response = editing
-                ? await axios.patch('/api/v1/admin/editorial/collections/' + editing, payload)
-                : await axios.post('/api/v1/admin/editorial/collections', { ...payload, publish });
+            const response = await saveCollectionMutation.mutateAsync({ editing, payload, publish });
             setMessage(response.data.message || 'مجموعه ذخیره شد.'); reset(); await refreshEditorialQueries();
         } catch (e) { setActionError(e.response?.data?.message || e.response?.data?.errors?.title?.[0] || 'ذخیره مجموعه انجام نشد.'); }
-        finally { setBusy(false); }
     };
     const publish = async (collection, next) => {
         if (!next && confirmUnpublishId !== collection.id) { setConfirmUnpublishId(collection.id); return; }
-        setBusy(true); setActionError(''); setMessage('');
+        setActionError(''); setMessage('');
         try {
-            const { data } = await axios.patch('/api/v1/admin/editorial/collections/' + collection.id + '/publication', { publish: next });
+            const { data } = await publishCollectionMutation.mutateAsync({ collection, next });
             setMessage(data.message); setConfirmUnpublishId(null); await refreshEditorialQueries();
         } catch (e) { setActionError(e.response?.data?.message || 'تغییر وضعیت انتشار انجام نشد.'); }
-        finally { setBusy(false); }
     };
     const moveCollection = (index, delta) => {
         const next = [...collections]; const target = index + delta;
@@ -126,19 +143,17 @@ export function AdminEditorialPage() {
         [next[index], next[target]] = [next[target], next[index]]; setCollectionOrder(next.map((item) => item.id));
     };
     const saveCollectionOrder = async () => {
-        setBusy(true); setActionError(''); setMessage('');
-        try { const { data } = await axios.put('/api/v1/admin/editorial/collections/order', { collection_ids: collections.map((item) => item.id) }); setMessage(data.message); await refreshEditorialQueries(); }
+        setActionError(''); setMessage('');
+        try { const { data } = await saveCollectionOrderMutation.mutateAsync(collections.map((item) => item.id)); setMessage(data.message); await refreshEditorialQueries(); }
         catch (e) { setActionError(e.response?.data?.message || 'ثبت ترتیب مجموعه‌ها انجام نشد.'); }
-        finally { setBusy(false); }
     };
     const saveFeatured = async () => {
-        setBusy(true); setActionError(''); setMessage('');
+        setActionError(''); setMessage('');
         try {
             const selections = featuredIds.map((id) => ({ artist_profile_id: id, editorial_intro: featuredIntros[id] || '' }));
-            const { data } = await axios.put('/api/v1/admin/editorial/featured-artists', { selections });
+            const { data } = await saveFeaturedMutation.mutateAsync(selections);
             setMessage(data.message); await refreshEditorialQueries();
         } catch (e) { setActionError(e.response?.data?.message || 'ذخیره انتخاب هنرمندان انجام نشد.'); }
-        finally { setBusy(false); }
     };
     return <section className="space-y-8" dir="rtl">
         <header className="border-b border-border pb-6"><p className="text-xs font-bold text-terracotta-strong">سردبیری راد آرت</p><h1 className="mt-2 text-3xl font-black">مجموعه‌ها و هنرمندان منتخب</h1><p className="mt-3 text-sm leading-7 text-muted">فقط آثار تأییدشده و پروفایل‌های عمومی در خروجی عمومی نمایش داده می‌شوند. تغییرات انتشار ثبت رویداد می‌شوند.</p></header>

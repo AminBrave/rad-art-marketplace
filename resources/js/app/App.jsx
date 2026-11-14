@@ -1,5 +1,6 @@
 import { createElement, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import { useMutation } from '@tanstack/react-query';
 import ArtworkGallery from './ArtworkGallery';
 import ArtworkStudio from './ArtworkStudio';
 import DesignFoundation from './DesignFoundation';
@@ -19,15 +20,31 @@ export default function App() {
     const [form, setForm] = useState(emptyForm);
     const [authErrors, setAuthErrors] = useState({});
     const [authMessage, setAuthMessage] = useState('');
-    const [busy, setBusy] = useState(false);
     const [adminUsers, setAdminUsers] = useState([]);
     const [profile, setProfile] = useState(emptyProfile);
     const [profileErrors, setProfileErrors] = useState({});
     const [profileMessage, setProfileMessage] = useState('');
-    const [profileBusy, setProfileBusy] = useState(false);
     const [publicProfile, setPublicProfile] = useState(null);
     const [publicProfileLoading, setPublicProfileLoading] = useState(window.location.pathname.startsWith('/artists/'));
     const savingProfileRef = useRef(false);
+    const authMutation = useMutation({
+        mutationKey: ['legacy-auth', 'authenticate'],
+        mutationFn: ({ endpoint, payload }) => axios.post(endpoint, payload),
+    });
+    const logoutMutation = useMutation({
+        mutationKey: ['legacy-auth', 'logout'],
+        mutationFn: () => axios.post('/api/v1/auth/logout'),
+    });
+    const roleMutation = useMutation({
+        mutationKey: ['legacy-admin', 'change-role'],
+        mutationFn: ({ targetUser, role }) => axios.patch('/api/v1/admin/users/' + targetUser.id + '/role', { role }),
+    });
+    const profileMutation = useMutation({
+        mutationKey: ['legacy-artist-profile', 'update'],
+        mutationFn: (nextProfile) => axios.put('/api/v1/artist-profile/me', nextProfile),
+    });
+    const busy = authMutation.isPending;
+    const profileBusy = profileMutation.isPending;
 
     useEffect(() => {
         axios.get('/api/v1/auth/me')
@@ -73,7 +90,6 @@ export default function App() {
 
     const submitAuth = async (event) => {
         event.preventDefault();
-        setBusy(true);
         setAuthErrors({});
         setAuthMessage('');
 
@@ -82,7 +98,7 @@ export default function App() {
             const payload = authMode === 'register'
                 ? form
                 : { email: form.email, password: form.password };
-            const { data } = await axios.post(endpoint, payload);
+            const { data } = await authMutation.mutateAsync({ endpoint, payload });
             setUser(data.data);
             setForm(emptyForm);
             setAuthMessage(data.message);
@@ -92,13 +108,11 @@ export default function App() {
             } else {
                 setAuthErrors({ form: ['ارتباط با سرور برقرار نشد. دوباره تلاش کنید.'] });
             }
-        } finally {
-            setBusy(false);
         }
     };
 
     const logout = async () => {
-        await axios.post('/api/v1/auth/logout');
+        await logoutMutation.mutateAsync();
         setUser(null);
         setAdminUsers([]);
         setAuthMessage('با موفقیت خارج شدید.');
@@ -106,7 +120,7 @@ export default function App() {
 
     const changeRole = async (targetUser, role) => {
         try {
-            const { data } = await axios.patch(`/api/v1/admin/users/${targetUser.id}/role`, { role });
+            const { data } = await roleMutation.mutateAsync({ targetUser, role });
             setAdminUsers((current) => current.map((item) => item.id === targetUser.id ? data.data : item));
         } catch {
             setAuthMessage('به‌روزرسانی نقش کاربر انجام نشد.');
@@ -122,12 +136,11 @@ export default function App() {
         event.preventDefault();
         if (savingProfileRef.current) return;
         savingProfileRef.current = true;
-        setProfileBusy(true);
         setProfileErrors({});
         setProfileMessage('');
 
         try {
-            const { data } = await axios.put('/api/v1/artist-profile/me', profile);
+            const { data } = await profileMutation.mutateAsync(profile);
             setProfile(data.data);
             setProfileMessage(data.message);
         } catch (error) {
@@ -139,7 +152,6 @@ export default function App() {
             }
         } finally {
             savingProfileRef.current = false;
-            setProfileBusy(false);
         }
     };
 

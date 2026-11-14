@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Badge, Button, EmptyState, ErrorState, FormField, ArtworkStudioListSkeleton, UploadFeedback, MediaImage } from '../components/ui';
@@ -43,13 +43,19 @@ export default function ArtworkStudio({ user, hasProfile }) {
     const [form, setForm] = useState(emptyArtwork);
     const [image, setImage] = useState(null);
     const [editingId, setEditingId] = useState(null);
-    const [busy, setBusy] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
     const [errors, setErrors] = useState({});
     const [message, setMessage] = useState('');
     const [imageError, setImageError] = useState('');
     const [imagePreview, setImagePreview] = useState('');
     const savingArtworkRef = useRef(false);
+    const saveArtworkMutation = useMutation({
+        mutationKey: ['artist', 'artworks', 'save', user?.id],
+        mutationFn: ({ endpoint, payload }) => axios.post(endpoint, payload, {
+            onUploadProgress: (event) => { if (event.total) setUploadProgress(Math.round((event.loaded * 100) / event.total)); },
+        }),
+    });
+    const busy = saveArtworkMutation.isPending;
 
     useEffect(() => {
         if (!image) { setImagePreview(''); return undefined; }
@@ -114,16 +120,14 @@ export default function ArtworkStudio({ user, hasProfile }) {
         event.preventDefault();
         if (savingArtworkRef.current) return;
         savingArtworkRef.current = true;
-        setBusy(true); setErrors({}); setMessage(''); setUploadProgress(0);
+        setErrors({}); setMessage(''); setUploadProgress(0);
         const payload = new FormData();
         Object.entries(form).forEach(([key, value]) => { if (value !== '') payload.append(key, value); });
         if (image) payload.append('image', image);
         if (editingId) payload.append('_method', 'PATCH');
         try {
             const endpoint = editingId ? '/api/v1/artist/artworks/' + editingId : '/api/v1/artist/artworks';
-            const { data } = await axios.post(endpoint, payload, {
-                onUploadProgress: (event) => { if (event.total) setUploadProgress(Math.round((event.loaded * 100) / event.total)); },
-            });
+            const { data } = await saveArtworkMutation.mutateAsync({ endpoint, payload });
             resetForm();
             setMessage(data.message ?? 'اثر ذخیره شد.');
             await Promise.all([
@@ -140,7 +144,6 @@ export default function ArtworkStudio({ user, hasProfile }) {
             else setMessage('ذخیره اثر انجام نشد. اطلاعات فرم حفظ شده است؛ دوباره تلاش کنید.');
         } finally {
             savingArtworkRef.current = false;
-            setBusy(false);
         }
     };
     const fieldError = (name) => errors[name]?.map((item) => <span key={item} className="mt-1 block text-xs font-normal text-danger">{item}</span>);
