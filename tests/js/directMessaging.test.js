@@ -22,6 +22,7 @@ test('message composer supports accessible text entry, IME-safe Enter send and m
 test('messaging workspace fills the viewport and related artwork chips scroll horizontally in RTL', () => {
     assert.ok(layouts.includes("'flex h-[100dvh] min-h-0 flex-col overflow-hidden'"));
     assert.ok(layouts.includes("'h-full min-h-0 overflow-hidden'"));
+    assert.ok(layouts.includes("h-full min-h-0 w-full flex-1 grid-cols-1 grid-rows-[auto_minmax(0,1fr)] !items-stretch"));
     assert.ok(!workspaceCss.includes('.ra-workspace-shell { min-height: 100vh'));
     assert.ok(messaging.includes('flex h-full min-h-0 flex-col gap-3 overflow-hidden'));
     assert.ok(messaging.includes('grid min-h-0 min-w-0 flex-1'));
