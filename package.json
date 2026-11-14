@@ -35,7 +35,9 @@
     "build": "vite build",
     "build:cpanel": "vite build --config vite.config.cpanel.js",
     "prod:optimize": "node scripts/project.mjs prod:optimize",
-    "prod:clear": "node scripts/project.mjs prod:clear"
+    "prod:clear": "node scripts/project.mjs prod:clear",
+    "test:report": "node scripts/project.mjs report",
+    "test:reporting": "node scripts/project.mjs reporting:test"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",
