@@ -77,7 +77,7 @@ export function AdminEditorialPage() {
     const error = actionError || (editorialQuery.isError
         ? (editorialQuery.error.response?.data?.message || 'دریافت اطلاعات مدیریت محتوای منتخب انجام نشد.')
         : '');
-    const load = () => editorialQuery.refetch();
+    const load = () => { setActionError(''); return editorialQuery.refetch(); };
     const refreshEditorialQueries = () => Promise.all([
         queryClient.invalidateQueries({ queryKey: editorialKey }),
         queryClient.invalidateQueries({ queryKey: ['collections'] }),
