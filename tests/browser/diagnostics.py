@@ -51,7 +51,8 @@ def start_page_diagnostics(context, page, test_id: str) -> dict:
 def _artifact_directory(test_id: str) -> Path:
     report_root = Path(os.environ.get("RAD_ART_TEST_REPORT_DIR", "build/test-reports"))
     safe_name = re.sub(r"[^A-Za-z0-9_.-]+", "_", test_id).strip("._") or "browser-test"
-    destination = report_root / "browser-artifacts" / safe_name
+    run_stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S_%fZ")
+    destination = report_root / "browser-artifacts" / safe_name / run_stamp
     destination.mkdir(parents=True, exist_ok=True)
     return destination
 
