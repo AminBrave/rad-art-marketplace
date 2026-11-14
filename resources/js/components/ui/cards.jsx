@@ -40,7 +40,7 @@ export function ArtistCard({ artist, className = '' }) {
         <article className={`group relative min-w-0 overflow-hidden border border-border bg-paper transition duration-300 hover:-translate-y-1 hover:border-border-strong hover:shadow-soft ${className}`} dir="rtl">
             <Link to={artist.slug ? `/artists/${artist.slug}` : '/artists'} className="flex h-full flex-col p-5 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus sm:p-6">
                 <div className="flex items-start justify-between gap-4">
-                    <div className="grid h-14 w-14 shrink-0 place-items-center rounded-full border border-sand bg-surface-muted text-xl font-black text-terracotta-strong transition-colors group-hover:bg-ink group-hover:text-white" aria-hidden="true">
+                    <div className="grid h-14 w-14 shrink-0 place-items-center rounded-full border border-sand bg-surface-muted text-xl font-black text-terracotta-strong transition-colors group-hover:bg-ink group-hover:text-inverse" aria-hidden="true">
                         {initial}
                     </div>
                     <span className="pt-1 text-[11px] font-semibold tracking-wide text-subtle">هنرمند راد آرت</span>
