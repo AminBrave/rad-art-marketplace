@@ -73,8 +73,22 @@ export default function MessagingCenter({ role }) {
     const [safetyLoading, setSafetyLoading] = useState(true);
     const messagesContainerRef = useRef(null);
     const messagesRef = useRef(messages);
+    const messagesCacheRef = useRef(new Map());
+    const scrollPositionsRef = useRef(new Map());
     const selectedFileRef = useRef(selectedFile);
-    useEffect(() => { messagesRef.current = messages; }, [messages]);
+    useEffect(() => {
+        messagesRef.current = messages;
+        const conversationId = activeConversationRef.current;
+        if (!conversationId) return;
+        const cached = messagesCacheRef.current.get(Number(conversationId)) ?? {};
+        messagesCacheRef.current.set(Number(conversationId), {
+            ...cached,
+            messages,
+            latestMessageId: latestMessageIdRef.current,
+            syncCursor: syncCursorRef.current,
+            hasOlder: hasOlderMessagesRef.current,
+        });
+    }, [messages]);
     useEffect(() => { selectedFileRef.current = selectedFile; }, [selectedFile]);
     const draftRef = useRef(null);
     const fileInputRef = useRef(null);
@@ -252,6 +266,9 @@ export default function MessagingCenter({ role }) {
 
     useEffect(() => {
         const previousConversation = activeConversationRef.current;
+        if (previousConversation && previousConversation !== active && messagesContainerRef.current) {
+            scrollPositionsRef.current.set(Number(previousConversation), messagesContainerRef.current.scrollTop);
+        }
         if (previousConversation && previousConversation !== active && draftRef.current) {
             draftsByConversationRef.current.set(Number(previousConversation), draftRef.current.value);
         }
@@ -262,17 +279,18 @@ export default function MessagingCenter({ role }) {
         historyRequestRef.current?.abort();
         historyLoadingRef.current = false;
         setLoadingOlder(false);
-        hasOlderMessagesRef.current = false;
+        hasOlderMessagesRef.current = Boolean(cachedConversation?.hasOlder);
         pendingScrollRestoreRef.current = null;
         activeConversationRef.current = active;
-        setMessages([]);
+        const cachedConversation = active ? messagesCacheRef.current.get(Number(active)) : null;
+        setMessages(cachedConversation?.messages ?? []);
         setMessagesError('');
         setOlderMessagesError('');
         setNewMessageCount(0);
         setMessagesLoading(Boolean(active));
         shouldStickToBottomRef.current = true;
-        latestMessageIdRef.current = null;
-        syncCursorRef.current = null;
+        latestMessageIdRef.current = cachedConversation?.latestMessageId ?? null;
+        syncCursorRef.current = cachedConversation?.syncCursor ?? null;
         setDraft(active ? (draftsByConversationRef.current.get(Number(active)) ?? '') : '');
         setSelectedFile(active ? (filesByConversationRef.current.get(Number(active)) ?? null) : null);
         setUploadProgress(0);
@@ -421,7 +439,8 @@ export default function MessagingCenter({ role }) {
 
     useEffect(() => {
         if (!active) return undefined;
-        loadMessages(active);
+        const hasCachedMessages = messagesCacheRef.current.has(Number(active));
+        loadMessages(active, { incremental: hasCachedMessages });
         const syncWhenVisible = () => {
             if (document.visibilityState === 'visible') loadMessages(active, { incremental: true });
         };
@@ -438,6 +457,11 @@ export default function MessagingCenter({ role }) {
     useEffect(() => {
         const container = messagesContainerRef.current;
         if (!container) return undefined;
+        const savedScrollTop = active ? scrollPositionsRef.current.get(Number(active)) : null;
+        if (savedScrollTop !== null && savedScrollTop !== undefined && messagesCacheRef.current.has(Number(active))) {
+            const frame = window.requestAnimationFrame(() => { container.scrollTop = savedScrollTop; });
+            return () => window.cancelAnimationFrame(frame);
+        }
         if (pendingScrollRestoreRef.current) {
             const previous = pendingScrollRestoreRef.current;
             pendingScrollRestoreRef.current = null;
@@ -757,6 +781,7 @@ export default function MessagingCenter({ role }) {
                             </header>
                             <div dir="ltr" ref={messagesContainerRef} onScroll={(event) => {
                                 const node = event.currentTarget;
+                                if (active) scrollPositionsRef.current.set(Number(active), node.scrollTop);
                                 shouldStickToBottomRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 120;
                                 if (shouldStickToBottomRef.current) setNewMessageCount(0);
                                 if (node.scrollTop < 72 && hasOlderMessagesRef.current && !olderMessagesError) loadOlderMessages();
