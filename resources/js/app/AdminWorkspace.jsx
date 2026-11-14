@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
@@ -130,10 +130,14 @@ export function AdminArtworkModeration() {
     const status = statuses.some((item) => item.value === params.get('status')) ? params.get('status') : 'pending_review';
     const page = Math.max(1, Number(params.get('page')) || 1);
     const [notes, setNotes] = useState({});
-    const [busyId, setBusyId] = useState(null);
     const [actionError, setActionError] = useState(''), [message, setMessage] = useState('');
     const queryClient = useQueryClient();
     const queryKey = ['admin', 'artworks', user?.id, status, page];
+    const moderationMutation = useMutation({
+        mutationKey: ['admin', 'artworks', 'moderate', user?.id],
+        mutationFn: ({ artwork, action, note }) => axios.patch(api + '/artworks/' + artwork.id + '/moderation', { action, ...(action === 'approve' ? {} : { note }) }),
+    });
+    const busyId = moderationMutation.isPending ? moderationMutation.variables?.artwork?.id ?? null : null;
     const artworksQuery = useQuery({
         queryKey,
         queryFn: async ({ signal }) => {
@@ -153,9 +157,9 @@ export function AdminArtworkModeration() {
     const moderate = async (artwork, action) => {
         const note = (notes[artwork.id] ?? '').trim();
         if (action !== 'approve' && !note) { setActionError('برای رد اثر یا درخواست اصلاح، نوشتن توضیح الزامی است.'); return; }
-        setBusyId(artwork.id); setActionError(''); setMessage('');
+        setActionError(''); setMessage('');
         try {
-            const { data } = await axios.patch(api + '/artworks/' + artwork.id + '/moderation', { action, ...(action === 'approve' ? {} : { note }) });
+            const { data } = await moderationMutation.mutateAsync({ artwork, action, note });
             setMessage(data.message ?? 'تصمیم ثبت شد.'); setNotes((current) => ({ ...current, [artwork.id]: '' })); await Promise.all([
                 queryClient.invalidateQueries({ queryKey: ['admin', 'artworks', user?.id] }),
                 queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard', user?.id] }),
@@ -164,7 +168,6 @@ export function AdminArtworkModeration() {
                 queryClient.invalidateQueries({ queryKey: ['artworks'] }),
             ]);
         } catch (e) { setActionError(e.response?.status === 403 ? 'سرور اجازه انجام این عملیات را نداد.' : e.response?.data?.errors?.note?.[0] ?? e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.'); }
-        finally { setBusyId(null); }
     };
     return <section className="space-y-6" dir="rtl">
         <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6"><div><p className="text-sm font-bold text-terracotta-strong">مدیریت آثار</p><h1 className="mt-2 text-2xl font-black">صف بررسی و انتشار</h1><p className="mt-2 text-sm leading-7 text-muted">فقط آثار در انتظار بررسی قابل تصمیم‌گیری‌اند. رد اثر یا درخواست اصلاح به توضیح نیاز دارد.</p></div><Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button></header>
@@ -194,11 +197,15 @@ export function AdminUsersPage() {
     const [params, setParams] = useSearchParams();
     const page = Math.max(1, Number(params.get('page')) || 1);
     const [drafts, setDrafts] = useState({});
-    const [busyId, setBusyId] = useState(null);
     const [actionError, setActionError] = useState(''), [message, setMessage] = useState('');
     const [confirmAdminId, setConfirmAdminId] = useState(null);
     const queryClient = useQueryClient();
     const queryKey = ['admin', 'users', user?.id, page];
+    const roleMutation = useMutation({
+        mutationKey: ['admin', 'users', 'role', user?.id],
+        mutationFn: ({ item, role }) => axios.patch(api + '/users/' + item.id + '/role', { role }),
+    });
+    const busyId = roleMutation.isPending ? roleMutation.variables?.item?.id ?? null : null;
     const usersQuery = useQuery({
         queryKey,
         queryFn: async ({ signal }) => {
@@ -221,16 +228,15 @@ export function AdminUsersPage() {
             setConfirmAdminId(item.id);
             return;
         }
-        setBusyId(item.id); setActionError(''); setMessage('');
+        setActionError(''); setMessage('');
         try {
-            const { data } = await axios.patch(api + '/users/' + item.id + '/role', { role });
+            const { data } = await roleMutation.mutateAsync({ item, role });
             queryClient.setQueryData(queryKey, (current) => current ? { ...current, data: current.data.map((row) => row.id === item.id ? data.data : row) } : current);
             setDrafts((current) => { const next = { ...current }; delete next[item.id]; return next; });
             setConfirmAdminId(null);
             setMessage(data.message ?? 'نقش کاربر به‌روزرسانی شد.');
         } catch (e) {
             setActionError(e.response?.status === 403 ? 'سرور اجازه تغییر نقش این حساب را نداد.' : e.response?.data?.errors?.role?.[0] ?? e.response?.data?.message ?? 'تغییر نقش کاربر انجام نشد.');
-        } finally { setBusyId(null); }
     };
     return <section className="space-y-6" dir="rtl">
         <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
@@ -278,12 +284,16 @@ export function AdminMessageReportsPage() {
     const [params, setParams] = useSearchParams();
     const page = Math.max(1, Number(params.get('page')) || 1);
     const [notes, setNotes] = useState({});
-    const [busyId, setBusyId] = useState(null);
     const [confirmRemovalId, setConfirmRemovalId] = useState(null);
     const [actionError, setActionError] = useState('');
     const [message, setMessage] = useState('');
     const queryClient = useQueryClient();
     const queryKey = ['admin', 'message-reports', user?.id, page];
+    const reviewMutation = useMutation({
+        mutationKey: ['admin', 'message-reports', 'review', user?.id],
+        mutationFn: ({ report, action, note }) => axios.patch(api + '/message-reports/' + report.id, { action, note }),
+    });
+    const busyId = reviewMutation.isPending ? reviewMutation.variables?.report?.id ?? null : null;
     const reportsQuery = useQuery({
         queryKey,
         queryFn: async ({ signal }) => {
@@ -303,16 +313,15 @@ export function AdminMessageReportsPage() {
             setConfirmRemovalId(report.id);
             return;
         }
-        setBusyId(report.id); setActionError(''); setMessage('');
+        setActionError(''); setMessage('');
         try {
-            const { data } = await axios.patch(api + '/message-reports/' + report.id, { action, note: (notes[report.id] ?? '').trim() || null });
+            const { data } = await reviewMutation.mutateAsync({ report, action, note: (notes[report.id] ?? '').trim() || null });
             setMessage(data.message ?? 'تصمیم ثبت شد.');
             setConfirmRemovalId(null);
             setNotes((current) => { const next = { ...current }; delete next[report.id]; return next; });
             await queryClient.invalidateQueries({ queryKey: ['admin', 'message-reports', user?.id] });
         } catch (e) {
             setActionError(e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.');
-        } finally { setBusyId(null); }
     };
     return <section className="space-y-6" dir="rtl">
         <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
