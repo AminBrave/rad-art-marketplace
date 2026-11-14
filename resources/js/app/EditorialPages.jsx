@@ -78,6 +78,13 @@ export function AdminEditorialPage() {
         ? (editorialQuery.error.response?.data?.message || 'دریافت اطلاعات مدیریت محتوای منتخب انجام نشد.')
         : '');
     const load = () => editorialQuery.refetch();
+    const refreshEditorialQueries = () => Promise.all([
+        queryClient.invalidateQueries({ queryKey: editorialKey }),
+        queryClient.invalidateQueries({ queryKey: ['collections'] }),
+        queryClient.invalidateQueries({ queryKey: ['collection'] }),
+        queryClient.invalidateQueries({ queryKey: ['home', 'collections'] }),
+        queryClient.invalidateQueries({ queryKey: ['home', 'featured-artists'] }),
+    ]);
     const sourceCollections = editorialQuery.data?.collections ?? [];
     const collections = collectionOrder.length
         ? collectionOrder.map((id) => sourceCollections.find((item) => item.id === id)).filter(Boolean)
@@ -100,7 +107,7 @@ export function AdminEditorialPage() {
             const response = editing
                 ? await axios.patch('/api/v1/admin/editorial/collections/' + editing, payload)
                 : await axios.post('/api/v1/admin/editorial/collections', { ...payload, publish });
-            setMessage(response.data.message || 'مجموعه ذخیره شد.'); reset(); await queryClient.invalidateQueries({ queryKey: editorialKey });
+            setMessage(response.data.message || 'مجموعه ذخیره شد.'); reset(); await refreshEditorialQueries();
         } catch (e) { setActionError(e.response?.data?.message || e.response?.data?.errors?.title?.[0] || 'ذخیره مجموعه انجام نشد.'); }
         finally { setBusy(false); }
     };
@@ -109,7 +116,7 @@ export function AdminEditorialPage() {
         setBusy(true); setActionError(''); setMessage('');
         try {
             const { data } = await axios.patch('/api/v1/admin/editorial/collections/' + collection.id + '/publication', { publish: next });
-            setMessage(data.message); setConfirmUnpublishId(null); await queryClient.invalidateQueries({ queryKey: editorialKey });
+            setMessage(data.message); setConfirmUnpublishId(null); await refreshEditorialQueries();
         } catch (e) { setActionError(e.response?.data?.message || 'تغییر وضعیت انتشار انجام نشد.'); }
         finally { setBusy(false); }
     };
@@ -120,7 +127,7 @@ export function AdminEditorialPage() {
     };
     const saveCollectionOrder = async () => {
         setBusy(true); setActionError(''); setMessage('');
-        try { const { data } = await axios.put('/api/v1/admin/editorial/collections/order', { collection_ids: collections.map((item) => item.id) }); setMessage(data.message); await queryClient.invalidateQueries({ queryKey: editorialKey }); }
+        try { const { data } = await axios.put('/api/v1/admin/editorial/collections/order', { collection_ids: collections.map((item) => item.id) }); setMessage(data.message); await refreshEditorialQueries(); }
         catch (e) { setActionError(e.response?.data?.message || 'ثبت ترتیب مجموعه‌ها انجام نشد.'); }
         finally { setBusy(false); }
     };
@@ -129,7 +136,7 @@ export function AdminEditorialPage() {
         try {
             const selections = featuredIds.map((id) => ({ artist_profile_id: id, editorial_intro: featuredIntros[id] || '' }));
             const { data } = await axios.put('/api/v1/admin/editorial/featured-artists', { selections });
-            setMessage(data.message); await queryClient.invalidateQueries({ queryKey: editorialKey });
+            setMessage(data.message); await refreshEditorialQueries();
         } catch (e) { setActionError(e.response?.data?.message || 'ذخیره انتخاب هنرمندان انجام نشد.'); }
         finally { setBusy(false); }
     };
