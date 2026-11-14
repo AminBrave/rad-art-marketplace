@@ -149,17 +149,24 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
                         content_height = page.locator(".ra-workspace-content").evaluate(
                             "(node) => node.getBoundingClientRect().height"
                         )
-                        self.assertAlmostEqual(
-                            shell_height, viewport_height, delta=2,
-                            msg=f"Messaging shell must fill the viewport on {route_path} at {width}px",
+                        chat_height = page.locator(".rad-messaging > .grid").evaluate(
+                            "(node) => node.getBoundingClientRect().height"
+                        )
+                        self.assertGreaterEqual(
+                            chat_height, viewport_height - 2,
+                            f"Main chat panel must be at least one browser viewport tall on {route_path} at {width}px",
                         )
                         self.assertGreater(
-                            content_height, viewport_height * 0.5,
-                            f"Messaging content must occupy most of the available viewport on {route_path} at {width}px",
+                            document_height, viewport_height,
+                            f"Messaging page must scroll vertically past the header and navigation on {route_path} at {width}px",
                         )
-                        self.assertLessEqual(
-                            document_height, viewport_height + 1,
-                            f"Messaging page must not scroll vertically on {route_path} at {width}px",
+                        self.assertGreater(
+                            shell_height, viewport_height,
+                            f"Messaging workspace must grow naturally with the full-height chat panel on {route_path} at {width}px",
+                        )
+                        self.assertGreater(
+                            content_height, viewport_height * 0.9,
+                            f"Messaging content must not be constrained to the remaining space below the header on {route_path} at {width}px",
                         )
             finally:
                 context.close()
