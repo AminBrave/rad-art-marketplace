@@ -15,8 +15,7 @@ export function PublicLayout() {
     const { pathname } = useLocation();
     const publicHeaderRef = useRef(null);
     const [publicHeaderHeight, setPublicHeaderHeight] = useState(0);
-    const isWorkspacePage = /^\\/(?:dashboard(?:\\/|$)|admin(?:\\/|$))/.test(pathname);
-    const isDedicatedChatPage = /^\\/dashboard\\/(?:artist|buyer)\\/messages$/.test(pathname);
+    const isWorkspacePage = /^\/(?:dashboard(?:\/|$)|admin(?:\/|$))/.test(pathname);
     const workspaceTitle = user?.role === 'artist' ? 'فضای هنرمند' : user?.role === 'buyer' ? 'فضای خریدار' : 'مدیریت رادآرت';
     const workspaceHome = user?.role === 'admin' ? '/admin' : user?.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist';
 
