@@ -1534,3 +1534,50 @@ a {
         transform: none;
     }
 }
+
+/* Keep the artwork's image and explicit details action as the only links. */
+.rad-messaging .message-artwork-card__media-link {
+    display: block;
+    min-width: 0;
+    color: inherit;
+    text-decoration: none;
+}
+.rad-messaging .message-artwork-card__media-link:focus-visible {
+    position: relative;
+    z-index: 1;
+    outline: 2px solid var(--color-focus);
+    outline-offset: -3px;
+}
+.rad-messaging .message-artwork-card__action {
+    width: fit-content;
+    text-decoration: none;
+}
+.rad-messaging .message-artwork-card__action:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+.rad-messaging .message-artwork-card__content {
+    cursor: default;
+}
+.rad-messaging .message-artwork-card__media-link:hover .message-artwork-card__media img {
+    transform: scale(1.045);
+}
+.rad-messaging .message-conversation-avatar-link {
+    text-decoration: none;
+    transition: transform 150ms ease, opacity 150ms ease;
+}
+.rad-messaging .message-conversation-avatar-link:hover {
+    opacity: .88;
+    transform: translateY(-1px);
+}
+.rad-messaging .message-conversation-avatar-link > span {
+    border: 1px solid var(--color-border-strong);
+    outline: 3px solid var(--color-surface-muted);
+    outline-offset: 1px;
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--color-ink) 8%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+    .rad-messaging .message-conversation-avatar-link {
+        transition: none;
+    }
+}
