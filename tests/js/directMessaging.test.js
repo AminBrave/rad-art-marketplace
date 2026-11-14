@@ -25,7 +25,7 @@ test('messaging workspace fills the viewport and related artwork chips scroll ho
     assert.ok(!layouts.includes('ra-workspace-content min-w-0 h-full'));
     assert.ok(!workspaceCss.includes('.ra-workspace-shell { min-height: 100vh'));
     assert.ok(messaging.includes('flex min-h-0 flex-col gap-3 overflow-visible'));
-    assert.ok(messaging.includes('grid min-h-[100dvh] min-w-0 grid-cols-1'));
+    assert.ok(messaging.includes('grid min-h-[100dvh] min-w-0 grid-cols-1 grid-rows-[minmax(100dvh,1fr)]'));
     assert.ok(!messaging.includes('grid min-h-0 min-w-0 flex-1'));
     assert.ok(messaging.includes('flex-nowrap items-center gap-2 overflow-x-auto overscroll-x-contain'));
     assert.ok(messaging.includes('role="group" aria-label="آثار مرتبط" tabIndex={0}'));
