@@ -1,0 +1,6 @@
+# LAN-accessible production-build preview. Laravel serves the built assets.
+rad.localhost, rad.home.arpa, {$RAD_LAN_HOST} {
+    tls internal
+
+    reverse_proxy 127.0.0.1:8000
+}
