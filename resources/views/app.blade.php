@@ -63,10 +63,10 @@
         $isDirectory = request()->is('artworks', 'artists');
     @endphp
     <div id="app">
-        <main class="app-boot" role="status" aria-busy="true" aria-label="در حال بارگذاری راد آرت">
-            <div class="app-boot__header">
-                <span class="app-skeleton app-boot__brand"></span>
-                <span class="app-skeleton app-boot__nav"></span>
+        <main class="mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16" role="status" aria-busy="true" aria-label="در حال بارگذاری راد آرت">
+            <div class="mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__header">
+                <span class="app-skeleton mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__brand"></span>
+                <span class="app-skeleton mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__nav"></span>
             </div>
 
             @if ($isArtworkDetail)
@@ -163,26 +163,26 @@
                     </div>
                 </section>
             @else
-                <section class="app-boot__hero">
-                    <div class="app-boot__copy">
-                        <span class="app-skeleton app-boot__eyebrow"></span>
-                        <span class="app-skeleton app-boot__heading"></span>
-                        <span class="app-skeleton app-boot__heading app-boot__heading--short"></span>
-                        <span class="app-skeleton app-boot__paragraph"></span>
-                        <span class="app-skeleton app-boot__paragraph app-boot__paragraph--short"></span>
-                        <span class="app-skeleton app-boot__button"></span>
+                <section class="mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__hero">
+                    <div class="mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__copy">
+                        <span class="app-skeleton mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__eyebrow"></span>
+                        <span class="app-skeleton mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__heading"></span>
+                        <span class="app-skeleton mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__heading mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__heading--short"></span>
+                        <span class="app-skeleton mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__paragraph"></span>
+                        <span class="app-skeleton mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__paragraph mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__paragraph--short"></span>
+                        <span class="app-skeleton mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__button"></span>
                     </div>
-                    <div class="app-boot__hero-media">
-                        <span class="app-skeleton app-boot__artwork"></span>
-                        <div class="app-boot__hero-caption">
-                            <div class="app-boot__caption-lines"><span class="app-skeleton app-boot__caption-label"></span><span class="app-skeleton app-boot__caption-title"></span></div>
-                            <span class="app-skeleton app-boot__caption-action"></span>
+                    <div class="mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__hero-media">
+                        <span class="app-skeleton mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__artwork"></span>
+                        <div class="mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__hero-caption">
+                            <div class="mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__caption-lines"><span class="app-skeleton mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__caption-label"></span><span class="app-skeleton mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__caption-title"></span></div>
+                            <span class="app-skeleton mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__caption-action"></span>
                         </div>
                     </div>
                 </section>
-                <section class="app-boot__features">
+                <section class="mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__features">
                     @foreach (range(1, 3) as $item)
-                        <div class="app-boot__feature">
+                        <div class="mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__feature">
                             <span class="app-skeleton h-3 w-20"></span>
                             <span class="app-skeleton mt-3 h-6 w-3/4"></span>
                             <span class="app-skeleton mt-3 h-3 w-full"></span>
@@ -190,29 +190,29 @@
                         </div>
                     @endforeach
                 </section>
-                <section class="app-boot__gallery">
-                    <div class="app-boot__section-heading"><div class="grid gap-3"><span class="app-skeleton h-3 w-24"></span><span class="app-skeleton h-8 w-40"></span></div><span class="app-skeleton h-4 w-20"></span></div>
-                    <div class="app-boot__cards" aria-hidden="true">
+                <section class="mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__gallery">
+                    <div class="mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__section-heading"><div class="grid gap-3"><span class="app-skeleton h-3 w-24"></span><span class="app-skeleton h-8 w-40"></span></div><span class="app-skeleton h-4 w-20"></span></div>
+                    <div class="mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__cards" aria-hidden="true">
                         @foreach (range(1, 3) as $item)
-                            <article class="app-boot__gallery-card"><a href="#" tabindex="-1" class="block"><div class="flex aspect-[4/3] items-center justify-center overflow-hidden bg-surface-muted p-3"><span class="app-skeleton app-boot__card"></span></div><div class="grid gap-2 p-4"><span class="app-skeleton h-5 w-20"></span><span class="app-skeleton h-6 w-4/5"></span><span class="app-skeleton h-4 w-2/5"></span><span class="app-skeleton h-4 w-1/3"></span></div></a></article>
+                            <article class="mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__gallery-card"><a href="#" tabindex="-1" class="block"><div class="flex aspect-[4/3] items-center justify-center overflow-hidden bg-surface-muted p-3"><span class="app-skeleton mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__card"></span></div><div class="grid gap-2 p-4"><span class="app-skeleton h-5 w-20"></span><span class="app-skeleton h-6 w-4/5"></span><span class="app-skeleton h-4 w-2/5"></span><span class="app-skeleton h-4 w-1/3"></span></div></a></article>
                         @endforeach
                     </div>
                 </section>
-                <section class="app-boot__categories">
+                <section class="mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__categories">
                     <div class="grid gap-3"><span class="app-skeleton h-3 w-24"></span><span class="app-skeleton h-8 w-48"></span></div>
-                    <div class="app-boot__category-pills">
+                    <div class="mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__category-pills">
                         @foreach (range(1, 6) as $item)<span class="app-skeleton h-11 w-28"></span>@endforeach
                     </div>
                 </section>
-                <section class="app-boot__artists">
-                    <div class="app-boot__section-heading"><div class="grid gap-3"><span class="app-skeleton h-3 w-24"></span><span class="app-skeleton h-8 w-44"></span></div><span class="app-skeleton h-4 w-24"></span></div>
-                    <div class="app-boot__artist-cards">
+                <section class="mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__artists">
+                    <div class="mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__section-heading"><div class="grid gap-3"><span class="app-skeleton h-3 w-24"></span><span class="app-skeleton h-8 w-44"></span></div><span class="app-skeleton h-4 w-24"></span></div>
+                    <div class="mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__artist-cards">
                         @foreach (range(1, 3) as $item)
                             <article class="grid gap-3 border border-border bg-white p-5"><div class="flex items-start gap-3"><span class="app-skeleton h-12 w-12 shrink-0 rounded-full"></span><div class="grid flex-1 content-start gap-2 pt-1"><span class="app-skeleton h-5 w-2/3"></span><span class="app-skeleton h-3 w-1/3"></span></div></div><div class="grid gap-2"><span class="app-skeleton h-3 w-full"></span><span class="app-skeleton h-3 w-11/12"></span><span class="app-skeleton h-3 w-3/4"></span></div><a href="#" tabindex="-1" class="mt-1 block"><span class="app-skeleton h-4 w-28"></span></a></article>
                         @endforeach
                     </div>
                 </section>
-                <section class="app-boot__cta">
+                <section class="mx-auto min-h-screen w-[min(calc(100%-2.5rem),80rem)] pt-6 pb-16__cta">
                     <div class="grid max-w-2xl gap-3"><span class="app-skeleton h-3 w-24"></span><span class="app-skeleton h-8 w-full"></span><span class="app-skeleton h-4 w-5/6"></span></div>
                     <span class="app-skeleton h-12 w-36"></span>
                 </section>
