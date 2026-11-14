@@ -23,7 +23,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
     if (pathname === '/') return <HomePageSkeleton />;
     if (isArtworkDetail) return <ArtworkDetailSkeleton />;
     if (isArtistProfile) return <ArtistProfileSkeleton />;
-    if (/^\\/dashboard\\/(artist|buyer)\\/messages$/.test(pathname)) {
+    if (pathname === '/dashboard/artist/messages' || pathname === '/dashboard/buyer/messages') {
         return (
             <section className="ra-chat-page grid min-h-0 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden border-y border-border bg-white md:grid-cols-[minmax(17rem,360px)_minmax(0,1fr)]" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
                 <aside className="min-h-0 overflow-hidden border-l border-border"><ConversationInboxSkeleton count={6} /></aside>
