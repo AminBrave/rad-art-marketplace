@@ -144,6 +144,15 @@ def _finish_test(test_id: str, failed: bool) -> list[str]:
     if not failed:
         for directory in pending:
             shutil.rmtree(directory, ignore_errors=True)
+            try:
+                directory.parent.rmdir()
+            except OSError:
+                pass
+        pending_root = _report_root() / "browser-artifacts" / ".pending"
+        try:
+            pending_root.rmdir()
+        except OSError:
+            pass
         return []
 
     saved = []
