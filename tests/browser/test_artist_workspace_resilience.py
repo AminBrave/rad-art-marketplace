@@ -60,6 +60,32 @@ class ArtistWorkspaceResilienceTests(unittest.TestCase):
                 }),
             ),
         )
+        # Keep unrelated notification queries authenticated in this isolated
+        # workspace journey. A 401 from any protected API endpoint correctly
+        # invalidates the session through the global Axios interceptor, which
+        # would otherwise unmount the workspace before the artwork retry is
+        # asserted.
+        page.route(
+            "**/api/v1/notifications",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({"data": [], "unread_count": 0}),
+            ),
+        )
+        page.route(
+            "**/api/v1/notifications/preferences",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({
+                    "data": {
+                        "in_app_messages": True,
+                        "email_available": False,
+                    }
+                }),
+            ),
+        )
         return context, page
 
     def test_artist_workspace_artwork_metrics_can_recover_after_api_failure(self):
