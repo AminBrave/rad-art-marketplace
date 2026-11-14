@@ -158,9 +158,13 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
                         history_top = history.evaluate("(node) => node.getBoundingClientRect().top")
                         history_bottom = history.evaluate("(node) => node.getBoundingClientRect().bottom")
                         composer_top = composer.evaluate("(node) => node.getBoundingClientRect().top")
+                        composer_bottom = composer.evaluate("(node) => node.getBoundingClientRect().bottom")
+                        nav_top = page.locator(".ra-workspace-bottom-nav").evaluate(
+                            "(node) => node.getBoundingClientRect().top"
+                        )
                         self.assertGreaterEqual(
-                            chat_height, viewport_height - header_height - 2,
-                            f"Chat must fill the viewport below the site header on {route_path} at {width}px",
+                            chat_height, viewport_height - header_height - nav_height - 2,
+                            f"Chat must fill the space between the site header and bottom navigation on {route_path} at {width}px",
                         )
                         nav_height = workspace_nav_height = page.locator(".ra-workspace-bottom-nav").evaluate(
                             "(node) => node.getBoundingClientRect().height"
@@ -180,6 +184,10 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
                         self.assertLessEqual(
                             history_bottom, composer_top + 1,
                             f"Composer must occupy its own row below messages on {route_path} at {width}px",
+                        )
+                        self.assertLessEqual(
+                            composer_bottom, nav_top + 1,
+                            f"Composer must remain above the fixed workspace navigation on {route_path} at {width}px",
                         )
                         self.assertLessEqual(
                             document_height, viewport_height + 2,
