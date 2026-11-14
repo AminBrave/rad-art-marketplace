@@ -25,6 +25,14 @@ const conversationApi = readFileSync(new URL('../../app/Http/Controllers/Api/V1/
 const messageModel = readFileSync(new URL('../../app/Models/Message.php', import.meta.url), 'utf8');
 const adminWorkspace = readFileSync(new URL('../../resources/js/app/AdminWorkspace.jsx', import.meta.url), 'utf8');
 const bootShell = readFileSync(new URL('../../resources/views/app.blade.php', import.meta.url), 'utf8');
+const legacyApp = readFileSync(new URL('../../resources/js/app/App.jsx', import.meta.url), 'utf8');
+const homePage = readFileSync(new URL('../../resources/js/app/HomePage.jsx', import.meta.url), 'utf8');
+const authPage = readFileSync(new URL('../../resources/js/app/AuthPage.jsx', import.meta.url), 'utf8');
+const artistProfile = readFileSync(new URL('../../resources/js/app/ArtistProfilePage.jsx', import.meta.url), 'utf8');
+const artworkGallery = readFileSync(new URL('../../resources/js/app/ArtworkGallery.jsx', import.meta.url), 'utf8');
+const artworkCatalogue = readFileSync(new URL('../../resources/js/app/ArtworkCatalogue.jsx', import.meta.url), 'utf8');
+const editorialPages = readFileSync(new URL('../../resources/js/app/EditorialPages.jsx', import.meta.url), 'utf8');
+const publicInfoPages = readFileSync(new URL('../../resources/js/app/PublicInfoPages.jsx', import.meta.url), 'utf8');
 
 test('semantic palette, typography, spacing and layout tokens have one CSS source', () => {
     for (const token of [
@@ -120,7 +128,7 @@ test('boot shell uses Tailwind utilities and custom CSS stays scoped to tokens, 
 });
 
 test('shared UI component source does not introduce arbitrary hex or raw palette colors', () => {
-    const componentSources = [primitives, cards, feedback, navigation, dialog, skeletons];
+    const componentSources = [primitives, cards, feedback, navigation, dialog, skeletons, legacyApp, homePage, authPage, artistProfile, artworkGallery, artworkCatalogue, editorialPages, publicInfoPages, layouts, buyerWorkspace, routeLoading, artistWorkspace, messaging, artworkDetail, artworkStudio, adminWorkspace];
     const arbitraryHex = /#[0-9a-fA-F]{3,8}\b/;
     const rawPalette = /\b(?:bg|text|border|ring)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\d{2,3}(?:\/\d{1,3})?\b/;
     for (const source of componentSources) {
@@ -129,6 +137,13 @@ test('shared UI component source does not introduce arbitrary hex or raw palette
     }
 });
 
+
+test('active frontend surfaces use semantic RAD colors and avoid raw palette utilities', () => {
+    const rawPalette = /\\b(?:bg|text|border|ring)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\\d{2,3}(?:\\/\\d{1,3})?\\b/;
+    for (const source of componentSources) {
+        assert.equal(rawPalette.test(source), false, 'Application surfaces must use semantic RAD color roles.');
+    }
+});
 
 test('route fallbacks preserve page-specific geometry for catalogues, artists and messaging', () => {
     assert.ok(routeLoading.includes("pathname === '/artworks'"));
