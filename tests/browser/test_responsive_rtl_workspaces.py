@@ -117,7 +117,7 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
 
             page.route("**/api/v1/**", api_fixture)
             try:
-                response = page.goto(BASE_URL + route_path, wait_until="commit")
+                response = page.goto(BASE_URL + route_path + ("?conversation=1" if route_path.endswith("/messages") else ""), wait_until="commit")
                 self.assertIsNotNone(response, f"No document response for {route_path}")
                 self.assertLess(response.status, 400, f"{route_path} returned HTTP {response.status}")
                 page.locator("#app").get_by_role("heading").first.wait_for()
