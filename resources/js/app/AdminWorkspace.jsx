@@ -237,6 +237,7 @@ export function AdminUsersPage() {
             setMessage(data.message ?? 'نقش کاربر به‌روزرسانی شد.');
         } catch (e) {
             setActionError(e.response?.status === 403 ? 'سرور اجازه تغییر نقش این حساب را نداد.' : e.response?.data?.errors?.role?.[0] ?? e.response?.data?.message ?? 'تغییر نقش کاربر انجام نشد.');
+        }
     };
     return <section className="space-y-6" dir="rtl">
         <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
@@ -322,6 +323,7 @@ export function AdminMessageReportsPage() {
             await queryClient.invalidateQueries({ queryKey: ['admin', 'message-reports', user?.id] });
         } catch (e) {
             setActionError(e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.');
+        }
     };
     return <section className="space-y-6" dir="rtl">
         <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
