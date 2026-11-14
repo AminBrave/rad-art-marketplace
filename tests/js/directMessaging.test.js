@@ -34,28 +34,20 @@ test('messaging workspace fills the viewport and related artwork chips scroll ho
     assert.ok(!messaging.includes('lg:h-[min(82dvh,900px)]'));
 });
 
-test('messaging headers stay aligned and the composer and artwork thumbnails remain compact and fitted', () => {
-    assert.ok(layouts.includes('ra-workspace-header sticky top-0 z-40'));
-    assert.ok(layouts.includes('ResizeObserver(measure)'));
-    assert.ok(layouts.includes('--workspace-header-height'));
-    assert.ok(messaging.includes('overflow-clip rounded-2xl'));
-    assert.ok(!messaging.includes('inboxHeadingRef'));
-    assert.ok(!messaging.includes('--inbox-heading-height'));
+test('messaging uses a dedicated viewport page with only the main site header and independent chat panes', () => {
+    assert.ok(layouts.includes('ra-public-header sticky top-0 z-40'));
+    assert.ok(layouts.includes('publicHeaderRef'));
+    assert.ok(layouts.includes("'--site-header-height': publicHeaderHeight + 'px'"));
+    assert.ok(layouts.includes('{!isChatPage && <footer'));
+    assert.ok(messaging.includes('ra-chat-page'));
+    assert.ok(messaging.includes('ra-chat-layout grid min-h-0 min-w-0 flex-1'));
+    assert.ok(messaging.includes('shrink-0 border-b border-border bg-white px-5 py-4'));
+    assert.ok(!messaging.includes('sticky top-[var(--workspace-header-height,4.5rem)]'));
     assert.ok(messaging.includes('shrink-0 border-b border-border bg-white shadow-soft'));
-    assert.ok(!messaging.includes('sticky top-[var(--workspace-header-height,4.5rem)] z-30'));
-    assert.ok(messaging.includes('sticky top-[var(--workspace-header-height,4.5rem)] z-20 shrink-0 border-b border-border bg-white px-5 py-5 shadow-soft'));
-    assert.ok(!messaging.includes('conversationHeaderVisible'));
-    assert.ok(!messaging.includes('setConversationHeaderVisible'));
-    assert.ok(!messaging.includes('scrollDirectionRef'));
-    assert.ok(!messaging.includes('translate-y-full'));
-    assert.ok(!messaging.includes('grid-rows-[0fr]'));
-    assert.ok(messaging.includes('const previousScrollTopRef = useRef(null)'));
-    assert.ok(messaging.includes('const ignoreScrollDirectionRef = useRef(false)'));
-    assert.ok(messaging.includes('distanceFromBottom <= 2 || node.scrollTop < previousScrollTop'));
-    assert.ok(messaging.includes('const previousScrollTop = previousScrollTopRef.current'));
-    assert.ok(messaging.includes('previousScrollTopRef.current = restoredScrollTop'));
-    assert.ok(messaging.includes('ignoreScrollDirectionRef.current = true'));
+    assert.ok(messaging.includes('overflow-y-auto overscroll-contain [scrollbar-gutter:stable]'));
     assert.ok(messaging.includes('px-3 py-3 sm:gap-3 sm:px-5 sm:py-5'));
+    assert.ok(workspaceCss.includes('.ra-chat-page {'));
+    assert.ok(workspaceCss.includes('height: calc(100dvh - var(--site-header-height, 4.5rem))'));
 });
 
 test('conversation history uses incremental synchronization and stable older-message cursors', () => {
