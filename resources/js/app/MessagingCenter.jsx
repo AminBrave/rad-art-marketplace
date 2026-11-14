@@ -73,8 +73,22 @@ export default function MessagingCenter({ role }) {
     const [safetyLoading, setSafetyLoading] = useState(true);
     const messagesContainerRef = useRef(null);
     const messagesRef = useRef(messages);
+    const messagesCacheRef = useRef(new Map());
+    const scrollPositionsRef = useRef(new Map());
     const selectedFileRef = useRef(selectedFile);
-    useEffect(() => { messagesRef.current = messages; }, [messages]);
+    useEffect(() => {
+        messagesRef.current = messages;
+        const conversationId = activeConversationRef.current;
+        if (!conversationId) return;
+        const cached = messagesCacheRef.current.get(Number(conversationId)) ?? {};
+        messagesCacheRef.current.set(Number(conversationId), {
+            ...cached,
+            messages,
+            latestMessageId: latestMessageIdRef.current,
+            syncCursor: syncCursorRef.current,
+            hasOlder: hasOlderMessagesRef.current,
+        });
+    }, [messages]);
     useEffect(() => { selectedFileRef.current = selectedFile; }, [selectedFile]);
     const draftRef = useRef(null);
     const fileInputRef = useRef(null);
@@ -226,6 +240,13 @@ export default function MessagingCenter({ role }) {
                 !latest || Number(message.id) > Number(latest.id) ? message : latest, null);
             if (newest?.id) latestMessageIdRef.current = Math.max(Number(latestMessageIdRef.current ?? 0), Number(newest.id));
             if (firstPage.sync_cursor) syncCursorRef.current = firstPage.sync_cursor;
+            const cachedState = messagesCacheRef.current.get(Number(id)) ?? {};
+            messagesCacheRef.current.set(Number(id), {
+                ...cachedState,
+                latestMessageId: latestMessageIdRef.current,
+                syncCursor: syncCursorRef.current,
+                hasOlder: hasOlderMessagesRef.current,
+            });
             const hasUnreadIncoming = incoming.some((message) =>
                 Number(message.sender_id) !== Number(user?.id) && !message.read_at
             );
@@ -252,6 +273,9 @@ export default function MessagingCenter({ role }) {
 
     useEffect(() => {
         const previousConversation = activeConversationRef.current;
+        if (previousConversation && previousConversation !== active && messagesContainerRef.current) {
+            scrollPositionsRef.current.set(Number(previousConversation), messagesContainerRef.current.scrollTop);
+        }
         if (previousConversation && previousConversation !== active && draftRef.current) {
             draftsByConversationRef.current.set(Number(previousConversation), draftRef.current.value);
         }
@@ -262,17 +286,18 @@ export default function MessagingCenter({ role }) {
         historyRequestRef.current?.abort();
         historyLoadingRef.current = false;
         setLoadingOlder(false);
-        hasOlderMessagesRef.current = false;
+        const cachedConversation = active ? messagesCacheRef.current.get(Number(active)) : null;
+        hasOlderMessagesRef.current = Boolean(cachedConversation?.hasOlder);
         pendingScrollRestoreRef.current = null;
         activeConversationRef.current = active;
-        setMessages([]);
+        setMessages(cachedConversation?.messages ?? []);
         setMessagesError('');
         setOlderMessagesError('');
         setNewMessageCount(0);
         setMessagesLoading(Boolean(active));
         shouldStickToBottomRef.current = true;
-        latestMessageIdRef.current = null;
-        syncCursorRef.current = null;
+        latestMessageIdRef.current = cachedConversation?.latestMessageId ?? null;
+        syncCursorRef.current = cachedConversation?.syncCursor ?? null;
         setDraft(active ? (draftsByConversationRef.current.get(Number(active)) ?? '') : '');
         setSelectedFile(active ? (filesByConversationRef.current.get(Number(active)) ?? null) : null);
         setUploadProgress(0);
@@ -421,7 +446,8 @@ export default function MessagingCenter({ role }) {
 
     useEffect(() => {
         if (!active) return undefined;
-        loadMessages(active);
+        const hasCachedMessages = messagesCacheRef.current.has(Number(active));
+        loadMessages(active, { incremental: hasCachedMessages });
         const syncWhenVisible = () => {
             if (document.visibilityState === 'visible') loadMessages(active, { incremental: true });
         };
@@ -438,6 +464,11 @@ export default function MessagingCenter({ role }) {
     useEffect(() => {
         const container = messagesContainerRef.current;
         if (!container) return undefined;
+        const savedScrollTop = active ? scrollPositionsRef.current.get(Number(active)) : null;
+        if (savedScrollTop !== null && savedScrollTop !== undefined && messagesCacheRef.current.has(Number(active))) {
+            const frame = window.requestAnimationFrame(() => { container.scrollTop = savedScrollTop; });
+            return () => window.cancelAnimationFrame(frame);
+        }
         if (pendingScrollRestoreRef.current) {
             const previous = pendingScrollRestoreRef.current;
             pendingScrollRestoreRef.current = null;
@@ -733,9 +764,9 @@ export default function MessagingCenter({ role }) {
                             <header className="relative z-20 shrink-0 border-b border-border bg-white shadow-soft">
                                 <div className="flex min-w-0 items-center gap-2.5 px-3 py-3 sm:gap-3 sm:px-5">
                                     <button type="button" aria-label="بازگشت به گفتگوها" title="بازگشت به گفتگوها" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-canvas text-ink transition hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:hidden" onClick={() => { setActive(null); setPendingArtwork(null); setParams((current) => { const next = new URLSearchParams(current); next.delete('conversation'); next.delete('artwork'); return next; }, { replace: true }); }}><ChevronRight size={19} aria-hidden="true" /></button>
-                                    <div aria-hidden="true" className={'flex h-11 w-11 aspect-square shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-inset ring-border text-sm font-black shadow-sm ' + avatarTone(selected?.participant?.name)}>{avatarInitial(selected?.participant?.name)}</div>
+                                    {selected?.artist?.slug ? <Link to={'/artists/' + selected.artist.slug} aria-label={'مشاهده صفحه هنرمند ' + (selected?.participant?.name ?? '')} title="مشاهده پروفایل هنرمند" className="message-conversation-avatar-link flex h-11 w-11 aspect-square shrink-0 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"><span aria-hidden="true" className={'flex h-full w-full items-center justify-center overflow-hidden rounded-full ring-1 ring-inset ring-border text-sm font-black shadow-sm ' + avatarTone(selected?.participant?.name)}>{avatarInitial(selected?.participant?.name)}</span></Link> : <div aria-hidden="true" className={'flex h-11 w-11 aspect-square shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-inset ring-border text-sm font-black shadow-sm ' + avatarTone(selected?.participant?.name)}>{avatarInitial(selected?.participant?.name)}</div>}
                                     <div className="min-w-0 flex-1">
-                                        <h2 dir="auto" title={selected?.participant?.name ?? 'گفتگوی خصوصی'} className="truncate text-sm font-extrabold leading-6 text-ink sm:text-base">{selected?.participant?.name ?? 'گفتگوی خصوصی'}</h2>
+                                        {role === 'buyer' && selected?.artist?.slug ? <Link to={'/artists/' + selected.artist.slug} dir="auto" title={'مشاهده صفحه هنرمند ' + (selected.participant.name ?? '')} className="block w-fit max-w-full truncate text-sm font-extrabold leading-6 text-ink transition hover:text-terracotta-strong focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus sm:text-base">{selected.participant.name ?? 'مشاهده هنرمند'}</Link> : <h2 dir="auto" title={selected?.participant?.name ?? 'گفتگوی خصوصی'} className="truncate text-sm font-extrabold leading-6 text-ink sm:text-base">{selected?.participant?.name ?? 'گفتگوی خصوصی'}</h2>}
                                         <p className="truncate text-[11px] leading-5 text-muted">گفتگوی خصوصی مستقیم</p>
                                     </div>
                                     <details className="group relative shrink-0">
@@ -753,10 +784,11 @@ export default function MessagingCenter({ role }) {
                                         </div>
                                     </details>
                                 </div>
-                                {selected?.contexts?.some((context) => context.artwork?.slug) && <div className="flex min-w-0 flex-wrap items-center gap-2 border-t border-border px-4 py-2.5 sm:px-5"><span className="shrink-0 text-[11px] font-semibold text-muted">آثار مرتبط:</span>{selected.contexts.filter((context) => context.artwork?.slug).map((context) => role === 'buyer' ? <button key={context.artwork.slug} type="button" onClick={() => { setPendingArtwork(context.artwork); setParams((current) => { const next = new URLSearchParams(current); next.set('artwork', context.artwork.slug); return next; }, { replace: true }); }} aria-label={'ارسال پیام درباره ' + context.artwork.title} className="max-w-full truncate rounded-lg border border-border bg-surface-muted px-3 py-1.5 text-xs font-semibold text-ink transition hover:border-terracotta/40 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">{context.artwork.title} · پاسخ</button> : <Link key={context.artwork.slug} to={'/artworks/' + context.artwork.slug} className="max-w-full truncate rounded-lg border border-border bg-surface-muted px-3 py-1.5 text-xs font-semibold text-ink transition hover:border-terracotta/40 hover:bg-white">{context.artwork.title}</Link>)}</div>}
+                                {selected?.contexts?.some((context) => context.artwork?.slug) && <div className="related-artworks-strip border-t border-border px-4 py-2.5 sm:px-5"><span className="shrink-0 text-[11px] font-semibold text-muted">آثار مرتبط:</span><div className="related-artworks-strip__scroller" role="list" aria-label="آثار مرتبط">{selected.contexts.filter((context) => context.artwork?.slug).map((context) => { const artwork = context.artwork; const chipContent = <><span className="related-artworks-chip__thumbnail">{artwork.image_url ? <img src={artwork.image_url} alt="" loading="lazy" decoding="async" /> : <ImageIcon size={15} aria-hidden="true" />}</span><span className="related-artworks-chip__title">{artwork.title}</span>{role === 'buyer' && <span className="related-artworks-chip__action">پاسخ</span>}</>; return role === 'buyer' ? <button key={artwork.slug} type="button" role="listitem" onClick={() => { setPendingArtwork(artwork); setParams((current) => { const next = new URLSearchParams(current); next.set('artwork', artwork.slug); return next; }, { replace: true }); }} aria-label={'ارسال پیام درباره ' + artwork.title} className="related-artworks-chip">{chipContent}</button> : <Link key={artwork.slug} role="listitem" to={'/artworks/' + artwork.slug} className="related-artworks-chip">{chipContent}</Link>; })}</div></div>}
                             </header>
                             <div dir="ltr" ref={messagesContainerRef} onScroll={(event) => {
                                 const node = event.currentTarget;
+                                if (active) scrollPositionsRef.current.set(Number(active), node.scrollTop);
                                 shouldStickToBottomRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 120;
                                 if (shouldStickToBottomRef.current) setNewMessageCount(0);
                                 if (node.scrollTop < 72 && hasOlderMessagesRef.current && !olderMessagesError) loadOlderMessages();
@@ -783,7 +815,7 @@ export default function MessagingCenter({ role }) {
                                             {showDayDivider && <div dir="rtl" className="flex justify-center py-1"><span className="rounded-full border border-border bg-white/90 px-3 py-1 text-[10px] font-semibold text-muted shadow-soft">{dayLabel(message.created_at)}</span></div>}
                                             <div dir="ltr" className={'flex w-full ' + (own ? 'justify-end' : 'justify-start')}>
                                             <article dir="rtl" className={'min-w-0 max-w-[88%] rounded-[20px] px-4 py-3 shadow-[0_2px_5px_rgba(31,30,27,0.055)] sm:max-w-[min(72%,680px)] ' + (own ? 'rounded-bl-[7px] bg-[var(--color-message-own)] text-ink' : 'rounded-br-[7px] border border-border bg-[var(--color-message-peer)] text-ink')}>
-                                                {message.artwork && <Link to={'/artworks/' + message.artwork.slug} className="mb-3 block overflow-hidden rounded-xl border border-border bg-white/90 transition hover:border-terracotta/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"><div className="flex items-stretch gap-3"><img src={message.artwork.image_url} alt={message.artwork.title} loading="lazy" decoding="async" className="h-24 w-24 shrink-0 bg-surface-muted object-cover sm:h-28 sm:w-28" /><div className="min-w-0 flex-1 py-3 pl-3"><span className="text-[10px] font-bold text-terracotta-strong">اثر مورد گفتگو</span><strong className="mt-1 block line-clamp-2 text-xs leading-6 text-ink">{message.artwork.title}</strong><span className="mt-1 block truncate text-[10px] text-muted">{[message.artwork.artist_name, message.artwork.category, message.artwork.medium, message.artwork.dimensions, message.artwork.year?.toLocaleString?.('fa-IR')].filter(Boolean).join(' · ')}</span>{message.artwork.price && <span className="mt-1 block text-[10px] font-semibold text-muted">قیمت: {Number(message.artwork.price).toLocaleString('fa-IR')} تومان</span>}<span className="mt-2 inline-block text-[10px] font-bold text-terracotta-strong">مشاهده جزئیات اثر ←</span></div></div></Link>}
+                                                {message.artwork && <div className="message-artwork-card mb-3 overflow-hidden rounded-xl border border-border bg-white/90"><div className="message-artwork-card__layout"><Link to={'/artworks/' + message.artwork.slug} aria-label={'مشاهده اثر ' + message.artwork.title} title={message.artwork.title} className="message-artwork-card__media-link"><span className="message-artwork-card__media"><img src={message.artwork.image_url} alt={message.artwork.title} loading="lazy" decoding="async" /></span></Link><div className="message-artwork-card__content min-w-0 flex-1"><span className="message-artwork-card__eyebrow">اثر مورد گفتگو</span><strong className="message-artwork-card__title">{message.artwork.title}</strong><span className="message-artwork-card__meta">{[message.artwork.artist_name, message.artwork.category, message.artwork.medium, message.artwork.dimensions, message.artwork.year?.toLocaleString?.('fa-IR')].filter(Boolean).join(' · ')}</span>{message.artwork.price && <span className="message-artwork-card__price">قیمت: {Number(message.artwork.price).toLocaleString('fa-IR')} تومان</span>}<Link to={'/artworks/' + message.artwork.slug} className="message-artwork-card__action rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">مشاهده جزئیات اثر <span aria-hidden="true">←</span></Link></div></div></div>}
                                                 {message.attachments?.length > 0 && <ul className="mb-3 space-y-3">{message.attachments.map((attachment) => {
                                                     const isImage = attachment.mime_type?.startsWith('image/');
                                                     return <li key={attachment.id} className="max-w-full overflow-hidden rounded-xl border border-border bg-white/80">
