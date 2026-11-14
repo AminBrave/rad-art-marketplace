@@ -11,17 +11,6 @@ const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مد
 export function PublicLayout() {
     const { user, logout } = useAuth();
     const [logoutError, setLogoutError] = useState('');
-    const workspaceHeaderRef = useRef(null);
-    const [workspaceHeaderHeight, setWorkspaceHeaderHeight] = useState(0);
-    useEffect(() => {
-        const header = workspaceHeaderRef.current;
-        if (!header) return undefined;
-        const measure = () => setWorkspaceHeaderHeight(Math.ceil(header.getBoundingClientRect().height));
-        measure();
-        const observer = new ResizeObserver(measure);
-        observer.observe(header);
-        return () => observer.disconnect();
-    }, []);
     const handleLogout = async () => {
         setLogoutError('');
         try { await logout(); } catch { setLogoutError('خروج انجام نشد. اتصال را بررسی کنید.'); }
@@ -216,6 +205,17 @@ function NotificationBell({ user }) {
 export function WorkspaceLayout({ title, links, outletContext }) {
     const { user, logout } = useAuth();
     const [logoutError, setLogoutError] = useState('');
+    const workspaceHeaderRef = useRef(null);
+    const [workspaceHeaderHeight, setWorkspaceHeaderHeight] = useState(0);
+    useEffect(() => {
+        const header = workspaceHeaderRef.current;
+        if (!header) return undefined;
+        const measure = () => setWorkspaceHeaderHeight(Math.ceil(header.getBoundingClientRect().height));
+        measure();
+        const observer = new ResizeObserver(measure);
+        observer.observe(header);
+        return () => observer.disconnect();
+    }, []);
     const handleLogout = async () => { setLogoutError(''); try { await logout(); } catch { setLogoutError('خروج انجام نشد. اتصال را بررسی کنید.'); } };
     return <div className="ra-workspace-shell min-h-screen bg-canvas text-ink" dir="rtl">
         <header className="ra-workspace-header sticky top-0 z-40 shrink-0 border-b border-border bg-white"><div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-8 lg:px-10"><div className="min-w-0"><Link to="/" className="text-lg font-black text-ink no-underline">راد<span className="text-terracotta-strong">آرت</span></Link><p className="mt-1 text-xs text-muted">{title}</p></div><div className="flex min-w-0 flex-wrap items-center justify-end gap-2 text-sm sm:gap-3">{user?.role !== 'admin' && <NotificationBell user={user} />}<span className="max-w-32 truncate font-semibold sm:max-w-none">{user?.name}</span><Link to="/" className="min-h-10 border border-border px-3 py-2 font-semibold hover:border-terracotta sm:px-4">مشاهده سایت</Link><button type="button" onClick={handleLogout} className="min-h-10 border border-border px-3 py-2 font-semibold hover:border-terracotta sm:px-4">خروج</button></div></div>{logoutError&&<p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-red-700 sm:px-8">{logoutError}</p>}</header>
