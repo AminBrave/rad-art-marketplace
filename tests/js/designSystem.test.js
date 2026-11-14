@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
 const css = readFileSync(new URL('../../resources/css/app.css', import.meta.url), 'utf8');
+const blade = readFileSync(new URL('../../resources/views/app.blade.php', import.meta.url), 'utf8');
 const tailwind = readFileSync(new URL('../../tailwind.config.js', import.meta.url), 'utf8');
 const primitives = readFileSync(new URL('../../resources/js/components/ui/primitives.jsx', import.meta.url), 'utf8');
 const cards = readFileSync(new URL('../../resources/js/components/ui/cards.jsx', import.meta.url), 'utf8');
@@ -40,7 +41,7 @@ test('semantic palette, typography, spacing and layout tokens have one CSS sourc
 });
 
 test('Tailwind semantic aliases reference CSS variables rather than duplicate literal values', () => {
-    for (const alias of ['canvas:', 'terracotta:', 'muted:', 'warning:', 'info:', 'success: {', 'danger: {', 'warning: {', 'info: {', 'accent: {', 'inverse:', 'fontSize:', 'lineHeight:', 'spacing:']) {
+    for (const alias of ['canvas:', 'terracotta:', 'muted:', 'warning:', 'info:', 'success: {', 'danger: {', 'warning: {', 'info: {', 'accent: {', 'inverse:', 'overlay:', 'fontSize:', 'lineHeight:', 'spacing:']) {
         assert.ok(tailwind.includes(alias), `Missing Tailwind alias: ${alias}`);
     }
     assert.ok(tailwind.includes('var(--color-canvas)'));
@@ -112,8 +113,23 @@ test('navigation and dialogs use Radix behavior with Tailwind semantic utility s
 });
 
 
+test('initial Blade loading shell uses responsive utilities instead of page-specific CSS selectors', () => {
+    assert.ok(blade.includes('md:grid-cols-[minmax(0,1fr)_minmax(16rem,.9fr)]'));
+    assert.ok(blade.includes('bg-surface-muted'));
+    assert.ok(blade.includes('aspect-[4/5]'));
+    assert.doesNotMatch(blade, /app-boot__/);
+    assert.doesNotMatch(css, /\.app-boot(?:__|\s*\{)/);
+});
+
+test('application stylesheet is limited to tokens, base/loading rules and documented messaging edge cases', () => {
+    assert.doesNotMatch(css, /\.ra-(?:button|control|page|surface|badge|form-field|tabs|menu|dialog|pagination)/);
+    assert.ok(css.includes('Verified edge-case CSS'));
+    assert.ok(css.includes('.rad-messaging'));
+    assert.ok(css.includes('.app-skeleton'));
+});
+
 test('shared UI component source does not introduce arbitrary hex or raw palette colors', () => {
-    const componentSources = [primitives, cards, feedback, navigation, dialog, skeletons];
+    const componentSources = [primitives, cards, feedback, navigation, dialog, skeletons, layouts, buyerWorkspace, artistWorkspace, messaging, artworkDetail, artworkStudio, adminWorkspace, ...publicPages];
     const arbitraryHex = /#[0-9a-fA-F]{3,8}\b/;
     const rawPalette = /\b(?:bg|text|border|ring)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\d{2,3}(?:\/\d{1,3})?\b/;
     for (const source of componentSources) {
