@@ -152,9 +152,16 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
                         chat_height = page.locator(".rad-messaging > .grid").evaluate(
                             "(node) => node.getBoundingClientRect().height"
                         )
+                        history_overflow = page.get_by_role("log", name="پیام‌های گفتگو").evaluate(
+                            "(node) => getComputedStyle(node).overflowY"
+                        )
                         self.assertGreaterEqual(
                             chat_height, viewport_height - 2,
                             f"Main chat panel must be at least one browser viewport tall on {route_path} at {width}px",
+                        )
+                        self.assertEqual(
+                            history_overflow, "auto",
+                            f"Message history must remain independently scrollable on {route_path} at {width}px",
                         )
                         self.assertGreater(
                             document_height, viewport_height,
