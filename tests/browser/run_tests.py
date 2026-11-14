@@ -91,11 +91,45 @@ class TimedTextTestResult(unittest.TextTestResult):
     def startTest(self, test):
         self.executed.append(test)
         self.started_at[test.id()] = time.perf_counter()
+        try:
+            from diagnostics import set_active_test
+            set_active_test(test.id())
+        except ImportError:
+            pass
         super().startTest(test)
+
+    def addSuccess(self, test):
+        super().addSuccess(test)
+        try:
+            from diagnostics import finish_test_success
+            finish_test_success(test.id())
+        except ImportError:
+            pass
+
+    def addFailure(self, test, err):
+        super().addFailure(test, err)
+        try:
+            from diagnostics import finish_test_failure
+            finish_test_failure(test.id())
+        except ImportError:
+            pass
+
+    def addError(self, test, err):
+        super().addError(test, err)
+        try:
+            from diagnostics import finish_test_failure
+            finish_test_failure(test.id())
+        except ImportError:
+            pass
 
     def stopTest(self, test):
         started = self.started_at.pop(test.id(), None)
         self.duration_by_id[test.id()] = time.perf_counter() - started if started is not None else 0.0
+        try:
+            from diagnostics import set_active_test
+            set_active_test(None)
+        except ImportError:
+            pass
         super().stopTest(test)
 
 
@@ -201,6 +235,8 @@ def main() -> int:
 
     browser_dir = Path(__file__).resolve().parent
     sys.path.insert(0, str(browser_dir))
+    from diagnostics import install_automatic_diagnostics
+    install_automatic_diagnostics()
     loader = unittest.defaultTestLoader
     if args.tests:
         suite = unittest.TestSuite(loader.loadTestsFromName(name) for name in args.tests)
