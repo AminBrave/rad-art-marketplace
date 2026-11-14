@@ -44,9 +44,10 @@ export function useMessagingQueries({ endpoint, search, filter, conversationId, 
         queryClient.setQueryData(inboxKey, (current) => updateInboxPages(current, updater));
     }, [inboxKey, queryClient]);
 
+    const { fetchNextPage: fetchNextInboxPage, refetch: refetchInbox } = inboxQuery;
     const loadThreads = useCallback(({ append = false } = {}) => (
-        append ? inboxQuery.fetchNextPage() : inboxQuery.refetch()
-    ), [inboxQuery.fetchNextPage, inboxQuery.refetch]);
+        append ? fetchNextInboxPage() : refetchInbox()
+    ), [fetchNextInboxPage, refetchInbox]);
 
     const messagesKey = useMemo(() => messagingKeys.messages(conversationId, userId), [conversationId, userId]);
     const messagesQuery = useQuery({
