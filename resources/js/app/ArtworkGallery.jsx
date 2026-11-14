@@ -46,7 +46,7 @@ export default function ArtworkGallery({ user }) {
                         <div className="mt-10"><h1 className="text-2xl font-black">اثر در دسترس نیست</h1><p className="mt-3 text-stone-500">این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.</p></div>
                     ) : (
                         <div className="mt-8 grid gap-8 md:grid-cols-[1.1fr_.9fr]">
-                            <MediaImage src={detail.image_url} alt={detail.title} className="aspect-[4/3] w-full rounded-2xl" imageClassName="object-cover" loading="eager" fetchPriority="high" sizes="(min-width: 768px) 50vw, 100vw" />
+                            <MediaImage src={detail.image_url} alt={detail.title} className="aspect-[4/3] w-full rounded-2xl" imageClassName="object-cover" loading="eager" fetchPriority="high" />
                             <div>
                                 <p className="text-sm font-bold text-terracotta-strong">{detail.category.name}</p>
                                 <h1 className="mt-3 text-3xl font-black leading-relaxed">{detail.title}</h1>
@@ -90,7 +90,7 @@ export default function ArtworkGallery({ user }) {
                 <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {artworks.map((artwork) => (
                         <a key={artwork.id} href={'/artworks/' + artwork.slug} className="group overflow-hidden rounded-2xl border border-stone-200 bg-white transition hover:-translate-y-1 hover:shadow-lg">
-                            <MediaImage src={artwork.image_url} alt={artwork.title} className="aspect-[4/3] w-full" imageClassName="object-cover transition group-hover:scale-[1.02]" loading="lazy" decoding="async" sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
+                            <MediaImage src={artwork.image_url} alt={artwork.title} className="aspect-[4/3] w-full" imageClassName="object-cover transition group-hover:scale-[1.02]" loading="lazy" decoding="async" />
                             <div className="p-5">
                                 <p className="text-xs font-bold text-terracotta-strong">{artwork.category.name}</p>
                                 <h3 className="mt-2 text-lg font-extrabold">{artwork.title}</h3>
