@@ -123,6 +123,23 @@ class TimedTextTestResult(unittest.TextTestResult):
         except ImportError:
             pass
 
+    def addSubTest(self, test, subtest, err):
+        super().addSubTest(test, subtest, err)
+        if err is not None:
+            try:
+                from diagnostics import finish_test_failure
+                self.failure_artifacts[test.id()] = finish_test_failure(test.id())
+            except ImportError:
+                pass
+
+    def addSkip(self, test, reason):
+        super().addSkip(test, reason)
+        try:
+            from diagnostics import finish_test_success
+            finish_test_success(test.id())
+        except ImportError:
+            pass
+
     def stopTest(self, test):
         started = self.started_at.pop(test.id(), None)
         self.duration_by_id[test.id()] = time.perf_counter() - started if started is not None else 0.0
