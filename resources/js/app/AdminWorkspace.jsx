@@ -153,11 +153,11 @@ export function AdminArtworkModeration() {
     const moderate = async (artwork, action) => {
         const note = (notes[artwork.id] ?? '').trim();
         if (action !== 'approve' && !note) { setActionError('برای رد اثر یا درخواست اصلاح، نوشتن توضیح الزامی است.'); return; }
-        setBusyId(artwork.id); setError(''); setMessage('');
+        setBusyId(artwork.id); setActionError(''); setMessage('');
         try {
             const { data } = await axios.patch(api + '/artworks/' + artwork.id + '/moderation', { action, ...(action === 'approve' ? {} : { note }) });
             setMessage(data.message ?? 'تصمیم ثبت شد.'); setNotes((current) => ({ ...current, [artwork.id]: '' })); await queryClient.invalidateQueries({ queryKey: ['admin', 'artworks', user?.id] });
-        } catch (e) { setError(e.response?.status === 403 ? 'سرور اجازه انجام این عملیات را نداد.' : e.response?.data?.errors?.note?.[0] ?? e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.'); }
+        } catch (e) { setActionError(e.response?.status === 403 ? 'سرور اجازه انجام این عملیات را نداد.' : e.response?.data?.errors?.note?.[0] ?? e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.'); }
         finally { setBusyId(null); }
     };
     return <section className="space-y-6" dir="rtl">
@@ -189,7 +189,7 @@ export function AdminUsersPage() {
     const page = Math.max(1, Number(params.get('page')) || 1);
     const [drafts, setDrafts] = useState({});
     const [busyId, setBusyId] = useState(null);
-    const [error, setError] = useState(''), [message, setMessage] = useState('');
+    const [actionError, setActionError] = useState(''), [message, setMessage] = useState('');
     const [confirmAdminId, setConfirmAdminId] = useState(null);
     const queryClient = useQueryClient();
     const queryKey = ['admin', 'users', user?.id, page];
@@ -204,18 +204,18 @@ export function AdminUsersPage() {
     const result = usersQuery.data;
     const loading = usersQuery.isPending;
     const load = () => usersQuery.refetch();
-    if (usersQuery.isError && !error) setError(usersQuery.error.response?.status === 403
-        ? 'این حساب اجازه مشاهده کاربران را ندارد.'
-        : 'دریافت فهرست کاربران انجام نشد. دوباره تلاش کنید.');
+    const error = actionError || (usersQuery.isError
+        ? (usersQuery.error.response?.status === 403 ? 'این حساب اجازه مشاهده کاربران را ندارد.' : 'دریافت فهرست کاربران انجام نشد. دوباره تلاش کنید.')
+        : '');
     const changePage = (next) => setParams(next > 1 ? { page: String(next) } : {});
     const updateRole = async (item) => {
         const role = drafts[item.id] ?? (item.role === 'buyer' ? '' : item.role);
-        if (!['artist', 'admin'].includes(role)) { setError('یکی از نقش‌های پشتیبانی‌شده را انتخاب کنید.'); return; }
+        if (!['artist', 'admin'].includes(role)) { setActionError('یکی از نقش‌های پشتیبانی‌شده را انتخاب کنید.'); return; }
         if (role === 'admin' && item.role !== 'admin' && confirmAdminId !== item.id) {
             setConfirmAdminId(item.id);
             return;
         }
-        setBusyId(item.id); setError(''); setMessage('');
+        setBusyId(item.id); setActionError(''); setMessage('');
         try {
             const { data } = await axios.patch(api + '/users/' + item.id + '/role', { role });
             queryClient.setQueryData(queryKey, (current) => current ? { ...current, data: current.data.map((row) => row.id === item.id ? data.data : row) } : current);
@@ -223,7 +223,7 @@ export function AdminUsersPage() {
             setConfirmAdminId(null);
             setMessage(data.message ?? 'نقش کاربر به‌روزرسانی شد.');
         } catch (e) {
-            setError(e.response?.status === 403 ? 'سرور اجازه تغییر نقش این حساب را نداد.' : e.response?.data?.errors?.role?.[0] ?? e.response?.data?.message ?? 'تغییر نقش کاربر انجام نشد.');
+            setActionError(e.response?.status === 403 ? 'سرور اجازه تغییر نقش این حساب را نداد.' : e.response?.data?.errors?.role?.[0] ?? e.response?.data?.message ?? 'تغییر نقش کاربر انجام نشد.');
         } finally { setBusyId(null); }
     };
     return <section className="space-y-6" dir="rtl">
