@@ -35,7 +35,7 @@ export function EmptyState({ title, description, action, className = '' }) {
 
 export function ErrorState({ title = 'مشکلی پیش آمد', description, onRetry, retryLabel = 'تلاش دوباره', className = '' }) {
     return (
-        <section role="alert" className={`grid justify-items-start gap-3 border border-danger/30 bg-surface p-5 ${className}`} dir="rtl">
+        <section role="alert" className={`grid justify-items-start gap-3 border border-danger bg-surface p-5 ${className}`} dir="rtl">
             <h2 className="font-bold text-danger">{title}</h2>
             {description && <p className="text-sm leading-7 text-muted">{description}</p>}
             {onRetry && <Button variant="outline" size="sm" onClick={onRetry}>{retryLabel}</Button>}
