@@ -41,7 +41,8 @@ test('messaging headers stay aligned and the composer and artwork thumbnails rem
     assert.ok(messaging.includes('overflow-clip rounded-2xl'));
     assert.ok(!messaging.includes('inboxHeadingRef'));
     assert.ok(!messaging.includes('--inbox-heading-height'));
-    assert.ok(messaging.includes('sticky top-[var(--workspace-header-height,4.5rem)] z-30 shrink-0 border-b border-border bg-white shadow-soft'));
+    assert.ok(messaging.includes('shrink-0 border-b border-border bg-white shadow-soft'));
+    assert.ok(!messaging.includes('sticky top-[var(--workspace-header-height,4.5rem)] z-30'));
     assert.ok(messaging.includes('sticky top-[var(--workspace-header-height,4.5rem)] z-20 shrink-0 border-b border-border bg-white px-5 py-5 shadow-soft'));
     assert.ok(!messaging.includes('conversationHeaderVisible'));
     assert.ok(!messaging.includes('setConversationHeaderVisible'));
