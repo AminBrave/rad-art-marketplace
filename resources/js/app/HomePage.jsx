@@ -87,7 +87,7 @@ export default function HomePage() {
                             </div>
                         </Link>
                     ) : (
-                        <div className="relative aspect-[4/5] overflow-hidden bg-sand p-8"><div className="absolute inset-8 border border-inverse/70" /><div className="absolute left-[12%] top-[12%] h-[48%] w-[48%] rounded-full bg-terracotta" /><div className="absolute bottom-[12%] right-[10%] h-[58%] w-[48%] rounded-t-full bg-olive" /><div className="absolute bottom-8 left-8 text-xs font-bold tracking-[.25em] text-ink">ART / PEOPLE / STORIES</div></div>
+                        <div className="relative aspect-[4/5] overflow-hidden bg-sand p-8"><div className="absolute inset-8 border border-inverse" /><div className="absolute left-[12%] top-[12%] h-[48%] w-[48%] rounded-full bg-terracotta" /><div className="absolute bottom-[12%] right-[10%] h-[58%] w-[48%] rounded-t-full bg-olive" /><div className="absolute bottom-8 left-8 text-xs font-bold tracking-[.25em] text-ink">ART / PEOPLE / STORIES</div></div>
                     )}
                 </div>
             </section>
@@ -127,7 +127,7 @@ export default function HomePage() {
 
             <section className="bg-ink text-inverse">
                 <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-5 py-14 sm:px-8 md:flex-row md:items-center lg:px-10">
-                    <div><p className="text-xs font-bold text-[#d9a58f]">دعوت به مشارکت</p><h2 className="mt-2 text-2xl font-black">جهان هنری خود را با دیگران به اشتراک بگذارید.</h2><p className="mt-3 max-w-2xl text-sm leading-7 text-inverse/70">هنرمندان می‌توانند حساب بسازند، پروفایل خود را تکمیل کنند و آثارشان را برای بررسی ارسال کنند.</p></div>
+                    <div><p className="text-xs font-bold text-[#d9a58f]">دعوت به مشارکت</p><h2 className="mt-2 text-2xl font-black">جهان هنری خود را با دیگران به اشتراک بگذارید.</h2><p className="mt-3 max-w-2xl text-sm leading-7 text-inverse">هنرمندان می‌توانند حساب بسازند، پروفایل خود را تکمیل کنند و آثارشان را برای بررسی ارسال کنند.</p></div>
                     <Link to="/register" className="shrink-0 bg-paper px-6 py-3 font-bold text-ink">شروع به‌عنوان هنرمند</Link>
                 </div>
             </section>
