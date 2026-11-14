@@ -134,7 +134,7 @@ test('application stylesheet is limited to tokens, base/loading rules and docume
 test('shared UI component source does not introduce arbitrary hex or raw palette colors', () => {
     const componentSources = [primitives, cards, feedback, navigation, dialog, skeletons, layouts, homePage, authPage, editorialPages, buyerWorkspace, artistWorkspace, messaging, artworkDetail, artworkStudio, adminWorkspace, routeLoading, ...publicPages];
     const arbitraryHex = /#[0-9a-fA-F]{3,8}\b/;
-    const rawPalette = /\b(?:bg|text|border|ring)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\d{2,3}(?:\/\d{1,3})?\b/;
+    const rawPalette = /\\b(?:bg|text|border|ring)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\\d{2,3}(?:\\/\\d{1,3})?\\b|\\b(?:bg|text|border)-(?:white|black)(?:\\/\\d{1,3})?\\b/;
     for (const source of componentSources) {
         assert.equal(arbitraryHex.test(source), false, 'Shared components must use semantic color tokens, not hex literals.');
         assert.equal(rawPalette.test(source), false, 'Shared components must use semantic color roles, not raw palette utilities.');
