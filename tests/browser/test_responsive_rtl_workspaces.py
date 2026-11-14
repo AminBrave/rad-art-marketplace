@@ -123,6 +123,9 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
                 page.locator("#app").get_by_role("heading").first.wait_for()
                 self.assertEqual(page.locator("html").get_attribute("lang"), "fa")
                 self.assertEqual(page.locator("html").get_attribute("dir"), "rtl")
+                self.assertEqual(page.locator(".ra-public-header").count(), 1, f"{route_path} must use the shared site header")
+                self.assertEqual(page.locator(".ra-workspace-header").count(), 0, f"{route_path} must not render a duplicate workspace header")
+                self.assertEqual(page.locator('nav[aria-label="ناوبری فضای کاربری"]').count(), 1, f"{route_path} must expose one shared workspace navigation")
                 for width in VIEWPORTS:
                     page.set_viewport_size({"width": width, "height": 812})
                     page.evaluate(
