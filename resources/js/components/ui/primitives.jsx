@@ -95,7 +95,7 @@ export function WorkspaceHero({ eyebrow, title, description, actions, className 
             <div className="relative z-10 max-w-[46rem]">
                 {eyebrow && <p className="text-xs font-bold text-sand">{eyebrow}</p>}
                 <h1 className="mt-3 text-[clamp(1.5rem,3vw,2rem)] font-extrabold leading-heading text-inverse">{title}</h1>
-                {description && <p className="mt-3 text-sm leading-copy text-white/80">{description}</p>}
+                {description && <p className="mt-3 text-sm leading-copy text-inverse">{description}</p>}
             </div>
             {actions && <div className="relative z-10 flex flex-wrap gap-2 max-md:w-full">{actions}</div>}
         </header>
