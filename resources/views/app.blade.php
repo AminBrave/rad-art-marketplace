@@ -63,7 +63,7 @@
         $isDirectory = request()->is('artworks', 'artists');
     @endphp
     <div id="app">
-        <main class="mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16" role="status" aria-busy="true" aria-label="در حال بارگذاری راد آرت">
+        <main class="mx-auto min-h-screen w-[min(100%_-_2.5rem,80rem)] py-6 pb-16" role="status" aria-busy="true" aria-label="در حال بارگذاری راد آرت">
             <div class="mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__header">
                 <span class="app-skeleton mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__brand"></span>
                 <span class="app-skeleton mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__nav"></span>
