@@ -185,7 +185,7 @@ function AuthUnavailable() {
         <div className="mx-auto max-w-xl px-6 py-20 text-center" dir="rtl">
             <h1 className="text-2xl font-black">ارتباط با حساب کاربری برقرار نشد</h1>
             <p className="mt-3 text-sm leading-7 text-muted">{authError}</p>
-            <button type="button" onClick={refreshUser} className="mt-6 rounded-full bg-[#20201e] px-5 py-3 text-sm font-bold text-inverse">تلاش دوباره</button>
+            <button type="button" onClick={refreshUser} className="mt-6 rounded-full bg-ink px-5 py-3 text-sm font-bold text-inverse">تلاش دوباره</button>
         </div>
     );
 }
@@ -253,19 +253,19 @@ export function ArtistDashboardHome() {
     const { user, profile, profileLoading, profileError } = useOutletContext();
     return (
         <section className="rounded-2xl border border-border bg-paper p-6 sm:p-8" dir="rtl">
-            <p className="text-sm font-bold text-[#9a452b]">فضای هنرمند</p>
+            <p className="text-sm font-bold text-terracotta-strong">فضای هنرمند</p>
             <h1 className="mt-2 text-2xl font-black">خوش آمدید، {user.name}</h1>
             <p className="mt-3 text-sm leading-7 text-muted">پروفایل و آثار ارسالی خود را مدیریت کنید و از بخش پیام‌های مستقیم با خریداران در ارتباط باشید.</p>
             {profileError && <p role="alert" className="mt-5 text-sm text-warning">{profileError}</p>}
             {profileLoading ? <p className="mt-5 text-sm text-muted">در حال دریافت پروفایل…</p> : (
-                <div className="mt-6 rounded-xl bg-[#f7f5f0] p-4">
+                <div className="mt-6 rounded-xl bg-canvas p-4">
                     <p className="font-semibold">{profile?.slug ? 'پروفایل هنرمند شما آماده است.' : 'برای شروع، پروفایل هنرمند خود را تکمیل کنید.'}</p>
-                    <Link to="/dashboard/artist/profile" className="mt-3 inline-block text-sm font-bold text-[#9a452b] underline">مدیریت پروفایل</Link>
+                    <Link to="/dashboard/artist/profile" className="mt-3 inline-block text-sm font-bold text-terracotta-strong underline">مدیریت پروفایل</Link>
                 </div>
             )}
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                <Link to="/dashboard/artist/artworks" className="rounded-xl border border-border p-5 font-bold hover:border-[#b65c3a]">مدیریت آثار</Link>
-                <Link to="/dashboard/artist/messages" className="rounded-xl border border-border p-5 font-bold hover:border-[#b65c3a]">پیام‌های مستقیم</Link>
+                <Link to="/dashboard/artist/artworks" className="rounded-xl border border-border p-5 font-bold hover:border-terracotta">مدیریت آثار</Link>
+                <Link to="/dashboard/artist/messages" className="rounded-xl border border-border p-5 font-bold hover:border-terracotta">پیام‌های مستقیم</Link>
             </div>
         </section>
     );
@@ -326,37 +326,37 @@ export function ArtistProfileSettings() {
             {profileError && <p role="alert" className="mt-4 text-sm text-warning">{profileError}</p>}
             <form onSubmit={save} className="mt-6 grid gap-4 sm:grid-cols-2">
                 <label className="text-sm font-semibold sm:col-span-2">نام نمایشی
-                    <input name="display_name" value={form.display_name ?? ''} onChange={update} required maxLength="120" className="mt-2 w-full rounded-xl border border-border bg-[#fcfbf9] px-4 py-3" />
+                    <input name="display_name" value={form.display_name ?? ''} onChange={update} required maxLength="120" className="mt-2 w-full rounded-xl border border-border bg-paper px-4 py-3" />
                     {errors.display_name?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
                 </label>
                 <label className="text-sm font-semibold sm:col-span-2">درباره هنرمند
-                    <textarea name="bio" value={form.bio ?? ''} onChange={update} rows="4" maxLength="2000" className="mt-2 w-full rounded-xl border border-border bg-[#fcfbf9] px-4 py-3 leading-7" />
+                    <textarea name="bio" value={form.bio ?? ''} onChange={update} rows="4" maxLength="2000" className="mt-2 w-full rounded-xl border border-border bg-paper px-4 py-3 leading-7" />
                     {errors.bio?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
                 </label>
                 <label className="text-sm font-semibold">شهر
-                    <input name="city" value={form.city ?? ''} onChange={update} maxLength="120" className="mt-2 w-full rounded-xl border border-border bg-[#fcfbf9] px-4 py-3" />
+                    <input name="city" value={form.city ?? ''} onChange={update} maxLength="120" className="mt-2 w-full rounded-xl border border-border bg-paper px-4 py-3" />
                     {errors.city?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
                 </label>
                 <label className="text-sm font-semibold">شناسه اینستاگرام
-                    <input name="instagram_handle" value={form.instagram_handle ?? ''} onChange={update} maxLength="30" dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-[#fcfbf9] px-4 py-3 text-left" />
+                    <input name="instagram_handle" value={form.instagram_handle ?? ''} onChange={update} maxLength="30" dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-paper px-4 py-3 text-left" />
                     {errors.instagram_handle?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
                 </label>
                 <label className="text-sm font-semibold sm:col-span-2">وب‌سایت
-                    <input name="website_url" type="url" value={form.website_url ?? ''} onChange={update} dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-[#fcfbf9] px-4 py-3 text-left" placeholder="https://example.com" />
+                    <input name="website_url" type="url" value={form.website_url ?? ''} onChange={update} dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-paper px-4 py-3 text-left" placeholder="https://example.com" />
                     {errors.website_url?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
                 </label>
                 <label className="flex items-center gap-3 text-sm font-semibold sm:col-span-2">
-                    <input type="checkbox" name="is_public" checked={Boolean(form.is_public)} onChange={update} className="h-4 w-4 accent-[#b65c3a]" />
+                    <input type="checkbox" name="is_public" checked={Boolean(form.is_public)} onChange={update} className="h-4 w-4 accent-terracotta" />
                     نمایش عمومی پروفایل
                 </label>
                 <div className="sm:col-span-2">
-                    <button disabled={busy} className="rounded-xl bg-[#20201e] px-6 py-3 font-bold text-inverse disabled:opacity-60">{busy ? 'در حال ذخیره…' : 'ذخیره پروفایل'}</button>
-                    {profile?.slug && <Link to={'/artists/' + profile.slug} className="mr-4 text-sm font-semibold text-[#9a452b] underline">{profile.is_public ? 'پیش‌نمایش پروفایل عمومی' : 'پیش‌نمایش خصوصی پروفایل'}</Link>}
+                    <button disabled={busy} className="rounded-xl bg-ink px-6 py-3 font-bold text-inverse disabled:opacity-60">{busy ? 'در حال ذخیره…' : 'ذخیره پروفایل'}</button>
+                    {profile?.slug && <Link to={'/artists/' + profile.slug} className="mr-4 text-sm font-semibold text-terracotta-strong underline">{profile.is_public ? 'پیش‌نمایش پروفایل عمومی' : 'پیش‌نمایش خصوصی پروفایل'}</Link>}
                     {profile?.slug && !profile.is_public && <p className="mt-3 text-xs leading-6 text-muted sm:col-span-2">این پیش‌نمایش فقط برای شما و مدیران مجاز قابل مشاهده است؛ بازدیدکنندگان عمومی به پروفایل خصوصی دسترسی ندارند.</p>}
                     <p className="mt-2 text-xs text-muted sm:col-span-2">{(form.bio?.length ?? 0).toLocaleString('fa-IR')} از ۲۰۰۰ نویسه برای معرفی هنری استفاده شده است.</p>
                 </div>
             </form>
-            {message && <p role="status" className="mt-4 text-sm text-[#80513d]">{message}</p>}
+            {message && <p role="status" className="mt-4 text-sm text-muted">{message}</p>}
         </section>
     );
 }
@@ -391,7 +391,7 @@ export function AdminWorkspaceLayout() {
 export function PublicInfoPage({ title, description }) {
     return (
         <main className="mx-auto max-w-4xl px-6 py-16 sm:px-8" dir="rtl">
-            <p className="text-sm font-bold text-[#9a452b]">راد آرت</p>
+            <p className="text-sm font-bold text-terracotta-strong">راد آرت</p>
             <h1 className="mt-3 text-3xl font-black">{title}</h1>
             <p className="mt-5 leading-8 text-muted">{description}</p>
             <p className="mt-6 rounded-xl border border-border bg-paper p-5 text-sm text-muted">این صفحه در نقشه مسیرهای MVP 2 ثبت شده و محتوای کامل آن در مرحله محتوای عمومی تکمیل می‌شود.</p>
@@ -403,10 +403,10 @@ export function UnauthorizedPage() {
     const { user } = useAuth();
     return (
         <main className="mx-auto max-w-2xl px-6 py-20 text-center" dir="rtl">
-            <p className="text-sm font-bold text-[#9a452b]">۴۰۳</p>
+            <p className="text-sm font-bold text-terracotta-strong">۴۰۳</p>
             <h1 className="mt-3 text-3xl font-black">دسترسی به این بخش مجاز نیست</h1>
             <p className="mt-4 leading-8 text-muted">نقش این حساب اجازه ورود به این فضای کاربری را ندارد. مجوزهای واقعی همچنان در سمت سرور بررسی می‌شوند.</p>
-            <Link to={user ? (user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist') : '/'} className="mt-7 inline-block rounded-full bg-[#20201e] px-6 py-3 font-bold text-inverse">بازگشت</Link>
+            <Link to={user ? (user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist') : '/'} className="mt-7 inline-block rounded-full bg-ink px-6 py-3 font-bold text-inverse">بازگشت</Link>
         </main>
     );
 }
@@ -414,10 +414,10 @@ export function UnauthorizedPage() {
 export function NotFoundPage() {
     return (
         <main className="mx-auto max-w-2xl px-6 py-20 text-center" dir="rtl">
-            <p className="text-sm font-bold text-[#9a452b]">۴۰۴</p>
+            <p className="text-sm font-bold text-terracotta-strong">۴۰۴</p>
             <h1 className="mt-3 text-3xl font-black">این صفحه پیدا نشد</h1>
             <p className="mt-4 leading-8 text-muted">نشانی واردشده معتبر نیست یا صفحه جابه‌جا شده است.</p>
-            <Link to="/" className="mt-7 inline-block rounded-full bg-[#20201e] px-6 py-3 font-bold text-inverse">بازگشت به صفحه اصلی</Link>
+            <Link to="/" className="mt-7 inline-block rounded-full bg-ink px-6 py-3 font-bold text-inverse">بازگشت به صفحه اصلی</Link>
         </main>
     );
 }
