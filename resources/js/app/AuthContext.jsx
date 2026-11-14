@@ -63,7 +63,8 @@ export function AuthProvider({ children }) {
         mutationFn: () => axios.post('/api/v1/auth/logout'),
         onSuccess: () => setUser(null),
     });
-    const logout = useCallback(() => logoutMutation.mutateAsync(), [logoutMutation.mutateAsync]);
+    const { mutateAsync: mutateLogout } = logoutMutation;
+    const logout = useCallback(() => mutateLogout(), [mutateLogout]);
 
     const value = useMemo(() => ({
         user,
