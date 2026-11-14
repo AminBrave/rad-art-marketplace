@@ -87,8 +87,8 @@ function AppRoutes() {
                         <Route path="editorial" element={withRouteFallback(<AdminEditorialPage />)} />
                         <Route path="*" element={<NotFoundPage />} />
                     </Route>
+                    <Route path="*" element={<NotFoundPage />} />
                 </Route>
-                <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </>
     );
