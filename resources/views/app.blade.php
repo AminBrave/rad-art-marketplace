@@ -172,9 +172,9 @@
                         <span class="app-skeleton h-4 w-[70%]"></span>
                         <span class="app-skeleton mt-5 h-12 w-36"></span>
                     </div>
-                    <div class="grid grid-cols-1 items-center gap-12 py-14 md:grid-cols-[minmax(0,1fr)_minmax(16rem,.9fr)] md:gap-20 md:py-24-media">
+                    <div class="w-full min-w-0">
                         <span class="app-skeleton aspect-[4/5] w-full"></span>
-                        <div class="grid grid-cols-1 items-center gap-12 py-14 md:grid-cols-[minmax(0,1fr)_minmax(16rem,.9fr)] md:gap-20 md:py-24-caption">
+                        <div class="flex min-h-[4.75rem] items-center justify-between gap-4 px-2 py-4">
                             <div class="grid gap-2"><span class="app-skeleton h-3 w-32"></span><span class="app-skeleton h-4 w-24"></span></div>
                             <span class="app-skeleton h-3 w-20"></span>
                         </div>
@@ -194,7 +194,7 @@
                     <div class="mb-8 flex items-end justify-between gap-4"><div class="grid gap-3"><span class="app-skeleton h-3 w-24"></span><span class="app-skeleton h-8 w-40"></span></div><span class="app-skeleton h-4 w-20"></span></div>
                     <div class="grid grid-cols-1 gap-5 md:grid-cols-3" aria-hidden="true">
                         @foreach (range(1, 3) as $item)
-                            <article class="py-16-card"><a href="#" tabindex="-1" class="block"><div class="flex aspect-[4/3] items-center justify-center overflow-hidden bg-surface-muted p-3"><span class="app-skeleton aspect-[4/3] w-full"></span></div><div class="grid gap-2 p-4"><span class="app-skeleton h-5 w-20"></span><span class="app-skeleton h-6 w-4/5"></span><span class="app-skeleton h-4 w-2/5"></span><span class="app-skeleton h-4 w-1/3"></span></div></a></article>
+                            <article class="min-w-0 border border-border bg-paper"><a href="#" tabindex="-1" class="block"><div class="flex aspect-[4/3] items-center justify-center overflow-hidden bg-surface-muted p-3"><span class="app-skeleton aspect-[4/3] w-full"></span></div><div class="grid gap-2 p-4"><span class="app-skeleton h-5 w-20"></span><span class="app-skeleton h-6 w-4/5"></span><span class="app-skeleton h-4 w-2/5"></span><span class="app-skeleton h-4 w-1/3"></span></div></a></article>
                         @endforeach
                     </div>
                 </section>
