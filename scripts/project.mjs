@@ -420,6 +420,7 @@ async function startDevelopmentLan() {
 
 async function startLanPreview() {
     const host = requireLanHost();
+    await artisan('config:clear');
     console.log('[project] Laravel build preview: http://' + host + ':8000');
     return run(php, ['artisan', 'serve', '--host=0.0.0.0', '--port=8000'], { env: lanEnvironment(host) });
 }
