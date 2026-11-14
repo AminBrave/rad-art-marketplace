@@ -31,6 +31,15 @@ class QualityReportTests(unittest.TestCase):
             self.assertIsNone(result["counts"])
             self.assertIn("not verified", result["reason"])
 
+    def test_invalid_junit_is_stale(self):
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory) / "browser-junit.xml"
+            report.write_text("<testsuites><broken></testsuites>", encoding="utf-8")
+            result = summarize_suite("Browser", "browser-junit.xml", Path(directory), 100, False, None)
+            self.assertEqual(result["status"], "STALE")
+            self.assertIsNone(result["counts"])
+            self.assertIn("invalid JUnit XML", result["reason"])
+
     def test_report_is_current_only_for_clean_current_snapshot(self):
         self.assertEqual(freshness(101, 100, False, None)[0], "CURRENT")
         self.assertEqual(freshness(99, 100, False, None)[0], "STALE")
