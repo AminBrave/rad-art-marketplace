@@ -66,8 +66,8 @@ function AppRoutes() {
                     <Route path="/login" element={withRouteFallback(<AuthPage />)} />
                     <Route path="/register" element={withRouteFallback(<AuthPage initialMode="register" />)} />
                     <Route path="/unauthorized" element={<UnauthorizedPage />} />
-                    <Route path="/dashboard/artist/messages" element={<RequireRole roles={['artist']}><MessagingCenter role="artist" standalone /></RequireRole>} />
-                    <Route path="/dashboard/buyer/messages" element={<RequireRole roles={['buyer']}><MessagingCenter role="buyer" standalone /></RequireRole>} />
+                    <Route path="/dashboard/artist/messages" element={<RequireRole roles={['artist']}>{withRouteFallback(<MessagingCenter role="artist" standalone />)}</RequireRole>} />
+                    <Route path="/dashboard/buyer/messages" element={<RequireRole roles={['buyer']}>{withRouteFallback(<MessagingCenter role="buyer" standalone />)}</RequireRole>} />
                 </Route>
                 <Route path="/dashboard" element={<RequireAuth><DashboardIndex /></RequireAuth>} />
                 <Route path="/dashboard/artist" element={<RequireRole roles={['artist']}><ArtistWorkspaceLayout /></RequireRole>}>
