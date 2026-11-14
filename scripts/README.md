@@ -68,7 +68,7 @@ The normal `dev`, `dev:https`, `dev:browser` and `preview` commands keep their e
 - Bash: `RAD_LAN_HOST=192.168.1.25 npm run dev:lan`
 - PowerShell: `$env:RAD_LAN_HOST="192.168.1.25"; npm run dev:lan`
 
-Replace the example address with the IPv4 address assigned to the development computer. The LAN commands reject missing, loopback and wildcard addresses; they bind the servers to all network interfaces but advertise only the supplied address.
+Replace the example address with the IPv4 address assigned to the development computer. The LAN commands reject missing and non-private IPv4 addresses; they bind the servers to all network interfaces but advertise only the supplied private address.
 
 | Command | Mobile URL | Notes |
 |---|---|---|
