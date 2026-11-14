@@ -18,8 +18,12 @@ const pythonArgs = (args) => isWindows ? ['-3', ...args] : args;
 function requireLanHost() {
     const host = process.env.RAD_LAN_HOST?.trim();
     if (!host) throw new Error('Set RAD_LAN_HOST to this computer’s LAN IPv4 address before starting a LAN workflow.');
-    if (isIP(host) !== 4 || host === '0.0.0.0' || host.startsWith('127.')) {
-        throw new Error('RAD_LAN_HOST must be this computer’s reachable LAN IPv4 address (not a bind address or loopback address).');
+    const octets = host.split('.').map(Number);
+    const isPrivateLanAddress = octets[0] === 10
+        || (octets[0] === 172 && octets[1] >= 16 && octets[1] <= 31)
+        || (octets[0] === 192 && octets[1] === 168);
+    if (isIP(host) !== 4 || !isPrivateLanAddress) {
+        throw new Error('RAD_LAN_HOST must be this computer’s private LAN IPv4 address (10/8, 172.16/12 or 192.168/16).');
     }
     return host;
 }
@@ -402,6 +406,7 @@ async function startBrowserDevelopment(lanHost = null) {
     console.log('[project] Cache, sessions, compiled views and uploaded files are isolated under storage/*/browser-testing.');
     return startServices(services);
 }
+
 async function startDevelopmentLan() {
     const host = requireLanHost();
     await artisan('config:clear');
