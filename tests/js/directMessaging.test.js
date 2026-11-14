@@ -57,7 +57,7 @@ test('messaging uses a dedicated viewport page with only the main site header an
     assert.ok(messaging.includes('overflow-y-auto overscroll-contain [scrollbar-gutter:stable]'));
     assert.ok(messaging.includes('px-3 py-3 sm:gap-3 sm:px-5 sm:py-5'));
     assert.ok(workspaceCss.includes('.ra-chat-page {'));
-    assert.ok(workspaceCss.includes('height: calc(100dvh - var(--site-header-height, 4.5rem))'));
+    assert.ok(workspaceCss.includes('height: calc(100dvh - var(--site-header-height, 4.5rem) - 4.5rem - env(safe-area-inset-bottom, 0px))'));
 });
 
 test('conversation history uses incremental synchronization and stable older-message cursors', () => {
