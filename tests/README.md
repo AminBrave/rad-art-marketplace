@@ -22,6 +22,7 @@ tests/
 │   ├── Database/                  # Constraints and relational invariants
 │   └── Storage/                   # Filesystem and rollback behavior
 ├── js/                            # Node test runner, React SSR and frontend contracts
+├── python/                        # Focused tests for repository quality-reporting tools
 ├── browser/                       # Playwright end-to-end journeys
 │   ├── accessibility/             # Browser accessibility checks and helpers
 │   ├── test_artist_directory_resilience.py # Empty/error/retry and keyboard search journeys
