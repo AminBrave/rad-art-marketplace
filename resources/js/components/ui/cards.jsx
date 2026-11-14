@@ -12,7 +12,7 @@ export function ArtworkCard({ artwork, className = '' }) {
         <article className={`group min-w-0 ${className}`}>
             <Link to={`/artworks/${artwork.slug}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus">
                 <div className="relative overflow-hidden bg-surface-muted">
-                    <div className="ra-artwork-frame aspect-[4/5] bg-surface-muted p-0">
+                    <div className="flex aspect-[4/5] items-center justify-center bg-surface-muted p-0">
                         <MediaImage src={artwork.image_url} alt={title} className="h-full w-full" imageClassName="object-contain transition-transform duration-300 group-hover:scale-[1.02]" />
                     </div>
                     <span aria-hidden="true" className="pointer-events-none absolute inset-0 border border-ink/5 transition-colors group-hover:border-terracotta/50" />
