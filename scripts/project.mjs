@@ -4,6 +4,7 @@ import { copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, rmSync, w
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isIP } from 'node:net';
+import { networkInterfaces } from 'node:os';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 process.chdir(root);
@@ -15,21 +16,63 @@ const composer = isWindows ? 'composer.bat' : 'composer';
 const python = isWindows ? 'py' : 'python3';
 const pythonArgs = (args) => isWindows ? ['-3', ...args] : args;
 
+function isPrivateLanAddress(host) {
+    if (isIP(host) !== 4) return false;
+    const [first, second] = host.split('.').map(Number);
+    return first === 10
+        || (first === 172 && second >= 16 && second <= 31)
+        || (first === 192 && second === 168);
+}
+
+function assignedPrivateIpv4Addresses() {
+    return Object.entries(networkInterfaces()).flatMap(([name, addresses]) =>
+        (addresses ?? [])
+            .filter((address) => !address.internal
+                && (address.family === 'IPv4' || address.family === 4)
+                && isPrivateLanAddress(address.address))
+            .map((address) => ({ name, address: address.address })),
+    );
+}
+
 function requireLanHost() {
-    const host = process.env.RAD_LAN_HOST?.trim();
-    if (!host) throw new Error('Set RAD_LAN_HOST to this computer’s LAN IPv4 address before starting a LAN workflow.');
-    const octets = host.split('.').map(Number);
-    const isPrivateLanAddress = octets[0] === 10
-        || (octets[0] === 172 && octets[1] >= 16 && octets[1] <= 31)
-        || (octets[0] === 192 && octets[1] === 168);
-    if (isIP(host) !== 4 || !isPrivateLanAddress) {
-        throw new Error('RAD_LAN_HOST must be this computer’s private LAN IPv4 address (10/8, 172.16/12 or 192.168/16).');
+    const assigned = assignedPrivateIpv4Addresses();
+    const configured = process.env.RAD_LAN_HOST?.trim();
+
+    if (configured) {
+        if (!isPrivateLanAddress(configured)) {
+            throw new Error('RAD_LAN_HOST must be a private LAN IPv4 address (10/8, 172.16/12 or 192.168/16).');
+        }
+        if (!assigned.some(({ address }) => address === configured)) {
+            const available = assigned.map(({ name, address }) => `${address} (${name})`).join(', ') || 'none detected';
+            throw new Error(`RAD_LAN_HOST ${configured} is not assigned to this computer. Detected private addresses: ${available}.`);
+        }
+        return configured;
     }
-    return host;
+
+    const virtualInterface = /docker|container|veth|(^|[-_])br[-_]?|virbr|vmnet|vbox|virtual|wsl|tailscale|zerotier|(^|[-_])(tun|tap|wg)([-_]|$)/i;
+    const preferred = assigned.filter(({ name }) => !virtualInterface.test(name));
+    const candidates = preferred.length ? preferred : assigned;
+
+    if (candidates.length === 1) return candidates[0].address;
+
+    if (candidates.length === 0) {
+        throw new Error('No private LAN IPv4 address was detected. Connect this computer to your LAN or set RAD_LAN_HOST to an address assigned to one of its network interfaces.');
+    }
+
+    const choices = candidates.map(({ name, address }) => `${address} (${name})`).join(', ');
+    throw new Error(`Multiple LAN addresses were detected: ${choices}. Set RAD_LAN_HOST to the address other devices use to reach this computer.`);
 }
 
 function lanEnvironment(host) {
-    return { ...process.env, APP_ENV: 'local', APP_URL: 'http://' + host + ':8000', SESSION_DOMAIN: '', SESSION_SECURE_COOKIE: 'false', VITE_DEV_LAN_HOST: host };
+    return {
+        ...process.env,
+        APP_ENV: 'local',
+        APP_URL: 'https://rad.localhost',
+        SESSION_DOMAIN: '',
+        SESSION_SECURE_COOKIE: 'true',
+        VITE_DEV_LAN_HOST: host,
+        RAD_LAN_HOST: host,
+    };
 }
 
 function run(command, args = [], options = {}) {
@@ -407,55 +450,65 @@ async function startBrowserDevelopment(lanHost = null) {
     return startServices(services);
 }
 
-async function startDevelopmentLan() {
+async function startDevelopment() {
     const host = requireLanHost();
+    const env = lanEnvironment(host);
+
+    // Local Caddy is the only network-facing service; app and Vite stay on loopback.
     await artisan('config:clear');
     await artisan('route:clear');
-    console.log('[project] LAN development: http://' + host + ':8000 (Vite HMR: ' + host + ':5173)');
+
+    console.log('[project] Local development: https://rad.localhost');
+    console.log('[project] LAN development: https://' + host);
+    console.log('[project] Optional LAN hostname: https://rad.home.arpa (configure local DNS first).');
+    console.log('[project] Caddy terminates HTTPS on port 443; Laravel and Vite remain on loopback.');
+
     return startServices([
-        { label: 'Laravel (LAN)', command: php, args: ['artisan', 'serve', '--host=0.0.0.0', '--port=8000'], env: lanEnvironment(host) },
-        { label: 'Vite (LAN)', command: npm, args: ['exec', '--', 'vite', '--mode', 'lan'], env: lanEnvironment(host) },
+        {
+            label: 'Laravel (loopback)',
+            command: php,
+            args: ['artisan', 'serve', '--host=127.0.0.1', '--port=8000'],
+            env,
+        },
+        {
+            label: 'Vite (loopback, LAN-aware HMR)',
+            command: npm,
+            args: ['exec', '--', 'vite', '--mode', 'lan'],
+            env,
+        },
+        {
+            label: 'Caddy HTTPS reverse proxy (local + LAN)',
+            command: 'caddy',
+            args: ['run', '--config', 'Caddyfile.dev'],
+            env,
+        },
     ]);
 }
 
-async function startLanPreview() {
+async function startPreview() {
     const host = requireLanHost();
-    await artisan('config:clear');
-    console.log('[project] Laravel build preview: http://' + host + ':8000');
-    return run(php, ['artisan', 'serve', '--host=0.0.0.0', '--port=8000'], { env: lanEnvironment(host) });
-}
+    const env = lanEnvironment(host);
 
-async function startDevelopment(secure = false) {
-    // Local development must not inherit stale production config from a previous optimize run.
     await artisan('config:clear');
-    await artisan('route:clear');
 
-    const services = [
+    console.log('[project] Production-build preview: https://rad.localhost');
+    console.log('[project] LAN preview: https://' + host);
+    console.log('[project] Optional LAN hostname: https://rad.home.arpa (configure local DNS first).');
+
+    return startServices([
         {
-            label: 'Laravel',
+            label: 'Laravel production-build preview (loopback)',
             command: php,
             args: ['artisan', 'serve', '--host=127.0.0.1', '--port=8000'],
-            env: { ...process.env, APP_ENV: 'local' },
+            env,
         },
         {
-            label: 'Vite',
-            command: npm,
-            args: secure ? ['exec', '--', 'vite', '--mode', 'https'] : ['exec', '--', 'vite', '--host', '127.0.0.1'],
-        },
-    ];
-
-    if (secure) {
-        services.push({
-            label: 'Caddy local HTTPS proxy',
+            label: 'Caddy HTTPS reverse proxy (local + LAN)',
             command: 'caddy',
-            args: ['run', '--config', 'Caddyfile.dev'],
-        });
-        console.log('[project] Local HTTPS: https://rad.localhost (Caddy must be installed and trusted).');
-    } else {
-        console.log('[project] Laravel: http://127.0.0.1:8000 | Vite: http://127.0.0.1:5173');
-    }
-
-    return startServices(services);
+            args: ['run', '--config', 'Caddyfile.preview'],
+            env,
+        },
+    ]);
 }
 
 function usage() {
@@ -468,12 +521,9 @@ Setup
   setup                 Install Composer/npm dependencies and create .env if missing
 
 Development
-  dev                   Start Laravel + Vite over local HTTP
-  dev:lan               Start Laravel + Vite for a specified LAN IPv4 address
-  preview:lan           Serve the existing production build on the LAN
-  dev:https             Start Laravel + Vite + Caddy over local HTTPS
-  dev:browser           Start the isolated browser-test application + Vite + Caddy
-  dev:browser:lan       Start the isolated browser-test app for manual LAN device testing
+  dev                   Start Laravel + Vite behind HTTPS on localhost and the LAN
+  preview               Serve the production build behind HTTPS on localhost and the LAN
+  dev:browser           Start the isolated browser-test application over loopback HTTPS only
 
 Database
   db:sqlite:init        Create database/database.sqlite if it does not exist
@@ -525,25 +575,16 @@ try {
             initializeSqlite();
             break;
         case 'dev':
-            await startDevelopment(false);
+            await startDevelopment();
             break;
-        case 'dev:https':
-            await startDevelopment(true);
-            break;
-        case 'dev:lan':
-            await startDevelopmentLan();
-            break;
-        case 'preview:lan':
-            await startLanPreview();
+        case 'preview':
+            await startPreview();
             break;
         case 'browser:prepare':
             await prepareBrowserEnvironment();
             break;
         case 'dev:browser':
             await startBrowserDevelopment();
-            break;
-        case 'dev:browser:lan':
-            await startBrowserDevelopment(requireLanHost());
             break;
         case 'db:migrate':
             await artisan('migrate');
