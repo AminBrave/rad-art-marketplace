@@ -35,6 +35,9 @@ export default defineConfig(({ mode }) => {
                 // Laravel's hot file uses this origin for every browser, including rad.localhost.
                 origin: `https://${lanHost}`,
                 allowedHosts: [lanHost, 'rad.localhost', 'rad.home.arpa'],
+                cors: {
+                    origin: ['https://rad.localhost', 'https://rad.home.arpa', `https://${lanHost}`],
+                },
                 hmr: {
                     host: lanHost,
                     protocol: 'wss',
