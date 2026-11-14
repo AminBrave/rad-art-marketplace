@@ -44,7 +44,6 @@ test('messaging uses a dedicated viewport page with only the main site header an
     assert.ok(!layouts.includes("{ to: '/artists', label: 'هنرمندان' }"));
     assert.ok(layouts.includes('فضای هنرمند'));
     assert.ok(!layouts.includes('ra-workspace-header'));
-    assert.ok(!layouts.includes('ra-workspace-header'));
     assert.ok(!layouts.includes('ra-workspace-sidebar'));
     assert.ok(workspaceCss.includes('.ra-workspace-bottom-nav {'));
     assert.ok(workspaceCss.includes('position: fixed;'));
