@@ -147,7 +147,7 @@ test('active frontend surfaces use semantic RAD colors and avoid raw palette uti
     for (const source of sources) {
         assert.equal(rawPalette.test(source), false, 'Application surfaces must use semantic RAD color roles.');
         assert.equal(tokenOpacity.test(source), false, 'Semantic token opacity must use a valid color-mix utility.');
-        assert.doesNotMatch(source, /\\bra-[\\w-]+/, 'Application components must not depend on legacy RAD CSS selectors.');
+        assert.doesNotMatch(source, /\bra-[\w-]+/, 'Application components must not depend on legacy RAD CSS selectors.');
     }
 });
 
