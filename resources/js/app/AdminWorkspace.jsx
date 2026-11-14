@@ -131,7 +131,7 @@ export function AdminArtworkModeration() {
     const page = Math.max(1, Number(params.get('page')) || 1);
     const [notes, setNotes] = useState({});
     const [busyId, setBusyId] = useState(null);
-    const [error, setError] = useState(''), [message, setMessage] = useState('');
+    const [actionError, setActionError] = useState(''), [message, setMessage] = useState('');
     const queryClient = useQueryClient();
     const queryKey = ['admin', 'artworks', user?.id, status, page];
     const artworksQuery = useQuery({
@@ -145,14 +145,14 @@ export function AdminArtworkModeration() {
     const result = artworksQuery.data;
     const loading = artworksQuery.isPending;
     const load = () => artworksQuery.refetch();
-    if (artworksQuery.isError && !error) setError(artworksQuery.error.response?.status === 403
-        ? 'این حساب اجازه مشاهده صف بررسی آثار را ندارد.'
-        : 'دریافت آثار انجام نشد. دوباره تلاش کنید.');
+    const error = actionError || (artworksQuery.isError
+        ? (artworksQuery.error.response?.status === 403 ? 'این حساب اجازه مشاهده صف بررسی آثار را ندارد.' : 'دریافت آثار انجام نشد. دوباره تلاش کنید.')
+        : '');
     const chooseStatus = (value) => { setMessage(''); setParams(value === 'pending_review' ? {} : { status: value }); };
     const changePage = (next) => setParams({ ...(status !== 'pending_review' ? { status } : {}), ...(next > 1 ? { page: String(next) } : {}) });
     const moderate = async (artwork, action) => {
         const note = (notes[artwork.id] ?? '').trim();
-        if (action !== 'approve' && !note) { setError('برای رد اثر یا درخواست اصلاح، نوشتن توضیح الزامی است.'); return; }
+        if (action !== 'approve' && !note) { setActionError('برای رد اثر یا درخواست اصلاح، نوشتن توضیح الزامی است.'); return; }
         setBusyId(artwork.id); setError(''); setMessage('');
         try {
             const { data } = await axios.patch(api + '/artworks/' + artwork.id + '/moderation', { action, ...(action === 'approve' ? {} : { note }) });
