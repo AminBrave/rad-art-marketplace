@@ -41,8 +41,8 @@ test('messaging headers stay aligned and the composer and artwork thumbnails rem
     assert.ok(messaging.includes('overflow-clip rounded-2xl'));
     assert.ok(!messaging.includes('inboxHeadingRef'));
     assert.ok(!messaging.includes('--inbox-heading-height'));
-    assert.ok(messaging.includes('lg:sticky lg:top-[calc(var(--workspace-header-height,4.5rem)_+_0.75rem)] lg:z-30'));
-    assert.ok(messaging.includes('relative z-30 border-b border-border bg-white shadow-soft'));
+    assert.ok(messaging.includes('sticky top-[calc(var(--workspace-header-height,4.5rem)_+_0.75rem)] z-30 grid'));
+    assert.ok(messaging.includes('relative z-30 min-h-0 border-b border-border bg-white shadow-soft'));
     assert.ok(!messaging.includes('var(--inbox-heading-height'));
     assert.ok(messaging.includes('pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2'));
     assert.ok(messaging.includes('max-h-28 min-h-9'));
@@ -50,7 +50,7 @@ test('messaging headers stay aligned and the composer and artwork thumbnails rem
     assert.ok(messaging.includes('absolute inset-0 block h-full w-full object-cover object-center'));
     assert.ok(messaging.includes('Math.min(textarea.scrollHeight, 112)'));
     assert.ok(messaging.includes('const [conversationHeaderVisible, setConversationHeaderVisible] = useState(true)'));
-    assert.ok(messaging.includes("'grid min-h-0 overflow-hidden transition-[grid-template-rows,opacity]"));
+    assert.ok(messaging.includes("'sticky top-[calc(var(--workspace-header-height,4.5rem)_+_0.75rem)] z-30 grid min-h-0 shrink-0 overflow-hidden transition-[grid-template-rows,opacity]"));
     assert.ok(messaging.includes('invisible pointer-events-none grid-rows-[0fr] opacity-0'));
     assert.ok(messaging.includes('lg:visible lg:pointer-events-auto lg:grid-rows-[1fr] lg:overflow-visible lg:opacity-100'));
     assert.ok(!messaging.includes('aria-hidden={!conversationHeaderVisible}'));
