@@ -66,18 +66,18 @@ function AppRoutes() {
                     <Route path="/login" element={withRouteFallback(<AuthPage />)} />
                     <Route path="/register" element={withRouteFallback(<AuthPage initialMode="register" />)} />
                     <Route path="/unauthorized" element={<UnauthorizedPage />} />
+                    <Route path="/dashboard/artist/messages" element={<RequireRole roles={['artist']}><MessagingCenter role="artist" standalone /></RequireRole>} />
+                    <Route path="/dashboard/buyer/messages" element={<RequireRole roles={['buyer']}><MessagingCenter role="buyer" standalone /></RequireRole>} />
                 </Route>
                 <Route path="/dashboard" element={<RequireAuth><DashboardIndex /></RequireAuth>} />
                 <Route path="/dashboard/artist" element={<RequireRole roles={['artist']}><ArtistWorkspaceLayout /></RequireRole>}>
                     <Route index element={withRouteFallback(<ArtistWorkspaceOverview />)} />
                     <Route path="profile" element={<ArtistProfileSettings />} />
                     <Route path="artworks" element={<ArtistArtworkPage />} />
-                    <Route path="messages" element={withRouteFallback(<MessagingCenter role="artist" />)} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
                 <Route path="/dashboard/buyer" element={<RequireRole roles={['buyer']}><BuyerWorkspaceLayout /></RequireRole>}>
                     <Route index element={withRouteFallback(<BuyerDashboardHome />)} />
-                    <Route path="messages" element={withRouteFallback(<MessagingCenter role="buyer" />)} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
                 <Route path="/admin" element={<RequireRole roles={['admin']}><AdminWorkspaceLayout /></RequireRole>}>
