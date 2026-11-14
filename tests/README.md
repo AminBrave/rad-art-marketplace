@@ -131,3 +131,9 @@ Do not add empty directories or placeholder test classes. Keep the current PHPUn
 - A missing report is not a passing report. Delete stale reports before a run (the existing runner already does this).
 - Report separately: automated tests, lint/static analysis, build, accessibility scan, performance measurement and manual review.
 - Always label verification that was not executed as **Not run**; never infer success from source edits.
+
+### Cross-suite report and release evidence
+
+Use `npm run test:report` after the relevant suites have produced JUnit files. The generated `build/test-reports/quality-summary.md` reports backend, frontend and browser counts and links to their detailed output. `CURRENT` requires a parseable report generated at or after Git HEAD with no project changes in the worktree; `STALE` means that freshness cannot be established or the report is invalid/older than HEAD; `MISSING` means that suite has no report. A missing or stale report is not a pass. The summary deliberately does not infer lint, build, accessibility, visual, performance or manual-review status from test reports.
+
+Run `npm run test:reporting` to exercise the report parser and freshness rules. This focused suite is separate from product behavior tests.
