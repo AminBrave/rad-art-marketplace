@@ -66,27 +66,27 @@ function AppRoutes() {
                     <Route path="/login" element={withRouteFallback(<AuthPage />)} />
                     <Route path="/register" element={withRouteFallback(<AuthPage initialMode="register" />)} />
                     <Route path="/unauthorized" element={<UnauthorizedPage />} />
+                    <Route path="/dashboard" element={<RequireAuth><DashboardIndex /></RequireAuth>} />
                     <Route path="/dashboard/artist/messages" element={<RequireRole roles={['artist']}>{withRouteFallback(<MessagingCenter role="artist" standalone />)}</RequireRole>} />
                     <Route path="/dashboard/buyer/messages" element={<RequireRole roles={['buyer']}>{withRouteFallback(<MessagingCenter role="buyer" standalone />)}</RequireRole>} />
-                </Route>
-                <Route path="/dashboard" element={<RequireAuth><DashboardIndex /></RequireAuth>} />
-                <Route path="/dashboard/artist" element={<RequireRole roles={['artist']}><ArtistWorkspaceLayout /></RequireRole>}>
-                    <Route index element={withRouteFallback(<ArtistWorkspaceOverview />)} />
-                    <Route path="profile" element={<ArtistProfileSettings />} />
-                    <Route path="artworks" element={<ArtistArtworkPage />} />
-                    <Route path="*" element={<NotFoundPage />} />
-                </Route>
-                <Route path="/dashboard/buyer" element={<RequireRole roles={['buyer']}><BuyerWorkspaceLayout /></RequireRole>}>
-                    <Route index element={withRouteFallback(<BuyerDashboardHome />)} />
-                    <Route path="*" element={<NotFoundPage />} />
-                </Route>
-                <Route path="/admin" element={<RequireRole roles={['admin']}><AdminWorkspaceLayout /></RequireRole>}>
-                    <Route index element={withRouteFallback(<AdminDashboardHome />)} />
-                    <Route path="users" element={withRouteFallback(<AdminUsersPage />)} />
-                    <Route path="artworks" element={withRouteFallback(<AdminArtworkModeration />)} />
-                    <Route path="message-reports" element={withRouteFallback(<AdminMessageReportsPage />)} />
-                    <Route path="editorial" element={withRouteFallback(<AdminEditorialPage />)} />
-                    <Route path="*" element={<NotFoundPage />} />
+                    <Route path="/dashboard/artist" element={<RequireRole roles={['artist']}><ArtistWorkspaceLayout /></RequireRole>}>
+                        <Route index element={withRouteFallback(<ArtistWorkspaceOverview />)} />
+                        <Route path="profile" element={<ArtistProfileSettings />} />
+                        <Route path="artworks" element={<ArtistArtworkPage />} />
+                        <Route path="*" element={<NotFoundPage />} />
+                    </Route>
+                    <Route path="/dashboard/buyer" element={<RequireRole roles={['buyer']}><BuyerWorkspaceLayout /></RequireRole>}>
+                        <Route index element={withRouteFallback(<BuyerDashboardHome />)} />
+                        <Route path="*" element={<NotFoundPage />} />
+                    </Route>
+                    <Route path="/admin" element={<RequireRole roles={['admin']}><AdminWorkspaceLayout /></RequireRole>}>
+                        <Route index element={withRouteFallback(<AdminDashboardHome />)} />
+                        <Route path="users" element={withRouteFallback(<AdminUsersPage />)} />
+                        <Route path="artworks" element={withRouteFallback(<AdminArtworkModeration />)} />
+                        <Route path="message-reports" element={withRouteFallback(<AdminMessageReportsPage />)} />
+                        <Route path="editorial" element={withRouteFallback(<AdminEditorialPage />)} />
+                        <Route path="*" element={<NotFoundPage />} />
+                    </Route>
                 </Route>
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
