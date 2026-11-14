@@ -459,7 +459,10 @@ export default function MessagingCenter({ role }) {
             const previous = pendingScrollRestoreRef.current;
             pendingScrollRestoreRef.current = null;
             const frame = window.requestAnimationFrame(() => {
-                container.scrollTop = previous.scrollTop + (container.scrollHeight - previous.scrollHeight);
+                const restoredScrollTop = previous.scrollTop + (container.scrollHeight - previous.scrollHeight);
+                container.scrollTop = restoredScrollTop;
+                previousScrollTopRef.current = restoredScrollTop;
+                scrollDirectionRef.current = { direction: 0, distance: 0 };
             });
             return () => window.cancelAnimationFrame(frame);
         }
