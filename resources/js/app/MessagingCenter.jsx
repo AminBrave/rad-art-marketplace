@@ -780,7 +780,7 @@ export default function MessagingCenter({ role }) {
                                     const movement = currentY - touchStartYRef.current;
                                     if (Math.abs(movement) >= 8) {
                                         setConversationHeaderVisible(movement > 0);
-                                        touchStartYRef.current = currentY;
+                                        touchStartYRef.current = null;
                                     }
                                 }}
                                 onTouchEnd={() => { touchStartYRef.current = null; }}
