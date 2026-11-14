@@ -50,20 +50,20 @@ function requireLanHost() {
     }
 
     const virtualInterface = /docker|container|veth|(^|[-_])br[-_]?|virbr|vmnet|vbox|virtual|wsl|tailscale|zerotier|(^|[-_])(tun|tap|wg)([-_]|$)/i;
-    const preferred = assigned.filter(({ name }) => !virtualInterface.test(name));
-    const candidates = preferred.length ? preferred : assigned;
+    const candidates = assigned.filter(({ name }) => !virtualInterface.test(name));
 
     if (candidates.length === 1) return candidates[0].address;
 
     if (candidates.length === 0) {
-        throw new Error('No private LAN IPv4 address was detected. Connect this computer to your LAN or set RAD_LAN_HOST to an address assigned to one of its network interfaces.');
+        const available = assigned.map(({ name, address }) => `${address} (${name})`).join(', ') || 'none detected';
+        throw new Error(`No suitable LAN IPv4 address was detected. Available private addresses: ${available}. Connect this computer to your LAN or set RAD_LAN_HOST to its reachable private address.`);
     }
 
     const choices = candidates.map(({ name, address }) => `${address} (${name})`).join(', ');
     throw new Error(`Multiple LAN addresses were detected: ${choices}. Set RAD_LAN_HOST to the address other devices use to reach this computer.`);
 }
 
-function lanEnvironment(host) {
+function httpsDevelopmentEnvironment(host) {
     return {
         ...process.env,
         APP_ENV: 'local',
@@ -191,14 +191,14 @@ function ensureReportDirectory() {
     mkdirSync(resolve(root, 'storage', 'framework', 'testing', 'views'), { recursive: true });
 }
 
-function browserTestEnvironment(lanHost = null) {
+function browserTestEnvironment() {
     const runtimeDir = resolve(root, 'storage', 'framework', 'browser-testing');
     return {
         ...process.env,
         APP_ENV: 'local',
         APP_KEY: 'base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
         APP_DEBUG: 'true',
-        APP_URL: lanHost ? 'http://' + lanHost + ':8000' : 'https://rad.localhost',
+        APP_URL: 'https://rad.localhost',
         APP_TIMEZONE: 'Asia/Tehran',
         APP_LOCALE: 'fa',
         APP_FALLBACK_LOCALE: 'en',
@@ -213,8 +213,8 @@ function browserTestEnvironment(lanHost = null) {
         SESSION_DRIVER: 'file',
         SESSION_FILES: resolve(runtimeDir, 'sessions'),
         SESSION_COOKIE: 'rad_browser_test_session',
-        SESSION_DOMAIN: lanHost ? '' : 'rad.localhost',
-        SESSION_SECURE_COOKIE: lanHost ? 'false' : 'true',
+        SESSION_DOMAIN: 'rad.localhost',
+        SESSION_SECURE_COOKIE: 'true',
         SESSION_SAME_SITE: 'lax',
         MAIL_MAILER: 'array',
         QUEUE_CONNECTION: 'sync',
@@ -450,7 +450,7 @@ async function startBrowserDevelopment() {
 
 async function startDevelopment() {
     const host = requireLanHost();
-    const env = lanEnvironment(host);
+    const env = httpsDevelopmentEnvironment(host);
 
     // Local Caddy is the only network-facing service; app and Vite stay on loopback.
     await artisan('config:clear');
