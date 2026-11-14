@@ -557,7 +557,7 @@ Production cache maintenance
   prod:optimize         Cache Laravel configuration, routes, events and views
   prod:clear            Clear Laravel optimization caches
 
-Builds and one-command tools are exposed directly by package.json.
+Build and one-command tools are exposed directly by package.json; preview is orchestrated with Caddy.
 `);
 }
 
