@@ -204,7 +204,6 @@ function NotificationBell({ user }) {
 
 export function WorkspaceLayout({ title, links, outletContext }) {
     const { user, logout } = useAuth();
-    const { pathname } = useLocation();
     const [logoutError, setLogoutError] = useState('');
     const handleLogout = async () => { setLogoutError(''); try { await logout(); } catch { setLogoutError('خروج انجام نشد. اتصال را بررسی کنید.'); } };
     return <div className="ra-workspace-shell min-h-screen bg-canvas text-ink" dir="rtl">
