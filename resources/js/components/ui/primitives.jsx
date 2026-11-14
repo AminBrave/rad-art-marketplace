@@ -6,7 +6,7 @@ const buttonVariants = {
     secondary: 'border-border bg-surface-muted text-ink hover:border-border-strong hover:bg-border',
     outline: 'border-border-strong bg-paper text-ink hover:border-terracotta hover:text-terracotta-strong',
     ghost: 'border-transparent bg-transparent text-ink hover:bg-surface-muted',
-    danger: 'border-transparent bg-danger text-inverse hover:bg-danger',
+    danger: 'border-transparent bg-danger text-inverse hover:brightness-95',
 };
 const buttonSizes = {
     sm: 'min-h-9 px-3 py-1 text-xs',
@@ -49,7 +49,7 @@ const badgeVariants = {
     accent: 'bg-accent-surface text-terracotta-strong',
 };
 export function Badge({ children, variant = 'neutral', className = '' }) {
-    return <span className={cn('inline-flex items-center gap-1 rounded-sm px-3 py-1 text-xs font-bold leading-6', badgeVariants[variant] ?? badgeVariants.neutral, className)}>{children}</span>;
+    return <span className={cn('inline-flex items-center gap-1 rounded-sm px-3 py-1 text-xs font-bold leading-[1.5]', badgeVariants[variant] ?? badgeVariants.neutral, className)}>{children}</span>;
 }
 
 const pageWidths = {
