@@ -213,7 +213,7 @@ Each run refreshes these files under `build/test-reports/`:
 | `browser-junit.xml` | JUnit test counts and per-test results |
 | `browser-run.log` | Terminal output and full Python unittest tracebacks |
 | `browser-debug.json` | Python/platform/Playwright versions, selected tests, timings, failures and exit status |
-| `browser-artifacts/` | Failure screenshots, Playwright traces and per-test debug data when captured |
+| `browser-artifacts/` | Automatic failure screenshots, Playwright traces and per-test debug data for browser contexts created during a failed test; explicitly instrumented tests also save focused artifacts |
 
 To inspect a captured Playwright trace:
 
@@ -221,7 +221,7 @@ To inspect a captured Playwright trace:
 python -m playwright show-trace build/test-reports/browser-artifacts/path/to/trace.zip
 ```
 
-Use the exact trace path printed or referenced by the failure output. Not every test failure necessarily produces a trace; the log and JSON summary remain useful even when no trace exists.
+Use the exact trace path printed or referenced by the failure output. The runner automatically starts tracing for every browser context created during a test and preserves screenshots/traces when that test fails. Passing-test temporary artifacts are removed. A trace may still be unavailable if Chromium or the context fails before tracing can start; the JUnit traceback and run log remain the fallback. Some explicitly instrumented tests also save richer event timelines.
 
 ## 6. Run complete test and quality workflows
 
