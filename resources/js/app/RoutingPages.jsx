@@ -23,6 +23,18 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
     if (pathname === '/') return <HomePageSkeleton />;
     if (isArtworkDetail) return <ArtworkDetailSkeleton />;
     if (isArtistProfile) return <ArtistProfileSkeleton />;
+    if (/^\\/dashboard\\/(artist|buyer)\\/messages$/.test(pathname)) {
+        return (
+            <section className="ra-chat-page grid min-h-0 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden border-y border-border bg-white md:grid-cols-[minmax(17rem,360px)_minmax(0,1fr)]" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
+                <aside className="min-h-0 overflow-hidden border-l border-border"><ConversationInboxSkeleton count={6} /></aside>
+                <div className="hidden min-h-0 flex-col md:flex">
+                    <div className="flex shrink-0 items-center gap-3 border-b border-border p-4"><LoadingBlock className="h-10 w-10 rounded-full" /><div className="grid gap-2"><LoadingBlock className="h-4 w-40" /><LoadingBlock className="h-3 w-28" /></div></div>
+                    <MessageHistorySkeleton count={4} className="min-h-0 flex-1" />
+                    <div className="shrink-0 border-t border-border p-4"><LoadingBlock className="h-12 w-full rounded-full" /></div>
+                </div>
+            </section>
+        );
+    }
 
     return (
         <div className="mx-auto min-h-[65vh] max-w-7xl px-5 py-10 sm:px-8 lg:px-10" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
@@ -81,15 +93,6 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                     </section>
                     <CollectionCardSkeleton count={6} />
                 </>
-            ) : /^\/(dashboard\/(artist|buyer)\/messages)$/.test(pathname) ? (
-                <section className="grid min-h-[34rem] overflow-hidden border border-border bg-paper md:grid-cols-[minmax(16rem,.36fr)_minmax(0,.64fr)]">
-                    <aside className="min-h-0 border-b border-border md:border-b-0 md:border-l"><ConversationInboxSkeleton count={6} /></aside>
-                    <div className="hidden min-w-0 flex-col justify-between md:flex">
-                        <div className="flex items-center gap-3 border-b border-border p-5"><LoadingBlock className="h-10 w-10 rounded-full" /><div className="grid gap-2"><LoadingBlock className="h-4 w-40" /><LoadingBlock className="h-3 w-28" /></div></div>
-                        <MessageHistorySkeleton count={4} className="flex-1" />
-                        <div className="border-t border-border p-5"><LoadingBlock className="h-12 w-full rounded-full" /></div>
-                    </div>
-                </section>
             ) : pathname === '/admin/artworks' ? (
                 <ArtworkModerationSkeleton count={4} />
             ) : pathname === '/admin/users' ? (
