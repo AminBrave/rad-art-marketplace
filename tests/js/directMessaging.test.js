@@ -4,6 +4,7 @@ import test from 'node:test';
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
 const messaging = read('../../resources/js/app/MessagingCenter.jsx');
+const layouts = read('../../resources/js/app/Layouts.jsx');
 const conversations = read('../../app/Http/Controllers/Api/V1/ConversationController.php');
 const directStart = read('../../app/Http/Controllers/Api/V1/DirectConversationController.php');
 const attachments = read('../../app/Http/Controllers/Api/V1/MessageAttachmentController.php');
@@ -15,6 +16,19 @@ test('message composer supports accessible text entry, IME-safe Enter send and m
     assert.ok(messaging.includes('event.currentTarget.form?.requestSubmit()'));
     assert.ok(messaging.includes('maxLength={5000}'));
     assert.ok(messaging.includes('disabled={sending || safetyLoading || safety.blocked_by_me || safety.blocked_by_other}'));
+});
+
+test('messaging workspace fills the viewport and related artwork chips scroll horizontally in RTL', () => {
+    assert.ok(layouts.includes("'flex h-[100dvh] min-h-0 flex-col overflow-hidden'"));
+    assert.ok(layouts.includes("'h-full min-h-0 overflow-hidden'"));
+    assert.ok(!layouts.includes('ra-workspace-shell { min-height: 100vh'));
+    assert.ok(messaging.includes('flex h-full min-h-0 flex-col gap-3 overflow-hidden'));
+    assert.ok(messaging.includes('grid min-h-0 min-w-0 flex-1'));
+    assert.ok(messaging.includes('flex-nowrap items-center gap-2 overflow-x-auto overscroll-x-contain'));
+    assert.ok(messaging.includes('role="group" aria-label="آثار مرتبط" tabIndex={0}'));
+    assert.ok(messaging.includes('shrink-0 truncate rounded-lg border border-border'));
+    assert.ok(!messaging.includes('h-[calc(100dvh-14rem)]'));
+    assert.ok(!messaging.includes('lg:h-[min(82dvh,900px)]'));
 });
 
 test('conversation history uses incremental synchronization and stable older-message cursors', () => {
