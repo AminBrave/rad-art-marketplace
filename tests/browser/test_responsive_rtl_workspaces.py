@@ -186,9 +186,18 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
                             page.locator("footer").count(), 0,
                             f"Chat page must not render the site footer on {route_path}",
                         )
+                        workspace_nav = page.locator('nav[aria-label="ناوبری فضای کاربری"]')
                         self.assertEqual(
-                            page.locator('nav[aria-label="ناوبری فضای کاربری"]').count(), 0,
-                            f"Chat page must not render dashboard navigation on {route_path}",
+                            workspace_nav.count(), 1,
+                            f"Chat page must keep one persistent workspace navigation on {route_path}",
+                        )
+                        self.assertEqual(
+                            workspace_nav.evaluate("(node) => getComputedStyle(node).position"), "fixed",
+                            f"Workspace navigation must remain fixed on chat pages on {route_path}",
+                        )
+                        self.assertTrue(
+                            workspace_nav.get_by_role("link", name="پیام‌ها").get_attribute("aria-current") == "page",
+                            f"Current chat destination must be announced as active on {route_path}",
                         )
             finally:
                 context.close()
