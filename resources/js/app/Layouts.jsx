@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Bell } from 'lucide-react';
@@ -207,7 +207,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
     const [logoutError, setLogoutError] = useState('');
     const workspaceHeaderRef = useRef(null);
     const [workspaceHeaderHeight, setWorkspaceHeaderHeight] = useState(0);
-    useEffect(() => {
+    useLayoutEffect(() => {
         const header = workspaceHeaderRef.current;
         if (!header) return undefined;
         const measure = () => setWorkspaceHeaderHeight(Math.ceil(header.getBoundingClientRect().height));
