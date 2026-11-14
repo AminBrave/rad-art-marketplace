@@ -146,13 +146,20 @@ def build_report(report_dir: Path, root: Path) -> str:
         )
         lines.append(f"| | | | | | | {suite['reason']} |")
 
+    browser_log = report_dir / "browser-run.log"
+    browser_debug = report_dir / "browser-debug.json"
+    browser_artifacts = report_dir / "browser-artifacts"
+    browser_log_line = "- [Browser execution log](browser-run.log)" if browser_log.is_file() else "- Browser execution log: Not present"
+    browser_debug_line = "- [Structured browser debug summary](browser-debug.json)" if browser_debug.is_file() else "- Browser debug summary: Not present"
+    browser_artifacts_line = "- Failure screenshots and traces: browser-artifacts/" if browser_artifacts.is_dir() else "- Failure screenshots and traces: No artifacts directory present"
+
     lines.extend([
         "",
         "## Browser diagnostics",
         "",
-        "- [Browser execution log](browser-run.log)",
-        "- [Structured browser debug summary](browser-debug.json)",
-        "- Failure screenshots and traces: browser-artifacts/ (when captured)",
+        browser_log_line,
+        browser_debug_line,
+        browser_artifacts_line,
         "",
         "## Freshness contract",
         "",
