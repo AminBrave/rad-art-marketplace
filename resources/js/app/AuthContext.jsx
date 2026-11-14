@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import axios from 'axios';
+import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '../lib/queryClient';
 
 const AuthContext = createContext(null);
@@ -57,10 +58,12 @@ export function AuthProvider({ children }) {
         return () => axios.interceptors.response.eject(interceptorId);
     }, [setUser]);
 
-    const logout = useCallback(async () => {
-        await axios.post('/api/v1/auth/logout');
-        setUser(null);
-    }, [setUser]);
+    const logoutMutation = useMutation({
+        mutationKey: ['auth', 'logout'],
+        mutationFn: () => axios.post('/api/v1/auth/logout'),
+        onSuccess: () => setUser(null),
+    });
+    const logout = useCallback(() => logoutMutation.mutateAsync(), [logoutMutation.mutateAsync]);
 
     const value = useMemo(() => ({
         user,
