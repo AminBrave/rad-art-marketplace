@@ -71,7 +71,7 @@ export default function ArtworkDetailPage() {
                 <span aria-current="page" className="text-ink">جزئیات اثر</span>
             </nav>
             {!artwork ? (
-                <section className="mt-8 border border-border bg-white p-8">
+                <section className="mt-8 border border-border bg-paper p-8">
                     <h1 className="text-2xl font-black">{status === 403 ? 'دسترسی به این اثر مجاز نیست' : 'اثر در دسترس نیست'}</h1>
                     <p className="mt-3 text-sm leading-7 text-muted">{status === 403 ? 'سرور اجازه مشاهده این اثر را صادر نکرد.' : 'این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.'}</p>
                     {artworkQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-danger">ارتباط با سرور برقرار نشد. <button type="button" onClick={() => artworkQuery.refetch()} className="font-bold underline">تلاش دوباره</button></p>}
@@ -94,7 +94,7 @@ export default function ArtworkDetailPage() {
                             </dl>
                             <p className="mt-5 inline-flex items-center gap-2 text-sm text-muted"><span aria-hidden="true" className="h-2 w-2 rounded-full bg-olive" />وضعیت: {availabilityLabel(artwork.availability)}</p>
                             {user?.role === 'buyer' && <div className="mt-7 flex flex-wrap gap-3">
-                                <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(artwork.artist.slug) + '&artwork=' + encodeURIComponent(artwork.slug)} className="inline-flex items-center bg-ink px-5 py-3 text-sm font-bold text-white hover:bg-terracotta">پیام مستقیم درباره این اثر</Link>
+                                <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(artwork.artist.slug) + '&artwork=' + encodeURIComponent(artwork.slug)} className="inline-flex items-center bg-ink px-5 py-3 text-sm font-bold text-inverse hover:bg-terracotta">پیام مستقیم درباره این اثر</Link>
                             </div>}
                             {!user && <Link to="/login" state={{ from: { pathname: '/artworks/' + slug } }} className="mt-7 inline-block text-sm font-bold text-terracotta-strong underline">برای ارسال پیام مستقیم وارد شوید</Link>}
                             {user && user.role !== 'buyer' && <p className="mt-7 text-xs leading-6 text-muted">ارسال پیام مستقیم از حساب خریدار امکان‌پذیر است.</p>}
