@@ -167,7 +167,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
         </section>
         <section className="space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-bold">آثار ثبت‌شده شما</h2><Button variant="outline" size="sm" onClick={() => artworksQuery.refetch()} disabled={loading}>بروزرسانی</Button></div>
-            {loadError && <ErrorState title="دریافت آثار ناموفق بود" description={loadError} onRetry={() => artworksQuery.refetch()} />}
+            {loadError && <ErrorState title="دریافت آثار ناموفق بود" description={loadError} onRetry={() => { artworksQuery.refetch(); categoriesQuery.refetch(); }} />}
             {loading ? <ArtworkStudioListSkeleton count={3} /> : artworks.length === 0 ? <EmptyState title="هنوز اثری ثبت نکرده‌اید" description="با فرم بالا اولین اثر خود را برای بررسی ارسال کنید." /> :
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{artworks.map((item) => <article key={item.id} className="overflow-hidden border border-border bg-paper">
                     <div className="flex aspect-[4/3] items-center justify-center bg-surface-muted p-3"><img src={item.image_url} alt={item.title} loading="lazy" decoding="async" className="h-full w-full object-contain" /></div>
