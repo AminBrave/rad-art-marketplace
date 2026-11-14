@@ -195,6 +195,15 @@ For example, the notification preference regression test can be selected with:
 npm run test:browser -- test_notifications_and_preferences.MessageNotificationBrowserTests.test_buyer_can_disable_in_app_message_notifications
 ```
 
+The messaging query-cache and incremental-sync journeys can be selected individually:
+
+```bash
+npm run test:browser -- test_messaging_query_cache.MessagingQueryCacheBrowserTests.test_reading_a_conversation_removes_it_from_unread_but_updates_the_all_inbox_cache
+npm run test:browser -- test_messaging_query_cache.MessagingQueryCacheBrowserTests.test_conversation_polling_uses_incremental_cursors_and_renders_new_messages
+```
+
+Messaging resilience fixtures account for the shared TanStack Query policy: transient server errors (for example, HTTP 503) are retried once automatically. Failure/recovery journeys therefore return two failures before succeeding on the explicit user retry. The older-history fixture distinguishes initial history, incremental `after_id` polling, and keyset `before_id` pagination so background synchronization cannot masquerade as an older-page request.
+
 When finished, stop the browser app in Terminal 2 with Ctrl+C.
 
 ### Browser safety rules

@@ -120,7 +120,7 @@ class MessagingHistoryResilienceTests(unittest.TestCase):
 
         def message_history(route):
             message_attempts["count"] += 1
-            if message_attempts["count"] == 1:
+            if message_attempts["count"] <= 2:
                 route.fulfill(
                     status=503,
                     content_type="application/json",
@@ -185,7 +185,7 @@ class MessagingHistoryResilienceTests(unittest.TestCase):
                 history_alert.get_by_role("button", name="تلاش دوباره").evaluate("(button) => button.click()")
 
             page.get_by_text("پیام بازیابی‌شده از تاریخچه گفتگو", exact=True).wait_for()
-            self.assertEqual(message_attempts["count"], 2)
+            self.assertEqual(message_attempts["count"], 3)
             self.assertIn(f"conversation={conversation_id}", page.url)
             page.get_by_role("heading", name="هنرمند گفتگو").wait_for()
             self.assertFalse(history_alert.is_visible())

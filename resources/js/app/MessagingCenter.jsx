@@ -1,5 +1,6 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import { useMessagingQueries } from './useMessagingQueries';
 import { useAuth } from './AuthContext';
 import { ConversationInboxSkeleton, MessageHistorySkeleton } from '../components/ui';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -38,12 +39,17 @@ function dayLabel(value) {
 export default function MessagingCenter({ role }) {
     const { user } = useAuth();
     const [params, setParams] = useSearchParams();
-    const [threads, setThreads] = useState([]);
+    const endpoint = role === 'artist' ? '/api/v1/artist/conversations' : '/api/v1/buyer/conversations';
     const [search, setSearch] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
     const [threadFilter, setThreadFilter] = useState('all');
     const [active, setActive] = useState(null);
-    const [messages, setMessages] = useState([]);
+    const { threads, setThreads, loadThreads, inboxQuery, messages, setMessages, setMessagesMeta, messagesQuery, fetchOlderMessages, cancelConversationQueries, safety, setSafety, safetyQuery, detailQuery, markRead, request } = useMessagingQueries({ endpoint, search: debouncedSearch, filter: threadFilter, conversationId: active, userId: user?.id });
+    const loading = inboxQuery.isLoading;
+    const hasMoreThreads = Boolean(inboxQuery.hasNextPage);
+    const loadingMoreThreads = inboxQuery.isFetchingNextPage;
+    const messagesLoading = messagesQuery.isLoading;
+    const messagesError = messagesQuery.isError && messages.length === 0 ? 'دریافت پیام‌ها انجام نشد. دوباره تلاش کنید.' : '';
     const [draft, setDraft] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
     const [filePreview, setFilePreview] = useState('');
@@ -53,116 +59,43 @@ export default function MessagingCenter({ role }) {
     const [pendingArtwork, setPendingArtwork] = useState(null);
     const [editingId, setEditingId] = useState(null);
     const [editDraft, setEditDraft] = useState('');
-    const [loading, setLoading] = useState(true);
     const [loadingOlder, setLoadingOlder] = useState(false);
-    const [messagesLoading, setMessagesLoading] = useState(false);
     const [newMessageCount, setNewMessageCount] = useState(0);
-    const [hasMoreThreads, setHasMoreThreads] = useState(false);
-    const [loadingMoreThreads, setLoadingMoreThreads] = useState(false);
     const [sending, setSending] = useState(false);
     const [actionId, setActionId] = useState(null);
     const [error, setError] = useState('');
-    const [threadsError, setThreadsError] = useState('');
-    const [messagesError, setMessagesError] = useState('');
     const [olderMessagesError, setOlderMessagesError] = useState('');
     const [notice, setNotice] = useState('');
     const [directStartLoading, setDirectStartLoading] = useState(false);
     const [directStartAttempt, setDirectStartAttempt] = useState(0);
     const [directStartError, setDirectStartError] = useState('');
-    const [safety, setSafety] = useState({ blocked_by_me: false, blocked_by_other: false });
     const [safetyLoading, setSafetyLoading] = useState(true);
     const messagesContainerRef = useRef(null);
     const messagesRef = useRef(messages);
-    const messagesCacheRef = useRef(new Map());
     const scrollPositionsRef = useRef(new Map());
+    const restoredScrollConversationRef = useRef(null);
     const selectedFileRef = useRef(selectedFile);
-    useEffect(() => {
-        messagesRef.current = messages;
-        const conversationId = activeConversationRef.current;
-        if (!conversationId) return;
-        const cached = messagesCacheRef.current.get(Number(conversationId)) ?? {};
-        messagesCacheRef.current.set(Number(conversationId), {
-            ...cached,
-            messages,
-            latestMessageId: latestMessageIdRef.current,
-            syncCursor: syncCursorRef.current,
-            hasOlder: hasOlderMessagesRef.current,
-        });
-    }, [messages]);
+    useEffect(() => { messagesRef.current = messages; }, [messages]);
     useEffect(() => { selectedFileRef.current = selectedFile; }, [selectedFile]);
     const draftRef = useRef(null);
     const fileInputRef = useRef(null);
     const latestMessageIdRef = useRef(null);
-    const syncCursorRef = useRef(null);
     const activeConversationRef = useRef(null);
-    const messageRequestRef = useRef(null);
-    const historyRequestRef = useRef(null);
     const historyLoadingRef = useRef(false);
     const hasOlderMessagesRef = useRef(false);
     const pendingScrollRestoreRef = useRef(null);
     const draftsByConversationRef = useRef(new Map());
     const filesByConversationRef = useRef(new Map());
     const pendingIdsByConversationRef = useRef(new Map());
-    const threadsRequestRef = useRef(null);
-    const threadsPageRef = useRef(1);
-    const threadsRef = useRef(threads);
-    const hasLoadedThreadsRef = useRef(false);
     const directStartKeyRef = useRef(null);
     const directStartRequestRef = useRef(null);
     const shouldStickToBottomRef = useRef(true);
+    const messageSyncSnapshotRef = useRef({ conversationId: null, lastSyncedAt: null, ids: new Set() });
     const sendingMessageRef = useRef(false);
 
-    useEffect(() => {
-        return () => {
-            threadsRequestRef.current?.abort();
-            messageRequestRef.current?.abort();
-            historyRequestRef.current?.abort();
-            directStartRequestRef.current?.abort();
-        };
+    useEffect(() => () => {
+        directStartRequestRef.current?.abort();
     }, []);
-
-    const endpoint = role === 'artist' ? '/api/v1/artist/conversations' : '/api/v1/buyer/conversations';
-    const loadThreads = useCallback(async ({ append = false } = {}) => {
-        threadsRequestRef.current?.abort();
-        const controller = new AbortController();
-        threadsRequestRef.current = controller;
-        if (append) setLoadingMoreThreads(true);
-        else {
-            setLoading(!hasLoadedThreadsRef.current);
-            setLoadingMoreThreads(false);
-        }
-        const page = append ? threadsPageRef.current + 1 : 1;
-        setThreadsError('');
-        try {
-            const query = { page };
-            if (debouncedSearch) query.search = debouncedSearch;
-            if (threadFilter !== 'all') query.filter = threadFilter;
-            const { data } = await axios.get(endpoint, { params: query, signal: controller.signal });
-            if (!controller.signal.aborted) {
-                const received = data.data ?? [];
-                setThreads((current) => {
-                    if (!append) {
-                        const activeThread = current.find((thread) => Number(thread.id) === Number(activeConversationRef.current));
-                        return activeThread && !received.some((thread) => Number(thread.id) === Number(activeThread.id))
-                            ? [activeThread, ...received] : received;
-                    }
-                    const known = new Set(current.map((thread) => Number(thread.id)));
-                    return [...current, ...received.filter((thread) => !known.has(Number(thread.id)))];
-                });
-                hasLoadedThreadsRef.current = true;
-                threadsPageRef.current = Number(data.current_page ?? page);
-                setHasMoreThreads(Number(data.current_page ?? page) < Number(data.last_page ?? page));
-            }
-        } catch (requestError) {
-            if (!axios.isCancel(requestError) && !controller.signal.aborted) setThreadsError('دریافت گفتگوها انجام نشد. دوباره تلاش کنید.');
-        } finally {
-            if (threadsRequestRef.current === controller) {
-                threadsRequestRef.current = null;
-                if (append) setLoadingMoreThreads(false);
-                else setLoading(false);
-            }
-        }
-    }, [endpoint, debouncedSearch, threadFilter]);
 
     useEffect(() => {
         const timer = window.setTimeout(() => setDebouncedSearch(search.trim()), 250);
@@ -171,11 +104,10 @@ export default function MessagingCenter({ role }) {
 
     const loadThreadsRef = useRef(loadThreads);
     useEffect(() => { loadThreadsRef.current = loadThreads; }, [loadThreads]);
-    useEffect(() => { threadsRef.current = threads; }, [threads]);
 
     const updateThreadSetting = async (thread, setting, value) => {
         try {
-            await axios.patch('/api/v1/conversations/' + thread.id + '/settings', { [setting]: value });
+            await request({ method: 'patch', url: '/api/v1/conversations/' + thread.id + '/settings', data: { [setting]: value } });
             const leavesCurrentFilter = setting === 'archived'
                 && (threadFilter === 'archived' ? !value : value);
             if (leavesCurrentFilter) {
@@ -191,85 +123,7 @@ export default function MessagingCenter({ role }) {
         }
     };
 
-    const loadMessages = useCallback(async (id, { incremental = false } = {}) => {
-        if (!id || (incremental && (messageRequestRef.current || historyLoadingRef.current))) return;
-        if (!incremental) messageRequestRef.current?.abort();
-        const controller = new AbortController();
-        messageRequestRef.current = controller;
-        const url = '/api/v1/conversations/' + id + '/messages';
-        if (!incremental) {
-            setMessagesError('');
-            setMessagesLoading(true);
-        }
-        try {
-            const query = incremental ? {
-                after_id: latestMessageIdRef.current ?? 0,
-                ...(syncCursorRef.current ? { updated_after: syncCursorRef.current } : {}),
-            } : {};
-            const { data: firstPage } = await axios.get(url, { params: query, signal: controller.signal });
-            if (controller.signal.aborted || Number(activeConversationRef.current) !== Number(id)) return;
-            const incoming = [...(firstPage.data ?? [])];
-            if (incremental) {
-                for (let page = 2; page <= Number(firstPage.last_page ?? 1); page += 1) {
-                    const { data: nextPage } = await axios.get(url, { params: { ...query, page }, signal: controller.signal });
-                    if (controller.signal.aborted || Number(activeConversationRef.current) !== Number(id)) return;
-                    incoming.push(...(nextPage.data ?? []));
-                }
-            }
-            if (incremental) {
-                setMessages((current) => {
-                    const updates = new Map(incoming.map((message) => [Number(message.id), message]));
-                    const merged = current.map((message) => updates.get(Number(message.id)) ?? message);
-                    const known = new Set(current.map((message) => Number(message.id)));
-                    const next = incoming.filter((message) => !known.has(Number(message.id)));
-                    return next.length ? [...merged, ...next].sort((left, right) => Number(left.id) - Number(right.id)) : merged;
-                });
-            } else {
-                setMessages(incoming);
-                hasOlderMessagesRef.current = Number(firstPage.current_page ?? 1) < Number(firstPage.last_page ?? 1);
-                shouldStickToBottomRef.current = true;
-            }
-            if (incremental && !shouldStickToBottomRef.current) {
-                const newIncomingCount = incoming.filter((message) =>
-                    Number(message.id) > Number(latestMessageIdRef.current ?? 0)
-                    && Number(message.sender_id) !== Number(user?.id)
-                ).length;
-                if (newIncomingCount) setNewMessageCount((count) => count + newIncomingCount);
-            }
-            const newest = incoming.reduce((latest, message) =>
-                !latest || Number(message.id) > Number(latest.id) ? message : latest, null);
-            if (newest?.id) latestMessageIdRef.current = Math.max(Number(latestMessageIdRef.current ?? 0), Number(newest.id));
-            if (firstPage.sync_cursor) syncCursorRef.current = firstPage.sync_cursor;
-            const cachedState = messagesCacheRef.current.get(Number(id)) ?? {};
-            messagesCacheRef.current.set(Number(id), {
-                ...cachedState,
-                latestMessageId: latestMessageIdRef.current,
-                syncCursor: syncCursorRef.current,
-                hasOlder: hasOlderMessagesRef.current,
-            });
-            const hasUnreadIncoming = incoming.some((message) =>
-                Number(message.sender_id) !== Number(user?.id) && !message.read_at
-            );
-            if (!incremental || hasUnreadIncoming) {
-                await axios.patch('/api/v1/conversations/' + id + '/read', {}, { signal: controller.signal });
-                if (controller.signal.aborted || Number(activeConversationRef.current) !== Number(id)) return;
-                setThreads((current) => current.map((thread) =>
-                    Number(thread.id) === Number(id) ? { ...thread, unread_count: 0 } : thread
-                ));
-            }
-            // Keep the inbox preview and unread badge in sync for new messages and edits,
-            // including messages sent from another tab/device by the current user.
-            if (!incremental || incoming.length > 0) loadThreadsRef.current();
-        } catch (requestError) {
-            if (!axios.isCancel(requestError) && !controller.signal.aborted
-                && Number(activeConversationRef.current) === Number(id)) setMessagesError('دریافت پیام‌ها انجام نشد. دوباره تلاش کنید.');
-        } finally {
-            if (messageRequestRef.current === controller) {
-                messageRequestRef.current = null;
-                if (Number(activeConversationRef.current) === Number(id)) setMessagesLoading(false);
-            }
-        }
-    }, [user?.id]);
+    const loadMessages = useCallback(() => messagesQuery.refetch(), [messagesQuery.refetch]);
 
     useEffect(() => {
         const previousConversation = activeConversationRef.current;
@@ -282,22 +136,15 @@ export default function MessagingCenter({ role }) {
         if (previousConversation && previousConversation !== active && selectedFileRef.current) {
             filesByConversationRef.current.set(Number(previousConversation), selectedFileRef.current);
         }
-        messageRequestRef.current?.abort();
-        historyRequestRef.current?.abort();
         historyLoadingRef.current = false;
         setLoadingOlder(false);
-        const cachedConversation = active ? messagesCacheRef.current.get(Number(active)) : null;
-        hasOlderMessagesRef.current = Boolean(cachedConversation?.hasOlder);
         pendingScrollRestoreRef.current = null;
+        restoredScrollConversationRef.current = null;
         activeConversationRef.current = active;
-        setMessages(cachedConversation?.messages ?? []);
-        setMessagesError('');
         setOlderMessagesError('');
         setNewMessageCount(0);
-        setMessagesLoading(Boolean(active));
         shouldStickToBottomRef.current = true;
-        latestMessageIdRef.current = cachedConversation?.latestMessageId ?? null;
-        syncCursorRef.current = cachedConversation?.syncCursor ?? null;
+        latestMessageIdRef.current = null;
         setDraft(active ? (draftsByConversationRef.current.get(Number(active)) ?? '') : '');
         setSelectedFile(active ? (filesByConversationRef.current.get(Number(active)) ?? null) : null);
         setUploadProgress(0);
@@ -310,41 +157,9 @@ export default function MessagingCenter({ role }) {
         setNotice('');
         if (fileInputRef.current) fileInputRef.current.value = '';
         if (draftRef.current) draftRef.current.style.height = 'auto';
-        setSafety({ blocked_by_me: false, blocked_by_other: false });
         setSafetyLoading(Boolean(active));
-        if (!active) {
-            setSafetyLoading(false);
-            return undefined;
-        }
-        let cancelled = false;
-        axios.get('/api/v1/conversations/' + active + '/safety')
-            .then(({ data }) => {
-                if (!cancelled) {
-                    setSafety(data.data ?? { blocked_by_me: false, blocked_by_other: false });
-                    setSafetyLoading(false);
-                }
-            })
-            .catch((requestError) => {
-                if (!cancelled && !axios.isCancel(requestError)) {
-                    setSafetyLoading(false);
-                    setError('وضعیت ایمنی گفتگو دریافت نشد.');
-                }
-            });
-        if (!threadsRef.current.some((thread) => Number(thread.id) === Number(active))) {
-            axios.get('/api/v1/conversations/' + active)
-                .then(({ data }) => {
-                    if (!cancelled && data.data) setThreads((current) => [
-                        data.data, ...current.filter((thread) => Number(thread.id) !== Number(data.data.id)),
-                    ]);
-                })
-                .catch(() => { if (!cancelled) setError('اطلاعات این گفتگو دریافت نشد.'); });
-        }
-        return () => {
-            cancelled = true;
-            messageRequestRef.current?.abort();
-            historyRequestRef.current?.abort();
-        };
-    }, [active]);
+        return () => { void cancelConversationQueries(); };
+    }, [active, cancelConversationQueries]);
 
     useEffect(() => {
         const textarea = draftRef.current;
@@ -367,7 +182,6 @@ export default function MessagingCenter({ role }) {
         if (Number.isSafeInteger(id) && id > 0) setActive(id);
     }, [requestedConversation]);
 
-    useEffect(() => { loadThreads(); }, [loadThreads]);
     const artistSlug = params.get('artist');
     const artworkSlug = params.get('artwork');
 
@@ -384,10 +198,10 @@ export default function MessagingCenter({ role }) {
 
         const startConversation = async () => {
             try {
-                const { data } = await axios.post('/api/v1/conversations/direct', {
+                const { data } = await request({ method: 'post', url: '/api/v1/conversations/direct', data: {
                     artist_slug: artistSlug,
                     artwork_slug: artworkSlug || null,
-                }, { signal: controller.signal });
+                }, config: { signal: controller.signal } });
                 if (controller.signal.aborted) return;
 
                 // Fetch the canonical thread payload so the artwork context is available
@@ -442,31 +256,82 @@ export default function MessagingCenter({ role }) {
             if (directStartRequestRef.current === controller) directStartRequestRef.current = null;
             if (directStartKeyRef.current === requestKey) directStartKeyRef.current = null;
         };
-    }, [artistSlug, artworkSlug, role, setParams, directStartAttempt]);
+    }, [artistSlug, artworkSlug, role, setParams, directStartAttempt, request]);
 
     useEffect(() => {
-        if (!active) return undefined;
-        const hasCachedMessages = messagesCacheRef.current.has(Number(active));
-        loadMessages(active, { incremental: hasCachedMessages });
-        const syncWhenVisible = () => {
-            if (document.visibilityState === 'visible') loadMessages(active, { incremental: true });
+        hasOlderMessagesRef.current = Boolean(messagesQuery.data?.hasOlder);
+    }, [messagesQuery.data?.hasOlder]);
+
+    useEffect(() => {
+        if (messagesQuery.data?.hasChanges) loadThreadsRef.current();
+    }, [messagesQuery.data?.lastSyncedAt, messagesQuery.data?.hasChanges]);
+
+    useEffect(() => {
+        const syncAt = messagesQuery.data?.lastSyncedAt;
+        if (!active || !syncAt) return;
+
+        const snapshot = messageSyncSnapshotRef.current;
+        const currentIds = new Set(messages.map((message) => Number(message.id)));
+
+        if (Number(snapshot.conversationId) !== Number(active) || !snapshot.lastSyncedAt) {
+            messageSyncSnapshotRef.current = {
+                conversationId: Number(active),
+                lastSyncedAt: syncAt,
+                ids: currentIds,
+            };
+            return;
+        }
+
+        if (snapshot.lastSyncedAt === syncAt) {
+            messageSyncSnapshotRef.current = { ...snapshot, ids: currentIds };
+            return;
+        }
+
+        const newIncomingCount = messages.filter((message) => (
+            !snapshot.ids.has(Number(message.id))
+            && Number(message.sender_id) !== Number(user?.id)
+        )).length;
+
+        if (newIncomingCount > 0 && !shouldStickToBottomRef.current) {
+            setNewMessageCount((count) => count + newIncomingCount);
+        }
+
+        messageSyncSnapshotRef.current = {
+            conversationId: Number(active),
+            lastSyncedAt: syncAt,
+            ids: currentIds,
         };
-        const poll = window.setInterval(syncWhenVisible, 5000);
-        document.addEventListener('visibilitychange', syncWhenVisible);
-        window.addEventListener('focus', syncWhenVisible);
-        return () => {
-            window.clearInterval(poll);
-            document.removeEventListener('visibilitychange', syncWhenVisible);
-            window.removeEventListener('focus', syncWhenVisible);
-        };
-    }, [active, loadMessages]);
+    }, [active, messages, messagesQuery.data?.lastSyncedAt, user?.id]);
+
+    useEffect(() => {
+        if (!active || !messages.length) return;
+        const hasUnread = messages.some((message) => Number(message.sender_id) !== Number(user?.id) && !message.read_at);
+        if (hasUnread) markRead(active).catch(() => {});
+    }, [active, messages, user?.id, markRead]);
+
+    useEffect(() => {
+        setSafetyLoading(Boolean(active) && safetyQuery.isLoading);
+        if (active && safetyQuery.isError) setError('وضعیت ایمنی گفتگو دریافت نشد.');
+    }, [active, safetyQuery.isLoading, safetyQuery.isError]);
+
+    useEffect(() => {
+        if (!detailQuery.data || threads.some((thread) => Number(thread.id) === Number(active))) return;
+        if (threadFilter === 'unread' && !Number(detailQuery.data.unread_count)) return;
+        if (threadFilter === 'archived' && !detailQuery.data.archived) return;
+        setThreads((current) => [detailQuery.data, ...current]);
+    }, [active, detailQuery.data, threads, setThreads, threadFilter]);
 
     useEffect(() => {
         const container = messagesContainerRef.current;
         if (!container) return undefined;
         const savedScrollTop = active ? scrollPositionsRef.current.get(Number(active)) : null;
-        if (savedScrollTop !== null && savedScrollTop !== undefined && messagesCacheRef.current.has(Number(active))) {
-            const frame = window.requestAnimationFrame(() => { container.scrollTop = savedScrollTop; });
+        if (savedScrollTop !== null && savedScrollTop !== undefined && Boolean(messagesQuery.data)
+            && restoredScrollConversationRef.current !== Number(active)) {
+            restoredScrollConversationRef.current = Number(active);
+            const frame = window.requestAnimationFrame(() => {
+                container.scrollTop = savedScrollTop;
+                shouldStickToBottomRef.current = container.scrollHeight - container.scrollTop - container.clientHeight < 120;
+            });
             return () => window.cancelAnimationFrame(frame);
         }
         if (pendingScrollRestoreRef.current) {
@@ -478,36 +343,32 @@ export default function MessagingCenter({ role }) {
             return () => window.cancelAnimationFrame(frame);
         }
         if (!shouldStickToBottomRef.current) return undefined;
-        const frame = window.requestAnimationFrame(() => container.scrollTo({
-            top: container.scrollHeight,
-            behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-        }));
+        const frame = window.requestAnimationFrame(() => {
+            // Keep the log pinned deterministically; CSS smooth scrolling can leave
+            // the initial history partway down while the first render is settling.
+            container.scrollTop = container.scrollHeight;
+        });
         return () => window.cancelAnimationFrame(frame);
-    }, [messages]);
+    }, [active, messages, messagesQuery.data]);
 
     const loadOlderMessages = useCallback(async () => {
         const conversationId = activeConversationRef.current;
-        if (!conversationId || !hasOlderMessagesRef.current || historyLoadingRef.current) return;
+        if (!conversationId || !(messagesQuery.data?.hasOlder ?? hasOlderMessagesRef.current) || historyLoadingRef.current) return;
         historyLoadingRef.current = true;
         setLoadingOlder(true);
         setOlderMessagesError('');
-        const controller = new AbortController();
-        historyRequestRef.current = controller;
         const container = messagesContainerRef.current;
         const previousHeight = container?.scrollHeight ?? 0;
         const previousTop = container?.scrollTop ?? 0;
         const beforeId = messagesRef.current?.[0]?.id;
         if (!beforeId) {
-            historyRequestRef.current = null;
             historyLoadingRef.current = false;
             setLoadingOlder(false);
             return;
         }
         try {
-            const { data } = await axios.get('/api/v1/conversations/' + conversationId + '/messages', {
-                params: { before_id: beforeId }, signal: controller.signal,
-            });
-            if (controller.signal.aborted || Number(activeConversationRef.current) !== Number(conversationId)) return;
+            const data = await fetchOlderMessages(beforeId);
+            if (Number(activeConversationRef.current) !== Number(conversationId)) return;
             const older = data.data ?? [];
             if (older.length && container) {
                 pendingScrollRestoreRef.current = { scrollHeight: previousHeight, scrollTop: previousTop };
@@ -519,17 +380,16 @@ export default function MessagingCenter({ role }) {
                 });
             }
             hasOlderMessagesRef.current = Number(data.current_page ?? 1) < Number(data.last_page ?? 1);
+            setMessagesMeta({ hasOlder: hasOlderMessagesRef.current });
         } catch (requestError) {
-            if (!axios.isCancel(requestError) && !controller.signal.aborted
-                && Number(activeConversationRef.current) === Number(conversationId)) setOlderMessagesError('دریافت پیام‌های قدیمی‌تر انجام نشد. دوباره تلاش کنید.');
+            if (Number(activeConversationRef.current) === Number(conversationId)) setOlderMessagesError('دریافت پیام‌های قدیمی‌تر انجام نشد. دوباره تلاش کنید.');
         } finally {
-            if (historyRequestRef.current === controller) historyRequestRef.current = null;
             if (Number(activeConversationRef.current) === Number(conversationId)) {
                 historyLoadingRef.current = false;
                 setLoadingOlder(false);
             }
         }
-    }, []);
+    }, [messagesQuery.data?.hasOlder, setMessages, setMessagesMeta, fetchOlderMessages]);
 
     const replaceMessage = (updated) => {
         setMessages((current) => current.map((message) => message.id === updated.id ? updated : message));
@@ -547,12 +407,12 @@ export default function MessagingCenter({ role }) {
         setPendingMessageId(messageClientId);
         pendingIdsByConversationRef.current.set(Number(conversationId), messageClientId);
         try {
-            const { data } = await axios.post('/api/v1/conversations/' + conversationId + '/messages', {
+            const { data } = await request({ method: 'post', url: '/api/v1/conversations/' + conversationId + '/messages', data: {
                 body: body || 'فایل پیوست',
                 reply_to_id: replyTo?.id ?? null,
                 artwork_id: pendingArtwork?.id ?? null,
                 client_message_id: messageClientId,
-            });
+            } });
             let savedMessage = data.data;
             const attachmentAlreadySaved = selectedFile && savedMessage.attachments?.some((attachment) =>
                 attachment.name === selectedFile.name && Number(attachment.size_bytes) === Number(selectedFile.size)
@@ -560,12 +420,17 @@ export default function MessagingCenter({ role }) {
             if (selectedFile && !attachmentAlreadySaved) {
                 const formData = new FormData();
                 formData.append('file', selectedFile);
-                const uploaded = await axios.post('/api/v1/conversations/' + conversationId + '/messages/' + savedMessage.id + '/attachments', formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                    onUploadProgress: (event) => {
-                        if (Number(activeConversationRef.current) === Number(conversationId)) {
-                            setUploadProgress(event.total ? Math.round((event.loaded * 100) / event.total) : 0);
-                        }
+                const uploaded = await request({
+                    method: 'post',
+                    url: '/api/v1/conversations/' + conversationId + '/messages/' + savedMessage.id + '/attachments',
+                    data: formData,
+                    config: {
+                        headers: { 'Content-Type': 'multipart/form-data' },
+                        onUploadProgress: (event) => {
+                            if (Number(activeConversationRef.current) === Number(conversationId)) {
+                                setUploadProgress(event.total ? Math.round((event.loaded * 100) / event.total) : 0);
+                            }
+                        },
                     },
                 });
                 savedMessage = { ...savedMessage, attachments: [...(savedMessage.attachments ?? []), { ...uploaded.data.data, download_url: '/api/v1/conversations/' + conversationId + '/messages/' + savedMessage.id + '/attachments/' + uploaded.data.data.id, preview_url: uploaded.data.data.mime_type?.startsWith('image/') ? '/api/v1/conversations/' + conversationId + '/messages/' + savedMessage.id + '/attachments/' + uploaded.data.data.id + '/preview' : null }] };
@@ -610,9 +475,10 @@ export default function MessagingCenter({ role }) {
         if (!body || actionId) return;
         setActionId(message.id);
         try {
-            const { data } = await axios.patch('/api/v1/conversations/' + conversationId + '/messages/' + message.id, { body });
+            const { data } = await request({ method: 'patch', url: '/api/v1/conversations/' + conversationId + '/messages/' + message.id, data: { body } });
             if (Number(activeConversationRef.current) === Number(conversationId)) {
                 replaceMessage(data.data);
+                loadThreads();
                 setEditingId(null);
                 setEditDraft('');
             }
@@ -628,8 +494,11 @@ export default function MessagingCenter({ role }) {
         if (actionId || !window.confirm('این پیام برای هر دو طرف حذف شود؟')) return;
         setActionId(message.id);
         try {
-            const { data } = await axios.delete('/api/v1/conversations/' + conversationId + '/messages/' + message.id);
-            if (Number(activeConversationRef.current) === Number(conversationId)) replaceMessage(data.data);
+            const { data } = await request({ method: 'delete', url: '/api/v1/conversations/' + conversationId + '/messages/' + message.id });
+            if (Number(activeConversationRef.current) === Number(conversationId)) {
+                replaceMessage(data.data);
+                loadThreads();
+            }
         } catch {
             if (Number(activeConversationRef.current) === Number(conversationId)) setError('حذف پیام انجام نشد. دوباره تلاش کنید.');
         } finally {
@@ -642,7 +511,7 @@ export default function MessagingCenter({ role }) {
         const details = window.prompt('دلیل گزارش این پیام را کوتاه توضیح دهید:');
         if (details === null) return;
         try {
-            await axios.post('/api/v1/conversations/' + conversationId + '/messages/' + message.id + '/report', { reason: 'other', details });
+            await request({ method: 'post', url: '/api/v1/conversations/' + conversationId + '/messages/' + message.id + '/report', data: { reason: 'other', details } });
             if (Number(activeConversationRef.current) === Number(conversationId)) setNotice('گزارش شما برای بررسی ثبت شد.');
         } catch {
             if (Number(activeConversationRef.current) === Number(conversationId)) setError('ثبت گزارش انجام نشد. دوباره تلاش کنید.');
@@ -654,7 +523,7 @@ export default function MessagingCenter({ role }) {
         const details = window.prompt('دلیل گزارش این گفتگو را کوتاه توضیح دهید:');
         if (details === null) return;
         try {
-            await axios.post('/api/v1/conversations/' + conversationId + '/report', { reason: 'other', details });
+            await request({ method: 'post', url: '/api/v1/conversations/' + conversationId + '/report', data: { reason: 'other', details } });
             if (Number(activeConversationRef.current) === Number(conversationId)) setNotice('گزارش گفتگو برای بررسی ثبت شد.');
         } catch {
             if (Number(activeConversationRef.current) === Number(conversationId)) setError('ثبت گزارش گفتگو انجام نشد.');
@@ -665,13 +534,13 @@ export default function MessagingCenter({ role }) {
         const conversationId = active;
         try {
             if (safety.blocked_by_me) {
-                await axios.delete('/api/v1/conversations/' + conversationId + '/block');
+                await request({ method: 'delete', url: '/api/v1/conversations/' + conversationId + '/block' });
                 if (Number(activeConversationRef.current) === Number(conversationId)) {
                     setSafety((current) => ({ ...current, blocked_by_me: false }));
                     setNotice('مسدودسازی برداشته شد.');
                 }
             } else if (window.confirm('با مسدودسازی این کاربر، ارسال پیام در این گفتگو برای هر دو طرف متوقف می‌شود. ادامه می‌دهید؟')) {
-                await axios.post('/api/v1/conversations/' + conversationId + '/block');
+                await request({ method: 'post', url: '/api/v1/conversations/' + conversationId + '/block' });
                 if (Number(activeConversationRef.current) === Number(conversationId)) {
                     setSafety((current) => ({ ...current, blocked_by_me: true }));
                     setNotice('کاربر مسدود شد.');
@@ -688,17 +557,17 @@ export default function MessagingCenter({ role }) {
         const existing = message.reactions?.find((reaction) => reaction.emoji === emoji);
         setActionId(message.id);
         try {
-            const { data } = await axios.post('/api/v1/conversations/' + conversationId + '/messages/' + message.id + '/reactions', {
+            const { data } = await request({ method: 'post', url: '/api/v1/conversations/' + conversationId + '/messages/' + message.id + '/reactions', data: {
                 emoji,
                 action: existing?.reacted_by_me ? 'remove' : 'add',
-            });
+            } });
             if (Number(activeConversationRef.current) === Number(conversationId)) replaceMessage(data.data);
         } catch {
             if (Number(activeConversationRef.current) === Number(conversationId)) setError('ثبت واکنش انجام نشد. دوباره تلاش کنید.');
         } finally { setActionId(null); }
     };
 
-    const selected = threads.find((item) => Number(item.id) === Number(active));
+    const selected = threads.find((item) => Number(item.id) === Number(active)) ?? detailQuery.data;
 
     useEffect(() => {
         if (role !== 'buyer' || !artworkSlug || !selected?.contexts) return;
@@ -715,7 +584,7 @@ export default function MessagingCenter({ role }) {
             </header>
             {notice && <p role="status" className="border border-border bg-surface-muted p-3 text-sm">{notice}</p>}
             {error && <p role="alert" className="border border-red-200 bg-red-50 p-3 text-sm text-red-800">{error}</p>}
-            {threadsError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 border border-red-200 bg-red-50 p-3 text-sm text-red-800"><span>{threadsError}</span><button type="button" onClick={() => loadThreads()} className="shrink-0 font-bold underline underline-offset-4">تلاش دوباره</button></div>}
+            {inboxQuery.isError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 border border-red-200 bg-red-50 p-3 text-sm text-red-800"><span>{'دریافت گفتگوها انجام نشد. دوباره تلاش کنید.'}</span><button type="button" onClick={() => loadThreads()} className="shrink-0 font-bold underline underline-offset-4">تلاش دوباره</button></div>}
             {directStartLoading && <div role="status" className="flex items-center gap-3 border border-border bg-surface-muted p-3 text-sm text-muted"><LoaderCircle size={16} className="animate-spin" aria-hidden="true" />در حال آماده‌سازی گفتگوی مستقیم و اتصال آن به اثر…</div>}
             {directStartError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 border border-danger/30 bg-danger-surface p-3 text-sm text-ink"><span>{directStartError}</span><button type="button" onClick={() => setDirectStartAttempt((attempt) => attempt + 1)} className="shrink-0 font-bold text-terracotta-strong underline underline-offset-4">تلاش دوباره</button></div>}
             <div className="grid h-[calc(100dvh-14rem)] min-h-[min(420px,calc(100dvh-14rem))] max-h-[900px] grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden rounded-2xl border border-border bg-white shadow-[0_18px_55px_rgba(36,35,32,0.07)] lg:h-[min(82dvh,900px)] lg:min-h-[min(620px,calc(100dvh-14rem))] lg:grid-cols-[360px_minmax(0,1fr)]">
@@ -740,7 +609,7 @@ export default function MessagingCenter({ role }) {
                             }} className={'flex min-w-0 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-[11px] font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-1 ' + (threadFilter === value ? 'bg-ink text-white shadow-sm' : 'text-muted hover:bg-surface-muted hover:text-ink')}><Icon size={14} aria-hidden="true" /><span className="truncate">{label}</span></button>)}
                         </div>
                     </div>
-                    {loading ? <ConversationInboxSkeleton count={6} /> : threads.length === 0 ? (threadsError ? null : <p className="p-5 text-sm leading-7 text-muted">هنوز گفتگویی ندارید. از صفحه هنرمند یا یک اثر، گزینه «پیام مستقیم» را انتخاب کنید.</p>) : (
+                    {loading ? <ConversationInboxSkeleton count={6} /> : threads.length === 0 ? (inboxQuery.isError ? null : <p className="p-5 text-sm leading-7 text-muted">هنوز گفتگویی ندارید. از صفحه هنرمند یا یک اثر، گزینه «پیام مستقیم» را انتخاب کنید.</p>) : (
                         <ul className="min-h-0 flex-1 divide-y divide-border overflow-y-auto overscroll-contain [scrollbar-gutter:stable]">
                             {threads.map((thread) => <li key={thread.id} className={'transition-colors hover:bg-surface-muted focus-within:bg-surface-muted ' + (Number(active) === Number(thread.id) ? 'bg-surface-muted shadow-[inset_-3px_0_0_var(--color-terracotta)]' : '')}>
                                 <button type="button" onClick={() => { setActive(thread.id); setReplyTo(null); setPendingArtwork(null); setEditingId(null); setParams((current) => { const next = new URLSearchParams(current); next.delete('artist'); next.delete('artwork'); next.set('conversation', String(thread.id)); return next; }, { replace: true }); }} aria-current={Number(active) === Number(thread.id) ? 'true' : undefined} className="flex w-full items-center gap-3 bg-transparent px-4 py-4 text-right transition"><span aria-hidden="true" className={'flex h-11 w-11 aspect-square shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-inset ring-border text-sm font-black shadow-sm ' + avatarTone(thread.participant?.name)}>{avatarInitial(thread.participant?.name)}</span><span className="min-w-0 flex-1">
@@ -788,13 +657,12 @@ export default function MessagingCenter({ role }) {
                             </header>
                             <div dir="ltr" ref={messagesContainerRef} onScroll={(event) => {
                                 const node = event.currentTarget;
-                                if (active) scrollPositionsRef.current.set(Number(active), node.scrollTop);
                                 shouldStickToBottomRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 120;
                                 if (shouldStickToBottomRef.current) setNewMessageCount(0);
-                                if (node.scrollTop < 72 && hasOlderMessagesRef.current && !olderMessagesError) loadOlderMessages();
+                                if (node.scrollTop < 72 && (messagesQuery.data?.hasOlder ?? hasOlderMessagesRef.current) && !olderMessagesError) loadOlderMessages();
                             }} className="relative flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain [scrollbar-gutter:stable] bg-[radial-gradient(circle_at_1px_1px,rgba(66,62,53,0.055)_1px,transparent_0)] [background-size:24px_24px] px-3 py-5 sm:gap-4 sm:px-6 sm:py-6" role="log" aria-label="پیام‌های گفتگو" aria-live="polite" aria-relevant="additions">
                                 {messagesLoading && messages.length === 0 && <MessageHistorySkeleton count={5} className="w-full" />}
-                                {messagesError && <div role="alert" className="m-auto flex max-w-md flex-col items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-5 text-center text-sm text-red-800"><p>{messagesError}</p><button type="button" onClick={() => loadMessages(active)} className="rounded-lg px-4 py-2 font-bold underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">تلاش دوباره</button></div>}
+                                {messagesError && <div role="alert" className="m-auto flex max-w-md flex-col items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-5 text-center text-sm text-red-800"><p>{messagesError}</p><button type="button" onClick={() => loadMessages()} className="rounded-lg px-4 py-2 font-bold underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">تلاش دوباره</button></div>}
                                 {!messagesLoading && !messagesError && messages.length === 0 && <p className="m-auto py-6 text-center text-sm text-muted">هنوز پیامی در این گفتگو وجود ندارد. می‌توانید گفتگو را با یک پیام شروع کنید.</p>}
                                 {olderMessagesError && <div role="alert" className="absolute inset-x-3 top-2 z-20 mx-auto flex w-fit max-w-full items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-xs text-red-800 shadow-soft"><span>{olderMessagesError}</span><button type="button" onClick={loadOlderMessages} className="shrink-0 rounded-lg px-2 py-1 font-bold underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">تلاش دوباره</button></div>}
                                 {loadingOlder && <p className="absolute inset-x-0 top-2 z-10 mx-auto w-fit rounded-full border border-border bg-white/95 px-3 py-1.5 text-xs text-muted shadow-soft" role="status">در حال دریافت پیام‌های قدیمی‌تر…</p>}
@@ -812,8 +680,8 @@ export default function MessagingCenter({ role }) {
                                         || new Date(previousMessage.created_at).toDateString() !== new Date(message.created_at).toDateString();
                                     return (
                                         <Fragment key={message.id}>
-                                            {showDayDivider && <div dir="rtl" className="flex justify-center py-1"><span className="rounded-full border border-border bg-white/90 px-3 py-1 text-[10px] font-semibold text-muted shadow-soft">{dayLabel(message.created_at)}</span></div>}
-                                            <div dir="ltr" className={'flex w-full ' + (own ? 'justify-end' : 'justify-start')}>
+                                            {showDayDivider && <div dir="rtl" className="flex shrink-0 justify-center py-1"><span className="rounded-full border border-border bg-white/90 px-3 py-1 text-[10px] font-semibold text-muted shadow-soft">{dayLabel(message.created_at)}</span></div>}
+                                            <div dir="ltr" className={'flex w-full shrink-0 ' + (own ? 'justify-end' : 'justify-start')}>
                                             <article dir="rtl" className={'min-w-0 max-w-[88%] rounded-[20px] px-4 py-3 shadow-[0_2px_5px_rgba(31,30,27,0.055)] sm:max-w-[min(72%,680px)] ' + (own ? 'rounded-bl-[7px] bg-[var(--color-message-own)] text-ink' : 'rounded-br-[7px] border border-border bg-[var(--color-message-peer)] text-ink')}>
                                                 {message.artwork && <div className="message-artwork-card mb-3 overflow-hidden rounded-xl border border-border bg-white/90"><div className="message-artwork-card__layout"><Link to={'/artworks/' + message.artwork.slug} aria-label={'مشاهده اثر ' + message.artwork.title} title={message.artwork.title} className="message-artwork-card__media-link"><span className="message-artwork-card__media"><img src={message.artwork.image_url} alt={message.artwork.title} loading="lazy" decoding="async" /></span></Link><div className="message-artwork-card__content min-w-0 flex-1"><span className="message-artwork-card__eyebrow">اثر مورد گفتگو</span><strong className="message-artwork-card__title">{message.artwork.title}</strong><span className="message-artwork-card__meta">{[message.artwork.artist_name, message.artwork.category, message.artwork.medium, message.artwork.dimensions, message.artwork.year?.toLocaleString?.('fa-IR')].filter(Boolean).join(' · ')}</span>{message.artwork.price && <span className="message-artwork-card__price">قیمت: {Number(message.artwork.price).toLocaleString('fa-IR')} تومان</span>}<Link to={'/artworks/' + message.artwork.slug} className="message-artwork-card__action rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">مشاهده جزئیات اثر <span aria-hidden="true">←</span></Link></div></div></div>}
                                                 {message.attachments?.length > 0 && <ul className="mb-3 space-y-3">{message.attachments.map((attachment) => {
