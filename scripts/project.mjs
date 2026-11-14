@@ -438,6 +438,7 @@ async function startBrowserDevelopment() {
             label: 'Vite (loopback)',
             command: npm,
             args: ['exec', '--', 'vite', '--mode', 'https'],
+            env: { ...process.env, VITE_DEV_HTTPS: 'true' },
         },
         {
             label: 'Caddy local HTTPS proxy (loopback only)',
