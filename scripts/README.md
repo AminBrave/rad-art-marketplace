@@ -24,13 +24,9 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Area | Command | Purpose |
 |---|---|---|
 | Setup | `npm run setup` | Install Composer/npm dependencies and create `.env` if absent |
-| Development | `npm run dev` | Laravel + Vite over loopback HTTP |
-| Development | `npm run dev:https` | Laravel + Vite + Caddy over local HTTPS |
-| Development | `npm run dev:lan` | Opt-in Laravel + Vite HTTP servers reachable from devices on the LAN (`RAD_LAN_HOST` required) |
+| Development | `npm run dev` | Laravel + Vite behind HTTPS on localhost and the LAN (default) |
 | Development | `npm run dev:browser` | Start the isolated browser-test application, Vite and Caddy |
-| Development | `npm run dev:browser:lan` | Start the isolated browser-test application for manual LAN device testing (`RAD_LAN_HOST` required) |
-| Preview | `npm run preview` | Start Laravel's PHP preview server on loopback without Vite |
-| Preview | `npm run preview:lan` | Serve the existing production build to LAN devices (`RAD_LAN_HOST` required) |
+| Preview | `npm run preview` | Serve the production build behind HTTPS on localhost and the LAN |
 | Database | `npm run db:sqlite:init` | Create the local SQLite file only if absent |
 | Database | `npm run db:status` | Show migration status |
 | Database | `npm run db:migrate` | Apply pending migrations |
@@ -61,26 +57,57 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Production | `npm run prod:optimize` | Cache Laravel config, routes, events and views |
 | Production | `npm run prod:clear` | Clear Laravel optimization caches |
 
-## LAN device testing (opt-in)
+## Default HTTPS development and LAN access
 
-The normal `dev`, `dev:https`, `dev:browser` and `preview` commands keep their existing loopback/local-host behavior. LAN access is a separate opt-in workflow and requires the computer's actual LAN IPv4 address:
+The normal development command serves the same running Laravel + Vite application through Caddy:
 
-- Bash: `RAD_LAN_HOST=192.168.1.25 npm run dev:lan`
-- PowerShell: `$env:RAD_LAN_HOST="192.168.1.25"; npm run dev:lan`
+    npm run dev
 
-Replace the example address with the IPv4 address assigned to the development computer. The LAN commands reject missing and non-private IPv4 addresses; they bind the servers to all network interfaces but advertise only the supplied private address.
+It automatically detects this computer's private LAN IPv4 address when there is one unambiguous candidate. If several network interfaces have private addresses (for example Wi-Fi plus a VPN or virtual adapter), select the address other devices use to reach this computer:
 
-| Command | Mobile URL | Notes |
-|---|---|---|
-| `npm run dev:lan` | `http://<RAD_LAN_HOST>:8000` | Laravel + Vite; HMR is served on port 5173 |
-| `npm run preview:lan` | `http://<RAD_LAN_HOST>:8000` | Run `npm run build` first; serves the existing production assets through Laravel |
-| `npm run dev:browser:lan` | `http://<RAD_LAN_HOST>:8000` | Manual mobile testing against the isolated browser-test SQLite database; run `npm run browser:prepare` first |
+Bash:
 
-For `dev:browser:lan`, the browser-test environment uses host-only, non-secure HTTP session cookies so they work with the LAN IP. The ordinary `dev:browser` HTTPS profile is unchanged. Stop the regular dev server before starting another profile because these workflows share ports 8000 and 5173 and the Laravel Vite hot-file location.
+    RAD_LAN_HOST=192.168.1.25 npm run dev
 
-Both the phone and development computer must be on the same trusted local network. Allow inbound TCP ports 8000 and 5173 through the computer's private-network firewall if prompted. These commands are for trusted LAN testing only: they bind to all interfaces and must not be exposed through router port-forwarding, public Wi-Fi or the internet. Do not use a public or shared untrusted network.
+PowerShell:
 
-The LAN commands are for manual device testing only. `npm run test:browser` remains guarded to localhost and the isolated browser-test app; do not weaken its remote-target rejection or point it at a LAN IP.
+    $env:RAD_LAN_HOST="192.168.1.25"
+    npm run dev
+
+Use the same RAD_LAN_HOST override with npm run preview after npm run build.
+
+| Where you open Rademan | URL |
+|---|---|
+| Development computer | https://rad.localhost |
+| Any device on the same LAN | https://<RAD_LAN_HOST> |
+| Any LAN device with local DNS configured | https://rad.home.arpa |
+
+**Important hostname behavior:** .localhost is loopback-only by design. It always points a device back to itself, so rad.localhost cannot reach your development computer from a phone or another computer. Use the LAN IP or rad.home.arpa on those devices. Configure rad.home.arpa in your router's local DNS to resolve to the development computer's LAN IP; otherwise, use the IP URL. A DHCP reservation for the development computer is recommended so the IP remains stable.
+
+### HTTPS certificate trust on devices
+
+Caddy issues certificates from its local development CA. This gives the LAN IP and local hostnames HTTPS certificates without sending private keys or traffic to a public CA. Each client device must trust this CA; never bypass browser certificate warnings or disable TLS verification.
+
+1. Start npm run dev once on the development computer so Caddy creates its local CA.
+2. On the development computer, run caddy trust in an elevated terminal if Caddy could not install the root certificate automatically.
+3. Export only Caddy's public root certificate, root.crt, from its data directory. The default locations are:
+   - Windows: %AppData%\Caddy\pki\authorities\local\root.crt
+   - macOS: ~/Library/Application Support/Caddy/pki/authorities/local/root.crt
+   - Linux: ~/.local/share/caddy/pki/authorities/local/root.crt
+4. Transfer that public root.crt to each trusted phone/tablet/computer and install it as a trusted certificate authority using that device's OS/browser certificate settings. On iOS, also enable full trust for the installed root certificate. Firefox may use its own certificate store depending on configuration.
+
+**Never copy or share Caddy's root private key.** Only distribute root.crt. Reinstall the public root certificate if you intentionally reset Caddy's local CA.
+
+### Network exposure and process boundaries
+
+- Caddy is the only service listening on the LAN, on TCP port 443.
+- Laravel (127.0.0.1:8000) and Vite (127.0.0.1:5173) remain bound to loopback; Vite assets and HMR are reverse-proxied through HTTPS.
+- Allow inbound TCP 443 on the computer's **private-network** firewall profile. Do not configure router port forwarding or expose this development server to public networks.
+- Keep the computer and test devices on a trusted LAN. This is a development environment, not a production deployment.
+- The isolated Playwright app remains loopback-only and is not exposed to LAN devices. Its remote-host rejection remains unchanged.
+- If the computer uses WSL2, Docker, a VPN, or multiple network adapters, LAN routing may require host-specific networking setup; set RAD_LAN_HOST to the reachable address and ensure the host firewall permits TCP 443.
+
+The rad.home.arpa name is optional convenience DNS; direct access by the LAN IP does not require it.
 
 ## Browser-test lifecycle
 
@@ -112,7 +139,7 @@ Browser tests must use the isolated browser database and storage. Never point th
 The dispatcher accepts these internal tasks:
 
 - Setup: `setup`
-- Development: `dev`, `dev:https`, `dev:lan`, `dev:browser`, `dev:browser:lan`, `preview:lan`
+- Development: `dev`, `preview`, `dev:browser`
 - Database: `db:sqlite:init`, `db:migrate`, `db:seed`, `db:seed:demo`, `db:fresh`
 - Tests: `test`, `backend:test`, `unit`, `feature`, `integration`, `frontend:test`, `browser`, `browser:prepare`
 - Quality: `backend`, `frontend`, `verify`, `verify:all`
