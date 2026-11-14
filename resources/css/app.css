@@ -276,10 +276,88 @@ a {
     .ra-workspace-content { min-width: 0; }
     .ra-workspace-content > :first-child { min-width: 0; }
 
-    /* Dedicated messaging surface: the site header is the only page chrome. */
+    /* Persistent workspace navigation remains available across dashboard and chat routes. */
+    .ra-workspace-shell {
+        padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+    }
+    .ra-workspace-bottom-nav {
+        position: fixed;
+        z-index: 60;
+        inset-inline: 0;
+        bottom: 0;
+        height: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        border-top: 1px solid var(--color-border);
+        background: color-mix(in srgb, var(--color-surface, #fff) 94%, transparent);
+        -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: blur(16px);
+        box-shadow: 0 -8px 28px rgb(32 32 30 / 7%);
+    }
+    .ra-workspace-bottom-nav__items {
+        display: flex;
+        width: min(100%, 58rem);
+        height: 4.5rem;
+        align-items: stretch;
+        justify-content: center;
+        gap: .25rem;
+        margin-inline: auto;
+        padding-inline: .5rem;
+    }
+    .ra-workspace-bottom-nav__link {
+        position: relative;
+        display: flex;
+        min-width: 0;
+        min-height: 3.5rem;
+        flex: 1 1 0;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: .3rem;
+        border-radius: .75rem;
+        color: var(--color-muted);
+        font-size: .6875rem;
+        font-weight: 650;
+        line-height: 1.25;
+        text-align: center;
+        text-decoration: none;
+        transition: color 160ms ease, background-color 160ms ease;
+    }
+    .ra-workspace-bottom-nav__link span {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .ra-workspace-bottom-nav__link:hover {
+        color: var(--color-terracotta-strong);
+        background: var(--color-surface-muted);
+    }
+    .ra-workspace-bottom-nav__link.is-active {
+        color: var(--color-terracotta-strong);
+        background: color-mix(in srgb, var(--color-terracotta) 9%, white);
+    }
+    .ra-workspace-bottom-nav__link.is-active::before {
+        position: absolute;
+        top: 0;
+        inset-inline: 28%;
+        height: 3px;
+        border-radius: 0 0 4px 4px;
+        background: var(--color-terracotta);
+        content: '';
+    }
+    .ra-workspace-bottom-nav__link:focus-visible {
+        z-index: 1;
+        outline: 2px solid var(--color-focus);
+        outline-offset: -3px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .ra-workspace-bottom-nav__link { transition: none; }
+    }
+
+    /* Dedicated messaging surface: reserve space for both persistent navigation bars. */
     .ra-chat-page {
-        height: calc(100vh - var(--site-header-height, 4.5rem));
-        height: calc(100dvh - var(--site-header-height, 4.5rem));
+        height: calc(100vh - var(--site-header-height, 4.5rem) - 4.5rem);
+        height: calc(100dvh - var(--site-header-height, 4.5rem) - 4.5rem - env(safe-area-inset-bottom, 0px));
         min-height: 0;
         background: var(--color-canvas);
     }
