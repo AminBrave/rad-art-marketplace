@@ -123,7 +123,8 @@ export default function MessagingCenter({ role }) {
         }
     };
 
-    const loadMessages = useCallback(() => messagesQuery.refetch(), [messagesQuery.refetch]);
+    const { refetch: refetchMessages } = messagesQuery;
+    const loadMessages = useCallback(() => refetchMessages(), [refetchMessages]);
 
     useEffect(() => {
         const previousConversation = activeConversationRef.current;
@@ -381,7 +382,7 @@ export default function MessagingCenter({ role }) {
             }
             hasOlderMessagesRef.current = Number(data.current_page ?? 1) < Number(data.last_page ?? 1);
             setMessagesMeta({ hasOlder: hasOlderMessagesRef.current });
-        } catch (requestError) {
+        } catch {
             if (Number(activeConversationRef.current) === Number(conversationId)) setOlderMessagesError('دریافت پیام‌های قدیمی‌تر انجام نشد. دوباره تلاش کنید.');
         } finally {
             if (Number(activeConversationRef.current) === Number(conversationId)) {
