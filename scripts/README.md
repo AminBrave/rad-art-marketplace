@@ -24,10 +24,9 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Area | Command | Purpose |
 |---|---|---|
 | Setup | `npm run setup` | Install Composer/npm dependencies and create `.env` if absent |
-| Development | `npm run dev` | Laravel + Vite over local HTTP |
-| Development | `npm run dev:https` | Laravel + Vite + Caddy over local HTTPS |
+| Development | `npm run dev` | Laravel + Vite behind HTTPS on localhost and the LAN (default) |
 | Development | `npm run dev:browser` | Start the isolated browser-test application, Vite and Caddy |
-| Preview | `npm run preview` | Start Laravel's PHP preview server without Vite |
+| Preview | `npm run preview` | Serve the production build behind HTTPS on localhost and the LAN |
 | Database | `npm run db:sqlite:init` | Create the local SQLite file only if absent |
 | Database | `npm run db:status` | Show migration status |
 | Database | `npm run db:migrate` | Apply pending migrations |
@@ -57,6 +56,58 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Build | `npm run build:cpanel` | cPanel Vite production build |
 | Production | `npm run prod:optimize` | Cache Laravel config, routes, events and views |
 | Production | `npm run prod:clear` | Clear Laravel optimization caches |
+
+## Default HTTPS development and LAN access
+
+The normal development command serves the same running Laravel + Vite application through Caddy. Install Caddy and make its executable available on PATH before starting either development or preview.
+
+    npm run dev
+
+It automatically detects this computer's private LAN IPv4 address when there is one unambiguous candidate. If several network interfaces have private addresses (for example Wi-Fi plus a VPN or virtual adapter), select the address other devices use to reach this computer:
+
+Bash:
+
+    RAD_LAN_HOST=192.168.1.25 npm run dev
+
+PowerShell:
+
+    $env:RAD_LAN_HOST="192.168.1.25"
+    npm run dev
+
+Use the same RAD_LAN_HOST override with npm run preview after npm run build.
+
+| Where you open Rademan | URL |
+|---|---|
+| Development computer | https://rad.localhost |
+| Any device on the same LAN | https://<RAD_LAN_HOST> |
+| Any LAN device with local DNS configured | https://rad.home.arpa |
+
+**Important hostname behavior:** .localhost is loopback-only by design. It always points a device back to itself, so rad.localhost cannot reach your development computer from a phone or another computer. Use the LAN IP or rad.home.arpa on those devices. Configure rad.home.arpa in your router's local DNS to resolve to the development computer's LAN IP; otherwise, use the IP URL. A DHCP reservation for the development computer is recommended so the IP remains stable.
+
+### HTTPS certificate trust on devices
+
+Caddy issues certificates from its local development CA. This gives the LAN IP and local hostnames HTTPS certificates without sending private keys or traffic to a public CA. Each client device must trust this CA; never bypass browser certificate warnings or disable TLS verification.
+
+1. Start npm run dev once on the development computer so Caddy creates its local CA.
+2. On the development computer, run caddy trust in an elevated terminal if Caddy could not install the root certificate automatically.
+3. Export only Caddy's public root certificate, root.crt, from its data directory. The default locations are:
+   - Windows: %AppData%\Caddy\pki\authorities\local\root.crt
+   - macOS: ~/Library/Application Support/Caddy/pki/authorities/local/root.crt
+   - Linux: ~/.local/share/caddy/pki/authorities/local/root.crt
+4. Transfer that public root.crt to each trusted phone/tablet/computer and install it as a trusted certificate authority using that device's OS/browser certificate settings. On iOS, also enable full trust for the installed root certificate. Firefox may use its own certificate store depending on configuration.
+
+**Never copy or share Caddy's root private key.** Only distribute root.crt. Reinstall the public root certificate if you intentionally reset Caddy's local CA.
+
+### Network exposure and process boundaries
+
+- Caddy is the only LAN-facing service. HTTPS is served on TCP port 443; Caddy may also listen on TCP port 80 to redirect HTTP requests to HTTPS.
+- Laravel (127.0.0.1:8000) and Vite (127.0.0.1:5173) remain bound to loopback; Vite assets and HMR are reverse-proxied through HTTPS.
+- Allow inbound TCP 443 on the computer's **private-network** firewall profile. Allow TCP 80 only if you want Caddy's HTTP-to-HTTPS redirect to be reachable. Do not configure router port forwarding or expose this development server to public networks.
+- Keep the computer and test devices on a trusted LAN. This is a development environment, not a production deployment.
+- The isolated Playwright app remains loopback-only and is not exposed to LAN devices. Its remote-host rejection remains unchanged.
+- If the computer uses WSL2, Docker, a VPN, or multiple network adapters, LAN routing may require host-specific networking setup; set RAD_LAN_HOST to the reachable address and ensure the host firewall permits TCP 443.
+
+The rad.home.arpa name is optional convenience DNS; direct access by the LAN IP does not require it.
 
 ## Browser-test lifecycle
 
@@ -88,14 +139,14 @@ Browser tests must use the isolated browser database and storage. Never point th
 The dispatcher accepts these internal tasks:
 
 - Setup: `setup`
-- Development: `dev`, `dev:https`, `dev:browser`
+- Development: `dev`, `preview`, `dev:browser`
 - Database: `db:sqlite:init`, `db:migrate`, `db:seed`, `db:seed:demo`, `db:fresh`
 - Tests: `test`, `backend:test`, `unit`, `feature`, `integration`, `frontend:test`, `browser`, `browser:prepare`
 - Quality: `backend`, `frontend`, `verify`, `verify:all`
 - Style: `fix:style`
 - Production: `prod:optimize`, `prod:clear`
 
-Use `node scripts/project.mjs --help` for the concise internal task list. Build, lint, preview and migration-status one-liners are intentionally defined directly in `package.json`.
+Use `node scripts/project.mjs --help` for the concise internal task list. Build, lint and migration-status one-liners are intentionally defined directly in `package.json`; preview is orchestrated because it starts both Laravel and Caddy.
 
 ## Reports
 

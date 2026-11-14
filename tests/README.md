@@ -52,7 +52,7 @@ Run these steps from the repository root.
    - PHP 8.3 or newer and Composer.
    - Node.js 20.13 or newer and npm.
    - Python 3 for the browser suite.
-   - Caddy for the HTTPS browser-test app.
+   - Caddy for HTTPS development, production-build preview and the loopback-only browser-test app.
 
 3. For browser tests, install the Python test requirement and Chromium browser:
 
@@ -138,6 +138,8 @@ This is a focused automated color-contrast check, not a complete accessibility a
 ## 5. Run browser tests (Playwright)
 
 Browser tests exercise the actual app in Chromium. They are stateful and can create, update and delete test records. They must run only against the dedicated local browser-test environment.
+
+For manual testing on a phone or another device on the same trusted LAN, use the normal `npm run dev` workflow and its HTTPS LAN URL described in [the development and LAN access guide](../scripts/README.md#default-https-development-and-lan-access). The isolated browser-test app started by `npm run dev:browser` is intentionally loopback-only and must not be exposed to LAN devices. The automated Playwright runner remains restricted to localhost/loopback; its remote-host rejection must not be bypassed.
 
 ### Required lifecycle
 
