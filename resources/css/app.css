@@ -269,7 +269,7 @@ a {
 
     .ra-public-shell { min-height: 100vh; background: var(--color-canvas); color: var(--color-text); }
     .ra-public-header { min-height: var(--header-height); }
-    .ra-workspace-shell { min-height: 100vh; background: var(--color-canvas); color: var(--color-text); }
+    .ra-workspace-shell { background: var(--color-canvas); color: var(--color-text); }
     .ra-workspace-header { min-height: var(--header-height); }
     .ra-workspace-grid { align-items: start; }
     .ra-workspace-sidebar { border-radius: var(--radius-md); box-shadow: var(--shadow-soft); }
