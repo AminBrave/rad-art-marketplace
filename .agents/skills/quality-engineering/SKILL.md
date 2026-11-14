@@ -21,6 +21,26 @@ description: Design, implement or maintain Rademan's backend, frontend, browser,
 - Include failure, empty, loading, disabled, unauthorized and boundary cases where relevant.
 - Do not duplicate a check across layers without a clear reason.
 
+## Feature-change coverage contract
+
+For every feature, bug fix or improvement, derive tests from the changed behavior and risk rather than adding tests mechanically:
+
+1. Identify the affected actor, user-visible journey, API/resource contract, state transition and security/data-integrity boundary.
+2. Add or update a Unit test for deterministic pure logic; a Feature test for HTTP validation, authorization, response shape and persisted outcomes; an Integration test for database, storage, transaction, queue or external-boundary invariants; and a frontend test for React state/rendering contracts where those boundaries changed.
+3. Add or update a Playwright journey when the change affects navigation, interaction, responsive/RTL behavior, keyboard/accessibility, cross-role behavior or an end-to-end recovery path. Prefer one meaningful journey with a strong failure/retry assertion over duplicating every backend permutation in the browser.
+4. Cover relevant negative paths: unauthorized actor, wrong owner/participant, invalid transition, empty/loading/error/retry, duplicate submission, stale state and failure recovery. Select only cases that apply to the changed behavior.
+5. Update tests/QUALITY-MATRIX.md when the supported journey, actor boundary or known coverage gap changes. Keep its statements explicit about what is covered versus still missing.
+6. Name tests after the actor and observable invariant. Assert both the user-visible/API outcome and that forbidden or failed operations did not mutate protected state.
+7. Do not add a browser test for an internal-only refactor unless it changes observable behavior or integration risk. Do not target arbitrary 100% line coverage.
+
+When adding or changing a test command, report, fixture or diagnostic artifact, add focused tests for the tooling itself and update package scripts, scripts/README.md and tests/README.md as appropriate. Keep the report generator dependency-free and distinguish missing/stale evidence from a passing result.
+
+## Reporting and release evidence
+- Generate the cross-suite report with `npm run test:report`; it reads existing JUnit files and Git metadata but does not run verification.
+- Run its focused unit tests with `npm run test:reporting`.
+- Treat CURRENT as a clean-worktree report generated at or after HEAD, STALE as invalid/older/unverifiable evidence, and MISSING as no result. Never infer that an unreported suite passed.
+- Track lint/static analysis, builds, automated accessibility scans, manual keyboard/screen-reader and visual review, and reproducible performance evidence separately from test results.
+
 ## Determinism and isolation
 - Backend PHPUnit tests must use the isolated bootstrap, in-memory SQLite, array cache/session/mail, sync queue, stderr logging and isolated file storage/view paths.
 - Browser tests are stateful and mutate records. They must use only database/browser-testing.sqlite and the isolated browser-test storage/cache/session/view directories.
