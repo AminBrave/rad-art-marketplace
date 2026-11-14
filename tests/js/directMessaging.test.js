@@ -40,7 +40,8 @@ test('messaging uses a dedicated viewport page with only the main site header an
     assert.ok(layouts.includes('workspaceLinksForRole(user.role)'));
     assert.ok(layouts.includes('MessageCircle'));
     assert.ok(layouts.includes('{isWorkspacePage && user && <WorkspaceBottomNavigation links={workspaceLinksForRole(user.role)} />}'));
-    assert.ok(layouts.includes("{ to: '/artists', label: 'هنرمندان' }"));
+    assert.ok(layouts.includes("{ to: '/dashboard/buyer/messages', label: 'پیام‌ها' }"));
+    assert.ok(!layouts.includes("{ to: '/artists', label: 'هنرمندان' }"));
     assert.ok(layouts.includes('فضای هنرمند'));
     assert.ok(!layouts.includes('ra-workspace-header'));
     assert.ok(!layouts.includes('ra-workspace-header'));
