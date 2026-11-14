@@ -177,7 +177,7 @@ def build_report(report_dir: Path, root: Path) -> str:
     return "\n".join(lines)
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--report-dir", type=Path, default=Path("build/test-reports"))
     parser.add_argument("--output", type=Path, default=None)
