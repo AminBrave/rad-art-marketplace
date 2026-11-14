@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Bell } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -70,90 +71,105 @@ function notificationDate(value) {
 
 function NotificationBell({ user }) {
     const navigate = useNavigate();
-    const [items, setItems] = useState([]);
-    const [unreadCount, setUnreadCount] = useState(0);
-    const [preferences, setPreferences] = useState({ in_app_messages: true, email_available: false });
+    const queryClient = useQueryClient();
     const [open, setOpen] = useState(false);
-    const [loading, setLoading] = useState(true);
-    const [busy, setBusy] = useState(false);
-    const [error, setError] = useState('');
-    const requestRef = useRef(null);
+    const [actionError, setActionError] = useState('');
+    const notificationKey = ['notifications', user?.id, 'list'];
+    const preferenceKey = ['notifications', user?.id, 'preferences'];
 
-    const load = useCallback(async () => {
-        requestRef.current?.abort();
-        const controller = new AbortController();
-        requestRef.current = controller;
-        try {
-            const [{ data }, preferenceResponse] = await Promise.all([
-                axios.get('/api/v1/notifications', { signal: controller.signal }),
-                axios.get('/api/v1/notifications/preferences', { signal: controller.signal }),
-            ]);
-            if (!controller.signal.aborted) {
-                setItems(data.data ?? []);
-                setUnreadCount(data.unread_count ?? 0);
-                setPreferences(preferenceResponse.data.data ?? { in_app_messages: true, email_available: false });
-                setError('');
-            }
-        } catch (requestError) {
-            if (!axios.isCancel(requestError) && requestError.response?.status !== 401) setError('دریافت اعلان‌ها انجام نشد.');
-        } finally {
-            if (requestRef.current === controller) { requestRef.current = null; setLoading(false); }
-        }
-    }, []);
+    const notificationsQuery = useQuery({
+        queryKey: notificationKey,
+        queryFn: async ({ signal }) => {
+            const { data } = await axios.get('/api/v1/notifications', { signal });
+            return { items: data.data ?? [], unreadCount: data.unread_count ?? 0 };
+        },
+        enabled: Boolean(user?.id),
+        refetchInterval: 30_000,
+    });
+    const preferencesQuery = useQuery({
+        queryKey: preferenceKey,
+        queryFn: async ({ signal }) => {
+            const { data } = await axios.get('/api/v1/notifications/preferences', { signal });
+            return data.data ?? { in_app_messages: true, email_available: false };
+        },
+        enabled: Boolean(user?.id),
+    });
 
-    useEffect(() => {
-        load();
-        const poll = window.setInterval(load, 30000);
-        return () => { window.clearInterval(poll); requestRef.current?.abort(); };
-    }, [load]);
+    const markOneRead = useMutation({
+        mutationFn: (item) => axios.patch('/api/v1/notifications/' + item.id + '/read'),
+        onSuccess: (_, item) => {
+            queryClient.setQueryData(notificationKey, (current) => current ? {
+                ...current,
+                items: current.items.map((notification) => notification.id === item.id
+                    ? { ...notification, read_at: new Date().toISOString() }
+                    : notification),
+                unreadCount: Math.max(0, current.unreadCount - 1),
+            } : current);
+        },
+    });
+    const markAllRead = useMutation({
+        mutationFn: () => axios.patch('/api/v1/notifications/read-all'),
+        onSuccess: () => {
+            queryClient.setQueryData(notificationKey, (current) => current ? {
+                ...current,
+                items: current.items.map((item) => ({ ...item, read_at: item.read_at ?? new Date().toISOString() })),
+                unreadCount: 0,
+            } : current);
+        },
+    });
+    const updatePreference = useMutation({
+        mutationFn: (enabled) => axios.patch('/api/v1/notifications/preferences', { in_app_messages: enabled }),
+        onMutate: async (enabled) => {
+            await queryClient.cancelQueries({ queryKey: preferenceKey });
+            const previous = queryClient.getQueryData(preferenceKey);
+            queryClient.setQueryData(preferenceKey, (current) => ({ ...(current ?? {}), in_app_messages: enabled }));
+            return { previous };
+        },
+        onError: (_, __, context) => {
+            if (context?.previous) queryClient.setQueryData(preferenceKey, context.previous);
+        },
+        onSuccess: ({ data }) => queryClient.setQueryData(preferenceKey, data.data),
+        onSettled: () => queryClient.invalidateQueries({ queryKey: preferenceKey }),
+    });
+
+    const items = notificationsQuery.data?.items ?? [];
+    const unreadCount = notificationsQuery.data?.unreadCount ?? 0;
+    const preferences = preferencesQuery.data ?? { in_app_messages: true, email_available: false };
+    const loading = notificationsQuery.isPending || preferencesQuery.isPending;
+    const busy = markOneRead.isPending || markAllRead.isPending || updatePreference.isPending;
+    const error = actionError || (notificationsQuery.isError || preferencesQuery.isError
+        ? 'دریافت اعلان‌ها انجام نشد.'
+        : '');
 
     const openNotification = async (item) => {
         if (busy) return;
-        setBusy(true);
+        setActionError('');
         try {
-            if (!item.read_at) {
-                await axios.patch('/api/v1/notifications/' + item.id + '/read');
-                setItems((current) => current.map((notification) => notification.id === item.id
-                    ? { ...notification, read_at: new Date().toISOString() }
-                    : notification));
-                setUnreadCount((current) => Math.max(0, current - 1));
-            }
+            if (!item.read_at) await markOneRead.mutateAsync(item);
             setOpen(false);
             const inbox = user.role === 'artist' ? '/dashboard/artist/messages' : '/dashboard/buyer/messages';
             navigate(inbox + '?conversation=' + encodeURIComponent(item.conversation_id));
         } catch {
-            setError('بازکردن اعلان انجام نشد. دوباره تلاش کنید.');
-        } finally {
-            setBusy(false);
+            setActionError('بازکردن اعلان انجام نشد. دوباره تلاش کنید.');
         }
     };
 
-    const markAllRead = async () => {
+    const markAll = async () => {
         if (busy || unreadCount === 0) return;
-        setBusy(true);
+        setActionError('');
         try {
-            await axios.patch('/api/v1/notifications/read-all');
-            setItems((current) => current.map((item) => ({ ...item, read_at: item.read_at ?? new Date().toISOString() })));
-            setUnreadCount(0);
+            await markAllRead.mutateAsync();
         } catch {
-            setError('به‌روزرسانی اعلان‌ها انجام نشد.');
-        } finally {
-            setBusy(false);
+            setActionError('به‌روزرسانی اعلان‌ها انجام نشد.');
         }
     };
 
-    const updatePreference = async (enabled) => {
-        const previous = preferences.in_app_messages;
-        setPreferences((current) => ({ ...current, in_app_messages: enabled }));
-        setBusy(true);
+    const changePreference = async (enabled) => {
+        setActionError('');
         try {
-            const { data } = await axios.patch('/api/v1/notifications/preferences', { in_app_messages: enabled });
-            setPreferences(data.data);
+            await updatePreference.mutateAsync(enabled);
         } catch {
-            setPreferences((current) => ({ ...current, in_app_messages: previous }));
-            setError('ذخیره تنظیمات اعلان انجام نشد.');
-        } finally {
-            setBusy(false);
+            setActionError('ذخیره تنظیمات اعلان انجام نشد.');
         }
     };
 
@@ -166,7 +182,7 @@ function NotificationBell({ user }) {
             {open && <section role="dialog" aria-label="اعلان‌های پیام" className="absolute left-0 top-full z-50 mt-2 w-[min(22rem,calc(100vw-2rem))] border border-border bg-white p-4 text-right shadow-xl">
                 <div className="flex items-center justify-between gap-3">
                     <h2 className="font-bold">اعلان‌های پیام</h2>
-                    <button type="button" onClick={markAllRead} disabled={busy || unreadCount === 0} className="text-xs font-semibold text-terracotta-strong disabled:opacity-40">خواندن همه</button>
+                    <button type="button" onClick={markAll} disabled={busy || unreadCount === 0} className="text-xs font-semibold text-terracotta-strong disabled:opacity-40">خواندن همه</button>
                 </div>
                 {error && <p role="alert" className="mt-3 text-xs text-red-700">{error}</p>}
                 {loading ? <div className="py-2"><NotificationListSkeleton count={3} /></div> : items.length === 0 ? <p className="py-5 text-sm text-muted">هنوز اعلانی ندارید.</p> : <ul className="mt-3 max-h-72 divide-y divide-border overflow-y-auto">
@@ -179,7 +195,7 @@ function NotificationBell({ user }) {
                     </li>)}
                 </ul>}
                 <div className="mt-3 border-t border-border pt-3">
-                    <label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={Boolean(preferences.in_app_messages)} disabled={busy} onChange={(event) => updatePreference(event.target.checked)} /><span>اعلان پیام‌های جدید در این بخش</span></label>
+                    <label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={Boolean(preferences.in_app_messages)} disabled={busy || preferencesQuery.isPending} onChange={(event) => changePreference(event.target.checked)} /><span>اعلان پیام‌های جدید در این بخش</span></label>
                     <p className="mt-2 text-[11px] leading-5 text-muted">اعلان ایمیلی تا تأیید صف ارسال و تنظیمات میزبان غیرفعال است.</p>
                 </div>
             </section>}
