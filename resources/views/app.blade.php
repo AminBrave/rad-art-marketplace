@@ -64,9 +64,9 @@
     @endphp
     <div id="app">
         <main class="mx-auto min-h-screen w-[min(100%_-_2.5rem,80rem)] py-6 pb-16" role="status" aria-busy="true" aria-label="در حال بارگذاری راد آرت">
-            <div class="mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__header">
-                <span class="app-skeleton mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__brand"></span>
-                <span class="app-skeleton mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__nav"></span>
+            <div class="flex min-h-14 items-center justify-between gap-8 border-b border-border">
+                <span class="app-skeleton h-7 w-24"></span>
+                <span class="app-skeleton h-4 w-[min(42%,22rem)]"></span>
             </div>
 
             @if ($isArtworkDetail)
@@ -163,26 +163,26 @@
                     </div>
                 </section>
             @else
-                <section class="mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__hero">
-                    <div class="mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__copy">
-                        <span class="app-skeleton mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__eyebrow"></span>
-                        <span class="app-skeleton mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__heading"></span>
-                        <span class="app-skeleton mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__heading mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__heading--short"></span>
-                        <span class="app-skeleton mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__paragraph"></span>
-                        <span class="app-skeleton mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__paragraph mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__paragraph--short"></span>
-                        <span class="app-skeleton mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__button"></span>
+                <section class="grid grid-cols-1 items-center gap-12 py-14 md:grid-cols-[minmax(0,1fr)_minmax(16rem,.9fr)] md:gap-20 md:py-24">
+                    <div class="grid gap-4">
+                        <span class="app-skeleton mb-3 h-3 w-28"></span>
+                        <span class="app-skeleton h-[clamp(2rem,4vw,3.5rem)] w-[92%]"></span>
+                        <span class="app-skeleton h-[clamp(2rem,4vw,3.5rem)] w-2/3"></span>
+                        <span class="app-skeleton mt-2 h-4 w-[94%]"></span>
+                        <span class="app-skeleton h-4 w-[70%]"></span>
+                        <span class="app-skeleton mt-5 h-12 w-36"></span>
                     </div>
-                    <div class="mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__hero-media">
-                        <span class="app-skeleton mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__artwork"></span>
-                        <div class="mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__hero-caption">
-                            <div class="mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__caption-lines"><span class="app-skeleton mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__caption-label"></span><span class="app-skeleton mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__caption-title"></span></div>
-                            <span class="app-skeleton mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__caption-action"></span>
+                    <div class="grid grid-cols-1 items-center gap-12 py-14 md:grid-cols-[minmax(0,1fr)_minmax(16rem,.9fr)] md:gap-20 md:py-24-media">
+                        <span class="app-skeleton aspect-[4/5] w-full"></span>
+                        <div class="grid grid-cols-1 items-center gap-12 py-14 md:grid-cols-[minmax(0,1fr)_minmax(16rem,.9fr)] md:gap-20 md:py-24-caption">
+                            <div class="grid gap-2"><span class="app-skeleton h-3 w-32"></span><span class="app-skeleton h-4 w-24"></span></div>
+                            <span class="app-skeleton h-3 w-20"></span>
                         </div>
                     </div>
                 </section>
-                <section class="mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__features">
+                <section class="grid grid-cols-1 gap-8 border-y border-border bg-surface-muted py-12 md:grid-cols-3">
                     @foreach (range(1, 3) as $item)
-                        <div class="mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__feature">
+                        <div class="grid content-start gap-1">
                             <span class="app-skeleton h-3 w-20"></span>
                             <span class="app-skeleton mt-3 h-6 w-3/4"></span>
                             <span class="app-skeleton mt-3 h-3 w-full"></span>
@@ -190,29 +190,29 @@
                         </div>
                     @endforeach
                 </section>
-                <section class="mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__gallery">
-                    <div class="mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__section-heading"><div class="grid gap-3"><span class="app-skeleton h-3 w-24"></span><span class="app-skeleton h-8 w-40"></span></div><span class="app-skeleton h-4 w-20"></span></div>
-                    <div class="mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__cards" aria-hidden="true">
+                <section class="py-16">
+                    <div class="mb-8 flex items-end justify-between gap-4"><div class="grid gap-3"><span class="app-skeleton h-3 w-24"></span><span class="app-skeleton h-8 w-40"></span></div><span class="app-skeleton h-4 w-20"></span></div>
+                    <div class="grid grid-cols-1 gap-5 md:grid-cols-3" aria-hidden="true">
                         @foreach (range(1, 3) as $item)
-                            <article class="mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__gallery-card"><a href="#" tabindex="-1" class="block"><div class="flex aspect-[4/3] items-center justify-center overflow-hidden bg-surface-muted p-3"><span class="app-skeleton mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__card"></span></div><div class="grid gap-2 p-4"><span class="app-skeleton h-5 w-20"></span><span class="app-skeleton h-6 w-4/5"></span><span class="app-skeleton h-4 w-2/5"></span><span class="app-skeleton h-4 w-1/3"></span></div></a></article>
+                            <article class="py-16-card"><a href="#" tabindex="-1" class="block"><div class="flex aspect-[4/3] items-center justify-center overflow-hidden bg-surface-muted p-3"><span class="app-skeleton aspect-[4/3] w-full"></span></div><div class="grid gap-2 p-4"><span class="app-skeleton h-5 w-20"></span><span class="app-skeleton h-6 w-4/5"></span><span class="app-skeleton h-4 w-2/5"></span><span class="app-skeleton h-4 w-1/3"></span></div></a></article>
                         @endforeach
                     </div>
                 </section>
-                <section class="mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__categories">
+                <section class="border-y border-border bg-paper py-14">
                     <div class="grid gap-3"><span class="app-skeleton h-3 w-24"></span><span class="app-skeleton h-8 w-48"></span></div>
-                    <div class="mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__category-pills">
+                    <div class="mt-6 flex min-h-24 flex-wrap content-start gap-3">
                         @foreach (range(1, 6) as $item)<span class="app-skeleton h-11 w-28"></span>@endforeach
                     </div>
                 </section>
-                <section class="mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__artists">
-                    <div class="mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__section-heading"><div class="grid gap-3"><span class="app-skeleton h-3 w-24"></span><span class="app-skeleton h-8 w-44"></span></div><span class="app-skeleton h-4 w-24"></span></div>
-                    <div class="mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__artist-cards">
+                <section class="py-16">
+                    <div class="mb-8 flex items-end justify-between gap-4"><div class="grid gap-3"><span class="app-skeleton h-3 w-24"></span><span class="app-skeleton h-8 w-44"></span></div><span class="app-skeleton h-4 w-24"></span></div>
+                    <div class="grid grid-cols-1 gap-5 md:grid-cols-3">
                         @foreach (range(1, 3) as $item)
                             <article class="grid gap-3 border border-border bg-paper p-5"><div class="flex items-start gap-3"><span class="app-skeleton h-12 w-12 shrink-0 rounded-full"></span><div class="grid flex-1 content-start gap-2 pt-1"><span class="app-skeleton h-5 w-2/3"></span><span class="app-skeleton h-3 w-1/3"></span></div></div><div class="grid gap-2"><span class="app-skeleton h-3 w-full"></span><span class="app-skeleton h-3 w-11/12"></span><span class="app-skeleton h-3 w-3/4"></span></div><a href="#" tabindex="-1" class="mt-1 block"><span class="app-skeleton h-4 w-28"></span></a></article>
                         @endforeach
                     </div>
                 </section>
-                <section class="mx-auto min-h-screen w-[min(100%-2.5rem,80rem)] py-6 pb-16__cta">
+                <section class="flex flex-col items-start justify-between gap-8 bg-ink py-14 text-inverse-text md:flex-row md:items-center">
                     <div class="grid max-w-2xl gap-3"><span class="app-skeleton h-3 w-24"></span><span class="app-skeleton h-8 w-full"></span><span class="app-skeleton h-4 w-5/6"></span></div>
                     <span class="app-skeleton h-12 w-36"></span>
                 </section>
