@@ -449,9 +449,11 @@ Focused tests (execute only with explicit authorization)
   integration           Run the Integration PHPUnit suite
   frontend:test         Run frontend Node tests
   browser [test-name]   Run all or selected guarded Playwright tests
-  report                Generate the cross-suite quality report from existing JUnit files
   reporting:test        Run focused tests for the report generator
   browser:prepare       Rebuild the isolated browser database and storage
+
+Reporting (does not run tests)
+  report                Generate the cross-suite quality report from existing JUnit files
 
 Quality workflows (execute only with explicit authorization)
   backend               Backend tests + PHP Pint check
