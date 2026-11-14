@@ -14,6 +14,9 @@ const skeletons = readFileSync(new URL('../../resources/js/components/ui/skeleto
 const showcase = readFileSync(new URL('../../resources/js/app/ComponentShowcase.jsx', import.meta.url), 'utf8');
 const publicPages = ['ArtworkCatalogue.jsx', 'ArtistDirectoryPage.jsx', 'ArtworkDetailPage.jsx'].map((file) => readFileSync(new URL('../../resources/js/app/' + file, import.meta.url), 'utf8'));
 const layouts = readFileSync(new URL('../../resources/js/app/Layouts.jsx', import.meta.url), 'utf8');
+const homePage = readFileSync(new URL('../../resources/js/app/HomePage.jsx', import.meta.url), 'utf8');
+const authPage = readFileSync(new URL('../../resources/js/app/AuthPage.jsx', import.meta.url), 'utf8');
+const editorialPages = readFileSync(new URL('../../resources/js/app/EditorialPages.jsx', import.meta.url), 'utf8');
 const buyerWorkspace = readFileSync(new URL('../../resources/js/app/BuyerWorkspace.jsx', import.meta.url), 'utf8');
 const routeLoading = readFileSync(new URL('../../resources/js/app/RoutingPages.jsx', import.meta.url), 'utf8');
 const queryClient = readFileSync(new URL('../../resources/js/lib/queryClient.js', import.meta.url), 'utf8');
@@ -65,7 +68,7 @@ test('shared content and feedback components use semantic surface and state cont
     assert.ok(cards.includes('border border-border'));
     assert.ok(cards.includes('aspect-[4/5]'));
     assert.ok(feedback.includes('border-dashed'));
-    assert.ok(feedback.includes('border-danger/30'));
+    assert.ok(feedback.includes('border-danger'));
     assert.ok(feedback.includes('border-s-2 border-success'));
     assert.ok(feedback.includes('app-skeleton'));
     assert.ok(feedback.includes('border-s-success'));
@@ -105,7 +108,7 @@ test('navigation and dialogs use Radix behavior with Tailwind semantic utility s
     for (const utility of ['data-[state=active]:border-terracotta', 'bg-paper', 'focus:bg-surface-muted', 'focus-visible:ring-focus']) {
         assert.ok(navigation.includes(utility), 'Missing navigation utility: ' + utility);
     }
-    for (const utility of ['fixed inset-0 z-50', 'bg-ink/55', 'border-border', 'focus-visible:ring-focus']) {
+    for (const utility of ['fixed inset-0 z-50', 'bg-overlay', 'border-border', 'focus-visible:ring-focus']) {
         assert.ok(dialog.includes(utility), 'Missing dialog utility: ' + utility);
     }
     assert.ok(showcase.includes('WorkspaceHero'));
@@ -129,7 +132,7 @@ test('application stylesheet is limited to tokens, base/loading rules and docume
 });
 
 test('shared UI component source does not introduce arbitrary hex or raw palette colors', () => {
-    const componentSources = [primitives, cards, feedback, navigation, dialog, skeletons, layouts, buyerWorkspace, artistWorkspace, messaging, artworkDetail, artworkStudio, adminWorkspace, ...publicPages];
+    const componentSources = [primitives, cards, feedback, navigation, dialog, skeletons, layouts, homePage, authPage, editorialPages, buyerWorkspace, artistWorkspace, messaging, artworkDetail, artworkStudio, adminWorkspace, routeLoading, ...publicPages];
     const arbitraryHex = /#[0-9a-fA-F]{3,8}\b/;
     const rawPalette = /\b(?:bg|text|border|ring)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\d{2,3}(?:\/\d{1,3})?\b/;
     for (const source of componentSources) {
