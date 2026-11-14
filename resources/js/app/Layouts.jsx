@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Bell } from 'lucide-react';
+import { Bell, BookOpen, Flag, Images, LayoutDashboard, MessageCircle, ShieldCheck, UserRound, Users } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { NotificationListSkeleton } from '../components/ui';
@@ -64,6 +64,7 @@ export function PublicLayout() {
             {logoutError && <p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-red-700 sm:px-8">{logoutError}</p>}
         </header>
         <Outlet />
+        {isChatPage && user && <WorkspaceBottomNavigation links={workspaceLinksForRole(user.role)} />}
         {!isChatPage && <footer className="border-t border-border bg-surface-muted">
             <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 sm:grid-cols-2 sm:px-8 lg:grid-cols-[1.3fr_1fr_1fr] lg:px-10">
                 <div><Link to="/" className="text-xl font-black text-ink">راد<span className="text-terracotta-strong">آرت</span></Link><p className="mt-3 max-w-sm text-sm leading-7 text-muted">فضایی برای کشف آثار هنری مستقل، شناخت هنرمندان و ارتباط درباره هنر.</p></div>
@@ -214,6 +215,63 @@ function NotificationBell({ user }) {
     );
 }
 
+function workspaceLinksForRole(role) {
+    if (role === 'artist') return [
+        { to: '/dashboard/artist', label: 'نمای کلی', end: true },
+        { to: '/dashboard/artist/profile', label: 'پروفایل' },
+        { to: '/dashboard/artist/artworks', label: 'آثار' },
+        { to: '/dashboard/artist/messages', label: 'پیام‌ها' },
+    ];
+    if (role === 'buyer') return [
+        { to: '/dashboard/buyer', label: 'نمای کلی', end: true },
+        { to: '/dashboard/buyer/messages', label: 'پیام‌ها' },
+    ];
+    if (role === 'admin') return [
+        { to: '/admin', label: 'نمای کلی', end: true },
+        { to: '/admin/users', label: 'کاربران' },
+        { to: '/admin/artworks', label: 'بررسی آثار' },
+        { to: '/admin/message-reports', label: 'گزارش‌ها' },
+        { to: '/admin/editorial', label: 'سردبیری' },
+    ];
+    return [];
+}
+
+function workspaceNavigationIcon(path) {
+    if (path.endsWith('/profile')) return UserRound;
+    if (path.endsWith('/artworks')) return Images;
+    if (path.endsWith('/messages')) return MessageCircle;
+    if (path.endsWith('/users')) return Users;
+    if (path.endsWith('/message-reports')) return Flag;
+    if (path.endsWith('/editorial')) return BookOpen;
+    return LayoutDashboard;
+}
+
+function WorkspaceBottomNavigation({ links }) {
+    if (!links?.length) return null;
+    return (
+        <nav className="ra-workspace-bottom-nav" aria-label="ناوبری فضای کاربری">
+            <div className="ra-workspace-bottom-nav__items">
+                {links.map((item) => {
+                    const Icon = workspaceNavigationIcon(item.to);
+                    return (
+                        <NavLink
+                            key={item.to}
+                            to={item.to}
+                            end={item.end}
+                            aria-label={item.label}
+                            title={item.label}
+                            className={({ isActive }) => isActive ? 'ra-workspace-bottom-nav__link is-active' : 'ra-workspace-bottom-nav__link'}
+                        >
+                            <Icon aria-hidden="true" size={20} strokeWidth={1.9} />
+                            <span>{item.label}</span>
+                        </NavLink>
+                    );
+                })}
+            </div>
+        </nav>
+    );
+}
+
 export function WorkspaceLayout({ title, links, outletContext }) {
     const { user, logout } = useAuth();
     const [logoutError, setLogoutError] = useState('');
@@ -230,14 +288,8 @@ export function WorkspaceLayout({ title, links, outletContext }) {
     }, []);
     const handleLogout = async () => { setLogoutError(''); try { await logout(); } catch { setLogoutError('خروج انجام نشد. اتصال را بررسی کنید.'); } };
     return <div className="ra-workspace-shell min-h-screen bg-canvas text-ink" dir="rtl" style={{ "--workspace-header-height": workspaceHeaderHeight + "px" }}>
-        <header ref={workspaceHeaderRef} className="ra-workspace-header sticky top-0 z-40 shrink-0 border-b border-border bg-white"><div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-8 lg:px-10"><div className="min-w-0"><Link to="/" className="text-lg font-black text-ink no-underline">راد<span className="text-terracotta-strong">آرت</span></Link><p className="mt-1 text-xs text-muted">{title}</p></div><div className="flex min-w-0 flex-wrap items-center justify-end gap-2 text-sm sm:gap-3">{user?.role !== 'admin' && <NotificationBell user={user} />}<span className="max-w-32 truncate font-semibold sm:max-w-none">{user?.name}</span><Link to="/" className="min-h-10 border border-border px-3 py-2 font-semibold hover:border-terracotta sm:px-4">مشاهده سایت</Link><button type="button" onClick={handleLogout} className="min-h-10 border border-border px-3 py-2 font-semibold hover:border-terracotta sm:px-4">خروج</button></div></div>{logoutError&&<p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-red-700 sm:px-8">{logoutError}</p>}</header>
-        <div className="ra-workspace-grid mx-auto grid min-w-0 max-w-7xl gap-5 px-5 py-6 sm:px-8 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-6 lg:px-10 lg:py-7">
-            <aside className="ra-workspace-sidebar min-w-0 overflow-hidden border border-border bg-white p-2 sm:p-3 lg:h-fit">
-                <nav aria-label="ناوبری فضای کاربری" className="flex w-full min-w-0 flex-nowrap gap-2 overflow-x-auto overscroll-x-contain pb-1 lg:flex-col lg:overflow-visible lg:pb-0">
-                    {links.map(item=><NavLink key={item.to} to={item.to} end={item.end} className={({isActive})=>(isActive?'bg-ink text-white':'text-muted hover:bg-surface-muted hover:text-ink')+' min-h-11 shrink-0 whitespace-nowrap px-4 py-3 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:w-full'}>{item.label}</NavLink>)}
-                </nav>
-            </aside>
-            <main className="ra-workspace-content min-w-0"><Outlet context={outletContext} /></main>
-        </div>
+        <header ref={workspaceHeaderRef} className="ra-workspace-header sticky top-0 z-40 shrink-0 border-b border-border bg-white"><div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-8 lg:px-10"><div className="min-w-0"><Link to="/" className="text-lg font-black text-ink">راد<span className="text-terracotta-strong">آرت</span></Link><p className="mt-1 text-xs text-muted">{title}</p></div><div className="flex min-w-0 flex-wrap items-center justify-end gap-2 text-sm sm:gap-3">{user?.role !== 'admin' && <NotificationBell user={user} />}<span className="max-w-32 truncate font-semibold sm:max-w-none">{user?.name}</span><Link to="/" className="min-h-10 border border-border px-3 py-2 font-semibold hover:border-terracotta sm:px-4">مشاهده سایت</Link><button type="button" onClick={handleLogout} className="min-h-10 border border-border px-3 py-2 font-semibold hover:border-terracotta sm:px-4">خروج</button></div></div>{logoutError&&<p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-red-700 sm:px-8">{logoutError}</p>}</header>
+        <main className="ra-workspace-content mx-auto min-w-0 max-w-7xl px-5 py-6 sm:px-8 lg:px-10 lg:py-7"><Outlet context={outletContext} /></main>
+        <WorkspaceBottomNavigation links={links} />
     </div>;
 }
