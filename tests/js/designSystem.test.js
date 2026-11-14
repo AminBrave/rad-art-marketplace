@@ -84,7 +84,7 @@ test('RAD visual tokens are declared in one canonical root block', () => {
 });
 
 test('shared layout and form primitives expose semantic utility compositions', () => {
-    for (const utility of ['max-w-[var(--content-wide-width)]', 'max-w-[var(--content-reading-width)]', 'border-b border-border', 'bg-surface-muted', 'bg-terracotta text-white', 'aria-[invalid=true]:border-danger']) {
+    for (const utility of ['max-w-[var(--content-wide-width)]', 'max-w-[var(--content-reading-width)]', 'border-b border-border', 'bg-surface-muted', 'bg-terracotta text-inverse', 'aria-[invalid=true]:border-danger']) {
         assert.ok(primitives.includes(utility), 'Missing shared utility contract: ' + utility);
     }
     for (const component of ['PageContainer', 'PageHeader', 'SectionHeader', 'Surface', 'StatusBadge', 'WorkspaceHero', 'DashboardMetricCard']) {
@@ -128,7 +128,8 @@ test('boot shell uses Tailwind utilities and custom CSS stays scoped to tokens, 
 });
 
 test('shared UI component source does not introduce arbitrary hex or raw palette colors', () => {
-    const componentSources = [primitives, cards, feedback, navigation, dialog, skeletons, legacyApp, homePage, authPage, artistProfile, artworkGallery, artworkCatalogue, editorialPages, publicInfoPages, layouts, buyerWorkspace, routeLoading, artistWorkspace, messaging, artworkDetail, artworkStudio, adminWorkspace];
+    const componentSources = [primitives, cards, feedback, navigation, dialog, skeletons];
+const applicationSources = [legacyApp, homePage, authPage, artistProfile, artworkGallery, artworkCatalogue, editorialPages, publicInfoPages, layouts, buyerWorkspace, routeLoading, artistWorkspace, messaging, artworkDetail, artworkStudio, adminWorkspace, ...publicPages];
     const arbitraryHex = /#[0-9a-fA-F]{3,8}\b/;
     const rawPalette = /\b(?:bg|text|border|ring)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\d{2,3}(?:\/\d{1,3})?\b/;
     for (const source of componentSources) {
@@ -139,9 +140,12 @@ test('shared UI component source does not introduce arbitrary hex or raw palette
 
 
 test('active frontend surfaces use semantic RAD colors and avoid raw palette utilities', () => {
-    const rawPalette = /\\b(?:bg|text|border|ring)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\\d{2,3}(?:\\/\\d{1,3})?\\b/;
-    for (const source of componentSources) {
+    const sources = [...componentSources, ...applicationSources];
+    const rawPalette = /\b(?:bg|text|border|ring)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\d{2,3}(?:\/\d{1,3})?\b/;
+    const tokenOpacity = /\b(?:bg|text|border|ring)-(?:paper|inverse|canvas|ink|terracotta|sand|olive|muted|subtle|border|surface|surface-muted|success|danger|warning|info|accent|focus)(?:-[\w-]+)?\/\d+\b/;
+    for (const source of sources) {
         assert.equal(rawPalette.test(source), false, 'Application surfaces must use semantic RAD color roles.');
+        assert.equal(tokenOpacity.test(source), false, 'Semantic token opacity must use a valid color-mix utility.');
     }
 });
 
