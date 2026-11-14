@@ -83,7 +83,7 @@ export default function ArtistProfilePage() {
 
             {profile ? (
                 <>
-                    <section className="relative mt-6 overflow-hidden border border-border bg-white">
+                    <section className="relative mt-6 overflow-hidden border border-border bg-paper">
                         <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1.5 bg-terracotta" />
                         <div className="grid lg:grid-cols-[minmax(0,1fr)_18rem]">
                             <div className="relative px-6 pb-8 pt-9 sm:px-10 sm:pb-10 sm:pt-12 lg:px-12">
@@ -103,8 +103,8 @@ export default function ArtistProfilePage() {
                                     <p className="mt-1 text-xs text-muted">اثر دریافت‌شده در این صفحه</p>
                                 </div>
                                 <div className="grid gap-3">
-                                    {user?.role === 'buyer' && <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(profile.slug)} className="flex min-h-12 items-center justify-center bg-ink px-5 py-3 text-center text-sm font-bold text-white transition-colors hover:bg-terracotta">ارسال پیام به هنرمند</Link>}
-                                    {!user && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className="flex min-h-12 items-center justify-center bg-ink px-5 py-3 text-center text-sm font-bold text-white transition-colors hover:bg-terracotta">ورود برای ارسال پیام مستقیم</Link>}
+                                    {user?.role === 'buyer' && <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(profile.slug)} className="flex min-h-12 items-center justify-center bg-ink px-5 py-3 text-center text-sm font-bold text-inverse transition-colors hover:bg-terracotta">ارسال پیام به هنرمند</Link>}
+                                    {!user && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className="flex min-h-12 items-center justify-center bg-ink px-5 py-3 text-center text-sm font-bold text-inverse transition-colors hover:bg-terracotta">ورود برای ارسال پیام مستقیم</Link>}
                                     {user && user.role !== 'buyer' && <p className="text-xs leading-6 text-muted">برای ارسال پیام مستقیم، از حساب خریدار استفاده کنید.</p>}
                                 </div>
                             </aside>
@@ -122,8 +122,8 @@ export default function ArtistProfilePage() {
                         </div>
 
                         {portfolioCategories.length > 1 && <div className="mt-6 flex flex-wrap gap-2" aria-label="فیلتر آثار بر اساس دسته">
-                            <button type="button" aria-pressed={!categoryFilter} onClick={() => setCategoryFilter('')} className={`min-h-10 border px-4 py-2 text-sm font-semibold transition-colors ${!categoryFilter ? 'border-ink bg-ink text-white' : 'border-border bg-white text-ink hover:border-terracotta'}`}>همه دسته‌ها</button>
-                            {portfolioCategories.map((category) => <button type="button" key={category.slug} aria-pressed={categoryFilter === category.slug} onClick={() => setCategoryFilter(category.slug)} className={`min-h-10 border px-4 py-2 text-sm font-semibold transition-colors ${categoryFilter === category.slug ? 'border-ink bg-ink text-white' : 'border-border bg-white text-ink hover:border-terracotta'}`}>{category.name}</button>)}
+                            <button type="button" aria-pressed={!categoryFilter} onClick={() => setCategoryFilter('')} className={`min-h-10 border px-4 py-2 text-sm font-semibold transition-colors ${!categoryFilter ? 'border-ink bg-ink text-inverse' : 'border-border bg-paper text-ink hover:border-terracotta'}`}>همه دسته‌ها</button>
+                            {portfolioCategories.map((category) => <button type="button" key={category.slug} aria-pressed={categoryFilter === category.slug} onClick={() => setCategoryFilter(category.slug)} className={`min-h-10 border px-4 py-2 text-sm font-semibold transition-colors ${categoryFilter === category.slug ? 'border-ink bg-ink text-inverse' : 'border-border bg-paper text-ink hover:border-terracotta'}`}>{category.name}</button>)}
                         </div>}
 
                         {visibleArtworks.length ? (
@@ -138,7 +138,7 @@ export default function ArtistProfilePage() {
                     </section>
                 </>
             ) : (
-                <section className="mt-8 border border-border bg-white p-8">
+                <section className="mt-8 border border-border bg-paper p-8">
                     <h1 className="text-2xl font-black">{status === 403 ? 'دسترسی به پروفایل مجاز نیست' : 'پروفایل در دسترس نیست'}</h1>
                     <p className="mt-3 text-sm leading-7 text-muted">این پروفایل وجود ندارد یا نمایش عمومی آن غیرفعال شده است.</p>
                     {profileQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-danger">ارتباط با سرور برقرار نشد. <button type="button" onClick={() => profileQuery.refetch()} className="font-bold underline">تلاش دوباره</button></p>}
