@@ -1197,6 +1197,7 @@ a {
     display: block;
     flex: 0 0 6rem;
     width: 6rem;
+    height: 6.5rem;
     min-height: 6.5rem;
     overflow: hidden;
     align-self: stretch;
@@ -1299,6 +1300,7 @@ a {
     .rad-messaging .message-artwork-card__media {
         flex-basis: 5.25rem;
         width: 5.25rem;
+        height: 6rem;
         min-height: 6rem;
     }
     .rad-messaging .message-artwork-card__media img {
