@@ -35,9 +35,9 @@ test('messaging workspace fills the viewport and related artwork chips scroll ho
 });
 
 test('messaging headers stay aligned and the composer and artwork thumbnails remain compact and fitted', () => {
-    assert.ok(layouts.includes('ra-workspace-header sticky top-0 z-40'));
+    assert.ok(layouts.includes('ra-workspace-header sticky top-0 z-40'));\n    assert.ok(layouts.includes('ResizeObserver(measure)'));\n    assert.ok(layouts.includes('--workspace-header-height'));
     assert.ok(messaging.includes('overflow-clip rounded-2xl'));
-    assert.ok(messaging.includes('sticky top-[var(--header-height)] z-30'));
+    assert.ok(messaging.includes('sticky top-[calc(var(--workspace-header-height,4.5rem)_+_0.75rem)] z-30'));
     assert.ok(messaging.includes('pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2'));
     assert.ok(messaging.includes('max-h-28 min-h-9'));
     assert.ok(messaging.includes('flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-terracotta'));
