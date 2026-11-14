@@ -443,7 +443,7 @@ async function startBrowserDevelopment() {
         {
             label: 'Caddy local HTTPS proxy (loopback only)',
             command: 'caddy',
-            args: ['run', '--config', 'Caddyfile.browser'],
+            args: ['run', '--config', 'Caddyfile.browser', '--adapter', 'caddyfile'],
         },
     ]);
 }
@@ -477,7 +477,7 @@ async function startDevelopment() {
         {
             label: 'Caddy HTTPS reverse proxy (local + LAN)',
             command: 'caddy',
-            args: ['run', '--config', 'Caddyfile.dev'],
+            args: ['run', '--config', 'Caddyfile.dev', '--adapter', 'caddyfile'],
             env,
         },
     ]);
@@ -503,7 +503,7 @@ async function startPreview() {
         {
             label: 'Caddy HTTPS reverse proxy (local + LAN)',
             command: 'caddy',
-            args: ['run', '--config', 'Caddyfile.preview'],
+            args: ['run', '--config', 'Caddyfile.preview', '--adapter', 'caddyfile'],
             env,
         },
     ]);
