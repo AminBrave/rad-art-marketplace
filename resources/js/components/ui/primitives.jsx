@@ -2,17 +2,17 @@ import { cloneElement, isValidElement, useId } from 'react';
 import { cn } from '../../lib/utils';
 
 const buttonVariants = {
-    primary: 'ra-button--primary',
-    secondary: 'ra-button--secondary',
-    outline: 'ra-button--outline',
-    ghost: 'ra-button--ghost',
-    danger: 'ra-button--danger',
+    primary: 'bg-terracotta text-white enabled:hover:bg-terracotta-strong',
+    secondary: 'border-border bg-surface-muted text-ink enabled:hover:border-border-strong enabled:hover:bg-border',
+    outline: 'border-border-strong bg-paper text-ink enabled:hover:border-terracotta enabled:hover:text-terracotta-strong',
+    ghost: 'bg-transparent text-ink hover:bg-surface-muted',
+    danger: 'bg-danger text-white enabled:hover:bg-danger/90',
 };
 
 const buttonSizes = {
-    sm: 'ra-button--sm',
-    md: 'ra-button--md',
-    lg: 'ra-button--lg',
+    sm: 'min-h-9 px-3 py-1 text-xs',
+    md: 'min-h-11 px-4 py-2 text-sm',
+    lg: 'min-h-12 px-6 py-3 text-base',
 };
 
 export function Button({
@@ -30,7 +30,7 @@ export function Button({
             type={type}
             disabled={disabled || loading}
             aria-busy={loading || undefined}
-            className={cn('ra-button', buttonVariants[variant] ?? buttonVariants.primary, buttonSizes[size] ?? buttonSizes.md, className)}
+            className={cn('inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-transparent px-4 py-2 text-sm font-bold leading-[1.4] text-ink no-underline transition-colors disabled:cursor-not-allowed disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus', buttonVariants[variant] ?? buttonVariants.primary, buttonSizes[size] ?? buttonSizes.md, className)}
             {...props}
         >
             {loading && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-current border-e-transparent" />}
@@ -46,7 +46,7 @@ export function IconButton({ children, label, size = 'md', className = '', ...pr
             type="button"
             aria-label={label}
             title={label}
-            className={cn('ra-button ra-button--outline ra-icon-button shrink-0', dimensions[size] ?? dimensions.md, className)}
+            className={cn('inline-flex items-center justify-center rounded-md border border-border-strong bg-paper p-0 text-ink transition-colors enabled:hover:border-terracotta enabled:hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus shrink-0', dimensions[size] ?? dimensions.md, className)}
             {...props}
         >
             {children}
@@ -55,17 +55,17 @@ export function IconButton({ children, label, size = 'md', className = '', ...pr
 }
 
 const badgeVariants = {
-    neutral: 'ra-badge--neutral',
-    success: 'ra-badge--success',
-    warning: 'ra-badge--warning',
-    danger: 'ra-badge--danger',
-    info: 'ra-badge--info',
-    accent: 'ra-badge--accent',
+    neutral: 'bg-surface-muted text-muted',
+    success: 'bg-success-surface text-success',
+    warning: 'bg-warning-surface text-warning',
+    danger: 'bg-danger-surface text-danger',
+    info: 'bg-info-surface text-info',
+    accent: 'bg-accent-surface text-terracotta-strong',
 };
 
 export function Badge({ children, variant = 'neutral', className = '' }) {
     return (
-        <span className={cn('ra-badge', badgeVariants[variant] ?? badgeVariants.neutral, className)}>
+        <span className={cn('inline-flex items-center gap-1 rounded-sm px-3 py-1 text-xs font-bold leading-[1.5]', badgeVariants[variant] ?? badgeVariants.neutral, className)}>
             {children}
         </span>
     );
@@ -73,25 +73,25 @@ export function Badge({ children, variant = 'neutral', className = '' }) {
 
 
 const pageWidths = {
-    wide: 'ra-page--wide',
-    reading: 'ra-page--reading',
-    full: 'ra-page--full',
+    wide: 'max-w-[var(--content-wide-width)]',
+    reading: 'max-w-[var(--content-reading-width)]',
+    full: 'w-full max-w-none',
 };
 
 export function PageContainer({ as: Element = 'div', width = 'wide', className = '', children, ...props }) {
-    return <Element className={cn('ra-page', pageWidths[width] ?? pageWidths.wide, className)} {...props}>{children}</Element>;
+    return <Element className={cn('mx-auto w-[min(calc(100%-2*var(--page-gutter)),var(--content-width))]', pageWidths[width] ?? pageWidths.wide, className)} {...props}>{children}</Element>;
 }
 
 export function PageHeader({ eyebrow, title, description, actions, level = 1, className = '', titleClassName = '', descriptionClassName = '' }) {
     const Heading = level === 2 ? 'h2' : 'h1';
     return (
-        <header className={cn('ra-page-header', className)}>
-            <div className="ra-page-header__copy">
-                {eyebrow && <p className="ra-page-header__eyebrow">{eyebrow}</p>}
-                <Heading className={cn('ra-page-header__title', titleClassName)}>{title}</Heading>
-                {description && <p className={cn('ra-page-header__description', descriptionClassName)}>{description}</p>}
+        <header className={cn('flex items-end justify-between gap-6 border-b border-border py-8 max-sm:items-stretch max-sm:flex-col max-sm:gap-4 max-sm:py-6', className)}>
+            <div className="min-w-0 max-w-[52rem]">
+                {eyebrow && <p className="text-xs font-bold tracking-[.02em] text-terracotta-strong">{eyebrow}</p>}
+                <Heading className={cn('mt-2 text-[clamp(2rem,4vw,3.25rem)] font-extrabold leading-heading tracking-[-.025em] text-ink', titleClassName)}>{title}</Heading>
+                {description && <p className={cn('mt-3 text-sm leading-copy text-muted', descriptionClassName)}>{description}</p>}
             </div>
-            {actions && <div className="ra-page-header__actions">{actions}</div>}
+            {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
         </header>
     );
 }
@@ -99,13 +99,13 @@ export function PageHeader({ eyebrow, title, description, actions, level = 1, cl
 export function SectionHeader({ id, eyebrow, title, description, actions, className = '', level = 2 }) {
     const Heading = level === 3 ? 'h3' : 'h2';
     return (
-        <header className={cn('ra-section-header', className)}>
-            <div className="ra-section-header__copy">
-                {eyebrow && <p className="ra-section-header__eyebrow">{eyebrow}</p>}
-                <Heading id={id} className="ra-section-header__title">{title}</Heading>
-                {description && <p className="ra-section-header__description">{description}</p>}
+        <header className={cn('flex items-end justify-between gap-4 border-b border-border pb-4 max-sm:items-stretch max-sm:flex-col', className)}>
+            <div className="min-w-0">
+                {eyebrow && <p className="text-xs font-bold tracking-[.02em] text-terracotta-strong">{eyebrow}</p>}
+                <Heading id={id} className="mt-1 text-xl font-bold leading-heading text-ink">{title}</Heading>
+                {description && <p className="mt-2 text-sm leading-relaxed text-muted">{description}</p>}
             </div>
-            {actions && <div className="ra-section-header__actions">{actions}</div>}
+            {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
         </header>
     );
 }
@@ -113,13 +113,13 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
 
 export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
     return (
-        <header className={cn('ra-workspace-hero', className)} dir="rtl">
-            <div className="ra-workspace-hero__copy">
-                {eyebrow && <p className="ra-workspace-hero__eyebrow">{eyebrow}</p>}
-                <h1 className="ra-workspace-hero__title">{title}</h1>
-                {description && <p className="ra-workspace-hero__description">{description}</p>}
+        <header className={cn('relative flex min-w-0 items-end justify-between gap-6 overflow-hidden rounded-md border border-ink bg-ink p-[clamp(1.5rem,4vw,2.5rem)] text-white max-md:items-stretch max-md:flex-col', className)} dir="rtl">
+            <div className="relative z-10 max-w-[46rem]">
+                {eyebrow && <p className="text-xs font-bold text-sand">{eyebrow}</p>}
+                <h1 className="mt-3 text-[clamp(1.5rem,3vw,2rem)] font-extrabold leading-heading text-white">{title}</h1>
+                {description && <p className="mt-3 text-sm leading-copy text-white/80">{description}</p>}
             </div>
-            {actions && <div className="ra-workspace-hero__actions">{actions}</div>}
+            {actions && <div className="relative z-10 flex flex-wrap gap-2 max-md:w-full">{actions}</div>}
         </header>
     );
 }
@@ -128,22 +128,22 @@ export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, cla
     const Element = as ?? (to ? 'a' : 'article');
     const destinationProps = to ? (Element === 'a' ? { href: to } : { to }) : {};
     return (
-        <Element {...destinationProps} className={cn('ra-metric-card', to && 'ra-metric-card--interactive', className)}>
-            <span className="ra-metric-card__top">
-                <span className="ra-metric-card__label">{label}</span>
-                {eyebrow && <span className="ra-metric-card__eyebrow">{eyebrow}</span>}
+        <Element {...destinationProps} className={cn('flex min-h-36 min-w-0 flex-col justify-between rounded-md border border-border bg-paper p-5 text-ink no-underline', to && 'transition duration-200 hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus', className)}>
+            <span className="flex items-center justify-between gap-3">
+                <span className="text-sm font-semibold text-muted">{label}</span>
+                {eyebrow && <span className="text-[10px] font-bold text-terracotta-strong">{eyebrow}</span>}
             </span>
-            <span className="ra-metric-card__value">{value ?? '—'}</span>
-            {detail && <span className="ra-metric-card__detail">{detail}</span>}
+            <span className="mt-5 text-3xl font-extrabold tabular-nums text-ink">{value ?? '—'}</span>
+            {detail && <span className="mt-2 text-xs leading-relaxed text-muted">{detail}</span>}
         </Element>
     );
 }
 
 const surfaceVariants = {
-    default: 'ra-surface',
-    muted: 'ra-surface ra-surface--muted',
-    raised: 'ra-surface ra-surface--raised',
-    interactive: 'ra-surface ra-surface--interactive',
+    default: 'border border-border rounded-md bg-surface',
+    muted: 'border border-border rounded-md bg-surface-muted',
+    raised: 'border border-border rounded-md bg-surface shadow-soft',
+    interactive: 'border border-border rounded-md bg-surface transition-colors hover:border-border-strong hover:bg-surface-muted focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus',
 };
 
 export function Surface({ as: Element = 'section', variant = 'default', className = '', children, ...props }) {
@@ -168,7 +168,7 @@ export function StatusBadge({ status, label, className = '' }) {
     return <Badge variant={statusVariants[status] ?? 'neutral'} className={className}>{label ?? status ?? 'نامشخص'}</Badge>;
 }
 
-const controlClass = 'ra-control';
+const controlClass = 'w-full min-h-11 rounded-md border border-border-strong bg-paper px-3.5 py-2 font-sans text-sm text-ink transition-colors placeholder:text-subtle focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:bg-surface-muted disabled:opacity-65 aria-[invalid=true]:border-danger';
 
 export function FormField({ id, label, hint, error, required = false, children, className = '' }) {
     const generatedId = useId();
@@ -186,14 +186,14 @@ export function FormField({ id, label, hint, error, required = false, children, 
         : children;
 
     return (
-        <div className={`ra-form-field ${className}`}>
-            <label htmlFor={fieldId} className="ra-form-field__label">
+        <div className={cn('grid gap-2', className)}>
+            <label htmlFor={fieldId} className="text-sm font-semibold text-ink">
                 {label}
                 {required && <span aria-hidden="true" className="ms-1 text-danger">*</span>}
             </label>
             {control}
-            {hint && <p id={`${fieldId}-hint`} className="ra-form-field__hint">{hint}</p>}
-            {error && <p id={`${fieldId}-error`} role="alert" className="ra-form-field__error">{error}</p>}
+            {hint && <p id={`${fieldId}-hint`} className="text-xs leading-relaxed text-muted">{hint}</p>}
+            {error && <p id={`${fieldId}-error`} role="alert" className="text-xs leading-relaxed text-danger">{error}</p>}
         </div>
     );
 }
@@ -203,7 +203,7 @@ export function TextInput({ className = '', ...props }) {
 }
 
 export function TextareaField({ className = '', rows = 4, ...props }) {
-    return <textarea rows={rows} className={`${controlClass} ra-control--textarea ${className}`} {...props} />;
+    return <textarea rows={rows} className={cn(controlClass, 'min-h-28 resize-y leading-copy', className)} {...props} />;
 }
 
 export function SelectField({ className = '', children, ...props }) {
@@ -231,7 +231,7 @@ export function SearchField({
     };
 
     return (
-        <form onSubmit={submit} role="search" className={`ra-search-field ${className}`}>
+        <form onSubmit={submit} role="search" className={cn('flex min-w-0 flex-col gap-2 sm:flex-row [&>input]:min-w-0 [&>input]:flex-1', className)}>
             <label className="sr-only" htmlFor={searchId}>{label}</label>
             <TextInput
                 id={searchId}
