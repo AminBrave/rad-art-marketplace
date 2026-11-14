@@ -71,6 +71,8 @@ export default function MessagingCenter({ role }) {
     const [directStartError, setDirectStartError] = useState('');
     const [safety, setSafety] = useState({ blocked_by_me: false, blocked_by_other: false });
     const [safetyLoading, setSafetyLoading] = useState(true);
+    const [conversationHeaderVisible, setConversationHeaderVisible] = useState(true);
+    const touchStartYRef = useRef(null);
     const messagesContainerRef = useRef(null);
     const inboxHeadingRef = useRef(null);
     const [inboxHeadingHeight, setInboxHeadingHeight] = useState(0);
@@ -275,6 +277,8 @@ export default function MessagingCenter({ role }) {
         setLoadingOlder(false);
         hasOlderMessagesRef.current = false;
         pendingScrollRestoreRef.current = null;
+        touchStartYRef.current = null;
+        setConversationHeaderVisible(true);
         activeConversationRef.current = active;
         setMessages([]);
         setMessagesError('');
@@ -741,7 +745,8 @@ export default function MessagingCenter({ role }) {
                 <div dir="rtl" style={{ "--inbox-heading-height": inboxHeadingHeight + "px" }} className={active ? 'flex h-full min-h-0 min-w-0 flex-col bg-canvas' : 'hidden h-full min-h-0 min-w-0 flex-col bg-canvas lg:flex'}>
                     {!active ? <div className="m-auto p-8 text-center text-sm text-muted">برای مشاهده پیام‌ها یک گفتگو را انتخاب کنید.</div> : (
                         <>
-                            <header className="relative z-30 shrink-0 border-b border-border bg-white shadow-soft lg:sticky lg:top-[calc(var(--workspace-header-height,4.5rem)_+_var(--inbox-heading-height,5.5rem)_+_0.75rem)]">
+                            <div aria-hidden={!conversationHeaderVisible} className={'shrink-0 overflow-hidden transition-[max-height,opacity] duration-200 ease-out motion-reduce:transition-none ' + (conversationHeaderVisible ? 'visible max-h-40 opacity-100' : 'invisible pointer-events-none max-h-0 opacity-0') + ' lg:visible lg:pointer-events-auto lg:max-h-none lg:overflow-visible lg:opacity-100 lg:transition-none'}>
+                            <header className="relative z-30 border-b border-border bg-white shadow-soft lg:sticky lg:top-[calc(var(--workspace-header-height,4.5rem)_+_var(--inbox-heading-height,5.5rem)_+_0.75rem)]">
                                 <div className="flex min-w-0 items-center gap-2.5 px-3 py-3 sm:gap-3 sm:px-5">
                                     <button type="button" aria-label="بازگشت به گفتگوها" title="بازگشت به گفتگوها" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-canvas text-ink transition hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:hidden" onClick={() => { setActive(null); setPendingArtwork(null); setParams((current) => { const next = new URLSearchParams(current); next.delete('conversation'); next.delete('artwork'); return next; }, { replace: true }); }}><ChevronRight size={19} aria-hidden="true" /></button>
                                     <div aria-hidden="true" className={'flex h-11 w-11 aspect-square shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-inset ring-border text-sm font-black shadow-sm ' + avatarTone(selected?.participant?.name)}>{avatarInitial(selected?.participant?.name)}</div>
@@ -766,12 +771,25 @@ export default function MessagingCenter({ role }) {
                                 </div>
                                 {selected?.contexts?.some((context) => context.artwork?.slug) && <div role="group" aria-label="آثار مرتبط" tabIndex={0} className="flex min-w-0 flex-nowrap items-center gap-2 overflow-x-auto overscroll-x-contain border-t border-border px-4 py-2.5 [scrollbar-width:thin] focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus sm:px-5"><span className="shrink-0 text-[11px] font-semibold text-muted">آثار مرتبط:</span>{selected.contexts.filter((context) => context.artwork?.slug).map((context) => role === 'buyer' ? <button key={context.artwork.slug} type="button" onClick={() => { setPendingArtwork(context.artwork); setParams((current) => { const next = new URLSearchParams(current); next.set('artwork', context.artwork.slug); return next; }, { replace: true }); }} aria-label={'ارسال پیام درباره ' + context.artwork.title} className="max-w-[min(70vw,18rem)] shrink-0 truncate rounded-lg border border-border bg-surface-muted px-3 py-1.5 text-xs font-semibold text-ink transition hover:border-terracotta/40 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">{context.artwork.title} · پاسخ</button> : <Link key={context.artwork.slug} to={'/artworks/' + context.artwork.slug} className="max-w-[min(70vw,18rem)] shrink-0 truncate rounded-lg border border-border bg-surface-muted px-3 py-1.5 text-xs font-semibold text-ink transition hover:border-terracotta/40 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">{context.artwork.title}</Link>)}</div>}
                             </header>
-                            <div dir="ltr" ref={messagesContainerRef} onScroll={(event) => {
+                            </div>
+                            <div dir="ltr" ref={messagesContainerRef}
+                                onTouchStart={(event) => { touchStartYRef.current = event.touches[0]?.clientY ?? null; }}
+                                onTouchMove={(event) => {
+                                    const currentY = event.touches[0]?.clientY;
+                                    if (currentY == null || touchStartYRef.current == null) return;
+                                    const movement = currentY - touchStartYRef.current;
+                                    if (Math.abs(movement) >= 8) {
+                                        setConversationHeaderVisible(movement > 0);
+                                        touchStartYRef.current = currentY;
+                                    }
+                                }}
+                                onTouchEnd={() => { touchStartYRef.current = null; }}
+                                onScroll={(event) => {
                                 const node = event.currentTarget;
                                 shouldStickToBottomRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 120;
                                 if (shouldStickToBottomRef.current) setNewMessageCount(0);
                                 if (node.scrollTop < 72 && hasOlderMessagesRef.current && !olderMessagesError) loadOlderMessages();
-                            }} className="relative flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain [scrollbar-gutter:stable] bg-[radial-gradient(circle_at_1px_1px,rgba(66,62,53,0.055)_1px,transparent_0)] [background-size:24px_24px] px-3 py-5 sm:gap-4 sm:px-6 sm:py-6" role="log" aria-label="پیام‌های گفتگو" aria-live="polite" aria-relevant="additions">
+                            }} className="relative flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto overscroll-contain [scrollbar-gutter:stable] bg-[radial-gradient(circle_at_1px_1px,rgba(66,62,53,0.055)_1px,transparent_0)] [background-size:24px_24px] px-3 py-3 sm:gap-3 sm:px-5 sm:py-5" role="log" aria-label="پیام‌های گفتگو" aria-live="polite" aria-relevant="additions">
                                 {messagesLoading && messages.length === 0 && <MessageHistorySkeleton count={5} className="w-full" />}
                                 {messagesError && <div role="alert" className="m-auto flex max-w-md flex-col items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-5 text-center text-sm text-red-800"><p>{messagesError}</p><button type="button" onClick={() => loadMessages(active)} className="rounded-lg px-4 py-2 font-bold underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">تلاش دوباره</button></div>}
                                 {!messagesLoading && !messagesError && messages.length === 0 && <p className="m-auto py-6 text-center text-sm text-muted">هنوز پیامی در این گفتگو وجود ندارد. می‌توانید گفتگو را با یک پیام شروع کنید.</p>}
