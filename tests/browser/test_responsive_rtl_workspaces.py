@@ -87,7 +87,9 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
     def test_authenticated_workspaces_respect_rtl_and_viewport_widths(self):
         workspace_roles = (
             ("/dashboard/buyer", "buyer"),
+            ("/dashboard/buyer/messages", "buyer"),
             ("/dashboard/artist", "artist"),
+            ("/dashboard/artist/messages", "artist"),
             ("/admin", "admin"),
         )
         for route_path, role in workspace_roles:
@@ -138,6 +140,20 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
                         dimensions["body"], dimensions["viewport"] + 1,
                         f"Horizontal body overflow on {route_path} at {width}px: {dimensions}",
                     )
+                    if route_path.endswith("/messages"):
+                        viewport_height = page.evaluate("() => window.innerHeight")
+                        shell_height = page.locator(".ra-workspace-shell").evaluate(
+                            "(node) => node.getBoundingClientRect().height"
+                        )
+                        document_height = page.evaluate("() => document.documentElement.scrollHeight")
+                        self.assertAlmostEqual(
+                            shell_height, viewport_height, delta=2,
+                            msg=f"Messaging shell must fill the viewport on {route_path} at {width}px",
+                        )
+                        self.assertLessEqual(
+                            document_height, viewport_height + 1,
+                            f"Messaging page must not scroll vertically on {route_path} at {width}px",
+                        )
             finally:
                 context.close()
 
