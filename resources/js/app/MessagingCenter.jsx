@@ -72,7 +72,8 @@ export default function MessagingCenter({ role }) {
     const [safety, setSafety] = useState({ blocked_by_me: false, blocked_by_other: false });
     const [safetyLoading, setSafetyLoading] = useState(true);
     const [conversationHeaderVisible, setConversationHeaderVisible] = useState(true);
-    const touchStartYRef = useRef(null);
+    const previousScrollTopRef = useRef(null);
+    const scrollDirectionRef = useRef({ direction: 0, distance: 0 });
     const messagesContainerRef = useRef(null);
     const inboxHeadingRef = useRef(null);
     const [inboxHeadingHeight, setInboxHeadingHeight] = useState(0);
@@ -277,7 +278,8 @@ export default function MessagingCenter({ role }) {
         setLoadingOlder(false);
         hasOlderMessagesRef.current = false;
         pendingScrollRestoreRef.current = null;
-        touchStartYRef.current = null;
+        previousScrollTopRef.current = null;
+        scrollDirectionRef.current = { direction: 0, distance: 0 };
         setConversationHeaderVisible(true);
         activeConversationRef.current = active;
         setMessages([]);
@@ -773,21 +775,34 @@ export default function MessagingCenter({ role }) {
                             </header>
                             </div>
                             <div dir="ltr" ref={messagesContainerRef}
-                                onTouchStart={(event) => { touchStartYRef.current = event.touches[0]?.clientY ?? null; }}
-                                onTouchMove={(event) => {
-                                    const currentY = event.touches[0]?.clientY;
-                                    if (currentY == null || touchStartYRef.current == null) return;
-                                    const movement = currentY - touchStartYRef.current;
-                                    if (Math.abs(movement) >= 8) {
-                                        setConversationHeaderVisible(movement > 0);
-                                        touchStartYRef.current = null;
-                                    }
-                                }}
-                                onTouchEnd={() => { touchStartYRef.current = null; }}
                                 onScroll={(event) => {
                                 const node = event.currentTarget;
+                                const previousScrollTop = previousScrollTopRef.current;
+                                previousScrollTopRef.current = node.scrollTop;
                                 shouldStickToBottomRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 120;
                                 if (shouldStickToBottomRef.current) setNewMessageCount(0);
+
+                                if (node.scrollTop <= 8) {
+                                    setConversationHeaderVisible(true);
+                                    scrollDirectionRef.current = { direction: 0, distance: 0 };
+                                } else if (previousScrollTop !== null && !shouldStickToBottomRef.current && window.matchMedia('(max-width: 1023px)').matches) {
+                                    const delta = node.scrollTop - previousScrollTop;
+                                    const direction = Math.sign(delta);
+                                    const tracking = scrollDirectionRef.current;
+                                    if (direction !== 0) {
+                                        if (tracking.direction !== direction) {
+                                            tracking.direction = direction;
+                                            tracking.distance = 0;
+                                        }
+                                        tracking.distance += Math.abs(delta);
+                                        const threshold = direction > 0 ? 18 : 10;
+                                        if (tracking.distance >= threshold) {
+                                            setConversationHeaderVisible(direction < 0);
+                                            tracking.distance = 0;
+                                        }
+                                    }
+                                }
+
                                 if (node.scrollTop < 72 && hasOlderMessagesRef.current && !olderMessagesError) loadOlderMessages();
                             }} className="relative flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto overscroll-contain [scrollbar-gutter:stable] bg-[radial-gradient(circle_at_1px_1px,rgba(66,62,53,0.055)_1px,transparent_0)] [background-size:24px_24px] px-3 py-3 sm:gap-3 sm:px-5 sm:py-5" role="log" aria-label="پیام‌های گفتگو" aria-live="polite" aria-relevant="additions">
                                 {messagesLoading && messages.length === 0 && <MessageHistorySkeleton count={5} className="w-full" />}
