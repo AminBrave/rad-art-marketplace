@@ -129,7 +129,6 @@ function NotificationBell({ user }) {
             if (context?.previous) queryClient.setQueryData(preferenceKey, context.previous);
         },
         onSuccess: ({ data }) => queryClient.setQueryData(preferenceKey, data.data),
-        onSettled: () => queryClient.invalidateQueries({ queryKey: preferenceKey }),
     });
 
     const items = notificationsQuery.data?.items ?? [];
