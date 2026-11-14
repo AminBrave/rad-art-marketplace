@@ -39,11 +39,11 @@ test('messaging headers stay aligned and the composer and artwork thumbnails rem
     assert.ok(layouts.includes('ResizeObserver(measure)'));
     assert.ok(layouts.includes('--workspace-header-height'));
     assert.ok(messaging.includes('overflow-clip rounded-2xl'));
-    assert.ok(messaging.includes('inboxHeadingRef'));
-    assert.ok(messaging.includes('ResizeObserver(measure)'));
-    assert.ok(messaging.includes('lg:sticky lg:top-[calc(var(--workspace-header-height,4.5rem)_+_var(--inbox-heading-height,5.5rem)_+_0.75rem)]'));
-    assert.ok(messaging.includes('relative z-30 border-b border-border bg-white shadow-soft lg:sticky'));
-    assert.ok(!messaging.includes('sticky top-[calc(var(--workspace-header-height,4.5rem)_+_0.75rem)]'));
+    assert.ok(!messaging.includes('inboxHeadingRef'));
+    assert.ok(!messaging.includes('--inbox-heading-height'));
+    assert.ok(messaging.includes('lg:sticky lg:top-[calc(var(--workspace-header-height,4.5rem)_+_0.75rem)] lg:z-30'));
+    assert.ok(messaging.includes('relative z-30 border-b border-border bg-white shadow-soft'));
+    assert.ok(!messaging.includes('var(--inbox-heading-height'));
     assert.ok(messaging.includes('pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2'));
     assert.ok(messaging.includes('max-h-28 min-h-9'));
     assert.ok(messaging.includes('flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-terracotta'));
