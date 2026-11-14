@@ -146,7 +146,7 @@ The dispatcher accepts these internal tasks:
 - Style: `fix:style`
 - Production: `prod:optimize`, `prod:clear`
 
-Use `node scripts/project.mjs --help` for the concise internal task list. Build, lint, preview and migration-status one-liners are intentionally defined directly in `package.json`.
+Use `node scripts/project.mjs --help` for the concise internal task list. Build, lint and migration-status one-liners are intentionally defined directly in `package.json`; preview is orchestrated because it starts both Laravel and Caddy.
 
 ## Reports
 
