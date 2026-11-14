@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Bell } from 'lucide-react';
@@ -11,6 +11,17 @@ const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مد
 export function PublicLayout() {
     const { user, logout } = useAuth();
     const [logoutError, setLogoutError] = useState('');
+    const workspaceHeaderRef = useRef(null);
+    const [workspaceHeaderHeight, setWorkspaceHeaderHeight] = useState(0);
+    useEffect(() => {
+        const header = workspaceHeaderRef.current;
+        if (!header) return undefined;
+        const measure = () => setWorkspaceHeaderHeight(Math.ceil(header.getBoundingClientRect().height));
+        measure();
+        const observer = new ResizeObserver(measure);
+        observer.observe(header);
+        return () => observer.disconnect();
+    }, []);
     const handleLogout = async () => {
         setLogoutError('');
         try { await logout(); } catch { setLogoutError('خروج انجام نشد. اتصال را بررسی کنید.'); }
