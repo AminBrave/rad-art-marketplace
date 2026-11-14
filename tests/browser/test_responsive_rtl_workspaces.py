@@ -142,38 +142,53 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
                     )
                     if route_path.endswith("/messages"):
                         viewport_height = page.evaluate("() => window.innerHeight")
-                        shell_height = page.locator(".ra-workspace-shell").evaluate(
-                            "(node) => node.getBoundingClientRect().height"
-                        )
+                        header = page.locator(".ra-public-header")
+                        header_height = header.evaluate("(node) => node.getBoundingClientRect().height")
+                        chat_page = page.locator(".ra-chat-page")
+                        chat_height = chat_page.evaluate("(node) => node.getBoundingClientRect().height")
                         document_height = page.evaluate("() => document.documentElement.scrollHeight")
-                        content_height = page.locator(".ra-workspace-content").evaluate(
-                            "(node) => node.getBoundingClientRect().height"
+                        page.get_by_role("log", name="پیام‌های گفتگو").wait_for()
+                        composer = page.locator(".ra-chat-layout > div > form")
+                        composer.wait_for()
+                        history = page.get_by_role("log", name="پیام‌های گفتگو")
+                        history_overflow = history.evaluate("(node) => getComputedStyle(node).overflowY")
+                        header_bottom = page.locator(".ra-chat-layout > div > header").evaluate(
+                            "(node) => node.getBoundingClientRect().bottom"
                         )
-                        chat_height = page.locator(".rad-messaging > .grid").evaluate(
-                            "(node) => node.getBoundingClientRect().height"
-                        )
-                        history_overflow = page.get_by_role("log", name="پیام‌های گفتگو").evaluate(
-                            "(node) => getComputedStyle(node).overflowY"
-                        )
+                        history_top = history.evaluate("(node) => node.getBoundingClientRect().top")
+                        history_bottom = history.evaluate("(node) => node.getBoundingClientRect().bottom")
+                        composer_top = composer.evaluate("(node) => node.getBoundingClientRect().top")
                         self.assertGreaterEqual(
-                            chat_height, viewport_height - 2,
-                            f"Main chat panel must be at least one browser viewport tall on {route_path} at {width}px",
+                            chat_height, viewport_height - header_height - 2,
+                            f"Chat must fill the viewport below the site header on {route_path} at {width}px",
+                        )
+                        self.assertLessEqual(
+                            abs((header_height + chat_height) - viewport_height), 3,
+                            f"Chat viewport must account for the actual responsive site-header height on {route_path} at {width}px",
                         )
                         self.assertEqual(
                             history_overflow, "auto",
                             f"Message history must remain independently scrollable on {route_path} at {width}px",
                         )
-                        self.assertGreater(
-                            document_height, viewport_height,
-                            f"Messaging page must scroll vertically past the header and navigation on {route_path} at {width}px",
+                        self.assertLessEqual(
+                            header_bottom, history_top + 1,
+                            f"Conversation header must occupy its own row above messages on {route_path} at {width}px",
                         )
-                        self.assertGreater(
-                            shell_height, viewport_height,
-                            f"Messaging workspace must grow naturally with the full-height chat panel on {route_path} at {width}px",
+                        self.assertLessEqual(
+                            history_bottom, composer_top + 1,
+                            f"Composer must occupy its own row below messages on {route_path} at {width}px",
                         )
-                        self.assertGreater(
-                            content_height, viewport_height * 0.9,
-                            f"Messaging content must not be constrained to the remaining space below the header on {route_path} at {width}px",
+                        self.assertLessEqual(
+                            document_height, viewport_height + 2,
+                            f"Dedicated chat page must not create outer-page scrolling on {route_path} at {width}px",
+                        )
+                        self.assertEqual(
+                            page.locator("footer").count(), 0,
+                            f"Chat page must not render the site footer on {route_path}",
+                        )
+                        self.assertEqual(
+                            page.locator('nav[aria-label="ناوبری فضای کاربری"]').count(), 0,
+                            f"Chat page must not render dashboard navigation on {route_path}",
                         )
             finally:
                 context.close()
