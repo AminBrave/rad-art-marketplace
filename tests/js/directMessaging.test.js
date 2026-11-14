@@ -27,7 +27,7 @@ test('dedicated chat fills the space below the site header and related artwork c
     assert.ok(messaging.includes('flex-nowrap items-center gap-2 overflow-x-auto overscroll-x-contain'));
     assert.ok(messaging.includes('role="group" aria-label="آثار مرتبط" tabIndex={0}'));
     assert.ok(messaging.includes('shrink-0 truncate rounded-lg border border-border'));
-    assert.ok(workspaceCss.includes('height: calc(100dvh - var(--site-header-height, 4.5rem))'));
+    assert.ok(workspaceCss.includes('height: calc(100dvh - var(--site-header-height, 4.5rem) - 4.5rem - env(safe-area-inset-bottom, 0px))'));
 });
 
 test('messaging uses a dedicated viewport page with only the main site header and independent chat panes', () => {
