@@ -1037,3 +1037,153 @@ a {
         transition: none;
     }
 }
+
+
+/* Messaging polish: avatar frame, composer surface, and compact action controls. */
+.rad-messaging > .grid > div[dir="rtl"] > header > div:first-child > div[aria-hidden="true"] {
+    border: 1px solid var(--color-border-strong);
+    --tw-ring-color: var(--color-border-strong);
+    outline: 3px solid var(--color-surface-muted);
+    outline-offset: 1px;
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--color-ink) 8%, transparent);
+}
+.rad-messaging .composer-shell {
+    display: flex;
+    align-items: flex-end;
+    gap: .5rem;
+    min-height: 3.75rem;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 1.15rem;
+    background: var(--color-surface);
+    padding: .45rem;
+    box-shadow: 0 3px 12px color-mix(in srgb, var(--color-ink) 6%, transparent);
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+.rad-messaging .composer-shell:focus-within {
+    border-color: var(--color-focus);
+    box-shadow: 0 0 0 3px var(--color-focus-soft), 0 3px 12px color-mix(in srgb, var(--color-ink) 5%, transparent);
+}
+.rad-messaging .composer-shell > div:first-child {
+    min-width: 0;
+}
+.rad-messaging .composer-shell textarea {
+    display: block;
+    min-height: 2.55rem;
+    max-height: 9rem;
+    padding: .55rem .7rem;
+    border: 0;
+    border-radius: .7rem;
+    background: transparent;
+    color: var(--color-text);
+    line-height: 1.65;
+}
+.rad-messaging .composer-shell textarea::placeholder {
+    color: var(--color-text-subtle);
+}
+.rad-messaging .composer-shell label {
+    display: inline-flex;
+    flex: 0 0 auto;
+    width: 2.5rem;
+    height: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: .75rem;
+    color: var(--color-text-muted);
+    background: transparent;
+    transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
+}
+.rad-messaging .composer-shell label:hover {
+    border-color: var(--color-border);
+    color: var(--color-action-text);
+    background: var(--color-surface-muted);
+}
+.rad-messaging .composer-shell > button[type="submit"] {
+    display: inline-flex;
+    flex: 0 0 auto;
+    width: 2.65rem;
+    height: 2.65rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-action);
+    border-radius: .85rem;
+    background: var(--color-action);
+    color: var(--color-inverse-text);
+    box-shadow: none;
+    transition: transform 150ms ease, background-color 150ms ease, opacity 150ms ease;
+}
+.rad-messaging .composer-shell > button[type="submit"]:hover:not(:disabled) {
+    background: var(--color-terracotta-strong);
+    transform: translateY(-1px);
+}
+.rad-messaging .composer-shell > button[type="submit"]:active:not(:disabled) {
+    transform: translateY(0);
+}
+.rad-messaging .composer-shell > button[type="submit"]:disabled {
+    border-color: var(--color-border);
+    background: var(--color-surface-muted);
+    color: var(--color-text-subtle);
+    opacity: 1;
+    cursor: not-allowed;
+}
+.rad-messaging > .grid > div[dir="rtl"] > [role="log"] article > div[class*="flex-wrap"][class*="items-center"] button {
+    min-width: 2.15rem;
+    min-height: 2rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-text-muted);
+    font-size: 11px;
+    line-height: 1;
+    transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease;
+}
+.rad-messaging > .grid > div[dir="rtl"] > [role="log"] article > div[class*="flex-wrap"][class*="items-center"] button:hover {
+    border-color: var(--color-border-strong);
+    background: var(--color-surface-muted);
+    color: var(--color-text);
+}
+.rad-messaging > .grid > div[dir="rtl"] > [role="log"] article > div[class*="flex-wrap"][class*="items-center"] button[aria-pressed="true"] {
+    border-color: var(--color-action);
+    background: var(--color-accent-surface);
+    color: var(--color-action-text);
+}
+.rad-messaging > .grid > div[dir="rtl"] > [role="log"] article > div[class*="flex-wrap"][class*="gap-1.5"] button {
+    min-height: 2rem;
+    border: 1px solid transparent;
+    border-radius: .6rem;
+    background: transparent;
+    color: var(--color-text-muted);
+    padding-inline: .65rem;
+    font-size: 11px;
+    font-weight: var(--weight-medium);
+    transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+.rad-messaging > .grid > div[dir="rtl"] > [role="log"] article > div[class*="flex-wrap"][class*="gap-1.5"] button:hover {
+    border-color: var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text);
+}
+.rad-messaging > .grid > div[dir="rtl"] > [role="log"] article > div[class*="flex-wrap"][class*="gap-1.5"] button:has(svg.lucide-trash-2):hover {
+    border-color: var(--color-danger);
+    background: var(--color-danger-surface);
+    color: var(--color-danger);
+}
+@media (max-width: 767px) {
+    .rad-messaging .composer-shell {
+        gap: .35rem;
+        border-radius: 1rem;
+        padding: .35rem;
+    }
+    .rad-messaging .composer-shell > button[type="submit"] {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .rad-messaging .composer-shell,
+    .rad-messaging .composer-shell label,
+    .rad-messaging .composer-shell > button[type="submit"],
+    .rad-messaging > .grid > div[dir="rtl"] > [role="log"] article button {
+        transition: none;
+    }
+}
