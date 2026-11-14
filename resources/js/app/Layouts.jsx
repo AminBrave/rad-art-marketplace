@@ -204,17 +204,19 @@ function NotificationBell({ user }) {
 
 export function WorkspaceLayout({ title, links, outletContext }) {
     const { user, logout } = useAuth();
+    const { pathname } = useLocation();
+    const isMessagingRoute = /^\\/dashboard\\/(artist|buyer)\\/messages$/.test(pathname);
     const [logoutError, setLogoutError] = useState('');
     const handleLogout = async () => { setLogoutError(''); try { await logout(); } catch { setLogoutError('خروج انجام نشد. اتصال را بررسی کنید.'); } };
-    return <div className="ra-workspace-shell min-h-screen bg-canvas text-ink" dir="rtl">
-        <header className="ra-workspace-header border-b border-border bg-white"><div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-8 lg:px-10"><div className="min-w-0"><Link to="/" className="text-lg font-black text-ink no-underline">راد<span className="text-terracotta-strong">آرت</span></Link><p className="mt-1 text-xs text-muted">{title}</p></div><div className="flex min-w-0 flex-wrap items-center justify-end gap-2 text-sm sm:gap-3">{user?.role !== 'admin' && <NotificationBell user={user} />}<span className="max-w-32 truncate font-semibold sm:max-w-none">{user?.name}</span><Link to="/" className="min-h-10 border border-border px-3 py-2 font-semibold hover:border-terracotta sm:px-4">مشاهده سایت</Link><button type="button" onClick={handleLogout} className="min-h-10 border border-border px-3 py-2 font-semibold hover:border-terracotta sm:px-4">خروج</button></div></div>{logoutError&&<p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-red-700 sm:px-8">{logoutError}</p>}</header>
-        <div className="ra-workspace-grid mx-auto grid min-w-0 max-w-7xl gap-5 px-5 py-6 sm:px-8 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-6 lg:px-10 lg:py-7">
-            <aside className="ra-workspace-sidebar min-w-0 overflow-hidden border border-border bg-white p-2 sm:p-3 lg:h-fit">
+    return <div className={'ra-workspace-shell bg-canvas text-ink ' + (isMessagingRoute ? 'flex h-[100dvh] flex-col overflow-hidden' : 'min-h-screen')} dir="rtl">
+        <header className="ra-workspace-header shrink-0 border-b border-border bg-white"><div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-8 lg:px-10"><div className="min-w-0"><Link to="/" className="text-lg font-black text-ink no-underline">راد<span className="text-terracotta-strong">آرت</span></Link><p className="mt-1 text-xs text-muted">{title}</p></div><div className="flex min-w-0 flex-wrap items-center justify-end gap-2 text-sm sm:gap-3">{user?.role !== 'admin' && <NotificationBell user={user} />}<span className="max-w-32 truncate font-semibold sm:max-w-none">{user?.name}</span><Link to="/" className="min-h-10 border border-border px-3 py-2 font-semibold hover:border-terracotta sm:px-4">مشاهده سایت</Link><button type="button" onClick={handleLogout} className="min-h-10 border border-border px-3 py-2 font-semibold hover:border-terracotta sm:px-4">خروج</button></div></div>{logoutError&&<p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-red-700 sm:px-8">{logoutError}</p>}</header>
+        <div className={'ra-workspace-grid mx-auto grid min-w-0 max-w-7xl ' + (isMessagingRoute ? 'min-h-0 w-full flex-1 grid-cols-1 grid-rows-[auto_minmax(0,1fr)] items-stretch gap-3 overflow-hidden px-3 py-3 sm:px-5 lg:grid-cols-[220px_minmax(0,1fr)] lg:grid-rows-1 lg:gap-5 lg:px-8' : 'gap-5 px-5 py-6 sm:px-8 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-6 lg:px-10 lg:py-7')}>
+            <aside className={'ra-workspace-sidebar min-w-0 overflow-hidden border border-border bg-white p-2 sm:p-3 ' + (isMessagingRoute ? 'lg:h-full lg:overflow-y-auto' : 'lg:h-fit')}>
                 <nav aria-label="ناوبری فضای کاربری" className="flex w-full min-w-0 flex-nowrap gap-2 overflow-x-auto overscroll-x-contain pb-1 lg:flex-col lg:overflow-visible lg:pb-0">
                     {links.map(item=><NavLink key={item.to} to={item.to} end={item.end} className={({isActive})=>(isActive?'bg-ink text-white':'text-muted hover:bg-surface-muted hover:text-ink')+' min-h-11 shrink-0 whitespace-nowrap px-4 py-3 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:w-full'}>{item.label}</NavLink>)}
                 </nav>
             </aside>
-            <main className="ra-workspace-content min-w-0"><Outlet context={outletContext} /></main>
+            <main className={'ra-workspace-content min-w-0 ' + (isMessagingRoute ? 'h-full min-h-0 overflow-hidden' : '')}><Outlet context={outletContext} /></main>
         </div>
     </div>;
 }
