@@ -59,7 +59,7 @@ export default function ArtistWorkspaceOverview() {
 
             {profileError && <ErrorState title="پروفایل دریافت نشد" description={profileError} />}
             {profileLoading ? <WorkspaceIdentitySkeleton /> : (
-                <section className="grid gap-5 border border-border bg-white p-5 sm:p-7 lg:grid-cols-[1fr_15rem] lg:items-center">
+                <section className="grid gap-5 border border-border bg-paper p-5 sm:p-7 lg:grid-cols-[1fr_15rem] lg:items-center">
                     <div>
                         <div className="flex flex-wrap items-center gap-3">
                             <p className="text-xs font-bold text-terracotta-strong">هویت هنری شما</p>
@@ -68,7 +68,7 @@ export default function ArtistWorkspaceOverview() {
                         <h2 className="mt-2 text-xl font-black text-ink">{profileReady ? profile.display_name : 'پروفایل هنری خود را بسازید'}</h2>
                         <p className="mt-2 max-w-2xl text-sm leading-7 text-muted">{profileReady ? (profile.is_public ? 'پروفایل شما برای بازدیدکنندگان قابل مشاهده است. آن را به‌روز نگه دارید تا مخاطبان با مسیر هنری شما آشنا شوند.' : 'پروفایل شما هنوز عمومی نیست. اطلاعات را تکمیل و وضعیت نمایش آن را بررسی کنید.') : 'با معرفی خود و افزودن اطلاعات حرفه‌ای، حضور عمومی‌تان در راد آرت را شکل دهید.'}</p>
                         <div className="mt-5 flex flex-wrap gap-3">
-                            <Link to="/dashboard/artist/profile" className="inline-flex min-h-11 items-center bg-ink px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-terracotta">{profileReady ? 'ویرایش پروفایل' : 'تکمیل پروفایل'}</Link>
+                            <Link to="/dashboard/artist/profile" className="inline-flex min-h-11 items-center bg-ink px-4 py-2.5 text-sm font-bold text-inverse transition-colors hover:bg-terracotta">{profileReady ? 'ویرایش پروفایل' : 'تکمیل پروفایل'}</Link>
                             {profile?.slug && <Link to={'/artists/' + profile.slug} className="inline-flex min-h-11 items-center border border-border px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-terracotta">{profile.is_public ? 'پیش‌نمایش عمومی' : 'پیش‌نمایش خصوصی'}</Link>}
                         </div>
                     </div>
@@ -96,12 +96,12 @@ export default function ArtistWorkspaceOverview() {
                         <span className="text-xs font-bold text-muted">{(completedProfileSteps + (hasArtwork ? 1 : 0)).toLocaleString('fa-IR')} از ۶ گام</span>
                     </div>
                     <ol className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                        {profileSteps.map((step) => <li key={step.label} className="flex items-center gap-3 border border-border bg-white px-4 py-3 text-sm">
+                        {profileSteps.map((step) => <li key={step.label} className="flex items-center gap-3 border border-border bg-paper px-4 py-3 text-sm">
                             <span aria-hidden="true" className={step.done ? 'text-success' : 'text-muted'}>{step.done ? '✓' : '○'}</span>
                             <span className={step.done ? 'text-muted line-through' : 'font-semibold text-ink'}>{step.label}</span>
                         </li>)}
-                        <li className="flex items-center gap-3 border border-border bg-white px-4 py-3 text-sm">
-                            <span aria-hidden="true" className={hasArtwork ? 'text-emerald-700' : 'text-muted'}>{hasArtwork ? '✓' : '○'}</span>
+                        <li className="flex items-center gap-3 border border-border bg-paper px-4 py-3 text-sm">
+                            <span aria-hidden="true" className={hasArtwork ? 'text-success' : 'text-muted'}>{hasArtwork ? '✓' : '○'}</span>
                             <span className={hasArtwork ? 'text-muted line-through' : 'font-semibold text-ink'}>ثبت اولین اثر برای بررسی</span>
                         </li>
                     </ol>
@@ -124,7 +124,7 @@ export default function ArtistWorkspaceOverview() {
                         onRetry={() => artworksQuery.refetch()}
                     />}
                     <section className="grid gap-5 xl:grid-cols-2">
-                        <div className="border border-border bg-white p-5 sm:p-6">
+                        <div className="border border-border bg-paper p-5 sm:p-6">
                             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
                                 <div><p className="text-[11px] font-bold text-terracotta-strong">پورتفولیو</p><h2 className="mt-1 font-black">آخرین آثار</h2></div>
                                 <Link to="/dashboard/artist/artworks" className="text-xs font-bold text-terracotta-strong underline underline-offset-4">مدیریت همه آثار</Link>
@@ -138,7 +138,7 @@ export default function ArtistWorkspaceOverview() {
                                 </ul>
                             )}
                         </div>
-                        <div className="border border-border bg-white p-5 sm:p-6">
+                        <div className="border border-border bg-paper p-5 sm:p-6">
                             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
                                 <div><p className="text-[11px] font-bold text-terracotta-strong">ارتباط با خریداران</p><h2 className="mt-1 font-black">پیام‌های مستقیم</h2></div>
                                 <Link to="/dashboard/artist/messages" className="text-xs font-bold text-terracotta-strong underline underline-offset-4">رفتن به پیام‌ها</Link>
