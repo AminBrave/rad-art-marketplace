@@ -17,7 +17,6 @@ function ArtworkImage({ artwork }) {
                 loading="eager"
                 fetchPriority="high"
                 decoding="async"
-                sizes="(min-width: 1024px) 55vw, 100vw"
             />
         </div>
     );
