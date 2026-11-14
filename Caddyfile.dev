@@ -5,7 +5,11 @@ rad.localhost, rad.home.arpa, {$RAD_LAN_HOST} {
     tls internal
 
     @vite path /@* /resources/* /node_modules/* /__vite_hmr
-    reverse_proxy @vite 127.0.0.1:5173
+    handle @vite {
+        reverse_proxy 127.0.0.1:5173
+    }
 
-    reverse_proxy 127.0.0.1:8000
+    handle {
+        reverse_proxy 127.0.0.1:8000
+    }
 }
