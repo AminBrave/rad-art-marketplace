@@ -3,6 +3,7 @@ import { spawn } from 'node:child_process';
 import { copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isIP } from 'node:net';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 process.chdir(root);
@@ -13,6 +14,19 @@ const php = 'php';
 const composer = isWindows ? 'composer.bat' : 'composer';
 const python = isWindows ? 'py' : 'python3';
 const pythonArgs = (args) => isWindows ? ['-3', ...args] : args;
+
+function requireLanHost() {
+    const host = process.env.RAD_LAN_HOST?.trim();
+    if (!host) throw new Error('Set RAD_LAN_HOST to this computer’s LAN IPv4 address before starting a LAN workflow.');
+    if (isIP(host) !== 4 || host === '0.0.0.0' || host.startsWith('127.')) {
+        throw new Error('RAD_LAN_HOST must be this computer’s reachable LAN IPv4 address (not a bind address or loopback address).');
+    }
+    return host;
+}
+
+function lanEnvironment(host) {
+    return { ...process.env, APP_ENV: 'local', APP_URL: 'http://' + host + ':8000', VITE_DEV_LAN_HOST: host };
+}
 
 function run(command, args = [], options = {}) {
     return new Promise((resolveRun, rejectRun) => {
@@ -130,14 +144,14 @@ function ensureReportDirectory() {
     mkdirSync(resolve(root, 'storage', 'framework', 'testing', 'views'), { recursive: true });
 }
 
-function browserTestEnvironment() {
+function browserTestEnvironment(lanHost = null) {
     const runtimeDir = resolve(root, 'storage', 'framework', 'browser-testing');
     return {
         ...process.env,
         APP_ENV: 'local',
         APP_KEY: 'base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
         APP_DEBUG: 'true',
-        APP_URL: 'https://rad.localhost',
+        APP_URL: lanHost ? 'http://' + lanHost + ':8000' : 'https://rad.localhost',
         APP_TIMEZONE: 'Asia/Tehran',
         APP_LOCALE: 'fa',
         APP_FALLBACK_LOCALE: 'en',
@@ -152,8 +166,8 @@ function browserTestEnvironment() {
         SESSION_DRIVER: 'file',
         SESSION_FILES: resolve(runtimeDir, 'sessions'),
         SESSION_COOKIE: 'rad_browser_test_session',
-        SESSION_DOMAIN: 'rad.localhost',
-        SESSION_SECURE_COOKIE: 'true',
+        SESSION_DOMAIN: lanHost ? '' : 'rad.localhost',
+        SESSION_SECURE_COOKIE: lanHost ? 'false' : 'true',
         SESSION_SAME_SITE: 'lax',
         MAIL_MAILER: 'array',
         QUEUE_CONNECTION: 'sync',
@@ -355,36 +369,53 @@ async function verify(includeBrowser = false) {
     }
 }
 
-async function startBrowserDevelopment() {
+async function startBrowserDevelopment(lanHost = null) {
     const databasePath = ensureBrowserDatabase();
     if (!existsSync(databasePath) || lstatSync(databasePath).size === 0) {
         throw new Error('Browser test database is empty. Run npm run browser:prepare first.');
     }
 
     resetBrowserVolatileRuntime();
+    const lan = lanHost !== null;
     const services = [
         {
             label: 'Laravel browser-test application (isolated SQLite)',
             command: php,
-            args: ['artisan', 'serve', '--host=127.0.0.1', '--port=8000'],
-            env: browserTestEnvironment(),
+            args: ['artisan', 'serve', '--host=' + (lan ? '0.0.0.0' : '127.0.0.1'), '--port=8000'],
+            env: browserTestEnvironment(lanHost),
         },
         {
             label: 'Vite',
             command: npm,
-            args: ['exec', '--', 'vite', '--mode', 'https'],
-        },
-        {
-            label: 'Caddy local HTTPS proxy',
-            command: 'caddy',
-            args: ['run', '--config', 'Caddyfile.dev'],
+            args: lan ? ['exec', '--', 'vite', '--mode', 'lan'] : ['exec', '--', 'vite', '--mode', 'https'],
+            env: lan ? lanEnvironment(lanHost) : process.env,
         },
     ];
 
-    console.log('[project] Browser test environment: https://rad.localhost');
+    if (!lan) {
+        services.push({ label: 'Caddy local HTTPS proxy', command: 'caddy', args: ['run', '--config', 'Caddyfile.dev'] });
+        console.log('[project] Browser test environment: https://rad.localhost');
+    } else {
+        console.log('[project] LAN browser-test app: http://' + lanHost + ':8000 (Vite HMR: ' + lanHost + ':5173)');
+    }
     console.log('[project] Database: database/browser-testing.sqlite');
     console.log('[project] Cache, sessions, compiled views and uploaded files are isolated under storage/*/browser-testing.');
     return startServices(services);
+}
+async function startDevelopmentLan() {
+    const host = requireLanHost();
+    await artisan('config:clear');
+    await artisan('route:clear');
+    return startServices([
+        { label: 'Laravel (LAN)', command: php, args: ['artisan', 'serve', '--host=0.0.0.0', '--port=8000'], env: lanEnvironment(host) },
+        { label: 'Vite (LAN)', command: npm, args: ['exec', '--', 'vite', '--mode', 'lan'], env: lanEnvironment(host) },
+    ]);
+}
+
+async function startLanPreview() {
+    const host = requireLanHost();
+    console.log('[project] Laravel build preview: http://' + host + ':8000');
+    return run(php, ['artisan', 'serve', '--host=0.0.0.0', '--port=8000'], { env: lanEnvironment(host) });
 }
 
 async function startDevelopment(secure = false) {
@@ -431,8 +462,11 @@ Setup
 
 Development
   dev                   Start Laravel + Vite over local HTTP
+  dev:lan               Start Laravel + Vite for a specified LAN IPv4 address
+  preview:lan           Serve the existing production build on the LAN
   dev:https             Start Laravel + Vite + Caddy over local HTTPS
   dev:browser           Start the isolated browser-test application + Vite + Caddy
+  dev:browser:lan       Start the isolated browser-test app for manual LAN device testing
 
 Database
   db:sqlite:init        Create database/database.sqlite if it does not exist
@@ -489,11 +523,20 @@ try {
         case 'dev:https':
             await startDevelopment(true);
             break;
+        case 'dev:lan':
+            await startDevelopmentLan();
+            break;
+        case 'preview:lan':
+            await startLanPreview();
+            break;
         case 'browser:prepare':
             await prepareBrowserEnvironment();
             break;
         case 'dev:browser':
             await startBrowserDevelopment();
+            break;
+        case 'dev:browser:lan':
+            await startBrowserDevelopment(requireLanHost());
             break;
         case 'db:migrate':
             await artisan('migrate');
