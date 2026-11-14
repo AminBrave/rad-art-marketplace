@@ -59,7 +59,7 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 
 ## Default HTTPS development and LAN access
 
-The normal development command serves the same running Laravel + Vite application through Caddy:
+The normal development command serves the same running Laravel + Vite application through Caddy. Install Caddy and make its executable available on PATH before starting either development or preview: 
 
     npm run dev
 
@@ -100,9 +100,9 @@ Caddy issues certificates from its local development CA. This gives the LAN IP a
 
 ### Network exposure and process boundaries
 
-- Caddy is the only service listening on the LAN, on TCP port 443.
+- Caddy is the only LAN-facing service. HTTPS is served on TCP port 443; Caddy may also listen on TCP port 80 to redirect HTTP requests to HTTPS.
 - Laravel (127.0.0.1:8000) and Vite (127.0.0.1:5173) remain bound to loopback; Vite assets and HMR are reverse-proxied through HTTPS.
-- Allow inbound TCP 443 on the computer's **private-network** firewall profile. Do not configure router port forwarding or expose this development server to public networks.
+- Allow inbound TCP 443 on the computer's **private-network** firewall profile. Allow TCP 80 only if you want Caddy's HTTP-to-HTTPS redirect to be reachable. Do not configure router port forwarding or expose this development server to public networks.
 - Keep the computer and test devices on a trusted LAN. This is a development environment, not a production deployment.
 - The isolated Playwright app remains loopback-only and is not exposed to LAN devices. Its remote-host rejection remains unchanged.
 - If the computer uses WSL2, Docker, a VPN, or multiple network adapters, LAN routing may require host-specific networking setup; set RAD_LAN_HOST to the reachable address and ensure the host firewall permits TCP 443.
