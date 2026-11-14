@@ -37,6 +37,8 @@ test('messaging uses a dedicated viewport page with only the main site header an
     assert.ok(layouts.includes('{!isWorkspacePage && <footer'));
     assert.ok(layouts.includes('function WorkspaceBottomNavigation({ links })'));
     assert.ok(layouts.includes('aria-label="ناوبری فضای کاربری"'));
+    assert.ok(layouts.includes('data-count={links.length}'));
+    assert.ok(workspaceCss.includes('.ra-workspace-bottom-nav[data-count="2"] .ra-workspace-bottom-nav__items'));
     assert.ok(layouts.includes('workspaceLinksForRole(user.role)'));
     assert.ok(layouts.includes('MessageCircle'));
     assert.ok(layouts.includes('{isWorkspacePage && user && <WorkspaceBottomNavigation links={workspaceLinksForRole(user.role)} />}'));
