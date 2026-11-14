@@ -95,23 +95,23 @@ export function AdminEditorialPage() {
     const edit = (collection) => { setEditing(collection.id); setTitle(collection.title); setIntro(collection.intro || ''); setArtworkIds(collection.artwork_ids || []); };
     const saveCollection = async (publish = false) => {
         if (!title.trim()) { setActionError('عنوان مجموعه الزامی است.'); return; }
-        setBusy(true); setError(''); setMessage('');
+        setBusy(true); setActionError(''); setMessage('');
         try {
             const payload = { title, intro, artwork_ids: artworkIds };
             const response = editing
                 ? await axios.patch('/api/v1/admin/editorial/collections/' + editing, payload)
                 : await axios.post('/api/v1/admin/editorial/collections', { ...payload, publish });
             setMessage(response.data.message || 'مجموعه ذخیره شد.'); reset(); await queryClient.invalidateQueries({ queryKey: editorialKey });
-        } catch (e) { setError(e.response?.data?.message || e.response?.data?.errors?.title?.[0] || 'ذخیره مجموعه انجام نشد.'); }
+        } catch (e) { setActionError(e.response?.data?.message || e.response?.data?.errors?.title?.[0] || 'ذخیره مجموعه انجام نشد.'); }
         finally { setBusy(false); }
     };
     const publish = async (collection, next) => {
         if (!next && confirmUnpublishId !== collection.id) { setConfirmUnpublishId(collection.id); return; }
-        setBusy(true); setError(''); setMessage('');
+        setBusy(true); setActionError(''); setMessage('');
         try {
             const { data } = await axios.patch('/api/v1/admin/editorial/collections/' + collection.id + '/publication', { publish: next });
             setMessage(data.message); setConfirmUnpublishId(null); await queryClient.invalidateQueries({ queryKey: editorialKey });
-        } catch (e) { setError(e.response?.data?.message || 'تغییر وضعیت انتشار انجام نشد.'); }
+        } catch (e) { setActionError(e.response?.data?.message || 'تغییر وضعیت انتشار انجام نشد.'); }
         finally { setBusy(false); }
     };
     const moveCollection = (index, delta) => {
@@ -120,18 +120,18 @@ export function AdminEditorialPage() {
         [next[index], next[target]] = [next[target], next[index]]; setCollectionOrder(next.map((item) => item.id));
     };
     const saveCollectionOrder = async () => {
-        setBusy(true); setError(''); setMessage('');
+        setBusy(true); setActionError(''); setMessage('');
         try { const { data } = await axios.put('/api/v1/admin/editorial/collections/order', { collection_ids: collections.map((item) => item.id) }); setMessage(data.message); await queryClient.invalidateQueries({ queryKey: editorialKey }); }
-        catch (e) { setError(e.response?.data?.message || 'ثبت ترتیب مجموعه‌ها انجام نشد.'); }
+        catch (e) { setActionError(e.response?.data?.message || 'ثبت ترتیب مجموعه‌ها انجام نشد.'); }
         finally { setBusy(false); }
     };
     const saveFeatured = async () => {
-        setBusy(true); setError(''); setMessage('');
+        setBusy(true); setActionError(''); setMessage('');
         try {
             const selections = featuredIds.map((id) => ({ artist_profile_id: id, editorial_intro: featuredIntros[id] || '' }));
             const { data } = await axios.put('/api/v1/admin/editorial/featured-artists', { selections });
             setMessage(data.message); await queryClient.invalidateQueries({ queryKey: editorialKey });
-        } catch (e) { setError(e.response?.data?.message || 'ذخیره انتخاب هنرمندان انجام نشد.'); }
+        } catch (e) { setActionError(e.response?.data?.message || 'ذخیره انتخاب هنرمندان انجام نشد.'); }
         finally { setBusy(false); }
     };
     return <section className="space-y-8" dir="rtl">
