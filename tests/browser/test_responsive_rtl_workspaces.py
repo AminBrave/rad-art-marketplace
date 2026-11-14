@@ -162,9 +162,12 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
                             chat_height, viewport_height - header_height - 2,
                             f"Chat must fill the viewport below the site header on {route_path} at {width}px",
                         )
+                        nav_height = workspace_nav_height = page.locator(".ra-workspace-bottom-nav").evaluate(
+                            "(node) => node.getBoundingClientRect().height"
+                        )
                         self.assertLessEqual(
-                            abs((header_height + chat_height) - viewport_height), 3,
-                            f"Chat viewport must account for the actual responsive site-header height on {route_path} at {width}px",
+                            abs((header_height + chat_height + nav_height) - viewport_height), 3,
+                            f"Chat viewport must reserve space for the site header and bottom navigation on {route_path} at {width}px",
                         )
                         self.assertEqual(
                             history_overflow, "auto",
