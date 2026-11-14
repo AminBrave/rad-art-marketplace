@@ -52,6 +52,11 @@ test('messaging uses a dedicated viewport page with only the main site header an
     assert.ok(workspaceCss.includes('env(safe-area-inset-bottom, 0px)'));
     assert.ok(workspaceCss.includes('.ra-workspace-bottom-nav__link:focus-visible'));
 
+    const appRouter = read('../../resources/js/app/AppRouter.jsx');
+    assert.ok(appRouter.includes('<Route element={<PublicLayout />}>'));
+    assert.ok(appRouter.includes('<Route path="/admin"'));
+    assert.ok(appRouter.includes('<Route path="/dashboard/artist"'));
+    assert.ok(appRouter.includes('<Route path="*" element={<NotFoundPage />} />'));
     assert.ok(read('../../resources/js/app/AppRouter.jsx').includes('MessagingCenter role="artist" standalone'));
     assert.ok(read('../../resources/js/app/AppRouter.jsx').includes('MessagingCenter role="buyer" standalone'));
     assert.ok(read('../../resources/js/app/AppRouter.jsx').includes('withRouteFallback(<MessagingCenter role="artist" standalone />)'));
