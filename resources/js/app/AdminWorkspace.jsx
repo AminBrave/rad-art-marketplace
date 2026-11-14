@@ -354,7 +354,7 @@ export function AdminMessageReportsPage() {
                                 <Button size="sm" variant="outline" disabled={busyId !== null} onClick={() => review(report, 'dismissed')}>رد گزارش</Button>
                                 {report.message && <Button size="sm" variant="danger" disabled={busyId !== null} onClick={() => review(report, 'remove_message')}>حذف پیام</Button>}
                             </div>
-                            {confirmingRemoval && <div className="border border-danger/30 bg-danger/5 p-4">
+                            {confirmingRemoval && <div className="border border-danger bg-danger-surface p-4">
                                 <p className="text-sm font-bold text-ink">حذف پیام را تأیید می‌کنید؟</p>
                                 <p className="mt-1 text-xs leading-6 text-muted">این اقدام پیام گزارش‌شده را حذف می‌کند. فقط در صورت احراز تخلف آن را ادامه دهید.</p>
                                 <div className="mt-3 flex flex-wrap gap-2"><Button size="sm" variant="danger" disabled={busyId !== null} loading={busyId === report.id} onClick={() => review(report, 'remove_message')}>بله، حذف پیام</Button><Button size="sm" variant="ghost" disabled={busyId !== null} onClick={() => setConfirmRemovalId(null)}>انصراف</Button></div>
