@@ -37,7 +37,7 @@ export function PublicLayout() {
         : 'text-muted transition-colors hover:text-terracotta-strong';
 
     return <div className="min-h-screen bg-canvas text-ink" dir="rtl">
-        <header className="sticky top-0 z-40 min-h-20 border-b border-border bg-canvas/95 backdrop-blur supports-[backdrop-filter]:bg-canvas/90">
+        <header className="sticky top-0 z-40 min-h-20 border-b border-border bg-[color:color-mix(in_srgb,var(--color-canvas)_95%,transparent)] backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-canvas)_90%,transparent)]">
             <div className="mx-auto flex min-h-[4.5rem] max-w-7xl items-center justify-between gap-4 px-5 sm:px-8 lg:min-h-20 lg:px-10">
                 <Link to="/" className="shrink-0 text-2xl font-black tracking-tight text-ink no-underline" aria-label="راد آرت، صفحه اصلی">راد<span className="text-terracotta-strong">آرت</span><span className="ms-2 hidden align-middle text-[10px] font-medium tracking-[.18em] text-muted sm:inline">ART MARKETPLACE</span></Link>
                 <nav aria-label="ناوبری اصلی" className="hidden items-center gap-6 text-sm lg:flex">
