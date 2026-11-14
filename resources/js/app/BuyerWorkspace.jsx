@@ -9,8 +9,8 @@ export function BuyerDashboardHome() {
                 title="هنر مورد علاقه‌تان را کشف کنید و گفت‌وگو را ادامه دهید."
                 description="از میان آثار و هنرمندان مستقل جست‌وجو کنید و گفت‌وگوهای مستقیم خود را با هنرمندان در یک فضای منظم دنبال کنید."
                 actions={<>
-                    <Link to="/artworks" className="ra-workspace-hero__action ra-workspace-hero__action--primary">کشف آثار هنری</Link>
-                    <Link to="/artists" className="ra-workspace-hero__action">آشنایی با هنرمندان</Link>
+                    <Link to="/artworks" className="inline-flex min-h-11 items-center justify-center rounded-md border border-white/40 px-4 py-2 text-sm font-semibold text-white no-underline transition-colors hover:bg-white/10 border-paper bg-paper text-ink hover:bg-sand hover:text-ink">کشف آثار هنری</Link>
+                    <Link to="/artists" className="inline-flex min-h-11 items-center justify-center rounded-md border border-white/40 px-4 py-2 text-sm font-semibold text-white no-underline transition-colors hover:bg-white/10">آشنایی با هنرمندان</Link>
                 </>}
             />
 
