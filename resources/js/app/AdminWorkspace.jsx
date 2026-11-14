@@ -156,7 +156,13 @@ export function AdminArtworkModeration() {
         setBusyId(artwork.id); setActionError(''); setMessage('');
         try {
             const { data } = await axios.patch(api + '/artworks/' + artwork.id + '/moderation', { action, ...(action === 'approve' ? {} : { note }) });
-            setMessage(data.message ?? 'تصمیم ثبت شد.'); setNotes((current) => ({ ...current, [artwork.id]: '' })); await queryClient.invalidateQueries({ queryKey: ['admin', 'artworks', user?.id] });
+            setMessage(data.message ?? 'تصمیم ثبت شد.'); setNotes((current) => ({ ...current, [artwork.id]: '' })); await Promise.all([
+                queryClient.invalidateQueries({ queryKey: ['admin', 'artworks', user?.id] }),
+                queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard', user?.id] }),
+                queryClient.invalidateQueries({ queryKey: ['artist-workspace', 'artworks'] }),
+                queryClient.invalidateQueries({ queryKey: ['home', 'artworks'] }),
+                queryClient.invalidateQueries({ queryKey: ['artworks'] }),
+            ]);
         } catch (e) { setActionError(e.response?.status === 403 ? 'سرور اجازه انجام این عملیات را نداد.' : e.response?.data?.errors?.note?.[0] ?? e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.'); }
         finally { setBusyId(null); }
     };
