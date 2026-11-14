@@ -2,12 +2,17 @@
 
 from __future__ import annotations
 
+import argparse
+import contextlib
 import json
 import os
+import platform
 import ssl
 import sys
 import time
 import unittest
+from datetime import datetime, timezone
+from importlib.metadata import PackageNotFoundError, version
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -135,10 +140,48 @@ def write_junit_report(result: TimedTextTestResult, destination: Path) -> None:
     ET.ElementTree(suite).write(destination, encoding="utf-8", xml_declaration=True)
 
 
+class Tee:
+    """Write test output to both the terminal and a durable UTF-8 log."""
+
+    def __init__(self, *streams):
+        self.streams = streams
+
+    def write(self, value):
+        for stream in self.streams:
+            try:
+                stream.write(value)
+            except UnicodeEncodeError:
+                encoding = getattr(stream, "encoding", None) or "utf-8"
+                stream.write(value.encode(encoding, errors="backslashreplace").decode(encoding))
+            stream.flush()
+        return len(value)
+
+    def flush(self):
+        for stream in self.streams:
+            stream.flush()
+
+    def isatty(self):
+        return any(getattr(stream, "isatty", lambda: False)() for stream in self.streams)
+
+
 def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Run guarded Rademan Playwright tests and write JUnit + diagnostic reports."
+    )
+    parser.add_argument(
+        "tests",
+        nargs="*",
+        help="Optional unittest names, e.g. test_notifications_and_preferences.MessageNotificationBrowserTests.test_buyer_can_disable_in_app_message_notifications",
+    )
+    args = parser.parse_args()
+
     report_dir = Path(os.environ.get("RAD_ART_TEST_REPORT_DIR", "build/test-reports"))
+    report_dir.mkdir(parents=True, exist_ok=True)
     report_path = report_dir / "browser-junit.xml"
-    report_path.unlink(missing_ok=True)
+    log_path = report_dir / "browser-run.log"
+    summary_path = report_dir / "browser-debug.json"
+    for destination in (report_path, log_path, summary_path):
+        destination.unlink(missing_ok=True)
 
     try:
         validate_local_target()
@@ -150,7 +193,7 @@ def main() -> int:
         import playwright.sync_api
     except ImportError:
         print(
-            "Playwright is required for local browser tests. Install requirements-test.txt "
+            "Playwright is required for local browser tests. Install the project's test requirements "
             "and run 'python -m playwright install chromium'.",
             file=sys.stderr,
         )
@@ -158,16 +201,70 @@ def main() -> int:
 
     browser_dir = Path(__file__).resolve().parent
     sys.path.insert(0, str(browser_dir))
-    suite = unittest.defaultTestLoader.discover(
-        start_dir=str(browser_dir),
-        pattern="test_*.py",
-        top_level_dir=str(browser_dir),
-    )
-    runner = unittest.TextTestRunner(verbosity=2, resultclass=TimedTextTestResult)
-    result = runner.run(suite)
+    loader = unittest.defaultTestLoader
+    if args.tests:
+        suite = unittest.TestSuite(loader.loadTestsFromName(name) for name in args.tests)
+    else:
+        suite = loader.discover(
+            start_dir=str(browser_dir),
+            pattern="test_*.py",
+            top_level_dir=str(browser_dir),
+        )
+
+    with log_path.open("w", encoding="utf-8") as log_file:
+        output = Tee(sys.__stdout__, log_file)
+        runner = unittest.TextTestRunner(
+            stream=output,
+            verbosity=2,
+            resultclass=TimedTextTestResult,
+        )
+        with contextlib.redirect_stdout(output), contextlib.redirect_stderr(output):
+            result = runner.run(suite)
 
     write_junit_report(result, report_path)
+    try:
+        playwright_version = version("playwright")
+    except PackageNotFoundError:
+        playwright_version = "unknown"
+
+    failures = [
+        {"test": test.id(), "traceback": detail}
+        for test, detail in result.failures
+    ]
+    errors = [
+        {"test": test.id(), "traceback": detail}
+        for test, detail in result.errors
+    ]
+    summary = {
+        "completed_at_utc": datetime.now(timezone.utc).isoformat(),
+        "python": sys.version,
+        "platform": platform.platform(),
+        "playwright": playwright_version,
+        "base_url": os.environ.get("RAD_ART_BASE_URL", "https://rad.localhost"),
+        "selected_tests": args.tests,
+        "tests_run": result.testsRun,
+        "failures": failures,
+        "errors": errors,
+        "skipped": [
+            {"test": test.id(), "reason": reason}
+            for test, reason in result.skipped
+        ],
+        "durations_seconds": result.duration_by_id,
+        "exit_code": 0 if result.wasSuccessful() else 1,
+        "artifacts": {
+            "junit": str(report_path),
+            "log": str(log_path),
+            "failure_artifacts": str(report_dir / "browser-artifacts"),
+        },
+    }
+    summary_path.write_text(
+        json.dumps(summary, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
     print(f"JUnit browser report: {report_path}")
+    print(f"Browser execution log: {log_path}")
+    print(f"Browser debug summary: {summary_path}")
+    print(f"Failure screenshots/traces: {report_dir / 'browser-artifacts'}")
 
     return 0 if result.wasSuccessful() else 1
 

@@ -431,7 +431,7 @@ Focused tests (execute only with explicit authorization)
   feature               Run the Feature PHPUnit suite
   integration           Run the Integration PHPUnit suite
   frontend:test         Run frontend Node tests
-  browser               Run guarded Playwright tests
+  browser [test-name]   Run all or selected guarded Playwright tests
   browser:prepare       Rebuild the isolated browser database and storage
 
 Quality workflows (execute only with explicit authorization)
@@ -520,7 +520,10 @@ try {
             await verify(false);
             break;
         case 'browser':
-            await run(python, pythonArgs(['tests/browser/run_tests.py']), {
+            await run(python, pythonArgs([
+                'tests/browser/run_tests.py',
+                ...process.argv.slice(3),
+            ]), {
                 env: { ...process.env, RAD_ART_TEST_MODE: '1' },
             });
             break;

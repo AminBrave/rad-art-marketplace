@@ -1,9 +1,10 @@
 import json
 import re
 import unittest
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import expect, sync_playwright
 
 from config import BASE_URL, IGNORE_HTTPS_ERRORS
+from diagnostics import save_failure_diagnostics, start_page_diagnostics, stop_page_diagnostics
 
 BUYER = {"id": 42, "name": "Buyer QA", "email": "buyer@example.test", "role": "buyer"}
 NOTIFICATION = {
@@ -179,13 +180,55 @@ class MessageNotificationBrowserTests(unittest.TestCase):
 
     def test_buyer_can_disable_in_app_message_notifications(self):
         context, page = self.new_page()
+        diagnostics = start_page_diagnostics(context, page, self.id())
+        preference_requests = []
+        page.on(
+            "request",
+            lambda request: preference_requests.append(request.method)
+            if "/api/v1/notifications/preferences" in request.url
+            else None,
+        )
         try:
-            page.goto(BASE_URL + "/dashboard/buyer/messages")
+            page.goto(BASE_URL + "/dashboard/buyer/messages", wait_until="domcontentloaded")
             page.get_by_role("button", name="اعلان‌ها").click()
             preference = page.get_by_label("اعلان پیام‌های جدید در این بخش")
-            self.assertTrue(preference.is_checked())
-            preference.uncheck()
-            self.assertFalse(preference.is_checked())
+            expect(preference).to_be_checked()
+
+            # Observe the actual persistence request instead of letting uncheck()
+            # hide whether React rejected an optimistic update or the API failed.
+            with page.expect_response(
+                lambda response: "/api/v1/notifications/preferences" in response.url
+                and response.request.method == "PATCH",
+                timeout=15_000,
+            ) as patch_response:
+                preference.click()
+
+            response = patch_response.value
+            self.assertEqual(
+                response.status,
+                200,
+                f"Preference PATCH failed. Requests: {preference_requests}",
+            )
+            self.assertEqual(
+                response.request.post_data_json,
+                {"in_app_messages": False},
+                "The checkbox click did not submit the expected disabled preference.",
+            )
+            expect(preference).not_to_be_checked(timeout=5_000)
+            self.assertEqual(
+                preference_requests,
+                ["GET", "PATCH"],
+                "The preference query was unexpectedly refetched after the successful PATCH.",
+            )
+            self.assertFalse(
+                page.get_by_role("alert").count(),
+                "The UI reported a preference-save error after a successful PATCH.",
+            )
             page.get_by_text("اعلان ایمیلی تا تأیید صف ارسال و تنظیمات میزبان غیرفعال است.").wait_for()
+        except Exception as error:
+            artifact_dir = save_failure_diagnostics(context, page, diagnostics, error)
+            error.add_note(f"Playwright failure artifacts: {artifact_dir}")
+            raise
         finally:
+            stop_page_diagnostics(context, diagnostics)
             context.close()

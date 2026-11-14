@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
@@ -21,46 +22,33 @@ const dateLabel = (value) => {
 
 export function AdminDashboardHome() {
     const { user } = useAuth();
-    const [summary, setSummary] = useState({ pending: null, users: null, reports: null, latest: null });
-    const [loading, setLoading] = useState(true);
-    const [errors, setErrors] = useState([]);
-    const controllerRef = useRef(null);
+    const dashboardQuery = useQuery({
+        queryKey: ['admin', 'dashboard', user?.id],
+        queryFn: async ({ signal }) => {
+            const responses = await Promise.allSettled([
+                axios.get(api + '/artworks', { params: { status: 'pending_review', page: 1, per_page: 1 }, signal }),
+                axios.get(api + '/users', { params: { page: 1, per_page: 1 }, signal }),
+                axios.get(api + '/message-reports', { params: { page: 1 }, signal }),
+            ]);
+            const summary = { pending: null, users: null, reports: null, latest: null };
+            const errors = [];
+            if (responses[0].status === 'fulfilled') {
+                summary.pending = responses[0].value.data.total ?? null;
+                summary.latest = responses[0].value.data.data?.[0] ?? null;
+            } else errors.push('دریافت صف بررسی آثار انجام نشد.');
+            if (responses[1].status === 'fulfilled') summary.users = responses[1].value.data.total ?? null;
+            else errors.push('دریافت تعداد کاربران انجام نشد.');
+            if (responses[2].status === 'fulfilled') summary.reports = responses[2].value.data.total ?? null;
+            else errors.push('دریافت گزارش‌های پیام انجام نشد.');
+            return { summary, errors };
+        },
+        enabled: user?.role === 'admin' && Boolean(user?.id),
+    });
+    const summary = dashboardQuery.data?.summary ?? { pending: null, users: null, reports: null, latest: null };
+    const errors = dashboardQuery.data?.errors ?? (dashboardQuery.isError ? ['دریافت آمار مدیریت انجام نشد.'] : []);
+    const loading = dashboardQuery.isPending;
+    const load = () => dashboardQuery.refetch();
 
-    const load = useCallback(async () => {
-        controllerRef.current?.abort();
-        const controller = new AbortController();
-        controllerRef.current = controller;
-        setLoading(true);
-        const responses = await Promise.allSettled([
-            axios.get(api + '/artworks', { params: { status: 'pending_review', page: 1, per_page: 1 }, signal: controller.signal }),
-            axios.get(api + '/users', { params: { page: 1, per_page: 1 }, signal: controller.signal }),
-            axios.get(api + '/message-reports', { params: { page: 1 }, signal: controller.signal }),
-        ]);
-        if (controller.signal.aborted) return;
-
-        const next = { pending: null, users: null, reports: null, latest: null };
-        const failures = [];
-        if (responses[0].status === 'fulfilled') {
-            next.pending = responses[0].value.data.total ?? null;
-            next.latest = responses[0].value.data.data?.[0] ?? null;
-        } else failures.push('دریافت صف بررسی آثار انجام نشد.');
-        if (responses[1].status === 'fulfilled') next.users = responses[1].value.data.total ?? null;
-        else failures.push('دریافت تعداد کاربران انجام نشد.');
-        if (responses[2].status === 'fulfilled') next.reports = responses[2].value.data.total ?? null;
-        else failures.push('دریافت گزارش‌های پیام انجام نشد.');
-
-        setSummary(next);
-        setErrors(failures);
-        if (controllerRef.current === controller) {
-            controllerRef.current = null;
-            setLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        load();
-        return () => controllerRef.current?.abort();
-    }, [load]);
 
     const shortcuts = [
         { to: '/admin/artworks', eyebrow: 'محتوا', title: 'بررسی آثار', description: 'صف انتظار، تصمیم‌های انتشار و سوابق اصلاح یا رد آثار', symbol: '▧' },
@@ -138,32 +126,44 @@ export function AdminDashboardHome() {
 
 export function AdminArtworkModeration() {
     const [params, setParams] = useSearchParams();
+    const { user } = useAuth();
     const status = statuses.some((item) => item.value === params.get('status')) ? params.get('status') : 'pending_review';
     const page = Math.max(1, Number(params.get('page')) || 1);
-    const [result, setResult] = useState(null), [notes, setNotes] = useState({});
-    const [loading, setLoading] = useState(true), [busyId, setBusyId] = useState(null);
-    const [error, setError] = useState(''), [message, setMessage] = useState('');
-    const controllerRef = useRef(null);
-    const load = useCallback(async () => {
-        controllerRef.current?.abort();
-        const controller = new AbortController();
-        controllerRef.current = controller;
-        setLoading(true); setError('');
-        try { const { data } = await axios.get(api + '/artworks', { params: { status, page }, signal: controller.signal }); if (!controller.signal.aborted) setResult(data); }
-        catch (e) { if (!axios.isCancel(e)) setError(e.response?.status === 403 ? 'این حساب اجازه مشاهده صف بررسی آثار را ندارد.' : 'دریافت آثار انجام نشد. دوباره تلاش کنید.'); }
-        finally { if (controllerRef.current === controller) { controllerRef.current = null; setLoading(false); } }
-    }, [status, page]);
-    useEffect(() => { load(); return () => controllerRef.current?.abort(); }, [load]);
-    const chooseStatus = (value) => { setMessage(''); setParams(value === 'pending_review' ? {} : { status: value }); };
+    const [notes, setNotes] = useState({});
+    const [busyId, setBusyId] = useState(null);
+    const [actionError, setActionError] = useState(''), [message, setMessage] = useState('');
+    const queryClient = useQueryClient();
+    const queryKey = ['admin', 'artworks', user?.id, status, page];
+    const artworksQuery = useQuery({
+        queryKey,
+        queryFn: async ({ signal }) => {
+            const { data } = await axios.get(api + '/artworks', { params: { status, page }, signal });
+            return data;
+        },
+        enabled: user?.role === 'admin' && Boolean(user?.id),
+    });
+    const result = artworksQuery.data;
+    const loading = artworksQuery.isPending;
+    const load = () => { setActionError(''); return artworksQuery.refetch(); };
+    const error = actionError || (artworksQuery.isError
+        ? (artworksQuery.error.response?.status === 403 ? 'این حساب اجازه مشاهده صف بررسی آثار را ندارد.' : 'دریافت آثار انجام نشد. دوباره تلاش کنید.')
+        : '');
+    const chooseStatus = (value) => { setActionError(''); setMessage(''); setParams(value === 'pending_review' ? {} : { status: value }); };
     const changePage = (next) => setParams({ ...(status !== 'pending_review' ? { status } : {}), ...(next > 1 ? { page: String(next) } : {}) });
     const moderate = async (artwork, action) => {
         const note = (notes[artwork.id] ?? '').trim();
-        if (action !== 'approve' && !note) { setError('برای رد اثر یا درخواست اصلاح، نوشتن توضیح الزامی است.'); return; }
-        setBusyId(artwork.id); setError(''); setMessage('');
+        if (action !== 'approve' && !note) { setActionError('برای رد اثر یا درخواست اصلاح، نوشتن توضیح الزامی است.'); return; }
+        setBusyId(artwork.id); setActionError(''); setMessage('');
         try {
             const { data } = await axios.patch(api + '/artworks/' + artwork.id + '/moderation', { action, ...(action === 'approve' ? {} : { note }) });
-            setMessage(data.message ?? 'تصمیم ثبت شد.'); setNotes((current) => ({ ...current, [artwork.id]: '' })); await load();
-        } catch (e) { setError(e.response?.status === 403 ? 'سرور اجازه انجام این عملیات را نداد.' : e.response?.data?.errors?.note?.[0] ?? e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.'); }
+            setMessage(data.message ?? 'تصمیم ثبت شد.'); setNotes((current) => ({ ...current, [artwork.id]: '' })); await Promise.all([
+                queryClient.invalidateQueries({ queryKey: ['admin', 'artworks', user?.id] }),
+                queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard', user?.id] }),
+                queryClient.invalidateQueries({ queryKey: ['artist-workspace', 'artworks'] }),
+                queryClient.invalidateQueries({ queryKey: ['home', 'artworks'] }),
+                queryClient.invalidateQueries({ queryKey: ['artworks'] }),
+            ]);
+        } catch (e) { setActionError(e.response?.status === 403 ? 'سرور اجازه انجام این عملیات را نداد.' : e.response?.data?.errors?.note?.[0] ?? e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.'); }
         finally { setBusyId(null); }
     };
     return <section className="space-y-6" dir="rtl">
@@ -193,43 +193,43 @@ export function AdminUsersPage() {
     const { user } = useAuth();
     const [params, setParams] = useSearchParams();
     const page = Math.max(1, Number(params.get('page')) || 1);
-    const [result, setResult] = useState(null), [drafts, setDrafts] = useState({});
-    const [loading, setLoading] = useState(true), [busyId, setBusyId] = useState(null);
-    const [error, setError] = useState(''), [message, setMessage] = useState('');
+    const [drafts, setDrafts] = useState({});
+    const [busyId, setBusyId] = useState(null);
+    const [actionError, setActionError] = useState(''), [message, setMessage] = useState('');
     const [confirmAdminId, setConfirmAdminId] = useState(null);
-    const controllerRef = useRef(null);
-    const load = useCallback(async () => {
-        controllerRef.current?.abort();
-        const controller = new AbortController();
-        controllerRef.current = controller;
-        setLoading(true); setError('');
-        try {
-            const { data } = await axios.get(api + '/users', { params: { page }, signal: controller.signal });
-            if (!controller.signal.aborted) setResult(data);
-        } catch (e) {
-            if (!axios.isCancel(e)) setError(e.response?.status === 403 ? 'این حساب اجازه مشاهده کاربران را ندارد.' : 'دریافت فهرست کاربران انجام نشد. دوباره تلاش کنید.');
-        } finally {
-            if (controllerRef.current === controller) { controllerRef.current = null; setLoading(false); }
-        }
-    }, [page]);
-    useEffect(() => { load(); return () => controllerRef.current?.abort(); }, [load]);
+    const queryClient = useQueryClient();
+    const queryKey = ['admin', 'users', user?.id, page];
+    const usersQuery = useQuery({
+        queryKey,
+        queryFn: async ({ signal }) => {
+            const { data } = await axios.get(api + '/users', { params: { page }, signal });
+            return data;
+        },
+        enabled: user?.role === 'admin' && Boolean(user?.id),
+    });
+    const result = usersQuery.data;
+    const loading = usersQuery.isPending;
+    const load = () => { setActionError(''); return usersQuery.refetch(); };
+    const error = actionError || (usersQuery.isError
+        ? (usersQuery.error.response?.status === 403 ? 'این حساب اجازه مشاهده کاربران را ندارد.' : 'دریافت فهرست کاربران انجام نشد. دوباره تلاش کنید.')
+        : '');
     const changePage = (next) => setParams(next > 1 ? { page: String(next) } : {});
     const updateRole = async (item) => {
         const role = drafts[item.id] ?? (item.role === 'buyer' ? '' : item.role);
-        if (!['artist', 'admin'].includes(role)) { setError('یکی از نقش‌های پشتیبانی‌شده را انتخاب کنید.'); return; }
+        if (!['artist', 'admin'].includes(role)) { setActionError('یکی از نقش‌های پشتیبانی‌شده را انتخاب کنید.'); return; }
         if (role === 'admin' && item.role !== 'admin' && confirmAdminId !== item.id) {
             setConfirmAdminId(item.id);
             return;
         }
-        setBusyId(item.id); setError(''); setMessage('');
+        setBusyId(item.id); setActionError(''); setMessage('');
         try {
             const { data } = await axios.patch(api + '/users/' + item.id + '/role', { role });
-            setResult((current) => ({ ...current, data: current.data.map((row) => row.id === item.id ? data.data : row) }));
+            queryClient.setQueryData(queryKey, (current) => current ? { ...current, data: current.data.map((row) => row.id === item.id ? data.data : row) } : current);
             setDrafts((current) => { const next = { ...current }; delete next[item.id]; return next; });
             setConfirmAdminId(null);
             setMessage(data.message ?? 'نقش کاربر به‌روزرسانی شد.');
         } catch (e) {
-            setError(e.response?.status === 403 ? 'سرور اجازه تغییر نقش این حساب را نداد.' : e.response?.data?.errors?.role?.[0] ?? e.response?.data?.message ?? 'تغییر نقش کاربر انجام نشد.');
+            setActionError(e.response?.status === 403 ? 'سرور اجازه تغییر نقش این حساب را نداد.' : e.response?.data?.errors?.role?.[0] ?? e.response?.data?.message ?? 'تغییر نقش کاربر انجام نشد.');
         } finally { setBusyId(null); }
     };
     return <section className="space-y-6" dir="rtl">
@@ -274,45 +274,44 @@ export function AdminUsersPage() {
 }
 
 export function AdminMessageReportsPage() {
+    const { user } = useAuth();
     const [params, setParams] = useSearchParams();
     const page = Math.max(1, Number(params.get('page')) || 1);
-    const [result, setResult] = useState(null);
     const [notes, setNotes] = useState({});
-    const [loading, setLoading] = useState(true);
     const [busyId, setBusyId] = useState(null);
     const [confirmRemovalId, setConfirmRemovalId] = useState(null);
-    const [error, setError] = useState('');
+    const [actionError, setActionError] = useState('');
     const [message, setMessage] = useState('');
-    const controllerRef = useRef(null);
-    const load = useCallback(async () => {
-        controllerRef.current?.abort();
-        const controller = new AbortController();
-        controllerRef.current = controller;
-        setLoading(true); setError('');
-        try {
-            const { data } = await axios.get(api + '/message-reports', { params: { page }, signal: controller.signal });
-            if (!controller.signal.aborted) setResult(data);
-        } catch (e) {
-            if (!axios.isCancel(e)) setError(e.response?.status === 403 ? 'دسترسی به گزارش‌های پیام مجاز نیست.' : 'دریافت گزارش‌ها انجام نشد.');
-        } finally {
-            if (controllerRef.current === controller) { controllerRef.current = null; setLoading(false); }
-        }
-    }, [page]);
-    useEffect(() => { load(); return () => controllerRef.current?.abort(); }, [load]);
+    const queryClient = useQueryClient();
+    const queryKey = ['admin', 'message-reports', user?.id, page];
+    const reportsQuery = useQuery({
+        queryKey,
+        queryFn: async ({ signal }) => {
+            const { data } = await axios.get(api + '/message-reports', { params: { page }, signal });
+            return data;
+        },
+        enabled: user?.role === 'admin' && Boolean(user?.id),
+    });
+    const result = reportsQuery.data;
+    const loading = reportsQuery.isPending;
+    const load = () => { setActionError(''); return reportsQuery.refetch(); };
+    const error = actionError || (reportsQuery.isError
+        ? (reportsQuery.error.response?.status === 403 ? 'دسترسی به گزارش‌های پیام مجاز نیست.' : 'دریافت گزارش‌ها انجام نشد.')
+        : '');
     const review = async (report, action) => {
         if (action === 'remove_message' && confirmRemovalId !== report.id) {
             setConfirmRemovalId(report.id);
             return;
         }
-        setBusyId(report.id); setError(''); setMessage('');
+        setBusyId(report.id); setActionError(''); setMessage('');
         try {
             const { data } = await axios.patch(api + '/message-reports/' + report.id, { action, note: (notes[report.id] ?? '').trim() || null });
             setMessage(data.message ?? 'تصمیم ثبت شد.');
             setConfirmRemovalId(null);
             setNotes((current) => { const next = { ...current }; delete next[report.id]; return next; });
-            await load();
+            await queryClient.invalidateQueries({ queryKey: ['admin', 'message-reports', user?.id] });
         } catch (e) {
-            setError(e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.');
+            setActionError(e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.');
         } finally { setBusyId(null); }
     };
     return <section className="space-y-6" dir="rtl">
