@@ -35,7 +35,7 @@ function dayLabel(value) {
     return Number.isNaN(date.getTime()) ? '' : date.toLocaleDateString('fa-IR', { dateStyle: 'medium' });
 }
 
-export default function MessagingCenter({ role }) {
+export default function MessagingCenter({ role, standalone = false }) {
     const { user } = useAuth();
     const [params, setParams] = useSearchParams();
     const [threads, setThreads] = useState([]);
@@ -684,20 +684,20 @@ export default function MessagingCenter({ role }) {
     }, [role, artworkSlug, selected]);
 
     return (
-        <section className="rad-messaging flex min-h-0 flex-col gap-3 overflow-visible font-sans" dir="rtl">
-            <header className="shrink-0 border-b border-border pb-4">
+        <section className={standalone ? "rad-messaging ra-chat-page flex min-h-0 flex-col overflow-hidden font-sans" : "rad-messaging flex min-h-0 flex-col gap-3 overflow-visible font-sans"} dir="rtl">
+            {!standalone && <header className="shrink-0 border-b border-border pb-4">
                 <p className="text-sm font-bold text-terracotta-strong">ارتباط مستقیم</p>
                 <h1 className="mt-2 text-2xl font-black">پیام‌ها</h1>
                 <p className="mt-2 text-sm text-muted">گفتگوی خصوصی خریداران و هنرمندان؛ پیام‌ها به‌صورت خودکار به‌روزرسانی می‌شوند.</p>
-            </header>
+            </header>}
             {notice && <p role="status" className="border border-border bg-surface-muted p-3 text-sm">{notice}</p>}
             {error && <p role="alert" className="border border-red-200 bg-red-50 p-3 text-sm text-red-800">{error}</p>}
             {threadsError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 border border-red-200 bg-red-50 p-3 text-sm text-red-800"><span>{threadsError}</span><button type="button" onClick={() => loadThreads()} className="shrink-0 font-bold underline underline-offset-4">تلاش دوباره</button></div>}
             {directStartLoading && <div role="status" className="flex items-center gap-3 border border-border bg-surface-muted p-3 text-sm text-muted"><LoaderCircle size={16} className="animate-spin" aria-hidden="true" />در حال آماده‌سازی گفتگوی مستقیم و اتصال آن به اثر…</div>}
             {directStartError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 border border-danger/30 bg-danger-surface p-3 text-sm text-ink"><span>{directStartError}</span><button type="button" onClick={() => setDirectStartAttempt((attempt) => attempt + 1)} className="shrink-0 font-bold text-terracotta-strong underline underline-offset-4">تلاش دوباره</button></div>}
-            <div className="grid h-[100dvh] min-h-[100dvh] min-w-0 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-clip rounded-2xl border border-border bg-white shadow-[0_18px_55px_rgba(36,35,32,0.07)] lg:grid-cols-[360px_minmax(0,1fr)]">
+            <div className={standalone ? "ra-chat-layout grid min-h-0 min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden border-y border-border bg-white lg:grid-cols-[360px_minmax(0,1fr)] sm:rounded-2xl sm:border sm:shadow-[0_18px_55px_rgba(36,35,32,0.07)]" : "grid h-[100dvh] min-h-[100dvh] min-w-0 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-clip rounded-2xl border border-border bg-white shadow-[0_18px_55px_rgba(36,35,32,0.07)] lg:grid-cols-[360px_minmax(0,1fr)]"}>
                 <aside className={active ? 'hidden h-full min-h-0 flex-col border-l border-border bg-white lg:flex' : 'flex h-full min-h-0 flex-col border-l border-border bg-white'}>
-                    <div className="sticky top-[var(--workspace-header-height,4.5rem)] z-20 shrink-0 border-b border-border bg-white px-5 py-5 shadow-soft">
+                    <div className="shrink-0 border-b border-border bg-white px-5 py-4">
                         <div className="flex items-center justify-between gap-3"><div><p className="text-[11px] font-bold tracking-wide text-terracotta-strong">RAD / MESSAGES</p><h2 className="mt-1 text-lg font-black">گفتگوها</h2></div><span className="rounded-full bg-surface-muted px-3 py-1 text-[11px] font-bold text-muted">{threads.length} گفتگو</span></div>
                     </div>
                     <div className="shrink-0 space-y-3 border-b border-border bg-surface-muted p-4">
