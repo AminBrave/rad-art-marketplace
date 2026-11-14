@@ -6,7 +6,7 @@ const buttonVariants = {
     secondary: 'border-border bg-surface-muted text-ink hover:border-border-strong hover:bg-border',
     outline: 'border-border-strong bg-paper text-ink hover:border-terracotta hover:text-terracotta-strong',
     ghost: 'border-transparent bg-transparent text-ink hover:bg-surface-muted',
-    danger: 'border-transparent bg-danger text-inverse hover:bg-danger/90',
+    danger: 'border-transparent bg-danger text-inverse hover:bg-danger',
 };
 const buttonSizes = {
     sm: 'min-h-9 px-3 py-1 text-xs',
@@ -118,7 +118,7 @@ const surfaceVariants = {
     default: 'border-border bg-surface',
     muted: 'border-border bg-surface-muted',
     raised: 'border-border bg-surface shadow-soft',
-    interactive: 'border-border bg-surface transition-colors hover:border-border-strong hover:bg-surface-muted focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus/20',
+    interactive: 'border-border bg-surface transition-colors hover:border-border-strong hover:bg-surface-muted focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus',
 };
 export function Surface({ as: Element = 'section', variant = 'default', className = '', children, ...props }) {
     return <Element className={cn('rounded-md border', surfaceVariants[variant] ?? surfaceVariants.default, className)} {...props}>{children}</Element>;
@@ -133,7 +133,7 @@ export function StatusBadge({ status, label, className = '' }) {
     return <Badge variant={statusVariants[status] ?? 'neutral'} className={className}>{label ?? status ?? 'نامشخص'}</Badge>;
 }
 
-const controlClass = 'min-h-11 w-full rounded-md border border-border-strong bg-paper px-3.5 py-2 text-sm text-ink transition-colors placeholder:text-subtle focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-focus/20 disabled:cursor-not-allowed disabled:bg-surface-muted disabled:opacity-65 aria-[invalid=true]:border-danger';
+const controlClass = 'min-h-11 w-full rounded-md border border-border-strong bg-paper px-3.5 py-2 text-sm text-ink transition-colors placeholder:text-subtle focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-focus disabled:cursor-not-allowed disabled:bg-surface-muted disabled:opacity-65 aria-[invalid=true]:border-danger';
 export function FormField({ id, label, hint, error, required = false, children, className = '' }) {
     const generatedId = useId();
     const fieldId = id ?? generatedId;
