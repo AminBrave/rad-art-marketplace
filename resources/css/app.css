@@ -276,6 +276,21 @@ a {
     .ra-workspace-content { min-width: 0; }
     .ra-workspace-content > :first-child { min-width: 0; }
 
+    /* Dedicated messaging surface: the site header is the only page chrome. */
+    .ra-chat-page {
+        height: calc(100dvh - var(--site-header-height, 4.5rem));
+        min-height: 0;
+        background: var(--color-canvas);
+    }
+    .ra-chat-layout,
+    .ra-chat-layout > aside,
+    .ra-chat-layout > div {
+        min-height: 0;
+    }
+    @media (max-width: 639px) {
+        .ra-chat-layout { border-radius: 0; }
+    }
+
     .ra-workspace-hero {
         position: relative;
         display: flex;
