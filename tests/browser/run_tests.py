@@ -148,7 +148,11 @@ class Tee:
 
     def write(self, value):
         for stream in self.streams:
-            stream.write(value)
+            try:
+                stream.write(value)
+            except UnicodeEncodeError:
+                encoding = getattr(stream, "encoding", None) or "utf-8"
+                stream.write(value.encode(encoding, errors="backslashreplace").decode(encoding))
             stream.flush()
         return len(value)
 
