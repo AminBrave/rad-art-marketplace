@@ -87,6 +87,7 @@ class TimedTextTestResult(unittest.TextTestResult):
         self.executed = []
         self.started_at = {}
         self.duration_by_id = {}
+        self.failure_artifacts = {}
 
     def startTest(self, test):
         self.executed.append(test)
@@ -110,7 +111,7 @@ class TimedTextTestResult(unittest.TextTestResult):
         super().addFailure(test, err)
         try:
             from diagnostics import finish_test_failure
-            finish_test_failure(test.id())
+            self.failure_artifacts[test.id()] = finish_test_failure(test.id())
         except ImportError:
             pass
 
@@ -118,7 +119,7 @@ class TimedTextTestResult(unittest.TextTestResult):
         super().addError(test, err)
         try:
             from diagnostics import finish_test_failure
-            finish_test_failure(test.id())
+            self.failure_artifacts[test.id()] = finish_test_failure(test.id())
         except ImportError:
             pass
 
@@ -286,6 +287,7 @@ def main() -> int:
             for test, reason in result.skipped
         ],
         "durations_seconds": result.duration_by_id,
+        "failure_artifacts_by_test": result.failure_artifacts,
         "exit_code": 0 if result.wasSuccessful() else 1,
         "artifacts": {
             "junit": str(report_path),
