@@ -30,6 +30,7 @@ export default {
                 accent: { DEFAULT: 'var(--color-terracotta)', surface: 'var(--color-accent-surface)' },
                 inverse: 'var(--color-inverse-text)',
                 focus: 'var(--color-focus)',
+                overlay: 'var(--color-overlay)',
             },
             fontFamily: {
                 sans: ['Vazirmatn', 'Inter', 'sans-serif'],
