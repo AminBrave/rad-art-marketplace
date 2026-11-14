@@ -416,38 +416,35 @@ async function verify(includeBrowser = false) {
     }
 }
 
-async function startBrowserDevelopment(lanHost = null) {
+async function startBrowserDevelopment() {
     const databasePath = ensureBrowserDatabase();
     if (!existsSync(databasePath) || lstatSync(databasePath).size === 0) {
         throw new Error('Browser test database is empty. Run npm run browser:prepare first.');
     }
 
     resetBrowserVolatileRuntime();
-    const lan = lanHost !== null;
-    const services = [
-        {
-            label: 'Laravel browser-test application (isolated SQLite)',
-            command: php,
-            args: ['artisan', 'serve', '--host=' + (lan ? '0.0.0.0' : '127.0.0.1'), '--port=8000'],
-            env: browserTestEnvironment(lanHost),
-        },
-        {
-            label: 'Vite',
-            command: npm,
-            args: lan ? ['exec', '--', 'vite', '--mode', 'lan'] : ['exec', '--', 'vite', '--mode', 'https'],
-            env: lan ? lanEnvironment(lanHost) : process.env,
-        },
-    ];
-
-    if (!lan) {
-        services.push({ label: 'Caddy local HTTPS proxy', command: 'caddy', args: ['run', '--config', 'Caddyfile.dev'] });
-        console.log('[project] Browser test environment: https://rad.localhost');
-    } else {
-        console.log('[project] LAN browser-test app: http://' + lanHost + ':8000 (Vite HMR: ' + lanHost + ':5173)');
-    }
+    console.log('[project] Browser test environment: https://rad.localhost (loopback only).');
     console.log('[project] Database: database/browser-testing.sqlite');
     console.log('[project] Cache, sessions, compiled views and uploaded files are isolated under storage/*/browser-testing.');
-    return startServices(services);
+
+    return startServices([
+        {
+            label: 'Laravel browser-test application (isolated SQLite, loopback)',
+            command: php,
+            args: ['artisan', 'serve', '--host=127.0.0.1', '--port=8000'],
+            env: browserTestEnvironment(),
+        },
+        {
+            label: 'Vite (loopback)',
+            command: npm,
+            args: ['exec', '--', 'vite', '--mode', 'https'],
+        },
+        {
+            label: 'Caddy local HTTPS proxy (loopback only)',
+            command: 'caddy',
+            args: ['run', '--config', 'Caddyfile.browser'],
+        },
+    ]);
 }
 
 async function startDevelopment() {
