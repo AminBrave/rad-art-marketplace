@@ -54,7 +54,7 @@ export default function ArtistWorkspaceOverview() {
                 eyebrow="استودیوی هنرمند / نمای کلی"
                 title={<>خوش آمدید، {user?.name}</>}
                 description="اینجا نقطه شروع مدیریت حضور هنری شماست؛ پروفایل را کامل کنید، آثار را برای بررسی بفرستید و ارتباط‌ها را دنبال کنید."
-                actions={<Link to="/dashboard/artist/artworks" className="ra-workspace-hero__action ra-workspace-hero__action--primary">ثبت یا مدیریت اثر</Link>}
+                actions={<Link to="/dashboard/artist/artworks" className="inline-flex min-h-11 items-center justify-center rounded-md border border-white/40 px-4 py-2 text-sm font-semibold text-white no-underline transition-colors hover:bg-white/10 border-paper bg-paper text-ink hover:bg-sand hover:text-ink">ثبت یا مدیریت اثر</Link>}
             />
 
             {profileError && <ErrorState title="پروفایل دریافت نشد" description={profileError} />}
