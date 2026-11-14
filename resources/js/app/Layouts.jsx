@@ -238,6 +238,7 @@ function workspaceLinksForRole(role) {
 
 function workspaceNavigationIcon(path) {
     if (path.endsWith('/profile')) return UserRound;
+    if (path === '/admin/artworks') return ShieldCheck;
     if (path.endsWith('/artworks')) return Images;
     if (path.endsWith('/messages')) return MessageCircle;
     if (path.endsWith('/users')) return Users;
