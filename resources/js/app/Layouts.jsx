@@ -100,7 +100,7 @@ export function PublicLayout() {
                     {user
                         ? <Link onClick={() => setMobileMenuOpen(false)} to={workspaceHome} className="min-h-11 rounded-lg px-3 py-2.5 text-sm font-semibold text-terracotta-strong">فضای کاربری</Link>
                         : <><Link onClick={() => setMobileMenuOpen(false)} to="/login" className="min-h-11 rounded-lg px-3 py-2.5 text-sm font-semibold text-muted">ورود</Link><Link onClick={() => setMobileMenuOpen(false)} to="/register" className="min-h-11 rounded-lg px-3 py-2.5 text-sm font-semibold text-terracotta-strong">ساخت حساب کاربری</Link></>}
-                    {user && <button type="button" onClick={handleLogout} className="min-h-11 rounded-lg px-3 py-2.5 text-right text-sm font-semibold text-muted">خروج از حساب</button>}
+                    {user && }
                 </div>
             </nav>}
             {logoutError && <p role="alert" className="mx-auto max-w-7xl px-4 pb-3 text-xs text-red-700 sm:px-8">{logoutError}</p>}
@@ -319,7 +319,7 @@ function WorkspaceBottomNavigation({ links }) {
 
 export function WorkspaceLayout({ outletContext }) {
     return (
-        <div className="ra-workspace-shell min-h-screen bg-canvas text-ink" dir="rtl">
+        <div className="ra-workspace-shell bg-canvas text-ink" dir="rtl">
             <main className="ra-workspace-content mx-auto min-w-0 max-w-7xl px-5 py-6 sm:px-8 lg:px-10 lg:py-7">
                 <Outlet context={outletContext} />
             </main>
