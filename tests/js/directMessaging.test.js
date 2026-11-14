@@ -27,7 +27,7 @@ test('dedicated chat fills the space below the site header and related artwork c
     assert.ok(messaging.includes('flex-nowrap items-center gap-2 overflow-x-auto overscroll-x-contain'));
     assert.ok(messaging.includes('role="group" aria-label="آثار مرتبط" tabIndex={0}'));
     assert.ok(messaging.includes('shrink-0 truncate rounded-lg border border-border'));
-    assert.ok(workspaceCss.includes('height: calc(100dvh - var(--site-header-height, 4.5rem) - 4.5rem - env(safe-area-inset-bottom, 0px))'));
+    assert.ok(workspaceCss.includes('height: calc(100dvh - var(--site-header-height, 4rem) - var(--workspace-nav-height, 4.25rem) - env(safe-area-inset-bottom, 0px))'));
 });
 
 test('messaging uses a dedicated viewport page with only the main site header and independent chat panes', () => {
@@ -39,7 +39,11 @@ test('messaging uses a dedicated viewport page with only the main site header an
     assert.ok(layouts.includes('aria-label="ناوبری فضای کاربری"'));
     assert.ok(layouts.includes('workspaceLinksForRole(user.role)'));
     assert.ok(layouts.includes('MessageCircle'));
-    assert.ok(layouts.includes('<WorkspaceBottomNavigation links={links} />'));
+    assert.ok(layouts.includes('{isWorkspacePage && user && <WorkspaceBottomNavigation links={workspaceLinksForRole(user.role)} />}'));
+    assert.ok(layouts.includes("{ to: '/artists', label: 'هنرمندان' }"));
+    assert.ok(layouts.includes('فضای هنرمند'));
+    assert.ok(!layouts.includes('ra-workspace-header'));
+    assert.ok(!layouts.includes('ra-workspace-sidebar'));
     assert.ok(!layouts.includes('ra-workspace-sidebar'));
     assert.ok(workspaceCss.includes('.ra-workspace-bottom-nav {'));
     assert.ok(workspaceCss.includes('position: fixed;'));
@@ -57,7 +61,7 @@ test('messaging uses a dedicated viewport page with only the main site header an
     assert.ok(messaging.includes('overflow-y-auto overscroll-contain [scrollbar-gutter:stable]'));
     assert.ok(messaging.includes('px-3 py-3 sm:gap-3 sm:px-5 sm:py-5'));
     assert.ok(workspaceCss.includes('.ra-chat-page {'));
-    assert.ok(workspaceCss.includes('height: calc(100dvh - var(--site-header-height, 4.5rem) - 4.5rem - env(safe-area-inset-bottom, 0px))'));
+    assert.ok(workspaceCss.includes('height: calc(100dvh - var(--site-header-height, 4rem) - var(--workspace-nav-height, 4.25rem) - env(safe-area-inset-bottom, 0px))'));
 });
 
 test('conversation history uses incremental synchronization and stable older-message cursors', () => {
