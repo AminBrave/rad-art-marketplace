@@ -18,7 +18,19 @@ export function PublicLayout() {
 
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const { pathname } = useLocation();
+    const publicHeaderRef = useRef(null);
+    const [publicHeaderHeight, setPublicHeaderHeight] = useState(0);
+    const isChatPage = /^\/dashboard\/(artist|buyer)\/messages$/.test(pathname);
     useEffect(() => setMobileMenuOpen(false), [pathname]);
+    useLayoutEffect(() => {
+        const header = publicHeaderRef.current;
+        if (!header) return undefined;
+        const measure = () => setPublicHeaderHeight(Math.ceil(header.getBoundingClientRect().height));
+        measure();
+        const observer = new ResizeObserver(measure);
+        observer.observe(header);
+        return () => observer.disconnect();
+    }, []);
     useEffect(() => {
         if (!mobileMenuOpen) return undefined;
         const closeOnEscape = (event) => { if (event.key === 'Escape') setMobileMenuOpen(false); };
@@ -36,8 +48,8 @@ export function PublicLayout() {
         ? 'font-bold text-terracotta-strong'
         : 'text-muted transition-colors hover:text-terracotta-strong';
 
-    return <div className="ra-public-shell min-h-screen bg-canvas text-ink" dir="rtl">
-        <header className="ra-public-header sticky top-0 z-40 border-b border-border bg-canvas/95 backdrop-blur supports-[backdrop-filter]:bg-canvas/90">
+    return <div className="ra-public-shell min-h-screen bg-canvas text-ink" dir="rtl" style={{ '--site-header-height': publicHeaderHeight + 'px' }}>
+        <header ref={publicHeaderRef} className="ra-public-header sticky top-0 z-40 border-b border-border bg-canvas/95 backdrop-blur supports-[backdrop-filter]:bg-canvas/90">
             <div className="mx-auto flex min-h-[4.5rem] max-w-7xl items-center justify-between gap-4 px-5 sm:px-8 lg:min-h-20 lg:px-10">
                 <Link to="/" className="shrink-0 text-2xl font-black tracking-tight text-ink no-underline" aria-label="راد آرت، صفحه اصلی">راد<span className="text-terracotta-strong">آرت</span><span className="ms-2 hidden align-middle text-[10px] font-medium tracking-[.18em] text-muted sm:inline">ART MARKETPLACE</span></Link>
                 <nav aria-label="ناوبری اصلی" className="hidden items-center gap-6 text-sm lg:flex">
@@ -52,14 +64,14 @@ export function PublicLayout() {
             {logoutError && <p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-red-700 sm:px-8">{logoutError}</p>}
         </header>
         <Outlet />
-        <footer className="border-t border-border bg-surface-muted">
+        {!isChatPage && <footer className="border-t border-border bg-surface-muted">
             <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 sm:grid-cols-2 sm:px-8 lg:grid-cols-[1.3fr_1fr_1fr] lg:px-10">
                 <div><Link to="/" className="text-xl font-black text-ink">راد<span className="text-terracotta-strong">آرت</span></Link><p className="mt-3 max-w-sm text-sm leading-7 text-muted">فضایی برای کشف آثار هنری مستقل، شناخت هنرمندان و ارتباط درباره هنر.</p></div>
                 <div><h2 className="text-sm font-bold">کشف</h2><div className="mt-3 flex flex-col items-start gap-3 text-sm text-muted"><Link to="/artworks">گالری آثار</Link><Link to="/artists">هنرمندان</Link><Link to="/collections">مجموعه‌های منتخب</Link></div></div>
                 <div><h2 className="text-sm font-bold">راد آرت</h2><div className="mt-3 flex flex-col items-start gap-3 text-sm text-muted"><Link to="/about">درباره ما</Link><Link to="/help">راهنما</Link><Link to="/contact">تماس با ما</Link></div></div>
             </div>
             <div className="border-t border-border py-4 text-center text-xs text-muted">راد آرت — گالری هنر مستقل معاصر</div>
-        </footer>
+        </footer>}
     </div>;
 }
 
