@@ -24,10 +24,13 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Area | Command | Purpose |
 |---|---|---|
 | Setup | `npm run setup` | Install Composer/npm dependencies and create `.env` if absent |
-| Development | `npm run dev` | Laravel + Vite over local HTTP |
+| Development | `npm run dev` | Laravel + Vite over loopback HTTP |
 | Development | `npm run dev:https` | Laravel + Vite + Caddy over local HTTPS |
+| Development | `npm run dev:lan` | Opt-in Laravel + Vite HTTP servers reachable from devices on the LAN (`RAD_LAN_HOST` required) |
 | Development | `npm run dev:browser` | Start the isolated browser-test application, Vite and Caddy |
-| Preview | `npm run preview` | Start Laravel's PHP preview server without Vite |
+| Development | `npm run dev:browser:lan` | Start the isolated browser-test application for manual LAN device testing (`RAD_LAN_HOST` required) |
+| Preview | `npm run preview` | Start Laravel's PHP preview server on loopback without Vite |
+| Preview | `npm run preview:lan` | Serve the existing production build to LAN devices (`RAD_LAN_HOST` required) |
 | Database | `npm run db:sqlite:init` | Create the local SQLite file only if absent |
 | Database | `npm run db:status` | Show migration status |
 | Database | `npm run db:migrate` | Apply pending migrations |
@@ -57,6 +60,27 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Build | `npm run build:cpanel` | cPanel Vite production build |
 | Production | `npm run prod:optimize` | Cache Laravel config, routes, events and views |
 | Production | `npm run prod:clear` | Clear Laravel optimization caches |
+
+## LAN device testing (opt-in)
+
+The normal `dev`, `dev:https`, `dev:browser` and `preview` commands keep their existing loopback/local-host behavior. LAN access is a separate opt-in workflow and requires the computer's actual LAN IPv4 address:
+
+- Bash: `RAD_LAN_HOST=192.168.1.25 npm run dev:lan`
+- PowerShell: `$env:RAD_LAN_HOST="192.168.1.25"; npm run dev:lan`
+
+Replace the example address with the IPv4 address assigned to the development computer. The LAN commands reject missing, loopback and wildcard addresses; they bind the servers to all network interfaces but advertise only the supplied address.
+
+| Command | Mobile URL | Notes |
+|---|---|---|
+| `npm run dev:lan` | `http://<RAD_LAN_HOST>:8000` | Laravel + Vite; HMR is served on port 5173 |
+| `npm run preview:lan` | `http://<RAD_LAN_HOST>:8000` | Run `npm run build` first; serves the existing production assets through Laravel |
+| `npm run dev:browser:lan` | `http://<RAD_LAN_HOST>:8000` | Manual mobile testing against the isolated browser-test SQLite database; run `npm run browser:prepare` first |
+
+For `dev:browser:lan`, the browser-test environment uses host-only, non-secure HTTP session cookies so they work with the LAN IP. The ordinary `dev:browser` HTTPS profile is unchanged. Stop the regular dev server before starting another profile because these workflows share ports 8000 and 5173 and the Laravel Vite hot-file location.
+
+Both the phone and development computer must be on the same trusted local network. Allow inbound TCP ports 8000 and 5173 through the computer's private-network firewall if prompted. These commands are for trusted LAN testing only: they bind to all interfaces and must not be exposed through router port-forwarding, public Wi-Fi or the internet. Do not use a public or shared untrusted network.
+
+The LAN commands are for manual device testing only. `npm run test:browser` remains guarded to localhost and the isolated browser-test app; do not weaken its remote-target rejection or point it at a LAN IP.
 
 ## Browser-test lifecycle
 
@@ -88,7 +112,7 @@ Browser tests must use the isolated browser database and storage. Never point th
 The dispatcher accepts these internal tasks:
 
 - Setup: `setup`
-- Development: `dev`, `dev:https`, `dev:browser`
+- Development: `dev`, `dev:https`, `dev:lan`, `dev:browser`, `dev:browser:lan`, `preview:lan`
 - Database: `db:sqlite:init`, `db:migrate`, `db:seed`, `db:seed:demo`, `db:fresh`
 - Tests: `test`, `backend:test`, `unit`, `feature`, `integration`, `frontend:test`, `browser`, `browser:prepare`
 - Quality: `backend`, `frontend`, `verify`, `verify:all`
