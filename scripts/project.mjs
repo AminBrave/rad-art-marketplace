@@ -312,7 +312,7 @@ async function runFrontendTests() {
 }
 
 async function generateQualityReport() {
-    ensureReportDirectory();
+    mkdirSync(resolve(root, 'build', 'test-reports'), { recursive: true });
     await run(python, pythonArgs(['scripts/summarize-test-reports.py']));
 }
 
