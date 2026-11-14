@@ -246,7 +246,7 @@ export default function App() {
                 <div className="relative mx-auto w-full max-w-xl" aria-label="ترکیب انتزاعی الهام‌گرفته از هنر معاصر">
                     <div className="absolute -right-5 -top-5 h-32 w-32 rounded-full border border-[#c9a58f]" />
                     <div className="relative aspect-[4/5] overflow-hidden rounded-[48%_48%_12px_12px] bg-[#d9c6b2] p-6 sm:p-10">
-                        <div className="absolute inset-6 rounded-[48%_48%_8px_8px] border border-paper/50" />
+                        <div className="absolute inset-6 rounded-[48%_48%_8px_8px] border border-[color:color-mix(in_srgb,var(--color-paper)_5%,transparent)]0" />
                         <div className="absolute left-[12%] top-[15%] h-[54%] w-[54%] rounded-full bg-terracotta" />
                         <div className="absolute bottom-[12%] right-[9%] h-[58%] w-[48%] rounded-t-full bg-[#333d35]" />
                         <div className="absolute bottom-[19%] left-[18%] h-[34%] w-[38%] rotate-[-22deg] rounded-[48%_48%_8px_8px] bg-[#e9dfcf]" />
@@ -260,7 +260,7 @@ export default function App() {
                 </div>
             </section>
 
-            <section id="discover" className="border-y border-border bg-paper/70">
+            <section id="discover" className="border-y border-border bg-[color:color-mix(in_srgb,var(--color-paper)_70%,transparent)]">
                 <div className="mx-auto grid max-w-7xl gap-8 px-6 py-16 md:grid-cols-3 lg:px-10">
                     {highlights.map((item) => (
                         <article key={item.number} className="border-r-2 border-sand pr-5">
