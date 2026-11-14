@@ -53,9 +53,14 @@ test('messaging headers stay aligned and the composer and artwork thumbnails rem
     assert.ok(messaging.includes('aria-hidden={!conversationHeaderVisible}'));
     assert.ok(messaging.includes('invisible pointer-events-none max-h-0 opacity-0'));
     assert.ok(messaging.includes('lg:visible lg:pointer-events-auto lg:max-h-none lg:overflow-visible lg:opacity-100'));
-    assert.ok(messaging.includes('onTouchStart='));
-    assert.ok(messaging.includes('onTouchMove='));
-    assert.ok(messaging.includes('setConversationHeaderVisible(movement > 0)'));
+    assert.ok(messaging.includes('const previousScrollTopRef = useRef(null)'));
+    assert.ok(messaging.includes('const scrollDirectionRef = useRef({ direction: 0, distance: 0 })'));
+    assert.ok(messaging.includes('const previousScrollTop = previousScrollTopRef.current'));
+    assert.ok(messaging.includes('const delta = node.scrollTop - previousScrollTop'));
+    assert.ok(messaging.includes('const threshold = direction > 0 ? 18 : 10'));
+    assert.ok(messaging.includes('setConversationHeaderVisible(direction < 0)'));
+    assert.ok(!messaging.includes('onTouchStart='));
+    assert.ok(!messaging.includes('onTouchMove='));
     assert.ok(messaging.includes('translate-y-0'));
     assert.ok(messaging.includes('-translate-y-full'));
     assert.ok(messaging.includes('lg:translate-y-0 lg:sticky'));
