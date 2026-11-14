@@ -51,8 +51,8 @@ export default function ArtistDirectoryPage() {
             </nav>
 
             <header className="relative mt-6 overflow-hidden border-y border-border bg-surface-muted px-6 py-10 sm:px-10 sm:py-14 lg:px-14">
-                <div aria-hidden="true" className="absolute -left-10 -top-16 h-56 w-56 rounded-full border border-sand/80" />
-                <div aria-hidden="true" className="absolute -left-2 -top-8 h-40 w-40 rounded-full border border-sand/70" />
+                <div aria-hidden="true" className="absolute -left-10 -top-16 h-56 w-56 rounded-full border border-[color:color-mix(in_srgb,var(--color-sand)_80%,transparent)]" />
+                <div aria-hidden="true" className="absolute -left-2 -top-8 h-40 w-40 rounded-full border border-[color:color-mix(in_srgb,var(--color-sand)_70%,transparent)]" />
                 <div className="relative max-w-3xl">
                     <p className="text-xs font-bold tracking-wide text-terracotta-strong">جامعه خلاق راد آرت</p>
                     <h1 className="mt-4 text-4xl font-black leading-tight sm:text-5xl">هنرمند را کشف کنید.</h1>
