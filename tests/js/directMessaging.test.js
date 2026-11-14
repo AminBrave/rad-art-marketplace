@@ -39,6 +39,9 @@ test('messaging uses a dedicated viewport page with only the main site header an
     assert.ok(layouts.includes('publicHeaderRef'));
     assert.ok(layouts.includes("'--site-header-height': publicHeaderHeight + 'px'"));
     assert.ok(layouts.includes('{!isChatPage && <footer'));
+    assert.ok(read('../../resources/js/app/AppRouter.jsx').includes('MessagingCenter role="artist" standalone'));
+    assert.ok(read('../../resources/js/app/AppRouter.jsx').includes('MessagingCenter role="buyer" standalone'));
+    assert.ok(read('../../resources/js/app/AppRouter.jsx').includes('withRouteFallback(<MessagingCenter role="artist" standalone />)'));
     assert.ok(messaging.includes('ra-chat-page'));
     assert.ok(messaging.includes('ra-chat-layout grid min-h-0 min-w-0 flex-1'));
     assert.ok(messaging.includes('shrink-0 border-b border-border bg-white px-5 py-4'));
