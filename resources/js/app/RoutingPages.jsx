@@ -242,14 +242,7 @@ export function ArtistWorkspaceLayout() {
         : '';
     const setProfile = (nextProfile) => queryClient.setQueryData(profileKey, nextProfile);
 
-    const links = [
-        { to: '/dashboard/artist', label: 'نمای کلی', end: true },
-        { to: '/dashboard/artist/profile', label: 'پروفایل هنرمند' },
-        { to: '/dashboard/artist/artworks', label: 'مدیریت آثار' },
-        { to: '/dashboard/artist/messages', label: 'پیام‌های مستقیم' },
-    ];
-
-    return <WorkspaceLayout title="فضای هنرمند" links={links} outletContext={{ user, profile, setProfile, profileLoading, profileError }} />;
+    return <WorkspaceLayout outletContext={{ user, profile, setProfile, profileLoading, profileError }} />;
 }
 
 export function ArtistDashboardHome() {
@@ -371,22 +364,11 @@ export function ArtistArtworkPage() {
 
 export function BuyerWorkspaceLayout() {
     const { user } = useAuth();
-    const links = [
-        { to: '/dashboard/buyer', label: 'نمای کلی', end: true },
-        { to: '/dashboard/buyer/messages', label: 'پیام‌های مستقیم' },
-    ];
-    return <WorkspaceLayout title="فضای خریدار" links={links} outletContext={{ user }} />;
+    return <WorkspaceLayout outletContext={{ user }} />;
 }
 
 export function AdminWorkspaceLayout() {
-    const links = [
-        { to: '/admin', label: 'نمای کلی', end: true },
-        { to: '/admin/users', label: 'مدیریت کاربران' },
-        { to: '/admin/artworks', label: 'بررسی آثار' },
-        { to: '/admin/message-reports', label: 'گزارش پیام‌ها' },
-        { to: '/admin/editorial', label: 'مجموعه‌ها و سردبیری' },
-    ];
-    return <WorkspaceLayout title="پنل مدیریت" links={links} />;
+    return <WorkspaceLayout />;
 }
 
 export function PublicInfoPage({ title, description }) {
