@@ -47,7 +47,6 @@ export function PublicLayout() {
     };
     const publicLinks = [
         { to: '/artworks', label: 'کشف آثار' },
-        { to: '/artists', label: 'هنرمندان' },
         { to: '/collections', label: 'مجموعه‌ها' },
     ];
     const navClass = ({ isActive }) => isActive
@@ -285,7 +284,7 @@ function workspaceNavigationIcon(path) {
     if (path === '/admin/artworks') return ShieldCheck;
     if (path.endsWith('/artworks')) return Images;
     if (path.endsWith('/messages')) return MessageCircle;
-    if (path === '/artists' || path.endsWith('/users')) return Users;
+    if (path.endsWith('/users')) return Users;
     if (path.endsWith('/message-reports')) return Flag;
     if (path.endsWith('/editorial')) return BookOpen;
     return LayoutDashboard;
