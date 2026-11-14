@@ -79,7 +79,7 @@ const pageWidths = {
 };
 
 export function PageContainer({ as: Element = 'div', width = 'wide', className = '', children, ...props }) {
-    return <Element className={cn('mx-auto w-[min(calc(100%-2*var(--page-gutter)),var(--content-width))]', pageWidths[width] ?? pageWidths.wide, className)} {...props}>{children}</Element>;
+    return <Element className={cn('mx-auto w-[min(calc(100%_-_2_*_var(--page-gutter)),var(--content-width))]', pageWidths[width] ?? pageWidths.wide, className)} {...props}>{children}</Element>;
 }
 
 export function PageHeader({ eyebrow, title, description, actions, level = 1, className = '', titleClassName = '', descriptionClassName = '' }) {
