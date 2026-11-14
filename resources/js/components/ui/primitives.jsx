@@ -6,7 +6,7 @@ const buttonVariants = {
     secondary: 'border-border bg-surface-muted text-ink enabled:hover:border-border-strong enabled:hover:bg-border',
     outline: 'border-border-strong bg-paper text-ink enabled:hover:border-terracotta enabled:hover:text-terracotta-strong',
     ghost: 'bg-transparent text-ink hover:bg-surface-muted',
-    danger: 'bg-danger text-inverse enabled:hover:bg-[color:color-mix(in_srgb,var(--color-danger)_90%,transparent)]',
+    danger: 'bg-danger text-inverse enabled:hover:bg-[color:color-mix(in_srgb,var(--color-danger)_88%,black)]',
 };
 
 const buttonSizes = {
