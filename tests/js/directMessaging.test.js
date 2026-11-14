@@ -56,6 +56,8 @@ test('messaging headers stay aligned and the composer and artwork thumbnails rem
     assert.ok(!messaging.includes('aria-hidden={!conversationHeaderVisible}'));
     assert.ok(messaging.includes('const previousScrollTopRef = useRef(null)'));
     assert.ok(messaging.includes('const scrollDirectionRef = useRef({ direction: 0, distance: 0 })'));
+    assert.ok(messaging.includes('const ignoreScrollDirectionRef = useRef(false)'));
+    assert.ok(messaging.includes('distanceFromBottom <= 2 || delta < 0'));
     assert.ok(messaging.includes('const previousScrollTop = previousScrollTopRef.current'));
     assert.ok(messaging.includes('const delta = node.scrollTop - previousScrollTop'));
     assert.ok(messaging.includes('const threshold = direction > 0 ? 18 : 10'));
