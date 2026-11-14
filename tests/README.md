@@ -139,7 +139,7 @@ This is a focused automated color-contrast check, not a complete accessibility a
 
 Browser tests exercise the actual app in Chromium. They are stateful and can create, update and delete test records. They must run only against the dedicated local browser-test environment.
 
-For manual testing on a phone or another device on the same trusted LAN, use `npm run dev:browser:lan` with `RAD_LAN_HOST` set as described in [the LAN device testing guide](../scripts/README.md#lan-device-testing-opt-in). This serves the isolated browser-test database over HTTP for manual interaction. It does **not** change the automated Playwright runner: `npm run test:browser` must remain pointed at localhost/loopback, and its remote-host rejection must not be bypassed.
+For manual testing on a phone or another device on the same trusted LAN, use the normal `npm run dev` workflow and its HTTPS LAN URL described in [the development and LAN access guide](../scripts/README.md#default-https-development-and-lan-access). The isolated browser-test app started by `npm run dev:browser` is intentionally loopback-only and must not be exposed to LAN devices. The automated Playwright runner remains restricted to localhost/loopback; its remote-host rejection must not be bypassed.
 
 ### Required lifecycle
 
