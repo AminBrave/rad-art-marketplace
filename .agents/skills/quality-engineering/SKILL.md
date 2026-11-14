@@ -43,7 +43,7 @@ When adding or changing a test command, report, fixture or diagnostic artifact, 
 
 ## Determinism and isolation
 - Backend PHPUnit tests must use the isolated bootstrap, in-memory SQLite, array cache/session/mail, sync queue, stderr logging and isolated file storage/view paths.
-- Browser tests are stateful and mutate records. They must use only database/browser-testing.sqlite and the isolated browser-test storage/cache/session/view directories.
+- Browser tests are stateful and mutate records. They must use only database/browser-testing.sqlite and the isolated browser-test storage/cache/session/view directories. The guarded runner automatically captures console/page errors, API request/response metadata, screenshots and Playwright traces for browser contexts created during a failing test; passing-test temporary artifacts are discarded. Keep explicit diagnostics only when a test needs a focused event timeline or custom failure context.
 - Prepare browser data only through npm run browser:prepare; start the isolated app only through npm run dev:browser.
 - Browser preflight must reject remote targets and verify the app reports browser_test_ready=true. Never weaken this guard to make a run pass.
 - Never point browser tests at a normal developer database or production/staging.
