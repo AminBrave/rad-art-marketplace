@@ -266,7 +266,6 @@ function workspaceLinksForRole(role) {
     ];
     if (role === 'buyer') return [
         { to: '/dashboard/buyer', label: 'خانه', end: true },
-        { to: '/artists', label: 'هنرمندان' },
         { to: '/dashboard/buyer/messages', label: 'پیام‌ها' },
     ];
     if (role === 'admin') return [
