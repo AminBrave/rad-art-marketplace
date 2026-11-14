@@ -42,13 +42,21 @@ test('messaging headers stay aligned and the composer and artwork thumbnails rem
     assert.ok(messaging.includes('inboxHeadingRef'));
     assert.ok(messaging.includes('ResizeObserver(measure)'));
     assert.ok(messaging.includes('lg:sticky lg:top-[calc(var(--workspace-header-height,4.5rem)_+_var(--inbox-heading-height,5.5rem)_+_0.75rem)]'));
-    assert.ok(messaging.includes('relative z-30 shrink-0 border-b border-border bg-white shadow-soft lg:sticky'));
+    assert.ok(messaging.includes('relative z-30 border-b border-border bg-white shadow-soft lg:sticky'));
     assert.ok(!messaging.includes('sticky top-[calc(var(--workspace-header-height,4.5rem)_+_0.75rem)]'));
     assert.ok(messaging.includes('pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2'));
     assert.ok(messaging.includes('max-h-28 min-h-9'));
     assert.ok(messaging.includes('flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-terracotta'));
     assert.ok(messaging.includes('absolute inset-0 block h-full w-full object-cover object-center'));
     assert.ok(messaging.includes('Math.min(textarea.scrollHeight, 112)'));
+    assert.ok(messaging.includes('const [conversationHeaderVisible, setConversationHeaderVisible] = useState(true)'));
+    assert.ok(messaging.includes('aria-hidden={!conversationHeaderVisible}'));
+    assert.ok(messaging.includes('invisible pointer-events-none max-h-0 opacity-0'));
+    assert.ok(messaging.includes('lg:visible lg:pointer-events-auto lg:max-h-none lg:overflow-visible lg:opacity-100'));
+    assert.ok(messaging.includes('onTouchStart='));
+    assert.ok(messaging.includes('onTouchMove='));
+    assert.ok(messaging.includes('setConversationHeaderVisible(movement > 0)'));
+    assert.ok(messaging.includes('px-3 py-3 sm:gap-3 sm:px-5 sm:py-5'));
 });
 
 test('conversation history uses incremental synchronization and stable older-message cursors', () => {
