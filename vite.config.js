@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => {
     const lanHost = env.VITE_DEV_LAN_HOST;
 
     if (lanDevelopment && !lanHost) {
-        throw new Error('Set RAD_LAN_HOST to this computer’s LAN IPv4 address before starting the LAN development server.');
+        throw new Error('The default development workflow must provide a detected private LAN IPv4 address.');
     }
 
     return {
@@ -28,18 +28,18 @@ export default defineConfig(({ mode }) => {
         ],
         server: lanDevelopment
             ? {
-                host: '0.0.0.0',
+                // Caddy is the only network-facing listener. Vite stays private.
+                host: '127.0.0.1',
                 port: 5173,
                 strictPort: true,
-                origin: `http://${lanHost}:5173`,
-                cors: {
-                    origin: `http://${lanHost}:8000`,
-                },
-                allowedHosts: [lanHost],
+                // Laravel's hot file uses this origin for every browser, including rad.localhost.
+                origin: `https://${lanHost}`,
+                allowedHosts: [lanHost, 'rad.localhost', 'rad.home.arpa'],
                 hmr: {
                     host: lanHost,
-                    protocol: 'ws',
-                    clientPort: 5173,
+                    protocol: 'wss',
+                    clientPort: 443,
+                    path: '/__vite_hmr',
                 },
             }
             : localHttps
