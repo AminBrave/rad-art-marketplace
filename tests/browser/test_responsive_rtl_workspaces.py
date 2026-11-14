@@ -146,9 +146,16 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
                             "(node) => node.getBoundingClientRect().height"
                         )
                         document_height = page.evaluate("() => document.documentElement.scrollHeight")
+                        content_height = page.locator(".ra-workspace-content").evaluate(
+                            "(node) => node.getBoundingClientRect().height"
+                        )
                         self.assertAlmostEqual(
                             shell_height, viewport_height, delta=2,
                             msg=f"Messaging shell must fill the viewport on {route_path} at {width}px",
+                        )
+                        self.assertGreater(
+                            content_height, viewport_height * 0.5,
+                            f"Messaging content must occupy most of the available viewport on {route_path} at {width}px",
                         )
                         self.assertLessEqual(
                             document_height, viewport_height + 1,
