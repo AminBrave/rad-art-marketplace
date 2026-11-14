@@ -24,6 +24,7 @@ const artworkStudio = readFileSync(new URL('../../resources/js/app/ArtworkStudio
 const conversationApi = readFileSync(new URL('../../app/Http/Controllers/Api/V1/ConversationController.php', import.meta.url), 'utf8');
 const messageModel = readFileSync(new URL('../../app/Models/Message.php', import.meta.url), 'utf8');
 const adminWorkspace = readFileSync(new URL('../../resources/js/app/AdminWorkspace.jsx', import.meta.url), 'utf8');
+const bootShell = readFileSync(new URL('../../resources/views/app.blade.php', import.meta.url), 'utf8');
 
 test('semantic palette, typography, spacing and layout tokens have one CSS source', () => {
     for (const token of [
@@ -48,26 +49,24 @@ test('Tailwind semantic aliases reference CSS variables rather than duplicate li
     assert.ok(tailwind.includes('var(--space-4)'));
 });
 
-test('shared primitives use centralized component contracts and expose accessible states', () => {
-    assert.ok(css.includes('.ra-button--primary'));
-    assert.ok(css.includes('.ra-button--danger'));
-    assert.ok(css.includes('.ra-control:focus-visible'));
-    assert.ok(css.includes('.ra-control[aria-invalid='));
-    assert.ok(primitives.includes('ra-button'));
+test('shared primitives express accessible component contracts with semantic Tailwind utilities', () => {
+    assert.ok(primitives.includes('bg-terracotta text-white'));
+    assert.ok(primitives.includes('focus-visible:outline'));
+    assert.ok(primitives.includes('aria-[invalid=true]:border-danger'));
     assert.ok(primitives.includes('aria-busy={loading || undefined}'));
     assert.ok(primitives.includes("'aria-describedby': describedBy"));
     assert.ok(primitives.includes("'aria-invalid': error ? true"));
+    assert.doesNotMatch(primitives, /ra-[a-z]/);
 });
 
-test('shared content and feedback components use semantic surface and state contracts', () => {
+test('shared content and feedback components use semantic utility classes', () => {
     assert.ok(cards.includes('bg-surface-muted'));
-    assert.ok(cards.includes('border border-border'));
-    assert.ok(cards.includes('ra-artwork-frame'));
-    assert.ok(feedback.includes('ra-state--empty'));
-    assert.ok(feedback.includes('ra-state--error'));
-    assert.ok(feedback.includes('ra-state--success'));
+    assert.ok(cards.includes('aspect-[4/5]'));
+    assert.ok(feedback.includes('border-danger/30'));
     assert.ok(feedback.includes('app-skeleton'));
-    assert.ok(feedback.includes('ra-toast--success'));
+    assert.ok(feedback.includes('border-s-4'));
+    assert.doesNotMatch(cards, /ra-[a-z]/);
+    assert.doesNotMatch(feedback, /ra-[a-z]/);
 });
 
 test('RAD visual tokens are declared in one canonical root block', () => {
@@ -76,18 +75,14 @@ test('RAD visual tokens are declared in one canonical root block', () => {
     assert.ok(css.includes('--color-success-surface:'));
 });
 
-test('shared layout, surface, button, badge and form contracts are defined centrally', () => {
-    for (const contract of [
-        '.ra-page--wide', '.ra-page--reading', '.ra-page-header__title',
-        '.ra-section-header__title', '.ra-surface--muted', '.ra-surface--interactive',
-        '.ra-badge--success', '.ra-badge--danger', '.ra-form-field__error', '.ra-workspace-hero', '.ra-metric-card', '.ra-tabs-list', '.ra-tabs-trigger', '.ra-menu-content', '.ra-menu-item', '.ra-dialog-content', '.ra-dialog-title', '.ra-breadcrumbs', '.ra-pagination__page', '.ra-toast', '.ra-toast--success', '.ra-toast--danger',
-        '.ra-control--textarea', '.ra-workspace-content',
-    ]) {
-        assert.ok(css.includes(contract), 'Missing component contract: ' + contract);
+test('shared layout and form primitives expose semantic utility compositions', () => {
+    for (const utility of ['max-w-[var(--content-wide-width)]', 'max-w-[var(--content-reading-width)]', 'border-b border-border', 'bg-surface-muted', 'bg-terracotta text-white', 'aria-[invalid=true]:border-danger']) {
+        assert.ok(primitives.includes(utility), 'Missing shared utility contract: ' + utility);
     }
     for (const component of ['PageContainer', 'PageHeader', 'SectionHeader', 'Surface', 'StatusBadge', 'WorkspaceHero', 'DashboardMetricCard']) {
         assert.ok(primitives.includes('function ' + component), 'Missing shared component: ' + component);
     }
+    assert.doesNotMatch(primitives, /ra-[a-z]/);
 });
 
 test('public catalogue, artist directory and artwork detail use shared page layout primitives', () => {
@@ -97,21 +92,31 @@ test('public catalogue, artist directory and artwork detail use shared page layo
     assert.ok(buyerWorkspace.includes('WorkspaceHero') && buyerWorkspace.includes('<Surface'));
 });
 
-test('public and role-based workspaces expose the shared application shell contracts', () => {
-    for (const contract of ['ra-public-shell', 'ra-public-header', 'ra-workspace-shell', 'ra-workspace-header', 'ra-workspace-sidebar', 'ra-workspace-content']) {
-        assert.ok(layouts.includes(contract), 'Missing application shell contract: ' + contract);
+test('public and role-based workspaces use shared semantic shell utilities', () => {
+    for (const utility of ['min-h-screen bg-canvas text-ink', 'min-h-20 border-b border-border', 'grid min-w-0 max-w-7xl', 'rounded-md border border-border bg-paper']) {
+        assert.ok(layouts.includes(utility), 'Missing shell utility: ' + utility);
     }
+    assert.doesNotMatch(layouts, /ra-[a-z]/);
 });
 
-test('navigation, dialog and design-system showcase use shared contracts', () => {
-    for (const contract of ['ra-tabs-list', 'ra-tabs-trigger', 'ra-menu-content', 'ra-menu-item', 'ra-breadcrumbs', 'ra-pagination']) {
-        assert.ok(navigation.includes(contract), 'Missing navigation contract: ' + contract);
-    }
-    for (const contract of ['ra-dialog-overlay', 'ra-dialog-content', 'ra-dialog-title', 'ra-dialog-description']) {
-        assert.ok(dialog.includes(contract), 'Missing dialog contract: ' + contract);
-    }
-    assert.ok(showcase.includes('WorkspaceHero'));
-    assert.ok(showcase.includes('DashboardMetricCard'));
+test('navigation and dialog primitives use Tailwind state and focus utilities', () => {
+    assert.ok(navigation.includes('data-[state=active]:border-terracotta'));
+    assert.ok(navigation.includes('data-[disabled]:pointer-events-none'));
+    assert.ok(navigation.includes('focus-visible:ring-2'));
+    assert.ok(navigation.includes('aria-current="page"'));
+    assert.ok(dialog.includes('bg-ink/55'));
+    assert.ok(dialog.includes('max-h-[85vh]'));
+    assert.doesNotMatch(navigation, /ra-[a-z]/);
+    assert.doesNotMatch(dialog, /ra-[a-z]/);
+});
+
+test('boot shell uses Tailwind utilities and custom CSS stays scoped to tokens, base, skeleton and messaging edge cases', () => {
+    assert.ok(bootShell.includes('grid grid-cols-1 items-center gap-12'));
+    assert.ok(bootShell.includes('lg:grid-cols-[minmax(0,1fr)_minmax(16rem,.9fr)]'));
+    assert.doesNotMatch(bootShell, /app-boot__/);
+    assert.doesNotMatch(css, /\.ra-[\w-]+|\.app-boot(?:__[\w-]+)?/);
+    assert.match(css, /Messaging workspace edge-case styles:/);
+    assert.match(css, /\.rad-messaging/);
 });
 
 test('shared UI component source does not introduce arbitrary hex or raw palette colors', () => {
