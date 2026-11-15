@@ -188,7 +188,12 @@ test('messaging is viewport-locked between the authenticated app header and bott
     assert.ok(layouts.includes('h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.ok(layouts.includes('sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.ok(layouts.includes('lg:h-[calc(100dvh-5rem)]'));
-    assert.ok(layouts.includes("isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden' : 'min-w-0'"));
+    assert.ok(layouts.includes("lg:fixed lg:top-28"));
+    assert.ok(layouts.includes("lg:right-[max(calc((100vw-var(--content-width))/2+var(--page-gutter)),var(--page-gutter))]"));
+    assert.ok(layouts.includes("lg:max-h-[calc(100dvh-8rem)] lg:w-60 lg:overflow-y-auto"));
+    assert.ok(layouts.includes('{isMessagingRoute && <div className="hidden lg:block" aria-hidden="true" />}'));
+    assert.ok(layouts.includes("overflow-hidden lg:col-start-2"));
+    assert.ok(layouts.includes("isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden lg:col-start-2' : 'min-w-0'"));
 });
 
 test('messaging chat geometry follows RTL logical flow and uses Radix collision-aware overlays', () => {
