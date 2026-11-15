@@ -85,6 +85,16 @@ Use the current RAD semantic tokens and project-owned primitives:
 - Keep message reactions and message actions in one compact footer row. Reduce excess vertical gaps and padding without shrinking readable Persian line-height or accessible touch targets.
 - The composer should remain visually compact, preserve attachment/reply previews, grow only as the draft wraps, and never force the conversation panel beyond its bounded height.
 
+## Messaging RTL layout rules
+
+- Keep the message history, message rows and message content in explicit RTL flow. Do not wrap message rows in LTR containers to achieve right/left alignment with physical `justify-end` utilities.
+- In an RTL message row, align the current user's bubble with `justify-start` (inline start/right) and the other participant's bubble with `justify-end` (inline end/left).
+- Use CSS logical properties and Tailwind logical utilities (`start/end`, `ps/pe`, `border-s/e`) for directional offsets and spacing. Reserve physical left/right utilities for deliberately asymmetric artwork or iconography that is truly physical.
+- Anchor contextual popovers with logical insets. Keep reaction pickers bounded to the viewport/chat width and allow emoji choices to wrap rather than clipping outside the conversation pane.
+- Reserve composer space on the same inline side as its attachment control. In RTL, the attachment control is on inline-start and the textarea must use matching inline-start padding.
+- Preserve RTL flex/grid ordering for avatars, timestamps, message status, reply previews, attachment previews and related-artwork chips. Use `dir="auto"` for user-provided names and mixed-direction values where appropriate.
+- Verify short and long Persian messages, Latin URLs/names, emoji sequences, media cards, narrow screens, both participants' bubbles, and popovers near both chat edges.
+
 ## Modal and dialog dismissal
 
 - All product modal dialogs must use the shared RAD Dialog / DialogContent primitive, backed by Radix Dialog. Do not create parallel modal implementations.
