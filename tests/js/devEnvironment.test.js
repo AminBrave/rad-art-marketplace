@@ -125,3 +125,15 @@ test('rejects a production-named database even when the host is local', () => {
     });
     assert.match(result.errors.join(' '), /looks like a production database name/);
 });
+
+
+test('checks the host embedded in DB_URL instead of trusting DB_HOST', () => {
+    const result = validateDevelopmentEnvironment({
+        fileValues: {
+            ...safeEnvironment,
+            DB_URL: 'mysql://user:secret@prod-db.example:3306/rad_art_marketplace',
+        },
+        root,
+    });
+    assert.match(result.errors.join(' '), /not loopback/);
+});
