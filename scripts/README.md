@@ -31,7 +31,7 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Database | `npm run db:migrate` | Apply pending migrations after local environment/database preflight |
 | Database | `npm run db:seed` | Run `DatabaseSeeder` after local environment/database preflight |
 | Database | `npm run db:seed:demo` | Run `DemoDatabaseSeeder` after local environment/database preflight |
-| Database | `npm run db:fresh` | **Destructive:** preflight, drop all configured local database tables, migrate and seed |
+| Database | `npm run db:fresh` | **Destructive:** preflight, drop all configured development database tables, migrate and seed |
 | Tests | `npm run test:backend` | Backend PHPUnit tests using isolated in-memory SQLite |
 | Tests | `npm run test:unit` | Unit PHPUnit suite |
 | Tests | `npm run test:feature` | Feature PHPUnit suite |
