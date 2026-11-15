@@ -135,6 +135,7 @@ test('navigation and dialog primitives use Tailwind state and focus utilities', 
 test('form controls and helper hints use shared RAD-styled Radix primitives', () => {
     assert.ok(primitives.includes('SelectPrimitive.Root'));
     assert.ok(primitives.includes('CheckboxPrimitive.Root'));
+    assert.ok(primitives.includes("type: 'checkbox'"));
     assert.ok(primitives.includes('data-[state=checked]:bg-terracotta'));
     assert.ok(tooltip.includes('TooltipPrimitive.Root'));
     assert.ok(alertDialog.includes('AlertDialogPrimitive.Root'));
