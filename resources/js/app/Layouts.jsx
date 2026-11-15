@@ -481,9 +481,19 @@ function NotificationBell({ user }) {
 
 export function WorkspaceLayout({ title, links, outletContext }) {
     const { user, logout } = useAuth();
+    const { pathname } = useLocation();
     const [logoutError, setLogoutError] = useState('');
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const mobileMenuTriggerRef = useRef(null);
+    const mobileMenuPanelRef = useRef(null);
+
+    const closeMobileMenu = () => {
+        setMobileMenuOpen(false);
+        mobileMenuTriggerRef.current?.focus();
+    };
 
     const handleLogout = async () => {
+        setMobileMenuOpen(false);
         setLogoutError('');
         try {
             await logout();
@@ -492,55 +502,194 @@ export function WorkspaceLayout({ title, links, outletContext }) {
         }
     };
 
+    useEffect(() => setMobileMenuOpen(false), [pathname]);
+
+    useEffect(() => {
+        if (!mobileMenuOpen) return undefined;
+
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        mobileMenuPanelRef.current?.focus();
+
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                closeMobileMenu();
+                return;
+            }
+
+            if (event.key !== 'Tab' || !mobileMenuPanelRef.current) return;
+            const focusable = mobileMenuPanelRef.current.querySelectorAll(
+                'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+            );
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last?.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first?.focus();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = previousOverflow;
+        };
+    }, [mobileMenuOpen]);
+
+    const workspaceDestination = user?.role === 'admin'
+        ? '/admin'
+        : user?.role === 'buyer'
+            ? '/dashboard/buyer'
+            : '/dashboard/artist';
+
     return (
         <div className="min-h-screen bg-canvas text-ink" dir="rtl">
             <header className="sticky top-0 z-40 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] shadow-soft backdrop-blur">
-                <div className="mx-auto flex max-w-content flex-wrap items-center justify-between gap-4 px-page-gutter py-3.5 sm:py-4">
-                    <div className="flex min-w-0 items-center gap-3">
-                        <Link to="/" className="group grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-ink text-xl font-black text-inverse shadow-soft no-underline transition-colors hover:bg-terracotta" aria-label="راد آرت، صفحه اصلی">
+                <div className="mx-auto flex min-h-[4.5rem] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-20 sm:gap-4">
+                    <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
+                        <Link to="/" className="group grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-lg font-black text-inverse shadow-soft no-underline transition-colors hover:bg-terracotta sm:h-12 sm:w-12 sm:text-xl" aria-label="راد آرت، صفحه اصلی">
                             <span className="transition-transform group-hover:scale-110">ر</span>
                         </Link>
                         <div className="min-w-0">
-                            <Link to="/" className="text-lg font-black tracking-tight text-ink no-underline">راد<span className="text-terracotta-strong">آرت</span></Link>
-                            <div className="mt-1 flex min-w-0 flex-wrap items-center gap-2">
-                                <span className="truncate text-xs font-semibold text-muted">{title}</span>
-                                <span aria-hidden="true" className="h-1 w-1 rounded-full bg-border-strong" />
-                                <Badge variant="accent" className="px-2 py-0.5 text-[10px]">{roleLabels[user?.role] ?? 'فضای کاربری'}</Badge>
+                            <Link to="/" className="text-base font-black tracking-tight text-ink no-underline sm:text-lg">راد<span className="text-terracotta-strong">آرت</span></Link>
+                            <div className="mt-0.5 flex min-w-0 items-center gap-1.5 sm:mt-1 sm:gap-2">
+                                <span className="max-w-[9.5rem] truncate text-[11px] font-semibold text-muted sm:max-w-none sm:text-xs">{title}</span>
+                                <span aria-hidden="true" className="h-1 w-1 shrink-0 rounded-full bg-border-strong" />
+                                <Badge variant="accent" className="shrink-0 px-1.5 py-0.5 text-[9px] sm:px-2 sm:text-[10px]">{roleLabels[user?.role] ?? 'فضای کاربری'}</Badge>
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex min-w-0 flex-wrap items-center justify-end gap-2 sm:gap-3">
+                    <div className="flex shrink-0 items-center gap-2 sm:gap-3">
                         {user?.role !== 'admin' && <NotificationBell user={user} />}
-                        <span className="hidden max-w-44 truncate border-e border-border pe-3 text-sm font-bold text-ink md:inline">{user?.name}</span>
-                        <Link to="/" className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border-strong bg-paper px-3 text-xs font-bold text-ink no-underline transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus sm:px-4 sm:text-sm">
-                            مشاهده سایت
-                        </Link>
-                        <Button variant="outline" size="sm" onClick={handleLogout} className="min-h-10 gap-2">
-                            <span>خروج</span>
-                        </Button>
+
+                        <div className="hidden min-w-0 items-center gap-3 lg:flex">
+                            <span className="max-w-44 truncate border-e border-border pe-3 text-sm font-bold text-ink">{user?.name}</span>
+                            <Link to="/" className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border-strong bg-paper px-4 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+                                مشاهده سایت
+                            </Link>
+                            <Button variant="outline" size="sm" onClick={handleLogout} className="min-h-10 gap-2">
+                                <span>خروج</span>
+                            </Button>
+                        </div>
+
+                        <button
+                            ref={mobileMenuTriggerRef}
+                            type="button"
+                            aria-label={mobileMenuOpen ? 'بستن منوی فضای کاربری' : 'باز کردن منوی فضای کاربری'}
+                            aria-expanded={mobileMenuOpen}
+                            aria-haspopup="dialog"
+                            aria-controls="workspace-mobile-menu"
+                            onClick={() => setMobileMenuOpen((open) => !open)}
+                            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus lg:hidden"
+                        >
+                            {mobileMenuOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
+                        </button>
                     </div>
                 </div>
                 {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{logoutError}</p>}
             </header>
 
-            <div className="mx-auto grid min-w-0 max-w-content gap-5 px-page-gutter py-6 sm:py-8 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-8">
-                <aside className="min-w-0 rounded-xl border border-border bg-paper p-2.5 shadow-soft lg:sticky lg:top-24 lg:h-fit lg:p-3">
-                    <div className="mb-2 hidden items-center justify-between px-3 py-2 lg:flex">
+            {mobileMenuOpen && (
+                <div className="fixed inset-0 z-[70] lg:hidden">
+                    <button
+                        type="button"
+                        aria-label="بستن منوی فضای کاربری"
+                        tabIndex="-1"
+                        onClick={closeMobileMenu}
+                        className="absolute inset-0 h-full w-full cursor-default bg-ink/45 backdrop-blur-[2px]"
+                    />
+                    <aside
+                        id="workspace-mobile-menu"
+                        ref={mobileMenuPanelRef}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="workspace-mobile-menu-title"
+                        tabIndex="-1"
+                        className="absolute inset-y-0 right-0 flex w-[min(22rem,calc(100vw-2.75rem))] flex-col border-s border-border bg-paper shadow-raised outline-none"
+                    >
+                        <div className="flex items-center justify-between border-b border-border px-5 py-5">
+                            <div className="flex min-w-0 items-center gap-3">
+                                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-lg font-black text-inverse">ر</span>
+                                <div className="min-w-0">
+                                    <h2 id="workspace-mobile-menu-title" className="text-sm font-extrabold text-ink">منوی فضای کاربری</h2>
+                                    <p className="mt-1 max-w-48 truncate text-xs text-muted">{user?.name}</p>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                aria-label="بستن منو"
+                                onClick={closeMobileMenu}
+                                className="grid h-10 w-10 shrink-0 place-items-center rounded-lg text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
+                            >
+                                <X size={19} aria-hidden="true" />
+                            </button>
+                        </div>
+
+                        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4">
+                            <p className="px-3 pb-2 text-[11px] font-extrabold tracking-wide text-muted">ناوبری</p>
+                            <nav aria-label="ناوبری فضای کاربری" className="grid gap-1">
+                                {links.map((item) => (
+                                    <NavLink
+                                        key={item.to}
+                                        to={item.to}
+                                        end={item.end}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className={({ isActive }) => [
+                                            'relative flex min-h-12 items-center rounded-lg px-4 py-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus',
+                                            isActive
+                                                ? 'bg-accent-surface text-terracotta-strong after:absolute after:inset-y-2 after:right-0 after:w-1 after:rounded-full after:bg-terracotta'
+                                                : 'text-muted hover:bg-surface-muted hover:text-ink',
+                                        ].join(' ')}
+                                    >
+                                        {item.label}
+                                    </NavLink>
+                                ))}
+                            </nav>
+                        </div>
+
+                        <div className="shrink-0 border-t border-border bg-surface-muted p-4">
+                            <Link
+                                to="/"
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="flex min-h-11 items-center justify-center rounded-lg border border-border-strong bg-paper px-4 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong"
+                            >
+                                مشاهده سایت
+                            </Link>
+                            <button
+                                type="button"
+                                onClick={handleLogout}
+                                className="mt-2 flex min-h-11 w-full items-center justify-center rounded-lg px-4 text-sm font-bold text-danger transition-colors hover:bg-danger-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
+                            >
+                                خروج از حساب
+                            </button>
+                        </div>
+                    </aside>
+                </div>
+            )}
+
+            <div className="mx-auto grid min-w-0 max-w-content gap-5 px-page-gutter py-5 sm:py-8 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-8">
+                <aside className="hidden min-w-0 rounded-xl border border-border bg-paper p-3 shadow-soft lg:sticky lg:top-24 lg:block lg:h-fit">
+                    <div className="mb-2 flex items-center justify-between px-3 py-2">
                         <p className="text-[11px] font-extrabold tracking-wide text-muted">ناوبری فضای کاری</p>
                         <span className="text-[10px] font-semibold text-subtle">RAD / MENU</span>
                     </div>
-                    <nav aria-label="ناوبری فضای کاربری" className="flex w-full min-w-0 gap-2 overflow-x-auto overscroll-x-contain pb-1 lg:flex-col lg:overflow-visible lg:pb-0">
+                    <nav aria-label="ناوبری فضای کاربری" className="flex w-full min-w-0 flex-col gap-1">
                         {links.map((item) => (
                             <NavLink
                                 key={item.to}
                                 to={item.to}
                                 end={item.end}
                                 className={({ isActive }) => [
-                                    'relative inline-flex min-h-11 shrink-0 items-center rounded-md px-4 py-2.5 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus lg:w-full',
+                                    'relative inline-flex min-h-11 w-full items-center rounded-lg px-4 py-2.5 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus',
                                     isActive
                                         ? 'bg-ink text-inverse shadow-soft after:absolute after:inset-y-2 after:right-0 after:w-1 after:rounded-full after:bg-terracotta'
-                                        : 'bg-surface-muted text-muted hover:bg-accent-surface hover:text-terracotta-strong lg:bg-transparent',
+                                        : 'bg-transparent text-muted hover:bg-accent-surface hover:text-terracotta-strong',
                                 ].join(' ')}
                             >
                                 {item.label}
