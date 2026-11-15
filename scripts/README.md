@@ -46,6 +46,8 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Production | `npm run production` | Build standard Vite assets and verify the manifest plus required CSS/JS output |
 | Build | `npm run build:cpanel` | Build and verify cPanel Vite production assets |
 
+Use the npm database commands for local development. Direct `php artisan` invocations bypass the project preflight and do not receive the launcher's scoped cache paths.
+
 ## Default HTTPS development and LAN access
 
 The normal development command first runs a read-only preflight, then serves Laravel + Vite through Caddy. Install Caddy and make its executable available on PATH before starting development.
