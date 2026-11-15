@@ -134,5 +134,80 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
             context.close()
 
 
+    def test_artwork_cards_recover_from_image_load_failure_and_keep_alt_text(self):
+        context, page = self.new_page()
+        artworks = [
+            {
+                "id": 910,
+                "slug": "image-loaded",
+                "title": "اثر با تصویر",
+                "price": None,
+                "image_url": "/media/loaded.svg",
+                "artist": {"display_name": "هنرمند تصویر"},
+                "category": {"name": "نقاشی"},
+            },
+            {
+                "id": 911,
+                "slug": "image-failed",
+                "title": "اثر خراب",
+                "price": None,
+                "image_url": "/media/failed.svg",
+                "artist": {"display_name": "هنرمند تصویر"},
+                "category": {"name": "نقاشی"},
+            },
+            {
+                "id": 912,
+                "slug": "image-missing",
+                "title": "اثر بدون تصویر",
+                "price": None,
+                "image_url": None,
+                "artist": {"display_name": "هنرمند تصویر"},
+                "category": {"name": "نقاشی"},
+            },
+        ]
+        page.route(
+            "**/api/v1/artworks**",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({
+                    "data": artworks,
+                    "current_page": 1,
+                    "last_page": 1,
+                    "per_page": 12,
+                    "total": len(artworks),
+                }),
+            ),
+        )
+        page.route(
+            "**/media/loaded.svg",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="image/svg+xml",
+                body='<svg xmlns="http://www.w3.org/2000/svg" width="8" height="10" viewBox="0 0 8 10"><rect width="8" height="10" fill="#777777"/></svg>',
+            ),
+        )
+        page.route("**/media/failed.svg", lambda route: route.abort())
+
+        try:
+            page.goto(BASE_URL + "/artworks", wait_until="domcontentloaded")
+            page.get_by_role("heading", name="گالری آثار").wait_for()
+
+            loaded = page.locator('img[alt="اثر با تصویر"]')
+            loaded.wait_for(state="visible")
+            page.wait_for_function("""() => {
+                const image = document.querySelector('img[alt="اثر با تصویر"]');
+                return image?.complete && image.naturalWidth > 0;
+            }""")
+            self.assertIsNone(loaded.locator("xpath=..").get_attribute("aria-busy"))
+
+            page.get_by_role("img", name="اثر خراب").wait_for()
+            page.get_by_role("img", name="اثر بدون تصویر").wait_for()
+            self.assertEqual(page.locator('img[alt="اثر خراب"]').count(), 0)
+            self.assertEqual(page.locator('img[alt="اثر بدون تصویر"]').count(), 0)
+        finally:
+            context.close()
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
