@@ -8,6 +8,38 @@ import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, D
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
 
+const publicSecondaryLinks = [
+    { to: '/artworks', label: 'گالری آثار' },
+    { to: '/artists', label: 'هنرمندان' },
+    { to: '/collections', label: 'مجموعه‌ها' },
+    { to: '/about', label: 'درباره ما' },
+    { to: '/help', label: 'راهنما' },
+    { to: '/contact', label: 'تماس' },
+];
+
+export function getWorkspacePrimaryLinks(role) {
+    const links = {
+        artist: [
+            { to: '/dashboard/artist', label: 'نمای کلی', end: true },
+            { to: '/dashboard/artist/profile', label: 'پروفایل هنرمند' },
+            { to: '/dashboard/artist/artworks', label: 'مدیریت آثار' },
+            { to: '/dashboard/artist/messages', label: 'پیام‌های مستقیم' },
+        ],
+        buyer: [
+            { to: '/dashboard/buyer', label: 'نمای کلی', end: true },
+            { to: '/dashboard/buyer/messages', label: 'پیام‌های مستقیم' },
+        ],
+        admin: [
+            { to: '/admin', label: 'نمای کلی', end: true },
+            { to: '/admin/users', label: 'مدیریت کاربران' },
+            { to: '/admin/artworks', label: 'بررسی آثار' },
+            { to: '/admin/message-reports', label: 'گزارش پیام‌ها' },
+            { to: '/admin/editorial', label: 'مجموعه‌ها و سردبیری' },
+        ],
+    };
+    return links[role] ?? [];
+}
+
 export function PublicLayout() {
     const { user, logout } = useAuth();
     const [logoutError, setLogoutError] = useState('');
@@ -54,7 +86,7 @@ export function PublicLayout() {
     ].join(' ');
 
     return (
-        <div className="min-h-screen bg-canvas text-ink" dir="rtl">
+        <div className={user ? "min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:pb-0" : "min-h-screen bg-canvas text-ink"} dir="rtl">
             <a href="#main-content" className="sr-only z-[60] bg-paper px-4 py-3 text-ink focus:not-sr-only focus:fixed focus:right-4 focus:top-4">
                 رفتن به محتوای اصلی
             </a>
@@ -194,6 +226,7 @@ export function PublicLayout() {
                     </div>
                 </div>
             </footer>
+            {user && <AuthenticatedBottomNavigation primaryLinks={getWorkspacePrimaryLinks(user.role)} secondaryLinks={publicSecondaryLinks} />}
         </div>
     );
 }
@@ -455,15 +488,14 @@ const workspaceNavigationLabels = {
     '/admin/editorial': 'سردبیری',
 };
 
-function WorkspaceBottomNavigation({ links }) {
+function AuthenticatedBottomNavigation({ primaryLinks, secondaryLinks }) {
     return (
-        <nav
-            aria-label="ناوبری اصلی فضای کاربری"
-            data-testid="workspace-bottom-navigation"
+        <div
+            data-testid="authenticated-bottom-navigation"
             className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-[color:color-mix(in_srgb,var(--color-paper)_92%,transparent)] pb-[env(safe-area-inset-bottom)] shadow-raised backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-paper)_86%,transparent)] lg:hidden"
         >
-            <div className="mx-auto grid h-[var(--workspace-bottom-nav-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2">
-                {links.map((item) => {
+            <nav aria-label="بخش‌های اصلی حساب کاربری" data-nav-priority="primary" className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2">
+                {primaryLinks.map((item) => {
                     const Icon = workspaceNavigationIcons[item.to] ?? LayoutDashboard;
                     return (
                         <NavLink
@@ -484,8 +516,23 @@ function WorkspaceBottomNavigation({ links }) {
                         </NavLink>
                     );
                 })}
-            </div>
-        </nav>
+            </nav>
+            <nav aria-label="پیوندهای تکمیلی سایت" data-nav-priority="secondary" className="flex h-[var(--workspace-bottom-nav-secondary-height)] items-center gap-1 overflow-x-auto border-t border-border px-2 [scrollbar-width:thin]">
+                {secondaryLinks.map((item) => (
+                    <NavLink
+                        key={item.to}
+                        to={item.to}
+                        title={item.label}
+                        className={({ isActive }) => [
+                            'inline-flex min-h-8 shrink-0 items-center rounded-md px-3 text-[10px] font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus motion-reduce:transition-none',
+                            isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
+                        ].join(' ')}
+                    >
+                        {item.label}
+                    </NavLink>
+                ))}
+            </nav>
+        </div>
     );
 }
 
@@ -689,7 +736,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     <Outlet context={outletContext} />
                 </main>
             </div>
-            <WorkspaceBottomNavigation links={links} />
+            <AuthenticatedBottomNavigation primaryLinks={links} secondaryLinks={publicSecondaryLinks} />
         </div>
     );
 }
