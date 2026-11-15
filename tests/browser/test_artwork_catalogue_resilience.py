@@ -27,6 +27,11 @@ def artwork_payload(title="اثر آزمایشی کاتالوگ"):
     }
 
 
+def manual_dev_safe(test_method):
+    test_method.manual_dev_safe = True
+    return test_method
+
+
 class ArtworkCatalogueResilienceTests(unittest.TestCase):
     # All API responses and media used by this class are intercepted in-page;
     # these journeys do not read or write application database records.
@@ -316,12 +321,7 @@ class CurrentDevelopmentDatabaseReadOnlyTests(unittest.TestCase):
         cls.browser.close()
         cls.playwright.stop()
 
-    @staticmethod
-    def manual_safe(test_method):
-        test_method.manual_dev_safe = True
-        return test_method
-
-    @manual_safe
+    @manual_dev_safe
     def test_public_artwork_catalogue_renders_from_current_development_data(self):
         context = self.browser.new_context(
             viewport={"width": 1280, "height": 900},
