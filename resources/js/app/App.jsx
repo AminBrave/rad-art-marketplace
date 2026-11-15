@@ -390,10 +390,9 @@ export default function App() {
                                 <input name="website_url" type="url" value={profile.website_url ?? ''} onChange={updateProfileForm} dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-surface-muted px-4 py-3 text-left outline-none focus:border-terracotta" placeholder="https://example.com" />
                                 {profileErrors.website_url?.map((message) => <span key={message} className="mt-1 block text-xs text-danger">{message}</span>)}
                             </label>
-                            <label className="flex items-center gap-3 text-sm font-semibold">
-                                <Checkbox name="is_public" checked={Boolean(profile.is_public)} onChange={updateProfileForm} aria-label="نمایش عمومی پروفایل" className="h-4 w-4" />
+                            <Checkbox name="is_public" checked={Boolean(profile.is_public)} onChange={updateProfileForm} className="flex min-h-11 items-center gap-3 text-sm font-semibold">
                                 نمایش عمومی پروفایل
-                            </label>
+                            </Checkbox>
                             <button disabled={profileBusy} className="w-full rounded-xl bg-ink px-6 py-3.5 font-bold text-inverse transition hover:bg-terracotta disabled:cursor-wait disabled:opacity-60">
                                 {profileBusy ? 'در حال ذخیره…' : 'ذخیره پروفایل'}
                             </button>
