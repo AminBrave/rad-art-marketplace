@@ -453,7 +453,7 @@ async function exportDevelopmentDatabase() {
     if (existsSync(temporaryPath)) throw new Error('A temporary database export already exists: ' + temporaryPath);
 
     const args = [
-        '--single-transaction', '--quick', '--skip-lock-tables',
+        '--single-transaction', '--quick', '--skip-lock-tables', '--skip-add-locks',
         '--default-character-set=utf8mb4', '--hex-blob', '--no-tablespaces',
     ];
     if (config.socket) args.push('--socket=' + config.socket);
@@ -491,9 +491,9 @@ async function exportDevelopmentDatabase() {
         renameSync(temporaryPath, outputPath);
     } catch (error) {
         dump.kill();
-        await Promise.allSettled([streamTask, processTask]);
+        const results = await Promise.allSettled([streamTask, processTask]);
         rmSync(temporaryPath, { force: true });
-        throw error;
+        throw results[1].status === 'rejected' ? results[1].reason : error;
     }
 
     const size = lstatSync(outputPath).size;
