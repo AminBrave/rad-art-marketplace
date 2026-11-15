@@ -42,7 +42,7 @@ test('semantic palette, typography, spacing and layout tokens have one CSS sourc
         '--color-success-surface', '--color-danger-surface', '--color-warning-surface', '--color-info-surface', '--color-accent-surface', '--color-inverse-text', '--color-message-own', '--color-message-peer',
         '--font-persian', '--font-latin', '--text-base', '--leading-copy',
         '--space-1', '--space-4', '--space-8', '--radius-md', '--content-width',
-        '--page-gutter', '--control-height-md', '--artwork-ratio',
+        '--page-gutter', '--control-height-md', '--artwork-ratio', '--workspace-bottom-nav-height',
     ]) {
         assert.match(css, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Missing design token: ${token}`);
     }
@@ -143,6 +143,22 @@ test('dashboard headers and notification drawer use the shared accessible RAD di
     assert.ok(buyerWorkspace.includes('<WorkspaceHero'));
     assert.ok(messaging.includes('<PageHeader'));
     assert.ok(messaging.includes('after:bg-terracotta'));
+});
+
+
+test('workspace bottom navigation is role-aware, route-driven and safe-area aware', () => {
+    assert.ok(layouts.includes('function WorkspaceBottomNavigation({ links })'));
+    assert.ok(layouts.includes('data-testid="workspace-bottom-navigation"'));
+    assert.ok(layouts.includes('fixed inset-x-0 bottom-0 z-50'));
+    assert.ok(layouts.includes('pb-[env(safe-area-inset-bottom)]'));
+    assert.ok(layouts.includes('lg:hidden'));
+    assert.ok(layouts.includes('pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)]'));
+    assert.ok(layouts.includes('<WorkspaceBottomNavigation links={links} />'));
+    assert.ok(layouts.includes('aria-label="ناوبری اصلی فضای کاربری"'));
+    assert.ok(layouts.includes("'/dashboard/artist/artworks': Images"));
+    assert.ok(layouts.includes("'/dashboard/buyer/messages': MessageCircle"));
+    assert.ok(layouts.includes("'/admin/message-reports': Flag"));
+    assert.ok(css.includes('--workspace-bottom-nav-height: 4.5rem;'));
 });
 
 test('boot shell and application presentation use Tailwind utilities with no component CSS selectors', () => {
