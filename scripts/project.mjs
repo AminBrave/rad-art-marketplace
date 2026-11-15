@@ -391,6 +391,7 @@ async function runManualBrowserTests() {
             RAD_ART_MANUAL_DEV_MODE: '1',
             RAD_ART_BASE_URL: baseUrl,
             RAD_ART_IGNORE_HTTPS_ERRORS: 'false',
+            RAD_ART_TEST_REPORT_DIR: process.env.RAD_ART_TEST_REPORT_DIR || 'build/test-reports/browser-manual',
         },
     });
 }
