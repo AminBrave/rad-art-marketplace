@@ -7,7 +7,7 @@ from pathlib import Path
 BROWSER_DIR = Path(__file__).resolve().parents[1] / "browser"
 sys.path.insert(0, str(BROWSER_DIR))
 
-from run_tests import flatten_tests, manual_selection_error  # noqa: E402
+from run_tests import flatten_tests, is_manual_dev_safe, manual_selection_error  # noqa: E402
 
 
 class ManualSafeCase(unittest.TestCase):
@@ -34,7 +34,14 @@ class ManualBrowserSelectionTests(unittest.TestCase):
         )
 
     def test_manual_safe_cases_need_no_mutation_opt_in(self):
+        self.assertTrue(is_manual_dev_safe(ManualSafeCase()))
         self.assertIsNone(manual_selection_error([ManualSafeCase()], allow_mutations=False))
+
+    def test_per_method_manual_safe_marker_is_supported(self):
+        case = UnclassifiedCase()
+        case.runTest.manual_dev_safe = True
+        self.assertTrue(is_manual_dev_safe(case))
+        self.assertIsNone(manual_selection_error([case], allow_mutations=False))
 
     def test_unclassified_cases_are_blocked_without_mutation_opt_in(self):
         error = manual_selection_error([UnclassifiedCase()], allow_mutations=False)
