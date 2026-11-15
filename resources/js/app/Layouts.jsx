@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Images, LayoutDashboard, Menu, MessageCircle, UserRound, Users, X } from 'lucide-react';
@@ -44,7 +44,6 @@ export function PublicLayout() {
     const { user, logout } = useAuth();
     const [logoutError, setLogoutError] = useState('');
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const mobileMenuTriggerRef = useRef(null);
     const { pathname } = useLocation();
 
     const handleLogout = async () => {
@@ -58,17 +57,6 @@ export function PublicLayout() {
     };
 
     useEffect(() => setMobileMenuOpen(false), [pathname]);
-    useEffect(() => {
-        if (!mobileMenuOpen) return undefined;
-        const closeOnEscape = (event) => {
-            if (event.key === 'Escape') {
-                setMobileMenuOpen(false);
-                mobileMenuTriggerRef.current?.focus();
-            }
-        };
-        window.addEventListener('keydown', closeOnEscape);
-        return () => window.removeEventListener('keydown', closeOnEscape);
-    }, [mobileMenuOpen]);
 
     const publicLinks = [
         { to: '/artworks', label: 'کشف آثار' },
@@ -86,6 +74,7 @@ export function PublicLayout() {
     ].join(' ');
 
     return (
+        <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <div className={user ? "min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:pb-0" : "min-h-screen bg-canvas text-ink"} dir="rtl">
             <a href="#main-content" className="sr-only z-[60] bg-paper px-4 py-3 text-ink focus:not-sr-only focus:fixed focus:right-4 focus:top-4">
                 رفتن به محتوای اصلی
@@ -128,22 +117,38 @@ export function PublicLayout() {
                             </>
                         )}
                         <span className="mx-1 hidden h-7 w-px bg-border xl:block" aria-hidden="true" />
-                        <button
-                            ref={mobileMenuTriggerRef}
-                            type="button"
-                            aria-label={mobileMenuOpen ? 'بستن منو' : 'باز کردن منو'}
-                            aria-expanded={mobileMenuOpen}
-                            aria-controls="public-mobile-navigation"
-                            onClick={() => setMobileMenuOpen((open) => !open)}
-                            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus xl:hidden"
-                        >
-                            {mobileMenuOpen ? <X size={19} aria-hidden="true" /> : <Menu size={19} aria-hidden="true" />}
-                        </button>
+                        <DialogTrigger asChild>
+                            <button
+                                type="button"
+                                aria-label="باز کردن منوی اصلی"
+                                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus xl:hidden"
+                            >
+                                <Menu size={19} aria-hidden="true" />
+                            </button>
+                        </DialogTrigger>
                     </div>
                 </div>
 
-                {mobileMenuOpen && (
-                    <nav id="public-mobile-navigation" aria-label="ناوبری موبایل" className="border-t border-border bg-paper px-page-gutter py-4 xl:hidden">
+                <DialogContent
+                    placement="drawer"
+                    className="flex flex-col px-4 py-5 xl:hidden"
+                >
+                    <div className="mb-5 flex items-center justify-between border-b border-border pb-4">
+                        <div>
+                            <DialogTitle className="text-base font-extrabold text-ink">ناوبری اصلی</DialogTitle>
+                            <DialogDescription className="mt-1 text-xs text-muted">بخش‌های مختلف راد آرت</DialogDescription>
+                        </div>
+                        <DialogClose asChild>
+                            <button
+                                type="button"
+                                aria-label="بستن منو"
+                                className="grid h-10 w-10 place-items-center rounded-lg text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
+                            >
+                                <X size={19} aria-hidden="true" />
+                            </button>
+                        </DialogClose>
+                    </div>
+                    <nav aria-label="ناوبری موبایل" className="min-h-0 flex-1 overflow-y-auto">
                         <div className="mx-auto grid max-w-content gap-1">
                             {publicLinks.map((item) => (
                                 <NavLink
@@ -178,6 +183,9 @@ export function PublicLayout() {
                                     <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center rounded-md px-4 text-sm font-bold text-terracotta-strong hover:bg-accent-surface">ساخت حساب کاربری</Link>
                                 </>
                             )}
+                        </div>
+                    </nav>
+                </DialogContent>
                         </div>
                     </nav>
                 )}
@@ -518,6 +526,7 @@ function AuthenticatedBottomNavigation({ primaryLinks }) {
                 })}
             </nav>
         </div>
+        </Dialog>
     );
 }
 
@@ -527,7 +536,6 @@ export function WorkspaceLayout({ title, links, outletContext }) {
     const isMessagingRoute = pathname.endsWith('/messages');
     const [logoutError, setLogoutError] = useState('');
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const mobileMenuTriggerRef = useRef(null);
     const handleLogout = async () => {
         setMobileMenuOpen(false);
         setLogoutError('');
@@ -589,7 +597,6 @@ export function WorkspaceLayout({ title, links, outletContext }) {
             <DialogContent
                 placement="drawer"
                 className="flex flex-col"
-                aria-label="منوی فضای کاربری"
             >
                 <div className="flex items-center justify-between border-b border-border px-5 py-5">
                     <div className="flex min-w-0 items-center gap-3">
