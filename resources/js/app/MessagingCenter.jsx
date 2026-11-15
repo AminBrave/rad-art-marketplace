@@ -1,9 +1,8 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useMessagingQueries } from './useMessagingQueries';
 import { useAuth } from './AuthContext';
-import { ConversationInboxSkeleton, MessageHistorySkeleton, MediaImage, PageHeader, Tabs, TabsList, TabsTrigger, TabsContent, Tooltip } from '../components/ui';
+import { ConversationInboxSkeleton, MessageHistorySkeleton, MediaImage, PageHeader, Tabs, TabsList, TabsTrigger, TabsContent, Tooltip, DropdownMenu } from '../components/ui';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Archive, ArchiveRestore, ArrowDown, Ban, Bell, BellOff, ChevronRight, Download, FileText, Flag, Image as ImageIcon, Inbox, LoaderCircle, MailOpen, MoreVertical, Paperclip, Pencil, Reply, Search, Send, ShieldCheck, SmilePlus, Trash2, X } from 'lucide-react';
 
