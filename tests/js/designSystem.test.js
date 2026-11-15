@@ -126,6 +126,12 @@ test('dashboard headers and notification dialog preserve RAD hierarchy and acces
     assert.ok(layouts.includes('panelRef.current?.focus()'));
     assert.ok(layouts.includes('triggerRef.current?.focus()'));
     assert.ok(layouts.includes('workspace-notification-panel'));
+    assert.ok(layouts.includes('aria-haspopup="dialog"'));
+    assert.ok(layouts.includes('aria-modal="true"'));
+    assert.ok(layouts.includes('workspace-mobile-menu'));
+    assert.ok(layouts.includes('document.body.style.overflow = \'hidden\''));
+    assert.ok(layouts.includes('lg:hidden'));
+    assert.ok(layouts.includes('hidden min-w-0 rounded-xl border border-border bg-paper'));
     assert.ok(adminWorkspace.includes('<PageHeader'));
     assert.ok(artistWorkspace.includes('<WorkspaceHero'));
     assert.ok(buyerWorkspace.includes('<WorkspaceHero'));
