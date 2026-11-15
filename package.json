@@ -15,6 +15,7 @@
     "db:seed": "node scripts/project.mjs db:seed",
     "db:seed:demo": "node scripts/project.mjs db:seed:demo",
     "db:fresh": "node scripts/project.mjs db:fresh",
+    "db:export:cpanel": "node scripts/project.mjs db:export:cpanel",
     "test:backend": "node scripts/project.mjs test:backend",
     "test:unit": "node scripts/project.mjs test:unit",
     "test:feature": "node scripts/project.mjs test:feature",
