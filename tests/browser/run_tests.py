@@ -26,11 +26,10 @@ class RejectRedirects(HTTPRedirectHandler):
 
 
 def validate_local_target() -> None:
-    if os.environ.get("RAD_ART_TEST_MODE") != "1":
-        raise RuntimeError(
-            "Browser tests must be started through the guarded project runner "
-            "(npm run test:browser)."
-        )
+    manual_mode = os.environ.get("RAD_ART_MANUAL_DEV_MODE") == "1"
+    isolated_mode = os.environ.get("RAD_ART_TEST_MODE") == "1"
+    if manual_mode == isolated_mode:
+        raise RuntimeError("Use exactly one guarded mode: npm run test:browser or npm run test:browser:manual.")
 
     raw_url = os.environ.get("RAD_ART_BASE_URL", "http://127.0.0.1:8000").rstrip("/")
     parsed = urlparse(raw_url)
@@ -69,7 +68,7 @@ def validate_local_target() -> None:
             payload = json.loads(response.read().decode("utf-8"))
             if response.status != 200 or payload.get("status") != "ok":
                 raise RuntimeError(f"Local app health check returned an unexpected response: {health_url}")
-            if payload.get("browser_test_ready") is not True:
+            if not manual_mode and payload.get("browser_test_ready") is not True:
                 raise RuntimeError(
                     "The local app is not using the isolated browser-test environment. "
                     "Run npm run test:browser to prepare and start the isolated test app."
@@ -220,12 +219,42 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description="Run guarded Rademan Playwright tests and write JUnit + diagnostic reports."
     )
+    parser.add_argument("--list", action="store_true", help="List discovered test IDs and whether they are safe for manual development mode.")
+    parser.add_argument("--all", action="store_true", help="Explicitly select the complete discovered suite.")
+    parser.add_argument("--allow-mutations", action="store_true", help="Allow selected tests not marked manual_dev_safe; they may change the current development database.")
     parser.add_argument(
         "tests",
         nargs="*",
         help="Optional unittest names, e.g. test_notifications_and_preferences.MessageNotificationBrowserTests.test_buyer_can_disable_in_app_message_notifications",
     )
     args = parser.parse_args()
+    manual_mode = os.environ.get("RAD_ART_MANUAL_DEV_MODE") == "1"
+    browser_dir = Path(__file__).resolve().parent
+    sys.path.insert(0, str(browser_dir))
+    loader = unittest.defaultTestLoader
+    discovered = loader.discover(
+        start_dir=str(browser_dir), pattern="test_*.py", top_level_dir=str(browser_dir)
+    )
+
+    def flatten(suite):
+        for item in suite:
+            if isinstance(item, unittest.TestSuite):
+                yield from flatten(item)
+            else:
+                yield item
+
+    all_tests = list(flatten(discovered))
+    if args.list:
+        for test in all_tests:
+            safe = getattr(test.__class__, "manual_dev_safe", False)
+            print(f"{test.id()}  [{'manual-safe: API mocked/read-only' if safe else 'requires --allow-mutations'}]")
+        return 0
+    if manual_mode and not args.tests and not args.all:
+        print("Manual mode requires explicit test IDs, or --all to select the complete suite.", file=sys.stderr)
+        return 2
+    if manual_mode and args.all and not args.allow_mutations:
+        print("The complete browser suite may mutate development data. Add --allow-mutations only after reviewing that risk.", file=sys.stderr)
+        return 2
 
     report_dir = Path(os.environ.get("RAD_ART_TEST_REPORT_DIR", "build/test-reports"))
     report_dir.mkdir(parents=True, exist_ok=True)
@@ -234,6 +263,25 @@ def main() -> int:
     summary_path = report_dir / "browser-debug.json"
     for destination in (report_path, log_path, summary_path):
         destination.unlink(missing_ok=True)
+
+    if args.tests:
+        selected = []
+        for name in args.tests:
+            loaded = loader.loadTestsFromName(name, module=None)
+            selected.extend(flatten(loaded))
+        suite = unittest.TestSuite(selected)
+    elif args.all:
+        suite = unittest.TestSuite(all_tests)
+    elif manual_mode:
+        suite = unittest.TestSuite(test for test in all_tests if getattr(test.__class__, "manual_dev_safe", False))
+    else:
+        suite = unittest.TestSuite(all_tests)
+
+    if manual_mode and not args.allow_mutations:
+        unsafe = [test.id() for test in flatten(suite) if not getattr(test.__class__, "manual_dev_safe", False)]
+        if unsafe:
+            print("Refusing tests not marked manual_dev_safe. Review their data effects, then pass --allow-mutations explicitly:\n" + "\n".join(unsafe), file=sys.stderr)
+            return 2
 
     try:
         validate_local_target()
@@ -251,20 +299,8 @@ def main() -> int:
         )
         return 2
 
-    browser_dir = Path(__file__).resolve().parent
-    sys.path.insert(0, str(browser_dir))
     from diagnostics import install_automatic_diagnostics
     install_automatic_diagnostics()
-    loader = unittest.defaultTestLoader
-    if args.tests:
-        suite = unittest.TestSuite(loader.loadTestsFromName(name) for name in args.tests)
-    else:
-        suite = loader.discover(
-            start_dir=str(browser_dir),
-            pattern="test_*.py",
-            top_level_dir=str(browser_dir),
-        )
-
     with log_path.open("w", encoding="utf-8") as log_file:
         output = Tee(sys.__stdout__, log_file)
         runner = unittest.TextTestRunner(
@@ -295,7 +331,9 @@ def main() -> int:
         "platform": platform.platform(),
         "playwright": playwright_version,
         "base_url": os.environ.get("RAD_ART_BASE_URL", "http://127.0.0.1:8000"),
-        "selected_tests": args.tests,
+        "selected_tests": [test.id() for test in flatten(suite)],
+        "manual_dev_mode": manual_mode,
+        "allow_mutations": args.allow_mutations,
         "tests_run": result.testsRun,
         "failures": failures,
         "errors": errors,
