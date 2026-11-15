@@ -35,7 +35,7 @@ For cPanel's repository-root document layout, use npm run build:cpanel instead.
 
 Set APP_URL in the deployed server's untracked .env file to the exact public HTTPS origin, for example https://your-domain.example. Laravel already reads this standard variable through config/app.php. Do not add URL_APP or hardcode a production hostname in source.
 
-Keep Laravel optimization caches disabled in the deployed environment. Preserve the APP_CONFIG_CACHE, APP_ROUTES_CACHE, APP_EVENTS_CACHE, APP_SERVICES_CACHE and APP_PACKAGES_CACHE values from .env.example, or set equivalent paths that do not exist. Do not run artisan optimize, config:cache, route:cache, event:cache or view:cache. This policy concerns Laravel-generated optimization caches; fingerprinted production assets and normal browser caching remain enabled.
+Keep Laravel optimization caches disabled in the deployed environment. Preserve the APP_CONFIG_CACHE, APP_ROUTES_CACHE and APP_EVENTS_CACHE values from .env.example, or set equivalent paths that do not exist. Do not run artisan optimize, config:cache, route:cache, event:cache or view:cache. This policy concerns Laravel-generated optimization caches; fingerprinted production assets and normal browser caching remain enabled.
 
 ## Database
 
