@@ -164,7 +164,9 @@ export function runDevelopmentPreflight({ root = process.cwd(), processValues = 
         throw new Error('Development environment check failed:\n- ' + errors.join('\n- ') + '\n\nFix these settings in your local .env and run npm run dev again.');
     }
 
-    const requiredPaths = ['vendor/autoload.php'];\n    if (requireFrontend) requiredPaths.push('node_modules/vite/bin/vite.js');\n    for (const relativePath of requiredPaths) {
+    const requiredPaths = ['vendor/autoload.php'];
+    if (requireFrontend) requiredPaths.push('node_modules/vite/bin/vite.js');
+    for (const relativePath of requiredPaths) {
         if (!existsSync(resolve(root, relativePath))) {
             throw new Error('Required project dependency is missing: ' + relativePath + '. Run npm run setup, then retry npm run dev.');
         }
