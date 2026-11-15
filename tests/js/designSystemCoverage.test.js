@@ -44,7 +44,7 @@ function describeViolations(pattern) {
 }
 
 test('design-system coverage discovers every frontend and Blade presentation source', () => {
-    const relativePaths = presentationFiles.map((path) => relative(root, path));
+    const relativePaths = presentationFiles.map((path) => relative(root, path).replace(/\\/g, '/'));
     assert.ok(frontendFiles.length > 0, 'Expected frontend source files to be discovered.');
     assert.ok(bladeFiles.length >= 1, 'Expected Blade presentation templates to be included.');
     assert.ok(relativePaths.includes('resources/js/app.jsx'));
