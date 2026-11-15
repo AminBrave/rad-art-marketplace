@@ -345,10 +345,9 @@ export function ArtistProfileSettings() {
                     <input name="website_url" type="url" value={form.website_url ?? ''} onChange={update} dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-paper px-4 py-3 text-left" placeholder="https://example.com" />
                     {errors.website_url?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
                 </label>
-                <label className="flex items-center gap-3 text-sm font-semibold sm:col-span-2">
-                    <Checkbox name="is_public" checked={Boolean(form.is_public)} onChange={update} aria-label="نمایش عمومی پروفایل" className="h-4 w-4" />
+                <Checkbox name="is_public" checked={Boolean(form.is_public)} onChange={update} className="flex min-h-11 items-center gap-3 text-sm font-semibold sm:col-span-2">
                     نمایش عمومی پروفایل
-                </label>
+                </Checkbox>
                 <div className="sm:col-span-2">
                     <button disabled={busy} className="rounded-xl bg-ink px-6 py-3 font-bold text-inverse disabled:opacity-60">{busy ? 'در حال ذخیره…' : 'ذخیره پروفایل'}</button>
                     {profile?.slug && <Link to={'/artists/' + profile.slug} className="mr-4 text-sm font-semibold text-terracotta-strong underline">{profile.is_public ? 'پیش‌نمایش پروفایل عمومی' : 'پیش‌نمایش خصوصی پروفایل'}</Link>}
