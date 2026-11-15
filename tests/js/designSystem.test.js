@@ -172,6 +172,20 @@ test('messaging uses bounded responsive geometry and compact Telegram-inspired d
     assert.doesNotMatch(messaging, /min-h-\[5\.35rem\]/);
 });
 
+test('messaging chat geometry follows RTL logical flow and keeps bubbles and popovers inside the pane', () => {
+    assert.ok(messaging.includes('<div dir="rtl" ref={messagesContainerRef}'));
+    assert.ok(messaging.includes('<div dir="rtl" className={\'flex w-full min-w-0 shrink-0 px-[.15rem] \' + (own ? \'justify-start\' : \'justify-end\')}>'));
+    assert.ok(messaging.includes('absolute bottom-full end-0 z-40 mb-2 flex max-w-[min(15rem,calc(100vw-2rem))] flex-wrap'));
+    assert.ok(messaging.includes('absolute bottom-full end-0 z-40 mb-2 w-40 max-w-[calc(100vw-2rem)]'));
+    assert.ok(messaging.includes('absolute end-1 top-1/2 -translate-y-1/2'));
+    assert.ok(messaging.includes('absolute start-2 z-10 flex h-9 w-9'));
+    assert.ok(messaging.includes('ps-10 pe-3 py-[.55rem]'));
+    assert.ok(messaging.includes('absolute start-3 top-1/2 -translate-y-1/2'));
+    assert.ok(messaging.includes('bg-surface py-2 ps-10 pe-4 text-sm'));
+    assert.doesNotMatch(messaging, /dir="ltr"/);
+    assert.doesNotMatch(messaging, /absolute bottom-full right-0/);
+});
+
 test('messaging actions use compact, dismissible Telegram-style popovers', () => {
     assert.ok(messaging.includes("const [openPopover, setOpenPopover] = useState(null)"));
     assert.ok(messaging.includes("document.addEventListener('pointerdown', closeOnOutsidePointer, true)"));
