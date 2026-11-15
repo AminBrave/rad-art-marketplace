@@ -24,7 +24,7 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Area | Command | Purpose |
 |---|---|---|
 | Setup | `npm run setup` | Install Composer/npm dependencies and create `.env` if absent |
-| Development | `npm run dev` | Laravel + Vite behind HTTPS on localhost and the LAN (default) |
+| Development | `npm run dev` | Validate `.env`, reject production/debug-off or unsafe database targets, check dependencies/stale Vite hot file, then start Laravel + Vite + Caddy |
 | Database | `npm run db:sqlite:init` | Create the local SQLite file only if absent |
 | Database | `npm run db:status` | Show migration status |
 | Database | `npm run db:migrate` | Apply pending migrations |
@@ -42,14 +42,16 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Lint | `npm run lint` | ESLint check |
 | Lint | `npm run lint:fix` | Apply ESLint autofixes |
 | Accessibility | `npm run a11y:colors` | Run focused color-accessibility tests |
-| Production | `npm run production` | Standard Vite production build; no Laravel optimization caches |
-| Build | `npm run build:cpanel` | cPanel Vite production build |
+| Production | `npm run production` | Build standard Vite assets and verify the manifest plus required CSS/JS output |
+| Build | `npm run build:cpanel` | Build and verify cPanel Vite production assets |
 
 ## Default HTTPS development and LAN access
 
-The normal development command serves Laravel + Vite through Caddy. Install Caddy and make its executable available on PATH before starting development.
+The normal development command first runs a read-only preflight, then serves Laravel + Vite through Caddy. Install Caddy and make its executable available on PATH before starting development.
 
     npm run dev
+
+Before starting services, the preflight validates the local `.env` and refuses to start when `APP_ENV=production`, `APP_DEBUG` is false, `APP_KEY` is missing, the database target is remote/ambiguous, required dependencies are missing, or a Vite `public/hot` file is already present. It never edits `.env`, clears caches, migrates a database or changes application data. A remote development database requires the explicit one-command opt-in `RAD_ALLOW_REMOTE_DEV_DATABASE=true`; use that only after confirming the database is isolated and disposable. The opt-in is intentionally not stored in `.env`.
 
 It automatically detects this computer's private LAN IPv4 address when there is one unambiguous candidate. If several network interfaces have private addresses (for example Wi-Fi plus a VPN or virtual adapter), select the address other devices use to reach this computer:
 
@@ -97,11 +99,25 @@ The rad.home.arpa name is optional convenience DNS; direct access by the LAN IP 
 
 ## Production
 
-The primary production asset command is npm run production. It runs Vite's standard production build only; it does not start Laravel, preview the site or run Artisan cache commands. For the cPanel repository-root document layout, use npm run build:cpanel instead.
+The primary production asset command is npm run production. It runs the standard Vite production build and then verifies that the manifest contains both application entry points and that their emitted files exist inside the build output. It refuses to build while public/hot exists, preventing a development Vite server from taking precedence over production assets. It does not start Laravel, preview the site or run Artisan cache commands. For the cPanel repository-root document layout, use npm run build:cpanel; that command performs the same output verification against the cPanel manifest.
 
-Set APP_URL in the deployed server's untracked .env file to the public HTTPS origin, for example https://your-domain.example. Laravel already reads APP_URL in config/app.php; do not introduce URL_APP or hardcode the production hostname in source.
+### Production environment checklist
 
-Keep Laravel optimization caches disabled in the deployed environment by preserving the APP_CONFIG_CACHE, APP_ROUTES_CACHE and APP_EVENTS_CACHE values from .env.example (or equivalent non-existent paths). Do not run artisan optimize, config:cache, route:cache, event:cache or view:cache. This does not disable fingerprinted production assets or normal browser caching.
+Configure the deployed server's untracked .env independently from local development:
+
+- APP_ENV=production
+- APP_DEBUG=false
+- APP_KEY must be set to the stable key generated for this application; never regenerate it on an existing installation.
+- APP_URL must be the public HTTPS origin, for example https://your-domain.example. Laravel already reads APP_URL in config/app.php; do not introduce URL_APP or hardcode the production hostname in source.
+- SESSION_SECURE_COOKIE=true when the site is served over HTTPS.
+- DB_CONNECTION, DB_HOST, DB_DATABASE, DB_USERNAME and DB_PASSWORD must target the production database. Keep credentials out of Git.
+- Configure mail, queue, session and cache drivers for the actual hosting topology; do not copy local credentials or test-only settings.
+
+Before a release, back up the database and uploaded files, run the authorized automated test/lint/build checks against the release commit, deploy the matching code and assets together, then apply forward migrations with php artisan migrate --force. Confirm the health endpoint, authentication, key user journeys, logs and asset loading after deployment. Do not run migrate:fresh or seed demo data on production.
+
+Keep Laravel config, route and event optimization caches disabled in the deployed environment by preserving the APP_CONFIG_CACHE, APP_ROUTES_CACHE and APP_EVENTS_CACHE values from .env.example (or equivalent paths that do not exist). Do not run artisan optimize, config:cache, route:cache, event:cache or view:cache. Composer's package/service provider manifests are separate framework metadata and may be generated normally. This does not disable fingerprinted production assets or normal browser caching.
+
+The production asset build is not a deployment or a complete release verification: it does not validate the deployed .env, database connectivity, HTTPS/proxy configuration, backups, migrations or live user journeys.
 
 ## Browser-test lifecycle
 
@@ -118,7 +134,7 @@ The runner remains guarded: it requires browser_test_ready=true and rejects non-
 
 scripts/project.mjs owns only workflows that need multiple steps, isolated test environments, report generation or service lifecycle management. It is not a second public command registry.
 
-The dispatcher tasks are setup, dev, db:sqlite:init, test:backend, test:unit, test:feature, test:integration, test:frontend, test:browser, test:report and test:reporting. Database one-liners, production builds, lint and focused accessibility tests are defined directly in package.json.
+The dispatcher tasks are setup, dev, production, build:cpanel, db:sqlite:init, test:backend, test:unit, test:feature, test:integration, test:frontend, test:browser, test:report and test:reporting. Database one-liners, production builds, lint and focused accessibility tests are defined directly in package.json.
 
 Use node scripts/project.mjs --help for the concise internal task list.
 
