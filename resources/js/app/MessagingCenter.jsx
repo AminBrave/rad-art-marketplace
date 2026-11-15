@@ -45,31 +45,35 @@ function getChatPopoverPosition(anchor, preferredWidth, preferredHeight) {
     const anchorGap = 8;
     const minLeft = Math.max(viewportLeft + margin, (boundary?.left ?? viewportLeft) + margin);
     const maxRight = Math.min(viewportLeft + viewportWidth - margin, (boundary?.right ?? viewportLeft + viewportWidth) - margin);
-    const width = Math.max(1, Math.min(preferredWidth, maxRight - minLeft));
-    const leftOfAnchor = rect.right - width;
-    const rightOfAnchor = rect.left;
-    const left = leftOfAnchor >= minLeft
-        ? leftOfAnchor
-        : rightOfAnchor + width <= maxRight
-            ? rightOfAnchor
-            : Math.max(minLeft, Math.min(leftOfAnchor, maxRight - width));
     const minTop = Math.max(viewportTop + margin, (boundary?.top ?? viewportTop) + margin);
     const maxBottom = Math.min(viewportTop + viewportHeight - margin, (boundary?.bottom ?? viewportTop + viewportHeight) - margin);
-    const maxHeight = Math.max(1, maxBottom - minTop);
-    const height = Math.min(preferredHeight, maxHeight);
-    const above = rect.top - minTop;
-    const below = maxBottom - rect.bottom;
-    // Context menus open below their trigger by default; flip above only when
-    // the visible pane does not have enough room beneath the trigger.
-    const preferredTop = below >= height + anchorGap
-        ? rect.bottom + anchorGap
-        : above >= height + anchorGap
-            ? rect.top - height - anchorGap
-            : below >= above
-                ? rect.bottom + anchorGap
-                : rect.top - height - anchorGap;
-    const top = Math.max(minTop, Math.min(preferredTop, maxBottom - height));
-    return { top, left, width, maxHeight };
+    const candidates = [
+        { vertical: 'below', horizontal: 'right' },
+        { vertical: 'below', horizontal: 'left' },
+        { vertical: 'above', horizontal: 'right' },
+        { vertical: 'above', horizontal: 'left' },
+    ].map(({ vertical, horizontal }) => {
+        const availableWidth = Math.max(1, horizontal === 'right' ? rect.right - minLeft : maxRight - rect.left);
+        const availableHeight = Math.max(1, vertical === 'below' ? maxBottom - rect.bottom - anchorGap : rect.top - minTop - anchorGap);
+        const width = Math.min(preferredWidth, availableWidth);
+        const height = Math.min(preferredHeight, availableHeight);
+        return {
+            top: vertical === 'below' ? rect.bottom + anchorGap : rect.top - anchorGap - height,
+            left: horizontal === 'right' ? rect.right - width : rect.left,
+            width,
+            maxHeight: height,
+            fits: availableWidth >= preferredWidth && availableHeight >= preferredHeight,
+            area: width * height,
+        };
+    });
+    // Prefer a complete fit; otherwise choose the corner with the most usable
+    // space. Candidate order provides a stable below/right tie-breaker.
+    return candidates.reduce((best, candidate) => (
+        !best || Number(candidate.fits) > Number(best.fits)
+            || (candidate.fits === best.fits && candidate.area > best.area)
+            ? candidate
+            : best
+    ), null);
 }
 
 function dayLabel(value) {
