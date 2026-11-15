@@ -86,3 +86,24 @@ test('rejects unsupported database drivers and malformed APP_URL values', () => 
     assert.match(result.errors.join(' '), /DB_CONNECTION must be mysql or sqlite/);
     assert.match(result.errors.join(' '), /APP_URL is not a valid URL/);
 });
+
+
+test('rejects a database URL that does not match the selected driver', () => {
+    const result = validateDevelopmentEnvironment({
+        fileValues: { ...safeEnvironment, DB_URL: 'sqlite:///shared/production.sqlite' },
+        root,
+    });
+    assert.match(result.errors.join(' '), /DB_URL uses SQLite/);
+});
+
+test('rejects a remote SQLite URL outside the repository database directory', () => {
+    const result = validateDevelopmentEnvironment({
+        fileValues: {
+            ...safeEnvironment,
+            DB_CONNECTION: 'sqlite',
+            DB_URL: 'sqlite:///shared/production.sqlite',
+        },
+        root,
+    });
+    assert.match(result.errors.join(' '), /inside the repository database/);
+});
