@@ -445,7 +445,7 @@ function usage() {
         'test:feature          Run PHPUnit Feature',
         'test:integration      Run PHPUnit Integration',
         'test:frontend         Run frontend Node tests',
-        'test:browser          Select and run Playwright tests against the already-running local MySQL development app',
+        'test:browser          Run all Playwright tests against the already-running local MySQL development app',
         'test:report           Summarize existing JUnit reports',
         'test:reporting        Test the report generator',
     ].join(String.fromCharCode(10)));
