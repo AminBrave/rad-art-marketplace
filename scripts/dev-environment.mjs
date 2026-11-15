@@ -88,8 +88,7 @@ export function validateDevelopmentEnvironment({ fileValues = {}, processValues 
     }
 
     const configuredDatabase = String(values.DB_DATABASE ?? '');
-    if (/(^|[._-])prod(uction)?([._-]|$)/i.test(configuredDatabase)
-        && String(processValues.RAD_ALLOW_REMOTE_DEV_DATABASE ?? '').toLowerCase() !== 'true') {
+    if (/(^|[._-])prod(uction)?([._-]|$)/i.test(configuredDatabase)) {
         errors.push('DB_DATABASE looks like a production database name. Use a dedicated local development database; the explicit remote-database opt-in is not a substitute for checking the target.');
     }
 
