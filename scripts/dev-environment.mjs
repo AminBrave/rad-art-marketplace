@@ -4,8 +4,7 @@ import { isIP } from 'node:net';
 
 export function parseDotEnv(source) {
     const values = {};
-    for (const rawLine of source.split(/\r?
-/)) {
+    for (const rawLine of source.split(/\r?\n/)) {
         const line = rawLine.trim();
         if (!line || line.startsWith('#')) continue;
         const match = line.match(/^(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/);
@@ -15,9 +14,7 @@ export function parseDotEnv(source) {
         if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
             value = value.slice(1, -1);
             if (match[2].trim().startsWith('"')) {
-                value = value.replace(/\
-/g, '
-').replace(/\\r/g, '\r').replace(/\\"/g, '"');
+                value = value.replace(/\\n/g, '\n').replace(/\\r/g, '\r').replace(/\\"/g, '"');
             }
         } else {
             value = value.replace(/\s+#.*$/, '').trim();
@@ -39,19 +36,23 @@ function isInside(parent, candidate) {
 }
 
 function databaseHost(values) {
-    if (values.DB_URL) {
-        let parsed;
-        try {
-            parsed = new URL(values.DB_URL);
-        } catch {
-            return { error: 'DB_URL is not a valid database URL. Check its scheme and host.' };
-        }
-        if (parsed.protocol === 'sqlite:') return { error: 'DB_URL uses SQLite, but DB_CONNECTION is mysql. Keep DB_CONNECTION and DB_URL consistent.' };
-        if (!['mysql:', 'mariadb:'].includes(parsed.protocol)) return { error: 'DB_URL must use the mysql:// or mariadb:// scheme for a MySQL connection.' };
-        if (!parsed.hostname) return { error: 'DB_URL must include a database host.' };
-        return { host: parsed.hostname };
+    if (!values.DB_URL) return { host: values.DB_HOST || '127.0.0.1' };
+
+    let parsed;
+    try {
+        parsed = new URL(values.DB_URL);
+    } catch {
+        return { error: 'DB_URL is not a valid database URL. Check its scheme and host.' };
     }
-    return { host: values.DB_HOST || '127.0.0.1' };
+
+    if (parsed.protocol === 'sqlite:') {
+        return { error: 'DB_URL uses SQLite, but DB_CONNECTION is mysql. Keep DB_CONNECTION and DB_URL consistent.' };
+    }
+    if (!['mysql:', 'mariadb:'].includes(parsed.protocol)) {
+        return { error: 'DB_URL must use the mysql:// or mariadb:// scheme for a MySQL connection.' };
+    }
+    if (!parsed.hostname) return { error: 'DB_URL must include a database host.' };
+    return { host: parsed.hostname };
 }
 
 export function validateDevelopmentEnvironment({ fileValues = {}, processValues = {}, root = process.cwd() } = {}) {
@@ -97,7 +98,9 @@ export function validateDevelopmentEnvironment({ fileValues = {}, processValues 
                 const parsed = new URL(values.DB_URL);
                 if (parsed.protocol !== 'sqlite:') errors.push('DB_URL must use the sqlite: scheme when DB_CONNECTION=sqlite.');
                 else database = decodeURIComponent(parsed.pathname || parsed.hostname);
-            } catch { errors.push('DB_URL is not a valid SQLite database URL.'); }
+            } catch {
+                errors.push('DB_URL is not a valid SQLite database URL.');
+            }
         }
         if (database !== ':memory:') {
             const path = resolve(root, database);
@@ -134,11 +137,7 @@ export function runDevelopmentPreflight({ root = process.cwd(), processValues = 
     const fileValues = parseDotEnv(readFileSync(envPath, 'utf8'));
     const { errors, warnings } = validateDevelopmentEnvironment({ fileValues, processValues, root });
     if (errors.length) {
-        throw new Error('Development environment check failed:
-- ' + errors.join('
-- ') + '
-
-Fix these settings in your local .env and run npm run dev again.');
+        throw new Error('Development environment check failed:\n- ' + errors.join('\n- ') + '\n\nFix these settings in your local .env and run npm run dev again.');
     }
 
     for (const relativePath of ['vendor/autoload.php', 'node_modules/vite/bin/vite.js']) {
