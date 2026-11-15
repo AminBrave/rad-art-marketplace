@@ -20,6 +20,29 @@ from urllib.parse import urlparse
 from urllib.request import HTTPRedirectHandler, HTTPSHandler, ProxyHandler, Request, build_opener
 
 
+def flatten_tests(suite):
+    """Yield individual unittest cases from nested suites."""
+    for item in suite:
+        if isinstance(item, unittest.TestSuite):
+            yield from flatten_tests(item)
+        else:
+            yield item
+
+
+def manual_selection_error(tests, allow_mutations: bool, run_all: bool = False) -> str | None:
+    """Return a safety error when a manual selection is not explicitly safe."""
+    if run_all and not allow_mutations:
+        return "The complete browser suite may mutate development data. Add --allow-mutations only after reviewing that risk."
+    if not allow_mutations:
+        unsafe = [test.id() for test in tests if not getattr(test.__class__, "manual_dev_safe", False)]
+        if unsafe:
+            return (
+                "Refusing tests not marked manual_dev_safe. Review their data effects, "
+                "then pass --allow-mutations explicitly:\\n" + "\\n".join(unsafe)
+            )
+    return None
+
+
 class RejectRedirects(HTTPRedirectHandler):
     def redirect_request(self, request, file_pointer, code, message, headers, new_url):
         return None
@@ -236,14 +259,7 @@ def main() -> int:
         start_dir=str(browser_dir), pattern="test_*.py", top_level_dir=str(browser_dir)
     )
 
-    def flatten(suite):
-        for item in suite:
-            if isinstance(item, unittest.TestSuite):
-                yield from flatten(item)
-            else:
-                yield item
-
-    all_tests = list(flatten(discovered))
+    all_tests = list(flatten_tests(discovered))
     if args.list:
         for test in all_tests:
             safe = getattr(test.__class__, "manual_dev_safe", False)
@@ -252,15 +268,11 @@ def main() -> int:
     if manual_mode and not args.tests and not args.all:
         print("Manual mode requires explicit test IDs, or --all to select the complete suite.", file=sys.stderr)
         return 2
-    if manual_mode and args.all and not args.allow_mutations:
-        print("The complete browser suite may mutate development data. Add --allow-mutations only after reviewing that risk.", file=sys.stderr)
-        return 2
-
     if args.tests:
         selected = []
         for name in args.tests:
             loaded = loader.loadTestsFromName(name, module=None)
-            selected.extend(flatten(loaded))
+            selected.extend(flatten_tests(loaded))
         suite = unittest.TestSuite(selected)
     elif args.all:
         suite = unittest.TestSuite(all_tests)
@@ -332,7 +344,7 @@ def main() -> int:
         "platform": platform.platform(),
         "playwright": playwright_version,
         "base_url": os.environ.get("RAD_ART_BASE_URL", "http://127.0.0.1:8000"),
-        "selected_tests": [test.id() for test in flatten(suite)],
+        "selected_tests": [test.id() for test in flatten_tests(suite)],
         "manual_dev_mode": manual_mode,
         "allow_mutations": args.allow_mutations,
         "tests_run": result.testsRun,
