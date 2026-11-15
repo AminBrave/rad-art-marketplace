@@ -376,9 +376,10 @@ async function runBrowserTests() {
 async function runManualBrowserTests() {
     const envPath = resolve(root, '.env');
     if (!existsSync(envPath)) throw new Error('The existing development .env is required. Run npm run setup and configure it first.');
-    const values = { ...parseDotEnv(readFileSync(envPath, 'utf8')), ...process.env };
-    const driver = String(values.DB_CONNECTION ?? 'mysql').toLowerCase();
-    if (!['mysql', 'mariadb'].includes(driver)) {
+    const values = parseDotEnv(readFileSync(envPath, 'utf8'));
+    const configuredUrl = String(values.DB_URL ?? '').trim();
+    const driver = String(values.DB_CONNECTION ?? (configuredUrl.startsWith('mariadb:') ? 'mariadb' : 'mysql')).toLowerCase();
+    if (!['mysql', 'mariadb'].includes(driver) || (configuredUrl && !configuredUrl.startsWith('mysql:') && !configuredUrl.startsWith('mariadb:'))) {
         throw new Error('Manual Playwright mode requires the existing .env to use MySQL/MariaDB. No database settings were changed.');
     }
     const baseUrl = process.env.RAD_ART_BASE_URL || 'https://rad.localhost';
