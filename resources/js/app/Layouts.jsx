@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Bell, Menu, X } from 'lucide-react';
+import { Bell, CheckCheck, Menu, MessageCircle, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { Badge, Button, NotificationListSkeleton } from '../components/ui';
@@ -218,9 +218,9 @@ function NotificationBell({ user }) {
         const trigger = triggerRef.current;
         if (!trigger) return;
         const rect = trigger.getBoundingClientRect();
-        const panelWidth = Math.min(352, window.innerWidth - 32);
+        const panelWidth = Math.min(400, window.innerWidth - 32);
         const left = Math.max(16, Math.min(rect.right - panelWidth, window.innerWidth - panelWidth - 16));
-        const estimatedHeight = Math.min(520, window.innerHeight - 32);
+        const estimatedHeight = Math.min(560, window.innerHeight - 32);
         const top = rect.bottom + 8 + estimatedHeight <= window.innerHeight
             ? rect.bottom + 8
             : Math.max(16, rect.top - estimatedHeight - 8);
@@ -230,11 +230,15 @@ function NotificationBell({ user }) {
     useEffect(() => {
         if (!open) return undefined;
         positionPanel();
+        panelRef.current?.focus();
         const reposition = () => positionPanel();
         window.addEventListener('resize', reposition);
         window.addEventListener('scroll', reposition, true);
         const closeOnEscape = (event) => {
-            if (event.key === 'Escape') setOpen(false);
+            if (event.key === 'Escape') {
+                setOpen(false);
+                triggerRef.current?.focus();
+            }
         };
         const closeOnOutsidePointer = (event) => {
             if (panelRef.current && !panelRef.current.parentElement?.contains(event.target)) {
@@ -353,33 +357,124 @@ function NotificationBell({ user }) {
 
     return (
         <div className="relative">
-            <button ref={triggerRef} type="button" aria-label="اعلان‌ها" aria-expanded={open} onClick={() => setOpen((value) => !value)} className="relative inline-flex min-h-10 items-center gap-2 rounded-md border border-border-strong bg-paper px-3 py-2 text-sm font-bold text-ink transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
-                <Bell aria-hidden="true" size={16} strokeWidth={1.8} /><span className="hidden sm:inline">اعلان‌ها</span>
-                {unreadCount > 0 && <span className="min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-[10px] text-inverse" aria-live="polite">{unreadCount > 99 ? '۹۹+' : unreadCount.toLocaleString('fa-IR')}</span>}
+            <button
+                ref={triggerRef}
+                type="button"
+                aria-label={unreadCount > 0 ? `اعلان‌ها، ${unreadCount.toLocaleString('fa-IR')} خوانده‌نشده` : 'اعلان‌ها'}
+                aria-expanded={open}
+                aria-haspopup="dialog"
+                aria-controls="workspace-notification-panel"
+                onClick={() => setOpen((value) => !value)}
+                className="relative inline-flex min-h-11 items-center gap-2 rounded-md border border-border-strong bg-paper px-3.5 py-2 text-sm font-bold text-ink shadow-soft transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+            >
+                <Bell aria-hidden="true" size={17} strokeWidth={1.8} />
+                <span className="hidden sm:inline">اعلان‌ها</span>
+                {unreadCount > 0 && <span className="min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-[10px] font-extrabold tabular-nums text-inverse" aria-live="polite">{unreadCount > 99 ? '۹۹+' : unreadCount.toLocaleString('fa-IR')}</span>}
             </button>
-            {open && <section role="dialog" aria-label="اعلان‌های پیام" ref={panelRef} style={{ top: panelPosition.top, left: panelPosition.left, width: 'min(22rem, calc(100vw - 2rem))', maxHeight: 'calc(100vh - 2rem)' }} className="fixed z-[100] overflow-y-auto border border-border bg-paper p-4 text-right shadow-xl">
-                <div className="flex items-center justify-between gap-3">
-                    <h2 className="font-bold">اعلان‌های پیام</h2>
-                    <div className="flex shrink-0 items-center gap-3">
-                    <button type="button" onClick={markAll} disabled={busy || unreadCount === 0} className="text-xs font-semibold text-terracotta-strong disabled:opacity-40">خواندن همه</button>
-                    <button type="button" aria-label="بستن اعلان‌ها" onClick={() => setOpen(false)} className="grid h-8 w-8 place-items-center rounded-sm text-muted hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">×</button>
+
+            {open && (
+                <section
+                    id="workspace-notification-panel"
+                    role="dialog"
+                    aria-modal="false"
+                    aria-labelledby="workspace-notification-title"
+                    ref={panelRef}
+                    tabIndex="-1"
+                    style={{ top: panelPosition.top, left: panelPosition.left, width: 'min(25rem, calc(100vw - 2rem))', maxHeight: 'calc(100dvh - 2rem)' }}
+                    className="fixed z-[100] flex flex-col overflow-hidden rounded-xl border border-border-strong bg-paper text-right text-ink shadow-raised ring-1 ring-[color:color-mix(in_srgb,var(--color-ink)_6%,transparent)] outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                >
+                    <div className="h-1 shrink-0 bg-terracotta" aria-hidden="true" />
+                    <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
+                        <div className="min-w-0">
+                            <div className="flex flex-wrap items-center gap-2">
+                                <h2 id="workspace-notification-title" className="text-base font-extrabold tracking-tight">اعلان‌های پیام</h2>
+                                {unreadCount > 0 && <Badge variant="accent">{unreadCount.toLocaleString('fa-IR')} جدید</Badge>}
+                            </div>
+                            <p className="mt-1 text-xs text-muted">پیام‌های تازه و وضعیت خوانده‌شدن آن‌ها</p>
+                        </div>
+                        <div className="flex shrink-0 items-center gap-1">
+                            <button
+                                type="button"
+                                onClick={markAll}
+                                disabled={busy || unreadCount === 0}
+                                className="inline-flex min-h-9 items-center gap-1.5 rounded-md px-2 text-[11px] font-bold text-terracotta-strong transition-colors hover:bg-accent-surface disabled:cursor-not-allowed disabled:opacity-40"
+                            >
+                                <CheckCheck size={14} aria-hidden="true" />
+                                <span>خواندن همه</span>
+                            </button>
+                            <button
+                                type="button"
+                                aria-label="بستن اعلان‌ها"
+                                onClick={() => { setOpen(false); triggerRef.current?.focus(); }}
+                                className="grid h-9 w-9 place-items-center rounded-md text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
+                            >
+                                <X size={17} aria-hidden="true" />
+                            </button>
+                        </div>
                     </div>
-                </div>
-                {error && <p role="alert" className="mt-3 text-xs text-danger">{error}</p>}
-                {loading ? <div className="py-2"><NotificationListSkeleton count={3} /></div> : items.length === 0 ? <p className="py-5 text-sm text-muted">هنوز اعلانی ندارید.</p> : <ul className="mt-3 max-h-72 divide-y divide-border overflow-y-auto">
-                    {items.map((item) => <li key={item.id}>
-                        <button type="button" disabled={busy} onClick={() => openNotification(item)} className="w-full py-3 text-right hover:bg-surface-muted disabled:opacity-50">
-                            <span className="flex items-start gap-2"><span aria-hidden="true" className={item.read_at ? 'mt-1.5 h-2 w-2 shrink-0 rounded-full bg-border' : 'mt-1.5 h-2 w-2 shrink-0 rounded-full bg-terracotta'} />
-                                <span className="min-w-0"><strong className="block text-sm">{item.sender_name} پیام جدیدی فرستاد</strong><span className="mt-1 block text-[11px] text-muted">{notificationDate(item.created_at)}</span></span>
+
+                    {error && <p role="alert" className="mx-4 mt-3 rounded-md border border-danger/20 bg-danger-surface px-3 py-2 text-xs leading-6 text-danger sm:mx-5">{error}</p>}
+
+                    <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-4">
+                        {loading ? (
+                            <div className="space-y-2 py-1"><NotificationListSkeleton count={3} /></div>
+                        ) : items.length === 0 ? (
+                            <div className="flex min-h-44 flex-col items-center justify-center rounded-lg border border-dashed border-border bg-surface-muted px-5 py-7 text-center">
+                                <span className="grid h-11 w-11 place-items-center rounded-full bg-paper text-muted shadow-soft"><Bell size={19} aria-hidden="true" /></span>
+                                <p className="mt-3 text-sm font-bold text-ink">هنوز اعلانی ندارید</p>
+                                <p className="mt-1 text-xs leading-6 text-muted">پیام‌های تازه از هنرمندان و خریداران در این بخش نمایش داده می‌شوند.</p>
+                            </div>
+                        ) : (
+                            <ul className="space-y-2">
+                                {items.map((item) => (
+                                    <li key={item.id}>
+                                        <button
+                                            type="button"
+                                            disabled={busy}
+                                            onClick={() => openNotification(item)}
+                                            className={[
+                                                'group flex w-full items-start gap-3 rounded-lg border p-3 text-right transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:opacity-50',
+                                                item.read_at
+                                                    ? 'border-border bg-paper hover:border-border-strong hover:bg-surface-muted'
+                                                    : 'border-[color:color-mix(in_srgb,var(--color-terracotta)_24%,var(--color-border))] bg-accent-surface hover:border-terracotta',
+                                            ].join(' ')}
+                                        >
+                                            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-surface-muted text-terracotta-strong">
+                                                <MessageCircle size={17} aria-hidden="true" />
+                                            </span>
+                                            <span className="min-w-0 flex-1">
+                                                <span className="flex flex-wrap items-center justify-between gap-2">
+                                                    <strong className="text-sm font-bold leading-6 text-ink">{item.sender_name} پیام جدیدی فرستاد</strong>
+                                                    {!item.read_at && <Badge variant="accent" className="px-2 py-0.5 text-[10px]">جدید</Badge>}
+                                                </span>
+                                                <span className="mt-1 block text-[11px] tabular-nums text-muted">{notificationDate(item.created_at)}</span>
+                                            </span>
+                                            {!item.read_at && <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-terracotta" />}
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+
+                    <div className="shrink-0 border-t border-border bg-surface-muted px-4 py-4 sm:px-5">
+                        <label className="flex cursor-pointer items-start gap-3 rounded-md border border-border bg-paper p-3 text-xs leading-6">
+                            <input
+                                type="checkbox"
+                                checked={Boolean(preferences.in_app_messages)}
+                                disabled={busy || preferencesQuery.isPending}
+                                onChange={(event) => changePreference(event.target.checked)}
+                                className="mt-1 h-4 w-4 shrink-0 accent-terracotta"
+                            />
+                            <span className="min-w-0">
+                                <strong className="block font-bold text-ink">اعلان پیام‌های جدید در این بخش</strong>
+                                <span className="mt-1 block text-[11px] text-muted">نمایش اعلان پیام‌های تازه در فضای کاربری</span>
                             </span>
-                        </button>
-                    </li>)}
-                </ul>}
-                <div className="mt-3 border-t border-border pt-3">
-                    <label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={Boolean(preferences.in_app_messages)} disabled={busy || preferencesQuery.isPending} onChange={(event) => changePreference(event.target.checked)} /><span>اعلان پیام‌های جدید در این بخش</span></label>
-                    <p className="mt-2 text-[11px] leading-5 text-muted">اعلان ایمیلی تا تأیید صف ارسال و تنظیمات میزبان غیرفعال است.</p>
-                </div>
-            </section>}
+                        </label>
+                        <p className="mt-2 text-[10px] leading-5 text-muted">اعلان ایمیلی تا تأیید صف ارسال و تنظیمات میزبان غیرفعال است.</p>
+                    </div>
+                </section>
+            )}
         </div>
     );
 }
@@ -399,36 +494,42 @@ export function WorkspaceLayout({ title, links, outletContext }) {
 
     return (
         <div className="min-h-screen bg-canvas text-ink" dir="rtl">
-            <header className="border-b border-border bg-paper">
-                <div className="mx-auto flex max-w-content flex-wrap items-center justify-between gap-4 px-page-gutter py-4 sm:py-5">
+            <header className="sticky top-0 z-40 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] shadow-soft backdrop-blur">
+                <div className="mx-auto flex max-w-content flex-wrap items-center justify-between gap-4 px-page-gutter py-3.5 sm:py-4">
                     <div className="flex min-w-0 items-center gap-3">
-                        <Link to="/" className="grid h-11 w-11 shrink-0 place-items-center rounded-md bg-ink text-lg font-black text-inverse no-underline transition-colors hover:bg-terracotta" aria-label="راد آرت، صفحه اصلی">
-                            ر
+                        <Link to="/" className="group grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-ink text-xl font-black text-inverse shadow-soft no-underline transition-colors hover:bg-terracotta" aria-label="راد آرت، صفحه اصلی">
+                            <span className="transition-transform group-hover:scale-110">ر</span>
                         </Link>
                         <div className="min-w-0">
-                            <Link to="/" className="text-lg font-black text-ink no-underline">راد<span className="text-terracotta-strong">آرت</span></Link>
-                            <div className="mt-1 flex flex-wrap items-center gap-2">
-                                <span className="text-xs text-muted">{title}</span>
-                                <Badge variant="accent" className="hidden sm:inline-flex">{roleLabels[user?.role] ?? 'فضای کاربری'}</Badge>
+                            <Link to="/" className="text-lg font-black tracking-tight text-ink no-underline">راد<span className="text-terracotta-strong">آرت</span></Link>
+                            <div className="mt-1 flex min-w-0 flex-wrap items-center gap-2">
+                                <span className="truncate text-xs font-semibold text-muted">{title}</span>
+                                <span aria-hidden="true" className="h-1 w-1 rounded-full bg-border-strong" />
+                                <Badge variant="accent" className="px-2 py-0.5 text-[10px]">{roleLabels[user?.role] ?? 'فضای کاربری'}</Badge>
                             </div>
                         </div>
                     </div>
 
                     <div className="flex min-w-0 flex-wrap items-center justify-end gap-2 sm:gap-3">
                         {user?.role !== 'admin' && <NotificationBell user={user} />}
-                        <span className="hidden max-w-40 truncate text-sm font-semibold text-ink md:inline">{user?.name}</span>
-                        <Link to="/" className="inline-flex min-h-10 items-center rounded-md border border-border px-3 text-xs font-bold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong sm:px-4 sm:text-sm">
+                        <span className="hidden max-w-44 truncate border-e border-border pe-3 text-sm font-bold text-ink md:inline">{user?.name}</span>
+                        <Link to="/" className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border-strong bg-paper px-3 text-xs font-bold text-ink no-underline transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus sm:px-4 sm:text-sm">
                             مشاهده سایت
                         </Link>
-                        <Button variant="outline" size="sm" onClick={handleLogout}>خروج</Button>
+                        <Button variant="outline" size="sm" onClick={handleLogout} className="min-h-10 gap-2">
+                            <span>خروج</span>
+                        </Button>
                     </div>
                 </div>
                 {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{logoutError}</p>}
             </header>
 
             <div className="mx-auto grid min-w-0 max-w-content gap-5 px-page-gutter py-6 sm:py-8 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-8">
-                <aside className="min-w-0 rounded-lg border border-border bg-paper p-3 shadow-soft lg:h-fit lg:p-4">
-                    <p className="mb-3 hidden px-2 text-[11px] font-extrabold tracking-wide text-muted lg:block">ناوبری فضای کاری</p>
+                <aside className="min-w-0 rounded-xl border border-border bg-paper p-2.5 shadow-soft lg:sticky lg:top-24 lg:h-fit lg:p-3">
+                    <div className="mb-2 hidden items-center justify-between px-3 py-2 lg:flex">
+                        <p className="text-[11px] font-extrabold tracking-wide text-muted">ناوبری فضای کاری</p>
+                        <span className="text-[10px] font-semibold text-subtle">RAD / MENU</span>
+                    </div>
                     <nav aria-label="ناوبری فضای کاربری" className="flex w-full min-w-0 gap-2 overflow-x-auto overscroll-x-contain pb-1 lg:flex-col lg:overflow-visible lg:pb-0">
                         {links.map((item) => (
                             <NavLink
@@ -436,9 +537,9 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                 to={item.to}
                                 end={item.end}
                                 className={({ isActive }) => [
-                                    'inline-flex min-h-11 shrink-0 items-center rounded-md px-4 py-2.5 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus lg:w-full',
+                                    'relative inline-flex min-h-11 shrink-0 items-center rounded-md px-4 py-2.5 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus lg:w-full',
                                     isActive
-                                        ? 'bg-ink text-inverse'
+                                        ? 'bg-ink text-inverse shadow-soft after:absolute after:inset-y-2 after:right-0 after:w-1 after:rounded-full after:bg-terracotta'
                                         : 'bg-surface-muted text-muted hover:bg-accent-surface hover:text-terracotta-strong lg:bg-transparent',
                                 ].join(' ')}
                             >
