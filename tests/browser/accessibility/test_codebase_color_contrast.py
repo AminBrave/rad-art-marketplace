@@ -12,7 +12,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from urllib.parse import urlparse
 
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import TimeoutError as PlaywrightTimeoutError, sync_playwright
 
 from config import BASE_URL, IGNORE_HTTPS_ERRORS
 
@@ -151,6 +151,8 @@ class CodebaseRenderedColorContrastTests(unittest.TestCase):
             ignore_https_errors=IGNORE_HTTPS_ERRORS,
         )
         page = context.new_page()
+        page._rad_page_errors = []
+        page.on("pageerror", lambda error: page._rad_page_errors.append(str(error)))
         page.set_default_timeout(20000)
         page.add_init_script(script=AUDIT_SCRIPT)
 
@@ -173,21 +175,28 @@ class CodebaseRenderedColorContrastTests(unittest.TestCase):
         self.assertIsNotNone(response, f"No document response for {route}")
         self.assertLess(response.status, 400, f"{route} returned HTTP {response.status}")
 
-        # Routes do not all expose a <main> landmark (some use a section or
-        # another semantic wrapper), so wait for the React root to mount instead
-        # of making a page landmark a prerequisite for running the audit.
-        page.locator("#app > *").first.wait_for(state="visible")
-        if route == "/?design-system":
-            # This preview is lazy-loaded; the showcase is its definitive
-            # readiness marker, not the outer React root's initial mount.
-            page.locator("#shared-components").wait_for(state="visible")
-        page.wait_for_function(
-            """() => {
-                const root = document.querySelector('#app');
-                return Boolean(root && root.children.length > 0);
-            }""",
-            timeout=20000,
-        )
+        # The server-side loading skeleton has no readable text. Waiting for
+        # body text avoids assumptions about root IDs and semantic landmarks.
+        try:
+            page.wait_for_function(
+                "() => document.body && document.body.innerText.trim().length > 0",
+                timeout=20000,
+            )
+            if route == "/?design-system":
+                page.locator("#shared-components").wait_for(state="visible")
+        except PlaywrightTimeoutError as error:
+            diagnostics = page.evaluate(
+                """() => ({
+                    url: location.href,
+                    title: document.title,
+                    bodyText: (document.body?.innerText || '').slice(0, 500),
+                    appRoot: document.querySelector('#app')?.outerHTML.slice(0, 1200) ?? null,
+                })"""
+            )
+            raise AssertionError(
+                f"Application content did not render for {route}; "
+                f"browser page errors: {page._rad_page_errors}; DOM diagnostics: {diagnostics}"
+            ) from error
         results = {}
         for viewport_name, width, height in (
             ("desktop", 1440, 1000),
@@ -202,28 +211,41 @@ class CodebaseRenderedColorContrastTests(unittest.TestCase):
             )
             if result["failures"]:
                 diagnostics = page.evaluate(
-                    """(selectors) => selectors.map((selector) => {
-                        const element = document.querySelector(selector);
-                        if (!element) return { selector, found: false };
-                        const chain = [];
-                        for (let node = element; node && node.nodeType === 1; node = node.parentElement) {
-                            const style = getComputedStyle(node);
-                            chain.push({
-                                tag: node.tagName.toLowerCase(),
-                                classes: typeof node.className === 'string' ? node.className : '',
-                                color: style.color,
-                                backgroundColor: style.backgroundColor,
-                                backgroundImage: style.backgroundImage,
-                                opacity: style.opacity,
-                            });
-                        }
-                        return { selector, chain };
-                    })""",
-                    list(dict.fromkeys(
-                        failure["element"].split("#")[0].split(".")[0]
-                        + "".join("." + part for part in failure["element"].split(".")[1:])
-                        for failure in result["failures"]
-                    )),
+                    """(labels) => {
+                        const describe = (element) => {
+                            const chain = [];
+                            for (let node = element; node && node.nodeType === 1; node = node.parentElement) {
+                                const style = getComputedStyle(node);
+                                chain.push({
+                                    tag: node.tagName.toLowerCase(),
+                                    classes: typeof node.className === 'string' ? node.className : '',
+                                    color: style.color,
+                                    backgroundColor: style.backgroundColor,
+                                    backgroundImage: style.backgroundImage,
+                                    opacity: style.opacity,
+                                });
+                            }
+                            return chain;
+                        };
+                        const label = (element) => {
+                            const tag = element.tagName.toLowerCase();
+                            const id = element.id ? '#' + element.id : '';
+                            const classes = typeof element.className === 'string'
+                                ? element.className.trim().split(/\\s+/).filter(Boolean).slice(0, 3).map((name) => '.' + name).join('')
+                                : '';
+                            return tag + id + classes;
+                        };
+                        const all = [...document.querySelectorAll('*')];
+                        return labels.map((wanted) => {
+                            const matches = all.filter((element) => label(element) === wanted);
+                            return {
+                                label: wanted,
+                                matches: matches.slice(0, 5).map((element) => describe(element)),
+                                totalMatches: matches.length,
+                            };
+                        });
+                    }""",
+                    list(dict.fromkeys(failure["element"] for failure in result["failures"])),
                 )
                 self.fail(
                     f"Computed WCAG contrast failures on {route} ({viewport_name}): "
