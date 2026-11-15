@@ -131,7 +131,7 @@ export function PublicLayout() {
 
                 <DialogContent
                     placement="drawer"
-                    className="flex flex-col px-4 py-5 xl:hidden"
+                    className="flex flex-col px-4 py-5"
                 >
                     <div className="mb-5 flex items-center justify-between border-b border-border pb-4">
                         <div>
