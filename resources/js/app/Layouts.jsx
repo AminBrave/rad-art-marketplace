@@ -152,9 +152,9 @@ export function PublicLayout() {
                 {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{logoutError}</p>}
             </header>
 
-            <main id="main-content">
+            <div id="main-content">
                 <Outlet />
-            </main>
+            </div>
 
             <footer className="border-t border-border bg-surface-muted">
                 <div className="mx-auto max-w-content px-page-gutter pb-10 pt-12 sm:pb-12 sm:pt-16">
