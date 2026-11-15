@@ -7,7 +7,7 @@
     "ai:context": "node scripts/ai-context.mjs",
     "setup": "node scripts/project.mjs setup",
     "dev": "node scripts/project.mjs dev",
-    "production": "vite build",
+    "production": "node scripts/project.mjs production",
     "db:sqlite:init": "node scripts/project.mjs db:sqlite:init",
     "db:status": "php artisan migrate:status",
     "db:migrate": "php artisan migrate",
@@ -25,7 +25,7 @@
     "lint": "eslint resources/js --max-warnings=0",
     "lint:fix": "eslint resources/js --fix",
     "a11y:colors": "node --test tests/js/colorAccessibility.test.js",
-    "build:cpanel": "vite build --config vite.config.cpanel.js"
+    "build:cpanel": "node scripts/project.mjs build:cpanel"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",
