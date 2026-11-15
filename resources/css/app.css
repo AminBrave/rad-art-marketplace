@@ -100,8 +100,7 @@
     --page-gutter: clamp(1.25rem, 4vw, 3rem);
     --header-height: 5rem;
     --workspace-bottom-nav-primary-height: 4.5rem;
-    --workspace-bottom-nav-secondary-height: 2.25rem;
-    --workspace-bottom-nav-height: calc(var(--workspace-bottom-nav-primary-height) + var(--workspace-bottom-nav-secondary-height));
+    --workspace-bottom-nav-height: var(--workspace-bottom-nav-primary-height);
     --control-height-sm: 2.25rem;
     --control-height-md: 2.75rem;
     --control-height-lg: 3rem;
