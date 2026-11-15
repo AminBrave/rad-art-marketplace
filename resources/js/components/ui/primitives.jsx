@@ -1,4 +1,7 @@
-import { cloneElement, isValidElement, useId } from 'react';
+import { Children, cloneElement, isValidElement, useId } from 'react';
+import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
+import * as SelectPrimitive from '@radix-ui/react-select';
+import { Check, ChevronDown } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 const buttonVariants = {
@@ -196,11 +199,118 @@ export function TextareaField({ className = '', rows = 4, ...props }) {
     return <textarea rows={rows} className={cn(controlClass, 'min-h-28 resize-y leading-copy', className)} {...props} />;
 }
 
-export function SelectField({ className = '', children, ...props }) {
+const emptySelectValue = '__radix_empty_option__';
+
+export function SelectField({
+    className = '',
+    children,
+    value,
+    defaultValue,
+    onChange,
+    name,
+    required = false,
+    disabled = false,
+    dir = 'rtl',
+    placeholder,
+    ...triggerProps
+}) {
+    const options = Children.toArray(children).filter((child) => isValidElement(child) && child.type === 'option');
+    const emptyOption = options.find((option) => String(option.props.value ?? '') === '');
+    const selectableOptions = options.filter((option) => String(option.props.value ?? '') !== '');
+
+    const handleValueChange = (nextValue) => {
+        const next = nextValue === emptySelectValue ? '' : nextValue;
+        onChange?.({ target: { name, value: next } });
+    };
+
     return (
-        <select className={`${controlClass} ${className}`} {...props}>
-            {children}
-        </select>
+        <SelectPrimitive.Root
+            value={value === '' ? '' : value}
+            defaultValue={defaultValue === '' ? '' : defaultValue}
+            onValueChange={handleValueChange}
+            name={name}
+            required={required}
+            disabled={disabled}
+            dir={dir}
+        >
+            <SelectPrimitive.Trigger
+                className={cn(controlClass, 'flex items-center justify-between gap-3 text-start', className)}
+                {...triggerProps}
+            >
+                <SelectPrimitive.Value placeholder={placeholder ?? emptyOption?.props.children} />
+                <SelectPrimitive.Icon asChild>
+                    <ChevronDown size={16} aria-hidden="true" className="shrink-0 text-muted" />
+                </SelectPrimitive.Icon>
+            </SelectPrimitive.Trigger>
+            <SelectPrimitive.Portal>
+                <SelectPrimitive.Content
+                    position="popper"
+                    sideOffset={4}
+                    dir={dir}
+                    className="z-[90] max-h-[var(--radix-select-content-available-height)] min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-md border border-border bg-paper text-ink shadow-raised"
+                >
+                    <SelectPrimitive.Viewport className="p-1.5">
+                        {selectableOptions.map((option) => (
+                            <SelectPrimitive.Item
+                                key={option.key ?? String(option.props.value)}
+                                value={String(option.props.value)}
+                                disabled={option.props.disabled}
+                                textValue={typeof option.props.children === 'string' ? option.props.children : undefined}
+                                className="relative flex min-h-10 cursor-pointer select-none items-center rounded-sm py-2 ps-3 pe-9 text-sm outline-none data-[highlighted]:bg-surface-muted data-[highlighted]:text-ink data-[disabled]:pointer-events-none data-[disabled]:opacity-40"
+                            >
+                                <SelectPrimitive.ItemText>{option.props.children}</SelectPrimitive.ItemText>
+                                <SelectPrimitive.ItemIndicator className="absolute end-2 inline-flex items-center text-terracotta-strong">
+                                    <Check size={15} aria-hidden="true" />
+                                </SelectPrimitive.ItemIndicator>
+                            </SelectPrimitive.Item>
+                        ))}
+                        {emptyOption && (
+                            <SelectPrimitive.Item
+                                value={emptySelectValue}
+                                className="sr-only"
+                            >
+                                <SelectPrimitive.ItemText>{emptyOption.props.children}</SelectPrimitive.ItemText>
+                            </SelectPrimitive.Item>
+                        )}
+                    </SelectPrimitive.Viewport>
+                </SelectPrimitive.Content>
+            </SelectPrimitive.Portal>
+        </SelectPrimitive.Root>
+    );
+}
+
+export function Checkbox({
+    checked,
+    defaultChecked,
+    onChange,
+    name,
+    value = 'on',
+    required = false,
+    disabled = false,
+    className = '',
+    ...props
+}) {
+    return (
+        <CheckboxPrimitive.Root
+            checked={checked}
+            defaultChecked={defaultChecked}
+            onCheckedChange={(nextChecked) => onChange?.({
+                target: { name, value, checked: nextChecked === true },
+            })}
+            name={name}
+            value={value}
+            required={required}
+            disabled={disabled}
+            className={cn(
+                'inline-flex h-5 w-5 shrink-0 items-center justify-center rounded border border-border-strong bg-paper text-inverse outline-none transition-colors focus-visible:ring-2 focus-visible:ring-focus data-[state=checked]:border-terracotta data-[state=checked]:bg-terracotta data-[state=indeterminate]:border-terracotta data-[state=indeterminate]:bg-terracotta disabled:cursor-not-allowed disabled:opacity-50',
+                className,
+            )}
+            {...props}
+        >
+            <CheckboxPrimitive.Indicator className="flex items-center justify-center">
+                <Check size={14} strokeWidth={3} aria-hidden="true" />
+            </CheckboxPrimitive.Indicator>
+        </CheckboxPrimitive.Root>
     );
 }
 
