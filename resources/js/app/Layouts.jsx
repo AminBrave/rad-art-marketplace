@@ -373,6 +373,15 @@ function NotificationBell({ user }) {
             </button>
 
             {open && (
+                <button
+                    type="button"
+                    aria-label="بستن اعلان‌ها"
+                    tabIndex="-1"
+                    onClick={() => setOpen(false)}
+                    className="fixed inset-0 z-[90] h-full w-full cursor-default bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]"
+                />
+            )}
+            {open && (
                 <section
                     id="workspace-notification-panel"
                     role="dialog"
