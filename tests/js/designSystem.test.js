@@ -163,7 +163,7 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     assert.ok(layouts.includes('ناوبری اصلی'));
     assert.doesNotMatch(layouts, /panelPosition|closeOnOutsidePointer|mobileMenuPanelRef|closeMobileMenu/);
     assert.ok(layouts.includes('aria-haspopup="dialog"'));
-    assert.ok(layouts.includes('bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]'));
+    assert.ok(dialog.includes('bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]'));
     assert.doesNotMatch(layouts, /document\.body\.style\.overflow|addEventListener\('keydown', closeOnEscape/);
     assert.ok(layouts.includes('lg:hidden'));
     assert.ok(layouts.includes('hidden min-w-0 rounded-xl border border-border bg-paper'));
