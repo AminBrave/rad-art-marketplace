@@ -737,7 +737,6 @@ export default function MessagingCenter({ role }) {
                                                                     })}
                                                                 </div>}
                                                             </div>
-                                                        </div>
                                                             </div>
                                                             <div data-chat-popover-root data-chat-popover-id={openPopover === 'message:' + message.id ? openPopover : undefined} className="relative">
                                                                 <button type="button" aria-label="عملیات پیام" title="عملیات پیام" aria-haspopup="true" aria-expanded={openPopover === 'message:' + message.id} aria-controls={openPopover === 'message:' + message.id ? 'message-actions-' + message.id : undefined} onClick={() => setOpenPopover((current) => current === 'message:' + message.id ? null : 'message:' + message.id)} className="flex h-8 w-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"><MoreVertical size={16} aria-hidden="true" /></button>
@@ -748,6 +747,7 @@ export default function MessagingCenter({ role }) {
                                                                     {own && <button type="button" disabled={actionId === message.id} onClick={() => { setOpenPopover(null); deleteMessage(message); }} className="flex min-h-10 w-full items-center gap-2.5 rounded-md px-3 text-right text-xs font-semibold text-danger transition-colors hover:bg-danger-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:opacity-50 motion-reduce:transition-none"><Trash2 size={15} aria-hidden="true" /><span>حذف</span></button>}
                                                                 </div>}
                                                             </div>
+                                                        </div>
                                                     </>
                                                 )}
                                             </article>
