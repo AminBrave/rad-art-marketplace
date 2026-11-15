@@ -283,6 +283,7 @@ export function SelectField({
 }
 
 export function Checkbox({
+    children,
     checked,
     defaultChecked,
     onChange,
@@ -293,6 +294,8 @@ export function Checkbox({
     className = '',
     ...props
 }) {
+    const hasLabel = children !== undefined && children !== null;
+
     return (
         <CheckboxPrimitive.Root
             checked={checked}
@@ -305,14 +308,22 @@ export function Checkbox({
             required={required}
             disabled={disabled}
             className={cn(
-                'inline-flex h-5 w-5 shrink-0 items-center justify-center rounded border border-border-strong bg-paper text-inverse outline-none transition-colors focus-visible:ring-2 focus-visible:ring-focus data-[state=checked]:border-terracotta data-[state=checked]:bg-terracotta data-[state=indeterminate]:border-terracotta data-[state=indeterminate]:bg-terracotta disabled:cursor-not-allowed disabled:opacity-50',
+                hasLabel
+                    ? 'group inline-flex min-h-11 items-center gap-3 text-start outline-none focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50'
+                    : 'group inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-sm outline-none focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
                 className,
             )}
             {...props}
         >
-            <CheckboxPrimitive.Indicator className="flex items-center justify-center">
-                <Check size={14} strokeWidth={3} aria-hidden="true" />
-            </CheckboxPrimitive.Indicator>
+            <span
+                aria-hidden="true"
+                className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded border border-border-strong bg-paper text-inverse transition-colors group-focus-visible:ring-2 group-focus-visible:ring-focus group-data-[state=checked]:border-terracotta group-data-[state=checked]:bg-terracotta group-data-[state=indeterminate]:border-terracotta group-data-[state=indeterminate]:bg-terracotta"
+            >
+                <CheckboxPrimitive.Indicator className="flex items-center justify-center">
+                    <Check size={14} strokeWidth={3} aria-hidden="true" />
+                </CheckboxPrimitive.Indicator>
+            </span>
+            {children}
         </CheckboxPrimitive.Root>
     );
 }
