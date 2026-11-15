@@ -1,7 +1,7 @@
-"""Shared configuration for the temporary local Playwright test workflow."""
+"""Shared configuration for Playwright against the current local development app."""
 import os
 
-BASE_URL = os.environ.get("RAD_ART_BASE_URL", "http://127.0.0.1:8000").rstrip("/")
+BASE_URL = os.environ.get("RAD_ART_BASE_URL", "https://rad.localhost").rstrip("/")
 IGNORE_HTTPS_ERRORS = os.environ.get("RAD_ART_IGNORE_HTTPS_ERRORS", "false").lower() in {
     "1",
     "true",
