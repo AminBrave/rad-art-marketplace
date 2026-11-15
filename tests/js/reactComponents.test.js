@@ -12,6 +12,9 @@ const vite = await createServer({
     configFile: false,
     root: process.cwd(),
     plugins: [react()],
+    // Keep React Router in Vite's SSR module graph so named ESM exports such
+    // as Link are not inferred from Node's CommonJS interop heuristics.
+    ssr: { noExternal: ['react-router-dom'] },
     server: { middlewareMode: true },
     appType: 'custom',
     logLevel: 'error',
