@@ -462,7 +462,7 @@ function WorkspaceBottomNavigation({ links }) {
             data-testid="workspace-bottom-navigation"
             className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-[color:color-mix(in_srgb,var(--color-paper)_92%,transparent)] pb-[env(safe-area-inset-bottom)] shadow-raised backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-paper)_86%,transparent)] lg:hidden"
         >
-            <div className="mx-auto grid h-[var(--workspace-bottom-nav-height)] max-w-2xl grid-flow-col auto-cols-fr gap-1 px-2">
+            <div className="mx-auto grid h-[var(--workspace-bottom-nav-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2">
                 {links.map((item) => {
                     const Icon = workspaceNavigationIcons[item.to] ?? LayoutDashboard;
                     return (
@@ -585,7 +585,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                         <button
                             ref={mobileMenuTriggerRef}
                             type="button"
-                            aria-label={mobileMenuOpen ? 'بستن منوی فضای کاربری' : 'باز کردن منوی فضای کاربری'}
+                            aria-label={mobileMenuOpen ? 'بستن منوی حساب کاربری' : 'باز کردن منوی حساب کاربری'}
                             aria-expanded={mobileMenuOpen}
                             aria-haspopup="dialog"
                             aria-controls="workspace-mobile-menu"
@@ -621,7 +621,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                             <div className="flex min-w-0 items-center gap-3">
                                 <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-lg font-black text-inverse">ر</span>
                                 <div className="min-w-0">
-                                    <h2 id="workspace-mobile-menu-title" className="text-sm font-extrabold text-ink">منوی فضای کاربری</h2>
+                                    <h2 id="workspace-mobile-menu-title" className="text-sm font-extrabold text-ink">حساب کاربری</h2>
                                     <p className="mt-1 max-w-48 truncate text-xs text-muted">{user?.name}</p>
                                 </div>
                             </div>
@@ -635,26 +635,9 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                             </button>
                         </div>
 
-                        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4">
-                            <p className="px-3 pb-2 text-[11px] font-extrabold tracking-wide text-muted">ناوبری</p>
-                            <nav aria-label="ناوبری فضای کاربری" className="grid gap-1">
-                                {links.map((item) => (
-                                    <NavLink
-                                        key={item.to}
-                                        to={item.to}
-                                        end={item.end}
-                                        onClick={closeMobileMenu}
-                                        className={({ isActive }) => [
-                                            'relative flex min-h-12 items-center rounded-lg px-4 py-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus',
-                                            isActive
-                                                ? 'bg-accent-surface text-terracotta-strong after:absolute after:inset-y-2 after:right-0 after:w-1 after:rounded-full after:bg-terracotta'
-                                                : 'text-muted hover:bg-surface-muted hover:text-ink',
-                                        ].join(' ')}
-                                    >
-                                        {item.label}
-                                    </NavLink>
-                                ))}
-                            </nav>
+                        <div className="flex-1 px-5 py-6">
+                            <p className="text-sm font-semibold leading-7 text-ink">برای جابه‌جایی بین بخش‌های فضای کاری از نوار پایین صفحه استفاده کنید.</p>
+                            <p className="mt-2 text-xs leading-6 text-muted">مدیریت حساب و بازگشت به وب‌سایت از این بخش در دسترس است.</p>
                         </div>
 
                         <div className="shrink-0 border-t border-border bg-surface-muted p-4">
