@@ -347,6 +347,46 @@ class CodebaseRenderedColorContrastTests(unittest.TestCase):
         finally:
             context.close()
 
+    def test_notification_panel_stays_in_viewport_and_can_be_dismissed(self):
+        context, page = self.new_page(role="buyer")
+        try:
+            page.goto(BASE_URL + "/dashboard", wait_until="domcontentloaded")
+            page.get_by_role("button", name="اعلان‌ها").wait_for(state="visible")
+
+            for viewport_name, width, height in (
+                ("desktop", 1440, 1000),
+                ("mobile", 390, 844),
+            ):
+                page.set_viewport_size({"width": width, "height": height})
+                page.get_by_role("button", name="اعلان‌ها").click()
+                panel = page.get_by_role("dialog", name="اعلان‌های پیام")
+                panel.wait_for(state="visible")
+
+                bounds = panel.bounding_box()
+                self.assertIsNotNone(bounds, f"Notification panel has no box on {viewport_name}")
+                self.assertGreaterEqual(bounds["x"], 0, f"Notification panel overflows left on {viewport_name}: {bounds}")
+                self.assertLessEqual(
+                    bounds["x"] + bounds["width"],
+                    width,
+                    f"Notification panel overflows right on {viewport_name}: {bounds}",
+                )
+                result = page.evaluate("() => window.__radColorAccessibilityAudit(document)")
+                self.assertEqual(
+                    result["failures"],
+                    [],
+                    f"Notification panel has contrast failures on {viewport_name}: {result['failures']}",
+                )
+
+                page.get_by_role("button", name="بستن اعلان‌ها").click()
+                panel.wait_for(state="hidden")
+
+            page.get_by_role("button", name="اعلان‌ها").click()
+            page.get_by_role("dialog", name="اعلان‌های پیام").wait_for(state="visible")
+            page.keyboard.press("Escape")
+            page.get_by_role("dialog", name="اعلان‌های پیام").wait_for(state="hidden")
+        finally:
+            context.close()
+
     def test_all_authenticated_role_workspace_routes_have_no_contrast_failures(self):
         for role, routes in ROLE_ROUTES.items():
             context, page = self.new_page(role=role)
