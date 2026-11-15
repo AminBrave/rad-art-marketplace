@@ -157,6 +157,30 @@ test('messaging conversation filters fill their RAD container edge to edge', () 
 });
 
 
+test('messaging actions use compact, dismissible Telegram-style popovers', () => {
+    assert.ok(messaging.includes("const [openPopover, setOpenPopover] = useState(null)"));
+    assert.ok(messaging.includes("document.addEventListener('pointerdown', closeOnOutsidePointer, true)"));
+    assert.ok(messaging.includes("document.addEventListener('keydown', closeOnEscape, true)"));
+    assert.ok(messaging.includes("data-chat-popover-root"));
+    assert.ok(messaging.includes("thread-options-' + thread.id"));
+    assert.ok(messaging.includes("updateThreadSetting(thread, 'archived'"));
+    assert.ok(messaging.includes("updateThreadSetting(thread, 'muted'"));
+    assert.ok(messaging.includes('flex items-center gap-1 rounded-full border border-border bg-paper p-1.5 shadow-soft'));
+    assert.ok(messaging.includes('aria-label="افزودن واکنش"'));
+    assert.ok(messaging.includes('aria-label="عملیات پیام"'));
+    assert.ok(messaging.includes('<span>پاسخ</span>'));
+    assert.ok(messaging.includes('<span>ویرایش</span>'));
+    assert.ok(messaging.includes('<span>حذف</span>'));
+});
+
+test('shared RAD modal dialogs retain outside-click and Escape dismissal behavior', () => {
+    assert.ok(dialog.includes('DialogPrimitive.Root'));
+    assert.ok(dialog.includes('<DialogPrimitive.Overlay'));
+    assert.ok(dialog.includes('<DialogPrimitive.Content'));
+    assert.doesNotMatch(dialog, /onPointerDownOutside=\{[^}]*preventDefault/);
+    assert.doesNotMatch(dialog, /onEscapeKeyDown=\{[^}]*preventDefault/);
+});
+
 test('authenticated app shell keeps primary-only bottom navigation and places both navigation tiers in the dashboard hamburger drawer', () => {
     const bottomStart = layouts.indexOf('function AuthenticatedBottomNavigation({ primaryLinks })');
     const bottomEnd = layouts.indexOf('\n}\n\nexport function WorkspaceLayout', bottomStart);
