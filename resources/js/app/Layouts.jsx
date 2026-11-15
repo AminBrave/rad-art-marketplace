@@ -320,7 +320,6 @@ function NotificationBell({ user }) {
                 aria-expanded={open}
                 aria-haspopup="dialog"
                 aria-controls="workspace-notification-panel"
-                onClick={() => setOpen((value) => !value)}
                 className="relative inline-flex min-h-11 items-center gap-2 rounded-md border border-border-strong bg-paper px-3.5 py-2 text-sm font-bold text-ink shadow-soft transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
             >
                 <Bell aria-hidden="true" size={17} strokeWidth={1.8} />
@@ -329,7 +328,7 @@ function NotificationBell({ user }) {
             </DialogTrigger>
             <DialogContent
                 id="workspace-notification-panel"
-                className="!left-auto !right-0 !top-0 !h-dvh !max-h-dvh !w-[min(25rem,100vw)] !max-w-none !translate-x-0 !translate-y-0 !rounded-none !border-y-0 !border-e-0 !border-s !p-0 flex flex-col overflow-hidden text-right"
+                className="!left-auto !right-0 !top-0 !h-dvh !max-h-dvh !w-[min(25rem,100vw)] !max-w-none !translate-x-0 !translate-y-0 !rounded-none !border-y-0 !border-e-0 !border-s !p-0 flex flex-col !overflow-hidden text-right"
             >
                     <div className="h-1 shrink-0 bg-terracotta" aria-hidden="true" />
                     <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
