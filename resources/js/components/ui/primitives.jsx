@@ -175,12 +175,13 @@ export function FormField({ id, label, hint, error, required = false, children, 
             id: fieldId,
             'aria-invalid': error ? true : children.props['aria-invalid'],
             'aria-describedby': describedBy ?? children.props['aria-describedby'],
+            'aria-labelledby': children.props['aria-labelledby'] ?? `${fieldId}-label`,
         })
         : children;
 
     return (
         <div className={cn('grid gap-2', className)}>
-            <label htmlFor={fieldId} className="text-sm font-semibold text-ink">
+            <label id={`${fieldId}-label`} htmlFor={fieldId} className="text-sm font-semibold text-ink">
                 {label}
                 {required && <span aria-hidden="true" className="ms-1 text-danger">*</span>}
             </label>
@@ -267,7 +268,7 @@ export function SelectField({
                         {emptyOption && (
                             <SelectPrimitive.Item
                                 value={emptySelectValue}
-                                className="sr-only"
+                                className="relative flex min-h-10 cursor-pointer select-none items-center rounded-sm py-2 ps-3 pe-9 text-sm outline-none data-[highlighted]:bg-surface-muted data-[highlighted]:text-ink"
                             >
                                 <SelectPrimitive.ItemText>{emptyOption.props.children}</SelectPrimitive.ItemText>
                             </SelectPrimitive.Item>
