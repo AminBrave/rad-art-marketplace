@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { Badge, Button, EmptyState, ErrorState, FormField, Skeleton, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField, WorkspaceHero, DashboardMetricCard, DashboardMetricSkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, MediaImage } from '../components/ui';
+import { Badge, Button, EmptyState, ErrorState, FormField, Skeleton, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField, WorkspaceHero, PageHeader, DashboardMetricCard, DashboardMetricSkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, MediaImage } from '../components/ui';
 
 const api = '/api/v1/admin';
 const statuses = [
@@ -170,7 +170,7 @@ export function AdminArtworkModeration() {
         } catch (e) { setActionError(e.response?.status === 403 ? 'سرور اجازه انجام این عملیات را نداد.' : e.response?.data?.errors?.note?.[0] ?? e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.'); }
     };
     return <section className="space-y-6" dir="rtl">
-        <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6"><div><p className="text-sm font-bold text-terracotta-strong">مدیریت آثار</p><h1 className="mt-2 text-2xl font-black">صف بررسی و انتشار</h1><p className="mt-2 text-sm leading-7 text-muted">فقط آثار در انتظار بررسی قابل تصمیم‌گیری‌اند. رد اثر یا درخواست اصلاح به توضیح نیاز دارد.</p></div><Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button></header>
+        <PageHeader eyebrow="مدیریت آثار" title="صف بررسی و انتشار" description="فقط آثار در انتظار بررسی قابل تصمیم‌گیری‌اند. رد اثر یا درخواست اصلاح به توضیح نیاز دارد." actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
         <div className="flex flex-wrap gap-2" aria-label="فیلتر وضعیت آثار">{statuses.map((item) => <Button key={item.value} size="sm" variant={status === item.value ? 'primary' : 'outline'} aria-pressed={status === item.value} onClick={() => chooseStatus(item.value)}>{item.label}</Button>)}</div>
         {message && <SuccessState title={message} />}{error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
         {loading ? <ArtworkModerationSkeleton count={4} /> : !result?.data?.length ? <EmptyState title="اثری در این وضعیت وجود ندارد" description="با انتخاب وضعیت دیگر می‌توانید سوابق تصمیم‌ها را مرور کنید." /> : <>
@@ -240,10 +240,7 @@ export function AdminUsersPage() {
         }
     };
     return <section className="space-y-6" dir="rtl">
-        <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
-            <div><p className="text-sm font-bold text-terracotta-strong">مدیریت حساب‌ها</p><h1 className="mt-2 text-2xl font-black">کاربران</h1><p className="mt-2 max-w-2xl text-sm leading-7 text-muted">فهرست حساب‌ها و مدیریت نقش‌های مجاز. ارتقای هر حساب به مدیر، مرحله تأیید جداگانه دارد.</p></div>
-            <Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>
-        </header>
+        <PageHeader eyebrow="مدیریت حساب‌ها" title="کاربران" description="فهرست حساب‌ها و مدیریت نقش‌های مجاز. ارتقای هر حساب به مدیر، مرحله تأیید جداگانه دارد." actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
         <div className="grid gap-3 sm:grid-cols-2">
             <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">حساب‌های این صفحه</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</p></div>
             <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">کل حساب‌ها</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</p></div>
@@ -326,10 +323,7 @@ export function AdminMessageReportsPage() {
         }
     };
     return <section className="space-y-6" dir="rtl">
-        <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
-            <div><p className="text-sm font-bold text-terracotta-strong">ایمنی گفتگوها</p><h1 className="mt-2 text-2xl font-black">گزارش‌های پیام</h1><p className="mt-2 max-w-2xl text-sm leading-7 text-muted">گزارش‌ها را با توجه به زمینه گفتگو بررسی کنید. حذف پیام یک اقدام برگشت‌ناپذیر در این پنل است و پیش از اجرا تأیید جداگانه می‌خواهد.</p></div>
-            <Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>
-        </header>
+        <PageHeader eyebrow="ایمنی گفتگوها" title="گزارش‌های پیام" description="گزارش‌ها را با توجه به زمینه گفتگو بررسی کنید. حذف پیام یک اقدام برگشت‌ناپذیر در این پنل است و پیش از اجرا تأیید جداگانه می‌خواهد." actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
         <div className="grid gap-3 sm:grid-cols-2">
             <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">گزارش‌های این صفحه</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</p></div>
             <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">کل گزارش‌ها</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</p></div>
