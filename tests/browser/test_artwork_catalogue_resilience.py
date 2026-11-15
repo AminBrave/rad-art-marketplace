@@ -165,6 +165,15 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
                 "artist": {"display_name": "هنرمند تصویر"},
                 "category": {"name": "نقاشی"},
             },
+            {
+                "id": 913,
+                "slug": "mixed-direction-title",
+                "title": "تابلو Mona Lisa 2026",
+                "price": None,
+                "image_url": None,
+                "artist": {"display_name": "Amin Studio"},
+                "category": {"name": "نقاشی / Oil painting"},
+            },
         ]
         page.route(
             "**/api/v1/artworks**",
@@ -207,6 +216,19 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
             page.get_by_role("img", name="اثر بدون تصویر").wait_for()
             self.assertEqual(page.locator('img[alt="اثر خراب"]').count(), 0)
             self.assertEqual(page.locator('img[alt="اثر بدون تصویر"]').count(), 0)
+            page.get_by_role("heading", name="تابلو Mona Lisa 2026").wait_for()
+            self.assertIn("Amin Studio", page.locator("main").inner_text())
+            self.assertEqual(page.locator("html").get_attribute("dir"), "rtl")
+            page.set_viewport_size({"width": 320, "height": 812})
+            dimensions = page.evaluate(
+                "() => ({ viewport: document.documentElement.clientWidth, "
+                "document: document.documentElement.scrollWidth })"
+            )
+            self.assertLessEqual(
+                dimensions["document"],
+                dimensions["viewport"] + 1,
+                f"Mixed Persian/Latin catalogue content overflows at 320px: {dimensions}",
+            )
         finally:
             context.close()
 
