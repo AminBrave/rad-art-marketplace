@@ -38,9 +38,12 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Tests | `npm run test:feature` | Feature PHPUnit suite |
 | Tests | `npm run test:integration` | Integration PHPUnit suite |
 | Tests | `npm run test:frontend` | Frontend Node tests |
-| Tests | `npm run test:browser` | Prepare isolated SQLite, run Playwright in a temporary local app, then stop it |
+| Tests | `npm run test:browser` | Run **all** Playwright tests against the already-running local development app and its existing MySQL/MariaDB database |
+
+
+
 | Reports | `npm run test:report` | Generate the cross-suite quality summary from existing JUnit files; does not run tests |
-| Reports | `npm run test:reporting` | Run focused Python unit tests for report parsing and freshness classification |
+| Reports | `npm run test:reporting` | Run focused Python unit tests for report parsing/freshness classification and Playwright test discovery/classification |
 | Lint | `npm run lint` | ESLint check |
 | Lint | `npm run lint:fix` | Apply ESLint autofixes |
 | Accessibility | `npm run a11y:colors` | Run focused color-accessibility tests |
@@ -104,7 +107,7 @@ Caddy issues certificates from its local development CA. This gives the LAN IP a
 - Laravel (127.0.0.1:8000) and Vite (127.0.0.1:5173) remain bound to loopback; Vite assets and HMR are reverse-proxied through HTTPS.
 - Allow inbound TCP 443 on the computer's **private-network** firewall profile. Allow TCP 80 only if you want Caddy's HTTP-to-HTTPS redirect to be reachable. Do not configure router port forwarding or expose this development server to public networks.
 - Keep the computer and test devices on a trusted LAN. This is a development environment, not a production deployment.
-- The temporary Playwright test app remains loopback-only and is not exposed to LAN devices. Its remote-host rejection remains unchanged.
+- Playwright attaches to the normal development app at `https://rad.localhost` by default. Its remote-host rejection remains in force.
 - If the computer uses WSL2, Docker, a VPN, or multiple network adapters, LAN routing may require host-specific networking setup; set RAD_LAN_HOST to the reachable address and ensure the host firewall permits TCP 443.
 
 The rad.home.arpa name is optional convenience DNS; direct access by the LAN IP does not require it.
@@ -131,20 +134,22 @@ Keep Laravel config, route and event optimization caches disabled in the deploye
 
 The production asset build is not a deployment or a complete release verification: it does not validate the deployed .env, database connectivity, HTTPS/proxy configuration, backups, migrations or live user journeys.
 
-## Browser-test lifecycle
+## Browser-test workflow
 
-Playwright is retained as a test workflow; it no longer has a separate development server or Caddy profile.
+Playwright has one workflow: it attaches to the app already running under the normal local `.env` and uses that app's configured MySQL/MariaDB database. There is no isolated Playwright app or browser-test database.
 
-1. Stop the normal npm run dev process because the temporary test stack uses the same local Laravel/Vite ports.
-2. Run npm run test:browser. The command prepares only database/browser-testing.sqlite and isolated browser-test storage, then runs migrate:fresh --seed against that SQLite database.
-3. The command starts temporary loopback-only Laravel and Vite processes, waits for the API health and Vite readiness checks, runs the full suite, and stops both processes.
-4. To run one test, append its Python unittest ID after --, for example: npm run test:browser -- test_notifications_and_preferences.MessageNotificationBrowserTests.test_buyer_can_disable_in_app_message_notifications.
+1. Start the usual development stack with `npm run dev` and leave Laravel, Vite and Caddy running.
+2. In another terminal, run the complete suite with `npm run test:browser`. This is the default behavior; no extra flags are required.
+3. To inspect discovery without running tests, use `npm run test:browser -- --list`. To run a focused subset, pass one or more Python unittest IDs after `--`.
 
-The runner remains guarded: it requires browser_test_ready=true and rejects non-loopback URLs. Never point browser tests at the normal development database, a shared database, staging or production. Install Python Playwright and Chromium using the instructions in tests/README.md.
+The runner requires a local `APP_ENV=local/development` and MySQL/MariaDB configuration, validates a localhost/loopback app URL, and checks the running app's health endpoint before launching Chromium. It never starts/stops app services, overrides database settings, runs Artisan, migrates, seeds, creates a database, resets storage or clears application records. Remote/staging/production targets are rejected.
+
+The full suite is authorized to create, update or delete records in the existing development database; the owner has confirmed that this data is disposable. Individual tests may still be marked `manual_dev_safe` to identify read-only/API-mocked cases in the test listing, but the marker no longer gates execution. The runner does not reset or seed the database, so test-created records may remain after a run. Reports are written under `build/test-reports/browser/`.
+
 
 ## Dispatcher boundary
 
-scripts/project.mjs owns only workflows that need multiple steps, isolated test environments, report generation or service lifecycle management. It is not a second public command registry.
+scripts/project.mjs owns workflows that need multiple steps, report generation or service lifecycle management. It is not a second public command registry.
 
 The dispatcher tasks are setup, dev:check, dev, production, build:cpanel, db:sqlite:init, db:status, db:migrate, db:seed, db:seed:demo, db:fresh, test:backend, test:unit, test:feature, test:integration, test:frontend, test:browser, test:report and test:reporting. Lint and focused accessibility tests are defined directly in package.json. Database commands are routed through the dispatcher so they inherit the local environment/database preflight.
 

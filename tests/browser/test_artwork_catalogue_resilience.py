@@ -27,7 +27,15 @@ def artwork_payload(title="اثر آزمایشی کاتالوگ"):
     }
 
 
+def manual_dev_safe(test_method):
+    test_method.manual_dev_safe = True
+    return test_method
+
+
 class ArtworkCatalogueResilienceTests(unittest.TestCase):
+    # All API responses and media used by this class are intercepted in-page;
+    # these journeys do not read or write application database records.
+    manual_dev_safe = True
     @classmethod
     def setUpClass(cls):
         cls.playwright = sync_playwright().start()
@@ -296,6 +304,35 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
             }""")
             self.assertEqual(requests, ["initial", "changed"])
             self.assertEqual(image.locator("xpath=..").get_attribute("aria-busy"), "false")
+        finally:
+            context.close()
+
+
+class CurrentDevelopmentDatabaseReadOnlyTests(unittest.TestCase):
+    """A public GET-only smoke journey against the running app's configured DB."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.playwright = sync_playwright().start()
+        cls.browser = cls.playwright.chromium.launch()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.browser.close()
+        cls.playwright.stop()
+
+    @manual_dev_safe
+    def test_public_artwork_catalogue_renders_from_current_development_data(self):
+        context = self.browser.new_context(
+            viewport={"width": 1280, "height": 900},
+            ignore_https_errors=IGNORE_HTTPS_ERRORS,
+        )
+        page = context.new_page()
+        page.set_default_timeout(15000)
+        try:
+            page.goto(BASE_URL + "/artworks", wait_until="domcontentloaded")
+            page.get_by_role("heading", name="گالری آثار").wait_for()
+            self.assertTrue(page.locator("main").is_visible())
         finally:
             context.close()
 

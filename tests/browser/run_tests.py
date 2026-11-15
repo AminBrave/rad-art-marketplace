@@ -20,19 +20,34 @@ from urllib.parse import urlparse
 from urllib.request import HTTPRedirectHandler, HTTPSHandler, ProxyHandler, Request, build_opener
 
 
+def flatten_tests(suite):
+    """Yield individual unittest cases from nested suites."""
+    for item in suite:
+        if isinstance(item, unittest.TestSuite):
+            yield from flatten_tests(item)
+        else:
+            yield item
+
+
+def is_manual_dev_safe(test) -> bool:
+    method = getattr(test.__class__, getattr(test, "_testMethodName", ""), None)
+    return bool(
+        getattr(test.__class__, "manual_dev_safe", False)
+        or getattr(method, "manual_dev_safe", False)
+    )
+
+
+
 class RejectRedirects(HTTPRedirectHandler):
     def redirect_request(self, request, file_pointer, code, message, headers, new_url):
         return None
 
 
 def validate_local_target() -> None:
-    if os.environ.get("RAD_ART_TEST_MODE") != "1":
-        raise RuntimeError(
-            "Browser tests must be started through the guarded project runner "
-            "(npm run test:browser)."
-        )
+    if os.environ.get("RAD_ART_DEV_MODE") != "1":
+        raise RuntimeError("Playwright must be launched by npm run test:browser against the current development app.")
 
-    raw_url = os.environ.get("RAD_ART_BASE_URL", "http://127.0.0.1:8000").rstrip("/")
+    raw_url = os.environ.get("RAD_ART_BASE_URL", "https://rad.localhost").rstrip("/")
     parsed = urlparse(raw_url)
     hostname = (parsed.hostname or "").lower()
     is_loopback_name = (
@@ -69,15 +84,9 @@ def validate_local_target() -> None:
             payload = json.loads(response.read().decode("utf-8"))
             if response.status != 200 or payload.get("status") != "ok":
                 raise RuntimeError(f"Local app health check returned an unexpected response: {health_url}")
-            if payload.get("browser_test_ready") is not True:
-                raise RuntimeError(
-                    "The local app is not using the isolated browser-test environment. "
-                    "Run npm run test:browser to prepare and start the isolated test app."
-                )
     except (URLError, HTTPError, TimeoutError, json.JSONDecodeError) as error:
         raise RuntimeError(
-            f"Local RAD app is not ready at {health_url}. Run npm run test:browser to prepare and start the isolated test app. "
-            f"Underlying error: {error}"
+            f"Current local RAD development app is not ready at {health_url}. Start it with npm run dev first. Underlying error: {error}"
         ) from error
 
 
@@ -218,22 +227,41 @@ class Tee:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Run guarded Rademan Playwright tests and write JUnit + diagnostic reports."
+        description="Run Rademan Playwright tests against the current local development app and write JUnit + diagnostic reports."
     )
+    parser.add_argument("--list", action="store_true", help="List discovered test IDs and whether they are read-only/manual-safe for the current development database.")
+    parser.add_argument("--all", action="store_true", help="Explicitly select the complete discovered suite.")
     parser.add_argument(
         "tests",
         nargs="*",
         help="Optional unittest names, e.g. test_notifications_and_preferences.MessageNotificationBrowserTests.test_buyer_can_disable_in_app_message_notifications",
     )
     args = parser.parse_args()
+    if args.all and args.tests:
+        parser.error("--all cannot be combined with individual test IDs")
+    browser_dir = Path(__file__).resolve().parent
+    sys.path.insert(0, str(browser_dir))
+    loader = unittest.defaultTestLoader
+    discovered = loader.discover(
+        start_dir=str(browser_dir), pattern="test_*.py", top_level_dir=str(browser_dir)
+    )
 
-    report_dir = Path(os.environ.get("RAD_ART_TEST_REPORT_DIR", "build/test-reports"))
-    report_dir.mkdir(parents=True, exist_ok=True)
-    report_path = report_dir / "browser-junit.xml"
-    log_path = report_dir / "browser-run.log"
-    summary_path = report_dir / "browser-debug.json"
-    for destination in (report_path, log_path, summary_path):
-        destination.unlink(missing_ok=True)
+    all_tests = list(flatten_tests(discovered))
+    if args.list:
+        for test in all_tests:
+            safe = is_manual_dev_safe(test)
+            print(f"{test.id()}  [{'manual-safe: API mocked/read-only' if safe else 'may mutate current dev data'}]")
+        return 0
+    if args.tests:
+        selected = []
+        for name in args.tests:
+            loaded = loader.loadTestsFromName(name, module=None)
+            selected.extend(flatten_tests(loaded))
+        suite = unittest.TestSuite(selected)
+    else:
+        # Bare invocation intentionally runs every discovered browser test.
+        # The project owner has authorized mutations to the current dev database.
+        suite = unittest.TestSuite(all_tests)
 
     try:
         validate_local_target()
@@ -251,20 +279,18 @@ def main() -> int:
         )
         return 2
 
-    browser_dir = Path(__file__).resolve().parent
-    sys.path.insert(0, str(browser_dir))
+    selected_test_ids = [test.id() for test in flatten_tests(suite)]
+
+    report_dir = Path(os.environ.get("RAD_ART_TEST_REPORT_DIR", "build/test-reports/browser"))
+    report_dir.mkdir(parents=True, exist_ok=True)
+    report_path = report_dir / "browser-junit.xml"
+    log_path = report_dir / "browser-run.log"
+    summary_path = report_dir / "browser-debug.json"
+    for destination in (report_path, log_path, summary_path):
+        destination.unlink(missing_ok=True)
+
     from diagnostics import install_automatic_diagnostics
     install_automatic_diagnostics()
-    loader = unittest.defaultTestLoader
-    if args.tests:
-        suite = unittest.TestSuite(loader.loadTestsFromName(name) for name in args.tests)
-    else:
-        suite = loader.discover(
-            start_dir=str(browser_dir),
-            pattern="test_*.py",
-            top_level_dir=str(browser_dir),
-        )
-
     with log_path.open("w", encoding="utf-8") as log_file:
         output = Tee(sys.__stdout__, log_file)
         runner = unittest.TextTestRunner(
@@ -294,8 +320,10 @@ def main() -> int:
         "python": sys.version,
         "platform": platform.platform(),
         "playwright": playwright_version,
-        "base_url": os.environ.get("RAD_ART_BASE_URL", "http://127.0.0.1:8000"),
-        "selected_tests": args.tests,
+        "base_url": os.environ.get("RAD_ART_BASE_URL", "https://rad.localhost"),
+        "selected_tests": selected_test_ids,
+        "target_environment": "current-local-development",
+        "mutation_policy": "owner-authorized-current-development-data",
         "tests_run": result.testsRun,
         "failures": failures,
         "errors": errors,

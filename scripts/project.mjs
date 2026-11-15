@@ -179,62 +179,8 @@ function testEnvironment() {
         FILESYSTEM_DISK: 'local',
         RAD_ART_LOCAL_STORAGE_PATH: resolve(root, 'storage', 'framework', 'testing', 'storage', 'private'),
         RAD_ART_PUBLIC_STORAGE_PATH: resolve(root, 'storage', 'framework', 'testing', 'storage', 'public'),
-        RAD_ART_BROWSER_TEST_MODE: '0',
         VIEW_COMPILED_PATH: resolve(root, 'storage', 'framework', 'testing', 'views'),
     };
-}
-
-function browserTestEnvironment() {
-    const runtimeDir = resolve(root, 'storage', 'framework', 'browser-testing');
-    return {
-        ...process.env, ...noCacheEnvironment('browser-testing'),
-        APP_ENV: 'local', APP_KEY: 'base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
-        APP_DEBUG: 'true', APP_URL: 'http://127.0.0.1:8000', APP_TIMEZONE: 'Asia/Tehran',
-        APP_LOCALE: 'fa', APP_FALLBACK_LOCALE: 'en', APP_FAKER_LOCALE: 'fa_IR',
-        DB_CONNECTION: 'sqlite', DB_DATABASE: resolve(root, 'database', 'browser-testing.sqlite'),
-        DB_FOREIGN_KEYS: 'true', DB_URL: '', CACHE_STORE: 'array',
-        SESSION_DRIVER: 'file', SESSION_FILES: resolve(runtimeDir, 'sessions'),
-        SESSION_COOKIE: 'rad_browser_test_session', SESSION_DOMAIN: '',
-        SESSION_SECURE_COOKIE: 'false', SESSION_SAME_SITE: 'lax',
-        MAIL_MAILER: 'array', QUEUE_CONNECTION: 'sync', LOG_CHANNEL: 'stderr',
-        FILESYSTEM_DISK: 'local',
-        RAD_ART_LOCAL_STORAGE_PATH: resolve(root, 'storage', 'app', 'browser-testing', 'private'),
-        RAD_ART_PUBLIC_STORAGE_PATH: resolve(root, 'storage', 'app', 'browser-testing', 'public'),
-        VIEW_COMPILED_PATH: resolve(runtimeDir, 'views'),
-        RAD_ART_BROWSER_TEST_MODE: '1',
-    };
-}
-
-function ensureBrowserDatabase() {
-    const databasePath = resolve(root, 'database', 'browser-testing.sqlite');
-    mkdirSync(dirname(databasePath), { recursive: true });
-    if (existsSync(databasePath)) {
-        const stats = lstatSync(databasePath);
-        if (stats.isSymbolicLink() || !stats.isFile()) throw new Error('The isolated browser-test database must be a regular file.');
-    } else writeFileSync(databasePath, '');
-}
-
-function resetBrowserRuntime() {
-    const appRuntimeDir = resolve(root, 'storage', 'app', 'browser-testing');
-    const frameworkRuntimeDir = resolve(root, 'storage', 'framework', 'browser-testing');
-    for (const directory of [appRuntimeDir, frameworkRuntimeDir]) {
-        if (existsSync(directory) && lstatSync(directory).isSymbolicLink()) {
-            throw new Error('Refusing to reset browser-test storage through a symbolic link: ' + directory);
-        }
-    }
-    rmSync(appRuntimeDir, { recursive: true, force: true });
-    rmSync(frameworkRuntimeDir, { recursive: true, force: true });
-    for (const directory of [
-        resolve(frameworkRuntimeDir, 'sessions'), resolve(frameworkRuntimeDir, 'views'),
-        resolve(appRuntimeDir, 'private'), resolve(appRuntimeDir, 'public'),
-    ]) mkdirSync(directory, { recursive: true });
-}
-
-async function prepareBrowserEnvironment() {
-    ensureBrowserDatabase();
-    resetBrowserRuntime();
-    console.log('[project] Preparing the isolated Playwright SQLite database and storage.');
-    await run(php, ['artisan', 'migrate:fresh', '--seed'], { env: browserTestEnvironment() });
 }
 
 async function runBackendTests(suite = 'backend') {
@@ -270,7 +216,6 @@ function developmentArtisanEnvironment() {
         ...process.env, ...noCacheEnvironment('development'),
         APP_ENV: 'local', APP_DEBUG: 'true', APP_URL: 'http://localhost',
         SESSION_DOMAIN: '', SESSION_SECURE_COOKIE: 'false',
-        RAD_ART_BROWSER_TEST_MODE: '0',
     };
 }
 
@@ -323,54 +268,47 @@ async function buildProduction(cpanel = false) {
     verifyProductionManifest(manifestPath);
     console.log('[project] Production asset manifest and required CSS/JS files verified.');
 }
-async function waitForBrowserApp(stopServices) {
-    const healthUrl = 'http://127.0.0.1:8000/api/v1/health';
-    const viteUrl = 'http://127.0.0.1:5173/@vite/client';
-    const deadline = Date.now() + 45000;
-    let lastError = 'services are starting';
-    while (Date.now() < deadline) {
-        const failure = stopServices.failure();
-        if (failure) throw failure;
-        try {
-            const healthResponse = await fetch(healthUrl, { headers: { Accept: 'application/json' } });
-            const health = await healthResponse.json();
-            const viteResponse = await fetch(viteUrl);
-            if (healthResponse.ok && health.browser_test_ready === true && viteResponse.ok) return;
-            lastError = 'Laravel health or Vite readiness check returned an unexpected response';
-        } catch (error) {
-            lastError = error.message;
-        }
-        await new Promise((resolveWait) => setTimeout(resolveWait, 500));
-    }
-    throw new Error('Temporary Playwright app did not become ready at ' + healthUrl + '. Last observation: ' + lastError);
+async function auditBuiltColorAccessibility() {
+    const outputDirectory = resolve(root, 'build', 'a11y-css');
+    const manifestPath = resolve(outputDirectory, 'manifest.json');
+    const viteCli = resolve(root, 'node_modules', 'vite', 'bin', 'vite.js');
+    if (!existsSync(viteCli)) throw new Error('Vite is not installed. Run npm run setup before auditing compiled CSS.');
+
+    // Use an isolated output directory so this audit can run while the normal
+    // development Vite server is active. It never touches public/build or .env.
+    await run(process.execPath, [
+        viteCli, 'build', '--outDir', 'build/a11y-css', '--manifest', 'manifest.json', '--emptyOutDir',
+    ]);
+    verifyProductionManifest(manifestPath);
+    await run(process.execPath, ['scripts/audit-built-css.mjs']);
 }
 
 async function runBrowserTests() {
-    await prepareBrowserEnvironment();
-    const env = browserTestEnvironment();
-    const stopServices = await startServices([
-        {
-            label: 'Temporary isolated Laravel app (loopback)',
-            command: php, args: ['artisan', 'serve', '--host=127.0.0.1', '--port=8000'], env,
-        },
-        {
-            label: 'Temporary Vite development server (loopback)',
-            command: npm, args: ['exec', '--', 'vite', '--mode', 'browser-test'],
-            env,
-        },
-    ]);
-    try {
-        await waitForBrowserApp(stopServices);
-        await run(python, pythonArgs(['tests/browser/run_tests.py', ...process.argv.slice(3)]), {
-            env: {
-                ...env, RAD_ART_TEST_MODE: '1',
-                RAD_ART_BASE_URL: 'http://127.0.0.1:8000',
-                RAD_ART_IGNORE_HTTPS_ERRORS: 'false',
-            },
-        });
-    } finally {
-        stopServices(0);
+    runDevelopmentPreflight({ root, processValues: process.env, requireFrontend: true, checkHotFile: false });
+    const envPath = resolve(root, '.env');
+    if (!existsSync(envPath)) throw new Error('The existing development .env is required. Run npm run setup and configure it first.');
+    const values = { ...parseDotEnv(readFileSync(envPath, 'utf8')), ...process.env };
+    const configuredUrl = String(values.DB_URL ?? '').trim();
+    const environment = String(values.APP_ENV ?? 'local').toLowerCase();
+    const driver = String(values.DB_CONNECTION ?? 'mysql').toLowerCase();
+    if (!['local', 'development'].includes(environment)) {
+        throw new Error('Playwright can only attach to the current local development environment (APP_ENV=local or development).');
     }
+    if (driver !== 'mysql' || (configuredUrl && !configuredUrl.startsWith('mysql:'))) {
+        throw new Error('Playwright requires the current development .env to use the MySQL connection. No database settings were changed.');
+    }
+    const baseUrl = process.env.RAD_ART_BASE_URL || 'https://rad.localhost';
+    console.log('[project] Running Playwright against the already-running development app at ' + baseUrl);
+    console.log('[project] The existing .env MySQL/MariaDB database is used through the app. No app services, database, migrations, seeders or storage are started/reset.');
+    await run(python, pythonArgs(['tests/browser/run_tests.py', ...process.argv.slice(3)]), {
+        env: {
+            ...process.env,
+            RAD_ART_DEV_MODE: '1',
+            RAD_ART_BASE_URL: baseUrl,
+            RAD_ART_IGNORE_HTTPS_ERRORS: 'false',
+            RAD_ART_TEST_REPORT_DIR: process.env.RAD_ART_TEST_REPORT_DIR || 'build/test-reports/browser',
+        },
+    });
 }
 
 function developmentMysqlConfig() {
@@ -509,6 +447,7 @@ function usage() {
         'dev:check             Validate local configuration without starting services',
         'dev                   Validate local configuration, then start Laravel + Vite + Caddy',
         'production            Build and verify standard production assets',
+        'a11y:build            Build Vite CSS in an isolated folder and audit compiled design tokens',
         'build:cpanel          Build and verify cPanel production assets',
         'db:sqlite:init        Create the local SQLite database file if absent',
         'db:status             Check local database migration status',
@@ -522,7 +461,7 @@ function usage() {
         'test:feature          Run PHPUnit Feature',
         'test:integration      Run PHPUnit Integration',
         'test:frontend         Run frontend Node tests',
-        'test:browser          Prepare isolated SQLite and run Playwright temporarily',
+        'test:browser          Run all Playwright tests against the already-running local MySQL development app',
         'test:report           Summarize existing JUnit reports',
         'test:reporting        Test the report generator',
     ].join(String.fromCharCode(10)));
@@ -541,6 +480,7 @@ try {
         case 'dev:check': runDevelopmentPreflight({ root, processValues: process.env }); break;
         case 'dev': await startDevelopment(); break;
         case 'production': await buildProduction(false); break;
+        case 'a11y:build': await auditBuiltColorAccessibility(); break;
         case 'build:cpanel': await buildProduction(true); break;
         case 'test:backend': await runBackendTests(); break;
         case 'test:unit':

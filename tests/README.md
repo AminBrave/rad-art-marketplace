@@ -56,7 +56,7 @@ Run these steps from the repository root.
 
    If your machine uses `python3` rather than `python`, use `python3 -m pip` and `python3 -m playwright` for these installation commands. The browser runner uses the Python interpreter available to the project scripts; make sure Playwright is installed into that same environment.
 
-The npm database commands (`db:status`, `db:migrate`, `db:seed`, `db:seed:demo`, `db:fresh` and `db:export:cpanel`) all run the same local environment/database preflight and use isolated Laravel optimization-cache paths. The export command additionally requires MySQL and `mysqldump`; it writes the current database, including every row, to a gzip-compressed SQL file in a web-denied subfolder of `public/build`. This does not make `npm run db:fresh` safe for important data: it still drops all tables in the configured development database, so do not use it as a general test setup step. PHPUnit uses its own in-memory SQLite database, and Playwright has a separate isolated database.
+The npm database commands (`db:status`, `db:migrate`, `db:seed`, `db:seed:demo`, `db:fresh` and `db:export:cpanel`) all run the same local environment/database preflight and use isolated Laravel optimization-cache paths. The export command additionally requires MySQL and `mysqldump`; it writes the current database, including every row, to a gzip-compressed SQL file in a web-denied subfolder of `public/build`. This does not make `npm run db:fresh` safe for important data: it still drops all tables in the configured development database, so do not use it as a general test setup step. PHPUnit uses its own in-memory SQLite database. Playwright does not create or use a separate database; it always exercises the already-running development app and that app's configured MySQL/MariaDB database.
 
 ### Development configuration preflight
 
@@ -134,6 +134,17 @@ npm run a11y:colors
 
 This is a focused automated color-contrast check, not a complete accessibility audit.
 
+The color-accessibility checks have three distinct layers:
+
+- `npm run a11y:colors` checks the semantic design-token combinations.
+- `npm run a11y:build` runs a fresh Vite production-mode build into the isolated `build/a11y-css/` directory, then audits the CSS assets listed in its manifest. It verifies that Tailwind color declarations are emitted, RAD color tokens survive compilation, and every compiled `--color-*` reference has a definition. This command does not stop the running dev server or overwrite `public/build`.
+- `npm run test:browser` includes two rendered contrast audits:
+  - `accessibility.test_rendered_color_contrast.RenderedColorContrastTests.test_public_and_auth_screens_have_no_computed_color_contrast_failures` is the original focused smoke check for the login, registration and artwork catalogue screens.
+  - `accessibility.test_codebase_color_contrast.CodebaseRenderedColorContrastTests` expands coverage to every declared React Router route, every public dynamic detail URL currently exposed by `/sitemap.xml`, and all buyer, artist and admin workspace routes. Authenticated screens use role-specific mocked API responses, so this audit does not create or modify database records.
+- The route-inventory test fails when a route declaration is added to `AppRouter.jsx` without being represented in the audit inventory. Each visited route is audited after React renders, and every visible element in its DOM is inspected using browser-computed colors.
+
+The build audit verifies the compiled artifact's token/utility wiring; it cannot infer every foreground/background pairing from CSS in isolation. The rendered browser audit now covers the full registered route surface and the dynamic public records currently in the sitemap at desktop and mobile widths. It also mounts the development component-library showcase and exercises representative button hover, dropdown, dialog, tab-selection and keyboard-focus states. It does not mathematically exhaust every arbitrary user-generated content value, browser engine or conditional branch. Image/gradient-backed text is reported for manual review because a single computed color cannot certify contrast across every pixel. This is comprehensive route-level color coverage, not a complete WCAG conformance certification.
+
 
 ### What frontend component tests prove
 
@@ -155,31 +166,46 @@ The source-level design-system and mutation-architecture tests intentionally ins
 
 ## 5. Run browser tests (Playwright)
 
-Browser tests exercise real user journeys in Chromium. They may create, update or delete test records and must use the disposable local browser-test environment.
+Browser tests exercise real user journeys in Chromium. There is one mode only: Playwright attaches to the already-running local development app and uses the app's existing `.env` and MySQL/MariaDB database. It never starts another app or creates, switches, resets, or seeds a browser-test database.
 
-### Single-command lifecycle
+### Current development app and MySQL/MariaDB
 
-Stop the normal npm run dev process, then run npm run test:browser from the repository root. The command:
+Start your usual local app first with `npm run dev` and keep it running. Then run the complete discovered Playwright suite with:
 
-1. Creates database/browser-testing.sqlite if absent and verifies it is a regular file.
-2. Resets only browser-test storage directories.
-3. Runs migrate:fresh --seed against the isolated browser SQLite database.
-4. Starts temporary Laravel on 127.0.0.1:8000 and Vite on 127.0.0.1:5173.
-5. Waits for the API health endpoint to confirm browser_test_ready=true and for Vite to respond.
-6. Runs the Playwright suite (or the selected unittest ID), then stops both temporary services.
+```powershell
+npm run test:browser
+```
 
-The Playwright app is a temporary test process, not a second development server. No separate browser:prepare, dev:browser or Caddy browser configuration is needed. The temporary app is loopback-only and is not exposed to LAN devices. Stop npm run dev first because the test workflow uses the same local Laravel/Vite ports.
+This bare command runs **all discovered browser tests**, including tests that create, update or delete development records. The project owner has explicitly accepted that the current development data may be changed by the suite. Run `npm run test:browser -- --list` whenever you want to inspect the test inventory first.
 
-Run one test method by appending its Python unittest ID after --:
-  npm run test:browser -- test_notifications_and_preferences.MessageNotificationBrowserTests.test_buyer_can_disable_in_app_message_notifications
+Run a GET-only smoke journey against the actual current development database (no API interception or writes):
+
+```powershell
+npm run test:browser -- test_artwork_catalogue_resilience.CurrentDevelopmentDatabaseReadOnlyTests.test_public_artwork_catalogue_renders_from_current_development_data
+```
+
+This reads the public artwork catalogue through the running Laravel app and therefore exercises its configured MySQL/MariaDB connection. It does not create or modify records.
+
+Run one API-mocked resilience method by its ID (copy the exact ID from the list):
+
+```powershell
+npm run test:browser -- test_artwork_catalogue_resilience.ArtworkCatalogueResilienceTests.test_artwork_catalogue_error_can_be_retried_into_results
+```
+
+You can pass multiple test IDs to run a selected subset. The default target is `https://rad.localhost`; set `RAD_ART_BASE_URL` only to another loopback or `.localhost` origin. The runner requires `.env` to select MySQL/MariaDB and leaves the app's existing environment and database connection untouched. It does not start or stop services, change environment variables for the Laravel process, invoke Artisan, migrate, seed, reset storage, or clean application records.
+
+The runner also supports focused selections by passing one or more unittest IDs. `--all` remains an explicit alias for the full suite, but is not required. The suite may mutate current development records; it does not reset the database or create a separate test database.
+
+Playwright diagnostics are written under `build/test-reports/browser/`.
+
 
 ### Browser safety rules
 
-- Do not run the Python browser runner directly. Use npm run test:browser; its guard verifies the target is localhost and that the app reports browser_test_ready=true.
-- Do not change RAD_ART_BASE_URL to a staging or production host. Remote targets are intentionally rejected.
-- Do not point browser tests at database/database.sqlite, your normal development database, or any shared database.
-- Each run resets only the dedicated browser-test SQLite database and storage. It does not reset the normal development database.
-- If the health or Vite readiness check fails, fix the local test setup; do not weaken or bypass the preflight guard.
+- Use only `npm run test:browser`; it attaches to the already-running development app and retains strict local-target guards.
+- Never target staging or production. Remote hosts are intentionally rejected.
+- The Playwright runner never creates or uses a separate database and never resets application storage.
+- The runner uses the app's existing `.env` MySQL/MariaDB connection and never resets or seeds it. Run only marked read-only/API-mocked tests by default; explicitly review and opt into any mutating test.
+- If the app health check fails, start or repair the normal local development app; do not weaken or bypass the preflight guard.
 
 ### Browser diagnostics
 
@@ -194,7 +220,7 @@ To inspect a captured trace, use python -m playwright show-trace with the exact 
 
 ## 6. Run the test suites and reports
 
-Run the backend suites with npm run test:backend, or choose one of npm run test:unit, npm run test:feature and npm run test:integration. Run frontend tests with npm run test:frontend. Run browser journeys with npm run test:browser; its temporary app is started and stopped by that command.
+Run the backend suites with npm run test:backend, or choose one of npm run test:unit, npm run test:feature and npm run test:integration. Run frontend tests with npm run test:frontend. Run all Playwright journeys against the already-running local MySQL/MariaDB development app with `npm run test:browser`, or pass one or more discovered test IDs for a focused selection.
 
 Lint and production builds are separate commands: npm run lint, npm run lint:fix, npm run production and npm run build:cpanel. They are not bundled into a verify alias. Follow AGENTS.md and obtain explicit authorization before running any verification.
 
@@ -230,7 +256,7 @@ The report links to detailed suite reports and browser diagnostics when present.
 npm run test:reporting
 ```
 
-This runs focused Python unit tests for report parsing and freshness classification. It is not a product behavior suite.
+This runs focused Python unit tests for report parsing/freshness classification and Playwright discovery and test classification (`tests/python/test_browser_runner.py`). It is not a product behavior suite.
 
 ## 8. A recommended workflow for each development task
 
@@ -246,7 +272,7 @@ Use this loop whenever you implement a feature, fix a bug or refactor behavior:
 3. **Add the important negative case.** Depending on the change, consider unauthorized actors, wrong owners, invalid transitions, empty/error/loading/retry states, duplicate submissions, stale state and failure recovery.
 4. **Run the focused test first.** Use the focused commands in sections 3–5.
 5. **Expand to the affected suite.** Then run the relevant backend, frontend or browser suite when the change crosses layers or has broader regression risk.
-6. **Run browser journeys when user-observable behavior changes.** Use the isolated lifecycle in section 5.
+6. **Run browser journeys when user-observable behavior changes.** Use the current-development Playwright workflow in section 5.
 7. **Inspect failures and diagnostics.** Fix the product/test setup cause; do not delete, skip or weaken a failing test just to get a green result.
 8. **Generate the report** after the relevant suites have produced their JUnit output.
 9. **Record exactly what ran.** List commands, pass/fail/skipped counts, environment and any tests or manual checks not performed.

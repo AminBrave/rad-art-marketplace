@@ -58,7 +58,7 @@ export default function AuthPage({ initialMode = 'login' }) {
 
     return (
         <main className="mx-auto max-w-xl px-5 py-12 sm:px-8" dir="rtl">
-            <section className="rounded-3xl border border-border bg-paper p-6 shadow-sm sm:p-9">
+            <section className="rounded-3xl border border-border-strong bg-paper p-6 shadow-sm sm:p-9">
                 <Link to="/" className="text-sm font-bold text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2">بازگشت به راد آرت</Link>
                 <h1 className="mt-5 text-2xl font-black">{mode === 'register' ? 'ساخت حساب کاربری' : 'ورود به حساب'}</h1>
                 <div className="mt-6 flex gap-5 border-b border-border pb-4">
@@ -68,25 +68,25 @@ export default function AuthPage({ initialMode = 'login' }) {
                 <form onSubmit={submit} className="mt-6 space-y-4">
                     {mode === 'register' && <>
                         <label className="block text-sm font-semibold">نوع حساب
-                            <select name="role" value={form.role} onChange={update} className="mt-2 w-full rounded-xl border border-border bg-paper px-4 py-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2">
+                            <select name="role" value={form.role} onChange={update} className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2">
                                 <option value="buyer">خریدار</option><option value="artist">هنرمند</option>
                             </select>
                         </label>
                         <label className="block text-sm font-semibold">نام و نام خانوادگی
-                            <input name="name" value={form.name} onChange={update} required maxLength="120" autoComplete="name" className="mt-2 w-full rounded-xl border border-border bg-paper px-4 py-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2" />
+                            <input name="name" value={form.name} onChange={update} required maxLength="120" autoComplete="name" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2" />
                             {errors.name?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
                         </label>
                     </>}
                     <label className="block text-sm font-semibold">ایمیل
-                        <input type="email" name="email" value={form.email} onChange={update} required autoComplete="email" dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-paper px-4 py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2" />
+                        <input type="email" name="email" value={form.email} onChange={update} required autoComplete="email" dir="ltr" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2" />
                         {errors.email?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
                     </label>
                     <label className="block text-sm font-semibold">گذرواژه
-                        <input type="password" name="password" value={form.password} onChange={update} required minLength="10" autoComplete={mode === 'register' ? 'new-password' : 'current-password'} dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-paper px-4 py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2" />
+                        <input type="password" name="password" value={form.password} onChange={update} required minLength="10" autoComplete={mode === 'register' ? 'new-password' : 'current-password'} dir="ltr" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2" />
                         {errors.password?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
                     </label>
                     {mode === 'register' && <label className="block text-sm font-semibold">تکرار گذرواژه
-                        <input type="password" name="password_confirmation" value={form.password_confirmation} onChange={update} required minLength="10" autoComplete="new-password" dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-paper px-4 py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2" />
+                        <input type="password" name="password_confirmation" value={form.password_confirmation} onChange={update} required minLength="10" autoComplete="new-password" dir="ltr" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2" />
                     </label>}
                     {errors.form?.map((item) => <p key={item} role="alert" className="text-sm text-danger">{item}</p>)}
                     {message && <p role="status" className="text-sm text-muted">{message}</p>}
