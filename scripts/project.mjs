@@ -362,7 +362,7 @@ function usage() {
     console.log([
         'Rademan project tasks',
         'setup                 Install dependencies and create .env if absent',
-        'dev                   Validate local configuration, then start Laravel + Vite + Caddy',
+        'dev:check             Validate local configuration without starting services',\n        'dev                   Validate local configuration, then start Laravel + Vite + Caddy',
         'production            Build and verify standard production assets',
         'build:cpanel          Build and verify cPanel production assets',
         'db:sqlite:init        Create the local SQLite database file if absent',
@@ -382,7 +382,7 @@ try {
     switch (task) {
         case 'setup': await setup(); break;
         case 'db:sqlite:init': initializeSqlite(); break;
-        case 'dev': await startDevelopment(); break;
+        case 'dev:check': runDevelopmentPreflight({ root, processValues: process.env }); break;\n        case 'dev': await startDevelopment(); break;
         case 'production': await buildProduction(false); break;
         case 'build:cpanel': await buildProduction(true); break;
         case 'test:backend': await runBackendTests(); break;
