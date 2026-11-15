@@ -181,7 +181,7 @@ npm run test:browser -- test_artwork_catalogue_resilience.ArtworkCatalogueResili
 
 You can pass multiple test IDs to run a selected subset. The default target is `https://rad.localhost`; set `RAD_ART_BASE_URL` only to another loopback or `.localhost` origin. The runner requires `.env` to select MySQL/MariaDB and leaves the app's existing environment and database connection untouched. It does not start or stop services, change environment variables for the Laravel process, invoke Artisan, migrate, seed, reset storage, or clean application records.
 
-Only tests explicitly marked manual-safe may run by default. A marker is allowed for either an API-mocked test with no persistent-record dependency or a reviewed GET-only test that reads current development data without writes. Other tests are labelled as requiring `--allow-mutations`; inspect their setup/teardown and use a dedicated test identity before opting in. The flag does not make arbitrary existing data safe. Running the complete browser suite requires both `--all` and `--allow-mutations`:
+Only tests explicitly marked manual-safe may be selected without mutation opt-in. A marker is allowed for either an API-mocked test with no persistent-record dependency or a reviewed GET-only test that reads current development data without writes. Other tests are labelled as requiring `--allow-mutations`; inspect their setup/teardown and use a dedicated test identity before opting in. The flag does not make arbitrary existing data safe. Running the complete browser suite requires both `--all` and `--allow-mutations`:
 
 ```powershell
 npm run test:browser -- --all --allow-mutations
