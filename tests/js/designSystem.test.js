@@ -170,6 +170,7 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.ok(messaging.includes('min-w-0 w-fit max-w-[88%]'));
     assert.ok(messaging.includes('min-h-[4.25rem] w-full items-center gap-2'));
     assert.ok(messaging.includes('absolute end-1 top-1/2 -translate-y-1/2'));
+    assert.ok(messaging.includes('absolute top-full') === false);
     assert.ok(messaging.includes('mt-2 flex flex-wrap items-center justify-between gap-1'));
     assert.ok(messaging.includes('max-h-28 min-h-[2.3rem] w-full resize-none'));
     assert.ok(messaging.includes('absolute bottom-2 start-2 z-10 flex h-9 w-9'));
@@ -190,6 +191,14 @@ test('messaging chat geometry follows RTL logical flow and keeps bubbles and pop
     assert.ok(messaging.includes('function getChatPopoverPosition(anchor, preferredWidth, preferredHeight)'));
     assert.ok(messaging.includes('const leftOfAnchor = rect.right - width'));
     assert.ok(messaging.includes('const rightOfAnchor = rect.left'));
+    assert.ok(messaging.includes('const preferredTop = below >= height + margin'));
+    assert.ok(messaging.includes('rect.bottom + margin'));
+    assert.ok(messaging.includes("toggleChatPopover(event, 'thread:' + thread.id, 192, 88)"));
+    assert.ok(messaging.includes("toggleChatPopover(event, 'conversation', 208, 88)"));
+    assert.ok(messaging.includes("createPortal(<div id={'thread-options-' + thread.id}"));
+    assert.ok(messaging.includes('createPortal(<div id="conversation-options"'));
+    assert.ok(messaging.includes('min-w-0 flex-wrap items-center justify-end gap-1.5'));
+    assert.ok(messaging.includes('relative shrink-0'));
     assert.ok(messaging.includes('const viewportHeight = visualViewport?.height ?? window.innerHeight;'));
     assert.ok(messaging.includes("anchor.closest('[data-chat-popover-boundary]')?.getBoundingClientRect()"));
     assert.ok(messaging.includes('rect.bottom < boundary.top || rect.top > boundary.bottom'));
