@@ -60,7 +60,7 @@ def validate_local_target() -> None:
     if os.environ.get("RAD_ART_DEV_MODE") != "1":
         raise RuntimeError("Playwright must be launched by npm run test:browser against the current development app.")
 
-    raw_url = os.environ.get("RAD_ART_BASE_URL", "http://127.0.0.1:8000").rstrip("/")
+    raw_url = os.environ.get("RAD_ART_BASE_URL", "https://rad.localhost").rstrip("/")
     parsed = urlparse(raw_url)
     hostname = (parsed.hostname or "").lower()
     is_loopback_name = (
