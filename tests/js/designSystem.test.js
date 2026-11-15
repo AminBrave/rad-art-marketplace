@@ -203,8 +203,10 @@ test('messaging chat geometry follows RTL logical flow and keeps bubbles and pop
     assert.ok(messaging.includes('function getChatPopoverPosition(anchor, preferredWidth, preferredHeight)'));
     assert.ok(messaging.includes('const leftOfAnchor = rect.right - width'));
     assert.ok(messaging.includes('const rightOfAnchor = rect.left'));
-    assert.ok(messaging.includes('const preferredTop = below >= height + margin'));
-    assert.ok(messaging.includes('rect.bottom + margin'));
+    assert.ok(messaging.includes('const anchorGap = 32'), 'Popover placement keeps a consistent 32px gap from its trigger.');
+    assert.ok(messaging.includes('const preferredTop = below >= height + anchorGap'));
+    assert.ok(messaging.includes('rect.bottom + anchorGap'));
+    assert.ok(messaging.includes('rect.top - height - anchorGap'));
     assert.ok(messaging.includes("toggleChatPopover(event, 'thread:' + thread.id, 192, 88)"));
     assert.ok(messaging.includes("toggleChatPopover(event, 'conversation', 208, 88)"));
     assert.ok(messaging.includes("createPortal(<div id={'thread-options-' + thread.id}"));
