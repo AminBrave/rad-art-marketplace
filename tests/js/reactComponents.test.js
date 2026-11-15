@@ -441,7 +441,7 @@ test('WorkspaceHero declares RTL direction and a primary page heading', () => {
     assert.match(html, /آثار و پروفایل خود را مدیریت کنید/);
 });
 
-test('TextInput, TextareaField and SelectField preserve native form semantics', () => {
+test('TextInput and TextareaField preserve native form semantics while SelectField uses Radix Select', () => {
     const input = renderToStaticMarkup(
         React.createElement(primitives.TextInput, { type: 'email', name: 'email', dir: 'ltr', required: true }),
     );
@@ -449,7 +449,7 @@ test('TextInput, TextareaField and SelectField preserve native form semantics', 
         React.createElement(primitives.TextareaField, { name: 'bio', rows: 5, maxLength: 500 }),
     );
     const select = renderToStaticMarkup(
-        React.createElement(primitives.SelectField, { name: 'status', 'aria-label': 'وضعیت اثر' },
+        React.createElement(primitives.SelectField, { name: 'status', value: 'approved', required: true, 'aria-label': 'وضعیت اثر' },
             React.createElement('option', { value: 'approved' }, 'تأییدشده'),
         ),
     );
@@ -459,8 +459,21 @@ test('TextInput, TextareaField and SelectField preserve native form semantics', 
     assert.match(input, /required=""/);
     assert.match(textarea, /rows="5"/);
     assert.match(textarea, /maxLength="500"|maxlength="500"/i);
+    assert.match(select, /role="combobox"/);
     assert.match(select, /aria-label="وضعیت اثر"/);
-    assert.match(select, /<option value="approved">تأییدشده<\/option>/);
+    assert.match(select, /name="status"/);
+    assert.match(select, /required=""/);
+});
+
+test('Checkbox uses the Radix checkbox interaction and exposes its accessible state', () => {
+    const checkbox = renderToStaticMarkup(
+        React.createElement(primitives.Checkbox, { checked: true, name: 'is_public', 'aria-label': 'نمایش عمومی پروفایل' }),
+    );
+
+    assert.match(checkbox, /role="checkbox"/);
+    assert.match(checkbox, /aria-checked="true"/);
+    assert.match(checkbox, /aria-label="نمایش عمومی پروفایل"/);
+    assert.match(checkbox, /name="is_public"/);
 });
 
 test('Tabs expose tablist, selected state and linked panel semantics', () => {
