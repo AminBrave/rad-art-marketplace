@@ -303,5 +303,39 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
             context.close()
 
 
+class CurrentDevelopmentDatabaseReadOnlyTests(unittest.TestCase):
+    """A public GET-only smoke journey against the running app's configured DB."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.playwright = sync_playwright().start()
+        cls.browser = cls.playwright.chromium.launch()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.browser.close()
+        cls.playwright.stop()
+
+    @staticmethod
+    def manual_safe(test_method):
+        test_method.manual_dev_safe = True
+        return test_method
+
+    @manual_safe
+    def test_public_artwork_catalogue_renders_from_current_development_data(self):
+        context = self.browser.new_context(
+            viewport={"width": 1280, "height": 900},
+            ignore_https_errors=IGNORE_HTTPS_ERRORS,
+        )
+        page = context.new_page()
+        page.set_default_timeout(15000)
+        try:
+            page.goto(BASE_URL + "/artworks", wait_until="domcontentloaded")
+            page.get_by_role("heading", name="گالری آثار").wait_for()
+            self.assertTrue(page.locator("main").is_visible())
+        finally:
+            context.close()
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
