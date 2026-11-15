@@ -587,6 +587,7 @@ export default function MessagingCenter({ role }) {
                 eyebrow="ارتباط مستقیم"
                 title="پیام‌ها"
                 description="گفتگوی خصوصی خریداران و هنرمندان؛ پیام‌ها به‌صورت خودکار به‌روزرسانی می‌شوند."
+                titleClassName="mt-1 text-xl sm:text-2xl"
                 className="max-sm:hidden"
             />
             {notice && <p role="status" className="rounded-md border border-border bg-surface-muted p-3 text-sm">{notice}</p>}
