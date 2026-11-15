@@ -622,48 +622,17 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                             aria-haspopup="dialog"
                             aria-controls="workspace-mobile-menu"
                             onClick={() => setMobileMenuOpen((open) => !open)}
-                            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus lg:hidden"
+                            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
                         >
                             {mobileMenuOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
                         </button>
                     </div>
                 </div>
-                <div className="border-t border-border/70">
-                    <nav aria-label="ناوبری اصلی فضای کاربری" data-nav-priority="primary" className="mx-auto flex min-h-11 max-w-content items-center gap-2 overflow-x-auto px-page-gutter [scrollbar-width:thin]">
-                        {links.map((item) => (
-                            <NavLink
-                                key={item.to}
-                                to={item.to}
-                                end={item.end}
-                                className={({ isActive }) => [
-                                    'inline-flex min-h-9 shrink-0 items-center rounded-md px-3 text-xs font-bold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus motion-reduce:transition-none sm:text-sm',
-                                    isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
-                                ].join(' ')}
-                            >
-                                {item.label}
-                            </NavLink>
-                        ))}
-                    </nav>
-                    <nav aria-label="ناوبری تکمیلی سایت" data-nav-priority="secondary" className="mx-auto flex min-h-9 max-w-content items-center gap-1 overflow-x-auto border-t border-border/60 px-page-gutter [scrollbar-width:thin]">
-                        {publicSecondaryLinks.map((item) => (
-                            <NavLink
-                                key={item.to}
-                                to={item.to}
-                                className={({ isActive }) => [
-                                    'inline-flex min-h-7 shrink-0 items-center rounded px-2.5 text-[11px] font-medium no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus motion-reduce:transition-none',
-                                    isActive ? 'text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
-                                ].join(' ')}
-                            >
-                                {item.label}
-                            </NavLink>
-                        ))}
-                    </nav>
-                </div>
                 {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{logoutError}</p>}
             </header>
 
             {mobileMenuOpen && (
-                <div className="fixed inset-0 z-[70] lg:hidden">
+                <div className="fixed inset-0 z-[70]">
                     <button
                         type="button"
                         aria-label="بستن منوی فضای کاربری"
@@ -698,9 +667,47 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                             </button>
                         </div>
 
-                        <div className="flex-1 px-5 py-6">
-                            <p className="text-sm font-semibold leading-7 text-ink">برای جابه‌جایی بین بخش‌های فضای کاری از نوار پایین صفحه استفاده کنید.</p>
-                            <p className="mt-2 text-xs leading-6 text-muted">مدیریت حساب و بازگشت به وب‌سایت از این بخش در دسترس است.</p>
+                        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-5">
+                            <nav aria-label="بخش‌های اصلی فضای کاربری">
+                                <h3 className="mb-2 px-3 text-xs font-extrabold text-ink">فضای کاربری</h3>
+                                <div className="grid gap-1">
+                                    {links.map((item) => (
+                                        <NavLink
+                                            key={item.to}
+                                            to={item.to}
+                                            end={item.end}
+                                            onClick={closeMobileMenu}
+                                            className={({ isActive }) => [
+                                                'flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
+                                                isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
+                                            ].join(' ')}
+                                        >
+                                            {item.label}
+                                        </NavLink>
+                                    ))}
+                                </div>
+                            </nav>
+
+                            <div className="my-5 border-t border-border" />
+
+                            <nav aria-label="پیوندهای تکمیلی سایت">
+                                <h3 className="mb-2 px-3 text-xs font-extrabold text-muted">کشف و راهنمایی</h3>
+                                <div className="grid gap-1">
+                                    {publicSecondaryLinks.map((item) => (
+                                        <NavLink
+                                            key={item.to}
+                                            to={item.to}
+                                            onClick={closeMobileMenu}
+                                            className={({ isActive }) => [
+                                                'flex min-h-10 items-center rounded-lg px-3 text-sm font-medium no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
+                                                isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
+                                            ].join(' ')}
+                                        >
+                                            {item.label}
+                                        </NavLink>
+                                    ))}
+                                </div>
+                            </nav>
                         </div>
 
                         <div className="shrink-0 border-t border-border bg-surface-muted p-4">
