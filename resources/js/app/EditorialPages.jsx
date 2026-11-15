@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { ArtworkCard, EmptyState, ErrorState, Button, FormField, TextareaField, SuccessState, CollectionCardSkeleton, CollectionDetailSkeleton, AdminEditorialSkeleton } from '../components/ui';
+import { ArtworkCard, EmptyState, ErrorState, Button, FormField, TextareaField, SuccessState, CollectionCardSkeleton, CollectionDetailSkeleton, AdminEditorialSkeleton, PageHeader } from '../components/ui';
 
 export function CollectionIndexPage() {
     const collectionsQuery = useQuery({
@@ -17,7 +17,7 @@ export function CollectionIndexPage() {
     const items = collectionsQuery.data ?? [];
 
     return <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl">
-        <header className="max-w-3xl border-b border-border pb-8"><p className="text-xs font-bold text-terracotta-strong">انتخاب سردبیر</p><h1 className="mt-3 text-3xl font-black sm:text-4xl">مجموعه‌های منتخب</h1><p className="mt-4 text-sm leading-8 text-muted">روایت‌های موضوعی و انتخاب‌های هنری راد آرت؛ هر مجموعه مسیری تازه برای کشف آثار است.</p></header>
+        <PageHeader eyebrow="انتخاب سردبیر" title="مجموعه‌های منتخب" description="روایت‌های موضوعی و انتخاب‌های هنری راد آرت؛ هر مجموعه مسیری تازه برای کشف آثار است." className="max-w-3xl" />
         {collectionsQuery.isError ? <ErrorState className="mt-8" title="دریافت مجموعه‌ها ممکن نشد" description="لطفاً دوباره تلاش کنید." onRetry={() => collectionsQuery.refetch()} /> : collectionsQuery.isPending ? <div className="mt-9"><CollectionCardSkeleton count={6} /></div> : items.length ? <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{items.map((item) => <Link key={item.id} to={'/collections/' + item.slug} className="group border border-border bg-paper p-6 transition-colors hover:border-terracotta"><p className="text-xs text-terracotta-strong">{item.artwork_count} اثر منتخب</p><h2 className="mt-3 text-xl font-black group-hover:text-terracotta-strong">{item.title}</h2><p className="mt-3 line-clamp-4 text-sm leading-7 text-muted">{item.intro || 'انتخابی از آثار تأییدشده هنرمندان راد آرت.'}</p><span className="mt-6 inline-block text-sm font-bold underline">مشاهده مجموعه</span></Link>)}</div> : <EmptyState className="mt-8" title="هنوز مجموعه‌ای منتشر نشده است" description="مجموعه‌های منتخب پس از آماده‌سازی در این بخش نمایش داده می‌شوند." />}
     </main>;
 }
@@ -40,7 +40,7 @@ export function CollectionDetailPage() {
 
     return <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl">
         <nav aria-label="مسیر صفحه" className="text-sm text-muted"><Link to="/" className="underline">خانه</Link><span className="mx-2">/</span><Link to="/collections" className="underline">مجموعه‌ها</Link></nav>
-        <header className="mt-7 max-w-3xl border-b border-border pb-8"><p className="text-xs font-bold text-terracotta-strong">روایت منتخب راد آرت</p><h1 className="mt-3 text-3xl font-black sm:text-4xl">{item.title}</h1>{item.intro && <p className="mt-5 whitespace-pre-line text-sm leading-9 text-muted">{item.intro}</p>}</header>
+        <PageHeader eyebrow="روایت منتخب راد آرت" title={item.title} description={item.intro} className="mt-7 max-w-3xl" descriptionClassName="whitespace-pre-line leading-8" />
         {item.artworks?.length ? <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{item.artworks.map((artwork) => <ArtworkCard key={artwork.id} artwork={artwork} />)}</div> : <EmptyState className="mt-8" title="اثری در این مجموعه موجود نیست" />}
     </main>;
 }
@@ -156,7 +156,7 @@ export function AdminEditorialPage() {
         } catch (e) { setActionError(e.response?.data?.message || 'ذخیره انتخاب هنرمندان انجام نشد.'); }
     };
     return <section className="space-y-8" dir="rtl">
-        <header className="border-b border-border pb-6"><p className="text-xs font-bold text-terracotta-strong">سردبیری راد آرت</p><h1 className="mt-2 text-3xl font-black">مجموعه‌ها و هنرمندان منتخب</h1><p className="mt-3 text-sm leading-7 text-muted">فقط آثار تأییدشده و پروفایل‌های عمومی در خروجی عمومی نمایش داده می‌شوند. تغییرات انتشار ثبت رویداد می‌شوند.</p></header>
+        <PageHeader eyebrow="سردبیری راد آرت" title="مجموعه‌ها و هنرمندان منتخب" description="فقط آثار تأییدشده و پروفایل‌های عمومی در خروجی عمومی نمایش داده می‌شوند. تغییرات انتشار ثبت رویداد می‌شوند." />
         {message && <SuccessState title={message} />}{error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
         {loading ? <AdminEditorialSkeleton /> : <>
             <section className="space-y-4 border border-border bg-paper p-5 sm:p-7">
