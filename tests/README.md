@@ -168,7 +168,7 @@ npm run test:browser -- --list
 Run a GET-only smoke journey against the actual current development database (no API interception or writes):
 
 ```powershell
-npm run test:browser:manual -- test_artwork_catalogue_resilience.CurrentDevelopmentDatabaseReadOnlyTests.test_public_artwork_catalogue_renders_from_current_development_data
+npm run test:browser -- test_artwork_catalogue_resilience.CurrentDevelopmentDatabaseReadOnlyTests.test_public_artwork_catalogue_renders_from_current_development_data
 ```
 
 This reads the public artwork catalogue through the running Laravel app and therefore exercises its configured MySQL/MariaDB connection. It does not create or modify records.
@@ -187,16 +187,16 @@ Only tests explicitly marked manual-safe may run by default. A marker is allowed
 npm run test:browser:manual -- --all --allow-mutations
 ```
 
-Manual diagnostics are isolated under `build/test-reports/browser-manual/`; they do not overwrite the isolated browser runner's reports.
+Playwright diagnostics are written under `build/test-reports/browser/`.
 
 
 ### Browser safety rules
 
-- Use `npm run test:browser` for the isolated SQLite lifecycle and `npm run test:browser:manual` for the already-running development app. Both modes retain local-target guards.
+- Use only `npm run test:browser`; it attaches to the already-running development app and retains strict local-target guards.
 - Never target staging or production. Remote hosts are intentionally rejected.
-- Isolated mode resets only its dedicated browser-test SQLite database and isolated storage; it does not reset the normal development database.
-- Manual mode uses the app's existing `.env` MySQL/MariaDB connection and never resets or seeds it. Run only marked manual-safe tests by default; explicitly review and opt into any mutating test.
-- If the health or Vite readiness check fails, fix the local test setup; do not weaken or bypass the preflight guard.
+- The Playwright runner never creates or uses a separate database and never resets application storage.
+- The runner uses the app's existing `.env` MySQL/MariaDB connection and never resets or seeds it. Run only marked read-only/API-mocked tests by default; explicitly review and opt into any mutating test.
+- If the app health check fails, start or repair the normal local development app; do not weaken or bypass the preflight guard.
 
 ### Browser diagnostics
 
@@ -211,7 +211,7 @@ To inspect a captured trace, use python -m playwright show-trace with the exact 
 
 ## 6. Run the test suites and reports
 
-Run the backend suites with npm run test:backend, or choose one of npm run test:unit, npm run test:feature and npm run test:integration. Run frontend tests with npm run test:frontend. Run isolated browser journeys with npm run test:browser; its temporary app is started and stopped by that command. For manual, selected Playwright tests against the already-running local MySQL app, use npm run test:browser:manual -- --list and then pass one or more discovered test IDs.
+Run the backend suites with npm run test:backend, or choose one of npm run test:unit, npm run test:feature and npm run test:integration. Run frontend tests with npm run test:frontend. Run selected Playwright journeys against the already-running local MySQL/MariaDB development app with `npm run test:browser -- --list`, then pass one or more discovered test IDs.
 
 Lint and production builds are separate commands: npm run lint, npm run lint:fix, npm run production and npm run build:cpanel. They are not bundled into a verify alias. Follow AGENTS.md and obtain explicit authorization before running any verification.
 
