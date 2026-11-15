@@ -37,17 +37,6 @@ def is_manual_dev_safe(test) -> bool:
     )
 
 
-def manual_selection_error(tests, allow_mutations: bool, run_all: bool = False) -> str | None:
-    """Return a safety error when a manual selection is not explicitly safe."""
-    if not allow_mutations:
-        unsafe = [test.id() for test in tests if not is_manual_dev_safe(test)]
-        if unsafe:
-            return (
-                "Refusing tests not marked manual_dev_safe. Review their data effects, "
-                "then pass --allow-mutations explicitly:\n" + "\n".join(unsafe)
-            )
-    return None
-
 
 class RejectRedirects(HTTPRedirectHandler):
     def redirect_request(self, request, file_pointer, code, message, headers, new_url):
