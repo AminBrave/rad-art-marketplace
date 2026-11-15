@@ -58,6 +58,14 @@ Use the current RAD semantic tokens and project-owned primitives:
 - Editorial restraint: artwork and artist identity remain central; navigation should be quiet, legible and predictable.
 - Avoid raw palette utilities, arbitrary one-off hex colors, parallel component CSS systems and unreviewed visual conventions.
 
+## Messaging and segmented filters
+
+- Treat the conversation filter as one continuous segmented control: its three equal-width options fill the full parent width with no inset padding or inter-button gap.
+- Use the parent border, clipped outer radius and semantic RAD surface tokens to define the control boundary; do not create a second inset frame around the options.
+- Each option spans its grid track, uses the shared control-height rhythm (at least 44px), and retains a clear selected state with sufficient contrast.
+- Keep keyboard roving focus and RTL arrow-key behavior intact. Focus indicators must remain visible inside the clipped group, and motion must respect reduced-motion preferences.
+- Messaging surfaces, filters, inputs, alerts and action controls must inherit the current RAD semantic colors, spacing, radii, typography and interaction states. Avoid one-off visual systems or arbitrary palette values.
+
 ## Accessibility and interaction
 
 - Use semantic `nav` landmarks with distinct accessible labels for primary and secondary header navigation; the bottom bar has a primary-only landmark.
