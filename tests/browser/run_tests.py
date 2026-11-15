@@ -74,9 +74,9 @@ def validate_local_target() -> None:
                     "Run npm run test:browser to prepare and start the isolated test app."
                 )
     except (URLError, HTTPError, TimeoutError, json.JSONDecodeError) as error:
+        next_step = "Start your normal local development app first." if manual_mode else "Run npm run test:browser to prepare the isolated app."
         raise RuntimeError(
-            f"Local RAD app is not ready at {health_url}. Run npm run test:browser to prepare and start the isolated test app. "
-            f"Underlying error: {error}"
+            f"Local RAD app is not ready at {health_url}. {next_step} Underlying error: {error}"
         ) from error
 
 
@@ -256,7 +256,8 @@ def main() -> int:
         print("The complete browser suite may mutate development data. Add --allow-mutations only after reviewing that risk.", file=sys.stderr)
         return 2
 
-    report_dir = Path(os.environ.get("RAD_ART_TEST_REPORT_DIR", "build/test-reports"))
+    default_report_dir = "build/test-reports/browser-manual" if manual_mode else "build/test-reports"
+    report_dir = Path(os.environ.get("RAD_ART_TEST_REPORT_DIR", default_report_dir))
     report_dir.mkdir(parents=True, exist_ok=True)
     report_path = report_dir / "browser-junit.xml"
     log_path = report_dir / "browser-run.log"
