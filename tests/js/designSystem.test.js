@@ -13,6 +13,7 @@ const skeletons = readFileSync(new URL('../../resources/js/components/ui/skeleto
 const showcase = readFileSync(new URL('../../resources/js/app/ComponentShowcase.jsx', import.meta.url), 'utf8');
 const publicPages = ['ArtworkCatalogue.jsx', 'ArtistDirectoryPage.jsx', 'ArtworkDetailPage.jsx'].map((file) => readFileSync(new URL('../../resources/js/app/' + file, import.meta.url), 'utf8'));
 const layouts = readFileSync(new URL('../../resources/js/app/Layouts.jsx', import.meta.url), 'utf8');
+const appRouter = readFileSync(new URL('../../resources/js/app/AppRouter.jsx', import.meta.url), 'utf8');
 const buyerWorkspace = readFileSync(new URL('../../resources/js/app/BuyerWorkspace.jsx', import.meta.url), 'utf8');
 const routeLoading = readFileSync(new URL('../../resources/js/app/RoutingPages.jsx', import.meta.url), 'utf8');
 const queryClient = readFileSync(new URL('../../resources/js/lib/queryClient.js', import.meta.url), 'utf8');
@@ -159,6 +160,10 @@ test('authenticated app shell exposes role-aware primary and separated secondary
     assert.ok(layouts.includes('aria-label="بخش‌های اصلی حساب کاربری"'));
     assert.ok(layouts.includes('aria-label="پیوندهای تکمیلی سایت"'));
     assert.ok(layouts.includes('user && <AuthenticatedBottomNavigation primaryLinks={getWorkspacePrimaryLinks(user.role)} secondaryLinks={publicSecondaryLinks} />'));
+    const publicRoutesStart = appRouter.indexOf('<Route element={<PublicLayout />}>' );
+    const publicRoutesEnd = appRouter.indexOf('</Route>', publicRoutesStart);
+    assert.ok(publicRoutesStart >= 0 && publicRoutesEnd > publicRoutesStart);
+    assert.ok(appRouter.slice(publicRoutesStart, publicRoutesEnd).includes('<Route path="*" element={<NotFoundPage />} />'), 'Public fallback routes must retain the authenticated shell.');
     assert.ok(layouts.includes('<AuthenticatedBottomNavigation primaryLinks={links} secondaryLinks={publicSecondaryLinks} />'));
     assert.ok(layouts.includes('pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)]'));
     assert.ok(layouts.includes('secondaryLinks.map((item)'));
