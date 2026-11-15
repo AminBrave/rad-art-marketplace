@@ -163,11 +163,11 @@ test('messaging uses bounded responsive geometry and compact Telegram-inspired d
     assert.ok(messaging.includes('lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]'));
     assert.ok(messaging.includes('min-w-0 w-fit max-w-[88%]'));
     assert.ok(messaging.includes('min-h-[4.25rem] w-full items-center gap-2'));
-    assert.ok(messaging.includes('absolute left-1 top-1/2 -translate-y-1/2'));
+    assert.ok(messaging.includes('absolute end-1 top-1/2 -translate-y-1/2'));
     assert.ok(messaging.includes('mt-2 flex flex-wrap items-center justify-between gap-1'));
     assert.ok(messaging.includes('max-h-28 min-h-[2.3rem] w-full resize-none'));
-    assert.ok(messaging.includes('absolute bottom-2 right-2 z-10 flex h-9 w-9'));
-    assert.ok(messaging.includes('ps-3 pe-10 py-[.55rem]'));
+    assert.ok(messaging.includes('absolute bottom-2 start-2 z-10 flex h-9 w-9'));
+    assert.ok(messaging.includes('ps-10 pe-3 py-[.55rem]'));
     assert.doesNotMatch(messaging, /md:min-h-\[min\(580px/);
     assert.doesNotMatch(messaging, /min-h-\[5\.35rem\]/);
 });
@@ -196,6 +196,8 @@ test('messaging RTL behavior covers skeletons and logical bubble geometry', () =
     assert.ok(skeletons.includes('dir="rtl" className={`grid content-end gap-5 p-4 sm:p-6 ${className}`}'));
     assert.ok(skeletons.includes("own ? 'justify-start' : 'justify-end'"));
     assert.ok(skeletons.includes('dir="rtl" className={`min-h-0 flex-1 divide-y divide-border overflow-hidden ${className}`}'));
+    assert.ok(skeletons.includes('justify-self-start rounded-sm'));
+    assert.doesNotMatch(messaging, /text-right|text-left|border-r-2|border-l-0|dir="ltr"/);
 });
 
 test('messaging actions use compact, dismissible Telegram-style popovers', () => {
@@ -206,7 +208,7 @@ test('messaging actions use compact, dismissible Telegram-style popovers', () =>
     assert.ok(messaging.includes("thread-options-' + thread.id"));
     assert.ok(messaging.includes("updateThreadSetting(thread, 'archived'"));
     assert.ok(messaging.includes("updateThreadSetting(thread, 'muted'"));
-    assert.ok(messaging.includes('flex items-center gap-1 rounded-full border border-border bg-paper p-1.5 shadow-soft'));
+    assert.ok(messaging.includes('flex max-w-[min(15rem,calc(100vw-2rem))] flex-wrap items-center gap-1 rounded-full border border-border bg-paper p-1.5 shadow-soft'));
     assert.ok(messaging.includes('aria-label="افزودن واکنش"'));
     assert.ok(messaging.includes('aria-label="عملیات پیام"'));
     assert.ok(messaging.includes('<span>پاسخ</span>'));
