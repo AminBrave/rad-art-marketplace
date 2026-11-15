@@ -152,7 +152,7 @@ export function validateDevelopmentEnvironment({ fileValues = {}, processValues 
     return { errors, warnings };
 }
 
-export function runDevelopmentPreflight({ root = process.cwd(), processValues = process.env } = {}) {
+export function runDevelopmentPreflight({ root = process.cwd(), processValues = process.env, requireFrontend = true, checkHotFile = true } = {}) {
     const envPath = resolve(root, '.env');
     if (!existsSync(envPath)) {
         throw new Error('Local .env file is missing. Run npm run setup first; this creates it from .env.example without overwriting an existing file.');
@@ -164,13 +164,13 @@ export function runDevelopmentPreflight({ root = process.cwd(), processValues = 
         throw new Error('Development environment check failed:\n- ' + errors.join('\n- ') + '\n\nFix these settings in your local .env and run npm run dev again.');
     }
 
-    for (const relativePath of ['vendor/autoload.php', 'node_modules/vite/bin/vite.js']) {
+    const requiredPaths = ['vendor/autoload.php'];\n    if (requireFrontend) requiredPaths.push('node_modules/vite/bin/vite.js');\n    for (const relativePath of requiredPaths) {
         if (!existsSync(resolve(root, relativePath))) {
             throw new Error('Required project dependency is missing: ' + relativePath + '. Run npm run setup, then retry npm run dev.');
         }
     }
 
-    if (existsSync(resolve(root, 'public/hot'))) {
+    if (checkHotFile && existsSync(resolve(root, 'public/hot'))) {
         throw new Error('public/hot already exists. Another Vite process may be running, or a previous run ended unexpectedly. Stop the old process; if it is no longer running, remove public/hot and retry.');
     }
 
