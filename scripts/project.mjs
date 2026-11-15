@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
 import { copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isIP } from 'node:net';
 import { networkInterfaces } from 'node:os';
@@ -299,7 +299,7 @@ function verifyProductionManifest(manifestPath) {
         for (const asset of [entry.file, ...(entry.css ?? [])]) {
             const assetPath = resolve(dirname(manifestPath), asset);
             const outputRoot = resolve(dirname(manifestPath));
-            if (!asset || asset.startsWith('/') || !assetPath.startsWith(outputRoot + (isWindows ? '\\\\' : '/')) || !existsSync(assetPath)) {
+            const relativeAsset = relative(outputRoot, assetPath);\n            const escapesOutput = relativeAsset === '..' || relativeAsset.startsWith('..' + sep) || isAbsolute(relativeAsset);\n            if (!asset || escapesOutput || !existsSync(assetPath)) {
                 throw new Error('Production build references a missing or unsafe asset: ' + asset);
             }
         }
