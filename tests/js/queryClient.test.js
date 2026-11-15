@@ -8,6 +8,9 @@ test('query defaults retry transient failures once but never retry ordinary clie
 
     assert.equal(retry(0, { response: { status: 422 } }), false);
     assert.equal(retry(0, { response: { status: 503 } }), true);
+    assert.equal(retry(0, { response: { status: 408 } }), true);
+    assert.equal(retry(0, { response: { status: 429 } }), true);
+    assert.equal(retry(0, { response: { status: 401 } }), false);
     assert.equal(retry(1, { response: { status: 503 } }), false);
     assert.equal(retry(0, new Error('network unavailable')), true);
 });
