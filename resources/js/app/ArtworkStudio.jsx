@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { Badge, Button, EmptyState, ErrorState, FormField, ArtworkStudioListSkeleton, UploadFeedback, MediaImage } from '../components/ui';
+import { Badge, Button, EmptyState, ErrorState, FormField, ArtworkStudioListSkeleton, UploadFeedback, MediaImage, PageHeader } from '../components/ui';
 
 const emptyArtwork = { title: '', description: '', category_id: '', medium: '', dimensions: '', year: '', price: '', availability: 'available' };
 const statusLabels = { pending_review: 'در انتظار بررسی', approved: 'تأیید و منتشرشده', rejected: 'ردشده', changes_requested: 'نیازمند اصلاح' };
@@ -149,8 +149,12 @@ export default function ArtworkStudio({ user, hasProfile }) {
     const fieldError = (name) => errors[name]?.map((item) => <span key={item} className="mt-1 block text-xs font-normal text-danger">{item}</span>);
 
     return <section className="space-y-7" dir="rtl">
-        <header><p className="text-sm font-bold text-terracotta-strong">گالری شخصی</p><h1 className="mt-2 text-2xl font-black">مدیریت آثار</h1>
-            <p className="mt-2 text-sm leading-7 text-muted">آثار جدید و ویرایش‌شده پس از ثبت دوباره برای بررسی مدیر ارسال می‌شوند. فقط آثار تأییدشده در گالری عمومی نمایش داده می‌شوند.</p></header>
+        <PageHeader
+            eyebrow="گالری شخصی"
+            title="مدیریت آثار"
+            description="آثار جدید و ویرایش‌شده پس از ثبت دوباره برای بررسی مدیر ارسال می‌شوند. فقط آثار تأییدشده در گالری عمومی نمایش داده می‌شوند."
+            className="border-0 pb-0 pt-0"
+        />
         <section id="artwork-editor" className="border border-border bg-paper p-5 sm:p-7">
             <div className="mb-6 flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-lg font-bold">{editingId ? 'ویرایش اثر' : 'ثبت اثر جدید'}</h2><p className="mt-1 text-xs text-muted">فیلدهای الزامی با علامت * مشخص شده‌اند.</p></div>{editingId && <Button variant="outline" size="sm" onClick={resetForm}>انصراف از ویرایش</Button>}</div>
             <form onSubmit={saveArtwork} className="grid gap-5 sm:grid-cols-2">
