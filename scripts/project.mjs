@@ -274,7 +274,7 @@ async function runBrowserTests() {
     runDevelopmentPreflight({ root, processValues: process.env, requireFrontend: true, checkHotFile: false });
     const envPath = resolve(root, '.env');
     if (!existsSync(envPath)) throw new Error('The existing development .env is required. Run npm run setup and configure it first.');
-    const values = parseDotEnv(readFileSync(envPath, 'utf8'));
+    const values = { ...parseDotEnv(readFileSync(envPath, 'utf8')), ...process.env };
     const configuredUrl = String(values.DB_URL ?? '').trim();
     const environment = String(values.APP_ENV ?? 'local').toLowerCase();
     const driver = String(values.DB_CONNECTION ?? 'mysql').toLowerCase();
