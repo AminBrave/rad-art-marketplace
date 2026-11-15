@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { WorkspaceHero, Surface } from '../components/ui';
+import { WorkspaceHero, SectionHeader, Surface } from '../components/ui';
 
 export function BuyerDashboardHome() {
     return (
@@ -16,10 +16,8 @@ export function BuyerDashboardHome() {
 
             <Surface className="p-5 sm:p-7">
                 <div className="flex flex-wrap items-start justify-between gap-4">
-                    <div>
-                        <p className="text-xs font-bold text-terracotta-strong">ارتباط‌های شما</p>
-                        <h2 className="mt-2 text-xl font-black">پیام‌های مستقیم</h2>
-                        <p className="mt-2 max-w-2xl text-sm leading-7 text-muted">گفت‌وگوها، پاسخ‌ها و پیوست‌های خود را از یک صندوق پیام پیگیری کنید. برای شروع گفت‌وگو، از صفحه یک اثر یا پروفایل هنرمند اقدام کنید.</p>
+                    <div className="min-w-0 flex-1">
+                        <SectionHeader eyebrow="ارتباط‌های شما" title="پیام‌های مستقیم" description="گفت‌وگوها، پاسخ‌ها و پیوست‌های خود را از یک صندوق پیام پیگیری کنید. برای شروع گفت‌وگو، از صفحه یک اثر یا پروفایل هنرمند اقدام کنید." className="border-0 pb-0" />
                     </div>
                     <span aria-hidden="true" className="grid h-12 w-12 shrink-0 place-items-center bg-surface-muted text-xl text-terracotta-strong">✉</span>
                 </div>
@@ -27,10 +25,7 @@ export function BuyerDashboardHome() {
             </Surface>
 
             <section className="border-t border-border pt-6">
-                <div className="flex flex-wrap items-end justify-between gap-3">
-                    <div><p className="text-xs font-bold text-terracotta-strong">شروع یک تجربه تازه</p><h2 className="mt-2 text-xl font-black">از کجا شروع کنید؟</h2></div>
-                    <Link to="/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">رفتن به گالری</Link>
-                </div>
+                <SectionHeader eyebrow="شروع یک تجربه تازه" title="از کجا شروع کنید؟" actions={<Link to="/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">رفتن به گالری</Link>} />
                 <ol className="mt-5 grid gap-4 md:grid-cols-3">
                     <li className="border-r-2 border-sand bg-surface-muted p-4"><span className="text-xs font-bold text-terracotta-strong">۰۱ / کشف</span><h3 className="mt-2 font-bold">آثار و سبک‌ها را ببینید</h3><p className="mt-2 text-sm leading-7 text-muted">در گالری جست‌وجو کنید و جزئیات هر اثر را بخوانید.</p></li>
                     <li className="border-r-2 border-sand bg-surface-muted p-4"><span className="text-xs font-bold text-terracotta-strong">۰۲ / ارتباط</span><h3 className="mt-2 font-bold">به هنرمند پیام بدهید</h3><p className="mt-2 text-sm leading-7 text-muted">از صفحه اثر یا پروفایل عمومی هنرمند، گفت‌وگوی مستقیم را آغاز کنید.</p></li>
