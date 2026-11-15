@@ -181,7 +181,7 @@ npm run test:browser -- test_artwork_catalogue_resilience.ArtworkCatalogueResili
 
 You can pass multiple test IDs to run a selected subset. The default target is `https://rad.localhost`; set `RAD_ART_BASE_URL` only to another loopback or `.localhost` origin. The runner requires `.env` to select MySQL/MariaDB and leaves the app's existing environment and database connection untouched. It does not start or stop services, change environment variables for the Laravel process, invoke Artisan, migrate, seed, reset storage, or clean application records.
 
-Only tests explicitly marked manual-safe may run by default. A marker is allowed for either an API-mocked test with no persistent-record dependency or a reviewed GET-only test that reads current development data without writes. Other tests are labelled as requiring `--allow-mutations`; inspect their setup/teardown and use a dedicated test identity before opting in. The flag does not make arbitrary existing data safe. Running the complete manual suite requires both `--all` and `--allow-mutations`:
+Only tests explicitly marked manual-safe may run by default. A marker is allowed for either an API-mocked test with no persistent-record dependency or a reviewed GET-only test that reads current development data without writes. Other tests are labelled as requiring `--allow-mutations`; inspect their setup/teardown and use a dedicated test identity before opting in. The flag does not make arbitrary existing data safe. Running the complete browser suite requires both `--all` and `--allow-mutations`:
 
 ```powershell
 npm run test:browser -- --all --allow-mutations
@@ -263,7 +263,7 @@ Use this loop whenever you implement a feature, fix a bug or refactor behavior:
 3. **Add the important negative case.** Depending on the change, consider unauthorized actors, wrong owners, invalid transitions, empty/error/loading/retry states, duplicate submissions, stale state and failure recovery.
 4. **Run the focused test first.** Use the focused commands in sections 3–5.
 5. **Expand to the affected suite.** Then run the relevant backend, frontend or browser suite when the change crosses layers or has broader regression risk.
-6. **Run browser journeys when user-observable behavior changes.** Use the isolated lifecycle in section 5.
+6. **Run browser journeys when user-observable behavior changes.** Use the current-development Playwright workflow in section 5.
 7. **Inspect failures and diagnostics.** Fix the product/test setup cause; do not delete, skip or weaken a failing test just to get a green result.
 8. **Generate the report** after the relevant suites have produced their JUnit output.
 9. **Record exactly what ran.** List commands, pass/fail/skipped counts, environment and any tests or manual checks not performed.
