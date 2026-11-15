@@ -209,5 +209,70 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
             context.close()
 
 
+    def test_artwork_image_source_change_shows_new_media_instead_of_stale_loaded_state(self):
+        context, page = self.new_page()
+        requests = []
+
+        def artworks(route):
+            query = route.request.url
+            changed = "q=تغییر" in query or "q=%D8%AA%D8%BA%DB%8C%DB%8C%D8%B1" in query.lower()
+            requests.append("changed" if changed else "initial")
+            payload = artwork_payload("اثر با تصویر متغیر")
+            payload["data"][0]["id"] = 920
+            payload["data"][0]["image_url"] = "/media/first.svg" if not changed else "/media/second.svg"
+            route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps(payload),
+            )
+
+        page.route("**/api/v1/artworks**", artworks)
+        page.route(
+            "**/media/first.svg",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="image/svg+xml",
+                body='<svg xmlns="http://www.w3.org/2000/svg" width="8" height="10"><rect width="8" height="10" fill="#777777"/></svg>',
+            ),
+        )
+        page.route(
+            "**/media/second.svg",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="image/svg+xml",
+                body='<svg xmlns="http://www.w3.org/2000/svg" width="8" height="10"><circle cx="4" cy="5" r="4" fill="#777777"/></svg>',
+            ),
+        )
+
+        try:
+            page.goto(BASE_URL + "/artworks", wait_until="domcontentloaded")
+            image = page.locator('img[alt="اثر با تصویر متغیر"]')
+            image.wait_for(state="visible")
+            page.wait_for_function("""() => {
+                const image = document.querySelector('img[alt="اثر با تصویر متغیر"]');
+                return image?.complete && image.naturalWidth > 0
+                    && image.getAttribute('src') === '/media/first.svg';
+            }""")
+
+            search = page.get_by_role("searchbox", name="جست‌وجو در آثار و هنرمندان")
+            search.fill("تغییر")
+            with page.expect_response(
+                lambda response: "/api/v1/artworks" in response.url
+                and "q=" in response.url
+                and response.request.method == "GET"
+            ):
+                search.press("Enter")
+
+            page.wait_for_function("""() => {
+                const image = document.querySelector('img[alt="اثر با تصویر متغیر"]');
+                return image?.complete && image.naturalWidth > 0
+                    && image.getAttribute('src') === '/media/second.svg';
+            }""")
+            self.assertEqual(requests, ["initial", "changed"])
+            self.assertIsNone(image.locator("xpath=..").get_attribute("aria-busy"))
+        finally:
+            context.close()
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
