@@ -24,6 +24,16 @@ export function parseDotEnv(source) {
     return values;
 }
 
+function hasValidAppKey(value) {
+    const key = String(value ?? '');
+    if (key.startsWith('base64:')) {
+        const encoded = key.slice(7);
+        const decoded = Buffer.from(encoded, 'base64');
+        return decoded.length === 32 && decoded.toString('base64').replace(/=+$/, '') === encoded.replace(/=+$/, '');
+    }
+    return key.length === 32;
+}
+
 function isLocalDatabaseHost(host) {
     const normalized = String(host ?? '').trim().toLowerCase().replace(/^\[|\]$/g, '');
     return ['localhost', '127.0.0.1', '::1', 'host.docker.internal'].includes(normalized)
@@ -73,9 +83,7 @@ export function validateDevelopmentEnvironment({ fileValues = {}, processValues 
         errors.push('APP_DEBUG must be true for local development so application errors are visible.');
     }
 
-    if (!String(values.APP_KEY ?? '').trim()) {
-        errors.push('APP_KEY is missing. Run npm run setup, or generate a local key with php artisan key:generate.');
-    }
+    if (!hasValidAppKey(values.APP_KEY)) {\n        errors.push('APP_KEY is missing or invalid. Generate a local 32-byte key with php artisan key:generate; do not reuse the production key.');\n    }
 
     const connection = String(values.DB_CONNECTION ?? 'mysql').toLowerCase();
     if (!['mysql', 'sqlite'].includes(connection)) {
