@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Bell, Menu, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { Badge, Button, IconButton, NotificationListSkeleton } from '../components/ui';
+import { Badge, Button, NotificationListSkeleton } from '../components/ui';
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
 
@@ -96,16 +96,17 @@ export function PublicLayout() {
                             </>
                         )}
                         <span className="mx-1 hidden h-7 w-px bg-border xl:block" aria-hidden="true" />
-                        <IconButton
+                        <button
                             ref={mobileMenuTriggerRef}
-                            label={mobileMenuOpen ? 'بستن منو' : 'باز کردن منو'}
+                            type="button"
+                            aria-label={mobileMenuOpen ? 'بستن منو' : 'باز کردن منو'}
                             aria-expanded={mobileMenuOpen}
                             aria-controls="public-mobile-navigation"
                             onClick={() => setMobileMenuOpen((open) => !open)}
-                            className="xl:hidden"
+                            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus xl:hidden"
                         >
                             {mobileMenuOpen ? <X size={19} aria-hidden="true" /> : <Menu size={19} aria-hidden="true" />}
-                        </IconButton>
+                        </button>
                     </div>
                 </div>
 
