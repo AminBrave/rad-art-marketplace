@@ -7,6 +7,7 @@
     "ai:context": "node scripts/ai-context.mjs",
     "setup": "node scripts/project.mjs setup",
     "dev": "node scripts/project.mjs dev",
+    "dev:check": "node scripts/project.mjs dev:check",
     "production": "node scripts/project.mjs production",
     "db:sqlite:init": "node scripts/project.mjs db:sqlite:init",
     "db:status": "php artisan migrate:status",
