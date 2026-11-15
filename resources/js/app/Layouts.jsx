@@ -677,7 +677,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                 </div>
             )}
 
-            <div className="mx-auto grid min-w-0 max-w-content gap-5 px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-8 lg:pb-8">
+            <div className="mx-auto grid min-w-0 max-w-content gap-5 px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-8 lg:pb-8">
                 <aside className="hidden min-w-0 rounded-xl border border-border bg-paper p-3 shadow-soft lg:sticky lg:top-24 lg:block lg:h-fit">
                     <div className="mb-2 flex items-center justify-between px-3 py-2">
                         <p className="text-[11px] font-extrabold tracking-wide text-muted">ناوبری فضای کاری</p>
