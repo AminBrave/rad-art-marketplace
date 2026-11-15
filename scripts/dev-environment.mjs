@@ -87,7 +87,16 @@ export function validateDevelopmentEnvironment({ fileValues = {}, processValues 
         errors.push('APP_KEY is missing or invalid. Generate a local 32-byte key with php artisan key:generate; do not reuse the production key.');
     }
 
-    const configuredDatabase = String(values.DB_DATABASE ?? '');
+    let configuredDatabase = String(values.DB_DATABASE ?? '');
+    if (values.DB_URL) {
+        try {
+            const databaseUrl = new URL(values.DB_URL);
+            configuredDatabase = decodeURIComponent(databaseUrl.pathname).split('/').filter(Boolean).pop() || configuredDatabase;
+        } catch {
+            // The driver-specific validation below reports malformed database URLs.
+        }
+    }
+    configuredDatabase = configuredDatabase.split(/[\\/]/).filter(Boolean).pop() || configuredDatabase;
     if (/(^|[._-])prod(uction)?([._-]|$)/i.test(configuredDatabase)) {
         errors.push('DB_DATABASE looks like a production database name. Use a dedicated local development database; the explicit remote-database opt-in is not a substitute for checking the target.');
     }
