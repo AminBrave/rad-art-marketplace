@@ -55,8 +55,6 @@ function noCacheEnvironment(scope) {
         APP_CONFIG_CACHE: resolve(directory, scope + '-config.php'),
         APP_ROUTES_CACHE: resolve(directory, scope + '-routes.php'),
         APP_EVENTS_CACHE: resolve(directory, scope + '-events.php'),
-        APP_SERVICES_CACHE: resolve(root, 'bootstrap', 'cache', scope + '-services.php'),
-        APP_PACKAGES_CACHE: resolve(root, 'bootstrap', 'cache', scope + '-packages.php'),
     };
 }
 
