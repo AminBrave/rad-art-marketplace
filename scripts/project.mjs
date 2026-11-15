@@ -301,9 +301,11 @@ function verifyProductionManifest(manifestPath) {
 
 async function buildProduction(cpanel = false) {
     if (existsSync(resolve(root, 'public', 'hot'))) throw new Error('public/hot exists. Stop the Vite development server before creating production assets.');
-    const args = ['exec', '--', 'vite', 'build'];
+    const viteCli = resolve(root, 'node_modules', 'vite', 'bin', 'vite.js');
+    if (!existsSync(viteCli)) throw new Error('Vite is not installed. Run npm run setup before building production assets.');
+    const args = [viteCli, 'build'];
     if (cpanel) args.push('--config', 'vite.config.cpanel.js');
-    await run(npm, args);
+    await run(process.execPath, args);
     const manifestPath = resolve(root, cpanel ? 'build/manifest.json' : 'public/build/manifest.json');
     verifyProductionManifest(manifestPath);
     console.log('[project] Production asset manifest and required CSS/JS files verified.');
