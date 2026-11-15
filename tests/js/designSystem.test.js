@@ -207,9 +207,8 @@ test('messaging conversation filters use the shared RAD-styled Radix Tabs primit
 
 
 test('messaging fills the workspace viewport and keeps compact Telegram-inspired density', () => {
-    assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col gap-2'));
+    assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden'));
     assert.ok(messaging.includes('grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1'));
-    assert.ok(messaging.includes('titleClassName="mt-1 text-xl sm:text-2xl"'));
     assert.ok(layouts.includes('const isMessagingRoute = pathname.endsWith(\'/messages\')'));
     assert.ok(layouts.includes('h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.ok(layouts.includes('sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
@@ -218,7 +217,8 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.ok(layouts.includes('<aside dir="rtl" className={isMessagingRoute'));
     assert.ok(layouts.includes('<main dir="rtl" className={isMessagingRoute ?'));
     assert.ok(layouts.includes("isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden lg:col-start-2' : 'min-w-0'"));
-    assert.ok(messaging.includes('lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]'));
+    assert.doesNotMatch(messaging, /RAD \/ MESSAGES|ارتباط مستقیم|PageHeader/);
+    assert.doesNotMatch(layouts, /ناوبری فضای کاری|RAD \/ MENU/);
     assert.ok(messaging.includes('min-w-0 w-fit max-w-[88%]'));
     assert.ok(messaging.includes('min-h-[4.25rem] w-full items-center gap-2'));
     assert.ok(messaging.includes('absolute end-1 top-1/2 -translate-y-1/2'));
