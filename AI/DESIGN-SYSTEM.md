@@ -154,6 +154,7 @@ Radix UI Primitives are the default behavior and accessibility foundation for ev
 | Single-value option controls | RAD Select through SelectField | Public artwork category filter, artwork category/availability editor, account-role selectors and legacy preview account-role selector |
 | Boolean selection controls | RAD Checkbox through Checkbox | Artist profile visibility, editorial artwork/artist selection and in-app message preference |
 | Hover/focus helper text | RAD Tooltip backed by Radix Tooltip | Icon buttons and messaging action, reaction, attachment and navigation controls |
+| Toast notifications | RAD Toast backed by Radix Toast | Shared feedback Toast component with polite/assertive announcement timing and dismiss behavior |
 
 ### Semantic HTML remains intentional
 
