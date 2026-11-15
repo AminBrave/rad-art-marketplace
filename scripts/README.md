@@ -43,7 +43,7 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Tests | `npm run test:browser:manual -- <test-id>` | Run selected manual-safe tests against the already-running local MySQL app |
 | Tests | `npm run test:browser:manual -- <test-id> --allow-mutations` | Explicitly opt in to a selected test not marked read-only/manual-safe |
 | Reports | `npm run test:report` | Generate the cross-suite quality summary from existing JUnit files; does not run tests |
-| Reports | `npm run test:reporting` | Run focused Python unit tests for report parsing and freshness classification |
+| Reports | `npm run test:reporting` | Run focused Python unit tests for report parsing/freshness classification and manual Playwright selection safety |
 | Lint | `npm run lint` | ESLint check |
 | Lint | `npm run lint:fix` | Apply ESLint autofixes |
 | Accessibility | `npm run a11y:colors` | Run focused color-accessibility tests |
@@ -164,7 +164,7 @@ Manual-mode reports are written under `build/test-reports/browser-manual/`, sepa
 
 scripts/project.mjs owns only workflows that need multiple steps, isolated test environments, report generation or service lifecycle management. It is not a second public command registry.
 
-The dispatcher tasks are setup, dev:check, dev, production, build:cpanel, db:sqlite:init, db:status, db:migrate, db:seed, db:seed:demo, db:fresh, test:backend, test:unit, test:feature, test:integration, test:frontend, test:browser, test:report and test:reporting. Lint and focused accessibility tests are defined directly in package.json. Database commands are routed through the dispatcher so they inherit the local environment/database preflight.
+The dispatcher tasks are setup, dev:check, dev, production, build:cpanel, db:sqlite:init, db:status, db:migrate, db:seed, db:seed:demo, db:fresh, test:backend, test:unit, test:feature, test:integration, test:frontend, test:browser, test:browser:manual, test:report and test:reporting. Lint and focused accessibility tests are defined directly in package.json. Database commands are routed through the dispatcher so they inherit the local environment/database preflight.
 
 Use node scripts/project.mjs --help for the concise internal task list.
 
