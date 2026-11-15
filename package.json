@@ -43,7 +43,8 @@
     "react-router-dom": "^7.18.5",
     "tailwind-merge": "^2.6.0",
     "@radix-ui/react-checkbox": "^1.4.1",
-    "@radix-ui/react-select": "^2.4.1"
+    "@radix-ui/react-select": "^2.4.1",
+    "@radix-ui/react-tooltip": "^1.4.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
