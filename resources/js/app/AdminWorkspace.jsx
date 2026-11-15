@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { Badge, Button, EmptyState, ErrorState, FormField, Skeleton, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField, WorkspaceHero, PageHeader, DashboardMetricCard, DashboardMetricSkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, MediaImage } from '../components/ui';
+import { Badge, Button, EmptyState, ErrorState, FormField, Skeleton, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField, WorkspaceHero, PageHeader, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, MediaImage } from '../components/ui';
 
 const api = '/api/v1/admin';
 const statuses = [
@@ -78,10 +78,7 @@ export function AdminDashboardHome() {
 
             <section className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,.8fr)]">
                 <div className="border border-border bg-paper p-5 sm:p-7">
-                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
-                        <div><p className="text-xs font-bold text-terracotta-strong">اولویت امروز</p><h2 className="mt-1 text-lg font-black">صف بررسی آثار</h2></div>
-                        <Link to="/admin/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">مشاهده صف</Link>
-                    </div>
+                    <SectionHeader eyebrow="اولویت امروز" title="صف بررسی آثار" actions={<Link to="/admin/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">مشاهده صف</Link>} />
                     {loading ? <div aria-hidden="true" className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]"><Skeleton className="aspect-square w-full rounded-none sm:max-w-32" /><div className="grid gap-3"><SkeletonLines lines={3} /><SkeletonLines lines={1} /></div></div> : summary.latest ? (
                         <div className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]">
                             <div className="aspect-square overflow-hidden bg-surface-muted">
@@ -100,17 +97,14 @@ export function AdminDashboardHome() {
                 </div>
 
                 <aside className="border border-border bg-surface-muted p-5 sm:p-7">
-                    <p className="text-xs font-bold text-terracotta-strong">راهنمای عملیات</p>
-                    <h2 className="mt-2 text-lg font-black">رسیدگی منظم و قابل پیگیری</h2>
+                    <SectionHeader eyebrow="راهنمای عملیات" title="رسیدگی منظم و قابل پیگیری" className="border-0 pb-0" />
                     <p className="mt-3 text-sm leading-7 text-muted">تصمیم‌های انتشار را همراه با توضیح ثبت کنید، نقش‌ها را با دقت مدیریت کنید و گزارش‌های ایمنی را از مسیر اختصاصی بررسی کنید.</p>
                     <Link to="/admin/artworks" className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 py-3 text-sm font-bold text-inverse transition-colors hover:bg-terracotta">شروع بررسی آثار <span aria-hidden="true" className="mr-3">←</span></Link>
                 </aside>
             </section>
 
             <section aria-labelledby="admin-shortcuts-heading">
-                <div className="flex flex-wrap items-end justify-between gap-3 border-b border-border pb-4">
-                    <div><p className="text-xs font-bold text-terracotta-strong">دسترسی سریع</p><h2 id="admin-shortcuts-heading" className="mt-2 text-xl font-black">بخش‌های مدیریتی</h2></div>
-                </div>
+                <SectionHeader id="admin-shortcuts-heading" eyebrow="دسترسی سریع" title="بخش‌های مدیریتی" />
                 <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                     {shortcuts.map((item) => <Link key={item.to} to={item.to} className="group flex min-h-44 flex-col border border-border bg-paper p-5 transition-all hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
                         <div className="flex items-center justify-between gap-3"><span aria-hidden="true" className="grid h-10 w-10 place-items-center bg-surface-muted text-lg text-terracotta-strong">{item.symbol}</span><span className="text-[10px] font-bold text-muted">{item.eyebrow}</span></div>
