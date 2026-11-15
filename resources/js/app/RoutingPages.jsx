@@ -10,7 +10,7 @@ const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
 const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
 
 function LoadingBlock({ className = '' }) {
-    return <Skeleton className={className} />;
+    return <Skeleton height={null} className={className} />;
 }
 
 export function RouteLoading({ label = 'در حال آماده‌سازی صفحه…' }) {
