@@ -151,8 +151,6 @@ class CodebaseRenderedColorContrastTests(unittest.TestCase):
             ignore_https_errors=IGNORE_HTTPS_ERRORS,
         )
         page = context.new_page()
-        page._rad_page_errors = []
-        page.on("pageerror", lambda error: page._rad_page_errors.append(str(error)))
         page.set_default_timeout(20000)
         page.add_init_script(script=AUDIT_SCRIPT)
 
@@ -171,6 +169,8 @@ class CodebaseRenderedColorContrastTests(unittest.TestCase):
         return context, page
 
     def audit_route(self, page, route):
+        page_errors = []
+        page.on("pageerror", lambda error: page_errors.append(str(error)))
         response = page.goto(BASE_URL + route, wait_until="domcontentloaded")
         self.assertIsNotNone(response, f"No document response for {route}")
         self.assertLess(response.status, 400, f"{route} returned HTTP {response.status}")
@@ -195,7 +195,7 @@ class CodebaseRenderedColorContrastTests(unittest.TestCase):
             )
             raise AssertionError(
                 f"Application content did not render for {route}; "
-                f"browser page errors: {page._rad_page_errors}; DOM diagnostics: {diagnostics}"
+                f"browser page errors: {page_errors}; DOM diagnostics: {diagnostics}"
             ) from error
         results = {}
         for viewport_name, width, height in (
