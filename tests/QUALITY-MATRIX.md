@@ -78,7 +78,7 @@ Source-level checks in `designSystem.test.js`, `designSystemCoverage.test.js` an
 - `test_accessibility_smoke.py` checks selected route document language/direction, landmarks, visible control names and image alt declarations; it is a focused smoke check, not a complete WCAG audit.
 - `test_responsive_rtl_workspaces.py` checks horizontal overflow at 320, 375, 768, 1024 and 1440 CSS pixels on selected public and authenticated routes. It does not establish visual fidelity at every breakpoint.
 - Messaging browser tests exercise RTL tab-key direction and keyboard boundaries. Registration browser tests exercise keyboard-only completion and visible focus.
-- Automated axe-core/Playwright scanning, manual screen-reader review, broad mixed Persian/Latin fixtures and route-wide dialog focus checks remain open work. Automated scanning, when added, must remain supplemental to manual review.
+- A representative mixed Persian/Latin artwork title and artist name are exercised at 320px; broader mixed-script fixtures across email, URL, long numeric and messaging content remain open. Automated axe-core/Playwright scanning, manual screen-reader review and route-wide dialog focus checks also remain open work. Automated scanning, when added, must remain supplemental to manual review.
 
 ## Route-to-role security matrix
 
