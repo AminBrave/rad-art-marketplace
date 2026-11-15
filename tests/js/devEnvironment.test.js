@@ -6,7 +6,7 @@ const root = '/workspace/rademan';
 const safeEnvironment = {
     APP_ENV: 'local',
     APP_DEBUG: 'true',
-    APP_KEY: 'base64:ZmFrZS1sb2NhbC1hcHAtc2VjcmV0LWtleQ==',
+    APP_KEY: 'base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
     APP_URL: 'http://localhost',
     DB_CONNECTION: 'mysql',
     DB_HOST: '127.0.0.1',
@@ -106,4 +106,13 @@ test('rejects a remote SQLite URL outside the repository database directory', ()
         root,
     });
     assert.match(result.errors.join(' '), /inside the repository database/);
+});
+
+
+test('rejects an application key with the wrong decoded length', () => {
+    const result = validateDevelopmentEnvironment({
+        fileValues: { ...safeEnvironment, APP_KEY: 'base64:c2hvcnQ=' },
+        root,
+    });
+    assert.match(result.errors.join(' '), /APP_KEY is missing or invalid/);
 });
