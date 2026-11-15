@@ -9,8 +9,8 @@ export function BuyerDashboardHome() {
                 title="هنر مورد علاقه‌تان را کشف کنید و گفت‌وگو را ادامه دهید."
                 description="از میان آثار و هنرمندان مستقل جست‌وجو کنید و گفت‌وگوهای مستقیم خود را با هنرمندان در یک فضای منظم دنبال کنید."
                 actions={<>
-                    <Link to="/artworks" className="ra-workspace-hero__action ra-workspace-hero__action--primary">کشف آثار هنری</Link>
-                    <Link to="/artists" className="ra-workspace-hero__action">آشنایی با هنرمندان</Link>
+                    <Link to="/artworks" className="inline-flex min-h-11 items-center justify-center rounded-md border border-[color:color-mix(in_srgb,var(--color-paper)_40%,transparent)] px-4 py-2 text-sm font-semibold text-inverse no-underline transition-colors hover:bg-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)] border-paper bg-paper text-ink hover:bg-sand hover:text-ink">کشف آثار هنری</Link>
+                    <Link to="/artists" className="inline-flex min-h-11 items-center justify-center rounded-md border border-[color:color-mix(in_srgb,var(--color-paper)_40%,transparent)] px-4 py-2 text-sm font-semibold text-inverse no-underline transition-colors hover:bg-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]">آشنایی با هنرمندان</Link>
                 </>}
             />
 
@@ -23,7 +23,7 @@ export function BuyerDashboardHome() {
                     </div>
                     <span aria-hidden="true" className="grid h-12 w-12 shrink-0 place-items-center bg-surface-muted text-xl text-terracotta-strong">✉</span>
                 </div>
-                <Link to="/dashboard/buyer/messages" className="mt-6 inline-flex min-h-11 items-center bg-ink px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-terracotta">ورود به صندوق پیام <span aria-hidden="true" className="mr-3">←</span></Link>
+                <Link to="/dashboard/buyer/messages" className="mt-6 inline-flex min-h-11 items-center bg-ink px-5 py-3 text-sm font-bold text-inverse transition-colors hover:bg-terracotta">ورود به صندوق پیام <span aria-hidden="true" className="mr-3">←</span></Link>
             </Surface>
 
             <section className="border-t border-border pt-6">

@@ -77,7 +77,7 @@ export function AdminDashboardHome() {
             </section>
 
             <section className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,.8fr)]">
-                <div className="border border-border bg-white p-5 sm:p-7">
+                <div className="border border-border bg-paper p-5 sm:p-7">
                     <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
                         <div><p className="text-xs font-bold text-terracotta-strong">اولویت امروز</p><h2 className="mt-1 text-lg font-black">صف بررسی آثار</h2></div>
                         <Link to="/admin/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">مشاهده صف</Link>
@@ -103,7 +103,7 @@ export function AdminDashboardHome() {
                     <p className="text-xs font-bold text-terracotta-strong">راهنمای عملیات</p>
                     <h2 className="mt-2 text-lg font-black">رسیدگی منظم و قابل پیگیری</h2>
                     <p className="mt-3 text-sm leading-7 text-muted">تصمیم‌های انتشار را همراه با توضیح ثبت کنید، نقش‌ها را با دقت مدیریت کنید و گزارش‌های ایمنی را از مسیر اختصاصی بررسی کنید.</p>
-                    <Link to="/admin/artworks" className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-terracotta">شروع بررسی آثار <span aria-hidden="true" className="mr-3">←</span></Link>
+                    <Link to="/admin/artworks" className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 py-3 text-sm font-bold text-inverse transition-colors hover:bg-terracotta">شروع بررسی آثار <span aria-hidden="true" className="mr-3">←</span></Link>
                 </aside>
             </section>
 
@@ -112,7 +112,7 @@ export function AdminDashboardHome() {
                     <div><p className="text-xs font-bold text-terracotta-strong">دسترسی سریع</p><h2 id="admin-shortcuts-heading" className="mt-2 text-xl font-black">بخش‌های مدیریتی</h2></div>
                 </div>
                 <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                    {shortcuts.map((item) => <Link key={item.to} to={item.to} className="group flex min-h-44 flex-col border border-border bg-white p-5 transition-all hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
+                    {shortcuts.map((item) => <Link key={item.to} to={item.to} className="group flex min-h-44 flex-col border border-border bg-paper p-5 transition-all hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
                         <div className="flex items-center justify-between gap-3"><span aria-hidden="true" className="grid h-10 w-10 place-items-center bg-surface-muted text-lg text-terracotta-strong">{item.symbol}</span><span className="text-[10px] font-bold text-muted">{item.eyebrow}</span></div>
                         <h3 className="mt-5 font-black">{item.title}</h3>
                         <p className="mt-2 text-xs leading-6 text-muted">{item.description}</p>
@@ -245,8 +245,8 @@ export function AdminUsersPage() {
             <Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>
         </header>
         <div className="grid gap-3 sm:grid-cols-2">
-            <div className="border border-border bg-white p-4"><p className="text-xs text-muted">حساب‌های این صفحه</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</p></div>
-            <div className="border border-border bg-white p-4"><p className="text-xs text-muted">کل حساب‌ها</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</p></div>
+            <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">حساب‌های این صفحه</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</p></div>
+            <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">کل حساب‌ها</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</p></div>
         </div>
         <p className="border-s-2 border-sand bg-surface-muted p-4 text-xs leading-7 text-muted">نقش‌های قابل انتخاب «هنرمند» و «مدیر» هستند. ایجاد خریدار از مسیر ثبت‌نام انجام می‌شود و حذف یا تعلیق حساب پشتیبانی نمی‌شود. مدیر نمی‌تواند نقش مدیریتی حساب خودش را حذف کند.</p>
         {message && <SuccessState title={message} />}{error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
@@ -255,7 +255,7 @@ export function AdminUsersPage() {
                 const selected = drafts[item.id] ?? (item.role === 'buyer' ? '' : item.role);
                 const selfAdmin = item.id === user?.id && item.role === 'admin';
                 const needsAdminConfirmation = confirmAdminId === item.id && selected === 'admin' && item.role !== 'admin';
-                return <article key={item.id} className="min-w-0 border border-border bg-white p-5">
+                return <article key={item.id} className="min-w-0 border border-border bg-paper p-5">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                         <div className="min-w-0"><h2 className="break-words font-bold">{item.name}</h2><p dir="ltr" className="mt-1 break-all text-left text-xs text-muted">{item.email}</p></div>
                         <Badge variant={item.role === 'admin' ? 'accent' : item.role === 'artist' ? 'info' : 'neutral'}>{roleLabels[item.role] ?? item.role}</Badge>
@@ -268,7 +268,7 @@ export function AdminUsersPage() {
                             </SelectField>
                             <Button size="sm" variant="outline" disabled={busyId !== null || !selected || selected === item.role} loading={busyId === item.id} onClick={() => updateRole(item)}>ثبت تغییر</Button>
                         </div>}
-                        {needsAdminConfirmation && <div className="mt-4 border border-warning/30 bg-warning/5 p-3">
+                        {needsAdminConfirmation && <div className="mt-4 border border-[color:color-mix(in_srgb,var(--color-warning)_30%,transparent)] bg-[color:color-mix(in_srgb,var(--color-warning)_5%,transparent)] p-3">
                             <p className="text-xs leading-6 text-ink">این تغییر دسترسی مدیریتی می‌دهد و امکان مدیریت کاربران و محتوای سامانه را فعال می‌کند. آیا ارتقا را تأیید می‌کنید؟</p>
                             <div className="mt-3 flex flex-wrap gap-2"><Button size="sm" onClick={() => updateRole(item)} loading={busyId === item.id}>تأیید ارتقا به مدیر</Button><Button size="sm" variant="ghost" onClick={() => setConfirmAdminId(null)} disabled={busyId !== null}>انصراف</Button></div>
                         </div>}
@@ -331,16 +331,16 @@ export function AdminMessageReportsPage() {
             <Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>
         </header>
         <div className="grid gap-3 sm:grid-cols-2">
-            <div className="border border-border bg-white p-4"><p className="text-xs text-muted">گزارش‌های این صفحه</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</p></div>
-            <div className="border border-border bg-white p-4"><p className="text-xs text-muted">کل گزارش‌ها</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</p></div>
+            <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">گزارش‌های این صفحه</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</p></div>
+            <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">کل گزارش‌ها</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</p></div>
         </div>
         {message && <SuccessState title={message} />}{error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
         {loading ? <MessageReportsSkeleton count={3} /> : !result?.data?.length ? <EmptyState title="گزارش بازی وجود ندارد" description="گزارش‌های جدید پس از ثبت از سوی یکی از طرفین گفتگو در اینجا نمایش داده می‌شوند." /> : <>
             <div className="space-y-4">{result.data.map((report) => {
                 const isOpen = report.status === 'open';
                 const confirmingRemoval = confirmRemovalId === report.id;
-                return <article key={report.id} className="overflow-hidden border border-border bg-white">
-                    <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border bg-surface-muted/70 p-4 sm:p-5">
+                return <article key={report.id} className="overflow-hidden border border-border bg-paper">
+                    <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border bg-[color:color-mix(in_srgb,var(--color-surface-muted)_70%,transparent)] p-4 sm:p-5">
                         <div><p className="text-xs font-bold text-terracotta-strong">گزارش شماره {report.id}</p><h2 className="mt-1 font-black">{report.reason}</h2><p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? 'کاربر'} · {dateLabel(report.created_at)}</p></div>
                         <Badge variant={isOpen ? 'warning' : report.status === 'dismissed' ? 'neutral' : 'success'}>{isOpen ? 'در انتظار بررسی' : report.status === 'dismissed' ? 'رد گزارش' : 'بررسی‌شده'}</Badge>
                     </div>
@@ -348,13 +348,13 @@ export function AdminMessageReportsPage() {
                         {report.details && <div><p className="text-xs font-bold text-muted">شرح گزارش</p><p className="mt-2 whitespace-pre-line text-sm leading-7">{report.details}</p></div>}
                         {report.message ? <div className="border-s-2 border-terracotta bg-surface-muted p-4"><p className="text-[11px] font-bold text-muted">پیام علامت‌گذاری‌شده</p><blockquote className="mt-2 whitespace-pre-line text-sm leading-7">{report.message.body ?? 'متن پیام حذف شده است.'}</blockquote></div> : <p className="text-xs text-muted">متن پیام مرتبط در دسترس نیست.</p>}
                         {isOpen && <>
-                            <label className="block text-xs font-semibold text-muted">یادداشت رسیدگی (اختیاری)<textarea value={notes[report.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [report.id]: event.target.value }))} maxLength={1000} rows={2} className="ra-control mt-2 w-full" placeholder="خلاصه تصمیم یا زمینه بررسی…" /></label>
+                            <label className="block text-xs font-semibold text-muted">یادداشت رسیدگی (اختیاری)<textarea value={notes[report.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [report.id]: event.target.value }))} maxLength={1000} rows={2} className="w-full min-h-11 rounded-md border border-border-strong bg-paper px-3.5 py-2 font-sans text-sm text-ink transition-colors placeholder:text-subtle focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:bg-surface-muted disabled:opacity-65 aria-[invalid=true]:border-danger mt-2 w-full" placeholder="خلاصه تصمیم یا زمینه بررسی…" /></label>
                             <div className="flex flex-wrap gap-2">
                                 <Button size="sm" variant="primary" disabled={busyId !== null} loading={busyId === report.id} onClick={() => review(report, 'reviewed')}>ثبت بررسی</Button>
                                 <Button size="sm" variant="outline" disabled={busyId !== null} onClick={() => review(report, 'dismissed')}>رد گزارش</Button>
                                 {report.message && <Button size="sm" variant="danger" disabled={busyId !== null} onClick={() => review(report, 'remove_message')}>حذف پیام</Button>}
                             </div>
-                            {confirmingRemoval && <div className="border border-danger/30 bg-danger/5 p-4">
+                            {confirmingRemoval && <div className="border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-[color:color-mix(in_srgb,var(--color-danger)_5%,transparent)] p-4">
                                 <p className="text-sm font-bold text-ink">حذف پیام را تأیید می‌کنید؟</p>
                                 <p className="mt-1 text-xs leading-6 text-muted">این اقدام پیام گزارش‌شده را حذف می‌کند. فقط در صورت احراز تخلف آن را ادامه دهید.</p>
                                 <div className="mt-3 flex flex-wrap gap-2"><Button size="sm" variant="danger" disabled={busyId !== null} loading={busyId === report.id} onClick={() => review(report, 'remove_message')}>بله، حذف پیام</Button><Button size="sm" variant="ghost" disabled={busyId !== null} onClick={() => setConfirmRemovalId(null)}>انصراف</Button></div>

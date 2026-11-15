@@ -3,6 +3,14 @@ export default {
     content: ['./resources/**/*.blade.php', './resources/**/*.js', './resources/**/*.jsx'],
     theme: {
         extend: {
+            keyframes: {
+                'skeleton-shimmer': {
+                    to: { backgroundPositionX: '-200%' },
+                },
+            },
+            animation: {
+                'skeleton-shimmer': 'skeleton-shimmer 1.35s ease-in-out infinite',
+            },
             colors: {
                 canvas: 'var(--color-canvas)',
                 ink: 'var(--color-ink)',
