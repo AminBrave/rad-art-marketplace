@@ -178,6 +178,15 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.doesNotMatch(messaging, /min-h-\[5\.35rem\]/);
 });
 
+test('messaging preserves the page header in inbox view and gives mobile conversations the full chat viewport', () => {
+    assert.ok(messaging.includes("className={active ? 'mb-0 gap-2 pb-3 pt-0 max-sm:hidden' : 'mb-0 gap-2 pb-3 pt-0 max-sm:gap-1 max-sm:pb-3'}"));
+    assert.ok(messaging.includes('titleClassName="mt-1 text-xl sm:text-2xl"'));
+    assert.ok(messaging.includes('descriptionClassName="mt-1 text-xs leading-relaxed sm:text-sm"'));
+    assert.ok(messaging.includes("active ? 'hidden h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e lg:flex'"));
+    assert.ok(messaging.includes("active ? 'flex h-full min-h-0 min-w-0 flex-col bg-canvas'"));
+    assert.ok(messaging.includes('grid min-h-0 w-full min-w-0 flex-1 grid-cols-1'));
+});
+
 test('messaging chat geometry follows RTL logical flow and keeps bubbles and popovers inside the pane', () => {
     assert.ok(messaging.includes('<div dir="rtl" ref={messagesContainerRef}'));
     assert.ok(messaging.includes('<div dir="rtl" className={\'flex w-full min-w-0 shrink-0 px-[.15rem] \' + (own ? \'justify-start\' : \'justify-end\')}>'));
