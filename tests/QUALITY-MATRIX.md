@@ -28,10 +28,56 @@ This matrix maps real product behavior to actors, risk and the tests that should
 | Attachments | Private PDF upload/download, sender-only upload, unsupported extension rejection, deletion cleanup, participant download, private image preview and missing-storage denial | Expanded in this phase; route-binding, guest, preview-type, count, private preview and missing-file boundaries have regression cases; browser coverage verifies upload failure/retry preserves the selected file and draft while reusing the same idempotent message ID |
 | Safety | Report idempotency, block/unblock, viewer-relative state, admin moderation and audit record | Good; abuse/rate-limit and attachment cleanup failure paths deserve deeper integration coverage |
 | Editorial/SEO | Editorial API and public SEO tests exist | Validate atomic reorder/publication rollback and missing/unpublished slug behavior more deeply |
-| Frontend | Query client retry policy, UI utilities, design system, color accessibility, SSR semantics for disabled/busy buttons, field errors, alert/retry and empty states, artist workspace and direct messaging | Component contracts and selected directory/catalogue async states are covered; artist workspace artwork-query, messaging inbox, selected message-history and older-history pagination failures expose explicit retry actions; pagination de-duplicates overlapping results and preserves scroll context; other authenticated page-level async states remain to be expanded |
+| Frontend | Query defaults, messaging query/cache utilities, mutation architecture, RAD token/source audits, color contrast, SSR contracts for shared primitives/navigation/feedback, image loading skeleton and priority semantics, and selected artist workspace behavior | SSR contracts now include button/form/status/feedback/navigation semantics; Playwright exercises image success, failure and missing-source fallbacks in the artwork catalogue. Existing browser suites cover selected public/authenticated async states, retry, keyboard, RTL and responsive journeys. Remaining gaps are route-by-route lazy fallback and page async-state coverage, live dialog focus behavior, broader form validation announcements, mixed-direction content, and a full automated accessibility scan |
 | Design system | A dynamic frontend presentation audit discovers every JavaScript/JSX source under `resources/js`, every Blade template under `resources/views` and every stylesheet under `resources`; it checks RAD semantic palette usage, arbitrary hex utility colors, removed component classes, stylesheet selector boundaries, token-backed inline colors and the Blade first-paint skeleton motion contract | Static regression coverage; visual rendering, responsive screenshots, browser accessibility scans and manual keyboard/screen-reader review remain separate evidence |
 | Browser | Cross-role journeys, auth, artwork publishing, admin moderation, messaging inbox, selected message-history, older-message pagination, message-attachment upload failure/retry, incremental message polling and read/unread inbox-cache reconciliation, cross-role messaging, notifications, discovery, editorial, responsive RTL smoke, artist-directory, artwork-catalogue and authenticated artist-workspace error/retry journeys, empty results, filter-metadata degradation, keyboard search submission, expired-session redirect and reauthentication return, duplicate-submit guards, keyboard-only registration, plus RTL conversation-filter tab navigation | Auth expiry, critical mutation duplicate-submit protection, public discovery/catalogue and artist-profile recovery, artist workspace artwork-statistics recovery, buyer/artist inbox recovery, selected conversation history recovery and older-message retry without duplicate records or loss of scroll context, attachment upload retry without duplicate message creation, incremental synchronization using after_id/updated_after, read-receipt updates across cached all/unread inbox filters, and conversation-detail cache reconciliation that prevents read conversations from reappearing in unread results are covered; other authenticated page-level loading states and focus management for any future mounted modal remain gaps. Browser journeys use DOMContentLoaded or document-commit navigation plus explicit page-level readiness assertions so delayed nonessential resources do not block navigation setup |
 | Performance | No dedicated repeatable performance budget suite was identified | Not yet covered as a governed quality gate |
+
+
+## Frontend route and shared-component coverage map
+
+The route inventory below is derived from the current React Router tree in `resources/js/app/AppRouter.jsx` and the public exports in `resources/js/components/ui/index.js`. Test filenames indicate the existing evidence layer; they do not imply every state or branch on a route is fully covered.
+
+| React route / family | Screen or boundary | Existing test evidence | Remaining risk / exclusion |
+|---|---|---|---|
+| `/` | Public home and discovery entry | `test_public_discovery_and_messaging_entry_points.py`, `test_responsive_rtl_workspaces.py`, cross-role journeys | No dedicated home-page loading/error state matrix |
+| `/artworks` | Artwork catalogue, search and filters | `test_artwork_catalogue_resilience.py`, `test_accessibility_smoke.py`, responsive RTL smoke; image success/error/missing-source behavior | Catalogue pagination and every filter combination are not exhaustively covered |
+| `/artworks/:slug` | Public artwork detail | `test_public_discovery_and_messaging_entry_points.py`, full-stack artwork journeys | No standalone route-level accessibility and async-state matrix |
+| `/artists` | Artist directory and search | `test_artist_directory_resilience.py`, responsive RTL smoke | Loading and pagination transitions need broader dedicated assertions |
+| `/artists/:slug` | Public artist profile | `test_public_discovery_and_messaging_entry_points.py` | No dedicated responsive and accessibility matrix for profile content |
+| `/collections`, `/collections/:slug` | Public editorial collections | `test_editorial_collections.py` | Empty/error states and direct deep-link coverage should be checked as the pages evolve |
+| `/about`, `/help`, `/contact` | Public information pages | Route implementation is present in `PublicInfoPages.jsx` | No dedicated route-specific browser coverage identified in this inventory |
+| `/login`, `/register` | Authentication forms | `test_accessibility_smoke.py`, `test_full_stack_auth.py`; keyboard-only registration and duplicate-submit coverage | Broader field-by-field validation announcements and login failure focus handling |
+| `/unauthorized` | Public unauthorized screen | Route is present in `AppRouter.jsx` | No dedicated browser assertion identified |
+| `/dashboard` | Role-aware dashboard redirect | `test_auth_session_resilience.py`, cross-role journeys | Redirect destinations should remain synchronized with role routing |
+| `/dashboard/artist` | Artist workspace overview | `test_artist_workspace_resilience.py`, responsive RTL and full-stack artist journeys | Other overview query failure combinations remain |
+| `/dashboard/artist/profile`, `/dashboard/artist/artworks` | Artist profile and artwork management | `test_artist_onboarding_and_artwork_feedback.py`, `test_full_stack_artist_artwork.py` | Broader validation, upload and responsive state combinations |
+| `/dashboard/artist/messages`, `/dashboard/buyer/messages` | Shared messaging center under role-specific shells | Messaging inbox/history/older-history/attachment/query-cache suites and cross-role journeys | More keyboard/focus coverage for future mounted dialogs and uncommon recovery states |
+| `/dashboard/buyer` | Buyer workspace | Cross-role journeys, auth-session resilience and responsive RTL smoke | Additional page-level async states |
+| `/admin`, `/admin/users`, `/admin/artworks`, `/admin/message-reports` | Admin workspaces and moderation | `test_full_stack_admin_moderation.py`, cross-role journeys and selected responsive smoke | Per-page async, filter and keyboard coverage is not exhaustive |
+| `/admin/editorial` | Editorial management | `test_editorial_collections.py` | Broader validation, publication and reorder failure states |
+| `*` | Not-found route and nested workspace fallbacks | Route fallback implementation in `RoutingPages.jsx` | No dedicated browser test for every not-found/fallback boundary |
+
+### Shared RAD component contract coverage
+
+`tests/js/reactComponents.test.js` uses the existing Vite JSX pipeline and React server renderer. It checks stable rendered semantics without adding a DOM library or another component-test framework.
+
+| Component family | Covered contract | Not established by SSR |
+|---|---|---|
+| Buttons and badges | Accessible icon-button labels, disabled/loading/busy state, variant/status presentation | Actual keyboard activation, focus ring rendering and pointer behavior |
+| Layout and form primitives | Semantic containers/headings, label-control association, hint/error descriptions, native input semantics, search landmark | Browser validation UI, focus movement and responsive visual layout |
+| Feedback | Error/status announcements, upload progress bounds, skeleton loading semantics, image placeholder and priority attributes | Live-region announcement behavior in assistive technology; actual image load/error transitions are browser-tested |
+| Navigation | Breadcrumb current-page semantics, pagination current/disabled boundaries, tab roles/selected panel structure | Full keyboard/focus behavior beyond the messaging tablist browser journey |
+| Dialog and dropdown | Existing Radix integration is retained | No live dialog open/close, Escape, focus containment/restoration or dropdown keyboard contract is claimed |
+
+Source-level checks in `designSystem.test.js`, `designSystemCoverage.test.js` and `frontendMutationArchitecture.test.js` intentionally protect architecture and design-system invariants. They are not substitutes for user-visible tests. Avoid using source-string assertions to claim a rendered interaction works.
+
+### Accessibility and responsive evidence boundaries
+
+- `test_accessibility_smoke.py` checks selected route document language/direction, landmarks, visible control names and image alt declarations; it is a focused smoke check, not a complete WCAG audit.
+- `test_responsive_rtl_workspaces.py` checks horizontal overflow at 320, 375, 768, 1024 and 1440 CSS pixels on selected public and authenticated routes. It does not establish visual fidelity at every breakpoint.
+- Messaging browser tests exercise RTL tab-key direction and keyboard boundaries. Registration browser tests exercise keyboard-only completion and visible focus.
+- Automated axe-core/Playwright scanning, manual screen-reader review, broad mixed Persian/Latin fixtures and route-wide dialog focus checks remain open work. Automated scanning, when added, must remain supplemental to manual review.
 
 ## Route-to-role security matrix
 
