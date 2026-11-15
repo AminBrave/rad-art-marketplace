@@ -161,14 +161,14 @@ export function runDevelopmentPreflight({ root = process.cwd(), processValues = 
     const fileValues = parseDotEnv(readFileSync(envPath, 'utf8'));
     const { errors, warnings } = validateDevelopmentEnvironment({ fileValues, processValues, root });
     if (errors.length) {
-        throw new Error('Development environment check failed:\n- ' + errors.join('\n- ') + '\n\nFix these settings in your local .env and run npm run dev again.');
+        throw new Error('Development environment check failed:\n- ' + errors.join('\n- ') + '\n\nFix these settings in your local .env and run the command again.');
     }
 
     const requiredPaths = ['vendor/autoload.php'];
     if (requireFrontend) requiredPaths.push('node_modules/vite/bin/vite.js');
     for (const relativePath of requiredPaths) {
         if (!existsSync(resolve(root, relativePath))) {
-            throw new Error('Required project dependency is missing: ' + relativePath + '. Run npm run setup, then retry npm run dev.');
+            throw new Error('Required project dependency is missing: ' + relativePath + '. Run npm run setup, then retry the command.');
         }
     }
 
