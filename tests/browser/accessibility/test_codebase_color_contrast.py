@@ -180,18 +180,25 @@ class CodebaseRenderedColorContrastTests(unittest.TestCase):
             }""",
             timeout=20000,
         )
-        result = page.evaluate("() => window.__radColorAccessibilityAudit(document)")
-        self.assertGreater(
-            result["textChecks"],
-            0,
-            f"No visible text was checked on {route}: {result}",
-        )
-        self.assertEqual(
-            result["failures"],
-            [],
-            f"Computed WCAG contrast failures on {route}: {result['failures']}",
-        )
-        return result
+        results = {}
+        for viewport_name, width, height in (
+            ("desktop", 1440, 1000),
+            ("mobile", 390, 844),
+        ):
+            page.set_viewport_size({"width": width, "height": height})
+            result = page.evaluate("() => window.__radColorAccessibilityAudit(document)")
+            self.assertGreater(
+                result["textChecks"],
+                0,
+                f"No visible text was checked on {route} ({viewport_name}): {result}",
+            )
+            self.assertEqual(
+                result["failures"],
+                [],
+                f"Computed WCAG contrast failures on {route} ({viewport_name}): {result['failures']}",
+            )
+            results[viewport_name] = result
+        return results
 
     def test_every_app_router_route_is_registered_in_the_audit_inventory(self):
         missing = [
