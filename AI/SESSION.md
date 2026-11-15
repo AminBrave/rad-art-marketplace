@@ -3,7 +3,7 @@
 > Durable handoff between chats, not a transcript or model memory. Keep concise and update only when project-wide state changes.
 
 ## Current objective
-Maintain a safe, evidence-driven AI development workflow for Rademan. Work is organized as explicitly authorized GitHub delivery issues on one decision-driven Kanban board. There is no product-phase roadmap. The product interface direction is a coherent, app-like responsive web experience; authenticated users retain role-aware primary navigation across authenticated routes, separate primary/secondary navigation tiers in dashboard headers, and a primary-only mobile/tablet bottom bar, with existing header/account controls retained. See `AI/DESIGN-SYSTEM.md`.
+Maintain a safe, evidence-driven AI development workflow for Rademan. Work is organized as explicitly authorized GitHub delivery issues on one decision-driven Kanban board. There is no product-phase roadmap. The product interface direction is a coherent, app-like responsive web experience; authenticated users retain role-aware primary navigation across authenticated routes, a compact dashboard header with primary and secondary navigation grouped in the hamburger drawer, and a primary-only mobile/tablet bottom bar, with existing header/account controls retained. See `AI/DESIGN-SYSTEM.md`.
 
 ## Project starting point
 - Product: Persian-first artist discovery and artist-contact marketplace. See AI/PROJECT.md.
@@ -24,7 +24,7 @@ Maintain a safe, evidence-driven AI development workflow for Rademan. Work is or
 - No tests, lint, builds, migrations, seeders, scanners or CI without explicit permission for the specific execution.
 - No deployment, merge, force-push, shared-history rewrite or repository-setting change without explicit permission.
 - Preserve Laravel/API, React, RAD design system, accessibility, Persian and RTL conventions.
-- RAD app-shell direction is defined in `AI/DESIGN-SYSTEM.md`; implementation uses shared role route definitions and a two-tier dashboard header navigation plus a primary-only authenticated mobile/tablet bottom bar.
+- RAD app-shell direction is defined in `AI/DESIGN-SYSTEM.md`; implementation uses shared role route definitions and a primary and secondary navigation inside the dashboard hamburger drawer plus a primary-only authenticated mobile/tablet bottom bar.
 - Current source and live GitHub state outrank chat history and AI-generated summaries.
 
 ## Current documentation work
