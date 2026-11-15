@@ -191,8 +191,8 @@ test('messaging RTL behavior covers skeletons and logical bubble geometry', () =
     assert.ok(messaging.includes('rounded-ee-[.35rem]'));
     assert.ok(messaging.includes('rounded-es-[.35rem]'));
     assert.ok(messaging.includes('border-s-2 border-terracotta'));
-    assert.ok(messaging.includes('dir="auto" aria-label="متن پیام"'));
-    assert.ok(messaging.includes('dir="auto" aria-label="جستجوی گفتگوها"'));
+    assert.ok(messaging.includes('dir="rtl" aria-label="متن پیام"'));
+    assert.ok(messaging.includes('dir="rtl" aria-label="جستجوی گفتگوها"'));
     assert.ok(messaging.includes('dir="auto" className={\'whitespace-pre-wrap break-words text-sm leading-[1.65] \' +'));
     assert.ok(messaging.includes('dir="auto" className="truncate text-xs font-semibold text-ink"'));
     assert.ok(messaging.includes('dir="auto" className="block truncate text-xs font-semibold text-ink"'));
