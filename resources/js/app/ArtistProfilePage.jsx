@@ -72,7 +72,7 @@ export default function ArtistProfilePage() {
     if (profileQuery.isPending) return <ArtistProfileSkeleton />;
 
     const status = profileQuery.error?.response?.status ?? 0;
-    const actionClass = 'inline-flex min-h-10 items-center justify-center rounded-md border border-border bg-paper px-4 py-2 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
+    const actionClass = 'inline-flex min-h-10 items-center justify-center rounded-md border border-border bg-transparent px-4 py-2 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
     const primaryActionClass = 'inline-flex min-h-11 items-center justify-center rounded-md border border-transparent bg-terracotta px-5 py-2.5 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
 
     return (
@@ -85,8 +85,7 @@ export default function ArtistProfilePage() {
 
             {profile ? (
                 <>
-                    <section className="mt-7">
-                        <PageHeader
+                    <PageHeader
                             eyebrow="پرونده هنرمند"
                             title={profile.display_name}
                             description={(
@@ -103,18 +102,17 @@ export default function ArtistProfilePage() {
                                     {!user && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className={primaryActionClass}>ورود برای ارتباط با هنرمند</Link>}
                                 </>
                             )}
-                        />
-                        {user && user.role !== 'buyer' && (
-                            <p className="mt-4 text-xs leading-6 text-muted">برای ارسال پیام مستقیم، از حساب خریدار استفاده کنید.</p>
-                        )}
-                        <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted">
+                    />
+                    {user && user.role !== 'buyer' && (
+                        <p className="mt-4 text-xs leading-6 text-muted">برای ارسال پیام مستقیم، از حساب خریدار استفاده کنید.</p>
+                    )}
+                    <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted">
                             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-muted px-3 py-1.5">
                                 <span className="h-1.5 w-1.5 rounded-full bg-olive" aria-hidden="true" />
                                 پورتفولیوی عمومی
                             </span>
                             <span className="font-semibold tabular-nums">{allArtworks.length.toLocaleString('fa-IR')} اثر بارگذاری‌شده</span>
-                        </div>
-                    </section>
+                    </div>
 
                     <section className="mt-12" aria-labelledby="artist-portfolio-heading">
                         <SectionHeader
