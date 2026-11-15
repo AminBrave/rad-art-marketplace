@@ -45,7 +45,7 @@ Rules:
 - The primary bottom bar is fixed to the viewport edge on mobile/tablet and uses the device safe-area inset.
 - Reserve matching bottom space for the primary bar only so content and the public footer are not hidden behind it.
 - The dashboard header stays compact; navigation links live in the hamburger drawer rather than horizontal header rows.
-- Preserve the current desktop sidebar for primary workspace navigation. Keep the hamburger available at desktop sizes for secondary site navigation.
+- Preserve the current desktop sidebar for primary workspace navigation and show the same role-aware Lucide icons used by the mobile bottom bar beside each destination label. Keep the hamburger available at desktop sizes for secondary site navigation.
 - Test narrow widths (including 320px), tablet widths, desktop, long Persian labels, nested routes, keyboard focus and safe-area behavior.
 
 ## Visual language
