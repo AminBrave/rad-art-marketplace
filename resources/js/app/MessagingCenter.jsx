@@ -681,21 +681,19 @@ export default function MessagingCenter({ role }) {
     }, [role, artworkSlug, selected]);
 
     return (
-        <section className="flex h-full min-h-0 min-w-0 w-full flex-col gap-2 font-sans" dir="rtl">
+        <section className="flex min-h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] min-w-0 w-full flex-col gap-2 font-sans sm:h-full sm:min-h-0" dir="rtl">
             <PageHeader
                 eyebrow="ارتباط مستقیم"
                 title="پیام‌ها"
                 description="گفتگوی خصوصی خریداران و هنرمندان؛ پیام‌ها به‌صورت خودکار به‌روزرسانی می‌شوند."
-                className={active ? 'mb-0 gap-2 pb-3 pt-0 max-sm:hidden' : 'mb-0 gap-2 pb-3 pt-0 max-sm:gap-1 max-sm:pb-3'}
-                titleClassName="mt-1 text-xl sm:text-2xl"
-                descriptionClassName="mt-1 text-xs leading-relaxed sm:text-sm"
+                className={active ? 'max-sm:hidden' : ''}
             />
             {notice && <p role="status" className="rounded-md border border-border bg-surface-muted p-3 text-sm">{notice}</p>}
             {error && <p role="alert" className="rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-danger-surface p-3 text-sm text-danger">{error}</p>}
             {inboxQuery.isError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-danger-surface p-3 text-sm text-danger"><span>{'دریافت گفتگوها انجام نشد. دوباره تلاش کنید.'}</span><button type="button" onClick={() => loadThreads()} className="shrink-0 font-bold underline underline-offset-4">تلاش دوباره</button></div>}
             {directStartLoading && <div role="status" className="flex items-center gap-3 rounded-md border border-border bg-surface-muted p-3 text-sm text-muted"><LoaderCircle size={16} className="animate-spin" aria-hidden="true" />در حال آماده‌سازی گفتگوی مستقیم و اتصال آن به اثر…</div>}
             {directStartError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-danger-surface p-3 text-sm text-ink"><span>{directStartError}</span><button type="button" onClick={() => setDirectStartAttempt((attempt) => attempt + 1)} className="shrink-0 font-bold text-terracotta-strong underline underline-offset-4">تلاش دوباره</button></div>}
-            <div className="grid min-h-0 w-full min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden rounded-lg border border-border bg-surface shadow-soft lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]">
+            <div className={'grid min-h-0 w-full min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden rounded-lg border border-border bg-surface shadow-soft lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)] ' + (!active ? 'min-h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom)+4.5rem)] sm:min-h-0' : '')}>
                 <aside className={active ? 'hidden h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e lg:flex' : 'flex h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e'}>
                     <div className="shrink-0 border-b border-border bg-paper px-3 py-3">
                         <div className="flex items-center justify-between gap-3"><div><p className="text-[11px] font-bold tracking-wide text-terracotta-strong">RAD / MESSAGES</p><h2 className="mt-1 text-lg font-black">گفتگوها</h2></div><span className="rounded-full border border-border bg-surface-muted px-3 py-1 text-[11px] font-bold text-muted">{threads.length} گفتگو</span></div>
