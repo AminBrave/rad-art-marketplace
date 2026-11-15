@@ -165,6 +165,7 @@ Do not add a Radix package merely to claim coverage. Add a primitive when a real
 
 - All new and existing interactive patterns must be reviewed against the Radix primitive catalogue before implementation.
 - Prefer shared RAD wrappers over importing Radix packages directly in page modules.
+- Use RAD AlertDialog for destructive or irreversible confirmations; use RAD Dialog for general modal content and drawers.
 - Do not apply stock shadcn defaults or Radix Themes. The RAD token and component layer remains authoritative.
 - Keep React form state, API payloads, validation, route behavior and backend contracts unchanged when swapping the interaction primitive.
 - Preserve RTL direction, Persian accessible names, touch target sizes, reduced motion, focus visibility, disabled/required states and native form submission semantics.
