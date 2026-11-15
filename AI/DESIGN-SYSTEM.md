@@ -12,29 +12,31 @@ This is a web application direction, not a claim that the product currently ship
 
 Every route rendered while a user is authenticated must retain a consistent shell:
 
-- Keep the existing page header. It carries RAD identity, current context, account actions, and the existing header navigation. A bottom bar supplements the header; it never replaces or silently removes header navigation.
-- On mobile and tablet, show a fixed bottom navigation on both public-layout routes and authenticated workspace routes.
-- On desktop, retain the existing header and workspace sidebar/navigation model. The fixed bottom navigation remains hidden at the desktop breakpoint; do not duplicate it beside the desktop sidebar.
+- Keep the compact dashboard header for RAD identity, current page context, role, notifications and account actions. Do not render primary or secondary navigation rows in this header.
+- Put both navigation tiers inside the dashboard hamburger drawer: role-specific primary workspace destinations first, then lower-priority public discovery and support destinations.
+- Keep the fixed mobile/tablet bottom navigation on public-layout routes and authenticated workspace routes; it contains primary workspace destinations only.
+- On desktop, retain the existing workspace sidebar for primary destinations. The hamburger menu remains available so secondary discovery/support links are reachable without adding another header navigation row.
 - Guest experiences remain unchanged and do not receive authenticated navigation.
 - The shell is presentation only. Laravel middleware, policies and server-side authorization remain the security boundary.
 
-## Two-level header navigation and primary bottom navigation
+## Hamburger navigation and primary bottom navigation
 
-Authenticated workspace headers expose two distinct navigation levels:
+The dashboard header contains the hamburger trigger, not navigation link rows. Opening it reveals a drawer with two clearly separated groups:
 
-1. **Primary header navigation** — the current role's frequent workspace destinations, sourced from the same canonical role route definitions used by the desktop sidebar and mobile bottom bar.
-2. **Secondary header navigation** — lower-priority public discovery and support destinations already present in the router (for example artworks, artists, collections, about, help and contact). This row is visually quieter and clearly separated from the primary row.
+1. **Primary workspace navigation** — frequent destinations for the current role, sourced from the canonical role route definitions also used by the desktop sidebar and mobile bottom bar.
+2. **Secondary site navigation** — lower-priority public discovery and support destinations already present in the router (for example artworks, artists, collections, about, help and contact).
 
-The fixed mobile/tablet bottom navigation contains **primary workspace destinations only**. It must never contain secondary discovery, about, help, contact or other low-priority links. The bottom bar is a compact mobile companion to the dashboard's primary header navigation, not a second location for the full site map.
+The fixed mobile/tablet bottom navigation contains **primary workspace destinations only**. It must never contain secondary discovery, about, help, contact or other low-priority links.
 
 Rules:
 
-- Keep both primary and secondary navigation in the dashboard header, with separate semantic `nav` landmarks, labels and visual hierarchy.
+- Do not render primary or secondary navigation rows beneath or beside the dashboard header. The hamburger trigger is the only navigation entry point in the dashboard header.
+- Keep both primary and secondary groups inside the hamburger drawer, with separate semantic `nav` landmarks, accessible labels and a clear visual separator.
 - Derive primary destinations from the canonical role route definitions. Artist, buyer and admin users must only see destinations appropriate to their current role.
 - Derive secondary destinations only from confirmed routes in the current router. Never invent a route or imply a feature exists from a label.
-- Keep the primary header tier prominent and task-oriented. Keep the secondary header tier visually subordinate through smaller typography, muted color and a clear separator.
+- Order primary destinations before secondary destinations. Make the secondary group visually quieter than the primary group.
+- Keep the hamburger drawer available at mobile, tablet and desktop sizes; preserve focus containment, Escape handling, focus restoration, body scroll locking and close-on-navigation behavior.
 - The mobile/tablet bottom bar renders only the role-specific primary destinations, with icons, concise Persian labels and a clear active-route indicator.
-- Do not duplicate primary workspace destinations in the secondary header tier.
 - Active state must work for nested routes and remain understandable without color alone. Use semantic links and `aria-current` behavior supplied by the router.
 - Preserve RTL reading order, touch targets, visible keyboard focus, long-label resilience and reduced-motion behavior.
 
@@ -42,8 +44,8 @@ Rules:
 
 - The primary bottom bar is fixed to the viewport edge on mobile/tablet and uses the device safe-area inset.
 - Reserve matching bottom space for the primary bar only so content and the public footer are not hidden behind it.
-- Header navigation rows may scroll horizontally when their links exceed the viewport; they must not cause page-level horizontal overflow.
-- Preserve the current desktop sidebar and header/account controls. The bottom bar remains hidden at the desktop breakpoint.
+- The dashboard header stays compact; navigation links live in the hamburger drawer rather than horizontal header rows.
+- Preserve the current desktop sidebar for primary workspace navigation. Keep the hamburger available at desktop sizes for secondary site navigation.
 - Test narrow widths (including 320px), tablet widths, desktop, long Persian labels, nested routes, keyboard focus and safe-area behavior.
 
 ## Visual language
