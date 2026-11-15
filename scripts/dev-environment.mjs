@@ -4,7 +4,8 @@ import { isIP } from 'node:net';
 
 export function parseDotEnv(source) {
     const values = {};
-    for (const rawLine of source.split(/\r?\n/)) {
+    for (const rawLine of source.split(/\r?
+/)) {
         const line = rawLine.trim();
         if (!line || line.startsWith('#')) continue;
         const match = line.match(/^(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/);
@@ -14,7 +15,9 @@ export function parseDotEnv(source) {
         if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
             value = value.slice(1, -1);
             if (match[2].trim().startsWith('"')) {
-                value = value.replace(/\\n/g, '\n').replace(/\\r/g, '\r').replace(/\\"/g, '"');
+                value = value.replace(/\
+/g, '
+').replace(/\\r/g, '\r').replace(/\\"/g, '"');
             }
         } else {
             value = value.replace(/\s+#.*$/, '').trim();
@@ -43,7 +46,10 @@ function databaseHost(values) {
         } catch {
             return { error: 'DB_URL is not a valid database URL. Check its scheme and host.' };
         }
-        if (parsed.protocol === 'sqlite:') return { error: 'DB_URL uses SQLite, but DB_CONNECTION is mysql. Keep DB_CONNECTION and DB_URL consistent.' };\n        if (!['mysql:', 'mariadb:'].includes(parsed.protocol)) return { error: 'DB_URL must use the mysql:// or mariadb:// scheme for a MySQL connection.' };\n        if (!parsed.hostname) return { error: 'DB_URL must include a database host.' };\n        return { host: parsed.hostname };
+        if (parsed.protocol === 'sqlite:') return { error: 'DB_URL uses SQLite, but DB_CONNECTION is mysql. Keep DB_CONNECTION and DB_URL consistent.' };
+        if (!['mysql:', 'mariadb:'].includes(parsed.protocol)) return { error: 'DB_URL must use the mysql:// or mariadb:// scheme for a MySQL connection.' };
+        if (!parsed.hostname) return { error: 'DB_URL must include a database host.' };
+        return { host: parsed.hostname };
     }
     return { host: values.DB_HOST || '127.0.0.1' };
 }
@@ -85,7 +91,16 @@ export function validateDevelopmentEnvironment({ fileValues = {}, processValues 
             }
         }
     } else {
-        let database = String(values.DB_DATABASE ?? 'database/database.sqlite');\n        if (values.DB_URL) {\n            try {\n                const parsed = new URL(values.DB_URL);\n                if (parsed.protocol !== 'sqlite:') errors.push('DB_URL must use the sqlite: scheme when DB_CONNECTION=sqlite.');\n                else database = decodeURIComponent(parsed.pathname || parsed.hostname);\n            } catch { errors.push('DB_URL is not a valid SQLite database URL.'); }\n        }\n        if (database !== ':memory:') {\n            const path = resolve(root, database);
+        let database = String(values.DB_DATABASE ?? 'database/database.sqlite');
+        if (values.DB_URL) {
+            try {
+                const parsed = new URL(values.DB_URL);
+                if (parsed.protocol !== 'sqlite:') errors.push('DB_URL must use the sqlite: scheme when DB_CONNECTION=sqlite.');
+                else database = decodeURIComponent(parsed.pathname || parsed.hostname);
+            } catch { errors.push('DB_URL is not a valid SQLite database URL.'); }
+        }
+        if (database !== ':memory:') {
+            const path = resolve(root, database);
             const databaseDirectory = resolve(root, 'database');
             if (!isInside(databaseDirectory, path)) {
                 const override = String(processValues.RAD_ALLOW_REMOTE_DEV_DATABASE ?? '').toLowerCase() === 'true';
@@ -119,7 +134,11 @@ export function runDevelopmentPreflight({ root = process.cwd(), processValues = 
     const fileValues = parseDotEnv(readFileSync(envPath, 'utf8'));
     const { errors, warnings } = validateDevelopmentEnvironment({ fileValues, processValues, root });
     if (errors.length) {
-        throw new Error('Development environment check failed:\n- ' + errors.join('\n- ') + '\n\nFix these settings in your local .env and run npm run dev again.');
+        throw new Error('Development environment check failed:
+- ' + errors.join('
+- ') + '
+
+Fix these settings in your local .env and run npm run dev again.');
     }
 
     for (const relativePath of ['vendor/autoload.php', 'node_modules/vite/bin/vite.js']) {
