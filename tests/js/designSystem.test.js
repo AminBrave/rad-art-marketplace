@@ -121,13 +121,16 @@ test('navigation and dialog primitives use Tailwind state and focus utilities', 
     assert.doesNotMatch(dialog, /ra-[a-z]/);
 });
 
-test('dashboard headers and notification dialog preserve RAD hierarchy and accessible non-modal behavior', () => {
+test('dashboard headers and notification drawer use the shared accessible RAD dialog primitive', () => {
     assert.ok(layouts.includes('aria-haspopup="dialog"'));
-    assert.ok(layouts.includes('aria-modal="false"'));
-    assert.ok(layouts.includes('aria-labelledby="workspace-notification-title"'));
-    assert.ok(layouts.includes('panelRef.current?.focus()'));
-    assert.ok(layouts.includes('triggerRef.current?.focus()'));
+    assert.ok(layouts.includes('<Dialog open={open} onOpenChange={setOpen}>'));
+    assert.ok(layouts.includes('<DialogTrigger asChild>'));
+    assert.ok(layouts.includes('<DialogContent'));
+    assert.ok(layouts.includes('<DialogTitle id="workspace-notification-title"'));
+    assert.ok(layouts.includes('<DialogClose asChild>'));
     assert.ok(layouts.includes('workspace-notification-panel'));
+    assert.ok(layouts.includes('!right-0 !top-0 !h-dvh'));
+    assert.doesNotMatch(layouts, /panelPosition|closeOnOutsidePointer|aria-modal="false"/);
     assert.ok(layouts.includes('aria-haspopup="dialog"'));
     assert.ok(layouts.includes('aria-modal="true"'));
     assert.ok(layouts.includes('bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]'));
