@@ -22,6 +22,14 @@ class UnclassifiedCase(unittest.TestCase):
         pass
 
 
+class MethodSafeCase(unittest.TestCase):
+    def runTest(self):
+        pass
+
+
+MethodSafeCase.runTest.manual_dev_safe = True
+
+
 class ManualBrowserSelectionTests(unittest.TestCase):
     def test_nested_suites_are_flattened_to_test_cases(self):
         suite = unittest.TestSuite([
@@ -38,8 +46,7 @@ class ManualBrowserSelectionTests(unittest.TestCase):
         self.assertIsNone(manual_selection_error([ManualSafeCase()], allow_mutations=False))
 
     def test_per_method_manual_safe_marker_is_supported(self):
-        case = UnclassifiedCase()
-        case.runTest.manual_dev_safe = True
+        case = MethodSafeCase()
         self.assertTrue(is_manual_dev_safe(case))
         self.assertIsNone(manual_selection_error([case], allow_mutations=False))
 
