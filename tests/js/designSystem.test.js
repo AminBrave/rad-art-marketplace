@@ -140,6 +140,9 @@ test('form controls and helper hints use shared RAD-styled Radix primitives', ()
     assert.ok(primitives.includes('data-[state=checked]:bg-terracotta'));
     assert.ok(tooltip.includes('TooltipPrimitive.Root'));
     assert.ok(alertDialog.includes('AlertDialogPrimitive.Root'));
+    assert.ok(feedback.includes('ToastPrimitive.Provider'));
+    assert.ok(feedback.includes('ToastPrimitive.Viewport'));
+    assert.ok(designSystem.includes('RAD Toast backed by Radix Toast'));
     assert.ok(editorialPages.includes('<AlertDialogAction asChild>'));
     assert.ok(editorialPages.includes('event.preventDefault(); publish(collection, false)'));
     assert.ok(editorialPages.includes('<AlertDialogTitle>'));
