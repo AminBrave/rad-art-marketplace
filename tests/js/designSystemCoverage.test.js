@@ -5,10 +5,8 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 
 const root = resolve(fileURLToPath(new URL('../../', import.meta.url)));
-const cssPath = resolve(root, 'resources/css/app.css');
-const tailwindPath = resolve(root, 'tailwind.config.js');
-const css = readFileSync(cssPath, 'utf8');
-const tailwind = readFileSync(tailwindPath, 'utf8');
+const css = readFileSync(resolve(root, 'resources/css/app.css'), 'utf8');
+const tailwind = readFileSync(resolve(root, 'tailwind.config.js'), 'utf8');
 
 function walk(directory) {
     return readdirSync(directory).flatMap((name) => {
@@ -22,13 +20,13 @@ const frontendFiles = walk(resolve(root, 'resources/js'))
 const bladeFiles = walk(resolve(root, 'resources/views'))
     .filter((path) => path.endsWith('.blade.php'));
 const presentationFiles = [...frontendFiles, ...bladeFiles].sort();
-const rawPaletteClass = /(?:^|[\\s'"\x60])(?:[a-z][\\w-]*:)*(?:bg|text|border|ring|fill|stroke|shadow)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\\d{2,3}(?:\\/\\d{1,3})?(?=$|[\\s'"\x60])/g;
-const arbitraryHexClass = /\\b(?:bg|text|border|ring|fill|stroke)-(?:\\[[^\\]]*#(?:[0-9a-f]{3,8})[^\\]]*\\])/gi;
-const legacyClass = /\\b(?:app-skeleton|rad-messaging|composer-shell|message-edit-shell|message-artwork-card__[\\w-]*|related-artworks-(?:chip|strip)__[\\w-]*|message-conversation-avatar-link)\\b|\\bra-[\\w-]+/g;
+const rawPaletteClass = /(?:^|[\s'"\x60])(?:[a-z][\w-]*:)*(?:bg|text|border|ring|fill|stroke|shadow)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\d{2,3}(?:\/\d{1,3})?(?=$|[\s'"\x60])/g;
+const arbitraryHexClass = /\b(?:bg|text|border|ring|fill|stroke)-(?:\[[^\]]*#(?:[0-9a-f]{3,8})[^\]]*\])/gi;
+const legacyClass = /\b(?:app-skeleton|rad-messaging|composer-shell|message-edit-shell|message-artwork-card__[\w-]*|related-artworks-(?:chip|strip)__[\w-]*|message-conversation-avatar-link)\b|\bra-[\w-]+/g;
 
 function matchesWithLines(source, pattern) {
     return [...source.matchAll(pattern)].map((match) => ({
-        line: source.slice(0, match.index).split('\\n').length,
+        line: source.slice(0, match.index).split('\n').length,
         value: match[0].trim(),
     }));
 }
@@ -70,13 +68,13 @@ test('presentation sources do not depend on removed component-specific CSS class
 });
 
 test('the application stylesheet contains tokens and base rules, not component selectors', () => {
-    assert.equal((css.match(/:root\\s*\\{/g) ?? []).length, 1);
+    assert.equal((css.match(/:root\s*\{/g) ?? []).length, 1);
     assert.deepEqual(
-        matchesWithLines(css, /^\\s*\\.[a-zA-Z_][\\w-]*(?:[^{}]*)\\{/gm),
+        matchesWithLines(css, /^\s*\.[a-zA-Z_][\w-]*(?:[^{}]*)\{/gm),
         [],
         'Component class selectors belong in Tailwind utilities, not app.css.',
     );
-    assert.doesNotMatch(css, /\\.ra-[\\w-]+|\\.rad-messaging|\\.app-boot|\\.app-skeleton/);
+    assert.doesNotMatch(css, /\.ra-[\w-]+|\.rad-messaging|\.app-boot|\.app-skeleton/);
 });
 
 test('Tailwind scans every presentation source family and defines accessible skeleton motion', () => {
@@ -91,13 +89,13 @@ test('Tailwind scans every presentation source family and defines accessible ske
 
 test('Blade first-paint skeletons use the shared shimmer and reduced-motion contract', () => {
     const blade = readFileSync(resolve(root, 'resources/views/app.blade.php'), 'utf8');
-    assert.match(blade, /\\$skeletonClass\\s*=\\s*'[^']*animate-skeleton-shimmer[^']*motion-reduce:animate-none[^']*'/);
-    assert.match(blade, /class="\\{\\{ \\$skeletonClass \\}\\}/);
+    assert.match(blade, /\$skeletonClass\s*=\s*'[^']*animate-skeleton-shimmer[^']*motion-reduce:animate-none[^']*'/);
+    assert.match(blade, /class="\{\{ \$skeletonClass \}\}/);
     assert.doesNotMatch(blade, /app-skeleton/);
 });
 
 test('inline color styling is token-backed rather than hardcoded', () => {
-    const literalInlineColors = /style=\\{\\{[^}]*\\b(?:color|backgroundColor|borderColor)\\s*:\\s*['\x22\\x60]#(?:[0-9a-f]{3,8})/gim;
+    const literalInlineColors = /style=\{\{[^}]*\b(?:color|backgroundColor|borderColor)\s*:\s*['"\x60]#(?:[0-9a-f]{3,8})/gim;
     const violations = describeViolations(literalInlineColors);
     assert.deepEqual(violations, [], 'Inline color values must resolve through RAD CSS variables.');
 });
