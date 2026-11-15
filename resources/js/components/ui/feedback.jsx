@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Button } from './primitives';
+import * as ToastPrimitive from '@radix-ui/react-toast';
 
 const skeletonClasses = 'block bg-[linear-gradient(100deg,var(--color-skeleton-base)_25%,var(--color-skeleton-highlight)_42%,var(--color-skeleton-base)_62%)] [background-size:200%_100%] animate-skeleton-shimmer motion-reduce:animate-none';
 
@@ -97,30 +98,49 @@ export function UploadFeedback({ fileName, status = 'idle', progress = 0, messag
     );
 }
 
-export function Toast({ open = true, title, description, variant = 'info', onDismiss }) {
-    if (!open) return null;
+export function Toast({ open, title, description, variant = 'info', onDismiss, duration = Infinity }) {
+    const [internalOpen, setInternalOpen] = useState(true);
+    const isOpen = open ?? internalOpen;
     const variants = {
         success: 'border-s-success',
         error: 'border-s-danger',
         info: 'border-s-terracotta',
     };
+
+    const handleOpenChange = (nextOpen) => {
+        if (open === undefined) setInternalOpen(nextOpen);
+        if (!nextOpen) onDismiss?.();
+    };
+
+    if (!isOpen) return null;
+
     return (
-        <div
-            role={variant === 'error' ? 'alert' : 'status'}
-            aria-live={variant === 'error' ? 'assertive' : 'polite'}
-            className={`flex items-start justify-between gap-4 rounded-md border-s-4 border-border bg-paper p-4 shadow-soft ${variants[variant] ?? variants.info}`}
-            dir="rtl"
-        >
-            <div>
-                <p className="font-bold text-ink">{title}</p>
-                {description && <p className="mt-1 text-sm leading-6 text-muted">{description}</p>}
-            </div>
-            {onDismiss && (
-                <button type="button" onClick={onDismiss} aria-label="بستن اعلان" className="rounded-sm px-2 py-1 text-muted hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
-                    ×
-                </button>
-            )}
-        </div>
+        <ToastPrimitive.Provider duration={duration}>
+            <ToastPrimitive.Root
+                open={isOpen}
+                onOpenChange={handleOpenChange}
+                type={variant === 'error' ? 'foreground' : 'background'}
+                dir="rtl"
+                className={`flex w-full items-start justify-between gap-4 rounded-md border-s-4 border-border bg-paper p-4 text-ink shadow-soft ${variants[variant] ?? variants.info}`}
+            >
+                <div>
+                    <ToastPrimitive.Title className="font-bold text-ink">{title}</ToastPrimitive.Title>
+                    {description && <ToastPrimitive.Description className="mt-1 text-sm leading-6 text-muted">{description}</ToastPrimitive.Description>}
+                </div>
+                {onDismiss && (
+                    <ToastPrimitive.Close asChild>
+                        <button type="button" aria-label="بستن اعلان" className="rounded-sm px-2 py-1 text-muted hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
+                            ×
+                        </button>
+                    </ToastPrimitive.Close>
+                )}
+            </ToastPrimitive.Root>
+            <ToastPrimitive.Viewport
+                label="اعلان‌ها"
+                dir="rtl"
+                className="fixed top-4 end-4 z-[100] flex w-[min(24rem,calc(100vw-2rem))] flex-col gap-2 outline-none"
+            />
+        </ToastPrimitive.Provider>
     );
 }
 
