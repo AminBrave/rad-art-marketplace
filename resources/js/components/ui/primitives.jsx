@@ -112,20 +112,7 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
 
 
 export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
-    return (
-        <header className={cn('relative isolate flex min-w-0 items-end justify-between gap-8 overflow-hidden rounded-xl border border-ink bg-ink p-[clamp(1.4rem,4vw,2.75rem)] text-inverse shadow-raised max-md:items-stretch max-md:flex-col max-md:gap-5', className)} dir="rtl">
-            <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-1.5 bg-terracotta" />
-            <span aria-hidden="true" className="pointer-events-none absolute -left-20 -top-28 aspect-square w-80 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_12%,transparent)]" />
-            <span aria-hidden="true" className="pointer-events-none absolute -left-4 -top-12 aspect-square w-52 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]" />
-            <span aria-hidden="true" className="pointer-events-none absolute bottom-0 left-[22%] h-24 w-24 rounded-full bg-[color:color-mix(in_srgb,var(--color-terracotta)_24%,transparent)] blur-2xl" />
-            <div className="relative z-10 max-w-[48rem]">
-                {eyebrow && <p className="inline-flex items-center gap-2 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_20%,transparent)] bg-[color:color-mix(in_srgb,var(--color-paper)_8%,transparent)] px-3 py-1.5 text-[11px] font-extrabold tracking-[.025em] text-sand">{eyebrow}</p>}
-                <h1 className="mt-4 text-[clamp(1.65rem,3.4vw,2.55rem)] font-extrabold leading-heading tracking-[-.03em] text-inverse">{title}</h1>
-                {description && <p className="mt-3 max-w-3xl text-sm leading-copy text-[color:color-mix(in_srgb,var(--color-inverse-text)_82%,transparent)] sm:text-[.95rem]">{description}</p>}
-            </div>
-            {actions && <div className="relative z-10 flex shrink-0 flex-wrap gap-2 max-md:w-full max-md:[&>*]:flex-1">{actions}</div>}
-        </header>
-    );
+    return <PageHeader eyebrow={eyebrow} title={title} description={description} actions={actions} className={className} />;
 }
 
 export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, className = '' }) {
