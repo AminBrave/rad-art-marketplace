@@ -111,7 +111,8 @@ test('MediaImage reserves its frame and exposes the RAD skeleton while loading',
     );
 
     assert.match(html, /aria-busy="true"/);
-    assert.match(html, /app-skeleton/);
+    assert.match(html, /animate-skeleton-shimmer/);
+    assert.match(html, /motion-reduce:animate-none/);
     assert.match(html, /loading="lazy"/);
     assert.match(html, /decoding="async"/);
     assert.match(html, /alt="اثر نمونه"/);
