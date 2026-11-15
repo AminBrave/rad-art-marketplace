@@ -21,12 +21,14 @@ jobs:
         run: npm ci
       - name: Verify RAD color contrast tokens
         run: npm run a11y:colors
+      - name: Build and audit compiled Vite color utilities
+        run: npm run a11y:build
       - name: Run frontend regression tests
         run: npm run test:frontend
       - name: Lint the complete frontend
         run: npm run lint
       - name: Build the production frontend
-        run: npm run build
+        run: npm run production
 
   backend-regression:
     runs-on: ubuntu-latest
