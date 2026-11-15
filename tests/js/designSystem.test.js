@@ -211,7 +211,7 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.ok(layouts.includes('h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.ok(layouts.includes('sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.ok(layouts.includes('lg:h-[calc(100dvh-5rem)]'));
-    assert.ok(layouts.includes("isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col' : 'min-w-0'"));
+    assert.ok(layouts.includes("isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden lg:col-start-2' : 'min-w-0'"));
     assert.ok(messaging.includes('lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]'));
     assert.ok(messaging.includes('min-w-0 w-fit max-w-[88%]'));
     assert.ok(messaging.includes('min-h-[4.25rem] w-full items-center gap-2'));
