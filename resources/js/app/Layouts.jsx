@@ -186,9 +186,6 @@ export function PublicLayout() {
                         </div>
                     </nav>
                 </DialogContent>
-                        </div>
-                    </nav>
-                )}
                 {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{logoutError}</p>}
             </header>
 
@@ -236,6 +233,7 @@ export function PublicLayout() {
             </footer>
             {user && <AuthenticatedBottomNavigation primaryLinks={getWorkspacePrimaryLinks(user.role)} />}
         </div>
+        </Dialog>
     );
 }
 
@@ -526,7 +524,6 @@ function AuthenticatedBottomNavigation({ primaryLinks }) {
                 })}
             </nav>
         </div>
-        </Dialog>
     );
 }
 
