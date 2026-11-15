@@ -10,6 +10,7 @@ const feedback = readFileSync(new URL('../../resources/js/components/ui/feedback
 const navigation = readFileSync(new URL('../../resources/js/components/ui/navigation.jsx', import.meta.url), 'utf8');
 const dialog = readFileSync(new URL('../../resources/js/components/ui/Dialog.jsx', import.meta.url), 'utf8');
 const tooltip = readFileSync(new URL('../../resources/js/components/ui/Tooltip.jsx', import.meta.url), 'utf8');
+const alertDialog = readFileSync(new URL('../../resources/js/components/ui/AlertDialog.jsx', import.meta.url), 'utf8');
 const skeletons = readFileSync(new URL('../../resources/js/components/ui/skeletons.jsx', import.meta.url), 'utf8');
 const showcase = readFileSync(new URL('../../resources/js/app/ComponentShowcase.jsx', import.meta.url), 'utf8');
 const publicPages = ['ArtworkCatalogue.jsx', 'ArtistDirectoryPage.jsx', 'ArtworkDetailPage.jsx'].map((file) => readFileSync(new URL('../../resources/js/app/' + file, import.meta.url), 'utf8'));
@@ -136,6 +137,11 @@ test('form controls and helper hints use shared RAD-styled Radix primitives', ()
     assert.ok(primitives.includes('CheckboxPrimitive.Root'));
     assert.ok(primitives.includes('data-[state=checked]:bg-terracotta'));
     assert.ok(tooltip.includes('TooltipPrimitive.Root'));
+    assert.ok(alertDialog.includes('AlertDialogPrimitive.Root'));
+    assert.ok(editorialPages.includes('<AlertDialogAction asChild>'));
+    assert.ok(editorialPages.includes('<AlertDialogTitle>'));
+    assert.ok(messaging.includes("DropdownMenu } from '../components/ui'"));
+    assert.doesNotMatch(messaging, /from '@radix-ui\\/react-dropdown-menu'/);
     assert.ok(messaging.includes('<Tooltip content="گزینه‌های گفتگو">'));
     assert.ok(messaging.includes('<Tooltip content="افزودن واکنش">'));
     assert.ok(artworkStudio.includes('<SelectField'));
