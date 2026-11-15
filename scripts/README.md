@@ -38,10 +38,10 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Tests | `npm run test:feature` | Feature PHPUnit suite |
 | Tests | `npm run test:integration` | Integration PHPUnit suite |
 | Tests | `npm run test:frontend` | Frontend Node tests |
-| Tests | `npm run test:browser` | Prepare isolated SQLite, run Playwright in a temporary local app, then stop it |
-| Tests | `npm run test:browser:manual -- --list` | List browser tests and identify the API-mocked/manual-safe subset |
-| Tests | `npm run test:browser:manual -- <test-id>` | Run selected manual-safe tests against the already-running local MySQL app |
-| Tests | `npm run test:browser:manual -- <test-id> --allow-mutations` | Explicitly opt in to a selected test not marked read-only/manual-safe |
+| Tests | `npm run test:browser -- --list` | List Playwright tests for the already-running local development app |
+
+
+
 | Reports | `npm run test:report` | Generate the cross-suite quality summary from existing JUnit files; does not run tests |
 | Reports | `npm run test:reporting` | Run focused Python unit tests for report parsing/freshness classification and manual Playwright selection safety |
 | Lint | `npm run lint` | ESLint check |
@@ -107,7 +107,7 @@ Caddy issues certificates from its local development CA. This gives the LAN IP a
 - Laravel (127.0.0.1:8000) and Vite (127.0.0.1:5173) remain bound to loopback; Vite assets and HMR are reverse-proxied through HTTPS.
 - Allow inbound TCP 443 on the computer's **private-network** firewall profile. Allow TCP 80 only if you want Caddy's HTTP-to-HTTPS redirect to be reachable. Do not configure router port forwarding or expose this development server to public networks.
 - Keep the computer and test devices on a trusted LAN. This is a development environment, not a production deployment.
-- The temporary Playwright test app remains loopback-only and is not exposed to LAN devices. Its remote-host rejection remains unchanged.
+- Playwright attaches to the normal development app at `https://rad.localhost` by default. Its remote-host rejection remains in force.
 - If the computer uses WSL2, Docker, a VPN, or multiple network adapters, LAN routing may require host-specific networking setup; set RAD_LAN_HOST to the reachable address and ensure the host firewall permits TCP 443.
 
 The rad.home.arpa name is optional convenience DNS; direct access by the LAN IP does not require it.
@@ -134,38 +134,25 @@ Keep Laravel config, route and event optimization caches disabled in the deploye
 
 The production asset build is not a deployment or a complete release verification: it does not validate the deployed .env, database connectivity, HTTPS/proxy configuration, backups, migrations or live user journeys.
 
-## Browser-test workflows
+## Browser-test workflow
 
-Playwright has two deliberately separate workflows. Choose manual mode when you want to exercise the app already running under your normal local `.env`; choose isolated mode when you want the disposable SQLite browser suite.
+Playwright has one workflow: it attaches to the app already running under the normal local `.env` and uses that app's configured MySQL/MariaDB database. There is no isolated Playwright app or browser-test database.
 
-1. Stop the normal npm run dev process because the temporary test stack uses the same local Laravel/Vite ports.
-2. Run npm run test:browser. The command prepares only database/browser-testing.sqlite and isolated browser-test storage, then runs migrate:fresh --seed against that SQLite database.
-3. The command starts temporary loopback-only Laravel and Vite processes, waits for the API health and Vite readiness checks, runs the full suite, and stops both processes.
-4. To run one test, append its Python unittest ID after --, for example: npm run test:browser -- test_notifications_and_preferences.MessageNotificationBrowserTests.test_buyer_can_disable_in_app_message_notifications.
+1. Start the usual development stack with `npm run dev` and leave Laravel, Vite and Caddy running.
+2. In another terminal, list tests with `npm run test:browser -- --list`.
+3. Run selected tests by their Python unittest IDs, for example `npm run test:browser -- test_artwork_catalogue_resilience.CurrentDevelopmentDatabaseReadOnlyTests.test_public_artwork_catalogue_renders_from_current_development_data`.
+4. Use `--all --allow-mutations` only after reviewing the complete suite's effects on current development data.
 
-The isolated runner remains guarded: it requires browser_test_ready=true and rejects non-loopback URLs. It never uses the normal development database.
+The runner requires a local `APP_ENV=local/development` and MySQL/MariaDB configuration, validates a localhost/loopback app URL, and checks the running app's health endpoint before launching Chromium. It never starts/stops app services, overrides database settings, runs Artisan, migrates, seeds, creates a database, resets storage or clears application records. Remote/staging/production targets are rejected.
 
-### Manual mode: existing local MySQL app
+Only tests marked `manual_dev_safe` can run without mutation opt-in. A marked test must either intercept its API/media dependencies or be a reviewed GET-only journey against current development data. Other tests require `--allow-mutations`; that flag is a risk acknowledgement, not a guarantee of safe cleanup. Reports are written under `build/test-reports/browser/`.
 
-Keep your normal `npm run dev` app running (including Laravel, Vite and Caddy), with `.env` configured for your local MySQL/MariaDB development database. In a second terminal:
-
-```powershell
-npm run test:browser:manual -- --list
-npm run test:browser:manual -- test_artwork_catalogue_resilience.CurrentDevelopmentDatabaseReadOnlyTests.test_public_artwork_catalogue_renders_from_current_development_data
-npm run test:browser:manual -- test_artwork_catalogue_resilience.ArtworkCatalogueResilienceTests.test_artwork_catalogue_error_can_be_retried_into_results
-```
-
-The manual command attaches to `https://rad.localhost` by default and does not start/stop services, alter `.env`, override database variables, run Artisan, migrate, seed, reset storage or clean application records. Override the origin only with a local `.localhost`/loopback URL using `RAD_ART_BASE_URL`; remote hosts are rejected. The command checks that the existing `.env` selects MySQL/MariaDB. It does not inspect database rows or prove that a database is disposable.
-
-Only tests explicitly marked manual-safe can run without an opt-in. A marked test must either intercept its API/media dependencies without relying on persisted records, or be a reviewed GET-only journey that reads current development data without writes. The catalogue smoke test below exercises the real app/MySQL read path. Other tests are listed as requiring `--allow-mutations`; review their setup and teardown first. This flag is a deliberate risk acknowledgement, not a guarantee of safe cleanup. The complete suite requires both `--all` and `--allow-mutations`.
-
-Manual-mode reports are written under `build/test-reports/browser-manual/`, separate from isolated-run reports. Existing failure artifacts are retained; only the selected run's JUnit/log/summary files are refreshed.
 
 ## Dispatcher boundary
 
 scripts/project.mjs owns only workflows that need multiple steps, isolated test environments, report generation or service lifecycle management. It is not a second public command registry.
 
-The dispatcher tasks are setup, dev:check, dev, production, build:cpanel, db:sqlite:init, db:status, db:migrate, db:seed, db:seed:demo, db:fresh, test:backend, test:unit, test:feature, test:integration, test:frontend, test:browser, test:browser:manual, test:report and test:reporting. Lint and focused accessibility tests are defined directly in package.json. Database commands are routed through the dispatcher so they inherit the local environment/database preflight.
+The dispatcher tasks are setup, dev:check, dev, production, build:cpanel, db:sqlite:init, db:status, db:migrate, db:seed, db:seed:demo, db:fresh, test:backend, test:unit, test:feature, test:integration, test:frontend, test:browser, test:report and test:reporting. Lint and focused accessibility tests are defined directly in package.json. Database commands are routed through the dispatcher so they inherit the local environment/database preflight.
 
 Use node scripts/project.mjs --help for the concise internal task list.
 
