@@ -315,20 +315,20 @@ function NotificationBell({ user }) {
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <button
-                type="button"
-                aria-label={unreadCount > 0 ? `اعلان‌ها، ${unreadCount.toLocaleString('fa-IR')} خوانده‌نشده` : 'اعلان‌ها'}
-                aria-expanded={open}
-                aria-haspopup="dialog"
-                aria-controls="workspace-notification-panel"
-                className="relative inline-flex min-h-11 items-center gap-2 rounded-md border border-border-strong bg-paper px-3.5 py-2 text-sm font-bold text-ink shadow-soft transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
-            >
+                    type="button"
+                    aria-label={unreadCount > 0 ? `اعلان‌ها، ${unreadCount.toLocaleString('fa-IR')} خوانده‌نشده` : 'اعلان‌ها'}
+                    aria-expanded={open}
+                    aria-haspopup="dialog"
+                    aria-controls="workspace-notification-panel"
+                    className="relative inline-flex min-h-11 items-center gap-2 rounded-md border border-border-strong bg-paper px-3.5 py-2 text-sm font-bold text-ink shadow-soft transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                >
                 <Bell aria-hidden="true" size={17} strokeWidth={1.8} />
                 <span className="hidden sm:inline">اعلان‌ها</span>
                 {unreadCount > 0 && <span className="min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-[10px] font-extrabold tabular-nums text-inverse" aria-live="polite">{unreadCount > 99 ? '۹۹+' : unreadCount.toLocaleString('fa-IR')}</span>}
             </DialogTrigger>
             <DialogContent
                 id="workspace-notification-panel"
-                className="!left-auto !right-0 !top-0 !h-dvh !max-h-dvh !w-[min(25rem,100vw)] !max-w-none !translate-x-0 !translate-y-0 !rounded-none !border-y-0 !border-e-0 !border-s !p-0 flex flex-col !overflow-hidden text-right"
+                className="!left-auto !right-0 !top-0 !h-dvh !max-h-dvh !w-[min(25rem,100vw)] !max-w-none !translate-x-0 !translate-y-0 !rounded-none !border-y-0 !border-s-0 !border-e !p-0 flex flex-col !overflow-hidden text-right"
             >
                     <div className="h-1 shrink-0 bg-terracotta" aria-hidden="true" />
                     <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
@@ -351,11 +351,11 @@ function NotificationBell({ user }) {
                             </button>
                             <DialogClose asChild>
                                 <button
-                                type="button"
-                                aria-label="بستن اعلان‌ها"
-                                className="grid h-9 w-9 place-items-center rounded-md text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
-                            >
-                                <X size={17} aria-hidden="true" />
+                                    type="button"
+                                    aria-label="بستن اعلان‌ها"
+                                    className="grid h-9 w-9 place-items-center rounded-md text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
+                                >
+                                    <X size={17} aria-hidden="true" />
                                 </button>
                             </DialogClose>
                         </div>
