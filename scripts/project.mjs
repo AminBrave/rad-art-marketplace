@@ -5,6 +5,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isIP } from 'node:net';
 import { networkInterfaces } from 'node:os';
+import { runDevelopmentPreflight } from './dev-environment.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 process.chdir(root);
@@ -54,6 +55,8 @@ function noCacheEnvironment(scope) {
         APP_CONFIG_CACHE: resolve(directory, scope + '-config.php'),
         APP_ROUTES_CACHE: resolve(directory, scope + '-routes.php'),
         APP_EVENTS_CACHE: resolve(directory, scope + '-events.php'),
+        APP_SERVICES_CACHE: resolve(root, 'bootstrap', 'cache', scope + '-services.php'),
+        APP_PACKAGES_CACHE: resolve(root, 'bootstrap', 'cache', scope + '-packages.php'),
     };
 }
 
@@ -263,6 +266,7 @@ async function runReportingTests() {
 }
 
 async function startDevelopment() {
+    runDevelopmentPreflight({ root, processValues: process.env });
     const host = requireLanHost();
     const env = developmentEnvironment(host);
     console.log('[project] Local development: https://rad.localhost');
@@ -274,6 +278,44 @@ async function startDevelopment() {
         { label: 'Vite (loopback, LAN-aware HMR)', command: npm, args: ['exec', '--', 'vite', '--mode', 'lan'], env },
         { label: 'Caddy HTTPS reverse proxy (local + LAN)', command: 'caddy', args: ['run', '--config', 'Caddyfile.dev', '--adapter', 'caddyfile'], env },
     ]);
+}
+
+function verifyProductionManifest(manifestPath) {
+    if (!existsSync(manifestPath)) {
+        throw new Error('Vite build completed without producing the expected manifest: ' + manifestPath);
+    }
+    let manifest;
+    try {
+        manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+    } catch {
+        throw new Error('Vite produced an unreadable manifest: ' + manifestPath);
+    }
+
+    for (const entryName of ['resources/css/app.css', 'resources/js/app.jsx']) {
+        const entry = manifest[entryName];
+        if (!entry || typeof entry.file !== 'string') {
+            throw new Error('Production manifest is missing the required entry: ' + entryName);
+        }
+        for (const asset of [entry.file, ...(entry.css ?? [])]) {
+            const assetPath = resolve(dirname(manifestPath), asset);
+            const outputRoot = resolve(dirname(manifestPath));
+            if (!asset || asset.startsWith('/') || !assetPath.startsWith(outputRoot + (isWindows ? '\\\\' : '/')) || !existsSync(assetPath)) {
+                throw new Error('Production build references a missing or unsafe asset: ' + asset);
+            }
+        }
+    }
+}
+
+async function buildProduction(cpanel = false) {
+    if (existsSync(resolve(root, 'public', 'hot'))) {
+        throw new Error('public/hot exists. Stop the Vite development server before creating production assets.');
+    }
+    const args = ['exec', '--', 'vite', 'build'];
+    if (cpanel) args.push('--config', 'vite.config.cpanel.js');
+    await run(npm, args);
+    const manifestPath = resolve(root, cpanel ? 'build/manifest.json' : 'public/build/manifest.json');
+    verifyProductionManifest(manifestPath);
+    console.log('[project] Production asset manifest and required CSS/JS files verified.');
 }
 
 async function waitForBrowserApp(stopServices) {
@@ -346,7 +388,7 @@ try {
     switch (task) {
         case 'setup': await setup(); break;
         case 'db:sqlite:init': initializeSqlite(); break;
-        case 'dev': await startDevelopment(); break;
+        case 'dev': await startDevelopment(); break;\n        case 'production': await buildProduction(false); break;\n        case 'build:cpanel': await buildProduction(true); break;
         case 'test:backend': await runBackendTests(); break;
         case 'test:unit':
         case 'test:feature':
