@@ -134,6 +134,14 @@ npm run a11y:colors
 
 This is a focused automated color-contrast check, not a complete accessibility audit.
 
+The color-accessibility checks have three distinct layers:
+
+- `npm run a11y:colors` checks the semantic design-token combinations.
+- `npm run a11y:build` runs a fresh Vite production-mode build into the isolated `build/a11y-css/` directory, then audits the CSS assets listed in its manifest. It verifies that Tailwind color declarations are emitted, RAD color tokens survive compilation, and every compiled `--color-*` reference has a definition. This command does not stop the running dev server or overwrite `public/build`.
+- `npm run test:browser` includes a read-only computed-style contrast audit for `/login`, `/register` and `/artworks`. It evaluates browser-resolved styles, including Tailwind utilities and CSS variables, against WCAG AA text and non-text thresholds. The focused test ID is `accessibility.test_rendered_color_contrast.RenderedColorContrastTests.test_public_and_auth_screens_have_no_computed_color_contrast_failures`.
+
+The build audit verifies the compiled artifact's token/utility wiring; it cannot infer every foreground/background pairing from CSS in isolation. The browser audit supplies those rendered pair checks on the selected screens. Gradients and image-backed text remain manual-review cases because a single computed color cannot certify contrast across every pixel. These checks are not a complete WCAG audit.
+
 
 ### What frontend component tests prove
 
