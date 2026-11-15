@@ -281,36 +281,26 @@ async function startDevelopment() {
 }
 
 function verifyProductionManifest(manifestPath) {
-    if (!existsSync(manifestPath)) {
-        throw new Error('Vite build completed without producing the expected manifest: ' + manifestPath);
-    }
+    if (!existsSync(manifestPath)) throw new Error('Vite build completed without producing the expected manifest: ' + manifestPath);
     let manifest;
-    try {
-        manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
-    } catch {
-        throw new Error('Vite produced an unreadable manifest: ' + manifestPath);
-    }
+    try { manifest = JSON.parse(readFileSync(manifestPath, 'utf8')); }
+    catch { throw new Error('Vite produced an unreadable manifest: ' + manifestPath); }
 
     for (const entryName of ['resources/css/app.css', 'resources/js/app.jsx']) {
         const entry = manifest[entryName];
-        if (!entry || typeof entry.file !== 'string') {
-            throw new Error('Production manifest is missing the required entry: ' + entryName);
-        }
+        if (!entry || typeof entry.file !== 'string') throw new Error('Production manifest is missing the required entry: ' + entryName);
         for (const asset of [entry.file, ...(entry.css ?? [])]) {
-            const assetPath = resolve(dirname(manifestPath), asset);
             const outputRoot = resolve(dirname(manifestPath));
+            const assetPath = resolve(outputRoot, asset);
             const relativeAsset = relative(outputRoot, assetPath);
-            const escapesOutput = relativeAsset === '..' || relativeAsset.startsWith('..' + sep) || isAbsolute(relativeAsset);\n            if (!asset || escapesOutput || !existsSync(assetPath)) {
-                throw new Error('Production build references a missing or unsafe asset: ' + asset);
-            }
+            const escapesOutput = relativeAsset === '..' || relativeAsset.startsWith('..' + sep) || isAbsolute(relativeAsset);
+            if (!asset || escapesOutput || !existsSync(assetPath)) throw new Error('Production build references a missing or unsafe asset: ' + asset);
         }
     }
 }
 
 async function buildProduction(cpanel = false) {
-    if (existsSync(resolve(root, 'public', 'hot'))) {
-        throw new Error('public/hot exists. Stop the Vite development server before creating production assets.');
-    }
+    if (existsSync(resolve(root, 'public', 'hot'))) throw new Error('public/hot exists. Stop the Vite development server before creating production assets.');
     const args = ['exec', '--', 'vite', 'build'];
     if (cpanel) args.push('--config', 'vite.config.cpanel.js');
     await run(npm, args);
@@ -318,7 +308,6 @@ async function buildProduction(cpanel = false) {
     verifyProductionManifest(manifestPath);
     console.log('[project] Production asset manifest and required CSS/JS files verified.');
 }
-
 async function waitForBrowserApp(stopServices) {
     const healthUrl = 'http://127.0.0.1:8000/api/v1/health';
     const viteUrl = 'http://127.0.0.1:5173/@vite/client';
@@ -370,18 +359,22 @@ async function runBrowserTests() {
 }
 
 function usage() {
-    console.log('Rademan project tasks\n\n'
-        + 'setup                 Install dependencies and create .env if absent\n'
-        + 'dev                   Start Laravel + Vite + Caddy for local/LAN HTTPS\n'
-        + 'production            Build and verify standard production assets\\n'\n        + 'build:cpanel          Build and verify cPanel production assets\\n'\n        + 'db:sqlite:init        Create the local SQLite database file if absent\n'
-        + 'test:backend          Run all PHPUnit suites\n'
-        + 'test:unit             Run PHPUnit Unit\n'
-        + 'test:feature          Run PHPUnit Feature\n'
-        + 'test:integration      Run PHPUnit Integration\n'
-        + 'test:frontend         Run frontend Node tests\n'
-        + 'test:browser          Prepare isolated SQLite and run Playwright temporarily\n'
-        + 'test:report           Summarize existing JUnit reports\n'
-        + 'test:reporting        Test the report generator\n');
+    console.log([
+        'Rademan project tasks',
+        'setup                 Install dependencies and create .env if absent',
+        'dev                   Validate local configuration, then start Laravel + Vite + Caddy',
+        'production            Build and verify standard production assets',
+        'build:cpanel          Build and verify cPanel production assets',
+        'db:sqlite:init        Create the local SQLite database file if absent',
+        'test:backend          Run all PHPUnit suites',
+        'test:unit             Run PHPUnit Unit',
+        'test:feature          Run PHPUnit Feature',
+        'test:integration      Run PHPUnit Integration',
+        'test:frontend         Run frontend Node tests',
+        'test:browser          Prepare isolated SQLite and run Playwright temporarily',
+        'test:report           Summarize existing JUnit reports',
+        'test:reporting        Test the report generator',
+    ].join(String.fromCharCode(10)));
 }
 
 const task = process.argv[2];
@@ -390,7 +383,8 @@ try {
         case 'setup': await setup(); break;
         case 'db:sqlite:init': initializeSqlite(); break;
         case 'dev': await startDevelopment(); break;
-        case 'production': await buildProduction(false); break;\n        case 'build:cpanel': await buildProduction(true); break;
+        case 'production': await buildProduction(false); break;
+        case 'build:cpanel': await buildProduction(true); break;
         case 'test:backend': await runBackendTests(); break;
         case 'test:unit':
         case 'test:feature':
@@ -403,11 +397,11 @@ try {
         case '-h':
         case undefined: usage(); break;
         default:
-            console.error('Unknown task: ' + task + '\n');
+            console.error('Unknown task: ' + task);
             usage();
             process.exitCode = 2;
     }
 } catch (error) {
-    console.error('\n[project] ' + error.message);
+    console.error('[project] ' + error.message);
     process.exitCode = 1;
 }
