@@ -373,6 +373,27 @@ async function runBrowserTests() {
     }
 }
 
+async function runManualBrowserTests() {
+    const envPath = resolve(root, '.env');
+    if (!existsSync(envPath)) throw new Error('The existing development .env is required. Run npm run setup and configure it first.');
+    const values = { ...parseDotEnv(readFileSync(envPath, 'utf8')), ...process.env };
+    const driver = String(values.DB_CONNECTION ?? 'mysql').toLowerCase();
+    if (!['mysql', 'mariadb'].includes(driver)) {
+        throw new Error('Manual Playwright mode requires the existing .env to use MySQL/MariaDB. No database settings were changed.');
+    }
+    const baseUrl = process.env.RAD_ART_BASE_URL || 'https://rad.localhost';
+    console.log('[project] Attaching Playwright to the existing development app at ' + baseUrl);
+    console.log('[project] No Laravel/Vite services, database, migrations, seeders or storage will be started/reset by this command.');
+    await run(python, pythonArgs(['tests/browser/run_tests.py', ...process.argv.slice(3)]), {
+        env: {
+            ...process.env,
+            RAD_ART_MANUAL_DEV_MODE: '1',
+            RAD_ART_BASE_URL: baseUrl,
+            RAD_ART_IGNORE_HTTPS_ERRORS: 'false',
+        },
+    });
+}
+
 function developmentMysqlConfig() {
     const fileValues = parseDotEnv(readFileSync(resolve(root, '.env'), 'utf8'));
     const values = { ...fileValues, ...process.env };
@@ -523,6 +544,7 @@ function usage() {
         'test:integration      Run PHPUnit Integration',
         'test:frontend         Run frontend Node tests',
         'test:browser          Prepare isolated SQLite and run Playwright temporarily',
+        'test:browser:manual  Attach to the existing local MySQL development app; select tests explicitly',
         'test:report           Summarize existing JUnit reports',
         'test:reporting        Test the report generator',
     ].join(String.fromCharCode(10)));
@@ -548,6 +570,7 @@ try {
         case 'test:integration': await runBackendTests(task.slice(5)); break;
         case 'test:frontend': await runFrontendTests(); break;
         case 'test:browser': await runBrowserTests(); break;
+        case 'test:browser:manual': await runManualBrowserTests(); break;
         case 'test:report': await generateQualityReport(); break;
         case 'test:reporting': await runReportingTests(); break;
         case '--help':
