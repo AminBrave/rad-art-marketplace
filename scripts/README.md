@@ -24,7 +24,7 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Area | Command | Purpose |
 |---|---|---|
 | Setup | `npm run setup` | Install Composer/npm dependencies and create `.env` if absent |
-| Development | `npm run dev` | Validate `.env`, reject production/debug-off or unsafe database targets, check dependencies/stale Vite hot file, then start Laravel + Vite + Caddy |
+| Development | `npm run dev:check` | Run the read-only local environment preflight without starting services |\n| Development | `npm run dev` | Validate `.env`, reject production/debug-off or unsafe database targets, check dependencies/stale Vite hot file, then start Laravel + Vite + Caddy |
 | Database | `npm run db:sqlite:init` | Create the local SQLite file only if absent |
 | Database | `npm run db:status` | Show migration status |
 | Database | `npm run db:migrate` | Apply pending migrations |
@@ -51,7 +51,7 @@ The normal development command first runs a read-only preflight, then serves Lar
 
     npm run dev
 
-Before starting services, the preflight validates the local `.env` and refuses to start when `APP_ENV=production`, `APP_DEBUG` is false, `APP_KEY` is missing, the database target is remote/ambiguous, required dependencies are missing, or a Vite `public/hot` file is already present. It never edits `.env`, clears caches, migrates a database or changes application data. A remote development database requires the explicit one-command opt-in `RAD_ALLOW_REMOTE_DEV_DATABASE=true`; use that only after confirming the database is isolated and disposable. The opt-in is intentionally not stored in `.env`.
+Before starting services, the preflight validates the local `.env` and refuses to start when `APP_ENV=production`, `APP_DEBUG` is false, `APP_KEY` is missing or invalid, the database target is remote/ambiguous, required dependencies are missing, or a Vite `public/hot` file is already present. It never edits `.env`, clears caches, migrates a database or changes application data. A remote development database requires the explicit one-command opt-in `RAD_ALLOW_REMOTE_DEV_DATABASE=true`; use that only after confirming the database is isolated and disposable. The opt-in is intentionally not stored in `.env`. Bash example: `RAD_ALLOW_REMOTE_DEV_DATABASE=true npm run dev`. PowerShell example: `$env:RAD_ALLOW_REMOTE_DEV_DATABASE="true"; npm run dev` (then clear it with `Remove-Item Env:RAD_ALLOW_REMOTE_DEV_DATABASE`). Run `npm run dev:check` first if you want to inspect the configuration without starting services.
 
 It automatically detects this computer's private LAN IPv4 address when there is one unambiguous candidate. If several network interfaces have private addresses (for example Wi-Fi plus a VPN or virtual adapter), select the address other devices use to reach this computer:
 
