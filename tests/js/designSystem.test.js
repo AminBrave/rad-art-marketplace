@@ -186,6 +186,18 @@ test('messaging chat geometry follows RTL logical flow and keeps bubbles and pop
     assert.doesNotMatch(messaging, /absolute bottom-full right-0/);
 });
 
+test('messaging RTL behavior covers skeletons and logical bubble geometry', () => {
+    assert.ok(messaging.includes('border-e-0 border-border bg-paper md:border-e'));
+    assert.ok(messaging.includes('rounded-ee-[.35rem]'));
+    assert.ok(messaging.includes('rounded-es-[.35rem]'));
+    assert.ok(messaging.includes('border-s-2 border-terracotta'));
+    assert.ok(messaging.includes('dir="auto" aria-label="متن پیام"'));
+    assert.ok(messaging.includes('dir="auto" aria-label="جستجوی گفتگوها"'));
+    assert.ok(skeletons.includes('dir="rtl" className={`grid content-end gap-5 p-4 sm:p-6 ${className}`}'));
+    assert.ok(skeletons.includes("own ? 'justify-start' : 'justify-end'"));
+    assert.ok(skeletons.includes('dir="rtl" className={`min-h-0 flex-1 divide-y divide-border overflow-hidden ${className}`}'));
+});
+
 test('messaging actions use compact, dismissible Telegram-style popovers', () => {
     assert.ok(messaging.includes("const [openPopover, setOpenPopover] = useState(null)"));
     assert.ok(messaging.includes("document.addEventListener('pointerdown', closeOnOutsidePointer, true)"));
