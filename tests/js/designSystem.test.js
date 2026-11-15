@@ -216,7 +216,7 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.ok(messaging.includes('min-w-0 w-fit max-w-[88%]'));
     assert.ok(messaging.includes('min-h-[4.25rem] w-full items-center gap-2'));
     assert.ok(messaging.includes('absolute end-1 top-1/2 -translate-y-1/2'));
-    assert.ok(messaging.includes('mt-2 flex flex-wrap items-center justify-between gap-1'));
+    assert.ok(messaging.includes('mt-[.55rem] flex flex-wrap items-center justify-between gap-2 text-[10px] text-subtle'));
     assert.ok(messaging.includes('max-h-28 min-h-[2.3rem] w-full resize-none'));
     assert.ok(messaging.includes('absolute bottom-2 start-2 z-10 flex h-9 w-9'));
     assert.ok(messaging.includes('ps-10 pe-3 py-[.55rem]'));
