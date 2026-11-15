@@ -395,7 +395,7 @@ function NotificationBell({ user }) {
                         </div>
                     </div>
 
-                    {error && <p role="alert" className="mx-4 mt-3 rounded-md border border-danger/20 bg-danger-surface px-3 py-2 text-xs leading-6 text-danger sm:mx-5">{error}</p>}
+                    {error && <p role="alert" className="mx-4 mt-3 rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_20%,transparent)] bg-danger-surface px-3 py-2 text-xs leading-6 text-danger sm:mx-5">{error}</p>}
 
                     <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-4">
                         {loading ? (
