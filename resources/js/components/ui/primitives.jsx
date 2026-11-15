@@ -99,7 +99,7 @@ export function PageHeader({ eyebrow, title, description, actions, level = 1, cl
                 <Heading className={cn('mt-3 text-[clamp(1.75rem,3.2vw,2.6rem)] font-extrabold leading-heading tracking-[-.035em] text-ink', titleClassName)}>{title}</Heading>
                 {description && <p className={cn('mt-3 max-w-2xl text-sm leading-8 text-muted sm:text-[.95rem]', descriptionClassName)}>{description}</p>}
             </div>
-            {actions && <div className="flex shrink-0 flex-wrap items-center gap-2 pb-1 max-sm:w-full max-sm:pb-0">{actions}</div>}
+            {actions && <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2 pb-1 max-sm:w-full max-sm:pb-0">{actions}</div>}
         </header>
     );
 }
