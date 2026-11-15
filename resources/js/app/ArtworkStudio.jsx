@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { Badge, Button, EmptyState, ErrorState, FormField, ArtworkStudioListSkeleton, UploadFeedback, MediaImage, PageHeader, SectionHeader } from '../components/ui';
+import { Badge, Button, EmptyState, ErrorState, FormField, ArtworkStudioListSkeleton, UploadFeedback, MediaImage, PageHeader, SectionHeader, SelectField } from '../components/ui';
 
 const emptyArtwork = { title: '', description: '', category_id: '', medium: '', dimensions: '', year: '', price: '', availability: 'available' };
 const statusLabels = { pending_review: 'در انتظار بررسی', approved: 'تأیید و منتشرشده', rejected: 'ردشده', changes_requested: 'نیازمند اصلاح' };
@@ -158,12 +158,12 @@ export default function ArtworkStudio({ user, hasProfile }) {
             <div className="mb-6 flex flex-wrap items-start justify-between gap-3"><SectionHeader title={editingId ? 'ویرایش اثر' : 'ثبت اثر جدید'} description="فیلدهای الزامی با علامت * مشخص شده‌اند." className="min-w-0 flex-1 border-0 pb-0" />{editingId && <Button variant="outline" size="sm" onClick={resetForm}>انصراف از ویرایش</Button>}</div>
             <form onSubmit={saveArtwork} className="grid gap-5 sm:grid-cols-2">
                 <FormField label="عنوان اثر" required error={errors.title?.[0]}><input name="title" value={form.title} onChange={updateForm} required maxLength={160} className={inputClass} /></FormField>
-                <FormField label="دسته‌بندی" required error={errors.category_id?.[0]}><select name="category_id" value={form.category_id} onChange={updateForm} required className={inputClass}><option value="">انتخاب دسته‌بندی</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select></FormField>
+                <FormField label="دسته‌بندی" required error={errors.category_id?.[0]}><SelectField name="category_id" value={form.category_id} onChange={updateForm} required className={inputClass}><option value="">انتخاب دسته‌بندی</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</SelectField></FormField>
                 <FormField label="تکنیک / متریال" error={errors.medium?.[0]}><input name="medium" value={form.medium} onChange={updateForm} maxLength={120} className={inputClass} placeholder="مثلاً رنگ روغن، آبرنگ…" /></FormField>
                 <FormField label="ابعاد" error={errors.dimensions?.[0]}><input name="dimensions" value={form.dimensions} onChange={updateForm} maxLength={120} className={inputClass} placeholder="مثلاً ۵۰ × ۷۰ سانتی‌متر" /></FormField>
                 <FormField label="سال خلق اثر" error={errors.year?.[0]}><input name="year" type="number" value={form.year} onChange={updateForm} min="1000" max={new Date().getFullYear() + 1} className={inputClass} /></FormField>
                 <FormField label="قیمت (ریال)" error={errors.price?.[0]}><input name="price" type="number" value={form.price} onChange={updateForm} min="0" step="1" className={inputClass} /></FormField>
-                <FormField label="وضعیت دسترس‌پذیری" required><select name="availability" value={form.availability} onChange={updateForm} className={inputClass}><option value="available">موجود</option><option value="sold">فروخته‌شده</option><option value="not_for_sale">برای فروش نیست</option></select></FormField>
+                <FormField label="وضعیت دسترس‌پذیری" required><SelectField name="availability" value={form.availability} onChange={updateForm} className={inputClass}><option value="available">موجود</option><option value="sold">فروخته‌شده</option><option value="not_for_sale">برای فروش نیست</option></SelectField></FormField>
                 <FormField label="توضیحات اثر" error={errors.description?.[0]} className="sm:col-span-2"><textarea name="description" value={form.description} onChange={updateForm} rows={4} maxLength={3000} className={inputClass} /></FormField>
                 <div className="sm:col-span-2">
                     <label htmlFor="artwork-image" className="block text-sm font-semibold text-ink">تصویر اثر {editingId ? '(اختیاری؛ برای جایگزینی تصویر)' : '*'}</label>
