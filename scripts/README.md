@@ -150,7 +150,7 @@ Only tests marked `manual_dev_safe` can run without mutation opt-in. A marked te
 
 ## Dispatcher boundary
 
-scripts/project.mjs owns only workflows that need multiple steps, isolated test environments, report generation or service lifecycle management. It is not a second public command registry.
+scripts/project.mjs owns workflows that need multiple steps, report generation or service lifecycle management. It is not a second public command registry.
 
 The dispatcher tasks are setup, dev:check, dev, production, build:cpanel, db:sqlite:init, db:status, db:migrate, db:seed, db:seed:demo, db:fresh, test:backend, test:unit, test:feature, test:integration, test:frontend, test:browser, test:report and test:reporting. Lint and focused accessibility tests are defined directly in package.json. Database commands are routed through the dispatcher so they inherit the local environment/database preflight.
 
