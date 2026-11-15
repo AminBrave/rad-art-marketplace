@@ -87,6 +87,12 @@ export function validateDevelopmentEnvironment({ fileValues = {}, processValues 
         errors.push('APP_KEY is missing or invalid. Generate a local 32-byte key with php artisan key:generate; do not reuse the production key.');
     }
 
+    const configuredDatabase = String(values.DB_DATABASE ?? '');
+    if (/(^|[._-])prod(uction)?([._-]|$)/i.test(configuredDatabase)
+        && String(processValues.RAD_ALLOW_REMOTE_DEV_DATABASE ?? '').toLowerCase() !== 'true') {
+        errors.push('DB_DATABASE looks like a production database name. Use a dedicated local development database; the explicit remote-database opt-in is not a substitute for checking the target.');
+    }
+
     const connection = String(values.DB_CONNECTION ?? 'mysql').toLowerCase();
     if (!['mysql', 'sqlite'].includes(connection)) {
         errors.push('DB_CONNECTION must be mysql or sqlite for the supported local development setup.');
