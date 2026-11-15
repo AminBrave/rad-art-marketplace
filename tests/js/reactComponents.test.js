@@ -367,9 +367,9 @@ test('Pagination exposes the active page and disables navigation at boundaries',
 
     assert.match(firstPage, /aria-label="صفحه‌بندی"/);
     assert.match(firstPage, /aria-label="صفحه 1"[^>]*aria-current="page"/);
-    assert.match(firstPage, /<button[^>]*disabled=""[^>]*>قبلی<\\/button>/);
+    assert.match(firstPage, /<button[^>]*disabled=""[^>]*>قبلی<\/button>/);
     assert.match(lastPage, /aria-label="صفحه 8"[^>]*aria-current="page"/);
-    assert.match(lastPage, /<button[^>]*disabled=""[^>]*>بعدی<\\/button>/);
+    assert.match(lastPage, /<button[^>]*disabled=""[^>]*>بعدی<\/button>/);
 });
 
 
