@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { after, test } from 'node:test';
+import { readFileSync } from 'node:fs';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { createServer } from 'vite';
@@ -318,19 +319,16 @@ test('SuccessState and PermissionState announce non-error outcomes', () => {
     assert.match(permission, /دسترسی مجاز نیست/);
 });
 
-test('Toast uses polite status announcements and assertive error announcements', () => {
-    const info = renderToStaticMarkup(
-        React.createElement(feedback.Toast, { title: 'پیام تازه', variant: 'info' }),
-    );
-    const error = renderToStaticMarkup(
-        React.createElement(feedback.Toast, { title: 'ذخیره انجام نشد', variant: 'error' }),
-    );
+test('Toast delegates announcements, dismissal and viewport behavior to Radix Toast', () => {
+    const feedbackSource = readFileSync(new URL('../../resources/js/components/ui/feedback.jsx', import.meta.url), 'utf8');
 
-    assert.match(info, /role="status"/);
-    assert.match(info, /aria-live="polite"/);
-    assert.match(error, /role="alert"/);
-    assert.match(error, /aria-live="assertive"/);
-});
+    assert.match(feedbackSource, /ToastPrimitive\.Provider/);
+    assert.match(feedbackSource, /ToastPrimitive\.Root/);
+    assert.match(feedbackSource, /ToastPrimitive\.Viewport/);
+    assert.match(feedbackSource, /ToastPrimitive\.Close asChild/);
+    assert.match(feedbackSource, /variant === 'error' \? 'foreground' : 'background'/);
+    assert.match(feedbackSource, /duration = Infinity/);
+});;
 
 test('SkeletonLines exposes one loading announcement while hiding decorative skeletons', () => {
     const html = renderToStaticMarkup(
