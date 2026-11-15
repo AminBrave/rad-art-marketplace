@@ -69,9 +69,11 @@ Use the current RAD semantic tokens and project-owned primitives:
 ## Messaging interaction patterns
 
 - Keep inbox-row actions such as archive and mute inside a compact three-dot popover attached to that conversation row; do not expose persistent action rows under every conversation.
+- Align message reactions and message-action controls in one compact, consistently spaced footer group; keep reaction chips flexible and action triggers fixed-size so wrapping never separates or stretches the controls.
 - Keep message reactions in a compact, single-tap horizontal picker anchored to the message. Existing reaction counts remain visible on the message; the picker only contains the available emoji choices.
 - Keep message actions in a compact vertical popover anchored to the message, with only actions valid for that message owner (reply for all, edit/delete for own messages, report for other participants' messages).
 - These chat popovers are lightweight contextual surfaces, not modal dialogs: no full-screen overlay, no global modal sizing, no focus trap. Use RAD semantic surfaces, border, radius, shadow, typography and focus tokens.
+- Anchor every contextual popover to its own three-dot or reaction trigger with a small, consistent gap. Prefer opening below the trigger; flip above only when the visible pane or viewport has insufficient room. Keep the horizontal edge aligned to the trigger where possible, then clamp to the available pane and visual viewport. Render portalled panels above message-history clipping without escaping the chat pane.
 - Only one chat popover may be open at a time. Close it on outside pointer/tap, Escape, action selection and conversation change. Keep controls keyboard reachable and announce expanded state with aria-expanded and aria-controls.
 - Keep emoji choices horizontally aligned and compact; keep action choices vertically stacked with readable touch targets. Preserve RTL alignment and avoid clipping at narrow widths.
 
