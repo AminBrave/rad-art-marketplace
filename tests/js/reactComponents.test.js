@@ -237,7 +237,20 @@ test('Page and section headers retain the requested heading hierarchy', () => {
 
     assert.match(page, /<h2[^>]*>مدیریت آثار<\/h2>/);
     assert.match(page, /فضای هنرمند/);
+    assert.match(page, /before:bg-terracotta/);
     assert.match(section, /<h3[^>]*id="recent-work"[^>]*>آثار اخیر<\/h3>/);
+
+    const hero = renderToStaticMarkup(
+        React.createElement(primitives.WorkspaceHero, {
+            eyebrow: 'فضای هنرمند',
+            title: 'خوش آمدید',
+            description: 'مدیریت حضور هنری شما',
+        }),
+    );
+
+    assert.match(hero, /rounded-xl border border-ink bg-ink/);
+    assert.match(hero, /inset-y-0 right-0 w-1.5 bg-terracotta/);
+    assert.match(hero, /خوش آمدید/);
 });
 
 test('PageContainer and Surface preserve semantic element and variant contracts', () => {

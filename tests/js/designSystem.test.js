@@ -13,6 +13,7 @@ const skeletons = readFileSync(new URL('../../resources/js/components/ui/skeleto
 const showcase = readFileSync(new URL('../../resources/js/app/ComponentShowcase.jsx', import.meta.url), 'utf8');
 const publicPages = ['ArtworkCatalogue.jsx', 'ArtistDirectoryPage.jsx', 'ArtworkDetailPage.jsx'].map((file) => readFileSync(new URL('../../resources/js/app/' + file, import.meta.url), 'utf8'));
 const layouts = readFileSync(new URL('../../resources/js/app/Layouts.jsx', import.meta.url), 'utf8');
+const appRouter = readFileSync(new URL('../../resources/js/app/AppRouter.jsx', import.meta.url), 'utf8');
 const buyerWorkspace = readFileSync(new URL('../../resources/js/app/BuyerWorkspace.jsx', import.meta.url), 'utf8');
 const routeLoading = readFileSync(new URL('../../resources/js/app/RoutingPages.jsx', import.meta.url), 'utf8');
 const queryClient = readFileSync(new URL('../../resources/js/lib/queryClient.js', import.meta.url), 'utf8');
@@ -33,6 +34,7 @@ const artworkGallery = readFileSync(new URL('../../resources/js/app/ArtworkGalle
 const artworkCatalogue = readFileSync(new URL('../../resources/js/app/ArtworkCatalogue.jsx', import.meta.url), 'utf8');
 const editorialPages = readFileSync(new URL('../../resources/js/app/EditorialPages.jsx', import.meta.url), 'utf8');
 const publicInfoPages = readFileSync(new URL('../../resources/js/app/PublicInfoPages.jsx', import.meta.url), 'utf8');
+const designSystem = readFileSync(new URL('../../AI/DESIGN-SYSTEM.md', import.meta.url), 'utf8');
 
 test('semantic palette, typography, spacing and layout tokens have one CSS source', () => {
     for (const token of [
@@ -42,7 +44,8 @@ test('semantic palette, typography, spacing and layout tokens have one CSS sourc
         '--color-success-surface', '--color-danger-surface', '--color-warning-surface', '--color-info-surface', '--color-accent-surface', '--color-inverse-text', '--color-message-own', '--color-message-peer',
         '--font-persian', '--font-latin', '--text-base', '--leading-copy',
         '--space-1', '--space-4', '--space-8', '--radius-md', '--content-width',
-        '--page-gutter', '--control-height-md', '--artwork-ratio',
+        '--page-gutter', '--control-height-md', '--artwork-ratio', '--workspace-bottom-nav-height',
+        '--workspace-bottom-nav-primary-height',
     ]) {
         assert.match(css, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Missing design token: ${token}`);
     }
@@ -64,6 +67,11 @@ test('shared primitives express accessible component contracts with semantic Tai
     assert.ok(primitives.includes('aria-busy={loading || undefined}'));
     assert.ok(primitives.includes("'aria-describedby': describedBy"));
     assert.ok(primitives.includes("'aria-invalid': error ? true"));
+    assert.ok(primitives.includes('bg-accent-surface px-3 py-1.5'));
+    assert.ok(primitives.includes('before:bg-terracotta'));
+    assert.ok(primitives.includes('before:bg-sand'));
+    assert.ok(primitives.includes('text-[clamp(1.75rem,3.2vw,2.6rem)]'));
+    assert.ok(primitives.includes('max-sm:w-full max-sm:pb-0'));
     assert.doesNotMatch(primitives, /ra-[a-z]/);
 });
 
@@ -79,6 +87,8 @@ test('shared content and feedback components use semantic utility classes', () =
 
 test('RAD visual tokens are declared in one canonical root block', () => {
     assert.equal((css.match(/:root\s*\{/g) ?? []).length, 1);
+    assert.ok(css.includes('--color-overlay: rgb(36 35 32 / 64%)'));
+    assert.ok(css.includes('--overlay-backdrop-blur: 8px;'));
     assert.ok(css.includes('--color-message-own:'));
     assert.ok(css.includes('--color-success-surface:'));
 });
@@ -98,10 +108,11 @@ test('public catalogue, artist directory and artwork detail use shared page layo
     assert.ok(publicPages[1].includes('PageContainer') && publicPages[1].includes('SectionHeader'));
     assert.ok(publicPages[2].includes('PageContainer'));
     assert.ok(buyerWorkspace.includes('WorkspaceHero') && buyerWorkspace.includes('<Surface'));
+    assert.ok(designSystem.includes('Dashboard page and section headings'));
 });
 
 test('public and role-based workspaces use shared semantic shell utilities', () => {
-    for (const utility of ['min-h-screen bg-canvas text-ink', 'min-h-20 border-b border-border', 'grid min-w-0 max-w-7xl', 'rounded-md border border-border bg-paper']) {
+    for (const utility of ['min-h-screen bg-canvas text-ink', 'sticky top-0 z-40 border-b border-border', 'grid min-w-0 max-w-content', 'rounded-xl border border-border bg-paper']) {
         assert.ok(layouts.includes(utility), 'Missing shell utility: ' + utility);
     }
     assert.doesNotMatch(layouts, /ra-[a-z]/);
@@ -112,12 +123,205 @@ test('navigation and dialog primitives use Tailwind state and focus utilities', 
     assert.ok(navigation.includes('data-[disabled]:pointer-events-none'));
     assert.ok(navigation.includes('focus-visible:ring-2'));
     assert.ok(navigation.includes('aria-current="page"'));
-    assert.ok(dialog.includes('color-mix(in_srgb,var(--color-ink)_55%,transparent)'));
-    assert.ok(dialog.includes('max-h-[85vh]'));
+    assert.ok(dialog.includes('bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]'));
+    assert.ok(dialog.includes('max-h-[min(88dvh,48rem)]'));
+    assert.ok(dialog.includes('rounded-xl border border-border-strong bg-paper'));
     assert.doesNotMatch(navigation, /ra-[a-z]/);
     assert.doesNotMatch(dialog, /ra-[a-z]/);
 });
 
+test('dashboard headers and notification drawer use the shared accessible RAD dialog primitive', () => {
+    assert.ok(layouts.includes('aria-haspopup="dialog"'));
+    assert.ok(layouts.includes('<Dialog open={open} onOpenChange={setOpen}>'));
+    assert.ok(layouts.includes('<DialogTrigger asChild>'));
+    assert.ok(layouts.includes('<DialogContent'));
+    assert.ok(layouts.includes('<DialogTitle id="workspace-notification-title"'));
+    assert.ok(layouts.includes('<DialogClose asChild>'));
+    assert.ok(layouts.includes('workspace-notification-panel'));
+    assert.ok(layouts.includes('!right-0 !top-0 !h-dvh'));
+    assert.doesNotMatch(layouts, /panelPosition|closeOnOutsidePointer|aria-modal="false"/);
+    assert.ok(layouts.includes('aria-haspopup="dialog"'));
+    assert.ok(layouts.includes('aria-modal="true"'));
+    assert.ok(layouts.includes('bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]'));
+    assert.ok(layouts.includes('workspace-mobile-menu'));
+    assert.ok(layouts.includes('document.body.style.overflow = \'hidden\''));
+    assert.ok(layouts.includes('lg:hidden'));
+    assert.ok(layouts.includes('hidden min-w-0 rounded-xl border border-border bg-paper'));
+    assert.ok(adminWorkspace.includes('<PageHeader'));
+    assert.ok(artistWorkspace.includes('<WorkspaceHero'));
+    assert.ok(buyerWorkspace.includes('<WorkspaceHero'));
+    assert.ok(artistWorkspace.includes('<SectionHeader'));
+    assert.ok(buyerWorkspace.includes('<SectionHeader'));
+    assert.ok(adminWorkspace.includes('<SectionHeader'));
+    assert.ok(artworkStudio.includes('<SectionHeader'));
+    assert.ok(editorialPages.includes('<SectionHeader'));
+    assert.ok(routeLoading.includes('<WorkspaceHero'));
+    assert.ok(routeLoading.includes('<PageHeader'));
+    assert.ok(messaging.includes('<PageHeader'));
+    assert.ok(messaging.includes('after:bg-terracotta'));
+    const heroStart = primitives.indexOf('export function WorkspaceHero');
+    const heroEnd = primitives.indexOf('\n}', heroStart);
+    assert.ok(heroStart >= 0 && heroEnd > heroStart);
+    assert.ok(primitives.slice(heroStart, heroEnd).includes('<PageHeader'));
+    assert.doesNotMatch(primitives.slice(heroStart, heroEnd), /bg-ink|text-inverse|shadow-raised/);
+    assert.ok(!artworkStudio.includes('className="border-0 pb-0 pt-0"'));
+});
+
+test('messaging conversation filters fill their RAD container edge to edge', () => {
+    assert.ok(messaging.includes('grid grid-cols-3 gap-0 overflow-hidden rounded-md border border-border bg-surface-muted'));
+    assert.ok(messaging.includes('min-h-11 w-full items-center justify-center'));
+    assert.ok(messaging.includes('focus-visible:outline-offset-[-2px]'));
+    assert.ok(messaging.includes('motion-reduce:transition-none'));
+    assert.doesNotMatch(messaging, /role="tablist"[^\n]*gap-1[^\n]*p-1/);
+});
+
+
+test('messaging fills the workspace viewport and keeps compact Telegram-inspired density', () => {
+    assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col gap-2'));
+    assert.ok(messaging.includes('grid min-h-0 w-full min-w-0 flex-1 grid-cols-1'));
+    assert.ok(messaging.includes('titleClassName="mt-1 text-xl sm:text-2xl"'));
+    assert.ok(layouts.includes('const isMessagingRoute = pathname.endsWith(\'/messages\')'));
+    assert.ok(layouts.includes('h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
+    assert.ok(layouts.includes('sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
+    assert.ok(layouts.includes('lg:h-[calc(100dvh-5rem)]'));
+    assert.ok(layouts.includes("isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col' : 'min-w-0'"));
+    assert.ok(messaging.includes('lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]'));
+    assert.ok(messaging.includes('min-w-0 w-fit max-w-[88%]'));
+    assert.ok(messaging.includes('min-h-[4.25rem] w-full items-center gap-2'));
+    assert.ok(messaging.includes('absolute end-1 top-1/2 -translate-y-1/2'));
+    assert.ok(messaging.includes('mt-2 flex flex-wrap items-center justify-between gap-1'));
+    assert.ok(messaging.includes('max-h-28 min-h-[2.3rem] w-full resize-none'));
+    assert.ok(messaging.includes('absolute bottom-2 start-2 z-10 flex h-9 w-9'));
+    assert.ok(messaging.includes('ps-10 pe-3 py-[.55rem]'));
+    assert.doesNotMatch(messaging, /md:min-h-\[min\(580px/);
+    assert.doesNotMatch(messaging, /min-h-\[5\.35rem\]/);
+});
+
+test('messaging is viewport-locked between the authenticated app header and bottom navigation on mobile', () => {
+    assert.ok(messaging.includes('className="max-sm:hidden"'), 'Hide the page-level direct-messaging heading on mobile.');
+    assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col gap-2 overflow-hidden'));
+    assert.ok(messaging.includes('grid h-full min-h-0 w-full min-w-0 flex-1'));
+    assert.ok(messaging.includes('divide-y divide-border overflow-y-auto'), 'The inbox list scrolls inside its fixed panel.');
+    assert.ok(messaging.includes('overflow-y-auto overscroll-contain'), 'Message history scrolls inside its fixed panel.');
+    assert.ok(layouts.includes('flex h-dvh flex-col overflow-hidden'), 'Messaging locks the authenticated shell to the dynamic viewport.');
+    assert.ok(layouts.includes('h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
+    assert.ok(layouts.includes('sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
+    assert.ok(layouts.includes('lg:h-[calc(100dvh-5rem)]'));
+    assert.ok(layouts.includes("lg:fixed lg:top-28"));
+    assert.ok(layouts.includes("lg:right-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))]"));
+    assert.ok(layouts.includes("lg:max-h-[calc(100dvh_-_8rem)] lg:w-60 lg:overflow-y-auto"));
+    assert.ok(layouts.includes('{isMessagingRoute && <div className="hidden lg:block" aria-hidden="true" />}'));
+    assert.ok(layouts.includes("overflow-hidden lg:col-start-2"));
+    assert.ok(layouts.includes("isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden lg:col-start-2' : 'min-w-0'"));
+});
+
+test('messaging chat geometry follows RTL logical flow and uses Radix collision-aware overlays', () => {
+    assert.ok(messaging.includes('<div dir="rtl" ref={messagesContainerRef}'));
+    assert.ok(messaging.includes("import * as DropdownMenu from '@radix-ui/react-dropdown-menu'"));
+    assert.ok(messaging.split('<DropdownMenu.Root').length - 1 >= 4, 'All messaging overlays use Radix.');
+    assert.ok(messaging.includes('<DropdownMenu.Portal>'));
+    assert.ok(messaging.includes('sideOffset={8} collisionPadding={8}'));
+    assert.ok(messaging.includes('var(--radix-dropdown-menu-content-available-height)'));
+    assert.ok(messaging.includes('flex-nowrap items-center gap-1 overflow-x-auto'));
+    assert.ok(messaging.includes('min-w-0 flex-wrap items-center justify-end gap-1.5'));
+    assert.ok(messaging.includes('overflow-x-hidden overflow-y-auto'));
+    assert.ok(messaging.includes('absolute end-1 top-1/2 -translate-y-1/2'));
+    assert.ok(messaging.includes('absolute bottom-2 start-2 z-10 flex h-9 w-9'));
+    assert.ok(messaging.includes('ps-10 pe-3 py-[.55rem]'));
+    assert.doesNotMatch(messaging, /getChatPopoverPosition|toggleChatPopover|createPortal|data-chat-popover-boundary/);
+});
+
+test('messaging actions use Radix menu semantics and preserve reply focus', () => {
+    assert.ok(messaging.includes("const [openPopover, setOpenPopover] = useState(null)"));
+    assert.ok(messaging.includes('const setPopoverOpen = (id, open) => setOpenPopover'));
+    assert.ok(messaging.includes('onCloseAutoFocus={(event) => {'));
+    assert.ok(messaging.includes('focusComposerAfterMenuCloseRef.current = true'));
+    assert.ok(messaging.includes('draftRef.current?.focus()'));
+    assert.ok(messaging.includes('<DropdownMenu.Trigger asChild>'));
+    assert.ok(messaging.includes("updateThreadSetting(thread, 'archived'"));
+    assert.ok(messaging.includes("updateThreadSetting(thread, 'muted'"));
+    assert.ok(messaging.includes('data-[highlighted]:bg-surface-muted'));
+    assert.ok(messaging.includes('aria-label="افزودن واکنش"'));
+    assert.ok(messaging.includes('aria-label="عملیات پیام"'));
+    assert.ok(!messaging.includes("document.addEventListener('pointerdown'"));
+    assert.ok(!messaging.includes("document.addEventListener('keydown'"));
+    assert.ok(!messaging.includes("window.addEventListener('scroll', reposition"));
+});
+
+test('shared RAD modal dialogs retain outside-click and Escape dismissal behavior', () => {
+    assert.ok(dialog.includes('DialogPrimitive.Root'));
+    assert.ok(dialog.includes('<DialogPrimitive.Overlay'));
+    assert.ok(dialog.includes('<DialogPrimitive.Content'));
+    assert.doesNotMatch(dialog, /onPointerDownOutside=\{[^}]*preventDefault/);
+    assert.doesNotMatch(dialog, /onEscapeKeyDown=\{[^}]*preventDefault/);
+});
+
+test('authenticated app shell keeps primary-only bottom navigation and places both navigation tiers in the dashboard hamburger drawer', () => {
+    const bottomStart = layouts.indexOf('function AuthenticatedBottomNavigation({ primaryLinks })');
+    const bottomEnd = layouts.indexOf('\n}\n\nexport function WorkspaceLayout', bottomStart);
+    const bottomNavigation = layouts.slice(bottomStart, bottomEnd);
+    const workspaceStart = layouts.indexOf('export function WorkspaceLayout');
+    const workspaceLayout = layouts.slice(workspaceStart);
+    const drawerStart = workspaceLayout.indexOf('id="workspace-mobile-menu"');
+    const drawerEnd = workspaceLayout.indexOf('</aside>', drawerStart);
+    const drawer = workspaceLayout.slice(drawerStart, drawerEnd);
+
+    assert.ok(bottomStart >= 0 && bottomEnd > bottomStart);
+    assert.ok(bottomNavigation.includes('data-testid="authenticated-bottom-navigation"'));
+    assert.ok(bottomNavigation.includes('fixed inset-x-0 bottom-0 z-50'));
+    assert.ok(bottomNavigation.includes('pb-[env(safe-area-inset-bottom)]'));
+    assert.ok(bottomNavigation.includes('lg:hidden'));
+    assert.ok(bottomNavigation.includes('aria-label="بخش‌های اصلی حساب کاربری"'));
+    assert.ok(bottomNavigation.includes('data-nav-priority="primary"'));
+    assert.doesNotMatch(bottomNavigation, /secondary|پیوندهای تکمیلی|publicSecondaryLinks/);
+    assert.ok(layouts.includes('user && <AuthenticatedBottomNavigation primaryLinks={getWorkspacePrimaryLinks(user.role)} />'));
+    assert.ok(workspaceLayout.includes('<AuthenticatedBottomNavigation primaryLinks={links} />'));
+
+    assert.doesNotMatch(workspaceLayout.slice(0, workspaceLayout.indexOf('{logoutError &&')), /ناوبری اصلی فضای کاربری|ناوبری تکمیلی سایت|data-nav-priority="secondary"/);
+    assert.ok(workspaceLayout.includes('aria-label={mobileMenuOpen ?'));
+    assert.ok(workspaceLayout.includes('aria-haspopup="dialog"'));
+    assert.ok(workspaceLayout.includes('fixed inset-0 z-[70]'));
+    assert.ok(drawer.includes('aria-label="بخش‌های اصلی فضای کاربری"'));
+    assert.ok(drawer.includes('aria-label="پیوندهای تکمیلی سایت"'));
+    assert.ok(drawer.includes('publicSecondaryLinks.map((item)'));
+    assert.ok(drawer.includes('links.map((item)'));
+    assert.ok(drawer.indexOf('بخش‌های اصلی فضای کاربری') < drawer.indexOf('پیوندهای تکمیلی سایت'));
+    assert.ok(workspaceLayout.includes('aria-label="ناوبری فضای کاربری"'), 'Desktop workspace sidebar remains available.');
+    assert.ok(workspaceLayout.includes('const Icon = workspaceNavigationIcons[item.to] ?? LayoutDashboard;'), 'Desktop sidebar uses the same route-aware icon map as mobile.');
+    assert.ok(workspaceLayout.includes('<Icon size={18} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />'), 'Desktop sidebar renders decorative Lucide icons beside labels.');
+    assert.ok(layouts.includes('aria-label="ناوبری اصلی"'), 'Existing public header navigation must remain available.');
+
+    const publicRoutesStart = appRouter.indexOf('<Route element={<PublicLayout />}>' );
+    const publicRoutesEnd = appRouter.indexOf('</Route>', publicRoutesStart);
+    assert.ok(publicRoutesStart >= 0 && publicRoutesEnd > publicRoutesStart);
+    assert.ok(appRouter.slice(publicRoutesStart, publicRoutesEnd).includes('<Route path="*" element={<NotFoundPage />} />'), 'Public fallback routes must retain the authenticated shell.');
+
+    assert.ok(layouts.includes('pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)]'));
+    assert.ok(layouts.includes('user ? "min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:pb-0" : "min-h-screen bg-canvas text-ink"'));
+    assert.ok(layouts.includes("'/dashboard/artist/artworks': Images"));
+    assert.ok(layouts.includes("'/dashboard/buyer/messages': MessageCircle"));
+    assert.ok(layouts.includes("'/admin/message-reports': Flag"));
+    assert.ok(layouts.includes("to: '/contact', label: 'تماس'"));
+    assert.ok(routeLoading.includes("getWorkspacePrimaryLinks('artist')"));
+    assert.ok(routeLoading.includes("getWorkspacePrimaryLinks('buyer')"));
+    assert.ok(routeLoading.includes("getWorkspacePrimaryLinks('admin')"));
+    assert.ok(css.includes('--workspace-bottom-nav-primary-height: 4.5rem;'));
+    assert.ok(css.includes('--workspace-bottom-nav-height: var(--workspace-bottom-nav-primary-height);'));
+    assert.doesNotMatch(css, /--workspace-bottom-nav-secondary-height/);
+});
+test('RAD design-system definition makes the authenticated app-shell and navigation hierarchy canonical', () => {
+    for (const principle of [
+        'coherent, responsive web app',
+        'Every route rendered while a user is authenticated',
+        'Keep the compact dashboard header',
+        'public-layout routes and authenticated workspace routes',
+        'Put both navigation tiers inside the dashboard hamburger drawer',
+        'Secondary site navigation',
+        'primary workspace destinations only',
+        'safe-area inset',
+        'Never invent a route',
+    ]) assert.ok(designSystem.includes(principle), 'Missing RAD design-system principle: ' + principle);
+});
 test('boot shell and application presentation use Tailwind utilities with no component CSS selectors', () => {
     assert.ok(bootShell.includes('grid grid-cols-1 items-center gap-12'));
     assert.ok(bootShell.includes('lg:grid-cols-[minmax(0,1fr)_minmax(16rem,.9fr)]'));

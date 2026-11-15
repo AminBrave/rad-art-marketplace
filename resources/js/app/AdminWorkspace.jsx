@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { Badge, Button, EmptyState, ErrorState, FormField, Skeleton, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField, WorkspaceHero, DashboardMetricCard, DashboardMetricSkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, MediaImage } from '../components/ui';
+import { Badge, Button, EmptyState, ErrorState, FormField, Skeleton, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField, WorkspaceHero, PageHeader, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, MediaImage } from '../components/ui';
 
 const api = '/api/v1/admin';
 const statuses = [
@@ -78,10 +78,7 @@ export function AdminDashboardHome() {
 
             <section className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,.8fr)]">
                 <div className="border border-border bg-paper p-5 sm:p-7">
-                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
-                        <div><p className="text-xs font-bold text-terracotta-strong">اولویت امروز</p><h2 className="mt-1 text-lg font-black">صف بررسی آثار</h2></div>
-                        <Link to="/admin/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">مشاهده صف</Link>
-                    </div>
+                    <SectionHeader eyebrow="اولویت امروز" title="صف بررسی آثار" actions={<Link to="/admin/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">مشاهده صف</Link>} />
                     {loading ? <div aria-hidden="true" className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]"><Skeleton className="aspect-square w-full rounded-none sm:max-w-32" /><div className="grid gap-3"><SkeletonLines lines={3} /><SkeletonLines lines={1} /></div></div> : summary.latest ? (
                         <div className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]">
                             <div className="aspect-square overflow-hidden bg-surface-muted">
@@ -100,17 +97,14 @@ export function AdminDashboardHome() {
                 </div>
 
                 <aside className="border border-border bg-surface-muted p-5 sm:p-7">
-                    <p className="text-xs font-bold text-terracotta-strong">راهنمای عملیات</p>
-                    <h2 className="mt-2 text-lg font-black">رسیدگی منظم و قابل پیگیری</h2>
+                    <SectionHeader eyebrow="راهنمای عملیات" title="رسیدگی منظم و قابل پیگیری" className="border-0 pb-0" />
                     <p className="mt-3 text-sm leading-7 text-muted">تصمیم‌های انتشار را همراه با توضیح ثبت کنید، نقش‌ها را با دقت مدیریت کنید و گزارش‌های ایمنی را از مسیر اختصاصی بررسی کنید.</p>
                     <Link to="/admin/artworks" className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 py-3 text-sm font-bold text-inverse transition-colors hover:bg-terracotta">شروع بررسی آثار <span aria-hidden="true" className="mr-3">←</span></Link>
                 </aside>
             </section>
 
             <section aria-labelledby="admin-shortcuts-heading">
-                <div className="flex flex-wrap items-end justify-between gap-3 border-b border-border pb-4">
-                    <div><p className="text-xs font-bold text-terracotta-strong">دسترسی سریع</p><h2 id="admin-shortcuts-heading" className="mt-2 text-xl font-black">بخش‌های مدیریتی</h2></div>
-                </div>
+                <SectionHeader id="admin-shortcuts-heading" eyebrow="دسترسی سریع" title="بخش‌های مدیریتی" />
                 <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                     {shortcuts.map((item) => <Link key={item.to} to={item.to} className="group flex min-h-44 flex-col border border-border bg-paper p-5 transition-all hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
                         <div className="flex items-center justify-between gap-3"><span aria-hidden="true" className="grid h-10 w-10 place-items-center bg-surface-muted text-lg text-terracotta-strong">{item.symbol}</span><span className="text-[10px] font-bold text-muted">{item.eyebrow}</span></div>
@@ -170,7 +164,7 @@ export function AdminArtworkModeration() {
         } catch (e) { setActionError(e.response?.status === 403 ? 'سرور اجازه انجام این عملیات را نداد.' : e.response?.data?.errors?.note?.[0] ?? e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.'); }
     };
     return <section className="space-y-6" dir="rtl">
-        <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6"><div><p className="text-sm font-bold text-terracotta-strong">مدیریت آثار</p><h1 className="mt-2 text-2xl font-black">صف بررسی و انتشار</h1><p className="mt-2 text-sm leading-7 text-muted">فقط آثار در انتظار بررسی قابل تصمیم‌گیری‌اند. رد اثر یا درخواست اصلاح به توضیح نیاز دارد.</p></div><Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button></header>
+        <PageHeader eyebrow="مدیریت آثار" title="صف بررسی و انتشار" description="فقط آثار در انتظار بررسی قابل تصمیم‌گیری‌اند. رد اثر یا درخواست اصلاح به توضیح نیاز دارد." actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
         <div className="flex flex-wrap gap-2" aria-label="فیلتر وضعیت آثار">{statuses.map((item) => <Button key={item.value} size="sm" variant={status === item.value ? 'primary' : 'outline'} aria-pressed={status === item.value} onClick={() => chooseStatus(item.value)}>{item.label}</Button>)}</div>
         {message && <SuccessState title={message} />}{error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
         {loading ? <ArtworkModerationSkeleton count={4} /> : !result?.data?.length ? <EmptyState title="اثری در این وضعیت وجود ندارد" description="با انتخاب وضعیت دیگر می‌توانید سوابق تصمیم‌ها را مرور کنید." /> : <>
@@ -240,10 +234,7 @@ export function AdminUsersPage() {
         }
     };
     return <section className="space-y-6" dir="rtl">
-        <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
-            <div><p className="text-sm font-bold text-terracotta-strong">مدیریت حساب‌ها</p><h1 className="mt-2 text-2xl font-black">کاربران</h1><p className="mt-2 max-w-2xl text-sm leading-7 text-muted">فهرست حساب‌ها و مدیریت نقش‌های مجاز. ارتقای هر حساب به مدیر، مرحله تأیید جداگانه دارد.</p></div>
-            <Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>
-        </header>
+        <PageHeader eyebrow="مدیریت حساب‌ها" title="کاربران" description="فهرست حساب‌ها و مدیریت نقش‌های مجاز. ارتقای هر حساب به مدیر، مرحله تأیید جداگانه دارد." actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
         <div className="grid gap-3 sm:grid-cols-2">
             <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">حساب‌های این صفحه</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</p></div>
             <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">کل حساب‌ها</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</p></div>
@@ -326,10 +317,7 @@ export function AdminMessageReportsPage() {
         }
     };
     return <section className="space-y-6" dir="rtl">
-        <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
-            <div><p className="text-sm font-bold text-terracotta-strong">ایمنی گفتگوها</p><h1 className="mt-2 text-2xl font-black">گزارش‌های پیام</h1><p className="mt-2 max-w-2xl text-sm leading-7 text-muted">گزارش‌ها را با توجه به زمینه گفتگو بررسی کنید. حذف پیام یک اقدام برگشت‌ناپذیر در این پنل است و پیش از اجرا تأیید جداگانه می‌خواهد.</p></div>
-            <Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>
-        </header>
+        <PageHeader eyebrow="ایمنی گفتگوها" title="گزارش‌های پیام" description="گزارش‌ها را با توجه به زمینه گفتگو بررسی کنید. حذف پیام یک اقدام برگشت‌ناپذیر در این پنل است و پیش از اجرا تأیید جداگانه می‌خواهد." actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
         <div className="grid gap-3 sm:grid-cols-2">
             <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">گزارش‌های این صفحه</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</p></div>
             <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">کل گزارش‌ها</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</p></div>

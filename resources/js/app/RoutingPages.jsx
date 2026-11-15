@@ -3,8 +3,8 @@ import axios from 'axios';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { WorkspaceLayout } from './Layouts';
-import { Skeleton, ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, FormFieldSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton } from '../components/ui';
+import { getWorkspacePrimaryLinks, WorkspaceLayout } from './Layouts';
+import { Skeleton, ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, FormFieldSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton, PageHeader, WorkspaceHero } from '../components/ui';
 const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
 
 const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
@@ -239,12 +239,7 @@ export function ArtistWorkspaceLayout() {
         : '';
     const setProfile = (nextProfile) => queryClient.setQueryData(profileKey, nextProfile);
 
-    const links = [
-        { to: '/dashboard/artist', label: 'نمای کلی', end: true },
-        { to: '/dashboard/artist/profile', label: 'پروفایل هنرمند' },
-        { to: '/dashboard/artist/artworks', label: 'مدیریت آثار' },
-        { to: '/dashboard/artist/messages', label: 'پیام‌های مستقیم' },
-    ];
+    const links = getWorkspacePrimaryLinks('artist');
 
     return <WorkspaceLayout title="فضای هنرمند" links={links} outletContext={{ user, profile, setProfile, profileLoading, profileError }} />;
 }
@@ -252,10 +247,12 @@ export function ArtistWorkspaceLayout() {
 export function ArtistDashboardHome() {
     const { user, profile, profileLoading, profileError } = useOutletContext();
     return (
-        <section className="rounded-2xl border border-border bg-paper p-6 sm:p-8" dir="rtl">
-            <p className="text-sm font-bold text-terracotta-strong">فضای هنرمند</p>
-            <h1 className="mt-2 text-2xl font-black">خوش آمدید، {user.name}</h1>
-            <p className="mt-3 text-sm leading-7 text-muted">پروفایل و آثار ارسالی خود را مدیریت کنید و از بخش پیام‌های مستقیم با خریداران در ارتباط باشید.</p>
+        <section className="space-y-6" dir="rtl">
+            <WorkspaceHero
+                eyebrow="فضای هنرمند"
+                title={<>خوش آمدید، {user.name}</>}
+                description="پروفایل و آثار ارسالی خود را مدیریت کنید و از بخش پیام‌های مستقیم با خریداران در ارتباط باشید."
+            />
             {profileError && <p role="alert" className="mt-5 text-sm text-warning">{profileError}</p>}
             {profileLoading ? <p className="mt-5 text-sm text-muted">در حال دریافت پروفایل…</p> : (
                 <div className="mt-6 rounded-xl bg-canvas p-4">
@@ -320,9 +317,12 @@ export function ArtistProfileSettings() {
     if (profileLoading) return <RouteLoading label="در حال دریافت پروفایل هنرمند…" />;
 
     return (
-        <section className="rounded-2xl border border-border bg-paper p-6 sm:p-8" dir="rtl">
-            <h1 className="text-2xl font-black">پروفایل هنرمند</h1>
-            <p className="mt-2 text-sm leading-7 text-muted">اطلاعات معرفی و وضعیت نمایش عمومی پروفایل خود را مدیریت کنید.</p>
+        <section className="space-y-6" dir="rtl">
+            <PageHeader
+                eyebrow="استودیوی هنرمند"
+                title="پروفایل هنرمند"
+                description="اطلاعات معرفی و وضعیت نمایش عمومی پروفایل خود را مدیریت کنید."
+            />
             {profileError && <p role="alert" className="mt-4 text-sm text-warning">{profileError}</p>}
             <form onSubmit={save} className="mt-6 grid gap-4 sm:grid-cols-2">
                 <label className="text-sm font-semibold sm:col-span-2">نام نمایشی
@@ -370,21 +370,12 @@ export function ArtistArtworkPage() {
 
 export function BuyerWorkspaceLayout() {
     const { user } = useAuth();
-    const links = [
-        { to: '/dashboard/buyer', label: 'نمای کلی', end: true },
-        { to: '/dashboard/buyer/messages', label: 'پیام‌های مستقیم' },
-    ];
+    const links = getWorkspacePrimaryLinks('buyer');
     return <WorkspaceLayout title="فضای خریدار" links={links} outletContext={{ user }} />;
 }
 
 export function AdminWorkspaceLayout() {
-    const links = [
-        { to: '/admin', label: 'نمای کلی', end: true },
-        { to: '/admin/users', label: 'مدیریت کاربران' },
-        { to: '/admin/artworks', label: 'بررسی آثار' },
-        { to: '/admin/message-reports', label: 'گزارش پیام‌ها' },
-        { to: '/admin/editorial', label: 'مجموعه‌ها و سردبیری' },
-    ];
+    const links = getWorkspacePrimaryLinks('admin');
     return <WorkspaceLayout title="پنل مدیریت" links={links} />;
 }
 

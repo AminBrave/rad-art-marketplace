@@ -1,30 +1,75 @@
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Bell } from 'lucide-react';
+import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Images, LayoutDashboard, Menu, MessageCircle, UserRound, Users, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { NotificationListSkeleton } from '../components/ui';
+import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, NotificationListSkeleton } from '../components/ui';
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
+
+const publicSecondaryLinks = [
+    { to: '/artworks', label: 'گالری آثار' },
+    { to: '/artists', label: 'هنرمندان' },
+    { to: '/collections', label: 'مجموعه‌ها' },
+    { to: '/about', label: 'درباره ما' },
+    { to: '/help', label: 'راهنما' },
+    { to: '/contact', label: 'تماس' },
+];
+
+export function getWorkspacePrimaryLinks(role) {
+    const links = {
+        artist: [
+            { to: '/dashboard/artist', label: 'نمای کلی', end: true },
+            { to: '/dashboard/artist/profile', label: 'پروفایل هنرمند' },
+            { to: '/dashboard/artist/artworks', label: 'مدیریت آثار' },
+            { to: '/dashboard/artist/messages', label: 'پیام‌های مستقیم' },
+        ],
+        buyer: [
+            { to: '/dashboard/buyer', label: 'نمای کلی', end: true },
+            { to: '/dashboard/buyer/messages', label: 'پیام‌های مستقیم' },
+        ],
+        admin: [
+            { to: '/admin', label: 'نمای کلی', end: true },
+            { to: '/admin/users', label: 'مدیریت کاربران' },
+            { to: '/admin/artworks', label: 'بررسی آثار' },
+            { to: '/admin/message-reports', label: 'گزارش پیام‌ها' },
+            { to: '/admin/editorial', label: 'مجموعه‌ها و سردبیری' },
+        ],
+    };
+    return links[role] ?? [];
+}
 
 export function PublicLayout() {
     const { user, logout } = useAuth();
     const [logoutError, setLogoutError] = useState('');
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const mobileMenuTriggerRef = useRef(null);
+    const { pathname } = useLocation();
+
     const handleLogout = async () => {
+        setMobileMenuOpen(false);
         setLogoutError('');
-        try { await logout(); } catch { setLogoutError('خروج انجام نشد. اتصال را بررسی کنید.'); }
+        try {
+            await logout();
+        } catch {
+            setLogoutError('خروج انجام نشد. اتصال را بررسی کنید.');
+        }
     };
 
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const { pathname } = useLocation();
     useEffect(() => setMobileMenuOpen(false), [pathname]);
     useEffect(() => {
         if (!mobileMenuOpen) return undefined;
-        const closeOnEscape = (event) => { if (event.key === 'Escape') setMobileMenuOpen(false); };
+        const closeOnEscape = (event) => {
+            if (event.key === 'Escape') {
+                setMobileMenuOpen(false);
+                mobileMenuTriggerRef.current?.focus();
+            }
+        };
         window.addEventListener('keydown', closeOnEscape);
         return () => window.removeEventListener('keydown', closeOnEscape);
     }, [mobileMenuOpen]);
+
     const publicLinks = [
         { to: '/artworks', label: 'کشف آثار' },
         { to: '/artists', label: 'هنرمندان' },
@@ -32,36 +77,160 @@ export function PublicLayout() {
         { to: '/about', label: 'درباره ما' },
         { to: '/help', label: 'راهنما' },
     ];
-    const navClass = ({ isActive }) => isActive
-        ? 'font-bold text-terracotta-strong'
-        : 'text-muted transition-colors hover:text-terracotta-strong';
+    const navClass = ({ isActive }) => [
+        'relative inline-flex min-h-11 items-center whitespace-nowrap px-1 text-sm font-semibold transition-colors',
+        'after:absolute after:inset-x-1 after:bottom-0 after:h-0.5 after:origin-center after:scale-x-0 after:bg-terracotta after:transition-transform',
+        isActive
+            ? 'text-terracotta-strong after:scale-x-100'
+            : 'text-muted hover:text-ink',
+    ].join(' ');
 
-    return <div className="min-h-screen bg-canvas text-ink" dir="rtl">
-        <header className="sticky top-0 z-40 min-h-20 border-b border-border bg-[color:color-mix(in_srgb,var(--color-canvas)_95%,transparent)] backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-canvas)_90%,transparent)]">
-            <div className="mx-auto flex min-h-[4.5rem] max-w-7xl items-center justify-between gap-4 px-5 sm:px-8 lg:min-h-20 lg:px-10">
-                <Link to="/" className="shrink-0 text-2xl font-black tracking-tight text-ink no-underline" aria-label="راد آرت، صفحه اصلی">راد<span className="text-terracotta-strong">آرت</span><span className="ms-2 hidden align-middle text-[10px] font-medium tracking-[.18em] text-muted sm:inline">ART MARKETPLACE</span></Link>
-                <nav aria-label="ناوبری اصلی" className="hidden items-center gap-6 text-sm lg:flex">
-                    {publicLinks.map((item) => <NavLink key={item.to} to={item.to} className={navClass}>{item.label}</NavLink>)}
-                </nav>
-                <div className="flex items-center gap-2 text-sm sm:gap-3">
-                    {user ? <><span className="hidden max-w-28 truncate font-semibold lg:inline">{user.name}</span><span className="hidden bg-surface-muted px-3 py-2 text-xs font-bold text-terracotta-strong sm:inline-flex">{roleLabels[user.role] ?? user.role}</span><Link to={user.role==='admin'?'/admin':user.role==='buyer'?'/dashboard/buyer':'/dashboard/artist'} className="hidden font-semibold text-terracotta-strong underline underline-offset-4 sm:inline">فضای کاربری</Link><button type="button" onClick={handleLogout} className="hidden min-h-10 border border-border px-4 py-2 font-semibold transition-colors hover:border-terracotta sm:inline-flex">خروج</button></> : <><Link to="/login" className="hidden font-semibold transition-colors hover:text-terracotta-strong sm:inline">ورود</Link><Link to="/register" className="min-h-10 bg-ink px-4 py-2.5 font-semibold text-inverse transition-colors hover:bg-terracotta">ثبت‌نام</Link></>}
-                    <button type="button" aria-label={mobileMenuOpen ? 'بستن منو' : 'باز کردن منو'} aria-expanded={mobileMenuOpen} aria-controls="public-mobile-navigation" onClick={() => setMobileMenuOpen((open) => !open)} className="grid h-10 w-10 place-items-center border border-border text-xl transition-colors hover:border-terracotta lg:hidden"><span aria-hidden="true">{mobileMenuOpen ? '×' : '☰'}</span></button>
+    return (
+        <div className={user ? "min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:pb-0" : "min-h-screen bg-canvas text-ink"} dir="rtl">
+            <a href="#main-content" className="sr-only z-[60] bg-paper px-4 py-3 text-ink focus:not-sr-only focus:fixed focus:right-4 focus:top-4">
+                رفتن به محتوای اصلی
+            </a>
+            <header className="sticky top-0 z-40 border-b border-border bg-[color:color-mix(in_srgb,var(--color-canvas)_94%,transparent)] backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-canvas)_88%,transparent)]">
+                <div className="mx-auto flex min-h-[var(--header-height)] max-w-content items-center justify-between gap-4 px-page-gutter">
+                    <Link to="/" className="group flex shrink-0 items-center gap-3 text-ink no-underline" aria-label="راد آرت، صفحه اصلی">
+                        <span className="grid h-11 w-11 place-items-center rounded-md bg-ink text-xl font-black text-inverse transition-colors group-hover:bg-terracotta">ر</span>
+                        <span className="flex flex-col leading-tight">
+                            <span className="text-xl font-black tracking-tight">راد<span className="text-terracotta-strong">آرت</span></span>
+                            <span dir="ltr" className="mt-1 text-[9px] font-semibold tracking-[.2em] text-muted">INDEPENDENT ART</span>
+                        </span>
+                    </Link>
+
+                    <nav aria-label="ناوبری اصلی" className="hidden items-center gap-5 xl:flex">
+                        {publicLinks.map((item) => (
+                            <NavLink key={item.to} to={item.to} className={navClass}>{item.label}</NavLink>
+                        ))}
+                    </nav>
+
+                    <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+                        {user ? (
+                            <>
+                                <span className="hidden max-w-36 truncate text-sm font-semibold text-ink 2xl:inline">{user.name}</span>
+                                <Badge variant="accent" className="hidden md:inline-flex">{roleLabels[user.role] ?? user.role}</Badge>
+                                <Link
+                                    to={user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist'}
+                                    className="hidden min-h-10 items-center px-2 text-sm font-bold text-terracotta-strong underline-offset-4 hover:underline sm:inline-flex"
+                                >
+                                    فضای کاربری
+                                </Link>
+                                <Button variant="outline" size="sm" className="hidden sm:inline-flex" onClick={handleLogout}>خروج</Button>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/login" className="hidden min-h-10 items-center px-2 text-sm font-bold text-ink transition-colors hover:text-terracotta-strong sm:inline-flex">ورود</Link>
+                                <Link to="/register" className="inline-flex min-h-10 items-center justify-center rounded-md bg-ink px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+                                    ثبت‌نام
+                                </Link>
+                            </>
+                        )}
+                        <span className="mx-1 hidden h-7 w-px bg-border xl:block" aria-hidden="true" />
+                        <button
+                            ref={mobileMenuTriggerRef}
+                            type="button"
+                            aria-label={mobileMenuOpen ? 'بستن منو' : 'باز کردن منو'}
+                            aria-expanded={mobileMenuOpen}
+                            aria-controls="public-mobile-navigation"
+                            onClick={() => setMobileMenuOpen((open) => !open)}
+                            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus xl:hidden"
+                        >
+                            {mobileMenuOpen ? <X size={19} aria-hidden="true" /> : <Menu size={19} aria-hidden="true" />}
+                        </button>
+                    </div>
                 </div>
+
+                {mobileMenuOpen && (
+                    <nav id="public-mobile-navigation" aria-label="ناوبری موبایل" className="border-t border-border bg-paper px-page-gutter py-4 xl:hidden">
+                        <div className="mx-auto grid max-w-content gap-1">
+                            {publicLinks.map((item) => (
+                                <NavLink
+                                    key={item.to}
+                                    to={item.to}
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className={({ isActive }) => [
+                                        'flex min-h-12 items-center rounded-md px-4 text-sm font-semibold transition-colors',
+                                        isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
+                                    ].join(' ')}
+                                >
+                                    {item.label}
+                                </NavLink>
+                            ))}
+                            <div className="my-2 border-t border-border" />
+                            {user ? (
+                                <>
+                                    <Link
+                                        to={user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist'}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className="flex min-h-12 items-center rounded-md px-4 text-sm font-bold text-terracotta-strong hover:bg-accent-surface"
+                                    >
+                                        فضای کاربری
+                                    </Link>
+                                    <button type="button" onClick={handleLogout} className="flex min-h-12 items-center rounded-md px-4 text-right text-sm font-semibold text-muted hover:bg-surface-muted hover:text-ink">
+                                        خروج از حساب
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center rounded-md px-4 text-sm font-semibold text-muted hover:bg-surface-muted">ورود</Link>
+                                    <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center rounded-md px-4 text-sm font-bold text-terracotta-strong hover:bg-accent-surface">ساخت حساب کاربری</Link>
+                                </>
+                            )}
+                        </div>
+                    </nav>
+                )}
+                {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{logoutError}</p>}
+            </header>
+
+            <div id="main-content">
+                <Outlet />
             </div>
-            {mobileMenuOpen && <nav id="public-mobile-navigation" aria-label="ناوبری موبایل" className="border-t border-border bg-canvas px-5 py-4 lg:hidden"><div className="mx-auto grid max-w-7xl gap-1">{publicLinks.map((item) => <NavLink key={item.to} to={item.to} onClick={() => setMobileMenuOpen(false)} className={({isActive}) => (isActive ? 'bg-surface-muted font-bold text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink') + ' min-h-11 px-3 py-2.5 text-sm'}>{item.label}</NavLink>)}{user ? <><Link onClick={() => setMobileMenuOpen(false)} to={user.role==='admin'?'/admin':user.role==='buyer'?'/dashboard/buyer':'/dashboard/artist'} className="min-h-11 px-3 py-2.5 text-sm font-semibold text-terracotta-strong">فضای کاربری</Link><button type="button" onClick={handleLogout} className="min-h-11 px-3 py-2.5 text-right text-sm font-semibold text-muted">خروج</button></> : <><Link onClick={() => setMobileMenuOpen(false)} to="/login" className="min-h-11 px-3 py-2.5 text-sm font-semibold text-muted">ورود</Link><Link onClick={() => setMobileMenuOpen(false)} to="/register" className="min-h-11 px-3 py-2.5 text-sm font-semibold text-terracotta-strong">ساخت حساب کاربری</Link></>}</div></nav>}
-            {logoutError && <p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-danger sm:px-8">{logoutError}</p>}
-        </header>
-        <Outlet />
-        <footer className="border-t border-border bg-surface-muted">
-            <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 sm:grid-cols-2 sm:px-8 lg:grid-cols-[1.3fr_1fr_1fr] lg:px-10">
-                <div><Link to="/" className="text-xl font-black text-ink">راد<span className="text-terracotta-strong">آرت</span></Link><p className="mt-3 max-w-sm text-sm leading-7 text-muted">فضایی برای کشف آثار هنری مستقل، شناخت هنرمندان و ارتباط درباره هنر.</p></div>
-                <div><h2 className="text-sm font-bold">کشف</h2><div className="mt-3 flex flex-col items-start gap-3 text-sm text-muted"><Link to="/artworks">گالری آثار</Link><Link to="/artists">هنرمندان</Link><Link to="/collections">مجموعه‌های منتخب</Link></div></div>
-                <div><h2 className="text-sm font-bold">راد آرت</h2><div className="mt-3 flex flex-col items-start gap-3 text-sm text-muted"><Link to="/about">درباره ما</Link><Link to="/help">راهنما</Link><Link to="/contact">تماس با ما</Link></div></div>
-            </div>
-            <div className="border-t border-border py-4 text-center text-xs text-muted">راد آرت — گالری هنر مستقل معاصر</div>
-        </footer>
-    </div>;
+
+            <footer className="border-t border-border bg-surface-muted">
+                <div className="mx-auto max-w-content px-page-gutter pb-10 pt-12 sm:pb-12 sm:pt-16">
+                    <div className="grid gap-10 border-b border-border pb-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr] lg:gap-16 lg:pb-12">
+                        <div className="max-w-md">
+                            <Link to="/" className="inline-flex items-center gap-3 text-ink no-underline" aria-label="راد آرت، صفحه اصلی">
+                                <span className="grid h-10 w-10 place-items-center rounded-md bg-ink text-lg font-black text-inverse">ر</span>
+                                <span className="text-xl font-black">راد<span className="text-terracotta-strong">آرت</span></span>
+                            </Link>
+                            <p className="mt-5 text-sm leading-8 text-muted">
+                                فضایی برای کشف آثار هنری مستقل، شناخت هنرمندان و ارتباط درباره هنر.
+                            </p>
+                            <Link to="/artworks" className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-md border border-border-strong px-4 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong">
+                                گشت‌وگذار در گالری
+                                <span aria-hidden="true">←</span>
+                            </Link>
+                        </div>
+
+                        <nav aria-label="پیوندهای کشف" className="flex flex-col items-start gap-3">
+                            <h2 className="mb-1 text-sm font-extrabold text-ink">برای کشف</h2>
+                            <Link to="/artworks" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">گالری آثار</Link>
+                            <Link to="/artists" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">هنرمندان</Link>
+                            <Link to="/collections" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">مجموعه‌های منتخب</Link>
+                        </nav>
+
+                        <nav aria-label="پیوندهای راد آرت" className="flex flex-col items-start gap-3">
+                            <h2 className="mb-1 text-sm font-extrabold text-ink">راد آرت</h2>
+                            <Link to="/about" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">درباره ما</Link>
+                            <Link to="/help" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">راهنما</Link>
+                            <Link to="/contact" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">تماس با ما</Link>
+                        </nav>
+                    </div>
+
+                    <div className="flex flex-col gap-2 pt-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
+                        <p>راد آرت — گالری هنر مستقل معاصر</p>
+                        <p dir="ltr" className="font-latin tracking-wide">RAD ART · DISCOVER INDEPENDENT ART</p>
+                    </div>
+                </div>
+            </footer>
+            {user && <AuthenticatedBottomNavigation primaryLinks={getWorkspacePrimaryLinks(user.role)} />}
+        </div>
+    );
 }
+
 
 function notificationDate(value) {
     if (!value) return '';
@@ -74,46 +243,6 @@ function NotificationBell({ user }) {
     const queryClient = useQueryClient();
     const [open, setOpen] = useState(false);
     const [actionError, setActionError] = useState('');
-    const panelRef = useRef(null);
-    const triggerRef = useRef(null);
-    const [panelPosition, setPanelPosition] = useState({ top: 0, left: 16 });
-
-    const positionPanel = () => {
-        const trigger = triggerRef.current;
-        if (!trigger) return;
-        const rect = trigger.getBoundingClientRect();
-        const panelWidth = Math.min(352, window.innerWidth - 32);
-        const left = Math.max(16, Math.min(rect.right - panelWidth, window.innerWidth - panelWidth - 16));
-        const estimatedHeight = Math.min(520, window.innerHeight - 32);
-        const top = rect.bottom + 8 + estimatedHeight <= window.innerHeight
-            ? rect.bottom + 8
-            : Math.max(16, rect.top - estimatedHeight - 8);
-        setPanelPosition({ top, left });
-    };
-
-    useEffect(() => {
-        if (!open) return undefined;
-        positionPanel();
-        const reposition = () => positionPanel();
-        window.addEventListener('resize', reposition);
-        window.addEventListener('scroll', reposition, true);
-        const closeOnEscape = (event) => {
-            if (event.key === 'Escape') setOpen(false);
-        };
-        const closeOnOutsidePointer = (event) => {
-            if (panelRef.current && !panelRef.current.parentElement?.contains(event.target)) {
-                setOpen(false);
-            }
-        };
-        document.addEventListener('keydown', closeOnEscape);
-        document.addEventListener('pointerdown', closeOnOutsidePointer);
-        return () => {
-            document.removeEventListener('keydown', closeOnEscape);
-            document.removeEventListener('pointerdown', closeOnOutsidePointer);
-            window.removeEventListener('resize', reposition);
-            window.removeEventListener('scroll', reposition, true);
-        };
-    }, [open]);
     const notificationKey = ['notifications', user?.id, 'list'];
     const preferenceKey = ['notifications', user?.id, 'preferences'];
 
@@ -216,51 +345,429 @@ function NotificationBell({ user }) {
     };
 
     return (
-        <div className="relative">
-            <button ref={triggerRef} type="button" aria-label="اعلان‌ها" aria-expanded={open} onClick={() => setOpen((value) => !value)} className="relative inline-flex min-h-10 items-center gap-2 border border-border px-3 py-2 font-semibold hover:border-terracotta">
-                <Bell aria-hidden="true" size={16} strokeWidth={1.8} /><span className="hidden sm:inline">اعلان‌ها</span>
-                {unreadCount > 0 && <span className="min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-[10px] text-inverse" aria-live="polite">{unreadCount > 99 ? '۹۹+' : unreadCount.toLocaleString('fa-IR')}</span>}
-            </button>
-            {open && <section role="dialog" aria-label="اعلان‌های پیام" ref={panelRef} style={{ top: panelPosition.top, left: panelPosition.left, width: 'min(22rem, calc(100vw - 2rem))', maxHeight: 'calc(100vh - 2rem)' }} className="fixed z-[100] overflow-y-auto border border-border bg-paper p-4 text-right shadow-xl">
-                <div className="flex items-center justify-between gap-3">
-                    <h2 className="font-bold">اعلان‌های پیام</h2>
-                    <div className="flex shrink-0 items-center gap-3">
-                    <button type="button" onClick={markAll} disabled={busy || unreadCount === 0} className="text-xs font-semibold text-terracotta-strong disabled:opacity-40">خواندن همه</button>
-                    <button type="button" aria-label="بستن اعلان‌ها" onClick={() => setOpen(false)} className="grid h-8 w-8 place-items-center rounded-sm text-muted hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">×</button>
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                <button
+                    type="button"
+                    aria-label={unreadCount > 0 ? `اعلان‌ها، ${unreadCount.toLocaleString('fa-IR')} خوانده‌نشده` : 'اعلان‌ها'}
+                    aria-expanded={open}
+                    aria-haspopup="dialog"
+                    aria-controls="workspace-notification-panel"
+                    className="relative inline-flex min-h-11 items-center gap-2 rounded-md border border-border-strong bg-paper px-3.5 py-2 text-sm font-bold text-ink shadow-soft transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                >
+                <Bell aria-hidden="true" size={17} strokeWidth={1.8} />
+                <span className="hidden sm:inline">اعلان‌ها</span>
+                {unreadCount > 0 && <span className="min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-[10px] font-extrabold tabular-nums text-inverse" aria-live="polite">{unreadCount > 99 ? '۹۹+' : unreadCount.toLocaleString('fa-IR')}</span>}
+                </button>
+            </DialogTrigger>
+            <DialogContent
+                id="workspace-notification-panel"
+                className="!left-auto !right-0 !top-0 !h-dvh !max-h-dvh !w-[min(25rem,100vw)] !max-w-none !translate-x-0 !translate-y-0 !rounded-none !border-y-0 !border-s-0 !border-e !p-0 flex flex-col !overflow-hidden text-right"
+            >
+                    <div className="h-1 shrink-0 bg-terracotta" aria-hidden="true" />
+                    <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
+                        <div className="min-w-0">
+                            <div className="flex flex-wrap items-center gap-2">
+                                <DialogTitle id="workspace-notification-title" className="text-base tracking-tight">اعلان‌های پیام</DialogTitle>
+                                {unreadCount > 0 && <Badge variant="accent">{unreadCount.toLocaleString('fa-IR')} جدید</Badge>}
+                            </div>
+                            <DialogDescription className="mt-1 text-xs leading-6">پیام‌های تازه و وضعیت خوانده‌شدن آن‌ها</DialogDescription>
+                        </div>
+                        <div className="flex shrink-0 items-center gap-1">
+                            <button
+                                type="button"
+                                onClick={markAll}
+                                disabled={busy || unreadCount === 0}
+                                className="inline-flex min-h-9 items-center gap-1.5 rounded-md px-2 text-[11px] font-bold text-terracotta-strong transition-colors hover:bg-accent-surface disabled:cursor-not-allowed disabled:opacity-40"
+                            >
+                                <CheckCheck size={14} aria-hidden="true" />
+                                <span>خواندن همه</span>
+                            </button>
+                            <DialogClose asChild>
+                                <button
+                                    type="button"
+                                    aria-label="بستن اعلان‌ها"
+                                    className="grid h-9 w-9 place-items-center rounded-md text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
+                                >
+                                    <X size={17} aria-hidden="true" />
+                                </button>
+                            </DialogClose>
+                        </div>
                     </div>
-                </div>
-                {error && <p role="alert" className="mt-3 text-xs text-danger">{error}</p>}
-                {loading ? <div className="py-2"><NotificationListSkeleton count={3} /></div> : items.length === 0 ? <p className="py-5 text-sm text-muted">هنوز اعلانی ندارید.</p> : <ul className="mt-3 max-h-72 divide-y divide-border overflow-y-auto">
-                    {items.map((item) => <li key={item.id}>
-                        <button type="button" disabled={busy} onClick={() => openNotification(item)} className="w-full py-3 text-right hover:bg-surface-muted disabled:opacity-50">
-                            <span className="flex items-start gap-2"><span aria-hidden="true" className={item.read_at ? 'mt-1.5 h-2 w-2 shrink-0 rounded-full bg-border' : 'mt-1.5 h-2 w-2 shrink-0 rounded-full bg-terracotta'} />
-                                <span className="min-w-0"><strong className="block text-sm">{item.sender_name} پیام جدیدی فرستاد</strong><span className="mt-1 block text-[11px] text-muted">{notificationDate(item.created_at)}</span></span>
+
+                    {error && <p role="alert" className="mx-4 mt-3 rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_20%,transparent)] bg-danger-surface px-3 py-2 text-xs leading-6 text-danger sm:mx-5">{error}</p>}
+
+                    <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-4">
+                        {loading ? (
+                            <div className="space-y-2 py-1"><NotificationListSkeleton count={3} /></div>
+                        ) : items.length === 0 ? (
+                            <div className="flex min-h-44 flex-col items-center justify-center rounded-lg border border-dashed border-border bg-surface-muted px-5 py-7 text-center">
+                                <span className="grid h-11 w-11 place-items-center rounded-full bg-paper text-muted shadow-soft"><Bell size={19} aria-hidden="true" /></span>
+                                <p className="mt-3 text-sm font-bold text-ink">هنوز اعلانی ندارید</p>
+                                <p className="mt-1 text-xs leading-6 text-muted">پیام‌های تازه از هنرمندان و خریداران در این بخش نمایش داده می‌شوند.</p>
+                            </div>
+                        ) : (
+                            <ul className="space-y-2">
+                                {items.map((item) => (
+                                    <li key={item.id}>
+                                        <button
+                                            type="button"
+                                            disabled={busy}
+                                            onClick={() => openNotification(item)}
+                                            className={[
+                                                'group flex w-full items-start gap-3 rounded-lg border p-3 text-right transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:opacity-50',
+                                                item.read_at
+                                                    ? 'border-border bg-paper hover:border-border-strong hover:bg-surface-muted'
+                                                    : 'border-[color:color-mix(in_srgb,var(--color-terracotta)_24%,var(--color-border))] bg-accent-surface hover:border-terracotta',
+                                            ].join(' ')}
+                                        >
+                                            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-surface-muted text-terracotta-strong">
+                                                <MessageCircle size={17} aria-hidden="true" />
+                                            </span>
+                                            <span className="min-w-0 flex-1">
+                                                <span className="flex flex-wrap items-center justify-between gap-2">
+                                                    <strong className="text-sm font-bold leading-6 text-ink">{item.sender_name} پیام جدیدی فرستاد</strong>
+                                                    {!item.read_at && <Badge variant="accent" className="px-2 py-0.5 text-[10px]">جدید</Badge>}
+                                                </span>
+                                                <span className="mt-1 block text-[11px] tabular-nums text-muted">{notificationDate(item.created_at)}</span>
+                                            </span>
+                                            {!item.read_at && <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-terracotta" />}
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+
+                    <div className="shrink-0 border-t border-border bg-surface-muted px-4 py-4 sm:px-5">
+                        <label className="flex cursor-pointer items-start gap-3 rounded-md border border-border bg-paper p-3 text-xs leading-6">
+                            <input
+                                type="checkbox"
+                                checked={Boolean(preferences.in_app_messages)}
+                                disabled={busy || preferencesQuery.isPending}
+                                onChange={(event) => changePreference(event.target.checked)}
+                                className="mt-1 h-4 w-4 shrink-0 accent-terracotta"
+                            />
+                            <span className="min-w-0">
+                                <strong className="block font-bold text-ink">اعلان پیام‌های جدید در این بخش</strong>
+                                <span className="mt-1 block text-[11px] text-muted">نمایش اعلان پیام‌های تازه در فضای کاربری</span>
                             </span>
-                        </button>
-                    </li>)}
-                </ul>}
-                <div className="mt-3 border-t border-border pt-3">
-                    <label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={Boolean(preferences.in_app_messages)} disabled={busy || preferencesQuery.isPending} onChange={(event) => changePreference(event.target.checked)} /><span>اعلان پیام‌های جدید در این بخش</span></label>
-                    <p className="mt-2 text-[11px] leading-5 text-muted">اعلان ایمیلی تا تأیید صف ارسال و تنظیمات میزبان غیرفعال است.</p>
-                </div>
-            </section>}
+                        </label>
+                        <p className="mt-2 text-[10px] leading-5 text-muted">اعلان ایمیلی تا تأیید صف ارسال و تنظیمات میزبان غیرفعال است.</p>
+                    </div>
+            </DialogContent>
+        </Dialog>
+    );
+}
+
+const workspaceNavigationIcons = {
+    '/dashboard/artist': LayoutDashboard,
+    '/dashboard/artist/profile': UserRound,
+    '/dashboard/artist/artworks': Images,
+    '/dashboard/artist/messages': MessageCircle,
+    '/dashboard/buyer': LayoutDashboard,
+    '/dashboard/buyer/messages': MessageCircle,
+    '/admin': LayoutDashboard,
+    '/admin/users': Users,
+    '/admin/artworks': ClipboardCheck,
+    '/admin/message-reports': Flag,
+    '/admin/editorial': BookOpen,
+};
+
+const workspaceNavigationLabels = {
+    '/dashboard/artist': 'خانه',
+    '/dashboard/artist/profile': 'پروفایل',
+    '/dashboard/artist/artworks': 'آثار',
+    '/dashboard/artist/messages': 'پیام‌ها',
+    '/dashboard/buyer': 'خانه',
+    '/dashboard/buyer/messages': 'پیام‌ها',
+    '/admin': 'خانه',
+    '/admin/users': 'کاربران',
+    '/admin/artworks': 'بررسی آثار',
+    '/admin/message-reports': 'گزارش‌ها',
+    '/admin/editorial': 'سردبیری',
+};
+
+function AuthenticatedBottomNavigation({ primaryLinks }) {
+    return (
+        <div
+            data-testid="authenticated-bottom-navigation"
+            className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-[color:color-mix(in_srgb,var(--color-paper)_92%,transparent)] pb-[env(safe-area-inset-bottom)] shadow-raised backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-paper)_86%,transparent)] lg:hidden"
+        >
+            <nav aria-label="بخش‌های اصلی حساب کاربری" data-nav-priority="primary" className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2">
+                {primaryLinks.map((item) => {
+                    const Icon = workspaceNavigationIcons[item.to] ?? LayoutDashboard;
+                    return (
+                        <NavLink
+                            key={item.to}
+                            to={item.to}
+                            end={item.end}
+                            aria-label={item.label}
+                            title={item.label}
+                            className={({ isActive }) => [
+                                'relative flex min-w-0 flex-col items-center justify-center gap-1 rounded-md px-1 text-[10px] font-bold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus motion-reduce:transition-none',
+                                isActive
+                                    ? 'text-terracotta-strong after:absolute after:inset-x-1/4 after:top-0 after:h-0.5 after:rounded-full after:bg-terracotta'
+                                    : 'text-muted hover:bg-surface-muted hover:text-ink',
+                            ].join(' ')}
+                        >
+                            <Icon size={19} strokeWidth={1.9} aria-hidden="true" />
+                            <span className="max-w-full truncate">{workspaceNavigationLabels[item.to] ?? item.label}</span>
+                        </NavLink>
+                    );
+                })}
+            </nav>
         </div>
     );
 }
 
 export function WorkspaceLayout({ title, links, outletContext }) {
     const { user, logout } = useAuth();
+    const { pathname } = useLocation();
+    const isMessagingRoute = pathname.endsWith('/messages');
     const [logoutError, setLogoutError] = useState('');
-    const handleLogout = async () => { setLogoutError(''); try { await logout(); } catch { setLogoutError('خروج انجام نشد. اتصال را بررسی کنید.'); } };
-    return <div className="min-h-screen bg-canvas text-ink" dir="rtl">
-        <header className="min-h-20 border-b border-border bg-paper"><div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-8 lg:px-10"><div className="min-w-0"><Link to="/" className="text-lg font-black text-ink no-underline">راد<span className="text-terracotta-strong">آرت</span></Link><p className="mt-1 text-xs text-muted">{title}</p></div><div className="flex min-w-0 flex-wrap items-center justify-end gap-2 text-sm sm:gap-3">{user?.role !== 'admin' && <NotificationBell user={user} />}<span className="max-w-32 truncate font-semibold sm:max-w-none">{user?.name}</span><Link to="/" className="min-h-10 border border-border px-3 py-2 font-semibold hover:border-terracotta sm:px-4">مشاهده سایت</Link><button type="button" onClick={handleLogout} className="min-h-10 border border-border px-3 py-2 font-semibold hover:border-terracotta sm:px-4">خروج</button></div></div>{logoutError&&<p role="alert" className="mx-auto max-w-7xl px-5 pb-3 text-xs text-danger sm:px-8">{logoutError}</p>}</header>
-        <div className="mx-auto grid min-w-0 max-w-7xl gap-5 px-5 py-6 sm:px-8 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-6 lg:px-10 lg:py-7">
-            <aside className="min-w-0 overflow-hidden rounded-md border border-border bg-paper p-2 shadow-soft sm:p-3 lg:h-fit">
-                <nav aria-label="ناوبری فضای کاربری" className="flex w-full min-w-0 flex-nowrap gap-2 overflow-x-auto overscroll-x-contain pb-1 lg:flex-col lg:overflow-visible lg:pb-0">
-                    {links.map(item=><NavLink key={item.to} to={item.to} end={item.end} className={({isActive})=>(isActive?'bg-ink text-inverse':'text-muted hover:bg-surface-muted hover:text-ink')+' min-h-11 shrink-0 whitespace-nowrap px-4 py-3 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:w-full'}>{item.label}</NavLink>)}
-                </nav>
-            </aside>
-            <main className="min-w-0"><Outlet context={outletContext} /></main>
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const mobileMenuTriggerRef = useRef(null);
+    const mobileMenuPanelRef = useRef(null);
+
+    const closeMobileMenu = () => {
+        setMobileMenuOpen(false);
+        mobileMenuTriggerRef.current?.focus();
+    };
+
+    const handleLogout = async () => {
+        setMobileMenuOpen(false);
+        setLogoutError('');
+        try {
+            await logout();
+        } catch {
+            setLogoutError('خروج انجام نشد. اتصال را بررسی کنید.');
+        }
+    };
+
+    useEffect(() => setMobileMenuOpen(false), [pathname]);
+
+    useEffect(() => {
+        if (!mobileMenuOpen) return undefined;
+
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        mobileMenuPanelRef.current?.focus();
+
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                closeMobileMenu();
+                return;
+            }
+
+            if (event.key !== 'Tab' || !mobileMenuPanelRef.current) return;
+            const focusable = mobileMenuPanelRef.current.querySelectorAll(
+                'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+            );
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (event.shiftKey && (document.activeElement === first || document.activeElement === mobileMenuPanelRef.current)) {
+                event.preventDefault();
+                last?.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first?.focus();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = previousOverflow;
+        };
+    }, [mobileMenuOpen]);
+
+    return (
+        <div className={isMessagingRoute ? "flex h-dvh flex-col overflow-hidden bg-canvas text-ink" : "min-h-screen bg-canvas text-ink"} dir="rtl">
+            <header className="sticky top-0 z-40 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] shadow-soft backdrop-blur">
+                <div className="mx-auto flex min-h-[4.5rem] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-20 sm:gap-4">
+                    <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
+                        <Link to="/" className="group grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-lg font-black text-inverse shadow-soft no-underline transition-colors hover:bg-terracotta sm:h-12 sm:w-12 sm:text-xl" aria-label="راد آرت، صفحه اصلی">
+                            <span className="transition-transform group-hover:scale-110">ر</span>
+                        </Link>
+                        <div className="min-w-0">
+                            <Link to="/" className="text-base font-black tracking-tight text-ink no-underline sm:text-lg">راد<span className="text-terracotta-strong">آرت</span></Link>
+                            <div className="mt-0.5 flex min-w-0 items-center gap-1.5 sm:mt-1 sm:gap-2">
+                                <span className="max-w-[9.5rem] truncate text-[11px] font-semibold text-muted sm:max-w-none sm:text-xs">{title}</span>
+                                <span aria-hidden="true" className="h-1 w-1 shrink-0 rounded-full bg-border-strong" />
+                                <Badge variant="accent" className="shrink-0 px-1.5 py-0.5 text-[9px] sm:px-2 sm:text-[10px]">{roleLabels[user?.role] ?? 'فضای کاربری'}</Badge>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+                        {user?.role !== 'admin' && <NotificationBell user={user} />}
+
+                        <div className="hidden min-w-0 items-center gap-3 lg:flex">
+                            <span className="max-w-44 truncate border-e border-border pe-3 text-sm font-bold text-ink">{user?.name}</span>
+                            <Link to="/" className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border-strong bg-paper px-4 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+                                مشاهده سایت
+                            </Link>
+                            <Button variant="outline" size="sm" onClick={handleLogout} className="min-h-10 gap-2">
+                                <span>خروج</span>
+                            </Button>
+                        </div>
+
+                        <button
+                            ref={mobileMenuTriggerRef}
+                            type="button"
+                            aria-label={mobileMenuOpen ? 'بستن منوی حساب کاربری' : 'باز کردن منوی حساب کاربری'}
+                            aria-expanded={mobileMenuOpen}
+                            aria-haspopup="dialog"
+                            aria-controls="workspace-mobile-menu"
+                            onClick={() => setMobileMenuOpen((open) => !open)}
+                            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                        >
+                            {mobileMenuOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
+                        </button>
+                    </div>
+                </div>
+                {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{logoutError}</p>}
+            </header>
+
+            {mobileMenuOpen && (
+                <div className="fixed inset-0 z-[70]">
+                    <button
+                        type="button"
+                        aria-label="بستن منوی فضای کاربری"
+                        tabIndex="-1"
+                        onClick={closeMobileMenu}
+                        className="absolute inset-0 h-full w-full cursor-default bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]"
+                    />
+                    <aside
+                        id="workspace-mobile-menu"
+                        ref={mobileMenuPanelRef}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="workspace-mobile-menu-title"
+                        tabIndex="-1"
+                        className="absolute inset-y-0 right-0 flex w-[min(22rem,calc(100vw-2.75rem))] flex-col border-s border-border bg-paper shadow-raised outline-none"
+                    >
+                        <div className="flex items-center justify-between border-b border-border px-5 py-5">
+                            <div className="flex min-w-0 items-center gap-3">
+                                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-lg font-black text-inverse">ر</span>
+                                <div className="min-w-0">
+                                    <h2 id="workspace-mobile-menu-title" className="text-sm font-extrabold text-ink">حساب کاربری</h2>
+                                    <p className="mt-1 max-w-48 truncate text-xs text-muted">{user?.name}</p>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                aria-label="بستن منو"
+                                onClick={closeMobileMenu}
+                                className="grid h-10 w-10 shrink-0 place-items-center rounded-lg text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
+                            >
+                                <X size={19} aria-hidden="true" />
+                            </button>
+                        </div>
+
+                        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-5">
+                            <nav aria-label="بخش‌های اصلی فضای کاربری">
+                                <h3 className="mb-2 px-3 text-xs font-extrabold text-ink">فضای کاربری</h3>
+                                <div className="grid gap-1">
+                                    {links.map((item) => (
+                                        <NavLink
+                                            key={item.to}
+                                            to={item.to}
+                                            end={item.end}
+                                            onClick={closeMobileMenu}
+                                            className={({ isActive }) => [
+                                                'flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
+                                                isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
+                                            ].join(' ')}
+                                        >
+                                            {item.label}
+                                        </NavLink>
+                                    ))}
+                                </div>
+                            </nav>
+
+                            <div className="my-5 border-t border-border" />
+
+                            <nav aria-label="پیوندهای تکمیلی سایت">
+                                <h3 className="mb-2 px-3 text-xs font-extrabold text-muted">کشف و راهنمایی</h3>
+                                <div className="grid gap-1">
+                                    {publicSecondaryLinks.map((item) => (
+                                        <NavLink
+                                            key={item.to}
+                                            to={item.to}
+                                            onClick={closeMobileMenu}
+                                            className={({ isActive }) => [
+                                                'flex min-h-10 items-center rounded-lg px-3 text-sm font-medium no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
+                                                isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
+                                            ].join(' ')}
+                                        >
+                                            {item.label}
+                                        </NavLink>
+                                    ))}
+                                </div>
+                            </nav>
+                        </div>
+
+                        <div className="shrink-0 border-t border-border bg-surface-muted p-4">
+                            <Link
+                                to="/"
+                                onClick={closeMobileMenu}
+                                className="flex min-h-11 items-center justify-center rounded-lg border border-border-strong bg-paper px-4 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong"
+                            >
+                                مشاهده سایت
+                            </Link>
+                            <button
+                                type="button"
+                                onClick={handleLogout}
+                                className="mt-2 flex min-h-11 w-full items-center justify-center rounded-lg px-4 text-sm font-bold text-danger transition-colors hover:bg-danger-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
+                            >
+                                خروج از حساب
+                            </button>
+                        </div>
+                    </aside>
+                </div>
+            )}
+
+            <div className={isMessagingRoute ? 'mx-auto grid h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-h-0 min-w-0 max-w-content flex-none grid-cols-1 grid-rows-[minmax(0,1fr)] gap-0 px-page-gutter py-page-gutter sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:gap-4 sm:py-4 lg:h-[calc(100dvh-5rem)] lg:grid-cols-[15rem_minmax(0,1fr)] lg:grid-rows-1 lg:gap-8 lg:py-8' : 'mx-auto grid min-w-0 max-w-content gap-5 px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-8 lg:pb-8'}>
+                {isMessagingRoute && <div className="hidden lg:block" aria-hidden="true" />}
+                <aside className={isMessagingRoute
+                    ? 'hidden min-w-0 rounded-xl border border-border bg-paper p-3 shadow-soft lg:fixed lg:top-28 lg:right-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))] lg:z-30 lg:block lg:h-fit lg:max-h-[calc(100dvh_-_8rem)] lg:w-60 lg:overflow-y-auto'
+                    : 'hidden min-w-0 rounded-xl border border-border bg-paper p-3 shadow-soft lg:sticky lg:top-24 lg:block lg:h-fit'}>
+                    <div className="mb-2 flex items-center justify-between px-3 py-2">
+                        <p className="text-[11px] font-extrabold tracking-wide text-muted">ناوبری فضای کاری</p>
+                        <span className="text-[10px] font-semibold text-subtle">RAD / MENU</span>
+                    </div>
+                    <nav aria-label="ناوبری فضای کاربری" className="flex w-full min-w-0 flex-col gap-1">
+                        {links.map((item) => {
+                            const Icon = workspaceNavigationIcons[item.to] ?? LayoutDashboard;
+                            return (
+                                <NavLink
+                                    key={item.to}
+                                    to={item.to}
+                                    end={item.end}
+                                    className={({ isActive }) => [
+                                        'relative inline-flex min-h-11 w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus motion-reduce:transition-none',
+                                        isActive
+                                            ? 'bg-ink text-inverse shadow-soft after:absolute after:inset-y-2 after:right-0 after:w-1 after:rounded-full after:bg-terracotta'
+                                            : 'bg-transparent text-muted hover:bg-accent-surface hover:text-terracotta-strong',
+                                    ].join(' ')}
+                                >
+                                    <Icon size={18} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />
+                                    <span className="min-w-0 truncate">{item.label}</span>
+                                </NavLink>
+                            );
+                        })}
+                    </nav>
+                </aside>
+
+                <main className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden lg:col-start-2' : 'min-w-0'}>
+                    <Outlet context={outletContext} />
+                </main>
+            </div>
+            <AuthenticatedBottomNavigation primaryLinks={links} />
         </div>
-    </div>;
+    );
 }

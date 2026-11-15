@@ -85,13 +85,13 @@ export function PageContainer({ as: Element = 'div', width = 'wide', className =
 export function PageHeader({ eyebrow, title, description, actions, level = 1, className = '', titleClassName = '', descriptionClassName = '' }) {
     const Heading = level === 2 ? 'h2' : 'h1';
     return (
-        <header className={cn('flex items-end justify-between gap-6 border-b border-border py-8 max-sm:items-stretch max-sm:flex-col max-sm:gap-4 max-sm:py-6', className)}>
-            <div className="min-w-0 max-w-[52rem]">
-                {eyebrow && <p className="text-xs font-bold tracking-[.02em] text-terracotta-strong">{eyebrow}</p>}
-                <Heading className={cn('mt-2 text-[clamp(2rem,4vw,3.25rem)] font-extrabold leading-heading tracking-[-.025em] text-ink', titleClassName)}>{title}</Heading>
-                {description && <p className={cn('mt-3 text-sm leading-copy text-muted', descriptionClassName)}>{description}</p>}
+        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-6 border-b border-border pb-7 pt-3 pr-5 before:absolute before:bottom-7 before:right-0 before:top-4 before:w-1 before:rounded-full before:bg-terracotta max-sm:items-stretch max-sm:flex-col max-sm:gap-4 max-sm:pb-6 max-sm:before:bottom-6', className)}>
+            <div className="min-w-0 max-w-[56rem]">
+                {eyebrow && <p className="inline-flex items-center gap-2 rounded-full border border-border bg-accent-surface px-3 py-1.5 text-[11px] font-extrabold leading-none tracking-[.025em] text-terracotta-strong before:h-1.5 before:w-1.5 before:shrink-0 before:rounded-full before:bg-terracotta">{eyebrow}</p>}
+                <Heading className={cn('mt-3 text-[clamp(1.75rem,3.2vw,2.6rem)] font-extrabold leading-heading tracking-[-.035em] text-ink', titleClassName)}>{title}</Heading>
+                {description && <p className={cn('mt-3 max-w-2xl text-sm leading-8 text-muted sm:text-[.95rem]', descriptionClassName)}>{description}</p>}
             </div>
-            {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+            {actions && <div className="flex shrink-0 flex-wrap items-center gap-2 pb-1 max-sm:w-full max-sm:pb-0">{actions}</div>}
         </header>
     );
 }
@@ -99,31 +99,19 @@ export function PageHeader({ eyebrow, title, description, actions, level = 1, cl
 export function SectionHeader({ id, eyebrow, title, description, actions, className = '', level = 2 }) {
     const Heading = level === 3 ? 'h3' : 'h2';
     return (
-        <header className={cn('flex items-end justify-between gap-4 border-b border-border pb-4 max-sm:items-stretch max-sm:flex-col', className)}>
+        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-4 border-b border-border pb-4 pr-4 before:absolute before:bottom-4 before:right-0 before:top-1 before:w-[3px] before:rounded-full before:bg-sand max-sm:items-stretch max-sm:flex-col', className)}>
             <div className="min-w-0">
-                {eyebrow && <p className="text-xs font-bold tracking-[.02em] text-terracotta-strong">{eyebrow}</p>}
-                <Heading id={id} className="mt-1 text-xl font-bold leading-heading text-ink">{title}</Heading>
-                {description && <p className="mt-2 text-sm leading-relaxed text-muted">{description}</p>}
+                {eyebrow && <p className="inline-flex items-center gap-1.5 text-[11px] font-extrabold tracking-[.025em] text-terracotta-strong before:h-1 before:w-1 before:rounded-full before:bg-terracotta">{eyebrow}</p>}
+                <Heading id={id} className="mt-1.5 text-lg font-extrabold leading-heading tracking-[-.02em] text-ink sm:text-xl">{title}</Heading>
+                {description && <p className="mt-2 max-w-3xl text-sm leading-7 text-muted">{description}</p>}
             </div>
-            {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+            {actions && <div className="flex shrink-0 flex-wrap items-center gap-2 max-sm:w-full">{actions}</div>}
         </header>
     );
 }
 
-
 export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
-    return (
-        <header className={cn('relative flex min-w-0 items-end justify-between gap-6 overflow-hidden rounded-md border border-ink bg-ink p-[clamp(1.5rem,4vw,2.5rem)] text-inverse max-md:items-stretch max-md:flex-col', className)} dir="rtl">
-            <span aria-hidden="true" className="pointer-events-none absolute -right-16 -top-24 aspect-square w-60 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]" />
-            <span aria-hidden="true" className="pointer-events-none absolute -right-4 -top-12 aspect-square w-44 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]" />
-            <div className="relative z-10 max-w-[46rem]">
-                {eyebrow && <p className="text-xs font-bold text-sand">{eyebrow}</p>}
-                <h1 className="mt-3 text-[clamp(1.5rem,3vw,2rem)] font-extrabold leading-heading text-inverse">{title}</h1>
-                {description && <p className="mt-3 text-sm leading-copy text-[color:color-mix(in_srgb,var(--color-inverse-text)_80%,transparent)]">{description}</p>}
-            </div>
-            {actions && <div className="relative z-10 flex flex-wrap gap-2 max-md:w-full">{actions}</div>}
-        </header>
-    );
+    return <PageHeader eyebrow={eyebrow} title={title} description={description} actions={actions} className={className} />;
 }
 
 export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, className = '' }) {

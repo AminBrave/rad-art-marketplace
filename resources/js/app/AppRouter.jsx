@@ -66,6 +66,7 @@ function AppRoutes() {
                     <Route path="/login" element={withRouteFallback(<AuthPage />)} />
                     <Route path="/register" element={withRouteFallback(<AuthPage initialMode="register" />)} />
                     <Route path="/unauthorized" element={<UnauthorizedPage />} />
+                    <Route path="*" element={<NotFoundPage />} />
                 </Route>
                 <Route path="/dashboard" element={<RequireAuth><DashboardIndex /></RequireAuth>} />
                 <Route path="/dashboard/artist" element={<RequireRole roles={['artist']}><ArtistWorkspaceLayout /></RequireRole>}>
@@ -88,7 +89,7 @@ function AppRoutes() {
                     <Route path="editorial" element={withRouteFallback(<AdminEditorialPage />)} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
-                <Route path="*" element={<NotFoundPage />} />
+
             </Routes>
         </>
     );
