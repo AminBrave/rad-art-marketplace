@@ -35,12 +35,16 @@ function getChatPopoverPosition(anchor, preferredWidth, preferredHeight) {
     if (!anchor?.isConnected) return null;
     const rect = anchor.getBoundingClientRect();
     const boundary = anchor.closest('[data-chat-popover-boundary]')?.getBoundingClientRect();
-    const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
-    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+    if (boundary && (rect.bottom < boundary.top || rect.top > boundary.bottom || rect.right < boundary.left || rect.left > boundary.right)) return null;
+    const visualViewport = window.visualViewport;
+    const viewportLeft = visualViewport?.offsetLeft ?? 0;
+    const viewportTop = visualViewport?.offsetTop ?? 0;
+    const viewportWidth = visualViewport?.width ?? document.documentElement.clientWidth ?? window.innerWidth;
+    const viewportHeight = visualViewport?.height ?? window.innerHeight;
     const margin = 8;
-    const minLeft = Math.max(margin, (boundary?.left ?? 0) + margin);
-    const maxRight = Math.min(viewportWidth - margin, (boundary?.right ?? viewportWidth) - margin);
-    const width = Math.min(preferredWidth, maxRight - minLeft);
+    const minLeft = Math.max(viewportLeft + margin, (boundary?.left ?? viewportLeft) + margin);
+    const maxRight = Math.min(viewportLeft + viewportWidth - margin, (boundary?.right ?? viewportLeft + viewportWidth) - margin);
+    const width = Math.max(1, Math.min(preferredWidth, maxRight - minLeft));
     const leftOfAnchor = rect.right - width;
     const rightOfAnchor = rect.left;
     const left = leftOfAnchor >= minLeft
@@ -48,8 +52,8 @@ function getChatPopoverPosition(anchor, preferredWidth, preferredHeight) {
         : rightOfAnchor + width <= maxRight
             ? rightOfAnchor
             : Math.max(minLeft, Math.min(leftOfAnchor, maxRight - width));
-    const minTop = Math.max(margin, (boundary?.top ?? 0) + margin);
-    const maxBottom = Math.min(viewportHeight - margin, (boundary?.bottom ?? viewportHeight) - margin);
+    const minTop = Math.max(viewportTop + margin, (boundary?.top ?? viewportTop) + margin);
+    const maxBottom = Math.min(viewportTop + viewportHeight - margin, (boundary?.bottom ?? viewportTop + viewportHeight) - margin);
     const maxHeight = Math.max(1, maxBottom - minTop);
     const height = Math.min(preferredHeight, maxHeight);
     const above = rect.top - minTop;
@@ -146,7 +150,13 @@ export default function MessagingCenter({ role }) {
                 return;
             }
             const { width, height } = popoverSizeRef.current;
-            setPopoverPosition(getChatPopoverPosition(anchor, width, height));
+            const nextPosition = getChatPopoverPosition(anchor, width, height);
+            if (!nextPosition) {
+                setOpenPopover(null);
+                setPopoverPosition(null);
+                return;
+            }
+            setPopoverPosition(nextPosition);
         };
         document.addEventListener('pointerdown', closeOnOutsidePointer, true);
         document.addEventListener('keydown', closeOnEscape, true);
