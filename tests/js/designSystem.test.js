@@ -103,6 +103,7 @@ test('public catalogue, artist directory and artwork detail use shared page layo
     assert.ok(publicPages[1].includes('PageContainer') && publicPages[1].includes('SectionHeader'));
     assert.ok(publicPages[2].includes('PageContainer'));
     assert.ok(buyerWorkspace.includes('WorkspaceHero') && buyerWorkspace.includes('<Surface'));
+    assert.ok(designSystem.includes('Dashboard page and section headings'));
 });
 
 test('public and role-based workspaces use shared semantic shell utilities', () => {
@@ -144,8 +145,18 @@ test('dashboard headers and notification drawer use the shared accessible RAD di
     assert.ok(adminWorkspace.includes('<PageHeader'));
     assert.ok(artistWorkspace.includes('<WorkspaceHero'));
     assert.ok(buyerWorkspace.includes('<WorkspaceHero'));
+    assert.ok(artistWorkspace.includes('<SectionHeader'));
+    assert.ok(buyerWorkspace.includes('<SectionHeader'));
+    assert.ok(adminWorkspace.includes('<SectionHeader'));
+    assert.ok(artworkStudio.includes('<SectionHeader'));
     assert.ok(messaging.includes('<PageHeader'));
     assert.ok(messaging.includes('after:bg-terracotta'));
+    const heroStart = primitives.indexOf('export function WorkspaceHero');
+    const heroEnd = primitives.indexOf('\n}', heroStart);
+    assert.ok(heroStart >= 0 && heroEnd > heroStart);
+    assert.ok(primitives.slice(heroStart, heroEnd).includes('<PageHeader'));
+    assert.doesNotMatch(primitives.slice(heroStart, heroEnd), /bg-ink|text-inverse|shadow-raised/);
+    assert.ok(!artworkStudio.includes('className="border-0 pb-0 pt-0"'));
 });
 
 test('messaging conversation filters fill their RAD container edge to edge', () => {
