@@ -43,9 +43,7 @@ function databaseHost(values) {
         } catch {
             return { error: 'DB_URL is not a valid database URL. Check its scheme and host.' };
         }
-        if (parsed.protocol === 'sqlite:') return { sqlitePath: decodeURIComponent(parsed.pathname) };
-        if (!parsed.hostname) return { error: 'DB_URL must include a database host.' };
-        return { host: parsed.hostname };
+        if (parsed.protocol === 'sqlite:') return { error: 'DB_URL uses SQLite, but DB_CONNECTION is mysql. Keep DB_CONNECTION and DB_URL consistent.' };\n        if (!['mysql:', 'mariadb:'].includes(parsed.protocol)) return { error: 'DB_URL must use the mysql:// or mariadb:// scheme for a MySQL connection.' };\n        if (!parsed.hostname) return { error: 'DB_URL must include a database host.' };\n        return { host: parsed.hostname };
     }
     return { host: values.DB_HOST || '127.0.0.1' };
 }
@@ -87,9 +85,7 @@ export function validateDevelopmentEnvironment({ fileValues = {}, processValues 
             }
         }
     } else {
-        const database = String(values.DB_DATABASE ?? 'database/database.sqlite');
-        if (database !== ':memory:') {
-            const path = resolve(root, database);
+        let database = String(values.DB_DATABASE ?? 'database/database.sqlite');\n        if (values.DB_URL) {\n            try {\n                const parsed = new URL(values.DB_URL);\n                if (parsed.protocol !== 'sqlite:') errors.push('DB_URL must use the sqlite: scheme when DB_CONNECTION=sqlite.');\n                else database = decodeURIComponent(parsed.pathname || parsed.hostname);\n            } catch { errors.push('DB_URL is not a valid SQLite database URL.'); }\n        }\n        if (database !== ':memory:') {\n            const path = resolve(root, database);
             const databaseDirectory = resolve(root, 'database');
             if (!isInside(databaseDirectory, path)) {
                 const override = String(processValues.RAD_ALLOW_REMOTE_DEV_DATABASE ?? '').toLowerCase() === 'true';
