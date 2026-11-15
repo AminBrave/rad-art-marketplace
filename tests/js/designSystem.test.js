@@ -149,6 +149,9 @@ test('dashboard headers and notification drawer use the shared accessible RAD di
     assert.ok(buyerWorkspace.includes('<SectionHeader'));
     assert.ok(adminWorkspace.includes('<SectionHeader'));
     assert.ok(artworkStudio.includes('<SectionHeader'));
+    assert.ok(editorialPages.includes('<SectionHeader'));
+    assert.ok(routeLoading.includes('<WorkspaceHero'));
+    assert.ok(routeLoading.includes('<PageHeader'));
     assert.ok(messaging.includes('<PageHeader'));
     assert.ok(messaging.includes('after:bg-terracotta'));
     const heroStart = primitives.indexOf('export function WorkspaceHero');
