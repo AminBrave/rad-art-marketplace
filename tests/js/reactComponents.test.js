@@ -13,15 +13,26 @@ const vite = await createServer({
     plugins: [
         react(),
         {
-            // navigation.jsx only needs Link to render breadcrumb anchors.
-            // Keep this SSR contract isolated from React Router's package
-            // export/interop formats; browser journeys cover real routing.
+            // Replace only navigation.jsx's router dependency before Vite's
+            // SSR externalizer sees it. The component contracts need Link's
+            // anchor output, while browser journeys cover real router behavior.
             name: 'react-router-link-ssr-test-double',
+            enforce: 'pre',
+            transform(code, id) {
+                if (!id.replaceAll('\\\\', '/').endsWith('/resources/js/components/ui/navigation.jsx')) {
+                    return null;
+                }
+
+                return code.replace(
+                    "import { Link } from 'react-router-dom';",
+                    "import { Link } from 'virtual:test-react-router-link';",
+                );
+            },
             resolveId(source) {
-                return source === 'react-router-dom' ? '\0test-react-router-dom' : null;
+                return source === 'virtual:test-react-router-link' ? '\0test-react-router-link' : null;
             },
             load(id) {
-                if (id !== '\0test-react-router-dom') return null;
+                if (id !== '\0test-react-router-link') return null;
                 return `
                     import React from 'react';
                     export function Link({ to, ...props }) {
