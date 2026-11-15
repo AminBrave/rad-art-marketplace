@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Bell, CheckCheck, Menu, MessageCircle, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { Badge, Button, NotificationListSkeleton } from '../components/ui';
+import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, NotificationListSkeleton } from '../components/ui';
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
 
@@ -210,50 +210,6 @@ function NotificationBell({ user }) {
     const queryClient = useQueryClient();
     const [open, setOpen] = useState(false);
     const [actionError, setActionError] = useState('');
-    const panelRef = useRef(null);
-    const triggerRef = useRef(null);
-    const [panelPosition, setPanelPosition] = useState({ top: 0, left: 16 });
-
-    const positionPanel = () => {
-        const trigger = triggerRef.current;
-        if (!trigger) return;
-        const rect = trigger.getBoundingClientRect();
-        const panelWidth = Math.min(400, window.innerWidth - 32);
-        const left = Math.max(16, Math.min(rect.right - panelWidth, window.innerWidth - panelWidth - 16));
-        const estimatedHeight = Math.min(560, window.innerHeight - 32);
-        const top = rect.bottom + 8 + estimatedHeight <= window.innerHeight
-            ? rect.bottom + 8
-            : Math.max(16, rect.top - estimatedHeight - 8);
-        setPanelPosition({ top, left });
-    };
-
-    useEffect(() => {
-        if (!open) return undefined;
-        positionPanel();
-        panelRef.current?.focus();
-        const reposition = () => positionPanel();
-        window.addEventListener('resize', reposition);
-        window.addEventListener('scroll', reposition, true);
-        const closeOnEscape = (event) => {
-            if (event.key === 'Escape') {
-                setOpen(false);
-                triggerRef.current?.focus();
-            }
-        };
-        const closeOnOutsidePointer = (event) => {
-            if (panelRef.current && !panelRef.current.parentElement?.contains(event.target)) {
-                setOpen(false);
-            }
-        };
-        document.addEventListener('keydown', closeOnEscape);
-        document.addEventListener('pointerdown', closeOnOutsidePointer);
-        return () => {
-            document.removeEventListener('keydown', closeOnEscape);
-            document.removeEventListener('pointerdown', closeOnOutsidePointer);
-            window.removeEventListener('resize', reposition);
-            window.removeEventListener('scroll', reposition, true);
-        };
-    }, [open]);
     const notificationKey = ['notifications', user?.id, 'list'];
     const preferenceKey = ['notifications', user?.id, 'preferences'];
 
@@ -356,9 +312,9 @@ function NotificationBell({ user }) {
     };
 
     return (
-        <div className="relative">
-            <button
-                ref={triggerRef}
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                <button
                 type="button"
                 aria-label={unreadCount > 0 ? `اعلان‌ها، ${unreadCount.toLocaleString('fa-IR')} خوانده‌نشده` : 'اعلان‌ها'}
                 aria-expanded={open}
@@ -370,36 +326,19 @@ function NotificationBell({ user }) {
                 <Bell aria-hidden="true" size={17} strokeWidth={1.8} />
                 <span className="hidden sm:inline">اعلان‌ها</span>
                 {unreadCount > 0 && <span className="min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-[10px] font-extrabold tabular-nums text-inverse" aria-live="polite">{unreadCount > 99 ? '۹۹+' : unreadCount.toLocaleString('fa-IR')}</span>}
-            </button>
-
-            {open && (
-                <button
-                    type="button"
-                    aria-label="بستن اعلان‌ها"
-                    tabIndex="-1"
-                    onClick={() => setOpen(false)}
-                    className="fixed inset-0 z-[90] h-full w-full cursor-default bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]"
-                />
-            )}
-            {open && (
-                <section
-                    id="workspace-notification-panel"
-                    role="dialog"
-                    aria-modal="false"
-                    aria-labelledby="workspace-notification-title"
-                    ref={panelRef}
-                    tabIndex="-1"
-                    style={{ top: panelPosition.top, left: panelPosition.left, width: 'min(25rem, calc(100vw - 2rem))', maxHeight: 'calc(100dvh - 2rem)' }}
-                    className="fixed z-[100] flex flex-col overflow-hidden rounded-xl border border-border-strong bg-paper text-right text-ink shadow-raised ring-1 ring-[color:color-mix(in_srgb,var(--color-ink)_6%,transparent)] outline-none focus-visible:ring-2 focus-visible:ring-focus"
-                >
+            </DialogTrigger>
+            <DialogContent
+                id="workspace-notification-panel"
+                className="!left-auto !right-0 !top-0 !h-dvh !max-h-dvh !w-[min(25rem,100vw)] !max-w-none !translate-x-0 !translate-y-0 !rounded-none !border-y-0 !border-e-0 !border-s !p-0 flex flex-col overflow-hidden text-right"
+            >
                     <div className="h-1 shrink-0 bg-terracotta" aria-hidden="true" />
                     <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
                         <div className="min-w-0">
                             <div className="flex flex-wrap items-center gap-2">
-                                <h2 id="workspace-notification-title" className="text-base font-extrabold tracking-tight">اعلان‌های پیام</h2>
+                                <DialogTitle id="workspace-notification-title" className="text-base tracking-tight">اعلان‌های پیام</DialogTitle>
                                 {unreadCount > 0 && <Badge variant="accent">{unreadCount.toLocaleString('fa-IR')} جدید</Badge>}
                             </div>
-                            <p className="mt-1 text-xs text-muted">پیام‌های تازه و وضعیت خوانده‌شدن آن‌ها</p>
+                            <DialogDescription className="mt-1 text-xs leading-6">پیام‌های تازه و وضعیت خوانده‌شدن آن‌ها</DialogDescription>
                         </div>
                         <div className="flex shrink-0 items-center gap-1">
                             <button
@@ -411,14 +350,15 @@ function NotificationBell({ user }) {
                                 <CheckCheck size={14} aria-hidden="true" />
                                 <span>خواندن همه</span>
                             </button>
-                            <button
+                            <DialogClose asChild>
+                                <button
                                 type="button"
                                 aria-label="بستن اعلان‌ها"
-                                onClick={() => { setOpen(false); triggerRef.current?.focus(); }}
                                 className="grid h-9 w-9 place-items-center rounded-md text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                             >
                                 <X size={17} aria-hidden="true" />
-                            </button>
+                                </button>
+                            </DialogClose>
                         </div>
                     </div>
 
@@ -482,9 +422,8 @@ function NotificationBell({ user }) {
                         </label>
                         <p className="mt-2 text-[10px] leading-5 text-muted">اعلان ایمیلی تا تأیید صف ارسال و تنظیمات میزبان غیرفعال است.</p>
                     </div>
-                </section>
-            )}
-        </div>
+            </DialogContent>
+        </Dialog>
     );
 }
 
