@@ -22,7 +22,7 @@ const bladeFiles = walk(resolve(root, 'resources/views'))
 const stylesheetFiles = walk(resolve(root, 'resources'))
     .filter((path) => extname(path) === '.css');
 const presentationFiles = [...frontendFiles, ...bladeFiles].sort();
-const rawPaletteClass = /(?:^|[\s'"\x60])(?:[a-z][\w-]*:)*(?:(?:bg|text|border|ring|fill|stroke|shadow)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\d{2,3}(?:\/\d{1,3})?|(?:bg|text|border|ring|fill|stroke|shadow)-(?:white|black))(?=$|[\s'"\x60])/g;
+const rawPaletteClass = /(?:^|[\s'"\x60])(?:[a-z][\w-]*:)*(?:(?:bg|text|border|ring|fill|stroke|shadow)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\d{2,3}(?:\/\d{1,3})?|(?:bg|text|border|ring|fill|stroke|shadow)-(?:white|black)(?:\/\d{1,3})?)(?=$|[\s'"\x60])/g;
 const arbitraryHexClass = /\b(?:bg|text|border|ring|fill|stroke)-(?:\[[^\]]*#(?:[0-9a-f]{3,8})[^\]]*\])/gi;
 const legacyClass = /\b(?:app-skeleton|rad-messaging|composer-shell|message-edit-shell|message-artwork-card__[\w-]*|related-artworks-(?:chip|strip)__[\w-]*|message-conversation-avatar-link)\b|\bra-[\w-]+/g;
 
