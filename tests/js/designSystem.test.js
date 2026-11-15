@@ -178,7 +178,7 @@ test('messaging chat geometry follows RTL logical flow and keeps bubbles and pop
     assert.ok(messaging.includes('absolute bottom-full end-0 z-40 mb-2 flex max-w-[min(15rem,calc(100vw-2rem))] flex-wrap'));
     assert.ok(messaging.includes('absolute bottom-full end-0 z-40 mb-2 w-40 max-w-[calc(100vw-2rem)]'));
     assert.ok(messaging.includes('absolute end-1 top-1/2 -translate-y-1/2'));
-    assert.ok(messaging.includes('absolute start-2 z-10 flex h-9 w-9'));
+    assert.ok(messaging.includes('absolute bottom-2 start-2 z-10 flex h-9 w-9'));
     assert.ok(messaging.includes('ps-10 pe-3 py-[.55rem]'));
     assert.ok(messaging.includes('absolute start-3 top-1/2 -translate-y-1/2'));
     assert.ok(messaging.includes('bg-surface py-2 ps-10 pe-4 text-sm'));
@@ -193,6 +193,9 @@ test('messaging RTL behavior covers skeletons and logical bubble geometry', () =
     assert.ok(messaging.includes('border-s-2 border-terracotta'));
     assert.ok(messaging.includes('dir="auto" aria-label="متن پیام"'));
     assert.ok(messaging.includes('dir="auto" aria-label="جستجوی گفتگوها"'));
+    assert.ok(messaging.includes('dir="auto" className={\'whitespace-pre-wrap break-words text-sm leading-[1.65] \' +'));
+    assert.ok(messaging.includes('dir="auto" className="truncate text-xs font-semibold text-ink"'));
+    assert.ok(messaging.includes('dir="auto" className="block truncate text-xs font-semibold text-ink"'));
     assert.ok(skeletons.includes('dir="rtl" className={`grid content-end gap-5 p-4 sm:p-6 ${className}`}'));
     assert.ok(skeletons.includes("own ? 'justify-start' : 'justify-end'"));
     assert.ok(skeletons.includes('dir="rtl" className={`min-h-0 flex-1 divide-y divide-border overflow-hidden ${className}`}'));
