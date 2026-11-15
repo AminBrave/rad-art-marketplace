@@ -468,13 +468,14 @@ test('TextInput and TextareaField preserve native form semantics while SelectFie
 
 test('Checkbox uses the Radix checkbox interaction and exposes its accessible state', () => {
     const checkbox = renderToStaticMarkup(
-        React.createElement(primitives.Checkbox, { checked: true, name: 'is_public', 'aria-label': 'نمایش عمومی پروفایل' }),
+        React.createElement(primitives.Checkbox, { checked: true, name: 'is_public', 'aria-label': 'نمایش عمومی پروفایل' }, 'نمایش عمومی پروفایل'),
     );
 
     assert.match(checkbox, /role="checkbox"/);
     assert.match(checkbox, /aria-checked="true"/);
     assert.match(checkbox, /aria-label="نمایش عمومی پروفایل"/);
     assert.match(checkbox, /name="is_public"/);
+    assert.match(checkbox, /نمایش عمومی پروفایل/);
 });
 
 test('Tabs expose tablist, selected state and linked panel semantics', () => {
