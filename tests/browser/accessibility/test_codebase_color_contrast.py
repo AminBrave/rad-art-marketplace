@@ -66,6 +66,8 @@ PUBLIC_STATIC_ROUTES = (
     "/register",
     "/unauthorized",
     "/__rad_a11y_unknown_route__",
+    # The development-only specimen mounts the shared component library.
+    "/?design-system",
 )
 
 ROLE_ROUTES = {
@@ -240,6 +242,51 @@ class CodebaseRenderedColorContrastTests(unittest.TestCase):
             context.close()
 
         self.assertTrue(audited, "No public routes were audited.")
+
+
+    def test_shared_component_library_and_interactive_states_have_no_contrast_failures(self):
+        context, page = self.new_page()
+        try:
+            self.audit_route(page, "/?design-system")
+
+            def assert_current_state(label):
+                result = page.evaluate("() => window.__radColorAccessibilityAudit(document)")
+                self.assertEqual(
+                    result["failures"],
+                    [],
+                    f"Computed WCAG contrast failures in component showcase state {label}: {result['failures']}",
+                )
+
+            # Exercise representative interactive states from the shared UI
+            # component showcase: hover, dropdown, dialog and selected tab.
+            for label in ("اقدام اصلی", "ثانویه", "خطی", "ساده", "حذف"):
+                page.get_by_role("button", name=label, exact=True).hover()
+                assert_current_state(f"hover:{label}")
+
+            page.get_by_role("button", name="باز کردن منو").click()
+            page.get_by_role("menu").wait_for(state="visible")
+            assert_current_state("dropdown-open")
+            page.get_by_role("menuitem", name="نمایش اعلان").click()
+            assert_current_state("dropdown-closed")
+
+            page.get_by_role("button", name="باز کردن دیالوگ").click()
+            page.get_by_role("dialog").wait_for(state="visible")
+            assert_current_state("dialog-open")
+            page.get_by_role("button", name="بستن").click()
+            page.get_by_role("dialog").wait_for(state="hidden")
+            assert_current_state("dialog-closed")
+
+            page.get_by_role("tab", name="جزئیات").click()
+            self.assertTrue(page.get_by_role("tab", name="جزئیات").get_attribute("aria-selected") == "true")
+            assert_current_state("tab-selected")
+
+            # Keyboard traversal activates :focus-visible styling on actual
+            # controls and links in the component gallery.
+            for index in range(20):
+                page.keyboard.press("Tab")
+                assert_current_state(f"keyboard-focus-{index + 1}")
+        finally:
+            context.close()
 
     def test_all_authenticated_role_workspace_routes_have_no_contrast_failures(self):
         for role, routes in ROLE_ROUTES.items():
