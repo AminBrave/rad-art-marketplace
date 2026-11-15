@@ -56,7 +56,7 @@ Run these steps from the repository root.
 
    If your machine uses `python3` rather than `python`, use `python3 -m pip` and `python3 -m playwright` for these installation commands. The browser runner uses the Python interpreter available to the project scripts; make sure Playwright is installed into that same environment.
 
-The npm database commands (`db:status`, `db:migrate`, `db:seed`, `db:seed:demo` and `db:fresh`) all run the same local environment/database preflight and use isolated Laravel optimization-cache paths. This does not make `npm run db:fresh` safe for important data: it still drops all tables in the configured development database, so do not use it as a general test setup step. PHPUnit uses its own in-memory SQLite database, and Playwright has a separate isolated database.
+The npm database commands (`db:status`, `db:migrate`, `db:seed`, `db:seed:demo`, `db:fresh` and `db:export:cpanel`) all run the same local environment/database preflight and use isolated Laravel optimization-cache paths. The export command additionally requires MySQL and `mysqldump`; it writes the current database, including every row, to a gzip-compressed SQL file in a web-denied subfolder of `public/build`. This does not make `npm run db:fresh` safe for important data: it still drops all tables in the configured development database, so do not use it as a general test setup step. PHPUnit uses its own in-memory SQLite database, and Playwright has a separate isolated database.
 
 ### Development configuration preflight
 
