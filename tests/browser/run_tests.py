@@ -252,7 +252,6 @@ def main() -> int:
             safe = is_manual_dev_safe(test)
             print(f"{test.id()}  [{'manual-safe: API mocked/read-only' if safe else 'may mutate current dev data'}]")
         return 0
-    if not args.tests and not args.all:
     if args.tests:
         selected = []
         for name in args.tests:
