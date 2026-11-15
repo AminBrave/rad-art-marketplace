@@ -79,6 +79,8 @@ test('shared content and feedback components use semantic utility classes', () =
 
 test('RAD visual tokens are declared in one canonical root block', () => {
     assert.equal((css.match(/:root\s*\{/g) ?? []).length, 1);
+    assert.ok(css.includes('--color-overlay: rgb(36 35 32 / 64%)'));
+    assert.ok(css.includes('--overlay-backdrop-blur: 8px;'));
     assert.ok(css.includes('--color-message-own:'));
     assert.ok(css.includes('--color-success-surface:'));
 });
@@ -112,7 +114,7 @@ test('navigation and dialog primitives use Tailwind state and focus utilities', 
     assert.ok(navigation.includes('data-[disabled]:pointer-events-none'));
     assert.ok(navigation.includes('focus-visible:ring-2'));
     assert.ok(navigation.includes('aria-current="page"'));
-    assert.ok(dialog.includes('bg-[color:var(--color-overlay)] backdrop-blur-[3px]'));
+    assert.ok(dialog.includes('bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]'));
     assert.ok(dialog.includes('max-h-[min(88dvh,48rem)]'));
     assert.ok(dialog.includes('rounded-xl border border-border-strong bg-paper'));
     assert.doesNotMatch(navigation, /ra-[a-z]/);
@@ -128,6 +130,7 @@ test('dashboard headers and notification dialog preserve RAD hierarchy and acces
     assert.ok(layouts.includes('workspace-notification-panel'));
     assert.ok(layouts.includes('aria-haspopup="dialog"'));
     assert.ok(layouts.includes('aria-modal="true"'));
+    assert.ok(layouts.includes('bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]'));
     assert.ok(layouts.includes('workspace-mobile-menu'));
     assert.ok(layouts.includes('document.body.style.overflow = \'hidden\''));
     assert.ok(layouts.includes('lg:hidden'));
