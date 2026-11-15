@@ -5,7 +5,7 @@ Run commands from the repository root. **Use the npm commands in `package.json` 
 ## Principles
 
 - One canonical command per workflow; do not add compatibility aliases without a concrete external consumer.
-- Keep npm script names grouped by setup, development, database, tests, verification, lint, builds and production.
+- Keep npm script names grouped by setup, development, database, tests, lint and builds.
 - Keep orchestration in `scripts/project.mjs`; keep direct Vite, ESLint and Artisan one-liners in `package.json`.
 - Update this reference and dispatcher help whenever a task changes.
 - Tests, lint, builds, migrations, seeders and cache mutation are opt-in. Follow `AGENTS.md`; never run them without explicit user authorization.
@@ -31,19 +31,19 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Database | `npm run db:seed` | Run `DatabaseSeeder` |
 | Database | `npm run db:seed:demo` | Run `DemoDatabaseSeeder` |
 | Database | `npm run db:fresh` | **Destructive:** drop all configured database tables, migrate and seed |
-| Tests | `npm test` | Backend PHPUnit + frontend Node tests |
 | Tests | `npm run test:backend` | Backend PHPUnit tests using isolated in-memory SQLite |
 | Tests | `npm run test:unit` | Unit PHPUnit suite |
 | Tests | `npm run test:feature` | Feature PHPUnit suite |
 | Tests | `npm run test:integration` | Integration PHPUnit suite |
 | Tests | `npm run test:frontend` | Frontend Node tests |
+| Tests | `npm run test:browser` | Prepare isolated SQLite, run Playwright in a temporary local app, then stop it |
 | Reports | `npm run test:report` | Generate the cross-suite quality summary from existing JUnit files; does not run tests |
 | Reports | `npm run test:reporting` | Run focused Python unit tests for report parsing and freshness classification |
 | Lint | `npm run lint` | ESLint check |
 | Lint | `npm run lint:fix` | Apply ESLint autofixes |
 | Accessibility | `npm run a11y:colors` | Run focused color-accessibility tests |
+| Production | `npm run production` | Standard Vite production build; no Laravel optimization caches |
 | Build | `npm run build:cpanel` | cPanel Vite production build |
-| Production | `npm run prod:optimize` | Cache Laravel config, routes, events and views |
 
 ## Default HTTPS development and LAN access
 
