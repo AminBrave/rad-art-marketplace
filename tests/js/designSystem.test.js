@@ -178,15 +178,17 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.doesNotMatch(messaging, /min-h-\[5\.35rem\]/);
 });
 
-test('messaging restores the standard page heading and lets the mobile inbox scroll to a full-height list', () => {
-    assert.ok(messaging.includes('className={active ? \'max-sm:hidden\' : \'\'}'));
-    assert.doesNotMatch(messaging, /titleClassName=|descriptionClassName=/);
-    assert.ok(messaging.includes('min-h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
-    assert.ok(messaging.includes('min-h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom)+4.5rem)] sm:min-h-0'));
-    assert.ok(messaging.includes("active ? 'hidden h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e lg:flex'"));
-    assert.ok(messaging.includes("active ? 'flex h-full min-h-0 min-w-0 flex-col bg-canvas'"));
-    assert.ok(layouts.includes('min-h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
-    assert.ok(layouts.includes('sm:overflow-hidden'));
+test('messaging is viewport-locked between the authenticated app header and bottom navigation on mobile', () => {
+    assert.ok(messaging.includes('className="max-sm:hidden"'), 'Hide the page-level direct-messaging heading on mobile.');
+    assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col gap-2 overflow-hidden'));
+    assert.ok(messaging.includes('grid h-full min-h-0 w-full min-w-0 flex-1'));
+    assert.ok(messaging.includes('divide-y divide-border overflow-y-auto'), 'The inbox list scrolls inside its fixed panel.');
+    assert.ok(messaging.includes('overflow-y-auto overscroll-contain'), 'Message history scrolls inside its fixed panel.');
+    assert.ok(layouts.includes('flex h-dvh flex-col overflow-hidden'), 'Messaging locks the authenticated shell to the dynamic viewport.');
+    assert.ok(layouts.includes('h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
+    assert.ok(layouts.includes('sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
+    assert.ok(layouts.includes('lg:h-[calc(100dvh-5rem)]'));
+    assert.ok(layouts.includes("isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden' : 'min-w-0'"));
 });
 
 test('messaging chat geometry follows RTL logical flow and keeps bubbles and popovers inside the pane', () => {
