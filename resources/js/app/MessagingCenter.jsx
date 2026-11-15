@@ -31,29 +31,36 @@ function timeLabel(value) {
     return Number.isNaN(date.getTime()) ? '' : date.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
 }
 
-function getChatPopoverPosition(anchor, preferredWidth, height) {
+function getChatPopoverPosition(anchor, preferredWidth, preferredHeight) {
     if (!anchor?.isConnected) return null;
     const rect = anchor.getBoundingClientRect();
+    const boundary = anchor.closest('[data-chat-popover-boundary]')?.getBoundingClientRect();
     const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
     const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
     const margin = 8;
-    const width = Math.min(preferredWidth, viewportWidth - margin * 2);
+    const minLeft = Math.max(margin, (boundary?.left ?? 0) + margin);
+    const maxRight = Math.min(viewportWidth - margin, (boundary?.right ?? viewportWidth) - margin);
+    const width = Math.min(preferredWidth, maxRight - minLeft);
     const leftOfAnchor = rect.right - width;
     const rightOfAnchor = rect.left;
-    const left = leftOfAnchor >= margin
+    const left = leftOfAnchor >= minLeft
         ? leftOfAnchor
-        : rightOfAnchor + width <= viewportWidth - margin
+        : rightOfAnchor + width <= maxRight
             ? rightOfAnchor
-            : Math.max(margin, Math.min(leftOfAnchor, viewportWidth - width - margin));
-    const above = rect.top - margin;
-    const below = viewportHeight - rect.bottom - margin;
+            : Math.max(minLeft, Math.min(leftOfAnchor, maxRight - width));
+    const minTop = Math.max(margin, (boundary?.top ?? 0) + margin);
+    const maxBottom = Math.min(viewportHeight - margin, (boundary?.bottom ?? viewportHeight) - margin);
+    const maxHeight = Math.max(1, maxBottom - minTop);
+    const height = Math.min(preferredHeight, maxHeight);
+    const above = rect.top - minTop;
+    const below = maxBottom - rect.bottom;
     const preferredTop = above >= height + margin
         ? rect.top - height - margin
         : below >= height + margin
             ? rect.bottom + margin
             : rect.top - height - margin;
-    const top = Math.max(margin, Math.min(preferredTop, viewportHeight - height - margin));
-    return { top, left, width };
+    const top = Math.max(minTop, Math.min(preferredTop, maxBottom - height));
+    return { top, left, width, maxHeight };
 }
 
 function dayLabel(value) {
@@ -745,7 +752,7 @@ export default function MessagingCenter({ role }) {
                                 shouldStickToBottomRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 120;
                                 if (shouldStickToBottomRef.current) setNewMessageCount(0);
                                 if (node.scrollTop < 72 && (messagesQuery.data?.hasOlder ?? hasOlderMessagesRef.current) && !olderMessagesError) loadOlderMessages();
-                            }} className="relative isolate flex min-h-0 flex-1 flex-col gap-2 overflow-x-hidden overflow-y-auto overscroll-contain [scrollbar-gutter:stable] [scrollbar-width:thin] [scrollbar-color:var(--color-border-strong)_transparent] bg-[radial-gradient(circle_at_1px_1px,color-mix(in_srgb,var(--color-ink)_5%,transparent)_1px,transparent_0)] [background-size:22px_22px] px-3 py-5 md:gap-2 md:px-[clamp(.75rem,2vw,1.5rem)] md:py-3 max-md:gap-2 max-md:px-2.5 max-md:py-3" role="log" aria-label="پیام‌های گفتگو" aria-live="polite" aria-relevant="additions">
+                            }} data-chat-popover-boundary className="relative isolate flex min-h-0 flex-1 flex-col gap-2 overflow-x-hidden overflow-y-auto overscroll-contain [scrollbar-gutter:stable] [scrollbar-width:thin] [scrollbar-color:var(--color-border-strong)_transparent] bg-[radial-gradient(circle_at_1px_1px,color-mix(in_srgb,var(--color-ink)_5%,transparent)_1px,transparent_0)] [background-size:22px_22px] px-3 py-5 md:gap-2 md:px-[clamp(.75rem,2vw,1.5rem)] md:py-3 max-md:gap-2 max-md:px-2.5 max-md:py-3" role="log" aria-label="پیام‌های گفتگو" aria-live="polite" aria-relevant="additions">
                                 {messagesLoading && messages.length === 0 && <MessageHistorySkeleton count={5} className="w-full" />}
                                 {messagesError && <div role="alert" className="m-auto flex max-w-md flex-col items-center gap-3 rounded-xl border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-danger-surface p-5 text-center text-sm text-danger"><p>{messagesError}</p><button type="button" onClick={() => loadMessages()} className="rounded-lg px-4 py-2 font-bold underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">تلاش دوباره</button></div>}
                                 {!messagesLoading && !messagesError && messages.length === 0 && <p className="m-auto py-6 text-center text-sm text-muted">هنوز پیامی در این گفتگو وجود ندارد. می‌توانید گفتگو را با یک پیام شروع کنید.</p>}
@@ -792,8 +799,8 @@ export default function MessagingCenter({ role }) {
                                                         <div className="mt-2 flex flex-wrap items-center justify-between gap-1"><div className="flex flex-wrap items-center gap-1">
                                                             {message.reactions?.filter((reaction) => reaction.count > 0).map((reaction) => <button key={reaction.emoji} type="button" disabled={actionId === message.id} onClick={() => toggleReaction(message, reaction.emoji)} aria-label={'واکنش ' + reaction.emoji} aria-pressed={Boolean(reaction.reacted_by_me)} className={'inline-flex min-h-8 items-center gap-1 rounded-full border border-border bg-surface px-2.5 text-[11px] leading-none text-muted transition-colors hover:border-border-strong hover:bg-surface-muted hover:text-ink aria-pressed:border-terracotta aria-pressed:bg-accent-surface aria-pressed:text-terracotta-strong motion-reduce:transition-none ' + (reaction.reacted_by_me ? 'border-terracotta bg-accent-surface text-terracotta-strong' : '')}>{reaction.emoji}<span className="tabular-nums">{Number(reaction.count).toLocaleString('fa-IR')}</span></button>)}
                                                             <div data-chat-popover-root data-chat-popover-id={openPopover === 'reactions:' + message.id ? openPopover : undefined} className="relative">
-                                                                <button type="button" aria-label="افزودن واکنش" title="افزودن واکنش" aria-haspopup="true" aria-expanded={openPopover === 'reactions:' + message.id} aria-controls={openPopover === 'reactions:' + message.id ? 'reaction-options-' + message.id : undefined} onClick={(event) => toggleChatPopover(event, 'reactions:' + message.id, 240, 48)} disabled={actionId === message.id} className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-surface text-muted transition-colors hover:border-border-strong hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:opacity-50 motion-reduce:transition-none"><SmilePlus size={15} aria-hidden="true" /></button>
-                                                                {openPopover === 'reactions:' + message.id && popoverPosition && createPortal(<div id={'reaction-options-' + message.id} dir="rtl" role="group" aria-label="انتخاب واکنش" data-chat-popover-panel style={{ position: 'fixed', top: popoverPosition.top, left: popoverPosition.left, width: popoverPosition.width, zIndex: 60 }} className="flex max-w-[calc(100vw-1rem)] flex-nowrap items-center gap-1 overflow-x-auto rounded-full border border-border bg-paper p-1.5 shadow-soft [scrollbar-width:none]">
+                                                                <button type="button" aria-label="افزودن واکنش" title="افزودن واکنش" aria-haspopup="true" aria-expanded={openPopover === 'reactions:' + message.id} aria-controls={openPopover === 'reactions:' + message.id ? 'reaction-options-' + message.id : undefined} onClick={(event) => toggleChatPopover(event, 'reactions:' + message.id, 256, 48)} disabled={actionId === message.id} className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-surface text-muted transition-colors hover:border-border-strong hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:opacity-50 motion-reduce:transition-none"><SmilePlus size={15} aria-hidden="true" /></button>
+                                                                {openPopover === 'reactions:' + message.id && popoverPosition && createPortal(<div id={'reaction-options-' + message.id} dir="rtl" role="group" aria-label="انتخاب واکنش" data-chat-popover-panel style={{ position: 'fixed', top: popoverPosition.top, left: popoverPosition.left, width: popoverPosition.width, maxHeight: popoverPosition.maxHeight, zIndex: 60 }} className="flex max-w-[calc(100vw-1rem)] flex-nowrap items-center gap-1 overflow-x-auto rounded-full border border-border bg-paper p-1.5 shadow-soft [scrollbar-width:none]">
                                                                     {reactionOptions.map((emoji) => {
                                                                         const reaction = message.reactions?.find((item) => item.emoji === emoji);
                                                                         return <button key={emoji} type="button" disabled={actionId === message.id} onClick={() => { setOpenPopover(null); toggleReaction(message, emoji); }} aria-label={'واکنش ' + emoji} aria-pressed={Boolean(reaction?.reacted_by_me)} className={'flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-base transition-colors hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none ' + (reaction?.reacted_by_me ? 'bg-accent-surface text-terracotta-strong' : 'text-ink')}>{emoji}</button>;
@@ -803,7 +810,7 @@ export default function MessagingCenter({ role }) {
                                                             </div>
                                                             <div data-chat-popover-root data-chat-popover-id={openPopover === 'message:' + message.id ? openPopover : undefined} className="relative">
                                                                 <button type="button" aria-label="عملیات پیام" title="عملیات پیام" aria-haspopup="true" aria-expanded={openPopover === 'message:' + message.id} aria-controls={openPopover === 'message:' + message.id ? 'message-actions-' + message.id : undefined} onClick={(event) => toggleChatPopover(event, 'message:' + message.id, 160, 168)} className="flex h-8 w-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"><MoreVertical size={16} aria-hidden="true" /></button>
-                                                                {openPopover === 'message:' + message.id && popoverPosition && createPortal(<div id={'message-actions-' + message.id} dir="rtl" role="group" aria-label="عملیات پیام" data-chat-popover-panel style={{ position: 'fixed', top: popoverPosition.top, left: popoverPosition.left, width: popoverPosition.width, zIndex: 60 }} className="max-w-[calc(100vw-1rem)] overflow-hidden rounded-lg border border-border bg-paper p-1 shadow-soft">
+                                                                {openPopover === 'message:' + message.id && popoverPosition && createPortal(<div id={'message-actions-' + message.id} dir="rtl" role="group" aria-label="عملیات پیام" data-chat-popover-panel style={{ position: 'fixed', top: popoverPosition.top, left: popoverPosition.left, width: popoverPosition.width, maxHeight: popoverPosition.maxHeight, zIndex: 60 }} className="max-w-[calc(100vw-1rem)] overflow-hidden rounded-lg border border-border bg-paper p-1 shadow-soft">
                                                                     <button type="button" onClick={() => { setOpenPopover(null); setReplyTo(message); setEditingId(null); draftRef.current?.focus(); }} className="flex min-h-10 w-full items-center gap-2.5 rounded-md px-3 text-start text-xs font-semibold text-ink transition-colors hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"><Reply size={15} aria-hidden="true" /><span>پاسخ</span></button>
                                                                     {!own && <button type="button" onClick={() => { setOpenPopover(null); reportMessage(message); }} className="flex min-h-10 w-full items-center gap-2.5 rounded-md px-3 text-start text-xs font-semibold text-ink transition-colors hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"><Flag size={15} aria-hidden="true" /><span>گزارش</span></button>}
                                                                     {own && <button type="button" onClick={() => { setOpenPopover(null); setEditingId(message.id); setEditDraft(message.body ?? ''); }} className="flex min-h-10 w-full items-center gap-2.5 rounded-md px-3 text-start text-xs font-semibold text-ink transition-colors hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"><Pencil size={15} aria-hidden="true" /><span>ویرایش</span></button>}
