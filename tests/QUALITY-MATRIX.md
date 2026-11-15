@@ -61,17 +61,53 @@ The route inventory below is derived from the current React Router tree in `reso
 
 ### Shared RAD component contract coverage
 
-`tests/js/reactComponents.test.js` uses the existing Vite JSX pipeline and React server renderer. It checks stable rendered semantics without adding a DOM library or another component-test framework.
+The public export inventory below is checked against `resources/js/components/ui/index.js`. Evidence is deliberately classified by what each test actually proves:
 
-| Component family | Covered contract | Not established by SSR |
+- **Direct SSR contract** means `tests/js/reactComponents.test.js` renders the component (or a composed primitive set) and asserts its static markup. It does not prove browser interaction, focus behavior or visual layout.
+- **Source/architecture only** means a source audit protects design-token, class, export or usage conventions; it is not component behavior coverage.
+- **Deferred** means no component-specific assertion was identified in this inventory. This is an explicit risk-based exclusion, not a claim that the component is defective.
+
+| Exported component(s) | Existing evidence | Status / boundary |
 |---|---|---|
-| Buttons and badges | Accessible icon-button labels, disabled/loading/busy state, variant/status presentation | Actual keyboard activation, focus ring rendering and pointer behavior |
-| Layout and form primitives | Semantic containers/headings, label-control association, hint/error descriptions, native input semantics, search landmark | Browser validation UI, focus movement and responsive visual layout |
-| Feedback | Error/status announcements, upload progress bounds, skeleton loading semantics, image placeholder and priority attributes | Live-region announcement behavior in assistive technology; actual image load/error transitions are browser-tested |
-| Navigation | Breadcrumb current-page semantics, pagination current/disabled boundaries, tab roles/selected panel structure | Full keyboard/focus behavior beyond the messaging tablist browser journey |
-| Dialog and dropdown | Existing Radix integration is retained | No live dialog open/close, Escape, focus containment/restoration or dropdown keyboard contract is claimed |
+| `Button` | `reactComponents.test.js`: disabled/loading/busy semantics, submit type and variant | Direct SSR contract; keyboard activation and rendered focus remain browser concerns |
+| `IconButton` | `reactComponents.test.js`: accessible label and title | Direct SSR contract; activation/focus not established |
+| `Badge` | `reactComponents.test.js`: status variant presentation | Direct SSR contract |
+| `FormField` | `reactComponents.test.js`: explicit and generated label/control IDs, hint/error descriptions and alert role | Direct SSR contract; actual validation/focus announcement remains open |
+| `TextInput` | `reactComponents.test.js`: native email, direction and required attributes; composed with `FormField` | Direct SSR contract; browser input behavior is not established |
+| `TextareaField` | `reactComponents.test.js`: rows/maxLength and generated `FormField` association | Direct SSR contract |
+| `SelectField` | `reactComponents.test.js`: accessible name and option markup | Direct SSR contract; selection interaction is not established |
+| `SearchField` | `reactComponents.test.js`: search landmark, search input, label and submit control | Direct SSR contract; browser submission is covered only in route-level journeys, not this component test |
+| `PageContainer` | `reactComponents.test.js`: semantic element and reading-width contract; `designSystem.test.js`: shared utility/source invariant | Direct SSR contract plus source/architecture evidence |
+| `PageHeader` | `reactComponents.test.js`: requested heading level and supporting content; `designSystem.test.js`: shared layout invariant | Direct SSR contract plus source/architecture evidence |
+| `SectionHeader` | `reactComponents.test.js`: requested heading level and ID; `designSystem.test.js`: shared layout invariant | Direct SSR contract plus source/architecture evidence |
+| `Surface` | `reactComponents.test.js`: semantic element and interactive variant focus utility; `designSystem.test.js`: shared layout invariant | Direct SSR contract plus source/architecture evidence; actual focus rendering remains open |
+| `StatusBadge` | `reactComponents.test.js`: mapped and unknown status presentation; `designSystem.test.js`: shared layout invariant | Direct SSR contract plus source/architecture evidence |
+| `WorkspaceHero` | `reactComponents.test.js`: RTL header and primary heading | Direct SSR contract |
+| `DashboardMetricCard` | `reactComponents.test.js`: destination renders as a link with metric content | Direct SSR contract; navigation destination behavior belongs to browser coverage |
+| `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent` | `reactComponents.test.js`: composed tablist, tab, selected state, linked panel and RTL markup; messaging browser journey checks RTL arrow-key direction and boundaries | Direct composed SSR contract plus selected browser keyboard evidence; not a full standalone Radix interaction suite |
+| `Breadcrumbs` | `reactComponents.test.js`: navigation label, current-page semantics and linked ancestors | Direct SSR contract; its SSR router link is a narrow anchor test double, while real routing is covered by browser journeys |
+| `Pagination` | `reactComponents.test.js`: active page and disabled previous/next boundaries | Direct SSR contract; page-change interaction is not established by this assertion |
+| `DropdownMenu`, `DropdownMenuTrigger`, `DropdownMenuContent`, `DropdownMenuItem`, `DropdownMenuLabel`, `DropdownMenuSeparator` | No component-specific render or browser assertion identified; `designSystem.test.js` checks navigation source styling conventions | Source/architecture only; menu open/close, keyboard navigation and focus behavior explicitly deferred |
+| `Dialog`, `DialogTrigger`, `DialogClose`, `DialogContent`, `DialogTitle`, `DialogDescription` | No live component interaction assertion identified; `designSystem.test.js` checks dialog source styling conventions | Source/architecture only; open/close, Escape, focus containment/restoration and accessible naming in a mounted dialog explicitly deferred |
+| `Skeleton` | No component-specific rendered assertion identified; shared skeleton source is included in design-system audits | Source/architecture only; standalone rendered contract deferred |
+| `SkeletonLines` | `reactComponents.test.js`: one loading announcement, decorative children hidden from AT, reduced-motion utility | Direct SSR contract; actual announcement/animation behavior requires browser/AT review |
+| `MediaImage` | `reactComponents.test.js`: loading skeleton, lazy/eager priority, missing-source fallback and custom fallback; `test_artwork_catalogue_resilience.py`: loaded, failed, missing and changed image sources | Direct SSR plus browser behavior evidence |
+| `EmptyState` | `reactComponents.test.js`: RTL section, heading and description | Direct SSR contract |
+| `ErrorState` | `reactComponents.test.js`: alert role, error content and retry affordance | Direct SSR contract; retry execution is covered in selected route journeys, not by this static assertion |
+| `SuccessState`, `PermissionState` | `reactComponents.test.js`: status role and content for both outcomes | Direct SSR contract |
+| `UploadFeedback` | `reactComponents.test.js`: progressbar semantics and lower/upper clamping | Direct SSR contract; live progress updates are not established here |
+| `Toast` | `reactComponents.test.js`: polite status and assertive error live-region markup | Direct SSR contract; announcement timing/behavior in assistive technology deferred |
+| `ArtworkCard`, `ArtistCard` | `designSystem.test.js`: semantic surface/aspect-ratio utility and no legacy classes/raw component colors; catalogue/directory browser suites exercise their surrounding screens | Source/architecture only for the card exports; no isolated card render/interaction contract identified |
+| `ArtworkCardSkeleton`, `ArtistCardSkeleton` | `designSystem.test.js`: route fallback references and skeleton structure/source invariants | Source/architecture only; isolated rendered geometry and loading semantics deferred |
+| `ArtworkDetailSkeleton`, `ArtistProfileSkeleton`, `FormFieldSkeleton` | Shared skeleton source is included in design-system audits; no component-specific rendered assertion identified | Source/architecture only; isolated contract deferred |
+| `ArtworkStudioListSkeleton`, `ConversationInboxSkeleton`, `MessageHistorySkeleton`, `AdminRecordListSkeleton` | `designSystem.test.js`: exported source and selected workspace/messaging consumers | Source/architecture only; isolated rendered contract deferred |
+| `DashboardMetricSkeleton`, `ArtistRecentWorkSkeleton`, `AdminDashboardSkeleton`, `ArtworkModerationSkeleton` | `designSystem.test.js`: selected export/consumer and skeleton utility invariants | Source/architecture only; isolated rendered contract deferred |
+| `WorkspaceIdentitySkeleton`, `MessageReportsSkeleton`, `AdminUserCardsSkeleton`, `CollectionCardSkeleton` | `designSystem.test.js`: selected export/consumer and skeleton utility invariants | Source/architecture only; isolated rendered contract deferred |
+| `AdminEditorialSkeleton`, `CollectionDetailSkeleton`, `NotificationListSkeleton`, `HomePageSkeleton` | `designSystem.test.js`: selected export/source and shared skeleton utility invariants | Source/architecture only; isolated rendered contract deferred |
 
-Source-level checks in `designSystem.test.js`, `designSystemCoverage.test.js` and `frontendMutationArchitecture.test.js` intentionally protect architecture and design-system invariants. They are not substitutes for user-visible tests. Avoid using source-string assertions to claim a rendered interaction works.
+The inventory is intentionally risk-weighted: deferred low-risk exports do not automatically require new tests in this change. When a deferred component becomes part of a critical journey or gains meaningful interaction/state, add focused rendered/browser evidence and update this table. Keep the public export list and this inventory synchronized.
+
+Source-level checks in `designSystem.test.js`, `designSystemCoverage.test.js` and `frontendMutationArchitecture.test.js` protect architecture and design-system invariants. They are not substitutes for user-visible tests. Avoid using source-string assertions to claim a rendered interaction works.
 
 ### Accessibility and responsive evidence boundaries
 
