@@ -49,7 +49,7 @@ test('rejects disabled debug and missing application key', () => {
         root,
     });
     assert.match(result.errors.join(' '), /APP_DEBUG must be true/);
-    assert.match(result.errors.join(' '), /APP_KEY is missing/);
+    assert.match(result.errors.join(' '), /APP_KEY is missing or invalid/);
 });
 
 test('rejects a remote database unless the developer explicitly opts in', () => {
