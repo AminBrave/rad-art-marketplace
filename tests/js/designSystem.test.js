@@ -186,10 +186,14 @@ test('messaging chat geometry follows RTL logical flow and keeps bubbles and pop
     assert.ok(messaging.includes('position: \'fixed\''));
     assert.ok(messaging.includes('zIndex: 60'));
     assert.ok(messaging.includes('flex-nowrap items-center gap-1 overflow-x-auto'));
+    assert.ok(messaging.includes("toggleChatPopover(event, 'reactions:' + message.id, 256, 48)"));
     assert.ok(messaging.includes('function getChatPopoverPosition(anchor, preferredWidth, height)'));
     assert.ok(messaging.includes('const leftOfAnchor = rect.right - width'));
     assert.ok(messaging.includes('const rightOfAnchor = rect.left'));
     assert.ok(messaging.includes('window.visualViewport?.height ?? window.innerHeight'));
+    assert.ok(messaging.includes("anchor.closest('[data-chat-popover-boundary]')?.getBoundingClientRect()"));
+    assert.ok(messaging.includes('data-chat-popover-boundary'));
+    assert.ok(messaging.includes('maxHeight: popoverPosition.maxHeight'));
     assert.ok(messaging.includes('overflow-x-hidden overflow-y-auto'));
     assert.ok(messaging.includes('absolute end-1 top-1/2 -translate-y-1/2'));
     assert.ok(messaging.includes('absolute bottom-2 start-2 z-10 flex h-9 w-9'));
