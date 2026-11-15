@@ -148,6 +148,7 @@ Radix UI Primitives are the default behavior and accessibility foundation for ev
 | Product pattern | Shared primitive | Current adoption |
 | --- | --- | --- |
 | Modal dialogs and mobile drawers | RAD Dialog backed by Radix Dialog | Public mobile navigation, workspace mobile navigation, notification drawer, and existing modal surfaces |
+| Destructive confirmation | RAD AlertDialog backed by Radix Alert Dialog | Editorial collection unpublish confirmation |
 | Contextual actions and reaction choices | Radix Dropdown Menu | Conversation-row actions, conversation actions, message actions and emoji reaction picker |
 | Segmented navigation and content modes | RAD Tabs backed by Radix Tabs | Messaging inbox filters and the legacy preview authentication mode selector |
 | Single-value option controls | RAD Select through SelectField | Public artwork category filter, artwork category/availability editor, account-role selectors and legacy preview account-role selector |
