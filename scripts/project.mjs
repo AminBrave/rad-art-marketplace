@@ -179,7 +179,6 @@ function testEnvironment() {
         FILESYSTEM_DISK: 'local',
         RAD_ART_LOCAL_STORAGE_PATH: resolve(root, 'storage', 'framework', 'testing', 'storage', 'private'),
         RAD_ART_PUBLIC_STORAGE_PATH: resolve(root, 'storage', 'framework', 'testing', 'storage', 'public'),
-        RAD_ART_BROWSER_TEST_MODE: '0',
         VIEW_COMPILED_PATH: resolve(root, 'storage', 'framework', 'testing', 'views'),
     };
 }
