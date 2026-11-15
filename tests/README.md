@@ -60,7 +60,7 @@ Do not run `npm run db:fresh` as a general test setup step. It drops tables in t
 
 ### Development configuration preflight
 
-The normal `npm run dev` command validates the local environment before opening services. It rejects production mode, disabled debug output, a missing application key, unsupported database drivers, remote/shared database targets without an explicit one-command opt-in, missing dependencies and a leftover `public/hot` file. It does not modify `.env`, clear caches, run migrations or touch database contents. The pure validation rules are covered by `tests/js/devEnvironment.test.js` and run as part of `npm run test:frontend`.
+Run `npm run dev:check` to validate configuration without starting services. The normal `npm run dev` command performs the same check before opening services. It rejects production mode, disabled debug output, a missing or malformed application key, unsupported database drivers, remote/shared database targets without an explicit one-command opt-in, missing dependencies and a leftover `public/hot` file. It does not modify `.env`, clear caches, run migrations or touch database contents. The pure validation rules are covered by `tests/js/devEnvironment.test.js` and run as part of `npm run test:frontend`.
 
 For a remote development database, set `RAD_ALLOW_REMOTE_DEV_DATABASE=true` in the shell for that invocation only, and only after confirming the target is a dedicated development database. The preflight cannot determine database ownership or prove that a remote database is safe.
 
