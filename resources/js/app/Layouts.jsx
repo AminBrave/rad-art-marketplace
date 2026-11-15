@@ -75,9 +75,28 @@ function NotificationBell({ user }) {
     const [open, setOpen] = useState(false);
     const [actionError, setActionError] = useState('');
     const panelRef = useRef(null);
+    const triggerRef = useRef(null);
+    const [panelPosition, setPanelPosition] = useState({ top: 0, left: 16 });
+
+    const positionPanel = () => {
+        const trigger = triggerRef.current;
+        if (!trigger) return;
+        const rect = trigger.getBoundingClientRect();
+        const panelWidth = Math.min(352, window.innerWidth - 32);
+        const left = Math.max(16, Math.min(rect.right - panelWidth, window.innerWidth - panelWidth - 16));
+        const estimatedHeight = Math.min(520, window.innerHeight - 32);
+        const top = rect.bottom + 8 + estimatedHeight <= window.innerHeight
+            ? rect.bottom + 8
+            : Math.max(16, rect.top - estimatedHeight - 8);
+        setPanelPosition({ top, left });
+    };
 
     useEffect(() => {
         if (!open) return undefined;
+        positionPanel();
+        const reposition = () => positionPanel();
+        window.addEventListener('resize', reposition);
+        window.addEventListener('scroll', reposition, true);
         const closeOnEscape = (event) => {
             if (event.key === 'Escape') setOpen(false);
         };
@@ -91,6 +110,8 @@ function NotificationBell({ user }) {
         return () => {
             document.removeEventListener('keydown', closeOnEscape);
             document.removeEventListener('pointerdown', closeOnOutsidePointer);
+            window.removeEventListener('resize', reposition);
+            window.removeEventListener('scroll', reposition, true);
         };
     }, [open]);
     const notificationKey = ['notifications', user?.id, 'list'];
@@ -196,11 +217,11 @@ function NotificationBell({ user }) {
 
     return (
         <div className="relative">
-            <button type="button" aria-label="اعلان‌ها" aria-expanded={open} onClick={() => setOpen((value) => !value)} className="relative inline-flex min-h-10 items-center gap-2 border border-border px-3 py-2 font-semibold hover:border-terracotta">
+            <button ref={triggerRef} type="button" aria-label="اعلان‌ها" aria-expanded={open} onClick={() => setOpen((value) => !value)} className="relative inline-flex min-h-10 items-center gap-2 border border-border px-3 py-2 font-semibold hover:border-terracotta">
                 <Bell aria-hidden="true" size={16} strokeWidth={1.8} /><span className="hidden sm:inline">اعلان‌ها</span>
                 {unreadCount > 0 && <span className="min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-[10px] text-inverse" aria-live="polite">{unreadCount > 99 ? '۹۹+' : unreadCount.toLocaleString('fa-IR')}</span>}
             </button>
-            {open && <section role="dialog" aria-label="اعلان‌های پیام" ref={panelRef} className="absolute start-0 top-full z-50 mt-2 w-[min(22rem,calc(100vw-2rem))] max-w-[calc(100vw-2rem)] border border-border bg-paper p-4 text-right shadow-xl">
+            {open && <section role="dialog" aria-label="اعلان‌های پیام" ref={panelRef} style={{ top: panelPosition.top, left: panelPosition.left, width: 'min(22rem, calc(100vw - 2rem))', maxHeight: 'calc(100vh - 2rem)' }} className="fixed z-[100] overflow-y-auto border border-border bg-paper p-4 text-right shadow-xl">
                 <div className="flex items-center justify-between gap-3">
                     <h2 className="font-bold">اعلان‌های پیام</h2>
                     <div className="flex shrink-0 items-center gap-3">
