@@ -159,11 +159,13 @@ Browser tests exercise real user journeys in Chromium. There is one mode only: P
 
 ### Current development app and MySQL/MariaDB
 
-Start your usual local app first with `npm run dev` and keep it running. Open a second terminal and list the available tests:
+Start your usual local app first with `npm run dev` and keep it running. Then run the complete discovered Playwright suite with:
 
 ```powershell
-npm run test:browser -- --list
+npm run test:browser
 ```
+
+This bare command runs **all discovered browser tests**, including tests that create, update or delete development records. The project owner has explicitly accepted that the current development data may be changed by the suite. Run `npm run test:browser -- --list` whenever you want to inspect the test inventory first.
 
 Run a GET-only smoke journey against the actual current development database (no API interception or writes):
 
@@ -181,11 +183,7 @@ npm run test:browser -- test_artwork_catalogue_resilience.ArtworkCatalogueResili
 
 You can pass multiple test IDs to run a selected subset. The default target is `https://rad.localhost`; set `RAD_ART_BASE_URL` only to another loopback or `.localhost` origin. The runner requires `.env` to select MySQL/MariaDB and leaves the app's existing environment and database connection untouched. It does not start or stop services, change environment variables for the Laravel process, invoke Artisan, migrate, seed, reset storage, or clean application records.
 
-Only tests explicitly marked manual-safe may be selected without mutation opt-in. A marker is allowed for either an API-mocked test with no persistent-record dependency or a reviewed GET-only test that reads current development data without writes. Other tests are labelled as requiring `--allow-mutations`; inspect their setup/teardown and use a dedicated test identity before opting in. The flag does not make arbitrary existing data safe. Running the complete browser suite requires both `--all` and `--allow-mutations`:
-
-```powershell
-npm run test:browser -- --all --allow-mutations
-```
+The runner also supports focused selections by passing one or more unittest IDs. `--all` remains an explicit alias for the full suite, but is not required. The suite may mutate current development records; it does not reset the database or create a separate test database.
 
 Playwright diagnostics are written under `build/test-reports/browser/`.
 
@@ -247,7 +245,7 @@ The report links to detailed suite reports and browser diagnostics when present.
 npm run test:reporting
 ```
 
-This runs focused Python unit tests for report parsing/freshness classification and manual Playwright selection safety (`tests/python/test_browser_runner.py`). It is not a product behavior suite.
+This runs focused Python unit tests for report parsing/freshness classification and Playwright discovery and test classification (`tests/python/test_browser_runner.py`). It is not a product behavior suite.
 
 ## 8. A recommended workflow for each development task
 
