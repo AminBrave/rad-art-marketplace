@@ -134,6 +134,25 @@ npm run a11y:colors
 
 This is a focused automated color-contrast check, not a complete accessibility audit.
 
+
+### What frontend component tests prove
+
+`tests/js/reactComponents.test.js` loads the real JSX modules through the repository's Vite React plugin and renders them with React's server renderer. It covers stable markup contracts such as:
+
+- button disabled/busy semantics, icon-button names and semantic badge states;
+- heading hierarchy, page containers, surfaces, navigable metric cards and form label/error relationships;
+- native form-control semantics and labelled search landmarks;
+- feedback roles/live-region intent, upload progress bounds, skeleton announcements and image fallback/priority attributes;
+- breadcrumb current-page state, pagination boundaries and tab roles/selection.
+
+`tests/js/queryClient.test.js` also exercises a real isolated TanStack QueryClient: transient query retry and recovery, non-retryable validation failures, fresh-cache reuse, and mutation pending/success/error outcomes. The test client is cleared after each case so query and mutation state cannot leak between tests.
+
+These are server-rendered contracts. They do **not** prove browser focus behavior, keyboard activation, responsive layout, live assistive-technology announcements or actual image events. Those require browser or manual evidence.
+
+The existing browser suite provides that separate layer for selected journeys. In particular, `test_artwork_catalogue_resilience.py` checks a successfully loaded image, a failed image request falling back to an accessible placeholder, an artwork with no image source, a changed image URL replacing stale loaded media, and mixed Persian/Latin artwork and artist text at a narrow mobile viewport. Keep these tests focused on user-visible outcomes rather than asserting component CSS implementation details.
+
+The source-level design-system and mutation-architecture tests intentionally inspect source because they enforce repository-wide conventions (token usage, removed selectors and mutation declarations). Do not use those checks as evidence that a user interaction or rendered layout works.
+
 ## 5. Run browser tests (Playwright)
 
 Browser tests exercise real user journeys in Chromium. They may create, update or delete test records and must use the disposable local browser-test environment.

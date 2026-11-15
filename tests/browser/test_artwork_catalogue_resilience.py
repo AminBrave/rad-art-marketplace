@@ -2,6 +2,7 @@
 
 import json
 import unittest
+from urllib.parse import parse_qs, urlparse
 
 from playwright.sync_api import sync_playwright
 
@@ -130,6 +131,171 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
             self.assertTrue(page.get_by_role("combobox", name="فیلتر دسته‌بندی").is_visible())
             self.assertTrue(page.get_by_role("combobox", name="فیلتر تکنیک و مواد").is_visible())
             self.assertTrue(page.get_by_role("combobox", name="فیلتر وضعیت اثر").is_visible())
+        finally:
+            context.close()
+
+
+    def test_artwork_cards_recover_from_image_load_failure_and_keep_alt_text(self):
+        context, page = self.new_page()
+        artworks = [
+            {
+                "id": 910,
+                "slug": "image-loaded",
+                "title": "اثر با تصویر",
+                "price": None,
+                "image_url": "/media/loaded.svg",
+                "artist": {"display_name": "هنرمند تصویر"},
+                "category": {"name": "نقاشی"},
+            },
+            {
+                "id": 911,
+                "slug": "image-failed",
+                "title": "اثر خراب",
+                "price": None,
+                "image_url": "/media/failed.svg",
+                "artist": {"display_name": "هنرمند تصویر"},
+                "category": {"name": "نقاشی"},
+            },
+            {
+                "id": 912,
+                "slug": "image-missing",
+                "title": "اثر بدون تصویر",
+                "price": None,
+                "image_url": None,
+                "artist": {"display_name": "هنرمند تصویر"},
+                "category": {"name": "نقاشی"},
+            },
+            {
+                "id": 913,
+                "slug": "mixed-direction-title",
+                "title": "تابلو Mona Lisa 2026",
+                "price": None,
+                "image_url": None,
+                "artist": {"display_name": "Amin Studio"},
+                "category": {"name": "نقاشی / Oil painting"},
+            },
+        ]
+        page.route(
+            "**/api/v1/artworks**",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({
+                    "data": artworks,
+                    "current_page": 1,
+                    "last_page": 1,
+                    "per_page": 12,
+                    "total": len(artworks),
+                }),
+            ),
+        )
+        page.route(
+            "**/media/loaded.svg",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="image/svg+xml",
+                body='<svg xmlns="http://www.w3.org/2000/svg" width="8" height="10" viewBox="0 0 8 10"><rect width="8" height="10" fill="#777777"/></svg>',
+            ),
+        )
+        page.route("**/media/failed.svg", lambda route: route.abort())
+
+        try:
+            page.goto(BASE_URL + "/artworks", wait_until="domcontentloaded")
+            page.get_by_role("heading", name="گالری آثار").wait_for()
+
+            loaded = page.locator('img[alt="اثر با تصویر"]')
+            loaded.wait_for(state="visible")
+            page.wait_for_function("""() => {
+                const image = document.querySelector('img[alt="اثر با تصویر"]');
+                return image?.complete && image.naturalWidth > 0
+                    && image.parentElement?.getAttribute('aria-busy') === 'false';
+            }""")
+            self.assertEqual(loaded.locator("xpath=..").get_attribute("aria-busy"), "false")
+
+            page.get_by_role("img", name="اثر خراب").wait_for()
+            page.get_by_role("img", name="اثر بدون تصویر").wait_for()
+            self.assertEqual(page.locator('img[alt="اثر خراب"]').count(), 0)
+            self.assertEqual(page.locator('img[alt="اثر بدون تصویر"]').count(), 0)
+            page.get_by_role("heading", name="تابلو Mona Lisa 2026").wait_for()
+            self.assertIn("Amin Studio", page.locator("main").inner_text())
+            self.assertEqual(page.locator("html").get_attribute("dir"), "rtl")
+            page.set_viewport_size({"width": 320, "height": 812})
+            dimensions = page.evaluate(
+                "() => ({ viewport: document.documentElement.clientWidth, "
+                "document: document.documentElement.scrollWidth })"
+            )
+            self.assertLessEqual(
+                dimensions["document"],
+                dimensions["viewport"] + 1,
+                f"Mixed Persian/Latin catalogue content overflows at 320px: {dimensions}",
+            )
+        finally:
+            context.close()
+
+
+    def test_artwork_image_source_change_shows_new_media_instead_of_stale_loaded_state(self):
+        context, page = self.new_page()
+        requests = []
+
+        def artworks(route):
+            query = parse_qs(urlparse(route.request.url).query)
+            changed = query.get("q") == ["تغییر"]
+            requests.append("changed" if changed else "initial")
+            payload = artwork_payload("اثر با تصویر متغیر")
+            payload["data"][0]["id"] = 920
+            payload["data"][0]["image_url"] = "/media/first.svg" if not changed else "/media/second.svg"
+            route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps(payload),
+            )
+
+        page.route("**/api/v1/artworks**", artworks)
+        page.route(
+            "**/media/first.svg",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="image/svg+xml",
+                body='<svg xmlns="http://www.w3.org/2000/svg" width="8" height="10"><rect width="8" height="10" fill="#777777"/></svg>',
+            ),
+        )
+        page.route(
+            "**/media/second.svg",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="image/svg+xml",
+                body='<svg xmlns="http://www.w3.org/2000/svg" width="8" height="10"><circle cx="4" cy="5" r="4" fill="#777777"/></svg>',
+            ),
+        )
+
+        try:
+            page.goto(BASE_URL + "/artworks", wait_until="domcontentloaded")
+            image = page.locator('img[alt="اثر با تصویر متغیر"]')
+            image.wait_for(state="visible")
+            page.wait_for_function("""() => {
+                const image = document.querySelector('img[alt="اثر با تصویر متغیر"]');
+                return image?.complete && image.naturalWidth > 0
+                    && image.getAttribute('src') === '/media/first.svg'
+                    && image.parentElement?.getAttribute('aria-busy') === 'false';
+            }""")
+
+            search = page.get_by_role("searchbox", name="جست‌وجو در آثار و هنرمندان")
+            search.fill("تغییر")
+            with page.expect_response(
+                lambda response: "/api/v1/artworks" in response.url
+                and "q=" in response.url
+                and response.request.method == "GET"
+            ):
+                search.press("Enter")
+
+            page.wait_for_function("""() => {
+                const image = document.querySelector('img[alt="اثر با تصویر متغیر"]');
+                return image?.complete && image.naturalWidth > 0
+                    && image.getAttribute('src') === '/media/second.svg'
+                    && image.parentElement?.getAttribute('aria-busy') === 'false';
+            }""")
+            self.assertEqual(requests, ["initial", "changed"])
+            self.assertEqual(image.locator("xpath=..").get_attribute("aria-busy"), "false")
         finally:
             context.close()
 
