@@ -447,19 +447,17 @@ function NotificationBell({ user }) {
                     </div>
 
                     <div className="shrink-0 border-t border-border bg-surface-muted px-4 py-4 sm:px-5">
-                        <label className="flex cursor-pointer items-start gap-3 rounded-md border border-border bg-paper p-3 text-xs leading-6">
-                            <Checkbox
-                                checked={Boolean(preferences.in_app_messages)}
-                                disabled={busy || preferencesQuery.isPending}
-                                onChange={(event) => changePreference(event.target.checked)}
-                                aria-label="دریافت پیام‌های درون‌برنامه‌ای"
-                                className="mt-1 h-4 w-4"
-                            />
+                        <Checkbox
+                            checked={Boolean(preferences.in_app_messages)}
+                            disabled={busy || preferencesQuery.isPending}
+                            onChange={(event) => changePreference(event.target.checked)}
+                            className="flex min-h-11 w-full items-start gap-3 rounded-md border border-border bg-paper p-3 text-xs leading-6"
+                        >
                             <span className="min-w-0">
                                 <strong className="block font-bold text-ink">اعلان پیام‌های جدید در این بخش</strong>
                                 <span className="mt-1 block text-[11px] text-muted">نمایش اعلان پیام‌های تازه در فضای کاربری</span>
                             </span>
-                        </label>
+                        </Checkbox>
                         <p className="mt-2 text-[10px] leading-5 text-muted">اعلان ایمیلی تا تأیید صف ارسال و تنظیمات میزبان غیرفعال است.</p>
                     </div>
             </DialogContent>
