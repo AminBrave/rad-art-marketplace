@@ -3,7 +3,7 @@ import axios from 'axios';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useMessagingQueries } from './useMessagingQueries';
 import { useAuth } from './AuthContext';
-import { ConversationInboxSkeleton, MessageHistorySkeleton, MediaImage, PageHeader } from '../components/ui';
+import { ConversationInboxSkeleton, MessageHistorySkeleton, MediaImage, PageHeader, Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Archive, ArchiveRestore, ArrowDown, Ban, Bell, BellOff, ChevronRight, Download, FileText, Flag, Image as ImageIcon, Inbox, LoaderCircle, MailOpen, MoreVertical, Paperclip, Pencil, Reply, Search, Send, ShieldCheck, SmilePlus, Trash2, X } from 'lucide-react';
 
@@ -600,23 +600,22 @@ export default function MessagingCenter({ role }) {
                     <div className="shrink-0 border-b border-border bg-paper px-3 py-3">
                         <div className="flex items-center justify-between gap-3"><div><p className="text-[11px] font-bold tracking-wide text-terracotta-strong">RAD / MESSAGES</p><h2 className="mt-1 text-lg font-black">گفتگوها</h2></div><span className="rounded-full border border-border bg-surface-muted px-3 py-1 text-[11px] font-bold text-muted">{threads.length} گفتگو</span></div>
                     </div>
-                    <div className="shrink-0 space-y-2 border-b border-border bg-surface-muted p-2.5">
-                        <div className="relative"><Search size={17} aria-hidden="true" className="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-muted" /><input dir="rtl" aria-label="جستجوی گفتگوها" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="جستجو در گفتگوها…" className="min-h-[2.5rem] w-full rounded-md border border-border-strong bg-surface py-2 ps-10 pe-4 text-sm text-ink placeholder:text-muted shadow-none outline-none transition focus:border-focus focus:outline focus:outline-2 focus:outline-[color:var(--color-focus-soft)] focus:outline-offset-1 focus:ring-0" /></div>
-                        <div role="tablist" aria-label="فیلتر گفتگوها" className="grid grid-cols-3 gap-0 overflow-hidden rounded-md border border-border bg-surface-muted">
-                            {[
-                                { value: 'all', label: 'همه', Icon: Inbox },
-                                { value: 'unread', label: 'خوانده‌نشده', Icon: MailOpen },
-                                { value: 'archived', label: 'بایگانی', Icon: Archive },
-                            ].map(({ value, label, Icon }, index, filters) => <button key={value} id={'conversation-filter-' + value} type="button" role="tab" tabIndex={threadFilter === value ? 0 : -1} aria-selected={threadFilter === value} onClick={() => setThreadFilter(value)} onKeyDown={(event) => {
-                                if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight' && event.key !== 'Home' && event.key !== 'End') return;
-                                event.preventDefault();
-                                const nextIndex = event.key === 'Home' ? 0 : event.key === 'End' ? filters.length - 1 : event.key === 'ArrowLeft' ? (index + 1) % filters.length : (index - 1 + filters.length) % filters.length;
-                                const nextFilter = filters[nextIndex].value;
-                                setThreadFilter(nextFilter);
-                                document.getElementById('conversation-filter-' + nextFilter)?.focus();
-                            }} className={'flex min-w-0 min-h-11 w-full items-center justify-center gap-1.5 rounded-none px-2 py-2 text-xs font-semibold transition-colors focus-visible:relative focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-[-2px] motion-reduce:transition-none ' + (threadFilter === value ? 'bg-ink text-inverse' : 'bg-transparent text-muted hover:bg-paper hover:text-ink')}><Icon size={14} aria-hidden="true" /><span className="truncate">{label}</span></button>)}
+                    <Tabs value={threadFilter} onValueChange={setThreadFilter} dir="rtl" className="flex min-h-0 flex-1 flex-col">
+                        <div className="shrink-0 space-y-2 border-b border-border bg-surface-muted p-2.5">
+                            <div className="relative"><Search size={17} aria-hidden="true" className="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-muted" /><input dir="rtl" aria-label="جستجوی گفتگوها" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="جستجو در گفتگوها…" className="min-h-[2.5rem] w-full rounded-md border border-border-strong bg-surface py-2 ps-10 pe-4 text-sm text-ink placeholder:text-muted shadow-none outline-none transition focus:border-focus focus:outline focus:outline-2 focus:outline-[color:var(--color-focus-soft)] focus:outline-offset-1 focus:ring-0" /></div>
+                            <TabsList aria-label="فیلتر گفتگوها" className="grid grid-cols-3 gap-0 overflow-hidden rounded-md border border-border bg-surface-muted border-b-0">
+                                <TabsTrigger value="all" className="min-w-0 w-full justify-center gap-1.5 rounded-none border-b-0 px-2 py-2 text-xs data-[state=active]:border-transparent data-[state=active]:bg-ink data-[state=active]:text-inverse">
+                                    <Inbox size={14} aria-hidden="true" /><span className="truncate">همه</span>
+                                </TabsTrigger>
+                                <TabsTrigger value="unread" className="min-w-0 w-full justify-center gap-1.5 rounded-none border-b-0 px-2 py-2 text-xs data-[state=active]:border-transparent data-[state=active]:bg-ink data-[state=active]:text-inverse">
+                                    <MailOpen size={14} aria-hidden="true" /><span className="truncate">خوانده‌نشده</span>
+                                </TabsTrigger>
+                                <TabsTrigger value="archived" className="min-w-0 w-full justify-center gap-1.5 rounded-none border-b-0 px-2 py-2 text-xs data-[state=active]:border-transparent data-[state=active]:bg-ink data-[state=active]:text-inverse">
+                                    <Archive size={14} aria-hidden="true" /><span className="truncate">بایگانی</span>
+                                </TabsTrigger>
+                            </TabsList>
                         </div>
-                    </div>
+                        <TabsContent value={threadFilter} className="min-h-0 flex-1 p-0 pt-0 focus-visible:ring-0">
                     {loading ? <ConversationInboxSkeleton count={6} /> : threads.length === 0 ? (inboxQuery.isError ? null : <p className="p-5 text-sm leading-7 text-muted">هنوز گفتگویی ندارید. از صفحه هنرمند یا یک اثر، گزینه «پیام مستقیم» را انتخاب کنید.</p>) : (
                         <ul className="min-h-0 flex-1 divide-y divide-border overflow-y-auto overscroll-contain [scrollbar-gutter:stable] [scrollbar-width:thin] [scrollbar-color:var(--color-border-strong)_transparent]">
                             {threads.map((thread) => <li key={thread.id} className={'relative transition-colors hover:bg-surface-muted focus-within:bg-surface-muted ' + (Number(active) === Number(thread.id) ? 'bg-surface-muted shadow-[inset_-3px_0_0_var(--color-terracotta)]' : '')}>
@@ -642,6 +641,8 @@ export default function MessagingCenter({ role }) {
                             </li>)}
                         </ul>
                     )}
+                        </TabsContent>
+                    </Tabs>
                     {hasMoreThreads && <button type="button" disabled={loadingMoreThreads} onClick={() => loadThreads({ append: true })} className="mx-4 my-3 min-h-10 rounded-md border border-border bg-surface px-3 py-2 text-xs font-semibold text-terracotta-strong hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:opacity-50">{loadingMoreThreads ? 'در حال دریافت…' : 'گفتگوهای بیشتر'}</button>}
                 </aside>
                 <div dir="rtl" className={active ? 'flex h-full min-h-0 min-w-0 flex-col bg-canvas' : 'hidden h-full min-h-0 min-w-0 flex-col bg-canvas lg:flex'}>
