@@ -85,13 +85,13 @@ export function PageContainer({ as: Element = 'div', width = 'wide', className =
 export function PageHeader({ eyebrow, title, description, actions, level = 1, className = '', titleClassName = '', descriptionClassName = '' }) {
     const Heading = level === 2 ? 'h2' : 'h1';
     return (
-        <header className={cn('flex items-end justify-between gap-6 border-b border-border py-8 max-sm:items-stretch max-sm:flex-col max-sm:gap-4 max-sm:py-6', className)}>
-            <div className="min-w-0 max-w-[52rem]">
-                {eyebrow && <p className="text-xs font-bold tracking-[.02em] text-terracotta-strong">{eyebrow}</p>}
-                <Heading className={cn('mt-2 text-[clamp(2rem,4vw,3.25rem)] font-extrabold leading-heading tracking-[-.025em] text-ink', titleClassName)}>{title}</Heading>
-                {description && <p className={cn('mt-3 text-sm leading-copy text-muted', descriptionClassName)}>{description}</p>}
+        <header className={cn('relative flex min-w-0 items-end justify-between gap-6 border-b border-border pb-7 pt-3 max-sm:items-stretch max-sm:flex-col max-sm:gap-4 max-sm:pb-6', className)}>
+            <div className="min-w-0 max-w-[56rem]">
+                {eyebrow && <p className="inline-flex items-center gap-2 text-xs font-extrabold tracking-[.025em] text-terracotta-strong before:h-1.5 before:w-1.5 before:rounded-full before:bg-terracotta">{eyebrow}</p>}
+                <Heading className={cn('mt-3 text-[clamp(1.8rem,3.4vw,2.8rem)] font-extrabold leading-heading tracking-[-.03em] text-ink', titleClassName)}>{title}</Heading>
+                {description && <p className={cn('mt-3 max-w-3xl text-sm leading-copy text-muted sm:text-[.95rem]', descriptionClassName)}>{description}</p>}
             </div>
-            {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+            {actions && <div className="flex shrink-0 flex-wrap items-center gap-2 max-sm:w-full max-sm:[&>*]:flex-1">{actions}</div>}
         </header>
     );
 }
@@ -99,13 +99,13 @@ export function PageHeader({ eyebrow, title, description, actions, level = 1, cl
 export function SectionHeader({ id, eyebrow, title, description, actions, className = '', level = 2 }) {
     const Heading = level === 3 ? 'h3' : 'h2';
     return (
-        <header className={cn('flex items-end justify-between gap-4 border-b border-border pb-4 max-sm:items-stretch max-sm:flex-col', className)}>
+        <header className={cn('flex min-w-0 items-end justify-between gap-4 border-b border-border pb-4 max-sm:items-stretch max-sm:flex-col', className)}>
             <div className="min-w-0">
-                {eyebrow && <p className="text-xs font-bold tracking-[.02em] text-terracotta-strong">{eyebrow}</p>}
-                <Heading id={id} className="mt-1 text-xl font-bold leading-heading text-ink">{title}</Heading>
-                {description && <p className="mt-2 text-sm leading-relaxed text-muted">{description}</p>}
+                {eyebrow && <p className="inline-flex items-center gap-2 text-[11px] font-extrabold tracking-[.025em] text-terracotta-strong before:h-1 before:w-1 before:rounded-full before:bg-terracotta">{eyebrow}</p>}
+                <Heading id={id} className="mt-2 text-xl font-extrabold leading-heading tracking-[-.02em] text-ink">{title}</Heading>
+                {description && <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">{description}</p>}
             </div>
-            {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+            {actions && <div className="flex shrink-0 flex-wrap items-center gap-2 max-sm:w-full">{actions}</div>}
         </header>
     );
 }
@@ -113,15 +113,17 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
 
 export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
     return (
-        <header className={cn('relative flex min-w-0 items-end justify-between gap-6 overflow-hidden rounded-md border border-ink bg-ink p-[clamp(1.5rem,4vw,2.5rem)] text-inverse max-md:items-stretch max-md:flex-col', className)} dir="rtl">
-            <span aria-hidden="true" className="pointer-events-none absolute -right-16 -top-24 aspect-square w-60 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]" />
-            <span aria-hidden="true" className="pointer-events-none absolute -right-4 -top-12 aspect-square w-44 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]" />
-            <div className="relative z-10 max-w-[46rem]">
-                {eyebrow && <p className="text-xs font-bold text-sand">{eyebrow}</p>}
-                <h1 className="mt-3 text-[clamp(1.5rem,3vw,2rem)] font-extrabold leading-heading text-inverse">{title}</h1>
-                {description && <p className="mt-3 text-sm leading-copy text-[color:color-mix(in_srgb,var(--color-inverse-text)_80%,transparent)]">{description}</p>}
+        <header className={cn('relative isolate flex min-w-0 items-end justify-between gap-8 overflow-hidden rounded-xl border border-ink bg-ink p-[clamp(1.4rem,4vw,2.75rem)] text-inverse shadow-raised max-md:items-stretch max-md:flex-col max-md:gap-5', className)} dir="rtl">
+            <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-1.5 bg-terracotta" />
+            <span aria-hidden="true" className="pointer-events-none absolute -left-20 -top-28 aspect-square w-80 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_12%,transparent)]" />
+            <span aria-hidden="true" className="pointer-events-none absolute -left-4 -top-12 aspect-square w-52 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]" />
+            <span aria-hidden="true" className="pointer-events-none absolute bottom-0 left-[22%] h-24 w-24 rounded-full bg-[color:color-mix(in_srgb,var(--color-terracotta)_24%,transparent)] blur-2xl" />
+            <div className="relative z-10 max-w-[48rem]">
+                {eyebrow && <p className="inline-flex items-center gap-2 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_20%,transparent)] bg-[color:color-mix(in_srgb,var(--color-paper)_8%,transparent)] px-3 py-1.5 text-[11px] font-extrabold tracking-[.025em] text-sand">{eyebrow}</p>}
+                <h1 className="mt-4 text-[clamp(1.65rem,3.4vw,2.55rem)] font-extrabold leading-heading tracking-[-.03em] text-inverse">{title}</h1>
+                {description && <p className="mt-3 max-w-3xl text-sm leading-copy text-[color:color-mix(in_srgb,var(--color-inverse-text)_82%,transparent)] sm:text-[.95rem]">{description}</p>}
             </div>
-            {actions && <div className="relative z-10 flex flex-wrap gap-2 max-md:w-full">{actions}</div>}
+            {actions && <div className="relative z-10 flex shrink-0 flex-wrap gap-2 max-md:w-full max-md:[&>*]:flex-1">{actions}</div>}
         </header>
     );
 }
