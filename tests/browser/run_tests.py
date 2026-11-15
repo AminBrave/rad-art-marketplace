@@ -29,12 +29,20 @@ def flatten_tests(suite):
             yield item
 
 
+def is_manual_dev_safe(test) -> bool:
+    method = getattr(test.__class__, getattr(test, "_testMethodName", ""), None)
+    return bool(
+        getattr(test.__class__, "manual_dev_safe", False)
+        or getattr(method, "manual_dev_safe", False)
+    )
+
+
 def manual_selection_error(tests, allow_mutations: bool, run_all: bool = False) -> str | None:
     """Return a safety error when a manual selection is not explicitly safe."""
     if run_all and not allow_mutations:
         return "The complete browser suite may mutate development data. Add --allow-mutations only after reviewing that risk."
     if not allow_mutations:
-        unsafe = [test.id() for test in tests if not getattr(test.__class__, "manual_dev_safe", False)]
+        unsafe = [test.id() for test in tests if not is_manual_dev_safe(test)]
         if unsafe:
             return (
                 "Refusing tests not marked manual_dev_safe. Review their data effects, "
@@ -264,7 +272,7 @@ def main() -> int:
     all_tests = list(flatten_tests(discovered))
     if args.list:
         for test in all_tests:
-            safe = getattr(test.__class__, "manual_dev_safe", False)
+            safe = is_manual_dev_safe(test)
             print(f"{test.id()}  [{'manual-safe: API mocked/read-only' if safe else 'requires --allow-mutations'}]")
         return 0
     if manual_mode and not args.tests and not args.all:
@@ -279,7 +287,7 @@ def main() -> int:
     elif args.all:
         suite = unittest.TestSuite(all_tests)
     elif manual_mode:
-        suite = unittest.TestSuite(test for test in all_tests if getattr(test.__class__, "manual_dev_safe", False))
+        suite = unittest.TestSuite(test for test in all_tests if is_manual_dev_safe(test))
     else:
         suite = unittest.TestSuite(all_tests)
 
