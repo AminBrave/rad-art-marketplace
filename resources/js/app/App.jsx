@@ -244,16 +244,16 @@ export default function App() {
                 </div>
 
                 <div className="relative mx-auto w-full max-w-xl" aria-label="ترکیب انتزاعی الهام‌گرفته از هنر معاصر">
-                    <div className="absolute -right-5 -top-5 h-32 w-32 rounded-full border border-[#c9a58f]" />
-                    <div className="relative aspect-[4/5] overflow-hidden rounded-[48%_48%_12px_12px] bg-[#d9c6b2] p-6 sm:p-10">
-                        <div className="absolute inset-6 rounded-[48%_48%_8px_8px] border border-[color:color-mix(in_srgb,var(--color-paper)_5%,transparent)]0" />
+                    <div className="absolute -right-5 -top-5 h-32 w-32 rounded-full border border-sand" />
+                    <div className="relative aspect-[4/5] overflow-hidden rounded-[48%_48%_12px_12px] bg-sand p-6 sm:p-10">
+                        <div className="absolute inset-6 rounded-[48%_48%_8px_8px] border border-[color:color-mix(in_srgb,var(--color-paper)_5%,transparent)]" />
                         <div className="absolute left-[12%] top-[15%] h-[54%] w-[54%] rounded-full bg-terracotta" />
-                        <div className="absolute bottom-[12%] right-[9%] h-[58%] w-[48%] rounded-t-full bg-[#333d35]" />
-                        <div className="absolute bottom-[19%] left-[18%] h-[34%] w-[38%] rotate-[-22deg] rounded-[48%_48%_8px_8px] bg-[#e9dfcf]" />
-                        <div className="absolute right-[17%] top-[13%] h-20 w-20 rounded-full border-[14px] border-[#f2e8d9]" />
-                        <div className="absolute bottom-7 left-8 text-xs font-semibold tracking-[0.3em] text-[#4b4038]">ART / PEOPLE / STORIES</div>
+                        <div className="absolute bottom-[12%] right-[9%] h-[58%] w-[48%] rounded-t-full bg-olive" />
+                        <div className="absolute bottom-[19%] left-[18%] h-[34%] w-[38%] rotate-[-22deg] rounded-[48%_48%_8px_8px] bg-surface-muted" />
+                        <div className="absolute right-[17%] top-[13%] h-20 w-20 rounded-full border-[14px] border-paper" />
+                        <div className="absolute bottom-7 left-8 text-xs font-semibold tracking-[0.3em] text-ink">ART / PEOPLE / STORIES</div>
                     </div>
-                    <div className="absolute -bottom-5 -left-4 rounded-2xl bg-paper px-5 py-4 shadow-xl shadow-stone-900/10">
+                    <div className="absolute -bottom-5 -left-4 rounded-2xl bg-paper px-5 py-4 shadow-raised">
                         <p className="text-xs text-muted">نگاهی تازه به هنر معاصر</p>
                         <p className="mt-1 text-sm font-bold">از نگاه هنرمندان مستقل</p>
                     </div>
