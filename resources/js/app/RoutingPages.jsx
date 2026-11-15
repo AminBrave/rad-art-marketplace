@@ -4,13 +4,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { WorkspaceLayout } from './Layouts';
-import { ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, FormFieldSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton } from '../components/ui';
+import { Skeleton, ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, FormFieldSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton } from '../components/ui';
 const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
 
 const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
 
 function LoadingBlock({ className = '' }) {
-    return <span aria-hidden="true" className={`app-skeleton block ${className}`} />;
+    return <Skeleton className={className} />;
 }
 
 export function RouteLoading({ label = 'در حال آماده‌سازی صفحه…' }) {
