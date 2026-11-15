@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Images, LayoutDashboard, Menu, MessageCircle, UserRound, Users, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, NotificationListSkeleton } from '../components/ui';
+import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, Checkbox, NotificationListSkeleton } from '../components/ui';
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
 
@@ -448,12 +448,12 @@ function NotificationBell({ user }) {
 
                     <div className="shrink-0 border-t border-border bg-surface-muted px-4 py-4 sm:px-5">
                         <label className="flex cursor-pointer items-start gap-3 rounded-md border border-border bg-paper p-3 text-xs leading-6">
-                            <input
-                                type="checkbox"
+                            <Checkbox
                                 checked={Boolean(preferences.in_app_messages)}
                                 disabled={busy || preferencesQuery.isPending}
                                 onChange={(event) => changePreference(event.target.checked)}
-                                className="mt-1 h-4 w-4 shrink-0 accent-terracotta"
+                                aria-label="دریافت پیام‌های درون‌برنامه‌ای"
+                                className="mt-1 h-4 w-4"
                             />
                             <span className="min-w-0">
                                 <strong className="block font-bold text-ink">اعلان پیام‌های جدید در این بخش</strong>
