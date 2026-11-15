@@ -737,21 +737,25 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                         <span className="text-[10px] font-semibold text-subtle">RAD / MENU</span>
                     </div>
                     <nav aria-label="ناوبری فضای کاربری" className="flex w-full min-w-0 flex-col gap-1">
-                        {links.map((item) => (
-                            <NavLink
-                                key={item.to}
-                                to={item.to}
-                                end={item.end}
-                                className={({ isActive }) => [
-                                    'relative inline-flex min-h-11 w-full items-center rounded-lg px-4 py-2.5 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus',
-                                    isActive
-                                        ? 'bg-ink text-inverse shadow-soft after:absolute after:inset-y-2 after:right-0 after:w-1 after:rounded-full after:bg-terracotta'
-                                        : 'bg-transparent text-muted hover:bg-accent-surface hover:text-terracotta-strong',
-                                ].join(' ')}
-                            >
-                                {item.label}
-                            </NavLink>
-                        ))}
+                        {links.map((item) => {
+                            const Icon = workspaceNavigationIcons[item.to] ?? LayoutDashboard;
+                            return (
+                                <NavLink
+                                    key={item.to}
+                                    to={item.to}
+                                    end={item.end}
+                                    className={({ isActive }) => [
+                                        'relative inline-flex min-h-11 w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus motion-reduce:transition-none',
+                                        isActive
+                                            ? 'bg-ink text-inverse shadow-soft after:absolute after:inset-y-2 after:right-0 after:w-1 after:rounded-full after:bg-terracotta'
+                                            : 'bg-transparent text-muted hover:bg-accent-surface hover:text-terracotta-strong',
+                                    ].join(' ')}
+                                >
+                                    <Icon size={18} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />
+                                    <span className="min-w-0 truncate">{item.label}</span>
+                                </NavLink>
+                            );
+                        })}
                     </nav>
                 </aside>
 
