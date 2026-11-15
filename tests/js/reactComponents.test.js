@@ -198,7 +198,8 @@ test('IconButton and Badge expose their accessible label and semantic state', ()
     );
 
     assert.match(icon, /aria-label="بستن پنجره"/);
-    assert.match(icon, /title="بستن پنجره"/);
+    assert.match(icon, /data-state="closed"/);
+    assert.doesNotMatch(icon, /title=/);
     assert.match(badge, /تأییدشده/);
     assert.match(badge, /bg-success-surface/);
 });
