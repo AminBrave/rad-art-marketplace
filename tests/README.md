@@ -209,7 +209,7 @@ To inspect a captured trace, use python -m playwright show-trace with the exact 
 
 ## 6. Run the test suites and reports
 
-Run the backend suites with npm run test:backend, or choose one of npm run test:unit, npm run test:feature and npm run test:integration. Run frontend tests with npm run test:frontend. Run selected Playwright journeys against the already-running local MySQL/MariaDB development app with `npm run test:browser -- --list`, then pass one or more discovered test IDs.
+Run the backend suites with npm run test:backend, or choose one of npm run test:unit, npm run test:feature and npm run test:integration. Run frontend tests with npm run test:frontend. Run all Playwright journeys against the already-running local MySQL/MariaDB development app with `npm run test:browser`, or pass one or more discovered test IDs for a focused selection.
 
 Lint and production builds are separate commands: npm run lint, npm run lint:fix, npm run production and npm run build:cpanel. They are not bundled into a verify alias. Follow AGENTS.md and obtain explicit authorization before running any verification.
 
