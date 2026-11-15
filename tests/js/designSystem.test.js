@@ -105,6 +105,16 @@ test('shared layout and form primitives expose semantic utility compositions', (
     assert.doesNotMatch(primitives, /ra-[a-z]/);
 });
 
+test('artist profile content cannot expand the viewport horizontally', () => {
+    assert.ok(artistProfile.includes('w-full min-w-0 max-w-7xl overflow-x-clip'));
+    assert.ok(artistProfile.includes('titleClassName="break-words [overflow-wrap:anywhere]"'));
+    assert.ok(artistProfile.includes('descriptionClassName="break-words [overflow-wrap:anywhere]"'));
+    assert.ok(artistProfile.includes('whitespace-pre-line break-words [overflow-wrap:anywhere]'));
+    assert.ok(artistProfile.includes('max-w-full whitespace-normal break-words text-center'));
+    assert.ok(artistProfile.includes('grid min-w-0 max-w-full grid-cols-1'));
+    assert.ok(artistProfile.includes('className="min-w-0 [overflow-wrap:anywhere]"'));
+});
+
 test('public catalogue, artist directory and artwork detail use shared page layout primitives', () => {
     assert.ok(publicPages[0].includes('PageContainer') && publicPages[0].includes('PageHeader'));
     assert.ok(publicPages[1].includes('PageContainer') && publicPages[1].includes('SectionHeader'));
