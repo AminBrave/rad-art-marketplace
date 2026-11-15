@@ -4,6 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import ArtworkGallery from './ArtworkGallery';
 import ArtworkStudio from './ArtworkStudio';
 import DesignFoundation from './DesignFoundation';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui';
 
 const highlights = [
     { number: '01', title: 'هنر اصیل', description: 'آثار منتخب هنرمندان مستقل را کشف کنید.' },
@@ -290,15 +291,24 @@ export default function App() {
 
                 {!user ? (
                     <div className="rounded-3xl border border-border bg-paper p-6 shadow-sm sm:p-9">
-                        <div className="flex gap-5 border-b border-border pb-4">
-                            <button onClick={() => { setAuthMode('login'); setAuthErrors({}); }} className={authMode === 'login' ? 'font-extrabold text-terracotta-strong' : 'text-muted'}>
-                                ورود
-                            </button>
-                            <button onClick={() => { setAuthMode('register'); setAuthErrors({}); }} className={authMode === 'register' ? 'font-extrabold text-terracotta-strong' : 'text-muted'}>
-                                ثبت‌نام
-                            </button>
-                        </div>
-                        <form onSubmit={submitAuth} className="mt-6 space-y-4">
+                        <Tabs
+                            value={authMode}
+                            onValueChange={(mode) => {
+                                setAuthMode(mode);
+                                setAuthErrors({});
+                            }}
+                            dir="rtl"
+                        >
+                            <TabsList className="mb-6 flex gap-5 border-b border-border pb-4">
+                                <TabsTrigger value="login" className="border-b-0 px-0 py-0 text-sm font-semibold data-[state=active]:font-extrabold">
+                                    ورود
+                                </TabsTrigger>
+                                <TabsTrigger value="register" className="border-b-0 px-0 py-0 text-sm font-semibold data-[state=active]:font-extrabold">
+                                    ثبت‌نام
+                                </TabsTrigger>
+                            </TabsList>
+                            <TabsContent value={authMode} className="pt-0">
+                        <form onSubmit={submitAuth} className="space-y-4">
                             {authMode === 'register' && (
                                 <label className="block text-sm font-semibold">
                                     نوع حساب
@@ -336,6 +346,8 @@ export default function App() {
                                 {busy ? 'لطفاً صبر کنید…' : authMode === 'register' ? (form.role === 'buyer' ? 'ایجاد حساب خریدار' : 'ایجاد حساب هنرمند') : 'ورود به حساب'}
                             </button>
                         </form>
+                            </TabsContent>
+                        </Tabs>
                         {authMessage && <p role="status" className="mt-4 text-sm text-terracotta-strong">{authMessage}</p>}
                         <p className="mt-5 text-xs leading-6 text-subtle">با ثبت‌نام می‌توانید نقش خریدار یا هنرمند را انتخاب کنید. ایجاد حساب مدیر فقط از طریق دستور مدیریتی سرور امکان‌پذیر است.</p>
                     </div>
