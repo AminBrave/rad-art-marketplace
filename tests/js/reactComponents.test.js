@@ -295,6 +295,7 @@ test('SkeletonLines exposes one loading announcement while hiding decorative ske
 
     assert.match(html, /role="status"/);
     assert.match(html, /در حال بارگذاری/);
+    assert.match(html, /motion-reduce:animate-none/);
     assert.equal((html.match(/aria-hidden="true"/g) ?? []).length, 2);
 });
 
