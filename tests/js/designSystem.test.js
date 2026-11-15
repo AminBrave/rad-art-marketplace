@@ -194,7 +194,7 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
 
 test('messaging conversation filters use the shared RAD-styled Radix Tabs primitive', () => {
     assert.ok(messaging.includes('<Tabs value={threadFilter} onValueChange={setThreadFilter} dir="rtl"'));
-    assert.ok(messaging.includes('flex-row min-w-0 w-full items-center justify-center gap-1.5'));
+    assert.ok(messaging.split('inline-flex flex-row min-w-0 w-full items-center justify-center gap-1.5').length - 1 === 3, 'All inbox filter icons and labels use the same centered RTL row alignment.');
     assert.ok(messaging.includes('<TabsContent value={threadFilter} dir="rtl"'));
     assert.ok(messaging.includes('<ul dir="rtl" className="min-h-0 flex-1 divide-y'));
     assert.ok(messaging.includes('<TabsList aria-label="فیلتر گفتگوها"'));
@@ -241,7 +241,7 @@ test('messaging is viewport-locked between the authenticated app header and bott
     assert.ok(layouts.includes('sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.ok(layouts.includes('lg:h-[calc(100dvh-5rem)]'));
     assert.ok(layouts.includes("lg:fixed lg:top-28"));
-    assert.ok(layouts.includes("lg:right-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))]"));
+    assert.ok(layouts.includes("lg:left-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))]"));
     assert.ok(layouts.includes("lg:max-h-[calc(100dvh_-_8rem)] lg:w-60 lg:overflow-y-auto"));
     assert.ok(layouts.includes('{isMessagingRoute && <div className="hidden lg:block" aria-hidden="true" />}'));
     assert.ok(layouts.includes("overflow-hidden lg:col-start-2"));
