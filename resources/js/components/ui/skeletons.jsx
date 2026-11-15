@@ -61,7 +61,7 @@ export function ArtworkStudioListSkeleton({ count = 3 }) {
 
 export function ConversationInboxSkeleton({ count = 6, className = '' }) {
     return (
-        <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال دریافت گفتگوها" className={`min-h-0 flex-1 divide-y divide-border overflow-hidden ${className}`}>
+        <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال دریافت گفتگوها" dir="rtl" className={`min-h-0 flex-1 divide-y divide-border overflow-hidden ${className}`}>
             {Array.from({ length: count }, (_, index) => <div key={index} className="flex items-center gap-3 px-4 py-4"><Skeleton className="h-11 w-11 shrink-0 rounded-full" /><div className="grid min-w-0 flex-1 gap-2"><div className="flex items-center justify-between gap-3"><Skeleton className="h-4 w-2/5 rounded-sm" /><Skeleton className="h-3 w-12 rounded-sm" /></div><Skeleton className="h-3 w-4/5 rounded-sm" /></div></div>)}
         </div>
     );
@@ -69,10 +69,10 @@ export function ConversationInboxSkeleton({ count = 6, className = '' }) {
 
 export function MessageHistorySkeleton({ count = 5, className = '' }) {
     return (
-        <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال دریافت پیام‌ها" className={`grid content-end gap-5 p-4 sm:p-6 ${className}`}>
+        <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال دریافت پیام‌ها" dir="rtl" className={`grid content-end gap-5 p-4 sm:p-6 ${className}`}>
             {Array.from({ length: count }, (_, index) => {
                 const own = index % 2 === 1;
-                return <div key={index} className={`flex ${own ? 'justify-end' : 'justify-start'}`}><div className={`grid w-[min(78%,28rem)] gap-2 rounded-[20px] border border-border p-4 ${own ? 'bg-[var(--color-message-own)]' : 'bg-[var(--color-message-peer)]'}`}><Skeleton className={`h-3 ${index % 2 ? 'w-4/5' : 'w-full'} rounded-sm`} /><Skeleton className="h-3 w-3/5 rounded-sm" /><Skeleton className="h-2 w-12 justify-self-end rounded-sm" /></div></div>;
+                return <div key={index} dir="rtl" className={`flex ${own ? 'justify-start' : 'justify-end'}`}><div className={`grid w-[min(78%,28rem)] gap-2 rounded-[20px] border border-border p-4 ${own ? 'bg-[var(--color-message-own)]' : 'bg-[var(--color-message-peer)]'}`}><Skeleton className={`h-3 ${index % 2 ? 'w-4/5' : 'w-full'} rounded-sm`} /><Skeleton className="h-3 w-3/5 rounded-sm" /><Skeleton className="h-2 w-12 justify-self-end rounded-sm" /></div></div>;
             })}
         </div>
     );
