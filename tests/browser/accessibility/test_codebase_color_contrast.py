@@ -217,7 +217,8 @@ class CodebaseRenderedColorContrastTests(unittest.TestCase):
                         return { selector, chain };
                     })""",
                     list(dict.fromkeys(
-                        failure["element"].split(".")[0]
+                        failure["element"].split("#")[0].split(".")[0]
+                        + "".join("." + part for part in failure["element"].split(".")[1:])
                         for failure in result["failures"]
                     )),
                 )
