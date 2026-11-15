@@ -9,8 +9,8 @@ export function BuyerDashboardHome() {
                 title="هنر مورد علاقه‌تان را کشف کنید و گفت‌وگو را ادامه دهید."
                 description="از میان آثار و هنرمندان مستقل جست‌وجو کنید و گفت‌وگوهای مستقیم خود را با هنرمندان در یک فضای منظم دنبال کنید."
                 actions={<>
-                    <Link to="/artworks" style={{ color: "var(--color-ink)" }} className="inline-flex min-h-11 items-center justify-center rounded-md border border-paper bg-paper px-4 py-2 text-sm font-semibold no-underline transition-colors hover:bg-sand">کشف آثار هنری</Link>
-                    <Link to="/artists" className="inline-flex min-h-11 items-center justify-center rounded-md border border-[color:color-mix(in_srgb,var(--color-paper)_40%,transparent)] px-4 py-2 text-sm font-semibold text-inverse no-underline transition-colors hover:bg-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]">آشنایی با هنرمندان</Link>
+                    <Link to="/artworks" style={{ color: "var(--color-ink)" }} className="inline-flex min-h-11 items-center justify-center rounded-md border border-transparent bg-terracotta px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">کشف آثار هنری</Link>
+                    <Link to="/artists" className="inline-flex min-h-11 items-center justify-center rounded-md border border-border-strong bg-paper px-4 py-2 text-sm font-semibold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">آشنایی با هنرمندان</Link>
                 </>}
             />
 
