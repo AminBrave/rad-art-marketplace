@@ -367,3 +367,72 @@ test('Pagination exposes the active page and disables navigation at boundaries',
     assert.match(lastPage, /aria-label="صفحه 8"[^>]*aria-current="page"/);
     assert.match(lastPage, /بعدی<\/button>/);
 });
+
+
+test('StatusBadge maps known review states to semantic status surfaces', () => {
+    const approved = renderToStaticMarkup(
+        React.createElement(primitives.StatusBadge, { status: 'approved', label: 'تأییدشده' }),
+    );
+    const unknown = renderToStaticMarkup(
+        React.createElement(primitives.StatusBadge, { status: 'unmapped-state' }),
+    );
+
+    assert.match(approved, /bg-success-surface/);
+    assert.match(approved, /تأییدشده/);
+    assert.match(unknown, /bg-surface-muted/);
+});
+
+test('WorkspaceHero declares RTL direction and a primary page heading', () => {
+    const html = renderToStaticMarkup(
+        React.createElement(primitives.WorkspaceHero, {
+            eyebrow: 'فضای هنرمند',
+            title: 'مدیریت آثار',
+            description: 'آثار و پروفایل خود را مدیریت کنید.',
+        }),
+    );
+
+    assert.match(html, /<header[^>]*dir="rtl"/);
+    assert.match(html, /<h1[^>]*>مدیریت آثار<\/h1>/);
+    assert.match(html, /آثار و پروفایل خود را مدیریت کنید/);
+});
+
+test('TextInput, TextareaField and SelectField preserve native form semantics', () => {
+    const input = renderToStaticMarkup(
+        React.createElement(primitives.TextInput, { type: 'email', name: 'email', dir: 'ltr', required: true }),
+    );
+    const textarea = renderToStaticMarkup(
+        React.createElement(primitives.TextareaField, { name: 'bio', rows: 5, maxLength: 500 }),
+    );
+    const select = renderToStaticMarkup(
+        React.createElement(primitives.SelectField, { name: 'status', 'aria-label': 'وضعیت اثر' },
+            React.createElement('option', { value: 'approved' }, 'تأییدشده'),
+        ),
+    );
+
+    assert.match(input, /type="email"/);
+    assert.match(input, /dir="ltr"/);
+    assert.match(input, /required=""/);
+    assert.match(textarea, /rows="5"/);
+    assert.match(textarea, /maxLength="500"|maxlength="500"/i);
+    assert.match(select, /aria-label="وضعیت اثر"/);
+    assert.match(select, /<option value="approved">تأییدشده<\/option>/);
+});
+
+test('Tabs expose tablist, selected state and linked panel semantics', () => {
+    const html = renderToStaticMarkup(
+        React.createElement(navigation.Tabs, { defaultValue: 'artists', dir: 'rtl' },
+            React.createElement(navigation.TabsList, { 'aria-label': 'نوع محتوا' },
+                React.createElement(navigation.TabsTrigger, { value: 'artists' }, 'هنرمندان'),
+                React.createElement(navigation.TabsTrigger, { value: 'artworks' }, 'آثار'),
+            ),
+            React.createElement(navigation.TabsContent, { value: 'artists' }, 'فهرست هنرمندان'),
+            React.createElement(navigation.TabsContent, { value: 'artworks' }, 'فهرست آثار'),
+        ),
+    );
+
+    assert.match(html, /role="tablist"/);
+    assert.match(html, /role="tab"/);
+    assert.match(html, /aria-selected="true"/);
+    assert.match(html, /role="tabpanel"/);
+    assert.match(html, /dir="rtl"/);
+});
