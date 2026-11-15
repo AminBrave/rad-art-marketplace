@@ -133,6 +133,7 @@ test('navigation and dialog primitives use Tailwind state and focus utilities', 
 });
 
 test('form controls and helper hints use shared RAD-styled Radix primitives', () => {
+    assert.ok(primitives.includes('forwardRef(function Button'));
     assert.ok(primitives.includes('SelectPrimitive.Root'));
     assert.ok(primitives.includes('CheckboxPrimitive.Root'));
     assert.ok(primitives.includes("type: 'checkbox'"));
@@ -140,6 +141,7 @@ test('form controls and helper hints use shared RAD-styled Radix primitives', ()
     assert.ok(tooltip.includes('TooltipPrimitive.Root'));
     assert.ok(alertDialog.includes('AlertDialogPrimitive.Root'));
     assert.ok(editorialPages.includes('<AlertDialogAction asChild>'));
+    assert.ok(editorialPages.includes('event.preventDefault(); publish(collection, false)'));
     assert.ok(editorialPages.includes('<AlertDialogTitle>'));
     assert.ok(messaging.includes("DropdownMenu } from '../components/ui'"));
     assert.doesNotMatch(messaging, /@radix-ui/);
