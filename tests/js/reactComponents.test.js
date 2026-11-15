@@ -18,6 +18,7 @@ const vite = await createServer({
 
 const primitives = await vite.ssrLoadModule('/resources/js/components/ui/primitives.jsx');
 const feedback = await vite.ssrLoadModule('/resources/js/components/ui/feedback.jsx');
+const navigation = await vite.ssrLoadModule('/resources/js/components/ui/navigation.jsx');
 
 after(async () => {
     await vite.close();
@@ -153,4 +154,216 @@ test('EmptyState renders a semantic heading and helpful description', () => {
     assert.match(html, /<section[^>]*dir="rtl"/);
     assert.match(html, /<h2[^>]*>اثری پیدا نشد<\/h2>/);
     assert.match(html, /فیلترها را تغییر دهید/);
+});
+
+
+test('IconButton and Badge expose their accessible label and semantic state', () => {
+    const icon = renderToStaticMarkup(
+        React.createElement(primitives.IconButton, { label: 'بستن پنجره' }, '×'),
+    );
+    const badge = renderToStaticMarkup(
+        React.createElement(primitives.Badge, { variant: 'success' }, 'تأییدشده'),
+    );
+
+    assert.match(icon, /aria-label="بستن پنجره"/);
+    assert.match(icon, /title="بستن پنجره"/);
+    assert.match(badge, /تأییدشده/);
+    assert.match(badge, /bg-success-surface/);
+});
+
+test('Button preserves explicit disabled state and submit semantics', () => {
+    const html = renderToStaticMarkup(
+        React.createElement(primitives.Button, {
+            type: 'submit',
+            variant: 'danger',
+            disabled: true,
+        }, 'حذف'),
+    );
+
+    assert.match(html, /type="submit"/);
+    assert.match(html, /disabled=""/);
+    assert.match(html, /bg-danger/);
+    assert.match(html, /حذف/);
+});
+
+test('Page and section headers retain the requested heading hierarchy', () => {
+    const page = renderToStaticMarkup(
+        React.createElement(primitives.PageHeader, {
+            level: 2,
+            eyebrow: 'فضای هنرمند',
+            title: 'مدیریت آثار',
+            description: 'آثار خود را مرور کنید.',
+        }),
+    );
+    const section = renderToStaticMarkup(
+        React.createElement(primitives.SectionHeader, {
+            level: 3,
+            id: 'recent-work',
+            title: 'آثار اخیر',
+        }),
+    );
+
+    assert.match(page, /<h2[^>]*>مدیریت آثار<\/h2>/);
+    assert.match(page, /فضای هنرمند/);
+    assert.match(section, /<h3[^>]*id="recent-work"[^>]*>آثار اخیر<\/h3>/);
+});
+
+test('PageContainer and Surface preserve semantic element and variant contracts', () => {
+    const container = renderToStaticMarkup(
+        React.createElement(primitives.PageContainer, { as: 'main', width: 'reading' }, 'محتوا'),
+    );
+    const surface = renderToStaticMarkup(
+        React.createElement(primitives.Surface, { as: 'article', variant: 'interactive' }, 'جزئیات'),
+    );
+
+    assert.match(container, /<main[^>]*max-w-\[var\(--content-reading-width\)\]/);
+    assert.match(container, /محتوا/);
+    assert.match(surface, /<article[^>]*focus-within:outline/);
+    assert.match(surface, /جزئیات/);
+});
+
+test('DashboardMetricCard renders a navigable metric as a link when a destination is supplied', () => {
+    const html = renderToStaticMarkup(
+        React.createElement(primitives.DashboardMetricCard, {
+            label: 'آثار منتشرشده',
+            value: 12,
+            detail: 'در گالری عمومی',
+            to: '/dashboard/artist/artworks',
+        }),
+    );
+
+    assert.match(html, /<a[^>]*href="\/dashboard\/artist\/artworks"/);
+    assert.match(html, /آثار منتشرشده/);
+    assert.match(html, />12</);
+});
+
+test('FormField generates a stable label-control association when no ID is supplied', () => {
+    const html = renderToStaticMarkup(
+        React.createElement(
+            primitives.FormField,
+            { label: 'عنوان اثر' },
+            React.createElement(primitives.TextareaField, { name: 'title' }),
+        ),
+    );
+    const labelId = html.match(/<label[^>]*for="([^"]+)"/)?.[1];
+    const controlId = html.match(/<textarea[^>]*id="([^"]+)"/)?.[1];
+
+    assert.ok(labelId, 'The generated field label must reference a control.');
+    assert.equal(controlId, labelId);
+});
+
+test('SuccessState and PermissionState announce non-error outcomes', () => {
+    const success = renderToStaticMarkup(
+        React.createElement(feedback.SuccessState, {
+            title: 'تغییرات ذخیره شد',
+            description: 'پروفایل به‌روزرسانی شد.',
+        }),
+    );
+    const permission = renderToStaticMarkup(
+        React.createElement(feedback.PermissionState, {
+            title: 'دسترسی مجاز نیست',
+            description: 'این بخش برای نقش هنرمند است.',
+        }),
+    );
+
+    assert.match(success, /role="status"/);
+    assert.match(success, /تغییرات ذخیره شد/);
+    assert.match(permission, /role="status"/);
+    assert.match(permission, /دسترسی مجاز نیست/);
+});
+
+test('Toast uses polite status announcements and assertive error announcements', () => {
+    const info = renderToStaticMarkup(
+        React.createElement(feedback.Toast, { title: 'پیام تازه', variant: 'info' }),
+    );
+    const error = renderToStaticMarkup(
+        React.createElement(feedback.Toast, { title: 'ذخیره انجام نشد', variant: 'error' }),
+    );
+
+    assert.match(info, /role="status"/);
+    assert.match(info, /aria-live="polite"/);
+    assert.match(error, /role="alert"/);
+    assert.match(error, /aria-live="assertive"/);
+});
+
+test('SkeletonLines exposes one loading announcement while hiding decorative skeletons', () => {
+    const html = renderToStaticMarkup(
+        React.createElement(feedback.SkeletonLines, { lines: 2 }),
+    );
+
+    assert.match(html, /role="status"/);
+    assert.match(html, /در حال بارگذاری/);
+    assert.equal((html.match(/aria-hidden="true"/g) ?? []).length, 2);
+});
+
+test('MediaImage fallback stays accessible for missing sources and supports custom fallback content', () => {
+    const missing = renderToStaticMarkup(
+        React.createElement(feedback.MediaImage, { src: '', alt: 'اثر بدون تصویر' }),
+    );
+    const custom = renderToStaticMarkup(
+        React.createElement(
+            feedback.MediaImage,
+            { src: null, alt: 'اثر جایگزین' },
+            React.createElement('span', null, 'جایگزین'),
+        ),
+    );
+
+    assert.match(missing, /role="img"/);
+    assert.match(missing, /aria-label="اثر بدون تصویر"/);
+    assert.match(custom, /اثر جایگزین/);
+});
+
+test('UploadFeedback clamps progress at both ends of the accessible range', () => {
+    const lower = renderToStaticMarkup(
+        React.createElement(feedback.UploadFeedback, { status: 'uploading', progress: -10 }),
+    );
+    const upper = renderToStaticMarkup(
+        React.createElement(feedback.UploadFeedback, { status: 'uploading', progress: 140 }),
+    );
+
+    assert.match(lower, /aria-valuenow="0"/);
+    assert.match(lower, /width:0%/);
+    assert.match(upper, /aria-valuenow="100"/);
+    assert.match(upper, /width:100%/);
+});
+
+test('Breadcrumbs expose the current page without making it a link', () => {
+    const html = renderToStaticMarkup(
+        React.createElement(navigation.Breadcrumbs, {
+            items: [
+                { label: 'خانه', to: '/' },
+                { label: 'آثار', to: '/artworks' },
+                { label: 'اثر نمونه' },
+            ],
+        }),
+    );
+
+    assert.match(html, /aria-label="مسیر صفحه"/);
+    assert.match(html, /aria-current="page"/);
+    assert.match(html, /اثر نمونه/);
+    assert.equal((html.match(/<a\b/g) ?? []).length, 2);
+});
+
+test('Pagination exposes the active page and disables navigation at boundaries', () => {
+    const firstPage = renderToStaticMarkup(
+        React.createElement(navigation.Pagination, {
+            currentPage: 1,
+            lastPage: 8,
+            onPageChange: () => {},
+        }),
+    );
+    const lastPage = renderToStaticMarkup(
+        React.createElement(navigation.Pagination, {
+            currentPage: 8,
+            lastPage: 8,
+            onPageChange: () => {},
+        }),
+    );
+
+    assert.match(firstPage, /aria-label="صفحه‌بندی"/);
+    assert.match(firstPage, /aria-label="صفحه 1"[^>]*aria-current="page"/);
+    assert.match(firstPage, /قبلی<\/button>/);
+    assert.match(firstPage, /قبلی<\/button>/);
+    assert.match(lastPage, /aria-label="صفحه 8"[^>]*aria-current="page"/);
+    assert.match(lastPage, /بعدی<\/button>/);
 });
