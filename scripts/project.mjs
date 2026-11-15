@@ -384,7 +384,7 @@ function usage() {
         'db:migrate            Run local database migrations',
         'db:seed               Seed the local database',
         'db:seed:demo          Seed local demo data',
-        'db:fresh              Destructively recreate and seed the local database',
+        'db:fresh              Destructively recreate and seed the configured dev database',
         'test:backend          Run all PHPUnit suites',
         'test:unit             Run PHPUnit Unit',
         'test:feature          Run PHPUnit Feature',
