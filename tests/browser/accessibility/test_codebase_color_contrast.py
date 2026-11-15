@@ -322,10 +322,9 @@ class CodebaseRenderedColorContrastTests(unittest.TestCase):
             page.get_by_role("button", name="باز کردن منو").click()
             page.get_by_role("menu").wait_for(state="visible")
             assert_current_state("dropdown-open")
-            # Radix focuses the first enabled menu item when the menu opens.
-            # Activate it from the keyboard so this test is independent of
-            # collision-based menu placement near the viewport edge.
-            page.keyboard.press("Enter")
+            # Escape closes the portalled Radix menu deterministically without
+            # depending on collision-based placement or item-selection side effects.
+            page.keyboard.press("Escape")
             page.get_by_role("menu").wait_for(state="hidden")
             assert_current_state("dropdown-closed")
 
