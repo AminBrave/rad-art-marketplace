@@ -256,15 +256,6 @@ def main() -> int:
         print("The complete browser suite may mutate development data. Add --allow-mutations only after reviewing that risk.", file=sys.stderr)
         return 2
 
-    default_report_dir = "build/test-reports/browser-manual" if manual_mode else "build/test-reports"
-    report_dir = Path(os.environ.get("RAD_ART_TEST_REPORT_DIR", default_report_dir))
-    report_dir.mkdir(parents=True, exist_ok=True)
-    report_path = report_dir / "browser-junit.xml"
-    log_path = report_dir / "browser-run.log"
-    summary_path = report_dir / "browser-debug.json"
-    for destination in (report_path, log_path, summary_path):
-        destination.unlink(missing_ok=True)
-
     if args.tests:
         selected = []
         for name in args.tests:
@@ -299,6 +290,15 @@ def main() -> int:
             file=sys.stderr,
         )
         return 2
+
+    default_report_dir = "build/test-reports/browser-manual" if manual_mode else "build/test-reports"
+    report_dir = Path(os.environ.get("RAD_ART_TEST_REPORT_DIR", default_report_dir))
+    report_dir.mkdir(parents=True, exist_ok=True)
+    report_path = report_dir / "browser-junit.xml"
+    log_path = report_dir / "browser-run.log"
+    summary_path = report_dir / "browser-debug.json"
+    for destination in (report_path, log_path, summary_path):
+        destination.unlink(missing_ok=True)
 
     from diagnostics import install_automatic_diagnostics
     install_automatic_diagnostics()
