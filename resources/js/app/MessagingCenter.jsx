@@ -597,13 +597,13 @@ export default function MessagingCenter({ role }) {
                         <div className="shrink-0 space-y-2 border-b border-border bg-surface-muted p-2.5">
                             <div className="relative"><Search size={17} aria-hidden="true" className="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-muted" /><input dir="rtl" aria-label="جستجوی گفتگوها" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="جستجو در گفتگوها…" className="min-h-[2.5rem] w-full rounded-md border border-border-strong bg-surface py-2 ps-10 pe-4 text-sm text-ink placeholder:text-muted shadow-none outline-none transition focus:border-focus focus:outline focus:outline-2 focus:outline-[color:var(--color-focus-soft)] focus:outline-offset-1 focus:ring-0" /></div>
                             <TabsList aria-label="فیلتر گفتگوها" className="grid grid-cols-3 gap-0 overflow-hidden rounded-md border border-border bg-surface-muted border-b-0">
-                                <TabsTrigger value="all" className="flex-row min-w-0 w-full items-center justify-center gap-1.5 rounded-none border-b-0 px-2 py-2 text-xs leading-none text-center data-[state=active]:border-transparent data-[state=active]:bg-ink data-[state=active]:text-inverse">
+                                <TabsTrigger value="all" className="inline-flex flex-row min-w-0 w-full items-center justify-center gap-1.5 rounded-none border-b-0 px-2 py-2 text-xs leading-none text-center data-[state=active]:border-transparent data-[state=active]:bg-ink data-[state=active]:text-inverse">
                                     <Inbox size={14} aria-hidden="true" className="shrink-0" /><span className="truncate leading-none">همه</span>
                                 </TabsTrigger>
-                                <TabsTrigger value="unread" className="min-w-0 w-full justify-center gap-1.5 rounded-none border-b-0 px-2 py-2 text-xs data-[state=active]:border-transparent data-[state=active]:bg-ink data-[state=active]:text-inverse">
+                                <TabsTrigger value="unread" className="inline-flex flex-row min-w-0 w-full items-center justify-center gap-1.5 rounded-none border-b-0 px-2 py-2 text-xs leading-none text-center data-[state=active]:border-transparent data-[state=active]:bg-ink data-[state=active]:text-inverse">
                                     <MailOpen size={14} aria-hidden="true" className="shrink-0" /><span className="truncate leading-none">خوانده‌نشده</span>
                                 </TabsTrigger>
-                                <TabsTrigger value="archived" className="min-w-0 w-full justify-center gap-1.5 rounded-none border-b-0 px-2 py-2 text-xs data-[state=active]:border-transparent data-[state=active]:bg-ink data-[state=active]:text-inverse">
+                                <TabsTrigger value="archived" className="inline-flex flex-row min-w-0 w-full items-center justify-center gap-1.5 rounded-none border-b-0 px-2 py-2 text-xs leading-none text-center data-[state=active]:border-transparent data-[state=active]:bg-ink data-[state=active]:text-inverse">
                                     <Archive size={14} aria-hidden="true" className="shrink-0" /><span className="truncate leading-none">بایگانی</span>
                                 </TabsTrigger>
                             </TabsList>
