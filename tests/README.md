@@ -149,7 +149,7 @@ This is a focused automated color-contrast check, not a complete accessibility a
 
 These are server-rendered contracts. They do **not** prove browser focus behavior, keyboard activation, responsive layout, live assistive-technology announcements or actual image events. Those require browser or manual evidence.
 
-The existing browser suite provides that separate layer for selected journeys. In particular, `test_artwork_catalogue_resilience.py` checks a successfully loaded image, a failed image request falling back to an accessible placeholder, and an artwork with no image source. Keep these tests focused on user-visible outcomes rather than asserting component CSS implementation details.
+The existing browser suite provides that separate layer for selected journeys. In particular, `test_artwork_catalogue_resilience.py` checks a successfully loaded image, a failed image request falling back to an accessible placeholder, an artwork with no image source, and a changed image URL replacing stale loaded media. Keep these tests focused on user-visible outcomes rather than asserting component CSS implementation details.
 
 The source-level design-system and mutation-architecture tests intentionally inspect source because they enforce repository-wide conventions (token usage, removed selectors and mutation declarations). Do not use those checks as evidence that a user interaction or rendered layout works.
 
