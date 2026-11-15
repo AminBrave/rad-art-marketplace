@@ -1,4 +1,4 @@
-import { Children, cloneElement, isValidElement, useId } from 'react';
+import { Children, cloneElement, forwardRef, isValidElement, useId } from 'react';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import * as SelectPrimitive from '@radix-ui/react-select';
 import { Check, ChevronDown } from 'lucide-react';
@@ -19,7 +19,7 @@ const buttonSizes = {
     lg: 'min-h-12 px-6 py-3 text-base',
 };
 
-export function Button({
+export const Button = forwardRef(function Button({
     children,
     variant = 'primary',
     size = 'md',
@@ -28,9 +28,10 @@ export function Button({
     type = 'button',
     className = '',
     ...props
-}) {
+}, ref) {
     return (
         <button
+            ref={ref}
             type={type}
             disabled={disabled || loading}
             aria-busy={loading || undefined}
@@ -41,7 +42,7 @@ export function Button({
             {children}
         </button>
     );
-}
+});
 
 export function IconButton({ children, label, size = 'md', className = '', ...props }) {
     const dimensions = { sm: 'h-9 w-9', md: 'h-11 w-11', lg: 'h-12 w-12' };
