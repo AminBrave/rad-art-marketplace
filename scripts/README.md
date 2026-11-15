@@ -38,12 +38,12 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Tests | `npm run test:feature` | Feature PHPUnit suite |
 | Tests | `npm run test:integration` | Integration PHPUnit suite |
 | Tests | `npm run test:frontend` | Frontend Node tests |
-| Tests | `npm run test:browser -- --list` | List Playwright tests for the already-running local development app |
+| Tests | `npm run test:browser` | Run **all** Playwright tests against the already-running local development app and its existing MySQL/MariaDB database |
 
 
 
 | Reports | `npm run test:report` | Generate the cross-suite quality summary from existing JUnit files; does not run tests |
-| Reports | `npm run test:reporting` | Run focused Python unit tests for report parsing/freshness classification and manual Playwright selection safety |
+| Reports | `npm run test:reporting` | Run focused Python unit tests for report parsing/freshness classification and Playwright test discovery/classification |
 | Lint | `npm run lint` | ESLint check |
 | Lint | `npm run lint:fix` | Apply ESLint autofixes |
 | Accessibility | `npm run a11y:colors` | Run focused color-accessibility tests |
@@ -139,13 +139,12 @@ The production asset build is not a deployment or a complete release verificatio
 Playwright has one workflow: it attaches to the app already running under the normal local `.env` and uses that app's configured MySQL/MariaDB database. There is no isolated Playwright app or browser-test database.
 
 1. Start the usual development stack with `npm run dev` and leave Laravel, Vite and Caddy running.
-2. In another terminal, list tests with `npm run test:browser -- --list`.
-3. Run selected tests by their Python unittest IDs, for example `npm run test:browser -- test_artwork_catalogue_resilience.CurrentDevelopmentDatabaseReadOnlyTests.test_public_artwork_catalogue_renders_from_current_development_data`.
-4. Use `--all --allow-mutations` only after reviewing the complete suite's effects on current development data.
+2. In another terminal, run the complete suite with `npm run test:browser`. This is the default behavior; no extra flags are required.
+3. To inspect discovery without running tests, use `npm run test:browser -- --list`. To run a focused subset, pass one or more Python unittest IDs after `--`.
 
 The runner requires a local `APP_ENV=local/development` and MySQL/MariaDB configuration, validates a localhost/loopback app URL, and checks the running app's health endpoint before launching Chromium. It never starts/stops app services, overrides database settings, runs Artisan, migrates, seeds, creates a database, resets storage or clears application records. Remote/staging/production targets are rejected.
 
-Only tests marked `manual_dev_safe` can run without mutation opt-in. A marked test must either intercept its API/media dependencies or be a reviewed GET-only journey against current development data. Other tests require `--allow-mutations`; that flag is a risk acknowledgement, not a guarantee of safe cleanup. Reports are written under `build/test-reports/browser/`.
+The full suite is authorized to create, update or delete records in the existing development database; the owner has confirmed that this data is disposable. Individual tests may still be marked `manual_dev_safe` to identify read-only/API-mocked cases in the test listing, but the marker no longer gates execution. The runner does not reset or seed the database, so test-created records may remain after a run. Reports are written under `build/test-reports/browser/`.
 
 
 ## Dispatcher boundary
