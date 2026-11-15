@@ -135,7 +135,7 @@ The runner remains guarded: it requires browser_test_ready=true and rejects non-
 
 scripts/project.mjs owns only workflows that need multiple steps, isolated test environments, report generation or service lifecycle management. It is not a second public command registry.
 
-The dispatcher tasks are setup, dev, production, build:cpanel, db:sqlite:init, test:backend, test:unit, test:feature, test:integration, test:frontend, test:browser, test:report and test:reporting. Database one-liners, production builds, lint and focused accessibility tests are defined directly in package.json.
+The dispatcher tasks are setup, dev:check, dev, production, build:cpanel, db:sqlite:init, test:backend, test:unit, test:feature, test:integration, test:frontend, test:browser, test:report and test:reporting. Database one-liners, production builds, lint and focused accessibility tests are defined directly in package.json.
 
 Use node scripts/project.mjs --help for the concise internal task list.
 
