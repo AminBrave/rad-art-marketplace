@@ -200,7 +200,7 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
                 const image = document.querySelector('img[alt="اثر با تصویر"]');
                 return image?.complete && image.naturalWidth > 0;
             }""")
-            self.assertIsNone(loaded.locator("xpath=..").get_attribute("aria-busy"))
+            self.assertEqual(loaded.locator("xpath=..").get_attribute("aria-busy"), "false")
 
             page.get_by_role("img", name="اثر خراب").wait_for()
             page.get_by_role("img", name="اثر بدون تصویر").wait_for()
@@ -270,7 +270,7 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
                     && image.getAttribute('src') === '/media/second.svg';
             }""")
             self.assertEqual(requests, ["initial", "changed"])
-            self.assertIsNone(image.locator("xpath=..").get_attribute("aria-busy"))
+            self.assertEqual(image.locator("xpath=..").get_attribute("aria-busy"), "false")
         finally:
             context.close()
 
