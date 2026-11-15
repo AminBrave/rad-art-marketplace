@@ -380,7 +380,11 @@ function usage() {
         'production            Build and verify standard production assets',
         'build:cpanel          Build and verify cPanel production assets',
         'db:sqlite:init        Create the local SQLite database file if absent',
-        'db:status             Check local database migration status',\n        'db:migrate            Run local database migrations',\n        'db:seed               Seed the local database',\n        'db:seed:demo          Seed local demo data',\n        'db:fresh              Destructively recreate and seed the local database',
+        'db:status             Check local database migration status',
+        'db:migrate            Run local database migrations',
+        'db:seed               Seed the local database',
+        'db:seed:demo          Seed local demo data',
+        'db:fresh              Destructively recreate and seed the local database',
         'test:backend          Run all PHPUnit suites',
         'test:unit             Run PHPUnit Unit',
         'test:feature          Run PHPUnit Feature',
@@ -391,7 +395,6 @@ function usage() {
         'test:reporting        Test the report generator',
     ].join(String.fromCharCode(10)));
 }
-
 const task = process.argv[2];
 try {
     switch (task) {
