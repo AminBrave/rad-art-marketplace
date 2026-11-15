@@ -44,11 +44,12 @@ export const Button = forwardRef(function Button({
     );
 });
 
-export function IconButton({ children, label, size = 'md', className = '', ...props }) {
+export const IconButton = forwardRef(function IconButton({ children, label, size = 'md', className = '', ...props }, ref) {
     const dimensions = { sm: 'h-9 w-9', md: 'h-11 w-11', lg: 'h-12 w-12' };
     return (
         <Tooltip content={label}>
             <button
+                ref={ref}
                 type="button"
                 aria-label={label}
                 className={cn('inline-flex items-center justify-center rounded-md border border-border-strong bg-paper p-0 text-ink transition-colors enabled:hover:border-terracotta enabled:hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus shrink-0', dimensions[size] ?? dimensions.md, className)}
@@ -58,7 +59,7 @@ export function IconButton({ children, label, size = 'md', className = '', ...pr
             </button>
         </Tooltip>
     );
-}
+});
 
 const badgeVariants = {
     neutral: 'bg-surface-muted text-muted',
