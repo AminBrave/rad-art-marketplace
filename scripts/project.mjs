@@ -268,6 +268,21 @@ async function buildProduction(cpanel = false) {
     verifyProductionManifest(manifestPath);
     console.log('[project] Production asset manifest and required CSS/JS files verified.');
 }
+async function auditBuiltColorAccessibility() {
+    const outputDirectory = resolve(root, 'build', 'a11y-css');
+    const manifestPath = resolve(outputDirectory, 'manifest.json');
+    const viteCli = resolve(root, 'node_modules', 'vite', 'bin', 'vite.js');
+    if (!existsSync(viteCli)) throw new Error('Vite is not installed. Run npm run setup before auditing compiled CSS.');
+
+    // Use an isolated output directory so this audit can run while the normal
+    // development Vite server is active. It never touches public/build or .env.
+    await run(process.execPath, [
+        viteCli, 'build', '--outDir', 'build/a11y-css', '--emptyOutDir',
+    ]);
+    verifyProductionManifest(manifestPath);
+    await run(process.execPath, ['scripts/audit-built-css.mjs']);
+}
+
 async function runBrowserTests() {
     runDevelopmentPreflight({ root, processValues: process.env, requireFrontend: true, checkHotFile: false });
     const envPath = resolve(root, '.env');
@@ -432,6 +447,7 @@ function usage() {
         'dev:check             Validate local configuration without starting services',
         'dev                   Validate local configuration, then start Laravel + Vite + Caddy',
         'production            Build and verify standard production assets',
+        'a11y:build            Build Vite CSS in an isolated folder and audit compiled design tokens',
         'build:cpanel          Build and verify cPanel production assets',
         'db:sqlite:init        Create the local SQLite database file if absent',
         'db:status             Check local database migration status',
@@ -464,6 +480,7 @@ try {
         case 'dev:check': runDevelopmentPreflight({ root, processValues: process.env }); break;
         case 'dev': await startDevelopment(); break;
         case 'production': await buildProduction(false); break;
+        case 'a11y:build': await auditBuiltColorAccessibility(); break;
         case 'build:cpanel': await buildProduction(true); break;
         case 'test:backend': await runBackendTests(); break;
         case 'test:unit':
