@@ -60,9 +60,12 @@ Use the current RAD semantic tokens and project-owned primitives:
 
 ## Dashboard page and section headings
 
-- Every authenticated dashboard page uses the shared PageHeader for its single page-level h1: eyebrow, title, optional description and optional actions share one consistent hierarchy, alignment, spacing, responsive stacking and divider treatment.
+- Every authenticated dashboard page and account-management screen uses the shared PageHeader for its single page-level h1: eyebrow, title, optional description and optional actions share one consistent hierarchy, alignment, spacing, responsive stacking and divider treatment.
+- PageHeader uses a restrained terracotta edge accent, a compact semantic eyebrow pill, a strong but controlled responsive title scale, and readable supporting copy. Keep the heading editorial and spacious; do not wrap the whole header in a heavy hero card or add decorative artwork behind it.
+- Keep primary actions grouped beside the page title on wide screens and naturally stacked beneath the description on narrow screens. Do not stretch unrelated actions to fill the row.
 - WorkspaceHero is a compatibility wrapper around PageHeader, not a separate visual treatment. Do not reintroduce dark hero panels, oversized title variants or page-specific title spacing in dashboard routes.
-- Use the shared SectionHeader for dashboard section headings (h2/h3), including optional eyebrow, description and actions. Do not hand-build alternate eyebrow/title stacks or vary section-title typography between artist, buyer and admin workspaces.
+- Use the shared SectionHeader for dashboard section headings (h2/h3), including optional eyebrow, description and actions. Its smaller type scale and subtle sand edge accent must remain visibly subordinate to PageHeader. Do not hand-build alternate eyebrow/title stacks or vary section-title typography between artist, buyer and admin workspaces.
+- Apply the same hierarchy to artist, buyer, admin overview, admin user management, artwork studio, editorial management, artist profile settings and messaging. Public editorial pages may reuse PageHeader while retaining their content-specific widths.
 - Keep content-specific headings inside artwork cards, report cards, forms and conversation rows at their semantic subordinate level; they are not page or section headers and should not be promoted to h1.
 - Preserve page-specific copy, actions, data, and layout; standardization applies to heading hierarchy and presentation, not to content or feature behavior.
 - Keep one h1 per dashboard route, use h2 for primary sections and h3 for nested sections/cards, and preserve heading order for screen-reader navigation.
