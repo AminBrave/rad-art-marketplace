@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import { after, test } from 'node:test';
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { createServer } from 'vite';
 import react from '@vitejs/plugin-react';
@@ -11,10 +10,27 @@ import react from '@vitejs/plugin-react';
 const vite = await createServer({
     configFile: false,
     root: process.cwd(),
-    plugins: [react()],
-    // Keep React Router in Vite's SSR module graph so named ESM exports such
-    // as Link are not inferred from Node's CommonJS interop heuristics.
-    ssr: { noExternal: ['react-router-dom'] },
+    plugins: [
+        react(),
+        {
+            // navigation.jsx only needs Link to render breadcrumb anchors.
+            // Keep this SSR contract isolated from React Router's package
+            // export/interop formats; browser journeys cover real routing.
+            name: 'react-router-link-ssr-test-double',
+            resolveId(source) {
+                return source === 'react-router-dom' ? '\0test-react-router-dom' : null;
+            },
+            load(id) {
+                if (id !== '\0test-react-router-dom') return null;
+                return `
+                    import React from 'react';
+                    export function Link({ to, ...props }) {
+                        return React.createElement('a', { href: to, ...props });
+                    }
+                `;
+            },
+        },
+    ],
     server: { middlewareMode: true },
     appType: 'custom',
     logLevel: 'error',
@@ -335,15 +351,13 @@ test('UploadFeedback clamps progress at both ends of the accessible range', () =
 
 test('Breadcrumbs expose the current page without making it a link', () => {
     const html = renderToStaticMarkup(
-        React.createElement(MemoryRouter, null,
-            React.createElement(navigation.Breadcrumbs, {
-                items: [
-                    { label: 'خانه', to: '/' },
-                    { label: 'آثار', to: '/artworks' },
-                    { label: 'اثر نمونه' },
-                ],
-            }),
-        ),
+        React.createElement(navigation.Breadcrumbs, {
+            items: [
+                { label: 'خانه', to: '/' },
+                { label: 'آثار', to: '/artworks' },
+                { label: 'اثر نمونه' },
+            ],
+        }),
     );
 
     assert.match(html, /aria-label="مسیر صفحه"/);
