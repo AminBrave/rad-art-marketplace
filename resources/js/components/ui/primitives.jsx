@@ -298,7 +298,7 @@ export function Checkbox({
             checked={checked}
             defaultChecked={defaultChecked}
             onCheckedChange={(nextChecked) => onChange?.({
-                target: { name, value, checked: nextChecked === true },
+                target: { name, value, type: 'checkbox', checked: nextChecked === true },
             })}
             name={name}
             value={value}
