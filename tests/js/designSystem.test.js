@@ -101,7 +101,7 @@ test('public catalogue, artist directory and artwork detail use shared page layo
 });
 
 test('public and role-based workspaces use shared semantic shell utilities', () => {
-    for (const utility of ['min-h-screen bg-canvas text-ink', 'min-h-20 border-b border-border', 'grid min-w-0 max-w-7xl', 'rounded-md border border-border bg-paper']) {
+    for (const utility of ['min-h-screen bg-canvas text-ink', 'sticky top-0 z-40 border-b border-border', 'grid min-w-0 max-w-content', 'rounded-xl border border-border bg-paper']) {
         assert.ok(layouts.includes(utility), 'Missing shell utility: ' + utility);
     }
     assert.doesNotMatch(layouts, /ra-[a-z]/);
@@ -112,10 +112,25 @@ test('navigation and dialog primitives use Tailwind state and focus utilities', 
     assert.ok(navigation.includes('data-[disabled]:pointer-events-none'));
     assert.ok(navigation.includes('focus-visible:ring-2'));
     assert.ok(navigation.includes('aria-current="page"'));
-    assert.ok(dialog.includes('color-mix(in_srgb,var(--color-ink)_55%,transparent)'));
-    assert.ok(dialog.includes('max-h-[85vh]'));
+    assert.ok(dialog.includes('bg-[color:var(--color-overlay)] backdrop-blur-[3px]'));
+    assert.ok(dialog.includes('max-h-[min(88dvh,48rem)]'));
+    assert.ok(dialog.includes('rounded-xl border border-border-strong bg-paper'));
     assert.doesNotMatch(navigation, /ra-[a-z]/);
     assert.doesNotMatch(dialog, /ra-[a-z]/);
+});
+
+test('dashboard headers and notification dialog preserve RAD hierarchy and accessible non-modal behavior', () => {
+    assert.ok(layouts.includes('aria-haspopup="dialog"'));
+    assert.ok(layouts.includes('aria-modal="false"'));
+    assert.ok(layouts.includes('aria-labelledby="workspace-notification-title"'));
+    assert.ok(layouts.includes('panelRef.current?.focus()'));
+    assert.ok(layouts.includes('triggerRef.current?.focus()'));
+    assert.ok(layouts.includes('workspace-notification-panel'));
+    assert.ok(adminWorkspace.includes('<PageHeader'));
+    assert.ok(artistWorkspace.includes('<WorkspaceHero'));
+    assert.ok(buyerWorkspace.includes('<WorkspaceHero'));
+    assert.ok(messaging.includes('<PageHeader'));
+    assert.ok(messaging.includes('after:bg-terracotta'));
 });
 
 test('boot shell and application presentation use Tailwind utilities with no component CSS selectors', () => {
