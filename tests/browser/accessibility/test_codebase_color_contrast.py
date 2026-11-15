@@ -173,15 +173,18 @@ class CodebaseRenderedColorContrastTests(unittest.TestCase):
         self.assertIsNotNone(response, f"No document response for {route}")
         self.assertLess(response.status, 400, f"{route} returned HTTP {response.status}")
 
-        # The Laravel entrypoint may mount under different root IDs in local
-        # configurations. The semantic main landmark is the stable contract.
-        page.locator("main").first.wait_for(state="visible")
+        # Routes do not all expose a <main> landmark (some use a section or
+        # another semantic wrapper), so wait for the React root to mount instead
+        # of making a page landmark a prerequisite for running the audit.
+        page.locator("#app > *").first.wait_for(state="visible")
         if route == "/?design-system":
+            # This preview is lazy-loaded; the showcase is its definitive
+            # readiness marker, not the outer React root's initial mount.
             page.locator("#shared-components").wait_for(state="visible")
         page.wait_for_function(
             """() => {
-                const main = document.querySelector('main');
-                return Boolean(main && !main.matches('[aria-busy="true"]'));
+                const root = document.querySelector('#app');
+                return Boolean(root && root.children.length > 0);
             }""",
             timeout=20000,
         )
