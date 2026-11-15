@@ -216,7 +216,6 @@ function developmentArtisanEnvironment() {
         ...process.env, ...noCacheEnvironment('development'),
         APP_ENV: 'local', APP_DEBUG: 'true', APP_URL: 'http://localhost',
         SESSION_DOMAIN: '', SESSION_SECURE_COOKIE: 'false',
-        RAD_ART_BROWSER_TEST_MODE: '0',
     };
 }
 
@@ -280,8 +279,8 @@ async function runBrowserTests() {
     if (!['local', 'development'].includes(environment)) {
         throw new Error('Playwright can only attach to the current local development environment (APP_ENV=local or development).');
     }
-    if (!['mysql', 'mariadb'].includes(driver) || (configuredUrl && !configuredUrl.startsWith('mysql:') && !configuredUrl.startsWith('mariadb:'))) {
-        throw new Error('Playwright requires the current development .env to use MySQL/MariaDB. No database settings were changed.');
+    if (driver !== 'mysql' || (configuredUrl && !configuredUrl.startsWith('mysql:'))) {
+        throw new Error('Playwright requires the current development .env to use the MySQL connection. No database settings were changed.');
     }
     const baseUrl = process.env.RAD_ART_BASE_URL || 'https://rad.localhost';
     console.log('[project] Running Playwright against the already-running development app at ' + baseUrl);
