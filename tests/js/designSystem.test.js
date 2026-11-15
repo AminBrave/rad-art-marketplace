@@ -130,21 +130,21 @@ test('navigation and dialog primitives use Tailwind state and focus utilities', 
     assert.doesNotMatch(dialog, /ra-[a-z]/);
 });
 
-test('dashboard headers and notification drawer use the shared accessible RAD dialog primitive', () => {
-    assert.ok(layouts.includes('aria-haspopup="dialog"'));
+test('public and workspace navigation plus notifications use the shared RAD Radix Dialog drawer', () => {
     assert.ok(layouts.includes('<Dialog open={open} onOpenChange={setOpen}>'));
+    assert.ok(layouts.includes('<Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>'));
     assert.ok(layouts.includes('<DialogTrigger asChild>'));
     assert.ok(layouts.includes('<DialogContent'));
     assert.ok(layouts.includes('<DialogTitle id="workspace-notification-title"'));
     assert.ok(layouts.includes('<DialogClose asChild>'));
     assert.ok(layouts.includes('workspace-notification-panel'));
-    assert.ok(layouts.includes('!right-0 !top-0 !h-dvh'));
-    assert.doesNotMatch(layouts, /panelPosition|closeOnOutsidePointer|aria-modal="false"/);
+    assert.ok(layouts.includes('placement="drawer"'));
+    assert.ok(layouts.includes('حساب کاربری'));
+    assert.ok(layouts.includes('ناوبری اصلی'));
+    assert.doesNotMatch(layouts, /panelPosition|closeOnOutsidePointer|mobileMenuPanelRef|closeMobileMenu/);
     assert.ok(layouts.includes('aria-haspopup="dialog"'));
-    assert.ok(layouts.includes('aria-modal="true"'));
     assert.ok(layouts.includes('bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]'));
-    assert.ok(layouts.includes('workspace-mobile-menu'));
-    assert.ok(layouts.includes('document.body.style.overflow = \'hidden\''));
+    assert.doesNotMatch(layouts, /document\.body\.style\.overflow|addEventListener\('keydown', closeOnEscape/);
     assert.ok(layouts.includes('lg:hidden'));
     assert.ok(layouts.includes('hidden min-w-0 rounded-xl border border-border bg-paper'));
     assert.ok(adminWorkspace.includes('<PageHeader'));
@@ -165,15 +165,17 @@ test('dashboard headers and notification drawer use the shared accessible RAD di
     assert.ok(primitives.slice(heroStart, heroEnd).includes('<PageHeader'));
     assert.doesNotMatch(primitives.slice(heroStart, heroEnd), /bg-ink|text-inverse|shadow-raised/);
     assert.ok(!artworkStudio.includes('className="border-0 pb-0 pt-0"'));
-});
+});;
 
-test('messaging conversation filters fill their RAD container edge to edge', () => {
-    assert.ok(messaging.includes('grid grid-cols-3 gap-0 overflow-hidden rounded-md border border-border bg-surface-muted'));
-    assert.ok(messaging.includes('min-h-11 w-full items-center justify-center'));
-    assert.ok(messaging.includes('focus-visible:outline-offset-[-2px]'));
-    assert.ok(messaging.includes('motion-reduce:transition-none'));
-    assert.doesNotMatch(messaging, /role="tablist"[^\n]*gap-1[^\n]*p-1/);
-});
+test('messaging conversation filters use the shared RAD-styled Radix Tabs primitive', () => {
+    assert.ok(messaging.includes('<Tabs value={threadFilter} onValueChange={setThreadFilter} dir="rtl"'));
+    assert.ok(messaging.includes('<TabsList aria-label="فیلتر گفتگوها"'));
+    assert.ok(messaging.includes('<TabsTrigger value="all"'));
+    assert.ok(messaging.includes('<TabsTrigger value="unread"'));
+    assert.ok(messaging.includes('<TabsTrigger value="archived"'));
+    assert.ok(navigation.includes('data-[state=active]:border-terracotta'));
+    assert.doesNotMatch(messaging, /document\.getElementById\('conversation-filter-/);
+});;
 
 
 test('messaging fills the workspace viewport and keeps compact Telegram-inspired density', () => {
