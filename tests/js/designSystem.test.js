@@ -180,6 +180,8 @@ test('authenticated app shell keeps primary-only bottom navigation and places bo
     assert.ok(drawer.includes('links.map((item)'));
     assert.ok(drawer.indexOf('بخش‌های اصلی فضای کاربری') < drawer.indexOf('پیوندهای تکمیلی سایت'));
     assert.ok(workspaceLayout.includes('aria-label="ناوبری فضای کاربری"'), 'Desktop workspace sidebar remains available.');
+    assert.ok(workspaceLayout.includes('const Icon = workspaceNavigationIcons[item.to] ?? LayoutDashboard;'), 'Desktop sidebar uses the same route-aware icon map as mobile.');
+    assert.ok(workspaceLayout.includes('<Icon size={18} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />'), 'Desktop sidebar renders decorative Lucide icons beside labels.');
     assert.ok(layouts.includes('aria-label="ناوبری اصلی"'), 'Existing public header navigation must remain available.');
 
     const publicRoutesStart = appRouter.indexOf('<Route element={<PublicLayout />}>' );
