@@ -686,7 +686,7 @@ export default function MessagingCenter({ role }) {
                 eyebrow="ارتباط مستقیم"
                 title="پیام‌ها"
                 description="گفتگوی خصوصی خریداران و هنرمندان؛ پیام‌ها به‌صورت خودکار به‌روزرسانی می‌شوند."
-                className="mb-0 gap-2 pb-3 pt-0 max-sm:gap-1 max-sm:pb-3"
+                className={active ? 'mb-0 gap-2 pb-3 pt-0 max-sm:hidden' : 'mb-0 gap-2 pb-3 pt-0 max-sm:gap-1 max-sm:pb-3'}
                 titleClassName="mt-1 text-xl sm:text-2xl"
                 descriptionClassName="mt-1 text-xs leading-relaxed sm:text-sm"
             />
