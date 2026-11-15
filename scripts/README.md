@@ -5,7 +5,7 @@ Run commands from the repository root. **Use the npm commands in `package.json` 
 ## Principles
 
 - One canonical command per workflow; do not add compatibility aliases without a concrete external consumer.
-- Keep npm script names grouped by setup, development, database, tests, verification, lint, builds and production.
+- Keep npm script names grouped by setup, development, database, tests, lint and builds.
 - Keep orchestration in `scripts/project.mjs`; keep direct Vite, ESLint and Artisan one-liners in `package.json`.
 - Update this reference and dispatcher help whenever a task changes.
 - Tests, lint, builds, migrations, seeders and cache mutation are opt-in. Follow `AGENTS.md`; never run them without explicit user authorization.
@@ -24,44 +24,46 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Area | Command | Purpose |
 |---|---|---|
 | Setup | `npm run setup` | Install Composer/npm dependencies and create `.env` if absent |
-| Development | `npm run dev` | Laravel + Vite behind HTTPS on localhost and the LAN (default) |
-| Development | `npm run dev:browser` | Start the isolated browser-test application, Vite and Caddy |
-| Preview | `npm run preview` | Serve the production build behind HTTPS on localhost and the LAN |
+| Development | `npm run dev:check` | Run the read-only local environment preflight without starting services |
+| Development | `npm run dev` | Validate `.env`, reject production/debug-off or unsafe database targets, check dependencies/stale Vite hot file, then start Laravel + Vite + Caddy |
 | Database | `npm run db:sqlite:init` | Create the local SQLite file only if absent |
-| Database | `npm run db:status` | Show migration status |
-| Database | `npm run db:migrate` | Apply pending migrations |
-| Database | `npm run db:seed` | Run `DatabaseSeeder` |
-| Database | `npm run db:seed:demo` | Run `DemoDatabaseSeeder` |
-| Database | `npm run db:fresh` | **Destructive:** drop all configured database tables, migrate and seed |
-| Tests | `npm test` | Backend PHPUnit + frontend Node tests |
+| Database | `npm run db:status` | Show migration status after local environment/database preflight |
+| Database | `npm run db:migrate` | Apply pending migrations after local environment/database preflight |
+| Database | `npm run db:seed` | Run `DatabaseSeeder` after local environment/database preflight |
+| Database | `npm run db:seed:demo` | Run `DemoDatabaseSeeder` after local environment/database preflight |
+| Database | `npm run db:fresh` | **Destructive:** preflight, drop all configured development database tables, migrate and seed |
+| Database | `npm run db:export:cpanel` | Export the current development MySQL database to a protected `public/build/database-export/*.sql.gz` dump |
 | Tests | `npm run test:backend` | Backend PHPUnit tests using isolated in-memory SQLite |
 | Tests | `npm run test:unit` | Unit PHPUnit suite |
 | Tests | `npm run test:feature` | Feature PHPUnit suite |
 | Tests | `npm run test:integration` | Integration PHPUnit suite |
 | Tests | `npm run test:frontend` | Frontend Node tests |
-| Browser | `npm run browser:prepare` | **Destructive to isolated browser-test data only:** rebuild browser SQLite and storage |
-| Browser | `npm run test:browser` | Guarded Playwright tests against the configured local browser app |
-| Browser | `npm run test:browser -- <unittest-name>` | Run one Playwright test by its Python unittest name |
+| Tests | `npm run test:browser` | Prepare isolated SQLite, run Playwright in a temporary local app, then stop it |
 | Reports | `npm run test:report` | Generate the cross-suite quality summary from existing JUnit files; does not run tests |
 | Reports | `npm run test:reporting` | Run focused Python unit tests for report parsing and freshness classification |
-| Verification | `npm run verify:backend` | Backend tests + PHP Pint check |
-| Verification | `npm run verify:frontend` | Frontend tests + ESLint + standard and cPanel builds |
-| Verification | `npm run verify` | Backend and frontend quality workflows |
-| Verification | `npm run verify:all` | `verify` plus Playwright |
 | Lint | `npm run lint` | ESLint check |
 | Lint | `npm run lint:fix` | Apply ESLint autofixes |
-| Style | `npm run fix:style` | Apply PHP Pint and ESLint fixes |
 | Accessibility | `npm run a11y:colors` | Run focused color-accessibility tests |
-| Build | `npm run build` | Standard Vite production build |
-| Build | `npm run build:cpanel` | cPanel Vite production build |
-| Production | `npm run prod:optimize` | Cache Laravel config, routes, events and views |
-| Production | `npm run prod:clear` | Clear Laravel optimization caches |
+| Production | `npm run production` | Build standard Vite assets and verify the manifest plus required CSS/JS output |
+| Build | `npm run build:cpanel` | Build and verify cPanel Vite production assets |
+
+Use the npm database commands for local development. Direct `php artisan` invocations bypass the project preflight and do not receive the launcher's scoped cache paths.
+
+### Export a seeded database for cPanel / phpMyAdmin
+
+Run `npm run db:export:cpanel` after seeding the development MySQL database. It requires `mysqldump` on PATH and writes `public/build/database-export/rademan-development-seed.sql.gz`. The dump contains the current database's schema and all rows; it does not seed, reset or modify the source database. To create a clean demo-only snapshot first, `npm run db:fresh` rebuilds the configured development database and runs `DatabaseSeeder` (destructive: it drops existing tables and data). `npm run db:seed` alone is additive/idempotent and does not remove unrelated records.
+
+The dump is a MySQL import file, not a SQLite converter. It does not include `CREATE DATABASE` or `USE`, so create/select the destination database in cPanel/phpMyAdmin before importing. Upload the `.sql.gz` file through phpMyAdmin's Import tab. Retrieve it from the development project with cPanel File Manager or FTP; direct Apache access to the export folder is denied by its `.htaccess`. The generated `.sql.gz` is ignored by Git. Run the export after `npm run production`, because a subsequent Vite production build recreates `public/build` and removes generated files there.
+
+**Production safety:** the demo seeder creates known test accounts (including `admin@rademan.test`) with the shared password `Demo@12345`. Do not expose or use these demo credentials on a live site. Before importing this snapshot into production, remove/replace demo accounts and inspect the dump for any local user data, messages or other development-only records. This command exports every table and row in the configured database; it cannot determine which rows are safe to publish.
 
 ## Default HTTPS development and LAN access
 
-The normal development command serves the same running Laravel + Vite application through Caddy. Install Caddy and make its executable available on PATH before starting either development or preview.
+The normal development command first runs a read-only preflight, then serves Laravel + Vite through Caddy. Install Caddy and make its executable available on PATH before starting development.
 
     npm run dev
+
+Before `npm run dev` starts services, and before the npm database commands invoke Artisan, the preflight validates the local `.env` and refuses unsafe `APP_ENV`, `APP_DEBUG`, `APP_KEY` or database settings. The dev startup additionally checks frontend dependencies and rejects an existing Vite `public/hot` file; database commands require PHP dependencies but can run while the normal dev server is active. It never edits `.env`, clears caches, migrates a database or changes application data. The dev launcher bypasses Laravel's config/route/event optimization-cache paths without deleting old files; normal application cache, sessions and Composer-managed package manifests are left alone. A database reached through an SSH tunnel on `127.0.0.1` still looks local to the check, so never tunnel a production database into the development environment. A remote development database requires the explicit one-command opt-in `RAD_ALLOW_REMOTE_DEV_DATABASE=true`; use that only after confirming the database is isolated and disposable. The opt-in is intentionally not stored in `.env`. Bash example: `RAD_ALLOW_REMOTE_DEV_DATABASE=true npm run dev`. PowerShell example: `$env:RAD_ALLOW_REMOTE_DEV_DATABASE="true"; npm run dev` (then clear it with `Remove-Item Env:RAD_ALLOW_REMOTE_DEV_DATABASE`). Run `npm run dev:check` first if you want to inspect the configuration without starting services.
 
 It automatically detects this computer's private LAN IPv4 address when there is one unambiguous candidate. If several network interfaces have private addresses (for example Wi-Fi plus a VPN or virtual adapter), select the address other devices use to reach this computer:
 
@@ -73,8 +75,6 @@ PowerShell:
 
     $env:RAD_LAN_HOST="192.168.1.25"
     npm run dev
-
-Use the same RAD_LAN_HOST override with npm run preview after npm run build.
 
 | Where you open Rademan | URL |
 |---|---|
@@ -104,49 +104,51 @@ Caddy issues certificates from its local development CA. This gives the LAN IP a
 - Laravel (127.0.0.1:8000) and Vite (127.0.0.1:5173) remain bound to loopback; Vite assets and HMR are reverse-proxied through HTTPS.
 - Allow inbound TCP 443 on the computer's **private-network** firewall profile. Allow TCP 80 only if you want Caddy's HTTP-to-HTTPS redirect to be reachable. Do not configure router port forwarding or expose this development server to public networks.
 - Keep the computer and test devices on a trusted LAN. This is a development environment, not a production deployment.
-- The isolated Playwright app remains loopback-only and is not exposed to LAN devices. Its remote-host rejection remains unchanged.
+- The temporary Playwright test app remains loopback-only and is not exposed to LAN devices. Its remote-host rejection remains unchanged.
 - If the computer uses WSL2, Docker, a VPN, or multiple network adapters, LAN routing may require host-specific networking setup; set RAD_LAN_HOST to the reachable address and ensure the host firewall permits TCP 443.
 
 The rad.home.arpa name is optional convenience DNS; direct access by the LAN IP does not require it.
 
+## Production
+
+The primary production asset command is npm run production. It runs the standard Vite production build and then verifies that the manifest contains both application entry points and that their emitted files exist inside the build output. It refuses to build while public/hot exists, preventing a development Vite server from taking precedence over production assets. It does not start Laravel, preview the site or run Artisan cache commands. For the cPanel repository-root document layout, use npm run build:cpanel; that command performs the same output verification against the cPanel manifest.
+
+### Production environment checklist
+
+Configure the deployed server's untracked .env independently from local development:
+
+- APP_ENV=production
+- APP_DEBUG=false
+- APP_KEY must be set to the stable key generated for this application; never regenerate it on an existing installation.
+- APP_URL must be the public HTTPS origin, for example https://your-domain.example. Laravel already reads APP_URL in config/app.php; do not introduce URL_APP or hardcode the production hostname in source.
+- SESSION_SECURE_COOKIE=true when the site is served over HTTPS.
+- DB_CONNECTION, DB_HOST, DB_DATABASE, DB_USERNAME and DB_PASSWORD must target the production database. Keep credentials out of Git.
+- Configure mail, queue, session and cache drivers for the actual hosting topology; do not copy local credentials or test-only settings.
+
+Before a release, back up the database and uploaded files, run the authorized automated test/lint/build checks against the release commit, deploy the matching code and assets together, then apply forward migrations with php artisan migrate --force. Confirm the health endpoint, authentication, key user journeys, logs and asset loading after deployment. Do not run migrate:fresh or seed demo data on production.
+
+Keep Laravel config, route and event optimization caches disabled in the deployed environment by preserving the APP_CONFIG_CACHE, APP_ROUTES_CACHE and APP_EVENTS_CACHE values from .env.example (or equivalent paths that do not exist). Do not run artisan optimize, config:cache, route:cache, event:cache or view:cache. Composer's package/service provider manifests are separate framework metadata and may be generated normally. This does not disable fingerprinted production assets or normal browser caching.
+
+The production asset build is not a deployment or a complete release verification: it does not validate the deployed .env, database connectivity, HTTPS/proxy configuration, backups, migrations or live user journeys.
+
 ## Browser-test lifecycle
 
-1. Stop any existing `dev:browser` process.
-2. Run `npm run browser:prepare` to recreate only `database/browser-testing.sqlite` and isolated browser-test runtime/storage.
-3. Run `npm run dev:browser` in a dedicated terminal.
-4. Run `npm run test:browser` in a second terminal, only when authorized. For one test, append its unittest name after `--` (example below).
-5. Stop the development stack with Ctrl+C.
+Playwright is retained as a test workflow; it no longer has a separate development server or Caddy profile.
 
-Focused example (PowerShell, CMD or Bash):
+1. Stop the normal npm run dev process because the temporary test stack uses the same local Laravel/Vite ports.
+2. Run npm run test:browser. The command prepares only database/browser-testing.sqlite and isolated browser-test storage, then runs migrate:fresh --seed against that SQLite database.
+3. The command starts temporary loopback-only Laravel and Vite processes, waits for the API health and Vite readiness checks, runs the full suite, and stops both processes.
+4. To run one test, append its Python unittest ID after --, for example: npm run test:browser -- test_notifications_and_preferences.MessageNotificationBrowserTests.test_buyer_can_disable_in_app_message_notifications.
 
-```bash
-npm run test:browser -- test_notifications_and_preferences.MessageNotificationBrowserTests.test_buyer_can_disable_in_app_message_notifications
-```
-
-The runner adds `tests/browser` to Python's import path, so direct `PYTHONPATH` setup is not needed. Each run refreshes these local reports under `build/test-reports/`:
-
-- `browser-junit.xml` — CI-compatible test results.
-- `browser-run.log` — terminal output and full unittest tracebacks.
-- `browser-debug.json` — Python/platform/Playwright metadata, selected tests, timings and structured failures.
-- `browser-artifacts/<test-name>/<run-id>/failure.png`, `trace.zip`, and `debug.json` — captured by the instrumented notification-preference regression test when it fails. Open a trace with `python -m playwright show-trace <path-to-trace.zip>`.
-
-Browser tests must use the isolated browser database and storage. Never point them at a normal developer, staging or production database. The browser runner's local-host and readiness guards are mandatory.
+The runner remains guarded: it requires browser_test_ready=true and rejects non-loopback URLs. Never point browser tests at the normal development database, a shared database, staging or production. Install Python Playwright and Chromium using the instructions in tests/README.md.
 
 ## Dispatcher boundary
 
-`scripts/project.mjs` owns workflows that need multiple steps, shared environment configuration, isolated test environments, service lifecycle management or guarded destructive behavior. It is not a second public command registry.
+scripts/project.mjs owns only workflows that need multiple steps, isolated test environments, report generation or service lifecycle management. It is not a second public command registry.
 
-The dispatcher accepts these internal tasks:
+The dispatcher tasks are setup, dev:check, dev, production, build:cpanel, db:sqlite:init, db:status, db:migrate, db:seed, db:seed:demo, db:fresh, test:backend, test:unit, test:feature, test:integration, test:frontend, test:browser, test:report and test:reporting. Lint and focused accessibility tests are defined directly in package.json. Database commands are routed through the dispatcher so they inherit the local environment/database preflight.
 
-- Setup: `setup`
-- Development: `dev`, `preview`, `dev:browser`
-- Database: `db:sqlite:init`, `db:migrate`, `db:seed`, `db:seed:demo`, `db:fresh`
-- Tests: `test`, `backend:test`, `unit`, `feature`, `integration`, `frontend:test`, `browser`, `browser:prepare`
-- Quality: `backend`, `frontend`, `verify`, `verify:all`
-- Style: `fix:style`
-- Production: `prod:optimize`, `prod:clear`
-
-Use `node scripts/project.mjs --help` for the concise internal task list. Build, lint and migration-status one-liners are intentionally defined directly in `package.json`; preview is orchestrated because it starts both Laravel and Caddy.
+Use node scripts/project.mjs --help for the concise internal task list.
 
 ## Reports
 

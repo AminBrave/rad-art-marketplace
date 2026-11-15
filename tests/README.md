@@ -18,25 +18,16 @@ The frontend suite also runs a **dynamic design-system source audit** (`tests/js
 
 ## 1. Choose what to run
 
-Use the smallest scope that gives useful feedback, then expand when the change or risk warrants it.
+| What changed / what you want to check | Start with |
+|---|---|
+| Pure PHP/domain helper | npm run test:unit |
+| Laravel route, controller, validation, auth or permissions | npm run test:feature |
+| Database constraint, storage, transaction or rollback | npm run test:integration |
+| React component, hook, utility or frontend state contract | npm run test:frontend |
+| User-visible journey, navigation, keyboard, responsive or RTL behavior | Focused Playwright test |
+| Test runner, JUnit output or quality report | npm run test:reporting, then npm run test:report |
 
-| What changed / what you want to check | Start with | Expand to |
-|---|---|---|
-| Pure PHP/domain helper | `npm run test:unit` | `npm run test:backend` |
-| Laravel route, controller, validation, auth or permissions | `npm run test:feature` | `npm run test:backend` |
-| Database constraint, storage, transaction or rollback | `npm run test:integration` | `npm run test:backend` |
-| React component, hook, utility or frontend state contract | `npm run test:frontend` | `npm test` |
-| User-visible journey, navigation, keyboard, responsive or RTL behavior | Focused Playwright test | `npm run test:browser` |
-| Test runner, JUnit output or quality report | `npm run test:reporting` | `npm run test:report` after the relevant suites |
-| Broad backend + frontend confidence | `npm test` | `npm run verify` |
-| Release-level local verification including browser journeys | `npm run verify:all` | Review the generated quality report and manual checks |
-
-**Important command differences**
-
-- `npm test` runs backend PHPUnit and frontend Node tests. It does **not** run Playwright, lint or production builds.
-- `npm run verify` runs backend tests + PHP Pint, then frontend tests + ESLint + standard and cPanel production builds. It does **not** run browser tests.
-- `npm run verify:all` runs the `verify` workflow and then Playwright. Prepare and start the isolated browser app first (see section 5).
-- `npm run test:report` only summarizes existing JUnit files. It does **not** execute any tests.
+Backend and frontend suites are separate commands. There is no composite npm test or verify alias; choose the smallest relevant suite and add lint/build commands separately when authorized.
 
 ## 2. First-time setup
 
@@ -54,7 +45,7 @@ Run these steps from the repository root.
    - PHP 8.3 or newer and Composer.
    - Node.js 20.13 or newer and npm.
    - Python 3 for the browser suite.
-   - Caddy for HTTPS development, production-build preview and the loopback-only browser-test app.
+   - Caddy for the normal HTTPS development command.
 
 3. For browser tests, install the Python test requirement and Chromium browser:
 
@@ -65,7 +56,13 @@ Run these steps from the repository root.
 
    If your machine uses `python3` rather than `python`, use `python3 -m pip` and `python3 -m playwright` for these installation commands. The browser runner uses the Python interpreter available to the project scripts; make sure Playwright is installed into that same environment.
 
-Do not run `npm run db:fresh` as a general test setup step. It drops tables in the database configured for the regular app. PHPUnit uses its own in-memory SQLite database, and Playwright has a separate isolated database.
+The npm database commands (`db:status`, `db:migrate`, `db:seed`, `db:seed:demo`, `db:fresh` and `db:export:cpanel`) all run the same local environment/database preflight and use isolated Laravel optimization-cache paths. The export command additionally requires MySQL and `mysqldump`; it writes the current database, including every row, to a gzip-compressed SQL file in a web-denied subfolder of `public/build`. This does not make `npm run db:fresh` safe for important data: it still drops all tables in the configured development database, so do not use it as a general test setup step. PHPUnit uses its own in-memory SQLite database, and Playwright has a separate isolated database.
+
+### Development configuration preflight
+
+Run `npm run dev:check` to validate configuration without starting services. The normal `npm run dev` command performs the same check before opening services. It rejects production mode, disabled debug output, a missing or malformed application key, unsupported database drivers, remote/shared database targets without an explicit one-command opt-in, missing dependencies and a leftover `public/hot` file. It does not modify `.env`, clear caches, run migrations or touch database contents. The dev launcher bypasses Laravel config/route/event optimization-cache paths without deleting files; it leaves application cache, sessions and Composer-managed package manifests alone. A production database tunneled through localhost cannot be distinguished from a local database, so never use a production tunnel for development. The pure validation rules are covered by `tests/js/devEnvironment.test.js` and run as part of `npm run test:frontend`.
+
+For a remote development database, set `RAD_ALLOW_REMOTE_DEV_DATABASE=true` in the shell for that invocation only, and only after confirming the target is a dedicated development database. The preflight cannot determine database ownership or prove that a remote database is safe.
 
 ## 3. Run backend tests (PHPUnit)
 
@@ -139,148 +136,48 @@ This is a focused automated color-contrast check, not a complete accessibility a
 
 ## 5. Run browser tests (Playwright)
 
-Browser tests exercise the actual app in Chromium. They are stateful and can create, update and delete test records. They must run only against the dedicated local browser-test environment.
+Browser tests exercise real user journeys in Chromium. They may create, update or delete test records and must use the disposable local browser-test environment.
 
-For manual testing on a phone or another device on the same trusted LAN, use the normal `npm run dev` workflow and its HTTPS LAN URL described in [the development and LAN access guide](../scripts/README.md#default-https-development-and-lan-access). The isolated browser-test app started by `npm run dev:browser` is intentionally loopback-only and must not be exposed to LAN devices. The automated Playwright runner remains restricted to localhost/loopback; its remote-host rejection must not be bypassed.
+### Single-command lifecycle
 
-### Required lifecycle
+Stop the normal npm run dev process, then run npm run test:browser from the repository root. The command:
 
-Use three terminals, all from the repository root.
+1. Creates database/browser-testing.sqlite if absent and verifies it is a regular file.
+2. Resets only browser-test storage directories.
+3. Runs migrate:fresh --seed against the isolated browser SQLite database.
+4. Starts temporary Laravel on 127.0.0.1:8000 and Vite on 127.0.0.1:5173.
+5. Waits for the API health endpoint to confirm browser_test_ready=true and for Vite to respond.
+6. Runs the Playwright suite (or the selected unittest ID), then stops both temporary services.
 
-**Terminal 1 — prepare the isolated browser environment**
+The Playwright app is a temporary test process, not a second development server. No separate browser:prepare, dev:browser or Caddy browser configuration is needed. The temporary app is loopback-only and is not exposed to LAN devices. Stop npm run dev first because the test workflow uses the same local Laravel/Vite ports.
 
-First stop any existing `npm run dev:browser` process. Then run:
-
-```bash
-npm run browser:prepare
-```
-
-This rebuilds only:
-
-- `database/browser-testing.sqlite`
-- Browser-test-only storage, cache, session and compiled-view directories.
-- Browser-test-specific Laravel bootstrap caches.
-
-It runs migrations and seeders against that isolated browser database. It does not prepare or reset your normal development database.
-
-**Terminal 2 — start the isolated browser app**
-
-```bash
-npm run dev:browser
-```
-
-The app is served through the local HTTPS host:
-
-```text
-https://rad.localhost
-```
-
-Keep this terminal running while browser tests execute. Caddy must be installed and configured for the local HTTPS host.
-
-**Terminal 3 — run the browser tests**
-
-Run the full browser suite:
-
-```bash
-npm run test:browser
-```
-
-Or run one test method by its Python unittest ID:
-
-```bash
-npm run test:browser -- test_module.TestClass.test_method
-```
-
-For example, the notification preference regression test can be selected with:
-
-```bash
-npm run test:browser -- test_notifications_and_preferences.MessageNotificationBrowserTests.test_buyer_can_disable_in_app_message_notifications
-```
-
-The messaging query-cache and incremental-sync journeys can be selected individually:
-
-```bash
-npm run test:browser -- test_messaging_query_cache.MessagingQueryCacheBrowserTests.test_reading_a_conversation_removes_it_from_unread_but_updates_the_all_inbox_cache
-npm run test:browser -- test_messaging_query_cache.MessagingQueryCacheBrowserTests.test_conversation_polling_uses_incremental_cursors_and_renders_new_messages
-```
-
-Messaging resilience fixtures account for the shared TanStack Query policy: transient server errors (for example, HTTP 503) are retried once automatically. Failure/recovery journeys therefore return two failures before succeeding on the explicit user retry. The older-history fixture distinguishes initial history, incremental `after_id` polling, and keyset `before_id` pagination so background synchronization cannot masquerade as an older-page request.
-
-When finished, stop the browser app in Terminal 2 with Ctrl+C.
+Run one test method by appending its Python unittest ID after --:
+  npm run test:browser -- test_notifications_and_preferences.MessageNotificationBrowserTests.test_buyer_can_disable_in_app_message_notifications
 
 ### Browser safety rules
 
-- Do not run the Python browser runner directly. Use `npm run test:browser`; its guard verifies the target is localhost and that the app reports `browser_test_ready=true`.
-- Do not change `RAD_ART_BASE_URL` to a staging or production host. Remote targets are intentionally rejected.
-- Do not point browser tests at `database/database.sqlite`, your normal development database, or any shared database.
-- Do not run `npm run browser:prepare` while the browser app is running.
-- Preparing the browser environment resets the dedicated browser-test database and browser-test storage. It does not reset your normal development database.
-- If the local HTTPS host or readiness check fails, fix the local browser setup; do not weaken or bypass the preflight guard.
+- Do not run the Python browser runner directly. Use npm run test:browser; its guard verifies the target is localhost and that the app reports browser_test_ready=true.
+- Do not change RAD_ART_BASE_URL to a staging or production host. Remote targets are intentionally rejected.
+- Do not point browser tests at database/database.sqlite, your normal development database, or any shared database.
+- Each run resets only the dedicated browser-test SQLite database and storage. It does not reset the normal development database.
+- If the health or Vite readiness check fails, fix the local test setup; do not weaken or bypass the preflight guard.
 
 ### Browser diagnostics
 
-Each run refreshes these files under `build/test-reports/`:
+Each run refreshes these files under build/test-reports/:
 
-| Artifact | What it contains |
-|---|---|
-| `browser-junit.xml` | JUnit test counts and per-test results |
-| `browser-run.log` | Terminal output and full Python unittest tracebacks |
-| `browser-debug.json` | Python/platform/Playwright versions, selected tests, timings, failures and exit status |
-| `browser-artifacts/` | Automatic failure screenshots, Playwright traces and per-test debug data for browser contexts created during a failed test; explicitly instrumented tests also save focused artifacts |
+- browser-junit.xml — JUnit test counts and per-test results.
+- browser-run.log — terminal output and full Python unittest tracebacks.
+- browser-debug.json — Python/platform/Playwright metadata, selected tests, timings and structured failures.
+- browser-artifacts/ — failure screenshots, Playwright traces and per-test debug data.
 
-To inspect a captured Playwright trace:
+To inspect a captured trace, use python -m playwright show-trace with the exact trace.zip path reported by the runner.
 
-```bash
-python -m playwright show-trace build/test-reports/browser-artifacts/path/to/trace.zip
-```
+## 6. Run the test suites and reports
 
-Use the exact trace path printed or referenced by the failure output. The runner automatically starts tracing for every browser context created during a test and preserves screenshots/traces when that test fails. Passing-test temporary artifacts are removed. A trace may still be unavailable if Chromium or the context fails before tracing can start; the JUnit traceback and run log remain the fallback. Some explicitly instrumented tests also save richer event timelines.
+Run the backend suites with npm run test:backend, or choose one of npm run test:unit, npm run test:feature and npm run test:integration. Run frontend tests with npm run test:frontend. Run browser journeys with npm run test:browser; its temporary app is started and stopped by that command.
 
-## 6. Run complete test and quality workflows
-
-Choose based on how much confidence you need.
-
-### Automated backend + frontend tests
-
-```bash
-npm test
-```
-
-Runs all PHPUnit suites and all frontend Node tests.
-
-### Backend and frontend quality checks
-
-```bash
-npm run verify
-```
-
-Runs, in order:
-
-1. Backend PHPUnit tests.
-2. PHP Pint style check.
-3. Frontend Node tests.
-4. ESLint.
-5. Standard Vite production build.
-6. cPanel Vite production build.
-
-### Full local verification including browser journeys
-
-First complete the three-terminal browser setup in section 5. Keep Terminal 2 (`npm run dev:browser`) running, then run:
-
-```bash
-npm run verify:all
-```
-
-This runs the backend and frontend quality workflow and then the guarded Playwright suite. It does not dispatch GitHub Actions or run remote CI.
-
-If you only want the complete automated test suites without lint/build checks, run:
-
-```bash
-npm test
-npm run test:browser
-```
-
-The browser app must already be prepared and running before the second command.
+Lint and production builds are separate commands: npm run lint, npm run lint:fix, npm run production and npm run build:cpanel. They are not bundled into a verify alias. Follow AGENTS.md and obtain explicit authorization before running any verification.
 
 ## 7. Generate and inspect the unified quality report
 
@@ -329,7 +226,7 @@ Use this loop whenever you implement a feature, fix a bug or refactor behavior:
    - Navigation, user interaction, responsive/RTL, keyboard/accessibility or cross-role journey → Browser.
 3. **Add the important negative case.** Depending on the change, consider unauthorized actors, wrong owners, invalid transitions, empty/error/loading/retry states, duplicate submissions, stale state and failure recovery.
 4. **Run the focused test first.** Use the focused commands in sections 3–5.
-5. **Expand to the affected suite.** Then run `npm test` or `npm run verify` when the change crosses layers or has broader regression risk.
+5. **Expand to the affected suite.** Then run the relevant backend, frontend or browser suite when the change crosses layers or has broader regression risk.
 6. **Run browser journeys when user-observable behavior changes.** Use the isolated lifecycle in section 5.
 7. **Inspect failures and diagnostics.** Fix the product/test setup cause; do not delete, skip or weaken a failing test just to get a green result.
 8. **Generate the report** after the relevant suites have produced their JUnit output.

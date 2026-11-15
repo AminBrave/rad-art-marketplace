@@ -1,14 +1,16 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
-import { copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { copyFileSync, createWriteStream, existsSync, lstatSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isIP } from 'node:net';
 import { networkInterfaces } from 'node:os';
+import { createGzip } from 'node:zlib';
+import { pipeline } from 'node:stream/promises';
+import { parseDotEnv, runDevelopmentPreflight } from './dev-environment.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 process.chdir(root);
-
 const isWindows = process.platform === 'win32';
 const npm = isWindows ? 'npm.cmd' : 'npm';
 const php = 'php';
@@ -19,17 +21,14 @@ const pythonArgs = (args) => isWindows ? ['-3', ...args] : args;
 function isPrivateLanAddress(host) {
     if (isIP(host) !== 4) return false;
     const [first, second] = host.split('.').map(Number);
-    return first === 10
-        || (first === 172 && second >= 16 && second <= 31)
-        || (first === 192 && second === 168);
+    return first === 10 || (first === 172 && second >= 16 && second <= 31) || (first === 192 && second === 168);
 }
 
 function assignedPrivateIpv4Addresses() {
     return Object.entries(networkInterfaces()).flatMap(([name, addresses]) =>
-        (addresses ?? [])
-            .filter((address) => !address.internal
-                && (address.family === 'IPv4' || address.family === 4)
-                && isPrivateLanAddress(address.address))
+        (addresses ?? []).filter((address) => !address.internal
+            && (address.family === 'IPv4' || address.family === 4)
+            && isPrivateLanAddress(address.address))
             .map((address) => ({ name, address: address.address })),
     );
 }
@@ -37,35 +36,34 @@ function assignedPrivateIpv4Addresses() {
 function requireLanHost() {
     const assigned = assignedPrivateIpv4Addresses();
     const configured = process.env.RAD_LAN_HOST?.trim();
-
     if (configured) {
-        if (!isPrivateLanAddress(configured)) {
-            throw new Error('RAD_LAN_HOST must be a private LAN IPv4 address (10/8, 172.16/12 or 192.168/16).');
-        }
+        if (!isPrivateLanAddress(configured)) throw new Error('RAD_LAN_HOST must be a private LAN IPv4 address.');
         if (!assigned.some(({ address }) => address === configured)) {
-            const available = assigned.map(({ name, address }) => `${address} (${name})`).join(', ') || 'none detected';
-            throw new Error(`RAD_LAN_HOST ${configured} is not assigned to this computer. Detected private addresses: ${available}.`);
+            const available = assigned.map(({ name, address }) => address + ' (' + name + ')').join(', ') || 'none detected';
+            throw new Error('RAD_LAN_HOST ' + configured + ' is not assigned to this computer. Detected: ' + available + '.');
         }
         return configured;
     }
-
     const virtualInterface = /docker|container|veth|(^|[-_])br[-_]?|virbr|vmnet|vbox|virtual|wsl|tailscale|zerotier|(^|[-_])(tun|tap|wg)([-_]|$)/i;
     const candidates = assigned.filter(({ name }) => !virtualInterface.test(name));
-
     if (candidates.length === 1) return candidates[0].address;
-
-    if (candidates.length === 0) {
-        const available = assigned.map(({ name, address }) => `${address} (${name})`).join(', ') || 'none detected';
-        throw new Error(`No suitable LAN IPv4 address was detected. Available private addresses: ${available}. Connect this computer to your LAN or set RAD_LAN_HOST to its reachable private address.`);
-    }
-
-    const choices = candidates.map(({ name, address }) => `${address} (${name})`).join(', ');
-    throw new Error(`Multiple LAN addresses were detected: ${choices}. Set RAD_LAN_HOST to the address other devices use to reach this computer.`);
+    if (candidates.length === 0) throw new Error('No suitable private LAN IPv4 address was detected. Set RAD_LAN_HOST to this computer’s reachable private address.');
+    throw new Error('Multiple LAN addresses were detected: ' + candidates.map(({ name, address }) => address + ' (' + name + ')').join(', ') + '. Set RAD_LAN_HOST explicitly.');
 }
 
-function httpsDevelopmentEnvironment(host) {
+function noCacheEnvironment(scope) {
+    const directory = resolve(root, 'storage', 'framework', 'cache-disabled');
+    return {
+        APP_CONFIG_CACHE: resolve(directory, scope + '-config.php'),
+        APP_ROUTES_CACHE: resolve(directory, scope + '-routes.php'),
+        APP_EVENTS_CACHE: resolve(directory, scope + '-events.php'),
+    };
+}
+
+function developmentEnvironment(host) {
     return {
         ...process.env,
+        ...noCacheEnvironment('development'),
         APP_ENV: 'local',
         APP_URL: 'https://rad.localhost',
         SESSION_DOMAIN: '',
@@ -78,101 +76,81 @@ function httpsDevelopmentEnvironment(host) {
 function run(command, args = [], options = {}) {
     return new Promise((resolveRun, rejectRun) => {
         const child = spawn(command, args, {
-            cwd: root,
-            stdio: 'inherit',
+            cwd: root, stdio: 'inherit',
             shell: isWindows && /\.(cmd|bat)$/i.test(command),
-            env: process.env,
-            ...options,
+            env: process.env, ...options,
         });
-
         child.once('error', rejectRun);
-        child.once('close', (code, signal) => {
-            if (code === 0) {
-                resolveRun();
-                return;
-            }
-
-            rejectRun(new Error(`${command} exited with ${signal ? `signal ${signal}` : `code ${code}`}.`));
-        });
+        child.once('close', (code, signal) => code === 0
+            ? resolveRun()
+            : rejectRun(new Error(command + ' exited with ' + (signal ? 'signal ' + signal : 'code ' + code) + '.')));
     });
 }
 
 async function runSteps(steps) {
     for (const [label, command, args, options = {}] of steps) {
-        console.log(`\n[project] ${label}\n`);
+        console.log('\n[project] ' + label + '\n');
         await run(command, args, options);
     }
 }
 
 function stopChild(child) {
     if (!child.pid || child.exitCode !== null) return;
-
     if (isWindows) {
-        const killer = spawn('taskkill', ['/pid', String(child.pid), '/t', '/f'], {
-            stdio: 'ignore',
-            windowsHide: true,
-        });
+        const killer = spawn('taskkill', ['/pid', String(child.pid), '/t', '/f'], { stdio: 'ignore', windowsHide: true });
         killer.unref();
-    } else {
-        child.kill('SIGTERM');
-    }
+    } else child.kill('SIGTERM');
 }
 
 async function startServices(services) {
     const children = [];
     let stopping = false;
-
+    let failure = null;
     const stopAll = (exitCode = 0) => {
         if (stopping) return;
         stopping = true;
         for (const child of children) stopChild(child);
         process.exitCode = exitCode;
     };
-
+    stopAll.failure = () => failure;
     for (const service of services) {
-        console.log(`[project] Starting ${service.label}...`);
+        console.log('[project] Starting ' + service.label + '...');
         const child = spawn(service.command, service.args, {
-            cwd: root,
-            stdio: 'inherit',
+            cwd: root, stdio: 'inherit',
             shell: isWindows && /\.(cmd|bat)$/i.test(service.command),
             env: service.env ?? process.env,
         });
         children.push(child);
-
         child.once('error', (error) => {
-            console.error(`[project] Could not start ${service.label}: ${error.message}`);
+            failure = new Error('Could not start ' + service.label + ': ' + error.message);
+            console.error('[project] ' + failure.message);
             stopAll(1);
         });
-
         child.once('close', (code, signal) => {
             if (!stopping) {
-                console.error(`[project] ${service.label} stopped (${signal || code}). Stopping the remaining services.`);
+                failure = new Error(service.label + ' stopped (' + (signal || code) + ').');
+                console.error('[project] ' + failure.message + ' Stopping remaining services.');
                 stopAll(code ?? 1);
             }
         });
     }
-
     process.once('SIGINT', () => stopAll(0));
     process.once('SIGTERM', () => stopAll(0));
+    return stopAll;
 }
 
 async function setup() {
     if (!existsSync('.env')) {
         copyFileSync('.env.example', '.env');
-        console.log('[project] Created .env from .env.example. Review database and mail settings before continuing.');
+        console.log('[project] Created .env from .env.example. Review database and mail settings.');
     }
-
     await runSteps([
         ['Install PHP dependencies', composer, ['install']],
         ['Install JavaScript dependencies', npm, ['ci']],
     ]);
-
     const env = readFileSync('.env', 'utf8');
-    if (!/^APP_KEY=.+/m.test(env)) {
-        await run(php, ['artisan', 'key:generate']);
-    }
-
-    console.log('\n[project] Setup complete. Configure your database in .env, then run npm run db:migrate.');
+    if (!/^APP_KEY=.+/m.test(env)) await run(php, ['artisan', 'key:generate']);
+    console.log('\n[project] Setup complete. Configure your database, then run npm run db:migrate.');
 }
 
 function initializeSqlite() {
@@ -180,10 +158,8 @@ function initializeSqlite() {
     mkdirSync(dirname(databasePath), { recursive: true });
     if (!existsSync(databasePath)) {
         writeFileSync(databasePath, '');
-        console.log(`[project] Created ${databasePath}`);
-    } else {
-        console.log('[project] SQLite database already exists; left unchanged.');
-    }
+        console.log('[project] Created ' + databasePath);
+    } else console.log('[project] SQLite database already exists; left unchanged.');
 }
 
 function ensureReportDirectory() {
@@ -191,44 +167,41 @@ function ensureReportDirectory() {
     mkdirSync(resolve(root, 'storage', 'framework', 'testing', 'views'), { recursive: true });
 }
 
+function testEnvironment() {
+    return {
+        ...process.env, ...noCacheEnvironment('phpunit'),
+        APP_ENV: 'testing', APP_KEY: 'base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
+        APP_DEBUG: 'true', APP_URL: 'http://localhost', APP_TIMEZONE: 'Asia/Tehran',
+        APP_LOCALE: 'fa', APP_FALLBACK_LOCALE: 'en', APP_FAKER_LOCALE: 'fa_IR',
+        DB_CONNECTION: 'sqlite', DB_DATABASE: ':memory:', DB_FOREIGN_KEYS: 'true', DB_URL: '',
+        CACHE_STORE: 'array', SESSION_DRIVER: 'array', SESSION_DOMAIN: '',
+        MAIL_MAILER: 'array', QUEUE_CONNECTION: 'sync', LOG_CHANNEL: 'stderr',
+        FILESYSTEM_DISK: 'local',
+        RAD_ART_LOCAL_STORAGE_PATH: resolve(root, 'storage', 'framework', 'testing', 'storage', 'private'),
+        RAD_ART_PUBLIC_STORAGE_PATH: resolve(root, 'storage', 'framework', 'testing', 'storage', 'public'),
+        RAD_ART_BROWSER_TEST_MODE: '0',
+        VIEW_COMPILED_PATH: resolve(root, 'storage', 'framework', 'testing', 'views'),
+    };
+}
+
 function browserTestEnvironment() {
     const runtimeDir = resolve(root, 'storage', 'framework', 'browser-testing');
     return {
-        ...process.env,
-        APP_ENV: 'local',
-        APP_KEY: 'base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
-        APP_DEBUG: 'true',
-        APP_URL: 'https://rad.localhost',
-        APP_TIMEZONE: 'Asia/Tehran',
-        APP_LOCALE: 'fa',
-        APP_FALLBACK_LOCALE: 'en',
-        APP_FAKER_LOCALE: 'fa_IR',
-        DB_CONNECTION: 'sqlite',
-        DB_DATABASE: resolve(root, 'database', 'browser-testing.sqlite'),
-        DB_FOREIGN_KEYS: 'true',
-        DB_URL: '',
-        CACHE_STORE: 'file',
-        CACHE_PREFIX: 'rad_browser_test_',
-        RAD_ART_CACHE_PATH: resolve(runtimeDir, 'cache'),
-        SESSION_DRIVER: 'file',
-        SESSION_FILES: resolve(runtimeDir, 'sessions'),
-        SESSION_COOKIE: 'rad_browser_test_session',
-        SESSION_DOMAIN: 'rad.localhost',
-        SESSION_SECURE_COOKIE: 'true',
-        SESSION_SAME_SITE: 'lax',
-        MAIL_MAILER: 'array',
-        QUEUE_CONNECTION: 'sync',
-        LOG_CHANNEL: 'stderr',
+        ...process.env, ...noCacheEnvironment('browser-testing'),
+        APP_ENV: 'local', APP_KEY: 'base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
+        APP_DEBUG: 'true', APP_URL: 'http://127.0.0.1:8000', APP_TIMEZONE: 'Asia/Tehran',
+        APP_LOCALE: 'fa', APP_FALLBACK_LOCALE: 'en', APP_FAKER_LOCALE: 'fa_IR',
+        DB_CONNECTION: 'sqlite', DB_DATABASE: resolve(root, 'database', 'browser-testing.sqlite'),
+        DB_FOREIGN_KEYS: 'true', DB_URL: '', CACHE_STORE: 'array',
+        SESSION_DRIVER: 'file', SESSION_FILES: resolve(runtimeDir, 'sessions'),
+        SESSION_COOKIE: 'rad_browser_test_session', SESSION_DOMAIN: '',
+        SESSION_SECURE_COOKIE: 'false', SESSION_SAME_SITE: 'lax',
+        MAIL_MAILER: 'array', QUEUE_CONNECTION: 'sync', LOG_CHANNEL: 'stderr',
         FILESYSTEM_DISK: 'local',
         RAD_ART_LOCAL_STORAGE_PATH: resolve(root, 'storage', 'app', 'browser-testing', 'private'),
         RAD_ART_PUBLIC_STORAGE_PATH: resolve(root, 'storage', 'app', 'browser-testing', 'public'),
         VIEW_COMPILED_PATH: resolve(runtimeDir, 'views'),
         RAD_ART_BROWSER_TEST_MODE: '1',
-        APP_CONFIG_CACHE: 'bootstrap/cache/config.browser-testing.php',
-        APP_ROUTES_CACHE: 'bootstrap/cache/routes.browser-testing.php',
-        APP_EVENTS_CACHE: 'bootstrap/cache/events.browser-testing.php',
-        APP_SERVICES_CACHE: 'bootstrap/cache/services.browser-testing.php',
-        APP_PACKAGES_CACHE: 'bootstrap/cache/packages.browser-testing.php',
     };
 }
 
@@ -236,126 +209,40 @@ function ensureBrowserDatabase() {
     const databasePath = resolve(root, 'database', 'browser-testing.sqlite');
     mkdirSync(dirname(databasePath), { recursive: true });
     if (existsSync(databasePath)) {
-        const databaseStats = lstatSync(databasePath);
-        if (databaseStats.isSymbolicLink() || !databaseStats.isFile()) {
-            throw new Error('The isolated browser-test database path must be a regular file, not a link or directory.');
-        }
-    }
-    if (!existsSync(databasePath)) {
-        writeFileSync(databasePath, '');
-    }
-
-    return databasePath;
-}
-
-function ensureBrowserRuntimeDirectories() {
-    const runtimeDir = resolve(root, 'storage', 'framework', 'browser-testing');
-    const appRuntimeDir = resolve(root, 'storage', 'app', 'browser-testing');
-    for (const baseDirectory of [runtimeDir, appRuntimeDir]) {
-        if (existsSync(baseDirectory) && lstatSync(baseDirectory).isSymbolicLink()) {
-            throw new Error(`Refusing to use a symbolic link for isolated browser-test runtime path: ${baseDirectory}`);
-        }
-    }
-
-    for (const directory of [
-        resolve(runtimeDir, 'cache'),
-        resolve(runtimeDir, 'sessions'),
-        resolve(runtimeDir, 'views'),
-        resolve(root, 'storage', 'app', 'browser-testing', 'private'),
-        resolve(root, 'storage', 'app', 'browser-testing', 'public'),
-    ]) {
-        mkdirSync(dirname(directory), { recursive: true });
-        if (existsSync(directory) && lstatSync(directory).isSymbolicLink()) {
-            throw new Error(`Refusing to use a symbolic link for isolated browser-test runtime path: ${directory}`);
-        }
-        mkdirSync(directory, { recursive: true });
-    }
-}
-
-function clearBrowserBootstrapCaches() {
-    const cacheDirectory = resolve(root, 'bootstrap', 'cache');
-    if (existsSync(cacheDirectory) && lstatSync(cacheDirectory).isSymbolicLink()) {
-        throw new Error('Refusing to clear browser-test caches through a symbolic link.');
-    }
-
-    for (const cacheFile of [
-        'config.browser-testing.php',
-        'routes.browser-testing.php',
-        'events.browser-testing.php',
-        'services.browser-testing.php',
-        'packages.browser-testing.php',
-    ]) {
-        rmSync(resolve(root, 'bootstrap', 'cache', cacheFile), { force: true });
-    }
+        const stats = lstatSync(databasePath);
+        if (stats.isSymbolicLink() || !stats.isFile()) throw new Error('The isolated browser-test database must be a regular file.');
+    } else writeFileSync(databasePath, '');
 }
 
 function resetBrowserRuntime() {
-    rmSync(resolve(root, 'storage', 'app', 'browser-testing'), { recursive: true, force: true });
-    rmSync(resolve(root, 'storage', 'framework', 'browser-testing'), { recursive: true, force: true });
-    clearBrowserBootstrapCaches();
-    ensureBrowserRuntimeDirectories();
-}
-
-function resetBrowserVolatileRuntime() {
-    const runtimeDir = resolve(root, 'storage', 'framework', 'browser-testing');
-    for (const directory of ['cache', 'sessions', 'views']) {
-        rmSync(resolve(runtimeDir, directory), { recursive: true, force: true });
+    const appRuntimeDir = resolve(root, 'storage', 'app', 'browser-testing');
+    const frameworkRuntimeDir = resolve(root, 'storage', 'framework', 'browser-testing');
+    for (const directory of [appRuntimeDir, frameworkRuntimeDir]) {
+        if (existsSync(directory) && lstatSync(directory).isSymbolicLink()) {
+            throw new Error('Refusing to reset browser-test storage through a symbolic link: ' + directory);
+        }
     }
-    clearBrowserBootstrapCaches();
-    ensureBrowserRuntimeDirectories();
+    rmSync(appRuntimeDir, { recursive: true, force: true });
+    rmSync(frameworkRuntimeDir, { recursive: true, force: true });
+    for (const directory of [
+        resolve(frameworkRuntimeDir, 'sessions'), resolve(frameworkRuntimeDir, 'views'),
+        resolve(appRuntimeDir, 'private'), resolve(appRuntimeDir, 'public'),
+    ]) mkdirSync(directory, { recursive: true });
 }
 
 async function prepareBrowserEnvironment() {
     ensureBrowserDatabase();
     resetBrowserRuntime();
-    console.log('[project] Stop npm run dev:browser before preparing the test database.');
-    console.log('[project] Rebuilding only database/browser-testing.sqlite and isolated browser-test storage.');
+    console.log('[project] Preparing the isolated Playwright SQLite database and storage.');
     await run(php, ['artisan', 'migrate:fresh', '--seed'], { env: browserTestEnvironment() });
-}
-
-function testEnvironment() {
-    return {
-        ...process.env,
-        APP_ENV: 'testing',
-        APP_KEY: 'base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
-        APP_DEBUG: 'true',
-        APP_URL: 'http://localhost',
-        APP_TIMEZONE: 'Asia/Tehran',
-        APP_LOCALE: 'fa',
-        APP_FALLBACK_LOCALE: 'en',
-        APP_FAKER_LOCALE: 'fa_IR',
-        DB_CONNECTION: 'sqlite',
-        DB_DATABASE: ':memory:',
-        DB_FOREIGN_KEYS: 'true',
-        DB_URL: '',
-        CACHE_STORE: 'array',
-        SESSION_DRIVER: 'array',
-        SESSION_DOMAIN: '',
-        MAIL_MAILER: 'array',
-        QUEUE_CONNECTION: 'sync',
-        LOG_CHANNEL: 'stderr',
-        FILESYSTEM_DISK: 'local',
-        RAD_ART_LOCAL_STORAGE_PATH: resolve(root, 'storage', 'framework', 'testing', 'storage', 'private'),
-        RAD_ART_PUBLIC_STORAGE_PATH: resolve(root, 'storage', 'framework', 'testing', 'storage', 'public'),
-        RAD_ART_BROWSER_TEST_MODE: '0',
-        VIEW_COMPILED_PATH: resolve(root, 'storage', 'framework', 'testing', 'views'),
-        APP_CONFIG_CACHE: 'bootstrap/cache/config.testing.php',
-        APP_ROUTES_CACHE: 'bootstrap/cache/routes.testing.php',
-        APP_EVENTS_CACHE: 'bootstrap/cache/events.testing.php',
-        APP_SERVICES_CACHE: 'bootstrap/cache/services.testing.php',
-        APP_PACKAGES_CACHE: 'bootstrap/cache/packages.testing.php',
-    };
 }
 
 async function runBackendTests(suite = 'backend') {
     ensureReportDirectory();
-    const reportPath = `build/test-reports/${suite}-junit.xml`; // Keep PHPUnit's CLI path relative on Windows.
+    const reportPath = 'build/test-reports/' + suite + '-junit.xml';
     rmSync(reportPath, { force: true });
-    const args = ['vendor/bin/phpunit', '--do-not-cache-result', `--log-junit=${reportPath}`];
-    if (suite !== 'backend') {
-        const suiteName = suite[0].toUpperCase() + suite.slice(1);
-        args.push(`--testsuite=${suiteName}`);
-    }
+    const args = ['vendor/bin/phpunit', '--do-not-cache-result', '--log-junit=' + reportPath];
+    if (suite !== 'backend') args.push('--testsuite=' + suite[0].toUpperCase() + suite.slice(1));
     await run(php, args, { env: testEnvironment() });
 }
 
@@ -363,11 +250,8 @@ async function runFrontendTests() {
     ensureReportDirectory();
     rmSync(resolve(root, 'build', 'test-reports', 'frontend-junit.xml'), { force: true });
     await run(process.execPath, [
-        '--test',
-        '--test-reporter=spec',
-        '--test-reporter-destination=stdout',
-        '--test-reporter=junit',
-        '--test-reporter-destination=build/test-reports/frontend-junit.xml',
+        '--test', '--test-reporter=spec', '--test-reporter-destination=stdout',
+        '--test-reporter=junit', '--test-reporter-destination=build/test-reports/frontend-junit.xml',
         'tests/js/*.test.js',
     ]);
 }
@@ -378,288 +262,303 @@ async function generateQualityReport() {
 }
 
 async function runReportingTests() {
-    await run(python, pythonArgs([
-        '-m',
-        'unittest',
-        'discover',
-        '-s',
-        'tests/python',
-        '-p',
-        'test_*.py',
-    ]));
+    await run(python, pythonArgs(['-m', 'unittest', 'discover', '-s', 'tests/python', '-p', 'test_*.py']));
 }
 
-async function verifyBackend() {
-    await runBackendTests();
-    await runSteps([
-        ['PHP style', composer, ['lint']],
-    ]);
+function developmentArtisanEnvironment() {
+    return {
+        ...process.env, ...noCacheEnvironment('development'),
+        APP_ENV: 'local', APP_DEBUG: 'true', APP_URL: 'http://localhost',
+        SESSION_DOMAIN: '', SESSION_SECURE_COOKIE: 'false',
+        RAD_ART_BROWSER_TEST_MODE: '0',
+    };
 }
 
-async function verifyFrontend() {
-    await runFrontendTests();
-    await runSteps([
-        ['Frontend lint', npm, ['run', 'lint']],
-        ['Standard production build', npm, ['run', 'build']],
-        ['cPanel production build', npm, ['run', 'build:cpanel']],
-    ]);
+async function runDevelopmentArtisan(args) {
+    runDevelopmentPreflight({ root, processValues: process.env, requireFrontend: false, checkHotFile: false });
+    await run(php, ['artisan', ...args], { env: developmentArtisanEnvironment() });
 }
-
-async function verify(includeBrowser = false) {
-    await verifyBackend();
-    await verifyFrontend();
-    if (includeBrowser) {
-        console.log('\n[project] Browser tests require npm run browser:prepare and npm run dev:browser. They mutate only the isolated browser-test database and storage.\n');
-        await run(python, pythonArgs(['tests/browser/run_tests.py']), {
-            env: { ...process.env, RAD_ART_TEST_MODE: '1' },
-        });
-    }
-}
-
-async function startBrowserDevelopment() {
-    const databasePath = ensureBrowserDatabase();
-    if (!existsSync(databasePath) || lstatSync(databasePath).size === 0) {
-        throw new Error('Browser test database is empty. Run npm run browser:prepare first.');
-    }
-
-    resetBrowserVolatileRuntime();
-    console.log('[project] Browser test environment: https://rad.localhost (loopback only).');
-    console.log('[project] Database: database/browser-testing.sqlite');
-    console.log('[project] Cache, sessions, compiled views and uploaded files are isolated under storage/*/browser-testing.');
-
-    return startServices([
-        {
-            label: 'Laravel browser-test application (isolated SQLite, loopback)',
-            command: php,
-            args: ['artisan', 'serve', '--host=127.0.0.1', '--port=8000'],
-            env: browserTestEnvironment(),
-        },
-        {
-            label: 'Vite (loopback)',
-            command: npm,
-            args: ['exec', '--', 'vite', '--mode', 'https'],
-            env: { ...process.env, VITE_DEV_HTTPS: 'true' },
-        },
-        {
-            label: 'Caddy local HTTPS proxy (loopback only)',
-            command: 'caddy',
-            args: ['run', '--config', 'Caddyfile.browser', '--adapter', 'caddyfile'],
-        },
-    ]);
-}
-
 async function startDevelopment() {
+    runDevelopmentPreflight({ root, processValues: process.env });
     const host = requireLanHost();
-    const env = httpsDevelopmentEnvironment(host);
-
-    // Local Caddy is the only network-facing service; app and Vite stay on loopback.
-    await artisan('config:clear');
-    await artisan('route:clear');
-
+    const env = developmentEnvironment(host);
     console.log('[project] Local development: https://rad.localhost');
     console.log('[project] LAN development: https://' + host);
     console.log('[project] Optional LAN hostname: https://rad.home.arpa (configure local DNS first).');
-    console.log('[project] Caddy terminates HTTPS on port 443; Laravel and Vite remain on loopback.');
-
+    console.log('[project] Laravel and Vite remain on loopback; Caddy is the only LAN-facing service.');
     return startServices([
-        {
-            label: 'Laravel (loopback)',
-            command: php,
-            args: ['artisan', 'serve', '--host=127.0.0.1', '--port=8000'],
-            env,
-        },
-        {
-            label: 'Vite (loopback, LAN-aware HMR)',
-            command: npm,
-            args: ['exec', '--', 'vite', '--mode', 'lan'],
-            env,
-        },
-        {
-            label: 'Caddy HTTPS reverse proxy (local + LAN)',
-            command: 'caddy',
-            args: ['run', '--config', 'Caddyfile.dev', '--adapter', 'caddyfile'],
-            env,
-        },
+        { label: 'Laravel (loopback)', command: php, args: ['artisan', 'serve', '--host=127.0.0.1', '--port=8000'], env },
+        { label: 'Vite (loopback, LAN-aware HMR)', command: npm, args: ['exec', '--', 'vite', '--mode', 'lan'], env },
+        { label: 'Caddy HTTPS reverse proxy (local + LAN)', command: 'caddy', args: ['run', '--config', 'Caddyfile.dev', '--adapter', 'caddyfile'], env },
     ]);
 }
 
-async function startPreview() {
-    const host = requireLanHost();
-    const env = httpsDevelopmentEnvironment(host);
+function verifyProductionManifest(manifestPath) {
+    if (!existsSync(manifestPath)) throw new Error('Vite build completed without producing the expected manifest: ' + manifestPath);
+    let manifest;
+    try { manifest = JSON.parse(readFileSync(manifestPath, 'utf8')); }
+    catch { throw new Error('Vite produced an unreadable manifest: ' + manifestPath); }
 
-    await artisan('config:clear');
+    for (const entryName of ['resources/css/app.css', 'resources/js/app.jsx']) {
+        const entry = manifest[entryName];
+        if (!entry || typeof entry.file !== 'string') throw new Error('Production manifest is missing the required entry: ' + entryName);
+        for (const asset of [entry.file, ...(entry.css ?? [])]) {
+            const outputRoot = resolve(dirname(manifestPath));
+            const assetPath = resolve(outputRoot, asset);
+            const relativeAsset = relative(outputRoot, assetPath);
+            const escapesOutput = relativeAsset === '..' || relativeAsset.startsWith('..' + sep) || isAbsolute(relativeAsset);
+            if (!asset || escapesOutput || !existsSync(assetPath)) throw new Error('Production build references a missing or unsafe asset: ' + asset);
+        }
+    }
+}
 
-    console.log('[project] Production-build preview: https://rad.localhost');
-    console.log('[project] LAN preview: https://' + host);
-    console.log('[project] Optional LAN hostname: https://rad.home.arpa (configure local DNS first).');
+async function buildProduction(cpanel = false) {
+    if (existsSync(resolve(root, 'public', 'hot'))) throw new Error('public/hot exists. Stop the Vite development server before creating production assets.');
+    const viteCli = resolve(root, 'node_modules', 'vite', 'bin', 'vite.js');
+    if (!existsSync(viteCli)) throw new Error('Vite is not installed. Run npm run setup before building production assets.');
+    const args = [viteCli, 'build'];
+    if (cpanel) args.push('--config', 'vite.config.cpanel.js');
+    await run(process.execPath, args);
+    const manifestPath = resolve(root, cpanel ? 'build/manifest.json' : 'public/build/manifest.json');
+    verifyProductionManifest(manifestPath);
+    console.log('[project] Production asset manifest and required CSS/JS files verified.');
+}
+async function waitForBrowserApp(stopServices) {
+    const healthUrl = 'http://127.0.0.1:8000/api/v1/health';
+    const viteUrl = 'http://127.0.0.1:5173/@vite/client';
+    const deadline = Date.now() + 45000;
+    let lastError = 'services are starting';
+    while (Date.now() < deadline) {
+        const failure = stopServices.failure();
+        if (failure) throw failure;
+        try {
+            const healthResponse = await fetch(healthUrl, { headers: { Accept: 'application/json' } });
+            const health = await healthResponse.json();
+            const viteResponse = await fetch(viteUrl);
+            if (healthResponse.ok && health.browser_test_ready === true && viteResponse.ok) return;
+            lastError = 'Laravel health or Vite readiness check returned an unexpected response';
+        } catch (error) {
+            lastError = error.message;
+        }
+        await new Promise((resolveWait) => setTimeout(resolveWait, 500));
+    }
+    throw new Error('Temporary Playwright app did not become ready at ' + healthUrl + '. Last observation: ' + lastError);
+}
 
-    return startServices([
+async function runBrowserTests() {
+    await prepareBrowserEnvironment();
+    const env = browserTestEnvironment();
+    const stopServices = await startServices([
         {
-            label: 'Laravel production-build preview (loopback)',
-            command: php,
-            args: ['artisan', 'serve', '--host=127.0.0.1', '--port=8000'],
-            env,
+            label: 'Temporary isolated Laravel app (loopback)',
+            command: php, args: ['artisan', 'serve', '--host=127.0.0.1', '--port=8000'], env,
         },
         {
-            label: 'Caddy HTTPS reverse proxy (local + LAN)',
-            command: 'caddy',
-            args: ['run', '--config', 'Caddyfile.preview', '--adapter', 'caddyfile'],
+            label: 'Temporary Vite development server (loopback)',
+            command: npm, args: ['exec', '--', 'vite', '--mode', 'browser-test'],
             env,
         },
     ]);
+    try {
+        await waitForBrowserApp(stopServices);
+        await run(python, pythonArgs(['tests/browser/run_tests.py', ...process.argv.slice(3)]), {
+            env: {
+                ...env, RAD_ART_TEST_MODE: '1',
+                RAD_ART_BASE_URL: 'http://127.0.0.1:8000',
+                RAD_ART_IGNORE_HTTPS_ERRORS: 'false',
+            },
+        });
+    } finally {
+        stopServices(0);
+    }
+}
+
+function developmentMysqlConfig() {
+    const fileValues = parseDotEnv(readFileSync(resolve(root, '.env'), 'utf8'));
+    const values = { ...fileValues, ...process.env };
+    if (String(values.DB_CONNECTION ?? 'mysql').toLowerCase() !== 'mysql') {
+        throw new Error('The cPanel SQL export requires DB_CONNECTION=mysql. SQLite databases cannot be exported as a MySQL/phpMyAdmin dump by this command.');
+    }
+
+    let host = values.DB_HOST || '127.0.0.1';
+    let port = values.DB_PORT || '3306';
+    let username = values.DB_USERNAME || '';
+    let password = values.DB_PASSWORD || '';
+    let database = values.DB_DATABASE || '';
+    const socket = values.DB_SOCKET || '';
+
+    if (values.DB_URL) {
+        let url;
+        try { url = new URL(values.DB_URL); }
+        catch { throw new Error('DB_URL is not a valid MySQL connection URL.'); }
+        if (!['mysql:', 'mariadb:'].includes(url.protocol)) {
+            throw new Error('DB_URL must use mysql:// or mariadb:// for the cPanel SQL export.');
+        }
+        host = url.hostname || host;
+        port = url.port || port;
+        username = decodeURIComponent(url.username) || username;
+        password = decodeURIComponent(url.password) || password;
+        database = decodeURIComponent(url.pathname.replace(/^\/+/, '')) || database;
+    }
+
+    if (!database) throw new Error('DB_DATABASE is empty. Set the development database name in .env.');
+    if (!username) throw new Error('DB_USERNAME is empty. Set the MySQL development username in .env.');
+    if (!socket && !host) throw new Error('DB_HOST is empty. Set the MySQL development host in .env.');
+
+    const numericPort = Number(port);
+    if (!Number.isInteger(numericPort) || numericPort < 1 || numericPort > 65535) {
+        throw new Error('DB_PORT must be a valid TCP port between 1 and 65535.');
+    }
+
+    return { host, port: String(numericPort), username, password, database, socket };
+}
+
+async function exportDevelopmentDatabase() {
+    runDevelopmentPreflight({ root, processValues: process.env, requireFrontend: false, checkHotFile: false });
+    const config = developmentMysqlConfig();
+    const outputDirectory = resolve(root, 'public', 'build', 'database-export');
+    const outputPath = resolve(outputDirectory, 'rademan-development-seed.sql.gz');
+    const accessPath = resolve(outputDirectory, '.htaccess');
+    const accessRules = [
+        'Options -Indexes',
+        '<IfModule mod_authz_core.c>',
+        '    Require all denied',
+        '</IfModule>',
+        '<IfModule !mod_authz_core.c>',
+        '    Order allow,deny',
+        '    Deny from all',
+        '</IfModule>',
+        '',
+    ].join('\n');
+
+    for (const directory of [resolve(root, 'public', 'build'), outputDirectory]) {
+        if (existsSync(directory)) {
+            const stats = lstatSync(directory);
+            if (stats.isSymbolicLink() || !stats.isDirectory()) {
+                throw new Error('Refusing to write the database export through a non-directory or symbolic link: ' + directory);
+            }
+        } else mkdirSync(directory);
+    }
+
+    if (existsSync(accessPath) && lstatSync(accessPath).isSymbolicLink()) {
+        throw new Error('Refusing to replace a symbolic-link export access rule: ' + accessPath);
+    }
+    writeFileSync(accessPath, accessRules, { mode: 0o644 });
+
+    if (existsSync(outputPath) && (lstatSync(outputPath).isSymbolicLink() || !lstatSync(outputPath).isFile())) {
+        throw new Error('Refusing to replace a non-regular database export target: ' + outputPath);
+    }
+
+    const temporaryPath = outputPath + '.tmp-' + process.pid;
+    if (existsSync(temporaryPath)) throw new Error('A temporary database export already exists: ' + temporaryPath);
+
+    const args = [
+        '--single-transaction', '--quick', '--skip-lock-tables', '--skip-add-locks',
+        '--default-character-set=utf8mb4', '--hex-blob', '--no-tablespaces',
+    ];
+    if (config.socket) args.push('--socket=' + config.socket);
+    else args.push('--host=' + config.host, '--port=' + config.port);
+    args.push('--user=' + config.username, '--', config.database);
+
+    const childEnvironment = { ...process.env };
+    delete childEnvironment.DB_PASSWORD;
+    if (config.password) childEnvironment.MYSQL_PWD = config.password;
+    else delete childEnvironment.MYSQL_PWD;
+
+    console.log('[project] Exporting the configured development MySQL database. No database rows will be changed.');
+    const dump = spawn('mysqldump', args, {
+        cwd: root, stdio: ['ignore', 'pipe', 'pipe'], env: childEnvironment, windowsHide: true,
+    });
+    let stderr = '';
+    dump.stderr.setEncoding('utf8');
+    dump.stderr.on('data', (chunk) => { stderr = (stderr + chunk).slice(-8000); });
+
+    const streamTask = pipeline(
+        dump.stdout,
+        createGzip({ level: 9 }),
+        createWriteStream(temporaryPath, { flags: 'wx', mode: 0o600 }),
+    );
+    const processTask = new Promise((resolveDump, rejectDump) => {
+        dump.once('error', (error) => rejectDump(new Error('Could not start mysqldump. Install the MySQL client tools and make mysqldump available on PATH. ' + error.message)));
+        dump.once('close', (code, signal) => {
+            if (code === 0) resolveDump();
+            else rejectDump(new Error('mysqldump failed (' + (signal ? 'signal ' + signal : 'exit code ' + code) + '). ' + stderr.trim()));
+        });
+    });
+
+    try {
+        await Promise.all([streamTask, processTask]);
+        renameSync(temporaryPath, outputPath);
+    } catch (error) {
+        dump.kill();
+        const results = await Promise.allSettled([streamTask, processTask]);
+        rmSync(temporaryPath, { force: true });
+        throw results[1].status === 'rejected' ? results[1].reason : error;
+    }
+
+    const size = lstatSync(outputPath).size;
+    console.log('[project] Created ' + relative(root, outputPath) + ' (' + size + ' bytes).');
+    console.log('[project] The export folder denies direct Apache web access. Retrieve the file through cPanel File Manager or FTP.');
+    console.log('[project] Import it in phpMyAdmin after selecting the destination database; the dump does not create or select a database.');
 }
 
 function usage() {
-    console.log(`Rademan project task dispatcher
-
-Usage: node scripts/project.mjs <task>
-Prefer the public npm commands documented in scripts/README.md.
-
-Setup
-  setup                 Install Composer/npm dependencies and create .env if missing
-
-Development
-  dev                   Start Laravel + Vite behind HTTPS on localhost and the LAN
-  preview               Serve the production build behind HTTPS on localhost and the LAN
-  dev:browser           Start the isolated browser-test application over loopback HTTPS only
-
-Database
-  db:sqlite:init        Create database/database.sqlite if it does not exist
-  db:migrate            Apply pending migrations
-  db:seed               Run DatabaseSeeder
-  db:seed:demo          Run DemoDatabaseSeeder
-  db:fresh              DESTRUCTIVE: drop all tables, migrate and seed
-
-Focused tests (execute only with explicit authorization)
-  test                  Run backend and frontend tests
-  backend:test          Run backend PHPUnit tests with in-memory SQLite
-  unit                  Run the Unit PHPUnit suite
-  feature               Run the Feature PHPUnit suite
-  integration           Run the Integration PHPUnit suite
-  frontend:test         Run frontend Node tests
-  browser [test-name]   Run all or selected guarded Playwright tests
-  reporting:test        Run focused tests for the report generator
-  browser:prepare       Rebuild the isolated browser database and storage
-
-Reporting (does not run tests)
-  report                Generate the cross-suite quality report from existing JUnit files
-
-Quality workflows (execute only with explicit authorization)
-  backend               Backend tests + PHP Pint check
-  frontend              Frontend tests + ESLint + production builds
-  verify                Run backend and frontend quality workflows
-  verify:all            Run verify plus Playwright
-
-Style repair
-  fix:style             Apply PHP Pint and ESLint fixes
-
-Production cache maintenance
-  prod:optimize         Cache Laravel configuration, routes, events and views
-  prod:clear            Clear Laravel optimization caches
-
-Build and one-command tools are exposed directly by package.json; preview is orchestrated with Caddy.
-`);
+    console.log([
+        'Rademan project tasks',
+        'setup                 Install dependencies and create .env if absent',
+        'dev:check             Validate local configuration without starting services',
+        'dev                   Validate local configuration, then start Laravel + Vite + Caddy',
+        'production            Build and verify standard production assets',
+        'build:cpanel          Build and verify cPanel production assets',
+        'db:sqlite:init        Create the local SQLite database file if absent',
+        'db:status             Check local database migration status',
+        'db:migrate            Run local database migrations',
+        'db:seed               Seed the local database',
+        'db:seed:demo          Seed local demo data',
+        'db:fresh              Destructively recreate and seed the configured dev database',
+        'db:export:cpanel       Export the current local MySQL database as a protected .sql.gz file',
+        'test:backend          Run all PHPUnit suites',
+        'test:unit             Run PHPUnit Unit',
+        'test:feature          Run PHPUnit Feature',
+        'test:integration      Run PHPUnit Integration',
+        'test:frontend         Run frontend Node tests',
+        'test:browser          Prepare isolated SQLite and run Playwright temporarily',
+        'test:report           Summarize existing JUnit reports',
+        'test:reporting        Test the report generator',
+    ].join(String.fromCharCode(10)));
 }
-
 const task = process.argv[2];
-const artisan = (...args) => run(php, ['artisan', ...args]);
-
 try {
     switch (task) {
-        case 'setup':
-            await setup();
-            break;
-        case 'db:sqlite:init':
-            initializeSqlite();
-            break;
-        case 'dev':
-            await startDevelopment();
-            break;
-        case 'preview':
-            await startPreview();
-            break;
-        case 'browser:prepare':
-            await prepareBrowserEnvironment();
-            break;
-        case 'dev:browser':
-            await startBrowserDevelopment();
-            break;
-        case 'db:migrate':
-            await artisan('migrate');
-            break;
-        case 'db:seed':
-            await artisan('db:seed');
-            break;
-        case 'db:seed:demo':
-            await artisan('db:seed', '--class=DemoDatabaseSeeder');
-            break;
-        case 'db:fresh':
-            await artisan('migrate:fresh', '--seed');
-            break;
-        case 'test':
-            await runBackendTests();
-            await runFrontendTests();
-            break;
-        case 'backend:test':
-            await runBackendTests();
-            break;
-        case 'unit':
-        case 'feature':
-        case 'integration':
-            await runBackendTests(task);
-            break;
-        case 'frontend:test':
-            await runFrontendTests();
-            break;
-        case 'backend':
-            await verifyBackend();
-            break;
-        case 'frontend':
-            await verifyFrontend();
-            break;
-        case 'fix:style':
-            await runSteps([
-                ['Apply PHP Pint fixes', composer, ['lint:fix']],
-                ['Apply ESLint fixes', npm, ['run', 'lint:fix']],
-            ]);
-            break;
-        case 'verify:all':
-            await verify(true);
-            break;
-        case 'verify':
-            await verify(false);
-            break;
-        case 'report':
-            await generateQualityReport();
-            break;
-        case 'reporting:test':
-            await runReportingTests();
-            break;
-        case 'browser':
-            await run(python, pythonArgs([
-                'tests/browser/run_tests.py',
-                ...process.argv.slice(3),
-            ]), {
-                env: { ...process.env, RAD_ART_TEST_MODE: '1' },
-            });
-            break;
-        case 'prod:optimize':
-            await artisan('optimize');
-            break;
-        case 'prod:clear':
-            await artisan('optimize:clear');
-            break;
+        case 'setup': await setup(); break;
+        case 'db:sqlite:init': initializeSqlite(); break;
+        case 'db:status': await runDevelopmentArtisan(['migrate:status']); break;
+        case 'db:migrate': await runDevelopmentArtisan(['migrate']); break;
+        case 'db:seed': await runDevelopmentArtisan(['db:seed']); break;
+        case 'db:seed:demo': await runDevelopmentArtisan(['db:seed', '--class=DemoDatabaseSeeder']); break;
+        case 'db:fresh': await runDevelopmentArtisan(['migrate:fresh', '--seed']); break;
+        case 'db:export:cpanel': await exportDevelopmentDatabase(); break;
+        case 'dev:check': runDevelopmentPreflight({ root, processValues: process.env }); break;
+        case 'dev': await startDevelopment(); break;
+        case 'production': await buildProduction(false); break;
+        case 'build:cpanel': await buildProduction(true); break;
+        case 'test:backend': await runBackendTests(); break;
+        case 'test:unit':
+        case 'test:feature':
+        case 'test:integration': await runBackendTests(task.slice(5)); break;
+        case 'test:frontend': await runFrontendTests(); break;
+        case 'test:browser': await runBrowserTests(); break;
+        case 'test:report': await generateQualityReport(); break;
+        case 'test:reporting': await runReportingTests(); break;
         case '--help':
         case '-h':
-        case undefined:
-            usage();
-            break;
+        case undefined: usage(); break;
         default:
-            console.error(`Unknown task: ${task}\n`);
+            console.error('Unknown task: ' + task);
             usage();
             process.exitCode = 2;
     }
 } catch (error) {
-    console.error(`\n[project] ${error.message}`);
+    console.error('[project] ' + error.message);
     process.exitCode = 1;
 }

@@ -29,10 +29,10 @@ def validate_local_target() -> None:
     if os.environ.get("RAD_ART_TEST_MODE") != "1":
         raise RuntimeError(
             "Browser tests must be started through the guarded project runner "
-            "(npm run test:browser or npm run verify:all)."
+            "(npm run test:browser)."
         )
 
-    raw_url = os.environ.get("RAD_ART_BASE_URL", "https://rad.localhost").rstrip("/")
+    raw_url = os.environ.get("RAD_ART_BASE_URL", "http://127.0.0.1:8000").rstrip("/")
     parsed = urlparse(raw_url)
     hostname = (parsed.hostname or "").lower()
     is_loopback_name = (
@@ -72,11 +72,11 @@ def validate_local_target() -> None:
             if payload.get("browser_test_ready") is not True:
                 raise RuntimeError(
                     "The local app is not using the isolated browser-test environment. "
-                    "Run npm run browser:prepare, then npm run dev:browser."
+                    "Run npm run test:browser to prepare and start the isolated test app."
                 )
     except (URLError, HTTPError, TimeoutError, json.JSONDecodeError) as error:
         raise RuntimeError(
-            f"Local RAD app is not ready at {health_url}. Run npm run browser:prepare, then npm run dev:browser. "
+            f"Local RAD app is not ready at {health_url}. Run npm run test:browser to prepare and start the isolated test app. "
             f"Underlying error: {error}"
         ) from error
 
@@ -294,7 +294,7 @@ def main() -> int:
         "python": sys.version,
         "platform": platform.platform(),
         "playwright": playwright_version,
-        "base_url": os.environ.get("RAD_ART_BASE_URL", "https://rad.localhost"),
+        "base_url": os.environ.get("RAD_ART_BASE_URL", "http://127.0.0.1:8000"),
         "selected_tests": args.tests,
         "tests_run": result.testsRun,
         "failures": failures,

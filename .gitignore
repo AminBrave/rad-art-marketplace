@@ -20,6 +20,8 @@
 /storage/logs/*
 /bootstrap/cache/*.php
 /public/hot
+/public/build/database-export/*.sql.gz
+/public/build/database-export/.htaccess
 /public/storage
 
 # Node / frontend
