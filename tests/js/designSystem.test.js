@@ -486,3 +486,12 @@ test('artwork-origin messages persist and render a reply-style artwork reference
     assert.ok(messageModel.includes("'artwork_id'"));
     assert.ok(messageModel.includes('function artwork(): BelongsTo'));
 });
+
+test('Radix checkbox form bridge cannot expand a page to the full available row width', () => {
+    const checkboxStart = primitives.indexOf('export function Checkbox({');
+    const checkboxEnd = primitives.indexOf('\n}\n\nexport function SearchField', checkboxStart);
+    const checkbox = primitives.slice(checkboxStart, checkboxEnd);
+    assert.ok(checkboxStart >= 0 && checkboxEnd > checkboxStart);
+    assert.ok(checkbox.includes('group inline-flex w-fit min-w-0 max-w-full min-h-11'), 'Labeled checkboxes must size to their content and remain shrinkable.');
+    assert.doesNotMatch(checkbox, /group inline-flex min-h-11 items-center/);
+});
