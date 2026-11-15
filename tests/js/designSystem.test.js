@@ -149,12 +149,15 @@ test('dashboard headers and notification drawer use the shared accessible RAD di
 });
 
 
-test('authenticated app shell keeps primary-only bottom navigation and two-tier dashboard header navigation', () => {
+test('authenticated app shell keeps primary-only bottom navigation and places both navigation tiers in the dashboard hamburger drawer', () => {
     const bottomStart = layouts.indexOf('function AuthenticatedBottomNavigation({ primaryLinks })');
-    const bottomEnd = layouts.indexOf('\n}\n\nexport function WorkspaceLayout', bottomStart);
+    const bottomEnd = layouts.indexOf('\\n}\\n\\nexport function WorkspaceLayout', bottomStart);
     const bottomNavigation = layouts.slice(bottomStart, bottomEnd);
     const workspaceStart = layouts.indexOf('export function WorkspaceLayout');
     const workspaceLayout = layouts.slice(workspaceStart);
+    const drawerStart = workspaceLayout.indexOf('id="workspace-mobile-menu"');
+    const drawerEnd = workspaceLayout.indexOf('</aside>', drawerStart);
+    const drawer = workspaceLayout.slice(drawerStart, drawerEnd);
 
     assert.ok(bottomStart >= 0 && bottomEnd > bottomStart);
     assert.ok(bottomNavigation.includes('data-testid="authenticated-bottom-navigation"'));
@@ -167,13 +170,16 @@ test('authenticated app shell keeps primary-only bottom navigation and two-tier 
     assert.ok(layouts.includes('user && <AuthenticatedBottomNavigation primaryLinks={getWorkspacePrimaryLinks(user.role)} />'));
     assert.ok(workspaceLayout.includes('<AuthenticatedBottomNavigation primaryLinks={links} />'));
 
-    assert.ok(workspaceLayout.includes('aria-label="ناوبری اصلی فضای کاربری"'));
-    assert.ok(workspaceLayout.includes('aria-label="ناوبری تکمیلی سایت"'));
-    assert.ok(workspaceLayout.includes('data-nav-priority="primary"'));
-    assert.ok(workspaceLayout.includes('data-nav-priority="secondary"'));
-    assert.ok(workspaceLayout.includes('publicSecondaryLinks.map((item)'));
-    assert.ok(workspaceLayout.indexOf('ناوبری اصلی فضای کاربری') < workspaceLayout.indexOf('ناوبری تکمیلی سایت'));
-    assert.ok(workspaceLayout.includes('overflow-x-auto'));
+    assert.doesNotMatch(workspaceLayout.slice(0, workspaceLayout.indexOf('{logoutError &&')), /ناوبری اصلی فضای کاربری|ناوبری تکمیلی سایت|data-nav-priority="secondary"/);
+    assert.ok(workspaceLayout.includes('aria-label={mobileMenuOpen ?'));
+    assert.ok(workspaceLayout.includes('aria-haspopup="dialog"'));
+    assert.ok(workspaceLayout.includes('fixed inset-0 z-[70]'));
+    assert.ok(drawer.includes('aria-label="بخش‌های اصلی فضای کاربری"'));
+    assert.ok(drawer.includes('aria-label="پیوندهای تکمیلی سایت"'));
+    assert.ok(drawer.includes('publicSecondaryLinks.map((item)'));
+    assert.ok(drawer.includes('links.map((item)'));
+    assert.ok(drawer.indexOf('بخش‌های اصلی فضای کاربری') < drawer.indexOf('پیوندهای تکمیلی سایت'));
+    assert.ok(workspaceLayout.includes('aria-label="ناوبری فضای کاربری"'), 'Desktop workspace sidebar remains available.');
     assert.ok(layouts.includes('aria-label="ناوبری اصلی"'), 'Existing public header navigation must remain available.');
 
     const publicRoutesStart = appRouter.indexOf('<Route element={<PublicLayout />}>' );
