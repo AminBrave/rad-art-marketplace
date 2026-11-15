@@ -251,6 +251,8 @@ def main() -> int:
         help="Optional unittest names, e.g. test_notifications_and_preferences.MessageNotificationBrowserTests.test_buyer_can_disable_in_app_message_notifications",
     )
     args = parser.parse_args()
+    if args.all and args.tests:
+        parser.error("--all cannot be combined with individual test IDs")
     manual_mode = os.environ.get("RAD_ART_MANUAL_DEV_MODE") == "1"
     browser_dir = Path(__file__).resolve().parent
     sys.path.insert(0, str(browser_dir))
