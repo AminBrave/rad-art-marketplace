@@ -43,7 +43,9 @@
     --color-inverse-text: #FFFFFF;
     --color-skeleton-base: #EEEAE3;
     --color-skeleton-highlight: #F8F6F2;
-    --color-overlay: rgb(36 35 32 / 56%);
+    /* Shared dimmed, blurred scrim for dialogs, drawers and modal surfaces. */
+    --color-overlay: rgb(36 35 32 / 64%);
+    --overlay-backdrop-blur: 8px;
     --color-focus-soft: rgb(154 69 43 / 16%);
     --color-message-own: color-mix(in srgb, var(--color-terracotta) 12%, var(--color-paper));
     --color-message-peer: var(--color-paper);
