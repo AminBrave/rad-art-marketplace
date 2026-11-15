@@ -194,7 +194,7 @@ test('messaging is viewport-locked between the authenticated app header and bott
 test('messaging chat geometry follows RTL logical flow and uses Radix collision-aware overlays', () => {
     assert.ok(messaging.includes('<div dir="rtl" ref={messagesContainerRef}'));
     assert.ok(messaging.includes("import * as DropdownMenu from '@radix-ui/react-dropdown-menu'"));
-    assert.ok((messaging.match(/<DropdownMenu\\.Root/g) ?? []).length >= 4, 'All messaging overlays use Radix.');
+    assert.ok(messaging.split('<DropdownMenu.Root').length - 1 >= 4, 'All messaging overlays use Radix.');
     assert.ok(messaging.includes('<DropdownMenu.Portal>'));
     assert.ok(messaging.includes('sideOffset={8} collisionPadding={8}'));
     assert.ok(messaging.includes('var(--radix-dropdown-menu-content-available-height)'));
