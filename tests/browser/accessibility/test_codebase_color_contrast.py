@@ -218,11 +218,8 @@ class CodebaseRenderedColorContrastTests(unittest.TestCase):
             )
             sitemap = ET.fromstring(sitemap_response.text())
             dynamic_routes = []
-            base_host = urlparse(BASE_URL).netloc
             for node in sitemap.findall(".//{*}loc"):
                 location = urlparse(node.text or "")
-                if location.netloc and location.netloc != base_host:
-                    continue
                 path = location.path or "/"
                 if re.match(r"^/(artworks|artists|collections)/[^/]+$", path):
                     dynamic_routes.append(path)
