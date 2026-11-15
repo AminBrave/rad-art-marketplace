@@ -12,6 +12,8 @@ Rademan has five practical test layers:
 
 The quality matrix in [QUALITY-MATRIX.md](QUALITY-MATRIX.md) describes the important journeys, permission boundaries, current coverage and known gaps. A test suite passing does not mean every product behavior is covered.
 
+The frontend suite also runs a **dynamic design-system source audit** (`tests/js/designSystemCoverage.test.js`). It discovers every JavaScript/JSX file under `resources/js` and every Blade template under `resources/views`, then checks semantic RAD palette utilities, arbitrary hex utility colors, removed component classes, CSS selector boundaries, token-backed inline colors and the Blade first-paint skeleton motion contract. New files in those trees are included automatically. This is static source coverage—not a substitute for rendered visual review, responsive browser checks, automated accessibility scans or manual keyboard/screen-reader testing.
+
 > **Safety and permission:** Follow the repository's `AGENTS.md` contract. Do not run tests, lint, builds, browser automation, migrations, seeders or CI unless the project owner has explicitly authorized that verification. The commands below are instructions, not evidence that they have been run.
 
 ## 1. Choose what to run
