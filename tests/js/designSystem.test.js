@@ -182,7 +182,7 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     assert.ok(editorialPages.includes('<SectionHeader'));
     assert.ok(routeLoading.includes('<WorkspaceHero'));
     assert.ok(routeLoading.includes('<PageHeader'));
-    assert.ok(messaging.includes('<PageHeader'));
+    assert.doesNotMatch(messaging, /<PageHeader/);
     assert.ok(messaging.includes('after:bg-terracotta'));
     const heroStart = primitives.indexOf('export function WorkspaceHero');
     const heroEnd = primitives.indexOf('\n}', heroStart);
@@ -194,6 +194,9 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
 
 test('messaging conversation filters use the shared RAD-styled Radix Tabs primitive', () => {
     assert.ok(messaging.includes('<Tabs value={threadFilter} onValueChange={setThreadFilter} dir="rtl"'));
+    assert.ok(messaging.includes('flex-row min-w-0 w-full items-center justify-center gap-1.5'));
+    assert.ok(messaging.includes('<TabsContent value={threadFilter} dir="rtl"'));
+    assert.ok(messaging.includes('<ul dir="rtl" className="min-h-0 flex-1 divide-y'));
     assert.ok(messaging.includes('<TabsList aria-label="فیلتر گفتگوها"'));
     assert.ok(messaging.includes('<TabsTrigger value="all"'));
     assert.ok(messaging.includes('<TabsTrigger value="unread"'));
@@ -211,6 +214,9 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.ok(layouts.includes('h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.ok(layouts.includes('sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.ok(layouts.includes('lg:h-[calc(100dvh-5rem)]'));
+    assert.ok(layouts.includes('lg:[direction:ltr] lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]'));
+    assert.ok(layouts.includes('<aside dir="rtl" className={isMessagingRoute'));
+    assert.ok(layouts.includes('<main dir="rtl" className={isMessagingRoute ?'));
     assert.ok(layouts.includes("isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden lg:col-start-2' : 'min-w-0'"));
     assert.ok(messaging.includes('lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]'));
     assert.ok(messaging.includes('min-w-0 w-fit max-w-[88%]'));
@@ -225,8 +231,8 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
 });
 
 test('messaging is viewport-locked between the authenticated app header and bottom navigation on mobile', () => {
-    assert.ok(messaging.includes('className="max-sm:hidden"'), 'Hide the page-level direct-messaging heading on mobile.');
-    assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col gap-2 overflow-hidden'));
+    assert.ok(messaging.includes('text-sm font-extrabold leading-6 text-ink">گفتگوها</h2>'), 'Keep the inbox heading compact inside its panel.');
+    assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden'));
     assert.ok(messaging.includes('grid h-full min-h-0 w-full min-w-0 flex-1'));
     assert.ok(messaging.includes('divide-y divide-border overflow-y-auto'), 'The inbox list scrolls inside its fixed panel.');
     assert.ok(messaging.includes('overflow-y-auto overscroll-contain'), 'Message history scrolls inside its fixed panel.');
