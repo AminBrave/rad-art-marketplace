@@ -2,6 +2,7 @@
 
 import json
 import unittest
+from urllib.parse import parse_qs, urlparse
 
 from playwright.sync_api import sync_playwright
 
@@ -214,8 +215,8 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
         requests = []
 
         def artworks(route):
-            query = route.request.url
-            changed = "q=تغییر" in query or "q=%D8%AA%D8%BA%DB%8C%DB%8C%D8%B1" in query.lower()
+            query = parse_qs(urlparse(route.request.url).query)
+            changed = query.get("q") == ["تغییر"]
             requests.append("changed" if changed else "initial")
             payload = artwork_payload("اثر با تصویر متغیر")
             payload["data"][0]["id"] = 920
