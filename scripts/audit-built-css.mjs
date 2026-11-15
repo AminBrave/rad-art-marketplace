@@ -37,12 +37,12 @@ for (const asset of cssAssets) {
     const rootNode = postcss.parse(readFileSync(assetPath, 'utf8'), { from: assetPath });
     rootNode.walkDecls((declaration) => {
         if (declaration.prop.startsWith('--')) definitions.add(declaration.prop);
-        for (const match of declaration.value.matchAll(/var\\(\\s*(--[\\w-]+)/g)) {
+        for (const match of declaration.value.matchAll(/var\(\s*(--[\w-]+)/g)) {
             references.add(match[1]);
         }
         if (/^(?:color|background-color|border(?:-top|-right|-bottom|-left)?-color|outline-color|text-decoration-color|fill|stroke)$/.test(declaration.prop)) {
             colorDeclarations += 1;
-            if (/var\\(\\s*--color-[\\w-]+/.test(declaration.value)) {
+            if (/var\(\s*--color-[\w-]+/.test(declaration.value)) {
                 semanticUtilityRules += 1;
             }
         }
