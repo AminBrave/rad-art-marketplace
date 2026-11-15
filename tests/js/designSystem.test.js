@@ -157,9 +157,15 @@ test('messaging conversation filters fill their RAD container edge to edge', () 
 });
 
 
-test('messaging uses bounded responsive geometry and compact Telegram-inspired density', () => {
-    assert.ok(messaging.includes('h-[clamp(22rem,calc(100dvh-17rem),46rem)]'));
-    assert.ok(messaging.includes('md:h-[clamp(26rem,calc(100dvh-15rem),50rem)]'));
+test('messaging fills the workspace viewport and keeps compact Telegram-inspired density', () => {
+    assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col gap-2'));
+    assert.ok(messaging.includes('grid min-h-0 w-full min-w-0 flex-1 grid-cols-1'));
+    assert.ok(messaging.includes('titleClassName="mt-1 text-xl sm:text-2xl"'));
+    assert.ok(layouts.includes('const isMessagingRoute = pathname.endsWith(\'/messages\')'));
+    assert.ok(layouts.includes('h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
+    assert.ok(layouts.includes('sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
+    assert.ok(layouts.includes('lg:h-[calc(100dvh-5rem)]'));
+    assert.ok(layouts.includes("isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col' : 'min-w-0'"));
     assert.ok(messaging.includes('lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]'));
     assert.ok(messaging.includes('min-w-0 w-fit max-w-[88%]'));
     assert.ok(messaging.includes('min-h-[4.25rem] w-full items-center gap-2'));
@@ -175,15 +181,23 @@ test('messaging uses bounded responsive geometry and compact Telegram-inspired d
 test('messaging chat geometry follows RTL logical flow and keeps bubbles and popovers inside the pane', () => {
     assert.ok(messaging.includes('<div dir="rtl" ref={messagesContainerRef}'));
     assert.ok(messaging.includes('<div dir="rtl" className={\'flex w-full min-w-0 shrink-0 px-[.15rem] \' + (own ? \'justify-start\' : \'justify-end\')}>'));
-    assert.ok(messaging.includes('absolute bottom-full end-0 z-40 mb-2 flex max-w-[min(15rem,calc(100vw-2rem))] flex-wrap'));
-    assert.ok(messaging.includes('absolute bottom-full end-0 z-40 mb-2 w-40 max-w-[calc(100vw-2rem)]'));
+    assert.ok(messaging.includes('createPortal(<div id={\'reaction-options-\' + message.id}'));
+    assert.ok(messaging.includes('createPortal(<div id={\'message-actions-\' + message.id}'));
+    assert.ok(messaging.includes('position: \'fixed\''));
+    assert.ok(messaging.includes('zIndex: 60'));
+    assert.ok(messaging.includes('flex-nowrap items-center gap-1 overflow-x-auto'));
+    assert.ok(messaging.includes('function getChatPopoverPosition(anchor, preferredWidth, height)'));
+    assert.ok(messaging.includes('const leftOfAnchor = rect.right - width'));
+    assert.ok(messaging.includes('const rightOfAnchor = rect.left'));
+    assert.ok(messaging.includes('window.visualViewport?.height ?? window.innerHeight'));
+    assert.ok(messaging.includes('overflow-x-hidden overflow-y-auto'));
     assert.ok(messaging.includes('absolute end-1 top-1/2 -translate-y-1/2'));
     assert.ok(messaging.includes('absolute bottom-2 start-2 z-10 flex h-9 w-9'));
     assert.ok(messaging.includes('ps-10 pe-3 py-[.55rem]'));
     assert.ok(messaging.includes('absolute start-3 top-1/2 -translate-y-1/2'));
     assert.ok(messaging.includes('bg-surface py-2 ps-10 pe-4 text-sm'));
     assert.doesNotMatch(messaging, /dir="ltr"/);
-    assert.doesNotMatch(messaging, /absolute bottom-full right-0/);
+    assert.doesNotMatch(messaging, /absolute bottom-full (?:right|left)-0/);
 });
 
 test('messaging RTL behavior covers skeletons and logical bubble geometry', () => {
@@ -207,6 +221,9 @@ test('messaging actions use compact, dismissible Telegram-style popovers', () =>
     assert.ok(messaging.includes("const [openPopover, setOpenPopover] = useState(null)"));
     assert.ok(messaging.includes("document.addEventListener('pointerdown', closeOnOutsidePointer, true)"));
     assert.ok(messaging.includes("document.addEventListener('keydown', closeOnEscape, true)"));
+    assert.ok(messaging.includes("event.target.closest?.('[data-chat-popover-root], [data-chat-popover-panel]')"));
+    assert.ok(messaging.includes('popoverAnchorRef.current?.focus()'));
+    assert.ok(messaging.includes("window.addEventListener('scroll', reposition, true)"));
     assert.ok(messaging.includes("data-chat-popover-root"));
     assert.ok(messaging.includes("thread-options-' + thread.id"));
     assert.ok(messaging.includes("updateThreadSetting(thread, 'archived'"));
