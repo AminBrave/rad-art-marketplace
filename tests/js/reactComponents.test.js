@@ -301,16 +301,16 @@ test('MediaImage fallback stays accessible for missing sources and supports cust
         React.createElement(feedback.MediaImage, { src: '', alt: 'اثر بدون تصویر' }),
     );
     const custom = renderToStaticMarkup(
-        React.createElement(
-            feedback.MediaImage,
-            { src: null, alt: 'اثر جایگزین' },
-            React.createElement('span', null, 'جایگزین'),
-        ),
+        React.createElement(feedback.MediaImage, {
+            src: null,
+            alt: 'اثر جایگزین',
+            fallback: React.createElement('span', null, 'جایگزین سفارشی'),
+        }),
     );
 
     assert.match(missing, /role="img"/);
     assert.match(missing, /aria-label="اثر بدون تصویر"/);
-    assert.match(custom, /اثر جایگزین/);
+    assert.match(custom, /جایگزین سفارشی/);
 });
 
 test('UploadFeedback clamps progress at both ends of the accessible range', () => {
