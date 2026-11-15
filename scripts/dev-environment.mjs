@@ -83,7 +83,9 @@ export function validateDevelopmentEnvironment({ fileValues = {}, processValues 
         errors.push('APP_DEBUG must be true for local development so application errors are visible.');
     }
 
-    if (!hasValidAppKey(values.APP_KEY)) {\n        errors.push('APP_KEY is missing or invalid. Generate a local 32-byte key with php artisan key:generate; do not reuse the production key.');\n    }
+    if (!hasValidAppKey(values.APP_KEY)) {
+        errors.push('APP_KEY is missing or invalid. Generate a local 32-byte key with php artisan key:generate; do not reuse the production key.');
+    }
 
     const connection = String(values.DB_CONNECTION ?? 'mysql').toLowerCase();
     if (!['mysql', 'sqlite'].includes(connection)) {
