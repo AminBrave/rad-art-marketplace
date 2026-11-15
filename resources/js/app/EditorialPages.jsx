@@ -178,7 +178,7 @@ export function AdminEditorialPage() {
                         {collection.status === 'published' ? (
                             <AlertDialog
                                 open={confirmUnpublishId === collection.id}
-                                onOpenChange={(open) => { setConfirmUnpublishId(open ? collection.id : null); if (open) setActionError(''); }}
+                                onOpenChange={(open) => { if (!open && busy) return; setConfirmUnpublishId(open ? collection.id : null); if (open) setActionError(''); }}
                             >
                                 <AlertDialogTrigger asChild>
                                     <Button size="sm" variant="danger" disabled={busy}>توقف انتشار</Button>
