@@ -39,6 +39,9 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Tests | `npm run test:integration` | Integration PHPUnit suite |
 | Tests | `npm run test:frontend` | Frontend Node tests |
 | Tests | `npm run test:browser` | Prepare isolated SQLite, run Playwright in a temporary local app, then stop it |
+| Tests | `npm run test:browser:manual -- --list` | List browser tests and identify the API-mocked/manual-safe subset |
+| Tests | `npm run test:browser:manual -- <test-id>` | Run selected manual-safe tests against the already-running local MySQL app |
+| Tests | `npm run test:browser:manual -- <test-id> --allow-mutations` | Explicitly opt in to a selected test not marked read-only/manual-safe |
 | Reports | `npm run test:report` | Generate the cross-suite quality summary from existing JUnit files; does not run tests |
 | Reports | `npm run test:reporting` | Run focused Python unit tests for report parsing and freshness classification |
 | Lint | `npm run lint` | ESLint check |
@@ -131,16 +134,31 @@ Keep Laravel config, route and event optimization caches disabled in the deploye
 
 The production asset build is not a deployment or a complete release verification: it does not validate the deployed .env, database connectivity, HTTPS/proxy configuration, backups, migrations or live user journeys.
 
-## Browser-test lifecycle
+## Browser-test workflows
 
-Playwright is retained as a test workflow; it no longer has a separate development server or Caddy profile.
+Playwright has two deliberately separate workflows. Choose manual mode when you want to exercise the app already running under your normal local `.env`; choose isolated mode when you want the disposable SQLite browser suite.
 
 1. Stop the normal npm run dev process because the temporary test stack uses the same local Laravel/Vite ports.
 2. Run npm run test:browser. The command prepares only database/browser-testing.sqlite and isolated browser-test storage, then runs migrate:fresh --seed against that SQLite database.
 3. The command starts temporary loopback-only Laravel and Vite processes, waits for the API health and Vite readiness checks, runs the full suite, and stops both processes.
 4. To run one test, append its Python unittest ID after --, for example: npm run test:browser -- test_notifications_and_preferences.MessageNotificationBrowserTests.test_buyer_can_disable_in_app_message_notifications.
 
-The runner remains guarded: it requires browser_test_ready=true and rejects non-loopback URLs. Never point browser tests at the normal development database, a shared database, staging or production. Install Python Playwright and Chromium using the instructions in tests/README.md.
+The isolated runner remains guarded: it requires browser_test_ready=true and rejects non-loopback URLs. It never uses the normal development database.
+
+### Manual mode: existing local MySQL app
+
+Keep your normal `npm run dev` app running (including Laravel, Vite and Caddy), with `.env` configured for your local MySQL/MariaDB development database. In a second terminal:
+
+```powershell
+npm run test:browser:manual -- --list
+npm run test:browser:manual -- test_artwork_catalogue_resilience.ArtworkCatalogueResilienceTests.test_artwork_catalogue_error_can_be_retried_into_results
+```
+
+The manual command attaches to `https://rad.localhost` by default and does not start/stop services, alter `.env`, override database variables, run Artisan, migrate, seed, reset storage or clean application records. Override the origin only with a local `.localhost`/loopback URL using `RAD_ART_BASE_URL`; remote hosts are rejected. The command checks that the existing `.env` selects MySQL/MariaDB. It does not inspect database rows or prove that a database is disposable.
+
+Only test classes explicitly marked `manual_dev_safe = True` can run without an opt-in. Those tests must intercept their API/media dependencies and avoid database-backed writes. Other tests are listed as requiring `--allow-mutations`; review their setup and teardown first. This flag is a deliberate risk acknowledgement, not a guarantee of safe cleanup. The complete suite requires both `--all` and `--allow-mutations`.
+
+Manual-mode reports are written under `build/test-reports/browser-manual/`, separate from isolated-run reports. Existing failure artifacts are retained; only the selected run's JUnit/log/summary files are refreshed.
 
 ## Dispatcher boundary
 
