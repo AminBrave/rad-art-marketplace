@@ -312,7 +312,7 @@ export default function App() {
                             {authMode === 'register' && (
                                 <label className="block text-sm font-semibold">
                                     نوع حساب
-                                    <SelectField name="role" value={form.role} onChange={updateForm} className="mt-2 w-full rounded-xl border border-border bg-surface-muted px-4 py-3">
+                                    <SelectField name="role" value={form.role} onChange={updateForm} aria-label="نوع حساب" className="mt-2 w-full rounded-xl border border-border bg-surface-muted px-4 py-3">
                                         <option value="buyer">خریدار</option>
                                         <option value="artist">هنرمند</option>
                                     </SelectField>
