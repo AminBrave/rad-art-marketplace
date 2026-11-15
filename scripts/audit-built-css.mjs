@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
-import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
+import { isAbsolute, relative, resolve, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import postcss from 'postcss';
 
-const root = resolve(new URL('..', import.meta.url).pathname);
+const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const outputDirectory = resolve(root, 'build/a11y-css');
 const manifestPath = resolve(outputDirectory, 'manifest.json');
 
