@@ -56,7 +56,7 @@ Run these steps from the repository root.
 
    If your machine uses `python3` rather than `python`, use `python3 -m pip` and `python3 -m playwright` for these installation commands. The browser runner uses the Python interpreter available to the project scripts; make sure Playwright is installed into that same environment.
 
-The npm database commands (`db:status`, `db:migrate`, `db:seed`, `db:seed:demo`, `db:fresh` and `db:export:cpanel`) all run the same local environment/database preflight and use isolated Laravel optimization-cache paths. The export command additionally requires MySQL and `mysqldump`; it writes the current database, including every row, to a gzip-compressed SQL file in a web-denied subfolder of `public/build`. This does not make `npm run db:fresh` safe for important data: it still drops all tables in the configured development database, so do not use it as a general test setup step. PHPUnit uses its own in-memory SQLite database, and Playwright has a separate isolated database.
+The npm database commands (`db:status`, `db:migrate`, `db:seed`, `db:seed:demo`, `db:fresh` and `db:export:cpanel`) all run the same local environment/database preflight and use isolated Laravel optimization-cache paths. The export command additionally requires MySQL and `mysqldump`; it writes the current database, including every row, to a gzip-compressed SQL file in a web-denied subfolder of `public/build`. This does not make `npm run db:fresh` safe for important data: it still drops all tables in the configured development database, so do not use it as a general test setup step. PHPUnit uses its own in-memory SQLite database. Playwright does not create or use a separate database; it always exercises the already-running development app and that app's configured MySQL/MariaDB database.
 
 ### Development configuration preflight
 
@@ -155,14 +155,14 @@ The source-level design-system and mutation-architecture tests intentionally ins
 
 ## 5. Run browser tests (Playwright)
 
-Browser tests exercise real user journeys in Chromium. There are two separate modes: manual mode attaches to your already-running local MySQL development app and defaults to read-only/API-mocked tests; isolated mode uses a disposable SQLite database for stateful journeys.
+Browser tests exercise real user journeys in Chromium. There is one mode only: Playwright attaches to the already-running local development app and uses the app's existing `.env` and MySQL/MariaDB database. It never starts another app or creates, switches, resets, or seeds a browser-test database.
 
-### Manual mode: current development app and MySQL
+### Current development app and MySQL/MariaDB
 
 Start your usual local app first with `npm run dev` and keep it running. Open a second terminal and list the available tests:
 
 ```powershell
-npm run test:browser:manual -- --list
+npm run test:browser -- --list
 ```
 
 Run a GET-only smoke journey against the actual current development database (no API interception or writes):
@@ -189,21 +189,6 @@ npm run test:browser:manual -- --all --allow-mutations
 
 Manual diagnostics are isolated under `build/test-reports/browser-manual/`; they do not overwrite the isolated browser runner's reports.
 
-### Isolated mode: disposable SQLite lifecycle
-
-Stop the normal npm run dev process, then run npm run test:browser from the repository root. The command:
-
-1. Creates database/browser-testing.sqlite if absent and verifies it is a regular file.
-2. Resets only browser-test storage directories.
-3. Runs migrate:fresh --seed against the isolated browser SQLite database.
-4. Starts temporary Laravel on 127.0.0.1:8000 and Vite on 127.0.0.1:5173.
-5. Waits for the API health endpoint to confirm browser_test_ready=true and for Vite to respond.
-6. Runs the Playwright suite (or the selected unittest ID), then stops both temporary services.
-
-The Playwright app is a temporary test process, not a second development server. No separate browser:prepare, dev:browser or Caddy browser configuration is needed. The temporary app is loopback-only and is not exposed to LAN devices. Stop npm run dev first because the test workflow uses the same local Laravel/Vite ports.
-
-Run one test method by appending its Python unittest ID after --:
-  npm run test:browser -- test_notifications_and_preferences.MessageNotificationBrowserTests.test_buyer_can_disable_in_app_message_notifications
 
 ### Browser safety rules
 
