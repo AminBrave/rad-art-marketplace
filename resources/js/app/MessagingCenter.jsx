@@ -2,7 +2,7 @@ import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useMessagingQueries } from './useMessagingQueries';
 import { useAuth } from './AuthContext';
-import { ConversationInboxSkeleton, MessageHistorySkeleton, MediaImage } from '../components/ui';
+import { ConversationInboxSkeleton, MessageHistorySkeleton, MediaImage, PageHeader } from '../components/ui';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Archive, ArchiveRestore, ArrowDown, Ban, Bell, BellOff, ChevronRight, Download, FileText, Flag, Image as ImageIcon, Inbox, LoaderCircle, MailOpen, MoreVertical, Paperclip, Pencil, Reply, Search, Send, ShieldCheck, Trash2, X } from 'lucide-react';
 
@@ -578,11 +578,12 @@ export default function MessagingCenter({ role }) {
 
     return (
         <section className="space-y-5 font-sans" dir="rtl">
-            <header className="border-b border-border pb-5">
-                <p className="text-sm font-bold tracking-[.035em] text-terracotta-strong">ارتباط مستقیم</p>
-                <h1 className="mt-2 text-2xl font-black tracking-[-.025em] lg:text-[clamp(1.5rem,2.4vw,2rem)]">پیام‌ها</h1>
-                <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">گفتگوی خصوصی خریداران و هنرمندان؛ پیام‌ها به‌صورت خودکار به‌روزرسانی می‌شوند.</p>
-            </header>
+            <PageHeader
+                eyebrow="ارتباط مستقیم"
+                title="پیام‌ها"
+                description="گفتگوی خصوصی خریداران و هنرمندان؛ پیام‌ها به‌صورت خودکار به‌روزرسانی می‌شوند."
+                className="mb-1"
+            />
             {notice && <p role="status" className="rounded-md border border-border bg-surface-muted p-3 text-sm">{notice}</p>}
             {error && <p role="alert" className="rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-danger-surface p-3 text-sm text-danger">{error}</p>}
             {inboxQuery.isError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-danger-surface p-3 text-sm text-danger"><span>{'دریافت گفتگوها انجام نشد. دوباره تلاش کنید.'}</span><button type="button" onClick={() => loadThreads()} className="shrink-0 font-bold underline underline-offset-4">تلاش دوباره</button></div>}
@@ -631,8 +632,8 @@ export default function MessagingCenter({ role }) {
                 <div dir="rtl" className={active ? 'flex h-full min-h-0 min-w-0 flex-col bg-canvas' : 'hidden h-full min-h-0 min-w-0 flex-col bg-canvas lg:flex'}>
                     {!active ? <div className="m-auto p-8 text-center text-sm text-muted">برای مشاهده پیام‌ها یک گفتگو را انتخاب کنید.</div> : (
                         <>
-                            <header className="relative z-20 shrink-0 border-b border-border bg-paper shadow-soft">
-                                <div className="flex min-h-[3.9rem] min-w-0 items-center gap-2.5 px-3 py-3 md:min-h-[4.4rem] md:gap-3 md:px-5">
+                            <header className="relative z-20 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_96%,transparent)] shadow-soft backdrop-blur after:absolute after:inset-x-0 after:top-0 after:h-1 after:bg-terracotta">
+                                <div className="flex min-h-[4.25rem] min-w-0 items-center gap-3 px-3 py-3 pt-4 md:min-h-[4.75rem] md:gap-4 md:px-5">
                                     <button type="button" aria-label="بازگشت به گفتگوها" title="بازگشت به گفتگوها" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-canvas text-ink transition hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:hidden" onClick={() => { setActive(null); setPendingArtwork(null); setParams((current) => { const next = new URLSearchParams(current); next.delete('conversation'); next.delete('artwork'); return next; }, { replace: true }); }}><ChevronRight size={19} aria-hidden="true" /></button>
                                     {selected?.artist?.slug ? <Link to={'/artists/' + selected.artist.slug} aria-label={'مشاهده صفحه هنرمند ' + (selected?.participant?.name ?? '')} title="مشاهده پروفایل هنرمند" className="group flex h-11 w-11 aspect-square shrink-0 items-center justify-center rounded-full text-inherit no-underline transition-[transform,opacity] hover:-translate-y-px hover:opacity-[.88] focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"><span aria-hidden="true" className={'flex h-full w-full items-center justify-center overflow-hidden rounded-full border border-border-strong outline outline-[3px] outline-surface-muted [outline-offset:1px] text-sm font-black [box-shadow:0_1px_2px_color-mix(in_srgb,var(--color-ink)_8%,transparent)] ' + avatarTone(selected?.participant?.name)}>{avatarInitial(selected?.participant?.name)}</span></Link> : <div aria-hidden="true" className={'flex h-11 w-11 aspect-square shrink-0 items-center justify-center overflow-hidden rounded-full border border-border-strong outline outline-[3px] outline-surface-muted [outline-offset:1px] text-sm font-black [box-shadow:0_1px_2px_color-mix(in_srgb,var(--color-ink)_8%,transparent)] ' + avatarTone(selected?.participant?.name)}>{avatarInitial(selected?.participant?.name)}</div>}
                                     <div className="min-w-0 flex-1">
