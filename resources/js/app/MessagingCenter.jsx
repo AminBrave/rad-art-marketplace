@@ -42,7 +42,7 @@ function getChatPopoverPosition(anchor, preferredWidth, preferredHeight) {
     const viewportWidth = visualViewport?.width ?? document.documentElement.clientWidth ?? window.innerWidth;
     const viewportHeight = visualViewport?.height ?? window.innerHeight;
     const margin = 8;
-    const anchorGap = 32;
+    const anchorGap = 8;
     const minLeft = Math.max(viewportLeft + margin, (boundary?.left ?? viewportLeft) + margin);
     const maxRight = Math.min(viewportLeft + viewportWidth - margin, (boundary?.right ?? viewportLeft + viewportWidth) - margin);
     const width = Math.max(1, Math.min(preferredWidth, maxRight - minLeft));
