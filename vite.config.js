@@ -38,7 +38,7 @@ export default defineConfig(({ mode }) => {
                 },
             }
             : lanDevelopment
-            ? {
+                ? {
                 // Caddy is the only network-facing listener. Vite stays private.
                 host: '127.0.0.1',
                 port: 5173,
