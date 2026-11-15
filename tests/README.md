@@ -254,7 +254,7 @@ The report links to detailed suite reports and browser diagnostics when present.
 npm run test:reporting
 ```
 
-This runs focused Python unit tests for report parsing and freshness classification. It is not a product behavior suite.
+This runs focused Python unit tests for report parsing/freshness classification and manual Playwright selection safety (`tests/python/test_browser_runner.py`). It is not a product behavior suite.
 
 ## 8. A recommended workflow for each development task
 
