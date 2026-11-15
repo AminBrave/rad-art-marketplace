@@ -2,6 +2,7 @@ import { Children, cloneElement, isValidElement, useId } from 'react';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import * as SelectPrimitive from '@radix-ui/react-select';
 import { Check, ChevronDown } from 'lucide-react';
+import { Tooltip } from './Tooltip';
 import { cn } from '../../lib/utils';
 
 const buttonVariants = {
@@ -45,15 +46,16 @@ export function Button({
 export function IconButton({ children, label, size = 'md', className = '', ...props }) {
     const dimensions = { sm: 'h-9 w-9', md: 'h-11 w-11', lg: 'h-12 w-12' };
     return (
-        <button
-            type="button"
-            aria-label={label}
-            title={label}
-            className={cn('inline-flex items-center justify-center rounded-md border border-border-strong bg-paper p-0 text-ink transition-colors enabled:hover:border-terracotta enabled:hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus shrink-0', dimensions[size] ?? dimensions.md, className)}
-            {...props}
-        >
-            {children}
-        </button>
+        <Tooltip content={label}>
+            <button
+                type="button"
+                aria-label={label}
+                className={cn('inline-flex items-center justify-center rounded-md border border-border-strong bg-paper p-0 text-ink transition-colors enabled:hover:border-terracotta enabled:hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus shrink-0', dimensions[size] ?? dimensions.md, className)}
+                {...props}
+            >
+                {children}
+            </button>
+        </Tooltip>
     );
 }
 
