@@ -198,7 +198,8 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
             loaded.wait_for(state="visible")
             page.wait_for_function("""() => {
                 const image = document.querySelector('img[alt="اثر با تصویر"]');
-                return image?.complete && image.naturalWidth > 0;
+                return image?.complete && image.naturalWidth > 0
+                    && image.parentElement?.getAttribute('aria-busy') === 'false';
             }""")
             self.assertEqual(loaded.locator("xpath=..").get_attribute("aria-busy"), "false")
 
@@ -252,7 +253,8 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
             page.wait_for_function("""() => {
                 const image = document.querySelector('img[alt="اثر با تصویر متغیر"]');
                 return image?.complete && image.naturalWidth > 0
-                    && image.getAttribute('src') === '/media/first.svg';
+                    && image.getAttribute('src') === '/media/first.svg'
+                    && image.parentElement?.getAttribute('aria-busy') === 'false';
             }""")
 
             search = page.get_by_role("searchbox", name="جست‌وجو در آثار و هنرمندان")
@@ -267,7 +269,8 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
             page.wait_for_function("""() => {
                 const image = document.querySelector('img[alt="اثر با تصویر متغیر"]');
                 return image?.complete && image.naturalWidth > 0
-                    && image.getAttribute('src') === '/media/second.svg';
+                    && image.getAttribute('src') === '/media/second.svg'
+                    && image.parentElement?.getAttribute('aria-busy') === 'false';
             }""")
             self.assertEqual(requests, ["initial", "changed"])
             self.assertEqual(image.locator("xpath=..").get_attribute("aria-busy"), "false")
