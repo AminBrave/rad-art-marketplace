@@ -602,7 +602,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                         aria-label="بستن منوی فضای کاربری"
                         tabIndex="-1"
                         onClick={closeMobileMenu}
-                        className="absolute inset-0 h-full w-full cursor-default bg-ink/45 backdrop-blur-[2px]"
+                        className="absolute inset-0 h-full w-full cursor-default bg-[color:color-mix(in_srgb,var(--color-ink)_45%,transparent)] backdrop-blur-[2px]"
                     />
                     <aside
                         id="workspace-mobile-menu"
