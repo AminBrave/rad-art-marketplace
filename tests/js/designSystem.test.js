@@ -33,6 +33,7 @@ const artworkGallery = readFileSync(new URL('../../resources/js/app/ArtworkGalle
 const artworkCatalogue = readFileSync(new URL('../../resources/js/app/ArtworkCatalogue.jsx', import.meta.url), 'utf8');
 const editorialPages = readFileSync(new URL('../../resources/js/app/EditorialPages.jsx', import.meta.url), 'utf8');
 const publicInfoPages = readFileSync(new URL('../../resources/js/app/PublicInfoPages.jsx', import.meta.url), 'utf8');
+const designSystem = readFileSync(new URL('../../AI/DESIGN-SYSTEM.md', import.meta.url), 'utf8');
 
 test('semantic palette, typography, spacing and layout tokens have one CSS source', () => {
     for (const token of [
@@ -43,6 +44,7 @@ test('semantic palette, typography, spacing and layout tokens have one CSS sourc
         '--font-persian', '--font-latin', '--text-base', '--leading-copy',
         '--space-1', '--space-4', '--space-8', '--radius-md', '--content-width',
         '--page-gutter', '--control-height-md', '--artwork-ratio', '--workspace-bottom-nav-height',
+        '--workspace-bottom-nav-primary-height', '--workspace-bottom-nav-secondary-height',
     ]) {
         assert.match(css, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Missing design token: ${token}`);
     }
@@ -146,23 +148,47 @@ test('dashboard headers and notification drawer use the shared accessible RAD di
 });
 
 
-test('workspace bottom navigation is role-aware, route-driven and safe-area aware', () => {
-    assert.ok(layouts.includes('function WorkspaceBottomNavigation({ links })'));
-    assert.ok(layouts.includes('data-testid="workspace-bottom-navigation"'));
+test('authenticated app shell exposes role-aware primary and separated secondary navigation on every signed-in surface', () => {
+    assert.ok(layouts.includes('function AuthenticatedBottomNavigation({ primaryLinks, secondaryLinks })'));
+    assert.ok(layouts.includes('data-testid="authenticated-bottom-navigation"'));
     assert.ok(layouts.includes('fixed inset-x-0 bottom-0 z-50'));
     assert.ok(layouts.includes('pb-[env(safe-area-inset-bottom)]'));
     assert.ok(layouts.includes('lg:hidden'));
+    assert.ok(layouts.includes('data-nav-priority="primary"'));
+    assert.ok(layouts.includes('data-nav-priority="secondary"'));
+    assert.ok(layouts.includes('aria-label="بخش‌های اصلی حساب کاربری"'));
+    assert.ok(layouts.includes('aria-label="پیوندهای تکمیلی سایت"'));
+    assert.ok(layouts.includes('user && <AuthenticatedBottomNavigation primaryLinks={getWorkspacePrimaryLinks(user.role)} secondaryLinks={publicSecondaryLinks} />'));
+    assert.ok(layouts.includes('<AuthenticatedBottomNavigation primaryLinks={links} secondaryLinks={publicSecondaryLinks} />'));
     assert.ok(layouts.includes('pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)]'));
-    assert.ok(layouts.includes('<WorkspaceBottomNavigation links={links} />'));
-    assert.ok(layouts.includes('aria-label="ناوبری اصلی فضای کاربری"'));
+    assert.ok(layouts.includes('secondaryLinks.map((item)'));
+    assert.ok(layouts.includes('overflow-x-auto'));
+    assert.ok(layouts.includes('aria-label="ناوبری اصلی"'), 'Existing public header navigation must remain available.');
     assert.ok(layouts.includes('برای جابه‌جایی بین بخش‌های فضای کاری از نوار پایین صفحه استفاده کنید.'));
-    assert.ok(!layouts.includes('ناوبری فضای کاربری" className="grid gap-1"'));
     assert.ok(layouts.includes("'/dashboard/artist/artworks': Images"));
     assert.ok(layouts.includes("'/dashboard/buyer/messages': MessageCircle"));
     assert.ok(layouts.includes("'/admin/message-reports': Flag"));
-    assert.ok(css.includes('--workspace-bottom-nav-height: 4.5rem;'));
+    assert.ok(layouts.includes("to: '/contact', label: 'تماس'"));
+    assert.ok(routeLoading.includes("getWorkspacePrimaryLinks('artist')"));
+    assert.ok(routeLoading.includes("getWorkspacePrimaryLinks('buyer')"));
+    assert.ok(routeLoading.includes("getWorkspacePrimaryLinks('admin')"));
+    assert.ok(css.includes('--workspace-bottom-nav-primary-height: 4.5rem;'));
+    assert.ok(css.includes('--workspace-bottom-nav-secondary-height: 2.25rem;'));
+    assert.ok(css.includes('--workspace-bottom-nav-height: calc('));
 });
 
+test('RAD design-system definition makes the authenticated app-shell and navigation hierarchy canonical', () => {
+    for (const principle of [
+        'coherent, responsive web app',
+        'Every route rendered while a user is authenticated',
+        'Keep the existing page header',
+        'public-layout routes and authenticated workspace routes',
+        'Primary destinations',
+        'Secondary destinations',
+        'safe-area inset',
+        'Do not invent a route',
+    ]) assert.ok(designSystem.includes(principle), 'Missing RAD design-system principle: ' + principle);
+});
 test('boot shell and application presentation use Tailwind utilities with no component CSS selectors', () => {
     assert.ok(bootShell.includes('grid grid-cols-1 items-center gap-12'));
     assert.ok(bootShell.includes('lg:grid-cols-[minmax(0,1fr)_minmax(16rem,.9fr)]'));
