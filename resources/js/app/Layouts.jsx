@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Bell } from 'lucide-react';
@@ -74,6 +74,25 @@ function NotificationBell({ user }) {
     const queryClient = useQueryClient();
     const [open, setOpen] = useState(false);
     const [actionError, setActionError] = useState('');
+    const panelRef = useRef(null);
+
+    useEffect(() => {
+        if (!open) return undefined;
+        const closeOnEscape = (event) => {
+            if (event.key === 'Escape') setOpen(false);
+        };
+        const closeOnOutsidePointer = (event) => {
+            if (panelRef.current && !panelRef.current.parentElement?.contains(event.target)) {
+                setOpen(false);
+            }
+        };
+        document.addEventListener('keydown', closeOnEscape);
+        document.addEventListener('pointerdown', closeOnOutsidePointer);
+        return () => {
+            document.removeEventListener('keydown', closeOnEscape);
+            document.removeEventListener('pointerdown', closeOnOutsidePointer);
+        };
+    }, [open]);
     const notificationKey = ['notifications', user?.id, 'list'];
     const preferenceKey = ['notifications', user?.id, 'preferences'];
 
@@ -181,10 +200,13 @@ function NotificationBell({ user }) {
                 <Bell aria-hidden="true" size={16} strokeWidth={1.8} /><span className="hidden sm:inline">اعلان‌ها</span>
                 {unreadCount > 0 && <span className="min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-[10px] text-inverse" aria-live="polite">{unreadCount > 99 ? '۹۹+' : unreadCount.toLocaleString('fa-IR')}</span>}
             </button>
-            {open && <section role="dialog" aria-label="اعلان‌های پیام" className="absolute end-0 top-full z-50 mt-2 w-[min(22rem,calc(100vw-2rem))] max-w-[calc(100vw-2rem)] border border-border bg-paper p-4 text-right shadow-xl">
+            {open && <section role="dialog" aria-label="اعلان‌های پیام" ref={panelRef} className="absolute start-0 top-full z-50 mt-2 w-[min(22rem,calc(100vw-2rem))] max-w-[calc(100vw-2rem)] border border-border bg-paper p-4 text-right shadow-xl">
                 <div className="flex items-center justify-between gap-3">
                     <h2 className="font-bold">اعلان‌های پیام</h2>
+                    <div className="flex shrink-0 items-center gap-3">
                     <button type="button" onClick={markAll} disabled={busy || unreadCount === 0} className="text-xs font-semibold text-terracotta-strong disabled:opacity-40">خواندن همه</button>
+                    <button type="button" aria-label="بستن اعلان‌ها" onClick={() => setOpen(false)} className="grid h-8 w-8 place-items-center rounded-sm text-muted hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">×</button>
+                    </div>
                 </div>
                 {error && <p role="alert" className="mt-3 text-xs text-danger">{error}</p>}
                 {loading ? <div className="py-2"><NotificationListSkeleton count={3} /></div> : items.length === 0 ? <p className="py-5 text-sm text-muted">هنوز اعلانی ندارید.</p> : <ul className="mt-3 max-h-72 divide-y divide-border overflow-y-auto">
