@@ -155,6 +155,8 @@ test('workspace bottom navigation is role-aware, route-driven and safe-area awar
     assert.ok(layouts.includes('pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)]'));
     assert.ok(layouts.includes('<WorkspaceBottomNavigation links={links} />'));
     assert.ok(layouts.includes('aria-label="ناوبری اصلی فضای کاربری"'));
+    assert.ok(layouts.includes('برای جابه‌جایی بین بخش‌های فضای کاری از نوار پایین صفحه استفاده کنید.'));
+    assert.ok(!layouts.includes('ناوبری فضای کاربری" className="grid gap-1"'));
     assert.ok(layouts.includes("'/dashboard/artist/artworks': Images"));
     assert.ok(layouts.includes("'/dashboard/buyer/messages': MessageCircle"));
     assert.ok(layouts.includes("'/admin/message-reports': Flag"));
