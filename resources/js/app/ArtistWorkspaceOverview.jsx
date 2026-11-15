@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useOutletContext } from 'react-router-dom';
-import { EmptyState, ErrorState, StatusBadge, Badge, WorkspaceHero, DashboardMetricCard, DashboardMetricSkeleton, ArtistRecentWorkSkeleton, WorkspaceIdentitySkeleton } from '../components/ui';
+import { EmptyState, ErrorState, StatusBadge, Badge, WorkspaceHero, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton, ArtistRecentWorkSkeleton, WorkspaceIdentitySkeleton } from '../components/ui';
 
 const statusLabels = {
     pending_review: 'در انتظار بررسی', approved: 'منتشرشده', rejected: 'ردشده',
@@ -88,10 +88,8 @@ export default function ArtistWorkspaceOverview() {
             {!profileLoading && (
                 <section aria-labelledby="artist-setup-heading" className="border border-border bg-surface-muted p-5 sm:p-7">
                     <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div>
-                            <p className="text-xs font-bold text-terracotta-strong">چک‌لیست شروع</p>
-                            <h2 id="artist-setup-heading" className="mt-2 text-lg font-black">پایه‌های حضور حرفه‌ای</h2>
-                            <p className="mt-2 text-xs leading-6 text-muted">این موارد به کامل‌تر شدن پروفایل عمومی شما کمک می‌کنند؛ رتبه یا امتیاز هنری نیستند.</p>
+                        <div className="min-w-0 flex-1">
+                            <SectionHeader id="artist-setup-heading" eyebrow="چک‌لیست شروع" title="پایه‌های حضور حرفه‌ای" description="این موارد به کامل‌تر شدن پروفایل عمومی شما کمک می‌کنند؛ رتبه یا امتیاز هنری نیستند." />
                         </div>
                         <span className="text-xs font-bold text-muted">{(completedProfileSteps + (hasArtwork ? 1 : 0)).toLocaleString('fa-IR')} از ۶ گام</span>
                     </div>
@@ -125,10 +123,7 @@ export default function ArtistWorkspaceOverview() {
                     />}
                     <section className="grid gap-5 xl:grid-cols-2">
                         <div className="border border-border bg-paper p-5 sm:p-6">
-                            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
-                                <div><p className="text-[11px] font-bold text-terracotta-strong">پورتفولیو</p><h2 className="mt-1 font-black">آخرین آثار</h2></div>
-                                <Link to="/dashboard/artist/artworks" className="text-xs font-bold text-terracotta-strong underline underline-offset-4">مدیریت همه آثار</Link>
-                            </div>
+                            <SectionHeader eyebrow="پورتفولیو" title="آخرین آثار" actions={<Link to="/dashboard/artist/artworks" className="text-xs font-bold text-terracotta-strong underline underline-offset-4">مدیریت همه آثار</Link>} />
                             {loading ? <div className="mt-5"><ArtistRecentWorkSkeleton /></div> : artworks.length === 0 ? <EmptyState className="mt-5" title="هنوز اثری ثبت نشده" description="اولین اثر خود را ثبت کنید تا برای بررسی ارسال شود." action={<Link to="/dashboard/artist/artworks" className="text-sm font-bold text-terracotta-strong underline">ثبت اثر</Link>} /> : (
                                 <ul className="divide-y divide-border">
                                     {artworks.slice(0, 4).map((item) => <li key={item.id} className="flex items-center justify-between gap-3 py-4">
@@ -139,10 +134,7 @@ export default function ArtistWorkspaceOverview() {
                             )}
                         </div>
                         <div className="border border-border bg-paper p-5 sm:p-6">
-                            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
-                                <div><p className="text-[11px] font-bold text-terracotta-strong">ارتباط با خریداران</p><h2 className="mt-1 font-black">پیام‌های مستقیم</h2></div>
-                                <Link to="/dashboard/artist/messages" className="text-xs font-bold text-terracotta-strong underline underline-offset-4">رفتن به پیام‌ها</Link>
-                            </div>
+                            <SectionHeader eyebrow="ارتباط با خریداران" title="پیام‌های مستقیم" actions={<Link to="/dashboard/artist/messages" className="text-xs font-bold text-terracotta-strong underline underline-offset-4">رفتن به پیام‌ها</Link>} />
                             <div className="py-7"><p className="text-sm leading-7 text-muted">گفت‌وگوهای مستقیم با خریداران را از صندوق پیام‌ها مدیریت کنید.</p><Link to="/dashboard/artist/messages" className="mt-3 inline-flex text-sm font-bold text-terracotta-strong underline">بازکردن صندوق پیام‌ها</Link></div>
                         </div>
                     </section>
