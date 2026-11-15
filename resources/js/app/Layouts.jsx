@@ -525,7 +525,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
             const first = focusable[0];
             const last = focusable[focusable.length - 1];
 
-            if (event.shiftKey && document.activeElement === first) {
+            if (event.shiftKey && (document.activeElement === first || document.activeElement === mobileMenuPanelRef.current)) {
                 event.preventDefault();
                 last?.focus();
             } else if (!event.shiftKey && document.activeElement === last) {
@@ -540,12 +540,6 @@ export function WorkspaceLayout({ title, links, outletContext }) {
             document.body.style.overflow = previousOverflow;
         };
     }, [mobileMenuOpen]);
-
-    const workspaceDestination = user?.role === 'admin'
-        ? '/admin'
-        : user?.role === 'buyer'
-            ? '/dashboard/buyer'
-            : '/dashboard/artist';
 
     return (
         <div className="min-h-screen bg-canvas text-ink" dir="rtl">
@@ -639,7 +633,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                         key={item.to}
                                         to={item.to}
                                         end={item.end}
-                                        onClick={() => setMobileMenuOpen(false)}
+                                        onClick={closeMobileMenu}
                                         className={({ isActive }) => [
                                             'relative flex min-h-12 items-center rounded-lg px-4 py-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus',
                                             isActive
@@ -656,7 +650,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                         <div className="shrink-0 border-t border-border bg-surface-muted p-4">
                             <Link
                                 to="/"
-                                onClick={() => setMobileMenuOpen(false)}
+                                onClick={closeMobileMenu}
                                 className="flex min-h-11 items-center justify-center rounded-lg border border-border-strong bg-paper px-4 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong"
                             >
                                 مشاهده سایت
