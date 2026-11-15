@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Bell, CheckCheck, Menu, MessageCircle, X } from 'lucide-react';
+import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Images, LayoutDashboard, Menu, MessageCircle, UserRound, Users, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, NotificationListSkeleton } from '../components/ui';
@@ -427,6 +427,68 @@ function NotificationBell({ user }) {
     );
 }
 
+const workspaceNavigationIcons = {
+    '/dashboard/artist': LayoutDashboard,
+    '/dashboard/artist/profile': UserRound,
+    '/dashboard/artist/artworks': Images,
+    '/dashboard/artist/messages': MessageCircle,
+    '/dashboard/buyer': LayoutDashboard,
+    '/dashboard/buyer/messages': MessageCircle,
+    '/admin': LayoutDashboard,
+    '/admin/users': Users,
+    '/admin/artworks': ClipboardCheck,
+    '/admin/message-reports': Flag,
+    '/admin/editorial': BookOpen,
+};
+
+const workspaceNavigationLabels = {
+    '/dashboard/artist': 'خانه',
+    '/dashboard/artist/profile': 'پروفایل',
+    '/dashboard/artist/artworks': 'آثار',
+    '/dashboard/artist/messages': 'پیام‌ها',
+    '/dashboard/buyer': 'خانه',
+    '/dashboard/buyer/messages': 'پیام‌ها',
+    '/admin': 'خانه',
+    '/admin/users': 'کاربران',
+    '/admin/artworks': 'بررسی آثار',
+    '/admin/message-reports': 'گزارش‌ها',
+    '/admin/editorial': 'سردبیری',
+};
+
+function WorkspaceBottomNavigation({ links }) {
+    return (
+        <nav
+            aria-label="ناوبری اصلی فضای کاربری"
+            data-testid="workspace-bottom-navigation"
+            className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-[color:color-mix(in_srgb,var(--color-paper)_92%,transparent)] pb-[env(safe-area-inset-bottom)] shadow-raised backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-paper)_86%,transparent)] lg:hidden"
+        >
+            <div className="mx-auto grid h-[var(--workspace-bottom-nav-height)] max-w-2xl grid-flow-col auto-cols-fr gap-1 px-2">
+                {links.map((item) => {
+                    const Icon = workspaceNavigationIcons[item.to] ?? LayoutDashboard;
+                    return (
+                        <NavLink
+                            key={item.to}
+                            to={item.to}
+                            end={item.end}
+                            aria-label={item.label}
+                            title={item.label}
+                            className={({ isActive }) => [
+                                'relative flex min-w-0 flex-col items-center justify-center gap-1 rounded-md px-1 text-[10px] font-bold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus motion-reduce:transition-none',
+                                isActive
+                                    ? 'text-terracotta-strong after:absolute after:inset-x-1/4 after:top-0 after:h-0.5 after:rounded-full after:bg-terracotta'
+                                    : 'text-muted hover:bg-surface-muted hover:text-ink',
+                            ].join(' ')}
+                        >
+                            <Icon size={19} strokeWidth={1.9} aria-hidden="true" />
+                            <span className="max-w-full truncate">{workspaceNavigationLabels[item.to] ?? item.label}</span>
+                        </NavLink>
+                    );
+                })}
+            </div>
+        </nav>
+    );
+}
+
 export function WorkspaceLayout({ title, links, outletContext }) {
     const { user, logout } = useAuth();
     const { pathname } = useLocation();
@@ -615,7 +677,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                 </div>
             )}
 
-            <div className="mx-auto grid min-w-0 max-w-content gap-5 px-page-gutter py-5 sm:py-8 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-8">
+            <div className="mx-auto grid min-w-0 max-w-content gap-5 px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-8 lg:pb-8">
                 <aside className="hidden min-w-0 rounded-xl border border-border bg-paper p-3 shadow-soft lg:sticky lg:top-24 lg:block lg:h-fit">
                     <div className="mb-2 flex items-center justify-between px-3 py-2">
                         <p className="text-[11px] font-extrabold tracking-wide text-muted">ناوبری فضای کاری</p>
@@ -644,6 +706,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     <Outlet context={outletContext} />
                 </main>
             </div>
+            <WorkspaceBottomNavigation links={links} />
         </div>
     );
 }
