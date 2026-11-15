@@ -75,6 +75,16 @@ Use the current RAD semantic tokens and project-owned primitives:
 - Only one chat popover may be open at a time. Close it on outside pointer/tap, Escape, action selection and conversation change. Keep controls keyboard reachable and announce expanded state with aria-expanded and aria-controls.
 - Keep emoji choices horizontally aligned and compact; keep action choices vertically stacked with readable touch targets. Preserve RTL alignment and avoid clipping at narrow widths.
 
+## Messaging layout density and geometry
+
+- Use Telegram as a reference for information density and interaction efficiency, not as a visual skin. Keep RAD semantic colors, typography, borders, radii, shadows, focus states and Persian RTL conventions.
+- Give the inbox/chat workspace one bounded responsive height. Avoid contradictory fixed-height and larger min-height declarations; reserve a single-column layout for mobile and tablet, and introduce the two-pane inbox/chat grid only at the desktop breakpoint.
+- Conversation items should be compact single-row targets. Anchor the three-dot action trigger inside the row instead of allocating a second persistent action row beneath every conversation.
+- Message bubbles must size to their content with `w-fit` and a readable maximum width. Do not let block-level bubbles stretch to the full available row; constrain long messages and media to the bubble width.
+- Keep the message history as the only flexible, vertically scrolling region (`min-h-0`, `flex-1`, `overflow-y-auto`). Header, related-artwork strip and composer remain compact, non-scrolling regions.
+- Keep message reactions and message actions in one compact footer row. Reduce excess vertical gaps and padding without shrinking readable Persian line-height or accessible touch targets.
+- The composer should remain visually compact, preserve attachment/reply previews, grow only as the draft wraps, and never force the conversation panel beyond its bounded height.
+
 ## Modal and dialog dismissal
 
 - All product modal dialogs must use the shared RAD Dialog / DialogContent primitive, backed by Radix Dialog. Do not create parallel modal implementations.
