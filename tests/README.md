@@ -165,7 +165,15 @@ Start your usual local app first with `npm run dev` and keep it running. Open a 
 npm run test:browser:manual -- --list
 ```
 
-Run one method by its ID (copy the exact ID from the list):
+Run a GET-only smoke journey against the actual current development database (no API interception or writes):
+
+```powershell
+npm run test:browser:manual -- test_artwork_catalogue_resilience.CurrentDevelopmentDatabaseReadOnlyTests.test_public_artwork_catalogue_renders_from_current_development_data
+```
+
+This reads the public artwork catalogue through the running Laravel app and therefore exercises its configured MySQL/MariaDB connection. It does not create or modify records.
+
+Run one API-mocked resilience method by its ID (copy the exact ID from the list):
 
 ```powershell
 npm run test:browser:manual -- test_artwork_catalogue_resilience.ArtworkCatalogueResilienceTests.test_artwork_catalogue_error_can_be_retried_into_results
@@ -173,7 +181,7 @@ npm run test:browser:manual -- test_artwork_catalogue_resilience.ArtworkCatalogu
 
 You can pass multiple test IDs to run a selected subset. The default target is `https://rad.localhost`; set `RAD_ART_BASE_URL` only to another loopback or `.localhost` origin. The runner requires `.env` to select MySQL/MariaDB and leaves the app's existing environment and database connection untouched. It does not start or stop services, change environment variables for the Laravel process, invoke Artisan, migrate, seed, reset storage, or clean application records.
 
-Only test classes marked `manual_dev_safe = True` may run by default. The marker means the test intercepts the API/media it exercises and does not rely on persistent app records. Other tests are labelled as requiring `--allow-mutations`; inspect their setup/teardown and use a dedicated test identity before opting in. The flag does not make arbitrary existing data safe. Running the complete manual suite requires both `--all` and `--allow-mutations`:
+Only tests explicitly marked manual-safe may run by default. A marker is allowed for either an API-mocked test with no persistent-record dependency or a reviewed GET-only test that reads current development data without writes. Other tests are labelled as requiring `--allow-mutations`; inspect their setup/teardown and use a dedicated test identity before opting in. The flag does not make arbitrary existing data safe. Running the complete manual suite requires both `--all` and `--allow-mutations`:
 
 ```powershell
 npm run test:browser:manual -- --all --allow-mutations
