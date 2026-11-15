@@ -116,3 +116,12 @@ test('rejects an application key with the wrong decoded length', () => {
     });
     assert.match(result.errors.join(' '), /APP_KEY is missing or invalid/);
 });
+
+
+test('rejects a production-named database even when the host is local', () => {
+    const result = validateDevelopmentEnvironment({
+        fileValues: { ...safeEnvironment, DB_DATABASE: 'rad_art_marketplace_production' },
+        root,
+    });
+    assert.match(result.errors.join(' '), /looks like a production database name/);
+});
