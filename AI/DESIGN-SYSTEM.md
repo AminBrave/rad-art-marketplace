@@ -78,7 +78,8 @@ Use the current RAD semantic tokens and project-owned primitives:
 ## Messaging layout density and geometry
 
 - Use Telegram as a reference for information density and interaction efficiency, not as a visual skin. Keep RAD semantic colors, typography, borders, radii, shadows, focus states and Persian RTL conventions.
-- Give the inbox/chat workspace one bounded responsive height. Avoid contradictory fixed-height and larger min-height declarations; reserve a single-column layout for mobile and tablet, and introduce the two-pane inbox/chat grid only at the desktop breakpoint.
+- Give the messaging route the exact available workspace height: use the dynamic viewport (`100dvh`) minus the sticky workspace header and, below desktop, the fixed primary bottom navigation plus its safe-area inset. At desktop, subtract only the workspace header. The workspace content wrapper must not add a second bottom-navigation spacer on this route. This lets the layout follow mobile browser chrome changes without overlapping the shell.
+- Keep the page heading compact and the inbox/chat panel as the remaining `flex-1 min-h-0` area. The conversation header, related-artwork strip and composer stay fixed inside the panel; only message history scrolls. Do not use a guessed `clamp()` height or force a minimum that exceeds the remaining viewport.
 - Conversation items should be compact single-row targets. Anchor the three-dot action trigger inside the row instead of allocating a second persistent action row beneath every conversation.
 - Message bubbles must size to their content with `w-fit` and a readable maximum width. Do not let block-level bubbles stretch to the full available row; constrain long messages and media to the bubble width.
 - Keep the message history as the only flexible, vertically scrolling region (`min-h-0`, `flex-1`, `overflow-y-auto`). Header, related-artwork strip and composer remain compact, non-scrolling regions.
@@ -90,7 +91,8 @@ Use the current RAD semantic tokens and project-owned primitives:
 - Keep the message history, message rows and message content in explicit RTL flow. Do not wrap message rows in LTR containers to achieve right/left alignment with physical `justify-end` utilities.
 - In an RTL message row, align the current user's bubble with `justify-start` (inline start/right) and the other participant's bubble with `justify-end` (inline end/left).
 - Use CSS logical properties and Tailwind logical utilities (`start/end`, `ps/pe`, `border-s/e`) for directional offsets and spacing. Reserve physical left/right utilities for deliberately asymmetric artwork or iconography that is truly physical.
-- Anchor contextual popovers with logical insets. Keep reaction pickers bounded to the viewport/chat width and allow emoji choices to wrap rather than clipping outside the conversation pane.
+- Keep emoji choices in one horizontal row; allow horizontal scrolling only on very narrow viewports rather than wrapping them into a vertical stack.
+- Render message reaction/action popovers in a portal outside the scrolling message-history clipping context. Measure the trigger and viewport, open to the left when the right side lacks room (and to the right when the left side is constrained), flip vertically when needed, and reposition on scroll/resize. Keep the popover above fixed shell chrome without placing it above a true modal or navigation drawer.
 - Reserve composer space on the same inline side as its attachment control. In RTL, the attachment control is on inline-start and the textarea must use matching inline-start padding.
 - Preserve RTL flex/grid ordering for avatars, timestamps, message status, reply previews, attachment previews and related-artwork chips. Use `dir="auto"` for user-provided names and mixed-direction values where appropriate.
 - Verify short and long Persian messages, Latin URLs/names, emoji sequences, media cards, narrow screens, both participants' bubbles, and popovers near both chat edges.
