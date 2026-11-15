@@ -263,6 +263,19 @@ async function runReportingTests() {
     await run(python, pythonArgs(['-m', 'unittest', 'discover', '-s', 'tests/python', '-p', 'test_*.py']));
 }
 
+function developmentArtisanEnvironment() {
+    return {
+        ...process.env, ...noCacheEnvironment('development'),
+        APP_ENV: 'local', APP_DEBUG: 'true', APP_URL: 'http://localhost',
+        SESSION_DOMAIN: '', SESSION_SECURE_COOKIE: 'false',
+        RAD_ART_BROWSER_TEST_MODE: '0',
+    };
+}
+
+async function runDevelopmentArtisan(args) {
+    runDevelopmentPreflight({ root, processValues: process.env, requireFrontend: false, checkHotFile: false });
+    await run(php, ['artisan', ...args], { env: developmentArtisanEnvironment() });
+}
 async function startDevelopment() {
     runDevelopmentPreflight({ root, processValues: process.env });
     const host = requireLanHost();
@@ -382,7 +395,7 @@ const task = process.argv[2];
 try {
     switch (task) {
         case 'setup': await setup(); break;
-        case 'db:sqlite:init': initializeSqlite(); break;
+        case 'db:sqlite:init': initializeSqlite(); break;\n        case 'db:status': await runDevelopmentArtisan(['migrate:status']); break;\n        case 'db:migrate': await runDevelopmentArtisan(['migrate']); break;\n        case 'db:seed': await runDevelopmentArtisan(['db:seed']); break;\n        case 'db:seed:demo': await runDevelopmentArtisan(['db:seed', '--class=DemoDatabaseSeeder']); break;\n        case 'db:fresh': await runDevelopmentArtisan(['migrate:fresh', '--seed']); break;
         case 'dev:check': runDevelopmentPreflight({ root, processValues: process.env }); break;
         case 'dev': await startDevelopment(); break;
         case 'production': await buildProduction(false); break;
