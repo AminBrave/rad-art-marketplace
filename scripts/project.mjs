@@ -277,7 +277,7 @@ async function auditBuiltColorAccessibility() {
     // Use an isolated output directory so this audit can run while the normal
     // development Vite server is active. It never touches public/build or .env.
     await run(process.execPath, [
-        viteCli, 'build', '--outDir', 'build/a11y-css', '--emptyOutDir',
+        viteCli, 'build', '--outDir', 'build/a11y-css', '--manifest', 'manifest.json', '--emptyOutDir',
     ]);
     verifyProductionManifest(manifestPath);
     await run(process.execPath, ['scripts/audit-built-css.mjs']);
