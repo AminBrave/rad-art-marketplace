@@ -205,7 +205,7 @@ test('messaging conversation filters use the shared RAD-styled Radix Tabs primit
 
 test('messaging fills the workspace viewport and keeps compact Telegram-inspired density', () => {
     assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col gap-2'));
-    assert.ok(messaging.includes('grid min-h-0 w-full min-w-0 flex-1 grid-cols-1'));
+    assert.ok(messaging.includes('grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1'));
     assert.ok(messaging.includes('titleClassName="mt-1 text-xl sm:text-2xl"'));
     assert.ok(layouts.includes('const isMessagingRoute = pathname.endsWith(\'/messages\')'));
     assert.ok(layouts.includes('h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
@@ -290,8 +290,8 @@ test('authenticated app shell keeps primary-only bottom navigation and places bo
     const bottomNavigation = layouts.slice(bottomStart, bottomEnd);
     const workspaceStart = layouts.indexOf('export function WorkspaceLayout');
     const workspaceLayout = layouts.slice(workspaceStart);
-    const drawerStart = workspaceLayout.indexOf('id="workspace-mobile-menu"');
-    const drawerEnd = workspaceLayout.indexOf('</aside>', drawerStart);
+    const drawerStart = workspaceLayout.indexOf('<DialogContent');
+    const drawerEnd = workspaceLayout.indexOf('</DialogContent>', drawerStart);
     const drawer = workspaceLayout.slice(drawerStart, drawerEnd);
 
     assert.ok(bottomStart >= 0 && bottomEnd > bottomStart);
@@ -306,9 +306,11 @@ test('authenticated app shell keeps primary-only bottom navigation and places bo
     assert.ok(workspaceLayout.includes('<AuthenticatedBottomNavigation primaryLinks={links} />'));
 
     assert.doesNotMatch(workspaceLayout.slice(0, workspaceLayout.indexOf('{logoutError &&')), /ناوبری اصلی فضای کاربری|ناوبری تکمیلی سایت|data-nav-priority="secondary"/);
-    assert.ok(workspaceLayout.includes('aria-label={mobileMenuOpen ?'));
-    assert.ok(workspaceLayout.includes('aria-haspopup="dialog"'));
-    assert.ok(workspaceLayout.includes('fixed inset-0 z-[70]'));
+    assert.ok(workspaceLayout.includes('<DialogTrigger asChild>'));
+    assert.ok(workspaceLayout.includes('aria-label="باز کردن منوی حساب کاربری"'));
+    assert.ok(workspaceLayout.includes('<DialogContent'));
+    assert.ok(workspaceLayout.includes('placement="drawer"'));
+    assert.ok(dialog.includes('DialogPrimitive.Overlay'));
     assert.ok(drawer.includes('aria-label="بخش‌های اصلی فضای کاربری"'));
     assert.ok(drawer.includes('aria-label="پیوندهای تکمیلی سایت"'));
     assert.ok(drawer.includes('publicSecondaryLinks.map((item)'));
