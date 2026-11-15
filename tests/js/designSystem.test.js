@@ -141,7 +141,7 @@ test('form controls and helper hints use shared RAD-styled Radix primitives', ()
     assert.ok(editorialPages.includes('<AlertDialogAction asChild>'));
     assert.ok(editorialPages.includes('<AlertDialogTitle>'));
     assert.ok(messaging.includes("DropdownMenu } from '../components/ui'"));
-    assert.doesNotMatch(messaging, /from '@radix-ui\\/react-dropdown-menu'/);
+    assert.doesNotMatch(messaging, /@radix-ui/);
     assert.ok(messaging.includes('<Tooltip content="گزینه‌های گفتگو">'));
     assert.ok(messaging.includes('<Tooltip content="افزودن واکنش">'));
     assert.ok(artworkStudio.includes('<SelectField'));
@@ -239,7 +239,7 @@ test('messaging is viewport-locked between the authenticated app header and bott
 test('messaging chat geometry follows RTL logical flow and uses Radix collision-aware overlays', () => {
     assert.ok(messaging.includes('<div dir="rtl" ref={messagesContainerRef}'));
     assert.ok(messaging.includes("DropdownMenu } from '../components/ui'"));
-    assert.doesNotMatch(messaging, /from '@radix-ui\\/react-dropdown-menu'/);
+    assert.doesNotMatch(messaging, /@radix-ui/);
     assert.ok(messaging.split('<DropdownMenu.Root').length - 1 >= 4, 'All messaging overlays use Radix.');
     assert.ok(messaging.includes('<DropdownMenu.Portal>'));
     assert.ok(messaging.includes('sideOffset={8} collisionPadding={8}'));
