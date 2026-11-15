@@ -2,7 +2,7 @@ import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useMessagingQueries } from './useMessagingQueries';
 import { useAuth } from './AuthContext';
-import { ConversationInboxSkeleton, MessageHistorySkeleton, MediaImage, PageHeader, Tabs, TabsList, TabsTrigger, TabsContent, Tooltip, DropdownMenu } from '../components/ui';
+import { ConversationInboxSkeleton, MessageHistorySkeleton, MediaImage, Tabs, TabsList, TabsTrigger, TabsContent, Tooltip, DropdownMenu } from '../components/ui';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Archive, ArchiveRestore, ArrowDown, Ban, Bell, BellOff, ChevronRight, Download, FileText, Flag, Image as ImageIcon, Inbox, LoaderCircle, MailOpen, MoreVertical, Paperclip, Pencil, Reply, Search, Send, ShieldCheck, SmilePlus, Trash2, X } from 'lucide-react';
 
@@ -582,14 +582,7 @@ export default function MessagingCenter({ role }) {
     }, [role, artworkSlug, selected]);
 
     return (
-        <section className="flex h-full min-h-0 min-w-0 w-full flex-col gap-2 overflow-hidden font-sans" dir="rtl">
-            <PageHeader
-                eyebrow="ارتباط مستقیم"
-                title="پیام‌ها"
-                description="گفتگوی خصوصی خریداران و هنرمندان؛ پیام‌ها به‌صورت خودکار به‌روزرسانی می‌شوند."
-                titleClassName="mt-1 text-xl sm:text-2xl"
-                className="max-sm:hidden"
-            />
+        <section className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden font-sans" dir="rtl">
             {notice && <p role="status" className="rounded-md border border-border bg-surface-muted p-3 text-sm">{notice}</p>}
             {error && <p role="alert" className="rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-danger-surface p-3 text-sm text-danger">{error}</p>}
             {inboxQuery.isError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-danger-surface p-3 text-sm text-danger"><span>{'دریافت گفتگوها انجام نشد. دوباره تلاش کنید.'}</span><button type="button" onClick={() => loadThreads()} className="shrink-0 font-bold underline underline-offset-4">تلاش دوباره</button></div>}
@@ -597,27 +590,27 @@ export default function MessagingCenter({ role }) {
             {directStartError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-danger-surface p-3 text-sm text-ink"><span>{directStartError}</span><button type="button" onClick={() => setDirectStartAttempt((attempt) => attempt + 1)} className="shrink-0 font-bold text-terracotta-strong underline underline-offset-4">تلاش دوباره</button></div>}
             <div className="grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden rounded-lg border border-border bg-surface shadow-soft lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]">
                 <aside className={active ? 'hidden h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e lg:flex' : 'flex h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e'}>
-                    <div className="shrink-0 border-b border-border bg-paper px-3 py-3">
-                        <div className="flex items-center justify-between gap-3"><div><p className="text-[11px] font-bold tracking-wide text-terracotta-strong">RAD / MESSAGES</p><h2 className="mt-1 text-lg font-black">گفتگوها</h2></div><span className="rounded-full border border-border bg-surface-muted px-3 py-1 text-[11px] font-bold text-muted">{threads.length} گفتگو</span></div>
+                    <div className="shrink-0 border-b border-border bg-paper px-3 py-2.5">
+                        <div className="flex items-center justify-between gap-3"><h2 className="text-sm font-extrabold leading-6 text-ink">گفتگوها</h2><span className="rounded-full border border-border bg-surface-muted px-2.5 py-1 text-[10px] font-bold leading-none text-muted">{threads.length} گفتگو</span></div>
                     </div>
                     <Tabs value={threadFilter} onValueChange={setThreadFilter} dir="rtl" className="flex min-h-0 flex-1 flex-col">
                         <div className="shrink-0 space-y-2 border-b border-border bg-surface-muted p-2.5">
                             <div className="relative"><Search size={17} aria-hidden="true" className="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-muted" /><input dir="rtl" aria-label="جستجوی گفتگوها" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="جستجو در گفتگوها…" className="min-h-[2.5rem] w-full rounded-md border border-border-strong bg-surface py-2 ps-10 pe-4 text-sm text-ink placeholder:text-muted shadow-none outline-none transition focus:border-focus focus:outline focus:outline-2 focus:outline-[color:var(--color-focus-soft)] focus:outline-offset-1 focus:ring-0" /></div>
                             <TabsList aria-label="فیلتر گفتگوها" className="grid grid-cols-3 gap-0 overflow-hidden rounded-md border border-border bg-surface-muted border-b-0">
-                                <TabsTrigger value="all" className="min-w-0 w-full justify-center gap-1.5 rounded-none border-b-0 px-2 py-2 text-xs data-[state=active]:border-transparent data-[state=active]:bg-ink data-[state=active]:text-inverse">
-                                    <Inbox size={14} aria-hidden="true" /><span className="truncate">همه</span>
+                                <TabsTrigger value="all" className="flex-row min-w-0 w-full items-center justify-center gap-1.5 rounded-none border-b-0 px-2 py-2 text-xs leading-none text-center data-[state=active]:border-transparent data-[state=active]:bg-ink data-[state=active]:text-inverse">
+                                    <Inbox size={14} aria-hidden="true" className="shrink-0" /><span className="truncate leading-none">همه</span>
                                 </TabsTrigger>
                                 <TabsTrigger value="unread" className="min-w-0 w-full justify-center gap-1.5 rounded-none border-b-0 px-2 py-2 text-xs data-[state=active]:border-transparent data-[state=active]:bg-ink data-[state=active]:text-inverse">
-                                    <MailOpen size={14} aria-hidden="true" /><span className="truncate">خوانده‌نشده</span>
+                                    <MailOpen size={14} aria-hidden="true" className="shrink-0" /><span className="truncate leading-none">خوانده‌نشده</span>
                                 </TabsTrigger>
                                 <TabsTrigger value="archived" className="min-w-0 w-full justify-center gap-1.5 rounded-none border-b-0 px-2 py-2 text-xs data-[state=active]:border-transparent data-[state=active]:bg-ink data-[state=active]:text-inverse">
-                                    <Archive size={14} aria-hidden="true" /><span className="truncate">بایگانی</span>
+                                    <Archive size={14} aria-hidden="true" className="shrink-0" /><span className="truncate leading-none">بایگانی</span>
                                 </TabsTrigger>
                             </TabsList>
                         </div>
-                        <TabsContent value={threadFilter} className="flex min-h-0 flex-1 flex-col p-0 pt-0 focus-visible:ring-0">
+                        <TabsContent value={threadFilter} dir="rtl" className="flex min-h-0 flex-1 flex-col p-0 pt-0 focus-visible:ring-0">
                     {loading ? <ConversationInboxSkeleton count={6} /> : threads.length === 0 ? (inboxQuery.isError ? null : <p className="p-5 text-sm leading-7 text-muted">هنوز گفتگویی ندارید. از صفحه هنرمند یا یک اثر، گزینه «پیام مستقیم» را انتخاب کنید.</p>) : (
-                        <ul className="min-h-0 flex-1 divide-y divide-border overflow-y-auto overscroll-contain [scrollbar-gutter:stable] [scrollbar-width:thin] [scrollbar-color:var(--color-border-strong)_transparent]">
+                        <ul dir="rtl" className="min-h-0 flex-1 divide-y divide-border overflow-y-auto overscroll-contain [scrollbar-gutter:stable] [scrollbar-width:thin] [scrollbar-color:var(--color-border-strong)_transparent]">
                             {threads.map((thread) => <li key={thread.id} className={'relative transition-colors hover:bg-surface-muted focus-within:bg-surface-muted ' + (Number(active) === Number(thread.id) ? 'bg-surface-muted shadow-[inset_-3px_0_0_var(--color-terracotta)]' : '')}>
                                 <button type="button" onClick={() => { setActive(thread.id); setReplyTo(null); setPendingArtwork(null); setEditingId(null); setParams((current) => { const next = new URLSearchParams(current); next.delete('artist'); next.delete('artwork'); next.set('conversation', String(thread.id)); return next; }, { replace: true }); }} aria-current={Number(active) === Number(thread.id) ? 'true' : undefined} className="flex min-h-[4.25rem] w-full items-center gap-2 bg-transparent px-3 py-2 pe-12 text-start transition"><span aria-hidden="true" className={'flex h-10 w-10 aspect-square shrink-0 items-center justify-center overflow-hidden rounded-full border border-border text-sm font-black [box-shadow:none] ' + avatarTone(thread.participant?.name)}>{avatarInitial(thread.participant?.name)}</span><span className="min-w-0 flex-1">
                                     <span className="flex items-center justify-between gap-2"><strong dir="auto" className="truncate text-sm font-extrabold">{thread.participant?.name ?? 'گفتگو'}</strong>{thread.unread_count > 0 && <span aria-label={`${Number(thread.unread_count).toLocaleString('fa-IR')} پیام خوانده‌نشده`} className={thread.unread_count < 10 ? 'flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-terracotta text-[11px] font-bold tabular-nums text-inverse' : 'flex h-6 min-w-8 max-w-12 shrink-0 items-center justify-center rounded-full bg-terracotta px-2 text-[11px] font-bold tabular-nums text-inverse'}>{thread.unread_count > 99 ? '۹۹+' : Number(thread.unread_count).toLocaleString('fa-IR')}</span>}</span>
