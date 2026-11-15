@@ -72,7 +72,7 @@ export function MessageHistorySkeleton({ count = 5, className = '' }) {
         <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال دریافت پیام‌ها" dir="rtl" className={`grid content-end gap-5 p-4 sm:p-6 ${className}`}>
             {Array.from({ length: count }, (_, index) => {
                 const own = index % 2 === 1;
-                return <div key={index} dir="rtl" className={`flex ${own ? 'justify-start' : 'justify-end'}`}><div className={`grid w-[min(78%,28rem)] gap-2 rounded-[20px] border border-border p-4 ${own ? 'bg-[var(--color-message-own)]' : 'bg-[var(--color-message-peer)]'}`}><Skeleton className={`h-3 ${index % 2 ? 'w-4/5' : 'w-full'} rounded-sm`} /><Skeleton className="h-3 w-3/5 rounded-sm" /><Skeleton className="h-2 w-12 justify-self-end rounded-sm" /></div></div>;
+                return <div key={index} dir="rtl" className={`flex ${own ? 'justify-start' : 'justify-end'}`}><div className={`grid w-[min(78%,28rem)] gap-2 rounded-[20px] border border-border p-4 ${own ? 'bg-[var(--color-message-own)]' : 'bg-[var(--color-message-peer)]'}`}><Skeleton className={`h-3 ${index % 2 ? 'w-4/5' : 'w-full'} rounded-sm`} /><Skeleton className="h-3 w-3/5 rounded-sm" /><Skeleton className="h-2 w-12 justify-self-start rounded-sm" /></div></div>;
             })}
         </div>
     );
