@@ -299,7 +299,8 @@ function verifyProductionManifest(manifestPath) {
         for (const asset of [entry.file, ...(entry.css ?? [])]) {
             const assetPath = resolve(dirname(manifestPath), asset);
             const outputRoot = resolve(dirname(manifestPath));
-            const relativeAsset = relative(outputRoot, assetPath);\n            const escapesOutput = relativeAsset === '..' || relativeAsset.startsWith('..' + sep) || isAbsolute(relativeAsset);\n            if (!asset || escapesOutput || !existsSync(assetPath)) {
+            const relativeAsset = relative(outputRoot, assetPath);
+            const escapesOutput = relativeAsset === '..' || relativeAsset.startsWith('..' + sep) || isAbsolute(relativeAsset);\n            if (!asset || escapesOutput || !existsSync(assetPath)) {
                 throw new Error('Production build references a missing or unsafe asset: ' + asset);
             }
         }
@@ -372,7 +373,7 @@ function usage() {
     console.log('Rademan project tasks\n\n'
         + 'setup                 Install dependencies and create .env if absent\n'
         + 'dev                   Start Laravel + Vite + Caddy for local/LAN HTTPS\n'
-        + 'db:sqlite:init        Create the local SQLite database file if absent\n'
+        + 'production            Build and verify standard production assets\\n'\n        + 'build:cpanel          Build and verify cPanel production assets\\n'\n        + 'db:sqlite:init        Create the local SQLite database file if absent\n'
         + 'test:backend          Run all PHPUnit suites\n'
         + 'test:unit             Run PHPUnit Unit\n'
         + 'test:feature          Run PHPUnit Feature\n'
@@ -388,7 +389,8 @@ try {
     switch (task) {
         case 'setup': await setup(); break;
         case 'db:sqlite:init': initializeSqlite(); break;
-        case 'dev': await startDevelopment(); break;\n        case 'production': await buildProduction(false); break;\n        case 'build:cpanel': await buildProduction(true); break;
+        case 'dev': await startDevelopment(); break;
+        case 'production': await buildProduction(false); break;\n        case 'build:cpanel': await buildProduction(true); break;
         case 'test:backend': await runBackendTests(); break;
         case 'test:unit':
         case 'test:feature':
