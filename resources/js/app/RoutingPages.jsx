@@ -322,7 +322,6 @@ export function ArtistProfileSettings() {
                 eyebrow="استودیوی هنرمند"
                 title="پروفایل هنرمند"
                 description="اطلاعات معرفی و وضعیت نمایش عمومی پروفایل خود را مدیریت کنید."
-                className="border-0 pb-0 pt-0"
             />
             {profileError && <p role="alert" className="mt-4 text-sm text-warning">{profileError}</p>}
             <form onSubmit={save} className="mt-6 grid gap-4 sm:grid-cols-2">
