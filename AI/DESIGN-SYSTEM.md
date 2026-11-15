@@ -66,6 +66,22 @@ Use the current RAD semantic tokens and project-owned primitives:
 - Keep keyboard roving focus and RTL arrow-key behavior intact. Focus indicators must remain visible inside the clipped group, and motion must respect reduced-motion preferences.
 - Messaging surfaces, filters, inputs, alerts and action controls must inherit the current RAD semantic colors, spacing, radii, typography and interaction states. Avoid one-off visual systems or arbitrary palette values.
 
+## Messaging interaction patterns
+
+- Keep inbox-row actions such as archive and mute inside a compact three-dot popover attached to that conversation row; do not expose persistent action rows under every conversation.
+- Keep message reactions in a compact, single-tap horizontal picker anchored to the message. Existing reaction counts remain visible on the message; the picker only contains the available emoji choices.
+- Keep message actions in a compact vertical popover anchored to the message, with only actions valid for that message owner (reply for all, edit/delete for own messages, report for other participants' messages).
+- These chat popovers are lightweight contextual surfaces, not modal dialogs: no full-screen overlay, no global modal sizing, no focus trap. Use RAD semantic surfaces, border, radius, shadow, typography and focus tokens.
+- Only one chat popover may be open at a time. Close it on outside pointer/tap, Escape, action selection and conversation change. Keep controls keyboard reachable and announce expanded state with aria-expanded and aria-controls.
+- Keep emoji choices horizontally aligned and compact; keep action choices vertically stacked with readable touch targets. Preserve RTL alignment and avoid clipping at narrow widths.
+
+## Modal and dialog dismissal
+
+- All product modal dialogs must use the shared RAD Dialog / DialogContent primitive, backed by Radix Dialog. Do not create parallel modal implementations.
+- A modal closes when the user clicks or taps outside its content, or presses Escape, unless a specific destructive or legally required flow has an explicitly documented reason to prevent dismissal.
+- Outside interaction must not be prevented by default handlers. Preserve Radix focus containment while open and focus restoration after close.
+- Contextual chat popovers are not modals and must not use the global dialog overlay or focus trap.
+
 ## Accessibility and interaction
 
 - Use semantic `nav` landmarks with distinct accessible labels for primary and secondary header navigation; the bottom bar has a primary-only landmark.
