@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { after, test } from 'node:test';
 import React from 'react';
+import { MemoryRouter } from 'react-router-dom';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { createServer } from 'vite';
 import react from '@vitejs/plugin-react';
@@ -330,13 +331,15 @@ test('UploadFeedback clamps progress at both ends of the accessible range', () =
 
 test('Breadcrumbs expose the current page without making it a link', () => {
     const html = renderToStaticMarkup(
-        React.createElement(navigation.Breadcrumbs, {
-            items: [
-                { label: 'خانه', to: '/' },
-                { label: 'آثار', to: '/artworks' },
-                { label: 'اثر نمونه' },
-            ],
-        }),
+        React.createElement(MemoryRouter, null,
+            React.createElement(navigation.Breadcrumbs, {
+                items: [
+                    { label: 'خانه', to: '/' },
+                    { label: 'آثار', to: '/artworks' },
+                    { label: 'اثر نمونه' },
+                ],
+            }),
+        ),
     );
 
     assert.match(html, /aria-label="مسیر صفحه"/);
