@@ -45,7 +45,7 @@ test('semantic palette, typography, spacing and layout tokens have one CSS sourc
         '--font-persian', '--font-latin', '--text-base', '--leading-copy',
         '--space-1', '--space-4', '--space-8', '--radius-md', '--content-width',
         '--page-gutter', '--control-height-md', '--artwork-ratio', '--workspace-bottom-nav-height',
-        '--workspace-bottom-nav-primary-height', '--workspace-bottom-nav-secondary-height',
+        '--workspace-bottom-nav-primary-height',
     ]) {
         assert.match(css, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Missing design token: ${token}`);
     }
@@ -149,28 +149,40 @@ test('dashboard headers and notification drawer use the shared accessible RAD di
 });
 
 
-test('authenticated app shell exposes role-aware primary and separated secondary navigation on every signed-in surface', () => {
-    assert.ok(layouts.includes('function AuthenticatedBottomNavigation({ primaryLinks, secondaryLinks })'));
-    assert.ok(layouts.includes('data-testid="authenticated-bottom-navigation"'));
-    assert.ok(layouts.includes('fixed inset-x-0 bottom-0 z-50'));
-    assert.ok(layouts.includes('pb-[env(safe-area-inset-bottom)]'));
-    assert.ok(layouts.includes('lg:hidden'));
-    assert.ok(layouts.includes('data-nav-priority="primary"'));
-    assert.ok(layouts.includes('data-nav-priority="secondary"'));
-    assert.ok(layouts.includes('aria-label="بخش‌های اصلی حساب کاربری"'));
-    assert.ok(layouts.includes('aria-label="پیوندهای تکمیلی سایت"'));
-    assert.ok(layouts.includes('user && <AuthenticatedBottomNavigation primaryLinks={getWorkspacePrimaryLinks(user.role)} secondaryLinks={publicSecondaryLinks} />'));
+test('authenticated app shell keeps primary-only bottom navigation and two-tier dashboard header navigation', () => {
+    const bottomStart = layouts.indexOf('function AuthenticatedBottomNavigation({ primaryLinks })');
+    const bottomEnd = layouts.indexOf('\n}\n\nexport function WorkspaceLayout', bottomStart);
+    const bottomNavigation = layouts.slice(bottomStart, bottomEnd);
+    const workspaceStart = layouts.indexOf('export function WorkspaceLayout');
+    const workspaceLayout = layouts.slice(workspaceStart);
+
+    assert.ok(bottomStart >= 0 && bottomEnd > bottomStart);
+    assert.ok(bottomNavigation.includes('data-testid="authenticated-bottom-navigation"'));
+    assert.ok(bottomNavigation.includes('fixed inset-x-0 bottom-0 z-50'));
+    assert.ok(bottomNavigation.includes('pb-[env(safe-area-inset-bottom)]'));
+    assert.ok(bottomNavigation.includes('lg:hidden'));
+    assert.ok(bottomNavigation.includes('aria-label="بخش‌های اصلی حساب کاربری"'));
+    assert.ok(bottomNavigation.includes('data-nav-priority="primary"'));
+    assert.doesNotMatch(bottomNavigation, /secondary|پیوندهای تکمیلی|publicSecondaryLinks/);
+    assert.ok(layouts.includes('user && <AuthenticatedBottomNavigation primaryLinks={getWorkspacePrimaryLinks(user.role)} />'));
+    assert.ok(workspaceLayout.includes('<AuthenticatedBottomNavigation primaryLinks={links} />'));
+
+    assert.ok(workspaceLayout.includes('aria-label="ناوبری اصلی فضای کاربری"'));
+    assert.ok(workspaceLayout.includes('aria-label="ناوبری تکمیلی سایت"'));
+    assert.ok(workspaceLayout.includes('data-nav-priority="primary"'));
+    assert.ok(workspaceLayout.includes('data-nav-priority="secondary"'));
+    assert.ok(workspaceLayout.includes('publicSecondaryLinks.map((item)'));
+    assert.ok(workspaceLayout.indexOf('ناوبری اصلی فضای کاربری') < workspaceLayout.indexOf('ناوبری تکمیلی سایت'));
+    assert.ok(workspaceLayout.includes('overflow-x-auto'));
+    assert.ok(layouts.includes('aria-label="ناوبری اصلی"'), 'Existing public header navigation must remain available.');
+
     const publicRoutesStart = appRouter.indexOf('<Route element={<PublicLayout />}>' );
     const publicRoutesEnd = appRouter.indexOf('</Route>', publicRoutesStart);
     assert.ok(publicRoutesStart >= 0 && publicRoutesEnd > publicRoutesStart);
     assert.ok(appRouter.slice(publicRoutesStart, publicRoutesEnd).includes('<Route path="*" element={<NotFoundPage />} />'), 'Public fallback routes must retain the authenticated shell.');
-    assert.ok(layouts.includes('<AuthenticatedBottomNavigation primaryLinks={links} secondaryLinks={publicSecondaryLinks} />'));
+
     assert.ok(layouts.includes('pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)]'));
-    assert.ok(layouts.includes('user ? "min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:pb-0" : "min-h-screen bg-canvas text-ink"'), 'Public content and footer need authenticated bottom-bar clearance.');
-    assert.ok(layouts.includes('secondaryLinks.map((item)'));
-    assert.ok(layouts.includes('overflow-x-auto'));
-    assert.ok(layouts.includes('aria-label="ناوبری اصلی"'), 'Existing public header navigation must remain available.');
-    assert.ok(layouts.includes('برای جابه‌جایی بین بخش‌های فضای کاری از نوار پایین صفحه استفاده کنید.'));
+    assert.ok(layouts.includes('user ? "min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:pb-0" : "min-h-screen bg-canvas text-ink"'));
     assert.ok(layouts.includes("'/dashboard/artist/artworks': Images"));
     assert.ok(layouts.includes("'/dashboard/buyer/messages': MessageCircle"));
     assert.ok(layouts.includes("'/admin/message-reports': Flag"));
@@ -179,18 +191,18 @@ test('authenticated app shell exposes role-aware primary and separated secondary
     assert.ok(routeLoading.includes("getWorkspacePrimaryLinks('buyer')"));
     assert.ok(routeLoading.includes("getWorkspacePrimaryLinks('admin')"));
     assert.ok(css.includes('--workspace-bottom-nav-primary-height: 4.5rem;'));
-    assert.ok(css.includes('--workspace-bottom-nav-secondary-height: 2.25rem;'));
-    assert.ok(css.includes('--workspace-bottom-nav-height: calc('));
+    assert.ok(css.includes('--workspace-bottom-nav-height: var(--workspace-bottom-nav-primary-height);'));
+    assert.doesNotMatch(css, /--workspace-bottom-nav-secondary-height/);
 });
-
 test('RAD design-system definition makes the authenticated app-shell and navigation hierarchy canonical', () => {
     for (const principle of [
         'coherent, responsive web app',
         'Every route rendered while a user is authenticated',
         'Keep the existing page header',
         'public-layout routes and authenticated workspace routes',
-        'Primary destinations',
-        'Secondary destinations',
+        'Two-level header navigation and primary bottom navigation',
+        'Secondary header navigation',
+        'primary workspace destinations only',
         'safe-area inset',
         'Never invent a route',
     ]) assert.ok(designSystem.includes(principle), 'Missing RAD design-system principle: ' + principle);
