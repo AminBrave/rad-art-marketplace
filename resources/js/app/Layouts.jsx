@@ -226,7 +226,7 @@ export function PublicLayout() {
                     </div>
                 </div>
             </footer>
-            {user && <AuthenticatedBottomNavigation primaryLinks={getWorkspacePrimaryLinks(user.role)} secondaryLinks={publicSecondaryLinks} />}
+            {user && <AuthenticatedBottomNavigation primaryLinks={getWorkspacePrimaryLinks(user.role)} />}
         </div>
     );
 }
@@ -488,7 +488,7 @@ const workspaceNavigationLabels = {
     '/admin/editorial': 'سردبیری',
 };
 
-function AuthenticatedBottomNavigation({ primaryLinks, secondaryLinks }) {
+function AuthenticatedBottomNavigation({ primaryLinks }) {
     return (
         <div
             data-testid="authenticated-bottom-navigation"
@@ -516,21 +516,6 @@ function AuthenticatedBottomNavigation({ primaryLinks, secondaryLinks }) {
                         </NavLink>
                     );
                 })}
-            </nav>
-            <nav aria-label="پیوندهای تکمیلی سایت" data-nav-priority="secondary" className="flex h-[var(--workspace-bottom-nav-secondary-height)] items-center gap-1 overflow-x-auto border-t border-border px-2 [scrollbar-width:thin]">
-                {secondaryLinks.map((item) => (
-                    <NavLink
-                        key={item.to}
-                        to={item.to}
-                        title={item.label}
-                        className={({ isActive }) => [
-                            'inline-flex min-h-8 shrink-0 items-center rounded-md px-3 text-[10px] font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus motion-reduce:transition-none',
-                            isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
-                        ].join(' ')}
-                    >
-                        {item.label}
-                    </NavLink>
-                ))}
             </nav>
         </div>
     );
@@ -643,6 +628,37 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                         </button>
                     </div>
                 </div>
+                <div className="border-t border-border/70">
+                    <nav aria-label="ناوبری اصلی فضای کاربری" data-nav-priority="primary" className="mx-auto flex min-h-11 max-w-content items-center gap-2 overflow-x-auto px-page-gutter [scrollbar-width:thin]">
+                        {links.map((item) => (
+                            <NavLink
+                                key={item.to}
+                                to={item.to}
+                                end={item.end}
+                                className={({ isActive }) => [
+                                    'inline-flex min-h-9 shrink-0 items-center rounded-md px-3 text-xs font-bold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus motion-reduce:transition-none sm:text-sm',
+                                    isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
+                                ].join(' ')}
+                            >
+                                {item.label}
+                            </NavLink>
+                        ))}
+                    </nav>
+                    <nav aria-label="ناوبری تکمیلی سایت" data-nav-priority="secondary" className="mx-auto flex min-h-9 max-w-content items-center gap-1 overflow-x-auto border-t border-border/60 px-page-gutter [scrollbar-width:thin]">
+                        {publicSecondaryLinks.map((item) => (
+                            <NavLink
+                                key={item.to}
+                                to={item.to}
+                                className={({ isActive }) => [
+                                    'inline-flex min-h-7 shrink-0 items-center rounded px-2.5 text-[11px] font-medium no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus motion-reduce:transition-none',
+                                    isActive ? 'text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
+                                ].join(' ')}
+                            >
+                                {item.label}
+                            </NavLink>
+                        ))}
+                    </nav>
+                </div>
                 {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{logoutError}</p>}
             </header>
 
@@ -736,7 +752,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     <Outlet context={outletContext} />
                 </main>
             </div>
-            <AuthenticatedBottomNavigation primaryLinks={links} secondaryLinks={publicSecondaryLinks} />
+            <AuthenticatedBottomNavigation primaryLinks={links} />
         </div>
     );
 }
