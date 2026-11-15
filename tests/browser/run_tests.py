@@ -38,7 +38,7 @@ def manual_selection_error(tests, allow_mutations: bool, run_all: bool = False) 
         if unsafe:
             return (
                 "Refusing tests not marked manual_dev_safe. Review their data effects, "
-                "then pass --allow-mutations explicitly:\\n" + "\\n".join(unsafe)
+                "then pass --allow-mutations explicitly:\n" + "\n".join(unsafe)
             )
     return None
 
@@ -281,10 +281,10 @@ def main() -> int:
     else:
         suite = unittest.TestSuite(all_tests)
 
-    if manual_mode and not args.allow_mutations:
-        unsafe = [test.id() for test in flatten(suite) if not getattr(test.__class__, "manual_dev_safe", False)]
-        if unsafe:
-            print("Refusing tests not marked manual_dev_safe. Review their data effects, then pass --allow-mutations explicitly:\n" + "\n".join(unsafe), file=sys.stderr)
+    if manual_mode:
+        safety_error = manual_selection_error(list(flatten_tests(suite)), args.allow_mutations, args.all)
+        if safety_error:
+            print(safety_error, file=sys.stderr)
             return 2
 
     try:
