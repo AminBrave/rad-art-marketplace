@@ -148,6 +148,14 @@ test('dashboard headers and notification drawer use the shared accessible RAD di
     assert.ok(messaging.includes('after:bg-terracotta'));
 });
 
+test('messaging conversation filters fill their RAD container edge to edge', () => {
+    assert.ok(messaging.includes('grid grid-cols-3 gap-0 overflow-hidden rounded-md border border-border bg-surface-muted'));
+    assert.ok(messaging.includes('min-h-11 w-full items-center justify-center'));
+    assert.ok(messaging.includes('focus-visible:outline-offset-[-2px]'));
+    assert.ok(messaging.includes('motion-reduce:transition-none'));
+    assert.doesNotMatch(messaging, /role="tablist"[^\n]*gap-1[^\n]*p-1/);
+});
+
 
 test('authenticated app shell keeps primary-only bottom navigation and places both navigation tiers in the dashboard hamburger drawer', () => {
     const bottomStart = layouts.indexOf('function AuthenticatedBottomNavigation({ primaryLinks })');
