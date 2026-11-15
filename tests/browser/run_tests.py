@@ -57,10 +57,8 @@ class RejectRedirects(HTTPRedirectHandler):
 
 
 def validate_local_target() -> None:
-    manual_mode = os.environ.get("RAD_ART_MANUAL_DEV_MODE") == "1"
-    isolated_mode = os.environ.get("RAD_ART_TEST_MODE") == "1"
-    if manual_mode == isolated_mode:
-        raise RuntimeError("Use exactly one guarded mode: npm run test:browser or npm run test:browser:manual.")
+    if os.environ.get("RAD_ART_DEV_MODE") != "1":
+        raise RuntimeError("Playwright must be launched by npm run test:browser against the current development app.")
 
     raw_url = os.environ.get("RAD_ART_BASE_URL", "http://127.0.0.1:8000").rstrip("/")
     parsed = urlparse(raw_url)
@@ -99,15 +97,9 @@ def validate_local_target() -> None:
             payload = json.loads(response.read().decode("utf-8"))
             if response.status != 200 or payload.get("status") != "ok":
                 raise RuntimeError(f"Local app health check returned an unexpected response: {health_url}")
-            if not manual_mode and payload.get("browser_test_ready") is not True:
-                raise RuntimeError(
-                    "The local app is not using the isolated browser-test environment. "
-                    "Run npm run test:browser to prepare and start the isolated test app."
-                )
     except (URLError, HTTPError, TimeoutError, json.JSONDecodeError) as error:
-        next_step = "Start your normal local development app first." if manual_mode else "Run npm run test:browser to prepare the isolated app."
         raise RuntimeError(
-            f"Local RAD app is not ready at {health_url}. {next_step} Underlying error: {error}"
+            f"Current local RAD development app is not ready at {health_url}. Start it with npm run dev first. Underlying error: {error}"
         ) from error
 
 
@@ -250,7 +242,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description="Run guarded Rademan Playwright tests and write JUnit + diagnostic reports."
     )
-    parser.add_argument("--list", action="store_true", help="List discovered test IDs and whether they are safe for manual development mode.")
+    parser.add_argument("--list", action="store_true", help="List discovered test IDs and whether they are read-only/manual-safe for the current development database.")
     parser.add_argument("--all", action="store_true", help="Explicitly select the complete discovered suite.")
     parser.add_argument("--allow-mutations", action="store_true", help="Allow selected tests not marked manual_dev_safe; they may change the current development database.")
     parser.add_argument(
@@ -261,7 +253,6 @@ def main() -> int:
     args = parser.parse_args()
     if args.all and args.tests:
         parser.error("--all cannot be combined with individual test IDs")
-    manual_mode = os.environ.get("RAD_ART_MANUAL_DEV_MODE") == "1"
     browser_dir = Path(__file__).resolve().parent
     sys.path.insert(0, str(browser_dir))
     loader = unittest.defaultTestLoader
@@ -275,8 +266,8 @@ def main() -> int:
             safe = is_manual_dev_safe(test)
             print(f"{test.id()}  [{'manual-safe: API mocked/read-only' if safe else 'requires --allow-mutations'}]")
         return 0
-    if manual_mode and not args.tests and not args.all:
-        print("Manual mode requires explicit test IDs, or --all to select the complete suite.", file=sys.stderr)
+    if not args.tests and not args.all:
+        print("Select one or more test IDs, or pass --all explicitly. The current development app is never started or reset.", file=sys.stderr)
         return 2
     if args.tests:
         selected = []
@@ -286,16 +277,11 @@ def main() -> int:
         suite = unittest.TestSuite(selected)
     elif args.all:
         suite = unittest.TestSuite(all_tests)
-    elif manual_mode:
-        suite = unittest.TestSuite(test for test in all_tests if is_manual_dev_safe(test))
-    else:
-        suite = unittest.TestSuite(all_tests)
 
-    if manual_mode:
-        safety_error = manual_selection_error(list(flatten_tests(suite)), args.allow_mutations, args.all)
-        if safety_error:
-            print(safety_error, file=sys.stderr)
-            return 2
+    safety_error = manual_selection_error(list(flatten_tests(suite)), args.allow_mutations, args.all)
+    if safety_error:
+        print(safety_error, file=sys.stderr)
+        return 2
 
     try:
         validate_local_target()
@@ -313,8 +299,7 @@ def main() -> int:
         )
         return 2
 
-    default_report_dir = "build/test-reports/browser-manual" if manual_mode else "build/test-reports"
-    report_dir = Path(os.environ.get("RAD_ART_TEST_REPORT_DIR", default_report_dir))
+    report_dir = Path(os.environ.get("RAD_ART_TEST_REPORT_DIR", "build/test-reports/browser"))
     report_dir.mkdir(parents=True, exist_ok=True)
     report_path = report_dir / "browser-junit.xml"
     log_path = report_dir / "browser-run.log"
@@ -355,7 +340,7 @@ def main() -> int:
         "playwright": playwright_version,
         "base_url": os.environ.get("RAD_ART_BASE_URL", "http://127.0.0.1:8000"),
         "selected_tests": [test.id() for test in flatten_tests(suite)],
-        "manual_dev_mode": manual_mode,
+        "target_environment": "current-local-development",
         "allow_mutations": args.allow_mutations,
         "tests_run": result.testsRun,
         "failures": failures,
