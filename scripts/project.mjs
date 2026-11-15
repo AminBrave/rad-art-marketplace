@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
-import { copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, createWriteStream, existsSync, lstatSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isIP } from 'node:net';
 import { networkInterfaces } from 'node:os';
-import { runDevelopmentPreflight } from './dev-environment.mjs';
+import { createGzip } from 'node:zlib';
+import { pipeline } from 'node:stream/promises';
+import { parseDotEnv, runDevelopmentPreflight } from './dev-environment.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 process.chdir(root);
@@ -272,7 +274,7 @@ function developmentArtisanEnvironment() {
     };
 }
 
-async function runDevelopmentArtisan(args) {
+async async function runDevelopmentArtisan(args) {
     runDevelopmentPreflight({ root, processValues: process.env, requireFrontend: false, checkHotFile: false });
     await run(php, ['artisan', ...args], { env: developmentArtisanEnvironment() });
 }
@@ -371,6 +373,135 @@ async function runBrowserTests() {
     }
 }
 
+function developmentMysqlConfig() {
+    const fileValues = parseDotEnv(readFileSync(resolve(root, '.env'), 'utf8'));
+    const values = { ...fileValues, ...process.env };
+    if (String(values.DB_CONNECTION ?? 'mysql').toLowerCase() !== 'mysql') {
+        throw new Error('The cPanel SQL export requires DB_CONNECTION=mysql. SQLite databases cannot be exported as a MySQL/phpMyAdmin dump by this command.');
+    }
+
+    let host = values.DB_HOST || '127.0.0.1';
+    let port = values.DB_PORT || '3306';
+    let username = values.DB_USERNAME || '';
+    let password = values.DB_PASSWORD || '';
+    let database = values.DB_DATABASE || '';
+    const socket = values.DB_SOCKET || '';
+
+    if (values.DB_URL) {
+        let url;
+        try { url = new URL(values.DB_URL); }
+        catch { throw new Error('DB_URL is not a valid MySQL connection URL.'); }
+        if (!['mysql:', 'mariadb:'].includes(url.protocol)) {
+            throw new Error('DB_URL must use mysql:// or mariadb:// for the cPanel SQL export.');
+        }
+        host = url.hostname || host;
+        port = url.port || port;
+        username = decodeURIComponent(url.username) || username;
+        password = decodeURIComponent(url.password) || password;
+        database = decodeURIComponent(url.pathname.replace(/^\/+/, '')) || database;
+    }
+
+    if (!database) throw new Error('DB_DATABASE is empty. Set the development database name in .env.');
+    if (!username) throw new Error('DB_USERNAME is empty. Set the MySQL development username in .env.');
+    if (!socket && !host) throw new Error('DB_HOST is empty. Set the MySQL development host in .env.');
+
+    const numericPort = Number(port);
+    if (!Number.isInteger(numericPort) || numericPort < 1 || numericPort > 65535) {
+        throw new Error('DB_PORT must be a valid TCP port between 1 and 65535.');
+    }
+
+    return { host, port: String(numericPort), username, password, database, socket };
+}
+
+async function exportDevelopmentDatabase() {
+    runDevelopmentPreflight({ root, processValues: process.env, requireFrontend: false, checkHotFile: false });
+    const config = developmentMysqlConfig();
+    const outputDirectory = resolve(root, 'public', 'build', 'database-export');
+    const outputPath = resolve(outputDirectory, 'rademan-development-seed.sql.gz');
+    const accessPath = resolve(outputDirectory, '.htaccess');
+    const accessRules = [
+        'Options -Indexes',
+        '<IfModule mod_authz_core.c>',
+        '    Require all denied',
+        '</IfModule>',
+        '<IfModule !mod_authz_core.c>',
+        '    Order allow,deny',
+        '    Deny from all',
+        '</IfModule>',
+        '',
+    ].join('\n');
+
+    for (const directory of [resolve(root, 'public', 'build'), outputDirectory]) {
+        if (existsSync(directory)) {
+            const stats = lstatSync(directory);
+            if (stats.isSymbolicLink() || !stats.isDirectory()) {
+                throw new Error('Refusing to write the database export through a non-directory or symbolic link: ' + directory);
+            }
+        } else mkdirSync(directory);
+    }
+
+    if (existsSync(accessPath) && lstatSync(accessPath).isSymbolicLink()) {
+        throw new Error('Refusing to replace a symbolic-link export access rule: ' + accessPath);
+    }
+    writeFileSync(accessPath, accessRules, { mode: 0o644 });
+
+    if (existsSync(outputPath) && (lstatSync(outputPath).isSymbolicLink() || !lstatSync(outputPath).isFile())) {
+        throw new Error('Refusing to replace a non-regular database export target: ' + outputPath);
+    }
+
+    const temporaryPath = outputPath + '.tmp-' + process.pid;
+    if (existsSync(temporaryPath)) throw new Error('A temporary database export already exists: ' + temporaryPath);
+
+    const args = [
+        '--single-transaction', '--quick', '--skip-lock-tables',
+        '--default-character-set=utf8mb4', '--hex-blob', '--no-tablespaces',
+    ];
+    if (config.socket) args.push('--socket=' + config.socket);
+    else args.push('--host=' + config.host, '--port=' + config.port);
+    args.push('--user=' + config.username, '--', config.database);
+
+    const childEnvironment = { ...process.env };
+    delete childEnvironment.DB_PASSWORD;
+    if (config.password) childEnvironment.MYSQL_PWD = config.password;
+    else delete childEnvironment.MYSQL_PWD;
+
+    console.log('[project] Exporting the configured development MySQL database. No database rows will be changed.');
+    const dump = spawn('mysqldump', args, {
+        cwd: root, stdio: ['ignore', 'pipe', 'pipe'], env: childEnvironment, windowsHide: true,
+    });
+    let stderr = '';
+    dump.stderr.setEncoding('utf8');
+    dump.stderr.on('data', (chunk) => { stderr = (stderr + chunk).slice(-8000); });
+
+    const streamTask = pipeline(
+        dump.stdout,
+        createGzip({ level: 9 }),
+        createWriteStream(temporaryPath, { flags: 'wx', mode: 0o600 }),
+    );
+    const processTask = new Promise((resolveDump, rejectDump) => {
+        dump.once('error', (error) => rejectDump(new Error('Could not start mysqldump. Install the MySQL client tools and make mysqldump available on PATH. ' + error.message)));
+        dump.once('close', (code, signal) => {
+            if (code === 0) resolveDump();
+            else rejectDump(new Error('mysqldump failed (' + (signal ? 'signal ' + signal : 'exit code ' + code) + '). ' + stderr.trim()));
+        });
+    });
+
+    try {
+        await Promise.all([streamTask, processTask]);
+        renameSync(temporaryPath, outputPath);
+    } catch (error) {
+        dump.kill();
+        await Promise.allSettled([streamTask, processTask]);
+        rmSync(temporaryPath, { force: true });
+        throw error;
+    }
+
+    const size = lstatSync(outputPath).size;
+    console.log('[project] Created ' + relative(root, outputPath) + ' (' + size + ' bytes).');
+    console.log('[project] The export folder denies direct Apache web access. Retrieve the file through cPanel File Manager or FTP.');
+    console.log('[project] Import it in phpMyAdmin after selecting the destination database; the dump does not create or select a database.');
+}
+
 function usage() {
     console.log([
         'Rademan project tasks',
@@ -385,6 +516,7 @@ function usage() {
         'db:seed               Seed the local database',
         'db:seed:demo          Seed local demo data',
         'db:fresh              Destructively recreate and seed the configured dev database',
+        'db:export:cpanel       Export the current local MySQL database as a protected .sql.gz file',
         'test:backend          Run all PHPUnit suites',
         'test:unit             Run PHPUnit Unit',
         'test:feature          Run PHPUnit Feature',
@@ -405,6 +537,7 @@ try {
         case 'db:seed': await runDevelopmentArtisan(['db:seed']); break;
         case 'db:seed:demo': await runDevelopmentArtisan(['db:seed', '--class=DemoDatabaseSeeder']); break;
         case 'db:fresh': await runDevelopmentArtisan(['migrate:fresh', '--seed']); break;
+        case 'db:export:cpanel': await exportDevelopmentDatabase(); break;
         case 'dev:check': runDevelopmentPreflight({ root, processValues: process.env }); break;
         case 'dev': await startDevelopment(); break;
         case 'production': await buildProduction(false); break;
