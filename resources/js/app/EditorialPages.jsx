@@ -186,6 +186,7 @@ export function AdminEditorialPage() {
                                 <AlertDialogContent>
                                     <AlertDialogTitle>توقف انتشار این مجموعه را تأیید می‌کنید؟</AlertDialogTitle>
                                     <AlertDialogDescription>این مجموعه از صفحه عمومی مجموعه‌های منتخب خارج می‌شود؛ محتوای آن حذف نخواهد شد.</AlertDialogDescription>
+                                    {actionError && <p role="alert" className="mt-3 text-sm leading-6 text-danger">{actionError}</p>}
                                     <div className="mt-5 flex flex-wrap justify-end gap-2">
                                         <AlertDialogCancel asChild>
                                             <Button size="sm" variant="ghost" disabled={busy}>انصراف</Button>
