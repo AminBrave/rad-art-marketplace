@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import ArtworkGallery from './ArtworkGallery';
 import ArtworkStudio from './ArtworkStudio';
 import DesignFoundation from './DesignFoundation';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui';
+import { Tabs, TabsList, TabsTrigger, TabsContent, SelectField, Checkbox } from '../components/ui';
 
 const highlights = [
     { number: '01', title: 'هنر اصیل', description: 'آثار منتخب هنرمندان مستقل را کشف کنید.' },
@@ -312,10 +312,10 @@ export default function App() {
                             {authMode === 'register' && (
                                 <label className="block text-sm font-semibold">
                                     نوع حساب
-                                    <select name="role" value={form.role} onChange={updateForm} className="mt-2 w-full rounded-xl border border-border bg-surface-muted px-4 py-3">
+                                    <SelectField name="role" value={form.role} onChange={updateForm} className="mt-2 w-full rounded-xl border border-border bg-surface-muted px-4 py-3">
                                         <option value="buyer">خریدار</option>
                                         <option value="artist">هنرمند</option>
-                                    </select>
+                                    </SelectField>
                                 </label>
                             )}
                             {authMode === 'register' && (
@@ -391,7 +391,7 @@ export default function App() {
                                 {profileErrors.website_url?.map((message) => <span key={message} className="mt-1 block text-xs text-danger">{message}</span>)}
                             </label>
                             <label className="flex items-center gap-3 text-sm font-semibold">
-                                <input type="checkbox" name="is_public" checked={Boolean(profile.is_public)} onChange={updateProfileForm} className="h-4 w-4 accent-terracotta" />
+                                <Checkbox name="is_public" checked={Boolean(profile.is_public)} onChange={updateProfileForm} aria-label="نمایش عمومی پروفایل" className="h-4 w-4" />
                                 نمایش عمومی پروفایل
                             </label>
                             <button disabled={profileBusy} className="w-full rounded-xl bg-ink px-6 py-3.5 font-bold text-inverse transition hover:bg-terracotta disabled:cursor-wait disabled:opacity-60">
