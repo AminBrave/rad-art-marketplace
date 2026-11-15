@@ -40,6 +40,7 @@ The route inventory below is derived from the current React Router tree in `reso
 
 | React route / family | Screen or boundary | Existing test evidence | Remaining risk / exclusion |
 |---|---|---|---|
+| `/?design-system` (development only) | Legacy component/design-foundation preview selected by the Vite development entrypoint | `designSystem.test.js`, `designSystemCoverage.test.js` source audits | Not a production React Router route; no dedicated browser interaction suite for the preview |
 | `/` | Public home and discovery entry | `test_public_discovery_and_messaging_entry_points.py`, `test_responsive_rtl_workspaces.py`, cross-role journeys | No dedicated home-page loading/error state matrix |
 | `/artworks` | Artwork catalogue, search and filters | `test_artwork_catalogue_resilience.py`, `test_accessibility_smoke.py`, responsive RTL smoke; image success/error/missing-source behavior | Catalogue pagination and every filter combination are not exhaustively covered |
 | `/artworks/:slug` | Public artwork detail | `test_public_discovery_and_messaging_entry_points.py`, full-stack artwork journeys | No standalone route-level accessibility and async-state matrix |
