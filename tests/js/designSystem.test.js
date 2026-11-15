@@ -166,6 +166,7 @@ test('authenticated app shell exposes role-aware primary and separated secondary
     assert.ok(appRouter.slice(publicRoutesStart, publicRoutesEnd).includes('<Route path="*" element={<NotFoundPage />} />'), 'Public fallback routes must retain the authenticated shell.');
     assert.ok(layouts.includes('<AuthenticatedBottomNavigation primaryLinks={links} secondaryLinks={publicSecondaryLinks} />'));
     assert.ok(layouts.includes('pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)]'));
+    assert.ok(layouts.includes('user ? "min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:pb-0" : "min-h-screen bg-canvas text-ink"'), 'Public content and footer need authenticated bottom-bar clearance.');
     assert.ok(layouts.includes('secondaryLinks.map((item)'));
     assert.ok(layouts.includes('overflow-x-auto'));
     assert.ok(layouts.includes('aria-label="ناوبری اصلی"'), 'Existing public header navigation must remain available.');
@@ -191,7 +192,7 @@ test('RAD design-system definition makes the authenticated app-shell and navigat
         'Primary destinations',
         'Secondary destinations',
         'safe-area inset',
-        'Do not invent a route',
+        'Never invent a route',
     ]) assert.ok(designSystem.includes(principle), 'Missing RAD design-system principle: ' + principle);
 });
 test('boot shell and application presentation use Tailwind utilities with no component CSS selectors', () => {
