@@ -39,8 +39,6 @@ def is_manual_dev_safe(test) -> bool:
 
 def manual_selection_error(tests, allow_mutations: bool, run_all: bool = False) -> str | None:
     """Return a safety error when a manual selection is not explicitly safe."""
-    if run_all and not allow_mutations:
-        return "The complete browser suite may mutate development data. Add --allow-mutations only after reviewing that risk."
     if not allow_mutations:
         unsafe = [test.id() for test in tests if not is_manual_dev_safe(test)]
         if unsafe:
@@ -240,11 +238,10 @@ class Tee:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Run guarded Rademan Playwright tests and write JUnit + diagnostic reports."
+        description="Run Rademan Playwright tests against the current local development app and write JUnit + diagnostic reports."
     )
     parser.add_argument("--list", action="store_true", help="List discovered test IDs and whether they are read-only/manual-safe for the current development database.")
     parser.add_argument("--all", action="store_true", help="Explicitly select the complete discovered suite.")
-    parser.add_argument("--allow-mutations", action="store_true", help="Allow selected tests not marked manual_dev_safe; they may change the current development database.")
     parser.add_argument(
         "tests",
         nargs="*",
@@ -267,21 +264,16 @@ def main() -> int:
             print(f"{test.id()}  [{'manual-safe: API mocked/read-only' if safe else 'requires --allow-mutations'}]")
         return 0
     if not args.tests and not args.all:
-        print("Select one or more test IDs, or pass --all explicitly. The current development app is never started or reset.", file=sys.stderr)
-        return 2
     if args.tests:
         selected = []
         for name in args.tests:
             loaded = loader.loadTestsFromName(name, module=None)
             selected.extend(flatten_tests(loaded))
         suite = unittest.TestSuite(selected)
-    elif args.all:
+    else:
+        # Bare invocation intentionally runs every discovered browser test.
+        # The project owner has authorized mutations to the current dev database.
         suite = unittest.TestSuite(all_tests)
-
-    safety_error = manual_selection_error(list(flatten_tests(suite)), args.allow_mutations, args.all)
-    if safety_error:
-        print(safety_error, file=sys.stderr)
-        return 2
 
     try:
         validate_local_target()
@@ -343,7 +335,7 @@ def main() -> int:
         "base_url": os.environ.get("RAD_ART_BASE_URL", "https://rad.localhost"),
         "selected_tests": selected_test_ids,
         "target_environment": "current-local-development",
-        "allow_mutations": args.allow_mutations,
+        "mutation_policy": "owner-authorized-current-development-data",
         "tests_run": result.testsRun,
         "failures": failures,
         "errors": errors,
