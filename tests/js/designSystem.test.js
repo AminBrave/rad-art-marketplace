@@ -213,9 +213,10 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.ok(layouts.includes('h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.ok(layouts.includes('sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.ok(layouts.includes('lg:h-[calc(100dvh-5rem)]'));
-    assert.ok(layouts.includes('lg:[direction:ltr] lg:grid-cols-[15rem_minmax(0,1fr)]'));
-    assert.ok(layouts.includes('<aside dir="rtl" className={isMessagingRoute'));
-    assert.ok(layouts.includes('<main dir="rtl" className={isMessagingRoute ?'));
+    assert.ok(layouts.includes('lg:grid-cols-[15rem_minmax(0,1fr)]'));
+    assert.doesNotMatch(layouts, /direction:ltr|<aside dir="rtl"|<main dir="rtl"/);
+    
+    
     assert.ok(layouts.includes("isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden lg:col-start-2' : 'min-w-0'"));
     assert.doesNotMatch(messaging, /RAD \/ MESSAGES|ارتباط مستقیم|PageHeader/);
     assert.doesNotMatch(layouts, /ناوبری فضای کاری|RAD \/ MENU/);
@@ -232,6 +233,9 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
 
 test('messaging is viewport-locked between the authenticated app header and bottom navigation on mobile', () => {
     assert.ok(messaging.includes('text-sm font-extrabold leading-6 text-ink">گفتگوها</h2>'), 'Keep the inbox heading compact inside its panel.');
+    assert.ok(messaging.includes('text-[10px] leading-4 text-muted">گفتگوی خصوصی خریداران و هنرمندان؛ پیام‌ها به‌صورت خودکار به‌روزرسانی می‌شوند.</p>'));
+    assert.ok(messaging.includes("own ? 'rounded-es-[.35rem]"));
+    assert.ok(messaging.includes(": 'rounded-ee-[.35rem]"));
     assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden'));
     assert.ok(messaging.includes('grid h-full min-h-0 w-full min-w-0 flex-1'));
     assert.ok(messaging.includes('divide-y divide-border overflow-y-auto'), 'The inbox list scrolls inside its fixed panel.');
@@ -241,7 +245,7 @@ test('messaging is viewport-locked between the authenticated app header and bott
     assert.ok(layouts.includes('sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.ok(layouts.includes('lg:h-[calc(100dvh-5rem)]'));
     assert.ok(layouts.includes("lg:fixed lg:top-28"));
-    assert.ok(layouts.includes("lg:left-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))]"));
+    assert.ok(layouts.includes("lg:right-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))]"));
     assert.ok(layouts.includes("lg:max-h-[calc(100dvh_-_8rem)] lg:w-60 lg:overflow-y-auto"));
     assert.ok(layouts.includes('{isMessagingRoute && <div className="hidden lg:block" aria-hidden="true" />}'));
     assert.ok(layouts.includes("overflow-hidden lg:col-start-2"));
