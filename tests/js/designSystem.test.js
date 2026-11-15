@@ -190,7 +190,7 @@ test('messaging chat geometry follows RTL logical flow and keeps bubbles and pop
     assert.ok(messaging.includes('function getChatPopoverPosition(anchor, preferredWidth, preferredHeight)'));
     assert.ok(messaging.includes('const leftOfAnchor = rect.right - width'));
     assert.ok(messaging.includes('const rightOfAnchor = rect.left'));
-    assert.ok(messaging.includes('window.visualViewport?.height ?? window.innerHeight'));
+    assert.ok(messaging.includes('const viewportHeight = visualViewport?.height ?? window.innerHeight;'));
     assert.ok(messaging.includes("anchor.closest('[data-chat-popover-boundary]')?.getBoundingClientRect()"));
     assert.ok(messaging.includes('rect.bottom < boundary.top || rect.top > boundary.bottom'));
     assert.ok(messaging.includes('window.visualViewport?.width'));
@@ -234,7 +234,7 @@ test('messaging actions use compact, dismissible Telegram-style popovers', () =>
     assert.ok(messaging.includes("thread-options-' + thread.id"));
     assert.ok(messaging.includes("updateThreadSetting(thread, 'archived'"));
     assert.ok(messaging.includes("updateThreadSetting(thread, 'muted'"));
-    assert.ok(messaging.includes('flex max-w-[min(15rem,calc(100vw-2rem))] flex-wrap items-center gap-1 rounded-full border border-border bg-paper p-1.5 shadow-soft'));
+    assert.ok(messaging.includes('flex max-w-[calc(100vw-1rem)] flex-nowrap items-center gap-1 overflow-x-auto rounded-full border border-border bg-paper p-1.5 shadow-soft'));
     assert.ok(messaging.includes('aria-label="افزودن واکنش"'));
     assert.ok(messaging.includes('aria-label="عملیات پیام"'));
     assert.ok(messaging.includes('<span>پاسخ</span>'));
@@ -307,7 +307,7 @@ test('RAD design-system definition makes the authenticated app-shell and navigat
     for (const principle of [
         'coherent, responsive web app',
         'Every route rendered while a user is authenticated',
-        'Keep the existing page header',
+        'Keep the compact dashboard header',
         'public-layout routes and authenticated workspace routes',
         'Two-level header navigation and primary bottom navigation',
         'Secondary header navigation',
