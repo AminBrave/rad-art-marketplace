@@ -176,7 +176,7 @@ This reads the public artwork catalogue through the running Laravel app and ther
 Run one API-mocked resilience method by its ID (copy the exact ID from the list):
 
 ```powershell
-npm run test:browser:manual -- test_artwork_catalogue_resilience.ArtworkCatalogueResilienceTests.test_artwork_catalogue_error_can_be_retried_into_results
+npm run test:browser -- test_artwork_catalogue_resilience.ArtworkCatalogueResilienceTests.test_artwork_catalogue_error_can_be_retried_into_results
 ```
 
 You can pass multiple test IDs to run a selected subset. The default target is `https://rad.localhost`; set `RAD_ART_BASE_URL` only to another loopback or `.localhost` origin. The runner requires `.env` to select MySQL/MariaDB and leaves the app's existing environment and database connection untouched. It does not start or stop services, change environment variables for the Laravel process, invoke Artisan, migrate, seed, reset storage, or clean application records.
@@ -184,7 +184,7 @@ You can pass multiple test IDs to run a selected subset. The default target is `
 Only tests explicitly marked manual-safe may run by default. A marker is allowed for either an API-mocked test with no persistent-record dependency or a reviewed GET-only test that reads current development data without writes. Other tests are labelled as requiring `--allow-mutations`; inspect their setup/teardown and use a dedicated test identity before opting in. The flag does not make arbitrary existing data safe. Running the complete manual suite requires both `--all` and `--allow-mutations`:
 
 ```powershell
-npm run test:browser:manual -- --all --allow-mutations
+npm run test:browser -- --all --allow-mutations
 ```
 
 Playwright diagnostics are written under `build/test-reports/browser/`.
