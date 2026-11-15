@@ -368,7 +368,8 @@ function NotificationBell({ user }) {
             </DialogTrigger>
             <DialogContent
                 id="workspace-notification-panel"
-                className="!left-auto !right-0 !top-0 !h-dvh !max-h-dvh !w-[min(25rem,100vw)] !max-w-none !translate-x-0 !translate-y-0 !rounded-none !border-y-0 !border-s-0 !border-e !p-0 flex flex-col !overflow-hidden text-right"
+                placement="drawer"
+                className="!w-[min(25rem,100vw)] !p-0 flex flex-col !overflow-hidden text-right"
             >
                     <div className="h-1 shrink-0 bg-terracotta" aria-hidden="true" />
                     <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
