@@ -317,7 +317,7 @@ export function ArtistProfileSettings() {
     if (profileLoading) return <RouteLoading label="در حال دریافت پروفایل هنرمند…" />;
 
     return (
-        <section className="rounded-2xl border border-border bg-paper p-6 sm:p-8" dir="rtl">
+        <section className="space-y-6" dir="rtl">
             <PageHeader
                 eyebrow="استودیوی هنرمند"
                 title="پروفایل هنرمند"
