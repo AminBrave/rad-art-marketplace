@@ -15,6 +15,7 @@ export {
 } from './navigation';
 export { Dialog, DialogTrigger, DialogClose, DialogContent, DialogTitle, DialogDescription } from './Dialog';
 export { Tooltip } from './Tooltip';
+export { AlertDialog, AlertDialogTrigger, AlertDialogCancel, AlertDialogAction, AlertDialogContent, AlertDialogTitle, AlertDialogDescription } from './AlertDialog';
 export { Skeleton, SkeletonLines, MediaImage, EmptyState, ErrorState, SuccessState, PermissionState, UploadFeedback, Toast } from './feedback';
 export { ArtworkCard, ArtistCard } from './cards';
 
