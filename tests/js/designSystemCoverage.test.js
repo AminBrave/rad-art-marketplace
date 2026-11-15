@@ -19,6 +19,8 @@ const frontendFiles = walk(resolve(root, 'resources/js'))
     .filter((path) => ['.js', '.jsx'].includes(extname(path)));
 const bladeFiles = walk(resolve(root, 'resources/views'))
     .filter((path) => path.endsWith('.blade.php'));
+const stylesheetFiles = walk(resolve(root, 'resources'))
+    .filter((path) => extname(path) === '.css');
 const presentationFiles = [...frontendFiles, ...bladeFiles].sort();
 const rawPaletteClass = /(?:^|[\s'"\x60])(?:[a-z][\w-]*:)*(?:bg|text|border|ring|fill|stroke|shadow)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\d{2,3}(?:\/\d{1,3})?(?=$|[\s'"\x60])/g;
 const arbitraryHexClass = /\b(?:bg|text|border|ring|fill|stroke)-(?:\[[^\]]*#(?:[0-9a-f]{3,8})[^\]]*\])/gi;
@@ -67,7 +69,7 @@ test('presentation sources do not depend on removed component-specific CSS class
     assert.deepEqual(violations, [], 'Legacy presentation classes must be migrated to shared utilities.');
 });
 
-test('the application stylesheet contains tokens and base rules, not component selectors', () => {
+test('all project stylesheets contain tokens and base rules, not component selectors', () => {
     assert.equal((css.match(/:root\s*\{/g) ?? []).length, 1);
     assert.deepEqual(
         matchesWithLines(css, /^\s*\.[a-zA-Z_][\w-]*(?:[^{}]*)\{/gm),
