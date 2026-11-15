@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { WorkspaceLayout } from './Layouts';
-import { Skeleton, ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, FormFieldSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton } from '../components/ui';
+import { Skeleton, ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, FormFieldSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton, PageHeader } from '../components/ui';
 const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
 
 const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
@@ -321,8 +321,12 @@ export function ArtistProfileSettings() {
 
     return (
         <section className="rounded-2xl border border-border bg-paper p-6 sm:p-8" dir="rtl">
-            <h1 className="text-2xl font-black">پروفایل هنرمند</h1>
-            <p className="mt-2 text-sm leading-7 text-muted">اطلاعات معرفی و وضعیت نمایش عمومی پروفایل خود را مدیریت کنید.</p>
+            <PageHeader
+                eyebrow="استودیوی هنرمند"
+                title="پروفایل هنرمند"
+                description="اطلاعات معرفی و وضعیت نمایش عمومی پروفایل خود را مدیریت کنید."
+                className="border-0 pb-0 pt-0"
+            />
             {profileError && <p role="alert" className="mt-4 text-sm text-warning">{profileError}</p>}
             <form onSubmit={save} className="mt-6 grid gap-4 sm:grid-cols-2">
                 <label className="text-sm font-semibold sm:col-span-2">نام نمایشی
