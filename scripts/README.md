@@ -151,12 +151,13 @@ Keep your normal `npm run dev` app running (including Laravel, Vite and Caddy), 
 
 ```powershell
 npm run test:browser:manual -- --list
+npm run test:browser:manual -- test_artwork_catalogue_resilience.CurrentDevelopmentDatabaseReadOnlyTests.test_public_artwork_catalogue_renders_from_current_development_data
 npm run test:browser:manual -- test_artwork_catalogue_resilience.ArtworkCatalogueResilienceTests.test_artwork_catalogue_error_can_be_retried_into_results
 ```
 
 The manual command attaches to `https://rad.localhost` by default and does not start/stop services, alter `.env`, override database variables, run Artisan, migrate, seed, reset storage or clean application records. Override the origin only with a local `.localhost`/loopback URL using `RAD_ART_BASE_URL`; remote hosts are rejected. The command checks that the existing `.env` selects MySQL/MariaDB. It does not inspect database rows or prove that a database is disposable.
 
-Only test classes explicitly marked `manual_dev_safe = True` can run without an opt-in. Those tests must intercept their API/media dependencies and avoid database-backed writes. Other tests are listed as requiring `--allow-mutations`; review their setup and teardown first. This flag is a deliberate risk acknowledgement, not a guarantee of safe cleanup. The complete suite requires both `--all` and `--allow-mutations`.
+Only tests explicitly marked manual-safe can run without an opt-in. A marked test must either intercept its API/media dependencies without relying on persisted records, or be a reviewed GET-only journey that reads current development data without writes. The catalogue smoke test below exercises the real app/MySQL read path. Other tests are listed as requiring `--allow-mutations`; review their setup and teardown first. This flag is a deliberate risk acknowledgement, not a guarantee of safe cleanup. The complete suite requires both `--all` and `--allow-mutations`.
 
 Manual-mode reports are written under `build/test-reports/browser-manual/`, separate from isolated-run reports. Existing failure artifacts are retained; only the selected run's JUnit/log/summary files are refreshed.
 
