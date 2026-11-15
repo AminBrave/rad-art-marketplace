@@ -27,8 +27,7 @@
     "lint": "eslint resources/js --max-warnings=0",
     "lint:fix": "eslint resources/js --fix",
     "a11y:colors": "node --test tests/js/colorAccessibility.test.js",
-    "build:cpanel": "node scripts/project.mjs build:cpanel",
-    "test:browser:manual": "node scripts/project.mjs test:browser:manual"
+    "build:cpanel": "node scripts/project.mjs build:cpanel"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",
