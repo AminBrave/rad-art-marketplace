@@ -358,9 +358,29 @@ class CodebaseRenderedColorContrastTests(unittest.TestCase):
                 ("mobile", 390, 844),
             ):
                 page.set_viewport_size({"width": width, "height": height})
+                main = page.locator("main").first
+                main_before = main.bounding_box()
+                width_before = page.evaluate("() => document.documentElement.scrollWidth")
+
                 page.get_by_role("button", name="اعلان‌ها").click()
                 panel = page.get_by_role("dialog", name="اعلان‌های پیام")
                 panel.wait_for(state="visible")
+
+                self.assertLessEqual(
+                    page.evaluate("() => document.documentElement.scrollWidth"),
+                    width,
+                    f"Opening the notification panel caused horizontal page overflow on {viewport_name}",
+                )
+                self.assertEqual(
+                    main.bounding_box()["x"],
+                    main_before["x"],
+                    f"Opening the notification panel shifted page content on {viewport_name}",
+                )
+                self.assertEqual(
+                    page.evaluate("() => document.documentElement.scrollWidth"),
+                    width_before,
+                    f"Opening the notification panel changed document width on {viewport_name}",
+                )
 
                 bounds = panel.bounding_box()
                 self.assertIsNotNone(bounds, f"Notification panel has no box on {viewport_name}")
