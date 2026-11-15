@@ -27,11 +27,11 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Development | `npm run dev:check` | Run the read-only local environment preflight without starting services |
 | Development | `npm run dev` | Validate `.env`, reject production/debug-off or unsafe database targets, check dependencies/stale Vite hot file, then start Laravel + Vite + Caddy |
 | Database | `npm run db:sqlite:init` | Create the local SQLite file only if absent |
-| Database | `npm run db:status` | Show migration status |
-| Database | `npm run db:migrate` | Apply pending migrations |
-| Database | `npm run db:seed` | Run `DatabaseSeeder` |
-| Database | `npm run db:seed:demo` | Run `DemoDatabaseSeeder` |
-| Database | `npm run db:fresh` | **Destructive:** drop all configured database tables, migrate and seed |
+| Database | `npm run db:status` | Show migration status after local environment/database preflight |
+| Database | `npm run db:migrate` | Apply pending migrations after local environment/database preflight |
+| Database | `npm run db:seed` | Run `DatabaseSeeder` after local environment/database preflight |
+| Database | `npm run db:seed:demo` | Run `DemoDatabaseSeeder` after local environment/database preflight |
+| Database | `npm run db:fresh` | **Destructive:** preflight, drop all configured local database tables, migrate and seed |
 | Tests | `npm run test:backend` | Backend PHPUnit tests using isolated in-memory SQLite |
 | Tests | `npm run test:unit` | Unit PHPUnit suite |
 | Tests | `npm run test:feature` | Feature PHPUnit suite |
@@ -135,7 +135,7 @@ The runner remains guarded: it requires browser_test_ready=true and rejects non-
 
 scripts/project.mjs owns only workflows that need multiple steps, isolated test environments, report generation or service lifecycle management. It is not a second public command registry.
 
-The dispatcher tasks are setup, dev:check, dev, production, build:cpanel, db:sqlite:init, test:backend, test:unit, test:feature, test:integration, test:frontend, test:browser, test:report and test:reporting. Database one-liners, production builds, lint and focused accessibility tests are defined directly in package.json.
+The dispatcher tasks are setup, dev:check, dev, production, build:cpanel, db:sqlite:init, db:status, db:migrate, db:seed, db:seed:demo, db:fresh, test:backend, test:unit, test:feature, test:integration, test:frontend, test:browser, test:report and test:reporting. Lint and focused accessibility tests are defined directly in package.json. Database commands are routed through the dispatcher so they inherit the local environment/database preflight.
 
 Use node scripts/project.mjs --help for the concise internal task list.
 
