@@ -331,7 +331,7 @@ class CodebaseRenderedColorContrastTests(unittest.TestCase):
             page.get_by_role("button", name="باز کردن دیالوگ").click()
             page.get_by_role("dialog").wait_for(state="visible")
             assert_current_state("dialog-open")
-            page.get_by_role("button", name="بستن").click()
+            page.get_by_role("button", name="بستن", exact=True).click()
             page.get_by_role("dialog").wait_for(state="hidden")
             assert_current_state("dialog-closed")
 
