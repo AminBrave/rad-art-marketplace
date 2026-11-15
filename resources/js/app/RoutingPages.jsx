@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { WorkspaceLayout } from './Layouts';
+import { getWorkspacePrimaryLinks, WorkspaceLayout } from './Layouts';
 import { Skeleton, ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, FormFieldSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton, PageHeader, WorkspaceHero } from '../components/ui';
 const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
 
@@ -239,12 +239,7 @@ export function ArtistWorkspaceLayout() {
         : '';
     const setProfile = (nextProfile) => queryClient.setQueryData(profileKey, nextProfile);
 
-    const links = [
-        { to: '/dashboard/artist', label: 'نمای کلی', end: true },
-        { to: '/dashboard/artist/profile', label: 'پروفایل هنرمند' },
-        { to: '/dashboard/artist/artworks', label: 'مدیریت آثار' },
-        { to: '/dashboard/artist/messages', label: 'پیام‌های مستقیم' },
-    ];
+    const links = getWorkspacePrimaryLinks('artist');
 
     return <WorkspaceLayout title="فضای هنرمند" links={links} outletContext={{ user, profile, setProfile, profileLoading, profileError }} />;
 }
@@ -376,21 +371,12 @@ export function ArtistArtworkPage() {
 
 export function BuyerWorkspaceLayout() {
     const { user } = useAuth();
-    const links = [
-        { to: '/dashboard/buyer', label: 'نمای کلی', end: true },
-        { to: '/dashboard/buyer/messages', label: 'پیام‌های مستقیم' },
-    ];
+    const links = getWorkspacePrimaryLinks('buyer');
     return <WorkspaceLayout title="فضای خریدار" links={links} outletContext={{ user }} />;
 }
 
 export function AdminWorkspaceLayout() {
-    const links = [
-        { to: '/admin', label: 'نمای کلی', end: true },
-        { to: '/admin/users', label: 'مدیریت کاربران' },
-        { to: '/admin/artworks', label: 'بررسی آثار' },
-        { to: '/admin/message-reports', label: 'گزارش پیام‌ها' },
-        { to: '/admin/editorial', label: 'مجموعه‌ها و سردبیری' },
-    ];
+    const links = getWorkspacePrimaryLinks('admin');
     return <WorkspaceLayout title="پنل مدیریت" links={links} />;
 }
 
