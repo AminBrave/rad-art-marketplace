@@ -42,6 +42,7 @@ function getChatPopoverPosition(anchor, preferredWidth, preferredHeight) {
     const viewportWidth = visualViewport?.width ?? document.documentElement.clientWidth ?? window.innerWidth;
     const viewportHeight = visualViewport?.height ?? window.innerHeight;
     const margin = 8;
+    const anchorGap = 32;
     const minLeft = Math.max(viewportLeft + margin, (boundary?.left ?? viewportLeft) + margin);
     const maxRight = Math.min(viewportLeft + viewportWidth - margin, (boundary?.right ?? viewportLeft + viewportWidth) - margin);
     const width = Math.max(1, Math.min(preferredWidth, maxRight - minLeft));
@@ -60,13 +61,13 @@ function getChatPopoverPosition(anchor, preferredWidth, preferredHeight) {
     const below = maxBottom - rect.bottom;
     // Context menus open below their trigger by default; flip above only when
     // the visible pane does not have enough room beneath the trigger.
-    const preferredTop = below >= height + margin
-        ? rect.bottom + margin
-        : above >= height + margin
-            ? rect.top - height - margin
+    const preferredTop = below >= height + anchorGap
+        ? rect.bottom + anchorGap
+        : above >= height + anchorGap
+            ? rect.top - height - anchorGap
             : below >= above
-                ? rect.bottom + margin
-                : rect.top - height - margin;
+                ? rect.bottom + anchorGap
+                : rect.top - height - anchorGap;
     const top = Math.max(minTop, Math.min(preferredTop, maxBottom - height));
     return { top, left, width, maxHeight };
 }
