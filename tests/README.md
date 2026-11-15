@@ -155,9 +155,33 @@ The source-level design-system and mutation-architecture tests intentionally ins
 
 ## 5. Run browser tests (Playwright)
 
-Browser tests exercise real user journeys in Chromium. They may create, update or delete test records and must use the disposable local browser-test environment.
+Browser tests exercise real user journeys in Chromium. There are two separate modes: manual mode attaches to your already-running local MySQL development app and defaults to read-only/API-mocked tests; isolated mode uses a disposable SQLite database for stateful journeys.
 
-### Single-command lifecycle
+### Manual mode: current development app and MySQL
+
+Start your usual local app first with `npm run dev` and keep it running. Open a second terminal and list the available tests:
+
+```powershell
+npm run test:browser:manual -- --list
+```
+
+Run one method by its ID (copy the exact ID from the list):
+
+```powershell
+npm run test:browser:manual -- test_artwork_catalogue_resilience.ArtworkCatalogueResilienceTests.test_artwork_catalogue_error_can_be_retried_into_results
+```
+
+You can pass multiple test IDs to run a selected subset. The default target is `https://rad.localhost`; set `RAD_ART_BASE_URL` only to another loopback or `.localhost` origin. The runner requires `.env` to select MySQL/MariaDB and leaves the app's existing environment and database connection untouched. It does not start or stop services, change environment variables for the Laravel process, invoke Artisan, migrate, seed, reset storage, or clean application records.
+
+Only test classes marked `manual_dev_safe = True` may run by default. The marker means the test intercepts the API/media it exercises and does not rely on persistent app records. Other tests are labelled as requiring `--allow-mutations`; inspect their setup/teardown and use a dedicated test identity before opting in. The flag does not make arbitrary existing data safe. Running the complete manual suite requires both `--all` and `--allow-mutations`:
+
+```powershell
+npm run test:browser:manual -- --all --allow-mutations
+```
+
+Manual diagnostics are isolated under `build/test-reports/browser-manual/`; they do not overwrite the isolated browser runner's reports.
+
+### Isolated mode: disposable SQLite lifecycle
 
 Stop the normal npm run dev process, then run npm run test:browser from the repository root. The command:
 
@@ -175,10 +199,10 @@ Run one test method by appending its Python unittest ID after --:
 
 ### Browser safety rules
 
-- Do not run the Python browser runner directly. Use npm run test:browser; its guard verifies the target is localhost and that the app reports browser_test_ready=true.
-- Do not change RAD_ART_BASE_URL to a staging or production host. Remote targets are intentionally rejected.
-- Do not point browser tests at database/database.sqlite, your normal development database, or any shared database.
-- Each run resets only the dedicated browser-test SQLite database and storage. It does not reset the normal development database.
+- Use `npm run test:browser` for the isolated SQLite lifecycle and `npm run test:browser:manual` for the already-running development app. Both modes retain local-target guards.
+- Never target staging or production. Remote hosts are intentionally rejected.
+- Isolated mode resets only its dedicated browser-test SQLite database and isolated storage; it does not reset the normal development database.
+- Manual mode uses the app's existing `.env` MySQL/MariaDB connection and never resets or seeds it. Run only marked manual-safe tests by default; explicitly review and opt into any mutating test.
 - If the health or Vite readiness check fails, fix the local test setup; do not weaken or bypass the preflight guard.
 
 ### Browser diagnostics
@@ -194,7 +218,7 @@ To inspect a captured trace, use python -m playwright show-trace with the exact 
 
 ## 6. Run the test suites and reports
 
-Run the backend suites with npm run test:backend, or choose one of npm run test:unit, npm run test:feature and npm run test:integration. Run frontend tests with npm run test:frontend. Run browser journeys with npm run test:browser; its temporary app is started and stopped by that command.
+Run the backend suites with npm run test:backend, or choose one of npm run test:unit, npm run test:feature and npm run test:integration. Run frontend tests with npm run test:frontend. Run isolated browser journeys with npm run test:browser; its temporary app is started and stopped by that command. For manual, selected Playwright tests against the already-running local MySQL app, use npm run test:browser:manual -- --list and then pass one or more discovered test IDs.
 
 Lint and production builds are separate commands: npm run lint, npm run lint:fix, npm run production and npm run build:cpanel. They are not bundled into a verify alias. Follow AGENTS.md and obtain explicit authorization before running any verification.
 
