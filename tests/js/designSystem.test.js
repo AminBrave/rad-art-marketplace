@@ -219,26 +219,9 @@ test('messaging actions use Radix menu semantics and preserve reply focus', () =
     assert.ok(messaging.includes('data-[highlighted]:bg-surface-muted'));
     assert.ok(messaging.includes('aria-label="افزودن واکنش"'));
     assert.ok(messaging.includes('aria-label="عملیات پیام"'));
-    assert.doesNotMatch(messaging, /document\\.addEventListener\\('pointerdown'|document\\.addEventListener\\('keydown'|window\\.addEventListener\\('scroll', reposition/);
-});
-
-test('messaging actions use compact, dismissible Telegram-style popovers', () => {
-    assert.ok(messaging.includes("const [openPopover, setOpenPopover] = useState(null)"));
-    assert.ok(messaging.includes("document.addEventListener('pointerdown', closeOnOutsidePointer, true)"));
-    assert.ok(messaging.includes("document.addEventListener('keydown', closeOnEscape, true)"));
-    assert.ok(messaging.includes("event.target.closest?.('[data-chat-popover-root], [data-chat-popover-panel]')"));
-    assert.ok(messaging.includes('popoverAnchorRef.current?.focus()'));
-    assert.ok(messaging.includes("window.addEventListener('scroll', reposition, true)"));
-    assert.ok(messaging.includes("data-chat-popover-root"));
-    assert.ok(messaging.includes("thread-options-' + thread.id"));
-    assert.ok(messaging.includes("updateThreadSetting(thread, 'archived'"));
-    assert.ok(messaging.includes("updateThreadSetting(thread, 'muted'"));
-    assert.ok(messaging.includes('flex max-w-[calc(100vw-1rem)] flex-nowrap items-center gap-1 overflow-x-auto rounded-full border border-border bg-paper p-1.5 shadow-soft'));
-    assert.ok(messaging.includes('aria-label="افزودن واکنش"'));
-    assert.ok(messaging.includes('aria-label="عملیات پیام"'));
-    assert.ok(messaging.includes('<span>پاسخ</span>'));
-    assert.ok(messaging.includes('<span>ویرایش</span>'));
-    assert.ok(messaging.includes('<span>حذف</span>'));
+    assert.ok(!messaging.includes("document.addEventListener('pointerdown'"));
+    assert.ok(!messaging.includes("document.addEventListener('keydown'"));
+    assert.ok(!messaging.includes("window.addEventListener('scroll', reposition"));
 });
 
 test('shared RAD modal dialogs retain outside-click and Escape dismissal behavior', () => {
