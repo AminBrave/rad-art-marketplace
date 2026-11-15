@@ -32,6 +32,7 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Database | `npm run db:seed` | Run `DatabaseSeeder` after local environment/database preflight |
 | Database | `npm run db:seed:demo` | Run `DemoDatabaseSeeder` after local environment/database preflight |
 | Database | `npm run db:fresh` | **Destructive:** preflight, drop all configured development database tables, migrate and seed |
+| Database | `npm run db:export:cpanel` | Export the current development MySQL database to a protected `public/build/database-export/*.sql.gz` dump |
 | Tests | `npm run test:backend` | Backend PHPUnit tests using isolated in-memory SQLite |
 | Tests | `npm run test:unit` | Unit PHPUnit suite |
 | Tests | `npm run test:feature` | Feature PHPUnit suite |
@@ -47,6 +48,14 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Build | `npm run build:cpanel` | Build and verify cPanel Vite production assets |
 
 Use the npm database commands for local development. Direct `php artisan` invocations bypass the project preflight and do not receive the launcher's scoped cache paths.
+
+### Export a seeded database for cPanel / phpMyAdmin
+
+Run `npm run db:export:cpanel` after seeding the development MySQL database. It requires `mysqldump` on PATH and writes `public/build/database-export/rademan-development-seed.sql.gz`. The dump contains the current database's schema and all rows; it does not seed, reset or modify the source database. To create a clean demo-only snapshot first, `npm run db:fresh` rebuilds the configured development database and runs `DatabaseSeeder` (destructive: it drops existing tables and data). `npm run db:seed` alone is additive/idempotent and does not remove unrelated records.
+
+The dump is a MySQL import file, not a SQLite converter. It does not include `CREATE DATABASE` or `USE`, so create/select the destination database in cPanel/phpMyAdmin before importing. Upload the `.sql.gz` file through phpMyAdmin's Import tab. Retrieve it from the development project with cPanel File Manager or FTP; direct Apache access to the export folder is denied by its `.htaccess`. The generated `.sql.gz` is ignored by Git. Run the export after `npm run production`, because a subsequent Vite production build recreates `public/build` and removes generated files there.
+
+**Production safety:** the demo seeder creates known test accounts (including `admin@rademan.test`) with the shared password `Demo@12345`. Do not expose or use these demo credentials on a live site. Before importing this snapshot into production, remove/replace demo accounts and inspect the dump for any local user data, messages or other development-only records. This command exports every table and row in the configured database; it cannot determine which rows are safe to publish.
 
 ## Default HTTPS development and LAN access
 
