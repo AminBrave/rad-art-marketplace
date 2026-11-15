@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import axios from 'axios';
 import { useMessagingQueries } from './useMessagingQueries';
 import { useAuth } from './AuthContext';
@@ -30,6 +31,31 @@ function timeLabel(value) {
     return Number.isNaN(date.getTime()) ? '' : date.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
 }
 
+function getChatPopoverPosition(anchor, preferredWidth, height) {
+    if (!anchor?.isConnected) return null;
+    const rect = anchor.getBoundingClientRect();
+    const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
+    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+    const margin = 8;
+    const width = Math.min(preferredWidth, viewportWidth - margin * 2);
+    const leftOfAnchor = rect.right - width;
+    const rightOfAnchor = rect.left;
+    const left = leftOfAnchor >= margin
+        ? leftOfAnchor
+        : rightOfAnchor + width <= viewportWidth - margin
+            ? rightOfAnchor
+            : Math.max(margin, Math.min(leftOfAnchor, viewportWidth - width - margin));
+    const above = rect.top - margin;
+    const below = viewportHeight - rect.bottom - margin;
+    const preferredTop = above >= height + margin
+        ? rect.top - height - margin
+        : below >= height + margin
+            ? rect.bottom + margin
+            : rect.top - height - margin;
+    const top = Math.max(margin, Math.min(preferredTop, viewportHeight - height - margin));
+    return { top, left, width };
+}
+
 function dayLabel(value) {
     if (!value) return '';
     const date = new Date(value);
@@ -45,6 +71,9 @@ export default function MessagingCenter({ role }) {
     const [threadFilter, setThreadFilter] = useState('all');
     const [active, setActive] = useState(null);
     const [openPopover, setOpenPopover] = useState(null);
+    const [popoverPosition, setPopoverPosition] = useState(null);
+    const popoverAnchorRef = useRef(null);
+    const popoverSizeRef = useRef({ width: 240, height: 48 });
     const { threads, setThreads, loadThreads, inboxQuery, messages, setMessages, setMessagesMeta, messagesQuery, fetchOlderMessages, cancelConversationQueries, safety, setSafety, safetyQuery, detailQuery, markRead, request } = useMessagingQueries({ endpoint, search: debouncedSearch, filter: threadFilter, conversationId: active, userId: user?.id });
     const loading = inboxQuery.isLoading;
     const hasMoreThreads = Boolean(inboxQuery.hasNextPage);
@@ -76,23 +105,55 @@ export default function MessagingCenter({ role }) {
     const scrollPositionsRef = useRef(new Map());
     const restoredScrollConversationRef = useRef(null);
     const selectedFileRef = useRef(selectedFile);
+    const toggleChatPopover = (event, id, width, height) => {
+        if (openPopover === id) {
+            setOpenPopover(null);
+            setPopoverPosition(null);
+            return;
+        }
+        popoverAnchorRef.current = event.currentTarget;
+        popoverSizeRef.current = { width, height };
+        setPopoverPosition(getChatPopoverPosition(event.currentTarget, width, height));
+        setOpenPopover(id);
+    };
+
     useEffect(() => {
         if (!openPopover) return undefined;
-        const openedRoot = document.querySelector('[data-chat-popover-id="' + openPopover + '"]');
-        openedRoot?.querySelector('[data-chat-popover-panel] button:not(:disabled)')?.focus();
+        document.querySelector('[data-chat-popover-panel] button:not(:disabled)')?.focus();
         const closeOnOutsidePointer = (event) => {
-            if (!event.target.closest?.('[data-chat-popover-root]')) setOpenPopover(null);
+            if (event.target.closest?.('[data-chat-popover-root], [data-chat-popover-panel]')) return;
+            setOpenPopover(null);
+            setPopoverPosition(null);
         };
         const closeOnEscape = (event) => {
             if (event.key !== 'Escape') return;
-            event.target.closest?.('[data-chat-popover-root]')?.querySelector('button[aria-haspopup="true"]')?.focus();
+            popoverAnchorRef.current?.focus();
             setOpenPopover(null);
+            setPopoverPosition(null);
+        };
+        const reposition = () => {
+            const anchor = popoverAnchorRef.current;
+            if (!anchor?.isConnected) {
+                setOpenPopover(null);
+                setPopoverPosition(null);
+                return;
+            }
+            const { width, height } = popoverSizeRef.current;
+            setPopoverPosition(getChatPopoverPosition(anchor, width, height));
         };
         document.addEventListener('pointerdown', closeOnOutsidePointer, true);
         document.addEventListener('keydown', closeOnEscape, true);
+        window.addEventListener('resize', reposition);
+        window.addEventListener('scroll', reposition, true);
+        window.visualViewport?.addEventListener('resize', reposition);
+        window.visualViewport?.addEventListener('scroll', reposition);
         return () => {
             document.removeEventListener('pointerdown', closeOnOutsidePointer, true);
             document.removeEventListener('keydown', closeOnEscape, true);
+            window.removeEventListener('resize', reposition);
+            window.removeEventListener('scroll', reposition, true);
+            window.visualViewport?.removeEventListener('resize', reposition);
+            window.visualViewport?.removeEventListener('scroll', reposition);
         };
     }, [openPopover]);
 
@@ -599,19 +660,21 @@ export default function MessagingCenter({ role }) {
     }, [role, artworkSlug, selected]);
 
     return (
-        <section className="flex min-h-0 min-w-0 w-full flex-col gap-3 font-sans" dir="rtl">
+        <section className="flex h-full min-h-0 min-w-0 w-full flex-col gap-2 font-sans" dir="rtl">
             <PageHeader
                 eyebrow="ارتباط مستقیم"
                 title="پیام‌ها"
                 description="گفتگوی خصوصی خریداران و هنرمندان؛ پیام‌ها به‌صورت خودکار به‌روزرسانی می‌شوند."
-                className="mb-1"
+                className="mb-0 gap-2 pb-3 pt-0 max-sm:gap-1 max-sm:pb-3"
+                titleClassName="mt-1 text-xl sm:text-2xl"
+                descriptionClassName="mt-1 text-xs leading-relaxed sm:text-sm"
             />
             {notice && <p role="status" className="rounded-md border border-border bg-surface-muted p-3 text-sm">{notice}</p>}
             {error && <p role="alert" className="rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-danger-surface p-3 text-sm text-danger">{error}</p>}
             {inboxQuery.isError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-danger-surface p-3 text-sm text-danger"><span>{'دریافت گفتگوها انجام نشد. دوباره تلاش کنید.'}</span><button type="button" onClick={() => loadThreads()} className="shrink-0 font-bold underline underline-offset-4">تلاش دوباره</button></div>}
             {directStartLoading && <div role="status" className="flex items-center gap-3 rounded-md border border-border bg-surface-muted p-3 text-sm text-muted"><LoaderCircle size={16} className="animate-spin" aria-hidden="true" />در حال آماده‌سازی گفتگوی مستقیم و اتصال آن به اثر…</div>}
             {directStartError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-danger-surface p-3 text-sm text-ink"><span>{directStartError}</span><button type="button" onClick={() => setDirectStartAttempt((attempt) => attempt + 1)} className="shrink-0 font-bold text-terracotta-strong underline underline-offset-4">تلاش دوباره</button></div>}
-            <div className="grid h-[clamp(22rem,calc(100dvh-17rem),46rem)] w-full min-w-0 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden rounded-lg border border-border bg-surface shadow-soft md:h-[clamp(26rem,calc(100dvh-15rem),50rem)] lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]">
+            <div className="grid min-h-0 w-full min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden rounded-lg border border-border bg-surface shadow-soft lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]">
                 <aside className={active ? 'hidden h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e lg:flex' : 'flex h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e'}>
                     <div className="shrink-0 border-b border-border bg-paper px-3 py-3">
                         <div className="flex items-center justify-between gap-3"><div><p className="text-[11px] font-bold tracking-wide text-terracotta-strong">RAD / MESSAGES</p><h2 className="mt-1 text-lg font-black">گفتگوها</h2></div><span className="rounded-full border border-border bg-surface-muted px-3 py-1 text-[11px] font-bold text-muted">{threads.length} گفتگو</span></div>
@@ -682,7 +745,7 @@ export default function MessagingCenter({ role }) {
                                 shouldStickToBottomRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 120;
                                 if (shouldStickToBottomRef.current) setNewMessageCount(0);
                                 if (node.scrollTop < 72 && (messagesQuery.data?.hasOlder ?? hasOlderMessagesRef.current) && !olderMessagesError) loadOlderMessages();
-                            }} className="relative flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto overscroll-contain [scrollbar-gutter:stable] [scrollbar-width:thin] [scrollbar-color:var(--color-border-strong)_transparent] bg-[radial-gradient(circle_at_1px_1px,color-mix(in_srgb,var(--color-ink)_5%,transparent)_1px,transparent_0)] [background-size:22px_22px] px-3 py-5 md:gap-2 md:px-[clamp(.75rem,2vw,1.5rem)] md:py-3 max-md:gap-2 max-md:px-2.5 max-md:py-3" role="log" aria-label="پیام‌های گفتگو" aria-live="polite" aria-relevant="additions">
+                            }} className="relative isolate flex min-h-0 flex-1 flex-col gap-2 overflow-x-hidden overflow-y-auto overscroll-contain [scrollbar-gutter:stable] [scrollbar-width:thin] [scrollbar-color:var(--color-border-strong)_transparent] bg-[radial-gradient(circle_at_1px_1px,color-mix(in_srgb,var(--color-ink)_5%,transparent)_1px,transparent_0)] [background-size:22px_22px] px-3 py-5 md:gap-2 md:px-[clamp(.75rem,2vw,1.5rem)] md:py-3 max-md:gap-2 max-md:px-2.5 max-md:py-3" role="log" aria-label="پیام‌های گفتگو" aria-live="polite" aria-relevant="additions">
                                 {messagesLoading && messages.length === 0 && <MessageHistorySkeleton count={5} className="w-full" />}
                                 {messagesError && <div role="alert" className="m-auto flex max-w-md flex-col items-center gap-3 rounded-xl border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-danger-surface p-5 text-center text-sm text-danger"><p>{messagesError}</p><button type="button" onClick={() => loadMessages()} className="rounded-lg px-4 py-2 font-bold underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">تلاش دوباره</button></div>}
                                 {!messagesLoading && !messagesError && messages.length === 0 && <p className="m-auto py-6 text-center text-sm text-muted">هنوز پیامی در این گفتگو وجود ندارد. می‌توانید گفتگو را با یک پیام شروع کنید.</p>}
@@ -704,7 +767,7 @@ export default function MessagingCenter({ role }) {
                                         <Fragment key={message.id}>
                                             {showDayDivider && <div dir="rtl" className="flex shrink-0 justify-center py-1 font-persian"><span className="rounded-full border border-border bg-[color:color-mix(in_srgb,var(--color-paper)_90%,transparent)] px-3 py-1 text-[10px] font-semibold text-muted shadow-soft">{dayLabel(message.created_at)}</span></div>}
                                             <div dir="rtl" className={'flex w-full min-w-0 shrink-0 px-[.15rem] ' + (own ? 'justify-start' : 'justify-end')}>
-                                            <article dir="rtl" className={'min-w-0 w-fit max-w-[88%] rounded-[1.1rem] border px-3 py-2.5 font-persian shadow-[0_2px_8px_color-mix(in_srgb,var(--color-ink)_5%,transparent)] max-md:px-3 max-md:py-2 md:max-w-[min(76%,42rem)] ' + (own ? 'rounded-ee-[.35rem] border-[color:color-mix(in_srgb,var(--color-action)_16%,var(--color-border))] bg-[var(--color-message-own)] text-ink' : 'rounded-es-[.35rem] border-border bg-[var(--color-message-peer)] text-ink')}>
+                                            <article dir="rtl" className={'relative z-0 min-w-0 w-fit max-w-[88%] rounded-[1.1rem] border px-3 py-2.5 font-persian shadow-[0_2px_8px_color-mix(in_srgb,var(--color-ink)_5%,transparent)] max-md:px-3 max-md:py-2 md:max-w-[min(76%,42rem)] ' + (own ? 'rounded-ee-[.35rem] border-[color:color-mix(in_srgb,var(--color-action)_16%,var(--color-border))] bg-[var(--color-message-own)] text-ink' : 'rounded-es-[.35rem] border-border bg-[var(--color-message-peer)] text-ink')}>
                                                 {message.artwork && <div className="group mb-3 block overflow-hidden rounded-xl border border-border bg-surface shadow-[0_1px_2px_rgba(31,30,27,0.04)]"><div className="grid min-h-32 grid-cols-[5.75rem_minmax(0,1fr)] items-stretch gap-0 md:min-h-[8.5rem] md:grid-cols-[7.25rem_minmax(0,1fr)]"><Link to={'/artworks/' + message.artwork.slug} aria-label={'مشاهده اثر ' + message.artwork.title} title={message.artwork.title} className="relative z-0 block min-w-0 text-inherit no-underline focus-visible:relative focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-[-3px]"><span className="relative block h-full min-h-32 w-full min-w-0 self-stretch overflow-hidden bg-surface-muted md:min-h-[8.5rem]"><MediaImage src={message.artwork.image_url} alt={message.artwork.title} className="absolute inset-0 h-full w-full" imageClassName="object-cover transition-transform duration-200 group-hover:scale-[1.045] motion-reduce:transform-none motion-reduce:transition-none" loading="lazy" decoding="async" /></span></Link><div className="flex min-w-0 flex-1 cursor-default flex-col items-start justify-center gap-[.2rem] p-[.65rem_.7rem] text-start md:p-[.8rem_.9rem]"><span className="inline-flex items-center text-[10px] font-extrabold leading-[1.5] text-terracotta-strong">اثر مورد گفتگو</span><strong dir="auto" className="[display:-webkit-box] max-w-full overflow-hidden text-xs font-extrabold leading-[1.8] text-ink [-webkit-box-orient:vertical] [-webkit-line-clamp:2]">{message.artwork.title}</strong><span dir="auto" className="[display:-webkit-box] max-w-full overflow-hidden text-[10px] leading-[1.8] text-muted [overflow-wrap:anywhere] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]">{[message.artwork.artist_name, message.artwork.category, message.artwork.medium, message.artwork.dimensions, message.artwork.year?.toLocaleString?.('fa-IR')].filter(Boolean).join(' · ')}</span>{message.artwork.price && <span className="block text-[10px] font-bold leading-[1.8] text-muted">قیمت: {Number(message.artwork.price).toLocaleString('fa-IR')} تومان</span>}<Link to={'/artworks/' + message.artwork.slug} className="mt-1 inline-flex w-fit items-center gap-[.3rem] rounded-sm text-[10px] font-extrabold leading-[1.7] text-terracotta-strong no-underline transition-[gap] duration-150 hover:gap-2 hover:underline hover:underline-offset-[3px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none">مشاهده جزئیات اثر <span aria-hidden="true">←</span></Link></div></div></div>}
                                                 {message.attachments?.length > 0 && <ul className="mb-3 space-y-3">{message.attachments.map((attachment) => {
                                                     const isImage = attachment.mime_type?.startsWith('image/');
@@ -729,23 +792,23 @@ export default function MessagingCenter({ role }) {
                                                         <div className="mt-2 flex flex-wrap items-center justify-between gap-1"><div className="flex flex-wrap items-center gap-1">
                                                             {message.reactions?.filter((reaction) => reaction.count > 0).map((reaction) => <button key={reaction.emoji} type="button" disabled={actionId === message.id} onClick={() => toggleReaction(message, reaction.emoji)} aria-label={'واکنش ' + reaction.emoji} aria-pressed={Boolean(reaction.reacted_by_me)} className={'inline-flex min-h-8 items-center gap-1 rounded-full border border-border bg-surface px-2.5 text-[11px] leading-none text-muted transition-colors hover:border-border-strong hover:bg-surface-muted hover:text-ink aria-pressed:border-terracotta aria-pressed:bg-accent-surface aria-pressed:text-terracotta-strong motion-reduce:transition-none ' + (reaction.reacted_by_me ? 'border-terracotta bg-accent-surface text-terracotta-strong' : '')}>{reaction.emoji}<span className="tabular-nums">{Number(reaction.count).toLocaleString('fa-IR')}</span></button>)}
                                                             <div data-chat-popover-root data-chat-popover-id={openPopover === 'reactions:' + message.id ? openPopover : undefined} className="relative">
-                                                                <button type="button" aria-label="افزودن واکنش" title="افزودن واکنش" aria-haspopup="true" aria-expanded={openPopover === 'reactions:' + message.id} aria-controls={openPopover === 'reactions:' + message.id ? 'reaction-options-' + message.id : undefined} onClick={() => setOpenPopover((current) => current === 'reactions:' + message.id ? null : 'reactions:' + message.id)} disabled={actionId === message.id} className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-surface text-muted transition-colors hover:border-border-strong hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:opacity-50 motion-reduce:transition-none"><SmilePlus size={15} aria-hidden="true" /></button>
-                                                                {openPopover === 'reactions:' + message.id && <div id={'reaction-options-' + message.id} dir="rtl" role="group" aria-label="انتخاب واکنش" data-chat-popover-panel className="absolute bottom-full end-0 z-40 mb-2 flex max-w-[min(15rem,calc(100vw-2rem))] flex-wrap items-center gap-1 rounded-full border border-border bg-paper p-1.5 shadow-soft">
+                                                                <button type="button" aria-label="افزودن واکنش" title="افزودن واکنش" aria-haspopup="true" aria-expanded={openPopover === 'reactions:' + message.id} aria-controls={openPopover === 'reactions:' + message.id ? 'reaction-options-' + message.id : undefined} onClick={(event) => toggleChatPopover(event, 'reactions:' + message.id, 240, 48)} disabled={actionId === message.id} className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-surface text-muted transition-colors hover:border-border-strong hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:opacity-50 motion-reduce:transition-none"><SmilePlus size={15} aria-hidden="true" /></button>
+                                                                {openPopover === 'reactions:' + message.id && popoverPosition && createPortal(<div id={'reaction-options-' + message.id} dir="rtl" role="group" aria-label="انتخاب واکنش" data-chat-popover-panel style={{ position: 'fixed', top: popoverPosition.top, left: popoverPosition.left, width: popoverPosition.width, zIndex: 60 }} className="flex max-w-[calc(100vw-1rem)] flex-nowrap items-center gap-1 overflow-x-auto rounded-full border border-border bg-paper p-1.5 shadow-soft [scrollbar-width:none]">
                                                                     {reactionOptions.map((emoji) => {
                                                                         const reaction = message.reactions?.find((item) => item.emoji === emoji);
                                                                         return <button key={emoji} type="button" disabled={actionId === message.id} onClick={() => { setOpenPopover(null); toggleReaction(message, emoji); }} aria-label={'واکنش ' + emoji} aria-pressed={Boolean(reaction?.reacted_by_me)} className={'flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-base transition-colors hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none ' + (reaction?.reacted_by_me ? 'bg-accent-surface text-terracotta-strong' : 'text-ink')}>{emoji}</button>;
                                                                     })}
-                                                                </div>}
+                                                                </div>, document.body)}
                                                             </div>
                                                             </div>
                                                             <div data-chat-popover-root data-chat-popover-id={openPopover === 'message:' + message.id ? openPopover : undefined} className="relative">
-                                                                <button type="button" aria-label="عملیات پیام" title="عملیات پیام" aria-haspopup="true" aria-expanded={openPopover === 'message:' + message.id} aria-controls={openPopover === 'message:' + message.id ? 'message-actions-' + message.id : undefined} onClick={() => setOpenPopover((current) => current === 'message:' + message.id ? null : 'message:' + message.id)} className="flex h-8 w-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"><MoreVertical size={16} aria-hidden="true" /></button>
-                                                                {openPopover === 'message:' + message.id && <div id={'message-actions-' + message.id} dir="rtl" role="group" aria-label="عملیات پیام" data-chat-popover-panel className="absolute bottom-full end-0 z-40 mb-2 w-40 max-w-[calc(100vw-2rem)] overflow-hidden rounded-lg border border-border bg-paper p-1 shadow-soft">
+                                                                <button type="button" aria-label="عملیات پیام" title="عملیات پیام" aria-haspopup="true" aria-expanded={openPopover === 'message:' + message.id} aria-controls={openPopover === 'message:' + message.id ? 'message-actions-' + message.id : undefined} onClick={(event) => toggleChatPopover(event, 'message:' + message.id, 160, 168)} className="flex h-8 w-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"><MoreVertical size={16} aria-hidden="true" /></button>
+                                                                {openPopover === 'message:' + message.id && popoverPosition && createPortal(<div id={'message-actions-' + message.id} dir="rtl" role="group" aria-label="عملیات پیام" data-chat-popover-panel style={{ position: 'fixed', top: popoverPosition.top, left: popoverPosition.left, width: popoverPosition.width, zIndex: 60 }} className="max-w-[calc(100vw-1rem)] overflow-hidden rounded-lg border border-border bg-paper p-1 shadow-soft">
                                                                     <button type="button" onClick={() => { setOpenPopover(null); setReplyTo(message); setEditingId(null); draftRef.current?.focus(); }} className="flex min-h-10 w-full items-center gap-2.5 rounded-md px-3 text-start text-xs font-semibold text-ink transition-colors hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"><Reply size={15} aria-hidden="true" /><span>پاسخ</span></button>
                                                                     {!own && <button type="button" onClick={() => { setOpenPopover(null); reportMessage(message); }} className="flex min-h-10 w-full items-center gap-2.5 rounded-md px-3 text-start text-xs font-semibold text-ink transition-colors hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"><Flag size={15} aria-hidden="true" /><span>گزارش</span></button>}
                                                                     {own && <button type="button" onClick={() => { setOpenPopover(null); setEditingId(message.id); setEditDraft(message.body ?? ''); }} className="flex min-h-10 w-full items-center gap-2.5 rounded-md px-3 text-start text-xs font-semibold text-ink transition-colors hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"><Pencil size={15} aria-hidden="true" /><span>ویرایش</span></button>}
                                                                     {own && <button type="button" disabled={actionId === message.id} onClick={() => { setOpenPopover(null); deleteMessage(message); }} className="flex min-h-10 w-full items-center gap-2.5 rounded-md px-3 text-start text-xs font-semibold text-danger transition-colors hover:bg-danger-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:opacity-50 motion-reduce:transition-none"><Trash2 size={15} aria-hidden="true" /><span>حذف</span></button>}
-                                                                </div>}
+                                                                </div>, document.body)}
                                                             </div>
                                                         </div>
                                                     </>
@@ -757,7 +820,7 @@ export default function MessagingCenter({ role }) {
                                 })}
                                 
                             </div>
-                            {safetyLoading ? <p role="status" className="rounded-md border-t border-border bg-surface-muted p-4 text-sm text-muted">در حال بررسی وضعیت ایمنی گفتگو…</p> : safety.blocked_by_me || safety.blocked_by_other ? <p role="status" className="border-t border-border bg-surface-muted p-4 text-sm text-muted">{safety.blocked_by_me ? 'این کاربر را مسدود کرده‌اید؛ برای ادامه گفتگو ابتدا مسدودسازی را بردارید.' : 'این گفتگو به‌دلیل تنظیمات ایمنی امکان ارسال پیام ندارد.'}</p> : <form onSubmit={send} className="shrink-0 border-t border-border bg-paper px-2.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 sm:px-3 sm:py-2">
+                            {safetyLoading ? <p role="status" className="rounded-md border-t border-border bg-surface-muted p-4 text-sm text-muted">در حال بررسی وضعیت ایمنی گفتگو…</p> : safety.blocked_by_me || safety.blocked_by_other ? <p role="status" className="border-t border-border bg-surface-muted p-4 text-sm text-muted">{safety.blocked_by_me ? 'این کاربر را مسدود کرده‌اید؛ برای ادامه گفتگو ابتدا مسدودسازی را بردارید.' : 'این گفتگو به‌دلیل تنظیمات ایمنی امکان ارسال پیام ندارد.'}</p> : <form onSubmit={send} className="shrink-0 border-t border-border bg-paper px-2.5 pb-2 pt-2 sm:px-3 sm:py-2">
                                 {pendingArtwork && <div className="mb-3 flex min-w-0 items-center gap-3 rounded-xl border border-[color:color-mix(in_srgb,var(--color-terracotta)_30%,transparent)] bg-surface-muted p-2.5"><Link to={'/artworks/' + pendingArtwork.slug} className="flex min-w-0 flex-1 items-center gap-3 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"><MediaImage src={pendingArtwork.image_url} alt={pendingArtwork.title} className="h-16 w-16 shrink-0 rounded-lg bg-paper" imageClassName="object-cover" loading="eager" /><span className="min-w-0"><span className="block text-[10px] font-bold text-terracotta-strong">پاسخ درباره این اثر</span><strong dir="auto" className="mt-1 block truncate text-xs text-ink">{pendingArtwork.title}</strong><span dir="auto" className="mt-1 block truncate text-[10px] text-muted">{[pendingArtwork.artist_name, pendingArtwork.category, pendingArtwork.medium, pendingArtwork.dimensions].filter(Boolean).join(' · ')}</span>{pendingArtwork.price && <span className="mt-1 block text-[10px] font-semibold text-muted">قیمت: {Number(pendingArtwork.price).toLocaleString('fa-IR')} تومان</span>}</span></Link><button type="button" onClick={() => { setPendingArtwork(null); setParams((current) => { const next = new URLSearchParams(current); next.delete('artwork'); return next; }, { replace: true }); }} aria-label="حذف ارجاع به اثر" title="حذف ارجاع به اثر" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted hover:bg-paper hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"><X size={16} aria-hidden="true" /></button></div>}
                                 {replyTo && <div className="mb-3 flex items-start justify-between gap-3 border-s-2 border-terracotta bg-surface-muted p-3 text-xs"><div><strong>پاسخ به <span dir="auto">{replyTo.sender_name ?? 'پیام'}</span></strong><p dir="auto" className="mt-1 line-clamp-2 text-muted">{replyTo.body}</p></div><button type="button" onClick={() => setReplyTo(null)} aria-label="لغو پاسخ" title="لغو پاسخ" className="rounded-full p-1 text-muted hover:bg-border"><X size={16} aria-hidden="true" /></button></div>}
                                 <div className="relative flex min-h-[3.1rem] items-end gap-1.5 rounded-[1rem] border border-border-strong bg-surface p-[.45rem] shadow-[0_3px_12px_color-mix(in_srgb,var(--color-ink)_6%,transparent)] transition-[border-color,box-shadow] duration-150 focus-within:border-focus focus-within:shadow-[0_0_0_3px_var(--color-focus-soft),0_3px_12px_color-mix(in_srgb,var(--color-ink)_5%,transparent)] has-[textarea:focus-visible]:outline has-[textarea:focus-visible]:outline-2 has-[textarea:focus-visible]:outline-focus has-[textarea:focus-visible]:outline-offset-2 has-[textarea:focus-visible]:shadow-[0_0_0_3px_var(--color-focus-soft),0_3px_12px_color-mix(in_srgb,var(--color-ink)_5%,transparent)] max-sm:gap-[.35rem] max-sm:rounded-2xl max-sm:p-[.35rem] motion-reduce:transition-none">
