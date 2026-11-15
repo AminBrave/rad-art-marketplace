@@ -28,6 +28,9 @@ def artwork_payload(title="اثر آزمایشی کاتالوگ"):
 
 
 class ArtworkCatalogueResilienceTests(unittest.TestCase):
+    # All API responses and media used by this class are intercepted in-page;
+    # these journeys do not read or write application database records.
+    manual_dev_safe = True
     @classmethod
     def setUpClass(cls):
         cls.playwright = sync_playwright().start()
