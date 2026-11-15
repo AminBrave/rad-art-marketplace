@@ -173,11 +173,14 @@ class CodebaseRenderedColorContrastTests(unittest.TestCase):
         self.assertIsNotNone(response, f"No document response for {route}")
         self.assertLess(response.status, 400, f"{route} returned HTTP {response.status}")
 
-        page.locator("#app main").first.wait_for(state="visible")
+        # The Laravel entrypoint may mount under different root IDs in local
+        # configurations. The semantic main landmark is the stable contract.
+        page.locator("main").first.wait_for(state="visible")
+        if route == "/?design-system":
+            page.locator("#shared-components").wait_for(state="visible")
         page.wait_for_function(
             """() => {
-                const root = document.querySelector('#app');
-                const main = root?.querySelector('main');
+                const main = document.querySelector('main');
                 return Boolean(main && !main.matches('[aria-busy="true"]'));
             }""",
             timeout=20000,
@@ -194,11 +197,34 @@ class CodebaseRenderedColorContrastTests(unittest.TestCase):
                 0,
                 f"No visible text was checked on {route} ({viewport_name}): {result}",
             )
-            self.assertEqual(
-                result["failures"],
-                [],
-                f"Computed WCAG contrast failures on {route} ({viewport_name}): {result['failures']}",
-            )
+            if result["failures"]:
+                diagnostics = page.evaluate(
+                    """(selectors) => selectors.map((selector) => {
+                        const element = document.querySelector(selector);
+                        if (!element) return { selector, found: false };
+                        const chain = [];
+                        for (let node = element; node && node.nodeType === 1; node = node.parentElement) {
+                            const style = getComputedStyle(node);
+                            chain.push({
+                                tag: node.tagName.toLowerCase(),
+                                classes: typeof node.className === 'string' ? node.className : '',
+                                color: style.color,
+                                backgroundColor: style.backgroundColor,
+                                backgroundImage: style.backgroundImage,
+                                opacity: style.opacity,
+                            });
+                        }
+                        return { selector, chain };
+                    })""",
+                    list(dict.fromkeys(
+                        failure["element"].split(".")[0]
+                        for failure in result["failures"]
+                    )),
+                )
+                self.fail(
+                    f"Computed WCAG contrast failures on {route} ({viewport_name}): "
+                    f"{result['failures']}; ancestor diagnostics: {diagnostics}"
+                )
             results[viewport_name] = result
         return results
 
@@ -219,13 +245,17 @@ class CodebaseRenderedColorContrastTests(unittest.TestCase):
         context, page = self.new_page()
         audited = []
         try:
-            sitemap_response = context.request.get(BASE_URL + "/sitemap.xml")
+            # Navigate through Chromium rather than APIRequestContext: browser
+            # navigation honors the context's ignore_https_errors setting for
+            # locally trusted/development certificates.
+            sitemap_response = page.goto(BASE_URL + "/sitemap.xml", wait_until="domcontentloaded")
+            self.assertIsNotNone(sitemap_response, "No response for /sitemap.xml")
             self.assertLess(
                 sitemap_response.status,
                 400,
                 f"Sitemap returned HTTP {sitemap_response.status}",
             )
-            sitemap = ET.fromstring(sitemap_response.text())
+            sitemap = ET.fromstring(page.evaluate("() => document.documentElement.outerHTML"))
             dynamic_routes = []
             for node in sitemap.findall(".//{*}loc"):
                 location = urlparse(node.text or "")
