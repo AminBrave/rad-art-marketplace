@@ -32,6 +32,7 @@ test('Button exposes disabled and busy semantics while loading', () => {
     assert.match(html, /<button[^>]*disabled=""/);
     assert.match(html, /aria-busy="true"/);
     assert.match(html, /ارسال/);
+    assert.match(html, /focus-visible:outline/);
 });
 
 test('FormField associates its label, hint and validation error with the control', () => {
