@@ -19,7 +19,7 @@ const vite = await createServer({
             name: 'react-router-link-ssr-test-double',
             enforce: 'pre',
             transform(code, id) {
-                if (!id.replaceAll('\\\\', '/').endsWith('/resources/js/components/ui/navigation.jsx')) {
+                if (!id.replaceAll('\\', '/').endsWith('/resources/js/components/ui/navigation.jsx')) {
                     return null;
                 }
 
