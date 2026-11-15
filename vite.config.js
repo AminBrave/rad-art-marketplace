@@ -7,6 +7,7 @@ export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), 'VITE_');
     const localHttps = env.VITE_DEV_HTTPS === 'true';
     const lanDevelopment = mode === 'lan';
+    const browserTest = mode === 'browser-test';
     const lanHost = env.VITE_DEV_LAN_HOST;
 
     if (lanDevelopment && !lanHost) {
@@ -26,7 +27,19 @@ export default defineConfig(({ mode }) => {
             }),
             react(),
         ],
-        server: lanDevelopment
+        server: browserTest
+            ? {
+                host: '127.0.0.1',
+                port: 5173,
+                strictPort: true,
+                origin: 'http://127.0.0.1:5173',
+                hmr: {
+                    host: '127.0.0.1',
+                    protocol: 'ws',
+                    clientPort: 5173,
+                },
+            }
+            : lanDevelopment
             ? {
                 // Caddy is the only network-facing listener. Vite stays private.
                 host: '127.0.0.1',

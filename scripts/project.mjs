@@ -308,7 +308,7 @@ async function runBrowserTests() {
         },
         {
             label: 'Temporary Vite development server (loopback)',
-            command: npm, args: ['exec', '--', 'vite', '--host', '127.0.0.1', '--port', '5173', '--strictPort'],
+            command: npm, args: ['exec', '--', 'vite', '--mode', 'browser-test'],
             env: { ...env, VITE_DEV_HTTPS: 'false' },
         },
     ]);
