@@ -20,6 +20,8 @@ This is the human operating manual for developing Rademan with ordinary chat-bas
 
 **Authority order:** explicit user decisions → `AGENTS.md` → approved issue/PR requirements and recorded decisions → current source and runtime evidence for implementation facts → product brief and canonical decision records for intent → AI suggestions. An AI suggestion is never an approved requirement.
 
+The canonical RAD interface direction is documented in [`AI/DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md); implementation tokens and primitives remain in `resources/css/app.css`, `tailwind.config.js` and `resources/js/components/ui/`. Keep those sources aligned rather than creating a parallel design system.
+
 The AI must not claim that a feature exists, is missing, works, is secure or is tested without suitable evidence. Documentation describes intent; source and runtime evidence establish implementation. Product decisions in #150 are not implementation permission. A named decision is retrieved independently; only explicitly authorized scope becomes a delivery issue.
 
 ## 2. One-time setup
