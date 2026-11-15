@@ -274,7 +274,7 @@ function developmentArtisanEnvironment() {
     };
 }
 
-async async function runDevelopmentArtisan(args) {
+async function runDevelopmentArtisan(args) {
     runDevelopmentPreflight({ root, processValues: process.env, requireFrontend: false, checkHotFile: false });
     await run(php, ['artisan', ...args], { env: developmentArtisanEnvironment() });
 }
