@@ -615,7 +615,7 @@ export default function MessagingCenter({ role }) {
                                 </TabsTrigger>
                             </TabsList>
                         </div>
-                        <TabsContent value={threadFilter} className="min-h-0 flex-1 p-0 pt-0 focus-visible:ring-0">
+                        <TabsContent value={threadFilter} className="flex min-h-0 flex-1 flex-col p-0 pt-0 focus-visible:ring-0">
                     {loading ? <ConversationInboxSkeleton count={6} /> : threads.length === 0 ? (inboxQuery.isError ? null : <p className="p-5 text-sm leading-7 text-muted">هنوز گفتگویی ندارید. از صفحه هنرمند یا یک اثر، گزینه «پیام مستقیم» را انتخاب کنید.</p>) : (
                         <ul className="min-h-0 flex-1 divide-y divide-border overflow-y-auto overscroll-contain [scrollbar-gutter:stable] [scrollbar-width:thin] [scrollbar-color:var(--color-border-strong)_transparent]">
                             {threads.map((thread) => <li key={thread.id} className={'relative transition-colors hover:bg-surface-muted focus-within:bg-surface-muted ' + (Number(active) === Number(thread.id) ? 'bg-surface-muted shadow-[inset_-3px_0_0_var(--color-terracotta)]' : '')}>
