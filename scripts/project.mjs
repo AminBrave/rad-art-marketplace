@@ -395,7 +395,12 @@ const task = process.argv[2];
 try {
     switch (task) {
         case 'setup': await setup(); break;
-        case 'db:sqlite:init': initializeSqlite(); break;\n        case 'db:status': await runDevelopmentArtisan(['migrate:status']); break;\n        case 'db:migrate': await runDevelopmentArtisan(['migrate']); break;\n        case 'db:seed': await runDevelopmentArtisan(['db:seed']); break;\n        case 'db:seed:demo': await runDevelopmentArtisan(['db:seed', '--class=DemoDatabaseSeeder']); break;\n        case 'db:fresh': await runDevelopmentArtisan(['migrate:fresh', '--seed']); break;
+        case 'db:sqlite:init': initializeSqlite(); break;
+        case 'db:status': await runDevelopmentArtisan(['migrate:status']); break;
+        case 'db:migrate': await runDevelopmentArtisan(['migrate']); break;
+        case 'db:seed': await runDevelopmentArtisan(['db:seed']); break;
+        case 'db:seed:demo': await runDevelopmentArtisan(['db:seed', '--class=DemoDatabaseSeeder']); break;
+        case 'db:fresh': await runDevelopmentArtisan(['migrate:fresh', '--seed']); break;
         case 'dev:check': runDevelopmentPreflight({ root, processValues: process.env }); break;
         case 'dev': await startDevelopment(); break;
         case 'production': await buildProduction(false); break;
