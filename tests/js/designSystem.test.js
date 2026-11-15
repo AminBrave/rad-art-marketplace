@@ -157,6 +157,19 @@ test('messaging conversation filters fill their RAD container edge to edge', () 
 });
 
 
+test('messaging uses bounded responsive geometry and compact Telegram-inspired density', () => {
+    assert.ok(messaging.includes('h-[clamp(25rem,calc(100dvh-19rem),48rem)]'));
+    assert.ok(messaging.includes('md:h-[clamp(30rem,calc(100dvh-16rem),52rem)]'));
+    assert.ok(messaging.includes('lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]'));
+    assert.ok(messaging.includes('min-w-0 w-fit max-w-[88%]'));
+    assert.ok(messaging.includes('min-h-[4.25rem] w-full items-center gap-2'));
+    assert.ok(messaging.includes('absolute left-1 top-1/2 -translate-y-1/2'));
+    assert.ok(messaging.includes('mt-2 flex flex-wrap items-center justify-between gap-1'));
+    assert.ok(messaging.includes('max-h-28 min-h-[2.3rem] w-full resize-none'));
+    assert.doesNotMatch(messaging, /md:min-h-\\[min\\(580px/);
+    assert.doesNotMatch(messaging, /min-h-\\[5\\.35rem\\]/);
+});
+
 test('messaging actions use compact, dismissible Telegram-style popovers', () => {
     assert.ok(messaging.includes("const [openPopover, setOpenPopover] = useState(null)"));
     assert.ok(messaging.includes("document.addEventListener('pointerdown', closeOnOutsidePointer, true)"));
