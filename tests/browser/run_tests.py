@@ -299,6 +299,8 @@ def main() -> int:
         )
         return 2
 
+    selected_test_ids = [test.id() for test in flatten_tests(suite)]
+
     report_dir = Path(os.environ.get("RAD_ART_TEST_REPORT_DIR", "build/test-reports/browser"))
     report_dir.mkdir(parents=True, exist_ok=True)
     report_path = report_dir / "browser-junit.xml"
@@ -338,8 +340,8 @@ def main() -> int:
         "python": sys.version,
         "platform": platform.platform(),
         "playwright": playwright_version,
-        "base_url": os.environ.get("RAD_ART_BASE_URL", "http://127.0.0.1:8000"),
-        "selected_tests": [test.id() for test in flatten_tests(suite)],
+        "base_url": os.environ.get("RAD_ART_BASE_URL", "https://rad.localhost"),
+        "selected_tests": selected_test_ids,
         "target_environment": "current-local-development",
         "allow_mutations": args.allow_mutations,
         "tests_run": result.testsRun,
