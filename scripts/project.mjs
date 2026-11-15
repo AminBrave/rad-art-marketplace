@@ -309,7 +309,7 @@ async function runBrowserTests() {
         {
             label: 'Temporary Vite development server (loopback)',
             command: npm, args: ['exec', '--', 'vite', '--mode', 'browser-test'],
-            env: { ...env, VITE_DEV_HTTPS: 'false' },
+            env,
         },
     ]);
     try {
