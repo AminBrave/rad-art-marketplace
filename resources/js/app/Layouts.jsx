@@ -585,8 +585,8 @@ export function WorkspaceLayout({ title, links, outletContext }) {
     }, [mobileMenuOpen]);
 
     return (
-        <div className="min-h-screen bg-canvas text-ink" dir="rtl">
-            <header className="sticky top-0 z-40 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] shadow-soft backdrop-blur">
+        <div className={isMessagingRoute ? "flex h-dvh flex-col overflow-hidden bg-canvas text-ink" : "min-h-screen bg-canvas text-ink"} dir="rtl">
+            <header className="sticky top-0 z-40 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] shadow-soft backdrop-blur">
                 <div className="mx-auto flex min-h-[4.5rem] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-20 sm:gap-4">
                     <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
                         <Link to="/" className="group grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-lg font-black text-inverse shadow-soft no-underline transition-colors hover:bg-terracotta sm:h-12 sm:w-12 sm:text-xl" aria-label="راد آرت، صفحه اصلی">
@@ -731,7 +731,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                 </div>
             )}
 
-            <div className={isMessagingRoute ? 'mx-auto grid min-h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] min-w-0 max-w-content grid-cols-1 grid-rows-[minmax(0,1fr)] gap-3 px-page-gutter py-3 sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:min-h-0 sm:gap-4 sm:overflow-hidden sm:py-4 lg:h-[calc(100dvh-5rem)] lg:grid-cols-[15rem_minmax(0,1fr)] lg:grid-rows-1 lg:gap-8 lg:py-5' : 'mx-auto grid min-w-0 max-w-content gap-5 px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-8 lg:pb-8'}>
+            <div className={isMessagingRoute ? 'mx-auto grid h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-h-0 min-w-0 max-w-content flex-none grid-cols-1 grid-rows-[minmax(0,1fr)] gap-0 overflow-hidden px-page-gutter py-0 sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:gap-4 sm:py-4 lg:h-[calc(100dvh-5rem)] lg:grid-cols-[15rem_minmax(0,1fr)] lg:grid-rows-1 lg:gap-8 lg:py-5' : 'mx-auto grid min-w-0 max-w-content gap-5 px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-8 lg:pb-8'}>
                 <aside className="hidden min-w-0 rounded-xl border border-border bg-paper p-3 shadow-soft lg:sticky lg:top-24 lg:block lg:h-fit">
                     <div className="mb-2 flex items-center justify-between px-3 py-2">
                         <p className="text-[11px] font-extrabold tracking-wide text-muted">ناوبری فضای کاری</p>
@@ -760,7 +760,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     </nav>
                 </aside>
 
-                <main className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col' : 'min-w-0'}>
+                <main className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden' : 'min-w-0'}>
                     <Outlet context={outletContext} />
                 </main>
             </div>
