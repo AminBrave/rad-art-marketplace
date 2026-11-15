@@ -138,7 +138,7 @@ export function Toast({ open, title, description, variant = 'info', onDismiss, d
             <ToastPrimitive.Viewport
                 label="اعلان‌ها"
                 dir="rtl"
-                className="fixed top-4 end-4 z-[100] flex w-[min(24rem,calc(100vw-2rem))] flex-col gap-2 outline-none"
+                className="fixed top-4 start-4 z-[100] flex w-[min(24rem,calc(100vw-2rem))] flex-col gap-2 outline-none"
             />
         </ToastPrimitive.Provider>
     );
