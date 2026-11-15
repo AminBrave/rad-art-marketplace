@@ -596,7 +596,7 @@ export default function MessagingCenter({ role }) {
                     </div>
                     <div className="shrink-0 space-y-3 border-b border-border bg-surface-muted p-3">
                         <div className="relative"><Search size={17} aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted" /><input aria-label="جستجوی گفتگوها" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="جستجو در گفتگوها…" className="min-h-[2.8rem] w-full rounded-md border border-border-strong bg-surface py-3 pl-4 pr-10 text-sm text-ink placeholder:text-muted shadow-none outline-none transition focus:border-focus focus:outline focus:outline-2 focus:outline-[color:var(--color-focus-soft)] focus:outline-offset-1 focus:ring-0" /></div>
-                        <div role="tablist" aria-label="فیلتر گفتگوها" className="grid grid-cols-3 gap-1 rounded-xl border border-border bg-paper p-1">
+                        <div role="tablist" aria-label="فیلتر گفتگوها" className="grid grid-cols-3 gap-0 overflow-hidden rounded-md border border-border bg-surface-muted">
                             {[
                                 { value: 'all', label: 'همه', Icon: Inbox },
                                 { value: 'unread', label: 'خوانده‌نشده', Icon: MailOpen },
@@ -608,7 +608,7 @@ export default function MessagingCenter({ role }) {
                                 const nextFilter = filters[nextIndex].value;
                                 setThreadFilter(nextFilter);
                                 document.getElementById('conversation-filter-' + nextFilter)?.focus();
-                            }} className={'flex min-w-0 min-h-[2.35rem] items-center justify-center gap-1.5 rounded-sm px-2 py-2 text-xs font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-1 ' + (threadFilter === value ? 'bg-ink text-inverse shadow-sm' : 'text-muted hover:bg-surface-muted hover:text-ink')}><Icon size={14} aria-hidden="true" /><span className="truncate">{label}</span></button>)}
+                            }} className={'flex min-w-0 min-h-11 w-full items-center justify-center gap-1.5 rounded-none px-2 py-2 text-xs font-semibold transition-colors focus-visible:relative focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-[-2px] motion-reduce:transition-none ' + (threadFilter === value ? 'bg-ink text-inverse' : 'bg-transparent text-muted hover:bg-paper hover:text-ink')}><Icon size={14} aria-hidden="true" /><span className="truncate">{label}</span></button>)}
                         </div>
                     </div>
                     {loading ? <ConversationInboxSkeleton count={6} /> : threads.length === 0 ? (inboxQuery.isError ? null : <p className="p-5 text-sm leading-7 text-muted">هنوز گفتگویی ندارید. از صفحه هنرمند یا یک اثر، گزینه «پیام مستقیم» را انتخاب کنید.</p>) : (
