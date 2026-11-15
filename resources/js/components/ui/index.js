@@ -14,6 +14,7 @@ export {
     Pagination,
 } from './navigation';
 export { Dialog, DialogTrigger, DialogClose, DialogContent, DialogTitle, DialogDescription } from './Dialog';
+export { Tooltip } from './Tooltip';
 export { Skeleton, SkeletonLines, MediaImage, EmptyState, ErrorState, SuccessState, PermissionState, UploadFeedback, Toast } from './feedback';
 export { ArtworkCard, ArtistCard } from './cards';
 
