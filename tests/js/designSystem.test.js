@@ -151,7 +151,7 @@ test('dashboard headers and notification drawer use the shared accessible RAD di
 
 test('authenticated app shell keeps primary-only bottom navigation and places both navigation tiers in the dashboard hamburger drawer', () => {
     const bottomStart = layouts.indexOf('function AuthenticatedBottomNavigation({ primaryLinks })');
-    const bottomEnd = layouts.indexOf('\\n}\\n\\nexport function WorkspaceLayout', bottomStart);
+    const bottomEnd = layouts.indexOf('\n}\n\nexport function WorkspaceLayout', bottomStart);
     const bottomNavigation = layouts.slice(bottomStart, bottomEnd);
     const workspaceStart = layouts.indexOf('export function WorkspaceLayout');
     const workspaceLayout = layouts.slice(workspaceStart);
