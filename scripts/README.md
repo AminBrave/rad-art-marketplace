@@ -24,7 +24,8 @@ The context command reads `AGENTS.md`, the product brief, the current handoff an
 | Area | Command | Purpose |
 |---|---|---|
 | Setup | `npm run setup` | Install Composer/npm dependencies and create `.env` if absent |
-| Development | `npm run dev:check` | Run the read-only local environment preflight without starting services |\n| Development | `npm run dev` | Validate `.env`, reject production/debug-off or unsafe database targets, check dependencies/stale Vite hot file, then start Laravel + Vite + Caddy |
+| Development | `npm run dev:check` | Run the read-only local environment preflight without starting services |
+| Development | `npm run dev` | Validate `.env`, reject production/debug-off or unsafe database targets, check dependencies/stale Vite hot file, then start Laravel + Vite + Caddy |
 | Database | `npm run db:sqlite:init` | Create the local SQLite file only if absent |
 | Database | `npm run db:status` | Show migration status |
 | Database | `npm run db:migrate` | Apply pending migrations |
