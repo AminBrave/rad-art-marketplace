@@ -28,7 +28,7 @@ The product is intended to address the gap between discovering artists and being
 4. Prefer a simple, coherent vertical slice over speculative platform complexity.
 5. Preserve the RAD design system, API contracts and established patterns.
 6. Source, migrations, tests and runtime behavior are truth; docs guide intent, not proof of implementation.
-7. Authenticated experiences should use a coherent, app-like responsive shell across public and workspace routes: persistent role-aware primary navigation, clearly separated secondary discovery/support navigation in dashboard headers, a primary-only mobile/tablet bottom bar, and a retained contextual header. See [`AI/DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md) for the canonical interface rules.
+7. Authenticated experiences should use a coherent, app-like responsive shell across public and workspace routes: persistent role-aware primary navigation, clearly separated primary workspace and secondary discovery/support groups inside the dashboard hamburger drawer, a primary-only mobile/tablet bottom bar, and a retained compact contextual header. See [`AI/DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md) for the canonical interface rules.
 
 ## Explicit non-goals unless approved
 Do not assume checkout, orders, shipping, payouts, subscriptions, commissions, booking, escrow or other commerce capabilities exist or belong in scope.
