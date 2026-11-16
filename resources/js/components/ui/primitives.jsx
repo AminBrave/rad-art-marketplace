@@ -119,7 +119,18 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
 }
 
 export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
-    return <PageHeader eyebrow={eyebrow} title={title} description={description} actions={actions} className={className} />;
+    return (
+        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-6 overflow-hidden rounded-xl border border-ink bg-ink p-[clamp(1.5rem,4vw,2.5rem)] text-inverse max-md:items-stretch max-md:flex-col', className)}>
+            <span aria-hidden="true" className="pointer-events-none absolute -right-16 -top-24 aspect-square w-60 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]" />
+            <span aria-hidden="true" className="pointer-events-none absolute -right-4 -top-12 aspect-square w-44 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]" />
+            <div className="relative z-10 max-w-[46rem]">
+                {eyebrow && <p className="text-xs font-bold text-sand">{eyebrow}</p>}
+                <h1 className="mt-3 text-[clamp(1.5rem,3vw,2rem)] font-extrabold leading-heading text-inverse">{title}</h1>
+                {description && <p className="mt-3 text-sm leading-copy text-[color:color-mix(in_srgb,var(--color-inverse-text)_80%,transparent)]">{description}</p>}
+            </div>
+            {actions && <div className="relative z-10 flex flex-wrap gap-2 max-md:w-full">{actions}</div>}
+        </header>
+    );
 }
 
 export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, className = '' }) {
