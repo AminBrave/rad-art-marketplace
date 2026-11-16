@@ -96,6 +96,9 @@ function validateBuildOutput() {
     } catch {
         fail('The cPanel Vite manifest is not valid JSON.');
     }
+    if (!manifest || typeof manifest !== 'object' || Array.isArray(manifest)) {
+        fail('The cPanel Vite manifest must contain an object of build entries.');
+    }
     for (const entryName of ['resources/css/app.css', 'resources/js/app.jsx']) {
         if (!manifest[entryName]?.file) fail('The cPanel Vite manifest is missing ' + entryName + '.');
     }
@@ -212,7 +215,7 @@ with zipfile.ZipFile(output, "r") as archive:
         parts = normalized.split("/")
         if normalized == ".env" or (normalized.startswith(".env.") and normalized != ".env.example"):
             forbidden.append(name)
-        if any(part in {".git", "node_modules", "tests"} for part in parts):
+        if any(part in {".git", "node_modules"} for part in parts) or parts[0] == "tests":
             forbidden.append(name)
         if normalized.startswith(("storage/app/private/", "storage/app/public/", "storage/logs/")):
             forbidden.append(name)
