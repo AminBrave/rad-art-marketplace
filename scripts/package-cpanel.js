@@ -45,9 +45,19 @@ fs.rmSync(outputZip, { force: true });
 
 console.log('[cPanel] Creating ZIP...');
 if (isWindows) {
-    run('tar.exe', ['-a', '-c', '-f', path.relative(root, outputZip), ...archivePaths]);
+    const winRarCandidates = [
+        process.env.ProgramFiles && path.join(process.env.ProgramFiles, 'WinRAR', 'WinRAR.exe'),
+        process.env['ProgramFiles(x86)'] && path.join(process.env['ProgramFiles(x86)'], 'WinRAR', 'WinRAR.exe'),
+    ].filter(Boolean);
+    const winRar = winRarCandidates.find(candidate => fs.existsSync(candidate));
+
+    if (winRar) {
+        run(winRar, ['a', '-afzip', '-m5', '-ep1', outputZip, ...archivePaths]);
+    } else {
+        run('tar.exe', ['-a', '-c', '-f', path.relative(root, outputZip), ...archivePaths]);
+    }
 } else {
-    run('zip', ['-q', '-r', '-1', outputZip, ...archivePaths]);
+    run('zip', ['-q', '-r', '-9', outputZip, ...archivePaths]);
 }
 
 console.log('[cPanel] Created build/rad-file.zip');
