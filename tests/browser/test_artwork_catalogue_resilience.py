@@ -335,7 +335,19 @@ class CurrentDevelopmentDatabaseReadOnlyTests(unittest.TestCase):
         try:
             # Wait for the document commit, then use the actual app heading as readiness.
             # This avoids treating delayed module loading as a navigation-event failure.
-            page.goto(BASE_URL + "/artworks", wait_until="commit", timeout=30000)
+            try:
+                page.goto(BASE_URL + "/artworks", wait_until="commit", timeout=30000)
+            except Exception as error:
+                diagnostics = page.evaluate("""() => ({
+                    url: location.href,
+                    title: document.title,
+                    readyState: document.readyState,
+                    bodyText: (document.body?.innerText || '').slice(0, 600),
+                })""")
+                raise AssertionError(
+                    "Catalogue document did not commit; "
+                    f"page errors: {page_errors}; DOM: {diagnostics}"
+                ) from error
             try:
                 page.get_by_role("heading", name="گالری آثار").wait_for(timeout=30000)
             except Exception as error:
