@@ -30,7 +30,7 @@
     --color-surface-muted: #F0EDE6;
     --color-action: var(--color-terracotta);
     --color-action-text: var(--color-terracotta-strong);
-    --color-focus: var(--color-terracotta-strong);
+    --color-focus: #C16C4C;
     --color-success: var(--color-olive);
     --color-danger: #A33D32;
     --color-warning: #8A5A12;
@@ -46,7 +46,7 @@
     /* Shared dimmed, blurred scrim for dialogs, drawers and modal surfaces. */
     --color-overlay: rgb(36 35 32 / 64%);
     --overlay-backdrop-blur: 8px;
-    --color-focus-soft: rgb(154 69 43 / 16%);
+    --color-focus-soft: rgb(193 108 76 / 16%);
     --color-message-own: color-mix(in srgb, var(--color-terracotta) 12%, var(--color-paper));
     --color-message-peer: var(--color-paper);
 
