@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const outputDir = path.join(root, 'build');
 const outputZip = path.join(outputDir, 'rad-file.zip');
+const temporaryZip = outputZip + '.tmp';
 const stagingRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'rad-file-cpanel-'));
 const stagingDir = path.join(stagingRoot, 'public_html');
 const isWindows = process.platform === 'win32';
@@ -55,11 +56,11 @@ function shouldCopy(sourcePath) {
         base === 'Thumbs.db'
     ) return false;
 
-    if (first === 'build' && !['build/manifest.json'].includes(relativePath) && !relativePath.startsWith('build/assets/')) {
+    if (first === 'build' && relativePath !== 'build' && relativePath !== 'build/assets' && relativePath !== 'build/manifest.json' && !relativePath.startsWith('build/assets/')) {
         return false;
     }
 
-    if (first === 'resources' && relativePath !== 'resources/views' && !relativePath.startsWith('resources/views/')) {
+    if (first === 'resources' && relativePath !== 'resources' && relativePath !== 'resources/views' && !relativePath.startsWith('resources/views/')) {
         return false;
     }
 
@@ -79,15 +80,8 @@ function shouldCopy(sourcePath) {
     ];
     if (excluded.some((item) => relativePath === item || relativePath.startsWith(item + '/'))) return false;
 
+    if (fs.lstatSync(sourcePath).isSymbolicLink()) throw new Error('Refusing to package symbolic link: ' + sourcePath);
     return true;
-}
-
-function assertNoSymlinks(sourcePath) {
-    const stat = fs.lstatSync(sourcePath);
-    if (stat.isSymbolicLink()) throw new Error('Refusing to package symbolic link: ' + sourcePath);
-    if (stat.isDirectory()) {
-        for (const name of fs.readdirSync(sourcePath)) assertNoSymlinks(path.join(sourcePath, name));
-    }
 }
 
 function validateManifest() {
@@ -111,23 +105,23 @@ function validateManifest() {
 function createZip() {
     if (isWindows) {
         const quote = (value) => "'" + value.replaceAll("'", "''") + "'";
-        const command = 'Compress-Archive -Path (Join-Path ' + quote(stagingDir) + " '*') -DestinationPath " + quote(outputZip) + ' -Force';
+        const command = 'Compress-Archive -Path (Join-Path ' + quote(stagingDir) + " '*') -DestinationPath " + quote(temporaryZip) + ' -Force';
         run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', command]);
     } else {
-        run('zip', ['-qr', outputZip, '.'], { cwd: stagingDir });
+        run('zip', ['-qr', temporaryZip, '.'], { cwd: stagingDir });
     }
 }
 
 function validateZip() {
     if (isWindows) {
         const command = 'Add-Type -AssemblyName System.IO.Compression.FileSystem; $z=[IO.Compression.ZipFile]::OpenRead(' +
-            "'" + outputZip.replaceAll("'", "''") + "'); try { $n=@($z.Entries | ForEach-Object { $_.FullName }); " +
+            "'" + temporaryZip.replaceAll("'", "''") + "'); try { $n=@($z.Entries | ForEach-Object { $_.FullName }); " +
             "$r=@('.htaccess','index.php','artisan','composer.json','composer.lock','vendor/autoload.php','build/manifest.json'); " +
             "foreach($x in $r){if($n -notcontains $x){throw ('Missing ZIP entry: '+$x)}} } finally {$z.Dispose()}";
         run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', command]);
     } else {
-        run('unzip', ['-tq', outputZip]);
-        const result = spawnSync('unzip', ['-Z1', outputZip], { encoding: 'utf8' });
+        run('unzip', ['-tq', temporaryZip]);
+        const result = spawnSync('unzip', ['-Z1', temporaryZip], { encoding: 'utf8' });
         if (result.status !== 0) throw new Error('Could not inspect the generated ZIP.');
         const names = new Set(result.stdout.split(/\r?\n/));
         for (const entry of ['.htaccess', 'index.php', 'artisan', 'composer.json', 'composer.lock', 'vendor/autoload.php', 'build/manifest.json']) {
@@ -154,7 +148,6 @@ try {
     for (const name of fs.readdirSync(root)) {
         const source = path.join(root, name);
         if (!shouldCopy(source)) continue;
-        assertNoSymlinks(source);
         fs.cpSync(source, path.join(stagingDir, name), {
             recursive: true,
             filter: shouldCopy,
@@ -187,16 +180,13 @@ try {
     }
 
     fs.mkdirSync(outputDir, { recursive: true });
-    const temporaryZip = outputZip + '.tmp';
     const previousZip = outputZip + '.previous';
     fs.rmSync(temporaryZip, { force: true });
     fs.rmSync(previousZip, { force: true });
 
     try {
         createZip();
-        // ZIP tools write to outputZip; move it into place only after validation.
         validateZip();
-        fs.renameSync(outputZip, temporaryZip);
         if (fs.existsSync(outputZip)) fs.renameSync(outputZip, previousZip);
         fs.renameSync(temporaryZip, outputZip);
         fs.rmSync(previousZip, { force: true });
