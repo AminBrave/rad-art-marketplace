@@ -98,7 +98,7 @@ class DiscoveryBrowserTests(unittest.TestCase):
             page.goto(BASE_URL + "/artworks")
             page.get_by_role("heading", name="گالری آثار").wait_for()
             def select_radix_option(label, option_name):
-                page.get_by_label(label).click()
+                page.get_by_role("combobox", name=label).click()
                 page.get_by_role("option", name=option_name, exact=True).click()
 
             def matches_artwork_query(response, expected):
