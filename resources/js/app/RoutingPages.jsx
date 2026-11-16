@@ -326,23 +326,23 @@ export function ArtistProfileSettings() {
             {profileError && <p role="alert" className="mt-4 text-sm text-warning">{profileError}</p>}
             <form onSubmit={save} className="mt-6 grid gap-4 sm:grid-cols-2">
                 <label className="text-sm font-semibold sm:col-span-2">نام نمایشی
-                    <input name="display_name" value={form.display_name ?? ''} onChange={update} required maxLength="120" className="mt-2 w-full rounded-xl border border-border bg-paper px-4 py-3" />
+                    <input name="display_name" value={form.display_name ?? ''} onChange={update} required maxLength="120" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3" />
                     {errors.display_name?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
                 </label>
                 <label className="text-sm font-semibold sm:col-span-2">درباره هنرمند
-                    <textarea name="bio" value={form.bio ?? ''} onChange={update} rows="4" maxLength="2000" className="mt-2 w-full rounded-xl border border-border bg-paper px-4 py-3 leading-7" />
+                    <textarea name="bio" value={form.bio ?? ''} onChange={update} rows="4" maxLength="2000" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3 leading-7" />
                     {errors.bio?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
                 </label>
                 <label className="text-sm font-semibold">شهر
-                    <input name="city" value={form.city ?? ''} onChange={update} maxLength="120" className="mt-2 w-full rounded-xl border border-border bg-paper px-4 py-3" />
+                    <input name="city" value={form.city ?? ''} onChange={update} maxLength="120" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3" />
                     {errors.city?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
                 </label>
                 <label className="text-sm font-semibold">شناسه اینستاگرام
-                    <input name="instagram_handle" value={form.instagram_handle ?? ''} onChange={update} maxLength="30" dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-paper px-4 py-3 text-left" />
+                    <input name="instagram_handle" value={form.instagram_handle ?? ''} onChange={update} maxLength="30" dir="ltr" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3 text-left" />
                     {errors.instagram_handle?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
                 </label>
                 <label className="text-sm font-semibold sm:col-span-2">وب‌سایت
-                    <input name="website_url" type="url" value={form.website_url ?? ''} onChange={update} dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-paper px-4 py-3 text-left" placeholder="https://example.com" />
+                    <input name="website_url" type="url" value={form.website_url ?? ''} onChange={update} dir="ltr" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3 text-left placeholder:text-muted" placeholder="https://example.com" />
                     {errors.website_url?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
                 </label>
                 <Checkbox name="is_public" checked={Boolean(form.is_public)} onChange={update} className="flex min-h-11 items-center gap-3 text-sm font-semibold sm:col-span-2">
