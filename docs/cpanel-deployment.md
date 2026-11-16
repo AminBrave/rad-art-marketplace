@@ -11,7 +11,8 @@ On the build machine, install the repository's Node dependencies and ensure thes
 - Node.js 20.13 or newer.
 - PHP 8.3 or newer on the CLI, with the extensions required by Laravel and PDO MySQL.
 - Composer.
-- Python 3 (the ZIP writer uses Python's standard library; no Python packages are installed).
+- On Linux/macOS: the `zip` and `unzip` command-line tools.
+- On Windows: PowerShell with the built-in `Compress-Archive` command.
 
 Then run:
 
@@ -20,7 +21,7 @@ npm ci
 npm run cpanel:build
 ```
 
-The command builds the cPanel Vite assets, creates a temporary clean deployment tree, installs Composer dependencies from `composer.lock` with development packages excluded, and writes:
+The single packaging script runs the existing cPanel Vite build, creates a temporary clean deployment tree, installs Composer dependencies from `composer.lock` with development packages excluded, validates the archive, and writes:
 
 ```
 build/rad-file.zip
