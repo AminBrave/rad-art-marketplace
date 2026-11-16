@@ -242,8 +242,8 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
 });
 
 test('messaging is viewport-locked between the authenticated app header and bottom navigation on mobile', () => {
-    assert.ok(messaging.includes('text-sm font-extrabold leading-6 text-ink">گفتگوها</h2>'), 'Keep the inbox heading compact inside its panel.');
-    assert.ok(messaging.includes('text-[10px] leading-4 text-muted">گفتگوی خصوصی خریداران و هنرمندان؛ پیام‌ها به‌صورت خودکار به‌روزرسانی می‌شوند.</p>'));
+    assert.ok(messaging.includes('text-sm font-extrabold leading-6 text-ink">پیام‌ها</h2>'), 'Keep the inbox heading compact inside its panel.');
+    assert.ok(messaging.includes('text-[10px] leading-4 text-muted">یک بستر امن برای ارتباط خریدار با هنرمند.</p>'));
     assert.ok(messaging.includes("own ? 'rounded-es-[.35rem]"));
     assert.ok(messaging.includes(": 'rounded-ee-[.35rem]"));
     assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden'));
@@ -494,4 +494,10 @@ test('Radix checkbox form bridge cannot expand a page to the full available row 
     assert.ok(checkboxStart >= 0 && checkboxEnd > checkboxStart);
     assert.ok(checkbox.includes('group inline-flex w-fit min-w-0 max-w-full min-h-11'), 'Labeled checkboxes must size to their content and remain shrinkable.');
     assert.doesNotMatch(checkbox, /group inline-flex min-h-11 items-center/);
+});
+
+test('messaging composer height is driven by its send control and compact padding', () => {
+    assert.ok(messaging.includes('relative flex min-w-0 items-center gap-1.5 rounded-[1rem]'));
+    assert.ok(messaging.includes('min-h-[2.35rem] max-sm:min-h-9 w-full resize-none'));
+    assert.doesNotMatch(messaging, /relative flex min-h-\[3\.1rem\] items-end/);
 });
