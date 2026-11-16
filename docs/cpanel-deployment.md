@@ -26,7 +26,7 @@ The command builds the cPanel Vite assets, creates a temporary clean deployment 
 build/rad-file.zip
 ```
 
-The archive is validated before it replaces an existing ZIP. Its contents are rooted at `public_html`; it does not contain an enclosing project directory. The archive includes production `vendor/` dependencies and compiled `build/` assets. It does not include `.env`, Git metadata, Node dependencies, tests, local SQLite databases, private/public upload contents, or runtime logs, sessions and caches.
+The archive is validated before it replaces an existing ZIP. Its contents are rooted at `public_html`; it does not contain an enclosing project directory. The archive includes production `vendor/` dependencies and compiled `build/` assets. It does not include `.env`, Git metadata, Node dependencies, tests, local SQLite databases, private/public upload contents, or runtime logs, sessions and storage cache contents. Composer-generated package discovery metadata is retained under `bootstrap/cache`.
 
 ## Prepare cPanel
 
