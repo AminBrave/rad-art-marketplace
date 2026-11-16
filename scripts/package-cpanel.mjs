@@ -5,6 +5,7 @@ import {
     mkdirSync,
     mkdtempSync,
     readdirSync,
+    readFileSync,
     renameSync,
     rmSync,
 } from 'node:fs';
@@ -91,17 +92,13 @@ function validateBuildOutput() {
 
     let manifest;
     try {
-        manifest = JSON.parse((awaitlessReadFile(manifestPath)));
+        manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
     } catch {
         fail('The cPanel Vite manifest is not valid JSON.');
     }
     for (const entryName of ['resources/css/app.css', 'resources/js/app.jsx']) {
         if (!manifest[entryName]?.file) fail('The cPanel Vite manifest is missing ' + entryName + '.');
     }
-}
-
-function awaitlessReadFile(path) {
-    return require('node:fs').readFileSync(path, 'utf8');
 }
 
 function createRuntimeDirectories(stage) {
