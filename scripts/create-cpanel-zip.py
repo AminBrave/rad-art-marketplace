@@ -60,8 +60,9 @@ def validate_archive(output):
         for name in names:
             normalized = name.rstrip("/")
             parts = normalized.split("/")
-            if normalized == ".env" or (
-                normalized.startswith(".env.") and normalized != ".env.example"
+            basename = parts[-1]
+            if basename == ".env" or (
+                basename.startswith(".env.") and normalized != ".env.example"
             ):
                 forbidden.append(name)
             if any(part in {".git", "node_modules"} for part in parts) or parts[0] == "tests":
