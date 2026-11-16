@@ -252,6 +252,9 @@ test('messaging is viewport-locked between the authenticated app header and bott
     assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden'));
     assert.ok(messaging.includes('grid h-full min-h-0 w-full min-w-0 flex-1'));
     assert.ok(messaging.includes('divide-y divide-border overflow-y-auto'), 'The inbox list scrolls inside its fixed panel.');
+    const inboxList = messaging.match(/<ul dir="rtl" className="([^"]+)"/);
+    assert.ok(inboxList, 'The conversation inbox list is present.');
+    assert.doesNotMatch(inboxList[1], /scrollbar-gutter/ , 'The inbox list must not reserve a gutter that leaves a blank strip beside its content.');
     assert.ok(messaging.includes('overflow-y-auto overscroll-contain'), 'Message history scrolls inside its fixed panel.');
     assert.ok(layouts.includes('flex h-dvh flex-col overflow-hidden'), 'Messaging locks the authenticated shell to the dynamic viewport.');
     assert.ok(layouts.includes('h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
