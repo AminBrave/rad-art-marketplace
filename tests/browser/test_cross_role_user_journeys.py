@@ -91,7 +91,7 @@ class RealUserBrowserFlowTests(unittest.TestCase):
 
         self.login("buyer@rademan.test", "/dashboard/buyer")
         self.page.goto(BASE_URL + "/dashboard/buyer/messages", wait_until="domcontentloaded")
-        self.page.get_by_text("گفتگوها", exact=True).wait_for(timeout=20_000)
+        self.page.get_by_role("heading", name="پیام‌ها").wait_for(timeout=20_000)
         inbox_overflow = self.page.evaluate("document.documentElement.scrollWidth > window.innerWidth")
         self.assertFalse(inbox_overflow, "The mobile inbox must fit the viewport without horizontal page overflow.")
         self.assert_no_uncaught_page_errors()
