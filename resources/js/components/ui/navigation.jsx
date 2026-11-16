@@ -28,20 +28,17 @@ export function TabsContent({ className = '', ...props }) {
     return <TabsPrimitive.Content className={cn('pt-5 outline-none focus-visible:ring-2 focus-visible:ring-terracotta-strong', className)} {...props} />;
 }
 
-export const DropdownMenu = DropdownMenuPrimitive.Root;
 export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
 
 export function DropdownMenuContent({ className = '', sideOffset = 6, ...props }) {
     return (
-        <DropdownMenuPrimitive.Portal>
-            <DropdownMenuPrimitive.Content
-                sideOffset={sideOffset}
-                align="end"
-                dir="rtl"
-                className={cn('z-50 min-w-44 rounded-md border border-border bg-paper p-1.5 text-ink shadow-raised outline-none', className)}
-                {...props}
-            />
-        </DropdownMenuPrimitive.Portal>
+        <DropdownMenuPrimitive.Content
+            sideOffset={sideOffset}
+            align="end"
+            dir="rtl"
+            className={cn('z-50 min-w-44 rounded-md border border-border bg-paper p-1.5 text-ink shadow-raised outline-none', className)}
+            {...props}
+        />
     );
 }
 
@@ -61,6 +58,16 @@ export function DropdownMenuLabel({ className = '', ...props }) {
 export function DropdownMenuSeparator({ className = '', ...props }) {
     return <DropdownMenuPrimitive.Separator className={cn('my-1 h-px bg-border', className)} {...props} />;
 }
+
+export const DropdownMenu = {
+    Root: DropdownMenuPrimitive.Root,
+    Trigger: DropdownMenuPrimitive.Trigger,
+    Portal: DropdownMenuPrimitive.Portal,
+    Content: DropdownMenuContent,
+    Item: DropdownMenuItem,
+    Label: DropdownMenuLabel,
+    Separator: DropdownMenuSeparator,
+};
 
 export function Breadcrumbs({ items = [], className = '' }) {
     return (

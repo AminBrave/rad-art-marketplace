@@ -9,6 +9,8 @@ const cards = readFileSync(new URL('../../resources/js/components/ui/cards.jsx',
 const feedback = readFileSync(new URL('../../resources/js/components/ui/feedback.jsx', import.meta.url), 'utf8');
 const navigation = readFileSync(new URL('../../resources/js/components/ui/navigation.jsx', import.meta.url), 'utf8');
 const dialog = readFileSync(new URL('../../resources/js/components/ui/Dialog.jsx', import.meta.url), 'utf8');
+const tooltip = readFileSync(new URL('../../resources/js/components/ui/Tooltip.jsx', import.meta.url), 'utf8');
+const alertDialog = readFileSync(new URL('../../resources/js/components/ui/AlertDialog.jsx', import.meta.url), 'utf8');
 const skeletons = readFileSync(new URL('../../resources/js/components/ui/skeletons.jsx', import.meta.url), 'utf8');
 const showcase = readFileSync(new URL('../../resources/js/app/ComponentShowcase.jsx', import.meta.url), 'utf8');
 const publicPages = ['ArtworkCatalogue.jsx', 'ArtistDirectoryPage.jsx', 'ArtworkDetailPage.jsx'].map((file) => readFileSync(new URL('../../resources/js/app/' + file, import.meta.url), 'utf8'));
@@ -103,6 +105,16 @@ test('shared layout and form primitives expose semantic utility compositions', (
     assert.doesNotMatch(primitives, /ra-[a-z]/);
 });
 
+test('artist profile content cannot expand the viewport horizontally', () => {
+    assert.ok(artistProfile.includes('w-full min-w-0 max-w-7xl overflow-x-clip'));
+    assert.ok(artistProfile.includes('titleClassName="break-words [overflow-wrap:anywhere]"'));
+    assert.ok(artistProfile.includes('descriptionClassName="break-words [overflow-wrap:anywhere]"'));
+    assert.ok(artistProfile.includes('whitespace-pre-line break-words [overflow-wrap:anywhere]'));
+    assert.ok(artistProfile.includes('max-w-full whitespace-normal break-words text-center'));
+    assert.ok(artistProfile.includes('grid min-w-0 max-w-full grid-cols-1'));
+    assert.ok(artistProfile.includes('className="min-w-0 [overflow-wrap:anywhere]"'));
+});
+
 test('public catalogue, artist directory and artwork detail use shared page layout primitives', () => {
     assert.ok(publicPages[0].includes('PageContainer') && publicPages[0].includes('PageHeader'));
     assert.ok(publicPages[1].includes('PageContainer') && publicPages[1].includes('SectionHeader'));
@@ -130,21 +142,44 @@ test('navigation and dialog primitives use Tailwind state and focus utilities', 
     assert.doesNotMatch(dialog, /ra-[a-z]/);
 });
 
-test('dashboard headers and notification drawer use the shared accessible RAD dialog primitive', () => {
-    assert.ok(layouts.includes('aria-haspopup="dialog"'));
+test('form controls and helper hints use shared RAD-styled Radix primitives', () => {
+    assert.ok(primitives.includes('forwardRef(function Button'));
+    assert.ok(primitives.includes('SelectPrimitive.Root'));
+    assert.ok(primitives.includes('CheckboxPrimitive.Root'));
+    assert.ok(primitives.includes("type: 'checkbox'"));
+    assert.ok(primitives.includes('data-[state=checked]:bg-terracotta'));
+    assert.ok(tooltip.includes('TooltipPrimitive.Root'));
+    assert.ok(alertDialog.includes('AlertDialogPrimitive.Root'));
+    assert.ok(feedback.includes('ToastPrimitive.Provider'));
+    assert.ok(feedback.includes('ToastPrimitive.Viewport'));
+    assert.ok(designSystem.includes('RAD Toast backed by Radix Toast'));
+    assert.ok(editorialPages.includes('<AlertDialogAction asChild>'));
+    assert.ok(editorialPages.includes('event.preventDefault(); publish(collection, false)'));
+    assert.ok(editorialPages.includes('<AlertDialogTitle>'));
+    assert.ok(messaging.includes("DropdownMenu } from '../components/ui'"));
+    assert.doesNotMatch(messaging, /@radix-ui/);
+    assert.ok(messaging.includes('<Tooltip content="گزینه‌های گفتگو">'));
+    assert.ok(messaging.includes('<Tooltip content="افزودن واکنش">'));
+    assert.ok(artworkStudio.includes('<SelectField'));
+    assert.ok(editorialPages.includes('<Checkbox'));
+    assert.ok(layouts.includes('<Checkbox'));
+});
+
+test('public and workspace navigation plus notifications use the shared RAD Radix Dialog drawer', () => {
     assert.ok(layouts.includes('<Dialog open={open} onOpenChange={setOpen}>'));
+    assert.ok(layouts.includes('<Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>'));
     assert.ok(layouts.includes('<DialogTrigger asChild>'));
     assert.ok(layouts.includes('<DialogContent'));
     assert.ok(layouts.includes('<DialogTitle id="workspace-notification-title"'));
     assert.ok(layouts.includes('<DialogClose asChild>'));
     assert.ok(layouts.includes('workspace-notification-panel'));
-    assert.ok(layouts.includes('!right-0 !top-0 !h-dvh'));
-    assert.doesNotMatch(layouts, /panelPosition|closeOnOutsidePointer|aria-modal="false"/);
+    assert.ok(layouts.includes('placement="drawer"'));
+    assert.ok(layouts.includes('حساب کاربری'));
+    assert.ok(layouts.includes('ناوبری اصلی'));
+    assert.doesNotMatch(layouts, /panelPosition|closeOnOutsidePointer|mobileMenuPanelRef|closeMobileMenu/);
     assert.ok(layouts.includes('aria-haspopup="dialog"'));
-    assert.ok(layouts.includes('aria-modal="true"'));
-    assert.ok(layouts.includes('bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]'));
-    assert.ok(layouts.includes('workspace-mobile-menu'));
-    assert.ok(layouts.includes('document.body.style.overflow = \'hidden\''));
+    assert.ok(dialog.includes('bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]'));
+    assert.doesNotMatch(layouts, /document\.body\.style\.overflow|addEventListener\('keydown', closeOnEscape/);
     assert.ok(layouts.includes('lg:hidden'));
     assert.ok(layouts.includes('hidden min-w-0 rounded-xl border border-border bg-paper'));
     assert.ok(adminWorkspace.includes('<PageHeader'));
@@ -157,51 +192,69 @@ test('dashboard headers and notification drawer use the shared accessible RAD di
     assert.ok(editorialPages.includes('<SectionHeader'));
     assert.ok(routeLoading.includes('<WorkspaceHero'));
     assert.ok(routeLoading.includes('<PageHeader'));
-    assert.ok(messaging.includes('<PageHeader'));
+    assert.doesNotMatch(messaging, /<PageHeader/);
     assert.ok(messaging.includes('after:bg-terracotta'));
     const heroStart = primitives.indexOf('export function WorkspaceHero');
     const heroEnd = primitives.indexOf('\n}', heroStart);
     assert.ok(heroStart >= 0 && heroEnd > heroStart);
-    assert.ok(primitives.slice(heroStart, heroEnd).includes('<PageHeader'));
-    assert.doesNotMatch(primitives.slice(heroStart, heroEnd), /bg-ink|text-inverse|shadow-raised/);
+    const hero = primitives.slice(heroStart, heroEnd);
+    assert.ok(hero.includes('rounded-xl border border-ink bg-ink'));
+    assert.ok(hero.includes('inset-y-0 right-0 w-1.5 bg-terracotta'));
+    assert.ok(hero.includes('text-inverse'));
+    assert.ok(hero.includes('text-sand'));
     assert.ok(!artworkStudio.includes('className="border-0 pb-0 pt-0"'));
-});
+});;
 
-test('messaging conversation filters fill their RAD container edge to edge', () => {
-    assert.ok(messaging.includes('grid grid-cols-3 gap-0 overflow-hidden rounded-md border border-border bg-surface-muted'));
-    assert.ok(messaging.includes('min-h-11 w-full items-center justify-center'));
-    assert.ok(messaging.includes('focus-visible:outline-offset-[-2px]'));
-    assert.ok(messaging.includes('motion-reduce:transition-none'));
-    assert.doesNotMatch(messaging, /role="tablist"[^\n]*gap-1[^\n]*p-1/);
-});
+test('messaging conversation filters use the shared RAD-styled Radix Tabs primitive', () => {
+    assert.ok(messaging.includes('<Tabs value={threadFilter} onValueChange={setThreadFilter} dir="rtl"'));
+    assert.ok(messaging.split('inline-flex flex-row min-w-0 w-full items-center justify-center gap-1.5').length - 1 === 3, 'All inbox filter icons and labels use the same centered RTL row alignment.');
+    assert.ok(messaging.includes('<TabsContent value={threadFilter} dir="rtl"'));
+    assert.ok(messaging.includes('<ul dir="rtl" className="min-h-0 flex-1 divide-y'));
+    assert.ok(messaging.includes('<TabsList aria-label="فیلتر گفتگوها"'));
+    assert.ok(messaging.includes('<TabsTrigger value="all"'));
+    assert.ok(messaging.includes('<TabsTrigger value="unread"'));
+    assert.ok(messaging.includes('<TabsTrigger value="archived"'));
+    assert.ok(navigation.includes('data-[state=active]:border-terracotta'));
+    assert.doesNotMatch(messaging, /document\.getElementById\('conversation-filter-/);
+});;
 
 
 test('messaging fills the workspace viewport and keeps compact Telegram-inspired density', () => {
-    assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col gap-2'));
-    assert.ok(messaging.includes('grid min-h-0 w-full min-w-0 flex-1 grid-cols-1'));
-    assert.ok(messaging.includes('titleClassName="mt-1 text-xl sm:text-2xl"'));
+    assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden'));
+    assert.ok(messaging.includes('grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1'));
     assert.ok(layouts.includes('const isMessagingRoute = pathname.endsWith(\'/messages\')'));
     assert.ok(layouts.includes('h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.ok(layouts.includes('sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.ok(layouts.includes('lg:h-[calc(100dvh-5rem)]'));
-    assert.ok(layouts.includes("isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col' : 'min-w-0'"));
-    assert.ok(messaging.includes('lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]'));
+    assert.ok(layouts.includes('lg:grid-cols-[15rem_minmax(0,1fr)]'));
+    assert.doesNotMatch(layouts, /direction:ltr|<aside dir="rtl"|<main dir="rtl"/);
+    
+    
+    assert.ok(layouts.includes("isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden lg:col-start-2' : 'min-w-0'"));
+    assert.doesNotMatch(messaging, /RAD \/ MESSAGES|ارتباط مستقیم|PageHeader/);
+    assert.doesNotMatch(layouts, /ناوبری فضای کاری|RAD \/ MENU/);
     assert.ok(messaging.includes('min-w-0 w-fit max-w-[88%]'));
     assert.ok(messaging.includes('min-h-[4.25rem] w-full items-center gap-2'));
     assert.ok(messaging.includes('absolute end-1 top-1/2 -translate-y-1/2'));
-    assert.ok(messaging.includes('mt-2 flex flex-wrap items-center justify-between gap-1'));
-    assert.ok(messaging.includes('max-h-28 min-h-[2.3rem] w-full resize-none'));
-    assert.ok(messaging.includes('absolute bottom-2 start-2 z-10 flex h-9 w-9'));
-    assert.ok(messaging.includes('ps-10 pe-3 py-[.55rem]'));
+    assert.ok(messaging.includes('mt-[.55rem] flex flex-wrap items-center justify-between gap-2 text-[10px] text-subtle'));
+    assert.ok(messaging.includes('max-h-28 min-h-[2.35rem] max-sm:min-h-9 w-full resize-none'));
+    assert.ok(messaging.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
+    assert.ok(messaging.includes('ps-10 pe-3 py-[.4rem]'));
     assert.doesNotMatch(messaging, /md:min-h-\[min\(580px/);
     assert.doesNotMatch(messaging, /min-h-\[5\.35rem\]/);
 });
 
 test('messaging is viewport-locked between the authenticated app header and bottom navigation on mobile', () => {
-    assert.ok(messaging.includes('className="max-sm:hidden"'), 'Hide the page-level direct-messaging heading on mobile.');
-    assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col gap-2 overflow-hidden'));
+    assert.ok(messaging.includes('text-sm font-extrabold leading-6 text-ink">پیام‌ها</h2>'), 'Keep the inbox heading compact inside its panel.');
+    assert.ok(messaging.includes('text-[10px] leading-4 text-muted">یک بستر امن برای ارتباط خریدار با هنرمند.</p>'));
+    assert.ok(messaging.includes("own ? 'rounded-es-[.35rem]"));
+    assert.ok(messaging.includes(": 'rounded-ee-[.35rem]"));
+    assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden'));
     assert.ok(messaging.includes('grid h-full min-h-0 w-full min-w-0 flex-1'));
     assert.ok(messaging.includes('divide-y divide-border overflow-y-auto'), 'The inbox list scrolls inside its fixed panel.');
+    const inboxList = messaging.match(/<ul dir="rtl" className="([^"]+)"/);
+    assert.ok(inboxList, 'The conversation inbox list is present.');
+    assert.doesNotMatch(inboxList[1], /scrollbar-gutter/ , 'The inbox list must not reserve a gutter that leaves a blank strip beside its content.');
     assert.ok(messaging.includes('overflow-y-auto overscroll-contain'), 'Message history scrolls inside its fixed panel.');
     assert.ok(layouts.includes('flex h-dvh flex-col overflow-hidden'), 'Messaging locks the authenticated shell to the dynamic viewport.');
     assert.ok(layouts.includes('h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
@@ -217,7 +270,8 @@ test('messaging is viewport-locked between the authenticated app header and bott
 
 test('messaging chat geometry follows RTL logical flow and uses Radix collision-aware overlays', () => {
     assert.ok(messaging.includes('<div dir="rtl" ref={messagesContainerRef}'));
-    assert.ok(messaging.includes("import * as DropdownMenu from '@radix-ui/react-dropdown-menu'"));
+    assert.ok(messaging.includes("DropdownMenu } from '../components/ui'"));
+    assert.doesNotMatch(messaging, /@radix-ui/);
     assert.ok(messaging.split('<DropdownMenu.Root').length - 1 >= 4, 'All messaging overlays use Radix.');
     assert.ok(messaging.includes('<DropdownMenu.Portal>'));
     assert.ok(messaging.includes('sideOffset={8} collisionPadding={8}'));
@@ -226,8 +280,8 @@ test('messaging chat geometry follows RTL logical flow and uses Radix collision-
     assert.ok(messaging.includes('min-w-0 flex-wrap items-center justify-end gap-1.5'));
     assert.ok(messaging.includes('overflow-x-hidden overflow-y-auto'));
     assert.ok(messaging.includes('absolute end-1 top-1/2 -translate-y-1/2'));
-    assert.ok(messaging.includes('absolute bottom-2 start-2 z-10 flex h-9 w-9'));
-    assert.ok(messaging.includes('ps-10 pe-3 py-[.55rem]'));
+    assert.ok(messaging.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
+    assert.ok(messaging.includes('ps-10 pe-3 py-[.4rem]'));
     assert.doesNotMatch(messaging, /getChatPopoverPosition|toggleChatPopover|createPortal|data-chat-popover-boundary/);
 });
 
@@ -262,8 +316,8 @@ test('authenticated app shell keeps primary-only bottom navigation and places bo
     const bottomNavigation = layouts.slice(bottomStart, bottomEnd);
     const workspaceStart = layouts.indexOf('export function WorkspaceLayout');
     const workspaceLayout = layouts.slice(workspaceStart);
-    const drawerStart = workspaceLayout.indexOf('id="workspace-mobile-menu"');
-    const drawerEnd = workspaceLayout.indexOf('</aside>', drawerStart);
+    const drawerStart = workspaceLayout.indexOf('<DialogContent');
+    const drawerEnd = workspaceLayout.indexOf('</DialogContent>', drawerStart);
     const drawer = workspaceLayout.slice(drawerStart, drawerEnd);
 
     assert.ok(bottomStart >= 0 && bottomEnd > bottomStart);
@@ -278,9 +332,11 @@ test('authenticated app shell keeps primary-only bottom navigation and places bo
     assert.ok(workspaceLayout.includes('<AuthenticatedBottomNavigation primaryLinks={links} />'));
 
     assert.doesNotMatch(workspaceLayout.slice(0, workspaceLayout.indexOf('{logoutError &&')), /ناوبری اصلی فضای کاربری|ناوبری تکمیلی سایت|data-nav-priority="secondary"/);
-    assert.ok(workspaceLayout.includes('aria-label={mobileMenuOpen ?'));
-    assert.ok(workspaceLayout.includes('aria-haspopup="dialog"'));
-    assert.ok(workspaceLayout.includes('fixed inset-0 z-[70]'));
+    assert.ok(workspaceLayout.includes('<DialogTrigger asChild>'));
+    assert.ok(workspaceLayout.includes('aria-label="باز کردن منوی حساب کاربری"'));
+    assert.ok(workspaceLayout.includes('<DialogContent'));
+    assert.ok(workspaceLayout.includes('placement="drawer"'));
+    assert.ok(dialog.includes('DialogPrimitive.Overlay'));
     assert.ok(drawer.includes('aria-label="بخش‌های اصلی فضای کاربری"'));
     assert.ok(drawer.includes('aria-label="پیوندهای تکمیلی سایت"'));
     assert.ok(drawer.includes('publicSecondaryLinks.map((item)'));
@@ -435,4 +491,19 @@ test('artwork-origin messages persist and render a reply-style artwork reference
     assert.ok(conversationApi.includes("$artwork->artistProfile?->user_id"));
     assert.ok(messageModel.includes("'artwork_id'"));
     assert.ok(messageModel.includes('function artwork(): BelongsTo'));
+});
+
+test('Radix checkbox form bridge cannot expand a page to the full available row width', () => {
+    const checkboxStart = primitives.indexOf('export function Checkbox({');
+    const checkboxEnd = primitives.indexOf('\n}\n\nexport function SearchField', checkboxStart);
+    const checkbox = primitives.slice(checkboxStart, checkboxEnd);
+    assert.ok(checkboxStart >= 0 && checkboxEnd > checkboxStart);
+    assert.ok(checkbox.includes('group inline-flex w-fit min-w-0 max-w-full min-h-11'), 'Labeled checkboxes must size to their content and remain shrinkable.');
+    assert.doesNotMatch(checkbox, /group inline-flex min-h-11 items-center/);
+});
+
+test('messaging composer height is driven by its send control and compact padding', () => {
+    assert.ok(messaging.includes('relative flex min-w-0 items-center gap-1.5 rounded-[1rem]'));
+    assert.ok(messaging.includes('min-h-[2.35rem] max-sm:min-h-9 w-full resize-none'));
+    assert.doesNotMatch(messaging, /relative flex min-h-\[3\.1rem\] items-end/);
 });

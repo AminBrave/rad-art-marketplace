@@ -4,6 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { RouteLoading } from './RoutingPages';
+import { SelectField } from '../components/ui';
 
 export default function AuthPage({ initialMode = 'login' }) {
     const [mode, setMode] = useState(initialMode);
@@ -68,9 +69,9 @@ export default function AuthPage({ initialMode = 'login' }) {
                 <form onSubmit={submit} className="mt-6 space-y-4">
                     {mode === 'register' && <>
                         <label className="block text-sm font-semibold">نوع حساب
-                            <select name="role" value={form.role} onChange={update} className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2">
+                            <SelectField name="role" value={form.role} onChange={update} aria-label="نوع حساب" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2">
                                 <option value="buyer">خریدار</option><option value="artist">هنرمند</option>
-                            </select>
+                            </SelectField>
                         </label>
                         <label className="block text-sm font-semibold">نام و نام خانوادگی
                             <input name="name" value={form.name} onChange={update} required maxLength="120" autoComplete="name" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2" />

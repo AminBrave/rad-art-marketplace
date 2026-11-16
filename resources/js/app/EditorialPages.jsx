@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { ArtworkCard, EmptyState, ErrorState, Button, FormField, TextareaField, SuccessState, CollectionCardSkeleton, CollectionDetailSkeleton, AdminEditorialSkeleton, PageHeader, SectionHeader } from '../components/ui';
+import { ArtworkCard, EmptyState, ErrorState, Button, FormField, TextareaField, SuccessState, Checkbox, AlertDialog, AlertDialogTrigger, AlertDialogCancel, AlertDialogAction, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, CollectionCardSkeleton, CollectionDetailSkeleton, AdminEditorialSkeleton, PageHeader, SectionHeader } from '../components/ui';
 
 export function CollectionIndexPage() {
     const collectionsQuery = useQuery({
@@ -130,7 +130,6 @@ export function AdminEditorialPage() {
         } catch (e) { setActionError(e.response?.data?.message || e.response?.data?.errors?.title?.[0] || 'ذخیره مجموعه انجام نشد.'); }
     };
     const publish = async (collection, next) => {
-        if (!next && confirmUnpublishId !== collection.id) { setConfirmUnpublishId(collection.id); return; }
         setActionError(''); setMessage('');
         try {
             const { data } = await publishCollectionMutation.mutateAsync({ collection, next });
@@ -163,7 +162,7 @@ export function AdminEditorialPage() {
                 <SectionHeader title={editing ? 'ویرایش مجموعه' : 'ایجاد مجموعه تازه'} className="border-0 pb-0" />
                 <FormField label="عنوان مجموعه"><input className="w-full min-h-11 rounded-md border border-border-strong bg-paper px-3.5 py-2 font-sans text-sm text-ink transition-colors placeholder:text-subtle focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:bg-surface-muted disabled:opacity-65 aria-[invalid=true]:border-danger w-full" value={title} maxLength={160} onChange={(e) => setTitle(e.target.value)} /></FormField>
                 <FormField label="مقدمه سردبیر" hint="اختیاری؛ حداکثر ۲۰۰۰ نویسه."><TextareaField value={intro} onChange={(e) => setIntro(e.target.value)} rows={4} maxLength={2000} /></FormField>
-                <div><p className="mb-2 text-sm font-bold">آثار مجموعه (حداکثر ۳۰ اثر)</p><div className="max-h-72 space-y-2 overflow-y-auto border border-border p-3">{options.artworks.map((work) => <label key={work.id} className="flex items-start gap-3 py-1 text-sm"><input type="checkbox" checked={artworkIds.includes(work.id)} disabled={!artworkIds.includes(work.id) && artworkIds.length >= 30} onChange={(e) => setArtworkIds((current) => e.target.checked ? [...current, work.id] : current.filter((id) => id !== work.id))} /><span>{work.title}<span className="block text-xs text-muted">{work.artist}</span></span></label>)}</div><p className="mt-2 text-xs text-muted">ترتیب انتخاب، ترتیب نمایش آثار در مجموعه خواهد بود.</p></div>
+                <div><p className="mb-2 text-sm font-bold">آثار مجموعه (حداکثر ۳۰ اثر)</p><div className="max-h-72 space-y-2 overflow-y-auto border border-border p-3">{options.artworks.map((work) => <Checkbox key={work.id} checked={artworkIds.includes(work.id)} disabled={!artworkIds.includes(work.id) && artworkIds.length >= 30} onChange={(e) => setArtworkIds((current) => e.target.checked ? [...current, work.id] : current.filter((id) => id !== work.id))} className="flex w-full items-start gap-3 py-1 text-sm"><span>{work.title}<span className="block text-xs text-muted">{work.artist}</span></span></Checkbox>)}</div><p className="mt-2 text-xs text-muted">ترتیب انتخاب، ترتیب نمایش آثار در مجموعه خواهد بود.</p></div>
                 <div className="flex flex-wrap gap-2"><Button onClick={() => saveCollection(false)} loading={busy}>{editing ? 'ذخیره تغییرات' : 'ذخیره پیش‌نویس'}</Button>{!editing && <Button variant="outline" disabled={busy} onClick={() => saveCollection(true)}>ذخیره و انتشار</Button>}{editing && <Button variant="outline" disabled={busy} onClick={reset}>لغو ویرایش</Button>}</div>
             </section>
             <section className="space-y-4"><SectionHeader title="مجموعه‌های ثبت‌شده" actions={<><Button variant="outline" size="sm" onClick={saveCollectionOrder} disabled={busy || collections.length < 2}>ذخیره ترتیب</Button><Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button></>} />
@@ -176,11 +175,34 @@ export function AdminEditorialPage() {
                         <Button size="sm" variant="outline" disabled={busy || index === 0} onClick={() => moveCollection(index, -1)}>انتقال به بالا</Button>
                         <Button size="sm" variant="outline" disabled={busy || index === collections.length - 1} onClick={() => moveCollection(index, 1)}>انتقال به پایین</Button>
                         <Button size="sm" variant="outline" disabled={busy} onClick={() => edit(collection)}>ویرایش مجموعه</Button>
-                        <Button size="sm" variant={collection.status === 'published' ? 'danger' : 'primary'} disabled={busy} onClick={() => publish(collection, collection.status !== 'published')}>{collection.status === 'published' ? 'توقف انتشار' : 'انتشار مجموعه'}</Button>
+                        {collection.status === 'published' ? (
+                            <AlertDialog
+                                open={confirmUnpublishId === collection.id}
+                                onOpenChange={(open) => { if (!open && busy) return; setConfirmUnpublishId(open ? collection.id : null); if (open) setActionError(''); }}
+                            >
+                                <AlertDialogTrigger asChild>
+                                    <Button size="sm" variant="danger" disabled={busy}>توقف انتشار</Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogTitle>توقف انتشار این مجموعه را تأیید می‌کنید؟</AlertDialogTitle>
+                                    <AlertDialogDescription>این مجموعه از صفحه عمومی مجموعه‌های منتخب خارج می‌شود؛ محتوای آن حذف نخواهد شد.</AlertDialogDescription>
+                                    {actionError && <p role="alert" className="mt-3 text-sm leading-6 text-danger">{actionError}</p>}
+                                    <div className="mt-5 flex flex-wrap justify-end gap-2">
+                                        <AlertDialogCancel asChild>
+                                            <Button size="sm" variant="ghost" disabled={busy}>انصراف</Button>
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction asChild>
+                                            <Button size="sm" variant="danger" disabled={busy} onClick={(event) => { event.preventDefault(); publish(collection, false); }}>تأیید توقف انتشار</Button>
+                                        </AlertDialogAction>
+                                    </div>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        ) : (
+                            <Button size="sm" variant="primary" disabled={busy} onClick={() => publish(collection, true)}>انتشار مجموعه</Button>
+                        )}
                     </div>
-                    {confirmUnpublishId === collection.id && <div className="mt-4 border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-[color:color-mix(in_srgb,var(--color-danger)_5%,transparent)] p-3"><p className="text-sm font-bold">توقف انتشار این مجموعه را تأیید می‌کنید؟</p><p className="mt-1 text-xs leading-6 text-muted">این مجموعه از صفحه عمومی مجموعه‌های منتخب خارج می‌شود؛ محتوای آن حذف نخواهد شد.</p><div className="mt-3 flex flex-wrap gap-2"><Button size="sm" variant="danger" disabled={busy} onClick={() => publish(collection, false)}>تأیید توقف انتشار</Button><Button size="sm" variant="ghost" disabled={busy} onClick={() => setConfirmUnpublishId(null)}>انصراف</Button></div></div>}
                 </article>)}</div> : <EmptyState title="مجموعه‌ای ثبت نشده است" />}</section>
-            <section className="space-y-4 border border-border bg-paper p-5 sm:p-7"><SectionHeader title="هنرمندان منتخب" description="انتخاب‌ها به ترتیب انتخاب شما در صفحه اصلی نمایش داده می‌شوند. بازه انتشار از طریق API قابل تنظیم است." className="border-0 pb-0" /><div className="grid gap-3 sm:grid-cols-2">{options.artists.map((artist) => <div key={artist.id} className="border border-border p-3"><label className="flex items-center gap-3 text-sm"><input type="checkbox" checked={featuredIds.includes(artist.id)} onChange={(e) => setFeaturedIds((current) => e.target.checked ? [...current, artist.id] : current.filter((id) => id !== artist.id))} />{artist.display_name}</label>{featuredIds.includes(artist.id) && <input aria-label={'معرفی کوتاه ' + artist.display_name} className="w-full min-h-11 rounded-md border border-border-strong bg-paper px-3.5 py-2 font-sans text-sm text-ink transition-colors placeholder:text-subtle focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:bg-surface-muted disabled:opacity-65 aria-[invalid=true]:border-danger mt-3 w-full" placeholder="معرفی کوتاه سردبیر" value={featuredIntros[artist.id] || ''} maxLength={500} onChange={(e) => setFeaturedIntros((current) => ({ ...current, [artist.id]: e.target.value }))} />}</div>)}</div><Button onClick={saveFeatured} loading={busy}>ذخیره هنرمندان منتخب</Button></section>
+            <section className="space-y-4 border border-border bg-paper p-5 sm:p-7"><SectionHeader title="هنرمندان منتخب" description="انتخاب‌ها به ترتیب انتخاب شما در صفحه اصلی نمایش داده می‌شوند. بازه انتشار از طریق API قابل تنظیم است." className="border-0 pb-0" /><div className="grid gap-3 sm:grid-cols-2">{options.artists.map((artist) => <div key={artist.id} className="border border-border p-3"><Checkbox checked={featuredIds.includes(artist.id)} onChange={(e) => setFeaturedIds((current) => e.target.checked ? [...current, artist.id] : current.filter((id) => id !== artist.id))} className="flex min-h-11 items-center gap-3 text-sm">{artist.display_name}</Checkbox>{featuredIds.includes(artist.id) && <input aria-label={'معرفی کوتاه ' + artist.display_name} className="w-full min-h-11 rounded-md border border-border-strong bg-paper px-3.5 py-2 font-sans text-sm text-ink transition-colors placeholder:text-subtle focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:bg-surface-muted disabled:opacity-65 aria-[invalid=true]:border-danger mt-3 w-full" placeholder="معرفی کوتاه سردبیر" value={featuredIntros[artist.id] || ''} maxLength={500} onChange={(e) => setFeaturedIntros((current) => ({ ...current, [artist.id]: e.target.value }))} />}</div>)}</div><Button onClick={saveFeatured} loading={busy}>ذخیره هنرمندان منتخب</Button></section>
         </>}
     </section>;
 }

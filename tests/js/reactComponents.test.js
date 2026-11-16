@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { after, test } from 'node:test';
+import { readFileSync } from 'node:fs';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { createServer } from 'vite';
@@ -198,7 +199,8 @@ test('IconButton and Badge expose their accessible label and semantic state', ()
     );
 
     assert.match(icon, /aria-label="بستن پنجره"/);
-    assert.match(icon, /title="بستن پنجره"/);
+    assert.match(icon, /data-state="closed"/);
+    assert.doesNotMatch(icon, /title=/);
     assert.match(badge, /تأییدشده/);
     assert.match(badge, /bg-success-surface/);
 });
@@ -248,8 +250,12 @@ test('Page and section headers retain the requested heading hierarchy', () => {
         }),
     );
 
+    assert.match(hero, /<header dir="rtl"/);
     assert.match(hero, /rounded-xl border border-ink bg-ink/);
-    assert.match(hero, /inset-y-0 right-0 w-1.5 bg-terracotta/);
+    assert.match(hero, /bg-terracotta/);
+    assert.match(hero, /text-inverse/);
+    assert.match(hero, /text-sand/);
+    assert.doesNotMatch(hero, /border-b border-border/);
     assert.match(hero, /خوش آمدید/);
 });
 
@@ -317,19 +323,16 @@ test('SuccessState and PermissionState announce non-error outcomes', () => {
     assert.match(permission, /دسترسی مجاز نیست/);
 });
 
-test('Toast uses polite status announcements and assertive error announcements', () => {
-    const info = renderToStaticMarkup(
-        React.createElement(feedback.Toast, { title: 'پیام تازه', variant: 'info' }),
-    );
-    const error = renderToStaticMarkup(
-        React.createElement(feedback.Toast, { title: 'ذخیره انجام نشد', variant: 'error' }),
-    );
+test('Toast delegates announcements, dismissal and viewport behavior to Radix Toast', () => {
+    const feedbackSource = readFileSync(new URL('../../resources/js/components/ui/feedback.jsx', import.meta.url), 'utf8');
 
-    assert.match(info, /role="status"/);
-    assert.match(info, /aria-live="polite"/);
-    assert.match(error, /role="alert"/);
-    assert.match(error, /aria-live="assertive"/);
-});
+    assert.match(feedbackSource, /ToastPrimitive\.Provider/);
+    assert.match(feedbackSource, /ToastPrimitive\.Root/);
+    assert.match(feedbackSource, /ToastPrimitive\.Viewport/);
+    assert.match(feedbackSource, /ToastPrimitive\.Close asChild/);
+    assert.match(feedbackSource, /variant === 'error' \? 'foreground' : 'background'/);
+    assert.match(feedbackSource, /duration = Infinity/);
+});;
 
 test('SkeletonLines exposes one loading announcement while hiding decorative skeletons', () => {
     const html = renderToStaticMarkup(
@@ -441,7 +444,7 @@ test('WorkspaceHero declares RTL direction and a primary page heading', () => {
     assert.match(html, /آثار و پروفایل خود را مدیریت کنید/);
 });
 
-test('TextInput, TextareaField and SelectField preserve native form semantics', () => {
+test('TextInput and TextareaField preserve native form semantics while SelectField uses Radix Select', () => {
     const input = renderToStaticMarkup(
         React.createElement(primitives.TextInput, { type: 'email', name: 'email', dir: 'ltr', required: true }),
     );
@@ -449,7 +452,7 @@ test('TextInput, TextareaField and SelectField preserve native form semantics', 
         React.createElement(primitives.TextareaField, { name: 'bio', rows: 5, maxLength: 500 }),
     );
     const select = renderToStaticMarkup(
-        React.createElement(primitives.SelectField, { name: 'status', 'aria-label': 'وضعیت اثر' },
+        React.createElement(primitives.SelectField, { name: 'status', value: 'approved', required: true, 'aria-label': 'وضعیت اثر' },
             React.createElement('option', { value: 'approved' }, 'تأییدشده'),
         ),
     );
@@ -459,8 +462,22 @@ test('TextInput, TextareaField and SelectField preserve native form semantics', 
     assert.match(input, /required=""/);
     assert.match(textarea, /rows="5"/);
     assert.match(textarea, /maxLength="500"|maxlength="500"/i);
+    assert.match(select, /role="combobox"/);
     assert.match(select, /aria-label="وضعیت اثر"/);
-    assert.match(select, /<option value="approved">تأییدشده<\/option>/);
+    assert.match(select, /name="status"/);
+    assert.match(select, /required=""/);
+});
+
+test('Checkbox uses the Radix checkbox interaction and exposes its accessible state', () => {
+    const checkbox = renderToStaticMarkup(
+        React.createElement(primitives.Checkbox, { checked: true, name: 'is_public', 'aria-label': 'نمایش عمومی پروفایل' }, 'نمایش عمومی پروفایل'),
+    );
+
+    assert.match(checkbox, /role="checkbox"/);
+    assert.match(checkbox, /aria-checked="true"/);
+    assert.match(checkbox, /aria-label="نمایش عمومی پروفایل"/);
+    assert.match(checkbox, /name="is_public"/);
+    assert.match(checkbox, /نمایش عمومی پروفایل/);
 });
 
 test('Tabs expose tablist, selected state and linked panel semantics', () => {

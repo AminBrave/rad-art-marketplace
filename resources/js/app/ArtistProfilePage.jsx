@@ -76,8 +76,8 @@ export default function ArtistProfilePage() {
     const primaryActionClass = 'inline-flex min-h-11 items-center justify-center rounded-md border border-transparent bg-terracotta px-5 py-2.5 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
 
     return (
-        <main className="mx-auto min-h-[65vh] max-w-7xl px-5 pb-16 pt-8 sm:px-8 sm:pt-12 lg:px-10" dir="rtl">
-            <nav aria-label="مسیر صفحه" className="text-xs text-muted">
+        <main className="mx-auto min-h-[65vh] w-full min-w-0 max-w-7xl overflow-x-clip px-5 pb-16 pt-8 sm:px-8 sm:pt-12 lg:px-10" dir="rtl">
+            <nav aria-label="مسیر صفحه" className="flex min-w-0 max-w-full flex-wrap items-center break-words text-xs text-muted">
                 <Link to="/" className="hover:text-terracotta-strong">خانه</Link><span className="mx-2" aria-hidden="true">/</span>
                 <Link to="/artists" className="hover:text-terracotta-strong">هنرمندان</Link><span className="mx-2" aria-hidden="true">/</span>
                 <span aria-current="page" className="text-ink">پروفایل هنرمند</span>
@@ -88,25 +88,27 @@ export default function ArtistProfilePage() {
                     <PageHeader
                             eyebrow="پرونده هنرمند"
                             title={profile.display_name}
+                            titleClassName="break-words [overflow-wrap:anywhere]"
+                            descriptionClassName="break-words [overflow-wrap:anywhere]"
                             description={(
-                                <span className="block">
-                                    {profile.city && <span className="mb-2 inline-flex items-center gap-2 font-semibold text-ink"><span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-terracotta" />{profile.city}</span>}
-                                    {profile.bio && <span className="block whitespace-pre-line">{profile.bio}</span>}
+                                <span className="block min-w-0 max-w-full">
+                                    {profile.city && <span className="mb-2 inline-flex max-w-full flex-wrap items-center gap-2 break-words font-semibold text-ink"><span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-terracotta" />{profile.city}</span>}
+                                    {profile.bio && <span className="block whitespace-pre-line break-words [overflow-wrap:anywhere]">{profile.bio}</span>}
                                 </span>
                             )}
                             actions={(
                                 <>
-                                    {profile.website_url && <a href={profile.website_url} target="_blank" rel="noreferrer" className={actionClass}>وب‌سایت هنرمند ↗</a>}
-                                    {profile.instagram_handle && <a href={'https://instagram.com/' + profile.instagram_handle} target="_blank" rel="noreferrer" className={actionClass}>اینستاگرام ↗</a>}
-                                    {user?.role === 'buyer' && <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(profile.slug)} className={primaryActionClass}>ارسال پیام به هنرمند</Link>}
-                                    {!user && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className={primaryActionClass}>ورود برای ارتباط با هنرمند</Link>}
+                                    {profile.website_url && <a href={profile.website_url} target="_blank" rel="noreferrer" className={`${actionClass} max-w-full whitespace-normal break-words text-center`}>وب‌سایت هنرمند ↗</a>}
+                                    {profile.instagram_handle && <a href={'https://instagram.com/' + profile.instagram_handle} target="_blank" rel="noreferrer" className={`${actionClass} max-w-full whitespace-normal break-words text-center`}>اینستاگرام ↗</a>}
+                                    {user?.role === 'buyer' && <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(profile.slug)} className={`${primaryActionClass} max-w-full whitespace-normal break-words text-center`}>ارسال پیام به هنرمند</Link>}
+                                    {!user && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className={`${primaryActionClass} max-w-full whitespace-normal break-words text-center`}>ورود برای ارتباط با هنرمند</Link>}
                                 </>
                             )}
                     />
                     {user && user.role !== 'buyer' && (
                         <p className="mt-4 text-xs leading-6 text-muted">برای ارسال پیام مستقیم، از حساب خریدار استفاده کنید.</p>
                     )}
-                    <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted">
+                    <div className="mt-5 flex min-w-0 max-w-full flex-wrap items-center gap-x-3 gap-y-2 break-words text-xs text-muted">
                             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-muted px-3 py-1.5">
                                 <span className="h-1.5 w-1.5 rounded-full bg-olive" aria-hidden="true" />
                                 پورتفولیوی عمومی
@@ -114,7 +116,7 @@ export default function ArtistProfilePage() {
                             <span className="font-semibold tabular-nums">{allArtworks.length.toLocaleString('fa-IR')} اثر بارگذاری‌شده</span>
                     </div>
 
-                    <section className="mt-12" aria-labelledby="artist-portfolio-heading">
+                    <section className="mt-12 min-w-0 max-w-full" aria-labelledby="artist-portfolio-heading">
                         <SectionHeader
                             id="artist-portfolio-heading"
                             eyebrow="منتخب آثار"
@@ -133,8 +135,8 @@ export default function ArtistProfilePage() {
                         )}
 
                         {visibleArtworks.length ? (
-                            <div className="mt-7 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                                {visibleArtworks.map((item) => <ArtworkCard key={item.id} artwork={{ ...item, artist: { display_name: profile.display_name, slug: profile.slug } }} />)}
+                            <div className="mt-7 grid min-w-0 max-w-full grid-cols-1 gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                                {visibleArtworks.map((item) => <ArtworkCard key={item.id} className="min-w-0 [overflow-wrap:anywhere]" artwork={{ ...item, artist: { display_name: profile.display_name, slug: profile.slug } }} />)}
                             </div>
                         ) : (
                             <EmptyState className="mt-7" title={categoryFilter ? 'در این دسته اثری بارگذاری نشده' : 'هنوز اثری برای نمایش وجود ندارد'} description="آثار تأییدشده این هنرمند در این بخش نمایش داده می‌شوند." />

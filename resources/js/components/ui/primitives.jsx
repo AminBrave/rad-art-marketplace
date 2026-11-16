@@ -1,4 +1,8 @@
-import { cloneElement, isValidElement, useId } from 'react';
+import { Children, cloneElement, forwardRef, isValidElement, useId } from 'react';
+import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
+import * as SelectPrimitive from '@radix-ui/react-select';
+import { Check, ChevronDown } from 'lucide-react';
+import { Tooltip } from './Tooltip';
 import { cn } from '../../lib/utils';
 
 const buttonVariants = {
@@ -15,7 +19,7 @@ const buttonSizes = {
     lg: 'min-h-12 px-6 py-3 text-base',
 };
 
-export function Button({
+export const Button = forwardRef(function Button({
     children,
     variant = 'primary',
     size = 'md',
@@ -24,9 +28,10 @@ export function Button({
     type = 'button',
     className = '',
     ...props
-}) {
+}, ref) {
     return (
         <button
+            ref={ref}
             type={type}
             disabled={disabled || loading}
             aria-busy={loading || undefined}
@@ -37,22 +42,25 @@ export function Button({
             {children}
         </button>
     );
-}
+});
 
-export function IconButton({ children, label, size = 'md', className = '', ...props }) {
+export const IconButton = forwardRef(function IconButton({ children, label, title, size = 'md', className = '', ...props }, ref) {
+    const tooltipLabel = label ?? title;
     const dimensions = { sm: 'h-9 w-9', md: 'h-11 w-11', lg: 'h-12 w-12' };
     return (
-        <button
-            type="button"
-            aria-label={label}
-            title={label}
-            className={cn('inline-flex items-center justify-center rounded-md border border-border-strong bg-paper p-0 text-ink transition-colors enabled:hover:border-terracotta enabled:hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus shrink-0', dimensions[size] ?? dimensions.md, className)}
-            {...props}
-        >
-            {children}
-        </button>
+        <Tooltip content={tooltipLabel}>
+            <button
+                ref={ref}
+                type="button"
+                aria-label={tooltipLabel}
+                className={cn('inline-flex items-center justify-center rounded-md border border-border-strong bg-paper p-0 text-ink transition-colors enabled:hover:border-terracotta enabled:hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus shrink-0', dimensions[size] ?? dimensions.md, className)}
+                {...props}
+            >
+                {children}
+            </button>
+        </Tooltip>
     );
-}
+});
 
 const badgeVariants = {
     neutral: 'bg-surface-muted text-muted',
@@ -91,7 +99,7 @@ export function PageHeader({ eyebrow, title, description, actions, level = 1, cl
                 <Heading className={cn('mt-3 text-[clamp(1.75rem,3.2vw,2.6rem)] font-extrabold leading-heading tracking-[-.035em] text-ink', titleClassName)}>{title}</Heading>
                 {description && <p className={cn('mt-3 max-w-2xl text-sm leading-8 text-muted sm:text-[.95rem]', descriptionClassName)}>{description}</p>}
             </div>
-            {actions && <div className="flex shrink-0 flex-wrap items-center gap-2 pb-1 max-sm:w-full max-sm:pb-0">{actions}</div>}
+            {actions && <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2 pb-1 max-sm:w-full max-sm:pb-0">{actions}</div>}
         </header>
     );
 }
@@ -111,7 +119,19 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
 }
 
 export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
-    return <PageHeader eyebrow={eyebrow} title={title} description={description} actions={actions} className={className} />;
+    return (
+        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-6 overflow-hidden rounded-xl border border-ink bg-ink p-[clamp(1.5rem,4vw,2.5rem)] text-inverse max-md:items-stretch max-md:flex-col', className)}>
+            <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-1.5 bg-terracotta" />
+            <span aria-hidden="true" className="pointer-events-none absolute -right-16 -top-24 aspect-square w-60 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]" />
+            <span aria-hidden="true" className="pointer-events-none absolute -right-4 -top-12 aspect-square w-44 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]" />
+            <div className="relative z-10 max-w-[46rem]">
+                {eyebrow && <p className="text-xs font-bold text-sand">{eyebrow}</p>}
+                <h1 className="mt-3 text-[clamp(1.5rem,3vw,2rem)] font-extrabold leading-heading text-inverse">{title}</h1>
+                {description && <p className="mt-3 text-sm leading-copy text-[color:color-mix(in_srgb,var(--color-inverse-text)_80%,transparent)]">{description}</p>}
+            </div>
+            {actions && <div className="relative z-10 flex flex-wrap gap-2 max-md:w-full">{actions}</div>}
+        </header>
+    );
 }
 
 export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, className = '' }) {
@@ -172,12 +192,13 @@ export function FormField({ id, label, hint, error, required = false, children, 
             id: fieldId,
             'aria-invalid': error ? true : children.props['aria-invalid'],
             'aria-describedby': describedBy ?? children.props['aria-describedby'],
+            'aria-labelledby': children.props['aria-labelledby'] ?? `${fieldId}-label`,
         })
         : children;
 
     return (
         <div className={cn('grid gap-2', className)}>
-            <label htmlFor={fieldId} className="text-sm font-semibold text-ink">
+            <label id={`${fieldId}-label`} htmlFor={fieldId} className="text-sm font-semibold text-ink">
                 {label}
                 {required && <span aria-hidden="true" className="ms-1 text-danger">*</span>}
             </label>
@@ -196,11 +217,129 @@ export function TextareaField({ className = '', rows = 4, ...props }) {
     return <textarea rows={rows} className={cn(controlClass, 'min-h-28 resize-y leading-copy', className)} {...props} />;
 }
 
-export function SelectField({ className = '', children, ...props }) {
+const emptySelectValue = '__radix_empty_option__';
+
+export function SelectField({
+    className = '',
+    children,
+    value,
+    defaultValue,
+    onChange,
+    name,
+    required = false,
+    disabled = false,
+    dir = 'rtl',
+    placeholder,
+    ...triggerProps
+}) {
+    const options = Children.toArray(children).filter((child) => isValidElement(child) && child.type === 'option');
+    const emptyOption = options.find((option) => String(option.props.value ?? '') === '');
+    const selectableOptions = options.filter((option) => String(option.props.value ?? '') !== '');
+
+    const handleValueChange = (nextValue) => {
+        const next = nextValue === emptySelectValue ? '' : nextValue;
+        onChange?.({ target: { name, value: next } });
+    };
+
     return (
-        <select className={`${controlClass} ${className}`} {...props}>
+        <SelectPrimitive.Root
+            value={value === '' ? '' : value}
+            defaultValue={defaultValue === '' ? '' : defaultValue}
+            onValueChange={handleValueChange}
+            name={name}
+            required={required}
+            disabled={disabled}
+            dir={dir}
+        >
+            <SelectPrimitive.Trigger
+                className={cn(controlClass, 'flex items-center justify-between gap-3 text-start', className)}
+                {...triggerProps}
+            >
+                <SelectPrimitive.Value placeholder={placeholder ?? emptyOption?.props.children} />
+                <SelectPrimitive.Icon asChild>
+                    <ChevronDown size={16} aria-hidden="true" className="shrink-0 text-muted" />
+                </SelectPrimitive.Icon>
+            </SelectPrimitive.Trigger>
+            <SelectPrimitive.Portal>
+                <SelectPrimitive.Content
+                    position="popper"
+                    sideOffset={4}
+                    dir={dir}
+                    className="z-[90] max-h-[var(--radix-select-content-available-height)] min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-md border border-border bg-paper text-ink shadow-raised"
+                >
+                    <SelectPrimitive.Viewport className="p-1.5">
+                        {selectableOptions.map((option) => (
+                            <SelectPrimitive.Item
+                                key={option.key ?? String(option.props.value)}
+                                value={String(option.props.value)}
+                                disabled={option.props.disabled}
+                                textValue={typeof option.props.children === 'string' ? option.props.children : undefined}
+                                className="relative flex min-h-10 cursor-pointer select-none items-center rounded-sm py-2 ps-3 pe-9 text-sm outline-none data-[highlighted]:bg-surface-muted data-[highlighted]:text-ink data-[disabled]:pointer-events-none data-[disabled]:opacity-40"
+                            >
+                                <SelectPrimitive.ItemText>{option.props.children}</SelectPrimitive.ItemText>
+                                <SelectPrimitive.ItemIndicator className="absolute end-2 inline-flex items-center text-terracotta-strong">
+                                    <Check size={15} aria-hidden="true" />
+                                </SelectPrimitive.ItemIndicator>
+                            </SelectPrimitive.Item>
+                        ))}
+                        {emptyOption && (
+                            <SelectPrimitive.Item
+                                value={emptySelectValue}
+                                className="relative flex min-h-10 cursor-pointer select-none items-center rounded-sm py-2 ps-3 pe-9 text-sm outline-none data-[highlighted]:bg-surface-muted data-[highlighted]:text-ink"
+                            >
+                                <SelectPrimitive.ItemText>{emptyOption.props.children}</SelectPrimitive.ItemText>
+                            </SelectPrimitive.Item>
+                        )}
+                    </SelectPrimitive.Viewport>
+                </SelectPrimitive.Content>
+            </SelectPrimitive.Portal>
+        </SelectPrimitive.Root>
+    );
+}
+
+export function Checkbox({
+    children,
+    checked,
+    defaultChecked,
+    onChange,
+    name,
+    value = 'on',
+    required = false,
+    disabled = false,
+    className = '',
+    ...props
+}) {
+    const hasLabel = children !== undefined && children !== null;
+
+    return (
+        <CheckboxPrimitive.Root
+            checked={checked}
+            defaultChecked={defaultChecked}
+            onCheckedChange={(nextChecked) => onChange?.({
+                target: { name, value, type: 'checkbox', checked: nextChecked === true },
+            })}
+            name={name}
+            value={value}
+            required={required}
+            disabled={disabled}
+            className={cn(
+                hasLabel
+                    ? 'group inline-flex w-fit min-w-0 max-w-full min-h-11 items-center gap-3 text-start outline-none focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50'
+                    : 'group inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-sm outline-none focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+                className,
+            )}
+            {...props}
+        >
+            <span
+                aria-hidden="true"
+                className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded border border-border-strong bg-paper text-inverse transition-colors group-focus-visible:ring-2 group-focus-visible:ring-focus group-data-[state=checked]:border-terracotta group-data-[state=checked]:bg-terracotta group-data-[state=indeterminate]:border-terracotta group-data-[state=indeterminate]:bg-terracotta"
+            >
+                <CheckboxPrimitive.Indicator className="flex items-center justify-center">
+                    <Check size={14} strokeWidth={3} aria-hidden="true" />
+                </CheckboxPrimitive.Indicator>
+            </span>
             {children}
-        </select>
+        </CheckboxPrimitive.Root>
     );
 }
 

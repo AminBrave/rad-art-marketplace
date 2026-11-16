@@ -60,10 +60,9 @@ Use the current RAD semantic tokens and project-owned primitives:
 
 ## Dashboard page and section headings
 
-- Every authenticated dashboard page and account-management screen uses the shared PageHeader for its single page-level h1: eyebrow, title, optional description and optional actions share one consistent hierarchy, alignment, spacing, responsive stacking and divider treatment.
-- PageHeader uses a restrained terracotta edge accent, a compact semantic eyebrow pill, a strong but controlled responsive title scale, and readable supporting copy. Keep the heading editorial and spacious; do not wrap the whole header in a heavy hero card or add decorative artwork behind it.
-- Keep primary actions grouped beside the page title on wide screens and naturally stacked beneath the description on narrow screens. Do not stretch unrelated actions to fill the row.
-- WorkspaceHero is a compatibility wrapper around PageHeader, not a separate visual treatment. Do not reintroduce dark hero panels, oversized title variants or page-specific title spacing in dashboard routes.
+- Every authenticated dashboard overview uses the shared WorkspaceHero for its single page-level h1. Keep the established dark charcoal hero panel with rounded corners, a restrained terracotta edge accent and subtle concentric line details; use sand for the eyebrow, inverse text for the title and muted inverse supporting copy.
+- WorkspaceHero keeps its responsive editorial scale, generous but controlled padding and clear action grouping. Actions sit beside the heading on wide screens and stack naturally on narrow screens without stretching unrelated controls.
+- Use PageHeader for account-management screens and dashboard subpages that are not overview heroes. PageHeader uses a restrained terracotta edge accent, a compact semantic eyebrow pill, a controlled responsive title scale and readable supporting copy; keep it lighter than the overview hero.
 - Use the shared SectionHeader for dashboard section headings (h2/h3), including optional eyebrow, description and actions. Its smaller type scale and subtle sand edge accent must remain visibly subordinate to PageHeader. Do not hand-build alternate eyebrow/title stacks or vary section-title typography between artist, buyer and admin workspaces.
 - Apply the same hierarchy to artist, buyer, admin overview, admin user management, artwork studio, editorial management, artist profile settings and messaging. Public editorial pages may reuse PageHeader while retaining their content-specific widths.
 - Keep content-specific headings inside artwork cards, report cards, forms and conversation rows at their semantic subordinate level; they are not page or section headers and should not be promoted to h1.
@@ -138,3 +137,36 @@ For any future page or component:
 - Check responsive content clearance for the primary bar, safe areas, nested-route active states, keyboard focus, RTL and reduced motion.
 - Add focused regression coverage for changed navigation contracts.
 - Follow `AGENTS.md`: tests, lint, builds, browser automation, scanners and CI require separate explicit permission. Adding tests does not authorize running them.
+
+## Radix-first interaction architecture
+
+Radix UI Primitives are the default behavior and accessibility foundation for every interactive pattern that has a matching Radix primitive. The project-owned RAD wrappers are the only visual integration layer. Radix owns interaction state, keyboard behavior, focus management, dismissal and ARIA mechanics; RAD owns the component API, tokens, typography, spacing, colors, sizing, variants, RTL presentation and responsive behavior.
+
+### Current interaction inventory
+
+| Product pattern | Shared primitive | Current adoption |
+| --- | --- | --- |
+| Modal dialogs and mobile drawers | RAD Dialog backed by Radix Dialog | Public mobile navigation, workspace mobile navigation, notification drawer, and existing modal surfaces |
+| Destructive confirmation | RAD AlertDialog backed by Radix Alert Dialog | Editorial collection unpublish confirmation |
+| Contextual actions and reaction choices | Radix Dropdown Menu | Conversation-row actions, conversation actions, message actions and emoji reaction picker |
+| Segmented navigation and content modes | RAD Tabs backed by Radix Tabs | Messaging inbox filters and the legacy preview authentication mode selector |
+| Single-value option controls | RAD Select through SelectField | Public artwork category filter, artwork category/availability editor, account-role selectors and legacy preview account-role selector |
+| Boolean selection controls | RAD Checkbox through Checkbox | Artist profile visibility, editorial artwork/artist selection and in-app message preference |
+| Hover/focus helper text | RAD Tooltip backed by Radix Tooltip | Icon buttons and messaging action, reaction, attachment and navigation controls |
+| Toast notifications | RAD Toast backed by Radix Toast | Shared feedback Toast component with polite/assertive announcement timing and dismiss behavior |
+
+### Semantic HTML remains intentional
+
+Radix does not provide a replacement for every HTML element. Keep native semantic HTML for buttons, links, anchors, headings, landmarks, forms, tables, text/email/password/number/file inputs, textareas, labels and static content. These elements should use the shared RAD wrappers/styles where appropriate, but must not be replaced with generic elements or fake Radix wrappers.
+
+Do not add a Radix package merely to claim coverage. Add a primitive when a real product interaction requires it, and use the matching primitive rather than rebuilding its ARIA roles, roving focus, keyboard handling, focus trap or dismissal behavior by hand. In particular, do not emulate Select with Dropdown Menu, Checkbox with a styled div, or a modal with a custom overlay.
+
+### Migration guardrails
+
+- All new and existing interactive patterns must be reviewed against the Radix primitive catalogue before implementation.
+- Prefer shared RAD wrappers over importing Radix packages directly in page modules.
+- Use RAD AlertDialog for destructive or irreversible confirmations; use RAD Dialog for general modal content and drawers.
+- Do not apply stock shadcn defaults or Radix Themes. The RAD token and component layer remains authoritative.
+- Keep React form state, API payloads, validation, route behavior and backend contracts unchanged when swapping the interaction primitive.
+- Preserve RTL direction, Persian accessible names, touch target sizes, reduced motion, focus visibility, disabled/required states and native form submission semantics.
+- Add focused component/source-level regression coverage when shared wrappers or adoption points change.

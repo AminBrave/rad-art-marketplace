@@ -1,4 +1,4 @@
-export { Button, IconButton, Badge, FormField, TextInput, TextareaField, SelectField, SearchField, PageContainer, PageHeader, SectionHeader, Surface, StatusBadge, WorkspaceHero, DashboardMetricCard } from './primitives';
+export { Button, IconButton, Badge, FormField, TextInput, TextareaField, SelectField, Checkbox, SearchField, PageContainer, PageHeader, SectionHeader, Surface, StatusBadge, WorkspaceHero, DashboardMetricCard } from './primitives';
 export {
     Tabs,
     TabsList,
@@ -14,6 +14,8 @@ export {
     Pagination,
 } from './navigation';
 export { Dialog, DialogTrigger, DialogClose, DialogContent, DialogTitle, DialogDescription } from './Dialog';
+export { Tooltip } from './Tooltip';
+export { AlertDialog, AlertDialogTrigger, AlertDialogCancel, AlertDialogAction, AlertDialogContent, AlertDialogTitle, AlertDialogDescription } from './AlertDialog';
 export { Skeleton, SkeletonLines, MediaImage, EmptyState, ErrorState, SuccessState, PermissionState, UploadFeedback, Toast } from './feedback';
 export { ArtworkCard, ArtistCard } from './cards';
 
