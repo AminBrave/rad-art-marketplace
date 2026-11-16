@@ -80,7 +80,7 @@ export function Avatar({ src, alt = '', fallback, size = 'md', className = '', .
     const [failed, setFailed] = useState(false);
     const dimensions = { sm: 'h-8 w-8 text-xs', md: 'h-10 w-10 text-sm', lg: 'h-14 w-14 text-base', xl: 'h-20 w-20 text-xl' };
     return (
-        <span role="img" aria-label={alt || undefined} className={cn('inline-grid shrink-0 place-items-center overflow-hidden rounded-full border border-border bg-surface-muted font-bold text-muted', dimensions[size] ?? dimensions.md, className)} {...props}>
+        <span role={alt ? "img" : undefined} aria-label={alt || undefined} aria-hidden={alt ? undefined : true} className={cn('inline-grid shrink-0 place-items-center overflow-hidden rounded-full border border-border bg-surface-muted font-bold text-muted', dimensions[size] ?? dimensions.md, className)} {...props}>
             {src && !failed ? <img src={src} alt="" className="h-full w-full object-cover" onError={() => setFailed(true)} /> : <span aria-hidden="true">{fallback ?? (alt ? Array.from(alt.trim())[0] : '?')}</span>}
         </span>
     );
