@@ -22,6 +22,7 @@ const archivePaths = [
     'resources',
     'routes',
     'storage',
+    'vendor',
     'build/manifest.json',
     'build/assets',
 ];
@@ -44,9 +45,9 @@ fs.rmSync(outputZip, { force: true });
 
 console.log('[cPanel] Creating ZIP...');
 if (isWindows) {
-    run('tar.exe', ['-a', '-c', '-f', path.relative(root, outputZip), ...archivePaths]);
+    run('tar.exe', ['-a', '-c', '-f', path.relative(root, outputZip), '-I', 'gzip -1', ...archivePaths]);
 } else {
-    run('zip', ['-q', '-r', outputZip, ...archivePaths]);
+    run('zip', ['-q', '-r', '-1', outputZip, ...archivePaths]);
 }
 
 console.log('[cPanel] Created build/rad-file.zip');
