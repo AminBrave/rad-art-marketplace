@@ -197,8 +197,11 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     const heroStart = primitives.indexOf('export function WorkspaceHero');
     const heroEnd = primitives.indexOf('\n}', heroStart);
     assert.ok(heroStart >= 0 && heroEnd > heroStart);
-    assert.ok(primitives.slice(heroStart, heroEnd).includes('<PageHeader'));
-    assert.doesNotMatch(primitives.slice(heroStart, heroEnd), /bg-ink|text-inverse|shadow-raised/);
+    const hero = primitives.slice(heroStart, heroEnd);
+    assert.ok(hero.includes('rounded-xl border border-ink bg-ink'));
+    assert.ok(hero.includes('inset-y-0 right-0 w-1.5 bg-terracotta'));
+    assert.ok(hero.includes('text-inverse'));
+    assert.ok(hero.includes('text-sand'));
     assert.ok(!artworkStudio.includes('className="border-0 pb-0 pt-0"'));
 });;
 
@@ -235,7 +238,7 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.ok(messaging.includes('absolute end-1 top-1/2 -translate-y-1/2'));
     assert.ok(messaging.includes('mt-[.55rem] flex flex-wrap items-center justify-between gap-2 text-[10px] text-subtle'));
     assert.ok(messaging.includes('max-h-28 min-h-[2.3rem] w-full resize-none'));
-    assert.ok(messaging.includes('absolute bottom-2 start-2 z-10 flex h-9 w-9'));
+    assert.ok(messaging.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
     assert.ok(messaging.includes('ps-10 pe-3 py-[.55rem]'));
     assert.doesNotMatch(messaging, /md:min-h-\[min\(580px/);
     assert.doesNotMatch(messaging, /min-h-\[5\.35rem\]/);
@@ -274,7 +277,7 @@ test('messaging chat geometry follows RTL logical flow and uses Radix collision-
     assert.ok(messaging.includes('min-w-0 flex-wrap items-center justify-end gap-1.5'));
     assert.ok(messaging.includes('overflow-x-hidden overflow-y-auto'));
     assert.ok(messaging.includes('absolute end-1 top-1/2 -translate-y-1/2'));
-    assert.ok(messaging.includes('absolute bottom-2 start-2 z-10 flex h-9 w-9'));
+    assert.ok(messaging.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
     assert.ok(messaging.includes('ps-10 pe-3 py-[.55rem]'));
     assert.doesNotMatch(messaging, /getChatPopoverPosition|toggleChatPopover|createPortal|data-chat-popover-boundary/);
 });
