@@ -5,7 +5,7 @@ import { useMessagingQueries } from './useMessagingQueries';
 import { useAuth } from './AuthContext';
 import { MessageHistorySkeleton, MediaImage, Tooltip, DropdownMenu } from '../components/ui';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ArrowDown, Ban, ChevronRight, Download, FileText, Flag, Image as ImageIcon, LoaderCircle, Paperclip, Pencil, Reply, Send, ShieldCheck, SmilePlus, Trash2, X } from 'lucide-react';
+import { ArrowDown, Ban, ChevronRight, Download, FileText, Flag, Image as ImageIcon, LoaderCircle, MoreVertical, Paperclip, Pencil, Reply, Send, ShieldCheck, SmilePlus, Trash2, X } from 'lucide-react';
 
 const reactionOptions = ['👍', '❤️', '😂', '😮', '🙏', '🎨'];
 const avatarTones = ['bg-[color:color-mix(in_srgb,var(--color-sand)_65%,transparent)] text-ink', 'bg-[color:color-mix(in_srgb,var(--color-olive)_10%,transparent)] text-olive', 'bg-[color:color-mix(in_srgb,var(--color-terracotta)_10%,transparent)] text-terracotta-strong', 'bg-surface-muted text-ink'];
