@@ -208,10 +208,17 @@ export function auditColorAccessibility(root = globalThis.document) {
         try {
             if (element.matches(':focus-visible')) {
                 const outlineWidth = Number.parseFloat(style.outlineWidth) || 0;
+                const outlineOffset = Number.parseFloat(style.outlineOffset) || 0;
                 const outline = parseColor(style.outlineColor);
                 if (outlineWidth > 0 && outline && outline.a > 0) {
+                    // An offset outline is drawn outside the element's border box.
+                    // Compare it with the surface behind that ring, not the
+                    // element's own fill (which can be a contrasting button color).
+                    const outlineBackground = outlineOffset > 0 && element.parentElement
+                        ? effectiveBackground(element.parentElement, getStyle).background
+                        : background;
                     nonTextChecks += 1;
-                    addCheck(element, outline, background, 3, 'focus-indicator');
+                    addCheck(element, outline, outlineBackground, 3, 'focus-indicator');
                 }
             }
         } catch {
