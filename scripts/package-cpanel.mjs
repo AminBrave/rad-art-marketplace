@@ -9,7 +9,7 @@ import {
     renameSync,
     rmSync,
 } from 'node:fs';
-import { dirname, join, relative, resolve, sep } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -145,6 +145,7 @@ function prepareStage(stage) {
     if (existsSync(languageDirectory)) copyTree(languageDirectory, resolve(stage, 'lang'));
 
     const manifest = requireFile('build/manifest.json', 'cPanel Vite manifest');
+    mkdirSync(resolve(stage, 'build'), { recursive: true });
     copyFileSync(manifest, resolve(stage, 'build/manifest.json'));
     copyRequiredDirectory('build/assets', stage);
 
@@ -168,81 +169,6 @@ function installProductionDependencies(stage) {
     }
 }
 
-const zipAndValidate = String.raw`
-import json
-import os
-import sys
-import zipfile
-
-stage, output = sys.argv[1], sys.argv[2]
-with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9, allowZip64=True) as archive:
-    for current, directories, files in os.walk(stage):
-        directories.sort()
-        files.sort()
-        for name in directories:
-            path = os.path.join(current, name)
-            if os.path.islink(path):
-                raise SystemExit("Refusing to archive symbolic link: " + path)
-            relative = os.path.relpath(path, stage).replace(os.sep, "/") + "/"
-            archive.write(path, relative)
-        for name in files:
-            path = os.path.join(current, name)
-            if os.path.islink(path) or not os.path.isfile(path):
-                raise SystemExit("Refusing to archive non-regular file: " + path)
-            relative = os.path.relpath(path, stage).replace(os.sep, "/")
-            archive.write(path, relative)
-
-with zipfile.ZipFile(output, "r") as archive:
-    bad_entry = archive.testzip()
-    if bad_entry:
-        raise SystemExit("ZIP integrity check failed at: " + bad_entry)
-    names = set(archive.namelist())
-    required = {
-        ".htaccess",
-        "index.php",
-        "artisan",
-        "composer.json",
-        "composer.lock",
-        "vendor/autoload.php",
-        "build/manifest.json",
-    }
-    missing = sorted(required - names)
-    if missing:
-        raise SystemExit("ZIP is missing required root entries: " + ", ".join(missing))
-    forbidden = []
-    for name in names:
-        normalized = name.rstrip("/")
-        parts = normalized.split("/")
-        if normalized == ".env" or (normalized.startswith(".env.") and normalized != ".env.example"):
-            forbidden.append(name)
-        if any(part in {".git", "node_modules"} for part in parts) or parts[0] == "tests":
-            forbidden.append(name)
-        if normalized.startswith(("storage/app/private/", "storage/app/public/", "storage/logs/")):
-            forbidden.append(name)
-        if normalized.startswith(("storage/framework/cache/", "storage/framework/sessions/", "storage/framework/views/")):
-            forbidden.append(name)
-        if normalized.endswith((".sqlite", ".sqlite3", ".db")):
-            forbidden.append(name)
-    if forbidden:
-        raise SystemExit("ZIP contains excluded development or private paths: " + ", ".join(sorted(set(forbidden))[:20]))
-
-    manifest = json.loads(archive.read("build/manifest.json"))
-    referenced = set()
-    for entry in manifest.values():
-        if not isinstance(entry, dict):
-            continue
-        for key in ("file",):
-            if isinstance(entry.get(key), str):
-                referenced.add("build/" + entry[key].lstrip("/"))
-        for key in ("css", "assets"):
-            for item in entry.get(key, []):
-                if isinstance(item, str):
-                    referenced.add("build/" + item.lstrip("/"))
-    missing_assets = sorted(path for path in referenced if path not in names)
-    if missing_assets:
-        raise SystemExit("ZIP is missing manifest assets: " + ", ".join(missing_assets[:20]))
-`;
-
 export async function packageCpanel() {
     validateBuildOutput();
     requireFile('.htaccess', 'root Apache security rules');
@@ -260,7 +186,8 @@ export async function packageCpanel() {
         prepareStage(stage);
         installProductionDependencies(stage);
 
-        const pythonArgs = [...pythonPrefix, '-c', zipAndValidate, stage, temporaryArchive];
+        const zipScript = requireFile('scripts/create-cpanel-zip.py', 'ZIP creation script');
+        const pythonArgs = [...pythonPrefix, zipScript, stage, temporaryArchive];
         console.log('[cpanel] Creating and validating a ZIP with public_html contents at its root.');
         run(pythonCommand, pythonArgs, { cwd: outputDirectory });
 
