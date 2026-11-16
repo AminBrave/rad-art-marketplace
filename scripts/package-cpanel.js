@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const outputDir = path.join(root, 'build');
 const outputZip = path.join(outputDir, 'rad-file.zip');
-const temporaryZip = outputZip + '.tmp';
+const temporaryZip = outputZip + '.tmp.zip';
 const stagingRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'rad-file-cpanel-'));
 const stagingDir = path.join(stagingRoot, 'public_html');
 const isWindows = process.platform === 'win32';
