@@ -9,7 +9,8 @@ use App\Http\Controllers\Api\V1\ArtworkController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ConversationController;
 use App\Http\Controllers\Api\V1\DirectConversationController;
-use App\Http\Controllers\Api\V1\EditorialController;
+use App\Http\Controllers\Api\V1\AdminEditorialController;
+use App\Http\Controllers\Api\V1\PublicEditorialController;
 use App\Http\Controllers\Api\V1\MessageAttachmentController;
 use App\Http\Controllers\Api\V1\MessageSafetyController;
 use App\Http\Controllers\Api\V1\NotificationController;
@@ -69,9 +70,9 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
         Route::get('/conversations', [ConversationController::class, 'buyerIndex'])->name('conversations.index');
     });
 
-    Route::get('/collections', [EditorialController::class, 'collections'])->name('collections.index');
-    Route::get('/collections/{collection:slug}', [EditorialController::class, 'collection'])->name('collections.show');
-    Route::get('/featured-artists', [EditorialController::class, 'featuredArtists'])->name('featured-artists.index');
+    Route::get('/collections', [PublicEditorialController::class, 'collections'])->name('collections.index');
+    Route::get('/collections/{collection:slug}', [PublicEditorialController::class, 'collection'])->name('collections.show');
+    Route::get('/featured-artists', [PublicEditorialController::class, 'featuredArtists'])->name('featured-artists.index');
 
     Route::get('/categories', [ArtworkController::class, 'categories'])->name('categories.index');
     Route::get('/artwork-filters', [ArtworkController::class, 'filters'])->name('artworks.filters');
@@ -99,14 +100,14 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
         Route::get('/message-reports', [MessageSafetyController::class, 'adminIndex'])->name('message-reports.index');
         Route::patch('/message-reports/{report}', [MessageSafetyController::class, 'adminUpdate'])->name('message-reports.update');
         Route::prefix('editorial')->name('editorial.')->group(function (): void {
-            Route::get('/options', [EditorialController::class, 'options'])->name('options');
-            Route::get('/featured-artists', [EditorialController::class, 'adminFeaturedArtists'])->name('featured-artists.index');
-            Route::get('/collections', [EditorialController::class, 'adminCollections'])->name('collections.index');
-            Route::post('/collections', [EditorialController::class, 'storeCollection'])->name('collections.store');
-            Route::patch('/collections/{collection}', [EditorialController::class, 'updateCollection'])->name('collections.update');
-            Route::patch('/collections/{collection}/publication', [EditorialController::class, 'setCollectionPublication'])->name('collections.publication');
-            Route::put('/collections/order', [EditorialController::class, 'reorderCollections'])->name('collections.order');
-            Route::put('/featured-artists', [EditorialController::class, 'saveFeaturedArtists'])->name('featured-artists.save');
+            Route::get('/options', [AdminEditorialController::class, 'options'])->name('options');
+            Route::get('/featured-artists', [AdminEditorialController::class, 'adminFeaturedArtists'])->name('featured-artists.index');
+            Route::get('/collections', [AdminEditorialController::class, 'adminCollections'])->name('collections.index');
+            Route::post('/collections', [AdminEditorialController::class, 'storeCollection'])->name('collections.store');
+            Route::patch('/collections/{collection}', [AdminEditorialController::class, 'updateCollection'])->name('collections.update');
+            Route::patch('/collections/{collection}/publication', [AdminEditorialController::class, 'setCollectionPublication'])->name('collections.publication');
+            Route::put('/collections/order', [AdminEditorialController::class, 'reorderCollections'])->name('collections.order');
+            Route::put('/featured-artists', [AdminEditorialController::class, 'saveFeaturedArtists'])->name('featured-artists.save');
         });
         Route::get('/artworks', [AdminArtworkModerationController::class, 'index'])->name('artworks.index');
         Route::patch('/artworks/{artwork}/moderation', [AdminArtworkModerationController::class, 'update'])->name('artworks.moderation');
