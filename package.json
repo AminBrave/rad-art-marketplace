@@ -28,6 +28,7 @@
     "lint:fix": "eslint resources/js --fix",
     "a11y:colors": "node --test tests/js/colorAccessibility.test.js",
     "build:cpanel": "node scripts/project.mjs build:cpanel",
+    "cpanel:build": "node scripts/project.mjs cpanel:build",
     "a11y:build": "node scripts/project.mjs a11y:build"
   },
   "dependencies": {
