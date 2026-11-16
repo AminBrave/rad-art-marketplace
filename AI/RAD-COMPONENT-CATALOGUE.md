@@ -253,3 +253,184 @@ At the time this catalogue was authored, the project already has RAD token found
 - Package installation and lockfile generation must be performed by the repository's package manager. Never hand-edit generated lockfile metadata or claim a dependency is installed merely because its manifest entry exists.
 
 Update this baseline as components are implemented, showcased, adopted and verified.
+
+
+## 9. Upstream Radix catalogue coverage
+
+This section maps the full current Radix Themes component and utility catalogue to RAD equivalents. It is a reference inventory, **not an instruction to install or visually inherit Radix Themes**. Radix Themes is pre-styled; its Getting Started guide installs `@radix-ui/themes`, imports `@radix-ui/themes/styles.css`, and wraps the application in `Theme`. That setup is intentionally not used in Rademan because it would introduce a second visual system. Use the upstream catalogue as a component taxonomy and use Radix Primitives for the interaction foundations. See the [Radix Themes Getting Started guide](https://www.radix-ui.com/themes/docs/overview/getting-started).
+
+### 9.1 Every component in the Radix Themes documentation
+
+| Radix Themes component | RAD catalogue destination | Implementation foundation |
+|---|---|---|
+| Alert Dialog | AlertDialog | `@radix-ui/react-alert-dialog` |
+| Aspect Ratio | AspectRatio | `@radix-ui/react-aspect-ratio` |
+| Avatar | Avatar | `@radix-ui/react-avatar` |
+| Badge | Badge / StatusBadge | RAD semantic HTML |
+| Button | Button / IconButton | RAD semantic HTML |
+| Callout | Callout | RAD semantic HTML |
+| Card | Card / Surface / Panel | RAD semantic HTML |
+| Checkbox | Checkbox | `@radix-ui/react-checkbox` |
+| Checkbox Group | CheckboxGroup | Checkbox primitives + fieldset/legend; controlled value array |
+| Checkbox Cards | CheckboxCardGroup / CheckboxCard | Checkbox primitives + RAD card composition |
+| Context Menu | ContextMenu | `@radix-ui/react-context-menu` |
+| Data List | DataList / DataListItem | semantic `dl`, `dt`, `dd` |
+| Dialog | Dialog | `@radix-ui/react-dialog` |
+| Dropdown Menu | DropdownMenu | `@radix-ui/react-dropdown-menu` |
+| Hover Card | HoverCard | `@radix-ui/react-hover-card` |
+| Icon Button | IconButton | RAD Button + accessible name |
+| Inset | Inset | RAD layout utility |
+| Popover | Popover | `@radix-ui/react-popover` |
+| Progress | Progress | `@radix-ui/react-progress` |
+| Radio | Radio / RadioGroup | `@radix-ui/react-radio-group` |
+| Radio Group | RadioGroup | `@radix-ui/react-radio-group` |
+| Radio Cards | RadioCardGroup / RadioCard | RadioGroup primitives + RAD card composition |
+| Scroll Area | ScrollArea | `@radix-ui/react-scroll-area` |
+| Segmented Control | SegmentedControl | ToggleGroup or Tabs, chosen by semantics |
+| Select | Select | `@radix-ui/react-select` |
+| Separator | Separator | `@radix-ui/react-separator` |
+| Skeleton | Skeleton / SkeletonLines | RAD CSS animation + reduced-motion |
+| Slider | Slider | `@radix-ui/react-slider` |
+| Spinner | Spinner | RAD CSS animation + reduced-motion |
+| Switch | Switch | `@radix-ui/react-switch` |
+| Table | Table | semantic table elements |
+| Tabs | Tabs | `@radix-ui/react-tabs` |
+| Tab Nav | TabNav | React Router links + semantic navigation; use Tabs only for in-page tab panels |
+| Text Area | TextareaField | native textarea + RAD styles |
+| Text Field | TextInput / SearchField | native input + RAD styles |
+| Tooltip | Tooltip | `@radix-ui/react-tooltip` |
+
+### 9.2 Every documented Radix primitive and low-level utility
+
+The following is the full primitive family to account for in the RAD implementation. Some are intended as low-level building blocks rather than direct user-facing catalogue components.
+
+| Primitive / utility | Package | RAD policy |
+|---|---|---|
+| Accordion | `@radix-ui/react-accordion` | Public compound component |
+| Alert Dialog | `@radix-ui/react-alert-dialog` | Public compound component |
+| Aspect Ratio | `@radix-ui/react-aspect-ratio` | Public component |
+| Avatar | `@radix-ui/react-avatar` | Public component |
+| Checkbox | `@radix-ui/react-checkbox` | Public component |
+| Collapsible | `@radix-ui/react-collapsible` | Public compound component |
+| Context Menu | `@radix-ui/react-context-menu` | Public compound component |
+| Dialog | `@radix-ui/react-dialog` | Public compound component |
+| Direction | `@radix-ui/react-direction` | Export a scoped provider utility only if needed |
+| Dropdown Menu | `@radix-ui/react-dropdown-menu` | Public compound component |
+| Form | `@radix-ui/react-form` | Evaluate alongside native form + existing validation; use if it adds clear value |
+| Hover Card | `@radix-ui/react-hover-card` | Public compound component |
+| Label | `@radix-ui/react-label` | Public accessible label |
+| Menubar | `@radix-ui/react-menubar` | Public compound component; use only if app has desktop menu use case |
+| Navigation Menu | `@radix-ui/react-navigation-menu` | Public compound component where disclosure navigation fits |
+| Popover | `@radix-ui/react-popover` | Public compound component |
+| Portal | `@radix-ui/react-portal` | Internal utility; prefer compound primitive Portal parts |
+| Presence | `@radix-ui/react-presence` | Internal animation/mount utility; do not expose unless a concrete need exists |
+| Primitive | `@radix-ui/react-primitive` | Internal low-level utility; use via Radix wrappers, not app imports |
+| Progress | `@radix-ui/react-progress` | Public component |
+| Radio Group | `@radix-ui/react-radio-group` | Public compound component |
+| Roving Focus | `@radix-ui/react-roving-focus` | Internal keyboard utility; use through composite primitives |
+| Scroll Area | `@radix-ui/react-scroll-area` | Public compound component; native overflow preferred by default |
+| Select | `@radix-ui/react-select` | Public compound component |
+| Separator | `@radix-ui/react-separator` | Public component |
+| Slider | `@radix-ui/react-slider` | Public compound component |
+| Slot | `@radix-ui/react-slot` | Internal composition utility; expose through documented RAD composition helper if needed |
+| Switch | `@radix-ui/react-switch` | Public component |
+| Tabs | `@radix-ui/react-tabs` | Public compound component |
+| Toast | `@radix-ui/react-toast` | Public compound component/provider |
+| Toggle | `@radix-ui/react-toggle` | Public component |
+| Toggle Group | `@radix-ui/react-toggle-group` | Public compound component |
+| Toolbar | `@radix-ui/react-toolbar` | Public compound component |
+| Tooltip | `@radix-ui/react-tooltip` | Public compound component/provider |
+| Visually Hidden | `@radix-ui/react-visually-hidden` | Public accessibility utility |
+
+**Do not install every package blindly.** Install the full component set below when implementing the complete catalogue. Keep low-level dependencies only when a direct import is required; Radix component packages may bring their own transitive dependencies. Check the current Radix installation instructions and peer compatibility at install time.
+
+### 9.3 Full primitive package installation command
+
+The project already declares Dialog, Dropdown Menu, Tabs, Checkbox, Select, Tooltip, Alert Dialog and Toast. Running the command below in the repository root installs the remaining public primitive families needed for the full RAD catalogue and lets npm reconcile `package.json` and `package-lock.json` together:
+
+```bash
+npm install \
+  @radix-ui/react-accordion \
+  @radix-ui/react-aspect-ratio \
+  @radix-ui/react-avatar \
+  @radix-ui/react-collapsible \
+  @radix-ui/react-context-menu \
+  @radix-ui/react-direction \
+  @radix-ui/react-form \
+  @radix-ui/react-hover-card \
+  @radix-ui/react-label \
+  @radix-ui/react-menubar \
+  @radix-ui/react-navigation-menu \
+  @radix-ui/react-popover \
+  @radix-ui/react-portal \
+  @radix-ui/react-progress \
+  @radix-ui/react-radio-group \
+  @radix-ui/react-scroll-area \
+  @radix-ui/react-separator \
+  @radix-ui/react-slider \
+  @radix-ui/react-slot \
+  @radix-ui/react-switch \
+  @radix-ui/react-toggle \
+  @radix-ui/react-toggle-group \
+  @radix-ui/react-toolbar \
+  @radix-ui/react-visually-hidden
+```
+
+This command deliberately does **not** install `@radix-ui/themes`, does not import its stylesheet, and does not add a `Theme` provider. Existing RAD styling remains the only visual authority. Do not install `@radix-ui/react-icons` by default: the project already uses `lucide-react` and should retain one icon system unless a separate product decision changes that.
+
+### 9.4 RAD compound component API map
+
+All multi-part wrappers should have stable, documented compound names. The canonical naming pattern is:
+
+- `Accordion.Root, Item, Header, Trigger, Content`
+- `AlertDialog.Root, Trigger, Portal, Overlay, Content, Title, Description, Action, Cancel`
+- `Avatar.Root, Image, Fallback`
+- `Checkbox.Root, Indicator`
+- `Collapsible.Root, Trigger, Content`
+- `ContextMenu.Root, Trigger, Portal, Content, Item, CheckboxItem, RadioGroup, RadioItem, Label, Separator, Sub, SubTrigger, SubContent`
+- `Dialog.Root, Trigger, Portal, Overlay, Content, Title, Description, Close`
+- `DropdownMenu.Root, Trigger, Portal, Content, Item, CheckboxItem, RadioGroup, RadioItem, Label, Separator, Sub, SubTrigger, SubContent`
+- `HoverCard.Root, Trigger, Portal, Content`
+- `Menubar.Root, Menu, Trigger, Portal, Content, Item, CheckboxItem, RadioGroup, RadioItem, Label, Separator, Sub`
+- `NavigationMenu.Root, List, Item, Trigger, Content, Link, Indicator, Viewport`
+- `Popover.Root, Trigger, Anchor, Portal, Content, Close`
+- `Progress.Root, Indicator`
+- `RadioGroup.Root, Item, Indicator`
+- `ScrollArea.Root, Viewport, Scrollbar, Thumb, Corner`
+- `Select.Root, Trigger, Value, Icon, Portal, Content, Viewport, Item, ItemText, ItemIndicator, Group, Label, Separator, ScrollUpButton, ScrollDownButton`
+- `Slider.Root, Track, Range, Thumb`
+- `Switch.Root, Thumb`
+- `Tabs.Root, List, Trigger, Content`
+- `Toast.Provider, Root, Title, Description, Action, Close, Viewport`
+- `Toggle.Root`
+- `ToggleGroup.Root, Item`
+- `Toolbar.Root, Button, Link, ToggleGroup, Separator`
+- `Tooltip.Provider, Root, Trigger, Portal, Content, Arrow`
+
+Part exports should be named exports and may additionally be grouped under a namespace for a consistent compound API. Do not export both a namespace object and attempt to render it as a JSX component. Document any deviations required by existing compatibility.
+
+## 10. Local installation handoff and execution order
+
+The package command in §9.3 is the only dependency installation step currently required for the planned wrapper set. Run it from the repository root on `feat/177-radix-first-migration`. Commit the generated manifest and lockfile together, then continue with the following implementation slices:
+
+1. **Foundation and composition:** reconcile existing wrappers with compound APIs, ref forwarding, `asChild`, direction, portal, focus and z-index contracts; add missing shared static equivalents from §9.1.
+2. **Core controls:** Accordion, Collapsible, Popover, Radio Group, Switch, Slider, Toggle, Toggle Group, Progress, Separator, Avatar, Aspect Ratio, Label.
+3. **Menus and navigation:** Context Menu, Hover Card, Navigation Menu, Menubar, Toolbar, Scroll Area; retain native navigation and overflow where more appropriate.
+4. **Forms and grouped patterns:** Checkbox Group/Cards, Radio Cards, Segmented Control, Form wrappers; preserve current native input integration and server validation.
+5. **Catalogue:** render every implemented component, all meaningful variants and state examples, and the full foundations/accessibility/recipes/API sections described in §5.
+6. **Application migration:** search all routes and domain components for duplicated controls, dialogs, menus, tabs, status, forms and feedback. Migrate by feature area, preserving all product logic and existing contracts.
+7. **Verification:** only after explicit authorization, run the approved install/build/lint/test/accessibility checks and record exact results. Do not label unverified items as verified.
+
+### Local commands after the dependency installation
+
+```bash
+# Inspect exactly what the install changed
+git diff -- package.json package-lock.json
+
+# Then, only when ready and explicitly authorized:
+npm run lint
+npm run build:cpanel
+npm run test:frontend
+```
+
+The commands above are suggestions, not evidence that verification has been run. Follow `AGENTS.md`: package installation, tests, lint, builds, browser automation and CI require explicit user authorization. The install command is provided for the user to execute locally; this assistant has not run it.
