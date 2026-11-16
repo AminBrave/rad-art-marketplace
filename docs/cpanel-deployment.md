@@ -9,8 +9,6 @@ This guide describes the `public_html` deployment profile. It places the Laravel
 On the build machine, install the repository's Node dependencies and ensure these tools are available:
 
 - Node.js 20.13 or newer.
-- PHP 8.3 or newer on the CLI, with the extensions required by Laravel and PDO MySQL.
-- Composer.
 - On Linux/macOS: the `zip` and `unzip` command-line tools.
 - On Windows: PowerShell with the built-in `Compress-Archive` command.
 
@@ -21,13 +19,13 @@ npm ci
 npm run build:cpanel
 ```
 
-The single packaging script runs the existing cPanel Vite build, creates a temporary clean deployment tree, installs Composer dependencies from `composer.lock` with development packages excluded, validates the archive, and writes:
+The single packaging script runs the existing cPanel production asset build, stages the project including the already-installed `vendor/` directory, validates the archive, and writes. It does not run Composer or download/install PHP dependencies. Ensure `vendor/` is already present from your normal production setup before building:
 
 ```
 build/rad-file.zip
 ```
 
-The archive is validated before it replaces an existing ZIP. Its contents are rooted at `public_html`; it does not contain an enclosing project directory. The archive includes production `vendor/` dependencies and compiled `build/` assets. It does not include `.env`, Git metadata, Node dependencies, tests, local SQLite databases, private/public upload contents, or runtime logs, sessions and storage cache contents. Composer-generated package discovery metadata is retained under `bootstrap/cache`.
+The archive is validated before it replaces an existing ZIP. Its contents are rooted at `public_html`; it does not contain an enclosing project directory. The archive includes the existing `vendor/` dependencies unchanged and compiled `build/` assets. It does not include `.env`, Git metadata, Node dependencies, tests, local SQLite databases, private/public upload contents, or runtime logs, sessions and storage cache contents. Composer-generated package discovery metadata is retained under `bootstrap/cache`.
 
 ## Prepare cPanel
 
