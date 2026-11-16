@@ -19,13 +19,13 @@ npm ci
 npm run build:cpanel
 ```
 
-The single packaging script runs the existing cPanel production asset build, stages the project including the already-installed `vendor/` directory, validates the archive, and writes. It does not run Composer or download/install PHP dependencies. Ensure `vendor/` is already present from your normal production setup before building:
+The single packaging script runs the existing cPanel production asset build, stages the project including the already-installed `vendor/` directory, validates the archive, and writes `build/rad-file.zip`. It does not run Composer or download/install PHP dependencies. Ensure `vendor/` is already present from your normal production setup before building:
 
 ```
 build/rad-file.zip
 ```
 
-The archive is validated before it replaces an existing ZIP. Its contents are rooted at `public_html`; it does not contain an enclosing project directory. The archive includes the existing `vendor/` dependencies unchanged and compiled `build/` assets. It does not include `.env`, Git metadata, Node dependencies, tests, local SQLite databases, private/public upload contents, or runtime logs, sessions and storage cache contents. Composer-generated package discovery metadata is retained under `bootstrap/cache`.
+The archive is validated before it replaces an existing ZIP. Its contents are rooted at `public_html`; it does not contain an enclosing project directory. The archive includes the existing `vendor/` dependencies unchanged and compiled `build/` assets. It does not include `.env`, Git metadata, Node dependencies, tests, local SQLite databases, private/public upload contents, or runtime logs, sessions and storage cache contents. The existing Composer package discovery metadata is retained under `bootstrap/cache`.
 
 ## Prepare cPanel
 
