@@ -44,7 +44,8 @@ class FullStackArtistArtworkTests(unittest.TestCase):
             page.goto(BASE_URL + "/dashboard/artist/artworks")
             page.get_by_role("heading", name="مدیریت آثار").wait_for()
             page.get_by_label("عنوان اثر").fill(title)
-            page.get_by_label("دسته‌بندی").select_option(label="نقاشی")
+            page.get_by_label("دسته‌بندی").click()
+            page.get_by_role("option", name="نقاشی", exact=True).click()
             page.get_by_label("تکنیک / متریال").fill("آبرنگ")
             page.get_by_label("توضیحات اثر").fill("این اثر برای آزمون کامل ثبت و بررسی هنری ایجاد شده است.")
             page.locator("#artwork-image").set_input_files({
