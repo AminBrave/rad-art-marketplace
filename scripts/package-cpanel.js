@@ -45,7 +45,7 @@ fs.rmSync(outputZip, { force: true });
 
 console.log('[cPanel] Creating ZIP...');
 if (isWindows) {
-    run('tar.exe', ['-a', '-c', '-f', outputZip, '-C', root, ...archivePaths]);
+    run('tar.exe', ['-a', '-c', '-f', path.relative(root, outputZip), ...archivePaths]);
 } else {
     run('zip', ['-q', '-r', outputZip, ...archivePaths]);
 }
