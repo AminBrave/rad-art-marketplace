@@ -181,6 +181,55 @@ export default function ComponentShowcase() {
                     </div>
                 </div>
 
+                <section aria-labelledby="rad-semantic-catalogue" className="grid min-w-0 gap-5 border-b border-border pb-8">
+                    <div>
+                        <h3 id="rad-semantic-catalogue" className="font-bold">بنیان‌های ساختاری و معنایی RAD</h3>
+                        <p className="mt-1 text-sm leading-7 text-muted">اجزای معنایی و چیدمان، با توکن‌های RAD و بدون بارگذاری پوسته یا سبک پیش‌فرض Radix Themes.</p>
+                    </div>
+                    <Flex align="center" wrap gap={3} className="min-w-0">
+                        <Avatar alt="هنرمند نمونه" fallback="ه" size="lg" />
+                        <div className="min-w-0">
+                            <Heading as="h4" size="sm">هنرمند نمونه</Heading>
+                            <Text size="xs" color="muted">نمایش آواتار و تایپوگرافی</Text>
+                        </div>
+                        <Kbd>Ctrl</Kbd>
+                        <Code>npm install</Code>
+                        <VisuallyHidden>متن کمکی برای فناوری‌های کمکی</VisuallyHidden>
+                    </Flex>
+                    <Container width="full" className="rounded-lg border border-border bg-surface p-4">
+                        <Flex align="center" justify="between" wrap gap={2}>
+                            <Heading as="h4" size="sm">ساختار داده</Heading>
+                            <Text size="xs" color="muted">نمونه ساختار واکنش‌گرا</Text>
+                        </Flex>
+                        <Separator className="my-3" />
+                        <DataList>
+                            <DataListItem label="وضعیت" value="منتشرشده" />
+                            <DataListItem label="دسته‌بندی" value="نقاشی معاصر" />
+                        </DataList>
+                    </Container>
+                    <div className="grid min-w-0 gap-4 sm:grid-cols-2">
+                        <Card>
+                            <Inset>
+                                <Heading as="h4" size="sm">کارت معنایی</Heading>
+                                <Text size="sm" color="muted">سطح و فاصله‌گذاری از توکن‌های طراحی RAD پیروی می‌کنند.</Text>
+                            </Inset>
+                        </Card>
+                        <Callout title="راهنمای دسترس‌پذیری" variant="info">
+                            ساختار HTML معنایی در کنار اجزای تعاملی Radix استفاده می‌شود.
+                        </Callout>
+                    </div>
+                    <Blockquote>کمتر تزئین، بیشتر توجه به اثر.</Blockquote>
+                    <div className="grid gap-2">
+                        <Text size="sm" color="muted">پیشرفت نمونه</Text>
+                        <Progress value={68} label="پیشرفت نمونه" />
+                        <Flex align="center" gap={2}>
+                            <Spinner label="در حال آماده‌سازی نمونه" />
+                            <Text size="xs" color="muted">نمونه حالت بارگذاری</Text>
+                        </Flex>
+                        <AspectRatio ratio={16 / 9} className="rounded-md border border-dashed border-border bg-surface-muted" />
+                    </div>
+                </section>
+
                 <div className="grid gap-5 border-b border-border pb-8 md:grid-cols-2 lg:grid-cols-3">
                     <div className="grid content-start gap-3">
                         <h3 className="font-bold">کارت اثر</h3>
