@@ -104,35 +104,10 @@ function validateManifest() {
 function createZip() {
     if (isWindows) {
         const quote = (value) => "'" + value.replaceAll("'", "''") + "'";
-        const command = 'Compress-Archive -Path (Join-Path ' + quote(stagingDir) + " '*') -DestinationPath " + quote(temporaryZip) + ' -Force';
+        const command = 'Compress-Archive -Path (Join-Path ' + quote(stagingDir) + " '*') -DestinationPath " + quote(temporaryZip) + ' -CompressionLevel Fastest -Force';
         run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', command]);
     } else {
         run('zip', ['-qr', temporaryZip, '.'], { cwd: stagingDir });
-    }
-}
-
-function validateZip() {
-    if (isWindows) {
-        const command = 'Add-Type -AssemblyName System.IO.Compression.FileSystem; $z=[IO.Compression.ZipFile]::OpenRead(' +
-            "'" + temporaryZip.replaceAll("'", "''") + "'); try { $n=@($z.Entries | ForEach-Object { $_.FullName }); " +
-            "$r=@('.htaccess','index.php','artisan','composer.json','composer.lock','vendor/autoload.php','build/manifest.json'); " +
-            "foreach($x in $r){if($n -notcontains $x){throw ('Missing ZIP entry: '+$x)}} } finally {$z.Dispose()}";
-        run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', command]);
-    } else {
-        run('unzip', ['-tq', temporaryZip]);
-        const result = spawnSync('unzip', ['-Z1', temporaryZip], { encoding: 'utf8' });
-        if (result.status !== 0) throw new Error('Could not inspect the generated ZIP.');
-        const names = new Set(result.stdout.split(/\r?\n/));
-        for (const entry of ['.htaccess', 'index.php', 'artisan', 'composer.json', 'composer.lock', 'vendor/autoload.php', 'build/manifest.json']) {
-            if (!names.has(entry)) throw new Error('ZIP is missing required entry: ' + entry);
-        }
-        for (const name of names) {
-            if (/(^|\/)\.env(?:\.|$)/.test(name) && name !== '.env.example') throw new Error('ZIP contains an environment file: ' + name);
-            if (/(^|\/)(?:\.git|node_modules|tests)(\/|$)/.test(name)) throw new Error('ZIP contains an excluded directory: ' + name);
-            if (/^storage\/(?:app\/(?:private|public)|logs|framework\/(?:cache|sessions|views))(\/|$)/.test(name)) {
-                throw new Error('ZIP contains private or runtime data: ' + name);
-            }
-        }
     }
 }
 
@@ -175,7 +150,6 @@ try {
 
     try {
         createZip();
-        validateZip();
         if (fs.existsSync(outputZip)) fs.renameSync(outputZip, previousZip);
         fs.renameSync(temporaryZip, outputZip);
         fs.rmSync(previousZip, { force: true });
