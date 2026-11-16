@@ -170,3 +170,28 @@ Do not add a Radix package merely to claim coverage. Add a primitive when a real
 - Keep React form state, API payloads, validation, route behavior and backend contracts unchanged when swapping the interaction primitive.
 - Preserve RTL direction, Persian accessible names, touch target sizes, reduced motion, focus visibility, disabled/required states and native form submission semantics.
 - Add focused component/source-level regression coverage when shared wrappers or adoption points change.
+
+## RAD semantic component catalogue
+
+The shared `resources/js/components/ui/layout.jsx` module provides RAD-owned counterparts for the structural and typographic parts of the Radix Themes catalogue. It intentionally uses semantic HTML and existing RAD tokens rather than introducing Radix Themes or pretending that static HTML elements are interaction primitives.
+
+| RAD component | Semantic foundation | Intended use |
+| --- | --- | --- |
+| `Box`, `Flex`, `Grid`, `Container`, `Section`, `Inset` | div / section and CSS layout | Consistent page composition with shrink-safe minimum widths |
+| `Heading`, `Text`, `Strong`, `Em`, `Code`, `Quote`, `Blockquote`, `Kbd` | Native text semantics | Typography using RAD ink, muted, accent and surface tokens |
+| `Card`, `Callout`, `Badge` | article / aside / span | RAD surfaces and status presentation |
+| `AspectRatio`, `Avatar`, `Progress`, `Spinner`, `Skeleton` | CSS aspect ratio, image, progress and status | Media, identity and loading feedback |
+| `Separator`, `Table`, `DataList`, `DataListItem` | hr-like separator, table and description list | Content structure and data presentation |
+| `AccessibleIcon`, `VisuallyHidden` | Accessible name and visually-hidden text | Nonvisual labels and assistive-technology support |
+
+These are RAD components, not additional Radix packages. Interactive patterns must continue to use the actual matching Radix primitive through a shared RAD wrapper. The existing installed primitive set is Dialog, Alert Dialog, Dropdown Menu, Tabs, Select, Checkbox, Tooltip and Toast. Do not substitute a menu for a popover, a styled element for a switch, or a custom key handler for a Radix keyboard interaction.
+
+The wider Radix Primitives catalogue also includes patterns not yet installed in this repository (for example Accordion, Aspect Ratio, Avatar, Context Menu, Hover Card, Popover, Radio Group, Scroll Area, Slider, Switch, Toggle and Toggle Group). Static RAD counterparts above do not claim to replace those interactive primitives. Add each missing primitive package together with a generated, verified lockfile update before adopting it in product flows. This keeps `npm ci` reproducible and avoids importing undeclared transitive dependencies.
+
+### Dependency and styling policy
+
+- Do not install `@radix-ui/themes`, import its stylesheet, or add a Radix `Theme` provider.
+- Keep React 18 compatibility and use the repository's existing Radix package versions.
+- Keep all visual classes and tokens in RAD wrappers; use Radix state attributes and CSS variables only as behavioral hooks.
+- Keep utility/layout wrappers shrink-safe (`min-w-0`, `max-w-full`) and use logical CSS properties for RTL.
+- Prefer native semantic elements when Radix has no behavior to provide. Do not invent a component merely to mirror a catalogue name.
