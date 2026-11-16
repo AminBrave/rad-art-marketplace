@@ -8,7 +8,21 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowDown, Ban, ChevronRight, Download, FileText, Flag, Image as ImageIcon, LoaderCircle, Paperclip, Pencil, Reply, Send, ShieldCheck, SmilePlus, Trash2, X } from 'lucide-react';
 
 const reactionOptions = ['👍', '❤️', '😂', '😮', '🙏', '🎨'];
-const avatarTones = ['bg-[color:color-mix(in_srgb,var(--color-sand)_65%,transparent)] text-   return Number.isNaN(date.getTime()) ? '' : date.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+const avatarTones = ['bg-[color:color-mix(in_srgb,var(--color-sand)_65%,transparent)] text-ink', 'bg-[color:color-mix(in_srgb,var(--color-olive)_10%,transparent)] text-olive', 'bg-[color:color-mix(in_srgb,var(--color-terracotta)_10%,transparent)] text-terracotta-strong', 'bg-surface-muted text-ink'];
+
+function avatarTone(name) {
+    const value = String(name ?? 'گفتگو').trim();
+    return avatarTones[(value.codePointAt(0) ?? 0) % avatarTones.length];
+}
+
+function avatarInitial(name) {
+    return String(name ?? 'گ').trim().slice(0, 1) || 'گ';
+}
+
+function timeLabel(value) {
+    if (!value) return '';
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? '' : date.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
 }
 
 function dayLabel(value) {
