@@ -141,7 +141,7 @@ try {
     for (const item of ['.htaccess', 'index.php', 'artisan', 'composer.json', 'composer.lock', '.env.example']) required(item);
 
     console.log('[cPanel] Building production Vite assets...');
-    run(isWindows ? 'npm.cmd' : 'npm', ['run', 'build:cpanel']);
+    run(isWindows ? 'node.exe' : 'node', ['scripts/project.mjs', 'build:cpanel']);
     validateManifest();
 
     fs.mkdirSync(stagingDir, { recursive: true });
