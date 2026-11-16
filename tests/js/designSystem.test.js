@@ -237,7 +237,7 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.doesNotMatch(layouts, /ناوبری فضای کاری|RAD \/ MENU/);
     assert.ok(messaging.includes('min-w-0 w-fit max-w-[88%]'));
     assert.ok(messagingInbox.includes('min-h-[4.25rem] w-full items-center gap-2'));
-    assert.ok(messaging.includes('absolute end-1 top-1/2 -translate-y-1/2'));
+    assert.ok(messagingInbox.includes('absolute end-1 top-1/2 -translate-y-1/2'));
     assert.ok(messaging.includes('mt-[.55rem] flex flex-wrap items-center justify-between gap-2 text-[10px] text-subtle'));
     assert.ok(messaging.includes('max-h-28 min-h-[2.35rem] max-sm:min-h-9 w-full resize-none'));
     assert.ok(messaging.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
@@ -281,7 +281,7 @@ test('messaging chat geometry follows RTL logical flow and uses Radix collision-
     assert.ok(messaging.includes('flex-nowrap items-center gap-1 overflow-x-auto'));
     assert.ok(messaging.includes('min-w-0 flex-wrap items-center justify-end gap-1.5'));
     assert.ok(messaging.includes('overflow-x-hidden overflow-y-auto'));
-    assert.ok(messaging.includes('absolute end-1 top-1/2 -translate-y-1/2'));
+    assert.ok(messagingInbox.includes('absolute end-1 top-1/2 -translate-y-1/2'));
     assert.ok(messaging.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
     assert.ok(messaging.includes('ps-10 pe-3 py-[.4rem]'));
     assert.doesNotMatch(messaging, /getChatPopoverPosition|toggleChatPopover|createPortal|data-chat-popover-boundary/);
