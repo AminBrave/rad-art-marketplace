@@ -375,7 +375,7 @@ function NotificationBell({ user }) {
                     <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
                         <div className="min-w-0">
                             <div className="flex flex-wrap items-center gap-2">
-                                <DialogTitle id="workspace-notification-title" className="text-base tracking-tight">اعلان‌های پیام</DialogTitle>
+                                <DialogTitle className="text-base tracking-tight">اعلان‌های پیام</DialogTitle>
                                 {unreadCount > 0 && <Badge variant="accent">{unreadCount.toLocaleString('fa-IR')} جدید</Badge>}
                             </div>
                             <DialogDescription className="mt-1 text-xs leading-6">پیام‌های تازه و وضعیت خوانده‌شدن آن‌ها</DialogDescription>
