@@ -18,7 +18,7 @@ Then run:
 
 ```sh
 npm ci
-npm run cpanel:build
+npm run build:cpanel
 ```
 
 The single packaging script runs the existing cPanel Vite build, creates a temporary clean deployment tree, installs Composer dependencies from `composer.lock` with development packages excluded, validates the archive, and writes:
