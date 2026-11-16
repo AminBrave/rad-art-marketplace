@@ -281,7 +281,7 @@ test('messaging chat geometry follows RTL logical flow and uses Radix collision-
     assert.ok(messaging.includes('overflow-x-hidden overflow-y-auto'));
     assert.ok(messaging.includes('absolute end-1 top-1/2 -translate-y-1/2'));
     assert.ok(messaging.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
-    assert.ok(messaging.includes('ps-10 pe-3 py-[.55rem]'));
+    assert.ok(messaging.includes('ps-10 pe-3 py-[.4rem]'));
     assert.doesNotMatch(messaging, /getChatPopoverPosition|toggleChatPopover|createPortal|data-chat-popover-boundary/);
 });
 
