@@ -195,3 +195,8 @@ The wider Radix Primitives catalogue also includes patterns not yet installed in
 - Keep all visual classes and tokens in RAD wrappers; use Radix state attributes and CSS variables only as behavioral hooks.
 - Keep utility/layout wrappers shrink-safe (`min-w-0`, `max-w-full`) and use logical CSS properties for RTL.
 - Prefer native semantic elements when Radix has no behavior to provide. Do not invent a component merely to mirror a catalogue name.
+
+
+## Canonical component catalogue
+
+The authoritative component inventory, wrapper contract, Radix primitive coverage, catalogue information architecture, application-wide adoption rules, and definition of done live in [`AI/RAD-COMPONENT-CATALOGUE.md`](./RAD-COMPONENT-CATALOGUE.md). Read that document before adding or changing shared UI. This document remains the product-level visual and experience specification; the component catalogue is its implementation-level companion.
