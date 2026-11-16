@@ -72,6 +72,7 @@ function run(command, args, options = {}) {
     const result = spawnSync(command, args, {
         cwd: projectRoot,
         encoding: 'utf8',
+        maxBuffer: 16 * 1024 * 1024,
         shell: isWindows,
         ...options,
     });
