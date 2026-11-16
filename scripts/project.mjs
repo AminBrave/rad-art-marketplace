@@ -8,6 +8,7 @@ import { networkInterfaces } from 'node:os';
 import { createGzip } from 'node:zlib';
 import { pipeline } from 'node:stream/promises';
 import { parseDotEnv, runDevelopmentPreflight } from './dev-environment.mjs';
+import { packageCpanel } from './package-cpanel.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 process.chdir(root);
@@ -449,6 +450,7 @@ function usage() {
         'production            Build and verify standard production assets',
         'a11y:build            Build Vite CSS in an isolated folder and audit compiled design tokens',
         'build:cpanel          Build and verify cPanel production assets',
+        'cpanel:build          Build assets and create build/rad-file.zip',
         'db:sqlite:init        Create the local SQLite database file if absent',
         'db:status             Check local database migration status',
         'db:migrate            Run local database migrations',
@@ -482,6 +484,7 @@ try {
         case 'production': await buildProduction(false); break;
         case 'a11y:build': await auditBuiltColorAccessibility(); break;
         case 'build:cpanel': await buildProduction(true); break;
+        case 'cpanel:build': await buildProduction(true); await packageCpanel(); break;
         case 'test:backend': await runBackendTests(); break;
         case 'test:unit':
         case 'test:feature':
