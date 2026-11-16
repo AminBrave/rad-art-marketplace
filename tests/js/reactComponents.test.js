@@ -251,9 +251,11 @@ test('Page and section headers retain the requested heading hierarchy', () => {
     );
 
     assert.match(hero, /<header dir="rtl"/);
-    assert.match(hero, /border-b border-border/);
-    assert.match(hero, /before:bg-terracotta/);
-    assert.doesNotMatch(hero, /rounded-xl border border-ink bg-ink/);
+    assert.match(hero, /rounded-xl border border-ink bg-ink/);
+    assert.match(hero, /bg-terracotta/);
+    assert.match(hero, /text-inverse/);
+    assert.match(hero, /text-sand/);
+    assert.doesNotMatch(hero, /border-b border-border/);
     assert.match(hero, /خوش آمدید/);
 });
 
