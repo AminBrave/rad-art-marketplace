@@ -46,7 +46,6 @@ function shouldCopy(sourcePath) {
         first === '.github' ||
         first === '.agents' ||
         first === 'tests' ||
-        first === 'vendor' ||
         first === '.vscode' ||
         first === '.idea' ||
         first.startsWith('.env') && relativePath !== '.env.example' ||
@@ -138,7 +137,7 @@ function validateZip() {
 }
 
 try {
-    for (const item of ['.htaccess', 'index.php', 'artisan', 'composer.json', 'composer.lock', '.env.example']) required(item);
+    for (const item of ['.htaccess', 'index.php', 'artisan', 'composer.json', 'composer.lock', '.env.example', 'vendor/autoload.php']) required(item);
 
     console.log('[cPanel] Building production Vite assets...');
     run(isWindows ? 'node.exe' : 'node', ['scripts/project.mjs', 'build:cpanel']);
@@ -165,18 +164,8 @@ try {
         'storage/logs',
     ]) fs.mkdirSync(path.join(stagingDir, directory), { recursive: true });
 
-    console.log('[cPanel] Installing production Composer dependencies in staging...');
-    run(isWindows ? 'composer.bat' : 'composer', [
-        'install',
-        '--no-dev',
-        '--prefer-dist',
-        '--optimize-autoloader',
-        '--no-interaction',
-        '--no-progress',
-    ], { cwd: stagingDir });
-
     if (!fs.existsSync(path.join(stagingDir, 'vendor/autoload.php'))) {
-        throw new Error('Composer did not create vendor/autoload.php.');
+        throw new Error('The existing vendor/autoload.php was not included in the deployment staging directory.');
     }
 
     fs.mkdirSync(outputDir, { recursive: true });
