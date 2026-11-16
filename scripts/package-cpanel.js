@@ -22,7 +22,6 @@ const archivePaths = [
     'resources',
     'routes',
     'storage',
-    'vendor',
     'build/manifest.json',
     'build/assets',
 ];
