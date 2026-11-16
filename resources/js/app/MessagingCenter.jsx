@@ -598,7 +598,7 @@ export default function MessagingCenter({ role }) {
                     threadFilter={threadFilter}
                     threads={threads}
                     updateThreadSetting={updateThreadSetting}
-                />        </aside>
+                />
                 <div dir="rtl" className={active ? 'flex h-full min-h-0 min-w-0 flex-col bg-canvas' : 'hidden h-full min-h-0 min-w-0 flex-col bg-canvas lg:flex'}>
                     {!active ? <div className="m-auto p-8 text-center text-sm text-muted">برای مشاهده پیام‌ها یک گفتگو را انتخاب کنید.</div> : (
                         <>
