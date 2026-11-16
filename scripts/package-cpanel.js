@@ -75,9 +75,9 @@ function shouldCopy(sourcePath) {
         'storage/app/private',
         'storage/app/public',
         'public/storage',
-        'bootstrap/cache',
     ];
     if (excluded.some((item) => relativePath === item || relativePath.startsWith(item + '/'))) return false;
+    if (relativePath.startsWith('bootstrap/cache/') && !['packages.php', 'services.php'].includes(base)) return false;
 
     if (fs.lstatSync(sourcePath).isSymbolicLink()) throw new Error('Refusing to package symbolic link: ' + sourcePath);
     return true;
