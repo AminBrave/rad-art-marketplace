@@ -131,5 +131,4 @@ export const DataList = forwardRef(function DataList({ className = '', ...props 
 });
 
 export const DataListItem = forwardRef(function DataListItem({ label, value, className = '', ...props }, ref) {
-    return <div ref={ref} className={cn('grid min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-3 border-b border-border py-2 last:border-0', className)} {...props}><dt className="text-sm text-muted">{label}</dt><dd className="min-w-0 break-words text-sm font-semibold text-ink">{value}</dd></div>;
-}
+    return <div ref={ref} className={cn('grid min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-3 border-b border-border py-2 last:border-0', className)} {...props}><dt className="text-sm text-muted">{label}</dt><dd className="min-w-0 break-words text-sm font-semibold text-ink">{value}</dd></div>;});
