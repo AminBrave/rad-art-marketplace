@@ -27,7 +27,7 @@
     "lint": "eslint resources/js --max-warnings=0",
     "lint:fix": "eslint resources/js --fix",
     "a11y:colors": "node --test tests/js/colorAccessibility.test.js",
-    "build:cpanel": "node scripts/project.mjs build:cpanel",
+    "build:cpanel": "node scripts/package-cpanel.js",
     "a11y:build": "node scripts/project.mjs a11y:build"
   },
   "dependencies": {
