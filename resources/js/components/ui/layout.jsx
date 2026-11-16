@@ -11,12 +11,16 @@ export const Box = forwardRef(function Box({ as: Element = 'div', className = ''
     return <Element ref={ref} className={cn('min-w-0', className)} {...props} />;
 });
 
-export const Flex = forwardRef(function Flex({ as: Element = 'div', direction = 'row', align, justify, wrap = false, gap, className = '', ...props }, ref) {
-    return <Element ref={ref} className={cn('flex min-w-0', direction === 'column' ? 'flex-col' : 'flex-row', align && `items-${align}`, justify && `justify-${justify}`, wrap && 'flex-wrap', gap && `gap-${gap}`, className)} {...props} />;
+export const Flex = forwardRef(function Flex({ as: Element = 'div', direction = 'row', align, justify, wrap = false, gap, className = '', style, ...props }, ref) {
+    const directions = { row: 'flex-row', column: 'flex-col', 'row-reverse': 'flex-row-reverse', 'column-reverse': 'flex-col-reverse' };
+    const alignments = { start: 'items-start', center: 'items-center', end: 'items-end', stretch: 'items-stretch', baseline: 'items-baseline' };
+    const justifications = { start: 'justify-start', center: 'justify-center', end: 'justify-end', between: 'justify-between', around: 'justify-around', evenly: 'justify-evenly' };
+    return <Element ref={ref} className={cn('flex min-w-0', directions[direction] ?? directions.row, alignments[align], justifications[justify], wrap && 'flex-wrap', className)} style={{ ...(gap !== undefined ? { gap: typeof gap === 'number' ? `${gap * 0.25}rem` : gap } : {}), ...style }} {...props} />;
 });
 
-export const Grid = forwardRef(function Grid({ as: Element = 'div', columns, gap, className = '', ...props }, ref) {
-    return <Element ref={ref} className={cn('grid min-w-0', columns && `grid-cols-${columns}`, gap && `gap-${gap}`, className)} {...props} />;
+export const Grid = forwardRef(function Grid({ as: Element = 'div', columns, gap, className = '', style, ...props }, ref) {
+    const columnClasses = { 1: 'grid-cols-1', 2: 'grid-cols-2', 3: 'grid-cols-3', 4: 'grid-cols-4', 5: 'grid-cols-5', 6: 'grid-cols-6', 12: 'grid-cols-12' };
+    return <Element ref={ref} className={cn('grid min-w-0', columnClasses[columns], className)} style={{ ...(gap !== undefined ? { gap: typeof gap === 'number' ? `${gap * 0.25}rem` : gap } : {}), ...style }} {...props} />;
 });
 
 export const Container = forwardRef(function Container({ as: Element = 'div', width = 'wide', className = '', ...props }, ref) {
@@ -68,8 +72,8 @@ export const Separator = forwardRef(function Separator({ orientation = 'horizont
     return <div ref={ref} role={decorative ? 'none' : 'separator'} aria-orientation={decorative ? undefined : orientation} className={cn(orientation === 'vertical' ? 'h-full w-px' : 'h-px w-full', 'shrink-0 bg-border', className)} {...props} />;
 });
 
-export const AspectRatio = forwardRef(function AspectRatio({ ratio = 1, className = '', ...props }, ref) {
-    return <div ref={ref} className={cn('relative w-full overflow-hidden', className)} style={{ aspectRatio: ratio, ...props.style }} {...props} />;
+export const AspectRatio = forwardRef(function AspectRatio({ ratio = 1, className = '', style, ...props }, ref) {
+    return <div ref={ref} className={cn('relative w-full overflow-hidden', className)} style={{ aspectRatio: ratio, ...style }} {...props} />;
 });
 
 export function Avatar({ src, alt = '', fallback, size = 'md', className = '', ...props }) {
