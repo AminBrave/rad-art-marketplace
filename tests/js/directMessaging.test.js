@@ -24,7 +24,7 @@ test('message composer supports accessible text entry, IME-safe Enter send and m
     assert.ok(messaging.includes('onDraftChange={setDraft}'), 'The composer remains controlled by parent draft state.');
     assert.ok(messaging.includes('safetyLoading ? <p role="status"'), 'The parent keeps safety-loading gating outside the composer.');
     assert.ok(messaging.includes(': <MessageComposer'), 'The parent renders the composer only after safety checks permit messaging.');
-    assert.doesNotMatch(messageComposer, /useState|useEffect|axios|fetch\(|window\.URL\.(?:create|revoke)ObjectURL/), 'The extracted composer has no local lifecycle, API, or object-URL ownership.');
+    assert.doesNotMatch(messageComposer, /useState|useEffect|axios|fetch\(|window\.URL\.(?:create|revoke)ObjectURL/, 'The extracted composer has no local lifecycle, API, or object-URL ownership.');
 });
 
 test('conversation history uses incremental synchronization and stable older-message cursors', () => {
