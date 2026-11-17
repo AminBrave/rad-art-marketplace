@@ -1,11 +1,12 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import MessagingInboxPanel from './MessagingInboxPanel';
+import ConversationHeader from './ConversationHeader';
 import axios from 'axios';
 import { useMessagingQueries } from './useMessagingQueries';
 import { useAuth } from './AuthContext';
 import { MessageHistorySkeleton, MediaImage, Tooltip, DropdownMenu } from '../components/ui';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ArrowDown, Ban, ChevronRight, Download, FileText, Flag, Image as ImageIcon, LoaderCircle, MoreVertical, Paperclip, Pencil, Reply, Send, ShieldCheck, SmilePlus, Trash2, X } from 'lucide-react';
+import { ArrowDown, Download, FileText, Image as ImageIcon, LoaderCircle, MoreVertical, Paperclip, Pencil, Reply, Send, SmilePlus, Trash2, X } from 'lucide-react';
 
 const reactionOptions = ['👍', '❤️', '😂', '😮', '🙏', '🎨'];
 const avatarTones = ['bg-[color:color-mix(in_srgb,var(--color-sand)_65%,transparent)] text-ink', 'bg-[color:color-mix(in_srgb,var(--color-olive)_10%,transparent)] text-olive', 'bg-[color:color-mix(in_srgb,var(--color-terracotta)_10%,transparent)] text-terracotta-strong', 'bg-surface-muted text-ink'];
@@ -616,28 +617,30 @@ export default function MessagingCenter({ role }) {
                 <div dir="rtl" className={active ? 'flex h-full min-h-0 min-w-0 flex-col bg-canvas' : 'hidden h-full min-h-0 min-w-0 flex-col bg-canvas lg:flex'}>
                     {!active ? <div className="m-auto p-8 text-center text-sm text-muted">برای مشاهده پیام‌ها یک گفتگو را انتخاب کنید.</div> : (
                         <>
-                            <header className="relative z-20 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_96%,transparent)] shadow-soft backdrop-blur after:absolute after:inset-x-0 after:top-0 after:h-1 after:bg-terracotta">
-                                <div className="flex min-h-[3.5rem] min-w-0 items-center gap-2 px-3 py-2 pt-3 md:min-h-[3.75rem] md:gap-3 md:px-4">
-                                    <Tooltip content="بازگشت به گفتگوها"><button type="button" aria-label="بازگشت به گفتگوها" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-canvas text-ink transition hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:hidden" onClick={() => { setActive(null); setPendingArtwork(null); setParams((current) => { const next = new URLSearchParams(current); next.delete('conversation'); next.delete('artwork'); return next; }, { replace: true }); }}><ChevronRight size={19} aria-hidden="true" /></button></Tooltip>
-                                    {selected?.artist?.slug ? <Tooltip content={'مشاهده پروفایل هنرمند'}><Link to={'/artists/' + selected.artist.slug} aria-label={'مشاهده صفحه هنرمند ' + (selected?.participant?.name ?? '')} className="group flex h-11 w-11 aspect-square shrink-0 items-center justify-center rounded-full text-inherit no-underline transition-[transform,opacity] hover:-translate-y-px hover:opacity-[.88] focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"><span aria-hidden="true" className={'flex h-full w-full items-center justify-center overflow-hidden rounded-full border border-border-strong outline outline-[3px] outline-surface-muted [outline-offset:1px] text-sm font-black [box-shadow:0_1px_2px_color-mix(in_srgb,var(--color-ink)_8%,transparent)] ' + avatarTone(selected?.participant?.name)}>{avatarInitial(selected?.participant?.name)}</span></Link></Tooltip> : <div aria-hidden="true" className={'flex h-11 w-11 aspect-square shrink-0 items-center justify-center overflow-hidden rounded-full border border-border-strong outline outline-[3px] outline-surface-muted [outline-offset:1px] text-sm font-black [box-shadow:0_1px_2px_color-mix(in_srgb,var(--color-ink)_8%,transparent)] ' + avatarTone(selected?.participant?.name)}>{avatarInitial(selected?.participant?.name)}</div>}
-                                    <div className="min-w-0 flex-1">
-                                        {role === 'buyer' && selected?.artist?.slug ? <Tooltip content={'مشاهده صفحه هنرمند ' + (selected.participant.name ?? '')}><Link to={'/artists/' + selected.artist.slug} dir="auto" className="block w-fit max-w-full truncate text-sm font-extrabold leading-6 text-ink transition hover:text-terracotta-strong focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus sm:text-base">{selected.participant.name ?? 'مشاهده هنرمند'}</Link></Tooltip> : <h2 dir="auto" title={selected?.participant?.name ?? 'گفتگوی خصوصی'} className="truncate text-sm font-extrabold leading-6 text-ink sm:text-base">{selected?.participant?.name ?? 'گفتگوی خصوصی'}</h2>}
-                                        <p className="truncate text-[11px] leading-5 text-muted">گفتگوی خصوصی مستقیم</p>
-                                    </div>
-                                    <DropdownMenu.Root dir="rtl" open={openPopover === 'conversation'} onOpenChange={(open) => setPopoverOpen('conversation', open)}>
-                                        <Tooltip content="گزینه‌های بیشتر"><DropdownMenu.Trigger asChild>
-                                            <button type="button" aria-label="گزینه‌های بیشتر گفتگو" className="flex h-10 w-10 items-center justify-center rounded-full border border-transparent bg-surface-muted text-muted transition-colors hover:border-border-strong hover:bg-surface hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"><MoreVertical size={19} aria-hidden="true" /></button>
-                                        </DropdownMenu.Trigger></Tooltip>
-                                        <DropdownMenu.Portal>
-                                            <DropdownMenu.Content dir="rtl" side="bottom" align="end" sideOffset={8} collisionPadding={8} className="z-[60] max-h-[min(20rem,var(--radix-dropdown-menu-content-available-height))] min-w-52 max-w-[calc(100vw-1rem)] overflow-y-auto rounded-lg border border-border bg-paper p-1 shadow-soft">
-                                                <DropdownMenu.Item onSelect={reportConversation} className="flex min-h-10 cursor-pointer items-center gap-2.5 rounded-md px-3 text-start text-xs font-semibold text-ink outline-none transition-colors data-[highlighted]:bg-surface-muted motion-reduce:transition-none"><Flag size={15} className="shrink-0 text-muted" aria-hidden="true" /><span>گزارش گفتگو</span></DropdownMenu.Item>
-                                                <DropdownMenu.Item onSelect={toggleBlock} className="flex min-h-10 cursor-pointer items-center gap-2.5 rounded-md px-3 text-start text-xs font-semibold text-danger outline-none transition-colors data-[highlighted]:bg-danger-surface motion-reduce:transition-none">{safety.blocked_by_me ? <ShieldCheck size={15} className="shrink-0" aria-hidden="true" /> : <Ban size={15} className="shrink-0" aria-hidden="true" />}<span>{safety.blocked_by_me ? 'رفع مسدودسازی کاربر' : 'مسدودسازی کاربر'}</span></DropdownMenu.Item>
-                                            </DropdownMenu.Content>
-                                        </DropdownMenu.Portal>
-                                    </DropdownMenu.Root>
-                                </div>
+                            <ConversationHeader
+                                avatarInitial={avatarInitial}
+                                avatarTone={avatarTone}
+                                onBack={() => {
+                                    setActive(null);
+                                    setPendingArtwork(null);
+                                    setParams((current) => {
+                                        const next = new URLSearchParams(current);
+                                        next.delete('conversation');
+                                        next.delete('artwork');
+                                        return next;
+                                    }, { replace: true });
+                                }}
+                                onPopoverOpenChange={(open) => setPopoverOpen('conversation', open)}
+                                onReportConversation={reportConversation}
+                                onToggleBlock={toggleBlock}
+                                openPopover={openPopover}
+                                role={role}
+                                safety={safety}
+                                selected={selected}
+                            >
                                 {selected?.contexts?.some((context) => context.artwork?.slug) && <div className="flex w-full min-w-0 items-center gap-[.45rem] border-t border-border bg-surface-muted px-5 py-[.45rem] max-md:px-[.65rem] md:gap-[.55rem]"><span className="shrink-0 text-[11px] font-semibold text-muted">آثار مرتبط:</span><div className="flex min-w-0 flex-1 flex-row items-center gap-[.4rem] overflow-x-auto overflow-y-hidden px-[.05rem] py-[.1rem] [scrollbar-width:none] [overscroll-behavior-inline:contain]" role="list" aria-label="آثار مرتبط">{selected.contexts.filter((context) => context.artwork?.slug).map((context) => { const artwork = context.artwork; const chipContent = <><span className="inline-flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-border text-muted">{artwork.image_url ? <MediaImage src={artwork.image_url} alt="" className="h-full w-full" imageClassName="object-cover" loading="lazy" decoding="async" /> : <ImageIcon size={15} aria-hidden="true" />}</span><span className="max-w-[7.5rem] truncate">{artwork.title}</span>{role === 'buyer' && <span className="border-s border-border ps-[.4rem] text-[9px] text-terracotta-strong">پاسخ</span>}</>; return role === 'buyer' ? <button key={artwork.slug} type="button" role="listitem" onClick={() => { setPendingArtwork(artwork); setParams((current) => { const next = new URLSearchParams(current); next.set('artwork', artwork.slug); return next; }, { replace: true }); }} aria-label={'ارسال پیام درباره ' + artwork.title} className="inline-flex min-w-0 max-w-48 min-h-[2.35rem] shrink-0 items-center gap-[.4rem] whitespace-nowrap rounded-full border border-border bg-surface-muted pe-[.6rem] ps-[.25rem] py-[.2rem] text-[11px] font-semibold leading-tight text-ink no-underline transition-colors hover:border-terracotta hover:bg-surface hover:text-terracotta-strong motion-reduce:transition-none">{chipContent}</button> : <Link key={artwork.slug} role="listitem" to={'/artworks/' + artwork.slug} className="inline-flex min-w-0 max-w-48 min-h-[2.35rem] shrink-0 items-center gap-[.4rem] whitespace-nowrap rounded-full border border-border bg-surface-muted pe-[.6rem] ps-[.25rem] py-[.2rem] text-[11px] font-semibold leading-tight text-ink no-underline transition-colors hover:border-terracotta hover:bg-surface hover:text-terracotta-strong motion-reduce:transition-none">{chipContent}</Link>; })}</div></div>}
-                            </header>
+
+                            </ConversationHeader>                   </header>
                             <div dir="rtl" ref={messagesContainerRef} onScroll={(event) => {
                                 const node = event.currentTarget;
                                 shouldStickToBottomRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 120;
