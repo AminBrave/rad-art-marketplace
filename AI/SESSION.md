@@ -27,8 +27,14 @@ Maintain a safe, evidence-driven AI development workflow for Rademan. Work is or
 - RAD app-shell direction is defined in `AI/DESIGN-SYSTEM.md`; implementation uses shared role route definitions and a primary and secondary navigation inside the dashboard hamburger drawer plus a primary-only authenticated mobile/tablet bottom bar.
 - Current source and live GitHub state outrank chat history and AI-generated summaries.
 
-## Current documentation work
-- #152 — configure the Rademan Workboard Kanban and repository labels.
+## Current delivery work
+- #152 — configure the Rademan Workboard Kanban and repository labels (still open).
+- #185 — architecture and unified development workflow epic (active).
+- #186 — modular-monolith baseline and ADR (completed).
+- #187 — agent/documentation reconciliation (draft PR #200).
+- #188 — incremental backend modularity (draft PR #202; further high-risk candidates remain deferred).
+- #189 — incremental React feature boundaries (completed).
+- #190 — engineering review, verification and delivery workflow (draft PR #201).
 - #153 — completed historical work replacing the old M0–M4 roadmap model with decision-driven task management.
 - #150 remains the canonical product-intent register; brainstorming closed at Decision 41.
 - #148 and #149 are completed historical AI-workflow records. Their old M0 wording is historical only.
