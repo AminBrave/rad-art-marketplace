@@ -8,6 +8,7 @@ use App\Models\Artwork;
 use App\Models\Category;
 use App\Models\Conversation;
 use App\Models\MessageAttachment;
+use App\Models\MessageReaction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
