@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Actions\Messaging\RemoveMessage;
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
 use App\Models\Message;
@@ -14,7 +15,6 @@ use App\Models\UserBlock;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class MessageSafetyController extends Controller
@@ -131,26 +131,20 @@ class MessageSafetyController extends Controller
         ]);
     }
 
-    public function adminUpdate(Request $request, MessageReport $report): JsonResponse
+    public function adminUpdate(Request $request, MessageReport $report, RemoveMessage $removeMessage): JsonResponse
     {
         $validated = $request->validate([
             'action' => ['required', 'string', Rule::in(['reviewed', 'dismissed', 'remove_message'])],
             'note' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        DB::transaction(function () use ($report, $validated, $request): void {
+        DB::transaction(function () use ($report, $validated, $request, $removeMessage): void {
             $locked = MessageReport::query()->lockForUpdate()->findOrFail($report->id);
             $action = $validated['action'];
             if ($action === 'remove_message' && $locked->message) {
                 $message = Message::withTrashed()->find($locked->message_id);
                 if ($message && ! $message->trashed()) {
-                    $message->reactions()->delete();
-                    $message->attachments()->get()->each(function ($attachment): void {
-                        Storage::disk('local')->delete($attachment->storage_path);
-                        $attachment->delete();
-                    });
-                    $message->forceFill(['body' => ''])->save();
-                    $message->delete();
+                    $removeMessage->handle($message);
                 }
             }
             $locked->forceFill([

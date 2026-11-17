@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Actions\Messaging\ListConversations;
 use App\Actions\Messaging\ListMessages;
+use App\Actions\Messaging\RemoveMessage;
 use App\Http\Controllers\Controller;
 use App\Models\Artwork;
 use App\Models\Conversation;
@@ -16,7 +17,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class ConversationController extends Controller
@@ -168,19 +168,13 @@ class ConversationController extends Controller
         ]);
     }
 
-    public function deleteMessage(Request $request, Conversation $conversation, Message $message): JsonResponse
+    public function deleteMessage(Request $request, Conversation $conversation, Message $message, RemoveMessage $removeMessage): JsonResponse
     {
         $this->assertOwnMessage($request->user(), $conversation, $message);
 
-        // Remove message content and reactions before retaining a minimal tombstone for thread continuity.
-        DB::transaction(function () use ($message): void {
-            $message->reactions()->delete();
-            $message->attachments()->get()->each(function ($attachment): void {
-                Storage::disk('local')->delete($attachment->storage_path);
-                $attachment->delete();
-            });
-            $message->forceFill(['body' => ''])->save();
-            $message->delete();
+        // Retain a minimal tombstone for thread continuity.
+        DB::transaction(function () use ($message, $removeMessage): void {
+            $removeMessage->handle($message);
         });
 
         return response()->json([

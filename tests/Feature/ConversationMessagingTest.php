@@ -8,6 +8,7 @@ use App\Models\Artwork;
 use App\Models\Category;
 use App\Models\Conversation;
 use App\Models\MessageAttachment;
+use App\Models\MessageReaction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -223,8 +224,25 @@ class ConversationMessagingTest extends TestCase
 
     public function test_message_sender_can_edit_and_delete_own_message_without_retaining_deleted_body(): void
     {
+        Storage::fake('local');
+
         [$buyer, $artist, $conversation] = $this->participantsWithConversation();
         $message = $conversation->messages()->firstOrFail();
+        $attachmentPath = 'message-attachments/'.$conversation->id.'/user-delete-test.jpg';
+        Storage::disk('local')->put($attachmentPath, 'private-image-bytes');
+        MessageAttachment::query()->create([
+            'message_id' => $message->id,
+            'uploaded_by_user_id' => $buyer->id,
+            'storage_path' => $attachmentPath,
+            'original_name' => 'اثر.jpg',
+            'mime_type' => 'image/jpeg',
+            'size_bytes' => 19,
+        ]);
+        MessageReaction::query()->create([
+            'message_id' => $message->id,
+            'user_id' => $artist->id,
+            'emoji' => '❤️',
+        ]);
 
         $edited = $this->actingAs($buyer)
             ->patchJson('/api/v1/conversations/'.$conversation->id.'/messages/'.$message->id, [
@@ -251,6 +269,9 @@ class ConversationMessagingTest extends TestCase
             'body' => '',
         ]);
         $this->assertSoftDeleted('messages', ['id' => $message->id]);
+        $this->assertDatabaseMissing('message_reactions', ['message_id' => $message->id]);
+        $this->assertDatabaseMissing('message_attachments', ['message_id' => $message->id]);
+        Storage::disk('local')->assertMissing($attachmentPath);
 
         $this->actingAs($artist)
             ->getJson('/api/v1/conversations/'.$conversation->id.'/messages')

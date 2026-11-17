@@ -6,10 +6,13 @@ namespace Tests\Feature;
 
 use App\Models\Conversation;
 use App\Models\Message;
+use App\Models\MessageAttachment;
+use App\Models\MessageReaction;
 use App\Models\MessageReport;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class MessageSafetyTest extends TestCase
@@ -86,7 +89,24 @@ class MessageSafetyTest extends TestCase
 
     public function test_admin_can_review_report_and_remove_reported_message_with_audit_record(): void
     {
+        Storage::fake('local');
+
         [$buyer, , $conversation, $message] = $this->fixture();
+        $attachmentPath = 'message-attachments/'.$conversation->id.'/moderation-remove-test.jpg';
+        Storage::disk('local')->put($attachmentPath, 'private-image-bytes');
+        MessageAttachment::query()->create([
+            'message_id' => $message->id,
+            'uploaded_by_user_id' => $buyer->id,
+            'storage_path' => $attachmentPath,
+            'original_name' => 'گزارش.jpg',
+            'mime_type' => 'image/jpeg',
+            'size_bytes' => 19,
+        ]);
+        MessageReaction::query()->create([
+            'message_id' => $message->id,
+            'user_id' => $buyer->id,
+            'emoji' => '❤️',
+        ]);
         $admin = $this->user('safety-admin@example.test', User::ROLE_ADMIN);
         $report = MessageReport::query()->create([
             'conversation_id' => $conversation->id,
@@ -110,6 +130,9 @@ class MessageSafetyTest extends TestCase
 
         $this->assertSoftDeleted('messages', ['id' => $message->id]);
         $this->assertDatabaseHas('messages', ['id' => $message->id, 'body' => '']);
+        $this->assertDatabaseMissing('message_reactions', ['message_id' => $message->id]);
+        $this->assertDatabaseMissing('message_attachments', ['message_id' => $message->id]);
+        Storage::disk('local')->assertMissing($attachmentPath);
         $this->assertDatabaseHas('message_reports', [
             'id' => $report->id,
             'status' => 'reviewed',
