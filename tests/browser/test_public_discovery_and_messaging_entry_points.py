@@ -245,7 +245,7 @@ class DiscoveryBrowserTests(unittest.TestCase):
                     page.route("**/api/v1/categories", lambda route: route.fulfill(status=200, content_type="application/json", body='{"data":[]}'))
                     page.route("**/api/v1/artwork-filters", lambda route: route.fulfill(status=200, content_type="application/json", body='{"data":{"mediums":[],"availability":[],"sorts":[]}}'))
                     page.route("**/api/v1/artworks**", lambda route: route.fulfill(status=200, content_type="application/json", body='{"data":[],"current_page":1,"last_page":1,"total":0}'))
-                    page.goto(BASE_URL + "/artworks")
+                    page.goto(BASE_URL + "/artworks", wait_until="commit")
                     page.get_by_role("heading", name="گالری آثار").wait_for()
                     dimensions = page.evaluate("""() => {
                         const width = document.documentElement.clientWidth;
