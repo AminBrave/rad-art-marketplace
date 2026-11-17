@@ -4,11 +4,12 @@ import ConversationHeader from './ConversationHeader';
 import MessageTimeline from './MessageTimeline';
 import MessageComposer from './MessageComposer';
 import RelatedArtworkStrip from './RelatedArtworkStrip';
+import MessagingStatusBanners from './MessagingStatusBanners';
 import axios from 'axios';
 import { useMessagingQueries } from './useMessagingQueries';
 import { useAuth } from './AuthContext';
 import { useSearchParams } from 'react-router-dom';
-import { LoaderCircle, X } from 'lucide-react';
+import { X } from 'lucide-react';
 
 const avatarTones = ['bg-[color:color-mix(in_srgb,var(--color-sand)_65%,transparent)] text-ink', 'bg-[color:color-mix(in_srgb,var(--color-olive)_10%,transparent)] text-olive', 'bg-[color:color-mix(in_srgb,var(--color-terracotta)_10%,transparent)] text-terracotta-strong', 'bg-surface-muted text-ink'];
 
@@ -580,11 +581,15 @@ export default function MessagingCenter({ role }) {
 
     return (
         <section className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden font-sans" dir="rtl">
-            {notice && <p role="status" className="rounded-md border border-border bg-surface-muted p-3 text-sm">{notice}</p>}
-            {error && <p role="alert" className="rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-danger-surface p-3 text-sm text-danger">{error}</p>}
-            {inboxQuery.isError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-danger-surface p-3 text-sm text-danger"><span>{'دریافت گفتگوها انجام نشد. دوباره تلاش کنید.'}</span><button type="button" onClick={() => loadThreads()} className="shrink-0 font-bold underline underline-offset-4">تلاش دوباره</button></div>}
-            {directStartLoading && <div role="status" className="flex items-center gap-3 rounded-md border border-border bg-surface-muted p-3 text-sm text-muted"><LoaderCircle size={16} className="animate-spin" aria-hidden="true" />در حال آماده‌سازی گفتگوی مستقیم و اتصال آن به اثر…</div>}
-            {directStartError && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-danger-surface p-3 text-sm text-ink"><span>{directStartError}</span><button type="button" onClick={() => setDirectStartAttempt((attempt) => attempt + 1)} className="shrink-0 font-bold text-terracotta-strong underline underline-offset-4">تلاش دوباره</button></div>}
+            <MessagingStatusBanners
+                notice={notice}
+                error={error}
+                inboxError={inboxQuery.isError}
+                directStartLoading={directStartLoading}
+                directStartError={directStartError}
+                onRetryInbox={loadThreads}
+                onRetryDirectStart={() => setDirectStartAttempt((attempt) => attempt + 1)}
+            />
             <div className="grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden rounded-lg border border-border bg-surface shadow-soft lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]">
                 <MessagingInboxPanel
                     active={active}
