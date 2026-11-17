@@ -1,4 +1,5 @@
 import json
+import re
 import unittest
 from playwright.sync_api import sync_playwright
 
@@ -88,7 +89,7 @@ class EditorialBrowserTests(unittest.TestCase):
             page.get_by_role("heading", name="مجموعه‌ها و هنرمندان منتخب").wait_for()
             page.get_by_label("عنوان مجموعه").fill("فرم‌های آرام")
             page.get_by_label("مقدمه سردبیر").fill("روایت سردبیر")
-            page.get_by_label("مطالعه آبی").check()
+            page.get_by_role("checkbox", name=re.compile("مطالعه آبی")).check()
             page.get_by_role("button", name="ذخیره پیش‌نویس").click()
             page.get_by_text("مجموعه ایجاد شد.").wait_for()
         finally:

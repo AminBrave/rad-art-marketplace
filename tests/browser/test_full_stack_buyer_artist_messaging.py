@@ -33,7 +33,8 @@ class FullStackBuyerArtistMessagingTests(unittest.TestCase):
         email = f"buyer-e2e-{uuid.uuid4().hex}@example.test"
         page.goto(BASE_URL + "/register", wait_until="domcontentloaded")
         page.get_by_role("heading", name="ساخت حساب کاربری").wait_for()
-        page.locator('select[name="role"]').select_option("buyer")
+        page.get_by_role("combobox", name="نوع حساب").click()
+        page.get_by_role("option", name="خریدار", exact=True).click()
         page.locator('input[name="name"]').fill("خریدار آزمون کامل")
         page.locator('input[name="email"]').fill(email)
         page.locator('input[name="password"]').fill("strong-password-123")

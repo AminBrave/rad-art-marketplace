@@ -136,13 +136,13 @@ class AccessibilitySmokeTests(unittest.TestCase):
             focused_control = ""
             for _ in range(20):
                 page.keyboard.press("Tab")
-                focused_control = page.evaluate("document.activeElement.name")
-                if focused_control == "role":
+                focused_control = page.evaluate("() => document.activeElement.getAttribute('aria-label') || document.activeElement.getAttribute('name') || ''")
+                if focused_control == "نوع حساب":
                     break
             self.assertEqual(
                 focused_control,
-                "role",
-                "Keyboard navigation should reach the account-role selector after the shared header and auth controls.",
+                "نوع حساب",
+                "Keyboard navigation should reach the accessible account-role combobox after the shared header and auth controls.",
             )
             page.keyboard.press("Home")
             page.keyboard.press("Tab")

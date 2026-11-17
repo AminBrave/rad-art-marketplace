@@ -328,10 +328,39 @@ class CurrentDevelopmentDatabaseReadOnlyTests(unittest.TestCase):
             ignore_https_errors=IGNORE_HTTPS_ERRORS,
         )
         page = context.new_page()
-        page.set_default_timeout(15000)
+        page.set_default_timeout(30000)
+        page.set_default_navigation_timeout(30000)
+        page_errors = []
+        page.on("pageerror", lambda error: page_errors.append(str(error)))
         try:
-            page.goto(BASE_URL + "/artworks", wait_until="domcontentloaded")
-            page.get_by_role("heading", name="گالری آثار").wait_for()
+            # Wait for the document commit, then use the actual app heading as readiness.
+            # This avoids treating delayed module loading as a navigation-event failure.
+            try:
+                page.goto(BASE_URL + "/artworks", wait_until="commit", timeout=30000)
+            except Exception as error:
+                diagnostics = page.evaluate("""() => ({
+                    url: location.href,
+                    title: document.title,
+                    readyState: document.readyState,
+                    bodyText: (document.body?.innerText || '').slice(0, 600),
+                })""")
+                raise AssertionError(
+                    "Catalogue document did not commit; "
+                    f"page errors: {page_errors}; DOM: {diagnostics}"
+                ) from error
+            try:
+                page.get_by_role("heading", name="گالری آثار").wait_for(timeout=30000)
+            except Exception as error:
+                diagnostics = page.evaluate("""() => ({
+                    url: location.href,
+                    title: document.title,
+                    bodyText: (document.body?.innerText || '').slice(0, 600),
+                    appRoot: document.querySelector('#app')?.outerHTML.slice(0, 1000) ?? null,
+                })""")
+                raise AssertionError(
+                    "Catalogue did not render from the current development database; "
+                    f"page errors: {page_errors}; DOM: {diagnostics}"
+                ) from error
             self.assertTrue(page.locator("main").is_visible())
         finally:
             context.close()

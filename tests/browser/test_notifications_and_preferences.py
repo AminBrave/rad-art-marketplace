@@ -129,6 +129,7 @@ class MessageNotificationBrowserTests(unittest.TestCase):
         try:
             page.goto(BASE_URL + "/dashboard/buyer/messages", wait_until="domcontentloaded")
             page.get_by_role("heading", name="پیام‌ها").wait_for()
+            expect(page.get_by_role("button", name="گزینه‌های گفتگو").first).to_be_visible()
 
             tabs = page.get_by_role("tablist", name="فیلتر گفتگوها")
             all_tab = tabs.get_by_role("tab", name="همه")
@@ -136,23 +137,23 @@ class MessageNotificationBrowserTests(unittest.TestCase):
             archived_tab = tabs.get_by_role("tab", name="بایگانی")
 
             all_tab.focus()
-            self.assertEqual(page.evaluate("document.activeElement.id"), "conversation-filter-all")
+            expect(all_tab).to_be_focused()
             page.keyboard.press("ArrowLeft")
-            self.assertEqual(page.evaluate("document.activeElement.id"), "conversation-filter-unread")
+            expect(unread_tab).to_be_focused()
             self.assertEqual(unread_tab.get_attribute("aria-selected"), "true")
             self.assertEqual(unread_tab.get_attribute("tabindex"), "0")
             self.assertEqual(all_tab.get_attribute("tabindex"), "-1")
 
             page.keyboard.press("ArrowRight")
-            self.assertEqual(page.evaluate("document.activeElement.id"), "conversation-filter-all")
+            expect(all_tab).to_be_focused()
             self.assertEqual(all_tab.get_attribute("aria-selected"), "true")
 
             page.keyboard.press("End")
-            self.assertEqual(page.evaluate("document.activeElement.id"), "conversation-filter-archived")
+            expect(archived_tab).to_be_focused()
             self.assertEqual(archived_tab.get_attribute("aria-selected"), "true")
 
             page.keyboard.press("Home")
-            self.assertEqual(page.evaluate("document.activeElement.id"), "conversation-filter-all")
+            expect(all_tab).to_be_focused()
             self.assertEqual(all_tab.get_attribute("aria-selected"), "true")
         finally:
             context.close()
@@ -191,7 +192,7 @@ class MessageNotificationBrowserTests(unittest.TestCase):
         try:
             page.goto(BASE_URL + "/dashboard/buyer/messages", wait_until="domcontentloaded")
             page.get_by_role("button", name="اعلان‌ها").click()
-            preference = page.get_by_label("اعلان پیام‌های جدید در این بخش")
+            preference = page.get_by_role("checkbox", name=re.compile("^اعلان پیام‌های جدید در این بخش"))
             expect(preference).to_be_checked()
 
             # Observe the actual persistence request instead of letting uncheck()

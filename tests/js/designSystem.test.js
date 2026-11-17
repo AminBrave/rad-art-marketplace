@@ -21,6 +21,8 @@ const routeLoading = readFileSync(new URL('../../resources/js/app/RoutingPages.j
 const queryClient = readFileSync(new URL('../../resources/js/lib/queryClient.js', import.meta.url), 'utf8');
 const artistWorkspace = readFileSync(new URL('../../resources/js/app/ArtistWorkspaceOverview.jsx', import.meta.url), 'utf8');
 const messaging = readFileSync(new URL('../../resources/js/app/MessagingCenter.jsx', import.meta.url), 'utf8');
+const messagingInbox = readFileSync(new URL('../../resources/js/app/MessagingInboxPanel.jsx', import.meta.url), 'utf8');
+const messagingSurface = messaging + '\n' + messagingInbox;
 const messagingQueries = readFileSync(new URL('../../resources/js/app/useMessagingQueries.js', import.meta.url), 'utf8');
 const artworkDetail = readFileSync(new URL('../../resources/js/app/ArtworkDetailPage.jsx', import.meta.url), 'utf8');
 const artworkStudio = readFileSync(new URL('../../resources/js/app/ArtworkStudio.jsx', import.meta.url), 'utf8');
@@ -158,7 +160,7 @@ test('form controls and helper hints use shared RAD-styled Radix primitives', ()
     assert.ok(editorialPages.includes('<AlertDialogTitle>'));
     assert.ok(messaging.includes("DropdownMenu } from '../components/ui'"));
     assert.doesNotMatch(messaging, /@radix-ui/);
-    assert.ok(messaging.includes('<Tooltip content="گزینه‌های گفتگو">'));
+    assert.ok(messagingInbox.includes('<Tooltip content="گزینه‌های گفتگو">'));
     assert.ok(messaging.includes('<Tooltip content="افزودن واکنش">'));
     assert.ok(artworkStudio.includes('<SelectField'));
     assert.ok(editorialPages.includes('<Checkbox'));
@@ -206,14 +208,14 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
 });;
 
 test('messaging conversation filters use the shared RAD-styled Radix Tabs primitive', () => {
-    assert.ok(messaging.includes('<Tabs value={threadFilter} onValueChange={setThreadFilter} dir="rtl"'));
-    assert.ok(messaging.split('inline-flex flex-row min-w-0 w-full items-center justify-center gap-1.5').length - 1 === 3, 'All inbox filter icons and labels use the same centered RTL row alignment.');
-    assert.ok(messaging.includes('<TabsContent value={threadFilter} dir="rtl"'));
-    assert.ok(messaging.includes('<ul dir="rtl" className="min-h-0 flex-1 divide-y'));
-    assert.ok(messaging.includes('<TabsList aria-label="فیلتر گفتگوها"'));
-    assert.ok(messaging.includes('<TabsTrigger value="all"'));
-    assert.ok(messaging.includes('<TabsTrigger value="unread"'));
-    assert.ok(messaging.includes('<TabsTrigger value="archived"'));
+    assert.ok(messagingInbox.includes('<Tabs value={threadFilter} onValueChange={setThreadFilter} dir="rtl"'));
+    assert.ok(messagingInbox.split('inline-flex flex-row min-w-0 w-full items-center justify-center gap-1.5').length - 1 === 3, 'All inbox filter icons and labels use the same centered RTL row alignment.');
+    assert.ok(messagingInbox.includes('<TabsContent value={threadFilter} dir="rtl"'));
+    assert.ok(messagingInbox.includes('<ul dir="rtl" className="min-h-0 flex-1 divide-y'));
+    assert.ok(messagingInbox.includes('<TabsList aria-label="فیلتر گفتگوها"'));
+    assert.ok(messagingInbox.includes('<TabsTrigger value="all"'));
+    assert.ok(messagingInbox.includes('<TabsTrigger value="unread"'));
+    assert.ok(messagingInbox.includes('<TabsTrigger value="archived"'));
     assert.ok(navigation.includes('data-[state=active]:border-terracotta'));
     assert.doesNotMatch(messaging, /document\.getElementById\('conversation-filter-/);
 });;
@@ -234,8 +236,8 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.doesNotMatch(messaging, /RAD \/ MESSAGES|ارتباط مستقیم|PageHeader/);
     assert.doesNotMatch(layouts, /ناوبری فضای کاری|RAD \/ MENU/);
     assert.ok(messaging.includes('min-w-0 w-fit max-w-[88%]'));
-    assert.ok(messaging.includes('min-h-[4.25rem] w-full items-center gap-2'));
-    assert.ok(messaging.includes('absolute end-1 top-1/2 -translate-y-1/2'));
+    assert.ok(messagingInbox.includes('min-h-[4.25rem] w-full items-center gap-2'));
+    assert.ok(messagingInbox.includes('absolute end-1 top-1/2 -translate-y-1/2'));
     assert.ok(messaging.includes('mt-[.55rem] flex flex-wrap items-center justify-between gap-2 text-[10px] text-subtle'));
     assert.ok(messaging.includes('max-h-28 min-h-[2.35rem] max-sm:min-h-9 w-full resize-none'));
     assert.ok(messaging.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
@@ -245,14 +247,14 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
 });
 
 test('messaging is viewport-locked between the authenticated app header and bottom navigation on mobile', () => {
-    assert.ok(messaging.includes('text-sm font-extrabold leading-6 text-ink">پیام‌ها</h2>'), 'Keep the inbox heading compact inside its panel.');
-    assert.ok(messaging.includes('text-[10px] leading-4 text-muted">یک بستر امن برای ارتباط خریدار با هنرمند.</p>'));
+    assert.ok(messagingInbox.includes('text-sm font-extrabold leading-6 text-ink">پیام‌ها</h2>'), 'Keep the inbox heading compact inside its panel.');
+    assert.ok(messagingInbox.includes('text-[10px] leading-4 text-muted">یک بستر امن برای ارتباط خریدار با هنرمند.</p>'));
     assert.ok(messaging.includes("own ? 'rounded-es-[.35rem]"));
     assert.ok(messaging.includes(": 'rounded-ee-[.35rem]"));
     assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden'));
     assert.ok(messaging.includes('grid h-full min-h-0 w-full min-w-0 flex-1'));
-    assert.ok(messaging.includes('divide-y divide-border overflow-y-auto'), 'The inbox list scrolls inside its fixed panel.');
-    const inboxList = messaging.match(/<ul dir="rtl" className="([^"]+)"/);
+    assert.ok(messagingInbox.includes('divide-y divide-border overflow-y-auto'), 'The inbox list scrolls inside its fixed panel.');
+    const inboxList = messagingInbox.match(/<ul dir="rtl" className="([^"]+)"/);
     assert.ok(inboxList, 'The conversation inbox list is present.');
     assert.doesNotMatch(inboxList[1], /scrollbar-gutter/ , 'The inbox list must not reserve a gutter that leaves a blank strip beside its content.');
     assert.ok(messaging.includes('overflow-y-auto overscroll-contain'), 'Message history scrolls inside its fixed panel.');
@@ -272,14 +274,14 @@ test('messaging chat geometry follows RTL logical flow and uses Radix collision-
     assert.ok(messaging.includes('<div dir="rtl" ref={messagesContainerRef}'));
     assert.ok(messaging.includes("DropdownMenu } from '../components/ui'"));
     assert.doesNotMatch(messaging, /@radix-ui/);
-    assert.ok(messaging.split('<DropdownMenu.Root').length - 1 >= 4, 'All messaging overlays use Radix.');
+    assert.ok(messagingSurface.split('<DropdownMenu.Root').length - 1 >= 4, 'All messaging overlays use Radix.');
     assert.ok(messaging.includes('<DropdownMenu.Portal>'));
     assert.ok(messaging.includes('sideOffset={8} collisionPadding={8}'));
     assert.ok(messaging.includes('var(--radix-dropdown-menu-content-available-height)'));
     assert.ok(messaging.includes('flex-nowrap items-center gap-1 overflow-x-auto'));
     assert.ok(messaging.includes('min-w-0 flex-wrap items-center justify-end gap-1.5'));
     assert.ok(messaging.includes('overflow-x-hidden overflow-y-auto'));
-    assert.ok(messaging.includes('absolute end-1 top-1/2 -translate-y-1/2'));
+    assert.ok(messagingInbox.includes('absolute end-1 top-1/2 -translate-y-1/2'));
     assert.ok(messaging.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
     assert.ok(messaging.includes('ps-10 pe-3 py-[.4rem]'));
     assert.doesNotMatch(messaging, /getChatPopoverPosition|toggleChatPopover|createPortal|data-chat-popover-boundary/);
@@ -292,8 +294,8 @@ test('messaging actions use Radix menu semantics and preserve reply focus', () =
     assert.ok(messaging.includes('focusComposerAfterMenuCloseRef.current = true'));
     assert.ok(messaging.includes('draftRef.current?.focus()'));
     assert.ok(messaging.includes('<DropdownMenu.Trigger asChild>'));
-    assert.ok(messaging.includes("updateThreadSetting(thread, 'archived'"));
-    assert.ok(messaging.includes("updateThreadSetting(thread, 'muted'"));
+    assert.ok(messagingInbox.includes("updateThreadSetting(thread, 'archived'"));
+    assert.ok(messagingInbox.includes("updateThreadSetting(thread, 'muted'"));
     assert.ok(messaging.includes('data-[highlighted]:bg-surface-muted'));
     assert.ok(messaging.includes('aria-label="افزودن واکنش"'));
     assert.ok(messaging.includes('aria-label="عملیات پیام"'));
@@ -467,7 +469,7 @@ test('loading skeletons mirror the main structures of the major project surfaces
     assert.ok(adminWorkspace.includes('<ArtworkModerationSkeleton count={4} />'));
     assert.ok(adminWorkspace.includes('<AdminUserCardsSkeleton count={4} />'));
     assert.ok(adminWorkspace.includes('<MessageReportsSkeleton count={3} />'));
-    assert.ok(messaging.includes('<ConversationInboxSkeleton count={6} />'));
+    assert.ok(messagingInbox.includes('<ConversationInboxSkeleton count={6} />'));
     assert.ok(messaging.includes('<MessageHistorySkeleton count={5}'));
     assert.ok(skeletons.includes('aspect-[4/3]'));
     assert.ok(skeletons.includes('aspect-[4/5]'));

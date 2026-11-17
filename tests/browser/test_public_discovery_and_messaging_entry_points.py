@@ -97,6 +97,10 @@ class DiscoveryBrowserTests(unittest.TestCase):
             page.route("**/api/v1/artworks?**", artworks)
             page.goto(BASE_URL + "/artworks")
             page.get_by_role("heading", name="گالری آثار").wait_for()
+            def select_radix_option(label, option_name):
+                page.get_by_role("combobox", name=label).click()
+                page.get_by_role("option", name=option_name, exact=True).click()
+
             def matches_artwork_query(response, expected):
                 if response.request.method != "GET" or "/api/v1/artworks" not in response.url:
                     return False
@@ -108,13 +112,13 @@ class DiscoveryBrowserTests(unittest.TestCase):
             with page.expect_response(lambda response: matches_artwork_query(response, {"q": "آبرنگ"})):
                 page.get_by_role("button", name="جست‌وجو").click()
             with page.expect_response(lambda response: matches_artwork_query(response, {"q": "آبرنگ", "category": "painting"})):
-                page.get_by_label("فیلتر دسته‌بندی").select_option("painting")
+                select_radix_option("فیلتر دسته‌بندی", "نقاشی")
             with page.expect_response(lambda response: matches_artwork_query(response, {"q": "آبرنگ", "category": "painting", "medium": "آبرنگ"})):
-                page.get_by_label("فیلتر تکنیک و مواد").select_option("آبرنگ")
+                select_radix_option("فیلتر تکنیک و مواد", "آبرنگ")
             with page.expect_response(lambda response: matches_artwork_query(response, {"q": "آبرنگ", "category": "painting", "medium": "آبرنگ", "availability": "available"})):
-                page.get_by_label("فیلتر وضعیت اثر").select_option("available")
+                select_radix_option("فیلتر وضعیت اثر", "قابل استعلام")
             with page.expect_response(lambda response: matches_artwork_query(response, {"q": "آبرنگ", "category": "painting", "medium": "آبرنگ", "availability": "available", "sort": "year_desc"})):
-                page.get_by_label("مرتب‌سازی آثار", exact=True).select_option("year_desc")
+                select_radix_option("مرتب‌سازی آثار", "سال خلق: جدید به قدیم")
             self.assertEqual(page.evaluate("new URL(location.href).searchParams.get('q')"), "آبرنگ")
             self.assertIn("category=painting", page.url)
             self.assertIn("medium=", page.url)
@@ -241,10 +245,37 @@ class DiscoveryBrowserTests(unittest.TestCase):
                     page.route("**/api/v1/categories", lambda route: route.fulfill(status=200, content_type="application/json", body='{"data":[]}'))
                     page.route("**/api/v1/artwork-filters", lambda route: route.fulfill(status=200, content_type="application/json", body='{"data":{"mediums":[],"availability":[],"sorts":[]}}'))
                     page.route("**/api/v1/artworks**", lambda route: route.fulfill(status=200, content_type="application/json", body='{"data":[],"current_page":1,"last_page":1,"total":0}'))
-                    page.goto(BASE_URL + "/artworks")
+                    page.goto(BASE_URL + "/artworks", wait_until="commit")
                     page.get_by_role("heading", name="گالری آثار").wait_for()
-                    dimensions = page.evaluate("({width: document.documentElement.clientWidth, scrollWidth: document.documentElement.scrollWidth})")
-                    self.assertLessEqual(dimensions["scrollWidth"], dimensions["width"])
+                    dimensions = page.evaluate("""() => {
+                        const width = document.documentElement.clientWidth;
+                        const offenders = [...document.querySelectorAll('body *')]
+                            .map((element) => {
+                                const rect = element.getBoundingClientRect();
+                                return {
+                                    tag: element.tagName.toLowerCase(),
+                                    className: typeof element.className === 'string' ? element.className : '',
+                                    text: (element.innerText || '').trim().slice(0, 80),
+                                    left: Math.round(rect.left * 100) / 100,
+                                    right: Math.round(rect.right * 100) / 100,
+                                    width: Math.round(rect.width * 100) / 100,
+                                };
+                            })
+                            .filter((element) => element.right > width + 0.5 || element.left < -0.5)
+                            .sort((first, second) => second.right - first.right)
+                            .slice(0, 8);
+                        return {
+                            width,
+                            scrollWidth: document.documentElement.scrollWidth,
+                            bodyScrollWidth: document.body.scrollWidth,
+                            offenders,
+                        };
+                    }""")
+                    self.assertLessEqual(
+                        dimensions["scrollWidth"],
+                        dimensions["width"],
+                        f"Horizontal overflow at viewport {width}px: {dimensions}",
+                    )
                 finally:
                     context.close()
 
