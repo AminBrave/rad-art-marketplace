@@ -485,7 +485,7 @@ test('artwork-origin messages persist and render a reply-style artwork reference
     assert.ok(messageTimeline.includes('message.artwork &&'));
     assert.ok(messageTimeline.includes("to={'/artworks/' + message.artwork.slug}"));
     assert.ok(messaging.includes('setPendingArtwork(artwork)'));
-    assert.ok(messageTimeline.includes('پاسخ درباره این اثر'));
+    assert.ok(messaging.includes('پاسخ درباره این اثر'), 'The parent composer renders the selected artwork reply context.');
     assert.ok(messageTimeline.includes('اثر مورد گفتگو'));
     assert.ok(messaging.includes("aria-label={'ارسال پیام درباره ' + artwork.title}"));
     assert.ok(conversationApi.includes("Schema::hasColumn('messages', 'artwork_id')"));
