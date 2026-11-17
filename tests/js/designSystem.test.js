@@ -25,7 +25,8 @@ const messagingInbox = readFileSync(new URL('../../resources/js/app/MessagingInb
 const conversationHeader = readFileSync(new URL('../../resources/js/app/ConversationHeader.jsx', import.meta.url), 'utf8');
 const messageTimeline = readFileSync(new URL('../../resources/js/app/MessageTimeline.jsx', import.meta.url), 'utf8');
 const messageComposer = readFileSync(new URL('../../resources/js/app/MessageComposer.jsx', import.meta.url), 'utf8');
-const messagingSurface = messaging + '\n' + messagingInbox + '\n' + conversationHeader + '\n' + messageTimeline + '\n' + messageComposer;
+const relatedArtworkStrip = readFileSync(new URL('../../resources/js/app/RelatedArtworkStrip.jsx', import.meta.url), 'utf8');
+const messagingSurface = messaging + '\n' + messagingInbox + '\n' + conversationHeader + '\n' + messageTimeline + '\n' + messageComposer + '\n' + relatedArtworkStrip;
 const messagingQueries = readFileSync(new URL('../../resources/js/app/useMessagingQueries.js', import.meta.url), 'utf8');
 const artworkDetail = readFileSync(new URL('../../resources/js/app/ArtworkDetailPage.jsx', import.meta.url), 'utf8');
 const artworkStudio = readFileSync(new URL('../../resources/js/app/ArtworkStudio.jsx', import.meta.url), 'utf8');
@@ -444,7 +445,7 @@ test('artwork-origin direct messaging loads the canonical conversation context b
     const detailIndex = messaging.indexOf("axios.get('/api/v1/conversations/' + conversationId");
     const consumeIndex = messaging.indexOf("next.delete('artist')");
     assert.ok(startIndex >= 0 && detailIndex > startIndex && consumeIndex > detailIndex);
-    assert.ok(messaging.includes("selected?.contexts?.some((context) => context.artwork?.slug)"));
+    assert.ok(messaging.includes("conversation.contexts?.find((context) => context.artwork?.slug === artworkSlug)?.artwork"), 'The parent resolves canonical artwork context before consuming the deep link.');
     assert.ok(messagingQueries.includes("queryKey: messagingKeys.detail(conversationId, userId)"));
     assert.ok(messaging.includes("setDirectStartAttempt((attempt) => attempt + 1)"));
     assert.ok(artworkDetail.includes("'&artwork=' + encodeURIComponent(artwork.slug)"));
@@ -488,7 +489,7 @@ test('artwork-origin messages persist and render a reply-style artwork reference
     assert.ok(messaging.includes('setPendingArtwork(artwork)'));
     assert.ok(messageComposer.includes('پاسخ درباره این اثر'), 'The extracted composer renders the selected artwork reply context.');
     assert.ok(messageTimeline.includes('اثر مورد گفتگو'));
-    assert.ok(messaging.includes("aria-label={'ارسال پیام درباره ' + artwork.title}"));
+    assert.ok(relatedArtworkStrip.includes("aria-label={'ارسال پیام درباره ' + artwork.title}"), 'The related-artwork strip owns the buyer artwork-selection control.');
     assert.ok(conversationApi.includes("Schema::hasColumn('messages', 'artwork_id')"));
     assert.ok(conversationApi.includes("'artwork_id' => $supportsArtworkReferences"));
     assert.ok(conversationApi.includes("$message->relationLoaded('artwork')"));
