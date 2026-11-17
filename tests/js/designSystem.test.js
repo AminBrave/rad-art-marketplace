@@ -22,7 +22,8 @@ const queryClient = readFileSync(new URL('../../resources/js/lib/queryClient.js'
 const artistWorkspace = readFileSync(new URL('../../resources/js/app/ArtistWorkspaceOverview.jsx', import.meta.url), 'utf8');
 const messaging = readFileSync(new URL('../../resources/js/app/MessagingCenter.jsx', import.meta.url), 'utf8');
 const messagingInbox = readFileSync(new URL('../../resources/js/app/MessagingInboxPanel.jsx', import.meta.url), 'utf8');
-const messagingSurface = messaging + '\n' + messagingInbox;
+const conversationHeader = readFileSync(new URL('../../resources/js/app/ConversationHeader.jsx', import.meta.url), 'utf8');
+const messagingSurface = messaging + '\n' + messagingInbox + '\n' + conversationHeader;
 const messagingQueries = readFileSync(new URL('../../resources/js/app/useMessagingQueries.js', import.meta.url), 'utf8');
 const artworkDetail = readFileSync(new URL('../../resources/js/app/ArtworkDetailPage.jsx', import.meta.url), 'utf8');
 const artworkStudio = readFileSync(new URL('../../resources/js/app/ArtworkStudio.jsx', import.meta.url), 'utf8');
@@ -172,7 +173,7 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     assert.ok(layouts.includes('<Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>'));
     assert.ok(layouts.includes('<DialogTrigger asChild>'));
     assert.ok(layouts.includes('<DialogContent'));
-    assert.ok(layouts.includes('<DialogTitle id="workspace-notification-title"'));
+    assert.ok(layouts.includes('<DialogTitle className="text-base tracking-tight">اعلان‌های پیام</DialogTitle>'), 'The notification drawer exposes its visible title through Radix DialogTitle.');
     assert.ok(layouts.includes('<DialogClose asChild>'));
     assert.ok(layouts.includes('workspace-notification-panel'));
     assert.ok(layouts.includes('placement="drawer"'));
@@ -195,7 +196,7 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     assert.ok(routeLoading.includes('<WorkspaceHero'));
     assert.ok(routeLoading.includes('<PageHeader'));
     assert.doesNotMatch(messaging, /<PageHeader/);
-    assert.ok(messaging.includes('after:bg-terracotta'));
+    assert.ok(conversationHeader.includes('after:bg-terracotta'), 'The extracted conversation header retains its terracotta top accent.');
     const heroStart = primitives.indexOf('export function WorkspaceHero');
     const heroEnd = primitives.indexOf('\n}', heroStart);
     assert.ok(heroStart >= 0 && heroEnd > heroStart);
