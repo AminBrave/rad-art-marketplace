@@ -219,12 +219,53 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
             composer = page.locator('textarea[aria-label="متن پیام"]')
             composer.wait_for(state="visible")
             composer.fill("لطفاً این فایل را بررسی کنید.")
-            page.get_by_label("انتخاب تصویر یا فایل PDF").set_input_files({
+            attachment_input = page.get_by_label("انتخاب تصویر یا فایل PDF")
+            # The composer intentionally disables attachment selection until the
+            # conversation safety check has completed. Waiting only for the
+            # participant heading does not guarantee that async check is finished.
+            page.wait_for_function(
+                """() => {
+                    const input = document.querySelector(
+                        'input[aria-label="انتخاب تصویر یا فایل PDF"]'
+                    );
+                    return input && !input.disabled;
+                }"""
+            )
+            attachment_input.set_input_files({
                 "name": "reference.pdf",
                 "mimeType": "application/pdf",
                 "buffer": b"%PDF-1.4\\n%%EOF",
             })
-            page.get_by_text("reference.pdf", exact=True).wait_for()
+            try:
+                page.get_by_text("reference.pdf", exact=True).wait_for()
+            except Exception as failure:
+                page_state = page.evaluate(
+                    """() => ({
+                        url: location.href,
+                        title: document.title,
+                        fileInputs: Array.from(document.querySelectorAll('input[type="file"]')).map(input => ({
+                            ariaLabel: input.getAttribute('aria-label'),
+                            disabled: input.disabled,
+                            files: Array.from(input.files ?? []).map(file => ({
+                                name: file.name,
+                                type: file.type,
+                                size: file.size,
+                            })),
+                        })),
+                        composers: document.querySelectorAll('textarea[aria-label="متن پیام"]').length,
+                        sendButtons: Array.from(document.querySelectorAll('button[aria-label="ارسال پیام"]')).map(button => ({
+                            disabled: button.disabled,
+                            text: button.innerText,
+                        })),
+                        body: document.body.innerText.slice(0, 2500),
+                    })"""
+                )
+                raise AssertionError(
+                    "File selection completed but the attachment preview did not render. "
+                    f"page_state={page_state!r}; "
+                    f"browser_errors={browser_errors!r}; "
+                    f"api_responses={api_responses[-20:]!r}"
+                ) from failure
 
             # Submit through the form's native API to avoid a pointer-action race
             # with the composer's asynchronous preview/state updates.

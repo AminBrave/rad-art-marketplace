@@ -4,6 +4,7 @@ import test from 'node:test';
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
 const messaging = read('../../resources/js/app/MessagingCenter.jsx');
+const messageTimeline = read('../../resources/js/app/MessageTimeline.jsx');
 const messagingQueries = read('../../resources/js/app/useMessagingQueries.js');
 const queryUtils = read('../../resources/js/app/messagingQueryUtils.js');
 const conversations = read('../../app/Http/Controllers/Api/V1/ConversationController.php');
@@ -63,10 +64,13 @@ test('message replies, reactions, edit/delete and read receipts stay inside the 
     for (const feature of ['reply_to_id', 'setReaction', 'updateMessage', 'deleteMessage', 'markRead', 'read_at']) {
         assert.ok(conversations.includes(feature), 'Missing backend messaging capability: ' + feature);
     }
-    assert.ok(messaging.includes('setReplyTo(message)'));
-    assert.ok(messaging.includes('saveEdit(event, message)'));
-    assert.ok(messaging.includes('deleteMessage(message)'));
-    assert.ok(messaging.includes('reportMessage(message)'));
+    assert.ok(messaging.includes('onReplyTo={setReplyTo}'), 'The parent supplies the selected-conversation reply state handler.');
+    assert.ok(messageTimeline.includes('onReplyTo(message)'), 'The timeline delegates reply selection to its parent.');
+    assert.ok(messageTimeline.includes('onSaveEdit(event, message)'));
+    assert.ok(messaging.includes('onDeleteMessage={deleteMessage}'));
+    assert.ok(messaging.includes('onReportMessage={reportMessage}'));
+    assert.ok(messaging.includes('onSaveEdit={saveEdit}'));
+    assert.doesNotMatch(messaging, /setReplyTo\(message\)/);
 });
 
 test('attachment upload and private image preview enforce participant, type, size and dimension boundaries', () => {
