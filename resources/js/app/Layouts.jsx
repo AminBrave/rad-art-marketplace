@@ -76,11 +76,11 @@ export function PublicLayout() {
     return (
         <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <div className={user ? "min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:pb-0" : "min-h-screen bg-canvas text-ink"} dir="rtl">
-            <a href="#main-content" className="sr-only z-[60] bg-paper px-4 py-3 text-ink focus:not-sr-only focus:fixed focus:right-4 focus:top-4">
+            <a href="#main-content" className="sr-only z-[60] bg-paper px-4 py-3 text-ink focus:not-sr-only focus:fixed focus:inset-x-4 focus:top-4">
                 رفتن به محتوای اصلی
             </a>
             <header className="sticky top-0 z-40 border-b border-border bg-[color:color-mix(in_srgb,var(--color-canvas)_94%,transparent)] backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-canvas)_88%,transparent)]">
-                <div className="mx-auto flex min-h-[var(--header-height)] max-w-content items-center justify-between gap-4 px-page-gutter">
+                <div className="mx-auto flex min-h-[var(--header-height)] max-w-content items-center justify-between gap-2 px-page-gutter sm:gap-4">
                     <Link to="/" className="group flex shrink-0 items-center gap-3 text-ink no-underline" aria-label="راد آرت، صفحه اصلی">
                         <span className="grid h-11 w-11 place-items-center rounded-md bg-ink text-xl font-black text-inverse transition-colors group-hover:bg-terracotta">ر</span>
                         <span className="flex flex-col leading-tight">
