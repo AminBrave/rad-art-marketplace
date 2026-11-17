@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import MessagingInboxPanel from './MessagingInboxPanel';
 import ConversationHeader from './ConversationHeader';
 import MessageTimeline from './MessageTimeline';
+import MessageComposer from './MessageComposer';
 import axios from 'axios';
 import { useMessagingQueries } from './useMessagingQueries';
 import { useAuth } from './AuthContext';
