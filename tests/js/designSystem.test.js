@@ -220,10 +220,10 @@ test('messaging avatar helpers share one canonical implementation across inbox a
     assert.ok(messaging.includes('avatarTone={avatarTone}'));
     assert.ok(messagingInbox.includes('avatarTone(thread.participant?.name)'));
     assert.ok(messagingInbox.includes('avatarInitial(thread.participant?.name)'));
-    assert.equal((messaging.match(/function avatarTone\\s*\\(/g) ?? []).length, 0);
-    assert.equal((messaging.match(/function avatarInitial\\s*\\(/g) ?? []).length, 0);
-    assert.equal((messagingInbox.match(/function avatarTone\\s*\\(/g) ?? []).length, 0);
-    assert.equal((messagingInbox.match(/function avatarInitial\\s*\\(/g) ?? []).length, 0);
+    assert.equal((messaging.match(/function avatarTone\s*\(/g) ?? []).length, 0);
+    assert.equal((messaging.match(/function avatarInitial\s*\(/g) ?? []).length, 0);
+    assert.equal((messagingInbox.match(/function avatarTone\s*\(/g) ?? []).length, 0);
+    assert.equal((messagingInbox.match(/function avatarInitial\s*\(/g) ?? []).length, 0);
     assert.ok(messagingAvatarUtils.includes('export function avatarTone(name)'));
     assert.ok(messagingAvatarUtils.includes('export function avatarInitial(name)'));
     assert.ok(messagingAvatarUtils.includes('value.codePointAt(0) ?? 0'));
