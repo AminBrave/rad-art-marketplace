@@ -13,6 +13,7 @@ export default function ConversationHeader({
     role,
     safety,
     selected,
+    children,
 }) {
     return (
         <header className="relative z-20 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_96%,transparent)] shadow-soft backdrop-blur after:absolute after:inset-x-0 after:top-0 after:h-1 after:bg-terracotta">
@@ -115,6 +116,7 @@ export default function ConversationHeader({
                     </DropdownMenu.Portal>
                 </DropdownMenu.Root>
             </div>
+            {children}
         </header>
     );
 }
