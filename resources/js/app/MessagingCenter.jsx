@@ -7,7 +7,7 @@ import { useMessagingQueries } from './useMessagingQueries';
 import { useAuth } from './AuthContext';
 import { MediaImage, Tooltip } from '../components/ui';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Flag, Image as ImageIcon, LoaderCircle, Paperclip, Send, X } from 'lucide-react';
+import { Image as ImageIcon, LoaderCircle, Paperclip, Send, X } from 'lucide-react';
 
 const avatarTones = ['bg-[color:color-mix(in_srgb,var(--color-sand)_65%,transparent)] text-ink', 'bg-[color:color-mix(in_srgb,var(--color-olive)_10%,transparent)] text-olive', 'bg-[color:color-mix(in_srgb,var(--color-terracotta)_10%,transparent)] text-terracotta-strong', 'bg-surface-muted text-ink'];
 
@@ -18,6 +18,18 @@ function avatarTone(name) {
 
 function avatarInitial(name) {
     return String(name ?? 'گ').trim().slice(0, 1) || 'گ';
+}
+
+function timeLabel(value) {
+    if (!value) return '';
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? '' : date.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+}
+
+function dayLabel(value) {
+    if (!value) return '';
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? '' : date.toLocaleDateString('fa-IR', { dateStyle: 'medium' });
 }
 
 export default function MessagingCenter({ role }) {
