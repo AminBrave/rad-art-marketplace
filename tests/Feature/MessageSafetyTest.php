@@ -6,10 +6,13 @@ namespace Tests\Feature;
 
 use App\Models\Conversation;
 use App\Models\Message;
+use App\Models\MessageAttachment;
+use App\Models\MessageReaction;
 use App\Models\MessageReport;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class MessageSafetyTest extends TestCase
