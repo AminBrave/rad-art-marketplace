@@ -219,7 +219,19 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
             composer = page.locator('textarea[aria-label="متن پیام"]')
             composer.wait_for(state="visible")
             composer.fill("لطفاً این فایل را بررسی کنید.")
-            page.get_by_label("انتخاب تصویر یا فایل PDF").set_input_files({
+            attachment_input = page.get_by_label("انتخاب تصویر یا فایل PDF")
+            # The composer intentionally disables attachment selection until the
+            # conversation safety check has completed. Waiting only for the
+            # participant heading does not guarantee that async check is finished.
+            page.wait_for_function(
+                """() => {
+                    const input = document.querySelector(
+                        'input[aria-label="انتخاب تصویر یا فایل PDF"]'
+                    );
+                    return input && !input.disabled;
+                }"""
+            )
+            attachment_input.set_input_files({
                 "name": "reference.pdf",
                 "mimeType": "application/pdf",
                 "buffer": b"%PDF-1.4\\n%%EOF",
