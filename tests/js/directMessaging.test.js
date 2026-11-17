@@ -7,12 +7,27 @@ const messaging = read('../../resources/js/app/MessagingCenter.jsx');
 const messageTimeline = read('../../resources/js/app/MessageTimeline.jsx');
 const messageComposer = read('../../resources/js/app/MessageComposer.jsx');
 const relatedArtworkStrip = read('../../resources/js/app/RelatedArtworkStrip.jsx');
+const messagingStatusBanners = read('../../resources/js/app/MessagingStatusBanners.jsx');
 const messagingQueries = read('../../resources/js/app/useMessagingQueries.js');
 const queryUtils = read('../../resources/js/app/messagingQueryUtils.js');
 const conversations = read('../../app/Http/Controllers/Api/V1/ConversationController.php');
 const directStart = read('../../app/Http/Controllers/Api/V1/DirectConversationController.php');
 const attachments = read('../../app/Http/Controllers/Api/V1/MessageAttachmentController.php');
 const routes = read('../../routes/web.php');
+
+test('status banners are presentational while messaging parent retains retry ownership', () => {
+    assert.ok(messaging.includes('<MessagingStatusBanners'));
+    assert.ok(messaging.includes('notice={notice}'));
+    assert.ok(messaging.includes('error={error}'));
+    assert.ok(messaging.includes('inboxError={inboxQuery.isError}'));
+    assert.ok(messaging.includes('directStartLoading={directStartLoading}'));
+    assert.ok(messaging.includes('directStartError={directStartError}'));
+    assert.ok(messaging.includes('onRetryInbox={loadThreads}'));
+    assert.ok(messaging.includes('onRetryDirectStart={() => setDirectStartAttempt((attempt) => attempt + 1)}'));
+    assert.doesNotMatch(messagingStatusBanners, /useState|useEffect|useQuery|axios|fetch\(|window\.location/);
+    assert.ok(messagingStatusBanners.includes('onClick={onRetryInbox}'));
+    assert.ok(messagingStatusBanners.includes('onClick={onRetryDirectStart}'));
+});
 
 test('message composer supports accessible text entry, IME-safe Enter send and multiline input', () => {
     assert.ok(messageComposer.includes('aria-label="متن پیام"'));
