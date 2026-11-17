@@ -656,7 +656,6 @@ export default function MessagingCenter({ role }) {
                                 messagesLoading={messagesLoading}
                                 newMessageCount={newMessageCount}
                                 olderMessagesError={olderMessagesError}
-                                onClearNewMessageCount={() => setNewMessageCount(0)}
                                 onDeleteMessage={deleteMessage}
                                 onJumpToLatest={() => {
                                     shouldStickToBottomRef.current = true;
