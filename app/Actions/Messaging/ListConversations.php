@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\\Actions\\Messaging;
+namespace App\Actions\Messaging;
 
-use App\\Models\\Conversation;
-use App\\Models\\User;
-use Illuminate\\Contracts\\Pagination\\LengthAwarePaginator;
+use App\Models\Conversation;
+use App\Models\User;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ListConversations
 {
     public function handle(User $viewer, string $participantColumn, string $search, string $filter): LengthAwarePaginator
     {
         if (! in_array($participantColumn, ['buyer_user_id', 'artist_user_id'], true)) {
-            throw new \\InvalidArgumentException('Unsupported conversation participant column.');
+            throw new \InvalidArgumentException('Unsupported conversation participant column.');
         }
 
         $archivedColumn = $participantColumn === 'buyer_user_id' ? 'buyer_archived_at' : 'artist_archived_at';
