@@ -24,7 +24,8 @@ const messaging = readFileSync(new URL('../../resources/js/app/MessagingCenter.j
 const messagingInbox = readFileSync(new URL('../../resources/js/app/MessagingInboxPanel.jsx', import.meta.url), 'utf8');
 const conversationHeader = readFileSync(new URL('../../resources/js/app/ConversationHeader.jsx', import.meta.url), 'utf8');
 const messageTimeline = readFileSync(new URL('../../resources/js/app/MessageTimeline.jsx', import.meta.url), 'utf8');
-const messagingSurface = messaging + '\n' + messagingInbox + '\n' + conversationHeader + '\n' + messageTimeline;
+const messageComposer = readFileSync(new URL('../../resources/js/app/MessageComposer.jsx', import.meta.url), 'utf8');
+const messagingSurface = messaging + '\n' + messagingInbox + '\n' + conversationHeader + '\n' + messageTimeline + '\n' + messageComposer;
 const messagingQueries = readFileSync(new URL('../../resources/js/app/useMessagingQueries.js', import.meta.url), 'utf8');
 const artworkDetail = readFileSync(new URL('../../resources/js/app/ArtworkDetailPage.jsx', import.meta.url), 'utf8');
 const artworkStudio = readFileSync(new URL('../../resources/js/app/ArtworkStudio.jsx', import.meta.url), 'utf8');
@@ -241,9 +242,9 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.ok(messagingInbox.includes('min-h-[4.25rem] w-full items-center gap-2'));
     assert.ok(messagingInbox.includes('absolute end-1 top-1/2 -translate-y-1/2'));
     assert.ok(messageTimeline.includes('mt-[.55rem] flex flex-wrap items-center justify-between gap-2 text-[10px] text-subtle'));
-    assert.ok(messaging.includes('max-h-28 min-h-[2.35rem] max-sm:min-h-9 w-full resize-none'));
-    assert.ok(messaging.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
-    assert.ok(messaging.includes('ps-10 pe-3 py-[.4rem]'));
+    assert.ok(messageComposer.includes('max-h-28 min-h-[2.35rem] max-sm:min-h-9 w-full resize-none'));
+    assert.ok(messageComposer.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
+    assert.ok(messageComposer.includes('ps-10 pe-3 py-[.4rem]'));
     assert.doesNotMatch(messaging, /md:min-h-\[min\(580px/);
     assert.doesNotMatch(messaging, /min-h-\[5\.35rem\]/);
 });
@@ -284,8 +285,8 @@ test('messaging chat geometry follows RTL logical flow and uses Radix collision-
     assert.ok(messageTimeline.includes('min-w-0 flex-wrap items-center justify-end gap-1.5'));
     assert.ok(messageTimeline.includes('overflow-x-hidden overflow-y-auto'));
     assert.ok(messagingInbox.includes('absolute end-1 top-1/2 -translate-y-1/2'));
-    assert.ok(messaging.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
-    assert.ok(messaging.includes('ps-10 pe-3 py-[.4rem]'));
+    assert.ok(messageComposer.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
+    assert.ok(messageComposer.includes('ps-10 pe-3 py-[.4rem]'));
     assert.doesNotMatch(messaging, /getChatPopoverPosition|toggleChatPopover|createPortal|data-chat-popover-boundary/);
 });
 
@@ -406,7 +407,7 @@ test('shared UI component source does not introduce arbitrary hex or raw palette
 
 test('active frontend surfaces use semantic RAD colors and avoid raw palette utilities', () => {
     const componentSources = [primitives, cards, feedback, navigation, dialog, skeletons];
-    const applicationSources = [legacyApp, homePage, authPage, artistProfile, artworkGallery, artworkCatalogue, editorialPages, publicInfoPages, layouts, buyerWorkspace, routeLoading, artistWorkspace, messaging, artworkDetail, artworkStudio, adminWorkspace, ...publicPages];
+    const applicationSources = [legacyApp, homePage, authPage, artistProfile, artworkGallery, artworkCatalogue, editorialPages, publicInfoPages, layouts, buyerWorkspace, routeLoading, artistWorkspace, messaging, messageComposer, artworkDetail, artworkStudio, adminWorkspace, ...publicPages];
     const sources = [...componentSources, ...applicationSources];
     const rawPalette = /\b(?:bg|text|border|ring)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\d{2,3}(?:\/\d{1,3})?\b/;
     const tokenOpacity = /\b(?:bg|text|border|ring)-(?:paper|inverse|canvas|ink|terracotta|sand|olive|muted|subtle|border|surface|surface-muted|success|danger|warning|info|accent|focus)(?:-[\w-]+)?\/\d+\b/;
@@ -485,7 +486,7 @@ test('artwork-origin messages persist and render a reply-style artwork reference
     assert.ok(messageTimeline.includes('message.artwork &&'));
     assert.ok(messageTimeline.includes("to={'/artworks/' + message.artwork.slug}"));
     assert.ok(messaging.includes('setPendingArtwork(artwork)'));
-    assert.ok(messaging.includes('پاسخ درباره این اثر'), 'The parent composer renders the selected artwork reply context.');
+    assert.ok(messageComposer.includes('پاسخ درباره این اثر'), 'The extracted composer renders the selected artwork reply context.');
     assert.ok(messageTimeline.includes('اثر مورد گفتگو'));
     assert.ok(messaging.includes("aria-label={'ارسال پیام درباره ' + artwork.title}"));
     assert.ok(conversationApi.includes("Schema::hasColumn('messages', 'artwork_id')"));
@@ -507,7 +508,7 @@ test('Radix checkbox form bridge cannot expand a page to the full available row 
 });
 
 test('messaging composer height is driven by its send control and compact padding', () => {
-    assert.ok(messaging.includes('relative flex min-w-0 items-center gap-1.5 rounded-[1rem]'));
-    assert.ok(messaging.includes('min-h-[2.35rem] max-sm:min-h-9 w-full resize-none'));
-    assert.doesNotMatch(messaging, /relative flex min-h-\[3\.1rem\] items-end/);
+    assert.ok(messageComposer.includes('relative flex min-w-0 items-center gap-1.5 rounded-[1rem]'));
+    assert.ok(messageComposer.includes('min-h-[2.35rem] max-sm:min-h-9 w-full resize-none'));
+    assert.doesNotMatch(messageComposer, /relative flex min-h-\[3\.1rem\] items-end/);
 });
