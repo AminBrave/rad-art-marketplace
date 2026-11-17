@@ -22,6 +22,7 @@ const queryClient = readFileSync(new URL('../../resources/js/lib/queryClient.js'
 const artistWorkspace = readFileSync(new URL('../../resources/js/app/ArtistWorkspaceOverview.jsx', import.meta.url), 'utf8');
 const messaging = readFileSync(new URL('../../resources/js/app/MessagingCenter.jsx', import.meta.url), 'utf8');
 const messagingInbox = readFileSync(new URL('../../resources/js/app/MessagingInboxPanel.jsx', import.meta.url), 'utf8');
+const messagingAvatarUtils = readFileSync(new URL('../../resources/js/app/messagingAvatarUtils.js', import.meta.url), 'utf8');
 const conversationHeader = readFileSync(new URL('../../resources/js/app/ConversationHeader.jsx', import.meta.url), 'utf8');
 const messageTimeline = readFileSync(new URL('../../resources/js/app/MessageTimeline.jsx', import.meta.url), 'utf8');
 const messageComposer = readFileSync(new URL('../../resources/js/app/MessageComposer.jsx', import.meta.url), 'utf8');
@@ -211,6 +212,30 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     assert.ok(hero.includes('text-sand'));
     assert.ok(!artworkStudio.includes('className="border-0 pb-0 pt-0"'));
 });;
+
+test('messaging avatar helpers share one canonical implementation across inbox and conversation header', () => {
+    assert.ok(messaging.includes("from './messagingAvatarUtils'"));
+    assert.ok(messagingInbox.includes("from './messagingAvatarUtils'"));
+    assert.ok(messaging.includes('avatarInitial={avatarInitial}'));
+    assert.ok(messaging.includes('avatarTone={avatarTone}'));
+    assert.ok(messagingInbox.includes('avatarTone(thread.participant?.name)'));
+    assert.ok(messagingInbox.includes('avatarInitial(thread.participant?.name)'));
+    assert.equal((messaging.match(/function avatarTone\\s*\\(/g) ?? []).length, 0);
+    assert.equal((messaging.match(/function avatarInitial\\s*\\(/g) ?? []).length, 0);
+    assert.equal((messagingInbox.match(/function avatarTone\\s*\\(/g) ?? []).length, 0);
+    assert.equal((messagingInbox.match(/function avatarInitial\\s*\\(/g) ?? []).length, 0);
+    assert.ok(messagingAvatarUtils.includes('export function avatarTone(name)'));
+    assert.ok(messagingAvatarUtils.includes('export function avatarInitial(name)'));
+    assert.ok(messagingAvatarUtils.includes('value.codePointAt(0) ?? 0'));
+    assert.ok(messagingAvatarUtils.includes('String(name ?? \'گفتگو\').trim()'));
+    assert.ok(messagingAvatarUtils.includes('String(name ?? \'گ\').trim().slice(0, 1) || \'گ\''));
+    for (const tone of [
+        'bg-[color:color-mix(in_srgb,var(--color-sand)_65%,transparent)] text-ink',
+        'bg-[color:color-mix(in_srgb,var(--color-olive)_10%,transparent)] text-olive',
+        'bg-[color:color-mix(in_srgb,var(--color-terracotta)_10%,transparent)] text-terracotta-strong',
+        'bg-surface-muted text-ink',
+    ]) assert.ok(messagingAvatarUtils.includes(tone), 'Missing shared avatar tone: ' + tone);
+});
 
 test('messaging status banners preserve accessible presentation and remain a dedicated component', () => {
     assert.ok(messaging.includes('<MessagingStatusBanners'));
