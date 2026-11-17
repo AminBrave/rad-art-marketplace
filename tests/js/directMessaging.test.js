@@ -24,8 +24,8 @@ test('shared avatar utility preserves fallback, Unicode tone selection and first
     assert.ok(messagingAvatarUtils.includes("String(name ?? 'گ').trim().slice(0, 1) || 'گ'"));
     assert.ok(messaging.includes("import { avatarInitial, avatarTone } from './messagingAvatarUtils';"));
     assert.ok(messagingInbox.includes("import { avatarInitial, avatarTone } from './messagingAvatarUtils';"));
-    assert.doesNotMatch(messaging, /function avatar(?:Tone|Initial)\\s*\\(/);
-    assert.doesNotMatch(messagingInbox, /function avatar(?:Tone|Initial)\\s*\\(/);
+    assert.doesNotMatch(messaging, /function avatar(?:Tone|Initial)\s*\(/);
+    assert.doesNotMatch(messagingInbox, /function avatar(?:Tone|Initial)\s*\(/);
     assert.ok(messaging.includes('avatarInitial={avatarInitial}'));
     assert.ok(messaging.includes('avatarTone={avatarTone}'));
     assert.ok(messagingInbox.includes('avatarTone(thread.participant?.name)'));
