@@ -21,7 +21,10 @@ test('message composer supports accessible text entry, IME-safe Enter send and m
     assert.ok(messageComposer.includes('disabled={sending || safetyLoading || safety.blocked_by_me || safety.blocked_by_other}'));
     assert.ok(messaging.includes('<MessageComposer'));
     assert.ok(messaging.includes('onSubmit={send}'), 'The parent retains ownership of the send transaction.');
-    assert.ok(messaging.includes('onDraftChange={(value) => setDraft(value)}'), 'The composer remains controlled by parent draft state.');
+    assert.ok(messaging.includes('onDraftChange={setDraft}'), 'The composer remains controlled by parent draft state.');
+    assert.ok(messaging.includes('safetyLoading ? <p role="status"'), 'The parent keeps safety-loading gating outside the composer.');
+    assert.ok(messaging.includes(': <MessageComposer'), 'The parent renders the composer only after safety checks permit messaging.');
+    assert.doesNotMatch(messageComposer, /useState|useEffect|axios|fetch\(|window\.URL\.(?:create|revoke)ObjectURL/), 'The extracted composer has no local lifecycle, API, or object-URL ownership.');
 });
 
 test('conversation history uses incremental synchronization and stable older-message cursors', () => {
@@ -80,7 +83,10 @@ test('message replies, reactions, edit/delete and read receipts stay inside the 
 test('attachment upload and private image preview enforce participant, type, size and dimension boundaries', () => {
     assert.ok(messageComposer.includes('accept="image/jpeg,image/png,image/webp,application/pdf"'));
     assert.ok(messageComposer.includes('onChange={onFileChange}'));
-    assert.ok(messageComposer.includes('onRemoveFile={onRemoveFile}') === false, 'File removal is passed as a callback, not nested in the child implementation.');
+    assert.ok(messaging.includes('onRemoveFile={() => {'), 'The parent owns attachment removal and per-conversation file state.');
+    assert.ok(messageComposer.includes('onClick={onRemoveFile}'), 'The composer delegates attachment removal through a callback.');
+    assert.ok(messaging.includes('if (file && file.size > 10 * 1024 * 1024)'), 'The parent retains attachment size validation.');
+    assert.ok(messaging.includes('filesByConversationRef.current.set(Number(active), file)'), 'The parent retains per-conversation attachment state.');
     assert.ok(messaging.includes('window.URL.createObjectURL(selectedFile)'), 'The parent owns attachment preview URL creation.');
     assert.ok(messaging.includes('window.URL.revokeObjectURL(url)'), 'The parent owns attachment preview URL cleanup.');
     assert.ok(messaging.includes('setSelectedFile(file)'), 'The parent owns selected attachment state.');
