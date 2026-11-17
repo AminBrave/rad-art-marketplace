@@ -26,7 +26,8 @@ const conversationHeader = readFileSync(new URL('../../resources/js/app/Conversa
 const messageTimeline = readFileSync(new URL('../../resources/js/app/MessageTimeline.jsx', import.meta.url), 'utf8');
 const messageComposer = readFileSync(new URL('../../resources/js/app/MessageComposer.jsx', import.meta.url), 'utf8');
 const relatedArtworkStrip = readFileSync(new URL('../../resources/js/app/RelatedArtworkStrip.jsx', import.meta.url), 'utf8');
-const messagingSurface = messaging + '\n' + messagingInbox + '\n' + conversationHeader + '\n' + messageTimeline + '\n' + messageComposer + '\n' + relatedArtworkStrip;
+const messagingStatusBanners = readFileSync(new URL('../../resources/js/app/MessagingStatusBanners.jsx', import.meta.url), 'utf8');
+const messagingSurface = messaging + '\n' + messagingInbox + '\n' + conversationHeader + '\n' + messageTimeline + '\n' + messageComposer + '\n' + relatedArtworkStrip + '\n' + messagingStatusBanners;
 const messagingQueries = readFileSync(new URL('../../resources/js/app/useMessagingQueries.js', import.meta.url), 'utf8');
 const artworkDetail = readFileSync(new URL('../../resources/js/app/ArtworkDetailPage.jsx', import.meta.url), 'utf8');
 const artworkStudio = readFileSync(new URL('../../resources/js/app/ArtworkStudio.jsx', import.meta.url), 'utf8');
@@ -210,6 +211,22 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     assert.ok(hero.includes('text-sand'));
     assert.ok(!artworkStudio.includes('className="border-0 pb-0 pt-0"'));
 });;
+
+test('messaging status banners preserve accessible presentation and remain a dedicated component', () => {
+    assert.ok(messaging.includes('<MessagingStatusBanners'));
+    assert.ok(messagingStatusBanners.includes('{notice && <p role="status"'));
+    assert.ok(messagingStatusBanners.includes('{error && <p role="alert"'));
+    assert.ok(messagingStatusBanners.includes("دریافت گفتگوها انجام نشد. دوباره تلاش کنید."));
+    assert.ok(messagingStatusBanners.includes('directStartLoading &&'));
+    assert.ok(messagingStatusBanners.includes('directStartError &&'));
+    assert.ok(messagingStatusBanners.includes('LoaderCircle'));
+    assert.ok(messagingStatusBanners.includes('onClick={onRetryInbox}'));
+    assert.ok(messagingStatusBanners.includes('onClick={onRetryDirectStart}'));
+    assert.ok(messagingStatusBanners.indexOf('{notice &&') < messagingStatusBanners.indexOf('{error &&'));
+    assert.ok(messagingStatusBanners.indexOf('{error &&') < messagingStatusBanners.indexOf('{inboxError &&'));
+    assert.ok(messagingStatusBanners.indexOf('{inboxError &&') < messagingStatusBanners.indexOf('{directStartLoading &&'));
+    assert.ok(messagingStatusBanners.indexOf('{directStartLoading &&') < messagingStatusBanners.indexOf('{directStartError &&'));
+});
 
 test('messaging conversation filters use the shared RAD-styled Radix Tabs primitive', () => {
     assert.ok(messagingInbox.includes('<Tabs value={threadFilter} onValueChange={setThreadFilter} dir="rtl"'));
