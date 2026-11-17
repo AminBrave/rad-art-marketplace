@@ -6,14 +6,14 @@
 Maintain a safe, evidence-driven AI development workflow for Rademan. Work is organized as explicitly authorized GitHub delivery issues on one decision-driven Kanban board. There is no product-phase roadmap. The product interface direction is a coherent, app-like responsive web experience; authenticated users retain role-aware primary navigation across authenticated routes, a compact dashboard header with primary and secondary navigation grouped in the hamburger drawer, and a primary-only mobile/tablet bottom bar, with existing header/account controls retained. See `AI/DESIGN-SYSTEM.md`.
 
 ## Project starting point
-- Product: Persian-first artist discovery and artist-contact marketplace. See AI/PROJECT.md.
-- Default integration branch: main.
-- Single AI entry point: AGENTS.md.
-- Human tutorial: AI/README.md.
-- Task and Kanban rules: AI/TASK-MANAGEMENT.md.
+- Product: Persian-first artist discovery and artist-contact marketplace. See `AI/PROJECT.md`.
+- Default integration branch: `main`.
+- Single AI entry point: `AGENTS.md`.
+- Human tutorial: `AI/README.md`.
+- Task and Kanban rules: `AI/TASK-MANAGEMENT.md`.
 - Canonical product intent: #150, with 41 standalone decision comments.
-- Canonical skills: .agents/skills/; Claude mirror: .claude/skills/.
-- Optional context helper: npm run ai:context -- --task "...".
+- Canonical skills: `.agents/skills/`; there is no maintained `.claude/skills/` mirror.
+- Optional context helper: `npm run ai:context -- --task "..."`.
 
 ## Confirmed workflow constraints
 - Product decisions in #150 are brainstorming/future direction unless separately authorized for implementation.
@@ -29,10 +29,10 @@ Maintain a safe, evidence-driven AI development workflow for Rademan. Work is or
 
 ## Current documentation work
 - #152 — configure the Rademan Workboard Kanban and repository labels.
-- #153 — replace the old M0–M4 roadmap model with decision-driven task management.
+- #153 — completed historical work replacing the old M0–M4 roadmap model with decision-driven task management.
 - #150 remains the canonical product-intent register; brainstorming closed at Decision 41.
 - #148 and #149 are completed historical AI-workflow records. Their old M0 wording is historical only.
-- The former docs/ai-ready-free-tier-workflow branch is divergent from main; do not merge it wholesale. New work must branch from the current main.
+- Historical branches are not integration sources; new work must branch from the current `main`.
 
 ## Resume protocol
-Read AGENTS.md first. Inspect the live issue/PR, current branch/commit and relevant source. For a named decision, retrieve only its canonical comment. Record confirmed facts, assumptions, unknowns, authorized scope, MVP, exclusions, verification status and next actions on the relevant issue. Update this handoff only when project-wide state changes.
+Read `AGENTS.md` first. Inspect the live issue/PR, current branch/commit and relevant source. For a named decision, retrieve only its canonical comment. Record confirmed facts, assumptions, unknowns, authorized scope, MVP, exclusions, verification status and next actions on the relevant issue. Update this handoff only when project-wide state changes.
