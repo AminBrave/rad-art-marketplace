@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Actions\Messaging\RemoveMessage;
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
 use App\Models\Message;
@@ -14,7 +15,6 @@ use App\Models\UserBlock;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class MessageSafetyController extends Controller
