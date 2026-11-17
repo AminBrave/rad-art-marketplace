@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\\Actions\\Messaging;
+namespace App\Actions\Messaging;
 
-use App\\Models\\Message;
-use Illuminate\\Support\\Facades\\Storage;
+use App\Models\Message;
+use Illuminate\Support\Facades\Storage;
 
 class RemoveMessage
 {
