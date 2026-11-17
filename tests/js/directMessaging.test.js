@@ -5,6 +5,7 @@ import test from 'node:test';
 const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
 const messaging = read('../../resources/js/app/MessagingCenter.jsx');
 const messageTimeline = read('../../resources/js/app/MessageTimeline.jsx');
+const messageComposer = read('../../resources/js/app/MessageComposer.jsx');
 const messagingQueries = read('../../resources/js/app/useMessagingQueries.js');
 const queryUtils = read('../../resources/js/app/messagingQueryUtils.js');
 const conversations = read('../../app/Http/Controllers/Api/V1/ConversationController.php');
@@ -13,11 +14,14 @@ const attachments = read('../../app/Http/Controllers/Api/V1/MessageAttachmentCon
 const routes = read('../../routes/web.php');
 
 test('message composer supports accessible text entry, IME-safe Enter send and multiline input', () => {
-    assert.ok(messaging.includes('aria-label="متن پیام"'));
-    assert.ok(messaging.includes("event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing"));
-    assert.ok(messaging.includes('event.currentTarget.form?.requestSubmit()'));
-    assert.ok(messaging.includes('maxLength={5000}'));
-    assert.ok(messaging.includes('disabled={sending || safetyLoading || safety.blocked_by_me || safety.blocked_by_other}'));
+    assert.ok(messageComposer.includes('aria-label="متن پیام"'));
+    assert.ok(messageComposer.includes("event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing"));
+    assert.ok(messageComposer.includes('event.currentTarget.form?.requestSubmit()'));
+    assert.ok(messageComposer.includes('maxLength={5000}'));
+    assert.ok(messageComposer.includes('disabled={sending || safetyLoading || safety.blocked_by_me || safety.blocked_by_other}'));
+    assert.ok(messaging.includes('<MessageComposer'));
+    assert.ok(messaging.includes('onSubmit={send}'), 'The parent retains ownership of the send transaction.');
+    assert.ok(messaging.includes('onDraftChange={(value) => setDraft(value)}'), 'The composer remains controlled by parent draft state.');
 });
 
 test('conversation history uses incremental synchronization and stable older-message cursors', () => {
@@ -33,7 +37,7 @@ test('conversation history uses incremental synchronization and stable older-mes
 test('artwork deep links become validated message references and persistent conversation context', () => {
     assert.ok(messaging.includes('artwork_id: pendingArtwork?.id ?? null'));
     assert.ok(messaging.includes('setPendingArtwork(artwork)'));
-    assert.ok(messaging.includes('پاسخ درباره این اثر'));
+    assert.ok(messageComposer.includes('پاسخ درباره این اثر'));
     assert.ok(messaging.includes('selected.contexts.filter((context) => context.artwork?.slug)'));
     assert.ok(directStart.includes("'artwork_slug' => ['nullable', 'string', 'max:180']"));
     assert.ok(directStart.includes("->where('status', Artwork::STATUS_APPROVED)"));
@@ -74,7 +78,12 @@ test('message replies, reactions, edit/delete and read receipts stay inside the 
 });
 
 test('attachment upload and private image preview enforce participant, type, size and dimension boundaries', () => {
-    assert.ok(messaging.includes('accept="image/jpeg,image/png,image/webp,application/pdf"'));
+    assert.ok(messageComposer.includes('accept="image/jpeg,image/png,image/webp,application/pdf"'));
+    assert.ok(messageComposer.includes('onChange={onFileChange}'));
+    assert.ok(messageComposer.includes('onRemoveFile={onRemoveFile}') === false, 'File removal is passed as a callback, not nested in the child implementation.');
+    assert.ok(messaging.includes('window.URL.createObjectURL(selectedFile)'), 'The parent owns attachment preview URL creation.');
+    assert.ok(messaging.includes('window.URL.revokeObjectURL(url)'), 'The parent owns attachment preview URL cleanup.');
+    assert.ok(messaging.includes('setSelectedFile(file)'), 'The parent owns selected attachment state.');
     assert.ok(messaging.includes('preview_url'));
     assert.ok(attachments.includes("abort_unless($this->isParticipant($user, $conversation), 404)"));
     assert.ok(attachments.includes("'max:10240'"));
