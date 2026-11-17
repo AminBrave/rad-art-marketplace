@@ -239,20 +239,30 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
             try:
                 page.get_by_text("reference.pdf", exact=True).wait_for()
             except Exception as failure:
-                input_state = attachment_input.evaluate(
-                    """input => ({
-                        disabled: input.disabled,
-                        files: Array.from(input.files ?? []).map(file => ({
-                            name: file.name,
-                            type: file.type,
-                            size: file.size,
+                page_state = page.evaluate(
+                    """() => ({
+                        url: location.href,
+                        title: document.title,
+                        fileInputs: Array.from(document.querySelectorAll('input[type="file"]')).map(input => ({
+                            ariaLabel: input.getAttribute('aria-label'),
+                            disabled: input.disabled,
+                            files: Array.from(input.files ?? []).map(file => ({
+                                name: file.name,
+                                type: file.type,
+                                size: file.size,
+                            })),
                         })),
+                        composers: document.querySelectorAll('textarea[aria-label="متن پیام"]').length,
+                        sendButtons: Array.from(document.querySelectorAll('button[aria-label="ارسال پیام"]')).map(button => ({
+                            disabled: button.disabled,
+                            text: button.innerText,
+                        })),
+                        body: document.body.innerText.slice(0, 2500),
                     })"""
                 )
                 raise AssertionError(
                     "File selection completed but the attachment preview did not render. "
-                    f"input_state={input_state!r}; "
-                    f"body={page.locator('body').inner_text()[:2500]!r}; "
+                    f"page_state={page_state!r}; "
                     f"browser_errors={browser_errors!r}; "
                     f"api_responses={api_responses[-20:]!r}"
                 ) from failure
