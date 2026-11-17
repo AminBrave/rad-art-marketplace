@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\V1;
 
 use App\Actions\Messaging\ListConversations;
+use App\Actions\Messaging\ListMessages;
 use App\Http\Controllers\Controller;
 use App\Models\Artwork;
 use App\Models\Conversation;
@@ -13,7 +14,6 @@ use App\Models\User;
 use App\Notifications\MessageReceivedNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
@@ -44,8 +44,11 @@ class ConversationController extends Controller
         ]);
     }
 
-    public function messages(Request $request, Conversation $conversation): JsonResponse
-    {
+    public function messages(
+        Request $request,
+        Conversation $conversation,
+        ListMessages $listMessages,
+    ): JsonResponse {
         $this->authorizeParticipant($request->user(), $conversation, 'view');
 
         $filters = $request->validate([
@@ -56,37 +59,7 @@ class ConversationController extends Controller
         // Keep a one-second overlap for databases with second-precision timestamps; clients merge by message ID.
         $syncCursor = now()->subSecond();
 
-        $query = $conversation->messages()
-            ->withTrashed()
-            ->with($this->messageRelations());
-
-        if (isset($filters['before_id'])) {
-            // Keyset pagination keeps older history stable while new messages arrive.
-            $messages = $query->where('id', '<', (int) $filters['before_id'])->latest('id')->paginate(30);
-            $messages->setCollection($messages->getCollection()->reverse()->values());
-        } elseif (isset($filters['after_id']) || isset($filters['updated_after'])) {
-            // Normalize ISO cursors to the database timestamp format (notably SQLite stores
-            // timestamps with a space separator, so comparing against an ISO "T" string
-            // lexically can silently omit every updated message).
-            $updatedAfter = isset($filters['updated_after'])
-                ? Carbon::parse($filters['updated_after'])->toDateTimeString()
-                : null;
-
-            // Include new messages and changed existing messages (e.g. edits, deletes and read receipts).
-            $messages = $query->where(function ($nested) use ($filters, $updatedAfter): void {
-                if (isset($filters['after_id'])) {
-                    $nested->where('id', '>', (int) $filters['after_id']);
-                }
-                if ($updatedAfter !== null) {
-                    $method = isset($filters['after_id']) ? 'orWhere' : 'where';
-                    $nested->{$method}('updated_at', '>=', $updatedAfter);
-                }
-            })->oldest('id')->paginate(100);
-        } else {
-            $messages = $query->latest('id')->paginate(30);
-            $messages->setCollection($messages->getCollection()->reverse()->values());
-        }
-
+        $messages = $listMessages->handle($conversation, $filters, $this->messageRelations());
         $messages->setCollection($messages->getCollection()->map(
             fn (Message $message): array => $this->messagePayload($message, $request->user())
         ));

@@ -83,6 +83,24 @@ class ConversationMessagingTest extends TestCase
             ->assertUnprocessable();
     }
 
+    public function test_updated_after_cursor_returns_changed_messages_without_an_id_cursor(): void
+    {
+        [$buyer, , $conversation] = $this->participantsWithConversation();
+        $message = $conversation->messages()->firstOrFail();
+        $message->forceFill([
+            'body' => 'پیام ویرایش‌شده برای همگام‌سازی زمانی',
+            'updated_at' => now(),
+        ])->save();
+
+        $this->actingAs($buyer)
+            ->getJson('/api/v1/conversations/'.$conversation->id.'/messages?updated_after='.urlencode(now()->subMinute()->toISOString()))
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', $message->id)
+            ->assertJsonPath('data.0.body', 'پیام ویرایش‌شده برای همگام‌سازی زمانی')
+            ->assertJsonStructure(['sync_cursor']);
+    }
+
     public function test_conversation_history_can_be_loaded_in_older_pages_without_losing_order(): void
     {
         [$buyer, $artist, $conversation] = $this->participantsWithConversation();
