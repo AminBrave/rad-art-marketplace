@@ -131,26 +131,20 @@ class MessageSafetyController extends Controller
         ]);
     }
 
-    public function adminUpdate(Request $request, MessageReport $report): JsonResponse
+    public function adminUpdate(Request $request, MessageReport $report, RemoveMessage $removeMessage): JsonResponse
     {
         $validated = $request->validate([
             'action' => ['required', 'string', Rule::in(['reviewed', 'dismissed', 'remove_message'])],
             'note' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        DB::transaction(function () use ($report, $validated, $request): void {
+        DB::transaction(function () use ($report, $validated, $request, $removeMessage): void {
             $locked = MessageReport::query()->lockForUpdate()->findOrFail($report->id);
             $action = $validated['action'];
             if ($action === 'remove_message' && $locked->message) {
                 $message = Message::withTrashed()->find($locked->message_id);
                 if ($message && ! $message->trashed()) {
-                    $message->reactions()->delete();
-                    $message->attachments()->get()->each(function ($attachment): void {
-                        Storage::disk('local')->delete($attachment->storage_path);
-                        $attachment->delete();
-                    });
-                    $message->forceFill(['body' => ''])->save();
-                    $message->delete();
+                    $removeMessage->handle($message);
                 }
             }
             $locked->forceFill([
