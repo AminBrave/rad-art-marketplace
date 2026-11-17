@@ -168,19 +168,13 @@ class ConversationController extends Controller
         ]);
     }
 
-    public function deleteMessage(Request $request, Conversation $conversation, Message $message): JsonResponse
+    public function deleteMessage(Request $request, Conversation $conversation, Message $message, RemoveMessage $removeMessage): JsonResponse
     {
         $this->assertOwnMessage($request->user(), $conversation, $message);
 
-        // Remove message content and reactions before retaining a minimal tombstone for thread continuity.
-        DB::transaction(function () use ($message): void {
-            $message->reactions()->delete();
-            $message->attachments()->get()->each(function ($attachment): void {
-                Storage::disk('local')->delete($attachment->storage_path);
-                $attachment->delete();
-            });
-            $message->forceFill(['body' => ''])->save();
-            $message->delete();
+        // Retain a minimal tombstone for thread continuity.
+        DB::transaction(function () use ($message, $removeMessage): void {
+            $removeMessage->handle($message);
         });
 
         return response()->json([
