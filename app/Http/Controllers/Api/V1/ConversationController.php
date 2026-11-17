@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Actions\Messaging\ListConversations;
 use App\Http\Controllers\Controller;
 use App\Models\Artwork;
 use App\Models\Conversation;
@@ -20,14 +21,14 @@ use Illuminate\Validation\Rule;
 
 class ConversationController extends Controller
 {
-    public function buyerIndex(Request $request): JsonResponse
+    public function buyerIndex(Request $request, ListConversations $listConversations): JsonResponse
     {
-        return $this->indexFor($request, $request->user(), 'buyer_user_id');
+        return $this->indexFor($request, $request->user(), 'buyer_user_id', $listConversations);
     }
 
-    public function artistIndex(Request $request): JsonResponse
+    public function artistIndex(Request $request, ListConversations $listConversations): JsonResponse
     {
-        return $this->indexFor($request, $request->user(), 'artist_user_id');
+        return $this->indexFor($request, $request->user(), 'artist_user_id', $listConversations);
     }
 
     public function show(Request $request, Conversation $conversation): JsonResponse
@@ -322,46 +323,23 @@ class ConversationController extends Controller
         abort_if($message->trashed(), 404);
     }
 
-    private function indexFor(Request $request, User $user, string $participantColumn): JsonResponse
-    {
+    private function indexFor(
+        Request $request,
+        User $user,
+        string $participantColumn,
+        ListConversations $listConversations,
+    ): JsonResponse {
         $filters = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
             'filter' => ['nullable', 'string', Rule::in(['all', 'unread', 'archived'])],
         ]);
-        $archivedColumn = $participantColumn === 'buyer_user_id' ? 'buyer_archived_at' : 'artist_archived_at';
-        $search = trim((string) ($filters['search'] ?? ''));
-        $filter = $filters['filter'] ?? 'all';
 
-        $query = Conversation::query()
-            ->where($participantColumn, $user->id)
-            ->with(['buyer', 'artist.artistProfile', 'latestMessage.sender', 'latestMessage.attachments'])
-            ->withCount([
-                'messages as unread_count' => fn ($messages) => $messages
-                    ->where('sender_user_id', '!=', $user->id)
-                    ->whereNull('read_at'),
-            ]);
-
-        if ($filter === 'archived') {
-            $query->whereNotNull($archivedColumn);
-        } else {
-            $query->whereNull($archivedColumn);
-        }
-        if ($filter === 'unread') {
-            $query->whereHas('messages', fn ($messages) => $messages
-                ->where('sender_user_id', '!=', $user->id)
-                ->whereNull('read_at'));
-        }
-        if ($search !== '') {
-            $query->where(function ($nested) use ($search): void {
-                $nested->whereHas('buyer', fn ($buyer) => $buyer->where('name', 'like', '%'.$search.'%'))
-                    ->orWhereHas('artist', fn ($artist) => $artist->where('name', 'like', '%'.$search.'%'))
-                    ->orWhereHas('messages', fn ($messages) => $messages->where('body', 'like', '%'.$search.'%'));
-            });
-        }
-
-        $conversations = $query->orderByDesc('last_message_at')
-            ->paginate(20)
-            ->through(fn (Conversation $conversation): array => $this->conversationPayload($conversation, $user));
+        $conversations = $listConversations->handle(
+            $user,
+            $participantColumn,
+            trim((string) ($filters['search'] ?? '')),
+            $filters['filter'] ?? 'all',
+        )->through(fn (Conversation $conversation): array => $this->conversationPayload($conversation, $user));
 
         return response()->json($conversations);
     }
