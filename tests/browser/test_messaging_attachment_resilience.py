@@ -236,7 +236,26 @@ class MessagingAttachmentResilienceTests(unittest.TestCase):
                 "mimeType": "application/pdf",
                 "buffer": b"%PDF-1.4\\n%%EOF",
             })
-            page.get_by_text("reference.pdf", exact=True).wait_for()
+            try:
+                page.get_by_text("reference.pdf", exact=True).wait_for()
+            except Exception as failure:
+                input_state = attachment_input.evaluate(
+                    """input => ({
+                        disabled: input.disabled,
+                        files: Array.from(input.files ?? []).map(file => ({
+                            name: file.name,
+                            type: file.type,
+                            size: file.size,
+                        })),
+                    })"""
+                )
+                raise AssertionError(
+                    "File selection completed but the attachment preview did not render. "
+                    f"input_state={input_state!r}; "
+                    f"body={page.locator('body').inner_text()[:2500]!r}; "
+                    f"browser_errors={browser_errors!r}; "
+                    f"api_responses={api_responses[-20:]!r}"
+                ) from failure
 
             # Submit through the form's native API to avoid a pointer-action race
             # with the composer's asynchronous preview/state updates.
