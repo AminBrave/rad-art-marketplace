@@ -23,8 +23,7 @@ const artistWorkspace = readFileSync(new URL('../../resources/js/app/ArtistWorks
 const messaging = readFileSync(new URL('../../resources/js/app/MessagingCenter.jsx', import.meta.url), 'utf8');
 const messagingInbox = readFileSync(new URL('../../resources/js/app/MessagingInboxPanel.jsx', import.meta.url), 'utf8');
 const conversationHeader = readFileSync(new URL('../../resources/js/app/ConversationHeader.jsx', import.meta.url), 'utf8');
-const messageTimeline = readFileSync(new URL('../../resources/js/app/MessageTimeline.jsx', import.meta.url), 'utf8');
-const messagingSurface = messaging + '\n' + messagingInbox + '\n' + conversationHeader + '\n' + messageTimeline;
+const messagingSurface = messaging + '\n' + messagingInbox + '\n' + conversationHeader;
 const messagingQueries = readFileSync(new URL('../../resources/js/app/useMessagingQueries.js', import.meta.url), 'utf8');
 const artworkDetail = readFileSync(new URL('../../resources/js/app/ArtworkDetailPage.jsx', import.meta.url), 'utf8');
 const artworkStudio = readFileSync(new URL('../../resources/js/app/ArtworkStudio.jsx', import.meta.url), 'utf8');
@@ -160,10 +159,10 @@ test('form controls and helper hints use shared RAD-styled Radix primitives', ()
     assert.ok(editorialPages.includes('<AlertDialogAction asChild>'));
     assert.ok(editorialPages.includes('event.preventDefault(); publish(collection, false)'));
     assert.ok(editorialPages.includes('<AlertDialogTitle>'));
-    assert.ok(messageTimeline.includes("DropdownMenu } from '../components/ui'"));
+    assert.ok(messaging.includes("DropdownMenu } from '../components/ui'"));
     assert.doesNotMatch(messaging, /@radix-ui/);
     assert.ok(messagingInbox.includes('<Tooltip content="گزینه‌های گفتگو">'));
-    assert.ok(messageTimeline.includes('<Tooltip content="افزودن واکنش">'));
+    assert.ok(messaging.includes('<Tooltip content="افزودن واکنش">'));
     assert.ok(artworkStudio.includes('<SelectField'));
     assert.ok(editorialPages.includes('<Checkbox'));
     assert.ok(layouts.includes('<Checkbox'));
@@ -237,10 +236,10 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.ok(layouts.includes("isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden lg:col-start-2' : 'min-w-0'"));
     assert.doesNotMatch(messaging, /RAD \/ MESSAGES|ارتباط مستقیم|PageHeader/);
     assert.doesNotMatch(layouts, /ناوبری فضای کاری|RAD \/ MENU/);
-    assert.ok(messageTimeline.includes('min-w-0 w-fit max-w-[88%]'));
+    assert.ok(messaging.includes('min-w-0 w-fit max-w-[88%]'));
     assert.ok(messagingInbox.includes('min-h-[4.25rem] w-full items-center gap-2'));
     assert.ok(messagingInbox.includes('absolute end-1 top-1/2 -translate-y-1/2'));
-    assert.ok(messageTimeline.includes('mt-[.55rem] flex flex-wrap items-center justify-between gap-2 text-[10px] text-subtle'));
+    assert.ok(messaging.includes('mt-[.55rem] flex flex-wrap items-center justify-between gap-2 text-[10px] text-subtle'));
     assert.ok(messaging.includes('max-h-28 min-h-[2.35rem] max-sm:min-h-9 w-full resize-none'));
     assert.ok(messaging.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
     assert.ok(messaging.includes('ps-10 pe-3 py-[.4rem]'));
@@ -251,15 +250,15 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
 test('messaging is viewport-locked between the authenticated app header and bottom navigation on mobile', () => {
     assert.ok(messagingInbox.includes('text-sm font-extrabold leading-6 text-ink">پیام‌ها</h2>'), 'Keep the inbox heading compact inside its panel.');
     assert.ok(messagingInbox.includes('text-[10px] leading-4 text-muted">یک بستر امن برای ارتباط خریدار با هنرمند.</p>'));
-    assert.ok(messageTimeline.includes("own ? 'rounded-es-[.35rem]"));
-    assert.ok(messageTimeline.includes(": 'rounded-ee-[.35rem]"));
+    assert.ok(messaging.includes("own ? 'rounded-es-[.35rem]"));
+    assert.ok(messaging.includes(": 'rounded-ee-[.35rem]"));
     assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden'));
     assert.ok(messaging.includes('grid h-full min-h-0 w-full min-w-0 flex-1'));
     assert.ok(messagingInbox.includes('divide-y divide-border overflow-y-auto'), 'The inbox list scrolls inside its fixed panel.');
     const inboxList = messagingInbox.match(/<ul dir="rtl" className="([^"]+)"/);
     assert.ok(inboxList, 'The conversation inbox list is present.');
     assert.doesNotMatch(inboxList[1], /scrollbar-gutter/ , 'The inbox list must not reserve a gutter that leaves a blank strip beside its content.');
-    assert.ok(messageTimeline.includes('overflow-y-auto overscroll-contain'), 'Message history scrolls inside its fixed panel.');
+    assert.ok(messaging.includes('overflow-y-auto overscroll-contain'), 'Message history scrolls inside its fixed panel.');
     assert.ok(layouts.includes('flex h-dvh flex-col overflow-hidden'), 'Messaging locks the authenticated shell to the dynamic viewport.');
     assert.ok(layouts.includes('h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.ok(layouts.includes('sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
@@ -273,16 +272,16 @@ test('messaging is viewport-locked between the authenticated app header and bott
 });
 
 test('messaging chat geometry follows RTL logical flow and uses Radix collision-aware overlays', () => {
-    assert.ok(messageTimeline.includes('<div dir="rtl" ref={containerRef}'));
-    assert.ok(messageTimeline.includes("DropdownMenu } from '../components/ui'"));
+    assert.ok(messaging.includes('<div dir="rtl" ref={messagesContainerRef}'));
+    assert.ok(messaging.includes("DropdownMenu } from '../components/ui'"));
     assert.doesNotMatch(messaging, /@radix-ui/);
     assert.ok(messagingSurface.split('<DropdownMenu.Root').length - 1 >= 4, 'All messaging overlays use Radix.');
-    assert.ok(messageTimeline.includes('<DropdownMenu.Portal>'));
-    assert.ok(messageTimeline.includes('sideOffset={8} collisionPadding={8}'));
-    assert.ok(messageTimeline.includes('var(--radix-dropdown-menu-content-available-height)'));
-    assert.ok(messageTimeline.includes('flex-nowrap items-center gap-1 overflow-x-auto'));
-    assert.ok(messageTimeline.includes('min-w-0 flex-wrap items-center justify-end gap-1.5'));
-    assert.ok(messageTimeline.includes('overflow-x-hidden overflow-y-auto'));
+    assert.ok(messaging.includes('<DropdownMenu.Portal>'));
+    assert.ok(messaging.includes('sideOffset={8} collisionPadding={8}'));
+    assert.ok(messaging.includes('var(--radix-dropdown-menu-content-available-height)'));
+    assert.ok(messaging.includes('flex-nowrap items-center gap-1 overflow-x-auto'));
+    assert.ok(messaging.includes('min-w-0 flex-wrap items-center justify-end gap-1.5'));
+    assert.ok(messaging.includes('overflow-x-hidden overflow-y-auto'));
     assert.ok(messagingInbox.includes('absolute end-1 top-1/2 -translate-y-1/2'));
     assert.ok(messaging.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
     assert.ok(messaging.includes('ps-10 pe-3 py-[.4rem]'));
@@ -292,15 +291,15 @@ test('messaging chat geometry follows RTL logical flow and uses Radix collision-
 test('messaging actions use Radix menu semantics and preserve reply focus', () => {
     assert.ok(messaging.includes("const [openPopover, setOpenPopover] = useState(null)"));
     assert.ok(messaging.includes('const setPopoverOpen = (id, open) => setOpenPopover'));
-    assert.ok(messageTimeline.includes('onCloseAutoFocus={(event) => {'));
-    assert.ok(messageTimeline.includes('focusComposerAfterMenuCloseRef.current = true'));
-    assert.ok(messageTimeline.includes('draftRef.current?.focus()'));
-    assert.ok(messageTimeline.includes('<DropdownMenu.Trigger asChild>'));
+    assert.ok(messaging.includes('onCloseAutoFocus={(event) => {'));
+    assert.ok(messaging.includes('focusComposerAfterMenuCloseRef.current = true'));
+    assert.ok(messaging.includes('draftRef.current?.focus()'));
+    assert.ok(messaging.includes('<DropdownMenu.Trigger asChild>'));
     assert.ok(messagingInbox.includes("updateThreadSetting(thread, 'archived'"));
     assert.ok(messagingInbox.includes("updateThreadSetting(thread, 'muted'"));
-    assert.ok(messageTimeline.includes('data-[highlighted]:bg-surface-muted'));
-    assert.ok(messageTimeline.includes('aria-label="افزودن واکنش"'));
-    assert.ok(messageTimeline.includes('aria-label="عملیات پیام"'));
+    assert.ok(messaging.includes('data-[highlighted]:bg-surface-muted'));
+    assert.ok(messaging.includes('aria-label="افزودن واکنش"'));
+    assert.ok(messaging.includes('aria-label="عملیات پیام"'));
     assert.ok(!messaging.includes("document.addEventListener('pointerdown'"));
     assert.ok(!messaging.includes("document.addEventListener('keydown'"));
     assert.ok(!messaging.includes("window.addEventListener('scroll', reposition"));
@@ -390,7 +389,7 @@ test('boot shell and application presentation use Tailwind utilities with no com
     assert.doesNotMatch(css, /\.rad-messaging|\.app-skeleton/);
     assert.ok(tailwind.includes('skeleton-shimmer'));
     assert.ok(feedback.includes('motion-reduce:animate-none'));
-    assert.doesNotMatch(messagingSurface, /rad-messaging|composer-shell|message-edit-shell|message-artwork-card__|related-artworks-chip__|related-artworks-strip__|message-conversation-avatar-link/);
+    assert.doesNotMatch(messaging, /rad-messaging|composer-shell|message-edit-shell|message-artwork-card__|related-artworks-chip__|related-artworks-strip__|message-conversation-avatar-link/);
 });
 
 test('shared UI component source does not introduce arbitrary hex or raw palette colors', () => {
@@ -406,7 +405,7 @@ test('shared UI component source does not introduce arbitrary hex or raw palette
 
 test('active frontend surfaces use semantic RAD colors and avoid raw palette utilities', () => {
     const componentSources = [primitives, cards, feedback, navigation, dialog, skeletons];
-    const applicationSources = [legacyApp, homePage, authPage, artistProfile, artworkGallery, artworkCatalogue, editorialPages, publicInfoPages, layouts, buyerWorkspace, routeLoading, artistWorkspace, messaging, messageTimeline, artworkDetail, artworkStudio, adminWorkspace, ...publicPages];
+    const applicationSources = [legacyApp, homePage, authPage, artistProfile, artworkGallery, artworkCatalogue, editorialPages, publicInfoPages, layouts, buyerWorkspace, routeLoading, artistWorkspace, messaging, artworkDetail, artworkStudio, adminWorkspace, ...publicPages];
     const sources = [...componentSources, ...applicationSources];
     const rawPalette = /\b(?:bg|text|border|ring)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\d{2,3}(?:\/\d{1,3})?\b/;
     const tokenOpacity = /\b(?:bg|text|border|ring)-(?:paper|inverse|canvas|ink|terracotta|sand|olive|muted|subtle|border|surface|surface-muted|success|danger|warning|info|accent|focus)(?:-[\w-]+)?\/\d+\b/;
@@ -472,7 +471,7 @@ test('loading skeletons mirror the main structures of the major project surfaces
     assert.ok(adminWorkspace.includes('<AdminUserCardsSkeleton count={4} />'));
     assert.ok(adminWorkspace.includes('<MessageReportsSkeleton count={3} />'));
     assert.ok(messagingInbox.includes('<ConversationInboxSkeleton count={6} />'));
-    assert.ok(messageTimeline.includes('<MessageHistorySkeleton count={5}'));
+    assert.ok(messaging.includes('<MessageHistorySkeleton count={5}'));
     assert.ok(skeletons.includes('aspect-[4/3]'));
     assert.ok(skeletons.includes('aspect-[4/5]'));
     assert.ok(skeletons.includes('aria-label="در حال آماده‌سازی صفحه اصلی"'));
@@ -482,11 +481,11 @@ test('loading skeletons mirror the main structures of the major project surfaces
 
 test('artwork-origin messages persist and render a reply-style artwork reference for both participants', () => {
     assert.ok(messaging.includes('artwork_id: pendingArtwork?.id ?? null'));
-    assert.ok(messageTimeline.includes('message.artwork &&'));
-    assert.ok(messageTimeline.includes("to={'/artworks/' + message.artwork.slug}"));
+    assert.ok(messaging.includes('message.artwork &&'));
+    assert.ok(messaging.includes("to={'/artworks/' + message.artwork.slug}"));
     assert.ok(messaging.includes('setPendingArtwork(artwork)'));
     assert.ok(messaging.includes('پاسخ درباره این اثر'));
-    assert.ok(messageTimeline.includes('اثر مورد گفتگو'));
+    assert.ok(messaging.includes('اثر مورد گفتگو'));
     assert.ok(messaging.includes("aria-label={'ارسال پیام درباره ' + artwork.title}"));
     assert.ok(conversationApi.includes("Schema::hasColumn('messages', 'artwork_id')"));
     assert.ok(conversationApi.includes("'artwork_id' => $supportsArtworkReferences"));
@@ -510,36 +509,4 @@ test('messaging composer height is driven by its send control and compact paddin
     assert.ok(messaging.includes('relative flex min-w-0 items-center gap-1.5 rounded-[1rem]'));
     assert.ok(messaging.includes('min-h-[2.35rem] max-sm:min-h-9 w-full resize-none'));
     assert.doesNotMatch(messaging, /relative flex min-h-\[3\.1rem\] items-end/);
-});
-
-
-test('message timeline is a presentation component while MessagingCenter retains orchestration', () => {
-    for (const presentation of [
-        'role="log"',
-        'aria-live="polite"',
-        'MessageHistorySkeleton count={5}',
-        'olderMessagesError',
-        'newMessageCount > 0',
-        'message.attachments?.length > 0',
-        'message.reply_to &&',
-        'message.reactions?.filter',
-        'onReportMessage(message)',
-        'onDeleteMessage(message)',
-        'onSaveEdit(event, message)',
-        'formatDayLabel(message.created_at)',
-        'formatTimeLabel(message.created_at)',
-    ]) assert.ok(messageTimeline.includes(presentation), 'Missing timeline presentation contract: ' + presentation);
-    for (const orchestration of [
-        'const loadOlderMessages = useCallback',
-        'shouldStickToBottomRef',
-        'messageSyncSnapshotRef',
-        'setNewMessageCount',
-        'const toggleReaction',
-        'const reportMessage',
-        'const deleteMessage',
-        'const saveEdit',
-        'const messagesContainerRef = useRef(null)',
-    ]) assert.ok(messaging.includes(orchestration), 'MessagingCenter must retain orchestration: ' + orchestration);
-    assert.ok(messaging.includes('<MessageTimeline'));
-    assert.doesNotMatch(messageTimeline, /useMessagingQueries|axios\.|fetch\(/);
 });
