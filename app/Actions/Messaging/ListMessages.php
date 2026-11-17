@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Messaging;
 
 use App\Models\Conversation;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 
 class ListMessages
