@@ -23,7 +23,8 @@ const artistWorkspace = readFileSync(new URL('../../resources/js/app/ArtistWorks
 const messaging = readFileSync(new URL('../../resources/js/app/MessagingCenter.jsx', import.meta.url), 'utf8');
 const messagingInbox = readFileSync(new URL('../../resources/js/app/MessagingInboxPanel.jsx', import.meta.url), 'utf8');
 const conversationHeader = readFileSync(new URL('../../resources/js/app/ConversationHeader.jsx', import.meta.url), 'utf8');
-const messagingSurface = messaging + '\n' + messagingInbox + '\n' + conversationHeader;
+const messageTimeline = readFileSync(new URL('../../resources/js/app/MessageTimeline.jsx', import.meta.url), 'utf8');
+const messagingSurface = messaging + '\n' + messagingInbox + '\n' + conversationHeader + '\n' + messageTimeline;
 const messagingQueries = readFileSync(new URL('../../resources/js/app/useMessagingQueries.js', import.meta.url), 'utf8');
 const artworkDetail = readFileSync(new URL('../../resources/js/app/ArtworkDetailPage.jsx', import.meta.url), 'utf8');
 const artworkStudio = readFileSync(new URL('../../resources/js/app/ArtworkStudio.jsx', import.meta.url), 'utf8');
@@ -405,7 +406,7 @@ test('shared UI component source does not introduce arbitrary hex or raw palette
 
 test('active frontend surfaces use semantic RAD colors and avoid raw palette utilities', () => {
     const componentSources = [primitives, cards, feedback, navigation, dialog, skeletons];
-    const applicationSources = [legacyApp, homePage, authPage, artistProfile, artworkGallery, artworkCatalogue, editorialPages, publicInfoPages, layouts, buyerWorkspace, routeLoading, artistWorkspace, messaging, artworkDetail, artworkStudio, adminWorkspace, ...publicPages];
+    const applicationSources = [legacyApp, homePage, authPage, artistProfile, artworkGallery, artworkCatalogue, editorialPages, publicInfoPages, layouts, buyerWorkspace, routeLoading, artistWorkspace, messaging, messageTimeline, artworkDetail, artworkStudio, adminWorkspace, ...publicPages];
     const sources = [...componentSources, ...applicationSources];
     const rawPalette = /\b(?:bg|text|border|ring)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\d{2,3}(?:\/\d{1,3})?\b/;
     const tokenOpacity = /\b(?:bg|text|border|ring)-(?:paper|inverse|canvas|ink|terracotta|sand|olive|muted|subtle|border|surface|surface-muted|success|danger|warning|info|accent|focus)(?:-[\w-]+)?\/\d+\b/;
@@ -481,8 +482,8 @@ test('loading skeletons mirror the main structures of the major project surfaces
 
 test('artwork-origin messages persist and render a reply-style artwork reference for both participants', () => {
     assert.ok(messaging.includes('artwork_id: pendingArtwork?.id ?? null'));
-    assert.ok(messaging.includes('message.artwork &&'));
-    assert.ok(messaging.includes("to={'/artworks/' + message.artwork.slug}"));
+    assert.ok(messageTimeline.includes('message.artwork &&'));
+    assert.ok(messageTimeline.includes("to={'/artworks/' + message.artwork.slug}"));
     assert.ok(messaging.includes('setPendingArtwork(artwork)'));
     assert.ok(messaging.includes('پاسخ درباره این اثر'));
     assert.ok(messaging.includes('اثر مورد گفتگو'));
@@ -509,4 +510,36 @@ test('messaging composer height is driven by its send control and compact paddin
     assert.ok(messaging.includes('relative flex min-w-0 items-center gap-1.5 rounded-[1rem]'));
     assert.ok(messaging.includes('min-h-[2.35rem] max-sm:min-h-9 w-full resize-none'));
     assert.doesNotMatch(messaging, /relative flex min-h-\[3\.1rem\] items-end/);
+});
+
+
+test('message timeline is a presentation component while MessagingCenter retains orchestration', () => {
+    for (const presentation of [
+        'role="log"',
+        'aria-live="polite"',
+        'MessageHistorySkeleton count={5}',
+        'olderMessagesError',
+        'newMessageCount > 0',
+        'message.attachments?.length > 0',
+        'message.reply_to &&',
+        'message.reactions?.filter',
+        'onReportMessage(message)',
+        'onDeleteMessage(message)',
+        'onSaveEdit(event, message)',
+        'formatDayLabel(message.created_at)',
+        'formatTimeLabel(message.created_at)',
+    ]) assert.ok(messageTimeline.includes(presentation), 'Missing timeline presentation contract: ' + presentation);
+    for (const orchestration of [
+        'const loadOlderMessages = useCallback',
+        'shouldStickToBottomRef',
+        'messageSyncSnapshotRef',
+        'setNewMessageCount',
+        'const toggleReaction',
+        'const reportMessage',
+        'const deleteMessage',
+        'const saveEdit',
+        'const messagesContainerRef = useRef(null)',
+    ]) assert.ok(messaging.includes(orchestration), 'MessagingCenter must retain orchestration: ' + orchestration);
+    assert.ok(messaging.includes('<MessageTimeline'));
+    assert.doesNotMatch(messageTimeline, /useMessagingQueries|axios\.|fetch\(/);
 });
