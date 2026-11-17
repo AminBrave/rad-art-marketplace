@@ -20,7 +20,6 @@ export default function MessageTimeline({
     messagesLoading,
     newMessageCount,
     olderMessagesError,
-    onClearNewMessageCount,
     onDeleteMessage,
     onJumpToLatest,
     onPopoverOpenChange,
