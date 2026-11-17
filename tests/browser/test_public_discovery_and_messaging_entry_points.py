@@ -247,8 +247,35 @@ class DiscoveryBrowserTests(unittest.TestCase):
                     page.route("**/api/v1/artworks**", lambda route: route.fulfill(status=200, content_type="application/json", body='{"data":[],"current_page":1,"last_page":1,"total":0}'))
                     page.goto(BASE_URL + "/artworks")
                     page.get_by_role("heading", name="گالری آثار").wait_for()
-                    dimensions = page.evaluate("({width: document.documentElement.clientWidth, scrollWidth: document.documentElement.scrollWidth})")
-                    self.assertLessEqual(dimensions["scrollWidth"], dimensions["width"])
+                    dimensions = page.evaluate("""() => {
+                        const width = document.documentElement.clientWidth;
+                        const offenders = [...document.querySelectorAll('body *')]
+                            .map((element) => {
+                                const rect = element.getBoundingClientRect();
+                                return {
+                                    tag: element.tagName.toLowerCase(),
+                                    className: typeof element.className === 'string' ? element.className : '',
+                                    text: (element.innerText || '').trim().slice(0, 80),
+                                    left: Math.round(rect.left * 100) / 100,
+                                    right: Math.round(rect.right * 100) / 100,
+                                    width: Math.round(rect.width * 100) / 100,
+                                };
+                            })
+                            .filter((element) => element.right > width + 0.5 || element.left < -0.5)
+                            .sort((first, second) => second.right - first.right)
+                            .slice(0, 8);
+                        return {
+                            width,
+                            scrollWidth: document.documentElement.scrollWidth,
+                            bodyScrollWidth: document.body.scrollWidth,
+                            offenders,
+                        };
+                    }""")
+                    self.assertLessEqual(
+                        dimensions["scrollWidth"],
+                        dimensions["width"],
+                        f"Horizontal overflow at viewport {width}px: {dimensions}",
+                    )
                 finally:
                     context.close()
 
