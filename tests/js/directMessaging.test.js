@@ -4,6 +4,8 @@ import test from 'node:test';
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
 const messaging = read('../../resources/js/app/MessagingCenter.jsx');
+const messagingInbox = read('../../resources/js/app/MessagingInboxPanel.jsx');
+const messagingAvatarUtils = read('../../resources/js/app/messagingAvatarUtils.js');
 const messageTimeline = read('../../resources/js/app/MessageTimeline.jsx');
 const messageComposer = read('../../resources/js/app/MessageComposer.jsx');
 const relatedArtworkStrip = read('../../resources/js/app/RelatedArtworkStrip.jsx');
@@ -14,6 +16,21 @@ const conversations = read('../../app/Http/Controllers/Api/V1/ConversationContro
 const directStart = read('../../app/Http/Controllers/Api/V1/DirectConversationController.php');
 const attachments = read('../../app/Http/Controllers/Api/V1/MessageAttachmentController.php');
 const routes = read('../../routes/web.php');
+
+test('shared avatar utility preserves fallback, Unicode tone selection and first-character behavior', () => {
+    assert.ok(messagingAvatarUtils.includes("const avatarTones = ["));
+    assert.ok(messagingAvatarUtils.includes("String(name ?? 'گفتگو').trim()"));
+    assert.ok(messagingAvatarUtils.includes('value.codePointAt(0) ?? 0'));
+    assert.ok(messagingAvatarUtils.includes("String(name ?? 'گ').trim().slice(0, 1) || 'گ'"));
+    assert.ok(messaging.includes("import { avatarInitial, avatarTone } from './messagingAvatarUtils';"));
+    assert.ok(messagingInbox.includes("import { avatarInitial, avatarTone } from './messagingAvatarUtils';"));
+    assert.doesNotMatch(messaging, /function avatar(?:Tone|Initial)\\s*\\(/);
+    assert.doesNotMatch(messagingInbox, /function avatar(?:Tone|Initial)\\s*\\(/);
+    assert.ok(messaging.includes('avatarInitial={avatarInitial}'));
+    assert.ok(messaging.includes('avatarTone={avatarTone}'));
+    assert.ok(messagingInbox.includes('avatarTone(thread.participant?.name)'));
+    assert.ok(messagingInbox.includes('avatarInitial(thread.participant?.name)'));
+});
 
 test('status banners are presentational while messaging parent retains retry ownership', () => {
     assert.ok(messaging.includes('<MessagingStatusBanners'));
