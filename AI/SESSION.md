@@ -27,6 +27,14 @@ Maintain a safe, evidence-driven AI development workflow for Rademan. Work is or
 - RAD app-shell direction is defined in `AI/DESIGN-SYSTEM.md`; implementation uses shared role route definitions and a primary and secondary navigation inside the dashboard hamburger drawer plus a primary-only authenticated mobile/tablet bottom bar.
 - Current source and live GitHub state outrank chat history and AI-generated summaries.
 
+## Batch delivery preference
+- The product owner has explicitly requested batching small, related implementation tasks to avoid per-slice approval overhead.
+- For a bounded active workstream, state the batch scope and stop conditions once, then implement all safe, low-risk in-scope slices without asking for approval after each one.
+- Keep issues and PRs independently reviewable; use draft PRs while the maintainer's combined local verification is pending.
+- Provide one consolidated set of exact backend/frontend/Playwright commands at the end. The maintainer tests the batch and gives one batch-level approval for the review/merge step.
+- Batch authorization does not authorize assistant-run tests, lint, builds, browser automation, CI, migrations, destructive operations, deployment or release. Stop for unresolved product, architecture, API/schema, security/privacy or material-risk decisions.
+- See the authoritative batch rules in AGENTS.md and AI/DEVELOPMENT-WORKFLOW.md.
+
 ## Current delivery work
 - #152 — configure the Rademan Workboard Kanban and repository labels (still open).
 - #185 — architecture and unified development workflow epic (active).
