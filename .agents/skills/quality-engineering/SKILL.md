@@ -35,6 +35,16 @@ For every feature, bug fix or improvement, derive tests from the changed behavio
 
 When adding or changing a test command, report, fixture or diagnostic artifact, add focused tests for the tooling itself and update package scripts, `scripts/README.md` and `tests/README.md` as appropriate. Keep the report generator dependency-free and distinguish missing/stale evidence from a passing result.
 
+## Batch verification handoff
+
+For an explicitly authorized batch, plan verification across the combined changed surface and ask the maintainer to run it once at the end:
+- Build one consolidated command list from the actual changed files and existing project scripts; group backend PHPUnit/Pint, frontend Node tests/lint/build and Playwright only where those boundaries changed.
+- Do not mechanically run every suite for every task. Select checks by changed boundary and risk, and deduplicate overlapping commands.
+- Include the exact Playwright command only when navigation, interaction, responsive/RTL, keyboard/accessibility or end-to-end recovery behavior changed. State the configured MySQL/MariaDB persistence risk.
+- State which checks are intentionally not applicable and why. Never imply that a backend-only change needs Playwright or that a React-only presentation change needs PHPUnit without a backend contract impact.
+- The assistant must not execute the consolidated commands unless the user separately authorizes those exact checks. Batch implementation authorization is not verification authorization.
+- Report the maintainer's combined results against each PR/issue and identify any failure that blocks the batch approval.
+
 ## Reporting and release evidence
 - Generate the cross-suite report with `npm run test:report`; it reads existing JUnit files and Git metadata but does not run verification.
 - Run its focused unit tests with `npm run test:reporting`.
