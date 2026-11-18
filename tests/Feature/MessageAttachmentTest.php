@@ -12,6 +12,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use RuntimeException;
 use Tests\TestCase;
 
 class MessageAttachmentTest extends TestCase
@@ -49,6 +50,36 @@ class MessageAttachmentTest extends TestCase
             ->assertOk();
         Storage::disk('local')->assertMissing($attachment->storage_path);
         $this->assertDatabaseMissing('message_attachments', ['id' => $attachment->id]);
+    }
+
+    public function test_failed_attachment_record_persistence_removes_the_stored_file(): void
+    {
+        Storage::fake('local');
+        [$buyer, , $conversation, $message] = $this->fixture();
+
+        MessageAttachment::creating(static function (MessageAttachment $attachment): void {
+            Storage::disk('local')->assertExists($attachment->storage_path);
+
+            throw new RuntimeException('Simulated attachment record persistence failure.');
+        });
+
+        $this->withoutExceptionHandling();
+
+        try {
+            $this->actingAs($buyer)->postJson(
+                "/api/v1/conversations/{$conversation->id}/messages/{$message->id}/attachments",
+                [
+                    'file' => UploadedFile::fake()->createWithContent('orphan-candidate.pdf', "%PDF-1.4\n%%EOF"),
+                ],
+            );
+
+            $this->fail('The simulated attachment persistence failure was not raised.');
+        } catch (RuntimeException $exception) {
+            $this->assertSame('Simulated attachment record persistence failure.', $exception->getMessage());
+        }
+
+        $this->assertSame([], Storage::disk('local')->allFiles('message-attachments'));
+        $this->assertDatabaseCount('message_attachments', 0);
     }
 
     public function test_only_the_message_sender_can_upload_and_unsupported_files_are_rejected(): void

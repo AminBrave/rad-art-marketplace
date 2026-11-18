@@ -11,10 +11,12 @@ use App\Models\MessageAttachment;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Throwable;
 
 class MessageAttachmentController extends Controller
 {
@@ -61,14 +63,28 @@ class MessageAttachmentController extends Controller
             throw ValidationException::withMessages(['file' => 'ذخیره فایل پیوست انجام نشد. دوباره تلاش کنید.']);
         }
 
-        $attachment = MessageAttachment::query()->create([
-            'message_id' => $message->id,
-            'uploaded_by_user_id' => $user->id,
-            'storage_path' => $path,
-            'original_name' => $originalName,
-            'mime_type' => $file->getMimeType() ?: 'application/octet-stream',
-            'size_bytes' => (int) $file->getSize(),
-        ]);
+        try {
+            $attachment = MessageAttachment::query()->create([
+                'message_id' => $message->id,
+                'uploaded_by_user_id' => $user->id,
+                'storage_path' => $path,
+                'original_name' => $originalName,
+                'mime_type' => $file->getMimeType() ?: 'application/octet-stream',
+                'size_bytes' => (int) $file->getSize(),
+            ]);
+        } catch (Throwable $exception) {
+            try {
+                if (! Storage::disk('local')->delete($path)) {
+                    Log::warning('Unable to remove an uploaded message attachment after record persistence failed.', [
+                        'message_id' => $message->id,
+                    ]);
+                }
+            } catch (Throwable $cleanupException) {
+                report($cleanupException);
+            }
+
+            throw $exception;
+        }
 
         return response()->json(['data' => $this->payload($attachment)], 201);
     }
