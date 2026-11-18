@@ -325,6 +325,98 @@ class ConversationMessagingTest extends TestCase
             ->assertJsonPath('data.reply_to.body', 'مایلم درباره جزئیات این اثر اطلاعات بیشتری دریافت کنم.');
     }
 
+    public function test_inbox_batches_contexts_without_mixing_conversations_and_keeps_inquiry_only_rows(): void
+    {
+        [$buyer, $firstArtist, $firstConversation] = $this->participantsWithConversation(
+            'context-batch-buyer@example.test',
+            'context-batch-first-artist@example.test',
+        );
+        $secondArtist = $this->makeUser('context-batch-second-artist@example.test', User::ROLE_ARTIST);
+        $secondProfile = $secondArtist->artistProfile()->create([
+            'slug' => 'context-batch-second-artist',
+            'display_name' => 'هنرمند دوم',
+            'is_public' => true,
+        ]);
+        $secondConversation = Conversation::query()->create([
+            'pair_key' => $buyer->id.':'.$secondArtist->id,
+            'buyer_user_id' => $buyer->id,
+            'artist_user_id' => $secondArtist->id,
+        ]);
+
+        $category = Category::query()->create([
+            'name' => 'نقاشی زمینه دسته‌ای',
+            'slug' => 'conversation-context-batch-category',
+            'is_active' => true,
+        ]);
+        $firstArtwork = $firstArtist->artistProfile->artworks()->create([
+            'category_id' => $category->id,
+            'slug' => 'conversation-context-first-artwork',
+            'title' => 'اثر زمینه اول',
+            'status' => Artwork::STATUS_APPROVED,
+            'image_path' => 'artworks/context-first.jpg',
+        ]);
+        $secondArtwork = $secondProfile->artworks()->create([
+            'category_id' => $category->id,
+            'slug' => 'conversation-context-second-artwork',
+            'title' => 'اثر زمینه دوم',
+            'status' => Artwork::STATUS_APPROVED,
+            'image_path' => 'artworks/context-second.jpg',
+        ]);
+
+        $now = now();
+        DB::table('conversation_contexts')->insert([
+            [
+                'conversation_id' => $firstConversation->id,
+                'artwork_id' => $firstArtwork->id,
+                'inquiry_id' => null,
+                'added_by_user_id' => $buyer->id,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            [
+                'conversation_id' => $secondConversation->id,
+                'artwork_id' => $secondArtwork->id,
+                'inquiry_id' => null,
+                'added_by_user_id' => $buyer->id,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+        ]);
+
+        $inquiryId = DB::table('artist_inquiries')->insertGetId([
+            'artist_profile_id' => $firstArtist->artistProfile->id,
+            'sender_user_id' => $buyer->id,
+            'artwork_id' => null,
+            'subject' => 'پرسش بدون ارجاع اثر',
+            'message' => 'این زمینه فقط شامل درخواست گفتگو است.',
+            'status' => 'new',
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+        DB::table('conversation_contexts')->insert([
+            'conversation_id' => $firstConversation->id,
+            'artwork_id' => null,
+            'inquiry_id' => $inquiryId,
+            'added_by_user_id' => $buyer->id,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+
+        $inbox = $this->actingAs($buyer)
+            ->getJson('/api/v1/buyer/conversations')
+            ->assertOk();
+        $firstPayload = collect($inbox->json('data'))->firstWhere('id', $firstConversation->id);
+        $secondPayload = collect($inbox->json('data'))->firstWhere('id', $secondConversation->id);
+
+        $this->assertCount(2, $firstPayload['contexts']);
+        $this->assertSame($firstArtwork->slug, $firstPayload['contexts'][0]['artwork']['slug']);
+        $this->assertNull($firstPayload['contexts'][1]['artwork']);
+        $this->assertSame($secondArtwork->slug, $secondPayload['contexts'][0]['artwork']['slug']);
+        $this->assertSame($firstPayload['contexts'], $this->getJson('/api/v1/conversations/'.$firstConversation->id)
+            ->assertOk()
+            ->json('data.contexts'));
+    }
+
     public function test_buyer_can_start_direct_conversation_from_approved_artwork_and_keep_artwork_context(): void
     {
         [$buyer, $artist] = $this->participants();
