@@ -48,15 +48,6 @@ At the end, provide one consolidated handoff containing:
 Keep each PR independently revertible where practical. A batch may contain multiple PRs; it must not collapse unrelated changes into one broad PR merely to reduce approval count.
 
 
-1. Re-check the live issue/PR, current `main`, relevant source and task-specific skills.
-2. Create a short-lived branch from current `main`, using the issue number in the branch name where practical.
-3. Keep one bounded issue outcome per PR. Preserve established Laravel, React, TanStack Query, API, RAD design-system, accessibility and Persian RTL conventions.
-4. Update focused tests and documentation where behavior, supported journeys, coverage or operating guidance changes.
-5. Review the complete diff and callers. Check correctness, authorization, privacy, data integrity, failure/retry behavior, performance, maintainability and UX impact as relevant.
-6. Link the PR to its issue and state exactly what changed, what did not change, and what verification did or did not run.
-
-Do not add dependencies, generic service/repository layers, new product behavior or unrelated cleanup without evidence and separate approval.
-
 ## 3. Review checklist
 
 Use the parts that apply to the change; do not require every item mechanically.
