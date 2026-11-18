@@ -15,16 +15,38 @@ Every delivery issue should identify:
 
 A product decision, planning issue, priority label or board status is not implementation authorization. Resolve product, UX, data/API compatibility and architecture decisions before changing behavior. For larger work, use an epic with independently reviewable child issues.
 
-## 2. Implement one reviewable slice
+## 2. Implement an authorized batch of reviewable slices
 
-1. Re-check the live issue/PR, current `main`, relevant source and task-specific skills.
-2. Create a short-lived branch from current `main`, using the issue number in the branch name where practical.
-3. Keep one bounded issue outcome per PR. Preserve established Laravel, React, TanStack Query, API, RAD design-system, accessibility and Persian RTL conventions.
-4. Update focused tests and documentation where behavior, supported journeys, coverage or operating guidance changes.
-5. Review the complete diff and callers. Check correctness, authorization, privacy, data integrity, failure/retry behavior, performance, maintainability and UX impact as relevant.
-6. Link the PR to its issue and state exactly what changed, what did not change, and what verification did or did not run.
+The default remains one bounded outcome per issue/PR. When the product owner explicitly requests batch delivery, do not pause for approval after every small task.
 
-Do not add dependencies, generic service/repository layers, new product behavior or unrelated cleanup without evidence and separate approval.
+1. Re-check the live parent issue/epic, child issues, open PRs, current main, relevant source and task-specific skills.
+2. At batch start, publish a concise batch plan: candidate tasks, boundaries, dependencies, intended issue/PR grouping, and explicit stop conditions.
+3. Implement every safe, in-scope, low-risk task in the batch. Use short-lived branches from current main; keep each independently reviewable outcome in its own PR unless two changes are tightly coupled.
+4. Do not create duplicate issues. Add child issues only for genuinely distinct deliverables that need durable tracking; link them to the parent.
+5. Update focused tests and documentation as each slice requires. Review callers and the full diff after each slice; record evidence and progress on the relevant issue/PR.
+6. Do not request per-slice approval when the batch authorization clearly covers the work. Stop only for unresolved product/architecture decisions, scope expansion, API/schema/data-contract changes not already authorized, security/privacy/authorization semantics, destructive or irreversible operations, new dependencies, material operational risk, conflicting evidence, or a task that cannot be safely bounded.
+7. Open PRs for the batch and keep them draft while maintainer verification is pending. Each PR must state its own behavior, risk, issue link and verification scope. The batch report should group the PRs and provide one consolidated test handoff.
+8. The maintainer runs the combined local verification once at the end and gives one batch-level result/approval. After a passing report and explicit batch approval, the assistant may perform the specifically approved PR review/ready/merge actions for the batch; do not ask for a separate approval per small PR.
+9. Batch authorization does not authorize the assistant to run tests, lint, builds, Playwright, migrations, seeders, scanners or CI. It also does not authorize deployment or release. Those remain separate explicit gates unless the user names the exact action.
+10. If one item is blocked, park it with evidence and continue independent safe items. Report the blocked item and the smallest decision/evidence needed.
+
+Do not add dependencies, generic service/repository layers, new product behavior or unrelated cleanup without evidence and the required approval.
+
+## 2A. Batch boundaries and final handoff
+
+A batch is a bounded set of related tasks under one explicitly named workstream/parent issue, not blanket permission to work across the product. At the start, define the batch in terms of outcomes, not a predetermined number of files or PRs.
+
+At the end, provide one consolidated handoff containing:
+- All included and deferred issues, with links and reasons.
+- All PRs, branches, changed files and commit references.
+- The exact combined local commands, grouped by backend, frontend and Playwright only where relevant. Do not ask the maintainer to run irrelevant suites.
+- Whether Playwright is required; if required, state that it uses the already-running app and configured MySQL/MariaDB database and may leave records.
+- Tests/checks not run by the assistant and any automatic CI status actually observed.
+- Acceptance criteria, risks and any remaining stop-condition decisions.
+- One batch-level next action: report test results and explicitly approve the batch review/merge, or request fixes.
+
+Keep each PR independently revertible where practical. A batch may contain multiple PRs; it must not collapse unrelated changes into one broad PR merely to reduce approval count.
+
 
 ## 3. Review checklist
 
