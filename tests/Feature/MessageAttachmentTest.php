@@ -2,17 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature;
+namespace Tests\\Feature;
 
-use App\Models\Conversation;
-use App\Models\Message;
-use App\Models\MessageAttachment;
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
-use Tests\TestCase;
+use App\\Models\\Conversation;
+use App\\Models\\Message;
+use App\\Models\\MessageAttachment;
+use App\\Models\\User;
+use Illuminate\\Foundation\\Testing\\RefreshDatabase;
+use Illuminate\\Http\\UploadedFile;
+use Illuminate\\Support\\Facades\\Hash;
+use Illuminate\\Support\\Facades\\Storage;
+use RuntimeException;
+use Tests\\TestCase;
 
 class MessageAttachmentTest extends TestCase
 {
@@ -25,7 +26,7 @@ class MessageAttachmentTest extends TestCase
 
         $upload = $this->actingAs($buyer)
             ->postJson("/api/v1/conversations/{$conversation->id}/messages/{$message->id}/attachments", [
-                'file' => UploadedFile::fake()->createWithContent('reference.pdf', "%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF"),
+                'file' => UploadedFile::fake()->createWithContent('reference.pdf', "%PDF-1.4\\n1 0 obj<</Type/Catalog>>endobj\\n%%EOF"),
             ])
             ->assertCreated()
             ->assertJsonPath('data.name', 'reference.pdf')
@@ -51,6 +52,36 @@ class MessageAttachmentTest extends TestCase
         $this->assertDatabaseMissing('message_attachments', ['id' => $attachment->id]);
     }
 
+    public function test_failed_attachment_record_persistence_removes_the_stored_file(): void
+    {
+        Storage::fake('local');
+        [$buyer, , $conversation, $message] = $this->fixture();
+
+        MessageAttachment::creating(static function (MessageAttachment $attachment): void {
+            Storage::disk('local')->assertExists($attachment->storage_path);
+
+            throw new RuntimeException('Simulated attachment record persistence failure.');
+        });
+
+        $this->withoutExceptionHandling();
+
+        try {
+            $this->actingAs($buyer)->postJson(
+                "/api/v1/conversations/{$conversation->id}/messages/{$message->id}/attachments",
+                [
+                    'file' => UploadedFile::fake()->createWithContent('orphan-candidate.pdf', "%PDF-1.4\\n%%EOF"),
+                ],
+            );
+
+            $this->fail('The simulated attachment persistence failure was not raised.');
+        } catch (RuntimeException $exception) {
+            $this->assertSame('Simulated attachment record persistence failure.', $exception->getMessage());
+        }
+
+        $this->assertSame([], Storage::disk('local')->allFiles('message-attachments'));
+        $this->assertDatabaseCount('message_attachments', 0);
+    }
+
     public function test_only_the_message_sender_can_upload_and_unsupported_files_are_rejected(): void
     {
         Storage::fake('local');
@@ -58,7 +89,7 @@ class MessageAttachmentTest extends TestCase
 
         $this->actingAs($artist)
             ->postJson("/api/v1/conversations/{$conversation->id}/messages/{$message->id}/attachments", [
-                'file' => UploadedFile::fake()->createWithContent('other.pdf', "%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF"),
+                'file' => UploadedFile::fake()->createWithContent('other.pdf', "%PDF-1.4\\n1 0 obj<</Type/Catalog>>endobj\\n%%EOF"),
             ])
             ->assertForbidden();
 
@@ -77,11 +108,11 @@ class MessageAttachmentTest extends TestCase
         $base = "/api/v1/conversations/{$conversation->id}/messages/{$message->id}/attachments";
 
         $this->postJson($base, [
-            'file' => UploadedFile::fake()->createWithContent('guest.pdf', "%PDF-1.4\n%%EOF"),
+            'file' => UploadedFile::fake()->createWithContent('guest.pdf', "%PDF-1.4\\n%%EOF"),
         ])->assertUnauthorized();
 
         $path = 'message-attachments/'.$conversation->id.'/guest-private.pdf';
-        Storage::disk('local')->put($path, "%PDF-1.4\n%%EOF");
+        Storage::disk('local')->put($path, "%PDF-1.4\\n%%EOF");
         $attachment = MessageAttachment::query()->create([
             'message_id' => $message->id,
             'uploaded_by_user_id' => $buyer->id,
@@ -104,7 +135,7 @@ class MessageAttachmentTest extends TestCase
             'delivered_at' => now(),
         ]);
         $path = 'message-attachments/'.$conversation->id.'/document.pdf';
-        Storage::disk('local')->put($path, "%PDF-1.4\n%%EOF");
+        Storage::disk('local')->put($path, "%PDF-1.4\\n%%EOF");
         $attachment = MessageAttachment::query()->create([
             'message_id' => $message->id,
             'uploaded_by_user_id' => $buyer->id,
@@ -167,13 +198,13 @@ class MessageAttachmentTest extends TestCase
         foreach (range(1, 5) as $index) {
             $this->actingAs($buyer)
                 ->postJson($url, [
-                    'file' => UploadedFile::fake()->createWithContent("reference-{$index}.pdf", "%PDF-1.4\n%%EOF"),
+                    'file' => UploadedFile::fake()->createWithContent("reference-{$index}.pdf", "%PDF-1.4\\n%%EOF"),
                 ])
                 ->assertCreated();
         }
 
         $this->postJson($url, [
-            'file' => UploadedFile::fake()->createWithContent('reference-6.pdf', "%PDF-1.4\n%%EOF"),
+            'file' => UploadedFile::fake()->createWithContent('reference-6.pdf', "%PDF-1.4\\n%%EOF"),
         ])->assertUnprocessable();
 
         $this->assertDatabaseCount('message_attachments', 5);
