@@ -344,8 +344,7 @@ class ConversationController extends Controller
         Conversation $conversation,
         User $viewer,
         array $contexts = [],
-    ): array
-    {
+    ): array {
         $other = (int) $conversation->buyer_user_id === (int) $viewer->id
             ? $conversation->artist
             : $conversation->buyer;
