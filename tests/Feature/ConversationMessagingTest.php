@@ -326,7 +326,7 @@ class ConversationMessagingTest extends TestCase
             ->assertJsonPath('data.reply_to.body', 'مایلم درباره جزئیات این اثر اطلاعات بیشتری دریافت کنم.');
     }
 
-    public function test_inbox_batches_contexts_without_mixing_conversations_and_keeps_inquiry_only_rows(): void
+    public function test_inbox_batches_contexts_without_mixing_conversations_and_keeps_null_artwork_rows(): void
     {
         [$buyer, $firstArtist, $firstConversation] = $this->participantsWithConversation(
             'context-batch-buyer@example.test',
@@ -369,7 +369,6 @@ class ConversationMessagingTest extends TestCase
             [
                 'conversation_id' => $firstConversation->id,
                 'artwork_id' => $firstArtwork->id,
-                'inquiry_id' => null,
                 'added_by_user_id' => $buyer->id,
                 'created_at' => $now,
                 'updated_at' => $now,
@@ -377,27 +376,15 @@ class ConversationMessagingTest extends TestCase
             [
                 'conversation_id' => $secondConversation->id,
                 'artwork_id' => $secondArtwork->id,
-                'inquiry_id' => null,
                 'added_by_user_id' => $buyer->id,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
         ]);
 
-        $inquiryId = DB::table('artist_inquiries')->insertGetId([
-            'artist_profile_id' => $firstArtist->artistProfile->id,
-            'sender_user_id' => $buyer->id,
-            'artwork_id' => null,
-            'subject' => 'پرسش بدون ارجاع اثر',
-            'message' => 'این زمینه فقط شامل درخواست گفتگو است.',
-            'status' => 'new',
-            'created_at' => $now,
-            'updated_at' => $now,
-        ]);
         DB::table('conversation_contexts')->insert([
             'conversation_id' => $firstConversation->id,
             'artwork_id' => null,
-            'inquiry_id' => $inquiryId,
             'added_by_user_id' => $buyer->id,
             'created_at' => $now,
             'updated_at' => $now,
