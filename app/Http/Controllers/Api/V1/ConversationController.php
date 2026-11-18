@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Actions\Messaging\ListConversationContexts;
 use App\Actions\Messaging\ListConversations;
 use App\Actions\Messaging\ListMessages;
 use App\Actions\Messaging\RemoveMessage;
@@ -21,26 +22,40 @@ use Illuminate\Validation\Rule;
 
 class ConversationController extends Controller
 {
-    public function buyerIndex(Request $request, ListConversations $listConversations): JsonResponse
-    {
-        return $this->indexFor($request, $request->user(), 'buyer_user_id', $listConversations);
+    public function buyerIndex(
+        Request $request,
+        ListConversations $listConversations,
+        ListConversationContexts $listConversationContexts,
+    ): JsonResponse {
+        return $this->indexFor($request, $request->user(), 'buyer_user_id', $listConversations, $listConversationContexts);
     }
 
-    public function artistIndex(Request $request, ListConversations $listConversations): JsonResponse
-    {
-        return $this->indexFor($request, $request->user(), 'artist_user_id', $listConversations);
+    public function artistIndex(
+        Request $request,
+        ListConversations $listConversations,
+        ListConversationContexts $listConversationContexts,
+    ): JsonResponse {
+        return $this->indexFor($request, $request->user(), 'artist_user_id', $listConversations, $listConversationContexts);
     }
 
-    public function show(Request $request, Conversation $conversation): JsonResponse
-    {
+    public function show(
+        Request $request,
+        Conversation $conversation,
+        ListConversationContexts $listConversationContexts,
+    ): JsonResponse {
         $this->authorizeParticipant($request->user(), $conversation, 'view');
+        $contexts = $listConversationContexts->handle([(int) $conversation->id]);
 
         return response()->json([
-            'data' => $this->conversationPayload($conversation->load([
-                'buyer',
-                'artist.artistProfile',
-                'latestMessage.sender',
-            ]), $request->user()),
+            'data' => $this->conversationPayload(
+                $conversation->load([
+                    'buyer',
+                    'artist.artistProfile',
+                    'latestMessage.sender',
+                ]),
+                $request->user(),
+                $contexts[$conversation->id] ?? [],
+            ),
         ]);
     }
 
@@ -295,6 +310,7 @@ class ConversationController extends Controller
         User $user,
         string $participantColumn,
         ListConversations $listConversations,
+        ListConversationContexts $listConversationContexts,
     ): JsonResponse {
         $filters = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
@@ -306,7 +322,17 @@ class ConversationController extends Controller
             $participantColumn,
             trim((string) ($filters['search'] ?? '')),
             $filters['filter'] ?? 'all',
-        )->through(fn (Conversation $conversation): array => $this->conversationPayload($conversation, $user));
+        );
+        $contexts = $listConversationContexts->handle(
+            $conversations->getCollection()->pluck('id')->map(fn ($id): int => (int) $id)->all(),
+        );
+        $conversations->setCollection($conversations->getCollection()->map(
+            fn (Conversation $conversation): array => $this->conversationPayload(
+                $conversation,
+                $user,
+                $contexts[$conversation->id] ?? [],
+            )
+        ));
 
         return response()->json($conversations);
     }
@@ -314,8 +340,11 @@ class ConversationController extends Controller
     /**
      * @return array<string, mixed>
      */
-    private function conversationPayload(Conversation $conversation, User $viewer): array
-    {
+    private function conversationPayload(
+        Conversation $conversation,
+        User $viewer,
+        array $contexts = [],
+    ): array {
         $other = (int) $conversation->buyer_user_id === (int) $viewer->id
             ? $conversation->artist
             : $conversation->buyer;
@@ -323,31 +352,7 @@ class ConversationController extends Controller
         return [
             'id' => $conversation->id,
             'participant' => ['name' => $other?->name],
-            'contexts' => DB::table('conversation_contexts')
-                ->where('conversation_id', $conversation->id)
-                ->get()
-                ->map(function ($context): array {
-                    $artwork = $context->artwork_id ? DB::table('artworks')->where('id', $context->artwork_id)->first() : null;
-
-                    return [
-                        'artwork' => $artwork ? (function () use ($artwork): array {
-                            $record = Artwork::query()->with(['category', 'artistProfile'])->find($artwork->id);
-
-                            return [
-                                'id' => $record?->id,
-                                'title' => $record?->title ?? $artwork->title,
-                                'slug' => $record?->slug ?? $artwork->slug,
-                                'image_url' => $record?->slug ? '/api/v1/artworks/'.$record->slug.'/image' : null,
-                                'category' => $record?->category?->name,
-                                'medium' => $record?->medium,
-                                'dimensions' => $record?->dimensions,
-                                'year' => $record?->year,
-                                'price' => $record?->price,
-                                'artist_name' => $record?->artistProfile?->display_name,
-                            ];
-                        })() : null,
-                    ];
-                })->all(),
+            'contexts' => $contexts,
             'artist' => [
                 'display_name' => $conversation->artist?->artistProfile?->display_name,
                 'slug' => $conversation->artist?->artistProfile?->slug,
