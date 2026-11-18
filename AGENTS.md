@@ -121,6 +121,21 @@ Do not state that a feature is missing until the relevant routes, screens, data 
 - Do not add dependencies without a demonstrated need and compatibility review.
 - Never delete, skip, weaken or broadly loosen a failing test merely to obtain a green result. Fix the cause or replace coverage with equivalent or stronger coverage.
 
+## 6A. Batch implementation and end-of-batch approval
+
+A product owner may explicitly authorize a **bounded batch** of related, low-risk implementation tasks. When they do:
+
+- Treat that authorization as standing permission to select and implement the small, independently reviewable tasks already within the approved parent issue/epic or explicitly named batch scope. Do not ask for approval after each small task.
+- At batch start, state the proposed task list, boundaries, dependencies, and stop conditions. Proceed through all safe, in-scope tasks without pausing for per-task confirmation.
+- Keep each outcome small and independently testable. Prefer one PR per independently reviewable issue/outcome; group only tightly coupled changes in one PR. Do not create a giant mixed-scope PR to simulate batching.
+- Re-check live source and GitHub state between slices. Update issue/PR records as work progresses, and avoid duplicate issues or work already completed.
+- Stop and ask only when a genuine decision boundary appears: product behavior or scope changes, architecture/data/API contract changes not already approved, authorization/privacy/security semantics, destructive or irreversible operations, new dependencies, material cost/operational risk, conflicting evidence, or an acceptance criterion that cannot be met safely.
+- Do not interpret batch authorization as permission to run tests, lint, builds, browser automation, migrations, seeders, scanners or CI. The maintainer performs one combined verification pass at the end unless they separately authorize exact execution.
+- Do not interpret batch authorization as permission to deploy, release, force-push, rewrite history, change repository settings, or merge. At batch completion, present all PRs/issues together with one consolidated verification handoff. One explicit end-of-batch approval may authorize the requested batch review/merge action; do not demand separate approval for every small PR when the user has clearly approved the batch.
+- If a task falls outside the authorized batch or meets a stop condition, park it with evidence and continue other independent safe tasks where possible.
+- The final batch report must include every issue/PR, changed files, exact combined local commands, which test layers are relevant (frontend/backend/Playwright), database side effects, unrun checks, risks and the one decision needed to close the batch.
+
+A short instruction such as “do the next small tasks in batch; I will test and approve them together at the end” authorizes this batch workflow for the active workstream. It does not authorize unrelated product work or any of the separately gated operations above.
 ## 7. Backend, data and frontend invariants
 
 - Laravel policies, middleware and explicit server-side ownership/participant checks are authoritative.
