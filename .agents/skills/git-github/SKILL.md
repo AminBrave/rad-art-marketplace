@@ -25,6 +25,17 @@ description: Safely manage Rademan branches, commits, remotes, pull requests, re
 - Keep one bounded issue/outcome per branch. Do not silently redirect work to another branch.
 - Do not delete a branch after merge unless asked.
 
+## Batch delivery
+
+When the product owner explicitly authorizes a bounded batch:
+- Do not request confirmation after each small issue/slice. Work through the approved batch and keep the owner informed through issue/PR records.
+- Re-check current main, live issues and open PRs before each independent slice; branch from the current agreed base.
+- Keep independently reviewable outcomes in separate PRs. Use one PR for multiple issues only when the changes are tightly coupled and should be reviewed/reverted together.
+- Draft PRs are the default while the maintainer's consolidated local verification is pending. Each PR must include exact scope, linked issue, risks and honest verification status.
+- Do not merge any batch PR until the maintainer reports the batch verification result and explicitly approves the batch review/merge action. That single approval can cover all listed PRs; do not ask again for each one.
+- Batch authorization is not permission to run CI, tests, builds, deploy, release, force-push, rewrite history or change repository settings.
+- If a task crosses a product, architecture, API/schema, security/privacy, destructive-operation or dependency decision boundary, park it and continue other independent safe work.
+
 ## Commits
 - Use imperative, specific commit subjects that describe the change (for example: "Add artist profile accessibility coverage").
 - Keep commits coherent and avoid mixing unrelated refactors.
