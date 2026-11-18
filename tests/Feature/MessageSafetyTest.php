@@ -145,6 +145,29 @@ class MessageSafetyTest extends TestCase
         ]);
     }
 
+    public function test_only_admins_can_access_admin_message_report_routes(): void
+    {
+        [$buyer, $artist, $conversation, $message] = $this->fixture();
+        $report = MessageReport::query()->create([
+            'conversation_id' => $conversation->id,
+            'message_id' => $message->id,
+            'reporter_user_id' => $buyer->id,
+            'subject_key' => 'message:'.$message->id,
+            'reason' => 'spam',
+            'details' => 'گزارش آزمایشی',
+        ]);
+
+        $this->getJson('/api/v1/admin/message-reports')->assertUnauthorized();
+
+        $this->actingAs($artist)
+            ->getJson('/api/v1/admin/message-reports')
+            ->assertForbidden();
+
+        $this->patchJson("/api/v1/admin/message-reports/{$report->id}", [
+            'action' => 'reviewed',
+        ])->assertForbidden();
+    }
+
     public function test_conversation_report_is_idempotent_and_block_status_is_viewer_relative(): void
     {
         [$buyer, $artist, $conversation, , $outsider] = $this->fixture();
