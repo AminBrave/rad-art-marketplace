@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ConversationController;
 use App\Http\Controllers\Api\V1\DirectConversationController;
 use App\Http\Controllers\Api\V1\MessageAttachmentController;
+use App\Http\Controllers\Api\V1\AdminMessageReportController;
 use App\Http\Controllers\Api\V1\MessageSafetyController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\PublicArtworkController;
@@ -98,8 +99,8 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
 
     Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function (): void {
         Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
-        Route::get('/message-reports', [MessageSafetyController::class, 'adminIndex'])->name('message-reports.index');
-        Route::patch('/message-reports/{report}', [MessageSafetyController::class, 'adminUpdate'])->name('message-reports.update');
+        Route::get('/message-reports', [AdminMessageReportController::class, 'adminIndex'])->name('message-reports.index');
+        Route::patch('/message-reports/{report}', [AdminMessageReportController::class, 'adminUpdate'])->name('message-reports.update');
         Route::prefix('editorial')->name('editorial.')->group(function (): void {
             Route::get('/options', [AdminEditorialController::class, 'options'])->name('options');
             Route::get('/featured-artists', [AdminEditorialController::class, 'adminFeaturedArtists'])->name('featured-artists.index');
