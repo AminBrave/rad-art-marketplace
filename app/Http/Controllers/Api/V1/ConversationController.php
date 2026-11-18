@@ -23,15 +23,15 @@ class ConversationController extends Controller
 {
     public function buyerIndex(Request $request, ListConversations $listConversations): JsonResponse
     {
-        return $this->indexFor($request, $request->user(), 'buyer_user_id', $listConversations);
+        return $this->indexFor($request, $request->user(), 'buyer_user_id', $listConversations, $listConversationContexts);
     }
 
     public function artistIndex(Request $request, ListConversations $listConversations): JsonResponse
     {
-        return $this->indexFor($request, $request->user(), 'artist_user_id', $listConversations);
+        return $this->indexFor($request, $request->user(), 'artist_user_id', $listConversations, $listConversationContexts);
     }
 
-    public function show(Request $request, Conversation $conversation): JsonResponse
+    public function show(\n        Request $request,\n        Conversation $conversation,\n        ListConversationContexts $listConversationContexts,\n    ): JsonResponse
     {
         $this->authorizeParticipant($request->user(), $conversation, 'view');
 
@@ -314,7 +314,7 @@ class ConversationController extends Controller
     /**
      * @return array<string, mixed>
      */
-    private function conversationPayload(Conversation $conversation, User $viewer): array
+    private function conversationPayload(\n        Conversation $conversation,\n        User $viewer,\n        array $contexts = [],\n    ): array
     {
         $other = (int) $conversation->buyer_user_id === (int) $viewer->id
             ? $conversation->artist
@@ -323,31 +323,7 @@ class ConversationController extends Controller
         return [
             'id' => $conversation->id,
             'participant' => ['name' => $other?->name],
-            'contexts' => DB::table('conversation_contexts')
-                ->where('conversation_id', $conversation->id)
-                ->get()
-                ->map(function ($context): array {
-                    $artwork = $context->artwork_id ? DB::table('artworks')->where('id', $context->artwork_id)->first() : null;
-
-                    return [
-                        'artwork' => $artwork ? (function () use ($artwork): array {
-                            $record = Artwork::query()->with(['category', 'artistProfile'])->find($artwork->id);
-
-                            return [
-                                'id' => $record?->id,
-                                'title' => $record?->title ?? $artwork->title,
-                                'slug' => $record?->slug ?? $artwork->slug,
-                                'image_url' => $record?->slug ? '/api/v1/artworks/'.$record->slug.'/image' : null,
-                                'category' => $record?->category?->name,
-                                'medium' => $record?->medium,
-                                'dimensions' => $record?->dimensions,
-                                'year' => $record?->year,
-                                'price' => $record?->price,
-                                'artist_name' => $record?->artistProfile?->display_name,
-                            ];
-                        })() : null,
-                    ];
-                })->all(),
+            'contexts' => $contexts,
             'artist' => [
                 'display_name' => $conversation->artist?->artistProfile?->display_name,
                 'slug' => $conversation->artist?->artistProfile?->slug,
