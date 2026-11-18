@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Tests\\Feature;
+namespace Tests\Feature;
 
-use App\\Models\\Conversation;
-use App\\Models\\Message;
-use App\\Models\\MessageAttachment;
-use App\\Models\\User;
-use Illuminate\\Foundation\\Testing\\RefreshDatabase;
-use Illuminate\\Http\\UploadedFile;
-use Illuminate\\Support\\Facades\\Hash;
-use Illuminate\\Support\\Facades\\Storage;
+use App\Models\Conversation;
+use App\Models\Message;
+use App\Models\MessageAttachment;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use RuntimeException;
-use Tests\\TestCase;
+use Tests\TestCase;
 
 class MessageAttachmentTest extends TestCase
 {
@@ -26,7 +26,7 @@ class MessageAttachmentTest extends TestCase
 
         $upload = $this->actingAs($buyer)
             ->postJson("/api/v1/conversations/{$conversation->id}/messages/{$message->id}/attachments", [
-                'file' => UploadedFile::fake()->createWithContent('reference.pdf', "%PDF-1.4\\n1 0 obj<</Type/Catalog>>endobj\\n%%EOF"),
+                'file' => UploadedFile::fake()->createWithContent('reference.pdf', "%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF"),
             ])
             ->assertCreated()
             ->assertJsonPath('data.name', 'reference.pdf')
@@ -69,7 +69,7 @@ class MessageAttachmentTest extends TestCase
             $this->actingAs($buyer)->postJson(
                 "/api/v1/conversations/{$conversation->id}/messages/{$message->id}/attachments",
                 [
-                    'file' => UploadedFile::fake()->createWithContent('orphan-candidate.pdf', "%PDF-1.4\\n%%EOF"),
+                    'file' => UploadedFile::fake()->createWithContent('orphan-candidate.pdf', "%PDF-1.4\n%%EOF"),
                 ],
             );
 
@@ -89,7 +89,7 @@ class MessageAttachmentTest extends TestCase
 
         $this->actingAs($artist)
             ->postJson("/api/v1/conversations/{$conversation->id}/messages/{$message->id}/attachments", [
-                'file' => UploadedFile::fake()->createWithContent('other.pdf', "%PDF-1.4\\n1 0 obj<</Type/Catalog>>endobj\\n%%EOF"),
+                'file' => UploadedFile::fake()->createWithContent('other.pdf', "%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF"),
             ])
             ->assertForbidden();
 
@@ -108,11 +108,11 @@ class MessageAttachmentTest extends TestCase
         $base = "/api/v1/conversations/{$conversation->id}/messages/{$message->id}/attachments";
 
         $this->postJson($base, [
-            'file' => UploadedFile::fake()->createWithContent('guest.pdf', "%PDF-1.4\\n%%EOF"),
+            'file' => UploadedFile::fake()->createWithContent('guest.pdf', "%PDF-1.4\n%%EOF"),
         ])->assertUnauthorized();
 
         $path = 'message-attachments/'.$conversation->id.'/guest-private.pdf';
-        Storage::disk('local')->put($path, "%PDF-1.4\\n%%EOF");
+        Storage::disk('local')->put($path, "%PDF-1.4\n%%EOF");
         $attachment = MessageAttachment::query()->create([
             'message_id' => $message->id,
             'uploaded_by_user_id' => $buyer->id,
@@ -135,7 +135,7 @@ class MessageAttachmentTest extends TestCase
             'delivered_at' => now(),
         ]);
         $path = 'message-attachments/'.$conversation->id.'/document.pdf';
-        Storage::disk('local')->put($path, "%PDF-1.4\\n%%EOF");
+        Storage::disk('local')->put($path, "%PDF-1.4\n%%EOF");
         $attachment = MessageAttachment::query()->create([
             'message_id' => $message->id,
             'uploaded_by_user_id' => $buyer->id,
@@ -198,13 +198,13 @@ class MessageAttachmentTest extends TestCase
         foreach (range(1, 5) as $index) {
             $this->actingAs($buyer)
                 ->postJson($url, [
-                    'file' => UploadedFile::fake()->createWithContent("reference-{$index}.pdf", "%PDF-1.4\\n%%EOF"),
+                    'file' => UploadedFile::fake()->createWithContent("reference-{$index}.pdf", "%PDF-1.4\n%%EOF"),
                 ])
                 ->assertCreated();
         }
 
         $this->postJson($url, [
-            'file' => UploadedFile::fake()->createWithContent('reference-6.pdf', "%PDF-1.4\\n%%EOF"),
+            'file' => UploadedFile::fake()->createWithContent('reference-6.pdf', "%PDF-1.4\n%%EOF"),
         ])->assertUnprocessable();
 
         $this->assertDatabaseCount('message_attachments', 5);
