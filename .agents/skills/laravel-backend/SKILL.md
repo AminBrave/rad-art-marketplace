@@ -23,6 +23,10 @@ description: Implement or review Rademan PHP 8.3+ and Laravel 13 backend behavio
 9. Add forward-only migrations. Never rewrite a migration that may have run in another environment. Check engine compatibility and rollback behavior.
 10. Keep controllers and services proportionate; do not introduce a service/repository layer by default.
 
+## Batch implementation
+
+When the product owner explicitly authorizes a bounded backend batch, implement multiple small, low-risk slices without asking for approval after each one. Keep each slice independently reviewable, preserve API/auth/data invariants, and stop for unresolved schema/API, authorization/privacy, transaction/idempotency, destructive or other material decisions. Add focused regression coverage for each behavior change, then provide one deduplicated PHPUnit/Pint command set for the complete batch. Do not run those commands, Artisan operations, migrations, seeders or CI without separate explicit permission. Playwright is not required for backend-only changes unless a browser-visible contract or journey is affected.
+
 ## Verification
 - Add or update focused backend tests when behavior changes.
 - Do not execute PHPUnit, Artisan commands, Pint, static analysis, migrations, seeders or other verification without explicit user authorization.
