@@ -100,10 +100,6 @@ class MessageSafetyController extends Controller
         return response()->json(['message' => 'مسدودسازی برداشته شد.']);
     }
 
-
-
-
-
     private function isParticipant(User $user, Conversation $conversation): bool
     {
         return (int) $conversation->buyer_user_id === (int) $user->id
