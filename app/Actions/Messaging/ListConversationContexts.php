@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\\Actions\\Messaging;
+namespace App\Actions\Messaging;
 
-use App\\Models\\Artwork;
-use Illuminate\\Support\\Facades\\DB;
+use App\Models\Artwork;
+use Illuminate\Support\Facades\DB;
 
 class ListConversationContexts
 {
