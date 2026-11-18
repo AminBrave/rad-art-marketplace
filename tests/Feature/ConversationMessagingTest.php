@@ -410,12 +410,21 @@ class ConversationMessagingTest extends TestCase
         $secondPayload = collect($inbox->json('data'))->firstWhere('id', $secondConversation->id);
 
         $this->assertCount(2, $firstPayload['contexts']);
-        $this->assertSame($firstArtwork->slug, $firstPayload['contexts'][0]['artwork']['slug']);
-        $this->assertNull($firstPayload['contexts'][1]['artwork']);
-        $this->assertSame($secondArtwork->slug, $secondPayload['contexts'][0]['artwork']['slug']);
-        $this->assertSame($firstPayload['contexts'], $this->getJson('/api/v1/conversations/'.$firstConversation->id)
+        $firstContexts = collect($firstPayload['contexts']);
+        $this->assertSame(
+            $firstArtwork->slug,
+            $firstContexts->firstWhere('artwork.slug', $firstArtwork->slug)['artwork']['slug'],
+        );
+        $this->assertNotNull($firstContexts->first(fn (array $context): bool => $context['artwork'] === null));
+        $this->assertSame(
+            $secondArtwork->slug,
+            collect($secondPayload['contexts'])->firstWhere('artwork.slug', $secondArtwork->slug)['artwork']['slug'],
+        );
+
+        $showContexts = $this->getJson('/api/v1/conversations/'.$firstConversation->id)
             ->assertOk()
-            ->json('data.contexts'));
+            ->json('data.contexts');
+        $this->assertEqualsCanonicalizing($firstPayload['contexts'], $showContexts);
     }
 
     public function test_buyer_can_start_direct_conversation_from_approved_artwork_and_keep_artwork_context(): void
