@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace App\\Http\\Controllers\\Api\\V1;
+namespace App\Http\Controllers\Api\V1;
 
-use App\\Http\\Controllers\\Controller;
-use App\\Models\\Conversation;
-use App\\Models\\Message;
-use App\\Models\\MessageAttachment;
-use App\\Models\\User;
-use Illuminate\\Http\\JsonResponse;
-use Illuminate\\Http\\Request;
-use Illuminate\\Support\\Facades\\Log;
-use Illuminate\\Support\\Facades\\Storage;
-use Illuminate\\Support\\Str;
-use Illuminate\\Validation\\ValidationException;
-use Symfony\\Component\\HttpFoundation\\StreamedResponse;
+use App\Http\Controllers\Controller;
+use App\Models\Conversation;
+use App\Models\Message;
+use App\Models\MessageAttachment;
+use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 
 class MessageAttachmentController extends Controller
@@ -53,7 +53,7 @@ class MessageAttachmentController extends Controller
         }
 
         $originalName = Str::of($file->getClientOriginalName())
-            ->replaceMatches('/[^\\pL\\pN._ -]/u', '')
+            ->replaceMatches('/[^\pL\pN._ -]/u', '')
             ->trim()
             ->limit(180, '')
             ->toString();
