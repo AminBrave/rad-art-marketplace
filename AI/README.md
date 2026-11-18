@@ -66,6 +66,22 @@ Use the same loop for every substantial feature, bug, maintenance task or review
 
 For a large authorized decision, create a parent epic and split its task-specific MVP into independently reviewable child issues. Do not create product-phase milestones or infer a delivery sequence from the decision register.
 
+## 3A. Batch development mode
+
+For a stream of small, related maintenance or refactoring tasks, you can authorize one bounded batch instead of approving every slice individually.
+
+Use a clear instruction such as:
+
+> Continue the active workstream in batch mode. Identify the next small, low-risk tasks that fit the approved parent issue, state the batch scope and stop conditions, then implement all safe in-scope tasks without asking me to approve each one. Keep changes independently reviewable and create the necessary linked PRs as drafts. Do not run tests, lint, builds, Playwright, migrations or CI. At the end, give me one consolidated report with exact local commands for the relevant backend, frontend and Playwright checks. I will test the batch and give one approval for the batch at the end.
+
+In batch mode:
+- The AI should proceed through small, reversible tasks already covered by the authorized workstream; no per-task confirmation is needed.
+- Each issue/outcome remains bounded and each PR remains independently reviewable. Related changes may share a PR only when they are tightly coupled.
+- The AI must stop for unresolved product, architecture, schema/API, authorization/privacy/security, destructive-operation, dependency or material operational decisions.
+- The AI must not run verification or CI unless separately authorized for the exact checks/workflow. The maintainer runs the combined verification at the end.
+- A single explicit batch-level approval after verification can authorize the batch review/merge action. Deployment and release remain separate approvals.
+
+The starter prompt's “do not modify until I approve the plan” rule remains the default for ordinary tasks. It is superseded only when you explicitly authorize batch implementation as described above.
 ## 4. Practical prompts for real development situations
 
 You do not need to use every prompt. Describe the situation naturally and use the matching example when you need stronger guardrails.
