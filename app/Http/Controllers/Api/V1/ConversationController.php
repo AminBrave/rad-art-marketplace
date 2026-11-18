@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Actions\Messaging\ListConversationContexts;
 use App\Actions\Messaging\ListConversations;
 use App\Actions\Messaging\ListMessages;
 use App\Actions\Messaging\RemoveMessage;
@@ -21,26 +22,40 @@ use Illuminate\Validation\Rule;
 
 class ConversationController extends Controller
 {
-    public function buyerIndex(Request $request, ListConversations $listConversations): JsonResponse
-    {
+    public function buyerIndex(
+        Request $request,
+        ListConversations $listConversations,
+        ListConversationContexts $listConversationContexts,
+    ): JsonResponse {
         return $this->indexFor($request, $request->user(), 'buyer_user_id', $listConversations, $listConversationContexts);
     }
 
-    public function artistIndex(Request $request, ListConversations $listConversations): JsonResponse
-    {
+    public function artistIndex(
+        Request $request,
+        ListConversations $listConversations,
+        ListConversationContexts $listConversationContexts,
+    ): JsonResponse {
         return $this->indexFor($request, $request->user(), 'artist_user_id', $listConversations, $listConversationContexts);
     }
 
-    public function show(\n        Request $request,\n        Conversation $conversation,\n        ListConversationContexts $listConversationContexts,\n    ): JsonResponse
-    {
+    public function show(
+        Request $request,
+        Conversation $conversation,
+        ListConversationContexts $listConversationContexts,
+    ): JsonResponse {
         $this->authorizeParticipant($request->user(), $conversation, 'view');
+        $contexts = $listConversationContexts->handle([(int) $conversation->id]);
 
         return response()->json([
-            'data' => $this->conversationPayload($conversation->load([
-                'buyer',
-                'artist.artistProfile',
-                'latestMessage.sender',
-            ]), $request->user()),
+            'data' => $this->conversationPayload(
+                $conversation->load([
+                    'buyer',
+                    'artist.artistProfile',
+                    'latestMessage.sender',
+                ]),
+                $request->user(),
+                $contexts[$conversation->id] ?? [],
+            ),
         ]);
     }
 
@@ -295,6 +310,7 @@ class ConversationController extends Controller
         User $user,
         string $participantColumn,
         ListConversations $listConversations,
+        ListConversationContexts $listConversationContexts,
     ): JsonResponse {
         $filters = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
@@ -306,7 +322,17 @@ class ConversationController extends Controller
             $participantColumn,
             trim((string) ($filters['search'] ?? '')),
             $filters['filter'] ?? 'all',
-        )->through(fn (Conversation $conversation): array => $this->conversationPayload($conversation, $user));
+        );
+        $contexts = $listConversationContexts->handle(
+            $conversations->getCollection()->pluck('id')->map(fn ($id): int => (int) $id)->all(),
+        );
+        $conversations->setCollection($conversations->getCollection()->map(
+            fn (Conversation $conversation): array => $this->conversationPayload(
+                $conversation,
+                $user,
+                $contexts[$conversation->id] ?? [],
+            )
+        ));
 
         return response()->json($conversations);
     }
@@ -314,7 +340,11 @@ class ConversationController extends Controller
     /**
      * @return array<string, mixed>
      */
-    private function conversationPayload(\n        Conversation $conversation,\n        User $viewer,\n        array $contexts = [],\n    ): array
+    private function conversationPayload(
+        Conversation $conversation,
+        User $viewer,
+        array $contexts = [],
+    ): array
     {
         $other = (int) $conversation->buyer_user_id === (int) $viewer->id
             ? $conversation->artist
