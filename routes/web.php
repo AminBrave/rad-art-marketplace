@@ -5,7 +5,8 @@ declare(strict_types=1);
 use App\Http\Controllers\Api\V1\AdminArtworkModerationController;
 use App\Http\Controllers\Api\V1\AdminUserController;
 use App\Http\Controllers\Api\V1\ArtistProfileController;
-use App\Http\Controllers\Api\V1\ArtworkController;
+use App\Http\Controllers\Api\V1\ArtistArtworkController;
+use App\Http\Controllers\Api\V1\PublicArtworkController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ConversationController;
 use App\Http\Controllers\Api\V1\DirectConversationController;
@@ -74,11 +75,11 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
     Route::get('/collections/{collection:slug}', [PublicEditorialController::class, 'collection'])->name('collections.show');
     Route::get('/featured-artists', [PublicEditorialController::class, 'featuredArtists'])->name('featured-artists.index');
 
-    Route::get('/categories', [ArtworkController::class, 'categories'])->name('categories.index');
-    Route::get('/artwork-filters', [ArtworkController::class, 'filters'])->name('artworks.filters');
-    Route::get('/artworks', [ArtworkController::class, 'index'])->name('artworks.index');
-    Route::get('/artworks/{artwork:slug}/image', [ArtworkController::class, 'image'])->name('artworks.image');
-    Route::get('/artworks/{artwork:slug}', [ArtworkController::class, 'show'])->name('artworks.show');
+    Route::get('/categories', [PublicArtworkController::class, 'categories'])->name('categories.index');
+    Route::get('/artwork-filters', [PublicArtworkController::class, 'filters'])->name('artworks.filters');
+    Route::get('/artworks', [PublicArtworkController::class, 'index'])->name('artworks.index');
+    Route::get('/artworks/{artwork:slug}/image', [PublicArtworkController::class, 'image'])->name('artworks.image');
+    Route::get('/artworks/{artwork:slug}', [PublicArtworkController::class, 'show'])->name('artworks.show');
 
     Route::middleware(['auth', 'role:artist,admin'])->group(function (): void {
         Route::get('/artist-profile/me', [ArtistProfileController::class, 'mine'])->name('artist-profile.me');
@@ -89,9 +90,9 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
             Route::middleware('role:artist')->group(function (): void {
                 Route::get('/conversations', [ConversationController::class, 'artistIndex'])->name('conversations.index');
             });
-            Route::get('/artworks', [ArtworkController::class, 'mine'])->name('artworks.index');
-            Route::post('/artworks', [ArtworkController::class, 'store'])->middleware('throttle:10,1')->name('artworks.store');
-            Route::patch('/artworks/{artwork}', [ArtworkController::class, 'update'])->middleware('throttle:10,1')->name('artworks.update');
+            Route::get('/artworks', [ArtistArtworkController::class, 'mine'])->name('artworks.index');
+            Route::post('/artworks', [ArtistArtworkController::class, 'store'])->middleware('throttle:10,1')->name('artworks.store');
+            Route::patch('/artworks/{artwork}', [ArtistArtworkController::class, 'update'])->middleware('throttle:10,1')->name('artworks.update');
         });
     });
 
