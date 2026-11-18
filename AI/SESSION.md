@@ -36,13 +36,14 @@ Maintain a safe, evidence-driven AI development workflow for Rademan. Work is or
 - See the authoritative batch rules in AGENTS.md and AI/DEVELOPMENT-WORKFLOW.md.
 
 ## Current delivery work
-- #152 — configure the Rademan Workboard Kanban and repository labels (still open).
+- #152 — configure the Rademan Workboard Kanban and repository labels (open; verify live state before resuming).
 - #185 — architecture and unified development workflow epic (active).
 - #186 — modular-monolith baseline and ADR (completed).
-- #187 — agent/documentation reconciliation (draft PR #200).
-- #188 — incremental backend modularity (draft PR #202; further high-risk candidates remain deferred).
-- #189 — incremental React feature boundaries (completed).
-- #190 — engineering review, verification and delivery workflow (draft PR #201).
+- #187 — agent/documentation reconciliation (completed; PR #200 merged).
+- #188 — incremental backend modularity (open; PRs #193, #202, #206 and #208 merged; PR #207 remains draft pending batch review; higher-risk lifecycle/payload/authorization candidates are deferred).
+- #189 — incremental React feature boundaries (completed; PRs #194–#199 merged).
+- #190 — engineering review, verification and delivery workflow (completed; PR #201 merged).
+- #209 — batch implementation and end-of-batch approval workflow (PR #210 draft pending maintainer verification/review).
 - #153 — completed historical work replacing the old M0–M4 roadmap model with decision-driven task management.
 - #150 remains the canonical product-intent register; brainstorming closed at Decision 41.
 - #148 and #149 are completed historical AI-workflow records. Their old M0 wording is historical only.
