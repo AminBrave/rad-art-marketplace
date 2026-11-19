@@ -22,7 +22,7 @@ Add these fields:
 
 Do not add a Milestone field or create M0–M4 product milestones. Use linked parent/child issues for task breakdown and GitHub's native Assignees for ownership. Use saved views only when they help inspect the same board; do not create separate boards or duplicate status systems.
 
-Add the repository's active issues to the Project as appropriate. Do not convert all 41 product decisions into work items. #150 remains a decision register, not a task backlog. Add #152 and #153 while this setup work is active.
+Add the repository's active issues to the Project as appropriate. Do not convert all 41 product decisions into work items. #150 remains a decision register, not a task backlog.
 
 ## 2. Create repository labels
 
