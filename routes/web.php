@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Api\V1\AdminArtworkModerationController;
 use App\Http\Controllers\Api\V1\AdminEditorialController;
+use App\Http\Controllers\Api\V1\AdminMessageReportController;
 use App\Http\Controllers\Api\V1\AdminUserController;
 use App\Http\Controllers\Api\V1\ArtistArtworkController;
 use App\Http\Controllers\Api\V1\ArtistProfileController;
@@ -11,7 +12,6 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ConversationController;
 use App\Http\Controllers\Api\V1\DirectConversationController;
 use App\Http\Controllers\Api\V1\MessageAttachmentController;
-use App\Http\Controllers\Api\V1\AdminMessageReportController;
 use App\Http\Controllers\Api\V1\MessageSafetyController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\PublicArtworkController;
