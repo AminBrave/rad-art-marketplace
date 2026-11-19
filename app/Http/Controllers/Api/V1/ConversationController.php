@@ -8,15 +8,14 @@ use App\Actions\Messaging\ListConversationContexts;
 use App\Actions\Messaging\ListConversations;
 use App\Actions\Messaging\ListMessages;
 use App\Actions\Messaging\RemoveMessage;
+use App\Actions\Messaging\SendMessage;
 use App\Http\Controllers\Controller;
 use App\Models\Artwork;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\User;
-use App\Notifications\MessageReceivedNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 
@@ -84,8 +83,11 @@ class ConversationController extends Controller
         ]));
     }
 
-    public function storeMessage(Request $request, Conversation $conversation): JsonResponse
-    {
+    public function storeMessage(
+        Request $request,
+        Conversation $conversation,
+        SendMessage $sendMessage,
+    ): JsonResponse {
         $this->authorizeParticipant($request->user(), $conversation, 'sendMessage');
 
         $supportsArtworkReferences = Schema::hasColumn('messages', 'artwork_id');
@@ -113,52 +115,18 @@ class ConversationController extends Controller
             abort_unless($artwork->status === Artwork::STATUS_APPROVED, 404);
         }
 
-        $message = DB::transaction(function () use ($conversation, $request, $validated): Message {
-            $lockedConversation = Conversation::query()->lockForUpdate()->findOrFail($conversation->id);
-
-            if (! empty($validated['client_message_id'])) {
-                $existing = $lockedConversation->messages()
-                    ->withTrashed()
-                    ->where('sender_user_id', $request->user()->id)
-                    ->where('client_message_id', $validated['client_message_id'])
-                    ->first();
-
-                if ($existing) {
-                    return $existing->load($this->messageRelations());
-                }
-            }
-
-            $attributes = [
-                'sender_user_id' => $request->user()->id,
+        $message = $sendMessage->handle(
+            $conversation,
+            $request->user(),
+            [
+                'body' => $validated['body'],
                 'client_message_id' => $validated['client_message_id'] ?? null,
-                'body' => trim($validated['body']),
                 'reply_to_id' => $validated['reply_to_id'] ?? null,
-                'delivered_at' => now(),
-            ];
-            if (Schema::hasColumn('messages', 'artwork_id')) {
-                $attributes['artwork_id'] = $validated['artwork_id'] ?? null;
-            }
-
-            $message = $lockedConversation->messages()->create($attributes);
-
-            $lockedConversation->forceFill(['last_message_at' => $message->created_at])->save();
-
-            $recipientId = (int) $request->user()->id === (int) $lockedConversation->buyer_user_id
-                ? (int) $lockedConversation->artist_user_id
-                : (int) $lockedConversation->buyer_user_id;
-            $recipientMutedAt = $recipientId === (int) $lockedConversation->buyer_user_id
-                ? $lockedConversation->buyer_muted_at
-                : $lockedConversation->artist_muted_at;
-            if ($recipientMutedAt === null) {
-                User::query()->find($recipientId)?->notify(new MessageReceivedNotification(
-                    (int) $lockedConversation->id,
-                    (int) $message->id,
-                    $request->user()->name,
-                ));
-            }
-
-            return $message->load($this->messageRelations());
-        });
+                'artwork_id' => $validated['artwork_id'] ?? null,
+            ],
+            $supportsArtworkReferences,
+            $this->messageRelations(),
+        );
 
         return response()->json([
             'data' => $this->messagePayload($message, $request->user()),
