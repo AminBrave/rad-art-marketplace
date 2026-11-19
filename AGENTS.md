@@ -28,7 +28,8 @@ Authority is purpose-specific: explicit user authorization defines the permitted
 
 ## 2. Non-negotiable permissions
 
-- **Never run GitHub Actions, dispatch a workflow, rerun a workflow, approve a workflow run, or otherwise initiate CI without the user's explicit permission for that run.**
+- **GitHub Actions are manual-only across this repository. Every workflow must use `workflow_dispatch` as its only trigger; do not add `push`, `pull_request`, `schedule`, `release`, `workflow_run`, or any other automatic trigger.**
+- **Never dispatch a workflow, rerun a workflow, approve a workflow run, or otherwise initiate CI unless the user explicitly authorizes that specific run.**
 - **Never run tests, lint, formatting checks, builds, type checks, browser automation, Lighthouse, accessibility scanners, security scanners, migrations, seeders, Artisan verification commands or other executable verification unless explicitly authorized.**
 - A request to implement, debug, review, commit, push, create a branch or open a PR is not permission to execute verification or CI.
 - Do not install packages, start/stop services, clear caches, mutate databases, deploy, release, merge, force-push, rewrite Git history, delete branches or change repository settings without explicit authorization.
@@ -174,7 +175,8 @@ A user may explicitly authorize a bounded batch for any engineering work type: f
 - Keep changes scoped to the requested task. Do not include unrelated formatting or generated files.
 - Before editing or deleting a repository file through an API, fetch its current content and blob SHA; use the fresh SHA for the write.
 - Prefer reviewable commits with imperative, specific messages. Do not claim a local working-tree state when using only remote GitHub access.
-- Do not dispatch or rerun GitHub Actions without explicit user permission. Do not assume opening or updating a PR authorizes CI.
+- All repository GitHub Actions workflows must remain manual-dispatch-only (`workflow_dispatch`); automatic event and scheduled triggers are prohibited.
+- Do not dispatch or rerun GitHub Actions without explicit user permission for that specific run. Requests to implement, review, commit, push, create a branch, open/update a PR, or finish a task do not authorize a workflow run.
 - Workflow files may be inspected or edited when requested, but never manually execute them without permission.
 
 ## 9. Verification and CI policy
@@ -185,7 +187,7 @@ Verification is opt-in, not implied.
 - When authorized, run only the named scope and environment. Do not expand a focused check into a full suite.
 - Before a command with side effects, explain the command and relevant effects when they are not obvious.
 - For CI, obtain explicit permission to start the specific workflow/run. A generic request to check, review or finish is insufficient.
-- If a workflow starts automatically due to a GitHub event, do not initiate additional runs or reruns. Report the observed status accurately if it is visible.
+- Repository workflows must not start automatically: keep only `workflow_dispatch` triggers. If an unexpected run appears, do not initiate additional runs or reruns; report the observed status accurately and flag the unexpected trigger for correction.
 - If not authorized, mark verification as **Not run (permission not granted)**.
 - Distinguish static inspection, locally executed checks and CI-confirmed results. A suggested command is not evidence that it ran.
 
