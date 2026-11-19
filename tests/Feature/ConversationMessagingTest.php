@@ -207,8 +207,8 @@ class ConversationMessagingTest extends TestCase
             ->assertCreated();
 
         $messageId = $sent->json('data.id');
-        $messageCreatedAt = Carbon::parse($sent->json('data.created_at'))->toDateTimeString();
-        $lastMessageAt = $conversation->fresh()->last_message_at->toDateTimeString();
+        $messageCreatedAt = Carbon::parse($sent->json('data.created_at'))->utc()->toDateTimeString();
+        $lastMessageAt = $conversation->fresh()->last_message_at->copy()->utc()->toDateTimeString();
 
         $this->assertSame($messageCreatedAt, $lastMessageAt);
 
@@ -217,7 +217,7 @@ class ConversationMessagingTest extends TestCase
             'body' => 'متن متفاوت در تلاش مجدد',
         ])->assertOk()->assertJsonPath('data.id', $messageId);
 
-        $this->assertSame($lastMessageAt, $conversation->fresh()->last_message_at->toDateTimeString());
+        $this->assertSame($lastMessageAt, $conversation->fresh()->last_message_at->copy()->utc()->toDateTimeString());
         $this->assertDatabaseCount('messages', 2);
     }
 
@@ -651,7 +651,6 @@ class ConversationMessagingTest extends TestCase
         $this->actingAs($outsider)->get($base)->assertNotFound();
         $this->get($base.'/preview')->assertNotFound();
     }
-
 
     public function test_client_message_id_is_scoped_to_sender_and_conversation_and_replay_keeps_original_content(): void
     {
