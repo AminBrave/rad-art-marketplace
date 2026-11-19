@@ -18,7 +18,7 @@ Keep each layer focused; do not copy whole policies between files.
 | Source, tests, configuration and runtime | Evidence of actual implementation and behavior | Product intent or authorization |
 | GitHub issues, PRs and Workboard (when configured) | Authorization records, task scope, review evidence and live progress | A substitute for source inspection or permission |
 
-Authority is purpose-specific: explicit user authorization defines the permitted task; this contract defines the safety boundaries; current source/runtime establishes implementation facts; canonical product decisions establish product intent; live GitHub records establish task/review status. AI/SESSION.md is only a concise handoff and never outranks those sources. Skills and playbook guidance must defer to their owning project documents.
+Authority is purpose-specific: explicit user authorization defines the permitted task and may grant separately gated actions where the contract allows; this contract defines default safety boundaries and explicit permission gates; current source/runtime establishes implementation facts; canonical product decisions establish product intent; live GitHub records establish task/review status. AI/SESSION.md is only a concise handoff and never outranks those sources. Skills and playbook guidance must defer to their owning project documents.
 
 - Rademan is a Persian-first artist discovery and artist-contact marketplace.
 - Recorded stack: PHP 8.3+ and Laravel 13; React 18, JavaScript, React Router 7, TanStack Query 5 and Vite. Confirm installed versions in manifests before relying on version-specific APIs.
