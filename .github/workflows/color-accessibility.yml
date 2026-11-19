@@ -1,9 +1,6 @@
 name: RAD accessibility and regression checks
 
 on:
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:
