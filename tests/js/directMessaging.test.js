@@ -13,6 +13,7 @@ const messagingStatusBanners = read('../../resources/js/app/MessagingStatusBanne
 const messagingQueries = read('../../resources/js/app/useMessagingQueries.js');
 const queryUtils = read('../../resources/js/app/messagingQueryUtils.js');
 const conversations = read('../../app/Http/Controllers/Api/V1/ConversationController.php');
+const listMessages = read('../../app/Actions/Messaging/ListMessages.php');
 const directStart = read('../../app/Http/Controllers/Api/V1/DirectConversationController.php');
 const attachments = read('../../app/Http/Controllers/Api/V1/MessageAttachmentController.php');
 const routes = read('../../routes/web.php');
@@ -65,8 +66,8 @@ test('conversation history uses incremental synchronization and stable older-mes
     assert.ok(queryUtils.includes('after_id: cached.latestMessageId ?? 0'));
     assert.ok(queryUtils.includes('updated_after: cached.syncCursor'));
     assert.ok(messagingQueries.includes('params: { before_id: beforeId }'));
-    assert.ok(conversations.includes("Carbon::parse($filters['updated_after'])->toDateTimeString()"));
-    assert.ok(conversations.includes("where('id', '<', (int) $filters['before_id'])"));
+    assert.ok(listMessages.includes("Carbon::parse($filters['updated_after'])->toDateTimeString()"));
+    assert.ok(listMessages.includes("where('id', '<', (int) $filters['before_id'])"));
     assert.ok(conversations.includes("'sync_cursor' => $syncCursor->toISOString()"));
 });
 

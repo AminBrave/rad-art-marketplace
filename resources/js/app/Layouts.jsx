@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Images, LayoutDashboard, Menu, MessageCircle, UserRound, Users, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import { getWorkspacePrimaryLinks } from './workspaceNavigation';
 import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, Checkbox, NotificationListSkeleton } from '../components/ui';
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
@@ -16,29 +17,6 @@ const publicSecondaryLinks = [
     { to: '/help', label: 'راهنما' },
     { to: '/contact', label: 'تماس' },
 ];
-
-export function getWorkspacePrimaryLinks(role) {
-    const links = {
-        artist: [
-            { to: '/dashboard/artist', label: 'نمای کلی', end: true },
-            { to: '/dashboard/artist/profile', label: 'پروفایل هنرمند' },
-            { to: '/dashboard/artist/artworks', label: 'مدیریت آثار' },
-            { to: '/dashboard/artist/messages', label: 'پیام‌های مستقیم' },
-        ],
-        buyer: [
-            { to: '/dashboard/buyer', label: 'نمای کلی', end: true },
-            { to: '/dashboard/buyer/messages', label: 'پیام‌های مستقیم' },
-        ],
-        admin: [
-            { to: '/admin', label: 'نمای کلی', end: true },
-            { to: '/admin/users', label: 'مدیریت کاربران' },
-            { to: '/admin/artworks', label: 'بررسی آثار' },
-            { to: '/admin/message-reports', label: 'گزارش پیام‌ها' },
-            { to: '/admin/editorial', label: 'مجموعه‌ها و سردبیری' },
-        ],
-    };
-    return links[role] ?? [];
-}
 
 export function PublicLayout() {
     const { user, logout } = useAuth();
