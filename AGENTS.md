@@ -6,6 +6,20 @@ Explicit user instructions take precedence over this file, except that the AI mu
 
 ## 1. Project identity and source of truth
 
+## Instruction and evidence map
+
+Keep each layer focused; do not copy whole policies between files.
+
+| Layer | Owns | Does not own |
+|---|---|---|
+| AGENTS.md | Entry point, authority/permission rules, evidence standards, global engineering invariants and task routing | Long task-specific procedures or duplicated project reference material |
+| AI/ | Durable Rademan context, product/architecture decisions, governance, delivery workflow and human-facing documentation | Proof of implementation or a second copy of skill procedures |
+| .agents/skills/ | Reusable, task-specific procedures, checklists and outputs | Overrides to this contract, global permissions or a competing delivery lifecycle |
+| Source, tests, configuration and runtime | Evidence of actual implementation and behavior | Product intent or authorization |
+| GitHub issues, PRs and Workboard (when configured) | Authorization records, task scope, review evidence and live progress | A substitute for source inspection or permission |
+
+Authority is purpose-specific: explicit user authorization defines the permitted task and may grant separately gated actions where the contract allows; this contract defines default safety boundaries and explicit permission gates; current source/runtime establishes implementation facts; canonical product decisions establish product intent; live GitHub records establish task/review status. AI/SESSION.md is only a concise handoff and never outranks those sources. Skills and playbook guidance must defer to their owning project documents.
+
 - Rademan is a Persian-first artist discovery and artist-contact marketplace.
 - Recorded stack: PHP 8.3+ and Laravel 13; React 18, JavaScript, React Router 7, TanStack Query 5 and Vite. Confirm installed versions in manifests before relying on version-specific APIs.
 - Preserve the established RAD design system, shared tokens/primitives, responsive layouts, accessibility and RTL behavior.
@@ -126,21 +140,16 @@ Do not state that a feature is missing until the relevant routes, screens, data 
 - Do not add dependencies without a demonstrated need and compatibility review.
 - Never delete, skip, weaken or broadly loosen a failing test merely to obtain a green result. Fix the cause or replace coverage with equivalent or stronger coverage.
 
-## 6A. Batch implementation and end-of-batch approval
+## 6A. Project-wide batch mode
 
-A product owner may explicitly authorize a **bounded batch** of related, low-risk implementation tasks. When they do:
+A user may explicitly authorize a bounded batch for any engineering work type: feature, bug, security, maintenance, documentation, design/RTL, quality, tooling or operations. A batch may cross disciplines when its tasks belong to one named workstream or the user explicitly names a finite cross-project task list; it is never blanket permission to clear the backlog.
 
-- Treat that authorization as standing permission to select and implement the small, independently reviewable tasks already within the approved parent issue/epic or explicitly named batch scope. Do not ask for approval after each small task.
-- At batch start, state the proposed task list, boundaries, dependencies, and stop conditions. Proceed through all safe, in-scope tasks without pausing for per-task confirmation.
-- Keep each outcome small and independently testable. Prefer one PR per independently reviewable issue/outcome; group only tightly coupled changes in one PR. Do not create a giant mixed-scope PR to simulate batching.
-- Re-check live source and GitHub state between slices. Update issue/PR records as work progresses, and avoid duplicate issues or work already completed.
-- Stop and ask only when a genuine decision boundary appears: product behavior or scope changes, architecture/data/API contract changes not already approved, authorization/privacy/security semantics, destructive or irreversible operations, new dependencies, material cost/operational risk, conflicting evidence, or an acceptance criterion that cannot be met safely.
-- Do not interpret batch authorization as permission to run tests, lint, builds, browser automation, migrations, seeders, scanners or CI. The maintainer performs one combined verification pass at the end unless they separately authorize exact execution.
-- Do not interpret batch authorization as permission to deploy, release, force-push, rewrite history, change repository settings, or merge. At batch completion, present all PRs/issues together with one consolidated verification handoff. One explicit end-of-batch approval may authorize the requested batch review/merge action; do not demand separate approval for every small PR when the user has clearly approved the batch.
-- If a task falls outside the authorized batch or meets a stop condition, park it with evidence and continue other independent safe tasks where possible.
-- The final batch report must include every issue/PR, changed files, exact combined local commands, which test layers are relevant (frontend/backend/Playwright), database side effects, unrun checks, risks and the one decision needed to close the batch.
-
-A short instruction such as “do the next small tasks in batch; I will test and approve them together at the end” authorizes this batch workflow for the active workstream. It does not authorize unrelated product work or any of the separately gated operations above.
+- A clear instruction such as “batch the next Ready tasks in [area/workstream] and bring me one combined verification handoff” authorizes the bounded batch. A board status alone does not authorize work. If the workstream or selection boundary is unclear, ask one focused question.
+- Do not ask for approval after every in-scope slice. State the batch plan once, then complete all safe, authorized tasks; follow AI/DEVELOPMENT-WORKFLOW.md §2 for selection, sequencing, PR grouping and the final handoff.
+- Keep each independently reviewable outcome separate. Re-check live source and GitHub state between slices; avoid duplicate or already-completed work.
+- Park a slice when it reaches a product, architecture, API/schema/data-contract, authorization/privacy/security, destructive-operation, dependency or material operational-risk decision boundary. Continue other independent safe slices.
+- Batch authorization never authorizes tests, lint, formatting, builds, type checks, browser automation, migrations, seeders, scanners or CI. It never authorizes deployment, release, force-push, history rewriting, repository-setting changes or merge.
+- At batch end, provide one consolidated report and one decision point. A single explicit end-of-batch approval may cover the listed review/merge actions; do not ask for separate approval per PR. All other permission gates remain unchanged.
 ## 7. Backend, data and frontend invariants
 
 - Laravel policies, middleware and explicit server-side ownership/participant checks are authoritative.
