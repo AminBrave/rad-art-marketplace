@@ -3,51 +3,50 @@
 > Durable handoff between chats, not a transcript or model memory. Keep concise and update only when project-wide state changes.
 
 ## Current objective
-Maintain a safe, evidence-driven AI development workflow for Rademan. Work is organized as explicitly authorized GitHub delivery issues on one decision-driven Kanban board. There is no product-phase roadmap. The product interface direction is a coherent, app-like responsive web experience; authenticated users retain role-aware primary navigation across authenticated routes, a compact dashboard header with primary and secondary navigation grouped in the hamburger drawer, and a primary-only mobile/tablet bottom bar, with existing header/account controls retained. See `AI/DESIGN-SYSTEM.md`.
+Maintain a safe, evidence-driven development workflow for Rademan. Work is organized as explicitly authorized GitHub delivery issues on one decision-driven Kanban board. There is no product-phase roadmap. The product interface direction is a coherent, app-like responsive web experience; authenticated users retain role-aware primary navigation across authenticated routes, a compact dashboard header with primary and secondary navigation grouped in the hamburger drawer, and a primary-only mobile/tablet bottom bar. See `AI/DESIGN-SYSTEM.md`.
 
 ## Project starting point
 - Product: Persian-first artist discovery and artist-contact marketplace. See `AI/PROJECT.md`.
 - Default integration branch: `main`.
 - Single AI entry point: `AGENTS.md`.
-- Human tutorial: `AI/README.md`.
+- Human operating guide: `AI/README.md`.
+- Engineering practices and curated external references: `AI/ENGINEERING-PLAYBOOK.md`.
 - Task and Kanban rules: `AI/TASK-MANAGEMENT.md`.
-- Canonical product intent: #150, with 41 standalone decision comments.
-- Canonical skills: `.agents/skills/`; there is no maintained `.claude/skills/` mirror.
-- Optional context helper: `npm run ai:context -- --task "..."`.
+- Issue-to-release workflow and verification selection: `AI/DEVELOPMENT-WORKFLOW.md`.
+- Canonical product intent: #150, with 41 standalone decision records.
+- Canonical task skills: `.agents/skills/`; there is no maintained `.claude/skills/` mirror.
+- Optional local context helper: `npm run ai:context -- --task "<one-sentence task>"`.
 
 ## Confirmed workflow constraints
-- Product decisions in #150 are brainstorming/future direction unless separately authorized for implementation.
-- When a decision is named, retrieve only its canonical comment; do not read unrelated decisions by default.
+- Product decisions in #150 are future product intent unless separately authorized for implementation.
+- When a decision is named, retrieve only its canonical record; do not read unrelated decisions by default.
 - Every authorized task has a bounded MVP, explicit exclusions, acceptance criteria and evidence-based dependencies.
 - GitHub issue numbers identify tasks; D01–D41 identify product decisions. They are different namespaces.
-- The Rademan Workboard is the only intended execution board. No product milestones or phase roadmap are used.
+- The Rademan Workboard is the intended single execution view; #152 remains open and its live configuration must be verified before claiming setup is complete.
 - No tests, lint, builds, migrations, seeders, scanners or CI without explicit permission for the specific execution.
 - No deployment, merge, force-push, shared-history rewrite or repository-setting change without explicit permission.
-- Preserve Laravel/API, React, RAD design system, accessibility, Persian and RTL conventions.
-- RAD app-shell direction is defined in `AI/DESIGN-SYSTEM.md`; implementation uses shared role route definitions and a primary and secondary navigation inside the dashboard hamburger drawer plus a primary-only authenticated mobile/tablet bottom bar.
+- Preserve Laravel/API, React, RAD design-system, accessibility, Persian and RTL conventions.
 - Current source and live GitHub state outrank chat history and AI-generated summaries.
 
-## Batch delivery preference
-- The product owner has explicitly requested batching small, related implementation tasks to avoid per-slice approval overhead.
-- For a bounded active workstream, state the batch scope and stop conditions once, then implement all safe, low-risk in-scope slices without asking for approval after each one.
-- Keep issues and PRs independently reviewable; use draft PRs while the maintainer's combined local verification is pending.
-- Provide one consolidated set of exact backend/frontend/Playwright commands at the end. The maintainer tests the batch and gives one batch-level approval for the review/merge step.
-- Batch authorization does not authorize assistant-run tests, lint, builds, browser automation, CI, migrations, destructive operations, deployment or release. Stop for unresolved product, architecture, API/schema, security/privacy or material-risk decisions.
-- See the authoritative batch rules in AGENTS.md and AI/DEVELOPMENT-WORKFLOW.md.
+## Architecture workstream status
+- Parent epic #185 — architecture and unified development workflow: **closed/completed on 2026-11-19**.
+- Child workstreams #186–#190 are closed. Relevant implementation and documentation PRs are merged to `main`.
+- #209 batch implementation and end-of-batch approval documentation is complete through merged PR #210.
+- #217 SendMessage action extraction is complete through merged PR #218.
+- Higher-risk backend lifecycle, payload-serialization and authorization-consolidation candidates were deliberately deferred; do not treat them as approved follow-up implementation.
+- Historical issues and PRs remain authoritative records. Verify live GitHub state before resuming any historical task.
 
-## Current delivery work
-- #152 — configure the Rademan Workboard Kanban and repository labels (open; verify live state before resuming).
-- #185 — architecture and unified development workflow epic (active).
-- #186 — modular-monolith baseline and ADR (completed).
-- #187 — agent/documentation reconciliation (completed; PR #200 merged).
-- #188 — incremental backend modularity (open; PRs #193, #202, #206 and #208 merged; PR #207 remains draft pending batch review; higher-risk lifecycle/payload/authorization candidates are deferred).
-- #189 — incremental React feature boundaries (completed; PRs #194–#199 merged).
-- #190 — engineering review, verification and delivery workflow (completed; PR #201 merged).
-- #209 — batch implementation and end-of-batch approval workflow (PR #210 draft pending maintainer verification/review).
-- #153 — completed historical work replacing the old M0–M4 roadmap model with decision-driven task management.
-- #150 remains the canonical product-intent register; brainstorming closed at Decision 41.
-- #148 and #149 are completed historical AI-workflow records. Their old M0 wording is historical only.
-- Historical branches are not integration sources; new work must branch from the current `main`.
+## Current documentation work
+- #219 — refresh agent skills and engineering playbook. This is the active task for the current documentation update.
+- #152 — Workboard configuration remains a separate open task, outside #185.
+
+## Batch delivery preference
+- For a bounded, explicitly authorized workstream, state the batch scope and stop conditions once, then implement all safe, low-risk in-scope slices without per-slice approval.
+- Keep independently reviewable outcomes in separate PRs; use draft PRs while maintainer verification is pending.
+- Provide one consolidated set of exact backend/frontend/Playwright commands at the end, only for affected boundaries.
+- Batch authorization does not authorize assistant-run tests, lint, builds, browser automation, CI, migrations, destructive operations, deployment or release.
+- Stop for unresolved product, architecture, API/schema, authorization/privacy/security or material-risk decisions.
+- See the authoritative rules in `AGENTS.md` and `AI/DEVELOPMENT-WORKFLOW.md`.
 
 ## Resume protocol
-Read `AGENTS.md` first. Inspect the live issue/PR, current branch/commit and relevant source. For a named decision, retrieve only its canonical comment. Record confirmed facts, assumptions, unknowns, authorized scope, MVP, exclusions, verification status and next actions on the relevant issue. Update this handoff only when project-wide state changes.
+Read `AGENTS.md` first. Inspect the live issue/PR, current branch/commit and relevant source. For a named product decision, retrieve only its canonical record. Record confirmed facts, assumptions, unknowns, authorized scope, MVP, exclusions, verification status and next actions on the relevant issue. Update this handoff only when project-wide state changes.
