@@ -11,6 +11,7 @@ use App\Models\MessageAttachment;
 use App\Models\MessageReaction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -206,7 +207,7 @@ class ConversationMessagingTest extends TestCase
             ->assertCreated();
 
         $messageId = $sent->json('data.id');
-        $messageCreatedAt = \\Illuminate\\Support\\Carbon::parse($sent->json('data.created_at'))->toDateTimeString();
+        $messageCreatedAt = Carbon::parse($sent->json('data.created_at'))->toDateTimeString();
         $lastMessageAt = $conversation->fresh()->last_message_at->toDateTimeString();
 
         $this->assertSame($messageCreatedAt, $lastMessageAt);
