@@ -31,15 +31,20 @@ At the start of a task, read this file first. Then classify the task and select 
 - Any task: inspect the live GitHub issue/PR if supplied; check for related open work before creating duplicates.
 - Product behavior, scope or user journey: read `AI/PROJECT.md`; when a specific product decision is named, retrieve only its canonical record from #150; read `AI/TASK-MANAGEMENT.md` for issue/MVP/Kanban rules.
 - Cross-chat continuation or project-wide planning: read `AI/SESSION.md` and the referenced live issue/PR.
-- Feature planning or product discovery: load `.agents/skills/feature-planning/SKILL.md`.
+- Product discovery, opportunity assessment, customer research or experiment design: load `.agents/skills/product-discovery/SKILL.md`; read `AI/PROJECT.md` and the named canonical #150 decision when relevant.
+- Feature planning, requirements, acceptance criteria or delivery slicing: load `.agents/skills/feature-planning/SKILL.md` and follow `AI/TASK-MANAGEMENT.md`.
+- UI/UX, user journeys, information architecture, interaction design, visual design or design-system changes: load `.agents/skills/ui-ux-design/SKILL.md` and `AI/DESIGN-SYSTEM.md`; consult `AI/RAD-COMPONENT-CATALOGUE.md` before changing shared UI.
 - Laravel, API, database or backend work: load `.agents/skills/laravel-backend/SKILL.md`.
-- React, routing, frontend or UI work: load `.agents/skills/react-frontend/SKILL.md`.
+- React, routing, frontend or UI implementation: load `.agents/skills/react-frontend/SKILL.md`.
 - Bug or regression: load `.agents/skills/debugging/SKILL.md`.
 - Authentication, authorization, privacy, uploads or abuse: load `.agents/skills/security-review/SKILL.md`.
 - PR or code review: load `.agents/skills/code-review/SKILL.md`.
 - Tests, accessibility, performance or verification planning: load `.agents/skills/quality-engineering/SKILL.md`.
 - Branches, commits, GitHub issues/PRs or repository workflow: load `.agents/skills/git-github/SKILL.md`.
+- Deployment planning, runtime configuration, observability, backups, incident response, reliability or operational readiness: load `.agents/skills/operations-reliability/SKILL.md` and inspect the actual deployment/runtime configuration before making claims.
 - Repository setup or settings: consult `AI/GITHUB-SETUP.md`.
+- For cross-cutting engineering principles and curated external references, consult `AI/ENGINEERING-PLAYBOOK.md`. It is an index and guidance layer, not a source of project-specific facts or permission.
+- Project delivery and board management remain governed by `AI/TASK-MANAGEMENT.md` and `AI/DEVELOPMENT-WORKFLOW.md`; do not create a duplicate project-management skill.
 - A cross-layer task may require multiple skills. Load only those needed; do not load every skill by default.
 - If unsure which skill applies, inspect the `name` and `description` in the frontmatter of available `.agents/skills/*/SKILL.md` files, then load the closest relevant skill.
 
