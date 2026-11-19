@@ -59,15 +59,9 @@ export function DropdownMenuSeparator({ className = '', ...props }) {
     return <DropdownMenuPrimitive.Separator className={cn('my-1 h-px bg-border', className)} {...props} />;
 }
 
-export const DropdownMenu = {
-    Root: DropdownMenuPrimitive.Root,
-    Trigger: DropdownMenuPrimitive.Trigger,
-    Portal: DropdownMenuPrimitive.Portal,
-    Content: DropdownMenuContent,
-    Item: DropdownMenuItem,
-    Label: DropdownMenuLabel,
-    Separator: DropdownMenuSeparator,
-};
+export function DropdownMenuRoot(props) {
+    return <DropdownMenuPrimitive.Root {...props} />;
+}
 
 export function Breadcrumbs({ items = [], className = '' }) {
     return (

@@ -4,7 +4,7 @@ export {
     TabsList,
     TabsTrigger,
     TabsContent,
-    DropdownMenu,
+    DropdownMenuRoot,
     DropdownMenuTrigger,
     DropdownMenuContent,
     DropdownMenuItem,

@@ -10,7 +10,6 @@ import axios from 'axios';
 import { useMessagingQueries } from './useMessagingQueries';
 import { useAuth } from './AuthContext';
 import { useSearchParams } from 'react-router-dom';
-import { X } from 'lucide-react';
 
 function timeLabel(value) {
     if (!value) return '';

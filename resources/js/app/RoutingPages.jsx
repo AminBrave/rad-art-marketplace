@@ -3,7 +3,8 @@ import axios from 'axios';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { getWorkspacePrimaryLinks, WorkspaceLayout } from './Layouts';
+import { WorkspaceLayout } from './Layouts';
+import { getWorkspacePrimaryLinks } from './workspaceNavigation';
 import { Skeleton, ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, FormFieldSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton, PageHeader, WorkspaceHero, Checkbox } from '../components/ui';
 const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
 
