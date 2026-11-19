@@ -15,39 +15,55 @@ Every delivery issue should identify:
 
 A product decision, planning issue, priority label or board status is not implementation authorization. Resolve product, UX, data/API compatibility and architecture decisions before changing behavior. For larger work, use an epic with independently reviewable child issues.
 
-## 2. Implement an authorized batch of reviewable slices
+## 2. Project-wide batch delivery
 
-The default remains one bounded outcome per issue/PR. When the product owner explicitly requests batch delivery, do not pause for approval after every small task.
+The default remains one bounded outcome per issue/PR. When the user explicitly authorizes a batch, apply this workflow to any engineering task category—not only feature implementation—including bugs, security, maintenance, documentation, design/RTL, quality, tooling and operations.
 
-1. Re-check the live parent issue/epic, child issues, open PRs, current main, relevant source and task-specific skills.
-2. At batch start, publish a concise batch plan: candidate tasks, boundaries, dependencies, intended issue/PR grouping, and explicit stop conditions.
-3. Implement every safe, in-scope, low-risk task in the batch. Use short-lived branches from current main; keep each independently reviewable outcome in its own PR unless two changes are tightly coupled.
-4. Do not create duplicate issues. Add child issues only for genuinely distinct deliverables that need durable tracking; link them to the parent.
-5. Update focused tests and documentation as each slice requires. Review callers and the full diff after each slice; record evidence and progress on the relevant issue/PR.
-6. Do not request per-slice approval when the batch authorization clearly covers the work. Stop only for unresolved product/architecture decisions, scope expansion, API/schema/data-contract changes not already authorized, security/privacy/authorization semantics, destructive or irreversible operations, new dependencies, material operational risk, conflicting evidence, or a task that cannot be safely bounded.
-7. Open PRs for the batch and keep them draft while maintainer verification is pending. Each PR must state its own behavior, risk, issue link and verification scope. The batch report should group the PRs and provide one consolidated test handoff.
-8. The maintainer runs the combined local verification once at the end and gives one batch-level result/approval. After a passing report and explicit batch approval, the assistant may perform the specifically approved PR review/ready/merge actions for the batch; do not ask for a separate approval per small PR.
-9. Batch authorization does not authorize the assistant to run tests, lint, builds, Playwright, migrations, seeders, scanners or CI. It also does not authorize deployment or release. Those remain separate explicit gates unless the user names the exact action.
-10. If one item is blocked, park it with evidence and continue independent safe items. Report the blocked item and the smallest decision/evidence needed.
+### 2.1 Authorization and batch boundary
 
-Do not add dependencies, generic service/repository layers, new product behavior or unrelated cleanup without evidence and the required approval.
+A batch is a finite set of related tasks under one named workstream/parent issue, or a finite cross-project list the user explicitly identifies. It is not blanket permission to work through every open issue or every product decision.
 
-## 2A. Batch boundaries and final handoff
+- Examples of clear authorization: “Batch issues #240, #241 and #242”; “Do the next Ready documentation tasks”; “Batch the next three low-risk tasks in the frontend workstream and bring me one combined handoff.”
+- If the user asks the agent to select tasks, select only from the explicitly named area/workstream and only tasks whose authorization, scope and acceptance criteria are already clear. Prefer Ready items when the live Workboard is accessible; otherwise use live GitHub issues and explain the source. Do not claim the Workboard is configured or accessible unless verified.
+- A Ready status, priority, label, roadmap entry or product decision is not by itself permission to implement. The user's batch instruction authorizes only the clearly bounded tasks it names or asks the agent to select.
+- If “next tasks” has no clear area, count or parent workstream, ask one concise clarification rather than silently treating the whole backlog as in scope.
+- Do not invent a fixed task count. Honor a user-specified count/list; otherwise choose a small, coherent set that can be reviewed together without making a large mixed-scope PR.
 
-A batch is a bounded set of related tasks under one explicitly named workstream/parent issue, not blanket permission to work across the product. At the start, define the batch in terms of outcomes, not a predetermined number of files or PRs.
+### 2.2 Select and sequence
 
-At the end, provide one consolidated handoff containing:
-- All included and deferred issues, with links and reasons.
-- All PRs, branches, changed files and commit references.
-- The exact combined local commands, grouped by backend, frontend and Playwright only where relevant. Do not ask the maintainer to run irrelevant suites.
-- Whether Playwright is required; if required, state that it uses the already-running app and configured MySQL/MariaDB database and may leave records.
-- Tests/checks not run by the assistant and any automatic CI status actually observed.
-- Acceptance criteria, risks and any remaining stop-condition decisions.
-- One batch-level next action: report test results and explicitly approve the batch review/merge, or request fixes.
+1. Re-check the live parent issue/epic, candidate issues, open PRs, current target branch, relevant source and task-specific skills.
+2. Prefer explicitly named tasks, then eligible child issues under the named parent, then the next eligible Ready tasks in the named area. Do not infer dependencies from issue numbers, labels or topic similarity.
+3. Confirm each task has clear authorization, a bounded outcome, acceptance criteria and no unresolved stop-condition decision. Product-decision work must still pass the #150 authorization gate.
+4. Sequence only evidenced dependencies. Work on independent safe tasks while a blocked slice is parked.
+5. At batch start, publish one concise plan: included tasks, exclusions, dependencies/order, intended branch/PR grouping and stop conditions. Do not ask for per-task confirmation after that.
 
-Keep each PR independently revertible where practical. A batch may contain multiple PRs; it must not collapse unrelated changes into one broad PR merely to reduce approval count.
+### 2.3 Execute and deliver
 
+1. Re-check live source and GitHub state before each independent slice; branch from the current agreed base.
+2. Keep changes small, focused and independently reviewable. Prefer one PR per independently reviewable outcome; combine tasks only when they are tightly coupled and should be reviewed/reverted together.
+3. Do not create duplicate issues. Create/link child issues only for distinct deliverables that need durable tracking and are within the authorized batch.
+4. Record progress and evidence on the relevant issue/PR. Each PR states its own outcome, scope, exclusions, risks, linked issue and honest verification status.
+5. Keep PRs draft while the maintainer's consolidated verification is pending. Review the full diff and relevant callers after each slice.
+6. Do not add dependencies, speculative abstractions, unrelated cleanup or new product behavior to make batching convenient.
 
+### 2.4 Stop conditions and permission boundaries
+
+Park the affected slice and explain the smallest decision/evidence needed if it requires a new product choice, architecture change, API/schema/data-contract change, authorization/privacy/security semantic change, destructive or irreversible operation, new dependency, material cost/operational risk, or resolution of conflicting evidence. Continue independent safe tasks where possible.
+
+Batch authorization does **not** authorize the assistant to run tests, lint, formatting, builds, type checks, browser automation, migrations, seeders, scanners or CI. It does not authorize deployment, release, force-push, history rewriting, repository-setting changes or merge. Those remain separate explicit gates. The maintainer may run one combined verification pass at the end. One explicit end-of-batch approval can authorize the specifically named review/ready/merge actions for all listed PRs; do not require approval separately for each small PR.
+
+### 2.5 One consolidated end-of-batch handoff
+
+Provide one final report containing:
+- Every included, completed, blocked and deferred issue, with links and reasons.
+- Every PR, branch, commit and changed file; identify coupled PRs and dependencies.
+- Acceptance criteria met, unmet or deferred, plus material risks and assumptions.
+- Exact combined local commands grouped by backend, frontend, accessibility and Playwright only where relevant; do not prescribe irrelevant suites.
+- Whether Playwright is required; if so, state that it attaches to the already-running app, uses the configured MySQL/MariaDB database and may leave persistent records.
+- Checks not run by the assistant and any automatically started CI status actually observed. Never initiate CI to complete the handoff.
+- One batch-level next action: report the combined verification result and approve the listed review/merge actions, or request fixes.
+
+Keep each PR independently revertible where practical. A batch may span multiple PRs, but must not collapse unrelated changes into one broad PR merely to reduce approval count.
 ## 3. Review checklist
 
 Use the parts that apply to the change; do not require every item mechanically.
@@ -119,19 +135,22 @@ Database commands such as `npm run db:migrate`, `npm run db:seed`, `npm run db:s
 - Deployment, release tagging, production migrations and post-release smoke checks each require separate explicit authorization.
 - Record the merged/deployed commit and environment when those actions occur. A merge is not a deployment.
 
-## 7. Documentation ownership
+## 7. Documentation and instruction ownership
 
-- `AI/ENGINEERING-PLAYBOOK.md`: curated engineering principles, lifecycle map and external reference index; it does not override project-specific contracts.
-- `.agents/skills/product-discovery/SKILL.md`, `ui-ux-design/SKILL.md` and `operations-reliability/SKILL.md`: focused procedures for those disciplines.
+Keep one authoritative home for each kind of guidance. Other files should link to it rather than copy its full rules.
 
-- `AGENTS.md`: authoritative permissions, evidence, implementation and delivery contract.
-- `.agents/skills/*/SKILL.md`: task-specific procedures; must not contradict `AGENTS.md` or executable scripts.
-- `AI/PROJECT.md` and canonical comments on #150: product intent and decisions.
-- `AI/TASK-MANAGEMENT.md`: decision-to-task, MVP and Workboard rules.
-- `AI/DEVELOPMENT-WORKFLOW.md`: issue-to-release sequence, review checklist and verification selection.
-- `tests/QUALITY-MATRIX.md`: supported journeys, actor boundaries and known coverage gaps.
-- `tests/README.md`: test layers, setup, commands and side effects.
-- `scripts/README.md`, `package.json` and `scripts/project.mjs`: public commands and executable orchestration.
-- `.github/workflows/*.yml` and live GitHub settings: actual automation configuration; never infer enforcement from documentation.
-- `AI/SESSION.md`: concise cross-issue objective and next actions, not a task transcript.
-- GitHub issues/PRs: task scope, approval, review and delivery evidence.
+| Location | Responsibility |
+|---|---|
+| AGENTS.md | Repository entry point, global permissions, evidence/authority model, engineering invariants and routing |
+| AI/PROJECT.md and canonical #150 records | Product intent, confirmed baseline and product decisions |
+| AI/TASK-MANAGEMENT.md | Issue structure, decision-to-task authorization, MVP and Workboard rules |
+| AI/DEVELOPMENT-WORKFLOW.md | Delivery lifecycle, project-wide batch procedure, review checklist and verification selection |
+| AI/ENGINEERING-PLAYBOOK.md | Cross-cutting engineering principles and curated external references |
+| AI/SESSION.md | Short-lived cross-chat handoff; remove stale status and never duplicate task records |
+| .agents/skills/*/SKILL.md | Triggered task-specific methods, checklists and expected outputs; defer global policy to AGENTS.md and delivery lifecycle to this document |
+| Source, tests, manifests, scripts and runtime | Actual implementation, supported commands and observed behavior |
+| GitHub issues/PRs and live Workboard (when configured) | Authorization, task scope, review and delivery status |
+
+The authority model is not a simple document ranking: user authorization sets the task boundary; AGENTS.md sets non-negotiable operating constraints; source/runtime is evidence of implementation; canonical decision records establish product intent; live GitHub records establish task status. A skill, handoff or playbook must not override those sources.
+
+When a skill needs GitHub mechanics, it should describe branch/commit/PR execution and link here for batch lifecycle. When it needs product or engineering context, it should point to the owning AI/ document rather than copying it.
