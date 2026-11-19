@@ -11,7 +11,7 @@ import {
     DialogDescription,
     DialogTitle,
     DialogTrigger,
-    DropdownMenuRoot,
+    DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
@@ -156,7 +156,7 @@ export default function ComponentShowcase() {
                     <div className="grid content-start gap-4">
                         <h3 className="font-bold">منو و پنجره محاوره‌ای</h3>
                         <div className="flex flex-wrap items-center gap-3">
-                            <DropdownMenuRoot>
+                            <DropdownMenu.Root>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="outline">باز کردن منو</Button>
                                 </DropdownMenuTrigger>
@@ -166,7 +166,7 @@ export default function ComponentShowcase() {
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem disabled>گزینه غیرفعال</DropdownMenuItem>
                                 </DropdownMenuContent>
-                            </DropdownMenuRoot>
+                            </DropdownMenu.Root>
                             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                                 <DialogTrigger asChild><Button>باز کردن دیالوگ</Button></DialogTrigger>
                                 <DialogContent>
