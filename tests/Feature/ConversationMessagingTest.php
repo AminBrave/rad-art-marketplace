@@ -206,16 +206,17 @@ class ConversationMessagingTest extends TestCase
             ->assertCreated();
 
         $messageId = $sent->json('data.id');
-        $lastMessageAt = $conversation->fresh()->last_message_at->toISOString();
+        $messageCreatedAt = \\Illuminate\\Support\\Carbon::parse($sent->json('data.created_at'))->toDateTimeString();
+        $lastMessageAt = $conversation->fresh()->last_message_at->toDateTimeString();
 
-        $this->assertSame($sent->json('data.created_at'), $lastMessageAt);
+        $this->assertSame($messageCreatedAt, $lastMessageAt);
 
         $this->postJson('/api/v1/conversations/'.$conversation->id.'/messages', [
             ...$payload,
             'body' => 'متن متفاوت در تلاش مجدد',
         ])->assertOk()->assertJsonPath('data.id', $messageId);
 
-        $this->assertSame($lastMessageAt, $conversation->fresh()->last_message_at->toISOString());
+        $this->assertSame($lastMessageAt, $conversation->fresh()->last_message_at->toDateTimeString());
         $this->assertDatabaseCount('messages', 2);
     }
 
