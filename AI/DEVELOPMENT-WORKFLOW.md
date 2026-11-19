@@ -60,6 +60,8 @@ Use the parts that apply to the change; do not require every item mechanically.
 - [ ] Error, empty, loading, retry, duplicate-submission, idempotency and rollback paths are covered where relevant.
 - [ ] Performance implications and evidence are stated when material.
 - [ ] Accessibility, semantic names, keyboard/focus, RTL, responsive layout and visual impact are reviewed where relevant.
+- [ ] User journey, content hierarchy, interaction states and RAD component/token reuse are reviewed for interface changes.
+- [ ] Runtime configuration, privacy-conscious observability, recovery and rollback are considered for operationally significant changes.
 - [ ] Relevant tests and checks are listed with exact scope and actual results; unrun checks are explicitly marked.
 - [ ] `tests/QUALITY-MATRIX.md` and operator/contributor docs are updated if supported journeys, known gaps or commands change.
 - [ ] Human review is complete. Merge and deployment remain separate explicit approvals.
@@ -118,6 +120,9 @@ Database commands such as `npm run db:migrate`, `npm run db:seed`, `npm run db:s
 - Record the merged/deployed commit and environment when those actions occur. A merge is not a deployment.
 
 ## 7. Documentation ownership
+
+- `AI/ENGINEERING-PLAYBOOK.md`: curated engineering principles, lifecycle map and external reference index; it does not override project-specific contracts.
+- `.agents/skills/product-discovery/SKILL.md`, `ui-ux-design/SKILL.md` and `operations-reliability/SKILL.md`: focused procedures for those disciplines.
 
 - `AGENTS.md`: authoritative permissions, evidence, implementation and delivery contract.
 - `.agents/skills/*/SKILL.md`: task-specific procedures; must not contradict `AGENTS.md` or executable scripts.
