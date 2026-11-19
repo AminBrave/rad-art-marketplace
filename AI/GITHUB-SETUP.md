@@ -58,10 +58,11 @@ Use short-lived branches from the current main, named with the task type and Git
 
 ### Committed workflow configuration
 
-- `.github/workflows/color-accessibility.yml` runs the frontend accessibility/regression and backend regression jobs for pull requests targeting `main`; it also retains manual dispatch.
-- Expected check names are `frontend-accessibility` and `backend-regression`. Confirm the exact status-check names shown by GitHub after an authorized workflow run before making either required.
-- `.github/workflows/cleanup-workflow-runs.yml` runs weekly and retains a 14-day investigation window plus up to 20 completed runs.
-- Workflow YAML is configuration, not evidence that a run completed successfully.
+- **Repository policy: every GitHub Actions workflow is manual-only.** Each workflow must declare `workflow_dispatch` as its only trigger. Do not add push, pull-request, schedule, release, workflow-run or other automatic triggers.
+- `.github/workflows/color-accessibility.yml` exposes the frontend accessibility/regression and backend regression jobs for manual dispatch only. Expected job/check names are `frontend-accessibility` and `backend-regression`.
+- `.github/workflows/cleanup-workflow-runs.yml` is also manual-dispatch-only; when explicitly run, it retains a 14-day investigation window plus up to 20 completed runs.
+- A workflow may be manually dispatched only after the user explicitly authorizes that specific run. Opening/updating a PR, asking for a review, or saying “finish it” is not authorization to run CI.
+- Workflow YAML is configuration, not evidence that a run completed successfully. Never dispatch or rerun a workflow merely to verify a change.
 
 ### Live repository settings — owner action
 
