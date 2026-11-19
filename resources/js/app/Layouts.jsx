@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Images, LayoutDashboard, Menu, MessageCircle, UserRound, Users, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import { getWorkspacePrimaryLinks } from './workspaceNavigation';
 import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, Checkbox, NotificationListSkeleton } from '../components/ui';
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
