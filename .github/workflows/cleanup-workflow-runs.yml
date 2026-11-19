@@ -2,7 +2,7 @@ name: Clean workflow runs
 
 on:
   schedule:
-    - cron: "0 * * * *"
+    - cron: "0 3 * * 1"
   workflow_dispatch:
 
 permissions:
@@ -15,11 +15,11 @@ concurrency:
 
 jobs:
   clean:
-    name: Delete completed runs older than 24 hours
+    name: Delete completed runs older than 14 days
     runs-on: ubuntu-latest
     steps:
       - name: Clean old workflow runs
         uses: igorjs/gh-actions-clean-workflow@v8
         with:
-          runs_older_than: 1
-          runs_to_keep: 0
+          runs_older_than: 14
+          runs_to_keep: 20
