@@ -14,6 +14,7 @@ This is the human operating manual for developing Rademan with ordinary chat-bas
 | Product | Product intent, principles and unresolved product questions | `AI/PROJECT.md` |
 | Task management | Authorized tasks, per-task MVP scope, priority and Kanban workflow | `AI/TASK-MANAGEMENT.md` |
 | Engineering workflow | Issue-to-release sequence, review checklist and change-type verification matrix | `AI/DEVELOPMENT-WORKFLOW.md` |
+| Engineering playbook | Curated cross-discipline principles and external references | `AI/ENGINEERING-PLAYBOOK.md` |
 | Project handoff | Current project objective, cross-project decisions, blockers and next actions | `AI/SESSION.md` |
 | Task history | Requirements, bug evidence, decisions, progress and review discussion | GitHub issue or PR |
 | Implementation | What the application actually does | Source code, migrations, tests, configuration and observed runtime behavior |
@@ -24,6 +25,8 @@ This is the human operating manual for developing Rademan with ordinary chat-bas
 The canonical RAD interface direction is documented in [`AI/DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md); implementation tokens and primitives remain in `resources/css/app.css`, `tailwind.config.js` and `resources/js/components/ui/`. Keep those sources aligned rather than creating a parallel design system.
 
 The practical issue-to-release sequence, PR review checklist and verification matrix are documented in [`AI/DEVELOPMENT-WORKFLOW.md`](DEVELOPMENT-WORKFLOW.md). `AGENTS.md` remains authoritative for all permission and safety rules.
+
+The cross-discipline engineering principles and curated public references are indexed in [`AI/ENGINEERING-PLAYBOOK.md`](ENGINEERING-PLAYBOOK.md). Task-specific procedures live in `.agents/skills/`; `AGENTS.md` routes product discovery, UI/UX, backend, frontend, security, quality, operations and GitHub tasks to the smallest relevant skill.
 
 The AI must not claim that a feature exists, is missing, works, is secure or is tested without suitable evidence. Documentation describes intent; source and runtime evidence establish implementation. Product decisions in #150 are not implementation permission. A named decision is retrieved independently; only explicitly authorized scope becomes a delivery issue.
 
