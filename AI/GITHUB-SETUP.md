@@ -54,27 +54,40 @@ Use issue prefixes and titles defined in AI/TASK-MANAGEMENT.md. Examples:
 
 Use short-lived branches from the current main, named with the task type and GitHub issue number (for example feat/123-buyer-discovery or docs/153-decision-kanban). Link each PR to its issue. Never assume a branch is integrated until GitHub confirms the merge.
 
-## 5. Protect main
+## 5. CI and protect main
 
-In **Settings → Branches** or repository rulesets, consider:
+### Committed workflow configuration
+
+- `.github/workflows/color-accessibility.yml` runs the frontend accessibility/regression and backend regression jobs for pull requests targeting `main`; it also retains manual dispatch.
+- Expected check names are `frontend-accessibility` and `backend-regression`. Confirm the exact status-check names shown by GitHub after an authorized workflow run before making either required.
+- `.github/workflows/cleanup-workflow-runs.yml` runs weekly and retains a 14-day investigation window plus up to 20 completed runs.
+- Workflow YAML is configuration, not evidence that a run completed successfully.
+
+### Live repository settings — owner action
+
+The live repository audit on 2026-11-19 found `main` unprotected (`protected: false`; protection disabled; no required status checks). The connected GitHub integration available for this task supports read-only inspection of branch protection/rulesets, but not writing those settings. An owner must configure and then verify the following in **Settings → Rules → Rulesets** or **Settings → Branches**:
+
+- Target the `main` branch.
 - Require a pull request before merging.
-- Require review when multiple collaborators are available; for solo work use a deliberate self-review checklist.
 - Require conversation resolution.
 - Block force pushes and branch deletion.
-- Require only stable CI checks that actually exist.
-- Prefer squash merging for one-task/one-PR work when suitable.
+- Require `frontend-accessibility` and `backend-regression` only after their names have appeared as successful checks on a real PR.
+- For a solo-maintained repository, do not require an independent approving review that cannot be provided; use the PR checklist and deliberate self-review instead.
+- Keep squash merging as the preferred one-issue/one-PR integration method.
 
-Do not claim a rule is enabled without inspecting the live repository settings.
+Do not claim branch protection is enabled until the live settings have been re-read and verified. Do not make the checks required before their first successful run, or merges may become blocked.
 
-## 6. Security and project hygiene
+## 6. Dependency and security automation
 
-Where available:
-- Enable Dependabot alerts and security updates.
-- Enable secret scanning and push protection.
+- `.github/dependabot.yml` configures monthly npm, Composer and GitHub Actions updates, with bounded open-PR counts and grouped minor/patch updates.
+- Enable Dependabot alerts and security updates in repository settings where available.
+- Enable secret scanning and push protection where the repository plan supports them.
 - Use least-privilege GitHub tokens and never commit .env, API keys or personal data.
 - Review Actions permissions and grant the minimum required token permissions.
 - Keep production deployment secrets in GitHub/Vercel environment secrets, not source files.
 
+No CODEOWNERS file is configured: the current repository appears to be maintained by one owner, so assigning all paths back to that same owner would add little review value. Add CODEOWNERS when distinct maintainers or teams own specific areas.
+
 ## 7. Capability boundary
 
-The current connected GitHub workflow can manage repository files, issues, branches and pull requests, but it does not expose GitHub Projects board creation/configuration actions. If the board cannot be created from the available GitHub UI/integration, the repository owner must create the Project and fields manually using this checklist. Do not claim the Project exists until its live URL and fields have been verified.
+The connected GitHub workflow can manage repository files, issues, branches and pull requests, and can read branch-protection/ruleset settings. It does not expose GitHub Projects board creation/configuration or branch-protection/ruleset write actions. The repository owner must complete those settings in GitHub's UI. Do not claim the Project, ruleset, branch protection, Dependabot security alerts or secret-scanning settings are active until their live state is verified.
