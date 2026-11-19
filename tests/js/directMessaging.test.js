@@ -13,6 +13,7 @@ const messagingStatusBanners = read('../../resources/js/app/MessagingStatusBanne
 const messagingQueries = read('../../resources/js/app/useMessagingQueries.js');
 const queryUtils = read('../../resources/js/app/messagingQueryUtils.js');
 const conversations = read('../../app/Http/Controllers/Api/V1/ConversationController.php');
+const listMessages = read('../../app/Actions/Messaging/ListMessages.php');
 const directStart = read('../../app/Http/Controllers/Api/V1/DirectConversationController.php');
 const attachments = read('../../app/Http/Controllers/Api/V1/MessageAttachmentController.php');
 const routes = read('../../routes/web.php');
@@ -24,8 +25,8 @@ test('shared avatar utility preserves fallback, Unicode tone selection and first
     assert.ok(messagingAvatarUtils.includes("String(name ?? 'گ').trim().slice(0, 1) || 'گ'"));
     assert.ok(messaging.includes("import { avatarInitial, avatarTone } from './messagingAvatarUtils';"));
     assert.ok(messagingInbox.includes("import { avatarInitial, avatarTone } from './messagingAvatarUtils';"));
-    assert.doesNotMatch(messaging, /function avatar(?:Tone|Initial)\s*\(/);
-    assert.doesNotMatch(messagingInbox, /function avatar(?:Tone|Initial)\s*\(/);
+    assert.doesNotMatch(messaging, /function avatar(?:Tone|Initial)\\s*\\(/);
+    assert.doesNotMatch(messagingInbox, /function avatar(?:Tone|Initial)\\s*\\(/);
     assert.ok(messaging.includes('avatarInitial={avatarInitial}'));
     assert.ok(messaging.includes('avatarTone={avatarTone}'));
     assert.ok(messagingInbox.includes('avatarTone(thread.participant?.name)'));
@@ -41,7 +42,7 @@ test('status banners are presentational while messaging parent retains retry own
     assert.ok(messaging.includes('directStartError={directStartError}'));
     assert.ok(messaging.includes('onRetryInbox={loadThreads}'));
     assert.ok(messaging.includes('onRetryDirectStart={() => setDirectStartAttempt((attempt) => attempt + 1)}'));
-    assert.doesNotMatch(messagingStatusBanners, /useState|useEffect|useQuery|axios|fetch\(|window\.location/);
+    assert.doesNotMatch(messagingStatusBanners, /useState|useEffect|useQuery|axios|fetch\\(|window\\.location/);
     assert.ok(messagingStatusBanners.includes('onClick={onRetryInbox}'));
     assert.ok(messagingStatusBanners.includes('onClick={onRetryDirectStart}'));
 });
@@ -57,7 +58,7 @@ test('message composer supports accessible text entry, IME-safe Enter send and m
     assert.ok(messaging.includes('onDraftChange={setDraft}'), 'The composer remains controlled by parent draft state.');
     assert.ok(messaging.includes('safetyLoading ? <p role="status"'), 'The parent keeps safety-loading gating outside the composer.');
     assert.ok(messaging.includes(': <MessageComposer'), 'The parent renders the composer only after safety checks permit messaging.');
-    assert.doesNotMatch(messageComposer, /useState|useEffect|axios|fetch\(|window\.URL\.(?:create|revoke)ObjectURL/, 'The extracted composer has no local lifecycle, API, or object-URL ownership.');
+    assert.doesNotMatch(messageComposer, /useState|useEffect|axios|fetch\\(|window\\.URL\\.(?:create|revoke)ObjectURL/, 'The extracted composer has no local lifecycle, API, or object-URL ownership.');
 });
 
 test('conversation history uses incremental synchronization and stable older-message cursors', () => {
@@ -65,8 +66,8 @@ test('conversation history uses incremental synchronization and stable older-mes
     assert.ok(queryUtils.includes('after_id: cached.latestMessageId ?? 0'));
     assert.ok(queryUtils.includes('updated_after: cached.syncCursor'));
     assert.ok(messagingQueries.includes('params: { before_id: beforeId }'));
-    assert.ok(conversations.includes("Carbon::parse($filters['updated_after'])->toDateTimeString()"));
-    assert.ok(conversations.includes("where('id', '<', (int) $filters['before_id'])"));
+    assert.ok(listMessages.includes("Carbon::parse($filters['updated_after'])->toDateTimeString()"));
+    assert.ok(listMessages.includes("where('id', '<', (int) $filters['before_id'])"));
     assert.ok(conversations.includes("'sync_cursor' => $syncCursor->toISOString()"));
 });
 
@@ -113,7 +114,7 @@ test('message replies, reactions, edit/delete and read receipts stay inside the 
     assert.ok(messaging.includes('onDeleteMessage={deleteMessage}'));
     assert.ok(messaging.includes('onReportMessage={reportMessage}'));
     assert.ok(messaging.includes('onSaveEdit={saveEdit}'));
-    assert.doesNotMatch(messaging, /setReplyTo\(message\)/);
+    assert.doesNotMatch(messaging, /setReplyTo\\(message\\)/);
 });
 
 test('attachment upload and private image preview enforce participant, type, size and dimension boundaries', () => {
