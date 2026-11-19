@@ -11,6 +11,7 @@ use App\Models\MessageAttachment;
 use App\Models\MessageReaction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -189,6 +190,50 @@ class ConversationMessagingTest extends TestCase
             ->assertJsonPath('data.body', $payload['body']);
 
         $this->assertDatabaseCount('messages', 2);
+    }
+
+    public function test_sending_updates_last_message_at_once_and_replay_does_not_change_it(): void
+    {
+        [$buyer, , $conversation] = $this->participantsWithConversation();
+        $conversation->forceFill(['last_message_at' => now()->subDay()])->save();
+
+        $payload = [
+            'body' => 'پیام تازه برای به‌روزرسانی زمان گفتگو',
+            'client_message_id' => 'last-message-at-once',
+        ];
+
+        $sent = $this->actingAs($buyer)
+            ->postJson('/api/v1/conversations/'.$conversation->id.'/messages', $payload)
+            ->assertCreated();
+
+        $messageId = $sent->json('data.id');
+        $messageCreatedAt = Carbon::parse($sent->json('data.created_at'))->utc()->toDateTimeString();
+        $lastMessageAt = $conversation->fresh()->last_message_at->copy()->utc()->toDateTimeString();
+
+        $this->assertSame($messageCreatedAt, $lastMessageAt);
+
+        $this->postJson('/api/v1/conversations/'.$conversation->id.'/messages', [
+            ...$payload,
+            'body' => 'متن متفاوت در تلاش مجدد',
+        ])->assertOk()->assertJsonPath('data.id', $messageId);
+
+        $this->assertSame($lastMessageAt, $conversation->fresh()->last_message_at->copy()->utc()->toDateTimeString());
+        $this->assertDatabaseCount('messages', 2);
+    }
+
+    public function test_message_submissions_without_a_client_id_remain_independent(): void
+    {
+        [$buyer, , $conversation] = $this->participantsWithConversation();
+        $payload = ['body' => 'ارسال بدون شناسه سمت کاربر'];
+
+        $first = $this->actingAs($buyer)
+            ->postJson('/api/v1/conversations/'.$conversation->id.'/messages', $payload)
+            ->assertCreated();
+        $second = $this->postJson('/api/v1/conversations/'.$conversation->id.'/messages', $payload)
+            ->assertCreated();
+
+        $this->assertNotSame($first->json('data.id'), $second->json('data.id'));
+        $this->assertDatabaseCount('messages', 3);
     }
 
     public function test_non_participants_cannot_read_or_mutate_a_conversation(): void
@@ -606,7 +651,6 @@ class ConversationMessagingTest extends TestCase
         $this->actingAs($outsider)->get($base)->assertNotFound();
         $this->get($base.'/preview')->assertNotFound();
     }
-
 
     public function test_client_message_id_is_scoped_to_sender_and_conversation_and_replay_keeps_original_content(): void
     {
