@@ -191,6 +191,49 @@ class ConversationMessagingTest extends TestCase
         $this->assertDatabaseCount('messages', 2);
     }
 
+    public function test_sending_updates_last_message_at_once_and_replay_does_not_change_it(): void
+    {
+        [$buyer, , $conversation] = $this->participantsWithConversation();
+        $conversation->forceFill(['last_message_at' => now()->subDay()])->save();
+
+        $payload = [
+            'body' => 'پیام تازه برای به‌روزرسانی زمان گفتگو',
+            'client_message_id' => 'last-message-at-once',
+        ];
+
+        $sent = $this->actingAs($buyer)
+            ->postJson('/api/v1/conversations/'.$conversation->id.'/messages', $payload)
+            ->assertCreated();
+
+        $messageId = $sent->json('data.id');
+        $lastMessageAt = $conversation->fresh()->last_message_at->toISOString();
+
+        $this->assertSame($sent->json('data.created_at'), $lastMessageAt);
+
+        $this->postJson('/api/v1/conversations/'.$conversation->id.'/messages', [
+            ...$payload,
+            'body' => 'متن متفاوت در تلاش مجدد',
+        ])->assertOk()->assertJsonPath('data.id', $messageId);
+
+        $this->assertSame($lastMessageAt, $conversation->fresh()->last_message_at->toISOString());
+        $this->assertDatabaseCount('messages', 2);
+    }
+
+    public function test_message_submissions_without_a_client_id_remain_independent(): void
+    {
+        [$buyer, , $conversation] = $this->participantsWithConversation();
+        $payload = ['body' => 'ارسال بدون شناسه سمت کاربر'];
+
+        $first = $this->actingAs($buyer)
+            ->postJson('/api/v1/conversations/'.$conversation->id.'/messages', $payload)
+            ->assertCreated();
+        $second = $this->postJson('/api/v1/conversations/'.$conversation->id.'/messages', $payload)
+            ->assertCreated();
+
+        $this->assertNotSame($first->json('data.id'), $second->json('data.id'));
+        $this->assertDatabaseCount('messages', 3);
+    }
+
     public function test_non_participants_cannot_read_or_mutate_a_conversation(): void
     {
         [$buyer, , $conversation] = $this->participantsWithConversation();
