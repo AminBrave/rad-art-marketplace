@@ -37,7 +37,7 @@ Maintain a safe, evidence-driven development workflow for Rademan. Work is organ
 - Historical issues and PRs remain authoritative records. Verify live GitHub state before resuming any historical task.
 
 ## Current documentation work
-- #219 — refresh agent skills and engineering playbook. This is the active task for the current documentation update.
+- #219 — refresh agent skills and engineering playbook: **completed through merged PR #220 on 2026-11-19**.
 - #152 — Workboard configuration remains a separate open task, outside #185.
 
 ## Batch delivery preference
