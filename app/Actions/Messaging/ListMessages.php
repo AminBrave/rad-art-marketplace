@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Messaging;
 
 use App\Models\Conversation;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Support\Carbon;
 
 class ListMessages
@@ -21,7 +21,7 @@ class ListMessages
         Conversation $conversation,
         array $filters,
         array $relations,
-    ): LengthAwarePaginator {
+    ): AbstractPaginator {
         $query = $conversation->messages()
             ->withTrashed()
             ->with($relations);
@@ -45,6 +45,7 @@ class ListMessages
                 : null;
 
             // Include new messages and changed existing messages (e.g. edits, deletes and read receipts).
+            // Polling only needs a next-page signal; a total count adds an unnecessary COUNT(*) query.
             return $query->where(function ($nested) use ($filters, $updatedAfter): void {
                 if (isset($filters['after_id'])) {
                     $nested->where('id', '>', (int) $filters['after_id']);
@@ -53,7 +54,7 @@ class ListMessages
                     $method = isset($filters['after_id']) ? 'orWhere' : 'where';
                     $nested->{$method}('updated_at', '>=', $updatedAfter);
                 }
-            })->oldest('id')->paginate(100);
+            })->oldest('id')->simplePaginate(100);
         }
 
         $messages = $query->latest('id')->paginate(30);
