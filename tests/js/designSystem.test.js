@@ -435,7 +435,8 @@ test('auth bootstrap resolves session state before React mounts without caching 
     assert.ok(authContext.includes("document.getElementById('rad-auth-bootstrap')"));
     assert.ok(authContext.includes('if (!initialAuth.available && !initialRefreshStartedRef.current)'));
     assert.ok(authContext.includes("axios.get('/api/v1/auth/me')"), 'The legacy endpoint remains available as a fallback when the Blade bootstrap is absent or invalid.');
-    assert.ok(webRoutes.includes("->header('Cache-Control', 'private, no-store, max-age=0, must-revalidate')"));
+    assert.ok(webRoutes.includes("Route::get('/', [PublicPageController::class, 'app'])"));
+    assert.ok(webRoutes.includes("Route::get('/{path?}', [PublicPageController::class, 'app'])"));
     assert.ok(publicPageController.includes("->header('Cache-Control', 'private, no-store, max-age=0, must-revalidate')"));
     assert.doesNotMatch(publicPageController, /response\(\)->view\('app'/, 'Every dynamic SEO app-shell response must use the private app-view helper.');
 });
