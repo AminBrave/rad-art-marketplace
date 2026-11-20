@@ -91,7 +91,7 @@ class ArtworkTest extends TestCase
             $imageInfo = getimagesize(Storage::disk('local')->path($path));
             $this->assertSame([6000, 6000], array_slice($imageInfo, 0, 2));
 
-            $variants = app(\\App\\Services\\ArtworkImageVariants::class);
+            $variants = app(\App\Services\ArtworkImageVariants::class);
             $variants->generate($path);
 
             foreach (['card', 'detail'] as $variant) {
