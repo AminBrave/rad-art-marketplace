@@ -430,6 +430,10 @@ test('Blade first-paint skeletons use route-specific geometry for studio forms, 
     assert.ok(bootShell.includes("$isArtworkStudio = request()->is('dashboard/artist/artworks')"));
     assert.ok(bootShell.includes("$isCollectionDetail = request()->is('collections/*')"));
     assert.ok(bootShell.includes("$isCollectionIndex = request()->is('collections')"));
+    assert.ok(bootShell.includes("request()->is('admin/editorial')"));
+    assert.ok(bootShell.includes("request()->is('dashboard/artist')"));
+    assert.ok(bootShell.includes("request()->is('dashboard/buyer')"));
+    assert.ok(bootShell.includes("request()->is('dashboard/artist/messages', 'dashboard/buyer/messages')"));
     assert.ok(bootShell.includes('@elseif ($isArtworkStudio)'));
     assert.ok(bootShell.includes('@elseif ($isArtistProfileSettings)'));
     assert.ok(bootShell.includes('@elseif ($isAuthForm)'));
