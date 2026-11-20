@@ -48,7 +48,7 @@ class PublicPageController extends Controller
             ...($artwork->year ? ['dateCreated' => (string) $artwork->year] : []),
         ] : null;
 
-        return response()->view('app', ['seo' => [
+        return $this->appView(['seo' => [
             'title' => $artwork->title.' | راد آرت',
             'description' => $description,
             'canonical' => $canonical,
@@ -209,9 +209,15 @@ class PublicPageController extends Controller
 
     private function missingPage(): Response
     {
-        return response()->view('app', [
+        return $this->appView([
             'seo' => ['robots' => 'noindex,nofollow'],
         ], 404);
+    }
+
+    private function appView(array $data = [], int $status = 200): Response
+    {
+        return response()->view('app', $data, $status)
+            ->header('Cache-Control', 'private, no-store, max-age=0, must-revalidate');
     }
 
     private function canonical(string $path): string
