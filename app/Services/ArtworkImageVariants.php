@@ -30,7 +30,13 @@ final class ArtworkImageVariants
         }
 
         [$width, $height] = $imageInfo;
-        if (! $this->hasSafeMemoryBudget($width, $height) || $this->hasUnsupportedExifOrientation($absolutePath, $imageInfo['mime'] ?? '')) {
+        $encodedBytes = @filesize($absolutePath);
+
+        if (
+            ! is_int($encodedBytes)
+            || ! $this->hasSafeMemoryBudget($width, $height, $encodedBytes)
+            || $this->hasUnsupportedExifOrientation($absolutePath, $imageInfo['mime'] ?? '')
+        ) {
             return;
         }
 
@@ -112,7 +118,7 @@ final class ArtworkImageVariants
         }
     }
 
-    private function hasSafeMemoryBudget(int $width, int $height): bool
+    private function hasSafeMemoryBudget(int $width, int $height, int $encodedBytes): bool
     {
         $limit = trim((string) ini_get('memory_limit'));
         if ($limit === '' || $limit === '-1') {
@@ -128,8 +134,19 @@ final class ArtworkImageVariants
             default => $value,
         };
 
-        // Leave headroom for Laravel, the decoded source, and the resized canvas.
-        $estimatedBytes = ($width * $height * 5) + memory_get_usage(true) + (24 * 1024 * 1024);
+        // Budget for both simultaneous GD canvases, the encoded input buffer,
+        // the current PHP allocation, and headroom for decoder/resampler overhead.
+        $scale = min(1, 1600 / max($width, $height));
+        $targetWidth = max(1, (int) round($width * $scale));
+        $targetHeight = max(1, (int) round($height * $scale));
+        $sourceBytes = $width * $height * 5;
+        $targetBytes = $targetWidth * $targetHeight * 5;
+        $reservedBytes = 32 * 1024 * 1024;
+        $estimatedBytes = memory_get_usage(true)
+            + $sourceBytes
+            + $targetBytes
+            + $encodedBytes
+            + $reservedBytes;
 
         return $estimatedBytes < $bytes;
     }
