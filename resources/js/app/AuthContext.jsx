@@ -22,7 +22,7 @@ function readInitialAuth() {
         }
 
         const validUser = user
-            && Number.isInteger(Number(user.id))
+            && Number.isInteger(user.id) && user.id > 0
             && typeof user.name === 'string'
             && typeof user.email === 'string'
             && ['artist', 'buyer', 'admin'].includes(user.role);
