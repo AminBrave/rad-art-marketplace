@@ -46,6 +46,57 @@ class ArtworkTest extends TestCase
         ]);
     }
 
+    public function test_artwork_upload_generates_bounded_private_image_variants(): void
+    {
+        [$artist] = $this->artistWithProfile();
+
+        $response = $this->actingAs($artist)->post('/api/v1/artist/artworks', [
+            ...$this->validArtwork(),
+            'image' => UploadedFile::fake()->image('original.png', 1200, 800),
+        ])->assertCreated();
+
+        $artwork = Artwork::firstOrFail();
+        $variants = app(\\App\\Services\\ArtworkImageVariants::class);
+
+        foreach (['card', 'detail'] as $variant) {
+            $path = $variants->pathFor($artwork->image_path, $variant);
+            $this->assertNotNull($path);
+            Storage::disk('local')->assertExists($path);
+        }
+
+        $this->get('/api/v1/artworks/'.$artwork->slug.'/image?variant=card')
+            ->assertOk()
+            ->assertHeader('Cache-Control', 'private, max-age=60');
+    }
+
+    public function test_replacing_artwork_image_removes_old_variants_and_keeps_new_variants_private(): void
+    {
+        [$artist, $profile] = $this->artistWithProfile();
+        $artwork = $profile->artworks()->create([
+            ...$this->validArtwork(),
+            'slug' => 'replace-image-work',
+            'image_path' => 'artworks/replace-image-original.jpg',
+            'status' => Artwork::STATUS_APPROVED,
+        ]);
+        Storage::disk('local')->put($artwork->image_path, 'old-image');
+
+        $variants = app(\\App\\Services\\ArtworkImageVariants::class);
+        $oldVariant = $variants->pathFor($artwork->image_path, 'card');
+        Storage::disk('local')->put($oldVariant, 'old-variant');
+
+        $this->actingAs($artist)->post('/api/v1/artist/artworks/'.$artwork->id, [
+            '_method' => 'PATCH',
+            ...$this->validArtwork(),
+            'image' => UploadedFile::fake()->image('replacement.png', 900, 700),
+        ])->assertOk();
+
+        $artwork->refresh();
+        Storage::disk('local')->assertMissing('artworks/replace-image-original.jpg');
+        Storage::disk('local')->assertMissing($oldVariant);
+        Storage::disk('local')->assertExists($artwork->image_path);
+        Storage::disk('local')->assertExists($variants->pathFor($artwork->image_path, 'card'));
+    }
+
     public function test_artwork_validation_rejects_invalid_image_and_inactive_category(): void
     {
         [$artist] = $this->artistWithProfile();
