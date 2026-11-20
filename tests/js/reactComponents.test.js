@@ -548,7 +548,7 @@ test('workspace overview skeletons match their loaded hero and content sections 
     assert.match(artist, /در حال آماده‌سازی فضای هنرمند/);
     assert.match(artist, /lg:grid-cols-\[1fr_15rem\]/);
     assert.match(artist, /bg-surface-muted p-5 sm:p-7/);
-    assert.match(artist, /xl:grid-cols-2/);
+    assert.doesNotMatch(artist, /در حال دریافت شاخص‌ها/);
     assert.equal((artist.match(/role="status"/g) ?? []).length, 1);
 
     assert.match(buyer, /در حال آماده‌سازی فضای خریدار/);
