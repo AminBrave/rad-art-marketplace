@@ -83,7 +83,7 @@ export function ConversationInboxSkeleton({ count = 6, className = '', announce 
             aria-label={announce ? 'در حال دریافت گفتگوها' : undefined}
             aria-hidden={announce ? undefined : 'true'}
             dir="rtl"
-            className={`min-h-0 flex-1 divide-y divide-border overflow-hidden ${className}`}
+            className={`min-h-0 flex-1 divide-y divide-border overflow-y-auto overscroll-contain [scrollbar-width:thin] [scrollbar-color:var(--color-border-strong)_transparent] ${className}`}
         >
             {Array.from({ length: count }, (_, index) => (
                 <li key={index} className="relative min-w-0">
