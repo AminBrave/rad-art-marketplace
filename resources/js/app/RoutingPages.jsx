@@ -20,6 +20,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
     const hasHeaderAction = ['/admin/artworks', '/admin/users', '/admin/message-reports'].includes(pathname);
     const isArtworkDetail = /^\/artworks\/[^/]+/.test(pathname);
     const isArtistProfile = /^\/artists\/[^/]+/.test(pathname);
+    const isCollectionDetail = /^\/collections\/[^/]+/.test(pathname);
     const isMessaging = /^\/dashboard\/(artist|buyer)\/messages$/.test(pathname);
     const requestedConversationId = Number(new URLSearchParams(search).get('conversation'));
     const hasRequestedConversation = Number.isSafeInteger(requestedConversationId) && requestedConversationId > 0;
@@ -27,6 +28,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
     if (pathname === '/') return <HomePageSkeleton />;
     if (isArtworkDetail) return <ArtworkDetailSkeleton />;
     if (isArtistProfile) return <ArtistProfileSkeleton />;
+    if (isCollectionDetail) return <CollectionDetailSkeleton />;
     if (pathname === '/admin') return <AdminDashboardSkeleton />;
     if (pathname === '/dashboard/artist') return <ArtistWorkspaceOverviewSkeleton />;
     if (pathname === '/dashboard/buyer') return <BuyerDashboardSkeleton />;
@@ -125,8 +127,6 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                         {[0, 1, 2, 3, 4, 5].map((item) => <ArtistCardSkeleton key={item} />)}
                     </section>
                 </>
-            ) : /^\/collections\/[^/]+/.test(pathname) ? (
-                <CollectionDetailSkeleton />
             ) : pathname === '/collections' ? (
                 <CollectionCardSkeleton count={6} announce={false} />
             ) : pathname === '/admin/artworks' ? (
