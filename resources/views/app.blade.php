@@ -58,6 +58,7 @@
     @php
         $isWorkspace = request()->is('dashboard', 'dashboard/*', 'admin*');
         $isMessagingRoute = request()->is('dashboard/artist/messages', 'dashboard/buyer/messages');
+        $workspaceNavigationCount = request()->is('admin*') ? 5 : (request()->is('dashboard/buyer*') ? 2 : 4);
         $isArtworkDetail = request()->is('artworks/*');
         $isArtistProfile = request()->is('artists/*');
         $isCollectionDetail = request()->is('collections/*');
@@ -96,7 +97,7 @@
                     @else
                         <aside class="hidden min-w-0 rounded-xl border border-border bg-paper p-3 shadow-soft lg:block" aria-hidden="true">
                             <div class="grid gap-1">
-                                @foreach (range(1, 6) as $item)
+                                @foreach (range(1, $workspaceNavigationCount) as $item)
                                     <div class="flex min-h-11 items-center gap-3 rounded-lg px-4 py-2.5"><span class="{{ $skeletonClass }} h-[18px] w-[18px] shrink-0"></span><span class="{{ $skeletonClass }} h-3 w-28"></span></div>
                                 @endforeach
                             </div>
@@ -402,7 +403,7 @@
                 @endif
                 <div class="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-paper pb-[env(safe-area-inset-bottom)] shadow-raised lg:hidden" aria-hidden="true">
                     <div class="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2">
-                        @foreach (range(1, 4) as $item)
+                        @foreach (range(1, $workspaceNavigationCount) as $item)
                             <div class="flex flex-col items-center justify-center gap-1"><span class="{{ $skeletonClass }} h-[19px] w-[19px]"></span><span class="{{ $skeletonClass }} h-2 w-10"></span></div>
                         @endforeach
                     </div>
