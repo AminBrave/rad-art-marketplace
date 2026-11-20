@@ -45,6 +45,7 @@ export function AuthProvider({ children }) {
         ? (initialAuth.user ? 'authenticated' : 'guest')
         : 'loading');
     const [authError, setAuthError] = useState('');
+    const initialRefreshStartedRef = useRef(false);
 
     const setUser = useCallback((nextUser) => {
         const nextIdentity = nextUser ? String(nextUser.id) + ':' + String(nextUser.role) : null;
@@ -78,7 +79,8 @@ export function AuthProvider({ children }) {
     useEffect(() => {
         // The Blade shell already resolved the current web session. Only use /me
         // when the app is rendered without the normal server bootstrap payload.
-        if (!initialAuth.available) {
+        if (!initialAuth.available && !initialRefreshStartedRef.current) {
+            initialRefreshStartedRef.current = true;
             refreshUser();
         }
     }, [initialAuth.available, refreshUser]);
