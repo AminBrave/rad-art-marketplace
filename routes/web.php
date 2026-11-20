@@ -20,7 +20,10 @@ use App\Http\Controllers\PublicPageController;
 use App\Http\Middleware\EnsureConversationNotBlocked;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'app')->name('home');
+$renderApp = static fn () => response()->view('app')
+    ->header('Cache-Control', 'private, no-store, max-age=0, must-revalidate');
+
+Route::get('/', $renderApp)->name('home');
 Route::get('/sitemap.xml', [PublicPageController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', [PublicPageController::class, 'robots'])->name('robots');
 Route::get('/artists/{slug}', [PublicPageController::class, 'artist'])->name('artists.page');
@@ -117,4 +120,4 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
     });
 });
 
-Route::view('/{path?}', 'app')->where('path', '^(?!api(?:/|$)|storage(?:/|$)|build(?:/|$)).*')->name('app.spa');
+Route::get('/{path?}', $renderApp)->where('path', '^(?!api(?:/|$)|storage(?:/|$)|build(?:/|$)).*')->name('app.spa');
