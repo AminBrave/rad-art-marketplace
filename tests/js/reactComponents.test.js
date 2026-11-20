@@ -512,16 +512,26 @@ test('ArtworkStudioListSkeleton mirrors the loaded artwork cards and announces i
 
 test('ConversationInboxSkeleton preserves the real inbox list and row geometry', () => {
     const html = renderToStaticMarkup(React.createElement(skeletons.ConversationInboxSkeleton, { count: 3 }));
-    assert.match(html, /<ul[^>]*role="status"/);
+    assert.match(html, /<div[^>]*role="status"/);
+    assert.match(html, /<ul[^>]*aria-hidden="true"/);
     assert.match(html, /در حال دریافت گفتگوها/);
     assert.match(html, /min-h-\[4\.25rem\]/);
     assert.match(html, /absolute end-2 top-1\/2/);
     assert.equal((html.match(/<li/g) ?? []).length, 3);
 });
 
+test('MessageHistorySkeleton retains a single loading announcement and the message-bubble layout', () => {
+    const html = renderToStaticMarkup(React.createElement(skeletons.MessageHistorySkeleton, { count: 4 }));
+    assert.match(html, /role="status"/);
+    assert.match(html, /در حال دریافت پیام‌ها/);
+    assert.match(html, /w-\[min\(78%,28rem\)\]/);
+    assert.equal((html.match(/rounded-\[20px\]/g) ?? []).length, 4);
+});
+
 test('ArtistRecentWorkSkeleton keeps the semantic list structure of the loaded workspace', () => {
     const html = renderToStaticMarkup(React.createElement(skeletons.ArtistRecentWorkSkeleton));
-    assert.match(html, /<ul[^>]*role="status"/);
+    assert.match(html, /<div[^>]*role="status"/);
+    assert.match(html, /<ul[^>]*aria-hidden="true"/);
     assert.equal((html.match(/<li/g) ?? []).length, 4);
 });
 
