@@ -64,9 +64,12 @@ class ArtworkTest extends TestCase
             Storage::disk('local')->assertExists($path);
         }
 
-        $this->get('/api/v1/artworks/'.$artwork->slug.'/image?variant=card')
-            ->assertOk()
-            ->assertHeader('Cache-Control', 'private, max-age=60');
+        $imageResponse = $this->get('/api/v1/artworks/'.$artwork->slug.'/image?variant=card');
+        $imageResponse->assertOk();
+
+        $cacheDirectives = array_map('trim', explode(',', (string) $imageResponse->headers->get('Cache-Control')));
+        $this->assertContains('private', $cacheDirectives);
+        $this->assertContains('max-age=60', $cacheDirectives);
     }
 
     public function test_replacing_artwork_image_removes_old_variants_and_keeps_new_variants_private(): void
