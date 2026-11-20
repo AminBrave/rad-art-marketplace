@@ -366,27 +366,9 @@ export function ArtistWorkspaceOverviewSkeleton() {
                 <Skeleton className="h-11 w-40 rounded-sm" />
             </header>
             <WorkspaceIdentitySkeleton announce={false} />
-            <section className="border border-border bg-surface-muted p-5 sm:p-7">
-                <div className="flex items-start justify-between gap-3"><div className="grid flex-1 gap-2"><Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="h-6 w-48 rounded-sm" /><Skeleton className="h-3 w-64 max-w-full rounded-sm" /></div><Skeleton className="h-4 w-16 rounded-sm" /></div>
-                <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                    {[0, 1, 2, 3, 4, 5].map((item) => <div key={item} className="flex items-center gap-3 border border-border bg-paper px-4 py-3"><Skeleton className="h-4 w-4 rounded-full" /><Skeleton className="h-4 flex-1 rounded-sm" /></div>)}
-                </div>
-            </section>
-            <DashboardMetricSkeleton count={4} announce={false} />
-            <section className="grid gap-5 xl:grid-cols-2">
-                <div className="border border-border bg-paper p-5 sm:p-6">
-                    <div className="grid gap-2 border-b border-border pb-4"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-6 w-40 rounded-sm" /></div>
-                    <div className="mt-5 grid gap-4">{[0, 1, 2, 3].map((item) => <div key={item} className="flex items-center justify-between gap-3 border-b border-border py-4"><div className="grid flex-1 gap-2"><Skeleton className="h-4 w-2/3 rounded-sm" /><Skeleton className="h-3 w-1/3 rounded-sm" /></div><Skeleton className="h-6 w-20 rounded-full" /></div>)}</div>
-                </div>
-                <div className="border border-border bg-paper p-5 sm:p-6">
-                    <div className="grid gap-2 border-b border-border pb-4"><Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="h-6 w-44 rounded-sm" /></div>
-                    <div className="grid gap-3 py-7"><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /><Skeleton className="h-4 w-40 rounded-sm" /></div>
-                </div>
-            </section>
         </section>
     );
 }
-
 export function BuyerDashboardSkeleton() {
     return (
         <section role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فضای خریدار" className="grid gap-7" dir="rtl">
