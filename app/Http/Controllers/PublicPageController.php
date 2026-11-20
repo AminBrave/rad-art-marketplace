@@ -98,7 +98,7 @@ class PublicPageController extends Controller
             ...($sameAs ? ['sameAs' => $sameAs] : []),
         ] : null;
 
-        return response()->view('app', ['seo' => [
+        return $this->appView(['seo' => [
             'title' => $profile->display_name.' | هنرمندان راد آرت',
             'description' => $description,
             'canonical' => $canonical,
@@ -141,7 +141,7 @@ class PublicPageController extends Controller
             ])->values()->all(),
         ];
 
-        return response()->view('app', ['seo' => [
+        return $this->appView(['seo' => [
             'title' => $collection->title.' | مجموعه‌های راد آرت',
             'description' => $description,
             'canonical' => $canonical,
