@@ -426,6 +426,17 @@ test('RAD design-system definition makes the authenticated app-shell and navigat
         'Never invent a route',
     ]) assert.ok(designSystem.includes(principle), 'Missing RAD design-system principle: ' + principle);
 });
+test('Blade first-paint skeletons use route-specific geometry for studio forms, directories and collections', () => {
+    assert.ok(bootShell.includes("$isArtworkStudio = request()->is('dashboard/artist/artworks')"));
+    assert.ok(bootShell.includes("$isCollectionDetail = request()->is('collections/*')"));
+    assert.ok(bootShell.includes("$isCollectionIndex = request()->is('collections')"));
+    assert.ok(bootShell.includes('@elseif ($isArtworkStudio)'));
+    assert.ok(bootShell.includes('@elseif ($isArtistProfileSettings)'));
+    assert.ok(bootShell.includes('@elseif ($isAuthForm)'));
+    assert.ok(bootShell.includes('aspect-[4/5]'));
+    assert.ok(bootShell.includes('h-14 w-14 shrink-0 rounded-full'));
+});
+
 test('boot shell and application presentation use Tailwind utilities with no component CSS selectors', () => {
     assert.ok(bootShell.includes('grid grid-cols-1 items-center gap-12'));
     assert.ok(bootShell.includes('lg:grid-cols-[minmax(0,1fr)_minmax(16rem,.9fr)]'));
