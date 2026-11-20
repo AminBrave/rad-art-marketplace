@@ -18,6 +18,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
     const { pathname, search } = useLocation();
     const isWorkspace = pathname === '/dashboard' || pathname.startsWith('/dashboard/') || pathname.startsWith('/admin');
     const hasHeaderAction = ['/admin/artworks', '/admin/users', '/admin/message-reports'].includes(pathname);
+    const hasHeaderAction = ['/admin/artworks', '/admin/users', '/admin/message-reports'].includes(pathname);
     const isArtworkDetail = /^\/artworks\/[^/]+/.test(pathname);
     const isArtistProfile = /^\/artists\/[^/]+/.test(pathname);
     const isMessaging = /^\/dashboard\/(artist|buyer)\/messages$/.test(pathname);
