@@ -249,7 +249,7 @@ export function WorkspaceIdentitySkeleton({ announce = true }) {
             aria-busy={announce ? 'true' : undefined}
             aria-label={announce ? 'در حال دریافت اطلاعات پروفایل هنرمند' : undefined}
             aria-hidden={announce ? undefined : 'true'}
-            className="grid gap-5 border border-border bg-paper p-5 sm:p-7 lg:grid-cols-[1fr_15rem] lg:items-center"
+            className="grid gap-5 border border-border bg-surface-muted p-5 sm:p-7 lg:grid-cols-[1fr_15rem] lg:items-center"
         >
             <div className="grid gap-3">
                 <div className="flex items-center gap-3"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-6 w-24 rounded-full" /></div>
