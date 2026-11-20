@@ -12,6 +12,42 @@ class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_guest_app_shell_bootstraps_a_resolved_guest_state_without_a_second_auth_request(): void
+    {
+        $this->get('/dashboard/artist')
+            ->assertOk()
+            ->assertSee('id="rad-auth-bootstrap"', false)
+            ->assertSee('>null</script>', false)
+            ->assertHeader('Cache-Control', 'private, no-store, max-age=0, must-revalidate');
+    }
+
+    public function test_authenticated_app_shell_embeds_the_minimal_current_user_payload_and_is_not_cacheable(): void
+    {
+        $user = User::create([
+            'name' => 'Bootstrap Artist',
+            'email' => 'bootstrap@example.com',
+            'password' => 'strong-password-123',
+            'role' => User::ROLE_ARTIST,
+        ]);
+
+        $this->actingAs($user)->get('/dashboard/artist')
+            ->assertOk()
+            ->assertSee('id="rad-auth-bootstrap"', false)
+            ->assertSee('"id":'.$user->id, false)
+            ->assertSee('"name":"Bootstrap Artist"', false)
+            ->assertSee('"email":"bootstrap@example.com"', false)
+            ->assertSee('"role":"artist"', false)
+            ->assertHeader('Cache-Control', 'private, no-store, max-age=0, must-revalidate');
+    }
+
+    public function test_dynamic_spa_not_found_shell_is_private_and_not_cacheable(): void
+    {
+        $this->get('/artworks/nonexistent-artwork-slug')
+            ->assertNotFound()
+            ->assertSee('id="rad-auth-bootstrap"', false)
+            ->assertHeader('Cache-Control', 'private, no-store, max-age=0, must-revalidate');
+    }
+
     public function test_guest_authentication_bootstrap_returns_a_guest_state_without_unauthorized_response(): void
     {
         $this->getJson('/api/v1/auth/me')
