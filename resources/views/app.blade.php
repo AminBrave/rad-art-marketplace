@@ -75,7 +75,7 @@
             </div>
 
             @if ($isArtworkDetail)
-                <main class="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت اثر هنری">
+                <section class="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl" aria-hidden="true">
                     <a href="/artworks" tabindex="-1" class="mb-7 block"><span class="{{ $skeletonClass }} h-4 w-28"></span></a>
                     <article class="grid gap-8 lg:grid-cols-[1.15fr_.85fr]">
                         <div class="flex aspect-[4/3] items-center justify-center overflow-hidden bg-paper p-4 sm:p-8 lg:aspect-[4/5]">
@@ -100,9 +100,9 @@
                             <span class="{{ $skeletonClass }} mt-7 h-11 w-48"></span>
                         </div>
                     </article>
-                </main>
+                </section>
             @elseif ($isCollectionDetail)
-                <main class="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت مجموعه منتخب">
+                <section class="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl" aria-hidden="true">
                     <nav aria-hidden="true" class="flex items-center gap-2"><span class="{{ $skeletonClass }} h-3 w-10"></span><span class="{{ $skeletonClass }} h-3 w-2"></span><span class="{{ $skeletonClass }} h-3 w-20"></span></nav>
                     <header class="mt-7 max-w-3xl border-b border-border pb-8"><span class="{{ $skeletonClass }} h-3 w-28"></span><span class="{{ $skeletonClass }} mt-3 h-10 w-2/3"></span><div class="mt-5 grid gap-2"><span class="{{ $skeletonClass }} h-3 w-full"></span><span class="{{ $skeletonClass }} h-3 w-full"></span><span class="{{ $skeletonClass }} h-3 w-4/5"></span></div></header>
                     <section class="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -110,18 +110,18 @@
                             <article class="min-w-0"><div class="relative overflow-hidden bg-surface-muted"><span class="{{ $skeletonClass }} block aspect-[4/5] w-full rounded-none"></span></div><div class="grid gap-1.5 px-0.5 pb-2 pt-4"><span class="{{ $skeletonClass }} h-3 w-20"></span><span class="{{ $skeletonClass }} h-5 w-4/5"></span><span class="{{ $skeletonClass }} h-5 w-3/5"></span><span class="{{ $skeletonClass }} h-4 w-2/5"></span><span class="{{ $skeletonClass }} h-4 w-1/3"></span></div></article>
                         @endforeach
                     </section>
-                </main>
+                </section>
             @elseif ($isCollectionIndex)
-                <main class="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت مجموعه‌های منتخب">
+                <section class="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl" aria-hidden="true">
                     <header class="grid max-w-3xl gap-3"><span class="{{ $skeletonClass }} h-3 w-24"></span><span class="{{ $skeletonClass }} h-10 w-2/3"></span><span class="{{ $skeletonClass }} h-4 w-full"></span></header>
                     <section class="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                         @foreach (range(1, 6) as $item)
                             <article class="grid content-start gap-3 border border-border bg-paper p-6"><span class="{{ $skeletonClass }} h-3 w-24"></span><span class="{{ $skeletonClass }} mt-1 h-7 w-4/5"></span><div class="mt-1 grid gap-2"><span class="{{ $skeletonClass }} h-3 w-full"></span><span class="{{ $skeletonClass }} h-3 w-full"></span><span class="{{ $skeletonClass }} h-3 w-11/12"></span><span class="{{ $skeletonClass }} h-3 w-4/5"></span></div><span class="{{ $skeletonClass }} mt-3 h-4 w-28"></span></article>
                         @endforeach
                     </section>
-                </main>
+                </section>
             @elseif ($isArtistProfile)
-                <main class="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت پروفایل هنرمند">
+                <section class="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl" aria-hidden="true">
                     <a href="/artists" tabindex="-1" class="block"><span class="{{ $skeletonClass }} h-4 w-28"></span></a>
                     <section class="mt-7 border border-border bg-paper p-7 sm:p-12">
                         <span class="{{ $skeletonClass }} h-4 w-28"></span>
@@ -149,7 +149,7 @@
                             @endforeach
                         </div>
                     </section>
-                </main>
+                </section>
             @elseif ($isArtworkStudio)
                 <section class="mx-auto mt-10 max-w-7xl" dir="rtl">
                     <header class="mb-8 grid gap-3 border-b border-border pb-6">
@@ -194,7 +194,7 @@
                     </section>
                 </section>
             @elseif ($isAuthForm)
-                <main class="mx-auto max-w-xl px-5 py-12 sm:px-8" dir="rtl">
+                <section class="mx-auto max-w-xl px-5 py-12 sm:px-8" dir="rtl" aria-hidden="true">
                     <section class="rounded-3xl border border-border-strong bg-paper p-6 shadow-sm sm:p-9">
                         <span class="{{ $skeletonClass }} h-4 w-32"></span>
                         <span class="{{ $skeletonClass }} mt-5 h-8 w-2/3"></span>
@@ -210,7 +210,7 @@
                         </div>
                         <span class="{{ $skeletonClass }} mt-5 h-3 w-4/5"></span>
                     </section>
-                </main>
+                </section>
             @elseif ($isInformationPage)
                 <section class="mt-10 grid gap-7">
                     @foreach (range(1, 3) as $item)
