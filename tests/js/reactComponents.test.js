@@ -515,6 +515,7 @@ test('ConversationInboxSkeleton preserves the real inbox list and row geometry',
     assert.match(html, /<div[^>]*role="status"/);
     assert.match(html, /<ul[^>]*aria-hidden="true"/);
     assert.match(html, /در حال دریافت گفتگوها/);
+    assert.match(html, /min-h-0 flex-1/);
     assert.match(html, /min-h-\[4\.25rem\]/);
     assert.match(html, /absolute end-2 top-1\/2/);
     assert.equal((html.match(/<li/g) ?? []).length, 3);
