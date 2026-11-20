@@ -448,6 +448,14 @@ test('protected-route auth loading preserves the workspace shell width and navig
     assert.ok(routeLoading.includes('<WorkspaceAuthLoading><RouteLoading label="در حال بررسی سطح دسترسی…'));
 });
 
+test('workspace first-paint skeleton uses the same constrained shell as the loaded workspace', () => {
+    assert.ok(bootShell.includes("max-w-content gap-5 px-page-gutter"));
+    assert.ok(bootShell.includes("lg:grid-cols-[15rem_minmax(0,1fr)]"));
+    assert.ok(bootShell.includes("$isMessagingRoute = request()->is('dashboard/artist/messages', 'dashboard/buyer/messages')"));
+    assert.ok(bootShell.includes('workspace-bottom-nav-primary-height'));
+    assert.ok(bootShell.includes('h-dvh flex-col overflow-hidden'));
+});
+
 test('Blade first-paint skeletons use route-specific geometry for studio forms, directories and collections', () => {
     assert.ok(bootShell.includes("$isArtworkStudio = request()->is('dashboard/artist/artworks')"));
     assert.ok(bootShell.includes("$isCollectionDetail = request()->is('collections/*')"));
