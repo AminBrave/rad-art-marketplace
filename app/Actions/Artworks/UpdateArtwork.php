@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\\Actions\\Artworks;
+namespace App\Actions\Artworks;
 
-use App\\Models\\Artwork;
-use App\\Services\\ArtworkImageVariants;
-use Illuminate\\Http\\UploadedFile;
-use Illuminate\\Support\\Facades\\Storage;
+use App\Models\Artwork;
+use App\Services\ArtworkImageVariants;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 use Throwable;
 
