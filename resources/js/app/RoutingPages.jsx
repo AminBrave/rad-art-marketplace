@@ -17,6 +17,7 @@ function LoadingBlock({ className = '' }) {
 export function RouteLoading({ label = 'در حال آماده‌سازی صفحه…' }) {
     const { pathname, search } = useLocation();
     const isWorkspace = pathname === '/dashboard' || pathname.startsWith('/dashboard/') || pathname.startsWith('/admin');
+    const hasHeaderAction = ['/admin/artworks', '/admin/users', '/admin/message-reports'].includes(pathname);
     const isArtworkDetail = /^\/artworks\/[^/]+/.test(pathname);
     const isArtistProfile = /^\/artists\/[^/]+/.test(pathname);
     const isMessaging = /^\/dashboard\/(artist|buyer)\/messages$/.test(pathname);
@@ -102,7 +103,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                     <Skeleton className="h-9 w-2/3 max-w-sm rounded-sm" />
                     <Skeleton className="h-4 w-full max-w-xl rounded-sm" />
                 </div>
-                {isWorkspace && <Skeleton className="h-10 w-28 shrink-0 rounded-md" />}
+                {hasHeaderAction && <Skeleton className="h-10 w-28 shrink-0 rounded-md" />}
             </div>
             {pathname === '/artworks' ? (
                 <>
