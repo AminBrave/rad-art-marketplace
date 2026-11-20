@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Artworks;
 
 use App\Models\Artwork;
+use App\Services\ArtworkImageVariants;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
@@ -12,6 +13,10 @@ use Throwable;
 
 class UpdateArtwork
 {
+    public function __construct(private readonly ArtworkImageVariants $imageVariants)
+    {
+    }
+
     /**
      * @param  array<string, mixed>  $attributes  Validated UpdateArtworkRequest data.
      */
@@ -46,14 +51,20 @@ class UpdateArtwork
             }
         } catch (Throwable $exception) {
             if ($newImagePath !== null) {
+                $this->imageVariants->deleteForOriginal($newImagePath);
                 Storage::disk('local')->delete($newImagePath);
             }
 
             throw $exception;
         }
 
-        if ($newImagePath !== null && $oldImagePath !== null) {
-            Storage::disk('local')->delete($oldImagePath);
+        if ($newImagePath !== null) {
+            $this->imageVariants->generate($newImagePath);
+
+            if ($oldImagePath !== null) {
+                $this->imageVariants->deleteForOriginal($oldImagePath);
+                Storage::disk('local')->delete($oldImagePath);
+            }
         }
 
         return $artwork->refresh();

@@ -46,6 +46,75 @@ class ArtworkTest extends TestCase
         ]);
     }
 
+    public function test_artwork_upload_generates_bounded_private_image_variants(): void
+    {
+        [$artist] = $this->artistWithProfile();
+
+        $response = $this->actingAs($artist)->post('/api/v1/artist/artworks', [
+            ...$this->validArtwork(),
+            'image' => UploadedFile::fake()->image('original.png', 1200, 800),
+        ])->assertCreated();
+
+        $artwork = Artwork::firstOrFail();
+        $variants = app(\App\Services\ArtworkImageVariants::class);
+
+        foreach (['card', 'detail'] as $variant) {
+            $path = $variants->pathFor($artwork->image_path, $variant);
+            $this->assertNotNull($path);
+            Storage::disk('local')->assertExists($path);
+        }
+
+        $imageResponse = $this->get('/api/v1/artworks/'.$artwork->slug.'/image?variant=card');
+        $imageResponse->assertOk();
+
+        $cacheDirectives = array_map('trim', explode(',', (string) $imageResponse->headers->get('Cache-Control')));
+        $this->assertContains('private', $cacheDirectives);
+        $this->assertContains('max-age=60', $cacheDirectives);
+    }
+
+    public function test_variant_generation_skips_images_that_exceed_the_memory_budget(): void
+    {
+        $originalMemoryLimit = ini_get('memory_limit');
+        $this->assertNotFalse(ini_set('memory_limit', '128M'));
+
+        try {
+            $variants = app(\App\Services\ArtworkImageVariants::class);
+            $memoryGuard = new \ReflectionMethod(\App\Services\ArtworkImageVariants::class, 'hasSafeMemoryBudget');
+
+            $this->assertFalse($memoryGuard->invoke($variants, 6000, 6000, 1024));
+        } finally {
+            ini_set('memory_limit', (string) $originalMemoryLimit);
+        }
+    }
+
+    public function test_replacing_artwork_image_removes_old_variants_and_keeps_new_variants_private(): void
+    {
+        [$artist, $profile] = $this->artistWithProfile();
+        $artwork = $profile->artworks()->create([
+            ...$this->validArtwork(),
+            'slug' => 'replace-image-work',
+            'image_path' => 'artworks/replace-image-original.jpg',
+            'status' => Artwork::STATUS_APPROVED,
+        ]);
+        Storage::disk('local')->put($artwork->image_path, 'old-image');
+
+        $variants = app(\App\Services\ArtworkImageVariants::class);
+        $oldVariant = $variants->pathFor($artwork->image_path, 'card');
+        Storage::disk('local')->put($oldVariant, 'old-variant');
+
+        $this->actingAs($artist)->post('/api/v1/artist/artworks/'.$artwork->id, [
+            '_method' => 'PATCH',
+            ...$this->validArtwork(),
+            'image' => UploadedFile::fake()->image('replacement.png', 900, 700),
+        ])->assertOk();
+
+        $artwork->refresh();
+        Storage::disk('local')->assertMissing('artworks/replace-image-original.jpg');
+        Storage::disk('local')->assertMissing($oldVariant);
+        Storage::disk('local')->assertExists($artwork->image_path);
+        Storage::disk('local')->assertExists($variants->pathFor($artwork->image_path, 'card'));
+    }
+
     public function test_artwork_validation_rejects_invalid_image_and_inactive_category(): void
     {
         [$artist] = $this->artistWithProfile();
@@ -238,9 +307,11 @@ class ArtworkTest extends TestCase
         Storage::disk('local')->put('artworks/private.jpg', 'private');
 
         $this->get('/api/v1/artworks/'.$artwork->slug.'/image')->assertForbidden();
+        $this->get('/api/v1/artworks/'.$artwork->slug.'/image?variant=card')->assertForbidden();
         [$otherArtist] = $this->artistWithProfile('other@example.com');
         $this->actingAs($otherArtist)->get('/api/v1/artworks/'.$artwork->slug.'/image')->assertForbidden();
         $this->actingAs($owner)->get('/api/v1/artworks/'.$artwork->slug.'/image')->assertOk();
+        $this->actingAs($owner)->get('/api/v1/artworks/'.$artwork->slug.'/image?variant=unknown')->assertOk();
     }
 
     public function test_public_catalogue_filters_by_medium_availability_and_artist_and_supports_sorting(): void

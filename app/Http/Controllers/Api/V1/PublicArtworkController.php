@@ -9,6 +9,7 @@ use App\Http\Resources\PublicArtworkResource;
 use App\Models\Artwork;
 use App\Models\Category;
 use App\Support\PersianSearch;
+use App\Services\ArtworkImageVariants;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -144,13 +145,19 @@ class PublicArtworkController extends Controller
         ]);
     }
 
-    public function image(Artwork $artwork): StreamedResponse
+    public function image(Request $request, Artwork $artwork, ArtworkImageVariants $variants): StreamedResponse
     {
         $this->authorize('view', $artwork);
 
-        abort_unless(Storage::disk('local')->exists($artwork->image_path), 404);
+        $disk = Storage::disk('local');
+        abort_unless($disk->exists($artwork->image_path), 404);
 
-        return Storage::disk('local')->response($artwork->image_path, null, [
+        $variantPath = $variants->pathFor((string) $artwork->image_path, (string) $request->query('variant', ''));
+        $imagePath = $variantPath !== null && $disk->exists($variantPath)
+            ? $variantPath
+            : $artwork->image_path;
+
+        return $disk->response($imagePath, null, [
             'Cache-Control' => 'private, max-age=60',
             'X-Content-Type-Options' => 'nosniff',
         ]);

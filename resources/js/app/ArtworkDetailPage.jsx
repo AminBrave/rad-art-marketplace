@@ -12,6 +12,7 @@ function ArtworkImage({ artwork }) {
             <MediaImage
                 src={artwork.image_url}
                 alt={artwork.title}
+                variant="detail"
                 className="h-full max-h-[78vh] w-full"
                 imageClassName="object-contain"
                 loading="eager"
