@@ -20,7 +20,8 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
     const isArtworkDetail = /^\/artworks\/[^/]+/.test(pathname);
     const isArtistProfile = /^\/artists\/[^/]+/.test(pathname);
     const isMessaging = /^\/dashboard\/(artist|buyer)\/messages$/.test(pathname);
-    const hasRequestedConversation = new URLSearchParams(search).has('conversation');
+    const requestedConversationId = Number(new URLSearchParams(search).get('conversation'));
+    const hasRequestedConversation = Number.isSafeInteger(requestedConversationId) && requestedConversationId > 0;
 
     if (pathname === '/') return <HomePageSkeleton />;
     if (isArtworkDetail) return <ArtworkDetailSkeleton />;
@@ -84,7 +85,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                     <div className={hasRequestedConversation ? 'flex h-full min-h-0 min-w-0 flex-col bg-canvas' : 'hidden h-full min-h-0 min-w-0 flex-col bg-canvas lg:flex'}>
                         <div className="flex items-center gap-3 border-b border-border p-5"><Skeleton className="h-10 w-10 shrink-0 rounded-full" /><div className="grid min-w-0 flex-1 gap-2"><Skeleton className="h-4 w-40 rounded-sm" /><Skeleton className="h-3 w-28 rounded-sm" /></div><Skeleton className="h-8 w-8 rounded-full" /></div>
                         <div className="border-b border-border bg-surface-muted px-5 py-3"><Skeleton className="h-3 w-28 rounded-sm" /></div>
-                        <MessageHistorySkeleton count={5} announce={false} className="min-h-0 flex-1" />
+                        <MessageHistorySkeleton count={5} announce={false} className="min-h-0 flex-1 overflow-y-auto overscroll-contain" />
                         <div className="border-t border-border p-5"><Skeleton className="h-12 w-full rounded-full" /></div>
                     </div>
                 </div>
