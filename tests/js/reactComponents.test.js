@@ -536,7 +536,8 @@ test('workspace overview skeletons match their loaded hero and content sections 
     assert.equal((admin.match(/role="status"/g) ?? []).length, 1);
 
     assert.match(artist, /در حال آماده‌سازی فضای هنرمند/);
-    assert.match(artist, /WorkspaceIdentitySkeleton/); // Component composition remains source-visible through the rendered identity section.
+    assert.match(artist, /lg:grid-cols-\[1fr_15rem\]/);
+    assert.match(artist, /bg-surface-muted p-5 sm:p-7/);
     assert.match(artist, /xl:grid-cols-2/);
     assert.equal((artist.match(/role="status"/g) ?? []).length, 1);
 
