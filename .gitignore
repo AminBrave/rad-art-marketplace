@@ -4,6 +4,7 @@
 !.env.example
 !.env.https
 !.env.testing
+!.env.cpanel
 
 # PHP / Laravel
 /vendor/
