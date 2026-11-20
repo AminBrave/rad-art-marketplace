@@ -62,7 +62,6 @@
         $isArtworkStudio = request()->is('dashboard/artist/artworks');
         $isArtistProfileSettings = request()->is('dashboard/artist/profile');
         $isAuthForm = request()->is('login', 'register');
-        $isForm = $isAuthForm || $isArtistProfileSettings || $isArtworkStudio;
         $isInformationPage = request()->is('about', 'help', 'contact');
         $isDirectory = request()->is('artworks', 'artists');
     @endphp
