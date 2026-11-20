@@ -81,13 +81,15 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                             <Skeleton className="h-10 w-full rounded-md" />
                             <div className="grid grid-cols-3 gap-0 overflow-hidden rounded-md border border-border"><Skeleton className="h-10 rounded-none" /><Skeleton className="h-10 rounded-none" /><Skeleton className="h-10 rounded-none" /></div>
                         </div>
-                        <ConversationInboxSkeleton count={6} announce={false} />
+                        <ConversationInboxSkeleton count={6} announce={false} className="min-h-0 flex-1" />
                     </aside>
                     <div className={hasRequestedConversation ? 'flex h-full min-h-0 min-w-0 flex-col bg-canvas' : 'hidden h-full min-h-0 min-w-0 flex-col bg-canvas lg:flex'}>
-                        <div className="flex items-center gap-3 border-b border-border p-5"><Skeleton className="h-10 w-10 shrink-0 rounded-full" /><div className="grid min-w-0 flex-1 gap-2"><Skeleton className="h-4 w-40 rounded-sm" /><Skeleton className="h-3 w-28 rounded-sm" /></div><Skeleton className="h-8 w-8 rounded-full" /></div>
-                        <div className="border-b border-border bg-surface-muted px-5 py-3"><Skeleton className="h-3 w-28 rounded-sm" /></div>
-                        <MessageHistorySkeleton count={5} announce={false} className="min-h-0 flex-1 overflow-y-auto overscroll-contain" />
-                        <div className="border-t border-border p-5"><Skeleton className="h-12 w-full rounded-full" /></div>
+                        {hasRequestedConversation ? <>
+                            <div className="flex items-center gap-3 border-b border-border p-5"><Skeleton className="h-10 w-10 shrink-0 rounded-full" /><div className="grid min-w-0 flex-1 gap-2"><Skeleton className="h-4 w-40 rounded-sm" /><Skeleton className="h-3 w-28 rounded-sm" /></div><Skeleton className="h-8 w-8 rounded-full" /></div>
+                            <div className="border-b border-border bg-surface-muted px-5 py-3"><Skeleton className="h-3 w-28 rounded-sm" /></div>
+                            <MessageHistorySkeleton count={5} announce={false} className="min-h-0 flex-1 overflow-y-auto overscroll-contain" />
+                            <div className="border-t border-border p-5"><Skeleton className="h-12 w-full rounded-full" /></div>
+                        </> : <div className="m-auto p-8 text-center"><Skeleton className="h-4 w-56 rounded-sm" /></div>}
                     </div>
                 </div>
             </section>
