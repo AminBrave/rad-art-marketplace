@@ -289,9 +289,11 @@ class ArtworkTest extends TestCase
         Storage::disk('local')->put('artworks/private.jpg', 'private');
 
         $this->get('/api/v1/artworks/'.$artwork->slug.'/image')->assertForbidden();
+        $this->get('/api/v1/artworks/'.$artwork->slug.'/image?variant=card')->assertForbidden();
         [$otherArtist] = $this->artistWithProfile('other@example.com');
         $this->actingAs($otherArtist)->get('/api/v1/artworks/'.$artwork->slug.'/image')->assertForbidden();
         $this->actingAs($owner)->get('/api/v1/artworks/'.$artwork->slug.'/image')->assertOk();
+        $this->actingAs($owner)->get('/api/v1/artworks/'.$artwork->slug.'/image?variant=unknown')->assertOk();
     }
 
     public function test_public_catalogue_filters_by_medium_availability_and_artist_and_supports_sorting(): void
