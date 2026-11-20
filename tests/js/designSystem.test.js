@@ -36,6 +36,9 @@ const conversationApi = readFileSync(new URL('../../app/Http/Controllers/Api/V1/
 const messageModel = readFileSync(new URL('../../app/Models/Message.php', import.meta.url), 'utf8');
 const adminWorkspace = readFileSync(new URL('../../resources/js/app/AdminWorkspace.jsx', import.meta.url), 'utf8');
 const bootShell = readFileSync(new URL('../../resources/views/app.blade.php', import.meta.url), 'utf8');
+const authContext = readFileSync(new URL('../../resources/js/app/AuthContext.jsx', import.meta.url), 'utf8');
+const webRoutes = readFileSync(new URL('../../routes/web.php', import.meta.url), 'utf8');
+const publicPageController = readFileSync(new URL('../../app/Http/Controllers/PublicPageController.php', import.meta.url), 'utf8');
 const legacyApp = readFileSync(new URL('../../resources/js/app/App.jsx', import.meta.url), 'utf8');
 const homePage = readFileSync(new URL('../../resources/js/app/HomePage.jsx', import.meta.url), 'utf8');
 const authPage = readFileSync(new URL('../../resources/js/app/AuthPage.jsx', import.meta.url), 'utf8');
@@ -426,6 +429,25 @@ test('RAD design-system definition makes the authenticated app-shell and navigat
         'Never invent a route',
     ]) assert.ok(designSystem.includes(principle), 'Missing RAD design-system principle: ' + principle);
 });
+test('auth bootstrap resolves session state before React mounts without caching personalized HTML', () => {
+    assert.ok(bootShell.includes('id="rad-auth-bootstrap"'));
+    assert.ok(bootShell.includes('request()->user()'));
+    assert.ok(authContext.includes("document.getElementById('rad-auth-bootstrap')"));
+    assert.ok(authContext.includes('if (!initialAuth.available && !initialRefreshStartedRef.current)'));
+    assert.ok(authContext.includes("axios.get('/api/v1/auth/me')"), 'The legacy endpoint remains available as a fallback when the Blade bootstrap is absent or invalid.');
+    assert.ok(webRoutes.includes("->header('Cache-Control', 'private, no-store, max-age=0, must-revalidate')"));
+    assert.ok(publicPageController.includes("->header('Cache-Control', 'private, no-store, max-age=0, must-revalidate')"));
+    assert.doesNotMatch(publicPageController, /response\(\)->view\('app'/, 'Every dynamic SEO app-shell response must use the private app-view helper.');
+});
+
+test('protected-route auth loading preserves the workspace shell width and navigation columns', () => {
+    assert.ok(routeLoading.includes('function WorkspaceAuthLoading'));
+    assert.ok(routeLoading.includes('max-w-content'));
+    assert.ok(routeLoading.includes('lg:grid-cols-[15rem_minmax(0,1fr)]'));
+    assert.ok(routeLoading.includes('<WorkspaceAuthLoading><RouteLoading label="در حال بررسی نشست کاربری…'));
+    assert.ok(routeLoading.includes('<WorkspaceAuthLoading><RouteLoading label="در حال بررسی سطح دسترسی…'));
+});
+
 test('Blade first-paint skeletons use route-specific geometry for studio forms, directories and collections', () => {
     assert.ok(bootShell.includes("$isArtworkStudio = request()->is('dashboard/artist/artworks')"));
     assert.ok(bootShell.includes("$isCollectionDetail = request()->is('collections/*')"));
