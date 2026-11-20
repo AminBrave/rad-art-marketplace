@@ -14,6 +14,75 @@ function LoadingBlock({ className = '' }) {
     return <Skeleton height={null} className={className} />;
 }
 
+function WorkspaceAuthLoading({ children }) {
+    const { pathname } = useLocation();
+    const isMessagingRoute = pathname.endsWith('/messages');
+    const navigationRows = [0, 1, 2, 3, 4, 5];
+
+    return (
+        <div
+            className={isMessagingRoute ? 'flex h-dvh flex-col overflow-hidden bg-canvas text-ink' : 'min-h-screen bg-canvas text-ink'}
+            dir="rtl"
+            aria-busy="true"
+        >
+            <header className="sticky top-0 z-40 shrink-0 border-b border-border bg-paper shadow-soft">
+                <div className="mx-auto flex min-h-[4.5rem] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-20 sm:gap-4" aria-hidden="true">
+                    <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
+                        <Skeleton className="h-10 w-10 shrink-0 rounded-lg sm:h-12 sm:w-12" />
+                        <div className="grid min-w-0 gap-2">
+                            <Skeleton className="h-4 w-20 rounded-sm" />
+                            <Skeleton className="h-3 w-28 rounded-sm" />
+                        </div>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+                        <Skeleton className="hidden h-9 w-28 rounded-md lg:block" />
+                        <Skeleton className="h-11 w-11 rounded-lg" />
+                    </div>
+                </div>
+            </header>
+
+            <div className={isMessagingRoute
+                ? 'mx-auto grid h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-h-0 min-w-0 max-w-content flex-none grid-cols-1 grid-rows-[minmax(0,1fr)] gap-0 px-page-gutter py-page-gutter sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:gap-4 sm:py-4 lg:h-[calc(100dvh-5rem)] lg:grid-cols-[15rem_minmax(0,1fr)] lg:grid-rows-1 lg:gap-8 lg:py-8'
+                : 'mx-auto grid min-w-0 max-w-content gap-5 px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-8 lg:pb-8'}>
+                {isMessagingRoute ? (
+                    <div className="hidden lg:block" aria-hidden="true" />
+                ) : (
+                    <aside className="hidden min-w-0 rounded-xl border border-border bg-paper p-3 shadow-soft lg:block" aria-hidden="true">
+                        <div className="grid gap-1">
+                            {navigationRows.map((item) => (
+                                <div key={item} className="flex min-h-11 items-center gap-3 rounded-lg px-4 py-2.5">
+                                    <Skeleton className="h-[18px] w-[18px] shrink-0 rounded-sm" />
+                                    <Skeleton className="h-3 w-28 rounded-sm" />
+                                </div>
+                            ))}
+                        </div>
+                    </aside>
+                )}
+                <main className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden lg:col-start-2' : 'min-w-0'}>
+                    {children}
+                </main>
+            </div>
+
+            {isMessagingRoute && (
+                <aside className="fixed right-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))] top-28 z-30 hidden h-fit max-h-[calc(100dvh_-_8rem)] w-60 overflow-hidden rounded-xl border border-border bg-paper p-3 shadow-soft lg:block" aria-hidden="true">
+                    <div className="grid gap-1">{navigationRows.map((item) => <Skeleton key={item} className="h-10 w-full rounded-md" />)}</div>
+                </aside>
+            )}
+
+            <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-paper pb-[env(safe-area-inset-bottom)] shadow-raised lg:hidden" aria-hidden="true">
+                <div className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2">
+                    {[0, 1, 2, 3].map((item) => (
+                        <div key={item} className="flex flex-col items-center justify-center gap-1">
+                            <Skeleton className="h-[19px] w-[19px] rounded-sm" />
+                            <Skeleton className="h-2 w-10 rounded-sm" />
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export function RouteLoading({ label = 'در حال آماده‌سازی صفحه…' }) {
     const { pathname, search } = useLocation();
     const isWorkspace = pathname === '/dashboard' || pathname.startsWith('/dashboard/') || pathname.startsWith('/admin');
@@ -197,7 +266,7 @@ export function RequireAuth({ children }) {
     const { user, status } = useAuth();
     const location = useLocation();
 
-    if (status === 'loading') return <RouteLoading label="در حال بررسی نشست کاربری…" />;
+    if (status === 'loading') return <WorkspaceAuthLoading><RouteLoading label="در حال بررسی نشست کاربری…" /></WorkspaceAuthLoading>;
     if (status === 'error') return <AuthUnavailable />;
     if (!user) return <Navigate to="/login" replace state={{ from: location }} />;
     return children ?? <Outlet />;
@@ -207,7 +276,7 @@ export function RequireRole({ roles, children }) {
     const { user, status } = useAuth();
     const location = useLocation();
 
-    if (status === 'loading') return <RouteLoading label="در حال بررسی سطح دسترسی…" />;
+    if (status === 'loading') return <WorkspaceAuthLoading><RouteLoading label="در حال بررسی سطح دسترسی…" /></WorkspaceAuthLoading>;
     if (status === 'error') return <AuthUnavailable />;
     if (!user) return <Navigate to="/login" replace state={{ from: location }} />;
     if (!roles.includes(user.role)) return <Navigate to="/unauthorized" replace />;
