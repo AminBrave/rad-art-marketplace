@@ -13,7 +13,7 @@ export function ArtworkCard({ artwork, className = '' }) {
             <Link to={`/artworks/${artwork.slug}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus">
                 <div className="relative overflow-hidden bg-surface-muted">
                     <div className="flex aspect-[4/5] items-center justify-center bg-surface-muted p-0">
-                        <MediaImage src={artwork.image_url} alt={title} className="h-full w-full" imageClassName="object-contain transition-transform duration-300 group-hover:scale-[1.02]" />
+                        <MediaImage src={artwork.image_url} alt={title} variant="card" className="h-full w-full" imageClassName="object-contain transition-transform duration-300 group-hover:scale-[1.02]" />
                     </div>
                     <span aria-hidden="true" className="pointer-events-none absolute inset-0 border border-[color:color-mix(in_srgb,var(--color-ink)_5%,transparent)] transition-colors group-hover:border-[color:color-mix(in_srgb,var(--color-terracotta)_50%,transparent)]" />
                 </div>
