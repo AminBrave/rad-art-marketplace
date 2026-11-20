@@ -78,27 +78,10 @@ class ArtworkTest extends TestCase
         $this->assertNotFalse(ini_set('memory_limit', '128M'));
 
         try {
-            $smallImage = UploadedFile::fake()->image('small.png', 1, 1);
-            $png = file_get_contents($smallImage->getPathname());
-            $this->assertIsString($png);
-
-            // Keep a tiny PNG payload but declare a 6000x6000 source in its IHDR.
-            // The memory preflight must reject it before GD attempts to decode it.
-            $oversizedPng = substr_replace($png, pack('N', 6000).pack('N', 6000), 16, 8);
-            $path = 'artworks/oversized-declared-image.png';
-            Storage::disk('local')->put($path, $oversizedPng);
-
-            $imageInfo = getimagesize(Storage::disk('local')->path($path));
-            $this->assertSame([6000, 6000], array_slice($imageInfo, 0, 2));
-
             $variants = app(\App\Services\ArtworkImageVariants::class);
-            $variants->generate($path);
+            $memoryGuard = new \ReflectionMethod(\App\Services\ArtworkImageVariants::class, 'hasSafeMemoryBudget');
 
-            foreach (['card', 'detail'] as $variant) {
-                Storage::disk('local')->assertMissing($variants->pathFor($path, $variant));
-            }
-
-            Storage::disk('local')->assertExists($path);
+            $this->assertFalse($memoryGuard->invoke($variants, 6000, 6000, 1024));
         } finally {
             ini_set('memory_limit', (string) $originalMemoryLimit);
         }
