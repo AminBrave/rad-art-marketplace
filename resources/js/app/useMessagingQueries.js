@@ -61,9 +61,20 @@ export function useMessagingQueries({ endpoint, search, filter, conversationId, 
             const { data: firstPage } = await axios.get(url, { params, signal });
             const incoming = [...(firstPage.data ?? [])];
             if (incremental) {
-                for (let page = 2; page <= Number(firstPage.last_page ?? 1); page += 1) {
-                    const { data: nextPage } = await axios.get(url, { params: { ...params, page }, signal });
-                    incoming.push(...(nextPage.data ?? []));
+                // Incremental API responses use simple pagination (no total-count query).
+                // Follow next_page_url rather than last_page, which is not available there.
+                let nextPage = firstPage.next_page_url
+                    ? Number(firstPage.current_page ?? 1) + 1
+                    : null;
+                while (nextPage !== null) {
+                    const { data: nextPageData } = await axios.get(url, {
+                        params: { ...params, page: nextPage },
+                        signal,
+                    });
+                    incoming.push(...(nextPageData.data ?? []));
+                    nextPage = nextPageData.next_page_url
+                        ? Number(nextPageData.current_page ?? nextPage) + 1
+                        : null;
                 }
             }
             const latestCache = queryClient.getQueryData(messagesKey) ?? cached;
