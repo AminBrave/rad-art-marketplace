@@ -398,7 +398,7 @@
                 </div>
                 @if ($isMessagingRoute)
                     <aside class="fixed right-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))] top-28 z-30 hidden h-fit max-h-[calc(100dvh_-_8rem)] w-60 overflow-hidden rounded-xl border border-border bg-paper p-3 shadow-soft lg:block" aria-hidden="true">
-                        <div class="grid gap-1">@foreach (range(1, 6) as $item)<span class="{{ $skeletonClass }} h-10 w-full rounded-md"></span>@endforeach</div>
+                        <div class="grid gap-1">@foreach (range(1, $workspaceNavigationCount) as $item)<span class="{{ $skeletonClass }} h-10 w-full rounded-md"></span>@endforeach</div>
                     </aside>
                 @endif
                 <div class="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-paper pb-[env(safe-area-inset-bottom)] shadow-raised lg:hidden" aria-hidden="true">
