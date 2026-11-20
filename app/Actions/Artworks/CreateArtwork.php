@@ -2,18 +2,23 @@
 
 declare(strict_types=1);
 
-namespace App\Actions\Artworks;
+namespace App\\Actions\\Artworks;
 
-use App\Models\ArtistProfile;
-use App\Models\Artwork;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use App\\Models\\ArtistProfile;
+use App\\Models\\Artwork;
+use App\\Services\\ArtworkImageVariants;
+use Illuminate\\Http\\UploadedFile;
+use Illuminate\\Support\\Facades\\Storage;
+use Illuminate\\Support\\Str;
 use RuntimeException;
 use Throwable;
 
 class CreateArtwork
 {
+    public function __construct(private readonly ArtworkImageVariants $imageVariants)
+    {
+    }
+
     /**
      * @param  array<string, mixed>  $attributes  Validated StoreArtworkRequest data.
      */
@@ -31,14 +36,18 @@ class CreateArtwork
 
         try {
             $baseSlug = Str::slug($attributes['title']) ?: 'artwork';
-
-            return $profile->artworks()->create([
+            $artwork = $profile->artworks()->create([
                 ...$attributes,
                 'slug' => $baseSlug.'-'.Str::lower(Str::random(10)),
                 'image_path' => $imagePath,
                 'status' => Artwork::STATUS_PENDING_REVIEW,
             ]);
+
+            $this->imageVariants->generate($imagePath);
+
+            return $artwork;
         } catch (Throwable $exception) {
+            $this->imageVariants->deleteForOriginal($imagePath);
             Storage::disk('local')->delete($imagePath);
 
             throw $exception;
