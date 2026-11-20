@@ -56,7 +56,7 @@ class ArtworkTest extends TestCase
         ])->assertCreated();
 
         $artwork = Artwork::firstOrFail();
-        $variants = app(\\App\\Services\\ArtworkImageVariants::class);
+        $variants = app(\App\Services\ArtworkImageVariants::class);
 
         foreach (['card', 'detail'] as $variant) {
             $path = $variants->pathFor($artwork->image_path, $variant);
@@ -80,7 +80,7 @@ class ArtworkTest extends TestCase
         ]);
         Storage::disk('local')->put($artwork->image_path, 'old-image');
 
-        $variants = app(\\App\\Services\\ArtworkImageVariants::class);
+        $variants = app(\App\Services\ArtworkImageVariants::class);
         $oldVariant = $variants->pathFor($artwork->image_path, 'card');
         Storage::disk('local')->put($oldVariant, 'old-variant');
 
