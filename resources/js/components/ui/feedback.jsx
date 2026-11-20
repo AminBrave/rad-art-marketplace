@@ -156,13 +156,17 @@ export function MediaImage({
     width,
     height,
     fallback,
+    variant,
 }) {
+    const imageSrc = src && variant
+        ? `${src}${src.includes('?') ? '&' : '?'}variant=${encodeURIComponent(variant)}`
+        : src;
     const [loadedSrc, setLoadedSrc] = useState(null);
     const [failedSrc, setFailedSrc] = useState(null);
-    const loaded = Boolean(src) && loadedSrc === src;
-    const failed = Boolean(src) && failedSrc === src;
+    const loaded = Boolean(imageSrc) && loadedSrc === imageSrc;
+    const failed = Boolean(imageSrc) && failedSrc === imageSrc;
 
-    if (!src || failed) {
+    if (!imageSrc || failed) {
         return fallback ?? (
             <span
                 role={alt ? 'img' : undefined}
@@ -179,15 +183,15 @@ export function MediaImage({
         <span className={`relative isolate block overflow-hidden bg-surface-muted ${className}`} aria-busy={!loaded}>
             {!loaded && <span aria-hidden="true" className={`${skeletonClasses} absolute inset-0 h-full w-full rounded-none`} />}
             <img
-                src={src}
+                src={imageSrc}
                 alt={alt}
                 loading={loading}
                 decoding={decoding}
                 fetchpriority={fetchPriority}
                 width={width}
                 height={height}
-                onLoad={() => setLoadedSrc(src)}
-                onError={() => setFailedSrc(src)}
+                onLoad={() => setLoadedSrc(imageSrc)}
+                onError={() => setFailedSrc(imageSrc)}
                 className={`absolute inset-0 block h-full w-full transition-opacity duration-200 ${loaded ? 'opacity-100' : 'opacity-0'} ${imageClassName}`}
             />
         </span>
