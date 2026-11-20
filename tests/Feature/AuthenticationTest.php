@@ -14,11 +14,16 @@ class AuthenticationTest extends TestCase
 
     public function test_guest_app_shell_bootstraps_a_resolved_guest_state_without_a_second_auth_request(): void
     {
-        $this->get('/dashboard/artist')
-            ->assertOk()
+        $response = $this->get('/dashboard/artist');
+
+        $response->assertOk()
             ->assertSee('id="rad-auth-bootstrap"', false)
-            ->assertSee('>null</script>', false)
-            ->assertHeader('Cache-Control', 'private, no-store, max-age=0, must-revalidate');
+            ->assertSee('>null</script>', false);
+
+        $this->assertEqualsCanonicalizing(
+            ['private', 'no-store', 'max-age=0', 'must-revalidate'],
+            array_map('trim', explode(',', (string) $response->headers->get('Cache-Control'))),
+        );
     }
 
     public function test_authenticated_app_shell_embeds_the_minimal_current_user_payload_and_is_not_cacheable(): void
@@ -30,22 +35,42 @@ class AuthenticationTest extends TestCase
             'role' => User::ROLE_ARTIST,
         ]);
 
-        $this->actingAs($user)->get('/dashboard/artist')
-            ->assertOk()
-            ->assertSee('id="rad-auth-bootstrap"', false)
-            ->assertSee('\\u0022id\\u0022:'.$user->id, false)
-            ->assertSee('\\u0022name\\u0022:\\u0022Bootstrap Artist\\u0022', false)
-            ->assertSee('\\u0022email\\u0022:\\u0022bootstrap@example.com\\u0022', false)
-            ->assertSee('\\u0022role\\u0022:\\u0022artist\\u0022', false)
-            ->assertHeader('Cache-Control', 'private, no-store, max-age=0, must-revalidate');
+        $response = $this->actingAs($user)->get('/dashboard/artist');
+
+        $response->assertOk()
+            ->assertSee('id="rad-auth-bootstrap"', false);
+
+        preg_match(
+            '/<script type="application\\/json" id="rad-auth-bootstrap">(.*?)<\\/script>/s',
+            $response->getContent(),
+            $matches,
+        );
+
+        $this->assertArrayHasKey(1, $matches);
+        $this->assertSame([
+            'id' => $user->id,
+            'name' => 'Bootstrap Artist',
+            'email' => 'bootstrap@example.com',
+            'role' => 'artist',
+        ], json_decode($matches[1], true, 512, JSON_THROW_ON_ERROR));
+
+        $this->assertEqualsCanonicalizing(
+            ['private', 'no-store', 'max-age=0', 'must-revalidate'],
+            array_map('trim', explode(',', (string) $response->headers->get('Cache-Control'))),
+        );
     }
 
     public function test_dynamic_spa_not_found_shell_is_private_and_not_cacheable(): void
     {
-        $this->get('/artworks/nonexistent-artwork-slug')
-            ->assertNotFound()
-            ->assertSee('id="rad-auth-bootstrap"', false)
-            ->assertHeader('Cache-Control', 'private, no-store, max-age=0, must-revalidate');
+        $response = $this->get('/artworks/nonexistent-artwork-slug');
+
+        $response->assertNotFound()
+            ->assertSee('id="rad-auth-bootstrap"', false);
+
+        $this->assertEqualsCanonicalizing(
+            ['private', 'no-store', 'max-age=0', 'must-revalidate'],
+            array_map('trim', explode(',', (string) $response->headers->get('Cache-Control'))),
+        );
     }
 
     public function test_guest_authentication_bootstrap_returns_a_guest_state_without_unauthorized_response(): void
