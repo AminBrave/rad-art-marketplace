@@ -461,12 +461,20 @@ test('active frontend surfaces use semantic RAD colors and avoid raw palette uti
     }
 });
 
-test('route fallbacks preserve page-specific geometry for catalogues, artists and messaging', () => {
+test('route fallbacks mirror loaded page geometry for catalogues, workspaces, admin and messaging', () => {
     assert.ok(routeLoading.includes("pathname === '/artworks'"));
     assert.ok(routeLoading.includes("pathname === '/artists'"));
     assert.ok(routeLoading.includes('ArtworkCardSkeleton'));
     assert.ok(routeLoading.includes('ArtistCardSkeleton'));
-    assert.ok(routeLoading.includes('min-h-[34rem]'));
+    assert.ok(routeLoading.includes("pathname === '/dashboard/artist/artworks'"));
+    assert.ok(routeLoading.includes('ArtworkStudioListSkeleton count={3} announce={false}'));
+    assert.ok(routeLoading.includes("pathname === '/admin/editorial'"));
+    assert.ok(routeLoading.includes('AdminEditorialSkeleton announce={false}'));
+    assert.ok(routeLoading.includes('ArtistWorkspaceOverviewSkeleton'));
+    assert.ok(routeLoading.includes('BuyerDashboardSkeleton'));
+    assert.ok(routeLoading.includes('hasRequestedConversation'));
+    assert.ok(routeLoading.includes('flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden'));
+    assert.doesNotMatch(routeLoading, /min-h-\\[34rem\\]/, 'Messaging fallback must fill the viewport-locked workspace slot instead of imposing a guessed minimum height.');
     assert.ok(routeLoading.includes('role="status"'));
     assert.ok(routeLoading.includes('aria-busy="true"'));
 });
