@@ -223,9 +223,9 @@ export function AdminDashboardSkeleton() {
     );
 }
 
-export function ArtworkModerationSkeleton({ count = 4 }) {
+export function ArtworkModerationSkeleton({ count = 4, announce = true }) {
     return (
-        <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال دریافت آثار برای بررسی" className="grid gap-4 xl:grid-cols-2">
+        <div role={announce ? 'status' : undefined} aria-live={announce ? 'polite' : undefined} aria-busy={announce ? 'true' : undefined} aria-label={announce ? 'در حال دریافت آثار برای بررسی' : undefined} aria-hidden={announce ? undefined : 'true'} className="grid gap-4 xl:grid-cols-2">
             {Array.from({ length: count }, (_, index) => <article key={index} className="overflow-hidden border border-border bg-paper">
                 <div className="grid sm:grid-cols-[minmax(0,.85fr)_minmax(0,1.15fr)]">
                     <Skeleton className="h-56 w-full rounded-none sm:h-full sm:min-h-64" />
@@ -289,9 +289,9 @@ export function MessageReportsSkeleton({ count = 3, announce = true }) {
     );
 }
 
-export function AdminUserCardsSkeleton({ count = 4 }) {
+export function AdminUserCardsSkeleton({ count = 4, announce = true }) {
     return (
-        <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال دریافت کاربران" className="grid gap-3 xl:grid-cols-2">
+        <div role={announce ? 'status' : undefined} aria-live={announce ? 'polite' : undefined} aria-busy={announce ? 'true' : undefined} aria-label={announce ? 'در حال دریافت کاربران' : undefined} aria-hidden={announce ? undefined : 'true'} className="grid gap-3 xl:grid-cols-2">
             {Array.from({ length: count }, (_, index) => <article key={index} className="grid gap-4 border border-border bg-paper p-5"><div className="flex items-start justify-between gap-3"><div className="grid min-w-0 flex-1 gap-2"><Skeleton className="h-5 w-2/3 rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div><Skeleton className="h-6 w-20 rounded-full" /></div><div className="grid gap-2 border-t border-border pt-4"><Skeleton className="h-4 w-28 rounded-sm" /><Skeleton className="h-11 w-full rounded-sm" /><Skeleton className="h-3 w-3/4 rounded-sm" /><div className="flex gap-2"><Skeleton className="h-9 w-24 rounded-sm" /><Skeleton className="h-9 w-24 rounded-sm" /></div></div></article>)}
         </div>
     );
@@ -318,9 +318,9 @@ export function CollectionCardSkeleton({ count = 3, announce = true }) {
     );
 }
 
-export function AdminEditorialSkeleton() {
+export function AdminEditorialSkeleton({ announce = true }) {
     return (
-        <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال دریافت محتوای سردبیری" className="grid gap-8">
+        <div role={announce ? 'status' : undefined} aria-live={announce ? 'polite' : undefined} aria-busy={announce ? 'true' : undefined} aria-label={announce ? 'در حال دریافت محتوای سردبیری' : undefined} aria-hidden={announce ? undefined : 'true'} className="grid gap-8">
             <section className="grid gap-4 border border-border bg-paper p-5 sm:p-7">
                 <Skeleton className="h-7 w-44 rounded-sm" />
                 <div className="grid gap-2"><Skeleton className="h-4 w-28 rounded-sm" /><Skeleton className="h-11 w-full rounded-sm" /></div>
