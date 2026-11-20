@@ -5,7 +5,7 @@ import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-rou
 import { useAuth } from './AuthContext';
 import { WorkspaceLayout } from './Layouts';
 import { getWorkspacePrimaryLinks } from './workspaceNavigation';
-import { Skeleton, ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, FormFieldSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton, PageHeader, WorkspaceHero, Checkbox } from '../components/ui';
+import { Skeleton, ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, ArtistWorkspaceOverviewSkeleton, BuyerDashboardSkeleton, FormFieldSkeleton, ArtworkStudioListSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, AdminEditorialSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton, PageHeader, WorkspaceHero, Checkbox } from '../components/ui';
 const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
 
 const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
@@ -15,45 +15,98 @@ function LoadingBlock({ className = '' }) {
 }
 
 export function RouteLoading({ label = 'در حال آماده‌سازی صفحه…' }) {
-    const { pathname } = useLocation();
+    const { pathname, search } = useLocation();
     const isWorkspace = pathname === '/dashboard' || pathname.startsWith('/dashboard/') || pathname.startsWith('/admin');
     const isArtworkDetail = /^\/artworks\/[^/]+/.test(pathname);
     const isArtistProfile = /^\/artists\/[^/]+/.test(pathname);
-    const isForm = /\/(login|register)$/.test(pathname) || /^\/dashboard\/artist\/(profile|artworks)$/.test(pathname);
+    const isMessaging = /^\/dashboard\/(artist|buyer)\/messages$/.test(pathname);
+    const hasRequestedConversation = new URLSearchParams(search).has('conversation');
 
     if (pathname === '/') return <HomePageSkeleton />;
     if (isArtworkDetail) return <ArtworkDetailSkeleton />;
     if (isArtistProfile) return <ArtistProfileSkeleton />;
+    if (pathname === '/admin') return <AdminDashboardSkeleton />;
+    if (pathname === '/dashboard/artist') return <ArtistWorkspaceOverviewSkeleton />;
+    if (pathname === '/dashboard/buyer') return <BuyerDashboardSkeleton />;
+
+    if (pathname === '/login' || pathname === '/register') {
+        const registering = pathname === '/register';
+        return (
+            <main className="mx-auto max-w-xl px-5 py-12 sm:px-8" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فرم حساب کاربری">
+                <section className="rounded-3xl border border-border-strong bg-paper p-6 shadow-sm sm:p-9">
+                    <Skeleton className="h-4 w-32 rounded-sm" />
+                    <Skeleton className="mt-5 h-8 w-2/3 rounded-sm" />
+                    <div className="mt-6 flex gap-5 border-b border-border pb-4"><Skeleton className="h-4 w-12 rounded-sm" /><Skeleton className="h-4 w-16 rounded-sm" /></div>
+                    <div className="mt-6 grid gap-4">
+                        {registering && <><FormFieldSkeleton /><FormFieldSkeleton /></>}
+                        <FormFieldSkeleton />
+                        <FormFieldSkeleton />
+                        {registering && <FormFieldSkeleton />}
+                        <Skeleton className="h-12 w-full rounded-md" />
+                    </div>
+                    <Skeleton className="mt-5 h-3 w-4/5 rounded-sm" />
+                </section>
+            </main>
+        );
+    }
+
+    if (pathname === '/dashboard/artist/profile') {
+        return (
+            <div className="mx-auto min-h-[65vh] max-w-7xl px-5 py-10 sm:px-8 lg:px-10" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
+                <span className="sr-only">{label}</span>
+                <div className="mb-8 grid gap-3 border-b border-border pb-6"><Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="h-9 w-2/3 max-w-sm rounded-sm" /><Skeleton className="h-4 w-full max-w-xl rounded-sm" /></div>
+                <section className="grid gap-4 sm:grid-cols-2">
+                    <FormFieldSkeleton className="sm:col-span-2" />
+                    <FormFieldSkeleton className="sm:col-span-2" controlClassName="h-28" />
+                    <FormFieldSkeleton />
+                    <FormFieldSkeleton />
+                    <FormFieldSkeleton className="sm:col-span-2" />
+                    <div className="sm:col-span-2"><Skeleton className="h-5 w-48 rounded-sm" /><Skeleton className="mt-4 h-11 w-36 rounded-sm" /></div>
+                </section>
+            </div>
+        );
+    }
+
+    if (isMessaging) {
+        return (
+            <section className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden font-sans" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
+                <div className="grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden rounded-lg border border-border bg-surface shadow-soft lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]">
+                    <aside className={hasRequestedConversation ? 'hidden h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e lg:flex' : 'flex h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e'}>
+                        <div className="shrink-0 border-b border-border bg-paper px-3 py-2.5">
+                            <div className="flex items-start justify-between gap-3"><div className="grid min-w-0 flex-1 gap-2"><Skeleton className="h-4 w-20 rounded-sm" /><Skeleton className="h-3 w-40 rounded-sm" /></div><Skeleton className="h-6 w-16 rounded-full" /></div>
+                        </div>
+                        <div className="shrink-0 space-y-2 border-b border-border bg-surface-muted p-2.5">
+                            <Skeleton className="h-10 w-full rounded-md" />
+                            <div className="grid grid-cols-3 gap-0 overflow-hidden rounded-md border border-border"><Skeleton className="h-10 rounded-none" /><Skeleton className="h-10 rounded-none" /><Skeleton className="h-10 rounded-none" /></div>
+                        </div>
+                        <ConversationInboxSkeleton count={6} announce={false} />
+                    </aside>
+                    <div className={hasRequestedConversation ? 'flex h-full min-h-0 min-w-0 flex-col bg-canvas' : 'hidden h-full min-h-0 min-w-0 flex-col bg-canvas lg:flex'}>
+                        <div className="flex items-center gap-3 border-b border-border p-5"><Skeleton className="h-10 w-10 shrink-0 rounded-full" /><div className="grid min-w-0 flex-1 gap-2"><Skeleton className="h-4 w-40 rounded-sm" /><Skeleton className="h-3 w-28 rounded-sm" /></div><Skeleton className="h-8 w-8 rounded-full" /></div>
+                        <div className="border-b border-border bg-surface-muted px-5 py-3"><Skeleton className="h-3 w-28 rounded-sm" /></div>
+                        <MessageHistorySkeleton count={5} announce={false} className="min-h-0 flex-1" />
+                        <div className="border-t border-border p-5"><Skeleton className="h-12 w-full rounded-full" /></div>
+                    </div>
+                </div>
+            </section>
+        );
+    }
 
     return (
         <div className="mx-auto min-h-[65vh] max-w-7xl px-5 py-10 sm:px-8 lg:px-10" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
             <span className="sr-only">{label}</span>
             <div className="mb-8 flex items-center justify-between gap-5 border-b border-border pb-6">
                 <div className="grid min-w-0 flex-1 gap-3">
-                    <LoadingBlock className="h-3 w-24" />
-                    <LoadingBlock className="h-9 w-2/3 max-w-sm" />
-                    <LoadingBlock className="h-4 w-full max-w-xl" />
+                    <Skeleton className="h-3 w-24 rounded-sm" />
+                    <Skeleton className="h-9 w-2/3 max-w-sm rounded-sm" />
+                    <Skeleton className="h-4 w-full max-w-xl rounded-sm" />
                 </div>
-                {isWorkspace && <LoadingBlock className="h-10 w-28 shrink-0" />}
+                {isWorkspace && <Skeleton className="h-10 w-28 shrink-0 rounded-md" />}
             </div>
-            {pathname === '/' ? (
-                <section className="grid items-center gap-8 lg:grid-cols-2">
-                    <div className="grid gap-4">
-                        <LoadingBlock className="h-3 w-28" />
-                        <LoadingBlock className="h-12 w-11/12" />
-                        <LoadingBlock className="h-12 w-3/4" />
-                        <LoadingBlock className="mt-3 h-4 w-full max-w-xl" />
-                        <LoadingBlock className="h-4 w-4/5" />
-                        <LoadingBlock className="mt-4 h-12 w-36" />
-                    </div>
-                    <LoadingBlock className="aspect-[4/5] w-full max-w-xl justify-self-center" />
-                </section>
-            ) : pathname === '/artworks' ? (
+            {pathname === '/artworks' ? (
                 <>
                     <section className="mb-7 grid gap-3 border border-border bg-surface-muted p-4 sm:grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))] sm:p-5">
-                        <LoadingBlock className="h-11 w-full" />
-                        <LoadingBlock className="h-11 w-full" />
-                        <LoadingBlock className="h-11 w-full" />
+                        <Skeleton className="h-11 w-full rounded-md" /><Skeleton className="h-11 w-full rounded-md" /><Skeleton className="h-11 w-full rounded-md" />
                     </section>
                     <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}
@@ -62,10 +115,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
             ) : pathname === '/artists' ? (
                 <>
                     <section className="mb-8 grid gap-4 border-y border-border bg-surface-muted px-6 py-10 sm:px-10">
-                        <LoadingBlock className="h-3 w-28" />
-                        <LoadingBlock className="h-10 w-2/3 max-w-lg" />
-                        <LoadingBlock className="h-4 w-full max-w-2xl" />
-                        <LoadingBlock className="h-11 w-full max-w-2xl" />
+                        <Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="h-10 w-2/3 max-w-lg rounded-sm" /><Skeleton className="h-4 w-full max-w-2xl rounded-sm" /><Skeleton className="h-11 w-full max-w-2xl rounded-md" />
                     </section>
                     <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                         {[0, 1, 2, 3, 4, 5].map((item) => <ArtistCardSkeleton key={item} />)}
@@ -74,112 +124,60 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
             ) : /^\/collections\/[^/]+/.test(pathname) ? (
                 <CollectionDetailSkeleton />
             ) : pathname === '/collections' ? (
-                <>
-                    <section className="mb-8 grid gap-3 border-b border-border pb-6">
-                        <LoadingBlock className="h-3 w-24" />
-                        <LoadingBlock className="h-10 w-2/3 max-w-lg" />
-                        <LoadingBlock className="h-4 w-full max-w-2xl" />
-                    </section>
-                    <CollectionCardSkeleton count={6} />
-                </>
-            ) : /^\/(dashboard\/(artist|buyer)\/messages)$/.test(pathname) ? (
-                <section className="grid min-h-[34rem] overflow-hidden border border-border bg-paper md:grid-cols-[minmax(16rem,.36fr)_minmax(0,.64fr)]">
-                    <aside className="min-h-0 border-b border-border md:border-b-0 md:border-l"><ConversationInboxSkeleton count={6} /></aside>
-                    <div className="hidden min-w-0 flex-col justify-between md:flex">
-                        <div className="flex items-center gap-3 border-b border-border p-5"><LoadingBlock className="h-10 w-10 rounded-full" /><div className="grid gap-2"><LoadingBlock className="h-4 w-40" /><LoadingBlock className="h-3 w-28" /></div></div>
-                        <MessageHistorySkeleton count={4} className="flex-1" />
-                        <div className="border-t border-border p-5"><LoadingBlock className="h-12 w-full rounded-full" /></div>
-                    </div>
-                </section>
+                <CollectionCardSkeleton count={6} announce={false} />
             ) : pathname === '/admin/artworks' ? (
-                <ArtworkModerationSkeleton count={4} />
+                <>
+                    <div className="mb-6 flex flex-wrap gap-2" aria-hidden="true">{[0, 1, 2, 3].map((item) => <Skeleton key={item} className="h-10 w-28 rounded-full" />)}</div>
+                    <ArtworkModerationSkeleton count={4} announce={false} />
+                </>
             ) : pathname === '/admin/users' ? (
-                <AdminUserCardsSkeleton count={4} />
+                <>
+                    <div className="mb-4 grid gap-3 sm:grid-cols-2">
+                        {[0, 1].map((item) => <div key={item} className="border border-border bg-paper p-4"><Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="mt-2 h-8 w-16 rounded-sm" /></div>)}
+                    </div>
+                    <div className="mb-6 grid gap-2 border-s-2 border-sand bg-surface-muted p-4"><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div>
+                    <AdminUserCardsSkeleton count={4} announce={false} />
+                </>
             ) : pathname === '/admin/message-reports' ? (
-                <MessageReportsSkeleton count={3} />
-            ) : isArtworkDetail ? (
-                <div className="grid gap-8 lg:grid-cols-[1.15fr_.85fr]">
-                    <LoadingBlock className="aspect-[4/3] w-full lg:aspect-[4/5]" />
-                    <div className="grid content-start gap-5 border border-border bg-paper p-6 sm:p-9">
-                        <LoadingBlock className="h-4 w-24" />
-                        <LoadingBlock className="h-10 w-4/5" />
-                        <LoadingBlock className="h-4 w-2/5" />
-                        <LoadingBlock className="mt-5 h-28 w-full" />
-                        <LoadingBlock className="mt-3 h-20 w-full" />
-                    </div>
-                </div>
-            ) : isArtistProfile ? (
                 <>
-                    <section className="grid gap-4 border border-border bg-paper p-7 sm:p-12">
-                        <LoadingBlock className="h-3 w-28" />
-                        <LoadingBlock className="h-10 w-2/3 max-w-md" />
-                        <LoadingBlock className="h-4 w-28" />
-                        <LoadingBlock className="mt-3 h-20 w-full max-w-3xl" />
-                    </section>
-                    <section className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                        {[0, 1, 2, 3, 4, 5].map((item) => <div key={item} className="border border-border bg-paper"><LoadingBlock className="aspect-[4/3] w-full" /><div className="grid gap-3 p-4"><LoadingBlock className="h-4 w-4/5" /><LoadingBlock className="h-3 w-2/5" /></div></div>)}
-                    </section>
+                    <div className="mb-4 grid gap-3 sm:grid-cols-2">
+                        {[0, 1].map((item) => <div key={item} className="border border-border bg-paper p-4"><Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="mt-2 h-8 w-16 rounded-sm" /></div>)}
+                    </div>
+                    <MessageReportsSkeleton count={3} announce={false} />
                 </>
+            ) : pathname === '/admin/editorial' ? (
+                <AdminEditorialSkeleton announce={false} />
             ) : pathname === '/dashboard/artist/artworks' ? (
-                <section className="border border-border bg-paper p-5 sm:p-7">
-                    <div className="mb-6 border-b border-border pb-5"><LoadingBlock className="h-6 w-36" /><LoadingBlock className="mt-2 h-4 w-64 max-w-full" /></div>
-                    <div className="grid gap-5 sm:grid-cols-2">
-                        {[0, 1, 2, 3, 4, 5, 6].map((item) => <FormFieldSkeleton key={item} />)}
-                        <FormFieldSkeleton className="sm:col-span-2" controlClassName="h-28" />
-                        <div className="grid gap-2 sm:col-span-2"><LoadingBlock className="h-4 w-36" /><LoadingBlock className="h-24 w-full max-w-md" /><LoadingBlock className="h-3 w-2/3 max-w-md" /></div>
-                        <LoadingBlock className="h-11 w-40" />
-                    </div>
-                </section>
-            ) : isForm ? (
-                <section className="grid gap-5 border border-border bg-paper p-6 sm:grid-cols-2 sm:p-8">
-                    {[0, 1, 2, 3].map((item) => <FormFieldSkeleton key={item} />)}
-                    <FormFieldSkeleton className="sm:col-span-2" controlClassName="h-28" />
-                    <LoadingBlock className="h-11 w-36" />
-                </section>
-            ) : pathname === '/admin' ? (
-                <AdminDashboardSkeleton />
-            ) : /^\/admin\/(users|artworks)$/.test(pathname) ? (
-                <section className="overflow-hidden border border-border bg-paper">
-                    <div className="flex justify-between gap-4 border-b border-border p-5"><LoadingBlock className="h-6 w-40" /><LoadingBlock className="h-9 w-28" /></div>
-                    <div className="grid gap-4 p-5">
-                        {[0, 1, 2, 3, 4, 5].map((item) => <div key={item} className="grid gap-3 border-b border-border pb-4 sm:grid-cols-3"><LoadingBlock className="h-5 w-4/5" /><LoadingBlock className="h-5 w-3/4" /><LoadingBlock className="h-9 w-28" /></div>)}
-                    </div>
-                </section>
-            ) : pathname === '/dashboard/buyer' ? (
                 <>
-                    <section className="border border-border bg-paper p-6"><LoadingBlock className="h-5 w-40" /><LoadingBlock className="mt-4 h-7 w-2/3" /><LoadingBlock className="mt-3 h-4 w-full" /><LoadingBlock className="mt-6 h-11 w-40" /></section>
-                    <section className="mt-6 grid gap-4 md:grid-cols-3">{[0, 1, 2].map((item) => <div key={item} className="border-r-2 border-sand bg-surface-muted p-4"><LoadingBlock className="h-3 w-20" /><LoadingBlock className="mt-3 h-5 w-3/4" /><LoadingBlock className="mt-3 h-3 w-full" /></div>)}</section>
-                </>
-            ) : pathname === '/dashboard/artist' ? (
-                <>
-                    <section className="border border-border bg-paper p-6"><LoadingBlock className="h-5 w-40" /><LoadingBlock className="mt-4 h-8 w-2/3" /><LoadingBlock className="mt-4 h-4 w-full" /><LoadingBlock className="mt-3 h-4 w-3/4" /></section>
-                    <section className="mt-6 grid gap-3 sm:grid-cols-2"><LoadingBlock className="h-24 w-full" /><LoadingBlock className="h-24 w-full" /></section>
+                    <section className="border border-border bg-paper p-5 sm:p-7">
+                        <div className="mb-6 flex flex-wrap items-start justify-between gap-3 border-b border-border pb-5"><Skeleton className="h-6 w-36 rounded-sm" /><Skeleton className="h-4 w-64 max-w-full rounded-sm" /></div>
+                        <div className="grid gap-5 sm:grid-cols-2">
+                            {[0, 1, 2, 3, 4, 5, 6].map((item) => <FormFieldSkeleton key={item} />)}
+                            <FormFieldSkeleton className="sm:col-span-2" controlClassName="h-28" />
+                            <div className="grid gap-2 sm:col-span-2"><Skeleton className="h-4 w-36 rounded-sm" /><Skeleton className="h-11 w-full rounded-sm" /><Skeleton className="h-3 w-2/3 max-w-md rounded-sm" /><Skeleton className="h-3 w-1/2 max-w-sm rounded-sm" /></div>
+                            <Skeleton className="h-11 w-40 rounded-md sm:col-span-2" />
+                        </div>
+                    </section>
+                    <section className="mt-7 space-y-4">
+                        <div className="flex items-center justify-between gap-3"><Skeleton className="h-6 w-40 rounded-sm" /><Skeleton className="h-9 w-28 rounded-md" /></div>
+                        <ArtworkStudioListSkeleton count={3} announce={false} />
+                    </section>
                 </>
             ) : /^\/(about|help|contact)$/.test(pathname) ? (
                 <section className="grid gap-6">
-                    {[0, 1, 2].map((item) => <div key={item} className="grid gap-3 border-b border-border pb-6"><LoadingBlock className="h-6 w-48" /><LoadingBlock className="h-4 w-full" /><LoadingBlock className="h-4 w-5/6" /></div>)}
+                    {[0, 1, 2].map((item) => <div key={item} className="grid gap-3 border-b border-border pb-6"><Skeleton className="h-6 w-48 rounded-sm" /><Skeleton className="h-4 w-full rounded-sm" /><Skeleton className="h-4 w-5/6 rounded-sm" /></div>)}
                 </section>
             ) : (
                 <>
-                    {isWorkspace && <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2].map((item) => <LoadingBlock key={item} className="h-28 w-full" />)}</div>}
+                    {isWorkspace && <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2].map((item) => <Skeleton key={item} className="h-28 w-full rounded-md" />)}</div>}
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                        {[0, 1, 2, 3, 4, 5].map((item) => (
-                            <div key={item} className="overflow-hidden border border-border bg-paper">
-                                <LoadingBlock className="aspect-[4/3] w-full" />
-                                <div className="grid gap-3 p-4">
-                                    <LoadingBlock className="h-3 w-20" />
-                                    <LoadingBlock className="h-5 w-4/5" />
-                                    <LoadingBlock className="h-4 w-2/5" />
-                                </div>
-                            </div>
-                        ))}
+                        {[0, 1, 2, 3, 4, 5].map((item) => <div key={item} className="overflow-hidden border border-border bg-paper"><Skeleton className="aspect-[4/3] w-full rounded-none" /><div className="grid gap-3 p-4"><Skeleton className="h-3 w-20 rounded-sm" /><Skeleton className="h-5 w-4/5 rounded-sm" /><Skeleton className="h-4 w-2/5 rounded-sm" /></div></div>)}
                     </div>
                 </>
             )}
         </div>
     );
 }
-
 function AuthUnavailable() {
     const { authError, refreshUser } = useAuth();
     return (
