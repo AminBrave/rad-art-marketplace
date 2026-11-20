@@ -33,10 +33,10 @@ class AuthenticationTest extends TestCase
         $this->actingAs($user)->get('/dashboard/artist')
             ->assertOk()
             ->assertSee('id="rad-auth-bootstrap"', false)
-            ->assertSee('"id":'.$user->id, false)
-            ->assertSee('"name":"Bootstrap Artist"', false)
-            ->assertSee('"email":"bootstrap@example.com"', false)
-            ->assertSee('"role":"artist"', false)
+            ->assertSee('\\u0022id\\u0022:'.$user->id, false)
+            ->assertSee('\\u0022name\\u0022:\\u0022Bootstrap Artist\\u0022', false)
+            ->assertSee('\\u0022email\\u0022:\\u0022bootstrap@example.com\\u0022', false)
+            ->assertSee('\\u0022role\\u0022:\\u0022artist\\u0022', false)
             ->assertHeader('Cache-Control', 'private, no-store, max-age=0, must-revalidate');
     }
 
