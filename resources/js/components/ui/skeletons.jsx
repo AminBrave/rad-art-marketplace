@@ -82,11 +82,12 @@ export function ConversationInboxSkeleton({ count = 6, className = '', announce 
             aria-busy={announce ? 'true' : undefined}
             aria-label={announce ? 'در حال دریافت گفتگوها' : undefined}
             aria-hidden={announce ? undefined : 'true'}
+            className={`min-h-0 flex-1 ${className}`}
         >
             <ul
                 aria-hidden="true"
                 dir="rtl"
-                className={`min-h-0 flex-1 divide-y divide-border overflow-y-auto overscroll-contain [scrollbar-width:thin] [scrollbar-color:var(--color-border-strong)_transparent] ${className}`}
+                className="min-h-0 h-full divide-y divide-border overflow-y-auto overscroll-contain [scrollbar-width:thin] [scrollbar-color:var(--color-border-strong)_transparent]"
             >
                 {Array.from({ length: count }, (_, index) => (
                     <li key={index} className="relative min-w-0">
