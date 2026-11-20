@@ -67,6 +67,16 @@
         $isInformationPage = request()->is('about', 'help', 'contact');
         $isDirectory = request()->is('artworks', 'artists');
     @endphp
+    @php
+        $authBootstrapUser = request()->user();
+        $authBootstrap = $authBootstrapUser ? [
+            'id' => $authBootstrapUser->id,
+            'name' => $authBootstrapUser->name,
+            'email' => $authBootstrapUser->email,
+            'role' => $authBootstrapUser->role,
+        ] : null;
+    @endphp
+    <script type="application/json" id="rad-auth-bootstrap">@json($authBootstrap, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT)</script>
     <div id="app">
         <main class="mx-auto min-h-screen w-[min(calc(100%_-_2.5rem),80rem)] pt-6 pb-16" role="status" aria-busy="true" aria-label="در حال بارگذاری راد آرت">
             <div class="flex min-h-14 items-center justify-between gap-8 border-b border-border">
