@@ -59,7 +59,10 @@
         $isWorkspace = request()->is('dashboard', 'dashboard/*', 'admin*');
         $isArtworkDetail = request()->is('artworks/*');
         $isArtistProfile = request()->is('artists/*');
-        $isForm = request()->is('login', 'register', 'dashboard/artist/profile', 'dashboard/artist/artworks');
+        $isArtworkStudio = request()->is('dashboard/artist/artworks');
+        $isArtistProfileSettings = request()->is('dashboard/artist/profile');
+        $isAuthForm = request()->is('login', 'register');
+        $isForm = $isAuthForm || $isArtistProfileSettings || $isArtworkStudio;
         $isInformationPage = request()->is('about', 'help', 'contact');
         $isDirectory = request()->is('artworks', 'artists');
     @endphp
@@ -127,22 +130,67 @@
                         </div>
                     </section>
                 </main>
-            @elseif ($isForm)
-                <section class="mx-auto mt-10 grid max-w-3xl gap-5 border border-border bg-paper p-6 sm:p-8">
-                    <span class="{{ $skeletonClass }} h-6 w-40"></span>
-                    @foreach (range(1, 4) as $item)
-                        <span class="{{ $skeletonClass }} h-12 w-full"></span>
-                    @endforeach
-                    <span class="{{ $skeletonClass }} h-28 w-full"></span>
-                    <span class="{{ $skeletonClass }} h-12 w-36"></span>
-                </section>
-                @if ($isWorkspace && request()->is('dashboard/artist/artworks'))
-                    <section class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                        @foreach (range(1, 3) as $item)
-                            <div class="border border-border bg-paper"><span class="{{ $skeletonClass }} block aspect-[4/3] w-full"></span><div class="grid gap-3 p-4"><span class="{{ $skeletonClass }} h-4 w-4/5"></span><span class="{{ $skeletonClass }} h-3 w-2/5"></span></div></div>
-                        @endforeach
+            @elseif ($isArtworkStudio)
+                <section class="mx-auto mt-10 max-w-7xl" dir="rtl">
+                    <header class="mb-8 grid gap-3 border-b border-border pb-6">
+                        <span class="{{ $skeletonClass }} h-3 w-28"></span>
+                        <span class="{{ $skeletonClass }} h-9 w-2/3 max-w-sm"></span>
+                        <span class="{{ $skeletonClass }} h-4 w-full max-w-2xl"></span>
+                    </header>
+                    <section class="border border-border bg-paper p-5 sm:p-7">
+                        <div class="mb-6 flex flex-wrap items-start justify-between gap-3 border-b border-border pb-5"><span class="{{ $skeletonClass }} h-6 w-36"></span><span class="{{ $skeletonClass }} h-4 w-64 max-w-full"></span></div>
+                        <div class="grid gap-5 sm:grid-cols-2">
+                            @foreach (range(1, 7) as $item)
+                                <div class="grid gap-2"><span class="{{ $skeletonClass }} h-4 w-28"></span><span class="{{ $skeletonClass }} h-11 w-full"></span></div>
+                            @endforeach
+                            <div class="grid gap-2 sm:col-span-2"><span class="{{ $skeletonClass }} h-4 w-32"></span><span class="{{ $skeletonClass }} h-28 w-full"></span></div>
+                            <div class="grid gap-2 sm:col-span-2"><span class="{{ $skeletonClass }} h-4 w-36"></span><span class="{{ $skeletonClass }} h-11 w-full"></span><span class="{{ $skeletonClass }} h-3 w-2/3 max-w-md"></span><span class="{{ $skeletonClass }} h-3 w-1/2 max-w-sm"></span></div>
+                            <span class="{{ $skeletonClass }} h-11 w-40 sm:col-span-2"></span>
+                        </div>
                     </section>
-                @endif
+                    <section class="mt-7 space-y-4">
+                        <div class="flex items-center justify-between gap-3"><span class="{{ $skeletonClass }} h-6 w-40"></span><span class="{{ $skeletonClass }} h-9 w-28"></span></div>
+                        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                            @foreach (range(1, 3) as $item)
+                                <article class="overflow-hidden border border-border bg-paper">
+                                    <div class="flex aspect-[4/3] items-center justify-center bg-surface-muted p-3"><span class="{{ $skeletonClass }} h-full w-full"></span></div>
+                                    <div class="grid gap-3 p-4"><div class="flex justify-between gap-2"><span class="{{ $skeletonClass }} h-5 w-2/3"></span><span class="{{ $skeletonClass }} h-6 w-20 rounded-full"></span></div><span class="{{ $skeletonClass }} h-3 w-1/3"></span><span class="{{ $skeletonClass }} h-3 w-full"></span><span class="{{ $skeletonClass }} h-3 w-4/5"></span><span class="{{ $skeletonClass }} h-9 w-28"></span></div>
+                                </article>
+                            @endforeach
+                        </div>
+                    </section>
+                </section>
+            @elseif ($isArtistProfileSettings)
+                <section class="mx-auto mt-10 max-w-7xl" dir="rtl">
+                    <header class="mb-8 grid gap-3 border-b border-border pb-6"><span class="{{ $skeletonClass }} h-3 w-28"></span><span class="{{ $skeletonClass }} h-9 w-2/3 max-w-sm"></span><span class="{{ $skeletonClass }} h-4 w-full max-w-xl"></span></header>
+                    <section class="grid gap-4 sm:grid-cols-2">
+                        <div class="grid gap-2 sm:col-span-2"><span class="{{ $skeletonClass }} h-4 w-28"></span><span class="{{ $skeletonClass }} h-11 w-full"></span></div>
+                        <div class="grid gap-2 sm:col-span-2"><span class="{{ $skeletonClass }} h-4 w-32"></span><span class="{{ $skeletonClass }} h-28 w-full"></span></div>
+                        @foreach (range(1, 2) as $item)
+                            <div class="grid gap-2"><span class="{{ $skeletonClass }} h-4 w-24"></span><span class="{{ $skeletonClass }} h-11 w-full"></span></div>
+                        @endforeach
+                        <div class="grid gap-2 sm:col-span-2"><span class="{{ $skeletonClass }} h-4 w-24"></span><span class="{{ $skeletonClass }} h-11 w-full"></span></div>
+                        <div class="grid gap-4 sm:col-span-2"><span class="{{ $skeletonClass }} h-5 w-48"></span><span class="{{ $skeletonClass }} h-11 w-36"></span></div>
+                    </section>
+                </section>
+            @elseif ($isAuthForm)
+                <main class="mx-auto max-w-xl px-5 py-12 sm:px-8" dir="rtl">
+                    <section class="rounded-3xl border border-border-strong bg-paper p-6 shadow-sm sm:p-9">
+                        <span class="{{ $skeletonClass }} h-4 w-32"></span>
+                        <span class="{{ $skeletonClass }} mt-5 h-8 w-2/3"></span>
+                        <div class="mt-6 flex gap-5 border-b border-border pb-4"><span class="{{ $skeletonClass }} h-4 w-12"></span><span class="{{ $skeletonClass }} h-4 w-16"></span></div>
+                        <div class="mt-6 grid gap-4">
+                            @if (request()->is('register'))
+                                @foreach (range(1, 2) as $item)<span class="{{ $skeletonClass }} h-12 w-full"></span>@endforeach
+                            @endif
+                            <span class="{{ $skeletonClass }} h-12 w-full"></span>
+                            <span class="{{ $skeletonClass }} h-12 w-full"></span>
+                            @if (request()->is('register'))<span class="{{ $skeletonClass }} h-12 w-full"></span>@endif
+                            <span class="{{ $skeletonClass }} h-12 w-full"></span>
+                        </div>
+                        <span class="{{ $skeletonClass }} mt-5 h-3 w-4/5"></span>
+                    </section>
+                </main>
             @elseif ($isInformationPage)
                 <section class="mt-10 grid gap-7">
                     @foreach (range(1, 3) as $item)
