@@ -197,7 +197,30 @@
                         <div class="grid gap-3 border-b border-border pb-7"><span class="{{ $skeletonClass }} h-6 w-48"></span><span class="{{ $skeletonClass }} h-4 w-full"></span><span class="{{ $skeletonClass }} h-4 w-5/6"></span></div>
                     @endforeach
                 </section>
-            @elseif ($isWorkspace || $isDirectory)
+            @elseif ($isDirectory)
+                @if (request()->is('artworks'))
+                    <section class="mx-auto mt-10 max-w-7xl" dir="rtl">
+                        <header class="grid gap-3 border-b border-border pb-6"><span class="{{ $skeletonClass }} h-3 w-24"></span><span class="{{ $skeletonClass }} h-9 w-2/3 max-w-sm"></span><span class="{{ $skeletonClass }} h-4 w-full max-w-xl"></span></header>
+                        <div class="mt-7 grid gap-3 border border-border bg-surface-muted p-4 sm:grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))] sm:p-5">
+                            @foreach (range(1, 3) as $item)<span class="{{ $skeletonClass }} h-11 w-full"></span>@endforeach
+                        </div>
+                        <div class="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                            @foreach (range(1, 6) as $item)
+                                <article class="min-w-0"><div class="relative overflow-hidden bg-surface-muted"><span class="{{ $skeletonClass }} block aspect-[4/5] w-full rounded-none"></span></div><div class="grid gap-1.5 px-0.5 pb-2 pt-4"><div class="flex min-h-5 items-center justify-between gap-3"><span class="{{ $skeletonClass }} h-3 w-20"></span><span class="{{ $skeletonClass }} h-3 w-3 rounded-full"></span></div><span class="{{ $skeletonClass }} h-5 w-4/5"></span><span class="{{ $skeletonClass }} h-5 w-3/5"></span><span class="{{ $skeletonClass }} h-4 w-2/5"></span><span class="{{ $skeletonClass }} h-4 w-1/3"></span></div></article>
+                            @endforeach
+                        </div>
+                    </section>
+                @else
+                    <section class="mx-auto mt-10 max-w-7xl" dir="rtl">
+                        <header class="mb-8 grid gap-4 border-y border-border bg-surface-muted px-6 py-10 sm:px-10"><span class="{{ $skeletonClass }} h-3 w-28"></span><span class="{{ $skeletonClass }} h-10 w-2/3 max-w-lg"></span><span class="{{ $skeletonClass }} h-4 w-full max-w-2xl"></span><span class="{{ $skeletonClass }} h-11 w-full max-w-2xl"></span></header>
+                        <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                            @foreach (range(1, 6) as $item)
+                                <article class="grid min-w-0 content-start gap-3 border border-border bg-paper p-5 sm:p-6"><div class="flex items-start justify-between gap-4"><span class="{{ $skeletonClass }} h-14 w-14 shrink-0 rounded-full"></span><span class="{{ $skeletonClass }} mt-1 h-3 w-24"></span></div><div class="mt-2 grid gap-2"><span class="{{ $skeletonClass }} h-7 w-2/3"></span><span class="{{ $skeletonClass }} h-3 w-1/3"></span></div><div class="mt-1 grid gap-2"><span class="{{ $skeletonClass }} h-3 w-full"></span><span class="{{ $skeletonClass }} h-3 w-11/12"></span><span class="{{ $skeletonClass }} h-3 w-3/4"></span></div><div class="mt-3 flex items-center justify-between border-t border-border pt-4"><span class="{{ $skeletonClass }} h-4 w-28"></span><span class="{{ $skeletonClass }} h-3 w-3 rounded-full"></span></div></article>
+                            @endforeach
+                        </div>
+                    </section>
+                @endif
+            @elseif ($isWorkspace)
                 <section class="mt-10">
                     <div class="grid gap-3 border-b border-border pb-6"><span class="{{ $skeletonClass }} h-3 w-24"></span><span class="{{ $skeletonClass }} h-9 w-2/3 max-w-sm"></span><span class="{{ $skeletonClass }} h-4 w-full max-w-xl"></span></div>
                     @if ($isWorkspace)
