@@ -474,7 +474,7 @@ test('route fallbacks mirror loaded page geometry for catalogues, workspaces, ad
     assert.ok(routeLoading.includes('BuyerDashboardSkeleton'));
     assert.ok(routeLoading.includes('hasRequestedConversation'));
     assert.ok(routeLoading.includes('flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden'));
-    assert.doesNotMatch(routeLoading, /min-h-\\[34rem\\]/, 'Messaging fallback must fill the viewport-locked workspace slot instead of imposing a guessed minimum height.');
+    assert.doesNotMatch(routeLoading, /min-h-\[34rem\]/, 'Messaging fallback must fill the viewport-locked workspace slot instead of imposing a guessed minimum height.');
     assert.ok(routeLoading.includes('role="status"'));
     assert.ok(routeLoading.includes('aria-busy="true"'));
 });
