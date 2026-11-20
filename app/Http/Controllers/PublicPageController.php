@@ -13,6 +13,11 @@ use Illuminate\Support\Str;
 
 class PublicPageController extends Controller
 {
+    public function app(?string $path = null): Response
+    {
+        return $this->appView();
+    }
+
     public function artwork(string $slug): Response
     {
         $artwork = Artwork::query()->with(['artistProfile', 'category'])->where('slug', $slug)->first();
