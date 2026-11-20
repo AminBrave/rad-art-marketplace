@@ -438,7 +438,8 @@ test('auth bootstrap resolves session state before React mounts without caching 
     assert.ok(webRoutes.includes("Route::get('/', [PublicPageController::class, 'app'])"));
     assert.ok(webRoutes.includes("Route::get('/{path?}', [PublicPageController::class, 'app'])"));
     assert.ok(publicPageController.includes("->header('Cache-Control', 'private, no-store, max-age=0, must-revalidate')"));
-    assert.doesNotMatch(publicPageController, /response\(\)->view\('app'/, 'Every dynamic SEO app-shell response must use the private app-view helper.');
+    assert.equal((publicPageController.match(/response\(\)->view\('app'/g) ?? []).length, 1, 'Only the private app-view helper should render the SPA shell directly.');
+    assert.ok(publicPageController.includes('return $this->appView(['));
 });
 
 test('protected-route auth loading preserves the workspace shell width and navigation columns', () => {
