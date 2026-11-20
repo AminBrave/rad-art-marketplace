@@ -20,7 +20,7 @@ This matrix maps real product behavior to actors, risk and the tests that should
 
 | Area | Existing protection observed | Assessment |
 |---|---|---|
-| Authentication | Guest bootstrap, registration, buyer/artist role choice, admin-role rejection, password confirmation, login/logout and invalid credentials | Expanded in this phase with registration/login/logout session rotation and guest login throttling; registration throttling and broader abuse scenarios remain |
+| Authentication | Guest bootstrap, registration, buyer/artist role choice, admin-role rejection, password confirmation, login/logout and invalid credentials | Expanded with server-rendered guest/authenticated app-shell bootstrap, private no-store response headers, registration/login/logout session rotation and guest login throttling; registration throttling and broader abuse scenarios remain |
 | Authorization | Admin user-management role gate, self-demotion protection, artist artwork ownership and conversation participant checks | Good targeted cases; complete route/role matrix still needed |
 | Artwork | Upload validation, private storage, owner/admin editing, pending/public visibility, public artist-profile filtering across review states, filters, sort, pagination and price nullability | Broad; malformed image content/size and deeper media-integrity failure cases remain |
 | Moderation | Admin-only queue, approve/reject/request-changes, required notes, repeat decision rejection, artist edit resets review metadata, owner-only review feedback, resubmission cleanup and public artist-profile visibility across review states | Stronger lifecycle coverage; simultaneous admin decision and notification failure still need integration coverage |
