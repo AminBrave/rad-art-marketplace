@@ -12,6 +12,67 @@ class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_guest_app_shell_bootstraps_a_resolved_guest_state_without_a_second_auth_request(): void
+    {
+        $response = $this->get('/dashboard/artist');
+
+        $response->assertOk()
+            ->assertSee('id="rad-auth-bootstrap"', false)
+            ->assertSee('>null</script>', false);
+
+        $this->assertEqualsCanonicalizing(
+            ['private', 'no-store', 'max-age=0', 'must-revalidate'],
+            array_map('trim', explode(',', (string) $response->headers->get('Cache-Control'))),
+        );
+    }
+
+    public function test_authenticated_app_shell_embeds_the_minimal_current_user_payload_and_is_not_cacheable(): void
+    {
+        $user = User::create([
+            'name' => 'Bootstrap Artist',
+            'email' => 'bootstrap@example.com',
+            'password' => 'strong-password-123',
+            'role' => User::ROLE_ARTIST,
+        ]);
+
+        $response = $this->actingAs($user)->get('/dashboard/artist');
+
+        $response->assertOk()
+            ->assertSee('id="rad-auth-bootstrap"', false);
+
+        preg_match(
+            '/<script type="application\\/json" id="rad-auth-bootstrap">(.*?)<\\/script>/s',
+            $response->getContent(),
+            $matches,
+        );
+
+        $this->assertArrayHasKey(1, $matches);
+        $this->assertSame([
+            'id' => $user->id,
+            'name' => 'Bootstrap Artist',
+            'email' => 'bootstrap@example.com',
+            'role' => 'artist',
+        ], json_decode($matches[1], true, 512, JSON_THROW_ON_ERROR));
+
+        $this->assertEqualsCanonicalizing(
+            ['private', 'no-store', 'max-age=0', 'must-revalidate'],
+            array_map('trim', explode(',', (string) $response->headers->get('Cache-Control'))),
+        );
+    }
+
+    public function test_dynamic_spa_not_found_shell_is_private_and_not_cacheable(): void
+    {
+        $response = $this->get('/artworks/nonexistent-artwork-slug');
+
+        $response->assertNotFound()
+            ->assertSee('id="rad-auth-bootstrap"', false);
+
+        $this->assertEqualsCanonicalizing(
+            ['private', 'no-store', 'max-age=0', 'must-revalidate'],
+            array_map('trim', explode(',', (string) $response->headers->get('Cache-Control'))),
+        );
+    }
+
     public function test_guest_authentication_bootstrap_returns_a_guest_state_without_unauthorized_response(): void
     {
         $this->getJson('/api/v1/auth/me')

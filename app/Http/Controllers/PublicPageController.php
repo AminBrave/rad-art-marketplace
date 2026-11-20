@@ -13,6 +13,11 @@ use Illuminate\Support\Str;
 
 class PublicPageController extends Controller
 {
+    public function app(?string $path = null): Response
+    {
+        return $this->appView();
+    }
+
     public function artwork(string $slug): Response
     {
         $artwork = Artwork::query()->with(['artistProfile', 'category'])->where('slug', $slug)->first();
@@ -48,7 +53,7 @@ class PublicPageController extends Controller
             ...($artwork->year ? ['dateCreated' => (string) $artwork->year] : []),
         ] : null;
 
-        return response()->view('app', ['seo' => [
+        return $this->appView(['seo' => [
             'title' => $artwork->title.' | راد آرت',
             'description' => $description,
             'canonical' => $canonical,
@@ -98,7 +103,7 @@ class PublicPageController extends Controller
             ...($sameAs ? ['sameAs' => $sameAs] : []),
         ] : null;
 
-        return response()->view('app', ['seo' => [
+        return $this->appView(['seo' => [
             'title' => $profile->display_name.' | هنرمندان راد آرت',
             'description' => $description,
             'canonical' => $canonical,
@@ -141,7 +146,7 @@ class PublicPageController extends Controller
             ])->values()->all(),
         ];
 
-        return response()->view('app', ['seo' => [
+        return $this->appView(['seo' => [
             'title' => $collection->title.' | مجموعه‌های راد آرت',
             'description' => $description,
             'canonical' => $canonical,
@@ -209,9 +214,15 @@ class PublicPageController extends Controller
 
     private function missingPage(): Response
     {
-        return response()->view('app', [
+        return $this->appView([
             'seo' => ['robots' => 'noindex,nofollow'],
         ], 404);
+    }
+
+    private function appView(array $data = [], int $status = 200): Response
+    {
+        return response()->view('app', $data, $status)
+            ->header('Cache-Control', 'private, no-store, max-age=0, must-revalidate');
     }
 
     private function canonical(string $path): string

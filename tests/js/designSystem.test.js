@@ -36,6 +36,9 @@ const conversationApi = readFileSync(new URL('../../app/Http/Controllers/Api/V1/
 const messageModel = readFileSync(new URL('../../app/Models/Message.php', import.meta.url), 'utf8');
 const adminWorkspace = readFileSync(new URL('../../resources/js/app/AdminWorkspace.jsx', import.meta.url), 'utf8');
 const bootShell = readFileSync(new URL('../../resources/views/app.blade.php', import.meta.url), 'utf8');
+const authContext = readFileSync(new URL('../../resources/js/app/AuthContext.jsx', import.meta.url), 'utf8');
+const webRoutes = readFileSync(new URL('../../routes/web.php', import.meta.url), 'utf8');
+const publicPageController = readFileSync(new URL('../../app/Http/Controllers/PublicPageController.php', import.meta.url), 'utf8');
 const legacyApp = readFileSync(new URL('../../resources/js/app/App.jsx', import.meta.url), 'utf8');
 const homePage = readFileSync(new URL('../../resources/js/app/HomePage.jsx', import.meta.url), 'utf8');
 const authPage = readFileSync(new URL('../../resources/js/app/AuthPage.jsx', import.meta.url), 'utf8');
@@ -426,6 +429,52 @@ test('RAD design-system definition makes the authenticated app-shell and navigat
         'Never invent a route',
     ]) assert.ok(designSystem.includes(principle), 'Missing RAD design-system principle: ' + principle);
 });
+test('auth bootstrap resolves session state before React mounts without caching personalized HTML', () => {
+    assert.ok(bootShell.includes('id="rad-auth-bootstrap"'));
+    assert.ok(bootShell.includes('request()->user()'));
+    assert.ok(authContext.includes("document.getElementById('rad-auth-bootstrap')"));
+    assert.ok(authContext.includes('if (!initialAuth.available && !initialRefreshStartedRef.current)'));
+    assert.ok(authContext.includes("axios.get('/api/v1/auth/me')"), 'The legacy endpoint remains available as a fallback when the Blade bootstrap is absent or invalid.');
+    assert.ok(webRoutes.includes("Route::get('/', [PublicPageController::class, 'app'])"));
+    assert.ok(webRoutes.includes("Route::get('/{path?}', [PublicPageController::class, 'app'])"));
+    assert.ok(publicPageController.includes("->header('Cache-Control', 'private, no-store, max-age=0, must-revalidate')"));
+    assert.equal((publicPageController.match(/response\(\)->view\('app'/g) ?? []).length, 1, 'Only the private app-view helper should render the SPA shell directly.');
+    assert.ok(publicPageController.includes('return $this->appView(['));
+});
+
+test('protected-route auth loading preserves the workspace shell width and navigation columns', () => {
+    assert.ok(routeLoading.includes('function WorkspaceAuthLoading'));
+    assert.ok(routeLoading.includes('max-w-content'));
+    assert.ok(routeLoading.includes('lg:grid-cols-[15rem_minmax(0,1fr)]'));
+    assert.ok(routeLoading.includes('<WorkspaceAuthLoading><RouteLoading label="در حال بررسی نشست کاربری…'));
+    assert.ok(routeLoading.includes('<WorkspaceAuthLoading><RouteLoading label="در حال بررسی سطح دسترسی…'));
+});
+
+test('workspace first-paint skeleton uses the same constrained shell as the loaded workspace', () => {
+    assert.ok(bootShell.includes("max-w-content gap-5 px-page-gutter"));
+    assert.ok(bootShell.includes("lg:grid-cols-[15rem_minmax(0,1fr)]"));
+    assert.ok(bootShell.includes("$isMessagingRoute = request()->is('dashboard/artist/messages', 'dashboard/buyer/messages')"));
+    assert.ok(bootShell.includes('workspace-bottom-nav-primary-height'));
+    assert.ok(bootShell.includes("$workspaceNavigationCount = request()->is('admin*') ? 5 : (request()->is('dashboard/buyer*') ? 2 : 4)"));
+    assert.ok(routeLoading.includes("pathname.startsWith('/dashboard/buyer') ? 2 : 4"));
+    assert.ok(bootShell.includes('h-dvh flex-col overflow-hidden'));
+});
+
+test('Blade first-paint skeletons use route-specific geometry for studio forms, directories and collections', () => {
+    assert.ok(bootShell.includes("$isArtworkStudio = request()->is('dashboard/artist/artworks')"));
+    assert.ok(bootShell.includes("$isCollectionDetail = request()->is('collections/*')"));
+    assert.ok(bootShell.includes("$isCollectionIndex = request()->is('collections')"));
+    assert.ok(bootShell.includes("request()->is('admin/editorial')"));
+    assert.ok(bootShell.includes("request()->is('dashboard/artist')"));
+    assert.ok(bootShell.includes("request()->is('dashboard/buyer')"));
+    assert.ok(bootShell.includes("request()->is('dashboard/artist/messages', 'dashboard/buyer/messages')"));
+    assert.ok(bootShell.includes('@elseif ($isArtworkStudio)'));
+    assert.ok(bootShell.includes('@elseif ($isArtistProfileSettings)'));
+    assert.ok(bootShell.includes('@elseif ($isAuthForm)'));
+    assert.ok(bootShell.includes('aspect-[4/5]'));
+    assert.ok(bootShell.includes('h-14 w-14 shrink-0 rounded-full'));
+});
+
 test('boot shell and application presentation use Tailwind utilities with no component CSS selectors', () => {
     assert.ok(bootShell.includes('grid grid-cols-1 items-center gap-12'));
     assert.ok(bootShell.includes('lg:grid-cols-[minmax(0,1fr)_minmax(16rem,.9fr)]'));
@@ -461,12 +510,21 @@ test('active frontend surfaces use semantic RAD colors and avoid raw palette uti
     }
 });
 
-test('route fallbacks preserve page-specific geometry for catalogues, artists and messaging', () => {
+test('route fallbacks mirror loaded page geometry for catalogues, workspaces, admin and messaging', () => {
     assert.ok(routeLoading.includes("pathname === '/artworks'"));
     assert.ok(routeLoading.includes("pathname === '/artists'"));
     assert.ok(routeLoading.includes('ArtworkCardSkeleton'));
     assert.ok(routeLoading.includes('ArtistCardSkeleton'));
-    assert.ok(routeLoading.includes('min-h-[34rem]'));
+    assert.ok(routeLoading.includes("pathname === '/dashboard/artist/artworks'"));
+    assert.ok(routeLoading.includes('ArtworkStudioListSkeleton count={3} announce={false}'));
+    assert.ok(routeLoading.includes("pathname === '/admin/editorial'"));
+    assert.ok(routeLoading.includes('AdminEditorialSkeleton announce={false}'));
+    assert.ok(routeLoading.includes('ArtistWorkspaceOverviewSkeleton'));
+    assert.ok(routeLoading.includes('BuyerDashboardSkeleton'));
+    assert.ok(routeLoading.includes('if (isCollectionDetail) return <CollectionDetailSkeleton />;'));
+    assert.ok(routeLoading.includes('hasRequestedConversation'));
+    assert.ok(routeLoading.includes('flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden'));
+    assert.doesNotMatch(routeLoading, /min-h-\[34rem\]/, 'Messaging fallback must fill the viewport-locked workspace slot instead of imposing a guessed minimum height.');
     assert.ok(routeLoading.includes('role="status"'));
     assert.ok(routeLoading.includes('aria-busy="true"'));
 });

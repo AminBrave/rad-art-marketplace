@@ -51,6 +51,7 @@ const vite = await createServer({
 const primitives = await vite.ssrLoadModule('/resources/js/components/ui/primitives.jsx');
 const feedback = await vite.ssrLoadModule('/resources/js/components/ui/feedback.jsx');
 const navigation = await vite.ssrLoadModule('/resources/js/components/ui/navigation.jsx');
+const skeletons = await vite.ssrLoadModule('/resources/js/components/ui/skeletons.jsx');
 
 after(async () => {
     await vite.close();
@@ -497,4 +498,70 @@ test('Tabs expose tablist, selected state and linked panel semantics', () => {
     assert.match(html, /aria-selected="true"/);
     assert.match(html, /role="tabpanel"/);
     assert.match(html, /dir="rtl"/);
+});
+
+
+test('ArtworkStudioListSkeleton mirrors the loaded artwork cards and announces its loading state', () => {
+    const html = renderToStaticMarkup(React.createElement(skeletons.ArtworkStudioListSkeleton, { count: 2 }));
+    assert.match(html, /role="status"/);
+    assert.match(html, /در حال دریافت آثار هنرمند/);
+    assert.match(html, /flex aspect-\[4\/3\] items-center justify-center bg-surface-muted p-3/);
+    assert.match(html, /space-y-3 p-4/);
+    assert.equal((html.match(/<article/g) ?? []).length, 2);
+});
+
+test('ConversationInboxSkeleton preserves the real inbox list and row geometry', () => {
+    const html = renderToStaticMarkup(React.createElement(skeletons.ConversationInboxSkeleton, { count: 3 }));
+    assert.match(html, /<div[^>]*role="status"/);
+    assert.match(html, /<ul[^>]*aria-hidden="true"/);
+    assert.match(html, /در حال دریافت گفتگوها/);
+    assert.match(html, /min-h-0 flex-1/);
+    assert.match(html, /min-h-\[4\.25rem\]/);
+    assert.match(html, /absolute end-2 top-1\/2/);
+    assert.equal((html.match(/<li/g) ?? []).length, 3);
+});
+
+test('MessageHistorySkeleton retains a single loading announcement and the message-bubble layout', () => {
+    const html = renderToStaticMarkup(React.createElement(skeletons.MessageHistorySkeleton, { count: 4 }));
+    assert.match(html, /role="status"/);
+    assert.match(html, /در حال دریافت پیام‌ها/);
+    assert.match(html, /w-\[min\(78%,28rem\)\]/);
+    assert.equal((html.match(/rounded-\[20px\]/g) ?? []).length, 4);
+});
+
+test('ArtistRecentWorkSkeleton keeps the semantic list structure of the loaded workspace', () => {
+    const html = renderToStaticMarkup(React.createElement(skeletons.ArtistRecentWorkSkeleton));
+    assert.match(html, /<div[^>]*role="status"/);
+    assert.match(html, /<ul[^>]*aria-hidden="true"/);
+    assert.equal((html.match(/<li/g) ?? []).length, 4);
+});
+
+test('workspace overview skeletons match their loaded hero and content sections without nested live regions', () => {
+    const admin = renderToStaticMarkup(React.createElement(skeletons.AdminDashboardSkeleton));
+    const artist = renderToStaticMarkup(React.createElement(skeletons.ArtistWorkspaceOverviewSkeleton));
+    const buyer = renderToStaticMarkup(React.createElement(skeletons.BuyerDashboardSkeleton));
+
+    assert.match(admin, /bg-ink p-6 sm:p-8/);
+    assert.match(admin, /xl:grid-cols-\[minmax\(0,1\.2fr\)_minmax\(18rem,\.8fr\)\]/);
+    assert.match(admin, /xl:grid-cols-4/);
+    assert.equal((admin.match(/role="status"/g) ?? []).length, 1);
+
+    assert.match(artist, /در حال آماده‌سازی فضای هنرمند/);
+    assert.match(artist, /lg:grid-cols-\[1fr_15rem\]/);
+    assert.match(artist, /bg-surface-muted p-5 sm:p-7/);
+    assert.doesNotMatch(artist, /در حال دریافت شاخص‌ها/);
+    assert.equal((artist.match(/role="status"/g) ?? []).length, 1);
+
+    assert.match(buyer, /در حال آماده‌سازی فضای خریدار/);
+    assert.match(buyer, /md:grid-cols-3/);
+    assert.equal((buyer.match(/role="status"/g) ?? []).length, 1);
+});
+
+test('collection and message-report skeletons announce data loading when used inside loaded pages', () => {
+    const collections = renderToStaticMarkup(React.createElement(skeletons.CollectionCardSkeleton, { count: 2 }));
+    const reports = renderToStaticMarkup(React.createElement(skeletons.MessageReportsSkeleton, { count: 2 }));
+    assert.match(collections, /role="status"/);
+    assert.match(collections, /در حال دریافت مجموعه‌ها/);
+    assert.match(reports, /role="status"/);
+    assert.match(reports, /در حال دریافت گزارش‌های پیام/);
 });
