@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\\Services;
+namespace App\Services;
 
-use Illuminate\\Support\\Facades\\Storage;
+use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 final class ArtworkImageVariants
