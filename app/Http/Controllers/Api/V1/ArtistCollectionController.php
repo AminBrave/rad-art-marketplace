@@ -108,6 +108,15 @@ class ArtistCollectionController extends Controller
         DB::transaction(function () use ($collection, $ids, $profileId): void {
             ArtistCollection::query()->lockForUpdate()->findOrFail($collection->id);
 
+            if ($ids !== []) {
+                ArtistContent::query()
+                    ->where('artist_profile_id', $profileId)
+                    ->whereIn('id', $ids)
+                    ->orderBy('id')
+                    ->lockForUpdate()
+                    ->get();
+            }
+
             DB::table('artist_collection_items')
                 ->where('artist_collection_id', $collection->id)
                 ->delete();
