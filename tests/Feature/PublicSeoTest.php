@@ -35,6 +35,7 @@ class PublicSeoTest extends TestCase
         $this->get('/artworks/'.$artwork->slug)
             ->assertOk()
             ->assertSee('<title>اثر سپهر | راد آرت</title>', false)
+            ->assertSee('<link rel="icon" type="image/svg+xml" href="/favicon.svg">', false)
             ->assertSee('<link rel="canonical" href="https://rad.example/artworks/seo-approved-artwork">', false)
             ->assertSee('property="og:image"', false)
             ->assertSee('https://rad.example/api/v1/artworks/seo-approved-artwork/image', false)
