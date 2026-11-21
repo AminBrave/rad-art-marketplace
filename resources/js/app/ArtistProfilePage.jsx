@@ -120,7 +120,7 @@ export default function ArtistProfilePage() {
                         <section className="mt-8 max-w-4xl border-s-4 border-terracotta bg-surface-muted px-5 py-6 sm:px-7 sm:py-8" aria-labelledby="artist-story-heading">
                             <p className="text-xs font-bold text-terracotta-strong">روایت هنرمند</p>
                             <h2 id="artist-story-heading" className="mt-2 text-xl font-extrabold text-ink">درباره {profile.display_name}</h2>
-                            <p className="mt-4 whitespace-pre-line break-words text-sm leading-9 text-muted [overflow-wrap:anywhere]">{profile.bio}</p>
+                            <p className="mt-4 whitespace-pre-line break-words [overflow-wrap:anywhere] text-sm leading-9 text-muted">{profile.bio}</p>
                         </section>
                     )}
 
