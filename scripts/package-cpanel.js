@@ -12,6 +12,7 @@ const isWindows = process.platform === 'win32';
 const archivePaths = [
     '.env.cpanel',
     '.htaccess',
+    'favicon.svg',
     'index.php',
     'artisan',
     'composer.json',

@@ -36,6 +36,7 @@ class PublicPageController extends Controller
         $description = Str::limit(trim(strip_tags((string) ($artwork->description ?: "اثر هنری {$artwork->title} از {$artistName}؛ جزئیات اثر و راه ارتباط با هنرمند."))), 155);
         $canonical = $isPublic ? $this->canonical('/artworks/'.$artwork->slug) : null;
         $image = $isPublic ? $this->artworkImage($artwork) : null;
+        $preloadImage = $image ? $image.'?variant=detail' : null;
 
         $structuredData = $isPublic ? [
             '@context' => 'https://schema.org',
@@ -60,6 +61,7 @@ class PublicPageController extends Controller
             'robots' => $isPublic ? 'index,follow' : 'noindex,nofollow',
             'og_type' => 'article',
             'image' => $image,
+            'preload_image' => $preloadImage,
             'image_alt' => $artwork->title,
             'structured_data' => $structuredData,
         ]]);
