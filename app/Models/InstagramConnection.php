@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class InstagramConnection extends Model
 {
+    protected $table = 'artist_instagram_connections';
+
     protected $hidden = ['access_token'];
 
     protected function casts(): array
