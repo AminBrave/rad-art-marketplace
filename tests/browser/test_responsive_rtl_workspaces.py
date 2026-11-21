@@ -88,7 +88,9 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
         workspace_roles = (
             ("/dashboard/buyer", "buyer"),
             ("/dashboard/artist", "artist"),
+            ("/dashboard/artist/content", "artist"),
             ("/admin", "admin"),
+            ("/admin/contents", "admin"),
         )
         for route_path, role in workspace_roles:
             context = self.browser.new_context(
@@ -108,7 +110,7 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
                 elif url.endswith("/api/v1/notifications"):
                     payload = {"data": [], "current_page": 1, "last_page": 1, "per_page": 20, "total": 0, "unread_count": 0}
                 elif url.endswith("/api/v1/artist-profile/me"):
-                    payload = {"data": None}
+                    payload = {"data": {"slug": "responsive-artist", "display_name": "هنرمند آزمایشی", "is_public": True}}
                 else:
                     payload = {"data": [], "current_page": 1, "last_page": 1, "per_page": 20, "total": 0}
                 route.fulfill(status=200, content_type="application/json", body=__import__("json").dumps(payload))
