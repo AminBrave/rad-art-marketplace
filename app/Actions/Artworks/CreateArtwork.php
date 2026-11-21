@@ -58,8 +58,9 @@ class CreateArtwork
                     'publication_status' => ArtistContent::PUBLICATION_DRAFT,
                 ]);
 
-                $artwork->artistContent()->associate($content);
-                $artwork->save();
+                DB::table('artworks')->where('id', $artwork->id)->update(['artist_content_id' => $content->id]);
+                $artwork->setAttribute('artist_content_id', $content->id);
+                $artwork->setRelation('artistContent', $content);
 
                 return $artwork;
             });
