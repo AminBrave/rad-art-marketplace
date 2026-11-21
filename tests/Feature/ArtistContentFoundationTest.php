@@ -78,6 +78,10 @@ class ArtistContentFoundationTest extends TestCase
             ->assertForbidden();
         $this->get('/api/v1/artworks/'.$artwork->slug.'/image')
             ->assertForbidden();
+        $this->getJson('/api/v1/artists/'.$profile->slug)
+            ->assertOk()
+            ->assertJsonPath('data.artworks', []);
+        $this->get('/artworks/'.$artwork->slug)->assertNotFound();
 
         $content->forceFill([
             'artist_approved_at' => now(),
@@ -95,6 +99,10 @@ class ArtistContentFoundationTest extends TestCase
             ->assertJsonPath('data.slug', $artwork->slug);
         $this->get('/api/v1/artworks/'.$artwork->slug.'/image')
             ->assertOk();
+        $this->getJson('/api/v1/artists/'.$profile->slug)
+            ->assertOk()
+            ->assertJsonFragment(['slug' => $artwork->slug]);
+        $this->get('/artworks/'.$artwork->slug)->assertOk();
     }
 
     public function test_new_artwork_creation_writes_its_content_companion_transactionally(): void
