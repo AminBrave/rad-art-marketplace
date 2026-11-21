@@ -114,6 +114,18 @@ class ArtistContentController extends Controller
         $this->authorize('update', $content);
 
         DB::transaction(function () use ($content): void {
+            $collectionIds = DB::table('artist_collection_items')
+                ->where('artist_content_id', $content->id)
+                ->pluck('artist_collection_id');
+
+            if ($collectionIds->isNotEmpty()) {
+                \App\Models\ArtistCollection::query()
+                    ->whereIn('id', $collectionIds)
+                    ->orderBy('id')
+                    ->lockForUpdate()
+                    ->get();
+            }
+
             $locked = ArtistContent::query()->lockForUpdate()->findOrFail($content->id);
             $locked->forceFill([
                 'publication_status' => ArtistContent::PUBLICATION_DRAFT,
