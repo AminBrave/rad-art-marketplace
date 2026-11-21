@@ -121,7 +121,10 @@ class UnifiedLoginClient
             $response = $this->graphGet('me/assigned_instagram_accounts', $parameters, $accessToken, $appSecretProof);
 
             foreach ($response['data'] ?? [] as $account) {
-                if (! is_array($account) || ! isset($account['id']) || ! is_string($account['id'])) {
+                if (! is_array($account)
+                    || ! isset($account['id'])
+                    || ! is_string($account['id'])
+                    || ! ctype_digit($account['id'])) {
                     continue;
                 }
 
@@ -207,6 +210,7 @@ class UnifiedLoginClient
         }
 
         if (! filter_var(config('services.instagram.redirect_uri'), FILTER_VALIDATE_URL)
+            || parse_url((string) config('services.instagram.redirect_uri'), PHP_URL_SCHEME) !== 'https'
             || ! preg_match('/^v\d+\.\d+$/', (string) config('services.instagram.graph_version'))) {
             throw new RuntimeException('Instagram Unified Login configuration is invalid.');
         }
