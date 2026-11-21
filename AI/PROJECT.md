@@ -50,3 +50,11 @@ Inspect current implementation and product evidence first. Separate confirmed fa
 
 ## Starting point
 Read `AGENTS.md` first. It selects this brief, the current handoff and only task-relevant skills. Inspect source before implementation and check open issues before creating duplicate work.
+
+
+## Confirmed admin content governance
+
+- The admin workspace includes a unified content moderation view at `/admin/contents`, protected by the admin route role boundary and the `ArtistContentPolicy` admin abilities.
+- The view derives moderation status from the linked native artwork moderation record. Content without a linked artwork, and non-native source records, are explicitly shown as unavailable rather than treated as publishable or actionable.
+- Admin moderation continues to use the existing artwork statuses and publication gate; it does not introduce a second approval state. Decisions through both artwork and unified-content moderation endpoints are recorded in `EditorialAudit`.
+- The admin response uses an explicit safe field allow-list and omits provider identifiers, captions, permalinks, source snapshots, media paths and credentials. Instagram connection monitoring and background sync remain out of scope until a real sync contract exists.
