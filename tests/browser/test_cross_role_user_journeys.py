@@ -157,5 +157,20 @@ class RealUserBrowserFlowTests(unittest.TestCase):
         self.assert_no_uncaught_page_errors()
 
 
+    def test_artist_content_library_and_admin_content_queue_open_for_their_roles(self) -> None:
+        self.login("artist@rademan.test", "/dashboard/artist")
+        self.page.goto(BASE_URL + "/dashboard/artist/content", wait_until="domcontentloaded")
+        self.page.get_by_role("heading", name="کتابخانه محتوای من").wait_for(timeout=20_000)
+        self.assert_no_uncaught_page_errors()
+
+        self.context.clear_cookies()
+        self.login("admin@rademan.test", "/admin")
+        self.page.goto(BASE_URL + "/admin/contents", wait_until="domcontentloaded")
+        self.page.get_by_role("heading", name="بررسی کتابخانه محتوا").wait_for(timeout=20_000)
+        self.page.get_by_role("button", name="فعلاً قابل بررسی نیست").click()
+        self.page.wait_for_url("**/admin/contents?status=unavailable", timeout=20_000)
+        self.assert_no_uncaught_page_errors()
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
