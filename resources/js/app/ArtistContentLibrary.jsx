@@ -241,6 +241,10 @@ export default function ArtistContentLibrary() {
         return <div className="space-y-4" dir="rtl" role="status" aria-live="polite" aria-busy="true"><div className="h-10 w-48 animate-pulse rounded bg-surface-muted" /><div className="h-32 animate-pulse rounded bg-surface-muted" /><div className="h-64 animate-pulse rounded bg-surface-muted" /></div>;
     }
 
+    if (profileError && !profile?.slug) {
+        return <ErrorState title="پروفایل هنرمند در دسترس نیست" description={profileError} />;
+    }
+
     if (!profile?.slug) {
         return (
             <section className="space-y-5" dir="rtl">
