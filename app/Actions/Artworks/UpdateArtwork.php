@@ -41,6 +41,24 @@ class UpdateArtwork
 
         try {
             DB::transaction(function () use ($artwork, $attributes, $newImagePath): void {
+                $content = $artwork->artistContent()->first();
+
+                if ($content) {
+                    $collectionIds = DB::table('artist_collection_items')
+                        ->where('artist_content_id', $content->id)
+                        ->pluck('artist_collection_id');
+
+                    if ($collectionIds->isNotEmpty()) {
+                        ArtistCollection::query()
+                            ->whereIn('id', $collectionIds)
+                            ->orderBy('id')
+                            ->lockForUpdate()
+                            ->get();
+                    }
+
+                    $content = ArtistContent::query()->lockForUpdate()->findOrFail($content->id);
+                }
+
                 $saved = $artwork->update([
                     ...$attributes,
                     'status' => Artwork::STATUS_PENDING_REVIEW,
@@ -53,8 +71,6 @@ class UpdateArtwork
                 if (! $saved) {
                     throw new RuntimeException('The artwork update was not persisted.');
                 }
-
-                $content = $artwork->artistContent()->first();
 
                 if ($content) {
                     $content->update([
