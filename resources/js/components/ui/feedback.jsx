@@ -157,6 +157,7 @@ export function MediaImage({
     width,
     height,
     variant,
+    fallback,
 }) {
     const imageSrc = src && variant
         ? `${src}${src.includes('?') ? '&' : '?'}variant=${encodeURIComponent(variant)}`
@@ -178,25 +179,29 @@ export function MediaImage({
                     aria-label={alt ? `${alt}: تصویر در دسترس نیست` : undefined}
                     className="absolute inset-0 grid min-h-32 place-items-center overflow-hidden bg-[radial-gradient(ellipse_at_18%_20%,color-mix(in_srgb,var(--color-sand)_55%,transparent),transparent_42%),radial-gradient(ellipse_at_82%_78%,color-mix(in_srgb,var(--color-terracotta)_18%,transparent),transparent_45%),linear-gradient(135deg,var(--color-paper),var(--color-surface-muted))] text-center"
                 >
-                    <span aria-hidden="true" className="pointer-events-none absolute -end-8 -top-10 h-36 w-36 rounded-full border border-terracotta/20" />
-                    <span aria-hidden="true" className="pointer-events-none absolute -start-10 -bottom-16 h-44 w-44 rounded-full border border-sand/70" />
+                    <span aria-hidden="true" className="pointer-events-none absolute -end-8 -top-10 h-36 w-36 rounded-full border border-[color:color-mix(in_srgb,var(--color-terracotta)_20%,transparent)]" />
+                    <span aria-hidden="true" className="pointer-events-none absolute -start-10 -bottom-16 h-44 w-44 rounded-full border border-[color:color-mix(in_srgb,var(--color-sand)_70%,transparent)]" />
                     <span className="relative z-10 flex flex-col items-center gap-2 px-4 pb-10 text-sm font-semibold text-muted">
-                        <span className="grid h-14 w-14 place-items-center rounded-full border border-terracotta/30 bg-paper/80 text-terracotta shadow-sm">
-                            <ImageOff size={27} strokeWidth={1.5} aria-hidden="true" />
-                        </span>
-                        <span className="tracking-wide">تصویر در دسترس نیست</span>
+                        {fallback ?? (
+                            <>
+                                <span className="grid h-14 w-14 place-items-center rounded-full border border-[color:color-mix(in_srgb,var(--color-terracotta)_30%,transparent)] bg-[color:color-mix(in_srgb,var(--color-paper)_80%,transparent)] text-terracotta shadow-sm">
+                                    <ImageOff size={27} strokeWidth={1.5} aria-hidden="true" />
+                                </span>
+                                <span className="tracking-wide">تصویر در دسترس نیست</span>
+                            </>
+                        )}
                     </span>
                     <span
                         role="note"
-                        className="absolute inset-x-0 bottom-0 z-20 flex items-start gap-2 border-t-2 border-danger bg-danger px-3 py-2 text-start text-[11px] font-medium leading-5 text-white shadow-lg"
+                        className="absolute inset-x-0 bottom-0 z-20 flex items-start gap-2 border-t-2 border-danger bg-danger px-3 py-2 text-start text-[11px] font-medium leading-5 text-inverse shadow-lg"
                         dir="rtl"
                     >
                         <AlertTriangle size={15} className="mt-0.5 shrink-0" aria-hidden="true" />
                         <span className="min-w-0">
-                            <span className="block font-bold">خطا در نمایش تصویر</span>
+                            <span className="block font-bold">بارگذاری تصویر ناموفق بود</span>
                             <span className="block opacity-95">
                                 {imageSrc
-                                    ? 'فایل پیدا نشد یا دریافت آن ناموفق بود.'
+                                    ? 'فایل در فضای ذخیره‌سازی پیدا نشد یا دریافت آن ناموفق بود'
                                     : 'نشانی تصویر ثبت نشده است.'}
                             </span>
                         </span>
