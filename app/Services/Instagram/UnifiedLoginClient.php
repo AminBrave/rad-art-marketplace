@@ -209,6 +209,10 @@ class UnifiedLoginClient
 
     private function assertConfigured(): void
     {
+        if (! config('services.instagram.enabled')) {
+            throw new RuntimeException('Instagram Unified Login is disabled.');
+        }
+
         foreach (['app_id', 'app_secret', 'config_id', 'redirect_uri', 'graph_version'] as $key) {
             if (! is_string(config('services.instagram.'.$key)) || trim(config('services.instagram.'.$key)) === '') {
                 throw new RuntimeException('Instagram Unified Login is not configured.');
