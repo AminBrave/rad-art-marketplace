@@ -134,6 +134,10 @@ class ArtistLibraryApiTest extends TestCase
             'artist_profile_id' => $profile->id,
             'position' => 0,
         ]);
+
+        $this->getJson('/api/v1/artist/collections?per_page=100')
+            ->assertOk()
+            ->assertJsonPath('data.0.items.0.id', $ownContent->id);
     }
 
     public function test_collection_publication_requires_every_item_to_be_approved_and_published(): void
