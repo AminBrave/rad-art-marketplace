@@ -58,8 +58,9 @@ class ArtistInstagramConnectionController extends Controller
 
         try {
             $result = $instagram->exchangeAndProbe($code);
-            $connection = $profile->instagramConnection()->firstOrNew();
+            $connection = $profile->instagramConnection()->first() ?? new \App\Models\InstagramConnection();
             $connection->forceFill([
+                'artist_profile_id' => $profile->id,
                 'configuration_id' => config('services.instagram.config_id'),
                 'meta_user_id' => $result['meta_user_id'],
                 'access_token' => $result['access_token'],
