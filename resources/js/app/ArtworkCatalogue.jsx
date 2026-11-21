@@ -68,10 +68,28 @@ export default function ArtworkCatalogue() {
     const filtersLoading = filtersQuery.isPending;
     const filtersError = filtersQuery.isError;
 
-    const activeFilterCount = useMemo(
-        () => [search, category, medium, availability, sort !== 'newest' ? sort : ''].filter(Boolean).length,
-        [search, category, medium, availability, sort],
-    );
+    const activeFilters = useMemo(() => {
+        const selected = [];
+
+        if (search) selected.push({ key: 'q', label: 'جست‌وجو: ' + search });
+        if (category) {
+            const option = categories.find((item) => item.slug === category);
+            selected.push({ key: 'category', label: 'دسته: ' + (option?.name ?? category) });
+        }
+        if (medium) selected.push({ key: 'medium', label: 'تکنیک: ' + medium });
+        if (availability) {
+            const option = filters.availability?.find((item) => item.value === availability);
+            selected.push({ key: 'availability', label: 'وضعیت: ' + (option?.label ?? availability) });
+        }
+        if (sort !== 'newest') {
+            const option = filters.sorts?.find((item) => item.value === sort);
+            selected.push({ key: 'sort', label: 'مرتب‌سازی: ' + (option?.label ?? sort) });
+        }
+
+        return selected;
+    }, [search, category, medium, availability, sort, categories, filters]);
+
+    const activeFilterCount = activeFilters.length;
 
     const updateFilters = (changes) => {
         const next = { q: search, category, medium, availability, sort, ...changes };
@@ -85,6 +103,7 @@ export default function ArtworkCatalogue() {
     };
 
     const submitSearch = (value) => updateFilters({ q: value.trim() });
+    const removeFilter = (key) => updateFilters({ [key]: key === 'sort' ? 'newest' : '' });
     const clearFilters = () => {
         setSearchInput('');
         setParams({});
@@ -121,8 +140,28 @@ export default function ArtworkCatalogue() {
                 {filtersLoading && <p className="mt-3 text-xs text-muted">در حال آماده‌سازی گزینه‌های فیلتر…</p>}
             </section>
 
+            {activeFilters.length > 0 && (
+                <section className="mt-4 flex flex-wrap items-center gap-2" aria-label="فیلترهای فعال">
+                    <span className="me-1 text-xs font-semibold text-muted">انتخاب‌های شما:</span>
+                    {activeFilters.map((filter) => (
+                        <button
+                            key={filter.key}
+                            type="button"
+                            onClick={() => removeFilter(filter.key)}
+                            aria-label={'حذف ' + filter.label}
+                            className="inline-flex min-h-9 max-w-full items-center gap-2 rounded-full border border-border bg-paper px-3 py-1.5 text-xs font-semibold text-ink transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                        >
+                            <span className="break-words">{filter.label}</span>
+                            <span aria-hidden="true" className="text-base leading-none text-muted">×</span>
+                        </button>
+                    ))}
+                </section>
+            )}
+
             <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
-                <p aria-live="polite" className="text-sm text-muted">{loading ? 'در حال دریافت آثار…' : meta.total.toLocaleString('fa-IR') + ' اثر'}</p>
+                <p aria-live="polite" className="text-sm text-muted">
+                    {loading ? 'در حال دریافت آثار…' : artworksQuery.isFetching ? 'در حال به‌روزرسانی نتایج…' : meta.total.toLocaleString('fa-IR') + ' اثر'}
+                </p>
                 <p className="text-xs text-muted">نمایش آثار عمومی و تأییدشده</p>
             </div>
             {loading ? (
@@ -136,9 +175,9 @@ export default function ArtworkCatalogue() {
             )}
             {!loading && !error && meta.last_page > 1 && (
                 <nav aria-label="صفحه‌بندی آثار" className="mt-10 flex items-center justify-center gap-4">
-                    <button type="button" disabled={page <= 1} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page - 1)]]))} className="border border-border px-4 py-2 text-sm font-semibold disabled:opacity-40">قبلی</button>
+                    <button type="button" disabled={page <= 1} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page - 1)]]))} className="min-h-11 border border-border px-5 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">قبلی</button>
                     <span className="text-sm text-muted">صفحه {meta.current_page.toLocaleString('fa-IR')} از {meta.last_page.toLocaleString('fa-IR')}</span>
-                    <button type="button" disabled={page >= meta.last_page} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page + 1)]]))} className="border border-border px-4 py-2 text-sm font-semibold disabled:opacity-40">بعدی</button>
+                    <button type="button" disabled={page >= meta.last_page} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page + 1)]]))} className="min-h-11 border border-border px-5 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">بعدی</button>
                 </nav>
             )}
         </PageContainer>
