@@ -85,8 +85,28 @@ export default function ArtworkDetailPage() {
                         <div className="border-y border-border bg-transparent py-6 sm:py-9 lg:sticky lg:top-28 lg:border-y-0 lg:py-2">
                             <p className="text-sm font-bold text-terracotta-strong">{artwork.category?.name}</p>
                             <h1 className="mt-3 text-3xl font-black leading-relaxed tracking-tight sm:text-4xl">{artwork.title}</h1>
-                            <Link to={'/artists/' + artwork.artist.slug} className="mt-3 inline-block text-sm font-semibold text-terracotta-strong underline">{artwork.artist.display_name}</Link>
-                            {artwork.description && <p className="mt-7 whitespace-pre-line text-sm leading-9 text-muted">{artwork.description}</p>}
+                            <div className="mt-5 flex min-w-0 items-center gap-3 border-y border-border bg-surface-muted px-4 py-3">
+                                <span aria-hidden="true" className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-paper text-sm font-black text-terracotta-strong">
+                                    {(artwork.artist.display_name || 'ه').trim().slice(0, 1)}
+                                </span>
+                                <div className="min-w-0">
+                                    <p className="text-[11px] font-semibold text-muted">هنرمند خالق اثر</p>
+                                    <Link to={'/artists/' + artwork.artist.slug} className="mt-0.5 inline-block max-w-full break-words text-sm font-bold text-terracotta-strong underline underline-offset-4">
+                                        {artwork.artist.display_name}
+                                    </Link>
+                                </div>
+                                <Link to={'/artists/' + artwork.artist.slug} className="ms-auto shrink-0 text-xs font-bold text-terracotta-strong" aria-label={'مشاهده پروفایل ' + artwork.artist.display_name}>
+                                    پروفایل ←
+                                </Link>
+                            </div>
+                            <section className="mt-7" aria-labelledby="artwork-story-heading">
+                                <h2 id="artwork-story-heading" className="text-base font-extrabold text-ink">داستان اثر</h2>
+                                {artwork.description ? (
+                                    <p className="mt-3 whitespace-pre-line break-words text-sm leading-9 text-muted">{artwork.description}</p>
+                                ) : (
+                                    <p className="mt-3 text-sm leading-7 text-muted">هنرمند هنوز توضیحی برای این اثر ثبت نکرده است.</p>
+                                )}
+                            </section>
                             <dl className="mt-7 grid grid-cols-2 gap-x-5 gap-y-6 border-y border-border py-6 text-sm">
                                 {artwork.medium && <div><dt className="text-xs text-muted">تکنیک / مواد</dt><dd className="mt-1 font-semibold">{artwork.medium}</dd></div>}
                                 {artwork.dimensions && <div><dt className="text-xs text-muted">ابعاد</dt><dd className="mt-1 font-semibold">{artwork.dimensions}</dd></div>}
