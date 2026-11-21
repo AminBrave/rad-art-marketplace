@@ -76,6 +76,32 @@ class ArtistContentFoundationTest extends TestCase
         $this->assertSame('draft', $content->publication_status);
     }
 
+    public function test_editing_legacy_artwork_creates_a_companion_and_returns_it_to_draft(): void
+    {
+        [$artist, $profile] = $this->artistWithProfile();
+        $artwork = $this->createArtwork($profile);
+
+        $this->actingAs($artist)->post('/api/v1/artist/artworks/'.$artwork->id, [
+            '_method' => 'PATCH',
+            'title' => 'اثر ویرایش‌شده',
+            'description' => 'روایت به‌روزشده',
+            'category_id' => Category::query()->where('slug', 'painting')->value('id'),
+            'medium' => 'آبرنگ',
+            'dimensions' => '۴۰ در ۶۰ سانتی‌متر',
+            'year' => 2026,
+            'price' => 0,
+            'availability' => 'available',
+        ])->assertOk()->assertJsonPath('data.title', 'اثر ویرایش‌شده');
+
+        $content = $artwork->fresh()->artistContent()->firstOrFail();
+
+        $this->assertSame('اثر ویرایش‌شده', $content->title);
+        $this->assertSame('روایت به‌روزشده', $content->description);
+        $this->assertSame('artworks/legacy.jpg', $content->media_path);
+        $this->assertSame('draft', $content->publication_status);
+        $this->assertNull($content->artist_approved_at);
+    }
+
     public function test_artist_collection_membership_cannot_cross_artist_ownership(): void
     {
         [, $ownerProfile] = $this->artistWithProfile('owner@example.com');
@@ -130,7 +156,7 @@ class ArtistContentFoundationTest extends TestCase
     {
         return $profile->artworks()->create([
             'category_id' => Category::query()->where('slug', 'painting')->value('id'),
-            'slug' => 'legacy-artwork-'.strtolower(str_replace('@', '-', $profile->user()->value('email'))),
+            'slug' => 'legacy-artwork-'.$profile->id,
             'title' => 'اثر قدیمی',
             'description' => 'توضیحات قدیمی',
             'availability' => 'available',
