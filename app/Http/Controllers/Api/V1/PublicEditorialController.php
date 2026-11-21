@@ -59,8 +59,7 @@ class PublicEditorialController extends Controller
 
     private function publicArtworkQuery($query)
     {
-        return $query->where('artworks.status', Artwork::STATUS_APPROVED)
-            ->whereHas('artistProfile', fn ($artist) => $artist->where('is_public', true))
+        return $query->publiclyVisible()
             ->with(['category', 'artistProfile']);
     }
 

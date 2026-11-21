@@ -22,7 +22,7 @@ class ArtistContentFoundationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_legacy_artwork_backfill_is_resumable_and_preserves_publication_as_draft(): void
+    public function test_legacy_artwork_backfill_is_resumable_and_preserves_previously_public_work(): void
     {
         [, $profile] = $this->artistWithProfile();
         $artwork = $this->createArtwork($profile);
@@ -42,11 +42,87 @@ class ArtistContentFoundationTest extends TestCase
         $this->assertSame($artwork->title, $content->title);
         $this->assertSame($artwork->description, $content->description);
         $this->assertSame($artwork->image_path, $content->media_path);
-        $this->assertSame('draft', $content->publication_status);
+        $this->assertSame('published', $content->publication_status);
+        $this->assertTrue($content->legacy_publication);
         $this->assertNull($content->artist_approved_at);
 
         Artisan::call('rademan:backfill-artist-content');
         $this->assertDatabaseCount('artist_contents', 1);
+    }
+
+
+    public function test_approved_legacy_artwork_without_content_companion_remains_public(): void
+    {
+        [, $profile] = $this->artistWithProfile();
+        $artwork = $this->createArtwork($profile);
+
+        $this->assertNull($artwork->artist_content_id);
+        $this->assertTrue($artwork->fresh()->isPubliclyVisible());
+
+        $this->getJson('/api/v1/artworks')
+            ->assertOk()
+            ->assertJsonFragment(['slug' => $artwork->slug]);
+        $this->getJson('/api/v1/artworks/'.$artwork->slug)
+            ->assertOk()
+            ->assertJsonPath('data.slug', $artwork->slug);
+        $this->getJson('/api/v1/artists/'.$profile->slug)
+            ->assertOk()
+            ->assertJsonFragment(['slug' => $artwork->slug]);
+        $this->get('/artworks/'.$artwork->slug)->assertOk();
+    }
+
+    public function test_public_artwork_requires_published_and_artist_approved_content(): void
+    {
+        Storage::fake('local');
+        [$artist, $profile] = $this->artistWithProfile();
+        $artwork = $this->createArtwork($profile);
+        $artwork->forceFill(['medium' => 'رنگ روغن'])->save();
+        Storage::disk('local')->put('artworks/legacy.jpg', 'test-image');
+
+        $content = ArtistContent::query()->create([
+            'artist_profile_id' => $profile->id,
+            'source' => ArtistContent::SOURCE_NATIVE,
+            'content_type' => 'artwork',
+            'title' => $artwork->title,
+            'publication_status' => ArtistContent::PUBLICATION_DRAFT,
+        ]);
+        $artwork->artistContent()->associate($content)->save();
+
+        $this->getJson('/api/v1/artworks')
+            ->assertOk()
+            ->assertJsonPath('data', []);
+        $this->getJson('/api/v1/artwork-filters')
+            ->assertOk()
+            ->assertJsonPath('data.mediums', []);
+        $this->getJson('/api/v1/artworks/'.$artwork->slug)
+            ->assertForbidden();
+        $this->get('/api/v1/artworks/'.$artwork->slug.'/image')
+            ->assertForbidden();
+        $this->getJson('/api/v1/artists/'.$profile->slug)
+            ->assertOk()
+            ->assertJsonPath('data.artworks', []);
+        $this->get('/artworks/'.$artwork->slug)->assertNotFound();
+
+        $content->forceFill([
+            'artist_approved_at' => now(),
+            'publication_status' => ArtistContent::PUBLICATION_PUBLISHED,
+        ])->save();
+
+        $this->getJson('/api/v1/artworks')
+            ->assertOk()
+            ->assertJsonFragment(['slug' => $artwork->slug]);
+        $this->getJson('/api/v1/artwork-filters')
+            ->assertOk()
+            ->assertJsonPath('data.mediums.0', 'رنگ روغن');
+        $this->getJson('/api/v1/artworks/'.$artwork->slug)
+            ->assertOk()
+            ->assertJsonPath('data.slug', $artwork->slug);
+        $this->get('/api/v1/artworks/'.$artwork->slug.'/image')
+            ->assertOk();
+        $this->getJson('/api/v1/artists/'.$profile->slug)
+            ->assertOk()
+            ->assertJsonFragment(['slug' => $artwork->slug]);
+        $this->get('/artworks/'.$artwork->slug)->assertOk();
     }
 
     public function test_new_artwork_creation_writes_its_content_companion_transactionally(): void

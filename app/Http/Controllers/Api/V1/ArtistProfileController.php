@@ -77,7 +77,7 @@ class ArtistProfileController extends Controller
         // Keep public profile payloads bounded even when an artist has a large portfolio.
         // simplePaginate avoids the additional COUNT query used by length-aware pagination.
         $artworks = $artistProfile->artworks()
-            ->where('status', Artwork::STATUS_APPROVED)
+            ->publiclyVisible()
             ->with('category')
             ->latest()
             ->orderByDesc('id')
