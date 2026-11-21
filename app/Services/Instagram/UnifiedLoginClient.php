@@ -82,7 +82,11 @@ class UnifiedLoginClient
                 'limit' => 5,
             ], $accessToken, $appSecretProof);
 
-            $mediaItems = is_array($media['data'] ?? null) ? $media['data'] : [];
+            if (! is_array($media['data'] ?? null)) {
+                throw new RuntimeException('Meta returned an invalid media listing.');
+            }
+
+            $mediaItems = $media['data'];
             $items = array_map(
                 fn (array $item): array => $this->mediaMetadata($item),
                 array_filter($mediaItems, 'is_array')
@@ -120,7 +124,9 @@ class UnifiedLoginClient
 
             $response = $this->graphGet('me/assigned_instagram_accounts', $parameters, $accessToken, $appSecretProof);
 
-            foreach ($response['data'] ?? [] as $account) {
+            $accountRows = is_array($response['data'] ?? null) ? $response['data'] : [];
+
+            foreach ($accountRows as $account) {
                 if (! is_array($account)
                     || ! isset($account['id'])
                     || ! is_string($account['id'])
