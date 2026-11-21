@@ -110,7 +110,7 @@ class ArtistInstagramUnifiedLoginTest extends TestCase
 
         $this->actingAs($artist)
             ->get('/dashboard/artist/instagram/connect')
-            ->assertServiceUnavailable();
+            ->assertStatus(503);
     }
 
     public function test_artist_can_delete_the_local_connection_record(): void
