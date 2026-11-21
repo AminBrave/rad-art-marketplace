@@ -110,10 +110,59 @@
     --portrait-ratio: 4 / 5;
 }
 
+:root[data-theme='dark'] {
+    color-scheme: dark;
+
+    /* Keep ink as the deep brand anchor; text is the adaptive foreground. */
+    --color-canvas: #171816;
+    --color-ink: #242320;
+    --color-terracotta: #A64F31;
+    --color-terracotta-strong: #E49A7D;
+    --color-sand: #8D7967;
+    --color-olive: #536052;
+    --color-paper: #222320;
+
+    --color-text: #F1EEE7;
+    --color-text-muted: #C0BAAF;
+    --color-text-subtle: #A49D92;
+    --color-border: #3D3C37;
+    --color-border-strong: #716B61;
+    --color-surface: #282925;
+    --color-surface-muted: #30312C;
+    --color-action: var(--color-terracotta);
+    --color-action-text: #E9A184;
+    --color-focus: #E49A7D;
+    --color-success: #A0B18F;
+    --color-danger: #F08E83;
+    --color-warning: #E7B66D;
+    --color-info: #8DBBD5;
+    --color-success-surface: color-mix(in srgb, var(--color-success) 16%, var(--color-paper));
+    --color-danger-surface: color-mix(in srgb, var(--color-danger) 14%, var(--color-paper));
+    --color-warning-surface: color-mix(in srgb, var(--color-warning) 14%, var(--color-paper));
+    --color-info-surface: color-mix(in srgb, var(--color-info) 14%, var(--color-paper));
+    --color-accent-surface: color-mix(in srgb, var(--color-terracotta) 16%, var(--color-paper));
+    --color-inverse-text: #FFFFFF;
+    --color-skeleton-base: #30312C;
+    --color-skeleton-highlight: #41423B;
+    --color-overlay: rgb(0 0 0 / 72%);
+    --color-focus-soft: rgb(228 154 125 / 20%);
+    --color-message-own: color-mix(in srgb, var(--color-terracotta) 20%, var(--color-paper));
+    --color-message-peer: var(--color-surface);
+}
+
+:root[data-theme='dark'] .text-ink {
+    color: var(--color-text);
+}
+
+:root[data-theme='dark'] .text-olive {
+    color: var(--color-success);
+}
+
 html {
     scroll-behavior: smooth;
     scroll-padding-top: var(--header-height);
     background: var(--color-canvas);
+    color-scheme: light;
 }
 
 body {
@@ -158,6 +207,14 @@ a {
 
 [dir='ltr'] {
     font-family: var(--font-latin), sans-serif;
+}
+
+:root[data-theme='dark'] .text-ink {
+    color: var(--color-text);
+}
+
+:root[data-theme='dark'] ::selection {
+    color: var(--color-text);
 }
 
 @media (prefers-reduced-motion: reduce) {

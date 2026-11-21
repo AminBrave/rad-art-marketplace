@@ -40,6 +40,16 @@ Rules:
 - Active state must work for nested routes and remain understandable without color alone. Use semantic links and `aria-current` behavior supplied by the router.
 - Preserve RTL reading order, touch targets, visible keyboard focus, long-label resilience and reduced-motion behavior.
 
+## Theme behavior
+
+- Light is the default when the operating system preference is unavailable; otherwise follow the system preference until the visitor chooses an explicit theme.
+- Store an explicit visitor choice as `rad-theme` with the values `light` or `dark`; apply it on the document root as `data-theme` before the stylesheet is evaluated to avoid a flash of the wrong palette.
+- The shared theme control is available in public and authenticated workspace headers, uses a semantic button with an accessible Persian name and pressed state, and updates the browser theme-color metadata.
+- All existing semantic RAD tokens retain their names. Dark mode overrides their values; it does not introduce a second Tailwind palette or a component-specific theme layer.
+- Keep `--color-ink` as the deep brand anchor for dark hero and brand surfaces. Adaptive foreground text uses `--color-text`; in dark mode the existing `text-ink` utility is mapped to that readable foreground while `bg-ink` remains the deep brand surface.
+- Theme changes must preserve status meaning, focus visibility, skeleton contrast, modal scrims, message surfaces, artwork legibility, RTL and reduced-motion behavior.
+- If the visitor has not made an explicit choice, changes to the operating-system color preference are followed automatically.
+
 ## Responsive behavior and safe areas
 
 - The primary bottom bar is fixed to the viewport edge on mobile/tablet and uses the device safe-area inset.
