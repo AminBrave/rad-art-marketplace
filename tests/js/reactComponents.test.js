@@ -359,8 +359,16 @@ test('MediaImage fallback stays accessible for missing sources and supports cust
     );
 
     assert.match(missing, /role="img"/);
-    assert.match(missing, /aria-label="اثر بدون تصویر"/);
+    assert.match(missing, /aria-label="اثر بدون تصویر: تصویر در دسترس نیست"/);
+    assert.match(missing, /تصویر در دسترس نیست/);
+    assert.match(missing, /بارگذاری تصویر ناموفق بود/);
+    assert.match(missing, /نشانی تصویر ثبت نشده است/);
     assert.match(custom, /جایگزین سفارشی/);
+    assert.match(custom, /بارگذاری تصویر ناموفق بود/);
+
+    const mediaSource = readFileSync(new URL('../../resources/js/components/ui/feedback.jsx', import.meta.url), 'utf8');
+    assert.match(mediaSource, /onError=\{\(\) => setFailedSrc\(imageSrc\)\}/);
+    assert.match(mediaSource, /فایل در فضای ذخیره‌سازی پیدا نشد یا دریافت آن ناموفق بود/);
 });
 
 test('UploadFeedback clamps progress at both ends of the accessible range', () => {
