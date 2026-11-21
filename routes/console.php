@@ -60,8 +60,7 @@ Artisan::command('rademan:backfill-artist-content {--chunk=200} {--dry-run}', fu
                     'publication_status' => ArtistContent::PUBLICATION_DRAFT,
                 ]);
 
-                $artwork->artistContent()->associate($content);
-                $artwork->save();
+                DB::table('artworks')->where('id', $artwork->id)->update(['artist_content_id' => $content->id]);
                 $processed++;
             });
         }
