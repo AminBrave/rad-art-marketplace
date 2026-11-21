@@ -3,6 +3,9 @@ Options -Indexes -MultiViews
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    # Vite emits content-hashed production assets; cache these immutable URLs for one year.
+    RewriteRule ^build/assets/ - [E=RAD_IMMUTABLE_ASSET:1]
+
     # Never expose dotfiles (.env, .git, editor metadata), except ACME/web well-known files.
     RewriteRule (^|/)\.(?!well-known(?:/|$)) - [F,L,NC]
 
@@ -42,5 +45,6 @@ Options -Indexes -MultiViews
 </IfModule>
 
 <IfModule mod_headers.c>
+    Header set Cache-Control "public, max-age=31536000, immutable" env=RAD_IMMUTABLE_ASSET
     Header always set Strict-Transport-Security "max-age=31536000" env=HTTPS
 </IfModule>
