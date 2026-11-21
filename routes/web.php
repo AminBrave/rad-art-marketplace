@@ -37,6 +37,9 @@ Route::middleware(['auth', 'role:artist'])->prefix('dashboard/artist')->name('ar
     Route::get('/instagram/callback', [ArtistInstagramConnectionController::class, 'callback'])
         ->middleware('throttle:10,1')
         ->name('instagram.callback');
+    Route::delete('/instagram/connection', [ArtistInstagramConnectionController::class, 'disconnect'])
+        ->middleware('throttle:5,1')
+        ->name('instagram.disconnect');
 });
 
 Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
