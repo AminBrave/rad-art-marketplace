@@ -23,6 +23,7 @@ class ArtistCollectionController extends Controller
 
         $profile = $request->user()->artistProfile()->firstOrFail();
         $collections = $profile->collections()
+            ->with(['contents' => fn ($query) => $query->orderByPivot('position')])
             ->withCount('contents')
             ->orderBy('position')
             ->orderBy('id')
