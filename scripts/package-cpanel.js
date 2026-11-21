@@ -10,6 +10,7 @@ const outputZip = path.join(outputDir, 'rad-file.zip');
 const isWindows = process.platform === 'win32';
 
 const archivePaths = [
+    '.env.cpanel',
     '.htaccess',
     'index.php',
     'artisan',
@@ -43,6 +44,15 @@ run(process.execPath, ['scripts/project.mjs', 'build:cpanel']);
 fs.mkdirSync(outputDir, { recursive: true });
 fs.rmSync(outputZip, { force: true });
 
+for (const requiredPath of ['.env.cpanel', 'build/manifest.json', 'build/assets']) {
+    if (!fs.existsSync(path.join(root, requiredPath))) {
+        throw new Error('[cPanel] Required package path is missing: ' + requiredPath);
+    }
+}
+if (!fs.statSync(path.join(root, 'build/assets')).isDirectory()) {
+    throw new Error('[cPanel] Expected build/assets to be a directory.');
+}
+
 console.log('[cPanel] Creating ZIP...');
 if (isWindows) {
     const winRarCandidates = [
@@ -52,7 +62,7 @@ if (isWindows) {
     const winRar = winRarCandidates.find(candidate => fs.existsSync(candidate));
 
     if (winRar) {
-        run(winRar, ['a', '-afzip', '-m5', '-ep1', outputZip, ...archivePaths]);
+        run(winRar, ['a', '-afzip', '-m5', outputZip, ...archivePaths]);
     } else {
         run('tar.exe', ['-a', '-c', '-f', path.relative(root, outputZip), ...archivePaths]);
     }
