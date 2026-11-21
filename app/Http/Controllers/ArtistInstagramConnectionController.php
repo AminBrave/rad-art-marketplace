@@ -31,6 +31,16 @@ class ArtistInstagramConnectionController extends Controller
         return redirect()->away($url);
     }
 
+    public function disconnect(Request $request): RedirectResponse
+    {
+        $request->user()->artistProfile()->firstOrFail()->instagramConnection()->delete();
+
+        return redirect('/dashboard/artist/content')->with(
+            'status',
+            'داده اتصال از رادمن حذف شد. برای لغو دسترسی برنامه در متا نیز آن را از بخش Business Integrations حذف کنید.'
+        );
+    }
+
     public function callback(Request $request, UnifiedLoginClient $instagram): RedirectResponse
     {
         $destination = redirect('/dashboard/artist/content');
