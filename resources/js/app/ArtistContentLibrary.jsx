@@ -261,7 +261,10 @@ export default function ArtistContentLibrary() {
                 eyebrow="استودیوی هنرمند / کتابخانه"
                 title="کتابخانه محتوای من"
                 description="آثار ثبت‌شده در راد آرت را مرور کنید، برای انتشار تأیید کنید و آن‌ها را در مجموعه‌های اختصاصی بچینید."
-                actions={<Badge variant="accent"> {contentMeta.total.toLocaleString('fa-IR')} محتوا</Badge>}
+                actions={<>
+                    <Badge variant="accent">{contentMeta.total.toLocaleString('fa-IR')} محتوا</Badge>
+                    <Link to="/dashboard/artist/artworks" className="inline-flex min-h-11 items-center justify-center rounded-md border border-border-strong bg-paper px-4 py-2 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">ثبت اثر هنری</Link>
+                </>}
             />
 
             {profileError && <ErrorState title="پروفایل هنرمند دریافت نشد" description={profileError} />}
@@ -303,7 +306,7 @@ export default function ArtistContentLibrary() {
                 ) : contentQuery.isError ? (
                     <ErrorState title="کتابخانه بارگذاری نشد" description="دریافت محتوا انجام نشد. اتصال را بررسی و دوباره تلاش کنید." onRetry={() => contentQuery.refetch()} />
                 ) : contents.length === 0 ? (
-                    <EmptyState title="محتوایی در این بخش نیست" description={Object.values(filters).some(Boolean) ? 'فیلترها را پاک کنید تا سایر محتواها را ببینید.' : 'پس از ثبت اثر در استودیوی آثار، محتوای آن در این کتابخانه نیز نمایش داده می‌شود.'} />
+                    <EmptyState title="محتوایی در این بخش نیست" description={Object.values(filters).some(Boolean) ? 'فیلترها را پاک کنید تا سایر محتواها را ببینید.' : 'پس از ثبت اثر در استودیوی آثار، محتوای آن در این کتابخانه نیز نمایش داده می‌شود.'} action={<Link to="/dashboard/artist/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">ثبت اولین اثر</Link>} />
                 ) : (
                     <div className="grid gap-3">
                         {contents.map((item) => {
