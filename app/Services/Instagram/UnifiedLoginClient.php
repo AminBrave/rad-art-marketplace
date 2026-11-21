@@ -78,14 +78,15 @@ class UnifiedLoginClient
 
         foreach ($accounts as $account) {
             $media = $this->graphGet($account['id'].'/media', [
-                'fields' => 'id,media_type,timestamp,permalink,children{id,media_type,timestamp,permalink}',
+                'fields' => 'id,media_type,timestamp,permalink,children{id,media_type,timestamp}',
                 'limit' => 5,
             ], $accessToken, $appSecretProof);
 
-            $items = array_map(fn (array $item): array => $this->mediaMetadata($item), array_filter(
-                $media['data'] ?? [],
-                'is_array'
-            ));
+            $mediaItems = is_array($media['data'] ?? null) ? $media['data'] : [];
+            $items = array_map(
+                fn (array $item): array => $this->mediaMetadata($item),
+                array_filter($mediaItems, 'is_array')
+            );
 
             $mediaSnapshot[] = [
                 'account_id' => $account['id'],
