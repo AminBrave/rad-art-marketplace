@@ -157,6 +157,7 @@ export function MediaImage({
     width,
     height,
     variant,
+    fallback,
 }) {
     const imageSrc = src && variant
         ? `${src}${src.includes('?') ? '&' : '?'}variant=${encodeURIComponent(variant)}`
@@ -181,10 +182,14 @@ export function MediaImage({
                     <span aria-hidden="true" className="pointer-events-none absolute -end-8 -top-10 h-36 w-36 rounded-full border border-[color:color-mix(in_srgb,var(--color-terracotta)_20%,transparent)]" />
                     <span aria-hidden="true" className="pointer-events-none absolute -start-10 -bottom-16 h-44 w-44 rounded-full border border-[color:color-mix(in_srgb,var(--color-sand)_70%,transparent)]" />
                     <span className="relative z-10 flex flex-col items-center gap-2 px-4 pb-10 text-sm font-semibold text-muted">
-                        <span className="grid h-14 w-14 place-items-center rounded-full border border-[color:color-mix(in_srgb,var(--color-terracotta)_30%,transparent)] bg-[color:color-mix(in_srgb,var(--color-paper)_80%,transparent)] text-terracotta shadow-sm">
-                            <ImageOff size={27} strokeWidth={1.5} aria-hidden="true" />
-                        </span>
-                        <span className="tracking-wide">تصویر در دسترس نیست</span>
+                        {fallback ?? (
+                            <>
+                                <span className="grid h-14 w-14 place-items-center rounded-full border border-[color:color-mix(in_srgb,var(--color-terracotta)_30%,transparent)] bg-[color:color-mix(in_srgb,var(--color-paper)_80%,transparent)] text-terracotta shadow-sm">
+                                    <ImageOff size={27} strokeWidth={1.5} aria-hidden="true" />
+                                </span>
+                                <span className="tracking-wide">تصویر در دسترس نیست</span>
+                            </>
+                        )}
                     </span>
                     <span
                         role="note"
