@@ -156,7 +156,6 @@ export function MediaImage({
     fetchPriority,
     width,
     height,
-    fallback,
     variant,
 }) {
     const imageSrc = src && variant
@@ -170,7 +169,7 @@ export function MediaImage({
 
     return (
         <span
-            className={`relative isolate block overflow-hidden bg-surface-muted ${className}`}
+            className={`relative isolate block overflow-hidden bg-surface-muted ${unavailable ? 'min-h-32' : ''} ${className}`}
             aria-busy={!loaded && !unavailable}
         >
             {unavailable ? (
