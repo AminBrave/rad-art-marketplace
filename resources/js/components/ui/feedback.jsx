@@ -185,7 +185,7 @@ export function MediaImage({
                             <span>تصویر در دسترس نیست</span>
                         </span>
                     )}
-                    <span className="absolute inset-x-0 bottom-0 flex items-start gap-2 border-t border-danger/20 bg-danger/95 px-3 py-2 text-start text-[11px] leading-5 text-white shadow-sm">
+                    <span className="absolute inset-x-0 bottom-0 flex items-start gap-2 border-t border-danger bg-danger-surface px-3 py-2 text-start text-[11px] leading-5 text-danger shadow-sm">
                         <AlertTriangle size={14} className="mt-0.5 shrink-0" aria-hidden="true" />
                         <span className="min-w-0">
                             <span className="block font-bold">بارگذاری تصویر ناموفق بود</span>
