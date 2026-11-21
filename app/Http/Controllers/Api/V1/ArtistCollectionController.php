@@ -21,13 +21,17 @@ class ArtistCollectionController extends Controller
     {
         $this->authorize('viewAny', ArtistCollection::class);
 
+        $validated = $request->validate([
+            'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
+        ]);
+
         $profile = $request->user()->artistProfile()->firstOrFail();
         $collections = $profile->collections()
             ->with(['contents' => fn ($query) => $query->orderByPivot('position')])
             ->withCount('contents')
             ->orderBy('position')
             ->orderBy('id')
-            ->paginate(12)
+            ->paginate($validated['per_page'] ?? 48)
             ->through(fn (ArtistCollection $collection): array => (new ArtistCollectionResource($collection))->resolve($request));
 
         return response()->json($collections);
