@@ -18,6 +18,7 @@ const ArtistDirectoryPage = lazy(() => import('./ArtistDirectoryPage'));
 const PublicInfoPage = lazy(() => import('./PublicInfoPages'));
 const AuthPage = lazy(() => import('./AuthPage'));
 const ArtistWorkspaceOverview = lazy(() => import('./ArtistWorkspaceOverview'));
+const ArtistContentLibrary = lazy(() => import('./ArtistContentLibrary'));
 const BuyerDashboardHome = lazy(() => import('./BuyerWorkspace').then((module) => ({ default: module.BuyerDashboardHome })));
 const AdminDashboardHome = lazy(() => import('./AdminWorkspace').then((module) => ({ default: module.AdminDashboardHome })));
 const AdminArtworkModeration = lazy(() => import('./AdminWorkspace').then((module) => ({ default: module.AdminArtworkModeration })));
@@ -73,6 +74,7 @@ function AppRoutes() {
                     <Route index element={withRouteFallback(<ArtistWorkspaceOverview />)} />
                     <Route path="profile" element={<ArtistProfileSettings />} />
                     <Route path="artworks" element={<ArtistArtworkPage />} />
+                    <Route path="content" element={withRouteFallback(<ArtistContentLibrary />)} />
                     <Route path="messages" element={withRouteFallback(<MessagingCenter role="artist" />)} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>

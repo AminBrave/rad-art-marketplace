@@ -108,11 +108,12 @@ export default function ArtistWorkspaceOverview() {
 
             {!profileLoading && profileReady && (
                 <>
-                    <section aria-label="آمار فضای هنرمند" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                    <section aria-label="آمار فضای هنرمند" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
                         {loading ? <DashboardMetricSkeleton count={4} /> : <>
                             <DashboardMetricCard as={Link} label="مجموع آثار" value={formatCount(counts.artworks)} detail="تمام آثار ثبت‌شده در استودیوی شما" to="/dashboard/artist/artworks" eyebrow="پورتفولیو" />
                             <DashboardMetricCard as={Link} label="منتشرشده" value={published.toLocaleString('fa-IR')} detail="آثاری که در گالری عمومی نمایش داده می‌شوند" to="/dashboard/artist/artworks" eyebrow="عمومی" />
                             <DashboardMetricCard as={Link} label="در انتظار بررسی" value={pending.toLocaleString('fa-IR')} detail="آثاری که هنوز بررسی نهایی نشده‌اند" to="/dashboard/artist/artworks" eyebrow="بررسی" />
+                            <DashboardMetricCard as={Link} label="کتابخانه محتوا" value="مدیریت یکپارچه" detail="تأیید انتشار و ساخت مجموعه‌ها" to="/dashboard/artist/content" eyebrow="محتوا" />
                             <DashboardMetricCard as={Link} label="پیام‌های مستقیم" value="صندوق پیام‌ها" detail="گفت‌وگو با خریداران" to="/dashboard/artist/messages" eyebrow="ارتباط" />
                         </>}
                     </section>

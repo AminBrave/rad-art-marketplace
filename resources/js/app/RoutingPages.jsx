@@ -221,6 +221,13 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                 </>
             ) : pathname === '/admin/editorial' ? (
                 <AdminEditorialSkeleton announce={false} />
+            ) : pathname === '/dashboard/artist/content' ? (
+                <section className="space-y-5" aria-label="در حال بارگذاری کتابخانه محتوا" aria-busy="true">
+                    <div className="grid gap-3 border-b border-border pb-6"><Skeleton className="h-3 w-32 rounded-sm" /><Skeleton className="h-9 w-56 rounded-sm" /><Skeleton className="h-4 w-full max-w-2xl rounded-sm" /></div>
+                    <div className="grid gap-3 sm:grid-cols-3">{[0, 1, 2].map((item) => <Skeleton key={item} className="h-11 w-full rounded-md" />)}</div>
+                    <div className="grid gap-3">{[0, 1, 2].map((item) => <Skeleton key={item} className="h-28 w-full rounded-md" />)}</div>
+                    <Skeleton className="h-64 w-full rounded-md" />
+                </section>
             ) : pathname === '/dashboard/artist/artworks' ? (
                 <>
                     <section className="border border-border bg-paper p-5 sm:p-7">

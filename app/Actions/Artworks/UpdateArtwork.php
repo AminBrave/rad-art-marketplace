@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Actions\Artworks;
 
+use App\Models\ArtistCollection;
+use App\Models\ArtistContent;
 use App\Models\Artwork;
 use App\Services\ArtworkImageVariants;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 use Throwable;
@@ -37,18 +40,79 @@ class UpdateArtwork
         }
 
         try {
-            $saved = $artwork->update([
-                ...$attributes,
-                'status' => Artwork::STATUS_PENDING_REVIEW,
-                'rejection_note' => null,
-                'reviewed_by' => null,
-                'reviewed_at' => null,
-                ...($newImagePath ? ['image_path' => $newImagePath] : []),
-            ]);
+            DB::transaction(function () use ($artwork, $attributes, $newImagePath): void {
+                // Legacy artwork has no companion row. Avoid resolving the
+                // belongs-to relation (and querying artist_contents) at all.
+                $content = $artwork->artist_content_id === null
+                    ? null
+                    : $artwork->artistContent()->first();
 
-            if (! $saved) {
-                throw new RuntimeException('The artwork update was not persisted.');
-            }
+                if ($content) {
+                    $collectionIds = DB::table('artist_collection_items')
+                        ->where('artist_content_id', $content->id)
+                        ->pluck('artist_collection_id');
+
+                    if ($collectionIds->isNotEmpty()) {
+                        ArtistCollection::query()
+                            ->whereIn('id', $collectionIds)
+                            ->orderBy('id')
+                            ->lockForUpdate()
+                            ->get();
+                    }
+
+                    $content = ArtistContent::query()->lockForUpdate()->findOrFail($content->id);
+                }
+
+                $saved = $artwork->update([
+                    ...$attributes,
+                    'status' => Artwork::STATUS_PENDING_REVIEW,
+                    'rejection_note' => null,
+                    'reviewed_by' => null,
+                    'reviewed_at' => null,
+                    ...($newImagePath ? ['image_path' => $newImagePath] : []),
+                ]);
+
+                if (! $saved) {
+                    throw new RuntimeException('The artwork update was not persisted.');
+                }
+
+                if ($content) {
+                    $content->update([
+                        'title' => $artwork->title,
+                        'description' => $artwork->description,
+                        'media_path' => $artwork->image_path,
+                        'publication_status' => ArtistContent::PUBLICATION_DRAFT,
+                        'artist_approved_at' => null,
+                    ]);
+
+                    DB::table('artist_collections')
+                        ->whereIn('id', DB::table('artist_collection_items')
+                            ->select('artist_collection_id')
+                            ->where('artist_content_id', $content->id))
+                        ->where('visibility', ArtistCollection::VISIBILITY_PUBLIC)
+                        ->update([
+                            'visibility' => ArtistCollection::VISIBILITY_PRIVATE,
+                            'published_at' => null,
+                            'updated_at' => now(),
+                        ]);
+
+                    return;
+                }
+
+                $content = ArtistContent::query()->create([
+                    'artist_profile_id' => $artwork->artist_profile_id,
+                    'source' => ArtistContent::SOURCE_NATIVE,
+                    'content_type' => 'artwork',
+                    'title' => $artwork->title,
+                    'description' => $artwork->description,
+                    'media_path' => $artwork->image_path,
+                    'publication_status' => ArtistContent::PUBLICATION_DRAFT,
+                ]);
+
+                DB::table('artworks')->where('id', $artwork->id)->update(['artist_content_id' => $content->id]);
+                $artwork->setAttribute('artist_content_id', $content->id);
+                $artwork->setRelation('artistContent', $content);
+            });
         } catch (Throwable $exception) {
             if ($newImagePath !== null) {
                 $this->imageVariants->deleteForOriginal($newImagePath);

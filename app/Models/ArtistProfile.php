@@ -36,4 +36,14 @@ class ArtistProfile extends Model
     {
         return $this->hasMany(Artwork::class);
     }
+
+    public function contents(): HasMany
+    {
+        return $this->hasMany(ArtistContent::class);
+    }
+
+    public function collections(): HasMany
+    {
+        return $this->hasMany(ArtistCollection::class);
+    }
 }

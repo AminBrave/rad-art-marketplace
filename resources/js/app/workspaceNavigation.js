@@ -4,6 +4,7 @@ export function getWorkspacePrimaryLinks(role) {
             { to: '/dashboard/artist', label: 'نمای کلی', end: true },
             { to: '/dashboard/artist/profile', label: 'پروفایل هنرمند' },
             { to: '/dashboard/artist/artworks', label: 'مدیریت آثار' },
+            { to: '/dashboard/artist/content', label: 'کتابخانه محتوا' },
             { to: '/dashboard/artist/messages', label: 'پیام‌های مستقیم' },
         ],
         buyer: [

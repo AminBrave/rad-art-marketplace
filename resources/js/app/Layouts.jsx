@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Images, LayoutDashboard, Menu, MessageCircle, UserRound, Users, X } from 'lucide-react';
+import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Images, Library, LayoutDashboard, Menu, MessageCircle, UserRound, Users, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { getWorkspacePrimaryLinks } from './workspaceNavigation';
@@ -447,6 +447,7 @@ const workspaceNavigationIcons = {
     '/dashboard/artist': LayoutDashboard,
     '/dashboard/artist/profile': UserRound,
     '/dashboard/artist/artworks': Images,
+    '/dashboard/artist/content': Library,
     '/dashboard/artist/messages': MessageCircle,
     '/dashboard/buyer': LayoutDashboard,
     '/dashboard/buyer/messages': MessageCircle,
@@ -461,6 +462,7 @@ const workspaceNavigationLabels = {
     '/dashboard/artist': 'خانه',
     '/dashboard/artist/profile': 'پروفایل',
     '/dashboard/artist/artworks': 'آثار',
+    '/dashboard/artist/content': 'کتابخانه',
     '/dashboard/artist/messages': 'پیام‌ها',
     '/dashboard/buyer': 'خانه',
     '/dashboard/buyer/messages': 'پیام‌ها',
