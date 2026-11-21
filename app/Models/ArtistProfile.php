@@ -7,6 +7,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class ArtistProfile extends Model
 {
@@ -45,5 +46,10 @@ class ArtistProfile extends Model
     public function collections(): HasMany
     {
         return $this->hasMany(ArtistCollection::class);
+    }
+
+    public function instagramConnection(): HasOne
+    {
+        return $this->hasOne(InstagramConnection::class);
     }
 }
