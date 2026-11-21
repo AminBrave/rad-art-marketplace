@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { AlertTriangle, ImageOff } from 'lucide-react';
 import { Button } from './primitives';
 import * as ToastPrimitive from '@radix-ui/react-toast';
 
@@ -155,7 +156,6 @@ export function MediaImage({
     fetchPriority,
     width,
     height,
-    fallback,
     variant,
 }) {
     const imageSrc = src && variant
@@ -165,35 +165,60 @@ export function MediaImage({
     const [failedSrc, setFailedSrc] = useState(null);
     const loaded = Boolean(imageSrc) && loadedSrc === imageSrc;
     const failed = Boolean(imageSrc) && failedSrc === imageSrc;
-
-    if (!imageSrc || failed) {
-        return fallback ?? (
-            <span
-                role={alt ? 'img' : undefined}
-                aria-label={alt || undefined}
-                aria-hidden={alt ? undefined : 'true'}
-                className={`grid place-items-center bg-surface-muted px-4 text-center text-sm text-muted ${className}`}
-            >
-                تصویر در دسترس نیست
-            </span>
-        );
-    }
+    const unavailable = !imageSrc || failed;
 
     return (
-        <span className={`relative isolate block overflow-hidden bg-surface-muted ${className}`} aria-busy={!loaded}>
-            {!loaded && <span aria-hidden="true" className={`${skeletonClasses} absolute inset-0 h-full w-full rounded-none`} />}
-            <img
-                src={imageSrc}
-                alt={alt}
-                loading={loading}
-                decoding={decoding}
-                fetchpriority={fetchPriority}
-                width={width}
-                height={height}
-                onLoad={() => setLoadedSrc(imageSrc)}
-                onError={() => setFailedSrc(imageSrc)}
-                className={`absolute inset-0 block h-full w-full transition-opacity duration-200 ${loaded ? 'opacity-100' : 'opacity-0'} ${imageClassName}`}
-            />
+        <span
+            className={`relative isolate block overflow-hidden bg-surface-muted ${unavailable ? 'min-h-32' : ''} ${className}`}
+            aria-busy={!loaded && !unavailable}
+        >
+            {unavailable ? (
+                <span
+                    role={alt ? 'img' : 'status'}
+                    aria-label={alt ? `${alt}: تصویر در دسترس نیست` : undefined}
+                    className="absolute inset-0 grid min-h-32 place-items-center overflow-hidden bg-[radial-gradient(ellipse_at_18%_20%,color-mix(in_srgb,var(--color-sand)_55%,transparent),transparent_42%),radial-gradient(ellipse_at_82%_78%,color-mix(in_srgb,var(--color-terracotta)_18%,transparent),transparent_45%),linear-gradient(135deg,var(--color-paper),var(--color-surface-muted))] text-center"
+                >
+                    <span aria-hidden="true" className="pointer-events-none absolute -end-8 -top-10 h-36 w-36 rounded-full border border-terracotta/20" />
+                    <span aria-hidden="true" className="pointer-events-none absolute -start-10 -bottom-16 h-44 w-44 rounded-full border border-sand/70" />
+                    <span className="relative z-10 flex flex-col items-center gap-2 px-4 pb-10 text-sm font-semibold text-muted">
+                        <span className="grid h-14 w-14 place-items-center rounded-full border border-terracotta/30 bg-paper/80 text-terracotta shadow-sm">
+                            <ImageOff size={27} strokeWidth={1.5} aria-hidden="true" />
+                        </span>
+                        <span className="tracking-wide">تصویر در دسترس نیست</span>
+                    </span>
+                    <span
+                        role="note"
+                        className="absolute inset-x-0 bottom-0 z-20 flex items-start gap-2 border-t-2 border-danger bg-danger px-3 py-2 text-start text-[11px] font-medium leading-5 text-white shadow-lg"
+                        dir="rtl"
+                    >
+                        <AlertTriangle size={15} className="mt-0.5 shrink-0" aria-hidden="true" />
+                        <span className="min-w-0">
+                            <span className="block font-bold">خطا در نمایش تصویر</span>
+                            <span className="block opacity-95">
+                                {imageSrc
+                                    ? 'فایل پیدا نشد یا دریافت آن ناموفق بود.'
+                                    : 'نشانی تصویر ثبت نشده است.'}
+                            </span>
+                        </span>
+                    </span>
+                </span>
+            ) : (
+                <>
+                    {!loaded && <span aria-hidden="true" className={`${skeletonClasses} absolute inset-0 h-full w-full rounded-none`} />}
+                    <img
+                        src={imageSrc}
+                        alt={alt}
+                        loading={loading}
+                        decoding={decoding}
+                        fetchpriority={fetchPriority}
+                        width={width}
+                        height={height}
+                        onLoad={() => setLoadedSrc(imageSrc)}
+                        onError={() => setFailedSrc(imageSrc)}
+                        className={`absolute inset-0 block h-full w-full transition-opacity duration-200 ${loaded ? 'opacity-100' : 'opacity-0'} ${imageClassName}`}
+                    />
+                </>
+            )}
         </span>
     );
 }
