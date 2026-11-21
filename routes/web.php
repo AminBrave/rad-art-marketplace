@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\V1\MessageSafetyController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\PublicArtworkController;
 use App\Http\Controllers\Api\V1\PublicEditorialController;
+use App\Http\Controllers\ArtistInstagramConnectionController;
 use App\Http\Controllers\PublicPageController;
 use App\Http\Middleware\EnsureConversationNotBlocked;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,15 @@ Route::get('/robots.txt', [PublicPageController::class, 'robots'])->name('robots
 Route::get('/artists/{slug}', [PublicPageController::class, 'artist'])->name('artists.page');
 Route::get('/artworks/{slug}', [PublicPageController::class, 'artwork'])->name('artworks.page');
 Route::get('/collections/{slug}', [PublicPageController::class, 'collection'])->name('collections.page');
+
+Route::middleware(['auth', 'role:artist'])->prefix('dashboard/artist')->name('artist.')->group(function (): void {
+    Route::get('/instagram/connect', [ArtistInstagramConnectionController::class, 'connect'])
+        ->middleware('throttle:5,1')
+        ->name('instagram.connect');
+    Route::get('/instagram/callback', [ArtistInstagramConnectionController::class, 'callback'])
+        ->middleware('throttle:10,1')
+        ->name('instagram.callback');
+});
 
 Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
     Route::prefix('auth')->name('auth.')->group(function (): void {
@@ -76,6 +86,7 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
 
     Route::get('/collections', [PublicEditorialController::class, 'collections'])->name('collections.index');
     Route::get('/collections/{collection:slug}', [PublicEditorialController::class, 'collection'])->name('collections.show');
+
     Route::get('/featured-artists', [PublicEditorialController::class, 'featuredArtists'])->name('featured-artists.index');
 
     Route::get('/categories', [PublicArtworkController::class, 'categories'])->name('categories.index');
