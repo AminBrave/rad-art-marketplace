@@ -140,7 +140,7 @@ class AdminArtworkModerationController extends Controller
             if ($count === 1) {
                 EditorialAudit::create([
                     'actor_id' => $request->user()->id,
-                    'action' => strtolower($subjectType).'.moderated',
+                    'action' => $subjectType === 'ArtistContent' ? 'artist_content.moderated' : 'artwork.moderated',
                     'subject_type' => $subjectType,
                     'subject_id' => $subjectId,
                     'metadata' => [
