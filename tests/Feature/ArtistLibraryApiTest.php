@@ -150,6 +150,16 @@ class ArtistLibraryApiTest extends TestCase
             'id' => $collectionId,
             'visibility' => ArtistCollection::VISIBILITY_PUBLIC,
         ]);
+
+        $this->postJson('/api/v1/artist/content/'.$content->id.'/unpublish')
+            ->assertOk()
+            ->assertJsonPath('data.publication_status', ArtistContent::PUBLICATION_DRAFT);
+
+        $this->assertDatabaseHas('artist_collections', [
+            'id' => $collectionId,
+            'visibility' => ArtistCollection::VISIBILITY_PRIVATE,
+            'published_at' => null,
+        ]);
     }
 
     public function test_artist_cannot_update_another_artists_collection(): void
