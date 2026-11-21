@@ -88,6 +88,10 @@ class ArtistContentController extends Controller
                 abort(409, 'پیش از انتشار، تأیید هنرمند برای محتوا الزامی است.');
             }
 
+            if ($locked->content_type === 'artwork' && ! $locked->artwork) {
+                abort(409, 'محتوای اثر هنری باید به یک اثر ثبت‌شده متصل باشد.');
+            }
+
             if ($locked->artwork && $locked->artwork->status !== Artwork::STATUS_APPROVED) {
                 abort(409, 'اثر هنری تا تأیید مدیر قابل انتشار نیست.');
             }
