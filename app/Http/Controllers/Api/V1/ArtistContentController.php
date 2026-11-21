@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ArtistContentResource;
+use App\Models\ArtistCollection;
 use App\Models\ArtistContent;
 use App\Models\Artwork;
 use Illuminate\Http\JsonResponse;
@@ -119,7 +120,7 @@ class ArtistContentController extends Controller
                 ->pluck('artist_collection_id');
 
             if ($collectionIds->isNotEmpty()) {
-                \App\Models\ArtistCollection::query()
+                ArtistCollection::query()
                     ->whereIn('id', $collectionIds)
                     ->orderBy('id')
                     ->lockForUpdate()
@@ -135,9 +136,9 @@ class ArtistContentController extends Controller
                 ->whereIn('id', DB::table('artist_collection_items')
                     ->select('artist_collection_id')
                     ->where('artist_content_id', $locked->id))
-                ->where('visibility', 'public')
+                ->where('visibility', ArtistCollection::VISIBILITY_PUBLIC)
                 ->update([
-                    'visibility' => 'private',
+                    'visibility' => ArtistCollection::VISIBILITY_PRIVATE,
                     'published_at' => null,
                     'updated_at' => now(),
                 ]);
