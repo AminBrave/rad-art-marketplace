@@ -194,6 +194,10 @@ class ArtistCollectionController extends Controller
                     abort(409, 'همه محتواهای مجموعه باید بومی، تأییدشده و منتشرشده باشند.');
                 }
 
+                if ($content->content_type === 'artwork' && ! $content->artwork) {
+                    abort(409, 'محتوای اثر هنری باید به یک اثر ثبت‌شده متصل باشد.');
+                }
+
                 if ($content->artwork && $content->artwork->status !== Artwork::STATUS_APPROVED) {
                     abort(409, 'همه آثار هنری مجموعه باید تأیید مدیر را دریافت کرده باشند.');
                 }
