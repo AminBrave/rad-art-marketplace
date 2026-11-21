@@ -1,5 +1,6 @@
 ## Related issue
-Closes #
+Refs #
+<!-- Use "Closes #123" only when this PR fully completes that issue. Use "Refs" or "Part of" for partial work. -->
 
 ## Summary
 
@@ -7,7 +8,7 @@ Closes #
 
 ## Scope
 - In scope:
-- Out of scope:
+- Explicitly out of scope:
 
 ## Implementation notes
 
@@ -27,8 +28,9 @@ Closes #
 Commands and evidence:
 
 ## Reviewer checklist
+- [ ] Linked issue and its acceptance criteria addressed
 - [ ] Focused diff and affected callers reviewed
-- [ ] Acceptance criteria addressed
 - [ ] No secrets or unrelated files included
-- [ ] Accessibility, responsive and Persian RTL considered
-- [ ] Documentation and AI/SESSION.md updated when durable state changed
+- [ ] Accessibility, responsive and Persian RTL considered where relevant
+- [ ] Documentation and AI/SESSION.md updated when durable project-wide state changed
+- [ ] PR is draft while required maintainer verification is pending
