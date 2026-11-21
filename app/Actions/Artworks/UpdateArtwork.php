@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\Artworks;
 
+use App\Models\ArtistCollection;
 use App\Models\ArtistContent;
 use App\Models\Artwork;
 use App\Services\ArtworkImageVariants;
@@ -63,6 +64,17 @@ class UpdateArtwork
                         'publication_status' => ArtistContent::PUBLICATION_DRAFT,
                         'artist_approved_at' => null,
                     ]);
+
+                    DB::table('artist_collections')
+                        ->whereIn('id', DB::table('artist_collection_items')
+                            ->select('artist_collection_id')
+                            ->where('artist_content_id', $content->id))
+                        ->where('visibility', ArtistCollection::VISIBILITY_PUBLIC)
+                        ->update([
+                            'visibility' => ArtistCollection::VISIBILITY_PRIVATE,
+                            'published_at' => null,
+                            'updated_at' => now(),
+                        ]);
 
                     return;
                 }
