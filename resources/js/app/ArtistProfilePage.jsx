@@ -90,12 +90,12 @@ export default function ArtistProfilePage() {
                             title={profile.display_name}
                             titleClassName="break-words [overflow-wrap:anywhere]"
                             descriptionClassName="break-words [overflow-wrap:anywhere]"
-                            description={(
-                                <span className="block min-w-0 max-w-full">
-                                    {profile.city && <span className="mb-2 inline-flex max-w-full flex-wrap items-center gap-2 break-words font-semibold text-ink"><span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-terracotta" />{profile.city}</span>}
-                                    {profile.bio && <span className="block whitespace-pre-line break-words [overflow-wrap:anywhere]">{profile.bio}</span>}
+                            description={profile.city ? (
+                                <span className="inline-flex max-w-full flex-wrap items-center gap-2 break-words font-semibold text-ink">
+                                    <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-terracotta" />
+                                    {profile.city}
                                 </span>
-                            )}
+                            ) : undefined}
                             actions={(
                                 <>
                                     {profile.website_url && <a href={profile.website_url} target="_blank" rel="noreferrer" className={`${actionClass} max-w-full whitespace-normal break-words text-center`}>وب‌سایت هنرمند ↗</a>}
@@ -115,6 +115,14 @@ export default function ArtistProfilePage() {
                             </span>
                             <span className="font-semibold tabular-nums">{allArtworks.length.toLocaleString('fa-IR')} اثر بارگذاری‌شده</span>
                     </div>
+
+                    {profile.bio && (
+                        <section className="mt-8 max-w-4xl border-s-4 border-terracotta bg-surface-muted px-5 py-6 sm:px-7 sm:py-8" aria-labelledby="artist-story-heading">
+                            <p className="text-xs font-bold text-terracotta-strong">روایت هنرمند</p>
+                            <h2 id="artist-story-heading" className="mt-2 text-xl font-extrabold text-ink">درباره {profile.display_name}</h2>
+                            <p className="mt-4 whitespace-pre-line break-words text-sm leading-9 text-muted [overflow-wrap:anywhere]">{profile.bio}</p>
+                        </section>
+                    )}
 
                     <section className="mt-12 min-w-0 max-w-full" aria-labelledby="artist-portfolio-heading">
                         <SectionHeader
