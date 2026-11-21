@@ -129,6 +129,14 @@ class ArtistCollectionController extends Controller
             if ($rows !== []) {
                 DB::table('artist_collection_items')->insert($rows);
             }
+
+            ArtistCollection::query()
+                ->whereKey($collection->id)
+                ->update([
+                    'visibility' => ArtistCollection::VISIBILITY_PRIVATE,
+                    'published_at' => null,
+                    'updated_at' => $now,
+                ]);
         });
 
         $collection->load(['contents' => fn ($query) => $query->orderByPivot('position')])->loadCount('contents');
@@ -221,14 +229,19 @@ class ArtistCollectionController extends Controller
     {
         $this->authorize('update', $collection);
 
-        $collection->forceFill([
-            'visibility' => ArtistCollection::VISIBILITY_PRIVATE,
-            'published_at' => null,
-        ])->save();
+        DB::transaction(function () use ($collection): void {
+            $locked = ArtistCollection::query()->lockForUpdate()->findOrFail($collection->id);
+            $locked->forceFill([
+                'visibility' => ArtistCollection::VISIBILITY_PRIVATE,
+                'published_at' => null,
+            ])->save();
+        });
+
+        $collection->refresh()->loadCount('contents');
 
         return response()->json([
             'message' => 'مجموعه خصوصی شد.',
-            'data' => (new ArtistCollectionResource($collection->refresh()->loadCount('contents')))->resolve($request),
+            'data' => (new ArtistCollectionResource($collection))->resolve($request),
         ]);
     }
 
