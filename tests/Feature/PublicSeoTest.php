@@ -38,6 +38,7 @@ class PublicSeoTest extends TestCase
             ->assertSee('<link rel="canonical" href="https://rad.example/artworks/seo-approved-artwork">', false)
             ->assertSee('property="og:image"', false)
             ->assertSee('https://rad.example/api/v1/artworks/seo-approved-artwork/image', false)
+            ->assertSee('<link rel="preload" as="image" href="https://rad.example/api/v1/artworks/seo-approved-artwork/image?variant=detail" fetchpriority="high">', false)
             ->assertSee('"@type":"VisualArtwork"', false)
             ->assertSee('name="robots" content="index,follow"', false);
     }
@@ -68,7 +69,8 @@ class PublicSeoTest extends TestCase
             ->assertOk()
             ->assertSee('name="robots" content="noindex,nofollow"', false)
             ->assertDontSee('rel="canonical"', false)
-            ->assertDontSee('property="og:image"', false);
+            ->assertDontSee('property="og:image"', false)
+            ->assertDontSee('rel="preload" as="image"', false);
     }
 
     public function test_published_collection_page_renders_collection_metadata(): void
