@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreign(['artist_content_id', 'artist_profile_id'], 'artworks_content_owner_foreign')
                 ->references(['id', 'artist_profile_id'])
                 ->on('artist_contents')
-                ->restrictOnDelete();
+                ->cascadeOnDelete();
         });
     }
 
