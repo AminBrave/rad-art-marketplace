@@ -120,6 +120,60 @@ class ArtistLibraryApiTest extends TestCase
         ]);
     }
 
+    public function test_collection_publication_requires_every_item_to_be_approved_and_published(): void
+    {
+        [$artist, $profile] = $this->artistWithProfile('collection-publication@example.com');
+        $content = $this->content($profile);
+
+        $collectionResponse = $this->actingAs($artist)->postJson('/api/v1/artist/collections', [
+            'title' => 'مجموعه قابل انتشار',
+        ])->assertCreated();
+
+        $collectionId = $collectionResponse->json('data.id');
+        $this->putJson('/api/v1/artist/collections/'.$collectionId.'/items', [
+            'content_ids' => [$content->id],
+        ])->assertOk();
+
+        $this->postJson('/api/v1/artist/collections/'.$collectionId.'/publish')
+            ->assertStatus(409);
+
+        $content->forceFill([
+            'artist_approved_at' => now(),
+            'publication_status' => ArtistContent::PUBLICATION_PUBLISHED,
+        ])->save();
+
+        $this->postJson('/api/v1/artist/collections/'.$collectionId.'/publish')
+            ->assertOk()
+            ->assertJsonPath('data.visibility', ArtistCollection::VISIBILITY_PUBLIC);
+
+        $this->assertDatabaseHas('artist_collections', [
+            'id' => $collectionId,
+            'visibility' => ArtistCollection::VISIBILITY_PUBLIC,
+        ]);
+    }
+
+    public function test_artist_cannot_update_another_artists_collection(): void
+    {
+        [$artist] = $this->artistWithProfile('collection-policy-owner@example.com');
+        [, $otherProfile] = $this->artistWithProfile('collection-policy-other@example.com');
+        $collection = $otherProfile->collections()->create([
+            'title' => 'مجموعه خصوصی',
+            'slug' => 'private-collection-other',
+            'visibility' => ArtistCollection::VISIBILITY_PRIVATE,
+        ]);
+
+        $this->actingAs($artist)
+            ->patchJson('/api/v1/artist/collections/'.$collection->id, [
+                'title' => 'تلاش برای تغییر',
+            ])
+            ->assertForbidden();
+
+        $this->assertDatabaseHas('artist_collections', [
+            'id' => $collection->id,
+            'title' => 'مجموعه خصوصی',
+        ]);
+    }
+
     public function test_only_artist_role_can_access_the_artist_library_routes(): void
     {
         [$buyer] = $this->artistWithProfile('role-check@example.com');
