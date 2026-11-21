@@ -6,6 +6,7 @@
     RewriteEngine On
 
     # Vite emits content-hashed production assets; cache these immutable URLs for one year.
+    RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^build/assets/ - [E=RAD_IMMUTABLE_ASSET:1]
 
     # Enforce HTTPS at the web server. Do not trust client-supplied forwarded headers.
