@@ -70,10 +70,10 @@ class ArtistContentFoundationTest extends TestCase
 
         $this->getJson('/api/v1/artworks')
             ->assertOk()
-            ->assertJsonMissing(['slug' => $artwork->slug]);
+            ->assertJsonPath('data', []);
         $this->getJson('/api/v1/artwork-filters')
             ->assertOk()
-            ->assertJsonMissing(['medium' => 'رنگ روغن']);
+            ->assertJsonPath('data.mediums', []);
         $this->getJson('/api/v1/artworks/'.$artwork->slug)
             ->assertForbidden();
         $this->get('/api/v1/artworks/'.$artwork->slug.'/image')
