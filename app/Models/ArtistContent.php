@@ -53,6 +53,7 @@ class ArtistContent extends Model
     public function scopePubliclyVisible(Builder $query): Builder
     {
         return $query
+            ->where('source', self::SOURCE_NATIVE)
             ->where('publication_status', self::PUBLICATION_PUBLISHED)
             ->where(fn (Builder $visibility) => $visibility
                 ->whereNotNull('artist_approved_at')
@@ -61,7 +62,8 @@ class ArtistContent extends Model
 
     public function isPubliclyVisible(): bool
     {
-        return $this->publication_status === self::PUBLICATION_PUBLISHED
+        return $this->source === self::SOURCE_NATIVE
+            && $this->publication_status === self::PUBLICATION_PUBLISHED
             && ($this->artist_approved_at !== null || $this->legacy_publication === true);
     }
 
