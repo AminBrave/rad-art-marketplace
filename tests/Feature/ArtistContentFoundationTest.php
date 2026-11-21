@@ -89,7 +89,7 @@ class ArtistContentFoundationTest extends TestCase
             ->assertJsonFragment(['slug' => $artwork->slug]);
         $this->getJson('/api/v1/artwork-filters')
             ->assertOk()
-            ->assertJsonFragment('رنگ روغن');
+            ->assertJsonPath('data.mediums.0', 'رنگ روغن');
         $this->getJson('/api/v1/artworks/'.$artwork->slug)
             ->assertOk()
             ->assertJsonPath('data.slug', $artwork->slug);
