@@ -24,13 +24,7 @@
     RewriteRule ^ index.php [L]
 </IfModule>
 
-# Apply long-lived caching only to Vite assets whose filenames contain content hashes.
-<IfModule mod_setenvif.c>
-    SetEnvIf Request_URI "^/build/assets/.+" RAD_FINGERPRINTED_ASSET
-</IfModule>
-
 # HSTS is emitted only for secure requests; subdomains are intentionally excluded.
 <IfModule mod_headers.c>
     Header always set Strict-Transport-Security "max-age=31536000" env=HTTPS
-    Header set Cache-Control "public, max-age=31536000, immutable" env=RAD_FINGERPRINTED_ASSET
 </IfModule>
