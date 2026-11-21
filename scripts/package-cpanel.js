@@ -12,6 +12,7 @@ const isWindows = process.platform === 'win32';
 const archivePaths = [
     '.env.cpanel',
     '.htaccess',
+    'favicon.svg',
     'index.php',
     'artisan',
     'composer.json',
@@ -44,7 +45,7 @@ run(process.execPath, ['scripts/project.mjs', 'build:cpanel']);
 fs.mkdirSync(outputDir, { recursive: true });
 fs.rmSync(outputZip, { force: true });
 
-for (const requiredPath of ['.env.cpanel', 'build/manifest.json', 'build/assets']) {
+for (const requiredPath of ['.env.cpanel', '.htaccess', 'favicon.svg', 'build/manifest.json', 'build/assets']) {
     if (!fs.existsSync(path.join(root, requiredPath))) {
         throw new Error('[cPanel] Required package path is missing: ' + requiredPath);
     }
