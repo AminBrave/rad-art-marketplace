@@ -23,10 +23,16 @@ return new class extends Migration
             ->join('artist_profiles', 'artist_profiles.id', '=', 'artist_contents.artist_profile_id')
             ->where('artworks.status', 'approved')
             ->where('artist_profiles.is_public', true)
-            ->update([
-                'artist_contents.legacy_publication' => true,
-                'artist_contents.publication_status' => 'published',
-            ]);
+            ->select('artist_contents.id')
+            ->orderBy('artist_contents.id')
+            ->chunk(500, function ($contents): void {
+                DB::table('artist_contents')
+                    ->whereIn('id', $contents->pluck('id'))
+                    ->update([
+                        'legacy_publication' => true,
+                        'publication_status' => 'published',
+                    ]);
+            });
     }
 
     public function down(): void
