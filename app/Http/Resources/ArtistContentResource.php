@@ -28,15 +28,15 @@ class ArtistContentResource extends JsonResource
             'artist_approved_at' => $this->artist_approved_at?->toISOString(),
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString(),
-            'artwork' => $this->whenLoaded('artwork', function (): ?array {
-                if (! $this->artwork) {
+            'artwork' => $this->whenLoaded('artwork', function ($artwork): ?array {
+                if (! $artwork) {
                     return null;
                 }
 
                 return [
-                    'id' => $this->artwork->id,
-                    'slug' => $this->artwork->slug,
-                    'status' => $this->artwork->status,
+                    'id' => $artwork->id,
+                    'slug' => $artwork->slug,
+                    'status' => $artwork->status,
                 ];
             }),
         ];
