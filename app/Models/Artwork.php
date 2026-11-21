@@ -19,6 +19,7 @@ class Artwork extends Model
 
     protected $fillable = [
         'category_id',
+        'artist_content_id',
         'slug',
         'title',
         'description',
@@ -46,6 +47,11 @@ class Artwork extends Model
     public function artistProfile(): BelongsTo
     {
         return $this->belongsTo(ArtistProfile::class);
+    }
+
+    public function artistContent(): BelongsTo
+    {
+        return $this->belongsTo(ArtistContent::class);
     }
 
     public function category(): BelongsTo
