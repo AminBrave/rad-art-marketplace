@@ -2,6 +2,7 @@
 
 return [
     'instagram' => [
+        'enabled' => env('META_INSTAGRAM_ENABLED', false),
         'app_id' => env('META_INSTAGRAM_APP_ID'),
         'app_secret' => env('META_INSTAGRAM_APP_SECRET'),
         'config_id' => env('META_INSTAGRAM_CONFIG_ID'),
