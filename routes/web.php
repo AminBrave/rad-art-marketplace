@@ -90,6 +90,20 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
         Route::prefix('artist')->name('artist.')->group(function (): void {
             Route::middleware('role:artist')->group(function (): void {
                 Route::get('/conversations', [ConversationController::class, 'artistIndex'])->name('conversations.index');
+
+                Route::get('/content', [ArtistContentController::class, 'index'])->name('content.index');
+                Route::post('/content/{content}/approve', [ArtistContentController::class, 'approve'])->middleware('throttle:30,1')->name('content.approve');
+                Route::post('/content/{content}/publish', [ArtistContentController::class, 'publish'])->middleware('throttle:30,1')->name('content.publish');
+                Route::post('/content/{content}/unpublish', [ArtistContentController::class, 'unpublish'])->middleware('throttle:30,1')->name('content.unpublish');
+
+                Route::get('/collections', [ArtistCollectionController::class, 'index'])->name('collections.index');
+                Route::post('/collections', [ArtistCollectionController::class, 'store'])->middleware('throttle:20,1')->name('collections.store');
+                Route::put('/collections/order', [ArtistCollectionController::class, 'reorder'])->name('collections.order');
+                Route::patch('/collections/{collection}', [ArtistCollectionController::class, 'update'])->name('collections.update');
+                Route::delete('/collections/{collection}', [ArtistCollectionController::class, 'destroy'])->name('collections.destroy');
+                Route::put('/collections/{collection}/items', [ArtistCollectionController::class, 'replaceItems'])->name('collections.items');
+                Route::post('/collections/{collection}/publish', [ArtistCollectionController::class, 'publish'])->middleware('throttle:20,1')->name('collections.publish');
+                Route::post('/collections/{collection}/unpublish', [ArtistCollectionController::class, 'unpublish'])->name('collections.unpublish');
             });
             Route::get('/artworks', [ArtistArtworkController::class, 'mine'])->name('artworks.index');
             Route::post('/artworks', [ArtistArtworkController::class, 'store'])->middleware('throttle:10,1')->name('artworks.store');
