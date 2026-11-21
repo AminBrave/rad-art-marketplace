@@ -19,6 +19,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#F7F5F0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <meta name="description" content="{{ $seoDescription }}">
     <meta name="robots" content="{{ $seoRobots }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -37,6 +38,9 @@
         <meta property="og:image" content="{{ $seoImage }}">
         <meta property="og:image:alt" content="{{ $seoImageAlt }}">
     @endif
+    @if (!empty($seo['preload_image']) && $seoImage)
+        <link rel="preload" as="image" href="{{ $seoImage }}" fetchpriority="high">
+    @endif
     <meta name="twitter:card" content="{{ $seoImage ? 'summary_large_image' : 'summary' }}">
     <meta name="twitter:title" content="{{ $seoTitle }}">
     <meta name="twitter:description" content="{{ $seoDescription }}">
@@ -49,7 +53,8 @@
     @endif
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"></noscript>
     <title>{{ $seoTitle }}</title>
     @viteReactRefresh
     @vite(['resources/css/app.css', 'resources/js/app.jsx'])
