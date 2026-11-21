@@ -35,8 +35,7 @@ class PublicArtworkController extends Controller
         return response()->json([
             'data' => [
                 'mediums' => Artwork::query()
-                    ->where('status', Artwork::STATUS_APPROVED)
-                    ->whereHas('artistProfile', fn ($artist) => $artist->where('is_public', true))
+                    ->publiclyVisible()
                     ->whereNotNull('medium')
                     ->where('medium', '<>', '')
                     ->distinct()
@@ -77,8 +76,7 @@ class PublicArtworkController extends Controller
         $sort = $validated['sort'] ?? 'newest';
 
         $query = Artwork::query()
-            ->where('status', Artwork::STATUS_APPROVED)
-            ->whereHas('artistProfile', fn ($artist) => $artist->where('is_public', true))
+            ->publiclyVisible()
             ->with(['category', 'artistProfile'])
             ->when(! empty($validated['q']), function ($query) use ($validated): void {
                 $term = $validated['q'];
@@ -122,8 +120,7 @@ class PublicArtworkController extends Controller
         $artwork->load(['category', 'artistProfile']);
 
         $related = Artwork::query()
-            ->where('status', Artwork::STATUS_APPROVED)
-            ->whereHas('artistProfile', fn ($artist) => $artist->where('is_public', true))
+            ->publiclyVisible()
             ->where('id', '<>', $artwork->id)
             ->where(function ($query) use ($artwork): void {
                 $query->where('category_id', $artwork->category_id)

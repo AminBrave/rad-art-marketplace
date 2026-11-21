@@ -41,7 +41,11 @@ class UpdateArtwork
 
         try {
             DB::transaction(function () use ($artwork, $attributes, $newImagePath): void {
-                $content = $artwork->artistContent()->first();
+                // Legacy artwork has no companion row. Avoid resolving the
+                // belongs-to relation (and querying artist_contents) at all.
+                $content = $artwork->artist_content_id === null
+                    ? null
+                    : $artwork->artistContent()->first();
 
                 if ($content) {
                     $collectionIds = DB::table('artist_collection_items')
