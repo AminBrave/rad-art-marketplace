@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { useOutletContext } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
 import {
     Badge,
     Button,
@@ -151,10 +151,10 @@ export default function ArtistContentLibrary() {
         onSuccess: async (response) => {
             setShowNewCollection(false);
             setNewCollectionForm({ title: '', description: '' });
-            setSelectedCollectionId(response.data?.id ?? null);
             setNotice(response.message ?? 'مجموعه خصوصی ایجاد شد.');
             setActionErrorMessage('');
             await invalidateLibrary();
+            setSelectedCollectionId(response.data?.id ?? null);
         },
         onError: (error) => setActionErrorMessage(actionError(error, 'ایجاد مجموعه انجام نشد.')),
     });
@@ -197,8 +197,8 @@ export default function ArtistContentLibrary() {
             setNotice(message ?? (action === 'delete' ? 'مجموعه حذف شد.' : 'وضعیت انتشار مجموعه تغییر کرد.'));
             setActionErrorMessage('');
             setConfirmDeleteId(null);
-            if (action === 'delete') setSelectedCollectionId(null);
             await invalidateLibrary();
+            if (action === 'delete') setSelectedCollectionId(null);
         },
         onError: (error) => setActionErrorMessage(actionError(error, 'عملیات روی مجموعه انجام نشد.')),
     });
@@ -246,7 +246,7 @@ export default function ArtistContentLibrary() {
             <section className="space-y-5" dir="rtl">
                 <PageHeader eyebrow="استودیوی هنرمند" title="کتابخانه محتوای من" description="آثار و محتواهای خود را در یک فضای واحد سازمان‌دهی کنید." />
                 <EmptyState title="ابتدا پروفایل هنرمند را تکمیل کنید" description="برای ساخت کتابخانه محتوا، ابتدا پروفایل هنرمند خود را ایجاد کنید." />
-                <a href="/dashboard/artist/profile" className="inline-flex min-h-11 items-center rounded-md bg-ink px-4 text-sm font-bold text-inverse">تکمیل پروفایل</a>
+                <Link to="/dashboard/artist/profile" className="inline-flex min-h-11 items-center rounded-md bg-ink px-4 text-sm font-bold text-inverse no-underline">تکمیل پروفایل</Link>
             </section>
         );
     }
@@ -262,7 +262,7 @@ export default function ArtistContentLibrary() {
 
             {profileError && <ErrorState title="پروفایل هنرمند دریافت نشد" description={profileError} />}
             {notice && <p role="status" aria-live="polite" className="rounded-md border border-border border-s-2 border-s-success bg-surface px-4 py-3 text-sm text-ink">{notice}</p>}
-            {actionErrorMessage && <ErrorState title="عملیات انجام نشد" description={actionErrorMessage} onRetry={() => setActionErrorMessage('')} retryLabel="بستن پیام" />}
+            {actionErrorMessage && <ErrorState title="عملیات انجام نشد" description={actionErrorMessage} />}
 
             <section className="grid gap-3 border border-border bg-surface-muted p-4 sm:grid-cols-3">
                 <FormField label="نوع محتوا">
