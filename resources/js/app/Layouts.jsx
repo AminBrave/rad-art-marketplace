@@ -5,6 +5,7 @@ import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Images, LayoutDashboa
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { getWorkspacePrimaryLinks } from './workspaceNavigation';
+import ThemeToggle from './ThemeToggle';
 import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, Checkbox, NotificationListSkeleton } from '../components/ui';
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
@@ -74,6 +75,7 @@ export function PublicLayout() {
                     </nav>
 
                     <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+                        <ThemeToggle />
                         {user ? (
                             <>
                                 <span className="hidden max-w-36 truncate text-sm font-semibold text-ink 2xl:inline">{user.name}</span>
@@ -542,6 +544,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     </div>
 
                     <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+                        <ThemeToggle />
                         {user?.role !== 'admin' && <NotificationBell user={user} />}
 
                         <div className="hidden min-w-0 items-center gap-3 lg:flex">
