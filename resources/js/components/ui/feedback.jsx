@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { AlertTriangle, ImageOff } from 'lucide-react';
 import { Button } from './primitives';
 import * as ToastPrimitive from '@radix-ui/react-toast';
 
@@ -165,35 +166,54 @@ export function MediaImage({
     const [failedSrc, setFailedSrc] = useState(null);
     const loaded = Boolean(imageSrc) && loadedSrc === imageSrc;
     const failed = Boolean(imageSrc) && failedSrc === imageSrc;
-
-    if (!imageSrc || failed) {
-        return fallback ?? (
-            <span
-                role={alt ? 'img' : undefined}
-                aria-label={alt || undefined}
-                aria-hidden={alt ? undefined : 'true'}
-                className={`grid place-items-center bg-surface-muted px-4 text-center text-sm text-muted ${className}`}
-            >
-                تصویر در دسترس نیست
-            </span>
-        );
-    }
+    const unavailable = !imageSrc || failed;
 
     return (
-        <span className={`relative isolate block overflow-hidden bg-surface-muted ${className}`} aria-busy={!loaded}>
-            {!loaded && <span aria-hidden="true" className={`${skeletonClasses} absolute inset-0 h-full w-full rounded-none`} />}
-            <img
-                src={imageSrc}
-                alt={alt}
-                loading={loading}
-                decoding={decoding}
-                fetchpriority={fetchPriority}
-                width={width}
-                height={height}
-                onLoad={() => setLoadedSrc(imageSrc)}
-                onError={() => setFailedSrc(imageSrc)}
-                className={`absolute inset-0 block h-full w-full transition-opacity duration-200 ${loaded ? 'opacity-100' : 'opacity-0'} ${imageClassName}`}
-            />
+        <span
+            className={`relative isolate block overflow-hidden bg-surface-muted ${className}`}
+            aria-busy={!loaded && !unavailable}
+        >
+            {unavailable ? (
+                <span
+                    role={alt ? 'img' : 'status'}
+                    aria-label={alt ? `${alt}: تصویر در دسترس نیست` : undefined}
+                    className="absolute inset-0 grid place-items-center overflow-hidden bg-surface-muted text-center"
+                >
+                    {fallback ?? (
+                        <span className="flex flex-col items-center gap-2 px-4 text-sm font-semibold text-muted">
+                            <ImageOff size={28} strokeWidth={1.5} aria-hidden="true" />
+                            <span>تصویر در دسترس نیست</span>
+                        </span>
+                    )}
+                    <span className="absolute inset-x-0 bottom-0 flex items-start gap-2 border-t border-danger/20 bg-danger/95 px-3 py-2 text-start text-[11px] leading-5 text-white shadow-sm">
+                        <AlertTriangle size={14} className="mt-0.5 shrink-0" aria-hidden="true" />
+                        <span className="min-w-0">
+                            <span className="block font-bold">بارگذاری تصویر ناموفق بود</span>
+                            <span className="block opacity-90">
+                                {imageSrc
+                                    ? 'فایل در فضای ذخیره‌سازی پیدا نشد یا دریافت آن ناموفق بود.'
+                                    : 'نشانی تصویر ثبت نشده است.'}
+                            </span>
+                        </span>
+                    </span>
+                </span>
+            ) : (
+                <>
+                    {!loaded && <span aria-hidden="true" className={`${skeletonClasses} absolute inset-0 h-full w-full rounded-none`} />}
+                    <img
+                        src={imageSrc}
+                        alt={alt}
+                        loading={loading}
+                        decoding={decoding}
+                        fetchpriority={fetchPriority}
+                        width={width}
+                        height={height}
+                        onLoad={() => setLoadedSrc(imageSrc)}
+                        onError={() => setFailedSrc(imageSrc)}
+                        className={`absolute inset-0 block h-full w-full transition-opacity duration-200 ${loaded ? 'opacity-100' : 'opacity-0'} ${imageClassName}`}
+                    />
+                </>
+            )}
         </span>
     );
 }
