@@ -66,6 +66,22 @@ class ArtistLibraryApiTest extends TestCase
         ]);
     }
 
+    public function test_artist_cannot_approve_another_artists_content(): void
+    {
+        [$artist] = $this->artistWithProfile('content-policy-owner@example.com');
+        [, $otherProfile] = $this->artistWithProfile('content-policy-other@example.com');
+        $otherContent = $this->content($otherProfile);
+
+        $this->actingAs($artist)
+            ->postJson('/api/v1/artist/content/'.$otherContent->id.'/approve')
+            ->assertForbidden();
+
+        $this->assertDatabaseHas('artist_contents', [
+            'id' => $otherContent->id,
+            'artist_approved_at' => null,
+        ]);
+    }
+
     public function test_imported_content_cannot_be_approved_before_source_integration_is_ready(): void
     {
         [$artist, $profile] = $this->artistWithProfile('imported-owner@example.com');
