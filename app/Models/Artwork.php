@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -41,6 +42,21 @@ class Artwork extends Model
             'price' => 'decimal:2',
             'reviewed_at' => 'datetime',
         ];
+    }
+
+    public function scopePubliclyVisible(Builder $query): Builder
+    {
+        return $query
+            ->where('status', self::STATUS_APPROVED)
+            ->whereHas('artistProfile', fn (Builder $artist) => $artist->where('is_public', true))
+            ->whereHas('artistContent', fn (Builder $content) => $content->publiclyVisible());
+    }
+
+    public function isPubliclyVisible(): bool
+    {
+        return $this->status === self::STATUS_APPROVED
+            && $this->artistProfile?->is_public === true
+            && $this->artistContent?->isPubliclyVisible() === true;
     }
 
     public function artistProfile(): BelongsTo
