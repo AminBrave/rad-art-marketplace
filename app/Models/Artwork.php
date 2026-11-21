@@ -49,14 +49,28 @@ class Artwork extends Model
         return $query
             ->where('status', self::STATUS_APPROVED)
             ->whereHas('artistProfile', fn (Builder $artist) => $artist->where('is_public', true))
-            ->whereHas('artistContent', fn (Builder $content) => $content->publiclyVisible());
+            ->where(function (Builder $visibility): void {
+                // Rows predating the content library have no companion record.
+                // Preserve their former public visibility during the transition.
+                $visibility
+                    ->whereNull('artist_content_id')
+                    ->orWhereHas('artistContent', fn (Builder $content) => $content->publiclyVisible());
+            });
     }
 
     public function isPubliclyVisible(): bool
     {
-        return $this->status === self::STATUS_APPROVED
-            && $this->artistProfile?->is_public === true
-            && $this->artistContent?->isPubliclyVisible() === true;
+        if ($this->status !== self::STATUS_APPROVED || $this->artistProfile?->is_public !== true) {
+            return false;
+        }
+
+        // A null foreign key identifies legacy artwork that still follows the
+        // pre-library public visibility contract.
+        if ($this->artist_content_id === null) {
+            return true;
+        }
+
+        return $this->artistContent?->isPubliclyVisible() === true;
     }
 
     public function artistProfile(): BelongsTo
