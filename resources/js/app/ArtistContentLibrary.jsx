@@ -118,7 +118,7 @@ export default function ArtistContentLibrary() {
             setCollectionForm({ title: '', description: '' });
             setSelectedContentIds([]);
         }
-    }, [selectedCollection?.id]);
+    }, [selectedCollection]);
 
     const invalidateLibrary = async () => {
         await Promise.all([
