@@ -22,6 +22,7 @@ const ArtistContentLibrary = lazy(() => import('./ArtistContentLibrary'));
 const BuyerDashboardHome = lazy(() => import('./BuyerWorkspace').then((module) => ({ default: module.BuyerDashboardHome })));
 const AdminDashboardHome = lazy(() => import('./AdminWorkspace').then((module) => ({ default: module.AdminDashboardHome })));
 const AdminArtworkModeration = lazy(() => import('./AdminWorkspace').then((module) => ({ default: module.AdminArtworkModeration })));
+const AdminContentModeration = lazy(() => import('./AdminContentModeration'));
 const AdminUsersPage = lazy(() => import('./AdminWorkspace').then((module) => ({ default: module.AdminUsersPage })));
 const AdminMessageReportsPage = lazy(() => import('./AdminWorkspace').then((module) => ({ default: module.AdminMessageReportsPage })));
 const AdminEditorialPage = lazy(() => import('./EditorialPages').then((module) => ({ default: module.AdminEditorialPage })));
@@ -87,6 +88,7 @@ function AppRoutes() {
                     <Route index element={withRouteFallback(<AdminDashboardHome />)} />
                     <Route path="users" element={withRouteFallback(<AdminUsersPage />)} />
                     <Route path="artworks" element={withRouteFallback(<AdminArtworkModeration />)} />
+                    <Route path="contents" element={withRouteFallback(<AdminContentModeration />)} />
                     <Route path="message-reports" element={withRouteFallback(<AdminMessageReportsPage />)} />
                     <Route path="editorial" element={withRouteFallback(<AdminEditorialPage />)} />
                     <Route path="*" element={<NotFoundPage />} />

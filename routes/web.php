@@ -141,6 +141,8 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
             Route::put('/collections/order', [AdminEditorialController::class, 'reorderCollections'])->name('collections.order');
             Route::put('/featured-artists', [AdminEditorialController::class, 'saveFeaturedArtists'])->name('featured-artists.save');
         });
+        Route::get('/contents', [AdminArtworkModerationController::class, 'contents'])->name('contents.index');
+        Route::patch('/contents/{content}/moderation', [AdminArtworkModerationController::class, 'moderateContent'])->name('contents.moderation');
         Route::get('/artworks', [AdminArtworkModerationController::class, 'index'])->name('artworks.index');
         Route::patch('/artworks/{artwork}/moderation', [AdminArtworkModerationController::class, 'update'])->name('artworks.moderation');
         Route::patch('/users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.role');
