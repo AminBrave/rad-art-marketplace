@@ -105,6 +105,8 @@ class ArtistCollectionController extends Controller
         }
 
         DB::transaction(function () use ($collection, $ids, $profileId): void {
+            ArtistCollection::query()->lockForUpdate()->findOrFail($collection->id);
+
             DB::table('artist_collection_items')
                 ->where('artist_collection_id', $collection->id)
                 ->delete();
@@ -167,36 +169,46 @@ class ArtistCollectionController extends Controller
     {
         $this->authorize('update', $collection);
 
-        $profile = $request->user()->artistProfile()->firstOrFail();
-        if (! $profile->is_public) {
-            abort(409, 'برای انتشار مجموعه ابتدا نمایان‌بودن پروفایل هنرمند را فعال کنید.');
-        }
+        DB::transaction(function () use ($request, $collection): void {
+            $lockedCollection = ArtistCollection::query()->lockForUpdate()->findOrFail($collection->id);
+            $profile = $request->user()->artistProfile()->lockForUpdate()->firstOrFail();
 
-        $contents = $collection->contents()->with('artwork')->get();
-        if ($contents->isEmpty()) {
-            abort(409, 'برای انتشار مجموعه، ابتدا محتوا به آن اضافه کنید.');
-        }
-
-        foreach ($contents as $content) {
-            if ($content->source !== ArtistContent::SOURCE_NATIVE
-                || $content->publication_status !== ArtistContent::PUBLICATION_PUBLISHED
-                || $content->artist_approved_at === null) {
-                abort(409, 'همه محتواهای مجموعه باید بومی، تأییدشده و منتشرشده باشند.');
+            if (! $profile->is_public) {
+                abort(409, 'برای انتشار مجموعه ابتدا نمایان‌بودن پروفایل هنرمند را فعال کنید.');
             }
 
-            if ($content->artwork && $content->artwork->status !== \App\Models\Artwork::STATUS_APPROVED) {
-                abort(409, 'همه آثار هنری مجموعه باید تأیید مدیر را دریافت کرده باشند.');
-            }
-        }
+            $contents = $lockedCollection->contents()
+                ->with(['artwork' => fn ($query) => $query->lockForUpdate()])
+                ->lockForUpdate()
+                ->get();
 
-        $collection->forceFill([
-            'visibility' => ArtistCollection::VISIBILITY_PUBLIC,
-            'published_at' => now(),
-        ])->save();
+            if ($contents->isEmpty()) {
+                abort(409, 'برای انتشار مجموعه، ابتدا محتوا به آن اضافه کنید.');
+            }
+
+            foreach ($contents as $content) {
+                if ($content->source !== ArtistContent::SOURCE_NATIVE
+                    || $content->publication_status !== ArtistContent::PUBLICATION_PUBLISHED
+                    || $content->artist_approved_at === null) {
+                    abort(409, 'همه محتواهای مجموعه باید بومی، تأییدشده و منتشرشده باشند.');
+                }
+
+                if ($content->artwork && $content->artwork->status !== \\App\\Models\\Artwork::STATUS_APPROVED) {
+                    abort(409, 'همه آثار هنری مجموعه باید تأیید مدیر را دریافت کرده باشند.');
+                }
+            }
+
+            $lockedCollection->forceFill([
+                'visibility' => ArtistCollection::VISIBILITY_PUBLIC,
+                'published_at' => now(),
+            ])->save();
+        });
+
+        $collection->refresh()->loadCount('contents');
 
         return response()->json([
             'message' => 'مجموعه منتشر شد.',
-            'data' => (new ArtistCollectionResource($collection->refresh()->loadCount('contents')))->resolve($request),
+            'data' => (new ArtistCollectionResource($collection))->resolve($request),
         ]);
     }
 
