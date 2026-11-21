@@ -50,6 +50,11 @@ Artisan::command('rademan:backfill-artist-content {--chunk=200} {--dry-run}', fu
                     return;
                 }
 
+                // Preserve the prior public state of already-approved legacy work.
+                // New content still requires explicit artist approval and publication.
+                $wasPreviouslyPublic = $artwork->status === Artwork::STATUS_APPROVED
+                    && $artwork->artistProfile()->where('is_public', true)->exists();
+
                 $content = ArtistContent::query()->create([
                     'artist_profile_id' => $artwork->artist_profile_id,
                     'source' => ArtistContent::SOURCE_NATIVE,
@@ -57,7 +62,10 @@ Artisan::command('rademan:backfill-artist-content {--chunk=200} {--dry-run}', fu
                     'title' => $artwork->title,
                     'description' => $artwork->description,
                     'media_path' => $artwork->image_path,
-                    'publication_status' => ArtistContent::PUBLICATION_DRAFT,
+                    'publication_status' => $wasPreviouslyPublic
+                        ? ArtistContent::PUBLICATION_PUBLISHED
+                        : ArtistContent::PUBLICATION_DRAFT,
+                    'legacy_publication' => $wasPreviouslyPublic,
                 ]);
 
                 DB::table('artworks')->where('id', $artwork->id)->update(['artist_content_id' => $content->id]);
