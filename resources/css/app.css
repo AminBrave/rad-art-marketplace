@@ -162,10 +162,6 @@ html {
     color-scheme: light;
 }
 
-:root[data-theme='dark'] html {
-    color-scheme: dark;
-}
-
 body {
     min-width: 320px;
     margin: 0;
@@ -208,6 +204,14 @@ a {
 
 [dir='ltr'] {
     font-family: var(--font-latin), sans-serif;
+}
+
+:root[data-theme='dark'] .text-ink {
+    color: var(--color-text);
+}
+
+:root[data-theme='dark'] ::selection {
+    color: var(--color-text);
 }
 
 @media (prefers-reduced-motion: reduce) {
