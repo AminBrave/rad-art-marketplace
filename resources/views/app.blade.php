@@ -20,6 +20,28 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#F7F5F0">
+    <script>
+        (() => {
+            const root = document.documentElement;
+            const meta = document.querySelector('meta[name="theme-color"]');
+            const media = window.matchMedia('(prefers-color-scheme: dark)');
+            const apply = () => {
+                let preference = null;
+                try { preference = localStorage.getItem('rad-theme'); } catch {}
+                const theme = preference === 'light' || preference === 'dark'
+                    ? preference
+                    : (media.matches ? 'dark' : 'light');
+                root.dataset.theme = theme;
+                if (meta) meta.setAttribute('content', theme === 'dark' ? '#171816' : '#F7F5F0');
+            };
+            apply();
+            media.addEventListener?.('change', () => {
+                try {
+                    if (localStorage.getItem('rad-theme') === null) apply();
+                } catch { apply(); }
+            });
+        })();
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <meta name="description" content="{{ $seoDescription }}">
     <meta name="robots" content="{{ $seoRobots }}">
