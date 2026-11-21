@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ArtistCollectionResource;
 use App\Models\ArtistCollection;
 use App\Models\ArtistContent;
+use App\Models\Artwork;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -193,7 +194,7 @@ class ArtistCollectionController extends Controller
                     abort(409, 'همه محتواهای مجموعه باید بومی، تأییدشده و منتشرشده باشند.');
                 }
 
-                if ($content->artwork && $content->artwork->status !== \\App\\Models\\Artwork::STATUS_APPROVED) {
+                if ($content->artwork && $content->artwork->status !== Artwork::STATUS_APPROVED) {
                     abort(409, 'همه آثار هنری مجموعه باید تأیید مدیر را دریافت کرده باشند.');
                 }
             }
