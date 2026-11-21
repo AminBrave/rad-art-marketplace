@@ -12,6 +12,7 @@
             ? rtrim((string) config('app.url'), '/').($seoPath === '/' ? '/' : $seoPath)
             : null);
         $seoImage = $seo['image'] ?? null;
+        $seoPreloadImage = $seo['preload_image'] ?? null;
         $seoImageAlt = $seo['image_alt'] ?? $seoTitle;
         $seoStructuredData = $seo['structured_data'] ?? null;
         $skeletonClass = 'block bg-[linear-gradient(100deg,var(--color-skeleton-base)_25%,var(--color-skeleton-highlight)_42%,var(--color-skeleton-base)_62%)] [background-size:200%_100%] animate-skeleton-shimmer motion-reduce:animate-none rounded-md';
@@ -19,6 +20,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#F7F5F0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <meta name="description" content="{{ $seoDescription }}">
     <meta name="robots" content="{{ $seoRobots }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -47,9 +49,13 @@
     @if (is_array($seoStructuredData))
         <script type="application/ld+json">@json($seoStructuredData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)</script>
     @endif
+    @if ($seoPreloadImage)
+        <link rel="preload" as="image" href="{{ $seoPreloadImage }}" fetchpriority="high">
+    @endif
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"></noscript>
     <title>{{ $seoTitle }}</title>
     @viteReactRefresh
     @vite(['resources/css/app.css', 'resources/js/app.jsx'])
