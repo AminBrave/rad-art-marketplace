@@ -62,7 +62,7 @@ if (isWindows) {
     const winRar = winRarCandidates.find(candidate => fs.existsSync(candidate));
 
     if (winRar) {
-        run(winRar, ['a', '-afzip', '-m5', '-ep1', outputZip, ...archivePaths]);
+        run(winRar, ['a', '-afzip', '-m5', outputZip, ...archivePaths]);
     } else {
         run('tar.exe', ['-a', '-c', '-f', path.relative(root, outputZip), ...archivePaths]);
     }
