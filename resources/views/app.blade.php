@@ -25,20 +25,22 @@
             const root = document.documentElement;
             const meta = document.querySelector('meta[name="theme-color"]');
             const media = window.matchMedia('(prefers-color-scheme: dark)');
+            const getStoredTheme = () => {
+                try {
+                    const preference = localStorage.getItem('rad-theme');
+                    return preference === 'light' || preference === 'dark' ? preference : null;
+                } catch {
+                    return null;
+                }
+            };
             const apply = () => {
-                let preference = null;
-                try { preference = localStorage.getItem('rad-theme'); } catch {}
-                const theme = preference === 'light' || preference === 'dark'
-                    ? preference
-                    : (media.matches ? 'dark' : 'light');
+                const theme = getStoredTheme() ?? (media.matches ? 'dark' : 'light');
                 root.dataset.theme = theme;
                 if (meta) meta.setAttribute('content', theme === 'dark' ? '#171816' : '#F7F5F0');
             };
             apply();
             media.addEventListener?.('change', () => {
-                try {
-                    if (localStorage.getItem('rad-theme') === null) apply();
-                } catch { apply(); }
+                if (getStoredTheme() === null) apply();
             });
         })();
     </script>
