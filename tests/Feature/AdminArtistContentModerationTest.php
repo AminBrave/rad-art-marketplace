@@ -76,7 +76,7 @@ class AdminArtistContentModerationTest extends TestCase
         ]);
         $this->assertDatabaseHas('editorial_audits', [
             'actor_id' => $admin->id,
-            'action' => 'artistcontent.moderated',
+            'action' => 'artist_content.moderated',
             'subject_type' => 'ArtistContent',
             'subject_id' => $content->id,
         ]);
