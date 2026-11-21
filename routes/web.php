@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\V1\AdminEditorialController;
 use App\Http\Controllers\Api\V1\AdminMessageReportController;
 use App\Http\Controllers\Api\V1\AdminUserController;
 use App\Http\Controllers\Api\V1\ArtistArtworkController;
+use App\Http\Controllers\Api\V1\ArtistCollectionController;
+use App\Http\Controllers\Api\V1\ArtistContentController;
 use App\Http\Controllers\Api\V1\ArtistProfileController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ConversationController;
