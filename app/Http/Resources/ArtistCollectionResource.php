@@ -27,7 +27,7 @@ class ArtistCollectionResource extends JsonResource
             'position' => $this->position,
             'published_at' => $this->published_at?->toISOString(),
             'items_count' => $this->whenCounted('contents'),
-            'items' => $this->whenLoaded('contents', fn () => $this->contents
+            'items' => $this->whenLoaded('contents', fn ($contents) => $contents
                 ->map(fn ($content): array => [
                     'id' => $content->id,
                     'content_type' => $content->content_type,
