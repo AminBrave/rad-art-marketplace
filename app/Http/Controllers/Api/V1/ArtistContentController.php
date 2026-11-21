@@ -77,8 +77,8 @@ class ArtistContentController extends Controller
         }
 
         DB::transaction(function () use ($request, $content): void {
-            $locked = ArtistContent::query()->lockForUpdate()->with('artwork')->findOrFail($content->id);
-            $profile = $request->user()->artistProfile()->firstOrFail();
+            $locked = ArtistContent::query()->lockForUpdate()->with(['artwork' => fn ($query) => $query->lockForUpdate()])->findOrFail($content->id);
+            $profile = $request->user()->artistProfile()->lockForUpdate()->firstOrFail();
 
             if (! $profile->is_public) {
                 abort(409, 'برای انتشار محتوا ابتدا نمایان‌بودن پروفایل هنرمند را فعال کنید.');
@@ -118,6 +118,17 @@ class ArtistContentController extends Controller
             $locked->forceFill([
                 'publication_status' => ArtistContent::PUBLICATION_DRAFT,
             ])->save();
+
+            DB::table('artist_collections')
+                ->whereIn('id', DB::table('artist_collection_items')
+                    ->select('artist_collection_id')
+                    ->where('artist_content_id', $locked->id))
+                ->where('visibility', 'public')
+                ->update([
+                    'visibility' => 'private',
+                    'published_at' => null,
+                    'updated_at' => now(),
+                ]);
         });
 
         $content->refresh()->load('artwork');
