@@ -24,4 +24,14 @@ class ArtistContentPolicy
     {
         return $this->view($user, $content);
     }
+
+    public function adminViewAny(User $user): bool
+    {
+        return $user->isAdmin();
+    }
+
+    public function moderate(User $user, ArtistContent $content): bool
+    {
+        return $user->isAdmin();
+    }
 }
