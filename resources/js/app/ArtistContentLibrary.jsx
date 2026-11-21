@@ -85,7 +85,7 @@ export default function ArtistContentLibrary() {
     const collectionsQuery = useQuery({
         queryKey: ['artist-collections', user?.id],
         queryFn: async ({ signal }) => {
-            const { data } = await axios.get('/api/v1/artist/collections', { signal });
+            const { data } = await axios.get('/api/v1/artist/collections', { params: { per_page: 100 }, signal });
             return data;
         },
         enabled: !profileLoading && Boolean(profile?.slug),
@@ -216,6 +216,7 @@ export default function ArtistContentLibrary() {
     });
 
     const selectedIdSet = useMemo(() => new Set(selectedContentIds), [selectedContentIds]);
+    const canReorderCollections = (collectionsQuery.data?.total ?? collections.length) <= collections.length;
 
     const toggleContent = (id, checked) => {
         setSelectedContentIds((current) => checked
@@ -310,7 +311,7 @@ export default function ArtistContentLibrary() {
                                     <div className="min-w-0">
                                         <div className="flex flex-wrap items-center gap-2">
                                             <Badge variant="neutral">{contentTypeLabels[item.content_type] ?? item.content_type}</Badge>
-                                            <Badge variant="outline">{sourceLabels[item.source] ?? item.source}</Badge>
+                                            <Badge variant="neutral">{sourceLabels[item.source] ?? item.source}</Badge>
                                             <Badge variant={item.publication_status === 'published' ? 'success' : 'neutral'}>{publicationLabels[item.publication_status] ?? item.publication_status}</Badge>
                                             {approved && <Badge variant="success">تأیید هنرمند</Badge>}
                                         </div>
@@ -381,12 +382,12 @@ export default function ArtistContentLibrary() {
                                         <span className="mt-1 block text-xs font-normal text-muted">{(collection.items_count ?? collection.items?.length ?? 0).toLocaleString('fa-IR')} محتوا · {collection.visibility === 'public' ? 'عمومی' : 'خصوصی'}</span>
                                     </button>
                                     <div className="flex shrink-0 flex-col">
-                                        <button type="button" aria-label={`انتقال ${collection.title} به بالا`} disabled={index === 0 || reorderCollections.isPending} onClick={() => moveCollection(index, -1)} className="grid h-7 w-7 place-items-center rounded text-muted hover:bg-surface-muted disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">↑</button>
-                                        <button type="button" aria-label={`انتقال ${collection.title} به پایین`} disabled={index === collections.length - 1 || reorderCollections.isPending} onClick={() => moveCollection(index, 1)} className="grid h-7 w-7 place-items-center rounded text-muted hover:bg-surface-muted disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">↓</button>
+                                        <button type="button" aria-label={`انتقال ${collection.title} به بالا`} disabled={!canReorderCollections || index === 0 || reorderCollections.isPending} onClick={() => moveCollection(index, -1)} className="grid h-7 w-7 place-items-center rounded text-muted hover:bg-surface-muted disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">↑</button>
+                                        <button type="button" aria-label={`انتقال ${collection.title} به پایین`} disabled={!canReorderCollections || index === collections.length - 1 || reorderCollections.isPending} onClick={() => moveCollection(index, 1)} className="grid h-7 w-7 place-items-center rounded text-muted hover:bg-surface-muted disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">↓</button>
                                     </div>
                                 </div>
                             ))}
-                            {(collectionsQuery.data?.total ?? collections.length) > collections.length && <p className="text-xs leading-6 text-warning">برای جابه‌جایی ترتیب، همه مجموعه‌ها باید در همین فهرست بارگذاری شوند.</p>}
+                            {!canReorderCollections && <p className="text-xs leading-6 text-warning">برای جابه‌جایی ترتیب، همه مجموعه‌ها باید در همین فهرست بارگذاری شوند.</p>}
                         </div>
 
                         {selectedCollection && (
