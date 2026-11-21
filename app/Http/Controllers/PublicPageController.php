@@ -35,7 +35,7 @@ class PublicPageController extends Controller
         $artistName = $artwork->artistProfile?->display_name ?? 'هنرمند راد آرت';
         $description = Str::limit(trim(strip_tags((string) ($artwork->description ?: "اثر هنری {$artwork->title} از {$artistName}؛ جزئیات اثر و راه ارتباط با هنرمند."))), 155);
         $canonical = $isPublic ? $this->canonical('/artworks/'.$artwork->slug) : null;
-        $image = $isPublic ? $this->artworkImage($artwork) : null;
+        $image = $isPublic ? $this->artworkImage($artwork, 'detail') : null;
 
         $structuredData = $isPublic ? [
             '@context' => 'https://schema.org',
@@ -61,6 +61,7 @@ class PublicPageController extends Controller
             'og_type' => 'article',
             'image' => $image,
             'image_alt' => $artwork->title,
+            'preload_image' => $isPublic && $image !== null,
             'structured_data' => $structuredData,
         ]]);
     }
@@ -230,10 +231,14 @@ class PublicPageController extends Controller
         return rtrim((string) config('app.url'), '/').'/'.ltrim($path, '/');
     }
 
-    private function artworkImage(Artwork $artwork): ?string
+    private function artworkImage(Artwork $artwork, ?string $variant = null): ?string
     {
-        return Storage::disk('local')->exists($artwork->image_path)
-            ? $this->canonical('/api/v1/artworks/'.$artwork->slug.'/image')
-            : null;
+        if (! Storage::disk('local')->exists($artwork->image_path)) {
+            return null;
+        }
+
+        $url = $this->canonical('/api/v1/artworks/'.$artwork->slug.'/image');
+
+        return $variant !== null ? $url.'?variant='.rawurlencode($variant) : $url;
     }
 }
