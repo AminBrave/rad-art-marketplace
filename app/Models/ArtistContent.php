@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -32,6 +33,7 @@ class ArtistContent extends Model
         'source_metadata',
         'media_path',
         'publication_status',
+        'legacy_publication',
         'artist_approved_at',
         'source_imported_at',
         'source_synced_at',
@@ -42,9 +44,27 @@ class ArtistContent extends Model
         return [
             'source_metadata' => 'array',
             'artist_approved_at' => 'datetime',
+            'legacy_publication' => 'boolean',
             'source_imported_at' => 'datetime',
             'source_synced_at' => 'datetime',
         ];
+    }
+
+    public function scopePubliclyVisible(Builder $query): Builder
+    {
+        return $query
+            ->where('source', self::SOURCE_NATIVE)
+            ->where('publication_status', self::PUBLICATION_PUBLISHED)
+            ->where(fn (Builder $visibility) => $visibility
+                ->whereNotNull('artist_approved_at')
+                ->orWhere('legacy_publication', true));
+    }
+
+    public function isPubliclyVisible(): bool
+    {
+        return $this->source === self::SOURCE_NATIVE
+            && $this->publication_status === self::PUBLICATION_PUBLISHED
+            && ($this->artist_approved_at !== null || $this->legacy_publication === true);
     }
 
     public function artistProfile(): BelongsTo

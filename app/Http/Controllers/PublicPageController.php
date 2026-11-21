@@ -24,8 +24,7 @@ class PublicPageController extends Controller
         if (! $artwork) {
             return $this->missingPage();
         }
-        $isPublic = $artwork->status === Artwork::STATUS_APPROVED
-            && (bool) $artwork->artistProfile?->is_public;
+        $isPublic = $artwork->isPubliclyVisible();
         $viewer = request()->user();
         $isOwnerOrAdmin = $viewer !== null
             && ($viewer->isAdmin() || $viewer->artistProfile?->id === $artwork->artist_profile_id);
@@ -82,7 +81,7 @@ class PublicPageController extends Controller
         }
         $firstArtwork = $isPublic
             ? $profile->artworks()
-                ->where('status', Artwork::STATUS_APPROVED)
+                ->publiclyVisible()
                 ->orderByDesc('id')
                 ->first()
             : null;
@@ -125,8 +124,7 @@ class PublicPageController extends Controller
         }
 
         $collection->load(['artworks' => fn ($query) => $query
-            ->where('status', Artwork::STATUS_APPROVED)
-            ->whereHas('artistProfile', fn ($artist) => $artist->where('is_public', true))
+            ->publiclyVisible()
             ->with('artistProfile')
             ->orderByPivot('position')]);
         $firstArtwork = $collection->artworks->first();
@@ -170,8 +168,7 @@ class PublicPageController extends Controller
 
         $urls = $urls->concat(
             Artwork::query()
-                ->where('status', Artwork::STATUS_APPROVED)
-                ->whereHas('artistProfile', fn ($artist) => $artist->where('is_public', true))
+                ->publiclyVisible()
                 ->get(['slug', 'updated_at'])
                 ->map(fn (Artwork $artwork): array => [
                     'loc' => $this->canonical('/artworks/'.$artwork->slug),
