@@ -1,10 +1,18 @@
 
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-import { ArtworkCard, ArtistCard, ArtworkCardSkeleton, ArtistCardSkeleton, EmptyState, ErrorState, MediaImage, Skeleton } from '../components/ui';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArtworkCard, ArtistCard, ArtworkCardSkeleton, ArtistCardSkeleton, EmptyState, ErrorState, MediaImage, SearchField, Skeleton } from '../components/ui';
 
 export default function HomePage() {
+    const navigate = useNavigate();
+    const [discoveryQuery, setDiscoveryQuery] = useState('');
+    const submitDiscoverySearch = (value) => {
+        const query = value.trim();
+        navigate(query ? '/artworks?q=' + encodeURIComponent(query) : '/artworks');
+    };
+
     const artworksQuery = useQuery({
         queryKey: ['home', 'artworks'],
         queryFn: async ({ signal }) => {
@@ -68,7 +76,17 @@ export default function HomePage() {
                     <p className="mb-6 inline-flex items-center gap-3 text-xs font-bold tracking-[.08em] text-terracotta-strong"><span className="h-px w-10 bg-terracotta" />گالری هنر مستقل معاصر <span className="text-subtle">/</span> ART &amp; CULTURE</p>
                     <h1 className="max-w-2xl text-4xl font-black leading-[1.5] tracking-tight sm:text-5xl lg:text-[4.25rem]">هنر را کشف کنید؛ <span className="relative inline-block text-terracotta-strong">فراتر از قاب.</span></h1>
                     <p className="mt-6 max-w-xl text-base leading-9 text-muted sm:text-lg">راد آرت فضایی برای دیدن آثار تأییدشده، شناخت جهان هنرمندان مستقل و آغاز ارتباطی مستقیم درباره هنر است.</p>
-                    <div className="mt-9 flex flex-wrap gap-3">
+                    <div className="mt-8 max-w-xl">
+                        <SearchField
+                            value={discoveryQuery}
+                            onChange={(event) => setDiscoveryQuery(event.target.value)}
+                            onSearch={submitDiscoverySearch}
+                            label="جست‌وجو در گالری آثار و هنرمندان"
+                            placeholder="نام اثر، هنرمند یا تکنیک…"
+                            buttonLabel="جست‌وجو"
+                        />
+                    </div>
+                    <div className="mt-5 flex flex-wrap gap-3">
                         <Link to="/artworks" className="bg-ink px-7 py-3.5 text-sm font-bold text-inverse transition-colors hover:bg-terracotta">ورود به گالری آثار</Link>
                         <Link to="/artists" className="border border-border px-7 py-3.5 text-sm font-bold transition-colors hover:border-terracotta">شناخت هنرمندان</Link>
                     </div>
