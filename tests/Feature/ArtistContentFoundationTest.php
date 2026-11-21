@@ -1,0 +1,141 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Feature;
+
+use App\Models\ArtistCollection;
+use App\Models\ArtistContent;
+use App\Models\ArtistProfile;
+use App\Models\Artwork;
+use App\Models\Category;
+use App\Models\User;
+use Illuminate\Database\QueryException;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Tests\TestCase;
+
+class ArtistContentFoundationTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_legacy_artwork_backfill_is_resumable_and_preserves_publication_as_draft(): void
+    {
+        [, $profile] = $this->artistWithProfile();
+        $artwork = $this->createArtwork($profile);
+
+        $this->assertSame(0, Artisan::call('rademan:backfill-artist-content', ['--dry-run' => true]));
+        $this->assertDatabaseCount('artist_contents', 0);
+
+        $this->assertSame(0, Artisan::call('rademan:backfill-artist-content'));
+        $this->assertDatabaseCount('artist_contents', 1);
+
+        $artwork->refresh();
+        $content = $artwork->artistContent()->firstOrFail();
+
+        $this->assertSame($profile->id, $content->artist_profile_id);
+        $this->assertSame('native', $content->source);
+        $this->assertSame('artwork', $content->content_type);
+        $this->assertSame($artwork->title, $content->title);
+        $this->assertSame($artwork->description, $content->description);
+        $this->assertSame($artwork->image_path, $content->media_path);
+        $this->assertSame('draft', $content->publication_status);
+        $this->assertNull($content->artist_approved_at);
+
+        Artisan::call('rademan:backfill-artist-content');
+        $this->assertDatabaseCount('artist_contents', 1);
+    }
+
+    public function test_new_artwork_creation_writes_its_content_companion_transactionally(): void
+    {
+        Storage::fake('local');
+        [$artist, $profile] = $this->artistWithProfile();
+
+        $this->actingAs($artist)->postJson('/api/v1/artist/artworks', [
+            'title' => 'اثر تازه',
+            'description' => 'روایت هنرمند',
+            'category_id' => Category::query()->where('slug', 'painting')->value('id'),
+            'medium' => 'رنگ روغن',
+            'dimensions' => '۵۰ در ۷۰ سانتی‌متر',
+            'year' => 2025,
+            'price' => 12500000,
+            'availability' => 'available',
+            'image' => UploadedFile::fake()->image('artwork.jpg', 1200, 800),
+        ])->assertCreated();
+
+        $artwork = Artwork::query()->firstOrFail();
+        $content = $artwork->artistContent()->firstOrFail();
+
+        $this->assertSame($profile->id, $content->artist_profile_id);
+        $this->assertSame('اثر تازه', $content->title);
+        $this->assertSame('روایت هنرمند', $content->description);
+        $this->assertSame($artwork->image_path, $content->media_path);
+        $this->assertSame('draft', $content->publication_status);
+    }
+
+    public function test_artist_collection_membership_cannot_cross_artist_ownership(): void
+    {
+        [, $ownerProfile] = $this->artistWithProfile('owner@example.com');
+        [, $otherProfile] = $this->artistWithProfile('other@example.com');
+
+        $content = ArtistContent::query()->create([
+            'artist_profile_id' => $ownerProfile->id,
+            'source' => 'native',
+            'content_type' => 'post',
+            'title' => 'محتوای خصوصی',
+        ]);
+        $collection = ArtistCollection::query()->create([
+            'artist_profile_id' => $otherProfile->id,
+            'title' => 'مجموعه دیگر',
+            'slug' => 'other-collection',
+        ]);
+
+        $this->expectException(QueryException::class);
+
+        DB::table('artist_collection_items')->insert([
+            'artist_collection_id' => $collection->id,
+            'artist_content_id' => $content->id,
+            'artist_profile_id' => $otherProfile->id,
+            'position' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    }
+
+    /**
+     * @return array{0: User, 1: ArtistProfile}
+     */
+    private function artistWithProfile(string $email = 'artist@example.com'): array
+    {
+        $artist = User::query()->create([
+            'name' => 'Artist',
+            'email' => $email,
+            'password' => 'strong-password-123',
+            'role' => User::ROLE_ARTIST,
+        ]);
+
+        $profile = $artist->artistProfile()->create([
+            'slug' => 'artist-'.str_replace(['@', '.'], '-', $email),
+            'display_name' => 'هنرمند آزمایشی',
+            'is_public' => true,
+        ]);
+
+        return [$artist, $profile];
+    }
+
+    private function createArtwork(ArtistProfile $profile): Artwork
+    {
+        return $profile->artworks()->create([
+            'category_id' => Category::query()->where('slug', 'painting')->value('id'),
+            'slug' => 'legacy-artwork-'.strtolower(str_replace('@', '-', $profile->user()->value('email'))),
+            'title' => 'اثر قدیمی',
+            'description' => 'توضیحات قدیمی',
+            'availability' => 'available',
+            'status' => Artwork::STATUS_APPROVED,
+            'image_path' => 'artworks/legacy.jpg',
+        ]);
+    }
+}

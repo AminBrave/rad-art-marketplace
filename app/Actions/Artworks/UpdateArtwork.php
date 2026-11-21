@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Actions\Artworks;
 
+use App\Models\ArtistContent;
 use App\Models\Artwork;
 use App\Services\ArtworkImageVariants;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 use Throwable;
@@ -37,18 +39,47 @@ class UpdateArtwork
         }
 
         try {
-            $saved = $artwork->update([
-                ...$attributes,
-                'status' => Artwork::STATUS_PENDING_REVIEW,
-                'rejection_note' => null,
-                'reviewed_by' => null,
-                'reviewed_at' => null,
-                ...($newImagePath ? ['image_path' => $newImagePath] : []),
-            ]);
+            DB::transaction(function () use ($artwork, $attributes, $newImagePath): void {
+                $saved = $artwork->update([
+                    ...$attributes,
+                    'status' => Artwork::STATUS_PENDING_REVIEW,
+                    'rejection_note' => null,
+                    'reviewed_by' => null,
+                    'reviewed_at' => null,
+                    ...($newImagePath ? ['image_path' => $newImagePath] : []),
+                ]);
 
-            if (! $saved) {
-                throw new RuntimeException('The artwork update was not persisted.');
-            }
+                if (! $saved) {
+                    throw new RuntimeException('The artwork update was not persisted.');
+                }
+
+                $content = $artwork->artistContent()->first();
+
+                if ($content) {
+                    $content->update([
+                        'title' => $artwork->title,
+                        'description' => $artwork->description,
+                        'media_path' => $artwork->image_path,
+                        'publication_status' => ArtistContent::PUBLICATION_DRAFT,
+                        'artist_approved_at' => null,
+                    ]);
+
+                    return;
+                }
+
+                $content = ArtistContent::query()->create([
+                    'artist_profile_id' => $artwork->artist_profile_id,
+                    'source' => ArtistContent::SOURCE_NATIVE,
+                    'content_type' => 'artwork',
+                    'title' => $artwork->title,
+                    'description' => $artwork->description,
+                    'media_path' => $artwork->image_path,
+                    'publication_status' => ArtistContent::PUBLICATION_DRAFT,
+                ]);
+
+                $artwork->artistContent()->associate($content);
+                $artwork->save();
+            });
         } catch (Throwable $exception) {
             if ($newImagePath !== null) {
                 $this->imageVariants->deleteForOriginal($newImagePath);

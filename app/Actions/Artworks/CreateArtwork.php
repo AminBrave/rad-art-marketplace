@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Actions\Artworks;
 
+use App\Models\ArtistContent;
 use App\Models\ArtistProfile;
 use App\Models\Artwork;
 use App\Services\ArtworkImageVariants;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use RuntimeException;
@@ -35,17 +37,32 @@ class CreateArtwork
         }
 
         try {
-            $baseSlug = Str::slug($attributes['title']) ?: 'artwork';
-            $artwork = $profile->artworks()->create([
-                ...$attributes,
-                'slug' => $baseSlug.'-'.Str::lower(Str::random(10)),
-                'image_path' => $imagePath,
-                'status' => Artwork::STATUS_PENDING_REVIEW,
-            ]);
-
             $this->imageVariants->generate($imagePath);
 
-            return $artwork;
+            return DB::transaction(function () use ($profile, $attributes, $imagePath): Artwork {
+                $baseSlug = Str::slug($attributes['title']) ?: 'artwork';
+                $artwork = $profile->artworks()->create([
+                    ...$attributes,
+                    'slug' => $baseSlug.'-'.Str::lower(Str::random(10)),
+                    'image_path' => $imagePath,
+                    'status' => Artwork::STATUS_PENDING_REVIEW,
+                ]);
+
+                $content = ArtistContent::query()->create([
+                    'artist_profile_id' => $profile->id,
+                    'source' => ArtistContent::SOURCE_NATIVE,
+                    'content_type' => 'artwork',
+                    'title' => $artwork->title,
+                    'description' => $artwork->description,
+                    'media_path' => $imagePath,
+                    'publication_status' => ArtistContent::PUBLICATION_DRAFT,
+                ]);
+
+                $artwork->artistContent()->associate($content);
+                $artwork->save();
+
+                return $artwork;
+            });
         } catch (Throwable $exception) {
             $this->imageVariants->deleteForOriginal($imagePath);
             Storage::disk('local')->delete($imagePath);
