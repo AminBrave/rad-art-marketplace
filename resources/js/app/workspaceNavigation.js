@@ -15,6 +15,7 @@ export function getWorkspacePrimaryLinks(role) {
             { to: '/admin', label: 'نمای کلی', end: true },
             { to: '/admin/users', label: 'مدیریت کاربران' },
             { to: '/admin/artworks', label: 'بررسی آثار' },
+            { to: '/admin/contents', label: 'بررسی کتابخانه محتوا' },
             { to: '/admin/message-reports', label: 'گزارش پیام‌ها' },
             { to: '/admin/editorial', label: 'مجموعه‌ها و سردبیری' },
         ],
