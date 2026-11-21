@@ -12,7 +12,7 @@ test('admin unified content moderation is routed and linked only in the admin wo
     ]);
 
     assert.match(router, /const AdminContentModeration = lazy\(\(\) => import\('\.\/AdminContentModeration'\)\)/);
-    assert.match(router, /<Route path="contents" element=\{withRouteFallback\(<AdminContentModeration \/>\)\} \/>/);
+    assert.ok(router.includes('<Route path="contents" element={withRouteFallback(<AdminContentModeration />)} />'));
     assert.match(navigation, /to: '\/admin\/contents', label: 'بررسی کتابخانه محتوا'/);
     assert.match(page, /moderation_status: status/);
     assert.match(page, /\/contents\/' \+ content\.id \+ '\/moderation/);
