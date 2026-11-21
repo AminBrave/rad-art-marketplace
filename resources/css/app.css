@@ -57,10 +57,10 @@
     /* Keep ink as the deep brand anchor; text is the adaptive foreground. */
     --color-canvas: #171816;
     --color-ink: #242320;
-    --color-terracotta: #D17A59;
+    --color-terracotta: #A64F31;
     --color-terracotta-strong: #E49A7D;
     --color-sand: #8D7967;
-    --color-olive: #A0B18F;
+    --color-olive: #536052;
     --color-paper: #222320;
 
     --color-text: #F1EEE7;
@@ -93,6 +93,10 @@
 
 :root[data-theme='dark'] .text-ink {
     color: var(--color-text);
+}
+
+:root[data-theme='dark'] .text-olive {
+    color: var(--color-success);
 }
 
     /* Typography */
