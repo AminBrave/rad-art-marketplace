@@ -104,6 +104,37 @@ class ArtistInstagramUnifiedLoginTest extends TestCase
         $this->assertDatabaseCount('artist_instagram_connections', 0);
     }
 
+    public function test_integration_is_disabled_until_explicitly_enabled_in_server_configuration(): void
+    {
+        [$artist] = $this->artistWithProfile('instagram-disabled@example.com');
+
+        $this->actingAs($artist)
+            ->get('/dashboard/artist/instagram/connect')
+            ->assertServiceUnavailable();
+    }
+
+    public function test_artist_can_delete_the_local_connection_record(): void
+    {
+        [$artist, $profile] = $this->artistWithProfile('instagram-disconnect@example.com');
+        $connection = new InstagramConnection();
+        $connection->forceFill([
+            'artist_profile_id' => $profile->id,
+            'configuration_id' => 'meta-config-id',
+            'meta_user_id' => 'meta-business-user',
+            'access_token' => 'encrypted-business-token',
+            'accounts' => [['id' => '17841400000000001', 'username' => 'artist']],
+            'media_snapshot' => [],
+            'status' => 'connected',
+        ])->save();
+
+        $this->actingAs($artist)
+            ->delete('/dashboard/artist/instagram/connection')
+            ->assertRedirect('/dashboard/artist/content')
+            ->assertSessionHas('status');
+
+        $this->assertDatabaseMissing('artist_instagram_connections', ['id' => $connection->id]);
+    }
+
     public function test_non_artist_roles_cannot_start_an_instagram_connection(): void
     {
         $buyer = User::query()->create([
@@ -121,6 +152,7 @@ class ArtistInstagramUnifiedLoginTest extends TestCase
     private function configureMeta(): void
     {
         config([
+            'services.instagram.enabled' => true,
             'services.instagram.app_id' => 'meta-app-id',
             'services.instagram.app_secret' => 'meta-app-secret',
             'services.instagram.config_id' => 'meta-config-id',
