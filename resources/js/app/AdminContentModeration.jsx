@@ -94,6 +94,8 @@ export default function AdminContentModeration() {
                 queryClient.invalidateQueries({ queryKey: ['admin', 'artworks', user?.id] }),
                 queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard', user?.id] }),
                 queryClient.invalidateQueries({ queryKey: ['artist-workspace', 'artworks'] }),
+                queryClient.invalidateQueries({ queryKey: ['artist-content'] }),
+                queryClient.invalidateQueries({ queryKey: ['home', 'artworks'] }),
                 queryClient.invalidateQueries({ queryKey: ['artworks'] }),
             ]);
         } catch (e) {
