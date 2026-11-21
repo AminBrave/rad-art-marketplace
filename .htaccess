@@ -4,6 +4,7 @@ Options -Indexes -MultiViews
     RewriteEngine On
 
     # Vite emits content-hashed production assets; cache these immutable URLs for one year.
+    RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^build/assets/ - [E=RAD_IMMUTABLE_ASSET:1]
 
     # Never expose dotfiles (.env, .git, editor metadata), except ACME/web well-known files.
