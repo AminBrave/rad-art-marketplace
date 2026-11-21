@@ -51,6 +51,26 @@ class ArtistContentFoundationTest extends TestCase
     }
 
 
+    public function test_approved_legacy_artwork_without_content_companion_remains_public(): void
+    {
+        [, $profile] = $this->artistWithProfile();
+        $artwork = $this->createArtwork($profile);
+
+        $this->assertNull($artwork->artist_content_id);
+        $this->assertTrue($artwork->fresh()->isPubliclyVisible());
+
+        $this->getJson('/api/v1/artworks')
+            ->assertOk()
+            ->assertJsonFragment(['slug' => $artwork->slug]);
+        $this->getJson('/api/v1/artworks/'.$artwork->slug)
+            ->assertOk()
+            ->assertJsonPath('data.slug', $artwork->slug);
+        $this->getJson('/api/v1/artists/'.$profile->slug)
+            ->assertOk()
+            ->assertJsonFragment(['slug' => $artwork->slug]);
+        $this->get('/artworks/'.$artwork->slug)->assertOk();
+    }
+
     public function test_public_artwork_requires_published_and_artist_approved_content(): void
     {
         Storage::fake('local');
