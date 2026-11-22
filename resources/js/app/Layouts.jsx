@@ -79,11 +79,11 @@ export function PublicLayout() {
             </a>
             <header className="sticky top-0 z-40 border-b border-border bg-[color:color-mix(in_srgb,var(--color-canvas)_94%,transparent)] backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-canvas)_88%,transparent)]">
                 <div className="mx-auto flex min-h-[var(--header-height)] max-w-content items-center justify-between gap-2 px-page-gutter sm:gap-4">
-                    <Link to="/" className="group flex shrink-0 items-center gap-3 text-ink no-underline" aria-label="راد آرت، صفحه اصلی">
-                        <span className="grid h-11 w-11 place-items-center rounded-md bg-ink text-xl font-black text-inverse transition-colors group-hover:bg-terracotta">ر</span>
+                    <Link to="/" className="group flex shrink-0 items-center gap-2 text-ink no-underline sm:gap-3" aria-label="راد آرت، صفحه اصلی">
+                        <span className="grid h-10 w-10 place-items-center rounded-md bg-ink text-lg font-black text-inverse transition-colors group-hover:bg-terracotta sm:h-11 sm:w-11 sm:text-xl">ر</span>
                         <span className="flex flex-col leading-tight">
-                            <span className="text-xl font-black tracking-tight">راد<span className="text-terracotta-strong">آرت</span></span>
-                            <span dir="ltr" className="mt-1 text-[9px] font-semibold tracking-[.2em] text-muted">INDEPENDENT ART</span>
+                            <span className="text-lg font-black tracking-tight sm:text-xl">راد<span className="text-terracotta-strong">آرت</span></span>
+                            <span dir="ltr" className="mt-1 hidden text-[9px] font-semibold tracking-[.2em] text-muted sm:block">INDEPENDENT ART</span>
                         </span>
                     </Link>
 
