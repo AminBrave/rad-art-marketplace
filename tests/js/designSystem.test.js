@@ -102,7 +102,7 @@ test('shared content and feedback components use semantic utility classes', () =
 });
 
 test('Rademan semantic design tokens are declared centrally and resolve through theme-aware roles', () => {
-    assert.equal((css.match(/:root\\s*\\{/g) ?? []).length, 1);
+    assert.equal((css.match(/:root \{/g) ?? []).length, 1);
     assert.ok(css.includes('--rd-overlay: rgb(36 35 32 / 64%)'));
     assert.ok(css.includes('--color-overlay: var(--rd-overlay)'));
     assert.ok(css.includes('--rd-message-own:'));
