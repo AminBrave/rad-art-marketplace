@@ -242,3 +242,24 @@ For substantial work, report:
 - Blockers and next 1–3 actions.
 
 Do not create a PR, merge, deploy or release unless requested. Do not claim completion while acceptance criteria remain unmet.
+
+
+## 8A. Parallel AI development branches (mandatory)
+
+Rademan uses two long-lived development integration branches:
+- `develop/chatgpt` is the integration target for work authored through ChatGPT.
+- `develop/claude` is the integration target for work authored through Claude.
+
+Branch and PR rules:
+1. **Never target `main` with ordinary feature, refactor, maintenance, documentation or agent-authored PRs.** Those PRs target the matching AI development branch.
+2. ChatGPT work starts from `develop/chatgpt`; Claude work starts from `develop/claude`. Create short-lived task branches from the matching development branch, using the issue number and task slug where practical.
+3. Open PRs from task branches into the matching development branch only. Do not open cross-track PRs or merge one AI track into the other unless the product owner explicitly requests it.
+4. The product owner may explicitly authorize a shared task or cross-track integration. Record the chosen integration branch in the issue/PR before proceeding.
+5. Keep the two tracks isolated. Do not assume commits on one branch exist on the other. Re-check the selected branch's current head and source before each task.
+6. `main` is the release/stable integration branch. Promotion from either development branch to `main` is a separate release decision and requires explicit product-owner approval, review and the applicable verification gates.
+7. Do not change the repository default branch, branch protections, merge settings or delete branches as part of this workflow unless separately authorized.
+8. Existing PRs must be retargeted to the appropriate development branch before merge. Never merge an ordinary development PR directly into `main`.
+9. GitHub issues are not mergeable. Keep issues open as the source of scope/status; link them to the matching development branch and PR. Close an issue only when its acceptance criteria are complete and the owner-approved workflow permits closure.
+10. If the authoring track is unclear, ask which development branch to use rather than guessing.
+
+The current branch mapping is also documented in `.agents/skills/git-github/SKILL.md`. This policy does not relax security, review, verification, CI, merge or release approval requirements.
