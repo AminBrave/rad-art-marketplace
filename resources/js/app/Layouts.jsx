@@ -21,7 +21,7 @@ function ThemeControl() {
             onClick={cycleTheme}
             aria-label={`تغییر پوسته؛ حالت فعلی: ${label}`}
             title={`پوسته: ${label}`}
-            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-surface text-text transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-surface text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
         >
             <Icon size={18} strokeWidth={1.9} aria-hidden="true" />
             <span className="sr-only">تغییر پوسته</span>
@@ -73,7 +73,7 @@ export function PublicLayout() {
 
     return (
         <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-        <div className={user ? "min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:pb-0" : "min-h-screen bg-canvas text-ink"} dir="rtl">
+        <div data-experience="discover" className={user ? "min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:pb-0" : "min-h-screen bg-canvas text-ink"} dir="rtl">
             <a href="#main-content" className="sr-only z-[60] bg-paper px-4 py-3 text-ink focus:not-sr-only focus:fixed focus:inset-x-4 focus:top-4">
                 رفتن به محتوای اصلی
             </a>
@@ -545,7 +545,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
 
     return (
         <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-        <div className={isMessagingRoute ? "flex h-dvh flex-col overflow-hidden bg-canvas text-ink" : "min-h-screen bg-canvas text-ink"} dir="rtl">
+        <div data-experience={user?.role ?? 'workspace'} className={isMessagingRoute ? "flex h-dvh flex-col overflow-hidden bg-canvas text-ink" : "min-h-screen bg-canvas text-ink"} dir="rtl">
             <header className="sticky top-0 z-40 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] shadow-soft backdrop-blur">
                 <div className="mx-auto flex min-h-[4.5rem] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-20 sm:gap-4">
                     <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
@@ -598,7 +598,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     <div className="flex min-w-0 items-center gap-3">
                         <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-lg font-black text-inverse">ر</span>
                         <div className="min-w-0">
-                            <DialogTitle className="text-sm font-extrabold text-ink">حساب کاربری</DialogTitle>
+                            <DialogTitle className="text-sm font-extrabold text-ink">فضای کاری</DialogTitle>
                             <DialogDescription className="mt-1 max-w-48 truncate text-xs text-muted">{user?.name}</DialogDescription>
                         </div>
                     </div>
@@ -637,7 +637,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     <div className="my-5 border-t border-border" />
 
                     <nav aria-label="پیوندهای تکمیلی سایت">
-                        <h3 className="mb-2 px-3 text-xs font-extrabold text-muted">کشف و راهنمایی</h3>
+                        <h3 className="mb-2 px-3 text-xs font-extrabold text-muted">کشف</h3>
                         <div className="grid gap-1">
                             {publicSecondaryLinks.map((item) => (
                                 <NavLink
