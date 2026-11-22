@@ -246,42 +246,30 @@ Do not create a PR, merge, deploy or release unless requested. Do not claim comp
 
 ## 8A. Parallel AI development branches (mandatory)
 
-Rademan uses two long-lived development integration branches:
-- `develop/chatgpt` is the integration target for work authored through ChatGPT.
-- `develop/claude` is the integration target for work authored through Claude.
+Rademan uses four permanent branches:
+- `main`: stable/release branch. Ordinary development never targets it.
+- `integration`: shared integration branch for combining the two agent lanes and validating cross-track compatibility.
+- `agent/chatgpt`: long-lived ChatGPT development lane.
+- `agent/claude`: long-lived Claude development lane.
+
+Task branches are short-lived and are based on the appropriate permanent lane. Because Git refs cannot have both `agent/chatgpt` and a child ref such as `agent/chatgpt/...` at the same time, task branches use the agent-qualified naming convention below rather than literal nested refs:
+- ChatGPT tasks: `feature/chatgpt/<slug>`, `refactor/chatgpt/<slug>`, `fix/chatgpt/<slug>`, `design/chatgpt/<slug>`, `docs/chatgpt/<slug>`, `test/chatgpt/<slug>`.
+- Claude tasks: `feature/claude/<slug>`, `refactor/claude/<slug>`, `fix/claude/<slug>`, `design/claude/<slug>`, `docs/claude/<slug>`, `test/claude/<slug>`.
+- Integration-only work: `integration/<slug>` or `fix/integration/<slug>`.
 
 Branch and PR rules:
-1. **Never target `main` with ordinary feature, refactor, maintenance, documentation or agent-authored PRs.** Those PRs target the matching AI development branch.
-2. ChatGPT work starts from `develop/chatgpt`; Claude work starts from `develop/claude`. Create short-lived task branches from the matching development branch, using the issue number and task slug where practical.
-3. Open PRs from task branches into the matching development branch only. Do not open cross-track PRs or merge one AI track into the other unless the product owner explicitly requests it.
-4. The product owner may explicitly authorize a shared task or cross-track integration. Record the chosen integration branch in the issue/PR before proceeding.
-5. Keep the two tracks isolated. Do not assume commits on one branch exist on the other. Re-check the selected branch's current head and source before each task.
-6. `main` is the release/stable integration branch. Promotion from either development branch to `main` is a separate release decision and requires explicit product-owner approval, review and the applicable verification gates.
-7. Do not change the repository default branch, branch protections, merge settings or delete branches as part of this workflow unless separately authorized.
-8. Existing PRs must be retargeted to the appropriate development branch before merge. Never merge an ordinary development PR directly into `main`.
-9. GitHub issues are not mergeable. Keep issues open as the source of scope/status; link them to the matching development branch and PR. Close an issue only when its acceptance criteria are complete and the owner-approved workflow permits closure.
-10. If the authoring track is unclear, ask which development branch to use rather than guessing.
+1. ChatGPT work starts from the current `agent/chatgpt` head; Claude work starts from the current `agent/claude` head. Create a short-lived, agent-qualified task branch from that lane.
+2. Task PRs target only their matching agent lane: ChatGPT task branches to `agent/chatgpt`; Claude task branches to `agent/claude`. Do not merge one agent lane into the other.
+3. Bring each agent lane into `integration` through explicit PRs targeting `integration`. The head is `agent/chatgpt` or `agent/claude`, or a dedicated integration-fix branch based on `integration`.
+4. Use `integration` for cross-agent conflict resolution, compatibility fixes, dependency/API contract reconciliation, deliberate code adoption, combined verification planning and final review. A clean Git merge does not prove runtime compatibility.
+5. Do not silently choose one agent's implementation when changes conflict. Inspect behavior, tests, security boundaries and product requirements; document the selected resolution and rationale.
+6. Changes made on `integration` are not automatically propagated to either agent lane. Backport only through a separate reviewed PR when explicitly intended.
+7. Never target `main` with ordinary feature, refactor, maintenance, documentation or agent-authored PRs. Promotion from `integration` to `main` is a separate release decision requiring explicit owner approval, review and applicable verification gates.
+8. Do not change the repository default branch, branch protections, merge settings or delete branches as part of this workflow unless separately authorized.
+9. Do not force-push, rewrite history or reset any shared branch. Resolve conflicts through normal commits and PRs.
+10. GitHub issues are tracking records, not mergeable objects. Keep issues open until acceptance criteria are met and link them to the relevant task branch and PR.
+11. Existing PRs must be retargeted to the correct branch before merge. Never merge an ordinary development PR directly into `main`.
+12. Re-check the selected branch's current head, issue/PR state and source before each task. Do not assume commits on one branch exist on another.
+13. If the authoring lane, integration direction, adoption decision or conflict resolution is ambiguous, ask the product owner.
 
-The current branch mapping is also documented in `.agents/skills/git-github/SKILL.md`. This policy does not relax security, review, verification, CI, merge or release approval requirements.
-
-
-## Blending integration branch (mandatory)
-
-The `blending` branch is the only shared integration environment for combining the two AI development tracks:
-- `develop/chatgpt`: ChatGPT-authored development.
-- `develop/claude`: Claude-authored development.
-- `blending`: isolated integration of both tracks for conflict resolution, compatibility work, code adoption, combined test planning/execution and final review.
-- `main`: stable/release branch; promotion remains a separate owner-approved release action.
-
-Integration workflow:
-1. Keep `develop/chatgpt` and `develop/claude` independent. Do not merge either development branch into the other.
-2. Bring changes from each development branch into `blending` through explicit PRs. The PR base is `blending`; the head is the selected development branch (or a dedicated integration-fix branch based on `blending`).
-3. Use `blending` for cross-agent conflict resolution, compatibility fixes, dependency/API contract reconciliation, test updates and deliberate adoption of useful work from either track.
-4. Do not silently choose one agent's implementation when changes conflict. Inspect behavior, tests, security boundaries and product requirements; document the chosen resolution and rationale.
-5. Integration changes that are specific to one development track should be brought back to that track through a separate reviewed PR only when explicitly intended. Do not automatically propagate blending changes to either track.
-6. Do not treat branch mergeability as proof of runtime compatibility. Run the approved combined verification plan on `blending` and report exact checks, failures and untested areas.
-7. No blending PR targets `main`. Release promotion from `blending` to `main` requires separate explicit owner approval after review and verification.
-8. Do not rewrite or force-push any of the three shared branches. Resolve conflicts in normal commits/PRs.
-9. If the integration direction, adoption decision or conflict resolution is ambiguous, stop and ask the product owner.
-
-This branch is an integration/test candidate, not an automatically releasable build. Existing CI, verification, security and merge approval gates remain in force.
+The mapping and task-branch naming rules are also documented in `.agents/skills/git-github/SKILL.md`. This policy does not relax security, review, verification, CI, merge or release approval requirements.
