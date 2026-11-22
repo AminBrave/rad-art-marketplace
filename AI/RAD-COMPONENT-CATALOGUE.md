@@ -1,12 +1,14 @@
-# RAD Component Catalogue
+> **Legacy reference only — not a design constraint for the Rademan product refactor.** This catalogue documents the previous RAD component architecture and token assumptions. Do not use it as the default specification for new or redesigned UI. The current target direction is `AI/DESIGN-SYSTEM.md`; retain only the five brand color anchors and rebuild component architecture from first principles. Existing components may be inspected and selectively reused only after evaluating fit, accessibility, behavior and migration cost. The latest `main` source remains the authority for what is implemented.
 
-**Status:** Canonical implementation contract  
+# Legacy RAD Component Catalogue
+
+**Status:** Historical implementation reference — superseded for new product design  
 **Audience:** Product design, frontend engineering, code-generation agents, reviewers  
 **Scope:** Rademan web application  
 **Implementation root:** `resources/js/components/ui/`  
-**Visual source of truth:** `resources/css/app.css`, `tailwind.config.js`, and the RAD tokens documented in `AI/DESIGN-SYSTEM.md`
+**Historical visual reference:** `resources/css/app.css` and `tailwind.config.js` as they existed when this catalogue was authored
 
-This document defines the component vocabulary and implementation rules for every new or revised interface in Rademan. It is intended to be used before writing page-level UI. The live catalogue at `/?design-system` must demonstrate the implemented components and their meaningful variants and states. Documentation must not claim a component is implemented until its wrapper, export, showcase example, and usage migration are present.
+This document records the former component vocabulary and implementation rules. It does not define requirements for the new Rademan interface. It is intended to be used before writing page-level UI. The live catalogue at `/?design-system` must demonstrate the implemented components and their meaningful variants and states. Documentation must not claim a component is implemented until its wrapper, export, showcase example, and usage migration are present.
 
 ## 1. Non-negotiable architecture
 
