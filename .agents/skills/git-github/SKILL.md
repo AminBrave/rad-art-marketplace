@@ -75,19 +75,29 @@ Use Conventional Commit prefixes such as `feat(scope):`, `fix(scope):`, `docs(sc
 State repository and branch, files changed, commit/PR links or identifiers when available, and whether changes were made through a local checkout or remote API. List verification as executed only when directly evidenced; otherwise say "Not run (permission not granted)." Explicitly mention that no CI workflow was initiated when that boundary is relevant.
 
 
-## Rademan parallel development tracks
+## Rademan parallel development and integration branches
 
 Use the branch mapping defined in `AGENTS.md`:
-- ChatGPT-authored changes integrate into `develop/chatgpt`.
-- Claude-authored changes integrate into `develop/claude`.
-- Create task branches from the matching integration branch; PR into that same branch.
-- Do not target `main` for ordinary development. `main` is reserved for separately approved release promotion.
-- Do not merge across the two tracks unless the product owner explicitly authorizes it.
-- Issues remain open tracking records; associate each with the matching track and PR rather than treating issues as mergeable objects.
-- Retarget legacy development PRs to the appropriate track before merging. Never merge a development PR to `main`.
-- Ask if the authoring track or destination is ambiguous.
+- `main`: stable/release branch; ordinary development PRs never target it.
+- `agent/chatgpt`: ChatGPT development lane.
+- `agent/claude`: Claude development lane.
+- `integration`: shared cross-agent integration and compatibility branch.
 
+Git cannot have both a branch named `agent/chatgpt` and child refs named `agent/chatgpt/...`. Therefore, task branches use agent-qualified prefixes:
+- ChatGPT: `feature/chatgpt/<slug>`, `refactor/chatgpt/<slug>`, `fix/chatgpt/<slug>`, `design/chatgpt/<slug>`, `docs/chatgpt/<slug>`, `test/chatgpt/<slug>`.
+- Claude: `feature/claude/<slug>`, `refactor/claude/<slug>`, `fix/claude/<slug>`, `design/claude/<slug>`, `docs/claude/<slug>`, `test/claude/<slug>`.
+- Integration-only: `integration/<slug>` or `fix/integration/<slug>`.
 
-## Blending workflow
+Workflow:
+1. Start ChatGPT tasks from `agent/chatgpt` and Claude tasks from `agent/claude`; branch for each bounded task.
+2. PR task branches into their matching agent lane only. Never merge ChatGPT directly into Claude or vice versa.
+3. Bring both agent lanes into `integration` through explicit PRs targeting `integration`.
+4. Resolve conflicts, reconcile contracts and adopt code deliberately on `integration`. Document non-obvious choices and preserve security boundaries.
+5. Do not automatically propagate integration changes back to agent lanes; use a separate reviewed PR when a backport is intended.
+6. Do not target `main` for ordinary development. Promotion from `integration` to `main` requires separate explicit owner approval after review and applicable verification.
+7. A clean merge is not proof of runtime compatibility. Follow the repository's verification permission gate; never initiate CI or run checks without the required explicit authorization.
+8. Do not force-push, rewrite shared history, delete branches or change repository settings without separate explicit authorization.
+9. Keep issues open as tracking records until acceptance criteria are met; link each issue to the relevant task branch and PR.
+10. Ask if the authoring lane, target or integration decision is ambiguous.
 
-`blending` is the shared integration branch for `develop/chatgpt` and `develop/claude`. Keep the two authoring branches independent. Bring each into `blending` through a PR targeting `blending`; do not merge ChatGPT directly into Claude or vice versa. Resolve conflicts and perform deliberate code adoption, compatibility reconciliation and combined verification on `blending`. A clean Git merge is not proof of runtime compatibility. Do not promote `blending` to `main` without separate explicit owner approval. See the mandatory workflow in `AGENTS.md`.
+The permanent lane names and task naming rules are intentionally distinct: `agent/chatgpt` is the long-lived branch; `feature/chatgpt/<slug>` is a short-lived task branch based on it.
