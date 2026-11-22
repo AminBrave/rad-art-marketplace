@@ -359,7 +359,7 @@ test('MediaImage fallback exposes accessible missing-source and load-error state
 
     const mediaSource = readFileSync(new URL('../../resources/js/components/ui/feedback.jsx', import.meta.url), 'utf8');
     assert.match(mediaSource, /onError=\\{\\(\\) => setFailedSrc\\(imageSrc\\)\\}/);
-    assert.match(mediaSource, /فایل در فضای ذخیره‌سازی پیدا نشد یا دریافت آن ناموفق بود/);
+    assert.match(mediaSource, /فایل پیدا نشد یا دریافت آن ناموفق بود/);
 });
 
 test('UploadFeedback clamps progress at both ends of the accessible range', () => {
