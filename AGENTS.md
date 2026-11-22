@@ -172,7 +172,7 @@ A user may explicitly authorize a bounded batch for any engineering work type: f
 - Use installed React APIs and existing React Router/TanStack Query patterns.
 - Keep server state in the existing query/cache approach; avoid introducing competing state systems.
 - Cover loading, empty, success, error, validation, disabled and submitting states.
-- Use shared RAD design tokens and primitives; do not introduce one-off visual systems.
+- Use the new semantic design tokens and shared primitives established by the product refactor; do not assume legacy RAD tokens/components are constraints or introduce unrelated one-off systems.
 - Maintain Persian-first copy, correct RTL flow, mixed-direction text handling, responsive layouts and long-content resilience.
 - Do not rely on color alone. Respect keyboard interaction, visible focus and reduced-motion preferences.
 - Frontend authorization must never be treated as access control.
