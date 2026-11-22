@@ -20,11 +20,21 @@ Keep each layer focused; do not copy whole policies between files.
 
 Authority is purpose-specific: explicit user authorization defines the permitted task and may grant separately gated actions where the contract allows; this contract defines default safety boundaries and explicit permission gates; current source/runtime establishes implementation facts; canonical product decisions establish product intent; live GitHub records establish task/review status. AI/SESSION.md is only a concise handoff and never outranks those sources. Skills and playbook guidance must defer to their owning project documents.
 
-- Rademan is a Persian-first artist discovery and artist-contact marketplace.
+- Rademan's current product direction is a mobile-first, installable visual-content platform connecting artists and buyers through artwork discovery and direct messaging. See `AI/PROJECT.md`.
 - Recorded stack: PHP 8.3+ and Laravel 13; React 18, JavaScript, React Router 7, TanStack Query 5 and Vite. Confirm installed versions in manifests before relying on version-specific APIs.
-- Preserve the established RAD design system, shared tokens/primitives, responsive layouts, accessibility and RTL behavior.
+- Rebuild the design system from first principles; retain only the five brand color anchors documented in `AI/PROJECT.md`. Do not treat the legacy RAD design system or component catalogue as a constraint.
 - Do not assume checkout, orders, shipping, payouts, subscriptions, commissions, booking, escrow or other commerce capabilities exist unless current source and approved product decisions prove they do.
 - Implementation facts come from current source, migrations, tests, configuration and observed runtime behavior. Product intent comes from the canonical decision records in #150 and `AI/PROJECT.md`. Task status comes from live GitHub issues/PRs and the Rademan Workboard Kanban Project. Chat history and model memory are not authoritative.
+
+## 1A. Rademan product refactor authority
+
+- The current owner-approved product direction is recorded in `AI/PROJECT.md`; the target experience direction is in `AI/DESIGN-SYSTEM.md`; the source-backed reconstruction baseline is in `AI/RECONSTRUCTION/`.
+- For implementation facts, inspect the latest `main` branch and relevant current source, migrations, configuration and tests. Record the inspected main SHA. Do not use stale documentation, old skills, historical issue text or old permission statements as implementation authority when they conflict with latest main or current owner direction.
+- Update repository documentation and agent skills as derived guidance whenever they conflict with the refactor. Retire or clearly label legacy catalogues and playbooks rather than silently treating them as design constraints.
+- Product direction does not authorize weakening backend authorization, privacy controls, safety controls or platform constraints. Inspect actual server-side enforcement; never bypass it because a document is stale.
+- “Inquiries” is the existing buyer–artist messaging subsystem. Preserve its identity, state, context, data contracts and access boundaries; do not replace it with a contact form or a new inbox.
+- Target experiences: public Discover, Buyer Studio, Artist Studio and Admin Console. Mobile-first installable PWA is the target; do not claim PWA/offline capabilities without source and runtime evidence.
+- Retain only the brand color anchors Ivory #F7F5F0, Charcoal #242320, Terracotta #A64F31, Sand #D8C9B7 and Olive #536052. Redesign all other visual-system foundations.
 
 ## 2. Non-negotiable permissions
 
@@ -98,7 +108,7 @@ Do not state that a feature is missing until the relevant routes, screens, data 
 
 ## 5A. Decision-to-task authorization gate
 
-- The canonical product vision register is GitHub issue #150. Its numbered decision comments are standalone records; the index is only a lookup table.
+- Issue #150 is a historical vision register. Its numbered decision comments are historical intent records, not current implementation authority or automatic authorization.
 - When the user names a decision, retrieve only that decision's canonical comment. Do not reread all 41 decisions unless explicitly asked or a real dependency is evidenced.
 - A decision is product intent, not an implementation task, MVP commitment, architecture specification, priority or permission to build.
 - Convert a decision into a delivery issue only after explicit product-owner authorization. Link the issue to the selected decision comment and record the authorization.
