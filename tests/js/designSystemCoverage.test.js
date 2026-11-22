@@ -54,9 +54,9 @@ test('design-system coverage discovers every frontend and Blade presentation sou
     assert.ok(relativePaths.includes('resources/views/sitemap.blade.php'));
 });
 
-test('every discovered presentation source uses RAD semantic palette utilities', () => {
+test('every discovered presentation source avoids deprecated palette-shade utilities', () => {
     const violations = describeViolations(rawPaletteClass);
-    assert.deepEqual(violations, [], 'Raw Tailwind palette classes found across the presentation tree.');
+    assert.deepEqual(violations, [], 'Deprecated named palette shades found; use the Rademan semantic token layer.');
 });
 
 test('presentation sources do not embed hex colors in Tailwind utility classes', () => {
