@@ -18,13 +18,23 @@ Keep each layer focused; do not copy whole policies between files.
 | Source, tests, configuration and runtime | Evidence of actual implementation and behavior | Product intent or authorization |
 | GitHub issues, PRs and Workboard (when configured) | Authorization records, task scope, review evidence and live progress | A substitute for source inspection or permission |
 
-Authority is purpose-specific: explicit user authorization defines the permitted task and may grant separately gated actions where the contract allows; this contract defines default safety boundaries and explicit permission gates; current source/runtime establishes implementation facts; canonical product decisions establish product intent; live GitHub records establish task/review status. AI/SESSION.md is only a concise handoff and never outranks those sources. Skills and playbook guidance must defer to their owning project documents.
+Authority is purpose-specific: current explicit owner direction defines product intent and authorized task scope; this contract defines default safety boundaries and explicit permission gates; latest main source/runtime establishes implementation facts; live GitHub records establish task/review status. Historical vision records are consulted only when the owner explicitly selects them. AI/SESSION.md is only a concise handoff and never outranks those sources. Skills and playbook guidance must defer to their owning project documents.
 
-- Rademan is a Persian-first artist discovery and artist-contact marketplace.
+- Rademan's current product direction is a mobile-first, installable visual-content platform connecting artists and buyers through artwork discovery and direct messaging. See `AI/PROJECT.md`.
 - Recorded stack: PHP 8.3+ and Laravel 13; React 18, JavaScript, React Router 7, TanStack Query 5 and Vite. Confirm installed versions in manifests before relying on version-specific APIs.
-- Preserve the established RAD design system, shared tokens/primitives, responsive layouts, accessibility and RTL behavior.
+- Rebuild the design system from first principles; retain only the five brand color anchors documented in `AI/PROJECT.md`. Do not treat the legacy RAD design system or component catalogue as a constraint.
 - Do not assume checkout, orders, shipping, payouts, subscriptions, commissions, booking, escrow or other commerce capabilities exist unless current source and approved product decisions prove they do.
-- Implementation facts come from current source, migrations, tests, configuration and observed runtime behavior. Product intent comes from the canonical decision records in #150 and `AI/PROJECT.md`. Task status comes from live GitHub issues/PRs and the Rademan Workboard Kanban Project. Chat history and model memory are not authoritative.
+- Implementation facts come from the latest main source, migrations, tests, configuration and observed runtime behavior. Product intent comes from current owner direction and `AI/PROJECT.md`. Task status comes from live GitHub issues/PRs and the Rademan Workboard Kanban Project. Chat history and model memory are not authoritative.
+
+## 1A. Rademan product refactor authority
+
+- The current owner-approved product direction is recorded in `AI/PROJECT.md`; the target experience direction is in `AI/DESIGN-SYSTEM.md`; the source-backed reconstruction baseline is in `AI/RECONSTRUCTION/`.
+- For implementation facts, inspect the latest `main` branch and relevant current source, migrations, configuration and tests. Record the inspected main SHA. Do not use stale documentation, old skills, historical issue text or old permission statements as implementation authority when they conflict with latest main or current owner direction.
+- Update repository documentation and agent skills as derived guidance whenever they conflict with the refactor. Retire or clearly label legacy catalogues and playbooks rather than silently treating them as design constraints.
+- Product direction does not authorize weakening backend authorization, privacy controls, safety controls or platform constraints. Inspect actual server-side enforcement; never bypass it because a document is stale.
+- “Inquiries” is the existing buyer–artist messaging subsystem. Preserve its identity, state, context, data contracts and access boundaries; do not replace it with a contact form or a new inbox.
+- Target experiences: public Discover, Buyer Studio, Artist Studio and Admin Console. Mobile-first installable PWA is the target; do not claim PWA/offline capabilities without source and runtime evidence.
+- Retain only the brand color anchors Ivory #F7F5F0, Charcoal #242320, Terracotta #A64F31, Sand #D8C9B7 and Olive #536052. Redesign all other visual-system foundations.
 
 ## 2. Non-negotiable permissions
 
@@ -44,11 +54,11 @@ At the start of a task, read this file first. Then classify the task and select 
 ### Context routing
 
 - Any task: inspect the live GitHub issue/PR if supplied; check for related open work before creating duplicates.
-- Product behavior, scope or user journey: read `AI/PROJECT.md`; when a specific product decision is named, retrieve only its canonical record from #150; read `AI/TASK-MANAGEMENT.md` for issue/MVP/Kanban rules.
+- Product behavior, scope or user journey: read `AI/PROJECT.md`; read `AI/TASK-MANAGEMENT.md` for issue/MVP/Kanban rules; retrieve a historical #150 record only when the owner explicitly names it.
 - Cross-chat continuation or project-wide planning: read `AI/SESSION.md` and the referenced live issue/PR.
-- Product discovery, opportunity assessment, customer research or experiment design: load `.agents/skills/product-discovery/SKILL.md`; read `AI/PROJECT.md` and the named canonical #150 decision when relevant.
+- Product discovery, opportunity assessment, customer research or experiment design: load `.agents/skills/product-discovery/SKILL.md`; read `AI/PROJECT.md`; retrieve a historical #150 record only when explicitly selected by the owner.
 - Feature planning, requirements, acceptance criteria or delivery slicing: load `.agents/skills/feature-planning/SKILL.md` and follow `AI/TASK-MANAGEMENT.md`.
-- UI/UX, user journeys, information architecture, interaction design, visual design or design-system changes: load `.agents/skills/ui-ux-design/SKILL.md` and `AI/DESIGN-SYSTEM.md`; consult `AI/RAD-COMPONENT-CATALOGUE.md` before changing shared UI.
+- UI/UX, user journeys, information architecture, interaction design, visual design or design-system changes: load `.agents/skills/ui-ux-design/SKILL.md` and `AI/DESIGN-SYSTEM.md`; treat `AI/RAD-COMPONENT-CATALOGUE.md` as legacy reference only; inspect current shared UI source and follow the new design direction.
 - Laravel, API, database or backend work: load `.agents/skills/laravel-backend/SKILL.md`.
 - React, routing, frontend or UI implementation: load `.agents/skills/react-frontend/SKILL.md`.
 - Bug or regression: load `.agents/skills/debugging/SKILL.md`.
@@ -98,9 +108,9 @@ Do not state that a feature is missing until the relevant routes, screens, data 
 
 ## 5A. Decision-to-task authorization gate
 
-- The canonical product vision register is GitHub issue #150. Its numbered decision comments are standalone records; the index is only a lookup table.
-- When the user names a decision, retrieve only that decision's canonical comment. Do not reread all 41 decisions unless explicitly asked or a real dependency is evidenced.
-- A decision is product intent, not an implementation task, MVP commitment, architecture specification, priority or permission to build.
+- Issue #150 is a historical vision register. Its numbered decision comments are historical intent records, not current implementation authority or automatic authorization.
+- When the user explicitly names a historical #150 decision, retrieve only that record. Do not read unrelated historical decisions.
+- A historical vision decision is context, not an implementation task, MVP commitment, architecture specification, priority or permission to build.
 - Convert a decision into a delivery issue only after explicit product-owner authorization. Link the issue to the selected decision comment and record the authorization.
 - Define an MVP boundary inside each authorized delivery issue. A small decision may be one issue; a large decision may use a parent epic and independently reviewable child issues. Keep later scope separate.
 - Standalone bugs, maintenance, QA and documentation tasks do not need a product decision ID.
@@ -151,6 +161,34 @@ A user may explicitly authorize a bounded batch for any engineering work type: f
 - Park a slice when it reaches a product, architecture, API/schema/data-contract, authorization/privacy/security, destructive-operation, dependency or material operational-risk decision boundary. Continue other independent safe slices.
 - Batch authorization never authorizes tests, lint, formatting, builds, type checks, browser automation, migrations, seeders, scanners or CI. It never authorizes deployment, release, force-push, history rewriting, repository-setting changes or merge.
 - At batch end, provide one consolidated report and one decision point. A single explicit end-of-batch approval may cover the listed review/merge actions; do not ask for separate approval per PR. All other permission gates remain unchanged.
+
+## 6B. Change-driven test maintenance (mandatory)
+
+Tests are executable specifications of the **current approved product behavior and architecture**, not preservation contracts for retired implementation choices. When production code, user-visible behavior, product architecture, information architecture, navigation, design tokens, shared components, API/data contracts, permissions or runtime configuration changes, update the relevant tests in the same change.
+
+Before implementation:
+1. Inspect the tests that currently cover the affected behavior and identify which assertions express durable user/business/security invariants versus incidental implementation details.
+2. Compare those assertions with the latest owner-approved product direction, task acceptance criteria and current source of truth (latest main for implementation facts; the task branch/diff for the proposed new behavior).
+3. Record which tests remain valid, which need revision, which new risks need coverage and which old expectations are explicitly retired. Do not assume an existing assertion is correct merely because it is green.
+
+During implementation:
+- Update or replace stale tests alongside the production change. Do not leave knowingly obsolete tests for a later cleanup task.
+- Prefer tests of observable behavior, user journeys, accessibility semantics, API contracts, authorization boundaries, data invariants and failure recovery. Avoid brittle snapshots or assertions coupled to class names, CSS values, component internals or exact implementation structure unless that detail is itself an explicit contract.
+- For redesign/refactor work, rewrite design-system and navigation tests to assert the new approved semantic tokens, themes, responsive behavior, roles and journeys. Remove assertions that encode retired design systems, component libraries, layout dimensions or navigation patterns.
+- Preserve coverage strength when replacing a test: map each removed assertion to a current invariant or explain why it no longer applies. Do not delete meaningful security, privacy, accessibility, compatibility or regression coverage just because implementation changed.
+- Add regression tests for newly introduced behavior and relevant negative/failure cases. Update fixtures, mocks, test helpers, accessibility expectations and test documentation when their contracts change.
+- Keep production code changes driven by product requirements and runtime correctness—not by pressure to satisfy stale tests. **Never modify new/refactored production code solely to make an obsolete test pass.**
+
+When a test fails after a product or architecture change, classify it before editing either side:
+1. **Real regression:** the new code violates an approved invariant; fix production code and retain/strengthen the test.
+2. **Stale test contract:** the assertion encodes superseded behavior; update the test to the approved current behavior while preserving equivalent or stronger coverage.
+3. **Unclear product decision:** stop and ask; do not guess whether code or test should change.
+4. **Environment/flaky/tooling failure:** isolate and report it; do not disguise it as a product fix or weaken the assertion.
+
+Review every test deletion or relaxation explicitly. A test may be removed only when its behavior is genuinely retired or its coverage is replaced by equivalent/stronger current-contract coverage; record the rationale in the PR. Never skip, quarantine, loosen or rewrite a test merely to obtain a green run.
+
+Before handoff, include a test-impact summary: changed production surfaces, tests added/updated/retired, invariant coverage preserved, commands actually run by an authorized person, exact result, and checks not run. A code change is not verified merely because tests were edited. Follow the repository's explicit verification permission gate; editing tests does not authorize executing them.
+
 ## 7. Backend, data and frontend invariants
 
 - Laravel policies, middleware and explicit server-side ownership/participant checks are authoritative.
@@ -162,7 +200,7 @@ A user may explicitly authorize a bounded batch for any engineering work type: f
 - Use installed React APIs and existing React Router/TanStack Query patterns.
 - Keep server state in the existing query/cache approach; avoid introducing competing state systems.
 - Cover loading, empty, success, error, validation, disabled and submitting states.
-- Use shared RAD design tokens and primitives; do not introduce one-off visual systems.
+- Use the new semantic design tokens and shared primitives established by the product refactor; do not assume legacy RAD tokens/components are constraints or introduce unrelated one-off systems.
 - Maintain Persian-first copy, correct RTL flow, mixed-direction text handling, responsive layouts and long-content resilience.
 - Do not rely on color alone. Respect keyboard interaction, visible focus and reduced-motion preferences.
 - Frontend authorization must never be treated as access control.
