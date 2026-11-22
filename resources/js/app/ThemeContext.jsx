@@ -24,6 +24,7 @@ function applyTheme(theme, prefersDark) {
 
     document.documentElement.dataset.theme = theme;
     document.documentElement.style.colorScheme = resolvedTheme;
+    document.getElementById('rad-theme-color')?.setAttribute('content', resolvedTheme === 'dark' ? '#171815' : '#F7F5F0');
 }
 
 export function ThemeProvider({ children }) {
@@ -38,8 +39,8 @@ export function ThemeProvider({ children }) {
     }, []);
 
     useEffect(() => {
-        const media = window.matchMedia('(prefers-color-scheme: dark)');
-        const syncTheme = () => applyTheme(theme, media.matches);
+        const media = window.matchMedia?.('(prefers-color-scheme: dark)');
+        const syncTheme = () => applyTheme(theme, Boolean(media?.matches));
 
         syncTheme();
         try {
@@ -50,8 +51,13 @@ export function ThemeProvider({ children }) {
 
         if (theme !== 'system') return undefined;
 
-        media.addEventListener?.('change', syncTheme);
-        return () => media.removeEventListener?.('change', syncTheme);
+        if (media?.addEventListener) {
+            media.addEventListener('change', syncTheme);
+            return () => media.removeEventListener('change', syncTheme);
+        }
+
+        media?.addListener?.(syncTheme);
+        return () => media?.removeListener?.(syncTheme);
     }, [theme]);
 
     useEffect(() => {
