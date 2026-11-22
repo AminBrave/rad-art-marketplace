@@ -161,6 +161,34 @@ A user may explicitly authorize a bounded batch for any engineering work type: f
 - Park a slice when it reaches a product, architecture, API/schema/data-contract, authorization/privacy/security, destructive-operation, dependency or material operational-risk decision boundary. Continue other independent safe slices.
 - Batch authorization never authorizes tests, lint, formatting, builds, type checks, browser automation, migrations, seeders, scanners or CI. It never authorizes deployment, release, force-push, history rewriting, repository-setting changes or merge.
 - At batch end, provide one consolidated report and one decision point. A single explicit end-of-batch approval may cover the listed review/merge actions; do not ask for separate approval per PR. All other permission gates remain unchanged.
+
+## 6B. Change-driven test maintenance (mandatory)
+
+Tests are executable specifications of the **current approved product behavior and architecture**, not preservation contracts for retired implementation choices. When production code, user-visible behavior, product architecture, information architecture, navigation, design tokens, shared components, API/data contracts, permissions or runtime configuration changes, update the relevant tests in the same change.
+
+Before implementation:
+1. Inspect the tests that currently cover the affected behavior and identify which assertions express durable user/business/security invariants versus incidental implementation details.
+2. Compare those assertions with the latest owner-approved product direction, task acceptance criteria and current source of truth (latest main for implementation facts; the task branch/diff for the proposed new behavior).
+3. Record which tests remain valid, which need revision, which new risks need coverage and which old expectations are explicitly retired. Do not assume an existing assertion is correct merely because it is green.
+
+During implementation:
+- Update or replace stale tests alongside the production change. Do not leave knowingly obsolete tests for a later cleanup task.
+- Prefer tests of observable behavior, user journeys, accessibility semantics, API contracts, authorization boundaries, data invariants and failure recovery. Avoid brittle snapshots or assertions coupled to class names, CSS values, component internals or exact implementation structure unless that detail is itself an explicit contract.
+- For redesign/refactor work, rewrite design-system and navigation tests to assert the new approved semantic tokens, themes, responsive behavior, roles and journeys. Remove assertions that encode retired design systems, component libraries, layout dimensions or navigation patterns.
+- Preserve coverage strength when replacing a test: map each removed assertion to a current invariant or explain why it no longer applies. Do not delete meaningful security, privacy, accessibility, compatibility or regression coverage just because implementation changed.
+- Add regression tests for newly introduced behavior and relevant negative/failure cases. Update fixtures, mocks, test helpers, accessibility expectations and test documentation when their contracts change.
+- Keep production code changes driven by product requirements and runtime correctness—not by pressure to satisfy stale tests. **Never modify new/refactored production code solely to make an obsolete test pass.**
+
+When a test fails after a product or architecture change, classify it before editing either side:
+1. **Real regression:** the new code violates an approved invariant; fix production code and retain/strengthen the test.
+2. **Stale test contract:** the assertion encodes superseded behavior; update the test to the approved current behavior while preserving equivalent or stronger coverage.
+3. **Unclear product decision:** stop and ask; do not guess whether code or test should change.
+4. **Environment/flaky/tooling failure:** isolate and report it; do not disguise it as a product fix or weaken the assertion.
+
+Review every test deletion or relaxation explicitly. A test may be removed only when its behavior is genuinely retired or its coverage is replaced by equivalent/stronger current-contract coverage; record the rationale in the PR. Never skip, quarantine, loosen or rewrite a test merely to obtain a green run.
+
+Before handoff, include a test-impact summary: changed production surfaces, tests added/updated/retired, invariant coverage preserved, commands actually run by an authorized person, exact result, and checks not run. A code change is not verified merely because tests were edited. Follow the repository's explicit verification permission gate; editing tests does not authorize executing them.
+
 ## 7. Backend, data and frontend invariants
 
 - Laravel policies, middleware and explicit server-side ownership/participant checks are authoritative.
