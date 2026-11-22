@@ -97,7 +97,6 @@ Workflow:
 6. If the owner asks for ChatGPT-only or Claude-only work, stay entirely within that lane. Do not include the other agent's code to make the work easier.
 7. Never target `main` for ordinary development. Release promotion requires separate explicit owner approval.
 8. Do not force-push, rewrite shared history, delete branches or change repository settings without separate authorization.
-9. Treat `feature/chatgpt/rademan-product-foundation-integrated` as a contaminated, prematurely combined history; do not use it as a ChatGPT development base or merge it anywhere unless the owner explicitly requests recovery/review. Use the isolated `feature/chatgpt/rademan-product-foundation` branch for that task's ChatGPT-only work.
-10. Ask the owner if an integration request or its intended scope is ambiguous.
+9. Ask the owner if an integration request or its intended scope is ambiguous.
 
 The distinction is intentional: `agent/chatgpt` and `agent/claude` are independent authoring lanes; `integration` is opt-in, not an automatic next step. A clean Git merge is not proof of runtime compatibility. Follow all repository security, review, verification and CI authorization requirements.
