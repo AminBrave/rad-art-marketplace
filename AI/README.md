@@ -20,15 +20,15 @@ This is the human operating manual for developing Rademan with ordinary chat-bas
 | Implementation | What the application actually does | Source code, migrations, tests, configuration and observed runtime behavior |
 | Procedures | Focused instructions for feature, backend, frontend, debugging, security, review, quality and Git work | Relevant skill selected by `AGENTS.md` |
 
-**Authority order:** explicit user decisions → `AGENTS.md` → approved issue/PR requirements and recorded decisions → current source and runtime evidence for implementation facts → product brief and canonical decision records for intent → AI suggestions. An AI suggestion is never an approved requirement.
+**Authority is purpose-specific:** explicit current owner direction defines product intent and task authorization; `AGENTS.md` defines safety and operating rules; the latest `main` source, migrations, configuration, tests and observed runtime establish implementation facts; live GitHub issues/PRs establish task scope and review status. Historical documents, old skills and #150 vision comments are not implementation authority when they conflict with current owner direction or latest main.
 
-The canonical RAD interface direction is documented in [`AI/DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md); implementation tokens and primitives remain in `resources/css/app.css`, `tailwind.config.js` and `resources/js/components/ui/`. Keep those sources aligned rather than creating a parallel design system.
+The target Rademan experience and design direction is documented in [`AI/DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md). The legacy RAD component catalogue is historical reference only; the product refactor retains five brand color anchors and rebuilds the rest of the design system.
 
 The practical issue-to-release sequence, PR review checklist and verification matrix are documented in [`AI/DEVELOPMENT-WORKFLOW.md`](DEVELOPMENT-WORKFLOW.md). `AGENTS.md` remains authoritative for all permission and safety rules.
 
 The cross-discipline engineering principles and curated public references are indexed in [`AI/ENGINEERING-PLAYBOOK.md`](ENGINEERING-PLAYBOOK.md). Task-specific procedures live in `.agents/skills/`; `AGENTS.md` routes product discovery, UI/UX, backend, frontend, security, quality, operations and GitHub tasks to the smallest relevant skill.
 
-The AI must not claim that a feature exists, is missing, works, is secure or is tested without suitable evidence. Documentation describes intent; source and runtime evidence establish implementation. Product decisions in #150 are not implementation permission. A named decision is retrieved independently; only explicitly authorized scope becomes a delivery issue.
+The AI must not claim that a feature exists, is missing, works, is secure or is tested without suitable evidence. Documentation describes intent; source and runtime evidence establish implementation. Issue #150 is a historical vision register, not the current product source of truth. Follow `AI/PROJECT.md` and the current owner-approved issues. Explicit authorization and bounded delivery scope are still required.
 
 ## 2. One-time setup
 
@@ -61,7 +61,7 @@ Use the same loop for every substantial feature, bug, maintenance task or review
 4. **Separate certainty levels.** List confirmed facts, hypotheses, unknowns and decisions requiring your approval.
 5. **Agree on acceptance criteria.** Include success, failure, permission-denied, empty/loading states and compatibility constraints as relevant.
 6. **Plan the smallest coherent change.** Identify affected backend/frontend/data/API/security/RTL/accessibility areas. Avoid unrelated refactors.
-7. **Implement on a task branch.** Keep changes focused on one issue and preserve established contracts.
+7. **Implement on a task branch.** Keep changes focused on one issue and preserve current source-backed API, data, messaging and authorization contracts.
 8. **Review the diff.** Check callers, error paths, authorization, privacy, data integrity, performance and accessibility.
 9. **Verify only with permission.** A request to implement does not authorize tests, builds, lint, migrations or CI. Record exactly what was and was not run.
 10. **Update GitHub.** Keep durable findings and progress on the issue; put code review discussion on the PR. Link PR to issue.
