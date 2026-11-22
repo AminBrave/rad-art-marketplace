@@ -98,7 +98,7 @@ Project management is intentionally handled by the existing task-management and 
 - Organize feature code around cohesive user-facing responsibilities; keep components composable and avoid premature generic abstractions.
 - Model loading, empty, success, validation, error, disabled, submitting and recovery states.
 - Use semantic controls, accessible names, keyboard interaction, visible focus and focus management.
-- Preserve shared RAD primitives/tokens, responsive behavior, RTL and reduced motion.
+- Use the new semantic primitives/tokens defined by the product refactor; preserve responsive behavior, RTL and reduced motion. The legacy RAD visual system is reference-only.
 
 ### API and data contracts
 - Trace request-to-response and frontend-to-backend flows end to end.
