@@ -8,11 +8,15 @@ This sequence is a dependency plan, not permission to change every area at once.
 - Record all findings and uncertainties on #265 and related child issues.
 - No runtime verification is implied by source inspection.
 
-## First implementation PR candidate (after audit closure)
-- New semantic design-token architecture using only the five brand anchors.
-- Shared responsive shell and role-aware navigation for Discover, Buyer Studio, Artist Studio and Admin Console.
-- No API/schema/permission changes and no messaging behavior changes in this first slice.
-- Confirm exact component and route scope against issues #265–#268 before implementation; do not run verification without explicit permission.
+## First implementation slice — in progress on `refactor/rademan-product-foundation`
+- [x] Add a semantic `--rd-*` token layer and expose brand/semantic colors through Tailwind; retain compatibility aliases while feature surfaces migrate.
+- [x] Add browser-persisted light/dark/system theme selection, OS preference tracking and early theme application before styles load.
+- [x] Reframe shared workspace navigation labels around Content Library, Inquiries and Admin Console functions while preserving every existing route.
+- [x] Add theme controls to public and authenticated shells; clarify desktop workspace identity/navigation.
+- [ ] Run authorized lint, color-token tests, production build and responsive/theme browser review. Not yet authorized or executed.
+- [ ] Review the diff and open a PR after verification is authorized and complete.
+
+Constraints maintained in this slice: no API/schema/permission changes and no messaging behavior changes. Theme persistence is browser-local; it is not synchronized to the user account.
 
 ## Workstream 1 — Product foundations
 - Define new semantic design tokens from the five retained brand anchors.
