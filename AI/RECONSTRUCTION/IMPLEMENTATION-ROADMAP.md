@@ -8,6 +8,12 @@ This sequence is a dependency plan, not permission to change every area at once.
 - Record all findings and uncertainties on #265 and related child issues.
 - No runtime verification is implied by source inspection.
 
+## First implementation PR candidate (after audit closure)
+- New semantic design-token architecture using only the five brand anchors.
+- Shared responsive shell and role-aware navigation for Discover, Buyer Studio, Artist Studio and Admin Console.
+- No API/schema/permission changes and no messaging behavior changes in this first slice.
+- Confirm exact component and route scope against issues #265–#268 before implementation; do not run verification without explicit permission.
+
 ## Workstream 1 — Product foundations
 - Define new semantic design tokens from the five retained brand anchors.
 - Define typography, spacing, grids, component primitives, responsive breakpoints and RTL/LTR rules.
