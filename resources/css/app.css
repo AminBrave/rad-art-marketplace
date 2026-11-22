@@ -109,11 +109,11 @@
      * components. New components should consume the --rd-* semantic roles.
      */
     --color-canvas: var(--rd-canvas);
-    --color-ink: var(--rd-brand-charcoal);
-    --color-terracotta: var(--rd-brand-terracotta);
+    --color-ink: var(--rd-text-primary);
+    --color-terracotta: var(--rd-action);
     --color-terracotta-strong: var(--rd-action-hover);
     --color-sand: var(--rd-brand-sand);
-    --color-olive: var(--rd-brand-olive);
+    --color-olive: var(--rd-success);
     --color-paper: var(--rd-surface);
     --color-text: var(--rd-text-primary);
     --color-text-muted: var(--rd-text-secondary);
