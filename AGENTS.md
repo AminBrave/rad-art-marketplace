@@ -18,13 +18,13 @@ Keep each layer focused; do not copy whole policies between files.
 | Source, tests, configuration and runtime | Evidence of actual implementation and behavior | Product intent or authorization |
 | GitHub issues, PRs and Workboard (when configured) | Authorization records, task scope, review evidence and live progress | A substitute for source inspection or permission |
 
-Authority is purpose-specific: explicit user authorization defines the permitted task and may grant separately gated actions where the contract allows; this contract defines default safety boundaries and explicit permission gates; current source/runtime establishes implementation facts; canonical product decisions establish product intent; live GitHub records establish task/review status. AI/SESSION.md is only a concise handoff and never outranks those sources. Skills and playbook guidance must defer to their owning project documents.
+Authority is purpose-specific: current explicit owner direction defines product intent and authorized task scope; this contract defines default safety boundaries and explicit permission gates; latest main source/runtime establishes implementation facts; live GitHub records establish task/review status. Historical vision records are consulted only when the owner explicitly selects them. AI/SESSION.md is only a concise handoff and never outranks those sources. Skills and playbook guidance must defer to their owning project documents.
 
 - Rademan's current product direction is a mobile-first, installable visual-content platform connecting artists and buyers through artwork discovery and direct messaging. See `AI/PROJECT.md`.
 - Recorded stack: PHP 8.3+ and Laravel 13; React 18, JavaScript, React Router 7, TanStack Query 5 and Vite. Confirm installed versions in manifests before relying on version-specific APIs.
 - Rebuild the design system from first principles; retain only the five brand color anchors documented in `AI/PROJECT.md`. Do not treat the legacy RAD design system or component catalogue as a constraint.
 - Do not assume checkout, orders, shipping, payouts, subscriptions, commissions, booking, escrow or other commerce capabilities exist unless current source and approved product decisions prove they do.
-- Implementation facts come from current source, migrations, tests, configuration and observed runtime behavior. Product intent comes from the canonical decision records in #150 and `AI/PROJECT.md`. Task status comes from live GitHub issues/PRs and the Rademan Workboard Kanban Project. Chat history and model memory are not authoritative.
+- Implementation facts come from the latest main source, migrations, tests, configuration and observed runtime behavior. Product intent comes from current owner direction and `AI/PROJECT.md`. Task status comes from live GitHub issues/PRs and the Rademan Workboard Kanban Project. Chat history and model memory are not authoritative.
 
 ## 1A. Rademan product refactor authority
 
@@ -58,7 +58,7 @@ At the start of a task, read this file first. Then classify the task and select 
 - Cross-chat continuation or project-wide planning: read `AI/SESSION.md` and the referenced live issue/PR.
 - Product discovery, opportunity assessment, customer research or experiment design: load `.agents/skills/product-discovery/SKILL.md`; read `AI/PROJECT.md` and the named canonical #150 decision when relevant.
 - Feature planning, requirements, acceptance criteria or delivery slicing: load `.agents/skills/feature-planning/SKILL.md` and follow `AI/TASK-MANAGEMENT.md`.
-- UI/UX, user journeys, information architecture, interaction design, visual design or design-system changes: load `.agents/skills/ui-ux-design/SKILL.md` and `AI/DESIGN-SYSTEM.md`; consult `AI/RAD-COMPONENT-CATALOGUE.md` before changing shared UI.
+- UI/UX, user journeys, information architecture, interaction design, visual design or design-system changes: load `.agents/skills/ui-ux-design/SKILL.md` and `AI/DESIGN-SYSTEM.md`; treat `AI/RAD-COMPONENT-CATALOGUE.md` as legacy reference only; inspect current shared UI source and follow the new design direction.
 - Laravel, API, database or backend work: load `.agents/skills/laravel-backend/SKILL.md`.
 - React, routing, frontend or UI implementation: load `.agents/skills/react-frontend/SKILL.md`.
 - Bug or regression: load `.agents/skills/debugging/SKILL.md`.
@@ -109,8 +109,8 @@ Do not state that a feature is missing until the relevant routes, screens, data 
 ## 5A. Decision-to-task authorization gate
 
 - Issue #150 is a historical vision register. Its numbered decision comments are historical intent records, not current implementation authority or automatic authorization.
-- When the user names a decision, retrieve only that decision's canonical comment. Do not reread all 41 decisions unless explicitly asked or a real dependency is evidenced.
-- A decision is product intent, not an implementation task, MVP commitment, architecture specification, priority or permission to build.
+- When the user explicitly names a historical #150 decision, retrieve only that record. Do not read unrelated historical decisions.
+- A historical vision decision is context, not an implementation task, MVP commitment, architecture specification, priority or permission to build.
 - Convert a decision into a delivery issue only after explicit product-owner authorization. Link the issue to the selected decision comment and record the authorization.
 - Define an MVP boundary inside each authorized delivery issue. A small decision may be one issue; a large decision may use a parent epic and independently reviewable child issues. Keep later scope separate.
 - Standalone bugs, maintenance, QA and documentation tasks do not need a product decision ID.
