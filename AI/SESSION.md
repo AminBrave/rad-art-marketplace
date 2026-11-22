@@ -1,52 +1,54 @@
 # AI handoff — current project state
 
-> Durable handoff between chats, not a transcript or model memory. Keep concise and update only when project-wide state changes.
+> Concise cross-chat handoff. Latest `main` is the implementation source of truth; this file is not.
 
 ## Current objective
-Maintain a safe, evidence-driven development workflow for Rademan. Work is organized as explicitly authorized GitHub delivery issues on one decision-driven Kanban board. There is no product-phase roadmap. The product interface direction is a coherent, app-like responsive web experience; authenticated users retain role-aware primary navigation across authenticated routes, a compact dashboard header with primary and secondary navigation grouped in the hamburger drawer, and a primary-only mobile/tablet bottom bar. See `AI/DESIGN-SYSTEM.md`.
+Reconstruct Rademan around four connected experiences: public Discover, Buyer Studio, Artist Studio and Admin Console. Rademan is a mobile-first visual-content platform connecting artists and buyers through artwork discovery and direct messaging. The existing buyer–artist chat remains a core product capability and must be preserved.
 
-## Project starting point
-- Product: Persian-first artist discovery and artist-contact marketplace. See `AI/PROJECT.md`.
-- Default integration branch: `main`.
-- Single AI entry point: `AGENTS.md`.
-- Human operating guide: `AI/README.md`.
-- Engineering practices and curated external references: `AI/ENGINEERING-PLAYBOOK.md`.
-- Task and Kanban rules: `AI/TASK-MANAGEMENT.md`.
-- Issue-to-release workflow and verification selection: `AI/DEVELOPMENT-WORKFLOW.md`.
-- Canonical product intent: #150, with 41 standalone decision records.
-- Canonical task skills: `.agents/skills/`; there is no maintained `.claude/skills/` mirror.
-- Optional local context helper: `npm run ai:context -- --task "<one-sentence task>"`.
+## Product and design direction
+- Product intent and exclusions: `AI/PROJECT.md`.
+- Target IA, navigation, themes, PWA and messaging preservation: `AI/DESIGN-SYSTEM.md`.
+- Retain only five brand color anchors: Ivory #F7F5F0, Charcoal #242320, Terracotta #A64F31, Sand #D8C9B7, Olive #536052. Rebuild the rest of the design system.
+- Do not assume commerce, social-feed, Instagram integration, saved items, global search or other unverified capabilities.
+- “Inquiries” is the existing messaging feature, not a new lead-management concept.
 
-## Confirmed workflow constraints
-- Product decisions in #150 are future product intent unless separately authorized for implementation.
-- When a decision is named, retrieve only its canonical record; do not read unrelated decisions by default.
-- Every authorized task has a bounded MVP, explicit exclusions, acceptance criteria and evidence-based dependencies.
-- GitHub issue numbers identify tasks; D01–D41 identify product decisions. They are different namespaces.
-- The Rademan Workboard is the intended single execution view; #152 remains open and its live configuration must be verified before claiming setup is complete.
-- No tests, lint, builds, migrations, seeders, scanners or CI without explicit permission for the specific execution.
-- No deployment, merge, force-push, shared-history rewrite or repository-setting change without explicit permission.
-- Preserve Laravel/API, React, RAD design-system, accessibility, Persian and RTL conventions.
-- Current source and live GitHub state outrank chat history and AI-generated summaries.
+## Source-of-truth rules
+- Before material implementation claims or changes, inspect latest `main`, record its SHA and trace current source, migrations, tests and configuration.
+- Older docs, old agent skills, historical permission statements and stale issue descriptions are derived/historical only when they conflict with latest main or current owner direction.
+- Never weaken actual server-side authorization, privacy or safety enforcement.
+- Update stale documentation and skills to align with this product direction.
+- GitHub issues/PRs are task scope and review records; explicit owner approval and platform safety gates still apply.
 
-## Architecture workstream status
-- Parent epic #185 — architecture and unified development workflow: **closed/completed on 2026-11-19**.
-- Child workstreams #186–#190 are closed. Relevant implementation and documentation PRs are merged to `main`.
-- #209 batch implementation and end-of-batch approval documentation is complete through merged PR #210.
-- #217 SendMessage action extraction is complete through merged PR #218.
-- Higher-risk backend lifecycle, payload-serialization and authorization-consolidation candidates were deliberately deferred; do not treat them as approved follow-up implementation.
-- Historical issues and PRs remain authoritative records. Verify live GitHub state before resuming any historical task.
+## Repository baseline
+- Repository: `AminBrave/rad-art-marketplace`.
+- Baseline main inspected for this reconstruction: `4db615e7ff271446640dd79ad2aa1c24553f7966` (2026-11-21).
+- Work branch: `refactor/rademan-product-foundation`.
+- Initial source-level audit and reconstruction documents are in `AI/RECONSTRUCTION/`.
+- Frontend: React 18, React Router, TanStack Query, Vite. Backend: Laravel. Verify exact versions in manifests before relying on specific APIs.
+- Router: `resources/js/app/AppRouter.jsx`; role navigation: `resources/js/app/workspaceNavigation.js`; API routes: `routes/web.php` under `api/v1`; health endpoint: `routes/api.php`.
 
-## Current documentation work
-- #219 — refresh agent skills and engineering playbook. This is the active task for the current documentation update.
-- #152 — Workboard configuration remains a separate open task, outside #185.
+## Confirmed initial findings (source inspection only)
+- Existing public discovery includes artwork catalogue/details, artist directory/profiles and editorial collections.
+- Existing workspaces include buyer overview/messages; artist overview/profile/artwork management/messages; admin users, artwork moderation, message reports and editorial curation.
+- Messaging is substantial: conversation list, history/pagination, polling sync, composer, message actions, attachments, artwork context and safety workflows exist in current source. Inspect before changing.
+- Messaging sync currently polls at five-second intervals in `useMessagingQueries.js`; do not describe it as WebSocket/push real-time.
+- Conversation endpoints are participant-authorized; direct conversation creation is buyer-role constrained in `routes/web.php`. Trace policies/controllers before any access change.
+- Initial CSS inspection found a light semantic token system; a complete dark theme was not established by that inspection.
+- Initial repository-tree inspection found no manifest/service-worker implementation; installability is not established.
+- `resources/js/app/App.jsx` and `AppRouter.jsx` both contain substantial code; verify entrypoint/import usage before classifying the former as legacy or removing anything.
 
-## Batch delivery preference
-- For a bounded, explicitly authorized workstream, state the batch scope and stop conditions once, then implement all safe, low-risk in-scope slices without per-slice approval.
-- Keep independently reviewable outcomes in separate PRs; use draft PRs while maintainer verification is pending.
-- Provide one consolidated set of exact backend/frontend/Playwright commands at the end, only for affected boundaries.
-- Batch authorization does not authorize assistant-run tests, lint, builds, browser automation, CI, migrations, destructive operations, deployment or release.
-- Stop for unresolved product, architecture, API/schema, authorization/privacy/security or material-risk decisions.
-- See the authoritative rules in `AGENTS.md` and `AI/DEVELOPMENT-WORKFLOW.md`.
+## Work completed
+- Created branch `refactor/rademan-product-foundation`.
+- Added current-state, target-architecture, capability-matrix, route-map, messaging-preservation and implementation-roadmap documents under `AI/RECONSTRUCTION/`.
+- Updated `AI/PROJECT.md` and `AI/DESIGN-SYSTEM.md` to the current product direction.
+- Further audit and remaining agent-skill/documentation alignment are in progress.
 
-## Resume protocol
-Read `AGENTS.md` first. Inspect the live issue/PR, current branch/commit and relevant source. For a named product decision, retrieve only its canonical record. Record confirmed facts, assumptions, unknowns, authorized scope, MVP, exclusions, verification status and next actions on the relevant issue. Update this handoff only when project-wide state changes.
+## Verification and safety status
+- Source inspection only. No tests, lint, builds, type checks, browser automation, migrations, scanners, CI, deployment or runtime verification were run.
+- Do not run executable verification or initiate CI without explicit permission for the specific execution.
+- No app behavior or UI implementation has been changed in this documentation workstream.
+
+## Next actions
+1. Finish source-backed route/API/policy/data audit and inspect the actual app entrypoint plus stale docs/skills.
+2. Align the remaining repository instructions and relevant agent skills; label the legacy component catalogue as reference-only.
+3. Update issues #265–#268 with confirmed audit findings and propose the first bounded implementation PR (design tokens + shared shell, preserving messaging behavior).
