@@ -1,13 +1,33 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Images, LayoutDashboard, Menu, MessageCircle, UserRound, Users, X } from 'lucide-react';
+import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Images, LayoutDashboard, Menu, MessageCircle, Monitor, Moon, Sun, UserRound, Users, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { getWorkspacePrimaryLinks } from './workspaceNavigation';
+import { useTheme } from './ThemeContext';
 import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, Checkbox, NotificationListSkeleton } from '../components/ui';
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
+
+function ThemeControl() {
+    const { theme, cycleTheme } = useTheme();
+    const Icon = theme === 'dark' ? Moon : theme === 'light' ? Sun : Monitor;
+    const label = theme === 'dark' ? 'تیره' : theme === 'light' ? 'روشن' : 'هماهنگ با دستگاه';
+
+    return (
+        <button
+            type="button"
+            onClick={cycleTheme}
+            aria-label={`تغییر پوسته؛ حالت فعلی: ${label}`}
+            title={`پوسته: ${label}`}
+            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-surface text-text transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+        >
+            <Icon size={18} strokeWidth={1.9} aria-hidden="true" />
+            <span className="sr-only">تغییر پوسته</span>
+        </button>
+    );
+}
 
 const publicSecondaryLinks = [
     { to: '/artworks', label: 'گالری آثار' },
@@ -74,6 +94,7 @@ export function PublicLayout() {
                     </nav>
 
                     <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+                        <ThemeControl />
                         {user ? (
                             <>
                                 <span className="hidden max-w-36 truncate text-sm font-semibold text-ink 2xl:inline">{user.name}</span>
@@ -460,14 +481,14 @@ const workspaceNavigationIcons = {
 const workspaceNavigationLabels = {
     '/dashboard/artist': 'خانه',
     '/dashboard/artist/profile': 'پروفایل',
-    '/dashboard/artist/artworks': 'آثار',
-    '/dashboard/artist/messages': 'پیام‌ها',
+    '/dashboard/artist/artworks': 'محتوا',
+    '/dashboard/artist/messages': 'درخواست‌ها',
     '/dashboard/buyer': 'خانه',
-    '/dashboard/buyer/messages': 'پیام‌ها',
+    '/dashboard/buyer/messages': 'درخواست‌ها',
     '/admin': 'خانه',
     '/admin/users': 'کاربران',
-    '/admin/artworks': 'بررسی آثار',
-    '/admin/message-reports': 'گزارش‌ها',
+    '/admin/artworks': 'آثار',
+    '/admin/message-reports': 'ایمنی',
     '/admin/editorial': 'سردبیری',
 };
 
@@ -495,7 +516,7 @@ function AuthenticatedBottomNavigation({ primaryLinks }) {
                             ].join(' ')}
                         >
                             <Icon size={19} strokeWidth={1.9} aria-hidden="true" />
-                            <span className="max-w-full truncate">{workspaceNavigationLabels[item.to] ?? item.label}</span>
+                            <span className="max-w-full truncate">{item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label}</span>
                         </NavLink>
                     );
                 })}
@@ -542,6 +563,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     </div>
 
                     <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+                        <ThemeControl />
                         {user?.role !== 'admin' && <NotificationBell user={user} />}
 
                         <div className="hidden min-w-0 items-center gap-3 lg:flex">
@@ -558,7 +580,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                             <button
                                 type="button"
                                 aria-label="باز کردن منوی حساب کاربری"
-                                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus lg:hidden"
                             >
                                 <Menu size={20} aria-hidden="true" />
                             </button>
@@ -657,6 +679,11 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                 <aside className={isMessagingRoute
                     ? 'hidden min-w-0 rounded-xl border border-border bg-paper p-3 shadow-soft lg:fixed lg:top-28 lg:right-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))] lg:z-30 lg:block lg:h-fit lg:max-h-[calc(100dvh_-_8rem)] lg:w-60 lg:overflow-y-auto'
                     : 'hidden min-w-0 rounded-xl border border-border bg-paper p-3 shadow-soft lg:sticky lg:top-24 lg:block lg:h-fit'}>
+                    <div className="mb-4 rounded-xl bg-surface-muted p-4">
+                        <p className="text-[10px] font-extrabold tracking-wide text-muted">RAD ART / WORKSPACE</p>
+                        <p className="mt-1 text-sm font-extrabold text-ink">{title}</p>
+                        <p className="mt-1 truncate text-xs text-muted">{user?.name}</p>
+                    </div>
                     <nav aria-label="ناوبری فضای کاربری" className="flex w-full min-w-0 flex-col gap-1">
                         {links.map((item) => {
                             const Icon = workspaceNavigationIcons[item.to] ?? LayoutDashboard;
@@ -668,8 +695,8 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                     className={({ isActive }) => [
                                         'relative inline-flex min-h-11 w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus motion-reduce:transition-none',
                                         isActive
-                                            ? 'bg-ink text-inverse shadow-soft after:absolute after:inset-y-2 after:right-0 after:w-1 after:rounded-full after:bg-terracotta'
-                                            : 'bg-transparent text-muted hover:bg-accent-surface hover:text-terracotta-strong',
+                                            ? 'bg-accent-surface text-terracotta-strong after:absolute after:inset-y-2 after:right-0 after:w-1 after:rounded-full after:bg-terracotta'
+                                            : 'bg-transparent text-muted hover:bg-surface-muted hover:text-ink',
                                     ].join(' ')}
                                 >
                                     <Icon size={18} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />
