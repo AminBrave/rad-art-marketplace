@@ -38,17 +38,19 @@ Reconstruct Rademan around four connected experiences: public Discover, Buyer St
 - `resources/js/app/App.jsx` and `AppRouter.jsx` both contain substantial code; verify entrypoint/import usage before classifying the former as legacy or removing anything.
 
 ## Work completed
-- Created branch `refactor/rademan-product-foundation`.
-- Added current-state, target-architecture, capability-matrix, route-map, messaging-preservation and implementation-roadmap documents under `AI/RECONSTRUCTION/`.
-- Updated `AI/PROJECT.md` and `AI/DESIGN-SYSTEM.md` to the current product direction.
-- Further audit and remaining agent-skill/documentation alignment are in progress.
+- Created branch `refactor/rademan-product-foundation` from main baseline `4db615e7ff271446640dd79ad2aa1c24553f7966`.
+- Added current-state, target-architecture, capability-matrix, route-map, messaging-preservation, implementation-roadmap and index documents under `AI/RECONSTRUCTION/`.
+- Updated project/design direction, agent instructions, task workflow, human guide and relevant repository skills; marked the legacy component catalogue reference-only.
+- Started the first code slice: semantic `--rd-*` tokens and Tailwind bindings; browser-persisted light/dark/system theme provider and early theme application; theme controls in public/workspace headers; product-aligned role navigation labels; improved workspace sidebar identity and narrow mobile public header.
+- Existing route paths, API/data contracts and messaging components/behavior were not intentionally changed.
 
 ## Verification and safety status
-- Source inspection only. No tests, lint, builds, type checks, browser automation, migrations, scanners, CI, deployment or runtime verification were run.
+- Code and documentation changes are on the working branch only. No tests, lint, builds, type checks, browser automation, migrations, scanners, CI, deployment or runtime verification have been run.
+- The earlier source-level baseline remains static inspection. The new theme/shell implementation is not yet runtime-verified.
 - Do not run executable verification or initiate CI without explicit permission for the specific execution.
-- No app behavior or UI implementation has been changed in this documentation workstream.
+- Messaging components, APIs, data and authorization code were not changed in the first code slice.
 
 ## Next actions
-1. Finish source-backed route/API/policy/data audit and inspect the actual app entrypoint plus stale docs/skills.
-2. Align the remaining repository instructions and relevant agent skills; label the legacy component catalogue as reference-only.
-3. Update issues #265–#268 with confirmed audit findings and propose the first bounded implementation PR (design tokens + shared shell, preserving messaging behavior).
+1. Review the complete code diff for the semantic tokens, theme lifecycle, navigation and layout changes.
+2. Obtain explicit permission to run lint, token tests, production build and browser verification; validate light/dark/system across public, buyer, artist, admin and messaging surfaces.
+3. Fix verified defects, update #265–#268 with implementation evidence, then open a focused PR for review. Do not merge without separate approval.
