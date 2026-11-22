@@ -46,7 +46,10 @@ Do not add Saved, checkout, orders, analytics, artist-owned collection managemen
 - Use role-aware navigation without treating client-side guards as authorization; backend controls remain authoritative.
 - Navigation labels and exact placement are proposals until reconciled with current source and owner-approved IA.
 
-## Visual and interaction system to create
+## Visual and interaction system
+The first foundation slice is implemented on `refactor/rademan-product-foundation`: `--rd-*` semantic tokens, Tailwind semantic/brand color bindings, theme provider and public/workspace theme controls. Existing `--color-*` values remain as compatibility aliases during migration; new feature work should consume semantic roles. The legacy visual system is not the target.
+
+
 1. Semantic design tokens for surfaces, text, borders, focus, status, overlays and elevation.
 2. Typography scale validated for Persian-first RTL and mixed Persian/Latin content. Select fonts based on glyph coverage, readability and loading performance; do not assume a font choice before testing.
 3. Responsive layout primitives and artwork-focused grids with intentional image ratios.
@@ -55,7 +58,7 @@ Do not add Saved, checkout, orders, analytics, artist-owned collection managemen
 6. Light, dark and system theme behavior across every surface, including messaging, media, forms, dialogs and statuses.
 
 ## Theme and accessibility
-- Complete light and dark themes are required target behavior; system preference and explicit light/dark/system selection should be supported where compatible with the existing account/preferences architecture.
+- The current branch implements a browser-persisted light/dark/system cycle control, system preference tracking and semantic theme tokens. This is local to the browser, not synchronized to the user account. Visual/accessibility verification across all surfaces remains outstanding.
 - Meet WCAG 2.2 AA contrast and keyboard/focus expectations.
 - Never rely on color alone for status or actions.
 - Validate RTL, focus order, touch targets, zoom/reflow, reduced motion, screen-reader names and validation feedback.
