@@ -100,7 +100,7 @@ test('shared content and feedback components use semantic utility classes', () =
 
 test('RAD visual tokens are declared in one canonical root block', () => {
     assert.equal((css.match(/:root\s*\{/g) ?? []).length, 1);
-    assert.ok(css.includes('--color-overlay: rgb(36 35 32 / 64%)'));
+    assert.ok(css.includes('--color-overlay: var(--rd-overlay)'));
     assert.ok(css.includes('--overlay-backdrop-blur: 8px;'));
     assert.ok(css.includes('--color-message-own:'));
     assert.ok(css.includes('--color-success-surface:'));
@@ -131,7 +131,7 @@ test('public catalogue, artist directory and artwork detail use shared page layo
     assert.ok(publicPages[1].includes('PageContainer') && publicPages[1].includes('SectionHeader'));
     assert.ok(publicPages[2].includes('PageContainer'));
     assert.ok(buyerWorkspace.includes('WorkspaceHero') && buyerWorkspace.includes('<Surface'));
-    assert.ok(designSystem.includes('Dashboard page and section headings'));
+    assert.ok(designSystem.includes('Product information architecture'));
 });
 
 test('public and role-based workspaces use shared semantic shell utilities', () => {
@@ -163,7 +163,7 @@ test('form controls and helper hints use shared RAD-styled Radix primitives', ()
     assert.ok(alertDialog.includes('AlertDialogPrimitive.Root'));
     assert.ok(feedback.includes('ToastPrimitive.Provider'));
     assert.ok(feedback.includes('ToastPrimitive.Viewport'));
-    assert.ok(designSystem.includes('RAD Toast backed by Radix Toast'));
+    assert.ok(designSystem.includes('Accessible controls, form states, dialogs, menus, notifications'));
     assert.ok(editorialPages.includes('<AlertDialogAction asChild>'));
     assert.ok(editorialPages.includes('event.preventDefault(); publish(collection, false)'));
     assert.ok(editorialPages.includes('<AlertDialogTitle>'));
@@ -418,16 +418,17 @@ test('authenticated app shell keeps primary-only bottom navigation and places bo
 });
 test('RAD design-system definition makes the authenticated app-shell and navigation hierarchy canonical', () => {
     for (const principle of [
-        'coherent, responsive web app',
-        'Every route rendered while a user is authenticated',
-        'Keep the compact dashboard header',
-        'public-layout routes and authenticated workspace routes',
-        'Put both navigation tiers inside the dashboard hamburger drawer',
-        'Secondary site navigation',
-        'primary workspace destinations only',
-        'safe-area inset',
-        'Never invent a route',
-    ]) assert.ok(designSystem.includes(principle), 'Missing RAD design-system principle: ' + principle);
+        'coherent, contemporary visual-content platform',
+        'Product information architecture',
+        'Buyer Studio',
+        'Artist Studio',
+        'Admin Console',
+        'single canonical Inquiries destination',
+        'Light, dark and system theme behavior',
+        'Mobile-first PWA',
+        'Messaging preservation contract',
+        'latest `main` branch establishes what exists',
+    ]) assert.ok(designSystem.includes(principle), 'Missing current product/design principle: ' + principle);
 });
 test('auth bootstrap resolves session state before React mounts without caching personalized HTML', () => {
     assert.ok(bootShell.includes('id="rad-auth-bootstrap"'));
