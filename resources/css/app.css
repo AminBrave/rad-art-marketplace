@@ -189,7 +189,7 @@
     --radius-card: var(--rd-radius-md);
     --page-gutter: var(--rd-page-gutter);
     --header-height: var(--rd-header-height);
-    --workspace-bottom-nav-primary-height: 4.5rem;
+    --workspace-bottom-nav-primary-height: var(--rd-workspace-nav-height);
     --workspace-bottom-nav-height: var(--rd-workspace-nav-height);
     --control-height-sm: var(--rd-control-height-sm);
     --control-height-md: var(--rd-control-height-md);
