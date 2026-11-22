@@ -209,13 +209,13 @@ Create or find a feature issue first. Ask the AI to investigate and plan, not im
 
 ## 5. Decision-driven task management
 
-Rademan does not use a product roadmap or M0–M4 product milestones. Product intent is recorded separately from approved delivery work.
+Rademan does not use a product roadmap or M0–M4 product milestones. Current product intent is documented in `AI/PROJECT.md` and explicit owner direction; historical vision records remain separate from approved delivery work.
 
 ### The model
 
 Product decision → authorized delivery issue → task-specific MVP → implementation PR
 
-- **Product decision:** one of the 41 standalone intent records linked from #150. A decision may describe future direction and is not automatically a task.
+- **Historical vision record:** one of the 41 standalone intent records linked from #150. These are historical context only and are consulted when explicitly selected by the owner; they are not the current product source of truth or implementation permission.
 - **Delivery issue:** a bounded piece of work explicitly authorized by the product owner. It links to the one relevant decision (or records “Standalone task”).
 - **MVP:** the smallest useful, testable scope for that specific decision/task. It is written inside the issue, not treated as a platform-wide MVP roadmap.
 - **Child tasks:** if a decision is too large for one reviewable change, use a parent epic and split the MVP into linked, independently reviewable child issues.
