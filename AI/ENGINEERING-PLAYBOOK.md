@@ -56,7 +56,7 @@ Project management is intentionally handled by the existing task-management and 
 - Make assumptions explicit and rank them by impact and uncertainty. Test the riskiest assumption with the smallest ethical, low-cost experiment.
 - Define a primary outcome metric and relevant guardrails only when a meaningful baseline and measurement method exist. Do not fabricate targets, conversion rates or sample sizes.
 - Consider desirability, usability, feasibility, security, privacy, accessibility, support cost and operational cost together.
-- A discovery recommendation is not product-owner authorization. Product decisions in #150 are intent records; only separately authorized scope becomes an issue and implementation task.
+- A discovery recommendation is not product-owner authorization. Historical #150 comments are context only when explicitly selected; current product direction is in `AI/PROJECT.md` and owner-approved issues. Only separately authorized scope becomes an implementation task.
 - Avoid roadmap theater: the Rademan Workboard is an execution view, not a substitute for product strategy or a phase-based roadmap.
 
 ## 5. Architecture and technical design
