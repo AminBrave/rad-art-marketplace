@@ -86,3 +86,8 @@ Use the branch mapping defined in `AGENTS.md`:
 - Issues remain open tracking records; associate each with the matching track and PR rather than treating issues as mergeable objects.
 - Retarget legacy development PRs to the appropriate track before merging. Never merge a development PR to `main`.
 - Ask if the authoring track or destination is ambiguous.
+
+
+## Blending workflow
+
+`blending` is the shared integration branch for `develop/chatgpt` and `develop/claude`. Keep the two authoring branches independent. Bring each into `blending` through a PR targeting `blending`; do not merge ChatGPT directly into Claude or vice versa. Resolve conflicts and perform deliberate code adoption, compatibility reconciliation and combined verification on `blending`. A clean Git merge is not proof of runtime compatibility. Do not promote `blending` to `main` without separate explicit owner approval. See the mandatory workflow in `AGENTS.md`.
