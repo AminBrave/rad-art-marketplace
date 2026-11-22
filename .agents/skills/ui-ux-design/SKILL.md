@@ -1,65 +1,63 @@
 ---
 name: ui-ux-design
-description: Design and review Rademan product journeys, information architecture, interaction behavior, visual hierarchy, responsive layouts, accessibility and Persian RTL experiences.
+description: Design and review Rademan's Discover, Buyer Studio, Artist Studio and Admin Console experiences, including journeys, IA, interaction, responsive behavior, accessibility and Persian RTL.
 ---
 
 # UI and UX Design
 
 ## Purpose
+Use this skill for product journeys, navigation, page structure, interaction design, visual hierarchy, design-system work, usability reviews and interface specifications. Follow `AI/PROJECT.md` and `AI/DESIGN-SYSTEM.md` for current product direction. The latest `main` source establishes what exists; this skill is a procedure, not an implementation authority.
 
-Use this skill for user journeys, navigation, page structure, interaction design, visual hierarchy, design-system changes, usability reviews and interface specifications. It complements—not replaces—`AI/DESIGN-SYSTEM.md`, `AI/RAD-COMPONENT-CATALOGUE.md`, `react-frontend` and `quality-engineering`.
+## Product experience model
+Design across four connected experiences:
+1. **Discover (public):** artwork, artist and editorial collection discovery, with contextual entry into buyer–artist conversations.
+2. **Buyer Studio:** buyer overview and one canonical Inquiries destination.
+3. **Artist Studio:** artist overview, content library, profile and one canonical Inquiries destination.
+4. **Admin Console:** operational overview, artwork moderation, editorial curation, reports/trust and safety, user/role governance.
+
+“Inquiries” is the existing buyer–artist messaging/chat capability. It is not a contact form or a separate lead-management product. Treat messaging as a core system to preserve.
 
 ## Design workflow
+1. Identify actor, task, intent, entry point, context, constraints and expected outcome.
+2. Inspect the latest `main` branch and trace the actual route, shared shell, components, API states, responsive behavior and related journey.
+3. Define information architecture and navigation before visual styling. Separate confirmed routes/capabilities from proposals.
+4. Specify interaction behavior, state transitions, keyboard behavior, focus entry/return, dismissal, validation, feedback and recovery paths.
+5. Cover loading, empty, populated, error, permission denied, disabled, submitting, success and stale states where relevant.
+6. Rebuild the design system from first principles. Retain only the five brand anchors: Ivory #F7F5F0, Charcoal #242320, Terracotta #A64F31, Sand #D8C9B7 and Olive #536052. Do not inherit the legacy RAD tokens or component catalogue as mandatory constraints.
+7. Design mobile-first for phone, then progressively enhance tablet and desktop. Account for safe areas, keyboard, long Persian labels, image ratios, overflow and fixed navigation clearance.
+8. Design accessibly: semantic HTML, accessible names, keyboard support, visible focus, sensible focus management, sufficient contrast, reduced motion and status cues beyond color.
+9. Validate through source-backed inspection and authorized review/testing. Distinguish inspected from tested.
+10. Hand off structure, flow, component responsibilities, interaction/state matrix, responsive rules, content notes and observable acceptance criteria.
 
-1. **Understand the actor and task.** Identify role, user intent, entry point, context, constraints and expected outcome.
-2. **Inspect the existing experience.** Trace the actual route, shared shell, RAD tokens/components, responsive behavior, API states and related user journey. Do not infer capabilities from labels or mockups.
-3. **Define structure before decoration.** Map information architecture, navigation hierarchy, content priority, page regions, primary action and recovery path.
-4. **Specify interaction behavior.** Describe trigger, state transition, keyboard behavior, focus entry/return, dismissal, validation, feedback and edge cases. Identify modal vs non-modal behavior.
-5. **Design all relevant states.** Include loading, empty, populated, error, permission denied, disabled, submitting, success, stale data and retry/recovery states as applicable.
-6. **Use the RAD system.** Reuse current semantic tokens, typography, spacing, layout primitives and project-owned wrappers. Consult the component catalogue before introducing or changing a shared component.
-7. **Design responsively.** Consider narrow mobile, tablet and desktop, touch targets, safe areas, long Persian labels, artwork aspect ratios, content overflow and fixed navigation clearance.
-8. **Design accessibly.** Use semantic HTML, accessible names, logical landmarks, keyboard support, visible focus, sensible focus management, sufficient contrast, reduced motion and status cues beyond color.
-9. **Validate the design.** Use source-backed visual inspection, representative content, keyboard walkthroughs and user feedback where available. State what was inspected versus not tested.
-10. **Hand off clearly.** Provide page/flow structure, component mapping, interaction/state matrix, content/copy notes, responsive rules and acceptance criteria. Do not start implementation if a product or material design decision is unresolved.
+## Messaging preservation
+Before changing messaging UX, inspect current frontend, query/cache, API routes, controllers, actions, models, policies, migrations and tests. Preserve existing conversation identity, buyer/artist roles, participant authorization, list/history/pagination, polling/sync behavior, composer, contextual artwork references, drafts, attachments, message actions, read state, archive/mute and safety workflows where confirmed in source. Keep artwork-/artist-originated context. Do not create duplicate inboxes or alter API/data/permission contracts as a design side effect.
 
-## Persian-first and RTL requirements
+Mobile messaging must provide a clear conversation-list ↔ active-conversation path, keyboard-safe composer and independently usable history scrolling. Desktop should make the conversation list and active thread efficient. These are target usability requirements, not claims about current runtime behavior.
 
-- Treat RTL as a structural layout concern, not a final text-alignment override.
-- Prefer CSS logical properties and established Tailwind logical utilities for inline/block positioning.
-- Preserve correct ordering for icons, labels, avatars, timestamps, controls and navigation in RTL.
-- Handle mixed Persian/Latin names, URLs, email addresses, numbers, punctuation and user-generated text deliberately; use `dir="auto"` where appropriate.
-- Check Vazirmatn/Inter typography roles, line-height, truncation, wrapping and long content.
-- Test representative Persian content, Latin-only content, mixed-direction strings and emoji sequences where relevant.
-- Never assume a mirrored layout is automatically usable; controls and icon meaning may be direction-independent or intentionally physical.
+## Visual system and themes
+- Use only the five brand colors as identity anchors; design semantic color roles and all other foundations anew.
+- Complete light and dark themes are required target behavior; system preference and explicit light/dark/system choice should be considered against current settings architecture.
+- Validate contrast and all semantic states in both themes.
+- Select typography after testing Persian glyph coverage, readability, mixed Persian/Latin text and loading performance.
+- Use logical CSS properties and deliberate LTR islands for URLs, email, code and Latin metadata.
+- Target WCAG 2.2 AA; never rely on color alone. Respect reduced motion.
 
-## Interaction and accessibility rules
+## PWA and privacy
+Treat installability as a target, not an existing fact. Inspect manifest, icons, service worker, lifecycle and runtime behavior before claiming PWA readiness. Do not propose unsafe caching of private workspace or chat data. Offline messaging/background sync are not implied.
 
-- Prefer native semantic HTML for links, buttons, forms, labels, headings, tables and landmarks.
-- Use existing Radix-backed RAD wrappers for supported interactive patterns. Do not recreate menu, dialog, tabs, select, checkbox, tooltip or toast behavior with ad-hoc event handlers.
-- Preserve focus containment only for true modal dialogs; contextual popovers must not become accidental modal traps.
-- Define Escape, outside interaction, close-on-navigation and focus restoration behavior.
-- Ensure visible keyboard focus, logical tab order, accessible names, adequate touch targets and error/status announcements.
-- Respect `prefers-reduced-motion`; do not rely on animation or color alone to communicate meaning.
-- Treat automated accessibility checks as useful signals, not proof of WCAG conformance.
-
-## Rademan design constraints
-
-- `AI/DESIGN-SYSTEM.md` is the canonical product-level interface direction; implementation source remains authoritative for what currently exists.
-- `AI/RAD-COMPONENT-CATALOGUE.md` is the implementation-level component inventory and adoption contract.
-- Preserve the authenticated app shell and role-aware navigation contracts; do not invent routes or roles.
-- Artwork and artist identity remain central. Do not sacrifice image quality, content legibility or trust cues for decorative effects.
-- Keep the shared RAD visual language. Do not introduce stock shadcn/Radix Themes styling or a parallel token system.
-- Product behavior, role access, data visibility and API contracts cannot be decided by a visual design proposal.
+## Source map
+Start with `resources/js/app/AppRouter.jsx`, `workspaceNavigation.js`, `Layouts.jsx`, `RoutingPages.jsx`, `resources/css/app.css` and relevant page components. For messaging inspect `MessagingCenter.jsx`, `MessagingInboxPanel.jsx`, `ConversationHeader.jsx`, `MessageTimeline.jsx`, `MessageComposer.jsx`, `RelatedArtworkStrip.jsx`, `MessagingStatusBanners.jsx`, `useMessagingQueries.js` and their backend call paths. Follow callers rather than assuming file names prove behavior.
 
 ## Design handoff checklist
-
-- [ ] Actor, goal, entry point and user outcome are explicit.
-- [ ] Current route and existing components were inspected.
-- [ ] Information hierarchy and primary action are clear.
-- [ ] Relevant loading/empty/error/permission/success states are specified.
-- [ ] Responsive behavior and content overflow are addressed.
+- [ ] Actor, goal, entry point and outcome are explicit.
+- [ ] Latest main and current route/call path were inspected.
+- [ ] Confirmed capabilities are separated from proposals.
+- [ ] Navigation and primary action are clear; no invented routes.
+- [ ] Messaging preservation and access boundaries are explicit where relevant.
+- [ ] Loading/empty/error/permission/success states are specified.
+- [ ] Phone, tablet and desktop behavior is addressed.
 - [ ] Persian RTL and mixed-direction content are addressed.
 - [ ] Keyboard, focus, semantic names, contrast and reduced motion are addressed.
-- [ ] RAD tokens and shared primitives are reused.
-- [ ] API/data/security implications and unresolved product decisions are called out.
-- [ ] Acceptance criteria describe observable behavior, not subjective “looks good” alone.
+- [ ] Light/dark theme behavior is covered.
+- [ ] API/data/security implications and unresolved decisions are called out.
+- [ ] Acceptance criteria describe observable behavior.
