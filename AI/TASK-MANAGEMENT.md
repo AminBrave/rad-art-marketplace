@@ -45,7 +45,7 @@ Examples:
 - [SPIKE] Investigate image moderation options
 
 Supported prefixes:
-- [DECISION] — a product decision record when a separate issue is genuinely needed; do not duplicate the canonical #150 record by default.
+- [DECISION] — a separately tracked product-direction record only when genuinely needed; do not duplicate historical #150 records by default.
 - [EPIC] — a decision-level outcome requiring multiple child issues.
 - [FEAT] — a user-visible delivery slice.
 - [BUG] — a reproducible defect or regression.
