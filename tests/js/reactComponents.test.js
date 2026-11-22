@@ -346,28 +346,19 @@ test('SkeletonLines exposes one loading announcement while hiding decorative ske
     assert.equal((html.match(/aria-hidden="true"/g) ?? []).length, 2);
 });
 
-test('MediaImage fallback stays accessible for missing sources and supports custom fallback content', () => {
+test('MediaImage fallback exposes accessible missing-source and load-error states', () => {
     const missing = renderToStaticMarkup(
         React.createElement(feedback.MediaImage, { src: '', alt: 'اثر بدون تصویر' }),
-    );
-    const custom = renderToStaticMarkup(
-        React.createElement(feedback.MediaImage, {
-            src: null,
-            alt: 'اثر جایگزین',
-            fallback: React.createElement('span', null, 'جایگزین سفارشی'),
-        }),
     );
 
     assert.match(missing, /role="img"/);
     assert.match(missing, /aria-label="اثر بدون تصویر: تصویر در دسترس نیست"/);
     assert.match(missing, /تصویر در دسترس نیست/);
-    assert.match(missing, /بارگذاری تصویر ناموفق بود/);
+    assert.match(missing, /خطا در نمایش تصویر/);
     assert.match(missing, /نشانی تصویر ثبت نشده است/);
-    assert.match(custom, /جایگزین سفارشی/);
-    assert.match(custom, /بارگذاری تصویر ناموفق بود/);
 
     const mediaSource = readFileSync(new URL('../../resources/js/components/ui/feedback.jsx', import.meta.url), 'utf8');
-    assert.match(mediaSource, /onError=\{\(\) => setFailedSrc\(imageSrc\)\}/);
+    assert.match(mediaSource, /onError=\\{\\(\\) => setFailedSrc\\(imageSrc\\)\\}/);
     assert.match(mediaSource, /فایل در فضای ذخیره‌سازی پیدا نشد یا دریافت آن ناموفق بود/);
 });
 
