@@ -23,6 +23,13 @@ description: Implement or review Rademan React 18 JavaScript UI, routing, TanSta
 9. Treat frontend route guards as presentation only. Backend authorization must protect the data and action.
 10. Keep rendering and bundle costs proportionate; avoid unnecessary dependencies and expensive rerenders.
 
+## Test contract for frontend refactors
+- Whenever a React component, page, shell, route, navigation model, design token, theme, responsive layout, interaction or accessibility behavior changes, update its component/integration/browser tests in the same change.
+- Assert user-visible behavior, accessible names/roles, state transitions, keyboard/focus behavior, responsive journey outcomes and theme semantics. Avoid coupling tests to incidental class strings, fixed CSS dimensions or retired component-library conventions.
+- During redesign, replace obsolete assertions about old RAD tokens, old navigation hierarchies or retired visual primitives with assertions for the approved semantic token system and current Discover / Buyer Studio / Artist Studio / Admin Console journeys.
+- Preserve meaningful loading, empty, error, permission, RTL, dark/light, keyboard and messaging regression coverage. If an old assertion no longer applies, document why and add equivalent/stronger coverage for the current contract.
+- If a test fails, determine whether the code regressed or the test describes superseded behavior before changing either. Do not alter new production code solely to appease stale assertions; ask when the intended behavior is unclear.
+
 ## Verification
 - Add or update focused component, integration or browser coverage when useful.
 - Do not run tests, lint, type checks, builds, browser automation, Lighthouse or accessibility tools unless explicitly authorized.
