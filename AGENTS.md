@@ -263,3 +263,25 @@ Branch and PR rules:
 10. If the authoring track is unclear, ask which development branch to use rather than guessing.
 
 The current branch mapping is also documented in `.agents/skills/git-github/SKILL.md`. This policy does not relax security, review, verification, CI, merge or release approval requirements.
+
+
+## Blending integration branch (mandatory)
+
+The `blending` branch is the only shared integration environment for combining the two AI development tracks:
+- `develop/chatgpt`: ChatGPT-authored development.
+- `develop/claude`: Claude-authored development.
+- `blending`: isolated integration of both tracks for conflict resolution, compatibility work, code adoption, combined test planning/execution and final review.
+- `main`: stable/release branch; promotion remains a separate owner-approved release action.
+
+Integration workflow:
+1. Keep `develop/chatgpt` and `develop/claude` independent. Do not merge either development branch into the other.
+2. Bring changes from each development branch into `blending` through explicit PRs. The PR base is `blending`; the head is the selected development branch (or a dedicated integration-fix branch based on `blending`).
+3. Use `blending` for cross-agent conflict resolution, compatibility fixes, dependency/API contract reconciliation, test updates and deliberate adoption of useful work from either track.
+4. Do not silently choose one agent's implementation when changes conflict. Inspect behavior, tests, security boundaries and product requirements; document the chosen resolution and rationale.
+5. Integration changes that are specific to one development track should be brought back to that track through a separate reviewed PR only when explicitly intended. Do not automatically propagate blending changes to either track.
+6. Do not treat branch mergeability as proof of runtime compatibility. Run the approved combined verification plan on `blending` and report exact checks, failures and untested areas.
+7. No blending PR targets `main`. Release promotion from `blending` to `main` requires separate explicit owner approval after review and verification.
+8. Do not rewrite or force-push any of the three shared branches. Resolve conflicts in normal commits/PRs.
+9. If the integration direction, adoption decision or conflict resolution is ambiguous, stop and ask the product owner.
+
+This branch is an integration/test candidate, not an automatically releasable build. Existing CI, verification, security and merge approval gates remain in force.
