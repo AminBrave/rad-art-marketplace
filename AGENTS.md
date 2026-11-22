@@ -54,9 +54,9 @@ At the start of a task, read this file first. Then classify the task and select 
 ### Context routing
 
 - Any task: inspect the live GitHub issue/PR if supplied; check for related open work before creating duplicates.
-- Product behavior, scope or user journey: read `AI/PROJECT.md`; when a specific product decision is named, retrieve only its canonical record from #150; read `AI/TASK-MANAGEMENT.md` for issue/MVP/Kanban rules.
+- Product behavior, scope or user journey: read `AI/PROJECT.md`; read `AI/TASK-MANAGEMENT.md` for issue/MVP/Kanban rules; retrieve a historical #150 record only when the owner explicitly names it.
 - Cross-chat continuation or project-wide planning: read `AI/SESSION.md` and the referenced live issue/PR.
-- Product discovery, opportunity assessment, customer research or experiment design: load `.agents/skills/product-discovery/SKILL.md`; read `AI/PROJECT.md` and the named canonical #150 decision when relevant.
+- Product discovery, opportunity assessment, customer research or experiment design: load `.agents/skills/product-discovery/SKILL.md`; read `AI/PROJECT.md`; retrieve a historical #150 record only when explicitly selected by the owner.
 - Feature planning, requirements, acceptance criteria or delivery slicing: load `.agents/skills/feature-planning/SKILL.md` and follow `AI/TASK-MANAGEMENT.md`.
 - UI/UX, user journeys, information architecture, interaction design, visual design or design-system changes: load `.agents/skills/ui-ux-design/SKILL.md` and `AI/DESIGN-SYSTEM.md`; treat `AI/RAD-COMPONENT-CATALOGUE.md` as legacy reference only; inspect current shared UI source and follow the new design direction.
 - Laravel, API, database or backend work: load `.agents/skills/laravel-backend/SKILL.md`.
