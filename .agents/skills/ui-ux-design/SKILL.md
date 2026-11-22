@@ -48,6 +48,12 @@ Treat installability as a target, not an existing fact. Inspect manifest, icons,
 ## Source map
 Start with `resources/js/app/AppRouter.jsx`, `workspaceNavigation.js`, `Layouts.jsx`, `RoutingPages.jsx`, `resources/css/app.css` and relevant page components. For messaging inspect `MessagingCenter.jsx`, `MessagingInboxPanel.jsx`, `ConversationHeader.jsx`, `MessageTimeline.jsx`, `MessageComposer.jsx`, `RelatedArtworkStrip.jsx`, `MessagingStatusBanners.jsx`, `useMessagingQueries.js` and their backend call paths. Follow callers rather than assuming file names prove behavior.
 
+## Test alignment for redesigns
+- A UI redesign is not complete when only the interface changes: update the affected component, interaction, responsive, accessibility and end-to-end tests in the same implementation change.
+- Retire tests that encode superseded layouts, legacy RAD tokens, old component-library behavior or obsolete navigation patterns. Replace them with tests for the approved IA, semantic design tokens, themes, mobile/desktop behavior and observable actor journeys.
+- Preserve equivalent or stronger checks for keyboard/focus behavior, accessible names, RTL/mixed-direction content, contrast-relevant theme roles, messaging continuity and permission boundaries.
+- Do not modify production UI to satisfy a test that merely encodes the retired design. First establish whether the test or implementation conflicts with the approved design; ask if unclear.
+
 ## Design handoff checklist
 - [ ] Actor, goal, entry point and outcome are explicit.
 - [ ] Latest main and current route/call path were inspected.
