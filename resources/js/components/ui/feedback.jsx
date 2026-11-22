@@ -194,7 +194,6 @@ export function MediaImage({
                         <AlertTriangle size={15} className="mt-0.5 shrink-0" aria-hidden="true" />
                         <span className="min-w-0">
                             <span className="block font-bold">خطا در نمایش تصویر</span>
-                            <span className="sr-only">بارگذاری تصویر ناموفق بود</span>
                             <span className="block opacity-95">
                                 {imageSrc
                                     ? 'فایل در فضای ذخیره‌سازی پیدا نشد یا دریافت آن ناموفق بود.'
