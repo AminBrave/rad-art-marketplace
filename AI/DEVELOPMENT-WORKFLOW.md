@@ -142,7 +142,7 @@ Keep one authoritative home for each kind of guidance. Other files should link t
 | Location | Responsibility |
 |---|---|
 | AGENTS.md | Repository entry point, global permissions, evidence/authority model, engineering invariants and routing |
-| AI/PROJECT.md and canonical #150 records | Product intent, confirmed baseline and product decisions |
+| AI/PROJECT.md and current owner-approved issues | Current product intent and authorized delivery scope |
 | AI/TASK-MANAGEMENT.md | Issue structure, decision-to-task authorization, MVP and Workboard rules |
 | AI/DEVELOPMENT-WORKFLOW.md | Delivery lifecycle, project-wide batch procedure, review checklist and verification selection |
 | AI/ENGINEERING-PLAYBOOK.md | Cross-cutting engineering principles and curated external references |
@@ -151,6 +151,6 @@ Keep one authoritative home for each kind of guidance. Other files should link t
 | Source, tests, manifests, scripts and runtime | Actual implementation, supported commands and observed behavior |
 | GitHub issues/PRs and live Workboard (when configured) | Authorization, task scope, review and delivery status |
 
-The authority model is not a simple document ranking: user authorization sets the task boundary; AGENTS.md sets non-negotiable operating constraints; source/runtime is evidence of implementation; canonical decision records establish product intent; live GitHub records establish task status. A skill, handoff or playbook must not override those sources.
+The authority model is not a simple document ranking: user authorization sets the task boundary; AGENTS.md sets non-negotiable operating constraints; source/runtime is evidence of implementation; AI/PROJECT.md and current owner direction establish product intent; live GitHub records establish task status. Historical #150 records are consulted only when explicitly selected. A skill, handoff or playbook must not override those sources.
 
 When a skill needs GitHub mechanics, it should describe branch/commit/PR execution and link here for batch lifecycle. When it needs product or engineering context, it should point to the owning AI/ document rather than copying it.
