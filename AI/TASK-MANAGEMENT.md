@@ -6,7 +6,8 @@ This document defines how approved work is captured and delivered. **It is not a
 
 | Record | Purpose | Canonical location |
 |---|---|---|
-| Product decision | Stable statement of product intent and rationale; may describe future direction | The standalone decision comment linked from #150 |
+| Product direction | Current owner-approved product brief and explicit product direction | `AI/PROJECT.md` and current owner-approved GitHub issues/comments |
+| Historical vision record | Prior product brainstorming and future intent | #150 decision comments; consult only when explicitly selected by the owner |
 | Delivery issue | Authorized, bounded work to be done; linked to its source decision when applicable | GitHub issue |
 | MVP scope | Smallest useful, testable first delivery for that decision/task | The delivery issue body |
 | Implementation evidence | What changed and what was actually verified | PR, commits, tests/CI evidence and relevant source |
@@ -16,13 +17,13 @@ GitHub issue numbers are permanent task identifiers. Decision IDs (D01–D41) ar
 
 ## 2. Decision → task → MVP
 
-A product decision is not automatically a task, backlog commitment, architecture specification or permission to implement.
+Product direction is not automatically a task, backlog commitment, architecture specification or permission to implement. Explicit owner authorization and a bounded delivery issue are still required.
 
 When the product owner explicitly authorizes work based on a decision:
 
 1. Retrieve only that decision's canonical comment from #150. Read another decision only when the selected record explicitly references it or a real technical dependency is evidenced.
 2. Inspect the current repository and describe the existing behavior as implemented, partial, missing or unknown.
-3. Create or update a focused GitHub issue and link the canonical decision comment.
+3. Create or update a focused GitHub issue and link the owner-approved product direction or specifically selected historical decision, if applicable.
 4. Define the **MVP for this decision/task**: the smallest coherent, useful, testable slice that satisfies the authorized outcome.
 5. State exclusions and later possibilities separately. They are not silently included in the MVP.
 6. If the decision is small enough, one delivery issue can represent the whole task and contain its MVP scope.
@@ -60,7 +61,7 @@ Do not put M0–M4 or other product-phase labels in new task titles. Do not crea
 
 Every authorized delivery issue should include:
 
-- **Source decision(s):** stable decision ID(s) and direct canonical link(s), or “Standalone task”.
+- **Source direction / decision(s):** stable decision ID(s) and direct canonical link(s), or “Standalone task”.
 - **Authorization:** what the product owner explicitly approved and when; link to the authorization when available.
 - **Problem and outcome:** who needs what and why.
 - **Current baseline:** source-backed implemented / partial / missing / unknown status.
