@@ -24,6 +24,12 @@ Find material defects and risks in the requested change. Review is read-only unl
 6. Report actionable findings first, ordered Critical / High / Medium / Low. Include file and line evidence, impact, realistic preconditions and a focused remediation.
 7. Separate confirmed defects from uncertainty and optional suggestions. If no findings are identified, state scope and limitations; do not imply proof of correctness.
 
+## Test-contract review
+- Check that every changed production behavior, architecture boundary or UI/design contract has corresponding updated tests in the same change.
+- Challenge assertions that preserve retired design systems, old navigation structures, obsolete labels or incidental CSS implementation details. Tests should express current approved behavior and durable invariants.
+- Verify that removed or relaxed assertions are genuinely obsolete and replaced by equivalent/stronger coverage where the underlying risk remains. Pay special attention to authorization, privacy, accessibility, RTL, messaging and data integrity.
+- Flag production changes made solely to satisfy stale tests, as well as test deletions or weakened assertions without a documented rationale.
+
 ## Review rules
 - Do not edit files, silently fix findings or broaden scope.
 - Do not report speculative style preferences as defects.
