@@ -2,7 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Rad Art — Contemporary Art Editorial design tokens. */
+/*
+ * Rademan semantic design foundation
+ * Brand anchors are intentionally limited to five colors. Component styling
+ * consumes semantic roles below; it should not depend directly on brand hues.
+ */
 :root {
     color-scheme: light;
     font-family: 'Vazirmatn', 'Inter', sans-serif;
@@ -11,106 +15,255 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
-    /* Core palette */
-    --color-canvas: #F7F5F0;
-    --color-ink: #242320;
-    --color-terracotta: #A64F31;
-    --color-terracotta-strong: #9A452B;
-    --color-sand: #D8C9B7;
-    --color-olive: #536052;
-    --color-paper: #FFFFFF;
+    /* Brand identity */
+    --rd-brand-ivory: #F7F5F0;
+    --rd-brand-charcoal: #242320;
+    --rd-brand-terracotta: #A64F31;
+    --rd-brand-sand: #D8C9B7;
+    --rd-brand-olive: #536052;
 
-    /* Semantic roles */
-    --color-text: var(--color-ink);
-    --color-text-muted: #625E56;
-    --color-text-subtle: #706A61;
-    --color-border: #DED8CF;
-    --color-border-strong: #8F877D;
-    --color-surface: var(--color-paper);
-    --color-surface-muted: #F0EDE6;
-    --color-action: var(--color-terracotta);
-    --color-action-text: var(--color-terracotta-strong);
-    --color-focus: #C16C4C;
-    --color-success: var(--color-olive);
-    --color-danger: #A33D32;
-    --color-warning: #8A5A12;
-    --color-info: #315F78;
-    --color-success-surface: color-mix(in srgb, var(--color-success) 12%, white);
-    --color-danger-surface: color-mix(in srgb, var(--color-danger) 10%, white);
-    --color-warning-surface: color-mix(in srgb, var(--color-warning) 10%, white);
-    --color-info-surface: color-mix(in srgb, var(--color-info) 10%, white);
-    --color-accent-surface: color-mix(in srgb, var(--color-terracotta) 10%, white);
-    --color-inverse-text: #FFFFFF;
-    --color-skeleton-base: #EEEAE3;
-    --color-skeleton-highlight: #F8F6F2;
-    /* Shared dimmed, blurred scrim for dialogs, drawers and modal surfaces. */
-    --color-overlay: rgb(36 35 32 / 64%);
-    --overlay-backdrop-blur: 8px;
-    --color-focus-soft: rgb(193 108 76 / 16%);
-    --color-message-own: color-mix(in srgb, var(--color-terracotta) 12%, var(--color-paper));
-    --color-message-peer: var(--color-paper);
+    /* Semantic color roles — light */
+    --rd-canvas: var(--rd-brand-ivory);
+    --rd-surface: #FFFFFF;
+    --rd-surface-raised: #FFFFFF;
+    --rd-surface-muted: #F0EDE6;
+    --rd-text-primary: var(--rd-brand-charcoal);
+    --rd-text-secondary: #625E56;
+    --rd-text-tertiary: #706A61;
+    --rd-border-subtle: #DED8CF;
+    --rd-border-strong: #8F877D;
+    --rd-action: var(--rd-brand-terracotta);
+    --rd-action-hover: #9A452B;
+    --rd-action-text: #9A452B;
+    --rd-focus: #A64F31;
+    --rd-success: var(--rd-brand-olive);
+    --rd-danger: #A33D32;
+    --rd-warning: #8A5A12;
+    --rd-info: #315F78;
+    --rd-inverse-text: #FFFFFF;
+    --rd-overlay: rgb(36 35 32 / 64%);
+    --rd-skeleton-base: #EEEAE3;
+    --rd-skeleton-highlight: #F8F6F2;
+    --rd-message-own: color-mix(in srgb, var(--rd-brand-terracotta) 12%, var(--rd-surface));
+    --rd-message-peer: var(--rd-surface);
 
     /* Typography */
-    --font-persian: 'Vazirmatn', sans-serif;
-    --font-latin: 'Inter', sans-serif;
-    --font-sans: 'Vazirmatn', 'Inter', sans-serif;
-    --text-xs: 0.75rem;
-    --text-sm: 0.875rem;
-    --text-base: 1rem;
-    --text-lg: 1.125rem;
-    --text-xl: 1.25rem;
-    --text-2xl: 1.5rem;
-    --text-3xl: 1.875rem;
-    --text-4xl: 2.25rem;
-    --text-5xl: 3rem;
-    --leading-copy: 1.9;
-    --leading-heading: 1.35;
-    --leading-tight: 1.25;
-    --leading-relaxed: 1.75;
-    --weight-regular: 400;
-    --weight-medium: 500;
-    --weight-semibold: 600;
-    --weight-bold: 700;
-    --weight-extrabold: 800;
+    --rd-font-persian: 'Vazirmatn', sans-serif;
+    --rd-font-latin: 'Inter', sans-serif;
+    --rd-font-sans: 'Vazirmatn', 'Inter', sans-serif;
+    --rd-text-xs: 0.75rem;
+    --rd-text-sm: 0.875rem;
+    --rd-text-base: 1rem;
+    --rd-text-lg: 1.125rem;
+    --rd-text-xl: 1.25rem;
+    --rd-text-2xl: 1.5rem;
+    --rd-text-3xl: 1.875rem;
+    --rd-text-4xl: 2.25rem;
+    --rd-text-5xl: 3rem;
+    --rd-leading-copy: 1.85;
+    --rd-leading-heading: 1.3;
+    --rd-leading-tight: 1.2;
+    --rd-leading-relaxed: 1.7;
+    --rd-weight-regular: 400;
+    --rd-weight-medium: 500;
+    --rd-weight-semibold: 600;
+    --rd-weight-bold: 700;
+    --rd-weight-extrabold: 800;
 
-    /* 4px spacing rhythm */
-    --space-1: 0.25rem;
-    --space-2: 0.5rem;
-    --space-3: 0.75rem;
-    --space-4: 1rem;
-    --space-5: 1.25rem;
-    --space-6: 1.5rem;
-    --space-8: 2rem;
-    --space-10: 2.5rem;
-    --space-12: 3rem;
-    --space-16: 4rem;
-    --space-20: 5rem;
-    --space-24: 6rem;
+    /* 4px spacing scale */
+    --rd-space-1: 0.25rem;
+    --rd-space-2: 0.5rem;
+    --rd-space-3: 0.75rem;
+    --rd-space-4: 1rem;
+    --rd-space-5: 1.25rem;
+    --rd-space-6: 1.5rem;
+    --rd-space-8: 2rem;
+    --rd-space-10: 2.5rem;
+    --rd-space-12: 3rem;
+    --rd-space-16: 4rem;
+    --rd-space-20: 5rem;
+    --rd-space-24: 6rem;
 
-    /* Shape, elevation, and layout */
-    --radius-sm: 0.25rem;
-    --radius-md: 0.5rem;
-    --radius-lg: 0.75rem;
-    --radius-xl: 1rem;
-    --radius-pill: 9999px;
-    --shadow-soft: 0 12px 32px rgb(36 35 32 / 5%);
-    --shadow-raised: 0 16px 40px rgb(36 35 32 / 10%);
-    --content-width: 84rem;
-    --radius-card: 0.625rem;
-    --page-gutter: clamp(1.25rem, 4vw, 3rem);
-    --header-height: 5rem;
-    --workspace-bottom-nav-primary-height: 4.5rem;
-    --workspace-bottom-nav-height: var(--workspace-bottom-nav-primary-height);
-    --control-height-sm: 2.25rem;
-    --control-height-md: 2.75rem;
-    --control-height-lg: 3rem;
-    --content-reading-width: 48rem;
-    --content-wide-width: 80rem;
-    --artwork-ratio: 4 / 3;
-    --portrait-ratio: 4 / 5;
+    /* Shape, elevation and responsive layout */
+    --rd-radius-sm: 0.375rem;
+    --rd-radius-md: 0.625rem;
+    --rd-radius-lg: 0.875rem;
+    --rd-radius-xl: 1.125rem;
+    --rd-radius-pill: 9999px;
+    --rd-shadow-soft: 0 8px 28px rgb(36 35 32 / 6%);
+    --rd-shadow-raised: 0 16px 40px rgb(36 35 32 / 12%);
+    --rd-content-width: 84rem;
+    --rd-page-gutter: clamp(1rem, 3vw, 2.5rem);
+    --rd-header-height: 4.5rem;
+    --rd-workspace-nav-height: 4.5rem;
+    --rd-control-height-sm: 2.25rem;
+    --rd-control-height-md: 2.75rem;
+    --rd-control-height-lg: 3rem;
+    --rd-content-reading-width: 48rem;
+    --rd-content-wide-width: 80rem;
+    --rd-artwork-ratio: 4 / 3;
+    --rd-portrait-ratio: 4 / 5;
+
+    /*
+     * Compatibility aliases for existing Tailwind utilities and feature
+     * components. New components should consume the --rd-* semantic roles.
+     */
+    --color-canvas: var(--rd-canvas);
+    --color-ink: var(--rd-brand-charcoal);
+    --color-terracotta: var(--rd-brand-terracotta);
+    --color-terracotta-strong: var(--rd-action-hover);
+    --color-sand: var(--rd-brand-sand);
+    --color-olive: var(--rd-brand-olive);
+    --color-paper: var(--rd-surface);
+    --color-text: var(--rd-text-primary);
+    --color-text-muted: var(--rd-text-secondary);
+    --color-text-subtle: var(--rd-text-tertiary);
+    --color-border: var(--rd-border-subtle);
+    --color-border-strong: var(--rd-border-strong);
+    --color-surface: var(--rd-surface);
+    --color-surface-muted: var(--rd-surface-muted);
+    --color-action: var(--rd-action);
+    --color-action-text: var(--rd-action-text);
+    --color-focus: var(--rd-focus);
+    --color-success: var(--rd-success);
+    --color-danger: var(--rd-danger);
+    --color-warning: var(--rd-warning);
+    --color-info: var(--rd-info);
+    --color-success-surface: color-mix(in srgb, var(--color-success) 14%, var(--color-surface));
+    --color-danger-surface: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface));
+    --color-warning-surface: color-mix(in srgb, var(--color-warning) 12%, var(--color-surface));
+    --color-info-surface: color-mix(in srgb, var(--color-info) 12%, var(--color-surface));
+    --color-accent-surface: color-mix(in srgb, var(--color-action) 10%, var(--color-surface));
+    --color-inverse-text: var(--rd-inverse-text);
+    --color-skeleton-base: var(--rd-skeleton-base);
+    --color-skeleton-highlight: var(--rd-skeleton-highlight);
+    --color-overlay: var(--rd-overlay);
+    --overlay-backdrop-blur: 8px;
+    --color-focus-soft: color-mix(in srgb, var(--rd-focus) 16%, transparent);
+    --color-message-own: var(--rd-message-own);
+    --color-message-peer: var(--rd-message-peer);
+
+    --font-persian: var(--rd-font-persian);
+    --font-latin: var(--rd-font-latin);
+    --font-sans: var(--rd-font-sans);
+    --text-xs: var(--rd-text-xs);
+    --text-sm: var(--rd-text-sm);
+    --text-base: var(--rd-text-base);
+    --text-lg: var(--rd-text-lg);
+    --text-xl: var(--rd-text-xl);
+    --text-2xl: var(--rd-text-2xl);
+    --text-3xl: var(--rd-text-3xl);
+    --text-4xl: var(--rd-text-4xl);
+    --text-5xl: var(--rd-text-5xl);
+    --leading-copy: var(--rd-leading-copy);
+    --leading-heading: var(--rd-leading-heading);
+    --leading-tight: var(--rd-leading-tight);
+    --leading-relaxed: var(--rd-leading-relaxed);
+    --weight-regular: var(--rd-weight-regular);
+    --weight-medium: var(--rd-weight-medium);
+    --weight-semibold: var(--rd-weight-semibold);
+    --weight-bold: var(--rd-weight-bold);
+    --weight-extrabold: var(--rd-weight-extrabold);
+
+    --space-1: var(--rd-space-1);
+    --space-2: var(--rd-space-2);
+    --space-3: var(--rd-space-3);
+    --space-4: var(--rd-space-4);
+    --space-5: var(--rd-space-5);
+    --space-6: var(--rd-space-6);
+    --space-8: var(--rd-space-8);
+    --space-10: var(--rd-space-10);
+    --space-12: var(--rd-space-12);
+    --space-16: var(--rd-space-16);
+    --space-20: var(--rd-space-20);
+    --space-24: var(--rd-space-24);
+
+    --radius-sm: var(--rd-radius-sm);
+    --radius-md: var(--rd-radius-md);
+    --radius-lg: var(--rd-radius-lg);
+    --radius-xl: var(--rd-radius-xl);
+    --radius-pill: var(--rd-radius-pill);
+    --shadow-soft: var(--rd-shadow-soft);
+    --shadow-raised: var(--rd-shadow-raised);
+    --content-width: var(--rd-content-width);
+    --radius-card: var(--rd-radius-md);
+    --page-gutter: var(--rd-page-gutter);
+    --header-height: var(--rd-header-height);
+    --workspace-bottom-nav-primary-height: var(--rd-workspace-nav-height);
+    --workspace-bottom-nav-height: var(--rd-workspace-nav-height);
+    --control-height-sm: var(--rd-control-height-sm);
+    --control-height-md: var(--rd-control-height-md);
+    --control-height-lg: var(--rd-control-height-lg);
+    --content-reading-width: var(--rd-content-reading-width);
+    --content-wide-width: var(--rd-content-wide-width);
+    --artwork-ratio: var(--rd-artwork-ratio);
+    --portrait-ratio: var(--rd-portrait-ratio);
+}
+
+/* Explicit dark choice. Brand anchors remain unchanged; semantic roles adapt. */
+:root[data-theme='dark'] {
+    color-scheme: dark;
+    --rd-canvas: #171815;
+    --rd-surface: #22231F;
+    --rd-surface-raised: #292A25;
+    --rd-surface-muted: #2B2C27;
+    --rd-text-primary: #F2EFE8;
+    --rd-text-secondary: #C0B9AD;
+    --rd-text-tertiary: #A49C90;
+    --rd-border-subtle: #41423B;
+    --rd-border-strong: #6B6C62;
+    --rd-action: #D27A58;
+    --rd-action-hover: #E09272;
+    --rd-action-text: #E7A184;
+    --rd-focus: #E09272;
+    --rd-success: #A4B49A;
+    --rd-danger: #F08A80;
+    --rd-warning: #E6B86B;
+    --rd-info: #8DBBD1;
+    --rd-inverse-text: #171815;
+    --rd-overlay: rgb(0 0 0 / 72%);
+    --rd-skeleton-base: #30312B;
+    --rd-skeleton-highlight: #3A3B34;
+    --rd-message-own: color-mix(in srgb, var(--rd-brand-terracotta) 28%, var(--rd-surface));
+    --rd-message-peer: var(--rd-surface-raised);
+    --rd-shadow-soft: 0 8px 28px rgb(0 0 0 / 18%);
+    --rd-shadow-raised: 0 16px 40px rgb(0 0 0 / 28%);
+}
+
+/* System preference applies only when the user has not selected light/dark. */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']):not([data-theme='dark']) {
+        color-scheme: dark;
+        --rd-canvas: #171815;
+        --rd-surface: #22231F;
+        --rd-surface-raised: #292A25;
+        --rd-surface-muted: #2B2C27;
+        --rd-text-primary: #F2EFE8;
+        --rd-text-secondary: #C0B9AD;
+        --rd-text-tertiary: #A49C90;
+        --rd-border-subtle: #41423B;
+        --rd-border-strong: #6B6C62;
+        --rd-action: #D27A58;
+        --rd-action-hover: #E09272;
+        --rd-action-text: #E7A184;
+        --rd-focus: #E09272;
+        --rd-success: #A4B49A;
+        --rd-danger: #F08A80;
+        --rd-warning: #E6B86B;
+        --rd-info: #8DBBD1;
+        --rd-inverse-text: #171815;
+        --rd-overlay: rgb(0 0 0 / 72%);
+        --rd-skeleton-base: #30312B;
+        --rd-skeleton-highlight: #3A3B34;
+        --rd-message-own: color-mix(in srgb, var(--rd-brand-terracotta) 28%, var(--rd-surface));
+        --rd-message-peer: var(--rd-surface-raised);
+        --rd-shadow-soft: 0 8px 28px rgb(0 0 0 / 18%);
+        --rd-shadow-raised: 0 16px 40px rgb(0 0 0 / 28%);
+    }
 }
 
 html {
+    min-width: 320px;
     scroll-behavior: smooth;
     scroll-padding-top: var(--header-height);
     background: var(--color-canvas);
@@ -153,7 +306,7 @@ a {
 
 ::selection {
     background: rgb(166 79 49 / 20%);
-    color: var(--color-ink);
+    color: var(--color-text);
 }
 
 [dir='ltr'] {
