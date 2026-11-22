@@ -359,7 +359,7 @@ test('messaging actions use Radix menu semantics and preserve reply focus', () =
     assert.ok(!messaging.includes("window.addEventListener('scroll', reposition"));
 });
 
-test('shared RAD modal dialogs retain outside-click and Escape dismissal behavior', () => {
+test('shared dialogs retain outside-click and Escape dismissal behavior', () => {
     assert.ok(dialog.includes('DialogPrimitive.Root'));
     assert.ok(dialog.includes('<DialogPrimitive.Overlay'));
     assert.ok(dialog.includes('<DialogPrimitive.Content'));
@@ -491,7 +491,7 @@ test('active frontend surfaces use semantic Rademan colors and avoid raw palette
     const sources = [...componentSources, ...applicationSources];
     const rawPalette = /\b(?:bg|text|border|ring)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\d{2,3}(?:\/\d{1,3})?\b/;
     for (const source of sources) {
-        assert.equal(rawPalette.test(source), false, 'Application surfaces must use semantic RAD color roles.');
+        assert.equal(rawPalette.test(source), false, 'Application surfaces must use semantic Rademan color roles.');
         assert.doesNotMatch(source, /\bra-[\w-]+/, 'Application components must not depend on legacy RAD CSS selectors.');
     }
 });
