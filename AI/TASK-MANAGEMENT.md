@@ -6,7 +6,8 @@ This document defines how approved work is captured and delivered. **It is not a
 
 | Record | Purpose | Canonical location |
 |---|---|---|
-| Product decision | Stable statement of product intent and rationale; may describe future direction | The standalone decision comment linked from #150 |
+| Product direction | Current owner-approved product brief and explicit product direction | `AI/PROJECT.md` and current owner-approved GitHub issues/comments |
+| Historical vision record | Prior product brainstorming and future intent | #150 decision comments; consult only when explicitly selected by the owner |
 | Delivery issue | Authorized, bounded work to be done; linked to its source decision when applicable | GitHub issue |
 | MVP scope | Smallest useful, testable first delivery for that decision/task | The delivery issue body |
 | Implementation evidence | What changed and what was actually verified | PR, commits, tests/CI evidence and relevant source |
@@ -16,20 +17,20 @@ GitHub issue numbers are permanent task identifiers. Decision IDs (D01–D41) ar
 
 ## 2. Decision → task → MVP
 
-A product decision is not automatically a task, backlog commitment, architecture specification or permission to implement.
+Product direction is not automatically a task, backlog commitment, architecture specification or permission to implement. Explicit owner authorization and a bounded delivery issue are still required.
 
-When the product owner explicitly authorizes work based on a decision:
+When the product owner explicitly authorizes work:
 
-1. Retrieve only that decision's canonical comment from #150. Read another decision only when the selected record explicitly references it or a real technical dependency is evidenced.
-2. Inspect the current repository and describe the existing behavior as implemented, partial, missing or unknown.
-3. Create or update a focused GitHub issue and link the canonical decision comment.
+1. Use the current owner-approved product direction. Retrieve a historical #150 comment only if the owner explicitly names that decision; do not read unrelated records.
+2. Inspect the latest `main` repository state and describe existing behavior as implemented, partial, missing or unknown.
+3. Create or update a focused GitHub issue and link the owner authorization / product direction; include a historical decision link only when specifically selected by the owner.
 4. Define the **MVP for this decision/task**: the smallest coherent, useful, testable slice that satisfies the authorized outcome.
 5. State exclusions and later possibilities separately. They are not silently included in the MVP.
 6. If the decision is small enough, one delivery issue can represent the whole task and contain its MVP scope.
 7. If the decision is too large for one reviewable change, use a parent [EPIC] issue for the decision-level outcome and create child delivery issues for independently reviewable MVP slices. Link every child to the parent and source decision.
-8. If an implementation requires more than one decision, record each relevant decision link and obtain explicit authorization for the combined scope. Do not infer dependencies from numbering or topic similarity.
+8. If an implementation combines distinct product directions, record each relevant owner-approved scope and obtain explicit authorization for the combined work. Do not infer dependencies from historical numbering or topic similarity.
 
-A decision may remain in the vision register indefinitely without creating any task. The owner may also authorize a standalone bug, maintenance, quality or documentation task that has no product decision ID.
+Historical vision records may remain indefinitely without creating any task. The owner may also authorize a standalone bug, maintenance, quality or documentation task that has no product decision ID.
 
 ## 3. Delivery issue naming
 
@@ -44,7 +45,7 @@ Examples:
 - [SPIKE] Investigate image moderation options
 
 Supported prefixes:
-- [DECISION] — a product decision record when a separate issue is genuinely needed; do not duplicate the canonical #150 record by default.
+- [DECISION] — a separately tracked product-direction record only when genuinely needed; do not duplicate historical #150 records by default.
 - [EPIC] — a decision-level outcome requiring multiple child issues.
 - [FEAT] — a user-visible delivery slice.
 - [BUG] — a reproducible defect or regression.
@@ -60,7 +61,7 @@ Do not put M0–M4 or other product-phase labels in new task titles. Do not crea
 
 Every authorized delivery issue should include:
 
-- **Source decision(s):** stable decision ID(s) and direct canonical link(s), or “Standalone task”.
+- **Source direction / decision(s):** stable decision ID(s) and direct canonical link(s), or “Standalone task”.
 - **Authorization:** what the product owner explicitly approved and when; link to the authorization when available.
 - **Problem and outcome:** who needs what and why.
 - **Current baseline:** source-backed implemented / partial / missing / unknown status.
@@ -136,10 +137,10 @@ Use one primary type, one priority and one primary area label per issue. Suggest
 
 ## 8. Non-negotiable AI guardrails
 
-- A decision ID is a pointer to one standalone intent record, not an instruction to read all decisions.
+- A historical decision ID is a pointer to one selected intent record, not an instruction to read all decisions.
 - Do not read unrelated decisions by default.
-- A decision does not imply MVP priority, timing, implementation permission, architecture or dependencies.
-- Do not create implementation issues from every vision decision automatically.
+- A historical vision decision does not imply MVP priority, timing, implementation permission, architecture or dependencies.
+- Do not create implementation issues from historical vision records automatically.
 - Do not expand an authorized MVP with adjacent decisions or speculative platform features.
 - If a task's scope changes materially, stop and ask for authorization or create a separately approved issue.
 - Distinguish confirmed facts, hypotheses, assumptions, unknowns and proposals.

@@ -1,13 +1,33 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Images, LayoutDashboard, Menu, MessageCircle, UserRound, Users, X } from 'lucide-react';
+import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Images, LayoutDashboard, Menu, MessageCircle, Monitor, Moon, Sun, UserRound, Users, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { getWorkspacePrimaryLinks } from './workspaceNavigation';
+import { useTheme } from './ThemeContext';
 import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, Checkbox, NotificationListSkeleton } from '../components/ui';
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
+
+function ThemeControl() {
+    const { theme, cycleTheme } = useTheme();
+    const Icon = theme === 'dark' ? Moon : theme === 'light' ? Sun : Monitor;
+    const label = theme === 'dark' ? 'تیره' : theme === 'light' ? 'روشن' : 'هماهنگ با دستگاه';
+
+    return (
+        <button
+            type="button"
+            onClick={cycleTheme}
+            aria-label={`تغییر پوسته؛ حالت فعلی: ${label}`}
+            title={`پوسته: ${label}`}
+            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-surface text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+        >
+            <Icon size={18} strokeWidth={1.9} aria-hidden="true" />
+            <span className="sr-only">تغییر پوسته</span>
+        </button>
+    );
+}
 
 const publicSecondaryLinks = [
     { to: '/artworks', label: 'گالری آثار' },
@@ -53,17 +73,17 @@ export function PublicLayout() {
 
     return (
         <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-        <div className={user ? "min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:pb-0" : "min-h-screen bg-canvas text-ink"} dir="rtl">
+        <div data-experience="discover" className={user ? "min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:pb-0" : "min-h-screen bg-canvas text-ink"} dir="rtl">
             <a href="#main-content" className="sr-only z-[60] bg-paper px-4 py-3 text-ink focus:not-sr-only focus:fixed focus:inset-x-4 focus:top-4">
                 رفتن به محتوای اصلی
             </a>
             <header className="sticky top-0 z-40 border-b border-border bg-[color:color-mix(in_srgb,var(--color-canvas)_94%,transparent)] backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-canvas)_88%,transparent)]">
                 <div className="mx-auto flex min-h-[var(--header-height)] max-w-content items-center justify-between gap-2 px-page-gutter sm:gap-4">
-                    <Link to="/" className="group flex shrink-0 items-center gap-3 text-ink no-underline" aria-label="راد آرت، صفحه اصلی">
-                        <span className="grid h-11 w-11 place-items-center rounded-md bg-ink text-xl font-black text-inverse transition-colors group-hover:bg-terracotta">ر</span>
+                    <Link to="/" className="group flex shrink-0 items-center gap-2 text-ink no-underline sm:gap-3" aria-label="راد آرت، صفحه اصلی">
+                        <span className="grid h-10 w-10 place-items-center rounded-md bg-ink text-lg font-black text-inverse transition-colors group-hover:bg-terracotta sm:h-11 sm:w-11 sm:text-xl">ر</span>
                         <span className="flex flex-col leading-tight">
-                            <span className="text-xl font-black tracking-tight">راد<span className="text-terracotta-strong">آرت</span></span>
-                            <span dir="ltr" className="mt-1 text-[9px] font-semibold tracking-[.2em] text-muted">INDEPENDENT ART</span>
+                            <span className="text-lg font-black tracking-tight sm:text-xl">راد<span className="text-terracotta-strong">آرت</span></span>
+                            <span dir="ltr" className="mt-1 hidden text-[9px] font-semibold tracking-[.2em] text-muted sm:block">INDEPENDENT ART</span>
                         </span>
                     </Link>
 
@@ -74,6 +94,7 @@ export function PublicLayout() {
                     </nav>
 
                     <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+                        <ThemeControl />
                         {user ? (
                             <>
                                 <span className="hidden max-w-36 truncate text-sm font-semibold text-ink 2xl:inline">{user.name}</span>
@@ -460,14 +481,14 @@ const workspaceNavigationIcons = {
 const workspaceNavigationLabels = {
     '/dashboard/artist': 'خانه',
     '/dashboard/artist/profile': 'پروفایل',
-    '/dashboard/artist/artworks': 'آثار',
-    '/dashboard/artist/messages': 'پیام‌ها',
+    '/dashboard/artist/artworks': 'محتوا',
+    '/dashboard/artist/messages': 'درخواست‌ها',
     '/dashboard/buyer': 'خانه',
-    '/dashboard/buyer/messages': 'پیام‌ها',
+    '/dashboard/buyer/messages': 'درخواست‌ها',
     '/admin': 'خانه',
     '/admin/users': 'کاربران',
-    '/admin/artworks': 'بررسی آثار',
-    '/admin/message-reports': 'گزارش‌ها',
+    '/admin/artworks': 'آثار',
+    '/admin/message-reports': 'ایمنی',
     '/admin/editorial': 'سردبیری',
 };
 
@@ -495,7 +516,7 @@ function AuthenticatedBottomNavigation({ primaryLinks }) {
                             ].join(' ')}
                         >
                             <Icon size={19} strokeWidth={1.9} aria-hidden="true" />
-                            <span className="max-w-full truncate">{workspaceNavigationLabels[item.to] ?? item.label}</span>
+                            <span className="max-w-full truncate">{item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label}</span>
                         </NavLink>
                     );
                 })}
@@ -524,7 +545,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
 
     return (
         <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-        <div className={isMessagingRoute ? "flex h-dvh flex-col overflow-hidden bg-canvas text-ink" : "min-h-screen bg-canvas text-ink"} dir="rtl">
+        <div data-experience={user?.role ?? 'workspace'} className={isMessagingRoute ? "flex h-dvh flex-col overflow-hidden bg-canvas text-ink" : "min-h-screen bg-canvas text-ink"} dir="rtl">
             <header className="sticky top-0 z-40 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] shadow-soft backdrop-blur">
                 <div className="mx-auto flex min-h-[4.5rem] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-20 sm:gap-4">
                     <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
@@ -542,6 +563,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     </div>
 
                     <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+                        <ThemeControl />
                         {user?.role !== 'admin' && <NotificationBell user={user} />}
 
                         <div className="hidden min-w-0 items-center gap-3 lg:flex">
@@ -558,7 +580,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                             <button
                                 type="button"
                                 aria-label="باز کردن منوی حساب کاربری"
-                                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus lg:hidden"
                             >
                                 <Menu size={20} aria-hidden="true" />
                             </button>
@@ -576,7 +598,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     <div className="flex min-w-0 items-center gap-3">
                         <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-lg font-black text-inverse">ر</span>
                         <div className="min-w-0">
-                            <DialogTitle className="text-sm font-extrabold text-ink">حساب کاربری</DialogTitle>
+                            <DialogTitle className="text-sm font-extrabold text-ink">فضای کاری</DialogTitle>
                             <DialogDescription className="mt-1 max-w-48 truncate text-xs text-muted">{user?.name}</DialogDescription>
                         </div>
                     </div>
@@ -615,7 +637,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     <div className="my-5 border-t border-border" />
 
                     <nav aria-label="پیوندهای تکمیلی سایت">
-                        <h3 className="mb-2 px-3 text-xs font-extrabold text-muted">کشف و راهنمایی</h3>
+                        <h3 className="mb-2 px-3 text-xs font-extrabold text-muted">کشف</h3>
                         <div className="grid gap-1">
                             {publicSecondaryLinks.map((item) => (
                                 <NavLink
@@ -657,6 +679,11 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                 <aside className={isMessagingRoute
                     ? 'hidden min-w-0 rounded-xl border border-border bg-paper p-3 shadow-soft lg:fixed lg:top-28 lg:right-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))] lg:z-30 lg:block lg:h-fit lg:max-h-[calc(100dvh_-_8rem)] lg:w-60 lg:overflow-y-auto'
                     : 'hidden min-w-0 rounded-xl border border-border bg-paper p-3 shadow-soft lg:sticky lg:top-24 lg:block lg:h-fit'}>
+                    <div className="mb-4 rounded-xl bg-surface-muted p-4">
+                        <p className="text-[10px] font-extrabold tracking-wide text-muted">RAD ART / WORKSPACE</p>
+                        <p className="mt-1 text-sm font-extrabold text-ink">{title}</p>
+                        <p className="mt-1 truncate text-xs text-muted">{user?.name}</p>
+                    </div>
                     <nav aria-label="ناوبری فضای کاربری" className="flex w-full min-w-0 flex-col gap-1">
                         {links.map((item) => {
                             const Icon = workspaceNavigationIcons[item.to] ?? LayoutDashboard;
@@ -668,8 +695,8 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                     className={({ isActive }) => [
                                         'relative inline-flex min-h-11 w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus motion-reduce:transition-none',
                                         isActive
-                                            ? 'bg-ink text-inverse shadow-soft after:absolute after:inset-y-2 after:right-0 after:w-1 after:rounded-full after:bg-terracotta'
-                                            : 'bg-transparent text-muted hover:bg-accent-surface hover:text-terracotta-strong',
+                                            ? 'bg-accent-surface text-terracotta-strong after:absolute after:inset-y-2 after:right-0 after:w-1 after:rounded-full after:bg-terracotta'
+                                            : 'bg-transparent text-muted hover:bg-surface-muted hover:text-ink',
                                     ].join(' ')}
                                 >
                                     <Icon size={18} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />

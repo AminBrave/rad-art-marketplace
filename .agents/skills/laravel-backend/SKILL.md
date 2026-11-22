@@ -27,6 +27,12 @@ description: Implement or review Rademan PHP 8.3+ and Laravel 13 backend behavio
 
 When the product owner explicitly authorizes a bounded backend batch, implement multiple small, low-risk slices without asking for approval after each one. Keep each slice independently reviewable, preserve API/auth/data invariants, and stop for unresolved schema/API, authorization/privacy, transaction/idempotency, destructive or other material decisions. Add focused regression coverage for each behavior change, then provide one deduplicated PHPUnit/Pint command set for the complete batch. Do not run those commands, Artisan operations, migrations, seeders or CI without separate explicit permission. Playwright is not required for backend-only changes unless a browser-visible contract or journey is affected.
 
+## Test contract for backend changes
+- Update feature/unit/integration tests in the same change whenever routes, validation, policies, authorization, resources, persistence, jobs, events or API contracts change.
+- Preserve tests for server-enforced role/ownership/participant boundaries, privacy, validation, data integrity, transactions, idempotency and failure behavior. A refactor may change internal implementation, but must not silently remove these invariants.
+- If an API or domain contract is intentionally changed with approval, rewrite stale response/behavior assertions to the new approved contract and update callers, fixtures and contract documentation together.
+- Classify failures as genuine regressions, stale test contracts, unresolved product/API decisions or environment/tooling issues before editing code or tests. Never weaken security assertions or change correct new code merely to satisfy obsolete expectations.
+
 ## Verification
 - Add or update focused backend tests when behavior changes.
 - Do not execute PHPUnit, Artisan commands, Pint, static analysis, migrations, seeders or other verification without explicit user authorization.

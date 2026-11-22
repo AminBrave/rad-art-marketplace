@@ -15,6 +15,16 @@ description: Investigate reproducible defects, exceptions, broken flows, API fai
 7. Add or update a regression test at the layer that best protects the behavior, including a negative case where relevant.
 8. Review adjacent paths for regressions and explain cause, fix, residual risk and user-run verification steps.
 
+## Test failure classification after refactors
+
+When a test fails after a redesign, architecture change or product refactor, do not immediately change production code to satisfy it. Compare the assertion with the approved current product contract and classify the failure:
+- **Regression:** implementation violates a still-valid invariant; fix code and keep/strengthen regression coverage.
+- **Stale expectation:** test describes retired behavior or architecture; update it to assert the new approved behavior while preserving meaningful coverage.
+- **Decision gap:** current product intent does not resolve the expected behavior; pause and ask the owner.
+- **Environment/flakiness/tooling:** isolate the failure and report evidence without disguising it as a product defect.
+
+Never skip, delete, quarantine or weaken tests just to get a green suite. If an assertion is retired, record why and what current invariant replaces it.
+
 ## Durable bug-issue record
 
 Keep the GitHub issue—not the chat—as the canonical investigation record. Update it after each meaningful session:

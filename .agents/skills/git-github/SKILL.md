@@ -73,3 +73,16 @@ Use Conventional Commit prefixes such as `feat(scope):`, `fix(scope):`, `docs(sc
 
 ## Delivery report
 State repository and branch, files changed, commit/PR links or identifiers when available, and whether changes were made through a local checkout or remote API. List verification as executed only when directly evidenced; otherwise say "Not run (permission not granted)." Explicitly mention that no CI workflow was initiated when that boundary is relevant.
+
+
+## Rademan parallel development tracks
+
+Use the branch mapping defined in `AGENTS.md`:
+- ChatGPT-authored changes integrate into `develop/chatgpt`.
+- Claude-authored changes integrate into `develop/claude`.
+- Create task branches from the matching integration branch; PR into that same branch.
+- Do not target `main` for ordinary development. `main` is reserved for separately approved release promotion.
+- Do not merge across the two tracks unless the product owner explicitly authorizes it.
+- Issues remain open tracking records; associate each with the matching track and PR rather than treating issues as mergeable objects.
+- Retarget legacy development PRs to the appropriate track before merging. Never merge a development PR to `main`.
+- Ask if the authoring track or destination is ambiguous.

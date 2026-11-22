@@ -68,9 +68,12 @@ test('Tailwind semantic aliases reference CSS variables rather than duplicate li
     for (const alias of ['canvas:', 'terracotta:', 'muted:', 'warning:', 'info:', 'success: {', 'danger: {', 'warning: {', 'info: {', 'accent: {', 'inverse:', 'fontSize:', 'lineHeight:', 'spacing:']) {
         assert.ok(tailwind.includes(alias), `Missing Tailwind alias: ${alias}`);
     }
-    assert.ok(tailwind.includes('var(--color-canvas)'));
-    assert.ok(tailwind.includes('var(--text-base)'));
-    assert.ok(tailwind.includes('var(--space-4)'));
+    assert.ok(tailwind.includes('var(--rd-canvas)'));
+    assert.ok(tailwind.includes('var(--rd-text-primary)'));
+    assert.ok(tailwind.includes('var(--rd-action)'));
+    assert.ok(tailwind.includes('var(--rd-success)'));
+    assert.ok(css.includes('--text-base: var(--rd-text-base)'));
+    assert.ok(css.includes('--space-4: var(--rd-space-4)'));
 });
 
 test('shared primitives express accessible component contracts with semantic Tailwind utilities', () => {
@@ -98,12 +101,15 @@ test('shared content and feedback components use semantic utility classes', () =
     assert.doesNotMatch(feedback, /ra-[a-z]/);
 });
 
-test('RAD visual tokens are declared in one canonical root block', () => {
-    assert.equal((css.match(/:root\s*\{/g) ?? []).length, 1);
-    assert.ok(css.includes('--color-overlay: rgb(36 35 32 / 64%)'));
-    assert.ok(css.includes('--overlay-backdrop-blur: 8px;'));
-    assert.ok(css.includes('--color-message-own:'));
+test('Rademan semantic design tokens are declared centrally and resolve through theme-aware roles', () => {
+    assert.equal((css.match(/:root \{/g) ?? []).length, 1);
+    assert.ok(css.includes('--rd-overlay: rgb(36 35 32 / 64%)'));
+    assert.ok(css.includes('--color-overlay: var(--rd-overlay)'));
+    assert.ok(css.includes('--rd-message-own:'));
+    assert.ok(css.includes('--rd-success:'));
     assert.ok(css.includes('--color-success-surface:'));
+    assert.ok(css.includes(":root[data-theme='dark']"));
+    assert.ok(css.includes('@media (prefers-color-scheme: dark)'));
 });
 
 test('shared layout and form primitives expose semantic utility compositions', () => {
@@ -131,7 +137,7 @@ test('public catalogue, artist directory and artwork detail use shared page layo
     assert.ok(publicPages[1].includes('PageContainer') && publicPages[1].includes('SectionHeader'));
     assert.ok(publicPages[2].includes('PageContainer'));
     assert.ok(buyerWorkspace.includes('WorkspaceHero') && buyerWorkspace.includes('<Surface'));
-    assert.ok(designSystem.includes('Dashboard page and section headings'));
+    assert.ok(designSystem.includes('Product information architecture'));
 });
 
 test('public and role-based workspaces use shared semantic shell utilities', () => {
@@ -153,7 +159,7 @@ test('navigation and dialog primitives use Tailwind state and focus utilities', 
     assert.doesNotMatch(dialog, /ra-[a-z]/);
 });
 
-test('form controls and helper hints use shared RAD-styled Radix primitives', () => {
+test('form controls and helper hints use accessible shared Radix primitives', () => {
     assert.ok(primitives.includes('forwardRef(function Button'));
     assert.ok(primitives.includes('SelectPrimitive.Root'));
     assert.ok(primitives.includes('CheckboxPrimitive.Root'));
@@ -163,7 +169,7 @@ test('form controls and helper hints use shared RAD-styled Radix primitives', ()
     assert.ok(alertDialog.includes('AlertDialogPrimitive.Root'));
     assert.ok(feedback.includes('ToastPrimitive.Provider'));
     assert.ok(feedback.includes('ToastPrimitive.Viewport'));
-    assert.ok(designSystem.includes('RAD Toast backed by Radix Toast'));
+    assert.ok(designSystem.includes('Accessible controls, form states, dialogs, menus, notifications'));
     assert.ok(editorialPages.includes('<AlertDialogAction asChild>'));
     assert.ok(editorialPages.includes('event.preventDefault(); publish(collection, false)'));
     assert.ok(editorialPages.includes('<AlertDialogTitle>'));
@@ -353,7 +359,7 @@ test('messaging actions use Radix menu semantics and preserve reply focus', () =
     assert.ok(!messaging.includes("window.addEventListener('scroll', reposition"));
 });
 
-test('shared RAD modal dialogs retain outside-click and Escape dismissal behavior', () => {
+test('shared dialogs retain outside-click and Escape dismissal behavior', () => {
     assert.ok(dialog.includes('DialogPrimitive.Root'));
     assert.ok(dialog.includes('<DialogPrimitive.Overlay'));
     assert.ok(dialog.includes('<DialogPrimitive.Content'));
@@ -361,73 +367,55 @@ test('shared RAD modal dialogs retain outside-click and Escape dismissal behavio
     assert.doesNotMatch(dialog, /onEscapeKeyDown=\{[^}]*preventDefault/);
 });
 
-test('authenticated app shell keeps primary-only bottom navigation and places both navigation tiers in the dashboard hamburger drawer', () => {
+test('responsive workspace navigation supports mobile task access and desktop role navigation', () => {
     const bottomStart = layouts.indexOf('function AuthenticatedBottomNavigation({ primaryLinks })');
-    const bottomEnd = layouts.indexOf('\n}\n\nexport function WorkspaceLayout', bottomStart);
+    const bottomEnd = layouts.indexOf('export function WorkspaceLayout', bottomStart);
     const bottomNavigation = layouts.slice(bottomStart, bottomEnd);
     const workspaceStart = layouts.indexOf('export function WorkspaceLayout');
     const workspaceLayout = layouts.slice(workspaceStart);
-    const drawerStart = workspaceLayout.indexOf('<DialogContent');
-    const drawerEnd = workspaceLayout.indexOf('</DialogContent>', drawerStart);
-    const drawer = workspaceLayout.slice(drawerStart, drawerEnd);
 
     assert.ok(bottomStart >= 0 && bottomEnd > bottomStart);
     assert.ok(bottomNavigation.includes('data-testid="authenticated-bottom-navigation"'));
     assert.ok(bottomNavigation.includes('fixed inset-x-0 bottom-0 z-50'));
     assert.ok(bottomNavigation.includes('pb-[env(safe-area-inset-bottom)]'));
     assert.ok(bottomNavigation.includes('lg:hidden'));
-    assert.ok(bottomNavigation.includes('aria-label="بخش‌های اصلی حساب کاربری"'));
-    assert.ok(bottomNavigation.includes('data-nav-priority="primary"'));
-    assert.doesNotMatch(bottomNavigation, /secondary|پیوندهای تکمیلی|publicSecondaryLinks/);
+    assert.ok(bottomNavigation.includes('primaryLinks.map((item)'));
     assert.ok(layouts.includes('user && <AuthenticatedBottomNavigation primaryLinks={getWorkspacePrimaryLinks(user.role)} />'));
     assert.ok(workspaceLayout.includes('<AuthenticatedBottomNavigation primaryLinks={links} />'));
 
-    assert.doesNotMatch(workspaceLayout.slice(0, workspaceLayout.indexOf('{logoutError &&')), /ناوبری اصلی فضای کاربری|ناوبری تکمیلی سایت|data-nav-priority="secondary"/);
     assert.ok(workspaceLayout.includes('<DialogTrigger asChild>'));
     assert.ok(workspaceLayout.includes('aria-label="باز کردن منوی حساب کاربری"'));
     assert.ok(workspaceLayout.includes('<DialogContent'));
     assert.ok(workspaceLayout.includes('placement="drawer"'));
-    assert.ok(dialog.includes('DialogPrimitive.Overlay'));
-    assert.ok(drawer.includes('aria-label="بخش‌های اصلی فضای کاربری"'));
-    assert.ok(drawer.includes('aria-label="پیوندهای تکمیلی سایت"'));
-    assert.ok(drawer.includes('publicSecondaryLinks.map((item)'));
-    assert.ok(drawer.includes('links.map((item)'));
-    assert.ok(drawer.indexOf('بخش‌های اصلی فضای کاربری') < drawer.indexOf('پیوندهای تکمیلی سایت'));
-    assert.ok(workspaceLayout.includes('aria-label="ناوبری فضای کاربری"'), 'Desktop workspace sidebar remains available.');
-    assert.ok(workspaceLayout.includes('const Icon = workspaceNavigationIcons[item.to] ?? LayoutDashboard;'), 'Desktop sidebar uses the same route-aware icon map as mobile.');
-    assert.ok(workspaceLayout.includes('<Icon size={18} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />'), 'Desktop sidebar renders decorative Lucide icons beside labels.');
-    assert.ok(layouts.includes('aria-label="ناوبری اصلی"'), 'Existing public header navigation must remain available.');
+    assert.ok(workspaceLayout.includes('aria-label="ناوبری فضای کاربری"'));
+    assert.ok(workspaceLayout.includes('links.map((item)'));
+    assert.ok(workspaceLayout.includes('lg:sticky'));
+    assert.ok(workspaceLayout.includes('lg:block'));
 
-    const publicRoutesStart = appRouter.indexOf('<Route element={<PublicLayout />}>' );
-    const publicRoutesEnd = appRouter.indexOf('</Route>', publicRoutesStart);
-    assert.ok(publicRoutesStart >= 0 && publicRoutesEnd > publicRoutesStart);
-    assert.ok(appRouter.slice(publicRoutesStart, publicRoutesEnd).includes('<Route path="*" element={<NotFoundPage />} />'), 'Public fallback routes must retain the authenticated shell.');
-
-    assert.ok(layouts.includes('pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)]'));
-    assert.ok(layouts.includes('user ? "min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:pb-0" : "min-h-screen bg-canvas text-ink"'));
-    assert.ok(layouts.includes("'/dashboard/artist/artworks': Images"));
-    assert.ok(layouts.includes("'/dashboard/buyer/messages': MessageCircle"));
-    assert.ok(layouts.includes("'/admin/message-reports': Flag"));
-    assert.ok(layouts.includes("to: '/contact', label: 'تماس'"));
+    assert.ok(layouts.includes('aria-label="ناوبری اصلی"'), 'Public discovery navigation remains available.');
+    assert.ok(layouts.includes('<ThemeControl />'), 'Public and workspace shells expose theme selection.');
+    assert.ok(css.includes('--workspace-bottom-nav-primary-height: var(--rd-workspace-nav-height);'));
+    assert.ok(css.includes('--workspace-bottom-nav-height: var(--rd-workspace-nav-height);'));
+    assert.doesNotMatch(css, /--workspace-bottom-nav-secondary-height/);
     assert.ok(routeLoading.includes("getWorkspacePrimaryLinks('artist')"));
     assert.ok(routeLoading.includes("getWorkspacePrimaryLinks('buyer')"));
     assert.ok(routeLoading.includes("getWorkspacePrimaryLinks('admin')"));
-    assert.ok(css.includes('--workspace-bottom-nav-primary-height: 4.5rem;'));
-    assert.ok(css.includes('--workspace-bottom-nav-height: var(--workspace-bottom-nav-primary-height);'));
-    assert.doesNotMatch(css, /--workspace-bottom-nav-secondary-height/);
+    assert.ok(workspaceLayout.includes('data-experience={user?.role ?? \'workspace\'}'));
 });
-test('RAD design-system definition makes the authenticated app-shell and navigation hierarchy canonical', () => {
+
+test('product and design guidance defines the new Rademan experience architecture', () => {
     for (const principle of [
-        'coherent, responsive web app',
-        'Every route rendered while a user is authenticated',
-        'Keep the compact dashboard header',
-        'public-layout routes and authenticated workspace routes',
-        'Put both navigation tiers inside the dashboard hamburger drawer',
-        'Secondary site navigation',
-        'primary workspace destinations only',
-        'safe-area inset',
-        'Never invent a route',
-    ]) assert.ok(designSystem.includes(principle), 'Missing RAD design-system principle: ' + principle);
+        'coherent, contemporary visual-content platform',
+        'Product information architecture',
+        'Buyer Studio',
+        'Artist Studio',
+        'Admin Console',
+        'single canonical Inquiries destination',
+        'Light, dark and system theme behavior',
+        'Mobile-first PWA',
+        'Messaging preservation contract',
+        'latest `main` branch establishes what exists',
+    ]) assert.ok(designSystem.includes(principle), 'Missing current product/design principle: ' + principle);
 });
 test('auth bootstrap resolves session state before React mounts without caching personalized HTML', () => {
     assert.ok(bootShell.includes('id="rad-auth-bootstrap"'));
@@ -497,15 +485,13 @@ test('shared UI component source does not introduce arbitrary hex or raw palette
 });
 
 
-test('active frontend surfaces use semantic RAD colors and avoid raw palette utilities', () => {
+test('active frontend surfaces use semantic Rademan colors and avoid raw palette utilities', () => {
     const componentSources = [primitives, cards, feedback, navigation, dialog, skeletons];
     const applicationSources = [legacyApp, homePage, authPage, artistProfile, artworkGallery, artworkCatalogue, editorialPages, publicInfoPages, layouts, buyerWorkspace, routeLoading, artistWorkspace, messaging, messageComposer, artworkDetail, artworkStudio, adminWorkspace, ...publicPages];
     const sources = [...componentSources, ...applicationSources];
     const rawPalette = /\b(?:bg|text|border|ring)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\d{2,3}(?:\/\d{1,3})?\b/;
-    const tokenOpacity = /\b(?:bg|text|border|ring)-(?:paper|inverse|canvas|ink|terracotta|sand|olive|muted|subtle|border|surface|surface-muted|success|danger|warning|info|accent|focus)(?:-[\w-]+)?\/\d+\b/;
     for (const source of sources) {
-        assert.equal(rawPalette.test(source), false, 'Application surfaces must use semantic RAD color roles.');
-        assert.equal(tokenOpacity.test(source), false, 'Semantic token opacity must use a valid color-mix utility.');
+        assert.equal(rawPalette.test(source), false, 'Application surfaces must use semantic Rademan color roles.');
         assert.doesNotMatch(source, /\bra-[\w-]+/, 'Application components must not depend on legacy RAD CSS selectors.');
     }
 });

@@ -35,6 +35,20 @@ For every feature, bug fix or improvement, derive tests from the changed behavio
 
 When adding or changing a test command, report, fixture or diagnostic artifact, add focused tests for the tooling itself and update package scripts, `scripts/README.md` and `tests/README.md` as appropriate. Keep the report generator dependency-free and distinguish missing/stale evidence from a passing result.
 
+## Product-refactor and redesign test alignment (mandatory)
+
+Treat the current approved product direction and observable contracts as the specification—not historical test assumptions. Whenever production code, design tokens, themes, typography, shared primitives, navigation, IA, responsive behavior, role journeys or messaging UX changes, inspect and update the corresponding tests in the same PR.
+
+1. Inventory affected tests before implementation. Separate durable invariants (user outcomes, accessibility, API/permission boundaries, privacy, data integrity, error recovery) from incidental implementation assertions (legacy class names, fixed layout dimensions, old component libraries, obsolete labels or retired IA).
+2. Validate the expected behavior against current owner-approved requirements and latest main implementation facts. If product intent is ambiguous, ask rather than choosing whether code or tests should change.
+3. Rewrite stale assertions to validate the new approved contract. For visual refactors, test semantic token roles, light/dark/system behavior, responsive navigation and observable role journeys—not the retired design system's token names or layout measurements.
+4. Preserve or improve coverage strength. Every removed/relaxed assertion must be mapped to a still-valid invariant, replaced with equivalent/stronger coverage, or documented as genuinely retired. Never remove security, privacy, accessibility or data-integrity coverage to make tests green.
+5. Add tests for new behavior and relevant failure/negative cases. Update fixtures, mocks, snapshots, test helpers, accessibility expectations, coverage rules and test documentation in the same change.
+6. Do not change new production code solely to satisfy a stale test. Classify failures as real regression, stale contract, unresolved product decision, or environment/flaky/tooling failure before acting.
+7. In the PR, summarize production surfaces changed, tests added/rewritten/retired, preserved invariants and rationale for any removed assertion. Report exact verification evidence separately from test edits.
+
+Never mechanically preserve old tests just because they previously passed. Never weaken, skip, quarantine or delete a failing test without evidence that its behavior is retired and equivalent or stronger coverage remains.
+
 ## Batch verification handoff
 
 For an explicitly authorized batch, plan verification across the combined changed surface and ask the maintainer to run it once at the end:
@@ -71,7 +85,7 @@ For an explicitly authorized batch, plan verification across the combined change
 
 ## Accessibility, product and performance
 - Preserve Persian-first RTL and test mixed-direction content, keyboard navigation, focus visibility, accessible names, semantic landmarks, reduced motion and responsive overflow.
-- Check shared RAD tokens, typography, spacing, component states and semantic color contrast.
+- Check the new semantic tokens, typography, spacing, component states and semantic color contrast in both light and dark themes. Retain only the five Rademan brand color anchors; do not assume legacy RAD tokens are target requirements.
 - Add automated accessibility checks as a supplement to manual assistive-technology and keyboard review; do not claim automated scans prove WCAG conformance.
 - Add Lighthouse/Core Web Vitals budgets only after establishing a reproducible local production-like target, fixed viewport/device/network profile and repeatable data.
 - Avoid flaky hard timing assertions. Prefer budgets and stable measurements with recorded context.
