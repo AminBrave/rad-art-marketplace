@@ -19,7 +19,21 @@
     @endphp
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#F7F5F0">
+    <meta name="theme-color" content="#F7F5F0" id="rad-theme-color">
+    <script>
+        (() => {
+            try {
+                const stored = localStorage.getItem("rademan-theme");
+                const theme = ["system", "light", "dark"].includes(stored) ? stored : "system";
+                const dark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+                document.documentElement.dataset.theme = theme;
+                document.documentElement.style.colorScheme = dark ? "dark" : "light";
+                document.getElementById("rad-theme-color")?.setAttribute("content", dark ? "#171815" : "#F7F5F0");
+            } catch {
+                document.documentElement.dataset.theme = "system";
+            }
+        })();
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <meta name="description" content="{{ $seoDescription }}">
     <meta name="robots" content="{{ $seoRobots }}">
