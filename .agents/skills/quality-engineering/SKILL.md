@@ -71,7 +71,7 @@ For an explicitly authorized batch, plan verification across the combined change
 
 ## Accessibility, product and performance
 - Preserve Persian-first RTL and test mixed-direction content, keyboard navigation, focus visibility, accessible names, semantic landmarks, reduced motion and responsive overflow.
-- Check shared RAD tokens, typography, spacing, component states and semantic color contrast.
+- Check the new semantic tokens, typography, spacing, component states and semantic color contrast in both light and dark themes. Retain only the five Rademan brand color anchors; do not assume legacy RAD tokens are target requirements.
 - Add automated accessibility checks as a supplement to manual assistive-technology and keyboard review; do not claim automated scans prove WCAG conformance.
 - Add Lighthouse/Core Web Vitals budgets only after establishing a reproducible local production-like target, fixed viewport/device/network profile and repeatable data.
 - Avoid flaky hard timing assertions. Prefer budgets and stable measurements with recorded context.
