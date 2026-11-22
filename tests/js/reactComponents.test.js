@@ -358,7 +358,7 @@ test('MediaImage fallback exposes accessible missing-source and load-error state
     assert.match(missing, /نشانی تصویر ثبت نشده است/);
 
     const mediaSource = readFileSync(new URL('../../resources/js/components/ui/feedback.jsx', import.meta.url), 'utf8');
-    assert.match(mediaSource, /onError=\\{\\(\\) => setFailedSrc\\(imageSrc\\)\\}/);
+    assert.ok(mediaSource.includes('onError={() => setFailedSrc(imageSrc)}'));
     assert.match(mediaSource, /فایل پیدا نشد یا دریافت آن ناموفق بود/);
 });
 
