@@ -11,7 +11,7 @@ Every delivery issue should identify:
 - A bounded MVP, explicit non-goals and observable acceptance criteria.
 - UX/design impact, architecture/API/data impact and relevant security/privacy, accessibility, RTL, responsive and performance risks.
 - Evidence-based dependencies, rollback considerations and a proportionate verification plan.
-- The source product decision and its canonical record when the work implements product intent. Standalone maintenance, bug, documentation and QA tasks do not need a product-decision ID.
+- The current owner-approved product direction and any specifically selected historical decision record when relevant. Standalone maintenance, bug, documentation and QA tasks do not need a product-decision ID.
 
 A product decision, planning issue, priority label or board status is not implementation authorization. Resolve product, UX, data/API compatibility and architecture decisions before changing behavior. For larger work, use an epic with independently reviewable child issues.
 
@@ -33,7 +33,7 @@ A batch is a finite set of related tasks under one named workstream/parent issue
 
 1. Re-check the live parent issue/epic, candidate issues, open PRs, current target branch, relevant source and task-specific skills.
 2. Prefer explicitly named tasks, then eligible child issues under the named parent, then the next eligible Ready tasks in the named area. Do not infer dependencies from issue numbers, labels or topic similarity.
-3. Confirm each task has clear authorization, a bounded outcome, acceptance criteria and no unresolved stop-condition decision. Product-decision work must still pass the #150 authorization gate.
+3. Confirm each task has clear authorization, a bounded outcome, acceptance criteria and no unresolved stop-condition decision. Product-direction work must still have explicit current owner authorization; #150 is a historical vision register and does not itself authorize implementation.
 4. Sequence only evidenced dependencies. Work on independent safe tasks while a blocked slice is parked.
 5. At batch start, publish one concise plan: included tasks, exclusions, dependencies/order, intended branch/PR grouping and stop conditions. Do not ask for per-task confirmation after that.
 
