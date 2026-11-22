@@ -75,29 +75,29 @@ Use Conventional Commit prefixes such as `feat(scope):`, `fix(scope):`, `docs(sc
 State repository and branch, files changed, commit/PR links or identifiers when available, and whether changes were made through a local checkout or remote API. List verification as executed only when directly evidenced; otherwise say "Not run (permission not granted)." Explicitly mention that no CI workflow was initiated when that boundary is relevant.
 
 
-## Rademan parallel development and integration branches
+## Rademan isolated agent branches and owner-triggered integration
 
-Use the branch mapping defined in `AGENTS.md`:
+Follow the mandatory branch policy in `AGENTS.md`. Agent code must remain isolated:
 - `main`: stable/release branch; ordinary development PRs never target it.
-- `agent/chatgpt`: ChatGPT development lane.
-- `agent/claude`: Claude development lane.
-- `integration`: shared cross-agent integration and compatibility branch.
+- `agent/chatgpt`: exclusive ChatGPT development lane.
+- `agent/claude`: exclusive Claude development lane.
+- `integration`: dormant destination used only after the product owner explicitly requests cross-agent integration.
 
-Git cannot have both a branch named `agent/chatgpt` and child refs named `agent/chatgpt/...`. Therefore, task branches use agent-qualified prefixes:
+Task branch prefixes:
 - ChatGPT: `feature/chatgpt/<slug>`, `refactor/chatgpt/<slug>`, `fix/chatgpt/<slug>`, `design/chatgpt/<slug>`, `docs/chatgpt/<slug>`, `test/chatgpt/<slug>`.
 - Claude: `feature/claude/<slug>`, `refactor/claude/<slug>`, `fix/claude/<slug>`, `design/claude/<slug>`, `docs/claude/<slug>`, `test/claude/<slug>`.
-- Integration-only: `integration/<slug>` or `fix/integration/<slug>`.
+- Integration-only: `integration/<slug>`, only after explicit owner authorization.
 
 Workflow:
-1. Start ChatGPT tasks from `agent/chatgpt` and Claude tasks from `agent/claude`; branch for each bounded task.
-2. PR task branches into their matching agent lane only. Never merge ChatGPT directly into Claude or vice versa.
-3. Bring both agent lanes into `integration` through explicit PRs targeting `integration`.
-4. Resolve conflicts, reconcile contracts and adopt code deliberately on `integration`. Document non-obvious choices and preserve security boundaries.
-5. Do not automatically propagate integration changes back to agent lanes; use a separate reviewed PR when a backport is intended.
-6. Do not target `main` for ordinary development. Promotion from `integration` to `main` requires separate explicit owner approval after review and applicable verification.
-7. A clean merge is not proof of runtime compatibility. Follow the repository's verification permission gate; never initiate CI or run checks without the required explicit authorization.
-8. Do not force-push, rewrite shared history, delete branches or change repository settings without separate explicit authorization.
-9. Keep issues open as tracking records until acceptance criteria are met; link each issue to the relevant task branch and PR.
-10. Ask if the authoring lane, target or integration decision is ambiguous.
+1. Start ChatGPT tasks from `agent/chatgpt` and Claude tasks from `agent/claude`; create short-lived task branches under the matching agent-qualified prefix.
+2. PR ChatGPT task branches only into `agent/chatgpt`; PR Claude task branches only into `agent/claude`.
+3. Never merge, rebase, cherry-pick, copy, port or adopt commits/code across the two agent lanes without an explicit owner request to integrate them.
+4. Do not bring either agent lane into `integration` as routine housekeeping. Keep `integration` untouched until the owner explicitly requests combining the tracks.
+5. On an explicit integration request, use `integration` as the isolated destination; inspect both lanes, resolve conflicts deliberately, document decisions, and follow the verification permission gate. Do not automatically backport integration results.
+6. If the owner asks for ChatGPT-only or Claude-only work, stay entirely within that lane. Do not include the other agent's code to make the work easier.
+7. Never target `main` for ordinary development. Release promotion requires separate explicit owner approval.
+8. Do not force-push, rewrite shared history, delete branches or change repository settings without separate authorization.
+9. Treat `feature/chatgpt/rademan-product-foundation-integrated` as a contaminated, prematurely combined history; do not use it as a ChatGPT development base or merge it anywhere unless the owner explicitly requests recovery/review. Use the isolated `feature/chatgpt/rademan-product-foundation` branch for that task's ChatGPT-only work.
+10. Ask the owner if an integration request or its intended scope is ambiguous.
 
-The permanent lane names and task naming rules are intentionally distinct: `agent/chatgpt` is the long-lived branch; `feature/chatgpt/<slug>` is a short-lived task branch based on it.
+The distinction is intentional: `agent/chatgpt` and `agent/claude` are independent authoring lanes; `integration` is opt-in, not an automatic next step. A clean Git merge is not proof of runtime compatibility. Follow all repository security, review, verification and CI authorization requirements.
