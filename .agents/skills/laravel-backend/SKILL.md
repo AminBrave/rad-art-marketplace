@@ -1,40 +1,26 @@
 ---
 name: laravel-backend
-description: Implement or review Rademan PHP 8.3+ and Laravel 13 backend behavior, APIs, Eloquent models, migrations, authorization, validation, queues and performance.
+description: Build, improve and review Rademan Laravel backend features, APIs, persistence, authorization and integrations.
 ---
 
-# Laravel Backend Engineering
+# Laravel backend engineering
 
-## First inspect
-- Confirm PHP, Laravel and package versions from composer.json and lockfile.
-- Trace route -> middleware -> controller/action -> policy -> service/model -> resource/response.
-- Inspect relevant migrations, relationships, indexes, factories, seeders and tests.
-- Follow nearby project conventions; do not assume generic Laravel examples match installed versions.
+## Purpose
+Deliver correct, secure and maintainable backend behavior using the versions and patterns actually installed in the repository.
 
-## Engineering rules
-1. Enforce authentication, role, ownership and participant authorization on the server for every sensitive operation.
-2. Validate untrusted input at request boundaries. Validate file content/type/size and authorize every upload/download path.
-3. Use explicit fillable/guarded boundaries and avoid mass assignment of privileged or derived fields.
-4. Use transactions for multi-record invariants; design retryable operations for idempotency and concurrency.
-5. Add indexes based on query patterns and constraints. Avoid N+1 queries, unbounded result sets and unnecessary eager loading.
-6. Keep API resource fields, status codes, validation errors and pagination contracts stable unless a versioned/intentional change is approved.
-7. Avoid leaking private messages, attachments, unpublished artwork, personal fields, internal paths or secrets through resources, logs and exceptions.
-8. Handle queue retries, duplicate delivery, external service failure, timeouts and partial failure deliberately.
-9. Add forward-only migrations. Never rewrite a migration that may have run in another environment. Check engine compatibility and rollback behavior.
-10. Keep controllers and services proportionate; do not introduce a service/repository layer by default.
+## Approach
+1. Inspect composer.json, relevant routes, middleware, controllers, policies, models, migrations, resources and tests.
+2. Trace the full request and data lifecycle.
+3. Keep validation and authorization at trusted server boundaries.
+4. Use transactions, constraints and idempotency where the business invariant requires them.
+5. Design queries and serialization to avoid N+1 access, unbounded results and private-data leakage.
+6. Choose controllers, actions, services, events or jobs according to real complexity; do not add layers by default.
+7. Consider compatibility, migration sequencing, database engine and rollback/recovery.
+8. Add focused tests for observable behavior and important forbidden paths.
+9. Run appropriate checks in a suitable development environment and report exact results.
 
-## Batch implementation
+## Rademan context
+The manifests currently declare PHP 8.3+ and Laravel 13. Verify current versions before using APIs. Browser-facing and api/v1 routes are currently present in routes/web.php; routes/api.php currently includes a health endpoint. This is an observation, not a rule about where routes must live.
 
-When the product owner explicitly authorizes a bounded backend batch, implement multiple small, low-risk slices without asking for approval after each one. Keep each slice independently reviewable, preserve API/auth/data invariants, and stop for unresolved schema/API, authorization/privacy, transaction/idempotency, destructive or other material decisions. Add focused regression coverage for each behavior change, then provide one deduplicated PHPUnit/Pint command set for the complete batch. Do not run those commands, Artisan operations, migrations, seeders or CI without separate explicit permission. Playwright is not required for backend-only changes unless a browser-visible contract or journey is affected.
-
-## Test contract for backend changes
-- Update feature/unit/integration tests in the same change whenever routes, validation, policies, authorization, resources, persistence, jobs, events or API contracts change.
-- Preserve tests for server-enforced role/ownership/participant boundaries, privacy, validation, data integrity, transactions, idempotency and failure behavior. A refactor may change internal implementation, but must not silently remove these invariants.
-- If an API or domain contract is intentionally changed with approval, rewrite stale response/behavior assertions to the new approved contract and update callers, fixtures and contract documentation together.
-- Classify failures as genuine regressions, stale test contracts, unresolved product/API decisions or environment/tooling issues before editing code or tests. Never weaken security assertions or change correct new code merely to satisfy obsolete expectations.
-
-## Verification
-- Add or update focused backend tests when behavior changes.
-- Do not execute PHPUnit, Artisan commands, Pint, static analysis, migrations, seeders or other verification without explicit user authorization.
-- Do not inspect production personal data or modify production state.
-- Do not add Livewire, Sanctum, Horizon, Pest or other packages unless the current project and task justify them.
+## Deliverable
+Working backend changes with relevant tests, migration or API notes, and a concise verification report.
