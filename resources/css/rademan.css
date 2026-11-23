@@ -160,3 +160,10 @@
 
 [data-ui=dialog-overlay],[data-ui=alert-dialog-overlay]{background:var(--rd-overlay);backdrop-filter:blur(6px)}
 [data-ui=dialog-trigger],[data-ui=dialog-close],[data-ui=alert-dialog-trigger],[data-ui=alert-dialog-cancel],[data-ui=alert-dialog-action]{touch-action:manipulation}
+
+[data-page^=admin-]{display:grid;gap:24px;min-width:0}
+[data-page^=admin-] [data-ui=page-heading]{margin-bottom:4px}
+[data-page^=admin-] [data-ui=surface],[data-page^=admin-] [data-ui=card]{min-width:0}
+[data-page=artist-settings]{display:grid;gap:24px}
+[data-page=collection-detail] [data-ui=page-heading]{margin-bottom:24px}
+[data-page=error-state]{min-height:50dvh;align-content:center}
