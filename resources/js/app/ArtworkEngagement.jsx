@@ -70,6 +70,10 @@ export default function ArtworkEngagement({ artwork, slug }) {
     });
 
     useEffect(() => {
+        setPage(1);
+    }, [slug, commentTargetId]);
+
+    useEffect(() => {
         if (!commentsQuery.isSuccess || !window.location.hash.startsWith('#comment-')) return;
         const target = document.getElementById(window.location.hash.slice(1));
         target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
