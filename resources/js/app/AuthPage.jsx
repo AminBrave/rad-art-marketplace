@@ -58,7 +58,7 @@ export default function AuthPage({ initialMode = 'login' }) {
     };
 
     return (
-        <main className="mx-auto max-w-xl px-5 py-12 sm:px-8" dir="rtl">
+        <main data-page="auth" className="mx-auto max-w-xl px-5 py-12 sm:px-8" dir="rtl">
             <section className="rounded-3xl border border-border-strong bg-paper p-6 shadow-sm sm:p-9">
                 <Link to="/" className="text-sm font-bold text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2">بازگشت به راد آرت</Link>
                 <h1 className="mt-5 text-2xl font-black">{mode === 'register' ? 'ساخت حساب کاربری' : 'ورود به حساب'}</h1>
