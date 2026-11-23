@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Api\V1\AdminArtworkModerationController;
 use App\Http\Controllers\Api\V1\AdminEditorialController;
+use App\Http\Controllers\Api\V1\AdminArtworkCommentReportController;
 use App\Http\Controllers\Api\V1\AdminMessageReportController;
 use App\Http\Controllers\Api\V1\AdminUserController;
 use App\Http\Controllers\Api\V1\ArtistArtworkController;
 use App\Http\Controllers\Api\V1\ArtistProfileController;
+use App\Http\Controllers\Api\V1\ArtistFollowController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\ArtworkInteractionController;
 use App\Http\Controllers\Api\V1\ConversationController;
 use App\Http\Controllers\Api\V1\DirectConversationController;
 use App\Http\Controllers\Api\V1\MessageAttachmentController;
@@ -65,6 +68,14 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
         Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
     });
 
+    Route::middleware(['auth', 'role:buyer,artist'])->group(function (): void {
+        Route::post('/artworks/{artwork:slug}/likes', [ArtworkInteractionController::class, 'like'])->middleware('throttle:60,1')->name('artworks.likes.store');
+        Route::delete('/artworks/{artwork:slug}/likes', [ArtworkInteractionController::class, 'unlike'])->middleware('throttle:60,1')->name('artworks.likes.destroy');
+        Route::post('/artworks/{artwork:slug}/comments', [ArtworkInteractionController::class, 'storeComment'])->middleware('throttle:20,1')->name('artworks.comments.store');
+        Route::delete('/artworks/{artwork:slug}/comments/{comment}', [ArtworkInteractionController::class, 'destroyComment'])->middleware('throttle:30,1')->name('artworks.comments.destroy');
+        Route::post('/artworks/{artwork:slug}/comments/{comment}/reports', [ArtworkInteractionController::class, 'reportComment'])->middleware('throttle:5,1')->name('artworks.comments.reports.store');
+    });
+
     Route::get('/artists', [ArtistProfileController::class, 'index'])->name('artists.index');
     Route::get('/artists/{artistProfile:slug}', [ArtistProfileController::class, 'publicShow'])->name('artists.show');
 
@@ -80,6 +91,7 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
     Route::get('/artwork-filters', [PublicArtworkController::class, 'filters'])->name('artworks.filters');
     Route::get('/artworks', [PublicArtworkController::class, 'index'])->name('artworks.index');
     Route::get('/artworks/{artwork:slug}/image', [PublicArtworkController::class, 'image'])->name('artworks.image');
+    Route::get('/artworks/{artwork:slug}/comments', [ArtworkInteractionController::class, 'comments'])->name('artworks.comments.index');
     Route::get('/artworks/{artwork:slug}', [PublicArtworkController::class, 'show'])->name('artworks.show');
 
     Route::middleware(['auth', 'role:artist,admin'])->group(function (): void {
@@ -98,6 +110,8 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
     });
 
     Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function (): void {
+        Route::get('/artwork-comment-reports', [AdminArtworkCommentReportController::class, 'index'])->name('artwork-comment-reports.index');
+        Route::patch('/artwork-comment-reports/{report}', [AdminArtworkCommentReportController::class, 'update'])->name('artwork-comment-reports.update');
         Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
         Route::get('/message-reports', [AdminMessageReportController::class, 'adminIndex'])->name('message-reports.index');
         Route::patch('/message-reports/{report}', [AdminMessageReportController::class, 'adminUpdate'])->name('message-reports.update');
@@ -114,6 +128,11 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
         Route::get('/artworks', [AdminArtworkModerationController::class, 'index'])->name('artworks.index');
         Route::patch('/artworks/{artwork}/moderation', [AdminArtworkModerationController::class, 'update'])->name('artworks.moderation');
         Route::patch('/users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.role');
+    });
+
+    Route::middleware(['auth', 'role:buyer,artist'])->group(function (): void {
+        Route::post('/artists/{artistProfile:slug}/follow', [ArtistFollowController::class, 'follow'])->middleware('throttle:30,1')->name('artists.follow');
+        Route::delete('/artists/{artistProfile:slug}/follow', [ArtistFollowController::class, 'unfollow'])->middleware('throttle:30,1')->name('artists.unfollow');
     });
 });
 

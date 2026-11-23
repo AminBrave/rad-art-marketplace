@@ -1,151 +1,120 @@
-# Rademan task management
+# Rademan GitHub task management
 
-This document defines how approved work is captured and delivered. **It is not a product roadmap.** Rademan does not use product-phase milestones (M0, M1, M2, etc.) to sequence its product vision. The active planning view is one decision-driven GitHub Kanban board.
+Use GitHub tracking to coordinate substantial work, parallel agent assignments and review. Keep it lightweight: the user's direct task instruction is sufficient for small, clear changes.
 
-## 1. Source-of-truth model
+## 1. Task ownership and source of truth
 
-| Record | Purpose | Canonical location |
-|---|---|---|
-| Product decision | Stable statement of product intent and rationale; may describe future direction | The standalone decision comment linked from #150 |
-| Delivery issue | Authorized, bounded work to be done; linked to its source decision when applicable | GitHub issue |
-| MVP scope | Smallest useful, testable first delivery for that decision/task | The delivery issue body |
-| Implementation evidence | What changed and what was actually verified | PR, commits, tests/CI evidence and relevant source |
-| Progress | Current execution state | The single Rademan Workboard Kanban Project |
+- The user's current instruction defines the intended outcome and scope.
+- A GitHub issue records a bounded task, owner, acceptance criteria and collaboration context.
+- A pull request records the proposed code change, review and verification evidence.
+- A project board, when configured, is a status view over issues and PRs—not a separate roadmap or source of product direction.
+- Source code, tests and runtime evidence show what is implemented.
+- Old issues, PRs, labels, milestones and decisions do not create new work automatically. Reassess their relevance before using them.
 
-GitHub issue numbers are permanent task identifiers. Decision IDs (D01–D41) are permanent product-intent identifiers. Never treat them as interchangeable.
+Do not require product decision IDs, MVP taxonomies or historical roadmap references for ordinary engineering tasks.
 
-## 2. Decision → task → MVP
+## 2. When to create an issue
 
-A product decision is not automatically a task, backlog commitment, architecture specification or permission to implement.
+Create or update an issue when work:
+- Is substantial or spans multiple sessions.
+- Is assigned to a particular agent or contributor.
+- Runs in parallel with other tasks.
+- Has dependencies, shared-file conflicts or integration requirements.
+- Needs independent review, acceptance criteria or a durable handoff.
 
-When the product owner explicitly authorizes work based on a decision:
+Skip the issue for a small, self-contained change directly requested and completed in the current workflow, unless the user wants tracking.
 
-1. Retrieve only that decision's canonical comment from #150. Read another decision only when the selected record explicitly references it or a real technical dependency is evidenced.
-2. Inspect the current repository and describe the existing behavior as implemented, partial, missing or unknown.
-3. Create or update a focused GitHub issue and link the canonical decision comment.
-4. Define the **MVP for this decision/task**: the smallest coherent, useful, testable slice that satisfies the authorized outcome.
-5. State exclusions and later possibilities separately. They are not silently included in the MVP.
-6. If the decision is small enough, one delivery issue can represent the whole task and contain its MVP scope.
-7. If the decision is too large for one reviewable change, use a parent [EPIC] issue for the decision-level outcome and create child delivery issues for independently reviewable MVP slices. Link every child to the parent and source decision.
-8. If an implementation requires more than one decision, record each relevant decision link and obtain explicit authorization for the combined scope. Do not infer dependencies from numbering or topic similarity.
+Before creating an issue, search for a relevant active issue to avoid duplicates. Do not revive an old issue merely because its title looks similar.
 
-A decision may remain in the vision register indefinitely without creating any task. The owner may also authorize a standalone bug, maintenance, quality or documentation task that has no product decision ID.
+## 3. Recommended issue structure
 
-## 3. Delivery issue naming
+Use a concise description. Include only relevant fields:
 
-Use a clear type prefix, include the decision ID when relevant, and let GitHub supply the unique issue number.
+    ## Outcome
+    What user-visible or engineering result is required?
 
-Examples:
-- [FEAT] D02 — Improve buyer discovery entry point
-- [EPIC] D06 — Deliver buyer personalization MVP
-- [FEAT] D06 — Add explicit buyer preference controls
-- [BUG] Fix artwork visibility regression
-- [CHORE] Simplify AI context bootstrap
-- [SPIKE] Investigate image moderation options
+    ## Scope
+    What is included? What is explicitly not included?
 
-Supported prefixes:
-- [DECISION] — a product decision record when a separate issue is genuinely needed; do not duplicate the canonical #150 record by default.
-- [EPIC] — a decision-level outcome requiring multiple child issues.
-- [FEAT] — a user-visible delivery slice.
-- [BUG] — a reproducible defect or regression.
-- [CHORE] — maintenance and developer experience.
-- [SEC] — security, privacy, trust or abuse-risk work.
-- [QA] — quality, test, accessibility or performance work.
-- [DOCS] — documentation and workflow work.
-- [SPIKE] — bounded investigation ending in evidence and a recommendation.
+    ## Acceptance criteria
+    - [ ] Observable result one
+    - [ ] Observable result two
 
-Do not put M0–M4 or other product-phase labels in new task titles. Do not create a second task-numbering scheme; use GitHub issue numbers.
+    ## Owner
+    Agent/contributor: <agent-name>
 
-## 4. Required delivery issue structure
+    ## Branch lane
+    Persistent lane: agent/<agent-name>/lane
+    Task branch: agent/<agent-name>/<task-type>/<task-name>
 
-Every authorized delivery issue should include:
+    ## Dependencies and coordination
+    Related issues/PRs, shared files, API contracts or blockers.
 
-- **Source decision(s):** stable decision ID(s) and direct canonical link(s), or “Standalone task”.
-- **Authorization:** what the product owner explicitly approved and when; link to the authorization when available.
-- **Problem and outcome:** who needs what and why.
-- **Current baseline:** source-backed implemented / partial / missing / unknown status.
-- **MVP scope:** the smallest deliverable included in this issue.
-- **Acceptance criteria:** observable outcomes, including relevant negative, permission, empty, error and edge cases.
-- **Out of scope:** explicit exclusions and later possibilities.
-- **Dependencies and risks:** only evidenced or owner-confirmed dependencies.
-- **Verification plan:** focused checks to run after separate permission is granted; a plan is not permission.
-- **Related work:** parent/child issues, blockers and PRs.
+    ## Tests and verification
+    - Backend/frontend/Playwright tests to add or update.
+    - Tests made obsolete by removed behavior, with rationale for removal.
+    - Relevant commands and expected evidence.
 
-For a parent epic, define the decision-level outcome and MVP boundary, then link its child issues. Child issues must each be independently understandable and reviewable.
+For very small tasks, a short title and acceptance checklist may be enough. Do not force empty template sections.
 
-## 5. Kanban board
+## 4. Parallel work and ownership
 
-Create one GitHub Project named **Rademan Workboard**. Issues and pull requests remain the source of truth; the board is a live execution view, not a copied backlog or product roadmap.
+- Assign one primary owner to each independently deliverable task.
+- Give each task its own task branch named agent/<agent-name>/<task-type>/<task-name>, under the same agent-name namespace as the owner's persistent lane. The task PR targets agent/<agent-name>/lane.
+- Split a larger outcome into child issues only when the parts can be delivered and reviewed independently.
+- Use a parent issue/epic to coordinate dependencies and shared acceptance criteria.
+- Record file/module ownership when tasks may overlap.
+- Agree shared interfaces before parallel implementation.
+- Avoid assigning multiple agents to the same files at the same time unless the user explicitly wants collaborative editing.
+- Track blocked work with the specific dependency, responsible party if known and next action.
 
-### Status options
+See DEVELOPMENT-WORKFLOW.md for the branch-lane and integration model.
 
-Use one Status field with these options in this order:
+## 5. Project board and labels
 
-1. Backlog
-2. Ready
-3. In progress
-4. In review
-5. Blocked
-6. Done
+A GitHub Project is useful for a multi-agent team when it reduces coordination overhead. Use the existing board if available; do not assume it exists or create/reconfigure one without user direction.
 
-### Additional fields
+Keep the board minimal and consistent with the repository's actual configuration:
+- Status: Backlog, Ready, In progress, In review, Blocked, Done.
+- Assignee: GitHub's native assignee field.
+- Priority: P0–P3 only if the team actively uses priority.
+- Type: Feature, Bug, Chore, Security, QA, Docs, Spike, or Epic.
+- Area: Backend, Frontend, Design, Product, Security, Tooling, Docs, Quality, as useful.
 
-- **Priority:** P0, P1, P2, P3.
-- **Type:** Epic, Feature, Bug, Chore, Security, QA, Docs, Spike.
-- **Area:** Backend, Frontend, Product, Design/RTL, Security, Tooling, Docs, Quality.
-- **Decision ID:** text field; use D01–D41 when applicable, otherwise leave blank.
+Use labels for filtering and classification, not as a second conflicting status system. Prefer GitHub's native assignees and linked PRs over duplicate custom fields. Do not create milestones or elaborate taxonomies unless they solve a real coordination problem.
 
-Use GitHub's native Assignees for ownership, Labels for filtering, and linked issues/PRs for dependencies and delivery evidence. Do not add a Milestone field or create product-phase milestones.
+Suggested status meanings:
+- Backlog: captured, not selected.
+- Ready: outcome, scope and acceptance criteria are clear; dependencies are understood.
+- In progress: work has started on a task branch.
+- In review: a PR or deliverable is awaiting review.
+- Blocked: a concrete blocker and next action are recorded.
+- Done: acceptance criteria are met in the task's declared target lane.
 
-### Movement rules
+## 6. Pull request practices
 
-- New, untriaged issues enter **Backlog**.
-- Move to **Ready** only when authorization is clear, the MVP boundary and acceptance criteria are explicit, dependencies are understood, and an owner is assigned.
-- Move to **In progress** when implementation or investigation actually begins.
-- Move to **In review** when a reviewable PR is open and linked, or when a defined investigation output is under review.
-- Move to **Blocked** only with a written blocker, its owner (if known), and the next action.
-- Move to **Done** only when acceptance criteria are met, required verification is honestly recorded, and any implementation PR is merged. An issue with unrun required verification is not Done.
-- Do not use labels to maintain a second, conflicting status system. Prefer the Project Status field.
-- A board column, label, priority or issue creation never grants implementation authorization.
+A useful PR should state:
+- Why the change is needed and what outcome it delivers.
+- The linked issue, if one exists.
+- Agent lane and task branch.
+- Scope and meaningful exclusions.
+- Important contracts, migrations, configuration or compatibility changes.
+- Security, privacy, accessibility, RTL or performance considerations where relevant.
+- Tests added, updated or removed, with a brief rationale for removals or for making no test changes.
+- Verification performed, not performed and any known risks.
+- Integration status and any dependencies on other agent lanes.
 
-## 6. Priority and labels
+Keep PRs focused. Combine changes only when they are tightly coupled and should be reviewed and reverted together. Do not mark work as released merely because its PR merged into an agent lane.
 
-Priority is task urgency/value, not a roadmap phase:
-- P0 — urgent incident, critical security or service-blocking work.
-- P1 — high-impact, time-sensitive work.
-- P2 — normal planned work.
-- P3 — low-priority improvement or explicitly deferred work.
+### Commit grouping by task
 
-Use one primary type, one priority and one primary area label per issue. Suggested label taxonomy:
-- Type: type:epic, type:feature, type:bug, type:chore, type:security, type:qa, type:docs, type:spike.
-- Priority: priority:p0, priority:p1, priority:p2, priority:p3.
-- Area: area:backend, area:frontend, area:product, area:design-rtl, area:security, area:tooling, area:docs, area:quality.
-- Optional triage labels only when useful: status:needs-decision, status:blocked. Do not use them to contradict the board Status field.
+- Scope work around an outcome, not around individual files. One bounded task can legitimately update multiple related implementation, test and documentation files.
+- Group those related files into one coherent task-level commit by default; do not create one commit per changed file or per small edit.
+- Use additional commits only for distinct independently reviewable tasks or meaningful checkpoints. Keep unrelated outcomes separate, but avoid fragmented histories and excessive commits for incremental edits to the same file.
+- For a batch of tasks, make the task boundaries explicit and use a small number of outcome-based commits, each with a clear imperative message.
 
-## 7. Operating loop
+## 7. Completion and stale work
 
-1. Find the relevant decision or existing task; do not duplicate it.
-2. Confirm explicit authorization before converting product intent into implementation.
-3. Inspect current source and live GitHub state.
-4. Define the issue's MVP, exclusions, acceptance criteria and dependencies.
-5. Add the issue to Rademan Workboard and set Status, Priority, Type, Area and Decision ID.
-6. Create a task branch from the current main; keep one bounded outcome per branch.
-7. Open a PR linked to the issue; report actual verification and what was not run.
-8. Merge only with explicit owner authorization and after the required review/check policy is satisfied.
-9. Move the issue to Done only when its completion criteria are actually met.
+A task is complete when its acceptance criteria are met in the declared target lane, affected tests are synchronized with the resulting code, and verification is honestly represented. Its integration or release status may still be pending.
 
-## 8. Non-negotiable AI guardrails
-
-- A decision ID is a pointer to one standalone intent record, not an instruction to read all decisions.
-- Do not read unrelated decisions by default.
-- A decision does not imply MVP priority, timing, implementation permission, architecture or dependencies.
-- Do not create implementation issues from every vision decision automatically.
-- Do not expand an authorized MVP with adjacent decisions or speculative platform features.
-- If a task's scope changes materially, stop and ask for authorization or create a separately approved issue.
-- Distinguish confirmed facts, hypotheses, assumptions, unknowns and proposals.
-- Never claim tests, builds, lint, CI, security review or deployment passed without direct evidence.
-- Never run verification or initiate CI without explicit permission for the specific execution.
-
-## 9. Historical records
-
-Historical issues, PRs, commits and former M0–M4 references remain valid historical records. Do not renumber GitHub issues, rewrite shared history, or rename old completed work merely to make history look current. New work follows this decision-driven task model.
+Close or update stale issues when their scope is superseded, duplicated or no longer desired. Preserve useful history without treating it as a future commitment. Do not automatically convert every observation, idea or review suggestion into a new issue.

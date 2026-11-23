@@ -1,13 +1,33 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Images, LayoutDashboard, Menu, MessageCircle, UserRound, Users, X } from 'lucide-react';
+import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Heart, Images, LayoutDashboard, Menu, MessageCircle, Monitor, Moon, Sun, UserRound, Users, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { getWorkspacePrimaryLinks } from './workspaceNavigation';
+import { useTheme } from './ThemeContext';
 import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, Checkbox, NotificationListSkeleton } from '../components/ui';
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
+
+function ThemeControl() {
+    const { theme, cycleTheme } = useTheme();
+    const Icon = theme === 'dark' ? Moon : theme === 'light' ? Sun : Monitor;
+    const label = theme === 'dark' ? 'تیره' : theme === 'light' ? 'روشن' : 'هماهنگ با دستگاه';
+
+    return (
+        <button
+            type="button"
+            onClick={cycleTheme}
+            aria-label={`تغییر پوسته؛ حالت فعلی: ${label}`}
+            title={`پوسته: ${label}`}
+            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-surface text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+        >
+            <Icon size={18} strokeWidth={1.9} aria-hidden="true" />
+            <span className="sr-only">تغییر پوسته</span>
+        </button>
+    );
+}
 
 const publicSecondaryLinks = [
     { to: '/artworks', label: 'گالری آثار' },
@@ -53,17 +73,17 @@ export function PublicLayout() {
 
     return (
         <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-        <div className={user ? "min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:pb-0" : "min-h-screen bg-canvas text-ink"} dir="rtl">
+        <div data-experience="discover" className={user ? "min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:pb-0" : "min-h-screen bg-canvas text-ink"} dir="rtl">
             <a href="#main-content" className="sr-only z-[60] bg-paper px-4 py-3 text-ink focus:not-sr-only focus:fixed focus:inset-x-4 focus:top-4">
                 رفتن به محتوای اصلی
             </a>
             <header className="sticky top-0 z-40 border-b border-border bg-[color:color-mix(in_srgb,var(--color-canvas)_94%,transparent)] backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-canvas)_88%,transparent)]">
                 <div className="mx-auto flex min-h-[var(--header-height)] max-w-content items-center justify-between gap-2 px-page-gutter sm:gap-4">
-                    <Link to="/" className="group flex shrink-0 items-center gap-3 text-ink no-underline" aria-label="راد آرت، صفحه اصلی">
-                        <span className="grid h-11 w-11 place-items-center rounded-md bg-ink text-xl font-black text-inverse transition-colors group-hover:bg-terracotta">ر</span>
+                    <Link to="/" className="group flex shrink-0 items-center gap-2 text-ink no-underline sm:gap-3" aria-label="راد آرت، صفحه اصلی">
+                        <span className="grid h-10 w-10 place-items-center rounded-md bg-ink text-lg font-black text-inverse transition-colors group-hover:bg-terracotta sm:h-11 sm:w-11 sm:text-xl">ر</span>
                         <span className="flex flex-col leading-tight">
-                            <span className="text-xl font-black tracking-tight">راد<span className="text-terracotta-strong">آرت</span></span>
-                            <span dir="ltr" className="mt-1 text-[9px] font-semibold tracking-[.2em] text-muted">INDEPENDENT ART</span>
+                            <span className="text-lg font-black tracking-tight sm:text-xl">راد<span className="text-terracotta-strong">آرت</span></span>
+                            <span dir="ltr" className="mt-1 hidden text-[9px] font-semibold tracking-[.2em] text-muted sm:block">INDEPENDENT ART</span>
                         </span>
                     </Link>
 
@@ -74,6 +94,7 @@ export function PublicLayout() {
                     </nav>
 
                     <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+                        <ThemeControl />
                         {user ? (
                             <>
                                 <span className="hidden max-w-36 truncate text-sm font-semibold text-ink 2xl:inline">{user.name}</span>
@@ -226,15 +247,20 @@ function NotificationBell({ user }) {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [open, setOpen] = useState(false);
+    const [page, setPage] = useState(1);
     const [actionError, setActionError] = useState('');
-    const notificationKey = ['notifications', user?.id, 'list'];
+    const notificationKey = ['notifications', user?.id, 'list', page];
     const preferenceKey = ['notifications', user?.id, 'preferences'];
 
     const notificationsQuery = useQuery({
         queryKey: notificationKey,
         queryFn: async ({ signal }) => {
-            const { data } = await axios.get('/api/v1/notifications', { signal });
-            return { items: data.data ?? [], unreadCount: data.unread_count ?? 0 };
+            const { data } = await axios.get('/api/v1/notifications', { params: { page }, signal });
+            return {
+                items: data.data ?? [],
+                unreadCount: data.unread_count ?? 0,
+                lastPage: data.last_page ?? 1,
+            };
         },
         enabled: Boolean(user?.id),
         refetchInterval: 30_000,
@@ -243,7 +269,14 @@ function NotificationBell({ user }) {
         queryKey: preferenceKey,
         queryFn: async ({ signal }) => {
             const { data } = await axios.get('/api/v1/notifications/preferences', { signal });
-            return data.data ?? { in_app_messages: true, email_available: false };
+            return data.data ?? {
+                in_app_messages: true,
+                in_app_follows: true,
+                in_app_artwork_likes: true,
+                in_app_artwork_comments: true,
+                in_app_comment_replies: true,
+                email_available: false,
+            };
         },
         enabled: Boolean(user?.id),
     });
@@ -259,6 +292,7 @@ function NotificationBell({ user }) {
                     : notification),
                 unreadCount: Math.max(0, current.unreadCount - 1),
             } : current);
+            queryClient.invalidateQueries({ queryKey: ['notifications', user?.id, 'list'] });
         },
     });
     const markAllRead = useMutation({
@@ -270,15 +304,16 @@ function NotificationBell({ user }) {
                 items: current.items.map((item) => ({ ...item, read_at: item.read_at ?? new Date().toISOString() })),
                 unreadCount: 0,
             } : current);
+            queryClient.invalidateQueries({ queryKey: ['notifications', user?.id, 'list'] });
         },
     });
     const updatePreference = useMutation({
         mutationKey: ['notifications', 'update-preference', user?.id],
-        mutationFn: (enabled) => axios.patch('/api/v1/notifications/preferences', { in_app_messages: enabled }),
-        onMutate: async (enabled) => {
+        mutationFn: ({ key, enabled }) => axios.patch('/api/v1/notifications/preferences', { [key]: enabled }),
+        onMutate: async ({ key, enabled }) => {
             await queryClient.cancelQueries({ queryKey: preferenceKey });
             const previous = queryClient.getQueryData(preferenceKey);
-            queryClient.setQueryData(preferenceKey, (current) => ({ ...(current ?? {}), in_app_messages: enabled }));
+            queryClient.setQueryData(preferenceKey, (current) => ({ ...(current ?? {}), [key]: enabled }));
             return { previous };
         },
         onError: (_, __, context) => {
@@ -289,7 +324,15 @@ function NotificationBell({ user }) {
 
     const items = notificationsQuery.data?.items ?? [];
     const unreadCount = notificationsQuery.data?.unreadCount ?? 0;
-    const preferences = preferencesQuery.data ?? { in_app_messages: true, email_available: false };
+    const lastPage = notificationsQuery.data?.lastPage ?? 1;
+    const preferences = preferencesQuery.data ?? {
+        in_app_messages: true,
+        in_app_follows: true,
+        in_app_artwork_likes: true,
+        in_app_artwork_comments: true,
+        in_app_comment_replies: true,
+        email_available: false,
+    };
     const loading = notificationsQuery.isPending || preferencesQuery.isPending;
     const busy = markOneRead.isPending || markAllRead.isPending || updatePreference.isPending;
     const error = actionError || (notificationsQuery.isError || preferencesQuery.isError
@@ -303,7 +346,9 @@ function NotificationBell({ user }) {
             if (!item.read_at) await markOneRead.mutateAsync(item);
             setOpen(false);
             const inbox = user.role === 'artist' ? '/dashboard/artist/messages' : '/dashboard/buyer/messages';
-            navigate(inbox + '?conversation=' + encodeURIComponent(item.conversation_id));
+            navigate(item.target_url || (item.conversation_id
+                ? inbox + '?conversation=' + encodeURIComponent(item.conversation_id)
+                : '/'));
         } catch {
             setActionError('بازکردن اعلان انجام نشد. دوباره تلاش کنید.');
         }
@@ -319,14 +364,22 @@ function NotificationBell({ user }) {
         }
     };
 
-    const changePreference = async (enabled) => {
+    const changePreference = async (key, enabled) => {
         setActionError('');
         try {
-            await updatePreference.mutateAsync(enabled);
+            await updatePreference.mutateAsync({ key, enabled });
         } catch {
             setActionError('ذخیره تنظیمات اعلان انجام نشد.');
         }
     };
+
+    const preferenceOptions = [
+        ['in_app_messages', 'اعلان پیام‌های جدید', 'پیام تازه در فضای کاربری'],
+        ['in_app_follows', 'دنبال‌کننده‌های تازه', 'وقتی کاربری هنرمند را دنبال می‌کند'],
+        ['in_app_artwork_likes', 'پسندیدن آثار', 'وقتی کسی اثری را می‌پسندد'],
+        ['in_app_artwork_comments', 'دیدگاه‌های آثار', 'وقتی کسی درباره اثر دیدگاه می‌نویسد'],
+        ['in_app_comment_replies', 'پاسخ به دیدگاه‌ها', 'وقتی کسی به دیدگاه پاسخ می‌دهد'],
+    ];
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -339,9 +392,9 @@ function NotificationBell({ user }) {
                     aria-controls="workspace-notification-panel"
                     className="relative inline-flex min-h-11 items-center gap-2 rounded-md border border-border-strong bg-paper px-3.5 py-2 text-sm font-bold text-ink shadow-soft transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
                 >
-                <Bell aria-hidden="true" size={17} strokeWidth={1.8} />
-                <span className="hidden sm:inline">اعلان‌ها</span>
-                {unreadCount > 0 && <span className="min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-[10px] font-extrabold tabular-nums text-inverse" aria-live="polite">{unreadCount > 99 ? '۹۹+' : unreadCount.toLocaleString('fa-IR')}</span>}
+                    <Bell aria-hidden="true" size={17} strokeWidth={1.8} />
+                    <span className="hidden sm:inline">اعلان‌ها</span>
+                    {unreadCount > 0 && <span className="min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-[10px] font-extrabold tabular-nums text-inverse" aria-live="polite">{unreadCount > 99 ? '۹۹+' : unreadCount.toLocaleString('fa-IR')}</span>}
                 </button>
             </DialogTrigger>
             <DialogContent
@@ -349,51 +402,53 @@ function NotificationBell({ user }) {
                 placement="drawer"
                 className="!w-[min(25rem,100vw)] !p-0 flex flex-col !overflow-hidden text-right"
             >
-                    <div className="h-1 shrink-0 bg-terracotta" aria-hidden="true" />
-                    <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
-                        <div className="min-w-0">
-                            <div className="flex flex-wrap items-center gap-2">
-                                <DialogTitle className="text-base tracking-tight">اعلان‌های پیام</DialogTitle>
-                                {unreadCount > 0 && <Badge variant="accent">{unreadCount.toLocaleString('fa-IR')} جدید</Badge>}
-                            </div>
-                            <DialogDescription className="mt-1 text-xs leading-6">پیام‌های تازه و وضعیت خوانده‌شدن آن‌ها</DialogDescription>
+                <div className="h-1 shrink-0 bg-terracotta" aria-hidden="true" />
+                <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
+                    <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <DialogTitle className="text-base tracking-tight">اعلان‌ها</DialogTitle>
+                            {unreadCount > 0 && <Badge variant="accent">{unreadCount.toLocaleString('fa-IR')} جدید</Badge>}
                         </div>
-                        <div className="flex shrink-0 items-center gap-1">
+                        <DialogDescription className="mt-1 text-xs leading-6">خبرهای تازه درباره پیام‌ها، آثار و هنرمندان</DialogDescription>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-1">
+                        <button
+                            type="button"
+                            onClick={markAll}
+                            disabled={busy || unreadCount === 0}
+                            className="inline-flex min-h-9 items-center gap-1.5 rounded-md px-2 text-[11px] font-bold text-terracotta-strong transition-colors hover:bg-accent-surface disabled:cursor-not-allowed disabled:opacity-40"
+                        >
+                            <CheckCheck size={14} aria-hidden="true" />
+                            <span>خواندن همه</span>
+                        </button>
+                        <DialogClose asChild>
                             <button
                                 type="button"
-                                onClick={markAll}
-                                disabled={busy || unreadCount === 0}
-                                className="inline-flex min-h-9 items-center gap-1.5 rounded-md px-2 text-[11px] font-bold text-terracotta-strong transition-colors hover:bg-accent-surface disabled:cursor-not-allowed disabled:opacity-40"
+                                aria-label="بستن اعلان‌ها"
+                                className="grid h-9 w-9 place-items-center rounded-md text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                             >
-                                <CheckCheck size={14} aria-hidden="true" />
-                                <span>خواندن همه</span>
+                                <X size={17} aria-hidden="true" />
                             </button>
-                            <DialogClose asChild>
-                                <button
-                                    type="button"
-                                    aria-label="بستن اعلان‌ها"
-                                    className="grid h-9 w-9 place-items-center rounded-md text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
-                                >
-                                    <X size={17} aria-hidden="true" />
-                                </button>
-                            </DialogClose>
-                        </div>
+                        </DialogClose>
                     </div>
+                </div>
 
-                    {error && <p role="alert" className="mx-4 mt-3 rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_20%,transparent)] bg-danger-surface px-3 py-2 text-xs leading-6 text-danger sm:mx-5">{error}</p>}
+                {error && <p role="alert" className="mx-4 mt-3 rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_20%,transparent)] bg-danger-surface px-3 py-2 text-xs leading-6 text-danger sm:mx-5">{error}</p>}
 
-                    <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-4">
-                        {loading ? (
-                            <div className="space-y-2 py-1"><NotificationListSkeleton count={3} /></div>
-                        ) : items.length === 0 ? (
-                            <div className="flex min-h-44 flex-col items-center justify-center rounded-lg border border-dashed border-border bg-surface-muted px-5 py-7 text-center">
-                                <span className="grid h-11 w-11 place-items-center rounded-full bg-paper text-muted shadow-soft"><Bell size={19} aria-hidden="true" /></span>
-                                <p className="mt-3 text-sm font-bold text-ink">هنوز اعلانی ندارید</p>
-                                <p className="mt-1 text-xs leading-6 text-muted">پیام‌های تازه از هنرمندان و خریداران در این بخش نمایش داده می‌شوند.</p>
-                            </div>
-                        ) : (
-                            <ul className="space-y-2">
-                                {items.map((item) => (
+                <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-4">
+                    {loading ? (
+                        <div className="space-y-2 py-1"><NotificationListSkeleton count={3} /></div>
+                    ) : items.length === 0 ? (
+                        <div className="flex min-h-44 flex-col items-center justify-center rounded-lg border border-dashed border-border bg-surface-muted px-5 py-7 text-center">
+                            <span className="grid h-11 w-11 place-items-center rounded-full bg-paper text-muted shadow-soft"><Bell size={19} aria-hidden="true" /></span>
+                            <p className="mt-3 text-sm font-bold text-ink">هنوز اعلانی ندارید</p>
+                            <p className="mt-1 text-xs leading-6 text-muted">فعالیت‌های تازه در این بخش نمایش داده می‌شوند.</p>
+                        </div>
+                    ) : (
+                        <ul className="space-y-2">
+                            {items.map((item) => {
+                                const ItemIcon = item.kind === 'artist_followed' ? Users : item.kind === 'artwork_liked' ? Heart : MessageCircle;
+                                return (
                                     <li key={item.id}>
                                         <button
                                             type="button"
@@ -407,37 +462,53 @@ function NotificationBell({ user }) {
                                             ].join(' ')}
                                         >
                                             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-surface-muted text-terracotta-strong">
-                                                <MessageCircle size={17} aria-hidden="true" />
+                                                <ItemIcon size={17} aria-hidden="true" />
                                             </span>
                                             <span className="min-w-0 flex-1">
                                                 <span className="flex flex-wrap items-center justify-between gap-2">
-                                                    <strong className="text-sm font-bold leading-6 text-ink">{item.sender_name} پیام جدیدی فرستاد</strong>
+                                                    <strong className="text-sm font-bold leading-6 text-ink">{item.title}</strong>
                                                     {!item.read_at && <Badge variant="accent" className="px-2 py-0.5 text-[10px]">جدید</Badge>}
                                                 </span>
+                                                {item.artwork_title && <span className="mt-1 block truncate text-xs text-muted">{item.artwork_title}</span>}
+                                                {item.comment_preview && <span className="mt-1 block line-clamp-2 text-xs leading-6 text-muted">{item.comment_preview}</span>}
                                                 <span className="mt-1 block text-[11px] tabular-nums text-muted">{notificationDate(item.created_at)}</span>
                                             </span>
                                             {!item.read_at && <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-terracotta" />}
                                         </button>
                                     </li>
-                                ))}
-                            </ul>
-                        )}
-                    </div>
+                                );
+                            })}
+                        </ul>
+                    )}
+                    {!loading && lastPage > 1 && (
+                        <nav aria-label="صفحه‌بندی اعلان‌ها" className="mt-4 flex items-center justify-between gap-3">
+                            <button type="button" disabled={page <= 1 || notificationsQuery.isFetching} onClick={() => setPage((value) => value - 1)} className="border border-border px-3 py-2 text-xs disabled:opacity-40">جدیدتر</button>
+                            <span className="text-xs tabular-nums text-muted">{page.toLocaleString('fa-IR')} از {lastPage.toLocaleString('fa-IR')}</span>
+                            <button type="button" disabled={page >= lastPage || notificationsQuery.isFetching} onClick={() => setPage((value) => value + 1)} className="border border-border px-3 py-2 text-xs disabled:opacity-40">قدیمی‌تر</button>
+                        </nav>
+                    )}
+                </div>
 
-                    <div className="shrink-0 border-t border-border bg-surface-muted px-4 py-4 sm:px-5">
-                        <Checkbox
-                            checked={Boolean(preferences.in_app_messages)}
-                            disabled={busy || preferencesQuery.isPending}
-                            onChange={(event) => changePreference(event.target.checked)}
-                            className="flex min-h-11 w-full items-start gap-3 rounded-md border border-border bg-paper p-3 text-xs leading-6"
-                        >
-                            <span className="min-w-0">
-                                <strong className="block font-bold text-ink">اعلان پیام‌های جدید در این بخش</strong>
-                                <span className="mt-1 block text-[11px] text-muted">نمایش اعلان پیام‌های تازه در فضای کاربری</span>
-                            </span>
-                        </Checkbox>
-                        <p className="mt-2 text-[10px] leading-5 text-muted">اعلان ایمیلی تا تأیید صف ارسال و تنظیمات میزبان غیرفعال است.</p>
+                <div className="shrink-0 border-t border-border bg-surface-muted px-4 py-4 sm:px-5">
+                    <p className="mb-3 text-xs font-bold text-ink">تنظیمات اعلان درون‌برنامه‌ای</p>
+                    <div className="space-y-2">
+                        {preferenceOptions.map(([key, label, description]) => (
+                            <Checkbox
+                                key={key}
+                                checked={Boolean(preferences[key])}
+                                disabled={busy || preferencesQuery.isPending}
+                                onChange={(event) => changePreference(key, event.target.checked)}
+                                className="flex min-h-11 w-full items-start gap-3 rounded-md border border-border bg-paper p-3 text-xs leading-6"
+                            >
+                                <span className="min-w-0">
+                                    <strong className="block font-bold text-ink">{label}</strong>
+                                    <span className="mt-1 block text-[11px] text-muted">{description}</span>
+                                </span>
+                            </Checkbox>
+                        ))}
                     </div>
+                    <p className="mt-2 text-[10px] leading-5 text-muted">اعلان ایمیلی و پیامکی در این نسخه غیرفعال است.</p>
+                </div>
             </DialogContent>
         </Dialog>
     );
@@ -460,14 +531,14 @@ const workspaceNavigationIcons = {
 const workspaceNavigationLabels = {
     '/dashboard/artist': 'خانه',
     '/dashboard/artist/profile': 'پروفایل',
-    '/dashboard/artist/artworks': 'آثار',
+    '/dashboard/artist/artworks': 'محتوا',
     '/dashboard/artist/messages': 'پیام‌ها',
     '/dashboard/buyer': 'خانه',
     '/dashboard/buyer/messages': 'پیام‌ها',
     '/admin': 'خانه',
     '/admin/users': 'کاربران',
-    '/admin/artworks': 'بررسی آثار',
-    '/admin/message-reports': 'گزارش‌ها',
+    '/admin/artworks': 'آثار',
+    '/admin/message-reports': 'ایمنی',
     '/admin/editorial': 'سردبیری',
 };
 
@@ -480,13 +551,16 @@ function AuthenticatedBottomNavigation({ primaryLinks }) {
             <nav aria-label="بخش‌های اصلی حساب کاربری" data-nav-priority="primary" className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2">
                 {primaryLinks.map((item) => {
                     const Icon = workspaceNavigationIcons[item.to] ?? LayoutDashboard;
+                    const isMessagesLink = item.to.endsWith('/messages');
+                    const accessibleLabel = isMessagesLink ? 'پیام‌ها' : item.label;
+                    const visibleLabel = isMessagesLink ? 'پیام‌ها' : item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label;
                     return (
                         <NavLink
                             key={item.to}
                             to={item.to}
                             end={item.end}
-                            aria-label={item.label}
-                            title={item.label}
+                            aria-label={accessibleLabel}
+                            title={accessibleLabel}
                             className={({ isActive }) => [
                                 'relative flex min-w-0 flex-col items-center justify-center gap-1 rounded-md px-1 text-[10px] font-bold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus motion-reduce:transition-none',
                                 isActive
@@ -495,7 +569,7 @@ function AuthenticatedBottomNavigation({ primaryLinks }) {
                             ].join(' ')}
                         >
                             <Icon size={19} strokeWidth={1.9} aria-hidden="true" />
-                            <span className="max-w-full truncate">{workspaceNavigationLabels[item.to] ?? item.label}</span>
+                            <span className="max-w-full truncate">{visibleLabel}</span>
                         </NavLink>
                     );
                 })}
@@ -524,7 +598,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
 
     return (
         <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-        <div className={isMessagingRoute ? "flex h-dvh flex-col overflow-hidden bg-canvas text-ink" : "min-h-screen bg-canvas text-ink"} dir="rtl">
+        <div data-experience={user?.role ?? 'workspace'} className={isMessagingRoute ? "flex h-dvh flex-col overflow-hidden bg-canvas text-ink" : "min-h-screen bg-canvas text-ink"} dir="rtl">
             <header className="sticky top-0 z-40 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] shadow-soft backdrop-blur">
                 <div className="mx-auto flex min-h-[4.5rem] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-20 sm:gap-4">
                     <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
@@ -542,6 +616,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     </div>
 
                     <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+                        <ThemeControl />
                         {user?.role !== 'admin' && <NotificationBell user={user} />}
 
                         <div className="hidden min-w-0 items-center gap-3 lg:flex">
@@ -558,7 +633,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                             <button
                                 type="button"
                                 aria-label="باز کردن منوی حساب کاربری"
-                                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus lg:hidden"
                             >
                                 <Menu size={20} aria-hidden="true" />
                             </button>
@@ -576,7 +651,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     <div className="flex min-w-0 items-center gap-3">
                         <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-lg font-black text-inverse">ر</span>
                         <div className="min-w-0">
-                            <DialogTitle className="text-sm font-extrabold text-ink">حساب کاربری</DialogTitle>
+                            <DialogTitle className="text-sm font-extrabold text-ink">فضای کاری</DialogTitle>
                             <DialogDescription className="mt-1 max-w-48 truncate text-xs text-muted">{user?.name}</DialogDescription>
                         </div>
                     </div>
@@ -615,7 +690,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     <div className="my-5 border-t border-border" />
 
                     <nav aria-label="پیوندهای تکمیلی سایت">
-                        <h3 className="mb-2 px-3 text-xs font-extrabold text-muted">کشف و راهنمایی</h3>
+                        <h3 className="mb-2 px-3 text-xs font-extrabold text-muted">کشف</h3>
                         <div className="grid gap-1">
                             {publicSecondaryLinks.map((item) => (
                                 <NavLink
@@ -657,6 +732,11 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                 <aside className={isMessagingRoute
                     ? 'hidden min-w-0 rounded-xl border border-border bg-paper p-3 shadow-soft lg:fixed lg:top-28 lg:right-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))] lg:z-30 lg:block lg:h-fit lg:max-h-[calc(100dvh_-_8rem)] lg:w-60 lg:overflow-y-auto'
                     : 'hidden min-w-0 rounded-xl border border-border bg-paper p-3 shadow-soft lg:sticky lg:top-24 lg:block lg:h-fit'}>
+                    <div className="mb-4 rounded-xl bg-surface-muted p-4">
+                        <p className="text-[10px] font-extrabold tracking-wide text-muted">RAD ART / WORKSPACE</p>
+                        <p className="mt-1 text-sm font-extrabold text-ink">{title}</p>
+                        <p className="mt-1 truncate text-xs text-muted">{user?.name}</p>
+                    </div>
                     <nav aria-label="ناوبری فضای کاربری" className="flex w-full min-w-0 flex-col gap-1">
                         {links.map((item) => {
                             const Icon = workspaceNavigationIcons[item.to] ?? LayoutDashboard;
@@ -668,8 +748,8 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                     className={({ isActive }) => [
                                         'relative inline-flex min-h-11 w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus motion-reduce:transition-none',
                                         isActive
-                                            ? 'bg-ink text-inverse shadow-soft after:absolute after:inset-y-2 after:right-0 after:w-1 after:rounded-full after:bg-terracotta'
-                                            : 'bg-transparent text-muted hover:bg-accent-surface hover:text-terracotta-strong',
+                                            ? 'bg-accent-surface text-terracotta-strong after:absolute after:inset-y-2 after:right-0 after:w-1 after:rounded-full after:bg-terracotta'
+                                            : 'bg-transparent text-muted hover:bg-surface-muted hover:text-ink',
                                     ].join(' ')}
                                 >
                                     <Icon size={18} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />

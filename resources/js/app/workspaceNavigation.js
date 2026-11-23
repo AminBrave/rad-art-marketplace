@@ -1,21 +1,22 @@
 export function getWorkspacePrimaryLinks(role) {
     const links = {
         artist: [
-            { to: '/dashboard/artist', label: 'نمای کلی', end: true },
-            { to: '/dashboard/artist/profile', label: 'پروفایل هنرمند' },
-            { to: '/dashboard/artist/artworks', label: 'مدیریت آثار' },
-            { to: '/dashboard/artist/messages', label: 'پیام‌های مستقیم' },
+            { to: '/dashboard/artist', label: 'نمای کلی', end: true, shortLabel: 'خانه' },
+            { to: '/dashboard/artist/artworks', label: 'کتابخانه محتوا', shortLabel: 'محتوا' },
+            { to: '/dashboard/artist/profile', label: 'پروفایل هنرمند', shortLabel: 'پروفایل' },
+            { to: '/dashboard/artist/messages', label: 'پیام‌ها', shortLabel: 'پیام‌ها' },
         ],
         buyer: [
-            { to: '/dashboard/buyer', label: 'نمای کلی', end: true },
-            { to: '/dashboard/buyer/messages', label: 'پیام‌های مستقیم' },
+            { to: '/dashboard/buyer', label: 'نمای کلی', end: true, shortLabel: 'خانه' },
+            { to: '/dashboard/buyer/messages', label: 'پیام‌ها', shortLabel: 'پیام‌ها' },
         ],
         admin: [
-            { to: '/admin', label: 'نمای کلی', end: true },
-            { to: '/admin/users', label: 'مدیریت کاربران' },
-            { to: '/admin/artworks', label: 'بررسی آثار' },
-            { to: '/admin/message-reports', label: 'گزارش پیام‌ها' },
-            { to: '/admin/editorial', label: 'مجموعه‌ها و سردبیری' },
+            { to: '/admin', label: 'نمای کلی', end: true, shortLabel: 'خانه' },
+            { to: '/admin/artworks', label: 'بازبینی آثار', shortLabel: 'آثار' },
+            { to: '/admin/artwork-comment-reports', label: 'گزارش دیدگاه‌ها', shortLabel: 'دیدگاه' },
+            { to: '/admin/editorial', label: 'سردبیری و گزینش', shortLabel: 'سردبیری' },
+            { to: '/admin/message-reports', label: 'ایمنی پیام‌ها', shortLabel: 'ایمنی' },
+            { to: '/admin/users', label: 'مدیریت کاربران', shortLabel: 'کاربران' },
         ],
     };
 

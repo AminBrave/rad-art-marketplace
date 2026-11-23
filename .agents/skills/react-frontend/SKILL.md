@@ -1,29 +1,26 @@
 ---
 name: react-frontend
-description: Implement or review Rademan React 18 JavaScript UI, routing, TanStack Query state, forms, accessibility, responsive layouts and Persian RTL behavior.
+description: Build and improve Rademan React interfaces, routing, state, forms, accessibility and responsive behavior.
 ---
 
-# React Frontend Engineering
+# React frontend engineering
 
-## First inspect
-- Confirm installed versions in package.json and lockfile; this project uses React 18 and JavaScript.
-- Trace route -> page -> component -> hook/query -> API client -> backend contract.
-- Inspect shared RAD tokens, primitives, layout conventions and nearby components before creating new UI.
-- Reuse existing React Router 7 and TanStack Query 5 patterns.
+## Purpose
+Build understandable, accessible and performant frontend experiences that fit the current product requirement.
 
-## Engineering rules
-1. Keep server state in the established TanStack Query approach; do not add another state library without a demonstrated need.
-2. Keep API calls in established client/service modules. Handle cancellation, stale data, retries and invalidation deliberately.
-3. Model loading, empty, success, error, validation, disabled and submitting states. Avoid blank or ambiguous transitions.
-4. Keep components cohesive and composable. Avoid premature abstractions, excessive prop drilling, redundant state and effects that can be derived.
-5. Use semantic HTML, accessible names, correct roles, keyboard interaction, visible focus and logical focus management.
-6. Preserve Persian-first copy, RTL direction, mixed Persian/Latin text, numerals, long labels, responsive breakpoints and overflow behavior.
-7. Use shared design tokens and primitives. Avoid one-off colors, spacing, typography, radii, shadows or interaction patterns.
-8. Respect reduced-motion preferences and do not communicate status through color alone.
-9. Treat frontend route guards as presentation only. Backend authorization must protect the data and action.
-10. Keep rendering and bundle costs proportionate; avoid unnecessary dependencies and expensive rerenders.
+## Approach
+1. Inspect package.json, route structure, shared components, hooks, styles and nearby tests.
+2. Identify the boundary between server state, local interaction state and derived UI state.
+3. Keep components focused and reuse abstractions that genuinely improve consistency.
+4. Model loading, empty, error, success, disabled and permission states.
+5. Use semantic HTML and accessible interaction patterns.
+6. Consider responsive layouts, RTL, mixed-direction text and reduced motion where relevant.
+7. Avoid unnecessary dependencies, global state and speculative component frameworks.
+8. Add or update tests around observable behavior.
+9. Run proportionate frontend checks when useful and report exact outcomes.
 
-## Verification
-- Add or update focused component, integration or browser coverage when useful.
-- Do not run tests, lint, type checks, builds, browser automation, Lighthouse or accessibility tools unless explicitly authorized.
-- Do not convert JavaScript to TypeScript or adopt React 19 APIs as incidental cleanup.
+## Rademan context
+The current manifests declare React 18, JavaScript, React Router 7, TanStack Query 5 and Vite 8. Verify versions and current patterns before implementation. Frontend guards improve UX; backend authorization protects data and actions.
+
+## Deliverable
+Cohesive frontend changes with relevant states, accessibility considerations, tests and verification notes.

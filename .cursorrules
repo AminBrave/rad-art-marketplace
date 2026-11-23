@@ -1,16 +1,17 @@
-# Rad Art Marketplace — Cursor Rules
+# Rademan — Cursor guidance
 
-Follow `AGENTS.md` as the primary repository instruction file.
+Read AGENTS.md first. It is the concise entry point for repository context and user-led development.
 
-- Read `AGENTS.md` first, then follow its context-routing instructions and inspect the live issue or pull request before implementation.
-- Do not assume a root README or product-phase roadmap exists; use the canonical project documentation identified by `AGENTS.md`.
-- Preserve the approved MVP scope; do not add deferred commerce or social features.
-- Backend: Laravel 13 (PHP 8.3+), MySQL, secure validation, Policies/Gates, migrations, and tests.
-- Frontend: React + Vite, Tailwind CSS, Radix UI, Axios.
-- Build Persian-first and RTL-aware experiences with responsive layouts.
-- Assume cPanel shared hosting; avoid dependencies on root access or persistent daemons.
-- Enforce authorization and ownership on the server, never only in the UI.
-- Validate uploads defensively and never commit secrets.
-- Add tests for permission boundaries and business-critical behavior when relevant.
-- Update documentation when a meaningful change affects contributor or operator guidance.
-- Report exactly which checks were run; never invent test results.
+- The user's latest explicit instructions define the intended outcome and may override repository conventions, existing architecture, these notes and skill guidance.
+- Inspect relevant source, configuration and tests before making implementation claims.
+- Treat old issues, PRs, branches, decisions and AI notes as historical context, not future requirements or priorities.
+- Apply current engineering best practices with judgment. Existing patterns are starting points, not immutable constraints.
+- Current stack details are in composer.json and package.json; verify versions before relying on them.
+- Consider server-side authorization, privacy, secure input handling and safe data access for relevant changes.
+- Consider Persian RTL, responsive behavior and accessibility when relevant to the user experience.
+- Run proportionate checks when useful and safe; report exactly what was and was not verified.
+- Keep documentation concise and update the canonical reference when implementation or user direction changes.
+- For parallel agents, use one persistent agent/<agent-name>/lane per agent and task branches named agent/<agent-name>/<task-type>/<task-name>. Task PRs target only their owning lane; cross-agent integration is owner-directed.
+- Coordinate shared files and API/data contracts before parallel edits. Use GitHub issues/PRs and the existing project board when they improve task ownership and handoff.
+
+See AI/DEVELOPMENT-GUIDE.md for the central engineering guide and AI/DEVELOPMENT-WORKFLOW.md for branch lanes and integration.

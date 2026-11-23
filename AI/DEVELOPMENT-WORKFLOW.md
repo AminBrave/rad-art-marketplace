@@ -1,156 +1,185 @@
-# Rademan issue-to-release workflow
+# Rademan multi-agent development and delivery workflow
 
-This document describes the practical delivery sequence and review evidence for Rademan. `AGENTS.md` remains authoritative for permissions, safety and implementation rules. This guide does not grant implementation, verification, merge, deployment or CI permission.
+This document defines how independent agents collaborate safely, how task branches move through agent lanes, and how completed work is integrated. It is designed for parallel development without making the user's workflow rigid.
 
-## 1. Shape and authorize the work
+## 1. Operating model
 
-Every delivery issue should identify:
+Use three layers:
 
-- The user or maintenance outcome, affected actor and journey.
-- Current implementation baseline, with source evidence or an explicit unknown.
-- A bounded MVP, explicit non-goals and observable acceptance criteria.
-- UX/design impact, architecture/API/data impact and relevant security/privacy, accessibility, RTL, responsive and performance risks.
-- Evidence-based dependencies, rollback considerations and a proportionate verification plan.
-- The source product decision and its canonical record when the work implements product intent. Standalone maintenance, bug, documentation and QA tasks do not need a product-decision ID.
+1. Agent lane — a persistent branch owned by one agent identity, named agent/<agent-name>/lane, such as agent/chatgpt/lane or agent/claude/lane.
+2. Task branch — a short-lived branch for one bounded assignment, named agent/<agent-name>/<task-type>/<task-name> and isolated from other tasks.
+3. Integration branch — an owner-directed place to combine selected agent lanes or task results before promotion to main.
 
-A product decision, planning issue, priority label or board status is not implementation authorization. Resolve product, UX, data/API compatibility and architecture decisions before changing behavior. For larger work, use an epic with independently reviewable child issues.
+The default flow:
 
-## 2. Project-wide batch delivery
+    main
+     └── agent/
+          ├── chatgpt/
+          │    ├── lane
+          │    ├── feature/<task-name>
+          │    └── fix/<task-name>
+          ├── claude/
+          │    ├── lane
+          │    └── docs/<task-name>
+          └── <other-agent>/
+               ├── lane
+               └── <task-type>/<task-name>
 
-The default remains one bounded outcome per issue/PR. When the user explicitly authorizes a batch, apply this workflow to any engineering task category—not only feature implementation—including bugs, security, maintenance, documentation, design/RTL, quality, tooling and operations.
+    Selected agent lane(s) -> owner-directed integration -> integration
+    integration -> reviewed release promotion -> main
 
-### 2.1 Authorization and batch boundary
+Agent lanes are isolated workspaces, not release branches. main remains the stable shared baseline. Integration is deliberate, not an automatic consequence of task completion.
 
-A batch is a finite set of related tasks under one named workstream/parent issue, or a finite cross-project list the user explicitly identifies. It is not blanket permission to work through every open issue or every product decision.
+## 2. Agent identity and branch naming
 
-- Examples of clear authorization: “Batch issues #240, #241 and #242”; “Do the next Ready documentation tasks”; “Batch the next three low-risk tasks in the frontend workstream and bring me one combined handoff.”
-- If the user asks the agent to select tasks, select only from the explicitly named area/workstream and only tasks whose authorization, scope and acceptance criteria are already clear. Prefer Ready items when the live Workboard is accessible; otherwise use live GitHub issues and explain the source. Do not claim the Workboard is configured or accessible unless verified.
-- A Ready status, priority, label, roadmap entry or product decision is not by itself permission to implement. The user's batch instruction authorizes only the clearly bounded tasks it names or asks the agent to select.
-- If “next tasks” has no clear area, count or parent workstream, ask one concise clarification rather than silently treating the whole backlog as in scope.
-- Do not invent a fixed task count. Honor a user-specified count/list; otherwise choose a small, coherent set that can be reviewed together without making a large mixed-scope PR.
+Each independently working agent uses one stable, unique, lowercase agent name. Keep existing names chatgpt and claude; add another name only when another distinct agent/workspace needs its own lane.
 
-### 2.2 Select and sequence
-
-1. Re-check the live parent issue/epic, candidate issues, open PRs, current target branch, relevant source and task-specific skills.
-2. Prefer explicitly named tasks, then eligible child issues under the named parent, then the next eligible Ready tasks in the named area. Do not infer dependencies from issue numbers, labels or topic similarity.
-3. Confirm each task has clear authorization, a bounded outcome, acceptance criteria and no unresolved stop-condition decision. Product-decision work must still pass the #150 authorization gate.
-4. Sequence only evidenced dependencies. Work on independent safe tasks while a blocked slice is parked.
-5. At batch start, publish one concise plan: included tasks, exclusions, dependencies/order, intended branch/PR grouping and stop conditions. Do not ask for per-task confirmation after that.
-
-### 2.3 Execute and deliver
-
-1. Re-check live source and GitHub state before each independent slice; branch from the current agreed base.
-2. Keep changes small, focused and independently reviewable. Prefer one PR per independently reviewable outcome; combine tasks only when they are tightly coupled and should be reviewed/reverted together.
-3. Do not create duplicate issues. Create/link child issues only for distinct deliverables that need durable tracking and are within the authorized batch.
-4. Record progress and evidence on the relevant issue/PR. Each PR states its own outcome, scope, exclusions, risks, linked issue and honest verification status.
-5. Keep PRs draft while the maintainer's consolidated verification is pending. Review the full diff and relevant callers after each slice.
-6. Do not add dependencies, speculative abstractions, unrelated cleanup or new product behavior to make batching convenient.
-
-### 2.4 Stop conditions and permission boundaries
-
-Park the affected slice and explain the smallest decision/evidence needed if it requires a new product choice, architecture change, API/schema/data-contract change, authorization/privacy/security semantic change, destructive or irreversible operation, new dependency, material cost/operational risk, or resolution of conflicting evidence. Continue independent safe tasks where possible.
-
-Batch authorization does **not** authorize the assistant to run tests, lint, formatting, builds, type checks, browser automation, migrations, seeders, scanners or CI. It does not authorize deployment, release, force-push, history rewriting, repository-setting changes or merge. Those remain separate explicit gates. The maintainer may run one combined verification pass at the end. One explicit end-of-batch approval can authorize the specifically named review/ready/merge actions for all listed PRs; do not require approval separately for each small PR.
-
-### 2.5 One consolidated end-of-batch handoff
-
-Provide one final report containing:
-- Every included, completed, blocked and deferred issue, with links and reasons.
-- Every PR, branch, commit and changed file; identify coupled PRs and dependencies.
-- Acceptance criteria met, unmet or deferred, plus material risks and assumptions.
-- Exact combined local commands grouped by backend, frontend, accessibility and Playwright only where relevant; do not prescribe irrelevant suites.
-- Whether Playwright is required; if so, state that it attaches to the already-running app, uses the configured MySQL/MariaDB database and may leave persistent records.
-- Checks not run by the assistant and any automatically started CI status actually observed. Never initiate CI to complete the handoff.
-- One batch-level next action: report the combined verification result and approve the listed review/merge actions, or request fixes.
-
-Keep each PR independently revertible where practical. A batch may span multiple PRs, but must not collapse unrelated changes into one broad PR merely to reduce approval count.
-## 3. Review checklist
-
-Use the parts that apply to the change; do not require every item mechanically.
-
-- [ ] Linked issue and approved product/architecture decisions, where applicable.
-- [ ] User/maintenance outcome, MVP scope, non-goals and acceptance criteria are satisfied.
-- [ ] Changed files and important behavior/state ownership are explained.
-- [ ] API, response, pagination, schema and migration compatibility are stated.
-- [ ] Authentication, authorization, ownership, privacy, uploads, storage and abuse boundaries are reviewed.
-- [ ] Error, empty, loading, retry, duplicate-submission, idempotency and rollback paths are covered where relevant.
-- [ ] Performance implications and evidence are stated when material.
-- [ ] Accessibility, semantic names, keyboard/focus, RTL, responsive layout and visual impact are reviewed where relevant.
-- [ ] User journey, content hierarchy, interaction states and RAD component/token reuse are reviewed for interface changes.
-- [ ] Runtime configuration, privacy-conscious observability, recovery and rollback are considered for operationally significant changes.
-- [ ] Relevant tests and checks are listed with exact scope and actual results; unrun checks are explicitly marked.
-- [ ] `tests/QUALITY-MATRIX.md` and operator/contributor docs are updated if supported journeys, known gaps or commands change.
-- [ ] Human review is complete. Merge and deployment remain separate explicit approvals.
-
-## 4. Change-type verification matrix
-
-Choose checks based on the changed boundary and risk. A passing lower-level test does not replace a necessary browser or manual review, and no suite is required merely for line coverage.
-
-| Change type | Focused automated evidence | Additional review |
+| Purpose | Pattern | Example |
 |---|---|---|
-| Documentation only | Usually no application suite; verify links and consistency with source/scripts | Ownership, precedence, factual accuracy and no unsupported automation claims |
-| Pure PHP/domain logic | PHPUnit Unit | Invariants, boundaries and failure behavior |
-| Laravel HTTP/controller/auth/validation | PHPUnit Feature | Route/middleware/policy ownership, response/status/pagination compatibility and actor isolation |
-| Database, transaction, storage, queue or external boundary | PHPUnit Integration plus relevant Feature coverage | Rollback, concurrency/idempotency, private-file access and retry/failure cleanup |
-| React component/hook/query/cache | Node frontend tests | State ownership, cache invalidation, loading/error/empty states, keyboard and RTL behavior |
-| Navigation or cross-role user journey | Focused Playwright journey plus relevant lower-layer tests | URL/deep links, focus/keyboard, responsive/RTL and recovery behavior |
-| Visual/design-system/token change | Relevant frontend/color tests; compiled CSS audit when output is affected | Visual comparison, keyboard/focus and manual contrast/assistive-technology review as relevant |
-| Security/privacy/upload/access boundary | Relevant Feature and Integration tests | Threat/ownership review, private storage and response leakage; scanners are supplemental |
-| Performance-sensitive change | Focused tests and reproducible measurements only where a baseline/target exists | Fixed target, data, viewport/device/network and repeatable method |
+| Persistent agent lane | agent/<agent-name>/lane | agent/chatgpt/lane |
+| Feature task | agent/<agent-name>/feature/<task-name> | agent/chatgpt/feature/123-artist-search |
+| Bug fix | agent/<agent-name>/fix/<task-name> | agent/claude/fix/456-message-state |
+| Refactor | agent/<agent-name>/refactor/<task-name> | agent/chatgpt/refactor/234-query-hooks |
+| Design/UI | agent/<agent-name>/design/<task-name> | agent/claude/design/321-profile-layout |
+| Documentation | agent/<agent-name>/docs/<task-name> | agent/chatgpt/docs/789-dev-guide |
+| Tests/quality | agent/<agent-name>/test/<task-name> | agent/claude/test/555-message-tests |
+| Security | agent/<agent-name>/security/<task-name> | agent/chatgpt/security/654-upload-checks |
+| Chore/tooling | agent/<agent-name>/chore/<task-name> | agent/agent-x/chore/888-scripts |
+| Integration workstream | integration/<slug> | integration/messaging-refresh |
 
-## 5. Existing commands and side effects
+The required task hierarchy is agent/<agent-name>/<task-type>/<task-name>. Use a stable lowercase agent name, a short task type (feature, fix, refactor, design, docs, test, security or chore), and a concise kebab-case task name. Include the issue number in the task name when one exists; otherwise use a descriptive unique slug. Avoid model versions and session dates. The persistent lane is agent/<agent-name>/lane. Git cannot have both agent/<agent-name> and nested refs below it, which is why the explicit /lane segment is required. Existing persistent branches named agent/chatgpt or agent/claude must be migrated to the /lane form before creating nested task branches for those agents. This guide defines the target convention; it does not rename existing remote branches.
 
-Public commands are declared in `package.json`; orchestration is in `scripts/project.mjs`. Check those files before relying on this list if the scripts change.
+## 3. Starting a task
 
-| Command | Purpose | Important side effects / limits |
-|---|---|---|
-| `npm run test:unit` | PHPUnit Unit suite | Uses the test bootstrap and in-memory SQLite; refreshes its JUnit report |
-| `npm run test:feature` | PHPUnit Feature suite | Uses the test bootstrap and in-memory SQLite; refreshes its JUnit report |
-| `npm run test:integration` | PHPUnit Integration suite | Uses the test bootstrap and in-memory SQLite; refreshes its JUnit report |
-| `npm run test:backend` | Full PHPUnit suite | Uses the test bootstrap and in-memory SQLite; refreshes its JUnit report |
-| `npm run test:frontend` | Node frontend tests | Refreshes the frontend JUnit report |
-| `npm run test:reporting` | Python tests for report tooling | Runs the Python reporting/discovery unit tests |
-| `npm run test:report` | Summarize existing test reports | Reads existing reports and Git metadata; it does not run suites. Missing/stale reports are not passes |
-| `npm run test:browser` | Playwright journeys against the running local app | Stateful: uses the app's configured MySQL/MariaDB database and may leave test records. It is not an isolated SQLite run |
-| `npm run lint` | ESLint over `resources/js` | Static check; does not execute tests |
-| `npm run a11y:colors` | Focused design-token color tests | Automated token checks do not prove full WCAG conformance |
-| `npm run a11y:build` | Build and audit compiled CSS in `build/a11y-css` | Creates/overwrites that audit output directory; does not replace visual/manual review |
-| `npm run production` | Production Vite build | Writes production assets under `public/build`; ensure the dev hot file is absent |
-| `npm run build:cpanel` | cPanel production packaging/build | Writes build artifacts; review the target/output before running |
+For each assignment:
 
-### Browser-test safety
+1. Confirm the agent name, task outcome, scope and intended base lane.
+2. Inspect live remote branch state and the relevant issue/PR. When a local checkout is available, inspect local status and uncommitted work separately.
+3. Start from the current head of agent/<agent-name>/lane. If the lane does not exist, create it from the agreed stable base only when that is part of the authorized task.
+4. Create a dedicated task branch named agent/<agent-name>/<task-type>/<task-name>. Do not implement multiple unrelated assignments directly on the persistent lane.
+5. Identify likely file ownership, shared contracts, dependencies and overlap with other active agent tasks.
+6. Record the task branch, base commit and linked issue in the task/PR description when tracking is useful.
 
-`npm run test:browser` attaches Playwright to the already-running development application. The runner requires a local/development app environment and a MySQL connection from the configured `.env`; it does not create a separate test database, reset the database, start services, run migrations/seeders or isolate application storage/cache/session state. Browser journeys may create or mutate persistent records.
+Do not assume remote GitHub state reveals local uncommitted changes. Do not switch or overwrite a working tree that may contain another task's work.
 
-Before running it, inspect the effective `.env` and confirm the database is dedicated to disposable development or safely backed up. Never use production, staging or important user data. A localhost tunnel does not prove the database is safe. Start the normal app through the documented `npm run dev` workflow. There are no `browser:prepare` or `dev:browser` scripts in the current package manifest.
+## 4. Parallel task isolation
 
-Database commands such as `npm run db:migrate`, `npm run db:seed`, `npm run db:seed:demo` and especially `npm run db:fresh` are data operations, not verification substitutes. `db:fresh` is destructive.
+- Assign each task to one primary agent and one task branch. Multiple agents may contribute only when the user explicitly asks for collaboration on the same task.
+- Keep tasks independent by separating files, modules, APIs or deliverables where practical.
+- Before parallelizing work that touches shared files, shared schemas, route contracts, design tokens, central navigation or common components, agree on ownership and interface boundaries.
+- If two tasks must edit the same files, serialize those edits or have one task own the shared change and expose a stable contract to the other.
+- Do not let agents commit directly to another agent's task branch or persistent lane.
+- Do not cherry-pick, copy or merge code between agent lanes as an informal shortcut.
+- Share concise handoff notes: task, branch, base commit, files/interfaces owned, expected contract, dependencies and verification state.
+- Keep each task branch focused and independently reviewable. A task may span several commits.
 
-## 6. CI, merge and release are separate gates
+Parallelism should be limited by actual independence, not by a target number of agents. More concurrent branches are not better if they contend for the same files or contracts.
 
-- Inspect workflow YAML and live repository settings before describing automation. A workflow file does not prove that it runs on pull requests, is required, or is enforced by branch protection.
-- Never dispatch, rerun or approve a workflow without explicit permission for that specific run.
-- Record automatically started workflow evidence only when it is actually visible; do not trigger a second run for convenience.
-- Mark a PR ready only after the draft is reviewable. Merge only after human review and explicit owner approval.
-- Deployment, release tagging, production migrations and post-release smoke checks each require separate explicit authorization.
-- Record the merged/deployed commit and environment when those actions occur. A merge is not a deployment.
+## 5. Updating and merging task branches into their lane
 
-## 7. Documentation and instruction ownership
+1. Open a PR from the task branch to its owning agent/<agent-name>/lane when PR-based review is useful or required by the team's repository settings.
+2. Link the relevant issue and state outcome, scope, exclusions, affected contracts, risks and verification.
+3. Review the diff and relevant callers. Run suitable local checks; inspect any CI status that starts automatically under repository configuration.
+4. Merge only into the matching agent/<agent-name>/lane. Do not target main or a different agent lane.
+5. After a task merges, other open task branches based on the old lane head may need updating. Rebase only the task branch (never rewrite the shared lane), or merge the updated lane into the task branch when appropriate. Resolve conflicts deliberately and rerun affected checks.
+6. Close the task when its acceptance criteria are met in the agent lane. Clearly state that it is lane-complete, not yet integrated or released.
 
-Keep one authoritative home for each kind of guidance. Other files should link to it rather than copy its full rules.
+For very small tasks or workflows that do not use PRs, a direct commit to the agent's own task branch is reasonable. Keep the persistent lane protected from unrelated direct edits.
 
-| Location | Responsibility |
-|---|---|
-| AGENTS.md | Repository entry point, global permissions, evidence/authority model, engineering invariants and routing |
-| AI/PROJECT.md and canonical #150 records | Product intent, confirmed baseline and product decisions |
-| AI/TASK-MANAGEMENT.md | Issue structure, decision-to-task authorization, MVP and Workboard rules |
-| AI/DEVELOPMENT-WORKFLOW.md | Delivery lifecycle, project-wide batch procedure, review checklist and verification selection |
-| AI/ENGINEERING-PLAYBOOK.md | Cross-cutting engineering principles and curated external references |
-| AI/SESSION.md | Short-lived cross-chat handoff; remove stale status and never duplicate task records |
-| .agents/skills/*/SKILL.md | Triggered task-specific methods, checklists and expected outputs; defer global policy to AGENTS.md and delivery lifecycle to this document |
-| Source, tests, manifests, scripts and runtime | Actual implementation, supported commands and observed behavior |
-| GitHub issues/PRs and live Workboard (when configured) | Authorization, task scope, review and delivery status |
+### Task scope and commit batching
 
-The authority model is not a simple document ranking: user authorization sets the task boundary; AGENTS.md sets non-negotiable operating constraints; source/runtime is evidence of implementation; canonical decision records establish product intent; live GitHub records establish task status. A skill, handoff or playbook must not override those sources.
+- Define the task boundary before implementation: intended outcome, in-scope behavior and files, explicit non-goals, dependencies and acceptance/verification criteria.
+- Keep all files required to deliver one coherent task together. A task may touch backend, frontend, tests, configuration and documentation; file count does not determine task count.
+- Commit related files together in one task-level commit by default. Never make a separate commit merely because a file changed, and do not create repeated commits for successive small edits to the same file.
+- Split work into multiple commits only when there are distinct, independently understandable outcomes or a useful intermediate checkpoint that should stand on its own. Each commit should be coherent and reviewable, not an arbitrary slice of the file list.
+- If a user requests multiple independent tasks, keep their scopes distinct and create a small number of task-level commits—one per independently reviewable task/outcome, not one per file. Do not bundle unrelated tasks just to reduce the count.
+- Before pushing, review the complete task diff and commit history to ensure related changes are grouped, unrelated changes are excluded, and commit messages describe outcomes.
 
-When a skill needs GitHub mechanics, it should describe branch/commit/PR execution and link here for batch lifecycle. When it needs product or engineering context, it should point to the owning AI/ document rather than copying it.
+## 6. Cross-agent integration
+
+Cross-agent integration happens only when the user asks for it or clearly authorizes the integration scope.
+
+1. Identify exactly which agent lanes, task PRs or commits are in scope. Do not integrate every existing lane by default.
+2. Confirm the intended integration base and whether the target is a temporary integration branch or a maintained integration branch.
+3. Fetch current heads and compare each selected lane with the agreed common base.
+4. Review changes, overlapping files, dependencies, API/schema contracts, design tokens, route ownership and incompatible assumptions.
+5. Integrate in dependency order. Resolve conflicts based on current user direction and implementation evidence, not on which agent produced the code.
+6. Keep an integration log/PR description with source lanes, commits, conflict decisions and deferred changes.
+7. Run the combined verification appropriate to the integrated surface. Individually passing task checks do not prove the combined system works.
+8. Report what integrated, what remains isolated, and any unresolved risk.
+
+Do not automatically back-merge integration results into every agent lane. Backports are separate, scoped changes.
+
+## 7. Promotion to main and releases
+
+- Agent lanes and task branches do not target main for ordinary development.
+- Promote a reviewed integration result to main through the repository's agreed PR/review process.
+- Release, production deployment, destructive migrations and production data operations are separate activities with explicit scope and authorization.
+- A merged PR is not proof of deployment. Report the actual commit and environment when promotion or deployment occurs.
+- Never force-push, rewrite shared history, delete persistent agent lanes or alter repository protections as routine cleanup.
+
+## 8. GitHub task and project management
+
+Use GitHub issues for substantial assignments, parallel work, dependencies and traceable acceptance criteria. Small, self-contained edits can proceed without an issue when the user directly assigns them.
+
+A useful task issue states:
+- User-requested outcome and primary owner/agent.
+- Scope, non-goals and observable acceptance criteria.
+- Intended agent lane and task branch, when known.
+- Files/modules/interfaces likely owned and known overlap with other tasks.
+- Dependencies, blockers and required handoffs.
+- Verification approach appropriate to the change.
+
+Use one issue per independently deliverable outcome. Use a parent issue/epic for a coordinated group of tasks and link child issues. Do not create duplicate issues or expand an assignment into unrelated backlog work.
+
+A project board is useful when it reflects live issue state and multiple contributors need a shared view. If the repository has an existing Rademan Workboard, use its actual fields and statuses. Do not assume it exists or create/change its configuration without an explicit request. Keep board fields minimal: status, assignee, priority, type and area are usually sufficient. Use GitHub native assignees, labels and issue/PR links rather than duplicating them in custom fields.
+
+Suggested status flow, adaptable to the actual project configuration:
+- Backlog — captured, not yet selected.
+- Ready — scope and acceptance criteria are clear, dependencies understood.
+- In progress — an agent has started work.
+- In review — a PR or deliverable is ready for review.
+- Blocked — a concrete blocker and next action are recorded.
+- Done — acceptance criteria are met and the task is complete in its declared target lane.
+
+Board status and priority organize work; they do not override the user's instructions or create product direction. Old issues and PRs are historical until reviewed and selected for current work.
+
+## 9. Batches and parallel assignment
+
+When the user assigns multiple tasks or asks for a batch:
+
+1. List the assignments and identify a primary agent/lane for each.
+2. Check dependencies and shared-file conflicts.
+3. Parallelize independent tasks; sequence dependent or overlapping tasks.
+4. Use a separate task branch and issue/PR link for each deliverable when tracking helps.
+5. Provide a concise consolidated handoff with task status, branches, PRs, changed areas, verification and integration readiness.
+
+The user's assignment defines the authorized batch. Do not silently add backlog tasks. If the scope is clear, proceed without requesting repeated approval for each task.
+
+## 10. Test synchronization, verification and safe operations
+
+Tests are part of the implementation, not a separate optional cleanup. Whenever code, behavior, contracts or dependencies change, inspect the affected backend, frontend and Playwright coverage and keep it aligned in the same task branch and PR.
+
+- Add tests for new behavior, important edge cases and regression risks at the layer that best observes the contract.
+- Update existing tests when behavior, API/data contracts, UI interactions or expected outcomes change. Prefer assertions on observable behavior over implementation details.
+- Remove tests only when the covered code or behavior has genuinely been removed, or when the test is demonstrably redundant or invalid. Confirm no remaining supported path relies on that behavior; do not delete or weaken a test merely because it fails after a change.
+- When code is moved or replaced, migrate useful coverage to the new location or layer rather than dropping it with the old implementation.
+- Keep backend (unit/feature/integration), frontend (component/state/interaction) and Playwright (critical end-to-end journey) coverage consistent with the changed surface. Avoid duplicating the same assertion at every layer without a reason.
+- Include test additions, updates and justified removals with the implementation. A code-only PR should explain why existing coverage remains valid or why no test change is warranted.
+- Run the most relevant tests and broader checks when proportionate and safe. Report exact commands, results, skipped suites and environment blockers; never imply unrun checks passed.
+
+Inspect scripts and environment before stateful browser tests, database operations or commands with external effects. Read-only inspection of CI is fine; do not manually dispatch, rerun, cancel or approve CI workflows unless the user requests that action.
+
+Do not trigger, rerun, cancel or approve CI workflows manually unless the user requests that action. Read-only inspection of automatically triggered CI is fine. Do not merge, deploy, release, force-push, rewrite shared history or delete shared branches without clear authorization.
+
+## 11. Handoff format
+
+For each task, report:
+- Agent name, task branch and base lane.
+- Issue and PR links where applicable.
+- Outcome and key files/contracts changed.
+- Verification actually performed and remaining gaps.
+- Status: task branch ready, merged into agent lane, blocked, or integrated.
+- Dependencies and whether it is ready for cross-agent integration.
+
+For an integration batch, additionally list source lanes/commits, conflict resolutions, combined checks, deferred work and the exact resulting integration commit/PR.

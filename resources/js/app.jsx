@@ -4,6 +4,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 import { queryClient } from './lib/queryClient';
 import AppRouter from './app/AppRouter';
+import { ThemeProvider } from './app/ThemeContext';
 import './bootstrap';
 import { auditColorAccessibility } from './lib/colorAccessibility';
 
@@ -25,5 +26,5 @@ const RootApp = isDesignSystemPreview
     : <AppRouter />;
 
 createRoot(document.getElementById('app')).render(
-    <React.StrictMode><QueryClientProvider client={queryClient}>{RootApp}</QueryClientProvider></React.StrictMode>,
+    <React.StrictMode><QueryClientProvider client={queryClient}><ThemeProvider>{RootApp}</ThemeProvider></QueryClientProvider></React.StrictMode>,
 );
