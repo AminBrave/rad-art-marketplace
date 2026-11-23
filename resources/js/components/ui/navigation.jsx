@@ -20,14 +20,14 @@ export function TabsTrigger({ className = '', ...props }) {
     return (
         <TabsPrimitive.Trigger
             data-ui="tabs-trigger"
-            className={cn('min-h-11 border-b-2 border-transparent px-4 py-2 text-sm font-semibold text-muted outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-terracotta-strong data-[state=active]:border-terracotta data-[state=active]:text-ink disabled:cursor-not-allowed disabled:opacity-50', className)}
+            className={cn('min-h-11 border-b-2 border-transparent px-4 py-2 text-sm font-semibold text-muted outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-accent-strong data-[state=active]:border-accent data-[state=active]:text-ink disabled:cursor-not-allowed disabled:opacity-50', className)}
             {...props}
         />
     );
 }
 
 export function TabsContent({ className = '', ...props }) {
-    return <TabsPrimitive.Content data-ui="tabs-content" className={cn('pt-5 outline-none focus-visible:ring-2 focus-visible:ring-terracotta-strong', className)} {...props} />;
+    return <TabsPrimitive.Content data-ui="tabs-content" className={cn('pt-5 outline-none focus-visible:ring-2 focus-visible:ring-accent-strong', className)} {...props} />;
 }
 
 export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
@@ -87,7 +87,7 @@ export function Breadcrumbs({ items = [], className = '' }) {
                             {current ? (
                                 <span aria-current="page" className="font-semibold text-ink">{item.label}</span>
                             ) : (
-                                <Link to={item.to} className="underline-offset-4 hover:text-terracotta-strong hover:underline">{item.label}</Link>
+                                <Link to={item.to} className="underline-offset-4 hover:text-accent-strong hover:underline">{item.label}</Link>
                             )}
                         </li>
                     );
@@ -118,7 +118,7 @@ export function Pagination({ currentPage = 1, lastPage = 1, onPageChange, disabl
                             aria-current={number === page ? 'page' : undefined}
                             disabled={disabled}
                             onClick={() => onPageChange(number)}
-                            className={cn('h-9 min-w-9 rounded-sm px-2 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-terracotta-strong disabled:opacity-50', number === page ? 'bg-ink text-inverse' : 'text-ink hover:bg-surface-muted')}
+                            className={cn('h-9 min-w-9 rounded-sm px-2 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-accent-strong disabled:opacity-50', number === page ? 'bg-ink text-inverse' : 'text-ink hover:bg-surface-muted')}
                         >
                             {number}
                         </button>
