@@ -44,7 +44,7 @@ Use a concise description. Include only relevant fields:
     Agent/contributor: <agent-id>
 
     ## Branch lane
-    agent/<agent-id>
+    agent/<agent-name>/lane
 
     ## Dependencies and coordination
     Related issues/PRs, shared files, API contracts or blockers.
@@ -57,7 +57,7 @@ For very small tasks, a short title and acceptance checklist may be enough. Do n
 ## 4. Parallel work and ownership
 
 - Assign one primary owner to each independently deliverable task.
-- Give each task its own task branch within the owner's agent lane.
+- Give each task its own task branch named agent/<agent-name>/<task-type>/<task-name>, under the same agent-name namespace as the owner's persistent lane.
 - Split a larger outcome into child issues only when the parts can be delivered and reviewed independently.
 - Use a parent issue/epic to coordinate dependencies and shared acceptance criteria.
 - Record file/module ownership when tasks may overlap.
