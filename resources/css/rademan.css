@@ -167,3 +167,7 @@
 [data-page=artist-settings]{display:grid;gap:24px}
 [data-page=collection-detail] [data-ui=page-heading]{margin-bottom:24px}
 [data-page=error-state]{min-height:50dvh;align-content:center}
+
+[data-page=artist-artworks]{display:grid;gap:24px;min-width:0}
+[data-page=artist-artworks] #artwork-editor{border:1px solid var(--rd-line);border-radius:18px;background:var(--rd-surface)}
+[data-page=artist-artworks] input[type=file]{max-width:100%}
