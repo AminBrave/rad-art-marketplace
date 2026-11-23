@@ -626,6 +626,13 @@ test('production forms and actions reuse the shared UI component contract', () =
         ['public artwork gallery', artworkGallery],
         ['artwork catalogue', artworkCatalogue],
         ['artist profile page', artistProfile],
+        ['artwork detail', artworkDetail],
+        ['workspace layouts', layouts],
+        ['message timeline', messageTimeline],
+        ['conversation header', conversationHeader],
+        ['related artwork strip', relatedArtworkStrip],
+        ['messaging status banners', messagingStatusBanners],
+        ['development specimen', legacyApp],
     ]) {
         assert.doesNotMatch(source, /<(?:input|textarea|select|button)\b/, `${name} should use shared controls and action primitives`);
     }
