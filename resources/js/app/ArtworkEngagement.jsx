@@ -54,11 +54,15 @@ export default function ArtworkEngagement({ artwork, slug }) {
     const [reportReason, setReportReason] = useState('spam');
     const [shareMessage, setShareMessage] = useState('');
     const canInteract = ['buyer', 'artist'].includes(user?.role);
+    const commentTargetId = typeof window !== 'undefined' && /^#comment-\d+$/.test(window.location.hash)
+        ? window.location.hash.slice(9)
+        : '';
 
     const commentsQuery = useQuery({
-        queryKey: ['artwork-comments', slug, page],
+        queryKey: ['artwork-comments', slug, page, commentTargetId],
         queryFn: async ({ signal }) => {
-            const { data } = await axios.get('/api/v1/artworks/' + encodeURIComponent(slug) + '/comments?page=' + page, { signal });
+            const targetQuery = page === 1 && commentTargetId ? '&comment_id=' + commentTargetId : '';
+            const { data } = await axios.get('/api/v1/artworks/' + encodeURIComponent(slug) + '/comments?page=' + page + targetQuery, { signal });
             return data;
         },
         enabled: Boolean(slug),
@@ -66,7 +70,7 @@ export default function ArtworkEngagement({ artwork, slug }) {
 
     useEffect(() => {
         if (!commentsQuery.isSuccess || !window.location.hash.startsWith('#comment-')) return;
-        const target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+        const target = document.getElementById(window.location.hash.slice(1));
         target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, [commentsQuery.data, commentsQuery.isSuccess]);
 
@@ -138,6 +142,7 @@ export default function ArtworkEngagement({ artwork, slug }) {
 
     const comments = commentsQuery.data?.data ?? [];
     const pagination = commentsQuery.data ?? {};
+    const currentPage = pagination.current_page ?? page;
 
     return (
         <section className="mt-12 border-t border-border pt-8" aria-labelledby="artwork-engagement-title">
@@ -214,9 +219,9 @@ export default function ArtworkEngagement({ artwork, slug }) {
             </div>
             {pagination.last_page > 1 && (
                 <nav aria-label="صفحه‌بندی دیدگاه‌ها" className="mt-5 flex items-center justify-between gap-3">
-                    <button type="button" disabled={page <= 1 || commentsQuery.isFetching} onClick={() => setPage((value) => value - 1)} className="border border-border px-3 py-2 text-xs disabled:opacity-40">دیدگاه‌های قبلی</button>
-                    <span className="text-xs text-muted">{Number(page).toLocaleString('fa-IR')} از {Number(pagination.last_page).toLocaleString('fa-IR')}</span>
-                    <button type="button" disabled={page >= pagination.last_page || commentsQuery.isFetching} onClick={() => setPage((value) => value + 1)} className="border border-border px-3 py-2 text-xs disabled:opacity-40">دیدگاه‌های بعدی</button>
+                    <button type="button" disabled={currentPage <= 1 || commentsQuery.isFetching} onClick={() => setPage(currentPage - 1)} className="border border-border px-3 py-2 text-xs disabled:opacity-40">دیدگاه‌های قبلی</button>
+                    <span className="text-xs text-muted">{Number(currentPage).toLocaleString('fa-IR')} از {Number(pagination.last_page).toLocaleString('fa-IR')}</span>
+                    <button type="button" disabled={currentPage >= pagination.last_page || commentsQuery.isFetching} onClick={() => setPage(currentPage + 1)} className="border border-border px-3 py-2 text-xs disabled:opacity-40">دیدگاه‌های بعدی</button>
                 </nav>
             )}
         </section>
