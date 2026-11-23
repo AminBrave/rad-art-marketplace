@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Images, LayoutDashboard, Menu, MessageCircle, Monitor, Moon, Sun, UserRound, Users, X } from 'lucide-react';
+import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Heart, Images, LayoutDashboard, Menu, MessageCircle, Monitor, Moon, Sun, UserRound, Users, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { getWorkspacePrimaryLinks } from './workspaceNavigation';
@@ -247,15 +247,20 @@ function NotificationBell({ user }) {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [open, setOpen] = useState(false);
+    const [page, setPage] = useState(1);
     const [actionError, setActionError] = useState('');
-    const notificationKey = ['notifications', user?.id, 'list'];
+    const notificationKey = ['notifications', user?.id, 'list', page];
     const preferenceKey = ['notifications', user?.id, 'preferences'];
 
     const notificationsQuery = useQuery({
         queryKey: notificationKey,
         queryFn: async ({ signal }) => {
-            const { data } = await axios.get('/api/v1/notifications', { signal });
-            return { items: data.data ?? [], unreadCount: data.unread_count ?? 0 };
+            const { data } = await axios.get('/api/v1/notifications', { params: { page }, signal });
+            return {
+                items: data.data ?? [],
+                unreadCount: data.unread_count ?? 0,
+                lastPage: data.last_page ?? 1,
+            };
         },
         enabled: Boolean(user?.id),
         refetchInterval: 30_000,
@@ -264,7 +269,14 @@ function NotificationBell({ user }) {
         queryKey: preferenceKey,
         queryFn: async ({ signal }) => {
             const { data } = await axios.get('/api/v1/notifications/preferences', { signal });
-            return data.data ?? { in_app_messages: true, email_available: false };
+            return data.data ?? {
+                in_app_messages: true,
+                in_app_follows: true,
+                in_app_artwork_likes: true,
+                in_app_artwork_comments: true,
+                in_app_comment_replies: true,
+                email_available: false,
+            };
         },
         enabled: Boolean(user?.id),
     });
@@ -280,6 +292,7 @@ function NotificationBell({ user }) {
                     : notification),
                 unreadCount: Math.max(0, current.unreadCount - 1),
             } : current);
+            queryClient.invalidateQueries({ queryKey: ['notifications', user?.id, 'list'] });
         },
     });
     const markAllRead = useMutation({
@@ -291,15 +304,16 @@ function NotificationBell({ user }) {
                 items: current.items.map((item) => ({ ...item, read_at: item.read_at ?? new Date().toISOString() })),
                 unreadCount: 0,
             } : current);
+            queryClient.invalidateQueries({ queryKey: ['notifications', user?.id, 'list'] });
         },
     });
     const updatePreference = useMutation({
         mutationKey: ['notifications', 'update-preference', user?.id],
-        mutationFn: (enabled) => axios.patch('/api/v1/notifications/preferences', { in_app_messages: enabled }),
-        onMutate: async (enabled) => {
+        mutationFn: ({ key, enabled }) => axios.patch('/api/v1/notifications/preferences', { [key]: enabled }),
+        onMutate: async ({ key, enabled }) => {
             await queryClient.cancelQueries({ queryKey: preferenceKey });
             const previous = queryClient.getQueryData(preferenceKey);
-            queryClient.setQueryData(preferenceKey, (current) => ({ ...(current ?? {}), in_app_messages: enabled }));
+            queryClient.setQueryData(preferenceKey, (current) => ({ ...(current ?? {}), [key]: enabled }));
             return { previous };
         },
         onError: (_, __, context) => {
@@ -310,7 +324,15 @@ function NotificationBell({ user }) {
 
     const items = notificationsQuery.data?.items ?? [];
     const unreadCount = notificationsQuery.data?.unreadCount ?? 0;
-    const preferences = preferencesQuery.data ?? { in_app_messages: true, email_available: false };
+    const lastPage = notificationsQuery.data?.lastPage ?? 1;
+    const preferences = preferencesQuery.data ?? {
+        in_app_messages: true,
+        in_app_follows: true,
+        in_app_artwork_likes: true,
+        in_app_artwork_comments: true,
+        in_app_comment_replies: true,
+        email_available: false,
+    };
     const loading = notificationsQuery.isPending || preferencesQuery.isPending;
     const busy = markOneRead.isPending || markAllRead.isPending || updatePreference.isPending;
     const error = actionError || (notificationsQuery.isError || preferencesQuery.isError
@@ -324,7 +346,9 @@ function NotificationBell({ user }) {
             if (!item.read_at) await markOneRead.mutateAsync(item);
             setOpen(false);
             const inbox = user.role === 'artist' ? '/dashboard/artist/messages' : '/dashboard/buyer/messages';
-            navigate(inbox + '?conversation=' + encodeURIComponent(item.conversation_id));
+            navigate(item.target_url || (item.conversation_id
+                ? inbox + '?conversation=' + encodeURIComponent(item.conversation_id)
+                : '/'));
         } catch {
             setActionError('بازکردن اعلان انجام نشد. دوباره تلاش کنید.');
         }
@@ -340,14 +364,22 @@ function NotificationBell({ user }) {
         }
     };
 
-    const changePreference = async (enabled) => {
+    const changePreference = async (key, enabled) => {
         setActionError('');
         try {
-            await updatePreference.mutateAsync(enabled);
+            await updatePreference.mutateAsync({ key, enabled });
         } catch {
             setActionError('ذخیره تنظیمات اعلان انجام نشد.');
         }
     };
+
+    const preferenceOptions = [
+        ['in_app_messages', 'اعلان پیام‌های جدید', 'پیام تازه در فضای کاربری'],
+        ['in_app_follows', 'دنبال‌کننده‌های تازه', 'وقتی کاربری هنرمند را دنبال می‌کند'],
+        ['in_app_artwork_likes', 'پسندیدن آثار', 'وقتی کسی اثری را می‌پسندد'],
+        ['in_app_artwork_comments', 'دیدگاه‌های آثار', 'وقتی کسی درباره اثر دیدگاه می‌نویسد'],
+        ['in_app_comment_replies', 'پاسخ به دیدگاه‌ها', 'وقتی کسی به دیدگاه پاسخ می‌دهد'],
+    ];
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -360,9 +392,9 @@ function NotificationBell({ user }) {
                     aria-controls="workspace-notification-panel"
                     className="relative inline-flex min-h-11 items-center gap-2 rounded-md border border-border-strong bg-paper px-3.5 py-2 text-sm font-bold text-ink shadow-soft transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
                 >
-                <Bell aria-hidden="true" size={17} strokeWidth={1.8} />
-                <span className="hidden sm:inline">اعلان‌ها</span>
-                {unreadCount > 0 && <span className="min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-[10px] font-extrabold tabular-nums text-inverse" aria-live="polite">{unreadCount > 99 ? '۹۹+' : unreadCount.toLocaleString('fa-IR')}</span>}
+                    <Bell aria-hidden="true" size={17} strokeWidth={1.8} />
+                    <span className="hidden sm:inline">اعلان‌ها</span>
+                    {unreadCount > 0 && <span className="min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-[10px] font-extrabold tabular-nums text-inverse" aria-live="polite">{unreadCount > 99 ? '۹۹+' : unreadCount.toLocaleString('fa-IR')}</span>}
                 </button>
             </DialogTrigger>
             <DialogContent
@@ -370,51 +402,53 @@ function NotificationBell({ user }) {
                 placement="drawer"
                 className="!w-[min(25rem,100vw)] !p-0 flex flex-col !overflow-hidden text-right"
             >
-                    <div className="h-1 shrink-0 bg-terracotta" aria-hidden="true" />
-                    <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
-                        <div className="min-w-0">
-                            <div className="flex flex-wrap items-center gap-2">
-                                <DialogTitle className="text-base tracking-tight">اعلان‌های پیام</DialogTitle>
-                                {unreadCount > 0 && <Badge variant="accent">{unreadCount.toLocaleString('fa-IR')} جدید</Badge>}
-                            </div>
-                            <DialogDescription className="mt-1 text-xs leading-6">پیام‌های تازه و وضعیت خوانده‌شدن آن‌ها</DialogDescription>
+                <div className="h-1 shrink-0 bg-terracotta" aria-hidden="true" />
+                <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
+                    <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <DialogTitle className="text-base tracking-tight">اعلان‌ها</DialogTitle>
+                            {unreadCount > 0 && <Badge variant="accent">{unreadCount.toLocaleString('fa-IR')} جدید</Badge>}
                         </div>
-                        <div className="flex shrink-0 items-center gap-1">
+                        <DialogDescription className="mt-1 text-xs leading-6">خبرهای تازه درباره پیام‌ها، آثار و هنرمندان</DialogDescription>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-1">
+                        <button
+                            type="button"
+                            onClick={markAll}
+                            disabled={busy || unreadCount === 0}
+                            className="inline-flex min-h-9 items-center gap-1.5 rounded-md px-2 text-[11px] font-bold text-terracotta-strong transition-colors hover:bg-accent-surface disabled:cursor-not-allowed disabled:opacity-40"
+                        >
+                            <CheckCheck size={14} aria-hidden="true" />
+                            <span>خواندن همه</span>
+                        </button>
+                        <DialogClose asChild>
                             <button
                                 type="button"
-                                onClick={markAll}
-                                disabled={busy || unreadCount === 0}
-                                className="inline-flex min-h-9 items-center gap-1.5 rounded-md px-2 text-[11px] font-bold text-terracotta-strong transition-colors hover:bg-accent-surface disabled:cursor-not-allowed disabled:opacity-40"
+                                aria-label="بستن اعلان‌ها"
+                                className="grid h-9 w-9 place-items-center rounded-md text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                             >
-                                <CheckCheck size={14} aria-hidden="true" />
-                                <span>خواندن همه</span>
+                                <X size={17} aria-hidden="true" />
                             </button>
-                            <DialogClose asChild>
-                                <button
-                                    type="button"
-                                    aria-label="بستن اعلان‌ها"
-                                    className="grid h-9 w-9 place-items-center rounded-md text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
-                                >
-                                    <X size={17} aria-hidden="true" />
-                                </button>
-                            </DialogClose>
-                        </div>
+                        </DialogClose>
                     </div>
+                </div>
 
-                    {error && <p role="alert" className="mx-4 mt-3 rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_20%,transparent)] bg-danger-surface px-3 py-2 text-xs leading-6 text-danger sm:mx-5">{error}</p>}
+                {error && <p role="alert" className="mx-4 mt-3 rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_20%,transparent)] bg-danger-surface px-3 py-2 text-xs leading-6 text-danger sm:mx-5">{error}</p>}
 
-                    <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-4">
-                        {loading ? (
-                            <div className="space-y-2 py-1"><NotificationListSkeleton count={3} /></div>
-                        ) : items.length === 0 ? (
-                            <div className="flex min-h-44 flex-col items-center justify-center rounded-lg border border-dashed border-border bg-surface-muted px-5 py-7 text-center">
-                                <span className="grid h-11 w-11 place-items-center rounded-full bg-paper text-muted shadow-soft"><Bell size={19} aria-hidden="true" /></span>
-                                <p className="mt-3 text-sm font-bold text-ink">هنوز اعلانی ندارید</p>
-                                <p className="mt-1 text-xs leading-6 text-muted">پیام‌های تازه از هنرمندان و خریداران در این بخش نمایش داده می‌شوند.</p>
-                            </div>
-                        ) : (
-                            <ul className="space-y-2">
-                                {items.map((item) => (
+                <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-4">
+                    {loading ? (
+                        <div className="space-y-2 py-1"><NotificationListSkeleton count={3} /></div>
+                    ) : items.length === 0 ? (
+                        <div className="flex min-h-44 flex-col items-center justify-center rounded-lg border border-dashed border-border bg-surface-muted px-5 py-7 text-center">
+                            <span className="grid h-11 w-11 place-items-center rounded-full bg-paper text-muted shadow-soft"><Bell size={19} aria-hidden="true" /></span>
+                            <p className="mt-3 text-sm font-bold text-ink">هنوز اعلانی ندارید</p>
+                            <p className="mt-1 text-xs leading-6 text-muted">فعالیت‌های تازه در این بخش نمایش داده می‌شوند.</p>
+                        </div>
+                    ) : (
+                        <ul className="space-y-2">
+                            {items.map((item) => {
+                                const ItemIcon = item.kind === 'artist_followed' ? Users : item.kind === 'artwork_liked' ? Heart : MessageCircle;
+                                return (
                                     <li key={item.id}>
                                         <button
                                             type="button"
@@ -428,37 +462,53 @@ function NotificationBell({ user }) {
                                             ].join(' ')}
                                         >
                                             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-surface-muted text-terracotta-strong">
-                                                <MessageCircle size={17} aria-hidden="true" />
+                                                <ItemIcon size={17} aria-hidden="true" />
                                             </span>
                                             <span className="min-w-0 flex-1">
                                                 <span className="flex flex-wrap items-center justify-between gap-2">
-                                                    <strong className="text-sm font-bold leading-6 text-ink">{item.sender_name} پیام جدیدی فرستاد</strong>
+                                                    <strong className="text-sm font-bold leading-6 text-ink">{item.title}</strong>
                                                     {!item.read_at && <Badge variant="accent" className="px-2 py-0.5 text-[10px]">جدید</Badge>}
                                                 </span>
+                                                {item.artwork_title && <span className="mt-1 block truncate text-xs text-muted">{item.artwork_title}</span>}
+                                                {item.comment_preview && <span className="mt-1 block line-clamp-2 text-xs leading-6 text-muted">{item.comment_preview}</span>}
                                                 <span className="mt-1 block text-[11px] tabular-nums text-muted">{notificationDate(item.created_at)}</span>
                                             </span>
                                             {!item.read_at && <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-terracotta" />}
                                         </button>
                                     </li>
-                                ))}
-                            </ul>
-                        )}
-                    </div>
+                                );
+                            })}
+                        </ul>
+                    )}
+                    {!loading && lastPage > 1 && (
+                        <nav aria-label="صفحه‌بندی اعلان‌ها" className="mt-4 flex items-center justify-between gap-3">
+                            <button type="button" disabled={page <= 1 || notificationsQuery.isFetching} onClick={() => setPage((value) => value - 1)} className="border border-border px-3 py-2 text-xs disabled:opacity-40">جدیدتر</button>
+                            <span className="text-xs tabular-nums text-muted">{page.toLocaleString('fa-IR')} از {lastPage.toLocaleString('fa-IR')}</span>
+                            <button type="button" disabled={page >= lastPage || notificationsQuery.isFetching} onClick={() => setPage((value) => value + 1)} className="border border-border px-3 py-2 text-xs disabled:opacity-40">قدیمی‌تر</button>
+                        </nav>
+                    )}
+                </div>
 
-                    <div className="shrink-0 border-t border-border bg-surface-muted px-4 py-4 sm:px-5">
-                        <Checkbox
-                            checked={Boolean(preferences.in_app_messages)}
-                            disabled={busy || preferencesQuery.isPending}
-                            onChange={(event) => changePreference(event.target.checked)}
-                            className="flex min-h-11 w-full items-start gap-3 rounded-md border border-border bg-paper p-3 text-xs leading-6"
-                        >
-                            <span className="min-w-0">
-                                <strong className="block font-bold text-ink">اعلان پیام‌های جدید در این بخش</strong>
-                                <span className="mt-1 block text-[11px] text-muted">نمایش اعلان پیام‌های تازه در فضای کاربری</span>
-                            </span>
-                        </Checkbox>
-                        <p className="mt-2 text-[10px] leading-5 text-muted">اعلان ایمیلی تا تأیید صف ارسال و تنظیمات میزبان غیرفعال است.</p>
+                <div className="shrink-0 border-t border-border bg-surface-muted px-4 py-4 sm:px-5">
+                    <p className="mb-3 text-xs font-bold text-ink">تنظیمات اعلان درون‌برنامه‌ای</p>
+                    <div className="space-y-2">
+                        {preferenceOptions.map(([key, label, description]) => (
+                            <Checkbox
+                                key={key}
+                                checked={Boolean(preferences[key])}
+                                disabled={busy || preferencesQuery.isPending}
+                                onChange={(event) => changePreference(key, event.target.checked)}
+                                className="flex min-h-11 w-full items-start gap-3 rounded-md border border-border bg-paper p-3 text-xs leading-6"
+                            >
+                                <span className="min-w-0">
+                                    <strong className="block font-bold text-ink">{label}</strong>
+                                    <span className="mt-1 block text-[11px] text-muted">{description}</span>
+                                </span>
+                            </Checkbox>
+                        ))}
                     </div>
+                    <p className="mt-2 text-[10px] leading-5 text-muted">اعلان ایمیلی و پیامکی در این نسخه غیرفعال است.</p>
+                </div>
             </DialogContent>
         </Dialog>
     );
