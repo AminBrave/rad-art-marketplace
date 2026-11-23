@@ -177,6 +177,9 @@ class SocialNotificationBrowserTests(unittest.TestCase):
             expect(page.get_by_role("link", name="پیام‌ها")).to_be_visible()
             expect(page.get_by_test_id("authenticated-bottom-navigation").get_by_text("پیام‌ها", exact=True)).to_be_visible()
             page.get_by_role("button", name=re.compile("^اعلان‌ها")).click()
+            dialog = page.get_by_role("dialog")
+            expect(dialog).to_be_visible()
+            expect(dialog.get_by_role("heading", name="اعلان‌ها", exact=True)).to_be_visible()
 
             notification = page.get_by_role(
                 "button",
