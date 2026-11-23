@@ -7,6 +7,7 @@ const css = readFileSync(new URL('../../resources/css/instagram.css', import.met
 const entry = readFileSync(new URL('../../resources/js/app.jsx', import.meta.url), 'utf8');
 const themeContext = readFileSync(new URL('../../resources/js/app/ThemeContext.jsx', import.meta.url), 'utf8');
 const blade = readFileSync(new URL('../../resources/views/app.blade.php', import.meta.url), 'utf8');
+const layouts = readFileSync(new URL('../../resources/js/app/Layouts.jsx', import.meta.url), 'utf8');
 
 function block(selector) {
     const escaped = selector.replace(/[.*+?^$\{\}()|[\]\\]/g, '\\$&');
@@ -62,4 +63,15 @@ test('the production entry loads the theme layer without replacing the existing 
     assert.ok(themeContext.includes("resolvedTheme === 'dark' ? '#000000' : '#FAFAFA'"));
     assert.ok(blade.includes('name="theme-color" content="#FAFAFA"'));
     assert.ok(blade.includes('dark ? "#000000" : "#FAFAFA"'));
+});
+
+test('public navigation uses existing destinations in desktop and mobile Instagram-style shells', () => {
+    assert.ok(layouts.includes('data-testid="public-navigation-rail"'));
+    assert.ok(layouts.includes('data-testid="public-bottom-navigation"'));
+    for (const route of ["to: '/'", "to: '/artworks'", "to: '/artists'", "to: '/collections'"]) {
+        assert.ok(layouts.includes(route), 'Public navigation must retain ' + route);
+    }
+    assert.ok(layouts.includes('const accountTo = user'));
+    assert.ok(css.includes("[data-testid='public-navigation-rail']"));
+    assert.ok(css.includes("[data-testid='public-bottom-navigation']"));
 });
