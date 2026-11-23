@@ -246,6 +246,26 @@ final class ArtworkInteractionTest extends TestCase
         ]);
     }
 
+    public function test_comment_validation_rejects_blank_oversized_and_ineligible_content(): void
+    {
+        [, , $artwork] = $this->artworkFixture();
+        $buyer = $this->user('social-validation-buyer@example.test', User::ROLE_BUYER);
+        $admin = $this->user('social-validation-admin@example.test', User::ROLE_ADMIN);
+
+        $this->actingAs($buyer)
+            ->postJson('/api/v1/artworks/'.$artwork->slug.'/comments', ['body' => '   '])
+            ->assertUnprocessable()
+            ->assertJsonPath('errors.body.0', 'متن دیدگاه نمی‌تواند خالی باشد.');
+
+        $this->postJson('/api/v1/artworks/'.$artwork->slug.'/comments', ['body' => str_repeat('x', 2001)])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['body']);
+
+        $this->actingAs($admin)
+            ->postJson('/api/v1/artworks/'.$artwork->slug.'/comments', ['body' => 'نظر مدیر'])
+            ->assertForbidden();
+    }
+
     public function test_social_endpoints_hide_pending_and_private_artworks(): void
     {
         [, $profile, $artwork] = $this->artworkFixture();
@@ -256,10 +276,18 @@ final class ArtworkInteractionTest extends TestCase
             'image_path' => 'artworks/social-pending-work.jpg',
             'status' => Artwork::STATUS_PENDING_REVIEW,
         ]);
+        $rejected = $profile->artworks()->create([
+            'category_id' => $artwork->category_id,
+            'slug' => 'social-rejected-work',
+            'title' => 'اثر ردشده',
+            'image_path' => 'artworks/social-rejected-work.jpg',
+            'status' => Artwork::STATUS_REJECTED,
+        ]);
         $profile->update(['is_public' => false]);
 
         $this->getJson('/api/v1/artworks/'.$artwork->slug.'/comments')->assertNotFound();
         $this->getJson('/api/v1/artworks/'.$pending->slug.'/comments')->assertNotFound();
+        $this->getJson('/api/v1/artworks/'.$rejected->slug.'/comments')->assertNotFound();
 
         $buyer = $this->user('social-private-buyer@example.test', User::ROLE_BUYER);
         $this->actingAs($buyer)
