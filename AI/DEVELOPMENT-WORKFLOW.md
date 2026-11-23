@@ -32,7 +32,7 @@ Agent lanes are isolated workspaces, not release branches. main remains the stab
 
 ## 2. Agent identity and branch naming
 
-Each independently working agent uses one stable, unique, lowercase agent ID. Keep existing IDs chatgpt and claude; add another ID only when another distinct agent/workspace needs its own lane.
+Each independently working agent uses one stable, unique, lowercase agent name. Keep existing names chatgpt and claude; add another name only when another distinct agent/workspace needs its own lane.
 
 | Purpose | Pattern | Example |
 |---|---|---|
@@ -47,13 +47,13 @@ Each independently working agent uses one stable, unique, lowercase agent ID. Ke
 | Chore/tooling | agent/<agent-name>/chore/<task-name> | agent/agent-x/chore/888-scripts |
 | Integration workstream | integration/<slug> | integration/messaging-refresh |
 
-The required hierarchy is agent/<agent-name>/<task-type>/<task-name>. Use a stable lowercase agent name, a short task type (feature, fix, refactor, design, docs, test, security or chore), and a concise kebab-case task name. Include the issue number in the task name when one exists; otherwise use a descriptive unique slug. Avoid model versions and session dates. The persistent lane is agent/<agent-name>/lane. Git cannot have both agent/<agent-name> and nested refs below it, which is why the explicit /lane segment is required.
+The required task hierarchy is agent/<agent-name>/<task-type>/<task-name>. Use a stable lowercase agent name, a short task type (feature, fix, refactor, design, docs, test, security or chore), and a concise kebab-case task name. Include the issue number in the task name when one exists; otherwise use a descriptive unique slug. Avoid model versions and session dates. The persistent lane is agent/<agent-name>/lane. Git cannot have both agent/<agent-name> and nested refs below it, which is why the explicit /lane segment is required. Existing persistent branches named agent/chatgpt or agent/claude must be migrated to the /lane form before creating nested task branches for those agents. This guide defines the target convention; it does not rename existing remote branches.
 
 ## 3. Starting a task
 
 For each assignment:
 
-1. Confirm the agent ID, task outcome, scope and intended base lane.
+1. Confirm the agent name, task outcome, scope and intended base lane.
 2. Inspect live remote branch state and the relevant issue/PR. When a local checkout is available, inspect local status and uncommitted work separately.
 3. Start from the current head of agent/<agent-name>/lane. If the lane does not exist, create it from the agreed stable base only when that is part of the authorized task.
 4. Create a dedicated task branch named agent/<agent-name>/<task-type>/<task-name>. Do not implement multiple unrelated assignments directly on the persistent lane.
