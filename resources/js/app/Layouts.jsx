@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Heart, Images, LayoutDashboard, Menu, MessageCircle, Monitor, Moon, Sun, UserRound, Users, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { getWorkspaceMobileLinks, getWorkspacePrimaryLinks } from './workspaceNavigation';
+import { getWorkspaceMobileLinks } from './workspaceNavigation';
 import { useTheme } from './ThemeContext';
 import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, Checkbox, NotificationListSkeleton } from '../components/ui';
 
@@ -545,7 +545,6 @@ const workspaceNavigationLabels = {
 };
 
 function AuthenticatedBottomNavigation({ mobileLinks }) {
-
     return (
         <div
             data-testid="authenticated-bottom-navigation"
@@ -554,7 +553,6 @@ function AuthenticatedBottomNavigation({ mobileLinks }) {
             <nav aria-label="بخش‌های اصلی حساب کاربری" data-nav-priority="primary" className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2">
                 {mobileLinks.map((item) => {
                     const Icon = workspaceNavigationIcons[item.to] ?? LayoutDashboard;
-                    const isMessagesLink = item.to.endsWith('/messages');
                     const accessibleLabel = item.label;
                     const visibleLabel = item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label;
                     return (
