@@ -119,7 +119,7 @@
 [data-page=home]>.home-feature{max-width:520px;justify-self:end}
 [data-page=home]>.home-categories{padding-block:24px;border-bottom:1px solid var(--rd-line)}
 [data-page=home]>.home-feed,[data-page=home]>.home-creators,[data-page=home]>.home-collections{padding-block:clamp(30px,4vw,56px);border-bottom:1px solid var(--rd-line)}
-[data-page=home] .home-feature img{object-fit:cover}
+[data-page=home] .home-feature img{object-fit:contain}
 [data-page=home] .home-feature:hover{border-color:var(--rd-line-strong)}
 [data-page=home] .home-categories a{white-space:nowrap}
 [data-page=home] .home-creators [data-ui=artist-card]{min-height:128px}
