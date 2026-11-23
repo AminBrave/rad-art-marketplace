@@ -1,38 +1,40 @@
-# Rademan — product and architecture brief
+# Rademan — product and application architecture
 
-## Product identity
-Rademan is a mobile-first visual art discovery and marketplace platform connecting artists and buyers through artwork discovery, artist profiles and direct buyer–artist conversations.
+## Product
+Rademan is a Persian-first, RTL visual art discovery marketplace connecting independent artists and buyers through artwork discovery, artist profiles, editorial collections and direct conversations.
 
-The interface adopts an Instagram-inspired visual language: image-first layouts, restrained chrome, compact typography, clear dividers, profile-led identity, simple navigation and blue primary actions. Rademan remains its own product; the design reference does not imply Instagram's product features, social graph or integrations.
+The application adopts an Instagram-inspired interaction model—image-led discovery, creator-first identity, minimal navigation chrome and a compact mobile experience—without copying Instagram's proprietary assets, branding or unsupported features.
 
-## Existing product experiences
-1. **Discover (public):** artwork, artist and editorial-collection discovery; artwork detail and artist profiles; contextual entry into buyer–artist conversations.
-2. **Buyer Studio:** buyer overview and the canonical Inquiries destination backed by existing messaging.
-3. **Artist Studio:** artist overview, content library/artwork management, profile management and canonical Inquiries.
-4. **Admin Console:** overview, content review/moderation, editorial curation, reports/trust and safety, and user/role governance.
+## Product surfaces
+1. **Discover:** home, artworks, artwork detail, artist directory/profile, editorial collections, public information and authentication.
+2. **Buyer Studio:** buyer overview and the canonical buyer–artist messaging inbox.
+3. **Artist Studio:** overview, profile management, artwork/content management and the canonical messaging inbox.
+4. **Admin Console:** dashboard, users/roles, artwork moderation, editorial curation, message reports and comment reports.
+5. **Messaging:** one canonical conversation model shared by buyer and artist roles.
 
-## Design system
-- Instagram-inspired visual design with complete light, dark and system themes.
-- Preserve the five Rademan brand anchors: Ivory `#F7F5F0`, Charcoal `#242320`, Terracotta `#A64F31`, Sand `#D8C9B7`, Olive `#536052`.
-- Use semantic Instagram-like UI roles: near-white/black canvas, white/dark surfaces, subtle dividers, high-contrast text and blue primary actions.
-- Persian-first RTL and mixed Persian/Latin content are first-class.
-- Mobile-first responsive layouts, accessible focus, reduced motion and WCAG 2.2 AA contrast are required.
+## New UI architecture
+- `resources/css/app.css` is the sole token and theme foundation.
+- `resources/css/rademan.css` defines the app shell, responsive page compositions and component presentation.
+- `tailwind.config.js` maps utility classes to semantic tokens.
+- `resources/js/components/ui/` contains the shared component primitives.
+- `resources/js/app/Layouts.jsx` owns public and role-based app chrome.
+- `resources/js/app/ThemeContext.jsx` owns system/light/dark theme preference.
+- The old Instagram adapter and application-shell stylesheets are removed; the legacy design-system demo entry and unused screens are removed from the active app.
+
+## Responsive product behavior
+- Mobile-first from 320px, safe-area-aware fixed navigation and touch controls.
+- Tablet layouts use compact navigation and content grids where useful.
+- Desktop uses a centered content canvas, persistent Discover rail, role workspace navigation and two-pane messaging.
+- Persian RTL and mixed Persian/Latin content are first-class.
+
+## PWA
+The application has a Persian RTL web manifest, app icon, standalone display configuration, production service-worker registration and static offline fallback. Cache policy is intentionally privacy-safe: static offline shell and eligible versioned assets only. Private API, auth, HTML navigation, workspace and conversation responses are never cached.
 
 ## Engineering boundaries
-Preserve the existing Laravel backend, React application, routes, API contracts, TanStack Query data behavior, authentication, role restrictions, server-side authorization, messaging identity and safety workflows. UI refactors must not weaken backend authorization or introduce new data capabilities.
-
-Do not introduce checkout, orders, payments, saved collections, Instagram OAuth/import or other unimplemented features. Keep existing URLs unless an explicit migration is separately approved.
-
-## PWA and privacy
-Treat installability as a verified runtime property, not an assumption. Never cache private workspace or conversation data in unsafe shared caches. Offline messaging/background sync are not implied.
+Preserve Laravel APIs, database schema, authentication, role restrictions, server-side authorization, routes, feature behavior, message identity, attachments, safety workflows, query caching and storage. UI redesign does not authorize new marketplace capabilities or backend contract changes.
 
 ## Source-of-truth
-For this task, the product owner's supplied `agent/chatgpt` branch is the baseline for implementation. Do not use historical issues or pull requests as design or implementation references. Inspect source and tests on that branch before changing feature behavior. This task authorizes a UI/UX redesign; it does not authorize unrelated backend or product-scope changes.
+The product owner's supplied `agent/chatgpt` branch is the redesign baseline. Historical issues and pull requests are not design or implementation references. Feature behavior must be grounded in current source and tests.
 
-## Application shell and PWA
-- The product is an installable, Persian RTL PWA with a standalone display mode, responsive app navigation and safe-area-aware mobile controls.
-- Public discovery uses a compact app bar, desktop navigation rail and mobile tab bar; legacy marketing header/footer are removed from the React public layout.
-- Workspaces retain their role-specific navigation and workflows while adopting the same compact application shell and mobile navigation behavior.
-- The service worker caches a static offline fallback and same-origin static assets only; it never caches HTML navigation, APIs, authentication, dashboards, admin or private conversations. Offline mutation, messaging sync and private-data caching are out of scope.
-- Verify install prompts, icon rendering, update lifecycle, offline fallback and responsive behavior on actual target browsers before claiming PWA release readiness.
-
+## Release requirements
+A complete visual implementation is not production-verified until tests, build, route journeys, responsive RTL review, theme review, accessibility checks, PWA installation and offline fallback are executed.
