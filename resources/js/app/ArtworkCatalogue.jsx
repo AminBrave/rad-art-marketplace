@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 import { ArrowLeft, X } from 'lucide-react';
-import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, SelectField, PageContainer, PageHeader } from '../components/ui';
+import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, SelectField, PageContainer, PageHeader, Button } from '../components/ui';
 
 const emptyFilters = { mediums: [], availability: [], sorts: [] };
 
@@ -122,7 +122,7 @@ export default function ArtworkCatalogue() {
                     </SelectField>
                     <div className="flex items-center justify-between gap-3">
                         <p className="text-xs text-muted">{activeFilterCount ? activeFilterCount.toLocaleString('fa-IR') + ' فیلتر فعال' : 'بدون فیلتر'}</p>
-                        {activeFilterCount > 0 && <button type="button" onClick={clearFilters} className="text-sm font-bold text-terracotta-strong underline underline-offset-4">پاک‌کردن فیلترها</button>}
+                        {activeFilterCount > 0 && <Button variant="ghost" type="button" onClick={clearFilters} className="text-sm font-bold text-terracotta-strong underline underline-offset-4">پاک‌کردن فیلترها</Button>}
                     </div>
                 </div>
                 {filtersError && <p role="status" className="mt-3 text-xs text-muted">برخی گزینه‌های فیلتر بارگذاری نشدند؛ می‌توانید با جست‌وجو و دسته‌بندی ادامه دهید.</p>}
@@ -132,11 +132,11 @@ export default function ArtworkCatalogue() {
             {activeFilterCount > 0 && (
                 <div className="mt-6 flex flex-wrap items-center gap-2" aria-label="معیارهای فعال">
                     <span className="me-1 text-xs font-bold text-muted">انتخاب شما:</span>
-                    {search && <button type="button" onClick={() => updateFilters({ q: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{search}<X size={12} aria-hidden="true" /></button>}
-                    {category && <button type="button" onClick={() => updateFilters({ category: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{categories.find((item) => item.slug === category)?.name ?? category}<X size={12} aria-hidden="true" /></button>}
-                    {medium && <button type="button" onClick={() => updateFilters({ medium: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{medium}<X size={12} aria-hidden="true" /></button>}
-                    {availability && <button type="button" onClick={() => updateFilters({ availability: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{filters.availability?.find((item) => item.value === availability)?.label ?? availability}<X size={12} aria-hidden="true" /></button>}
-                    {sort !== 'newest' && <button type="button" onClick={() => updateFilters({ sort: 'newest' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{filters.sorts?.find((item) => item.value === sort)?.label ?? sort}<X size={12} aria-hidden="true" /></button>}
+                    {search && <Button variant="outline" type="button" onClick={() => updateFilters({ q: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{search}<X size={12} aria-hidden="true" /></Button>}
+                    {category && <Button variant="outline" type="button" onClick={() => updateFilters({ category: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{categories.find((item) => item.slug === category)?.name ?? category}<X size={12} aria-hidden="true" /></Button>}
+                    {medium && <Button variant="outline" type="button" onClick={() => updateFilters({ medium: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{medium}<X size={12} aria-hidden="true" /></Button>}
+                    {availability && <Button variant="outline" type="button" onClick={() => updateFilters({ availability: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{filters.availability?.find((item) => item.value === availability)?.label ?? availability}<X size={12} aria-hidden="true" /></Button>}
+                    {sort !== 'newest' && <Button variant="outline" type="button" onClick={() => updateFilters({ sort: 'newest' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{filters.sorts?.find((item) => item.value === sort)?.label ?? sort}<X size={12} aria-hidden="true" /></Button>}
                 </div>
             )}
             <div className="mt-8 flex flex-wrap items-end justify-between gap-3 border-b border-border pb-4">
@@ -157,9 +157,9 @@ export default function ArtworkCatalogue() {
             )}
             {!loading && !error && meta.last_page > 1 && (
                 <nav aria-label="صفحه‌بندی آثار" className="mt-12 flex items-center justify-center gap-3 border-t border-border pt-7">
-                    <button type="button" disabled={page <= 1} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page - 1)]]))} className="inline-flex min-h-11 items-center gap-2 border border-border px-4 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40"><ArrowLeft size={15} aria-hidden="true" />قبلی</button>
+                    <Button variant="outline" type="button" disabled={page <= 1} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page - 1)]]))} className="inline-flex min-h-11 items-center gap-2 border border-border px-4 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40"><ArrowLeft size={15} aria-hidden="true" />قبلی</Button>
                     <span className="px-2 text-sm tabular-nums text-muted">صفحه {meta.current_page.toLocaleString('fa-IR')} از {meta.last_page.toLocaleString('fa-IR')}</span>
-                    <button type="button" disabled={page >= meta.last_page} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page + 1)]]))} className="inline-flex min-h-11 items-center gap-2 border border-border px-4 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40">بعدی<ArrowLeft size={15} aria-hidden="true" className="rotate-180" /></button>
+                    <Button variant="outline" type="button" disabled={page >= meta.last_page} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page + 1)]]))} className="inline-flex min-h-11 items-center gap-2 border border-border px-4 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40">بعدی<ArrowLeft size={15} aria-hidden="true" className="rotate-180" /></Button>
                 </nav>
             )}
         </PageContainer>
