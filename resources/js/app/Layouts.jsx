@@ -600,10 +600,10 @@ export function WorkspaceLayout({ title, links, outletContext }) {
     return (
         <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <div data-experience={user?.role ?? 'workspace'} className={isMessagingRoute ? "flex h-dvh flex-col overflow-hidden bg-canvas text-ink" : "min-h-screen bg-canvas text-ink"} dir="rtl">
-            <header className="sticky top-0 z-40 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] shadow-soft backdrop-blur">
+            <header className="sticky top-0 z-40 shrink-0 border-b-2 border-ink bg-[color:color-mix(in_srgb,var(--color-paper)_96%,transparent)] backdrop-blur">
                 <div className="mx-auto flex min-h-[4.5rem] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-20 sm:gap-4">
                     <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
-                        <Link to="/" className="min-h-0 p-0 group grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-lg font-black text-inverse shadow-soft no-underline transition-colors hover:bg-terracotta sm:h-12 sm:w-12 sm:text-xl" aria-label="راد آرت، صفحه اصلی">
+                        <Link to="/" className="min-h-0 p-0 group grid h-10 w-10 shrink-0 place-items-center bg-ink text-lg font-black text-inverse shadow-soft no-underline transition-colors hover:bg-terracotta sm:h-12 sm:w-12 sm:text-xl" aria-label="راد آرت، صفحه اصلی">
                             <span className="transition-transform group-hover:scale-110">ر</span>
                         </Link>
                         <div className="min-w-0">
@@ -678,7 +678,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                     end={item.end}
                                     onClick={() => setMobileMenuOpen(false)}
                                     className={({ isActive }) => [
-                                        'flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
+                                        'flex min-h-11 items-center border-s-2 border-transparent px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
                                         isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
                                     ].join(' ')}
                                 >
@@ -731,9 +731,9 @@ export function WorkspaceLayout({ title, links, outletContext }) {
             <div className={isMessagingRoute ? 'mx-auto grid h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-h-0 min-w-0 max-w-content flex-none grid-cols-1 grid-rows-[minmax(0,1fr)] gap-0 px-page-gutter py-page-gutter sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:gap-4 sm:py-4 lg:h-[calc(100dvh-5rem)] lg:grid-cols-[15rem_minmax(0,1fr)] lg:grid-rows-1 lg:gap-8 lg:py-8' : 'mx-auto grid min-w-0 max-w-content gap-5 px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-8 lg:pb-8'}>
                 {isMessagingRoute && <div className="hidden lg:block" aria-hidden="true" />}
                 <aside className={isMessagingRoute
-                    ? 'hidden min-w-0 rounded-xl border border-border bg-paper p-3 shadow-soft lg:fixed lg:top-28 lg:right-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))] lg:z-30 lg:block lg:h-fit lg:max-h-[calc(100dvh_-_8rem)] lg:w-60 lg:overflow-y-auto'
-                    : 'hidden min-w-0 rounded-xl border border-border bg-paper p-3 shadow-soft lg:sticky lg:top-24 lg:block lg:h-fit'}>
-                    <div className="mb-4 rounded-xl bg-surface-muted p-4">
+                    ? 'hidden min-w-0 border-y-2 border-ink bg-paper px-3 py-4 lg:fixed lg:top-28 lg:right-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))] lg:z-30 lg:block lg:h-fit lg:max-h-[calc(100dvh_-_8rem)] lg:w-60 lg:overflow-y-auto'
+                    : 'hidden min-w-0 border-y-2 border-ink bg-paper px-3 py-4 lg:sticky lg:top-24 lg:block lg:h-fit'}>
+                    <div className="mb-4 border-b border-border bg-surface-muted p-4">
                         <p className="text-[10px] font-extrabold tracking-wide text-muted">RAD ART / WORKSPACE</p>
                         <p className="mt-1 text-sm font-extrabold text-ink">{title}</p>
                         <p className="mt-1 truncate text-xs text-muted">{user?.name}</p>
@@ -747,10 +747,10 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                     to={item.to}
                                     end={item.end}
                                     className={({ isActive }) => [
-                                        'relative inline-flex min-h-11 w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus motion-reduce:transition-none',
+                                        'relative inline-flex min-h-11 w-full items-center gap-3 border-s-2 border-transparent px-4 py-2.5 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus motion-reduce:transition-none',
                                         isActive
-                                            ? 'bg-accent-surface text-terracotta-strong after:absolute after:inset-y-2 after:right-0 after:w-1 after:rounded-full after:bg-terracotta'
-                                            : 'bg-transparent text-muted hover:bg-surface-muted hover:text-ink',
+                                            ? 'border-terracotta bg-accent-surface text-terracotta-strong'
+                                            : 'border-transparent bg-transparent text-muted hover:bg-surface-muted hover:text-ink',
                                     ].join(' ')}
                                 >
                                     <Icon size={18} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />
