@@ -35,7 +35,10 @@ final class ArtworkInteractionTest extends TestCase
         $this->getJson('/api/v1/artworks/'.$artwork->slug.'/comments')
             ->assertOk()
             ->assertJsonPath('data.0.id', $comment->id)
-            ->assertJsonPath('data.0.body', 'دیدگاه عمومی');
+            ->assertJsonPath('data.0.body', 'دیدگاه عمومی')
+            ->assertJsonPath('data.0.user.name', 'خریدار')
+            ->assertJsonPath('data.0.is_mine', false)
+            ->assertJsonMissingPath('data.0.user.id');
 
         $this->postJson('/api/v1/artworks/'.$artwork->slug.'/likes')->assertUnauthorized();
         $this->postJson('/api/v1/artworks/'.$artwork->slug.'/comments', ['body' => 'مهمان'])->assertUnauthorized();
