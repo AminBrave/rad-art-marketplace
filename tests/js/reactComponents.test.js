@@ -252,7 +252,7 @@ test('Page and section headers retain the requested heading hierarchy', () => {
     );
 
     assert.match(hero, /<header dir="rtl"/);
-    assert.match(hero, /rounded-xl border border-ink bg-ink/);
+    assert.match(hero, /border-y border-ink bg-ink/);
     assert.match(hero, /bg-terracotta/);
     assert.match(hero, /text-inverse/);
     assert.match(hero, /text-sand/);
@@ -547,7 +547,7 @@ test('workspace overview skeletons match their loaded hero and content sections 
 
     assert.match(artist, /در حال آماده‌سازی فضای هنرمند/);
     assert.match(artist, /lg:grid-cols-\[1fr_15rem\]/);
-    assert.match(artist, /bg-surface-muted p-5 sm:p-7/);
+    assert.match(artist, /border-y-2 border-ink bg-transparent py-6 sm:py-7/);
     assert.doesNotMatch(artist, /در حال دریافت شاخص‌ها/);
     assert.equal((artist.match(/role="status"/g) ?? []).length, 1);
 
