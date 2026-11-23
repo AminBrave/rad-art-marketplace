@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import { Button, TextareaField } from '../components/ui';
 
 function CommentItem({ comment, user, onReply, onDelete, onReport }) {
     const canDelete = user && comment.is_mine && !comment.is_deleted;
@@ -14,13 +15,13 @@ function CommentItem({ comment, user, onReply, onDelete, onReport }) {
                     <p className="text-sm font-bold">{comment.user?.name || 'کاربر'}</p>
                     <p className="mt-1 text-xs text-muted">{comment.created_at ? new Date(comment.created_at).toLocaleDateString('fa-IR') : ''}</p>
                 </div>
-                {canDelete && <button type="button" onClick={() => onDelete(comment.id)} className="shrink-0 text-xs text-muted underline hover:text-danger">حذف</button>}
+                {canDelete && <Button variant="ghost" type="button" onClick={() => onDelete(comment.id)} className="shrink-0 text-xs text-muted underline hover:text-danger">حذف</Button>}
             </div>
             <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-8">{comment.is_deleted ? 'این دیدگاه حذف شده است.' : comment.body}</p>
             {!comment.is_deleted && user && (
                 <div className="mt-2 flex flex-wrap gap-4">
-                    {comment.parent_id === null && <button type="button" onClick={() => onReply(comment)} className="text-xs font-semibold text-terracotta-strong underline">پاسخ</button>}
-                    {!comment.is_mine && <button type="button" onClick={() => onReport(comment)} className="text-xs text-muted underline">گزارش دیدگاه</button>}
+                    {comment.parent_id === null && <Button variant="ghost" type="button" onClick={() => onReply(comment)} className="text-xs font-semibold text-terracotta-strong underline">پاسخ</Button>}
+                    {!comment.is_mine && <Button variant="ghost" type="button" onClick={() => onReport(comment)} className="text-xs text-muted underline">گزارش دیدگاه</Button>}
                 </div>
             )}
             {comment.replies?.length > 0 && (
@@ -32,10 +33,10 @@ function CommentItem({ comment, user, onReply, onDelete, onReport }) {
                                     <p className="text-xs font-bold">{reply.user?.name || 'کاربر'}</p>
                                     <p className="mt-1 text-[11px] text-muted">{reply.created_at ? new Date(reply.created_at).toLocaleDateString('fa-IR') : ''}</p>
                                 </div>
-                                {user && reply.is_mine && !reply.is_deleted && <button type="button" onClick={() => onDelete(reply.id)} className="text-xs text-muted underline hover:text-danger">حذف</button>}
+                                {user && reply.is_mine && !reply.is_deleted && <Button variant="ghost" type="button" onClick={() => onDelete(reply.id)} className="text-xs text-muted underline hover:text-danger">حذف</Button>}
                             </div>
                             <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-7">{reply.is_deleted ? 'این پاسخ حذف شده است.' : reply.body}</p>
-                            {!reply.is_deleted && user && !reply.is_mine && <button type="button" onClick={() => onReport(reply)} className="mt-2 text-xs text-muted underline">گزارش پاسخ</button>}
+                            {!reply.is_deleted && user && !reply.is_mine && <Button variant="ghost" type="button" onClick={() => onReport(reply)} className="mt-2 text-xs text-muted underline">گزارش پاسخ</Button>}
                         </div>
                     ))}
                 </div>
@@ -160,16 +161,16 @@ export default function ArtworkEngagement({ artwork, slug }) {
                     <h2 id="artwork-engagement-title" className="text-xl font-black">گفت‌وگو درباره اثر</h2>
                     <p className="mt-1 text-xs text-muted">تعامل با اثر هنری و گفت‌وگوی محترمانه با جامعه رادمن</p>
                 </div>
-                <button type="button" onClick={shareArtwork} className="border border-border px-4 py-2 text-sm font-semibold hover:border-terracotta-strong">اشتراک‌گذاری اثر</button>
+                <Button variant="ghost" type="button" onClick={shareArtwork} className="border border-border px-4 py-2 text-sm font-semibold hover:border-terracotta-strong">اشتراک‌گذاری اثر</Button>
             </div>
             {shareMessage && <p role="status" className="mt-3 break-words text-xs text-muted">{shareMessage}</p>}
 
             <div className="mt-5 flex flex-wrap items-center gap-3">
                 {canInteract ? (
-                    <button type="button" disabled={likeMutation.isPending} onClick={() => likeMutation.mutate()} aria-pressed={Boolean(artwork.liked_by_me)} className="inline-flex items-center gap-2 border border-border px-4 py-2 text-sm font-bold disabled:opacity-60">
+                    <Button variant="ghost" type="button" disabled={likeMutation.isPending} onClick={() => likeMutation.mutate()} aria-pressed={Boolean(artwork.liked_by_me)} className="inline-flex items-center gap-2 border border-border px-4 py-2 text-sm font-bold disabled:opacity-60">
                         <span aria-hidden="true">{artwork.liked_by_me ? '♥' : '♡'}</span>
                         {artwork.liked_by_me ? 'پسندیده‌اید' : 'پسندیدن'}
-                    </button>
+                    </Button>
                 ) : (
                     <Link to="/login" state={{ from: { pathname: '/artworks/' + slug } }} className="border border-border px-4 py-2 text-sm font-bold">برای پسندیدن وارد شوید</Link>
                 )}
@@ -180,12 +181,12 @@ export default function ArtworkEngagement({ artwork, slug }) {
 
             {canInteract ? (
                 <form onSubmit={(event) => { event.preventDefault(); if (draft.trim() && !commentMutation.isPending) commentMutation.mutate(); }} className="mt-6">
-                    {replyTo && <div className="mb-2 flex items-center justify-between text-xs text-muted"><span>در پاسخ به {replyTo.user?.name || 'کاربر'}</span><button type="button" onClick={() => setReplyTo(null)} className="underline">لغو پاسخ</button></div>}
+                    {replyTo && <div className="mb-2 flex items-center justify-between text-xs text-muted"><span>در پاسخ به {replyTo.user?.name || 'کاربر'}</span><Button variant="ghost" type="button" onClick={() => setReplyTo(null)} className="underline">لغو پاسخ</Button></div>}
                     <label htmlFor="artwork-comment-body" className="mb-2 block text-sm font-semibold">{replyTo ? 'پاسخ شما' : 'دیدگاه شما'}</label>
-                    <textarea id="artwork-comment-body" value={draft} onChange={(event) => setDraft(event.target.value)} rows={3} maxLength={2000} required placeholder="دیدگاه خود را بنویسید..." className="w-full resize-y border border-border bg-surface px-3 py-3 text-sm leading-7 outline-none focus:border-terracotta-strong" />
+                    <TextareaField id="artwork-comment-body" value={draft} onChange={(event) => setDraft(event.target.value)} rows={3} maxLength={2000} required placeholder="دیدگاه خود را بنویسید..." className="w-full resize-y border border-border bg-surface px-3 py-3 text-sm leading-7 outline-none focus:border-terracotta-strong" />
                     <div className="mt-2 flex items-center justify-between gap-3">
                         <span className="text-xs text-muted">{draft.length.toLocaleString('fa-IR')} / ۲۰۰۰</span>
-                        <button type="submit" disabled={!draft.trim() || commentMutation.isPending} className="bg-ink px-4 py-2 text-sm font-bold text-inverse disabled:opacity-50">{commentMutation.isPending ? 'در حال ثبت...' : 'ثبت دیدگاه'}</button>
+                        <Button variant="ghost" type="submit" disabled={!draft.trim() || commentMutation.isPending} className="bg-ink px-4 py-2 text-sm font-bold text-inverse disabled:opacity-50">{commentMutation.isPending ? 'در حال ثبت...' : 'ثبت دیدگاه'}</Button>
                     </div>
                     {commentMutation.isError && <p role="alert" className="mt-2 text-xs text-danger">ثبت دیدگاه انجام نشد. متن را بررسی و دوباره تلاش کنید.</p>}
                 </form>
@@ -205,8 +206,8 @@ export default function ArtworkEngagement({ artwork, slug }) {
                         <option value="other">سایر</option>
                     </select>
                     <div className="mt-3 flex gap-3">
-                        <button type="submit" disabled={reportMutation.isPending} className="bg-ink px-3 py-2 text-xs font-bold text-inverse">ارسال گزارش</button>
-                        <button type="button" onClick={() => setReportTarget(null)} className="px-3 py-2 text-xs underline">انصراف</button>
+                        <Button variant="ghost" type="submit" disabled={reportMutation.isPending} className="bg-ink px-3 py-2 text-xs font-bold text-inverse">ارسال گزارش</Button>
+                        <Button variant="ghost" type="button" onClick={() => setReportTarget(null)} className="px-3 py-2 text-xs underline">انصراف</Button>
                     </div>
                     {reportMutation.isError && <p role="alert" className="mt-2 text-xs text-danger">ارسال گزارش انجام نشد.</p>}
                 </form>
@@ -215,7 +216,7 @@ export default function ArtworkEngagement({ artwork, slug }) {
             {deleteMutation.isError && <p role="alert" className="mt-3 text-xs text-danger">حذف دیدگاه انجام نشد. دوباره تلاش کنید.</p>}
             <div className="mt-7">
                 {commentsQuery.isPending ? <p className="py-6 text-sm text-muted">در حال دریافت دیدگاه‌ها...</p> : null}
-                {commentsQuery.isError ? <div className="py-6 text-sm text-danger" role="alert">دریافت دیدگاه‌ها انجام نشد. <button type="button" onClick={() => commentsQuery.refetch()} className="underline">تلاش دوباره</button></div> : null}
+                {commentsQuery.isError ? <div className="py-6 text-sm text-danger" role="alert">دریافت دیدگاه‌ها انجام نشد. <Button variant="ghost" type="button" onClick={() => commentsQuery.refetch()} className="underline">تلاش دوباره</Button></div> : null}
                 {!commentsQuery.isPending && !commentsQuery.isError && comments.length === 0 ? <p className="py-6 text-sm text-muted">هنوز دیدگاهی ثبت نشده است.</p> : null}
                 {comments.map((comment) => (
                     <CommentItem
@@ -230,9 +231,9 @@ export default function ArtworkEngagement({ artwork, slug }) {
             </div>
             {pagination.last_page > 1 && (
                 <nav aria-label="صفحه‌بندی دیدگاه‌ها" className="mt-5 flex items-center justify-between gap-3">
-                    <button type="button" disabled={currentPage <= 1 || commentsQuery.isFetching} onClick={() => { setCommentTargetId(''); setPage(currentPage - 1); }} className="border border-border px-3 py-2 text-xs disabled:opacity-40">دیدگاه‌های قبلی</button>
+                    <Button variant="ghost" type="button" disabled={currentPage <= 1 || commentsQuery.isFetching} onClick={() => { setCommentTargetId(''); setPage(currentPage - 1); }} className="border border-border px-3 py-2 text-xs disabled:opacity-40">دیدگاه‌های قبلی</Button>
                     <span className="text-xs text-muted">{Number(currentPage).toLocaleString('fa-IR')} از {Number(pagination.last_page).toLocaleString('fa-IR')}</span>
-                    <button type="button" disabled={currentPage >= pagination.last_page || commentsQuery.isFetching} onClick={() => { setCommentTargetId(''); setPage(currentPage + 1); }} className="border border-border px-3 py-2 text-xs disabled:opacity-40">دیدگاه‌های بعدی</button>
+                    <Button variant="ghost" type="button" disabled={currentPage >= pagination.last_page || commentsQuery.isFetching} onClick={() => { setCommentTargetId(''); setPage(currentPage + 1); }} className="border border-border px-3 py-2 text-xs disabled:opacity-40">دیدگاه‌های بعدی</Button>
                 </nav>
             )}
         </section>
