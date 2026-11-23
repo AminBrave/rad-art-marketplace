@@ -2,7 +2,7 @@ import { forwardRef, useState } from 'react';
 import { cn } from '../../lib/utils';
 
 /**
- * RAD's semantic/layout catalogue.
+ * Rademan semantic layout primitives.
  * These are intentionally project-owned HTML components: Radix Primitives
  * provide interaction behavior, not a replacement for static HTML elements.
  */
