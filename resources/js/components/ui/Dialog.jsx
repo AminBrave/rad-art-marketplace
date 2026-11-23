@@ -1,8 +1,8 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 
 export const Dialog = DialogPrimitive.Root;
-export const DialogTrigger = DialogPrimitive.Trigger;
-export const DialogClose = DialogPrimitive.Close;
+export function DialogTrigger(props) { return <DialogPrimitive.Trigger data-ui="dialog-trigger" {...props} />; }
+export function DialogClose(props) { return <DialogPrimitive.Close data-ui="dialog-close" {...props} />; }
 
 export function DialogContent({ children, className = '', overlayClassName = '', placement = 'center', ...props }) {
     return (
