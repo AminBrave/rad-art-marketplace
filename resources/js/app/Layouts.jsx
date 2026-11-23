@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Heart, Images, LayoutDashboard, Menu, MessageCircle, Monitor, Moon, Sun, UserRound, Users, X } from 'lucide-react';
+import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Heart, Home, Images, LayoutDashboard, Menu, MessageCircle, Monitor, Moon, Search, Sun, UserRound, Users, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { getWorkspacePrimaryLinks } from './workspaceNavigation';
@@ -37,6 +37,63 @@ const publicSecondaryLinks = [
     { to: '/help', label: 'راهنما' },
     { to: '/contact', label: 'تماس' },
 ];
+
+function PublicNavigation({ user }) {
+    const accountTo = user
+        ? user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist'
+        : '/login';
+    const items = [
+        { to: '/', label: 'خانه', Icon: Home, end: true },
+        { to: '/artworks', label: 'کشف آثار', Icon: Search },
+        { to: '/artists', label: 'هنرمندان', Icon: Users },
+        { to: '/collections', label: 'مجموعه‌ها', Icon: BookOpen },
+        { to: accountTo, label: user ? 'فضای کاربری' : 'ورود', Icon: UserRound },
+    ];
+
+    return (
+        <>
+            <aside data-testid="public-navigation-rail" className="fixed inset-y-[60px] end-0 z-30 hidden w-[76px] border-s border-border bg-paper xl:flex">
+                <nav aria-label="ناوبری اصلی" className="flex w-full flex-col items-center gap-2 px-2 py-5">
+                    {items.map(({ to, label, Icon, end }) => (
+                        <NavLink
+                            key={to}
+                            to={to}
+                            end={end}
+                            aria-label={label}
+                            title={label}
+                            className={({ isActive }) => [
+                                'flex h-12 w-12 items-center justify-center rounded-lg text-ink transition-colors hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
+                                isActive ? 'bg-surface-muted text-terracotta-strong' : 'text-muted',
+                            ].join(' ')}
+                        >
+                            <Icon size={22} strokeWidth={1.9} aria-hidden="true" />
+                            <span className="sr-only">{label}</span>
+                        </NavLink>
+                    ))}
+                </nav>
+            </aside>
+            {!user && (
+                <nav data-testid="public-bottom-navigation" aria-label="ناوبری اصلی موبایل" className="fixed inset-x-0 bottom-0 z-50 grid h-[60px] grid-flow-col auto-cols-fr border-t border-border bg-paper pb-[env(safe-area-inset-bottom)] xl:hidden">
+                    {items.map(({ to, label, Icon, end }) => (
+                        <NavLink
+                            key={to}
+                            to={to}
+                            end={end}
+                            aria-label={label}
+                            className={({ isActive }) => [
+                                'flex min-w-0 flex-col items-center justify-center gap-1 text-[10px] font-semibold no-underline transition-colors',
+                                isActive ? 'text-terracotta-strong' : 'text-muted',
+                            ].join(' ')}
+                        >
+                            <Icon size={20} strokeWidth={1.9} aria-hidden="true" />
+                            <span className="max-w-full truncate">{label}</span>
+                        </NavLink>
+                    ))}
+                </nav>
+            )}
+        </>
+    );
+}
 
 export function PublicLayout() {
     const { user, logout } = useAuth();
@@ -187,6 +244,8 @@ export function PublicLayout() {
                 </DialogContent>
                 {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{logoutError}</p>}
             </header>
+
+            <PublicNavigation user={user} />
 
             <div id="main-content">
                 <Outlet />
