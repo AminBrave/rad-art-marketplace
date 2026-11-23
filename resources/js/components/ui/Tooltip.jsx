@@ -19,6 +19,7 @@ export function Tooltip({
                 </TooltipPrimitive.Trigger>
                 <TooltipPrimitive.Portal>
                     <TooltipPrimitive.Content
+                        data-ui="tooltip"
                         side={side}
                         sideOffset={sideOffset}
                         dir="rtl"
