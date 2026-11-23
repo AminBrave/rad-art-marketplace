@@ -460,7 +460,7 @@ export function NotFoundPage() {
             <p className="text-sm font-bold text-terracotta-strong">۴۰۴</p>
             <h1 className="mt-3 text-4xl font-black tracking-tight">این صفحه پیدا نشد</h1>
             <p className="mt-4 leading-8 text-muted">نشانی واردشده معتبر نیست یا صفحه جابه‌جا شده است.</p>
-            <Link to="/" className="mt-7 inline-block rounded-full bg-ink px-6 py-3 font-bold text-inverse">بازگشت به صفحه اصلی</Link>
+            <Link to="/" className="mt-8 inline-flex min-h-12 items-center border border-ink bg-ink px-6 py-3 font-bold text-inverse transition-colors hover:border-terracotta hover:bg-terracotta">بازگشت به صفحه اصلی</Link>
         </main>
     );
 }
