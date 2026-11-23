@@ -22,7 +22,7 @@ export default function ConversationHeader({
                     <Button variant="ghost"
                         type="button"
                         aria-label="بازگشت به گفتگوها"
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-canvas text-ink transition hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:hidden"
+                        className="min-h-0 p-0 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-canvas text-ink transition hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:hidden"
                         onClick={onBack}
                     >
                         <ChevronRight size={19} aria-hidden="true" />
@@ -33,7 +33,7 @@ export default function ConversationHeader({
                         <Link
                             to={'/artists/' + selected.artist.slug}
                             aria-label={'مشاهده صفحه هنرمند ' + (selected?.participant?.name ?? '')}
-                            className="group flex h-11 w-11 aspect-square shrink-0 items-center justify-center rounded-full text-inherit no-underline transition-[transform,opacity] hover:-translate-y-px hover:opacity-[.88] focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"
+                            className="min-h-0 p-0 group flex h-11 w-11 aspect-square shrink-0 items-center justify-center rounded-full text-inherit no-underline transition-[transform,opacity] hover:-translate-y-px hover:opacity-[.88] focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"
                         >
                             <span
                                 aria-hidden="true"
@@ -79,7 +79,7 @@ export default function ConversationHeader({
                             <Button variant="ghost"
                                 type="button"
                                 aria-label="گزینه‌های بیشتر گفتگو"
-                                className="flex h-10 w-10 items-center justify-center rounded-full border border-transparent bg-surface-muted text-muted transition-colors hover:border-border-strong hover:bg-surface hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"
+                                className="min-h-0 p-0 flex h-10 w-10 items-center justify-center rounded-full border border-transparent bg-surface-muted text-muted transition-colors hover:border-border-strong hover:bg-surface hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"
                             >
                                 <MoreVertical size={19} aria-hidden="true" />
                             </Button>
