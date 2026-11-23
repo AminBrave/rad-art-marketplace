@@ -539,7 +539,7 @@ const workspaceNavigationLabels = {
     '/admin': 'خانه',
     '/admin/users': 'کاربران',
     '/admin/artworks': 'آثار',
-    '/admin/message-reports': 'پیام‌ها',
+    '/admin/message-reports': 'ایمنی',
     '/admin/artwork-comment-reports': 'دیدگاه‌ها',
     '/admin/editorial': 'سردبیری',
 };
