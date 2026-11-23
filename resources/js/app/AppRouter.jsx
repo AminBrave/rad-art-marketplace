@@ -23,6 +23,7 @@ const AdminDashboardHome = lazy(() => import('./AdminWorkspace').then((module) =
 const AdminArtworkModeration = lazy(() => import('./AdminWorkspace').then((module) => ({ default: module.AdminArtworkModeration })));
 const AdminUsersPage = lazy(() => import('./AdminWorkspace').then((module) => ({ default: module.AdminUsersPage })));
 const AdminMessageReportsPage = lazy(() => import('./AdminWorkspace').then((module) => ({ default: module.AdminMessageReportsPage })));
+const AdminArtworkCommentReportsPage = lazy(() => import('./AdminWorkspace').then((module) => ({ default: module.AdminArtworkCommentReportsPage })));
 const AdminEditorialPage = lazy(() => import('./EditorialPages').then((module) => ({ default: module.AdminEditorialPage })));
 const CollectionIndexPage = lazy(() => import('./EditorialPages').then((module) => ({ default: module.CollectionIndexPage })));
 const CollectionDetailPage = lazy(() => import('./EditorialPages').then((module) => ({ default: module.CollectionDetailPage })));
@@ -86,6 +87,7 @@ function AppRoutes() {
                     <Route path="users" element={withRouteFallback(<AdminUsersPage />)} />
                     <Route path="artworks" element={withRouteFallback(<AdminArtworkModeration />)} />
                     <Route path="message-reports" element={withRouteFallback(<AdminMessageReportsPage />)} />
+                    <Route path="artwork-comment-reports" element={withRouteFallback(<AdminArtworkCommentReportsPage />)} />
                     <Route path="editorial" element={withRouteFallback(<AdminEditorialPage />)} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>

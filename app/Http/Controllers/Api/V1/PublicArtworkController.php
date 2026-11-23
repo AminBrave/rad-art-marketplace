@@ -80,6 +80,8 @@ class PublicArtworkController extends Controller
             ->where('status', Artwork::STATUS_APPROVED)
             ->whereHas('artistProfile', fn ($artist) => $artist->where('is_public', true))
             ->with(['category', 'artistProfile'])
+            ->withCount(['likes', 'comments'])
+            ->when($request->user(), fn ($query) => $query->withExists(['likes as liked_by_me' => fn ($likes) => $likes->where('user_id', $request->user()->id)]))
             ->when(! empty($validated['q']), function ($query) use ($validated): void {
                 $term = $validated['q'];
                 $query->where(function ($nested) use ($term): void {
@@ -116,10 +118,13 @@ class PublicArtworkController extends Controller
         return response()->json($artworks);
     }
 
-    public function show(Artwork $artwork): JsonResponse
+    public function show(Request $request, Artwork $artwork): JsonResponse
     {
         $this->authorize('view', $artwork);
-        $artwork->load(['category', 'artistProfile']);
+        $artwork->load(['category', 'artistProfile'])->loadCount(['likes', 'comments']);
+        $artwork->setAttribute('liked_by_me', $request->user()
+            ? $artwork->likes()->where('user_id', $request->user()->id)->exists()
+            : false);
 
         $related = Artwork::query()
             ->where('status', Artwork::STATUS_APPROVED)
@@ -130,6 +135,8 @@ class PublicArtworkController extends Controller
                     ->orWhere('artist_profile_id', $artwork->artist_profile_id);
             })
             ->with(['category', 'artistProfile'])
+            ->withCount(['likes', 'comments'])
+            ->when($request->user(), fn ($query) => $query->withExists(['likes as liked_by_me' => fn ($likes) => $likes->where('user_id', $request->user()->id)]))
             ->orderByRaw('category_id = ? DESC', [$artwork->category_id])
             ->latest()
             ->limit(4)
