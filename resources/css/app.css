@@ -152,9 +152,9 @@
     --color-ink:var(--rd-text);--color-paper:var(--rd-surface);--color-canvas:var(--rd-canvas);
     --color-text:var(--rd-text);--color-text-muted:var(--rd-text-2);--color-text-subtle:var(--rd-text-3);
     --color-border:var(--rd-line);--color-border-strong:var(--rd-line-strong);--color-surface:var(--rd-surface);
-    --color-surface-muted:var(--rd-surface-2);--color-action:var(--rd-accent);--color-action-text:var(--rd-accent);
-    --color-terracotta:var(--rd-accent);--color-terracotta-strong:var(--rd-accent-hover);--color-sand:var(--rd-line);
-    --color-olive:var(--rd-positive);--color-focus:var(--rd-accent);--color-success:var(--rd-positive);
+    --color-surface-muted:var(--rd-surface-2);--color-action:var(--rd-accent);--color-action-text:var(--rd-link);
+    --color-terracotta:var(--rd-accent);--color-terracotta-strong:var(--rd-link);--color-sand:var(--rd-line);
+    --color-olive:var(--rd-positive);--color-focus:var(--rd-focus);--color-success:var(--rd-positive);
     --color-danger:var(--rd-negative);--color-warning:var(--rd-warning);--color-info:var(--rd-info);
     --color-inverse-text:var(--rd-inverse);--color-accent-surface:var(--rd-accent-soft);
     --color-message-own:var(--rd-accent-soft);--color-message-peer:var(--rd-surface-3);
