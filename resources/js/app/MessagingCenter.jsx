@@ -80,6 +80,7 @@ export default function MessagingCenter({ role }) {
     const draftsByConversationRef = useRef(new Map());
     const filesByConversationRef = useRef(new Map());
     const pendingIdsByConversationRef = useRef(new Map());
+    const sendErrorsByConversationRef = useRef(new Map());
     const directStartKeyRef = useRef(null);
     const directStartRequestRef = useRef(null);
     const shouldStickToBottomRef = useRef(true);
@@ -151,7 +152,7 @@ export default function MessagingCenter({ role }) {
         setPendingMessageId(active ? (pendingIdsByConversationRef.current.get(Number(active)) ?? null) : null);
         setActionId(null);
         setOpenPopover(null);
-        setError('');
+        setError(active ? (sendErrorsByConversationRef.current.get(Number(active)) ?? '') : '');
         setNotice('');
         if (fileInputRef.current) fileInputRef.current.value = '';
         if (draftRef.current) draftRef.current.style.height = 'auto';
@@ -402,6 +403,7 @@ export default function MessagingCenter({ role }) {
         setSending(true);
         setSendingConversationId(Number(conversationId));
         setError('');
+        sendErrorsByConversationRef.current.delete(Number(conversationId));
         const messageClientId = pendingMessageId || (window.crypto?.randomUUID?.() ?? ('msg-' + Date.now() + '-' + Math.random().toString(36).slice(2)));
         setPendingMessageId(messageClientId);
         pendingIdsByConversationRef.current.set(Number(conversationId), messageClientId);
@@ -441,6 +443,7 @@ export default function MessagingCenter({ role }) {
             }
             if (Number(activeConversationRef.current) === Number(conversationId)) setMessages((current) => current.some((item) => item.id === savedMessage.id) ? current.map((item) => item.id === savedMessage.id ? savedMessage : item) : [...current, savedMessage]);
             pendingIdsByConversationRef.current.delete(Number(conversationId));
+            sendErrorsByConversationRef.current.delete(Number(conversationId));
             draftsByConversationRef.current.delete(Number(conversationId));
             filesByConversationRef.current.delete(Number(conversationId));
             if (Number(activeConversationRef.current) === Number(conversationId)) {
@@ -461,13 +464,13 @@ export default function MessagingCenter({ role }) {
             }
             loadThreads();
         } catch (requestError) {
-            if (Number(activeConversationRef.current) === Number(conversationId)) {
-                setError(requestError.response?.status === 503 && pendingArtwork
-                    ? 'برای ارسال کارت اثر، پایگاه داده هنوز به‌روزرسانی نشده است. کارت اثر را حذف کنید تا پیام عادی ارسال شود؛ سپس مدیر فنی باید مهاجرت پایگاه داده را اجرا کند.'
-                    : messageCreated && selectedFile
-                        ? 'پیام ذخیره شد، اما بارگذاری پیوست انجام نشد. فایل همچنان انتخاب‌شده است؛ برای تلاش دوباره ارسال را بزنید.'
-                        : 'ارسال پیام انجام نشد. وضعیت اتصال و پاسخ سرور را بررسی و دوباره تلاش کنید.');
-            }
+            const sendError = requestError.response?.status === 503 && pendingArtwork
+                ? 'برای ارسال کارت اثر، پایگاه داده هنوز به‌روزرسانی نشده است. کارت اثر را حذف کنید تا پیام عادی ارسال شود؛ سپس مدیر فنی باید مهاجرت پایگاه داده را اجرا کند.'
+                : messageCreated && selectedFile
+                    ? 'پیام ذخیره شد، اما بارگذاری پیوست انجام نشد. فایل همچنان انتخاب‌شده است؛ برای تلاش دوباره ارسال را بزنید.'
+                    : 'ارسال پیام یا پیوست انجام نشد. وضعیت اتصال و پاسخ سرور را بررسی و دوباره تلاش کنید.';
+            sendErrorsByConversationRef.current.set(Number(conversationId), sendError);
+            if (Number(activeConversationRef.current) === Number(conversationId)) setError(sendError);
         } finally {
             setUploading(false);
             setUploadProgress(0);
