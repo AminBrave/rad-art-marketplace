@@ -16,7 +16,7 @@ function ThemeControl() {
     const label = theme === 'dark' ? 'تیره' : theme === 'light' ? 'روشن' : 'هماهنگ با دستگاه';
 
     return (
-        <button
+        <Button variant="ghost"
             type="button"
             onClick={cycleTheme}
             aria-label={`تغییر پوسته؛ حالت فعلی: ${label}`}
@@ -25,7 +25,7 @@ function ThemeControl() {
         >
             <Icon size={18} strokeWidth={1.9} aria-hidden="true" />
             <span className="sr-only">تغییر پوسته</span>
-        </button>
+        </Button>
     );
 }
 
@@ -117,13 +117,13 @@ export function PublicLayout() {
                         )}
                         <span className="mx-1 hidden h-7 w-px bg-border xl:block" aria-hidden="true" />
                         <DialogTrigger asChild>
-                            <button
+                            <Button variant="ghost"
                                 type="button"
                                 aria-label="باز کردن منوی اصلی"
                                 className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${user ? 'xl:hidden' : 'lg:hidden'}`}
                             >
                                 <Menu size={19} aria-hidden="true" />
-                            </button>
+                            </Button>
                         </DialogTrigger>
                     </div>
                 </div>
@@ -138,13 +138,13 @@ export function PublicLayout() {
                             <DialogDescription className="mt-1 text-xs text-muted">بخش‌های مختلف راد آرت</DialogDescription>
                         </div>
                         <DialogClose asChild>
-                            <button
+                            <Button variant="ghost"
                                 type="button"
                                 aria-label="بستن منو"
                                 className="grid h-10 w-10 place-items-center rounded-lg text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                             >
                                 <X size={19} aria-hidden="true" />
-                            </button>
+                            </Button>
                         </DialogClose>
                     </div>
                     <nav aria-label="ناوبری موبایل" className="min-h-0 flex-1 overflow-y-auto">
@@ -172,9 +172,9 @@ export function PublicLayout() {
                                     >
                                         فضای کاربری
                                     </Link>
-                                    <button type="button" onClick={handleLogout} className="flex min-h-12 items-center rounded-md px-4 text-right text-sm font-semibold text-muted hover:bg-surface-muted hover:text-ink">
+                                    <Button variant="ghost" type="button" onClick={handleLogout} className="flex min-h-12 items-center rounded-md px-4 text-right text-sm font-semibold text-muted hover:bg-surface-muted hover:text-ink">
                                         خروج از حساب
-                                    </button>
+                                    </Button>
                                 </>
                             ) : (
                                 <>
@@ -384,7 +384,7 @@ function NotificationBell({ user }) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <button
+                <Button variant="ghost"
                     type="button"
                     aria-label={unreadCount > 0 ? `اعلان‌ها، ${unreadCount.toLocaleString('fa-IR')} خوانده‌نشده` : 'اعلان‌ها'}
                     aria-expanded={open}
@@ -395,7 +395,7 @@ function NotificationBell({ user }) {
                     <Bell aria-hidden="true" size={17} strokeWidth={1.8} />
                     <span className="hidden sm:inline">اعلان‌ها</span>
                     {unreadCount > 0 && <span className="min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-[10px] font-extrabold tabular-nums text-inverse" aria-live="polite">{unreadCount > 99 ? '۹۹+' : unreadCount.toLocaleString('fa-IR')}</span>}
-                </button>
+                </Button>
             </DialogTrigger>
             <DialogContent
                 id="workspace-notification-panel"
@@ -412,7 +412,7 @@ function NotificationBell({ user }) {
                         <DialogDescription className="mt-1 text-xs leading-6">خبرهای تازه درباره پیام‌ها، آثار و هنرمندان</DialogDescription>
                     </div>
                     <div className="flex shrink-0 items-center gap-1">
-                        <button
+                        <Button variant="ghost"
                             type="button"
                             onClick={markAll}
                             disabled={busy || unreadCount === 0}
@@ -420,15 +420,15 @@ function NotificationBell({ user }) {
                         >
                             <CheckCheck size={14} aria-hidden="true" />
                             <span>خواندن همه</span>
-                        </button>
+                        </Button>
                         <DialogClose asChild>
-                            <button
+                            <Button variant="ghost"
                                 type="button"
                                 aria-label="بستن اعلان‌ها"
                                 className="grid h-9 w-9 place-items-center rounded-md text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                             >
                                 <X size={17} aria-hidden="true" />
-                            </button>
+                            </Button>
                         </DialogClose>
                     </div>
                 </div>
@@ -450,7 +450,7 @@ function NotificationBell({ user }) {
                                 const ItemIcon = item.kind === 'artist_followed' ? Users : item.kind === 'artwork_liked' ? Heart : MessageCircle;
                                 return (
                                     <li key={item.id}>
-                                        <button
+                                        <Button variant="ghost"
                                             type="button"
                                             disabled={busy}
                                             onClick={() => openNotification(item)}
@@ -474,7 +474,7 @@ function NotificationBell({ user }) {
                                                 <span className="mt-1 block text-[11px] tabular-nums text-muted">{notificationDate(item.created_at)}</span>
                                             </span>
                                             {!item.read_at && <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-terracotta" />}
-                                        </button>
+                                        </Button>
                                     </li>
                                 );
                             })}
@@ -482,9 +482,9 @@ function NotificationBell({ user }) {
                     )}
                     {!loading && lastPage > 1 && (
                         <nav aria-label="صفحه‌بندی اعلان‌ها" className="mt-4 flex items-center justify-between gap-3">
-                            <button type="button" disabled={page <= 1 || notificationsQuery.isFetching} onClick={() => setPage((value) => value - 1)} className="border border-border px-3 py-2 text-xs disabled:opacity-40">جدیدتر</button>
+                            <Button variant="ghost" type="button" disabled={page <= 1 || notificationsQuery.isFetching} onClick={() => setPage((value) => value - 1)} className="border border-border px-3 py-2 text-xs disabled:opacity-40">جدیدتر</Button>
                             <span className="text-xs tabular-nums text-muted">{page.toLocaleString('fa-IR')} از {lastPage.toLocaleString('fa-IR')}</span>
-                            <button type="button" disabled={page >= lastPage || notificationsQuery.isFetching} onClick={() => setPage((value) => value + 1)} className="border border-border px-3 py-2 text-xs disabled:opacity-40">قدیمی‌تر</button>
+                            <Button variant="ghost" type="button" disabled={page >= lastPage || notificationsQuery.isFetching} onClick={() => setPage((value) => value + 1)} className="border border-border px-3 py-2 text-xs disabled:opacity-40">قدیمی‌تر</Button>
                         </nav>
                     )}
                 </div>
@@ -631,13 +631,13 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                         </div>
 
                         <DialogTrigger asChild>
-                            <button
+                            <Button variant="ghost"
                                 type="button"
                                 aria-label="باز کردن منوی حساب کاربری"
                                 className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus lg:hidden"
                             >
                                 <Menu size={20} aria-hidden="true" />
-                            </button>
+                            </Button>
                         </DialogTrigger>
                     </div>
                 </div>
@@ -657,13 +657,13 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                         </div>
                     </div>
                     <DialogClose asChild>
-                        <button
+                        <Button variant="ghost"
                             type="button"
                             aria-label="بستن منو"
                             className="grid h-10 w-10 shrink-0 place-items-center rounded-lg text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                         >
                             <X size={19} aria-hidden="true" />
-                        </button>
+                        </Button>
                     </DialogClose>
                 </div>
 
@@ -718,13 +718,13 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     >
                         مشاهده سایت
                     </Link>
-                    <button
+                    <Button variant="ghost"
                         type="button"
                         onClick={handleLogout}
                         className="mt-2 flex min-h-11 w-full items-center justify-center rounded-lg px-4 text-sm font-bold text-danger transition-colors hover:bg-danger-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                     >
                         خروج از حساب
-                    </button>
+                    </Button>
                 </div>
             </DialogContent>
 
