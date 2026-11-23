@@ -70,7 +70,7 @@ export function DropdownMenu(props) {
 }
 
 DropdownMenu.Root = DropdownMenu;
-DropdownMenu.Trigger = DropdownMenuPrimitive.Trigger;
+DropdownMenu.Trigger = DropdownMenuTrigger;
 DropdownMenu.Portal = DropdownMenuPrimitive.Portal;
 DropdownMenu.Content = DropdownMenuContent;
 DropdownMenu.Item = DropdownMenuItem;
