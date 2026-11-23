@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
@@ -8,6 +8,7 @@ import { ArtworkCard, EmptyState, ErrorState, ArtistProfileSkeleton, PageHeader,
 export default function ArtistProfilePage() {
     const { slug } = useParams();
     const { user } = useAuth();
+    const queryClient = useQueryClient();
     const [categoryFilter, setCategoryFilter] = useState('');
 
     const profileQuery = useInfiniteQuery({
@@ -68,6 +69,18 @@ export default function ArtistProfilePage() {
         () => categoryFilter ? allArtworks.filter((artwork) => artwork.category?.slug === categoryFilter) : allArtworks,
         [allArtworks, categoryFilter],
     );
+    const followState = {
+        followers_count: profile?.followers_count ?? null,
+        is_following: profile?.is_following ?? false,
+        is_own_profile: profile?.is_own_profile ?? false,
+    };
+    const canFollow = Boolean(profile) && ['buyer', 'artist'].includes(user?.role) && !followState.is_own_profile;
+    const followMutation = useMutation({
+        mutationFn: () => followState.is_following
+            ? axios.delete('/api/v1/artists/' + encodeURIComponent(slug) + '/follow')
+            : axios.post('/api/v1/artists/' + encodeURIComponent(slug) + '/follow'),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['artist-profile', slug] }),
+    });
 
     if (profileQuery.isPending) return <ArtistProfileSkeleton />;
 
@@ -98,6 +111,8 @@ export default function ArtistProfilePage() {
                             )}
                             actions={(
                                 <>
+                                    {canFollow && <button type="button" disabled={followMutation.isPending} onClick={() => followMutation.mutate()} aria-pressed={Boolean(followState.is_following)} className={primaryActionClass}>{followMutation.isPending ? 'در حال به‌روزرسانی…' : followState.is_following ? 'دنبال می‌کنید' : 'دنبال کردن هنرمند'}</button>}
+                                    {!user && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className={actionClass}>برای دنبال کردن وارد شوید</Link>}
                                     {profile.website_url && <a href={profile.website_url} target="_blank" rel="noreferrer" className={`${actionClass} max-w-full whitespace-normal break-words text-center`}>وب‌سایت هنرمند ↗</a>}
                                     {profile.instagram_handle && <a href={'https://instagram.com/' + profile.instagram_handle} target="_blank" rel="noreferrer" className={`${actionClass} max-w-full whitespace-normal break-words text-center`}>اینستاگرام ↗</a>}
                                     {user?.role === 'buyer' && <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(profile.slug)} className={`${primaryActionClass} max-w-full whitespace-normal break-words text-center`}>ارسال پیام به هنرمند</Link>}
@@ -108,12 +123,14 @@ export default function ArtistProfilePage() {
                     {user && user.role !== 'buyer' && (
                         <p className="mt-4 text-xs leading-6 text-muted">برای ارسال پیام مستقیم، از حساب خریدار استفاده کنید.</p>
                     )}
+                    {followMutation.isError && <p role="alert" className="mt-3 text-xs text-danger">به‌روزرسانی دنبال‌کردن هنرمند انجام نشد. دوباره تلاش کنید.</p>}
                     <div className="mt-5 flex min-w-0 max-w-full flex-wrap items-center gap-x-3 gap-y-2 break-words text-xs text-muted">
                             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-muted px-3 py-1.5">
                                 <span className="h-1.5 w-1.5 rounded-full bg-olive" aria-hidden="true" />
                                 پورتفولیوی عمومی
                             </span>
                             <span className="font-semibold tabular-nums">{allArtworks.length.toLocaleString('fa-IR')} اثر بارگذاری‌شده</span>
+                            {followState.followers_count !== undefined && followState.followers_count !== null && <span className="font-semibold tabular-nums">{Number(followState.followers_count).toLocaleString('fa-IR')} دنبال‌کننده</span>}
                     </div>
 
                     <section className="mt-12 min-w-0 max-w-full" aria-labelledby="artist-portfolio-heading">
