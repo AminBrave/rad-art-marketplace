@@ -61,6 +61,35 @@ class ArtworkInteractionController extends Controller
     public function comments(Request $request, Artwork $artwork): JsonResponse
     {
         $this->ensurePublicArtwork($artwork);
+        $validated = $request->validate([
+            'page' => ['sometimes', 'integer', 'min:1'],
+            'comment_id' => ['sometimes', 'integer', 'min:1'],
+        ]);
+        $page = (int) ($validated['page'] ?? 1);
+
+        if ($page === 1 && isset($validated['comment_id'])) {
+            $target = ArtworkComment::withTrashed()
+                ->where('artwork_id', $artwork->id)
+                ->find($validated['comment_id']);
+            $root = $target?->parent_id
+                ? ArtworkComment::withTrashed()->where('artwork_id', $artwork->id)->find($target->parent_id)
+                : $target;
+
+            if ($root && $root->parent_id === null) {
+                $position = ArtworkComment::withTrashed()
+                    ->where('artwork_id', $artwork->id)
+                    ->whereNull('parent_id')
+                    ->where(function ($query) use ($root): void {
+                        $query->where('created_at', '<', $root->created_at)
+                            ->orWhere(function ($tie) use ($root): void {
+                                $tie->where('created_at', $root->created_at)
+                                    ->where('id', '<=', $root->id);
+                            });
+                    })
+                    ->count();
+                $page = intdiv(max(0, $position - 1), 20) + 1;
+            }
+        }
 
         $comments = ArtworkComment::query()
             ->withTrashed()
@@ -75,7 +104,8 @@ class ArtworkInteractionController extends Controller
                 ]),
             ])
             ->oldest()
-            ->paginate(20);
+            ->orderBy('id')
+            ->paginate(20, ['*'], 'page', $page);
 
         return response()->json([
             'data' => $comments->getCollection()
