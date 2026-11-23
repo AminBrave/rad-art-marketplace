@@ -31,7 +31,7 @@ export function ArtworkCard({ artwork, className = '' }) {
             </Link>
             <div className="grid gap-2 px-3 pb-4 pt-3 sm:px-4">
                 <div className="flex items-start justify-between gap-3">
-                    <Link to={`/artworks/${artwork.slug}`} className="line-clamp-2 text-sm font-bold leading-6 text-ink no-underline hover:text-terracotta-strong">{title}</Link>
+                    <Link to={`/artworks/${artwork.slug}`} className="line-clamp-2 text-sm font-bold leading-6 text-ink no-underline hover:text-accent-strong">{title}</Link>
                     <span className="shrink-0 pt-0.5 text-xs font-bold tabular-nums text-ink">{price}</span>
                 </div>
                 <div className="flex items-center justify-between border-t border-border pt-2 text-[11px] text-muted">
@@ -52,10 +52,10 @@ export function ArtistCard({ artist, className = '' }) {
             <Link to={artist.slug ? `/artists/${artist.slug}` : '/artists'} className="flex h-full min-w-0 items-center gap-4 p-4 text-ink no-underline outline-none sm:p-5">
                 <span data-ui="artist-avatar" className="grid h-16 w-16 shrink-0 place-items-center rounded-full border-2 border-paper bg-surface-muted text-xl font-extrabold text-ink shadow-soft" aria-hidden="true">{initial}</span>
                 <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-bold group-hover:text-terracotta-strong">{name}</span>
+                    <span className="block truncate text-sm font-bold group-hover:text-accent-strong">{name}</span>
                     {artist.city && <span className="mt-1 block truncate text-xs text-muted">{artist.city}</span>}
                     {artist.bio && <span className="mt-2 line-clamp-2 block text-xs leading-6 text-muted">{artist.bio}</span>}
-                    <span className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-terracotta-strong">مشاهده پروفایل <ArrowUpLeft size={13}/></span>
+                    <span className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-accent-strong">مشاهده پروفایل <ArrowUpLeft size={13}/></span>
                 </span>
             </Link>
         </article>
