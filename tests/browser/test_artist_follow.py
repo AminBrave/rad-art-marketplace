@@ -6,7 +6,7 @@ import unittest
 
 from playwright.sync_api import expect, sync_playwright
 
-from config import BASE_URL, IGNORE_HTTPS_ERRORS
+from config import BASE_URL
 
 
 BUYER = {
