@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
+import { ArrowLeft, X } from 'lucide-react';
 import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, SelectField, PageContainer, PageHeader } from '../components/ui';
 
 const emptyFilters = { mediums: [], availability: [], sorts: [] };
@@ -94,8 +95,15 @@ export default function ArtworkCatalogue() {
         <PageContainer as="main" className="min-w-0 max-w-full box-border min-h-[65vh] py-10 lg:py-14" dir="rtl">
             <PageHeader eyebrow="آرشیو عمومی راد آرت" title="گالری آثار" description="در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید." />
 
-            <section aria-label="فیلتر و مرتب‌سازی آثار" className="mt-7 border border-border bg-surface-muted p-4 sm:p-5 lg:p-6">
-                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(18rem,1.5fr)_repeat(2,minmax(11rem,1fr))]">
+            <section aria-label="فیلتر و مرتب‌سازی آثار" className="mt-8 border-y border-border bg-surface-muted/70 px-4 py-5 sm:px-6 sm:py-6 lg:px-7">
+                <div className="mb-5 flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                        <p className="text-[11px] font-extrabold tracking-[.12em] text-terracotta-strong">جست‌وجوی هدفمند</p>
+                        <h2 className="mt-1 text-base font-black">آثاری را پیدا کنید که با نگاه شما هم‌مسیرند</h2>
+                    </div>
+                    <span className="text-xs text-muted">{activeFilterCount ? activeFilterCount.toLocaleString('fa-IR') + ' معیار انتخاب‌شده' : 'همه آثار عمومی'}</span>
+                </div>
+                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(18rem,1.5fr)_repeat(2,minmax(11rem,1fr)]
                     <SearchField value={searchInput} onChange={(event) => setSearchInput(event.target.value)} onSearch={submitSearch} label="جست‌وجو در آثار و هنرمندان" placeholder="عنوان، توضیحات، تکنیک یا نام هنرمند…" />
                     <SelectField value={category} onChange={(event) => updateFilters({ category: event.target.value })} aria-label="فیلتر دسته‌بندی">
                         <option value="">همه دسته‌ها</option>
@@ -121,8 +129,21 @@ export default function ArtworkCatalogue() {
                 {filtersLoading && <p className="mt-3 text-xs text-muted">در حال آماده‌سازی گزینه‌های فیلتر…</p>}
             </section>
 
-            <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
-                <p aria-live="polite" className="text-sm text-muted">{loading ? 'در حال دریافت آثار…' : meta.total.toLocaleString('fa-IR') + ' اثر'}</p>
+            {activeFilterCount > 0 && (
+                <div className="mt-6 flex flex-wrap items-center gap-2" aria-label="معیارهای فعال">
+                    <span className="me-1 text-xs font-bold text-muted">انتخاب شما:</span>
+                    {search && <button type="button" onClick={() => updateFilters({ q: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{search}<X size={12} aria-hidden="true" /></button>}
+                    {category && <button type="button" onClick={() => updateFilters({ category: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{categories.find((item) => item.slug === category)?.name ?? category}<X size={12} aria-hidden="true" /></button>}
+                    {medium && <button type="button" onClick={() => updateFilters({ medium: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{medium}<X size={12} aria-hidden="true" /></button>}
+                    {availability && <button type="button" onClick={() => updateFilters({ availability: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{filters.availability?.find((item) => item.value === availability)?.label ?? availability}<X size={12} aria-hidden="true" /></button>}
+                    {sort !== 'newest' && <button type="button" onClick={() => updateFilters({ sort: 'newest' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{filters.sorts?.find((item) => item.value === sort)?.label ?? sort}<X size={12} aria-hidden="true" /></button>}
+                </div>
+            )}
+            <div className="mt-8 flex flex-wrap items-end justify-between gap-3 border-b border-border pb-4">
+                <div>
+                    <p className="text-[11px] font-bold tracking-[.12em] text-terracotta-strong">آرشیو آثار</p>
+                    <p aria-live="polite" className="mt-1 text-sm font-semibold text-ink">{loading ? 'در حال دریافت آثار…' : meta.total.toLocaleString('fa-IR') + ' اثر'}</p>
+                </div>
                 <p className="text-xs text-muted">نمایش آثار عمومی و تأییدشده</p>
             </div>
             {loading ? (
