@@ -158,8 +158,8 @@ button:disabled, [role="button"][aria-disabled="true"] { cursor: not-allowed; }
   outline: 2px solid var(--color-focus);
   outline-offset: 3px;
 }
-:where(.bg-accent-surface) { background-color: color-mix(in srgb, var(--color-action) 9%, var(--color-paper)); }
-:where(.text-terracotta-strong) { color: var(--color-action-text); }
-:where(.bg-terracotta) { background-color: var(--color-action); }
-:where(.border-terracotta) { border-color: var(--color-action); }
+.bg-accent-surface { background-color: color-mix(in srgb, var(--color-action) 9%, var(--color-paper)); }
+.text-terracotta-strong { color: var(--color-action-text); }
+.bg-terracotta { background-color: var(--color-action); }
+.border-terracotta { border-color: var(--color-action); }
 main[aria-label="در حال بارگذاری راد آرت"] > .flex.min-h-14 { display: none; }
