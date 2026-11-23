@@ -15,12 +15,12 @@ Protect independent work, coordinate multiple agents and make changes easy to re
 4. Choose a task-specific branch. Never assume remote state includes another workspace's uncommitted work.
 
 ## Branch model
-- Persistent lane: agent/<agent-id>; existing IDs include chatgpt and claude.
-- Task branch: <type>/<agent-id>/<issue>-<slug>, e.g. feature/chatgpt/123-search or docs/claude/234-guide.
+- Persistent lane: agent/<agent-name>/lane; examples: agent/chatgpt/lane and agent/claude/lane.
+- Task branch: agent/<agent-name>/<task-type>/<task-name>, e.g. agent/chatgpt/feature/123-search or agent/claude/docs/234-guide.
 - Integration branch: integration or a scoped integration/<workstream>, used only for owner-directed cross-agent integration.
 - main is the stable shared baseline and release destination, not an ordinary task target.
 
-Each agent works only in its own task branches and lane. Task PRs target the matching agent lane. Do not merge, cherry-pick, copy or rebase commits into another agent's lane without an explicit integration task. Keep shared lane history stable; update/rebase only short-lived task branches when needed.
+Each agent works only in its own task branches and lane. Task PRs target agent/<agent-name>/lane for that same agent. Do not merge, cherry-pick, copy or rebase commits into another agent's lane without an explicit integration task. Keep shared lane history stable; update/rebase only short-lived task branches when needed.
 
 ## Parallel work
 - Give each independent task its own branch and primary owner.
@@ -51,4 +51,4 @@ Each agent works only in its own task branches and lane. Task PRs target the mat
 Use issues and a board when they improve parallel coordination. Assign one primary owner per task, define observable acceptance criteria, track real dependencies and avoid duplicate or speculative backlog items. Use the existing board configuration rather than inventing fields. See AI/TASK-MANAGEMENT.md.
 
 ## Deliverable
-Report agent ID, task branch, base lane, changed files/contracts, issue/PR links, verification, lane-merge status and whether cross-agent integration remains pending.
+Report agent name, task branch, base lane, changed files/contracts, issue/PR links, verification, lane-merge status and whether cross-agent integration remains pending.
