@@ -84,7 +84,7 @@ test('messaging remains a canonical feature with conversation selection and cont
     assert.ok(messaging.includes('setReplyTo'));
     assert.ok(messaging.includes('selectedFile'));
     assert.ok(messaging.includes('pendingArtwork'));
-    assert.ok(messaging.includes('sendMessage') || messaging.includes('mutateAsync'));
+    assert.ok(messaging.includes('const send = async'));
 });
 
 test('feedback and documentation use the new design-system language', () => {
