@@ -5,6 +5,10 @@ Rademan adopts Instagram's recognizable interface principles—minimal chrome, i
 
 This is a design-language reference, not a request to reproduce Instagram's proprietary assets, copy, social graph or product features.
 
+## Product information architecture
+
+The visual redesign applies consistently to the existing Discover, Buyer Studio, Artist Studio and Admin Console routes. It changes presentation and navigation ergonomics, not the underlying capabilities or role permissions.
+
 ## Product integrity
 Keep the existing product experiences and backend contracts:
 - **Discover:** home, artworks, artwork detail, artists, artist profiles, editorial collections, information pages and authentication.
@@ -70,6 +74,7 @@ Semantic overrides live in `resources/css/instagram.css`; theme selection remain
 
 ## Accessibility and quality
 - Target WCAG 2.2 AA contrast in both themes.
+- Provide accessible controls, form states, dialogs, menus, notifications and feedback in both themes.
 - Preserve semantic HTML, accessible names, keyboard navigation, visible focus, validation feedback and reduced-motion preferences.
 - Never communicate status by color alone.
 - Test Persian RTL, mixed Persian/Latin content, zoom/reflow, touch targets, dialogs, forms, menus and all major page states.
