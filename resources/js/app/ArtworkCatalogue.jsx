@@ -94,8 +94,8 @@ export default function ArtworkCatalogue() {
         <PageContainer as="main" data-page="artwork-catalogue" className="min-w-0 max-w-full box-border min-h-[65vh] py-10 lg:py-14" dir="rtl">
             <PageHeader eyebrow="آرشیو عمومی راد آرت" title="گالری آثار" description="در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید." />
 
-            <section aria-label="فیلتر و مرتب‌سازی آثار" className="mt-7 border border-border bg-surface-muted p-4 sm:p-5 lg:p-6">
-                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(18rem,1.5fr)_repeat(2,minmax(11rem,1fr))]">
+            <section data-ui="filter-panel" aria-label="فیلتر و مرتب‌سازی آثار" className="mt-7 border border-border bg-surface-muted p-4 sm:p-5 lg:p-6">
+                <div data-ui="filter-grid" className="grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(18rem,1.5fr)_repeat(2,minmax(11rem,1fr))]">
                     <SearchField value={searchInput} onChange={(event) => setSearchInput(event.target.value)} onSearch={submitSearch} label="جست‌وجو در آثار و هنرمندان" placeholder="عنوان، توضیحات، تکنیک یا نام هنرمند…" />
                     <SelectField value={category} onChange={(event) => updateFilters({ category: event.target.value })} aria-label="فیلتر دسته‌بندی">
                         <option value="">همه دسته‌ها</option>
@@ -121,12 +121,12 @@ export default function ArtworkCatalogue() {
                 {filtersLoading && <p className="mt-3 text-xs text-muted">در حال آماده‌سازی گزینه‌های فیلتر…</p>}
             </section>
 
-            <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
+            <div data-ui="results-meta" className="mt-8 flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
                 <p aria-live="polite" className="text-sm text-muted">{loading ? 'در حال دریافت آثار…' : meta.total.toLocaleString('fa-IR') + ' اثر'}</p>
                 <p className="text-xs text-muted">نمایش آثار عمومی و تأییدشده</p>
             </div>
             {loading ? (
-                <div className="mt-6 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}</div>
+                <div data-ui="artwork-grid" className="mt-6 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}</div>
             ) : error ? (
                 <ErrorState className="mt-8" title="دریافت گالری با خطا روبه‌رو شد" description="اتصال را بررسی کنید و دوباره تلاش کنید." onRetry={() => artworksQuery.refetch()} />
             ) : artworks.length ? (
@@ -135,7 +135,7 @@ export default function ArtworkCatalogue() {
                 <EmptyState className="mt-8" title="اثری با این مشخصات پیدا نشد" description="عبارت جست‌وجو یا گزینه‌های فیلتر را تغییر دهید." />
             )}
             {!loading && !error && meta.last_page > 1 && (
-                <nav aria-label="صفحه‌بندی آثار" className="mt-10 flex items-center justify-center gap-4">
+                <nav data-ui="pagination" aria-label="صفحه‌بندی آثار" className="mt-10 flex items-center justify-center gap-4">
                     <button type="button" disabled={page <= 1} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page - 1)]]))} className="border border-border px-4 py-2 text-sm font-semibold disabled:opacity-40">قبلی</button>
                     <span className="text-sm text-muted">صفحه {meta.current_page.toLocaleString('fa-IR')} از {meta.last_page.toLocaleString('fa-IR')}</span>
                     <button type="button" disabled={page >= meta.last_page} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page + 1)]]))} className="border border-border px-4 py-2 text-sm font-semibold disabled:opacity-40">بعدی</button>
