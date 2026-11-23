@@ -70,6 +70,32 @@ def reply_resource(body):
     }
 
 
+def install_auth_bootstrap(page, user):
+    """Replace the real Blade auth payload before the React entry point runs."""
+    payload = json.dumps(user, ensure_ascii=False)
+
+    def rewrite_navigation(route):
+        if not route.request.is_navigation_request():
+            route.continue_()
+            return
+
+        response = route.fetch()
+        html = response.text()
+        html, replacements = re.subn(
+            r'<script\\b[^>]*\\bid=["\\']rad-auth-bootstrap["\\'][^>]*>.*?</script>',
+            f'<script type="application/json" id="rad-auth-bootstrap">{payload}</script>',
+            html,
+            count=1,
+            flags=re.DOTALL,
+        )
+        if replacements != 1:
+            raise AssertionError("The app shell must contain exactly one Blade auth bootstrap script.")
+
+        route.fulfill(response=response, body=html)
+
+    page.route("**/*", rewrite_navigation)
+
+
 class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
     """Every API call is intercepted; these tests never mutate dev records."""
 
@@ -94,18 +120,8 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
         )
         page = context.new_page()
         page.set_default_timeout(15000)
-        # AuthProvider reads this JSON script synchronously during its first render.
-        # Insert a real element before the Blade body bootstrap so getElementById sees
-        # the test identity rather than the unauthenticated development session.
         bootstrap_user = BUYER if authenticated else None
-        page.add_init_script("""
-            const bootstrapUser = __BOOTSTRAP_USER__;
-            const bootstrap = document.createElement('script');
-            bootstrap.type = 'application/json';
-            bootstrap.id = 'rad-auth-bootstrap';
-            bootstrap.textContent = JSON.stringify(bootstrapUser);
-            document.head.appendChild(bootstrap);
-        """.replace("__BOOTSTRAP_USER__", json.dumps(bootstrap_user, ensure_ascii=False)))
+        install_auth_bootstrap(page, bootstrap_user)
         page.route(
             re.compile(r".*/api/v1/artworks/social-journey-artwork$"),
             lambda route: route.fulfill(
