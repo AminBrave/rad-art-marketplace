@@ -579,7 +579,7 @@ export default function MessagingCenter({ role }) {
                 onRetryInbox={loadThreads}
                 onRetryDirectStart={() => setDirectStartAttempt((attempt) => attempt + 1)}
             />
-            <div className="grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden rounded-lg border border-border bg-surface shadow-soft lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]">
+            <div className="grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden border-y border-border bg-surface lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]">
                 <MessagingInboxPanel
                     active={active}
                     hasMoreThreads={hasMoreThreads}
