@@ -85,14 +85,14 @@ export default function ArtistProfilePage() {
     if (profileQuery.isPending) return <ArtistProfileSkeleton />;
 
     const status = profileQuery.error?.response?.status ?? 0;
-    const actionClass = 'inline-flex min-h-10 items-center justify-center rounded-md border border-border bg-transparent px-4 py-2 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
-    const primaryActionClass = 'inline-flex min-h-11 items-center justify-center rounded-md border border-transparent bg-terracotta px-5 py-2.5 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
+    const actionClass = 'inline-flex min-h-10 items-center justify-center rounded-md border border-border bg-transparent px-4 py-2 text-sm font-bold text-ink no-underline transition-colors hover:border-accent hover:text-accent-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
+    const primaryActionClass = 'inline-flex min-h-11 items-center justify-center rounded-md border border-transparent bg-accent px-5 py-2.5 text-sm font-bold text-inverse no-underline transition-colors hover:bg-accent-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
 
     return (
         <main data-page="artist-profile" className="mx-auto min-h-[65vh] w-full min-w-0 max-w-7xl overflow-x-clip px-5 pb-16 pt-8 sm:px-8 sm:pt-12 lg:px-10" dir="rtl">
             <nav aria-label="مسیر صفحه" className="flex min-w-0 max-w-full flex-wrap items-center break-words text-xs text-muted">
-                <Link to="/" className="hover:text-terracotta-strong">خانه</Link><span className="mx-2" aria-hidden="true">/</span>
-                <Link to="/artists" className="hover:text-terracotta-strong">هنرمندان</Link><span className="mx-2" aria-hidden="true">/</span>
+                <Link to="/" className="hover:text-accent-strong">خانه</Link><span className="mx-2" aria-hidden="true">/</span>
+                <Link to="/artists" className="hover:text-accent-strong">هنرمندان</Link><span className="mx-2" aria-hidden="true">/</span>
                 <span aria-current="page" className="text-ink">پروفایل هنرمند</span>
             </nav>
 
@@ -105,7 +105,7 @@ export default function ArtistProfilePage() {
                             descriptionClassName="break-words [overflow-wrap:anywhere]"
                             description={(
                                 <span className="block min-w-0 max-w-full">
-                                    {profile.city && <span className="mb-2 inline-flex max-w-full flex-wrap items-center gap-2 break-words font-semibold text-ink"><span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-terracotta" />{profile.city}</span>}
+                                    {profile.city && <span className="mb-2 inline-flex max-w-full flex-wrap items-center gap-2 break-words font-semibold text-ink"><span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-accent" />{profile.city}</span>}
                                     {profile.bio && <span className="block whitespace-pre-line break-words [overflow-wrap:anywhere]">{profile.bio}</span>}
                                 </span>
                             )}
@@ -126,7 +126,7 @@ export default function ArtistProfilePage() {
                     {followMutation.isError && <p role="alert" className="mt-3 text-xs text-danger">به‌روزرسانی دنبال‌کردن هنرمند انجام نشد. دوباره تلاش کنید.</p>}
                     <div className="mt-5 flex min-w-0 max-w-full flex-wrap items-center gap-x-3 gap-y-2 break-words text-xs text-muted">
                             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-muted px-3 py-1.5">
-                                <span className="h-1.5 w-1.5 rounded-full bg-olive" aria-hidden="true" />
+                                <span className="h-1.5 w-1.5 rounded-full bg-success" aria-hidden="true" />
                                 پورتفولیوی عمومی
                             </span>
                             <span className="font-semibold tabular-nums">{allArtworks.length.toLocaleString('fa-IR')} اثر بارگذاری‌شده</span>
@@ -144,9 +144,9 @@ export default function ArtistProfilePage() {
 
                         {portfolioCategories.length > 1 && (
                             <div className="mt-6 flex flex-wrap gap-2" aria-label="فیلتر آثار بر اساس دسته">
-                                <button type="button" aria-pressed={!categoryFilter} onClick={() => setCategoryFilter('')} className={`min-h-10 rounded-full border px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${!categoryFilter ? 'border-ink bg-ink text-inverse' : 'border-border bg-paper text-ink hover:border-terracotta'}`}>همه دسته‌ها</button>
+                                <button type="button" aria-pressed={!categoryFilter} onClick={() => setCategoryFilter('')} className={`min-h-10 rounded-full border px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${!categoryFilter ? 'border-ink bg-ink text-inverse' : 'border-border bg-paper text-ink hover:border-accent'}`}>همه دسته‌ها</button>
                                 {portfolioCategories.map((category) => (
-                                    <button type="button" key={category.slug} aria-pressed={categoryFilter === category.slug} onClick={() => setCategoryFilter(category.slug)} className={`min-h-10 rounded-full border px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${categoryFilter === category.slug ? 'border-ink bg-ink text-inverse' : 'border-border bg-paper text-ink hover:border-terracotta'}`}>{category.name}</button>
+                                    <button type="button" key={category.slug} aria-pressed={categoryFilter === category.slug} onClick={() => setCategoryFilter(category.slug)} className={`min-h-10 rounded-full border px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${categoryFilter === category.slug ? 'border-ink bg-ink text-inverse' : 'border-border bg-paper text-ink hover:border-accent'}`}>{category.name}</button>
                                 ))}
                             </div>
                         )}
@@ -159,7 +159,7 @@ export default function ArtistProfilePage() {
                             <EmptyState className="mt-7" title={categoryFilter ? 'در این دسته اثری بارگذاری نشده' : 'هنوز اثری برای نمایش وجود ندارد'} description="آثار تأییدشده این هنرمند در این بخش نمایش داده می‌شوند." />
                         )}
                         {profileQuery.isFetchNextPageError && <ErrorState className="mt-7" title="دریافت آثار بیشتر ناموفق بود" description="دریافت آثار بیشتر انجام نشد. دوباره تلاش کنید." onRetry={() => profileQuery.fetchNextPage()} />}
-                        {pagination?.has_more && <div className="mt-9 flex justify-center"><button type="button" onClick={() => profileQuery.fetchNextPage()} disabled={profileQuery.isFetchingNextPage} className="min-h-11 rounded-md border border-border bg-paper px-7 py-3 text-sm font-bold text-ink transition-colors hover:border-terracotta disabled:cursor-wait disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">{profileQuery.isFetchingNextPage ? 'در حال دریافت…' : 'نمایش آثار بیشتر'}</button></div>}
+                        {pagination?.has_more && <div className="mt-9 flex justify-center"><button type="button" onClick={() => profileQuery.fetchNextPage()} disabled={profileQuery.isFetchingNextPage} className="min-h-11 rounded-md border border-border bg-paper px-7 py-3 text-sm font-bold text-ink transition-colors hover:border-accent disabled:cursor-wait disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">{profileQuery.isFetchingNextPage ? 'در حال دریافت…' : 'نمایش آثار بیشتر'}</button></div>}
                     </section>
                 </>
             ) : (
