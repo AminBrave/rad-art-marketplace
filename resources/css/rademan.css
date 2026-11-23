@@ -136,3 +136,13 @@
 @media(max-width:767px){[data-page=artwork-catalogue] [data-ui=filter-grid]{grid-template-columns:1fr}[data-page=artwork-catalogue] [data-ui=filter-grid]>form[role=search]{grid-template-columns:1fr}}
 
 [data-experience=discover] [data-testid=public-navigation-rail]{inset-inline-start:0;inset-inline-end:auto;top:var(--rd-topbar);bottom:0}
+
+[data-ui=page-container]{min-width:0}
+[data-ui=table-scroll]{max-width:100%;border-radius:14px}
+[data-ui=table]{border-color:var(--rd-line);background:var(--rd-surface)}
+[data-ui=data-list]{min-width:0}
+[data-ui=data-list-item]{border-color:var(--rd-line)}
+[data-ui=menu-trigger]{touch-action:manipulation}
+[data-ui=artwork-card-skeleton],[data-ui=artist-card-skeleton]{min-width:0;border-radius:18px;overflow:hidden}
+[data-ui=form-field-skeleton]{min-width:0}
+[data-ui=artwork-studio-list-skeleton],[data-ui=conversation-inbox-skeleton]{min-width:0}
