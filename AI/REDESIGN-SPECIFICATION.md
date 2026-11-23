@@ -373,3 +373,13 @@ Never cache authenticated API responses, private workspace data, messages, or pr
 - Run relevant lint, accessibility, frontend, backend, and browser checks where the environment permits.
 - Report exact verification performed and anything not run.
 - Treat this document as the design contract; update it when implementation evidence justifies a change.
+
+
+### 14.5 Messaging composer accessibility and keyboard refinements
+
+- Name the message form and keep the composer textarea explicitly labeled; retain Enter-to-send with Shift+Enter for a newline and IME composition protection.
+- Give the attachment picker a stable explicit label and a screen-reader hint describing accepted file types and the 10 MB limit. Announce selected attachment details politely and retain an accessible remove control.
+- Mark artwork and reply context previews as labeled groups. Dismissal controls retain visible keyboard focus treatment; dismissing a reply or artwork reference returns focus to the message field, while removing an attachment returns focus to the attachment picker.
+- Expose the send button's busy state in its accessible name and retain native disabled semantics during safety checks and in-flight sends.
+- Respect reduced-motion preferences on composer transitions and attachment removal; the global reduced-motion stylesheet also suppresses spinner animation duration.
+- No messaging API, upload, keyboard-send, or transaction semantics changed.
