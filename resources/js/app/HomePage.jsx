@@ -62,7 +62,7 @@ export default function HomePage() {
     const spotlight = artists[0];
 
     return (
-        <main className="overflow-hidden" dir="rtl">
+        <main data-page="home" className="overflow-hidden" dir="rtl">
             <section className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[1fr_.9fr] lg:gap-16 lg:px-10 lg:py-24">
                 <div className="max-w-2xl">
                     <p className="mb-6 inline-flex items-center gap-3 text-xs font-bold tracking-[.08em] text-terracotta-strong"><span className="h-px w-10 bg-terracotta" />گالری هنر مستقل معاصر <span className="text-subtle">/</span> ART &amp; CULTURE</p>
