@@ -148,7 +148,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
     };
     const fieldError = (name) => errors[name]?.map((item) => <span key={item} className="mt-1 block text-xs font-normal text-danger">{item}</span>);
 
-    return <section className="space-y-7" dir="rtl">
+    return <section data-page="artist-artworks" className="space-y-7" dir="rtl">
         <PageHeader
             eyebrow="گالری شخصی"
             title="مدیریت آثار"
