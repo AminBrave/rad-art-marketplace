@@ -35,7 +35,7 @@ export const Button = forwardRef(function Button({
             type={type}
             disabled={disabled || loading}
             aria-busy={loading || undefined}
-            className={cn('inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-transparent px-4 py-2 text-sm font-bold leading-[1.4] text-ink no-underline transition-colors disabled:cursor-not-allowed disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus', buttonVariants[variant] ?? buttonVariants.primary, buttonSizes[size] ?? buttonSizes.md, className)}
+            className={cn('inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-transparent px-4 py-2 text-sm font-bold leading-[1.4] tracking-[-.01em] text-ink no-underline transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus', buttonVariants[variant] ?? buttonVariants.primary, buttonSizes[size] ?? buttonSizes.md, className)}
             {...props}
         >
             {loading && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-current border-e-transparent" />}
@@ -93,9 +93,9 @@ export function PageContainer({ as: Element = 'div', width = 'wide', className =
 export function PageHeader({ eyebrow, title, description, actions, level = 1, className = '', titleClassName = '', descriptionClassName = '' }) {
     const Heading = level === 2 ? 'h2' : 'h1';
     return (
-        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-6 border-b border-border pb-7 pt-3 pr-5 before:absolute before:bottom-7 before:right-0 before:top-4 before:w-1 before:rounded-full before:bg-terracotta max-sm:items-stretch max-sm:flex-col max-sm:gap-4 max-sm:pb-6 max-sm:before:bottom-6', className)}>
+        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-6 border-b border-border pb-8 pt-4 pr-6 before:absolute before:bottom-8 before:right-0 before:top-4 before:w-1.5 before:bg-terracotta max-sm:items-stretch max-sm:flex-col max-sm:gap-4 max-sm:pb-6 max-sm:before:bottom-6', className)}>
             <div className="min-w-0 max-w-[56rem]">
-                {eyebrow && <p className="inline-flex items-center gap-2 rounded-full border border-border bg-accent-surface px-3 py-1.5 text-[11px] font-extrabold leading-none tracking-[.025em] text-terracotta-strong before:h-1.5 before:w-1.5 before:shrink-0 before:rounded-full before:bg-terracotta">{eyebrow}</p>}
+                {eyebrow && <p className="inline-flex items-center gap-2 border-s-2 border-terracotta bg-transparent px-3 py-1 text-[11px] font-extrabold leading-none tracking-[.06em] text-terracotta-strong">{eyebrow}</p>}
                 <Heading className={cn('mt-3 text-[clamp(1.75rem,3.2vw,2.6rem)] font-extrabold leading-heading tracking-[-.035em] text-ink', titleClassName)}>{title}</Heading>
                 {description && <p className={cn('mt-3 max-w-2xl text-sm leading-8 text-muted sm:text-[.95rem]', descriptionClassName)}>{description}</p>}
             </div>
@@ -107,7 +107,7 @@ export function PageHeader({ eyebrow, title, description, actions, level = 1, cl
 export function SectionHeader({ id, eyebrow, title, description, actions, className = '', level = 2 }) {
     const Heading = level === 3 ? 'h3' : 'h2';
     return (
-        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-4 border-b border-border pb-4 pr-4 before:absolute before:bottom-4 before:right-0 before:top-1 before:w-[3px] before:rounded-full before:bg-sand max-sm:items-stretch max-sm:flex-col', className)}>
+        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-4 border-b border-border pb-5 pr-4 before:absolute before:bottom-5 before:right-0 before:top-0 before:w-1 before:bg-sand max-sm:items-stretch max-sm:flex-col', className)}>
             <div className="min-w-0">
                 {eyebrow && <p className="inline-flex items-center gap-1.5 text-[11px] font-extrabold tracking-[.025em] text-terracotta-strong before:h-1 before:w-1 before:rounded-full before:bg-terracotta">{eyebrow}</p>}
                 <Heading id={id} className="mt-1.5 text-lg font-extrabold leading-heading tracking-[-.02em] text-ink sm:text-xl">{title}</Heading>
@@ -120,7 +120,7 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
 
 export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
     return (
-        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-6 overflow-hidden rounded-xl border border-ink bg-ink p-[clamp(1.5rem,4vw,2.5rem)] text-inverse max-md:items-stretch max-md:flex-col', className)}>
+        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-8 overflow-hidden border-y border-ink bg-ink px-[clamp(1.25rem,4vw,3.25rem)] py-[clamp(1.75rem,4vw,3rem)] text-inverse max-md:items-stretch max-md:flex-col', className)}>
             <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-1.5 bg-terracotta" />
             <span aria-hidden="true" className="pointer-events-none absolute -right-16 -top-24 aspect-square w-60 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]" />
             <span aria-hidden="true" className="pointer-events-none absolute -right-4 -top-12 aspect-square w-44 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]" />
@@ -138,7 +138,7 @@ export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, cla
     const Element = as ?? (to ? 'a' : 'article');
     const destinationProps = to ? (Element === 'a' ? { href: to } : { to }) : {};
     return (
-        <Element {...destinationProps} className={cn('flex min-h-36 min-w-0 flex-col justify-between rounded-md border border-border bg-paper p-5 text-ink no-underline', to && 'transition duration-200 hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus', className)}>
+        <Element {...destinationProps} className={cn('flex min-h-36 min-w-0 flex-col justify-between border-y border-border bg-transparent p-5 text-ink no-underline transition-colors hover:border-terracotta', to && 'transition duration-200 hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus', className)}>
             <span className="flex items-center justify-between gap-3">
                 <span className="text-sm font-semibold text-muted">{label}</span>
                 {eyebrow && <span className="text-[10px] font-bold text-terracotta-strong">{eyebrow}</span>}
@@ -150,10 +150,10 @@ export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, cla
 }
 
 const surfaceVariants = {
-    default: 'border border-border rounded-md bg-surface',
-    muted: 'border border-border rounded-md bg-surface-muted',
-    raised: 'border border-border rounded-md bg-surface shadow-soft',
-    interactive: 'border border-border rounded-md bg-surface transition-colors hover:border-border-strong hover:bg-surface-muted focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus',
+    default: 'border-y border-border bg-surface',
+    muted: 'border-y border-border bg-surface-muted',
+    raised: 'border-y border-border bg-surface shadow-soft',
+    interactive: 'border-y border-border bg-surface transition-colors hover:border-terracotta hover:bg-surface-muted focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus',
 };
 
 export function Surface({ as: Element = 'section', variant = 'default', className = '', children, ...props }) {
