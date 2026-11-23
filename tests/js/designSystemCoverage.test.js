@@ -70,11 +70,11 @@ test('presentation sources do not depend on removed component-specific CSS class
 });
 
 test('base stylesheet stays token-focused and the Instagram theme adapter is explicitly scoped', () => {
-    assert.equal((css.match(/:root\\s*\\{/g) ?? []).length, 1);
+    assert.equal((css.match(/:root\s*\{/g) ?? []).length, 1);
     assert.ok(stylesheetFiles.length >= 2, 'Expected the base and Instagram theme stylesheets.');
     for (const path of stylesheetFiles) {
         const source = readFileSync(path, 'utf8');
-        const file = relative(root, path).replace(/\\\\/g, '/');
+        const file = relative(root, path).replace(/\\/g, '/');
         if (file === 'resources/css/instagram.css') {
             assert.ok(source.includes('Rademan Instagram-inspired design layer'));
             assert.ok(source.includes(":root[data-theme='dark']"));
@@ -82,12 +82,12 @@ test('base stylesheet stays token-focused and the Instagram theme adapter is exp
             continue;
         }
         assert.deepEqual(
-            matchesWithLines(source, /(?:^|,)\\s*\\.[a-zA-Z_][\\w-]*(?:[^{}]*)\\{/gm),
+            matchesWithLines(source, /(?:^|,)\s*\.[a-zA-Z_][\w-]*(?:[^{}]*)\{/gm),
             [],
             file + ' must remain a token/base stylesheet.',
         );
     }
-    assert.doesNotMatch(css, /\\.ra-[\\w-]+|\\.rad-messaging|\\.app-boot|\\.app-skeleton/);
+    assert.doesNotMatch(css, /\.ra-[\w-]+|\.rad-messaging|\.app-boot|\.app-skeleton/);
 });
 test('Tailwind scans every presentation source family and defines accessible skeleton motion', () => {
     assert.ok(tailwind.includes("'./resources/**/*.blade.php'"));
