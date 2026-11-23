@@ -1,6 +1,7 @@
 """Playwright coverage for public artwork likes, comments and one-level replies."""
 
 import json
+import re
 import unittest
 
 from playwright.sync_api import expect, sync_playwright
@@ -84,7 +85,7 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
         cls.browser.close()
         cls.playwright.stop()
 
-    def new_page(self):
+    def new_page(self, authenticated=True):
         context = self.browser.new_context(
             viewport={"width": 390, "height": 844},
             is_mobile=True,
@@ -93,16 +94,21 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
         )
         page = context.new_page()
         page.set_default_timeout(15000)
+        # AuthProvider reads the Blade bootstrap synchronously before it calls /auth/me.
+        # Mock the bootstrap element itself so the app renders as the intended account.
+        bootstrap_user = BUYER if authenticated else None
+        page.add_init_script("""
+            const bootstrapUser = "PLACEHOLDER";
+            const originalGetElementById = Document.prototype.getElementById;
+            Document.prototype.getElementById = function (id) {
+                if (id === 'rad-auth-bootstrap') {
+                    return { textContent: JSON.stringify(bootstrapUser) };
+                }
+                return originalGetElementById.call(this, id);
+            };
+        """.replace("PLACEHOLDER", JSON.stringify(bootstrap_user)))
         page.route(
-            "**/api/v1/auth/me",
-            lambda route: route.fulfill(
-                status=200,
-                content_type="application/json",
-                body=json.dumps({"data": BUYER}, ensure_ascii=False),
-            ),
-        )
-        page.route(
-            "**/api/v1/artworks/social-journey-artwork",
+            re.compile(r".*/api/v1/artworks/social-journey-artwork$"),
             lambda route: route.fulfill(
                 status=200,
                 content_type="application/json",
@@ -143,7 +149,10 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
                 }, ensure_ascii=False),
             )
 
-        page.route("**/api/v1/artworks/social-journey-artwork/comments**", comments_route)
+        page.route(
+            re.compile(r".*/api/v1/artworks/social-journey-artwork/comments(?:\?.*)?$"),
+            comments_route,
+        )
         try:
             page.goto(BASE_URL + "/artworks/social-journey-artwork", wait_until="domcontentloaded")
             page.get_by_role("heading", name="گفت‌وگو درباره اثر").wait_for()
@@ -285,16 +294,7 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
             context.close()
 
     def test_guest_can_read_comments_share_artwork_and_cannot_mutate_social_state(self):
-        context, page = self.new_page()
-        page.unroute("**/api/v1/auth/me")
-        page.route(
-            "**/api/v1/auth/me",
-            lambda route: route.fulfill(
-                status=200,
-                content_type="application/json",
-                body='{"data":null}',
-            ),
-        )
+        context, page = self.new_page(authenticated=False)
         page.add_init_script("""
             Object.defineProperty(navigator, 'share', { configurable: true, value: undefined });
             Object.defineProperty(navigator, 'clipboard', {
@@ -303,7 +303,7 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
             });
         """)
         page.route(
-            "**/api/v1/artworks/social-journey-artwork/comments**",
+            re.compile(r".*/api/v1/artworks/social-journey-artwork/comments(?:\?.*)?$"),
             lambda route: route.fulfill(
                 status=200,
                 content_type="application/json",
@@ -349,8 +349,8 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
             state["likes_count"] += 1 if state["liked"] else -1
             route.fulfill(status=204, body="")
 
-        page.unroute("**/api/v1/artworks/social-journey-artwork")
-        page.route("**/api/v1/artworks/social-journey-artwork", artwork_route)
+        page.unroute(re.compile(r".*/api/v1/artworks/social-journey-artwork$"))
+        page.route(re.compile(r".*/api/v1/artworks/social-journey-artwork$"), artwork_route)
         page.route("**/api/v1/artworks/social-journey-artwork/likes", likes_route)
         try:
             page.goto(BASE_URL + "/artworks/social-journey-artwork", wait_until="domcontentloaded")
