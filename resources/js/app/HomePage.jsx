@@ -61,7 +61,7 @@ export default function HomePage() {
         <main data-page="home" className="min-w-0 overflow-x-clip" dir="rtl">
             <section className="home-intro grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(300px,.82fr)]">
                 <div className="min-w-0">
-                    <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-accent-surface px-3 py-1.5 text-xs font-bold text-terracotta-strong">
+                    <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-accent-surface px-3 py-1.5 text-xs font-bold text-accent-strong">
                         <Compass size={15} aria-hidden="true" />
                         کشف هنر مستقل
                     </div>
@@ -72,7 +72,7 @@ export default function HomePage() {
                         آثار، هنرمندان و مجموعه‌های منتخب را مرور کنید؛ مسیر کشف خود را با دیدن کارهای تازه آغاز کنید.
                     </p>
                     <div className="mt-7 flex flex-wrap gap-3">
-                        <Link to="/artworks" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-terracotta px-5 py-2.5 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong">
+                        <Link to="/artworks" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-bold text-inverse no-underline transition-colors hover:bg-accent-strong">
                             ورود به گالری <ArrowLeft size={16} aria-hidden="true" />
                         </Link>
                         <Link to="/artists" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-paper px-5 py-2.5 text-sm font-bold text-ink no-underline hover:border-border-strong">
@@ -104,12 +104,12 @@ export default function HomePage() {
             <section className="home-categories" aria-label="دسته‌بندی‌های آثار">
                 <div className="mb-4 flex items-center justify-between gap-3">
                     <h2 className="text-sm font-extrabold">کاوش بر اساس دسته</h2>
-                    <Link to="/artworks" className="text-xs font-bold text-terracotta-strong no-underline">همه دسته‌ها</Link>
+                    <Link to="/artworks" className="text-xs font-bold text-accent-strong no-underline">همه دسته‌ها</Link>
                 </div>
                 <div className="flex gap-2 overflow-x-auto pb-2">
                     {categoriesQuery.isPending ? [0,1,2,3,4].map((item) => <Skeleton key={item} className="h-10 w-24 shrink-0 rounded-full"/>)
                         : categories.slice(0, 12).map((category) => (
-                            <Link key={category.id} to={'/artworks?category=' + encodeURIComponent(category.slug)} className="inline-flex min-h-10 shrink-0 items-center rounded-full border border-border bg-paper px-4 text-xs font-semibold text-ink no-underline transition-colors hover:border-terracotta hover:bg-accent-surface">
+                            <Link key={category.id} to={'/artworks?category=' + encodeURIComponent(category.slug)} className="inline-flex min-h-10 shrink-0 items-center rounded-full border border-border bg-paper px-4 text-xs font-semibold text-ink no-underline transition-colors hover:border-accent hover:bg-accent-surface">
                                 {category.name}
                             </Link>
                         ))}
@@ -119,11 +119,11 @@ export default function HomePage() {
             <section className="home-feed" aria-labelledby="home-recent-heading">
                 <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
                     <div>
-                        <p className="text-xs font-bold text-terracotta-strong">تازه‌منتشرشده‌ها</p>
+                        <p className="text-xs font-bold text-accent-strong">تازه‌منتشرشده‌ها</p>
                         <h2 id="home-recent-heading" className="mt-1 text-2xl font-black tracking-tight sm:text-3xl">تازه در گالری</h2>
                         <p className="mt-2 text-xs leading-6 text-muted">آثار تأییدشده‌ای که به‌تازگی به مجموعه راد آرت پیوسته‌اند.</p>
                     </div>
-                    <Link to="/artworks" className="inline-flex min-h-10 items-center gap-1 text-xs font-bold text-terracotta-strong no-underline">دیدن همه آثار <ArrowLeft size={14}/></Link>
+                    <Link to="/artworks" className="inline-flex min-h-10 items-center gap-1 text-xs font-bold text-accent-strong no-underline">دیدن همه آثار <ArrowLeft size={14}/></Link>
                 </div>
                 {error ? <ErrorState title="دریافت محتوای گالری ممکن نشد" description="برای دریافت دوباره تلاش کنید." onRetry={() => artworksQuery.refetch()} />
                     : loading ? <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{[0,1,2,3,4,5].map((item) => <ArtworkCardSkeleton key={item}/>)}</div>
@@ -134,11 +134,11 @@ export default function HomePage() {
             <section className="home-creators" aria-labelledby="home-artists-heading">
                 <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
                     <div>
-                        <p className="text-xs font-bold text-terracotta-strong">جامعه خلاق</p>
+                        <p className="text-xs font-bold text-accent-strong">جامعه خلاق</p>
                         <h2 id="home-artists-heading" className="mt-1 text-2xl font-black tracking-tight sm:text-3xl">هنرمندان راد آرت</h2>
                         <p className="mt-2 text-xs leading-6 text-muted">با خالق آثار آشنا شوید و پورتفولیوی عمومی او را ببینید.</p>
                     </div>
-                    <Link to="/artists" className="inline-flex min-h-10 items-center gap-1 text-xs font-bold text-terracotta-strong no-underline">همه هنرمندان <ArrowLeft size={14}/></Link>
+                    <Link to="/artists" className="inline-flex min-h-10 items-center gap-1 text-xs font-bold text-accent-strong no-underline">همه هنرمندان <ArrowLeft size={14}/></Link>
                 </div>
                 {artistsQuery.isPending ? <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{[0,1,2].map((item) => <ArtistCardSkeleton key={item}/>)}</div>
                     : artists.length ? <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{spotlightArtists.map((artist) => <ArtistCard key={artist.id} artist={artist}/>)}</div>
@@ -149,22 +149,22 @@ export default function HomePage() {
                 <section className="home-collections" aria-labelledby="home-collections-heading">
                     <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
                         <div>
-                            <p className="text-xs font-bold text-terracotta-strong">انتخاب سردبیر</p>
+                            <p className="text-xs font-bold text-accent-strong">انتخاب سردبیر</p>
                             <h2 id="home-collections-heading" className="mt-1 text-2xl font-black tracking-tight">مجموعه‌های منتخب</h2>
                         </div>
-                        <Link to="/collections" className="text-xs font-bold text-terracotta-strong no-underline">همه مجموعه‌ها</Link>
+                        <Link to="/collections" className="text-xs font-bold text-accent-strong no-underline">همه مجموعه‌ها</Link>
                     </div>
                     {collections.length > 0 && <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                        {collections.slice(0,3).map((item) => <Link key={item.id} to={'/collections/' + item.slug} className="group rounded-2xl border border-border bg-paper p-5 text-ink no-underline transition-colors hover:border-terracotta">
-                            <span className="text-[11px] font-bold text-terracotta-strong">{Number(item.artwork_count ?? 0).toLocaleString('fa-IR')} اثر منتخب</span>
+                        {collections.slice(0,3).map((item) => <Link key={item.id} to={'/collections/' + item.slug} className="group rounded-2xl border border-border bg-paper p-5 text-ink no-underline transition-colors hover:border-accent">
+                            <span className="text-[11px] font-bold text-accent-strong">{Number(item.artwork_count ?? 0).toLocaleString('fa-IR')} اثر منتخب</span>
                             <h3 className="mt-3 text-lg font-extrabold">{item.title}</h3>
                             <p className="mt-2 line-clamp-3 text-xs leading-7 text-muted">{item.intro || 'انتخابی از آثار تأییدشده هنرمندان راد آرت.'}</p>
-                            <span className="mt-5 inline-flex items-center gap-1 text-xs font-bold text-terracotta-strong">مشاهده مجموعه <ArrowLeft size={14}/></span>
+                            <span className="mt-5 inline-flex items-center gap-1 text-xs font-bold text-accent-strong">مشاهده مجموعه <ArrowLeft size={14}/></span>
                         </Link>)}
                     </div>}
                     {featuredArtists.length > 0 && <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                        {featuredArtists.slice(0,3).filter((item) => item.artist?.slug).map((item) => <Link key={item.id} to={'/artists/' + item.artist.slug} className="rounded-2xl border border-border bg-paper p-5 text-ink no-underline hover:border-terracotta">
-                            <span className="text-[11px] font-bold text-terracotta-strong">هنرمند منتخب</span>
+                        {featuredArtists.slice(0,3).filter((item) => item.artist?.slug).map((item) => <Link key={item.id} to={'/artists/' + item.artist.slug} className="rounded-2xl border border-border bg-paper p-5 text-ink no-underline hover:border-accent">
+                            <span className="text-[11px] font-bold text-accent-strong">هنرمند منتخب</span>
                             <h3 className="mt-2 text-base font-extrabold">{item.artist.display_name}</h3>
                             <p className="mt-2 line-clamp-3 text-xs leading-7 text-muted">{item.editorial_intro || item.artist.bio || 'پورتفولیوی عمومی این هنرمند را ببینید.'}</p>
                         </Link>)}
