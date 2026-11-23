@@ -19,12 +19,16 @@ class ArtworkInteractionController extends Controller
     {
         $this->ensurePublicArtwork($artwork);
 
-        DB::table('artwork_likes')->insertOrIgnore([
+        $created = DB::table('artwork_likes')->insertOrIgnore([
             'artwork_id' => $artwork->id,
             'user_id' => $request->user()->id,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        if ($created === 1) {
+            event('artwork.liked', [$artwork, $request->user()]);
+        }
 
         return response()->json([
             'data' => [
@@ -118,6 +122,7 @@ class ArtworkInteractionController extends Controller
         ]);
 
         $comment->load(['user:id,role', 'user.artistProfile:id,user_id,display_name,is_public']);
+        event($parent ? 'artwork.comment.replied' : 'artwork.commented', [$artwork, $comment, $request->user()]);
 
         return response()->json([
             'message' => 'دیدگاه ثبت شد.',
