@@ -17,7 +17,7 @@ export function Skeleton({ className = '', width, height = '1rem', rounded = 'md
 
 export function SkeletonLines({ lines = 3, className = '' }) {
     return (
-        <div aria-label="در حال بارگذاری" role="status" className={`grid gap-3 ${className}`}>
+        <div data-ui="skeleton-lines" aria-label="در حال بارگذاری" role="status" className={`grid gap-3 ${className}`}>
             {Array.from({ length: lines }, (_, index) => (
                 <Skeleton key={index} width={index === lines - 1 ? '68%' : '100%'} height="0.8rem" />
             ))}
@@ -28,7 +28,7 @@ export function SkeletonLines({ lines = 3, className = '' }) {
 
 export function EmptyState({ title, description, action, className = '' }) {
     return (
-        <section className={`grid justify-items-center gap-3 rounded-md border border-dashed border-border bg-surface px-5 py-10 text-center ${className}`} dir="rtl">
+        <section data-ui="empty-state" className={`grid justify-items-center gap-3 rounded-md border border-dashed border-border bg-surface px-5 py-10 text-center ${className}`} dir="rtl">
             <span aria-hidden="true" className="h-2 w-10 rounded-full bg-sand" />
             <h2 className="text-base font-bold text-ink">{title}</h2>
             {description && <p className="max-w-lg text-sm leading-7 text-muted">{description}</p>}
@@ -39,7 +39,7 @@ export function EmptyState({ title, description, action, className = '' }) {
 
 export function ErrorState({ title = 'مشکلی پیش آمد', description, onRetry, retryLabel = 'تلاش دوباره', className = '' }) {
     return (
-        <section role="alert" className={`grid justify-items-start gap-3 rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-surface p-5 ${className}`} dir="rtl">
+        <section data-ui="error-state" role="alert" className={`grid justify-items-start gap-3 rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-surface p-5 ${className}`} dir="rtl">
             <h2 className="font-bold text-danger">{title}</h2>
             {description && <p className="text-sm leading-7 text-muted">{description}</p>}
             {onRetry && <Button variant="outline" size="sm" onClick={onRetry}>{retryLabel}</Button>}
@@ -49,7 +49,7 @@ export function ErrorState({ title = 'مشکلی پیش آمد', description, on
 
 export function SuccessState({ title, description, className = '' }) {
     return (
-        <div role="status" className={`rounded-md border border-border border-s-2 border-s-success bg-surface px-4 py-3 ${className}`} dir="rtl">
+        <div data-ui="success-state" role="status" className={`rounded-md border border-border border-s-2 border-s-success bg-surface px-4 py-3 ${className}`} dir="rtl">
             <p className="font-semibold text-olive">{title}</p>
             {description && <p className="mt-1 text-sm leading-6 text-muted">{description}</p>}
         </div>
@@ -58,7 +58,7 @@ export function SuccessState({ title, description, className = '' }) {
 
 export function PermissionState({ title = 'دسترسی مجاز نیست', description, className = '' }) {
     return (
-        <section role="status" className={`rounded-md border border-border bg-surface-muted p-5 ${className}`} dir="rtl">
+        <section data-ui="permission-state" role="status" className={`rounded-md border border-border bg-surface-muted p-5 ${className}`} dir="rtl">
             <h2 className="font-bold text-ink">{title}</h2>
             {description && <p className="mt-2 text-sm leading-7 text-muted">{description}</p>}
         </section>
@@ -75,7 +75,7 @@ export function UploadFeedback({ fileName, status = 'idle', progress = 0, messag
     };
 
     return (
-        <div className="grid gap-2 rounded-md border border-border bg-paper p-3 text-sm" dir="rtl">
+        <div data-ui="upload-feedback" className="grid gap-2 rounded-md border border-border bg-paper p-3 text-sm" dir="rtl">
             <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="font-semibold text-ink">{fileName || 'فایل انتخاب‌شده'}</span>
                 <span className={status === 'error' ? 'text-danger' : status === 'success' ? 'text-olive' : 'text-muted'}>
