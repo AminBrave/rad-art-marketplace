@@ -9,6 +9,8 @@ const manifest = JSON.parse(readFileSync(resolve(root, 'public/manifest.webmanif
 const worker = readFileSync(resolve(root, 'public/sw.js'), 'utf8');
 const entry = readFileSync(resolve(root, 'resources/js/app.jsx'), 'utf8');
 const blade = readFileSync(resolve(root, 'resources/views/app.blade.php'), 'utf8');
+const icon192 = readFileSync(resolve(root, 'public/pwa-icon-192.png'));
+const icon512 = readFileSync(resolve(root, 'public/pwa-icon-512.png'));
 
 test('PWA manifest declares a Persian RTL standalone application', () => {
     assert.equal(manifest.lang, 'fa');
@@ -17,6 +19,8 @@ test('PWA manifest declares a Persian RTL standalone application', () => {
     assert.equal(manifest.start_url, '/');
     assert.ok(manifest.icons.some((icon) => icon.sizes === '192x192' && icon.type === 'image/png'));
     assert.ok(manifest.icons.some((icon) => icon.sizes === '512x512' && icon.purpose.includes('maskable')));
+    assert.equal(icon192.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
+    assert.equal(icon512.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
 });
 
 test('PWA worker never caches private navigation or API responses', () => {
