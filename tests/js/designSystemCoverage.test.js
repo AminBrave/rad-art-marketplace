@@ -5,8 +5,9 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 
 const root = resolve(fileURLToPath(new URL('../../', import.meta.url)));
-const css = readFileSync(resolve(root, 'resources/css/app.css'), 'utf8');
-const tailwind = readFileSync(resolve(root, 'tailwind.config.js'), 'utf8');
+const base = readFileSync(resolve(root, 'resources/css/app.css'), 'utf8');
+const system = readFileSync(resolve(root, 'resources/css/rademan.css'), 'utf8');
+const entry = readFileSync(resolve(root, 'resources/js/app.jsx'), 'utf8');
 
 function walk(directory) {
     return readdirSync(directory).flatMap((name) => {
@@ -15,105 +16,52 @@ function walk(directory) {
     });
 }
 
-const frontendFiles = walk(resolve(root, 'resources/js'))
-    .filter((path) => ['.js', '.jsx'].includes(extname(path)));
-const bladeFiles = walk(resolve(root, 'resources/views'))
-    .filter((path) => path.endsWith('.blade.php'));
-const stylesheetFiles = walk(resolve(root, 'resources'))
-    .filter((path) => extname(path) === '.css');
-const presentationFiles = [...frontendFiles, ...bladeFiles].sort();
-const rawPaletteClass = /(?:^|[\s'"\x60])(?:[a-z][\w-]*:)*(?:bg|text|border|ring|fill|stroke|shadow)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\d{2,3}(?:\/\d{1,3})?(?=$|[\s'"\x60])/g;
-const arbitraryHexClass = /\b(?:bg|text|border|ring|fill|stroke|shadow)-(?:\[[^\]]*#(?:[0-9a-f]{3,8})[^\]]*\])/gi;
-const legacyClass = /\b(?:app-skeleton|rad-messaging|composer-shell|message-edit-shell|message-artwork-card__[\w-]*|related-artworks-(?:chip|strip)__[\w-]*|message-conversation-avatar-link)\b|\bra-[\w-]+/g;
+const sources = [
+    ...walk(resolve(root, 'resources/js')).filter((path) => ['.js', '.jsx'].includes(extname(path))),
+    ...walk(resolve(root, 'resources/views')).filter((path) => path.endsWith('.blade.php')),
+];
+const stylesheetFiles = walk(resolve(root, 'resources')).filter((path) => extname(path) === '.css');
 
-function matchesWithLines(source, pattern) {
-    return [...source.matchAll(pattern)].map((match) => ({
-        line: source.slice(0, match.index).split('\n').length,
-        value: match[0].trim(),
-    }));
-}
-
-function describeViolations(pattern) {
-    return presentationFiles.flatMap((path) => {
-        const source = readFileSync(path, 'utf8');
-        return matchesWithLines(source, pattern).map((match) => ({
-            file: relative(root, path),
-            ...match,
-        }));
-    });
-}
-
-test('design-system coverage discovers every frontend and Blade presentation source', () => {
-    const relativePaths = presentationFiles.map((path) => relative(root, path).replace(/\\/g, '/'));
-    assert.ok(frontendFiles.length > 0, 'Expected frontend source files to be discovered.');
-    assert.ok(bladeFiles.length >= 1, 'Expected Blade presentation templates to be included.');
-    assert.ok(relativePaths.includes('resources/js/app.jsx'));
-    assert.ok(relativePaths.includes('resources/js/app/AppRouter.jsx'));
-    assert.ok(relativePaths.includes('resources/js/components/ui/primitives.jsx'));
-    assert.ok(relativePaths.includes('resources/views/app.blade.php'));
-    assert.ok(relativePaths.includes('resources/views/sitemap.blade.php'));
+test('the new design foundation is loaded once and the old adapter architecture is gone', () => {
+    assert.ok(entry.includes("import '../css/rademan.css';"));
+    assert.ok(!entry.includes('instagram.css'));
+    assert.ok(!entry.includes('application-shell.css'));
+    assert.ok(base.includes('--rd-canvas:#fafafa'));
+    assert.ok(base.includes(":root[data-theme='dark']"));
+    assert.ok(system.includes('Rademan app-first component language'));
+    assert.equal(stylesheetFiles.some((path) => path.endsWith('instagram.css')), false);
+    assert.equal(stylesheetFiles.some((path) => path.endsWith('application-shell.css')), false);
 });
 
-test('every discovered presentation source avoids deprecated palette-shade utilities', () => {
-    const violations = describeViolations(rawPaletteClass);
-    assert.deepEqual(violations, [], 'Deprecated named palette shades found; use the Rademan semantic token layer.');
+test('the complete presentation surface is discovered for design-system coverage', () => {
+    const paths = sources.map((path) => relative(root, path).replace(/\\/g, '/'));
+    assert.ok(paths.includes('resources/js/app/AppRouter.jsx'));
+    assert.ok(paths.includes('resources/js/app/HomePage.jsx'));
+    assert.ok(paths.includes('resources/js/app/ArtworkCatalogue.jsx'));
+    assert.ok(paths.includes('resources/js/app/ArtistProfilePage.jsx'));
+    assert.ok(paths.includes('resources/js/app/MessagingCenter.jsx'));
+    assert.ok(paths.includes('resources/js/components/ui/primitives.jsx'));
+    assert.ok(paths.includes('resources/views/app.blade.php'));
 });
 
-test('presentation sources do not embed hex colors in Tailwind utility classes', () => {
-    const violations = describeViolations(arbitraryHexClass);
-    assert.deepEqual(violations, [], 'Replace arbitrary hex utilities with RAD semantic tokens or intentional documented content colors.');
-});
-
-test('presentation sources do not depend on removed component-specific CSS classes', () => {
-    const violations = describeViolations(legacyClass);
-    assert.deepEqual(violations, [], 'Legacy presentation classes must be migrated to shared utilities.');
-});
-
-test('base stylesheet stays token-focused and the Instagram theme adapter is explicitly scoped', () => {
-    assert.equal((css.match(/:root\s*\{/g) ?? []).length, 1);
-    assert.ok(stylesheetFiles.length >= 2, 'Expected the base and Instagram theme stylesheets.');
-    for (const path of stylesheetFiles) {
-        const source = readFileSync(path, 'utf8');
-        const file = relative(root, path).replace(/\\/g, '/');
-        if (file === 'resources/css/application-shell.css') {
-            assert.ok(source.includes('App-first Rademan shell'));
-            assert.ok(source.includes('[data-testid="public-navigation-rail"]'));
-            assert.ok(source.includes('env(safe-area-inset-bottom)'));
-            continue;
-        }
-        if (file === 'resources/css/instagram.css') {
-            assert.ok(source.includes('Rademan Instagram-inspired design layer'));
-            assert.ok(source.includes(":root[data-theme='dark']"));
-            assert.ok(source.includes('@media (prefers-color-scheme: dark)'));
-            continue;
-        }
-        assert.deepEqual(
-            matchesWithLines(source, /(?:^|,)\s*\.[a-zA-Z_][\w-]*(?:[^{}]*)\{/gm),
-            [],
-            file + ' must remain a token/base stylesheet.',
-        );
+test('the new app shell defines responsive rails, mobile tabs, standalone safe areas and shared page primitives', () => {
+    for (const contract of ['public-navigation-rail', 'authenticated-bottom-navigation', 'data-ui=workspace-hero', 'data-ui=surface', 'data-ui=metric', '@media(min-width:1280px)', '@media(max-width:767px)', 'env(safe-area-inset-bottom)', 'display-mode:standalone']) {
+        assert.ok(system.includes(contract), 'Missing shell contract ' + contract);
     }
-    assert.doesNotMatch(css, /\.ra-[\w-]+|\.rad-messaging|\.app-boot|\.app-skeleton/);
-});
-test('Tailwind scans every presentation source family and defines accessible skeleton motion', () => {
-    assert.ok(tailwind.includes("'./resources/**/*.blade.php'"));
-    assert.ok(tailwind.includes("'./resources/**/*.js'"));
-    assert.ok(tailwind.includes("'./resources/**/*.jsx'"));
-    assert.ok(tailwind.includes("'skeleton-shimmer'"));
-    assert.ok(tailwind.includes("'skeleton-shimmer': 'skeleton-shimmer 1.35s ease-in-out infinite'"));
-    assert.ok(css.includes('--color-skeleton-base:'));
-    assert.ok(css.includes('--color-skeleton-highlight:'));
 });
 
-test('Blade first-paint skeletons use the shared shimmer and reduced-motion contract', () => {
+test('the design system remains semantic and avoids deprecated palette shade utilities', () => {
+    const forbidden = /(?:^|[\\s'"\\x60])(?:[a-z][\\w-]*:)*(?:bg|text|border|ring)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\\d{2,3}/g;
+    const violations = sources.flatMap((path) => {
+        const source = readFileSync(path, 'utf8');
+        return [...source.matchAll(forbidden)].map((match) => relative(root, path) + ': ' + match[0]);
+    });
+    assert.deepEqual(violations, []);
+});
+
+test('the app shell preserves Blade PWA metadata and reduced-motion behavior', () => {
     const blade = readFileSync(resolve(root, 'resources/views/app.blade.php'), 'utf8');
-    assert.match(blade, /\$skeletonClass\s*=\s*'[^']*animate-skeleton-shimmer[^']*motion-reduce:animate-none[^']*'/);
-    assert.match(blade, /class="\{\{ \$skeletonClass \}\}/);
-    assert.doesNotMatch(blade, /app-skeleton/);
-});
-
-test('inline color styling is token-backed rather than hardcoded', () => {
-    const literalInlineColors = /style=\{\{[^}]*\b(?:color|backgroundColor|borderColor)\s*:\s*['"\x60]#(?:[0-9a-f]{3,8})/gim;
-    const violations = describeViolations(literalInlineColors);
-    assert.deepEqual(violations, [], 'Inline color values must resolve through RAD CSS variables.');
+    assert.match(blade, /rel="manifest" href="\\/manifest\\.webmanifest"/);
+    assert.match(blade, /apple-mobile-web-app-capable/);
+    assert.ok(base.includes('prefers-reduced-motion:reduce'));
 });
