@@ -25,7 +25,7 @@ export function ArtworkCard({ artwork, className = '' }) {
             </div>
             <Link data-ui="artwork-media" to={`/artworks/${artwork.slug}`} className="relative block overflow-hidden bg-surface-muted outline-none" aria-label={`مشاهده اثر ${title}`}>
                 <div className="aspect-[4/5] overflow-hidden">
-                    <MediaImage src={artwork.image_url} alt={title} variant="card" className="h-full w-full" imageClassName="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.035]"/>
+                    <MediaImage src={artwork.image_url} alt={title} variant="card" className="h-full w-full" imageClassName="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]"/>
                 </div>
                 <span className="absolute bottom-3 left-3 grid h-9 w-9 place-items-center rounded-full bg-black/55 text-white backdrop-blur"><ArrowUpLeft size={17}/></span>
             </Link>
