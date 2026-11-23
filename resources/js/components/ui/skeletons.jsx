@@ -20,7 +20,7 @@ export function ArtworkCardSkeleton({ className = '' }) {
 
 export function ArtistCardSkeleton({ className = '' }) {
     return (
-        <article aria-hidden="true" className={`grid min-w-0 content-start gap-3 border border-border bg-paper p-5 sm:p-6 ${className}`} dir="rtl">
+        <article aria-hidden="true" className={`grid min-w-0 content-start gap-3 border-y border-border bg-transparent py-5 sm:py-6 ${className}`} dir="rtl">
             <div className="flex items-start justify-between gap-4">
                 <Skeleton className="h-14 w-14 shrink-0 rounded-full" />
                 <Skeleton className="mt-1 h-3 w-24 rounded-sm" />
@@ -52,7 +52,7 @@ export function ArtworkStudioListSkeleton({ count = 3, className = '', announce 
             className={`grid gap-4 sm:grid-cols-2 xl:grid-cols-3 ${className}`}
         >
             {Array.from({ length: count }, (_, index) => (
-                <article key={index} className="min-w-0 overflow-hidden border border-border bg-paper">
+                <article key={index} className="min-w-0 overflow-hidden border-y border-border bg-transparent">
                     <div className="flex aspect-[4/3] items-center justify-center bg-surface-muted p-3">
                         <Skeleton className="h-full w-full rounded-none" />
                     </div>
@@ -138,7 +138,7 @@ export function MessageHistorySkeleton({ count = 5, className = '', announce = t
 
 export function AdminRecordListSkeleton({ count = 5, columns = 3, className = '' }) {
     return (
-        <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال دریافت فهرست مدیریت" className={`overflow-hidden border border-border bg-paper ${className}`}>
+        <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال دریافت فهرست مدیریت" className={`overflow-hidden border-y border-border bg-transparent ${className}`}>
             <div className="flex items-center justify-between gap-4 border-b border-border p-5"><Skeleton className="h-6 w-40 rounded-sm" /><Skeleton className="h-9 w-28 rounded-sm" /></div>
             <div className="grid gap-0 px-5">
                 {Array.from({ length: count }, (_, index) => <div key={index} className="grid items-center gap-3 border-b border-border py-4 sm:grid-cols-2 lg:grid-cols-3">{Array.from({ length: columns }, (_, cell) => <Skeleton key={cell} className={cell === 0 ? 'h-5 w-4/5 rounded-sm' : 'h-4 w-3/4 rounded-sm'} />)}</div>)}
@@ -158,7 +158,7 @@ export function DashboardMetricSkeleton({ count = 4, className = '', announce = 
             className={`grid gap-3 sm:grid-cols-2 ${count === 3 ? 'xl:grid-cols-3' : 'xl:grid-cols-4'} ${className}`}
         >
             {Array.from({ length: count }, (_, index) => (
-                <article key={index} className="grid min-h-32 content-between gap-4 border border-border bg-paper p-5">
+                <article key={index} className="grid min-h-32 content-between gap-4 border-y border-border bg-transparent p-5">
                     <div className="flex items-center justify-between gap-3"><Skeleton className="h-4 w-28 rounded-sm" /><Skeleton className="h-3 w-16 rounded-sm" /></div>
                     <Skeleton className="h-8 w-2/5 rounded-sm" />
                     <Skeleton className="h-3 w-4/5 rounded-sm" />
@@ -191,7 +191,7 @@ export function ArtistRecentWorkSkeleton({ announce = true }) {
 export function AdminDashboardSkeleton() {
     return (
         <section role="status" aria-live="polite" aria-busy="true" aria-label="در حال دریافت پنل مدیریت" className="grid gap-8" dir="rtl">
-            <header className="grid gap-4 overflow-hidden rounded-2xl bg-ink p-6 sm:p-8">
+            <header className="grid gap-4 overflow-hidden border-y-2 border-ink bg-ink p-6 sm:p-8">
                 <Skeleton className="h-3 w-28 rounded-sm" />
                 <Skeleton className="h-9 w-2/3 max-w-xl rounded-sm sm:h-11" />
                 <div className="grid max-w-3xl gap-2"><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div>
@@ -199,7 +199,7 @@ export function AdminDashboardSkeleton() {
             </header>
             <DashboardMetricSkeleton count={3} announce={false} />
             <section className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,.8fr)]">
-                <div className="border border-border bg-paper p-5 sm:p-7">
+                <div className="border-y border-border bg-transparent py-5 sm:p-7">
                     <div className="grid gap-2 border-b border-border pb-4"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-6 w-40 rounded-sm" /></div>
                     <div className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]">
                         <Skeleton className="aspect-square w-full rounded-none sm:max-w-32" />
@@ -249,7 +249,7 @@ export function WorkspaceIdentitySkeleton({ announce = true }) {
             aria-busy={announce ? 'true' : undefined}
             aria-label={announce ? 'در حال دریافت اطلاعات پروفایل هنرمند' : undefined}
             aria-hidden={announce ? undefined : 'true'}
-            className="grid gap-5 border border-border bg-surface-muted p-5 sm:p-7 lg:grid-cols-[1fr_15rem] lg:items-center"
+            className="grid gap-5 border-y-2 border-ink bg-transparent py-6 sm:py-7 lg:grid-cols-[1fr_15rem] lg:items-center"
         >
             <div className="grid gap-3">
                 <div className="flex items-center gap-3"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-6 w-24 rounded-full" /></div>
@@ -296,7 +296,7 @@ export function MessageReportsSkeleton({ count = 3, announce = true }) {
 export function AdminUserCardsSkeleton({ count = 4, announce = true }) {
     return (
         <div role={announce ? 'status' : undefined} aria-live={announce ? 'polite' : undefined} aria-busy={announce ? 'true' : undefined} aria-label={announce ? 'در حال دریافت کاربران' : undefined} aria-hidden={announce ? undefined : 'true'} className="grid gap-3 xl:grid-cols-2">
-            {Array.from({ length: count }, (_, index) => <article key={index} className="grid gap-4 border border-border bg-paper p-5"><div className="flex items-start justify-between gap-3"><div className="grid min-w-0 flex-1 gap-2"><Skeleton className="h-5 w-2/3 rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div><Skeleton className="h-6 w-20 rounded-full" /></div><div className="grid gap-2 border-t border-border pt-4"><Skeleton className="h-4 w-28 rounded-sm" /><Skeleton className="h-11 w-full rounded-sm" /><Skeleton className="h-3 w-3/4 rounded-sm" /><div className="flex gap-2"><Skeleton className="h-9 w-24 rounded-sm" /><Skeleton className="h-9 w-24 rounded-sm" /></div></div></article>)}
+            {Array.from({ length: count }, (_, index) => <article key={index} className="grid gap-4 border-y border-border bg-transparent py-5"><div className="flex items-start justify-between gap-3"><div className="grid min-w-0 flex-1 gap-2"><Skeleton className="h-5 w-2/3 rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div><Skeleton className="h-6 w-20 rounded-full" /></div><div className="grid gap-2 border-t border-border pt-4"><Skeleton className="h-4 w-28 rounded-sm" /><Skeleton className="h-11 w-full rounded-sm" /><Skeleton className="h-3 w-3/4 rounded-sm" /><div className="flex gap-2"><Skeleton className="h-9 w-24 rounded-sm" /><Skeleton className="h-9 w-24 rounded-sm" /></div></div></article>)}
         </div>
     );
 }
@@ -312,7 +312,7 @@ export function CollectionCardSkeleton({ count = 3, announce = true }) {
             className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
         >
             {Array.from({ length: count }, (_, index) => (
-                <article key={index} className="grid content-start gap-3 border border-border bg-paper p-6">
+                <article key={index} className="grid content-start gap-3 border-y border-border bg-transparent py-6">
                     <Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="mt-1 h-7 w-4/5 rounded-sm" />
                     <div className="mt-1 grid gap-2"><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-11/12 rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div>
                     <Skeleton className="mt-3 h-4 w-28 rounded-sm" />
@@ -325,7 +325,7 @@ export function CollectionCardSkeleton({ count = 3, announce = true }) {
 export function AdminEditorialSkeleton({ announce = true }) {
     return (
         <div role={announce ? 'status' : undefined} aria-live={announce ? 'polite' : undefined} aria-busy={announce ? 'true' : undefined} aria-label={announce ? 'در حال دریافت محتوای سردبیری' : undefined} aria-hidden={announce ? undefined : 'true'} className="grid gap-8">
-            <section className="grid gap-4 border border-border bg-paper p-5 sm:p-7">
+            <section className="grid gap-4 border-y-2 border-ink bg-transparent py-5 sm:py-7">
                 <Skeleton className="h-7 w-44 rounded-sm" />
                 <div className="grid gap-2"><Skeleton className="h-4 w-28 rounded-sm" /><Skeleton className="h-11 w-full rounded-sm" /></div>
                 <div className="grid gap-2"><Skeleton className="h-4 w-32 rounded-sm" /><Skeleton className="h-28 w-full rounded-sm" /><Skeleton className="h-3 w-2/3 rounded-sm" /></div>
@@ -333,7 +333,7 @@ export function AdminEditorialSkeleton({ announce = true }) {
                 <div className="flex gap-2"><Skeleton className="h-10 w-32 rounded-sm" /><Skeleton className="h-10 w-32 rounded-sm" /></div>
             </section>
             <section className="grid gap-4"><div className="flex items-center justify-between gap-3"><Skeleton className="h-6 w-40 rounded-sm" /><Skeleton className="h-9 w-28 rounded-sm" /></div>{[0, 1, 2].map((item) => <article key={item} className="grid gap-4 border border-border bg-paper p-5"><div className="flex items-start justify-between gap-3"><div className="grid flex-1 gap-2"><Skeleton className="h-5 w-2/3 rounded-sm" /><Skeleton className="h-3 w-1/3 rounded-sm" /><Skeleton className="h-3 w-1/2 rounded-sm" /></div><Skeleton className="h-4 w-16 rounded-sm" /></div><div className="flex flex-wrap gap-2 border-t border-border pt-4"><Skeleton className="h-9 w-24 rounded-sm" /><Skeleton className="h-9 w-24 rounded-sm" /><Skeleton className="h-9 w-24 rounded-sm" /><Skeleton className="h-9 w-24 rounded-sm" /></div></article>)}</section>
-            <section className="grid gap-4 border border-border bg-paper p-5 sm:p-7"><Skeleton className="h-6 w-40 rounded-sm" /><Skeleton className="h-4 w-full max-w-xl rounded-sm" /><div className="grid gap-3 sm:grid-cols-2">{[0, 1, 2, 3].map((item) => <div key={item} className="grid gap-3 border border-border p-3"><div className="flex items-center gap-3"><Skeleton className="h-4 w-4 rounded-sm" /><Skeleton className="h-4 w-2/3 rounded-sm" /></div><Skeleton className="h-10 w-full rounded-sm" /></div>)}</div><Skeleton className="h-10 w-40 rounded-sm" /></section>
+            <section className="grid gap-4 border-y-2 border-ink bg-transparent py-5 sm:py-7"><Skeleton className="h-6 w-40 rounded-sm" /><Skeleton className="h-4 w-full max-w-xl rounded-sm" /><div className="grid gap-3 sm:grid-cols-2">{[0, 1, 2, 3].map((item) => <div key={item} className="grid gap-3 border border-border p-3"><div className="flex items-center gap-3"><Skeleton className="h-4 w-4 rounded-sm" /><Skeleton className="h-4 w-2/3 rounded-sm" /></div><Skeleton className="h-10 w-full rounded-sm" /></div>)}</div><Skeleton className="h-10 w-40 rounded-sm" /></section>
         </div>
     );
 }
@@ -379,7 +379,7 @@ export function BuyerDashboardSkeleton() {
                 <div className="grid max-w-3xl gap-2"><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div>
                 <div className="flex flex-wrap gap-3"><Skeleton className="h-11 w-36 rounded-sm" /><Skeleton className="h-11 w-40 rounded-sm" /></div>
             </header>
-            <section className="border border-border bg-paper p-5 sm:p-7">
+            <section className="border-y-2 border-ink bg-transparent py-5 sm:py-7">
                 <div className="flex items-start justify-between gap-4"><div className="grid min-w-0 flex-1 gap-2"><Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="h-6 w-40 rounded-sm" /><Skeleton className="h-3 w-full max-w-2xl rounded-sm" /><Skeleton className="h-3 w-4/5 max-w-xl rounded-sm" /></div><Skeleton className="h-12 w-12 shrink-0 rounded-sm" /></div>
                 <Skeleton className="mt-6 h-11 w-40 rounded-sm" />
             </section>
@@ -436,7 +436,7 @@ export function ArtistProfileSkeleton() {
         <PageContainer as="main" className="min-h-[65vh] pb-16 pt-8 sm:pt-12" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت پروفایل هنرمند">
             <span className="sr-only">در حال دریافت پروفایل هنرمند…</span>
             <nav aria-hidden="true" className="flex items-center gap-2"><Skeleton className="h-3 w-10 rounded-sm" /><Skeleton className="h-3 w-2 rounded-sm" /><Skeleton className="h-3 w-16 rounded-sm" /><Skeleton className="h-3 w-2 rounded-sm" /><Skeleton className="h-3 w-24 rounded-sm" /></nav>
-            <section className="relative mt-6 overflow-hidden border border-border bg-paper">
+            <section className="relative mt-6 overflow-hidden border-y-2 border-ink bg-paper">
                 <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1.5 bg-terracotta" />
                 <div className="grid lg:grid-cols-[minmax(0,1fr)_18rem]">
                     <div className="relative px-6 pb-8 pt-9 sm:px-10 sm:pb-10 sm:pt-12 lg:px-12">
