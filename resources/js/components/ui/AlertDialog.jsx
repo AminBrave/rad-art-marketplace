@@ -10,7 +10,7 @@ export function AlertDialogContent({ className = '', overlayClassName = '', ...p
     return (
         <AlertDialogPrimitive.Portal>
             <AlertDialogPrimitive.Overlay
-                className={cn('fixed inset-0 z-[80] bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]', overlayClassName)}
+                className={cn('fixed inset-0 z-[80] bg-[color:var(--color-overlay)] backdrop-blur-sm', overlayClassName)}
             />
             <AlertDialogPrimitive.Content
                 data-ui="alert-dialog"
