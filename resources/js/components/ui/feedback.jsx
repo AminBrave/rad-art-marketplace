@@ -130,9 +130,9 @@ export function Toast({ open, title, description, variant = 'info', onDismiss, d
                 </div>
                 {onDismiss && (
                     <ToastPrimitive.Close asChild>
-                        <button type="button" aria-label="بستن اعلان" className="rounded-sm px-2 py-1 text-muted hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
+                        <Button variant="ghost" type="button" aria-label="بستن اعلان" className="min-h-0 rounded-sm px-2 py-1 text-muted hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
                             ×
-                        </button>
+                        </Button>
                     </ToastPrimitive.Close>
                 )}
             </ToastPrimitive.Root>
