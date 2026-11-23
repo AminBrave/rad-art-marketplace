@@ -129,6 +129,12 @@ final class ArtworkInteractionTest extends TestCase
             'parent_id' => $root->id,
             'body' => 'پاسخ اول',
         ]);
+        $foreignReply = ArtworkComment::query()->create([
+            'artwork_id' => $otherArtwork->id,
+            'user_id' => $artist->id,
+            'parent_id' => $root->id,
+            'body' => 'پاسخ متعلق به اثر دیگر',
+        ]);
 
         $this->actingAs($buyer)
             ->postJson('/api/v1/artworks/'.$artwork->slug.'/comments', [
