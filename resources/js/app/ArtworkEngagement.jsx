@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 
 function CommentItem({ comment, user, onReply, onDelete, onReport }) {
@@ -55,9 +55,9 @@ export default function ArtworkEngagement({ artwork, slug }) {
     const [reportMessage, setReportMessage] = useState('');
     const [shareMessage, setShareMessage] = useState('');
     const canInteract = ['buyer', 'artist'].includes(user?.role);
-    const commentTargetId = typeof window !== 'undefined' && /^#comment-\d+$/.test(window.location.hash)
-        ? window.location.hash.slice(9)
-        : '';
+    const { hash, key: locationKey } = useLocation();
+    const commentTargetIdFromHash = /^#comment-\d+$/.test(hash) ? hash.slice(9) : '';
+    const [commentTargetId, setCommentTargetId] = useState(commentTargetIdFromHash);
 
     const commentsQuery = useQuery({
         queryKey: ['artwork-comments', slug, page, commentTargetId],
@@ -71,11 +71,12 @@ export default function ArtworkEngagement({ artwork, slug }) {
 
     useEffect(() => {
         setPage(1);
-    }, [slug, commentTargetId]);
+        setCommentTargetId(commentTargetIdFromHash);
+    }, [slug, hash, locationKey, commentTargetIdFromHash]);
 
     useEffect(() => {
-        if (!commentsQuery.isSuccess || !window.location.hash.startsWith('#comment-')) return;
-        const target = document.getElementById(window.location.hash.slice(1));
+        if (!commentsQuery.isSuccess || !hash.startsWith('#comment-')) return;
+        const target = document.getElementById(hash.slice(1));
         target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, [commentsQuery.data, commentsQuery.isSuccess]);
 
@@ -229,9 +230,9 @@ export default function ArtworkEngagement({ artwork, slug }) {
             </div>
             {pagination.last_page > 1 && (
                 <nav aria-label="صفحه‌بندی دیدگاه‌ها" className="mt-5 flex items-center justify-between gap-3">
-                    <button type="button" disabled={currentPage <= 1 || commentsQuery.isFetching} onClick={() => setPage(currentPage - 1)} className="border border-border px-3 py-2 text-xs disabled:opacity-40">دیدگاه‌های قبلی</button>
+                    <button type="button" disabled={currentPage <= 1 || commentsQuery.isFetching} onClick={() => { setCommentTargetId(''); setPage(currentPage - 1); }} className="border border-border px-3 py-2 text-xs disabled:opacity-40">دیدگاه‌های قبلی</button>
                     <span className="text-xs text-muted">{Number(currentPage).toLocaleString('fa-IR')} از {Number(pagination.last_page).toLocaleString('fa-IR')}</span>
-                    <button type="button" disabled={currentPage >= pagination.last_page || commentsQuery.isFetching} onClick={() => setPage(currentPage + 1)} className="border border-border px-3 py-2 text-xs disabled:opacity-40">دیدگاه‌های بعدی</button>
+                    <button type="button" disabled={currentPage >= pagination.last_page || commentsQuery.isFetching} onClick={() => { setCommentTargetId(''); setPage(currentPage + 1); }} className="border border-border px-3 py-2 text-xs disabled:opacity-40">دیدگاه‌های بعدی</button>
                 </nav>
             )}
         </section>
