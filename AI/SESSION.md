@@ -16,7 +16,8 @@ Redesign the complete Rademan codebase presentation as a mobile-first, desktop-c
 - Removed the old `instagram.css` and `application-shell.css` adapters.
 - Rebuilt Tailwind semantic aliases around the new tokens.
 - Added semantic component slots to shared UI primitives.
-- Rebuilt artwork and artist cards as image-led discovery components.
+- Rebuilt the Discover home as an image-led art feed with category exploration, new artworks, artist profiles and editorial collections.
+- Rebuilt artwork and artist cards as creator-first, image-led discovery components.
 - Added page markers and new compositions for public discovery, catalogue, artist directory/profile, authentication, collections, buyer/artist/admin homes and messaging.
 - Removed the old development-only application preview and its unused legacy screens.
 - Added Persian RTL PWA manifest, app icon, standalone metadata, service-worker registration and offline fallback.
