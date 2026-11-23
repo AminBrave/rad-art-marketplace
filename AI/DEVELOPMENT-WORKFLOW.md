@@ -147,9 +147,19 @@ When the user assigns multiple tasks or asks for a batch:
 
 The user's assignment defines the authorized batch. Do not silently add backlog tasks. If the scope is clear, proceed without requesting repeated approval for each task.
 
-## 10. Verification and safe operations
+## 10. Test synchronization, verification and safe operations
 
-Run relevant local checks as part of normal engineering when they are safe and useful. Inspect scripts and environment before stateful browser tests, database operations or commands with external effects. Report exact commands and results.
+Tests are part of the implementation, not a separate optional cleanup. Whenever code, behavior, contracts or dependencies change, inspect the affected backend, frontend and Playwright coverage and keep it aligned in the same task branch and PR.
+
+- Add tests for new behavior, important edge cases and regression risks at the layer that best observes the contract.
+- Update existing tests when behavior, API/data contracts, UI interactions or expected outcomes change. Prefer assertions on observable behavior over implementation details.
+- Remove tests only when the covered code or behavior has genuinely been removed, or when the test is demonstrably redundant or invalid. Confirm no remaining supported path relies on that behavior; do not delete or weaken a test merely because it fails after a change.
+- When code is moved or replaced, migrate useful coverage to the new location or layer rather than dropping it with the old implementation.
+- Keep backend (unit/feature/integration), frontend (component/state/interaction) and Playwright (critical end-to-end journey) coverage consistent with the changed surface. Avoid duplicating the same assertion at every layer without a reason.
+- Include test additions, updates and justified removals with the implementation. A code-only PR should explain why existing coverage remains valid or why no test change is warranted.
+- Run the most relevant tests and broader checks when proportionate and safe. Report exact commands, results, skipped suites and environment blockers; never imply unrun checks passed.
+
+Inspect scripts and environment before stateful browser tests, database operations or commands with external effects. Read-only inspection of CI is fine; do not manually dispatch, rerun, cancel or approve CI workflows unless the user requests that action.
 
 Do not trigger, rerun, cancel or approve CI workflows manually unless the user requests that action. Read-only inspection of automatically triggered CI is fine. Do not merge, deploy, release, force-push, rewrite shared history or delete shared branches without clear authorization.
 
