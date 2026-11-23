@@ -89,21 +89,21 @@ export default function HomePage() {
         <main className="overflow-hidden" dir="rtl">
             <section aria-labelledby="home-hero-title" className="relative border-b border-border bg-canvas">
                 <div className="mx-auto max-w-content px-page-gutter pb-12 pt-8 sm:pb-16 sm:pt-12 lg:pb-20 lg:pt-14">
-                    <div className="mb-7 flex items-center justify-between border-y border-border py-3 text-[10px] font-bold tracking-[.16em] text-muted sm:text-xs">
+                    <div className="mb-8 flex items-center justify-between border-y-2 border-ink py-3.5 text-[10px] font-extrabold tracking-[.18em] text-muted sm:text-xs">
                         <span>گالری هنر مستقل معاصر</span>
                         <span dir="ltr" className="font-latin">RAD ART / DISCOVER &amp; CONNECT</span>
                     </div>
-                    <div className="grid items-center gap-9 lg:grid-cols-[.9fr_1.1fr] lg:gap-14">
+                    <div className="grid items-center gap-10 lg:grid-cols-[.82fr_1.18fr] lg:gap-16">
                         <div className="relative z-10 order-2 max-w-2xl py-2 lg:order-1 lg:py-10">
                             <p className="mb-5 flex items-center gap-3 text-xs font-extrabold text-terracotta-strong">
                                 <span className="h-px w-9 bg-terracotta" />
                                 هنر معاصر، از نگاه مستقل
                             </p>
-                            <h1 id="home-hero-title" className="max-w-2xl text-[2.35rem] font-black leading-[1.45] tracking-tight sm:text-5xl sm:leading-[1.35] lg:text-[4.15rem]">
+                            <h1 id="home-hero-title" className="max-w-2xl text-[2.55rem] font-black leading-[1.38] tracking-[-.055em] sm:text-6xl sm:leading-[1.24] lg:text-[5rem]">
                                 هر اثر،
                                 <span className="block text-terracotta-strong">آغاز یک نگاه تازه.</span>
                             </h1>
-                            <p className="mt-6 max-w-xl text-base leading-9 text-muted sm:text-lg">
+                            <p className="mt-7 max-w-xl text-base leading-9 text-muted sm:text-lg">
                                 راد آرت جایی برای مکث، کشف آثار هنری مستقل، شناخت هنرمندان و شکل‌گرفتن گفت‌وگوهایی تازه درباره هنر است.
                             </p>
                             <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -122,8 +122,8 @@ export default function HomePage() {
                             <div aria-hidden="true" className="absolute -left-3 -top-3 hidden h-24 w-24 border border-sand sm:block lg:-left-5 lg:-top-5 lg:h-32 lg:w-32" />
                             <div aria-hidden="true" className="absolute -bottom-4 -right-4 hidden h-28 w-28 bg-surface-muted sm:block lg:-bottom-6 lg:-right-6 lg:h-40 lg:w-40" />
                             {hero ? (
-                                <Link to={'/artworks/' + hero.slug} className="group relative block bg-surface-muted p-2 sm:p-3">
-                                    <div className="relative aspect-[5/4] overflow-hidden bg-paper sm:aspect-[4/3] lg:aspect-[5/4]">
+                                <Link to={'/artworks/' + hero.slug} className="group relative block border border-ink bg-ink p-2 sm:p-3">
+                                    <div className="relative aspect-[5/4] overflow-hidden bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))] sm:aspect-[4/3] lg:aspect-[5/4]">
                                         <MediaImage
                                             src={hero.image_url}
                                             alt={hero.title}
@@ -133,7 +133,7 @@ export default function HomePage() {
                                             fetchPriority="high"
                                             decoding="async"
                                         />
-                                        <span className="absolute right-4 top-4 bg-paper/90 px-3 py-2 text-[10px] font-bold text-ink backdrop-blur sm:right-5 sm:top-5 sm:text-xs">در گالری راد آرت</span>
+                                        <span className="absolute right-4 top-4 bg-ink px-3 py-2 text-[10px] font-bold text-inverse backdrop-blur sm:right-5 sm:top-5 sm:text-xs">در گالری راد آرت</span>
                                     </div>
                                     <div className="flex flex-wrap items-center justify-between gap-3 px-2 pb-1 pt-4 sm:px-3">
                                         <div className="min-w-0">
@@ -204,7 +204,7 @@ export default function HomePage() {
                     />
                     <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                         {loading ? [0, 1, 2, 3].map((item) => <Skeleton key={item} height={null} className="h-28 w-full rounded-none" />) : categories.length ? categories.slice(0, 8).map((category, index) => (
-                            <Link key={category.id} to={'/artworks?category=' + encodeURIComponent(category.slug)} className="group flex min-h-28 items-end justify-between border border-border bg-canvas p-5 no-underline transition-colors hover:border-terracotta hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+                            <Link key={category.id} to={'/artworks?category=' + encodeURIComponent(category.slug)} className="group flex min-h-32 items-end justify-between border-y border-border bg-canvas p-5 no-underline transition-colors hover:border-terracotta hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
                                 <span>
                                     <span dir="ltr" className="block font-latin text-[10px] font-bold tracking-widest text-terracotta-strong">0{index + 1}</span>
                                     <span className="mt-2 block font-bold text-ink">{category.name}</span>
