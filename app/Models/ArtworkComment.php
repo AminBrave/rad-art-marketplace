@@ -32,6 +32,8 @@ class ArtworkComment extends Model
 
     public function replies(): HasMany
     {
-        return $this->hasMany(self::class, 'parent_id')->oldest();
+        return $this->hasMany(self::class, 'parent_id')
+            ->where('artwork_id', $this->artwork_id)
+            ->oldest();
     }
 }
