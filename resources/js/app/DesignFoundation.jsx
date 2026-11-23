@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { auditColorAccessibility } from '../lib/colorAccessibility';
 import ComponentShowcase from './ComponentShowcase';
+import { Button, TextInput } from '../components/ui';
 
 const swatches = [
     { name: 'Ivory', value: 'var(--color-canvas)', token: 'canvas' },
@@ -22,7 +23,7 @@ function ColorAccessibilityPanel() {
                     <h2 id="color-audit-title" className="mt-2 text-2xl font-bold">بررسی دسترس‌پذیری رنگ</h2>
                     <p className="mt-2 max-w-2xl text-sm leading-7 text-muted">تمام عناصر قابل مشاهده در این صفحه، از جمله نمونه‌های کتابخانه اجزا، از نظر کنتراست متن، آیکون، مرز کنترل و نشانگر فوکوس بررسی می‌شوند.</p>
                 </div>
-                <button type="button" onClick={() => setReport(auditColorAccessibility(document.documentElement))} className="min-h-11 rounded-md bg-terracotta px-5 py-3 text-sm font-bold text-inverse transition hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2">اجرای بررسی کنتراست</button>
+                <Button variant="ghost" type="button" onClick={() => setReport(auditColorAccessibility(document.documentElement))} className="min-h-11 rounded-md bg-terracotta px-5 py-3 text-sm font-bold text-inverse transition hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2">اجرای بررسی کنتراست</Button>
             </div>
             {report && (
                 <div className="mt-6 border border-border bg-paper p-5" aria-live="polite">
@@ -102,13 +103,13 @@ export default function DesignFoundation() {
                     <p className="text-xs font-bold text-terracotta-strong">03 / INTERACTION</p><h2 id="controls-title" className="mt-2 text-2xl font-bold">کنترل‌ها و سطوح</h2>
                     <div className="mt-6 grid gap-8 lg:grid-cols-2">
                         <div className="flex flex-wrap items-center gap-3">
-                            <button type="button" className="rounded-md bg-terracotta px-5 py-3 text-sm font-bold text-inverse transition hover:bg-terracotta-strong">دکمه اصلی</button>
-                            <button type="button" className="rounded-md border border-border-strong bg-paper px-5 py-3 text-sm font-bold text-ink transition hover:border-terracotta">دکمه ثانویه</button>
+                            <Button variant="ghost" type="button" className="rounded-md bg-terracotta px-5 py-3 text-sm font-bold text-inverse transition hover:bg-terracotta-strong">دکمه اصلی</Button>
+                            <Button variant="ghost" type="button" className="rounded-md border border-border-strong bg-paper px-5 py-3 text-sm font-bold text-ink transition hover:border-terracotta">دکمه ثانویه</Button>
                             <a href="#palette-title" className="text-sm font-bold text-terracotta-strong underline">پیوند متنی</a>
                         </div>
                         <form className="rounded-lg border border-border bg-paper p-5 shadow-soft" onSubmit={(event) => event.preventDefault()}>
                             <label htmlFor="foundation-email" className="block text-sm font-semibold">نشانی ایمیل</label>
-                            <input id="foundation-email" type="email" placeholder="name@example.com" dir="ltr" className="mt-2 w-full rounded-md border border-border-strong bg-canvas px-4 py-3 text-left text-sm outline-none transition placeholder:text-subtle focus:border-terracotta" />
+                            <TextInput id="foundation-email" type="email" placeholder="name@example.com" dir="ltr" className="bg-canvas text-left" />
                             <p className="mt-2 text-xs text-muted">نمونه فیلد ورودی با حالت تمرکز قابل مشاهده.</p>
                         </form>
                     </div>
