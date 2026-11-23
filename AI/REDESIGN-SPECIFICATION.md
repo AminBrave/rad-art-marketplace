@@ -346,6 +346,16 @@ Never cache authenticated API responses, private workspace data, messages, or pr
 - No message delivery, attachment, read-state, reporting, blocking, archive, mute, or conversation API behavior was changed.
 - Messaging interaction and responsive behavior still require browser and assistive-technology verification.
 
+## 14.3 Messaging composer and attachment lifecycle refinement
+
+- Kept selected files and drafts scoped to their conversation; switching threads restores the matching pending file rather than leaking it into another conversation.
+- Distinguished message preparation from actual attachment upload progress so the composer does not report a percentage before upload begins.
+- When the message record is created but its attachment upload fails, the error now says the message was saved and the file remains selected for retry.
+- Preserved the existing client message ID across retries. The server already treats that ID as idempotent, and the upload response is reconciled against existing attachment name/size to avoid duplicate uploads after an ambiguous network failure.
+- Confirmed the current server contract: one file per composer selection, up to 10 MB, JPEG/PNG/WebP/PDF, with server-side MIME and image-dimension validation. No API or backend behavior was changed.
+- Added a browser regression scenario that forces the first attachment upload to fail and checks that the file remains selected, retry succeeds, and both message submissions reuse the same client message ID.
+- Browser scenario is committed but has not been executed; no full frontend/browser run is claimed.
+
 ## 15. Delivery discipline
 
 - Follow `AGENTS.md` and `AI/DEVELOPMENT-WORKFLOW.md`.
