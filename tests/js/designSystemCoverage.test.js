@@ -75,6 +75,12 @@ test('base stylesheet stays token-focused and the Instagram theme adapter is exp
     for (const path of stylesheetFiles) {
         const source = readFileSync(path, 'utf8');
         const file = relative(root, path).replace(/\\/g, '/');
+        if (file === 'resources/css/application-shell.css') {
+            assert.ok(source.includes('App-first Rademan shell'));
+            assert.ok(source.includes('[data-testid="public-navigation-rail"]'));
+            assert.ok(source.includes('env(safe-area-inset-bottom)'));
+            continue;
+        }
         if (file === 'resources/css/instagram.css') {
             assert.ok(source.includes('Rademan Instagram-inspired design layer'));
             assert.ok(source.includes(":root[data-theme='dark']"));
