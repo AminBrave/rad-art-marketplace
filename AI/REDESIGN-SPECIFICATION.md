@@ -335,6 +335,14 @@ Never cache authenticated API responses, private workspace data, messages, or pr
 - These are presentation refinements only; no new moderation policy, user lifecycle action, or backend capability was introduced.
 - Admin curation and messaging still require a separate review pass; no claim of end-to-end verification is made.
 
+## 14.2 Editorial and messaging refinement progress
+
+- Refined admin collection editing, collection ordering, and featured-artist selection layouts while preserving publication controls, unpublish confirmation, selection limits, and API mutations.
+- Improved messaging landmarks for the messaging center, conversation list, and message history to make the workspace regions easier to identify with assistive technology.
+- Added bottom safe-area spacing to the message composer for mobile devices with system gesture areas.
+- No message delivery, attachment, read-state, reporting, blocking, archive, mute, or conversation API behavior was changed.
+- Messaging interaction and responsive behavior still require browser and assistive-technology verification.
+
 ## 15. Delivery discipline
 
 - Follow `AGENTS.md` and `AI/DEVELOPMENT-WORKFLOW.md`.
