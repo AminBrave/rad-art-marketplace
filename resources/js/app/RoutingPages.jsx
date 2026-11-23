@@ -437,7 +437,7 @@ export function PublicInfoPage({ title, description }) {
             <p className="text-sm font-bold text-terracotta-strong">راد آرت</p>
             <h1 className="mt-3 text-3xl font-black">{title}</h1>
             <p className="mt-5 leading-8 text-muted">{description}</p>
-            <p className="mt-6 rounded-xl border border-border bg-paper p-5 text-sm text-muted">این صفحه در نقشه مسیرهای MVP 2 ثبت شده و محتوای کامل آن در مرحله محتوای عمومی تکمیل می‌شود.</p>
+            <p className="mt-6 border-y border-border bg-surface-muted px-5 py-5 text-sm text-muted">این صفحه در نقشه مسیرهای MVP 2 ثبت شده و محتوای کامل آن در مرحله محتوای عمومی تکمیل می‌شود.</p>
         </main>
     );
 }
@@ -445,11 +445,11 @@ export function PublicInfoPage({ title, description }) {
 export function UnauthorizedPage() {
     const { user } = useAuth();
     return (
-        <main className="mx-auto max-w-2xl px-6 py-20 text-center" dir="rtl">
+        <main className="mx-auto max-w-2xl px-6 py-24 text-center" dir="rtl">
             <p className="text-sm font-bold text-terracotta-strong">۴۰۳</p>
-            <h1 className="mt-3 text-3xl font-black">دسترسی به این بخش مجاز نیست</h1>
+            <h1 className="mt-3 text-4xl font-black tracking-tight">دسترسی به این بخش مجاز نیست</h1>
             <p className="mt-4 leading-8 text-muted">نقش این حساب اجازه ورود به این فضای کاربری را ندارد. مجوزهای واقعی همچنان در سمت سرور بررسی می‌شوند.</p>
-            <Link to={user ? (user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist') : '/'} className="mt-7 inline-block rounded-full bg-ink px-6 py-3 font-bold text-inverse">بازگشت</Link>
+            <Link to={user ? (user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist') : '/'} className="mt-8 inline-flex min-h-12 items-center border border-ink bg-ink px-6 py-3 font-bold text-inverse transition-colors hover:border-terracotta hover:bg-terracotta">بازگشت</Link>
         </main>
     );
 }
@@ -458,7 +458,7 @@ export function NotFoundPage() {
     return (
         <main className="mx-auto max-w-2xl px-6 py-20 text-center" dir="rtl">
             <p className="text-sm font-bold text-terracotta-strong">۴۰۴</p>
-            <h1 className="mt-3 text-3xl font-black">این صفحه پیدا نشد</h1>
+            <h1 className="mt-3 text-4xl font-black tracking-tight">این صفحه پیدا نشد</h1>
             <p className="mt-4 leading-8 text-muted">نشانی واردشده معتبر نیست یا صفحه جابه‌جا شده است.</p>
             <Link to="/" className="mt-7 inline-block rounded-full bg-ink px-6 py-3 font-bold text-inverse">بازگشت به صفحه اصلی</Link>
         </main>
