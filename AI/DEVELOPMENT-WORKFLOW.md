@@ -8,7 +8,7 @@ Use three layers:
 
 1. Agent lane — normally a persistent branch named agent/<agent-name>/lane.
 2. Task branch — normally a short-lived branch named agent/<agent-name>/<task-type>/<task-name>.
-3. Collision fallback — when a legacy branch named agent/<agent-name> already exists and cannot be renamed safely, use agent-<agent-name>/lane and agent-<agent-name>/<task-type>/<task-name> until the legacy ref is migrated.
+3. Collision fallback — when a legacy branch named agent/<agent-name> already exists and cannot be renamed safely, use agent-<agent-name>/lane and agent-<agent-name>/<task-name> until the legacy ref is migrated.
 3. Integration branch — an owner-directed place to combine selected agent lanes or task results before promotion to main.
 
 The default flow:
@@ -50,7 +50,7 @@ Each independently working agent uses one stable, unique, lowercase agent name. 
 
 The preferred task hierarchy is agent/<agent-name>/<task-type>/<task-name>; the preferred persistent lane is agent/<agent-name>/lane. Use a stable lowercase agent name, a short task type (feature, fix, refactor, design, docs, test, security or chore), and a concise kebab-case task name. Include an issue number when one exists; otherwise use a descriptive unique slug. Avoid model versions and session dates.
 
-**Git ref collision rule:** Git cannot have both a branch named agent/<agent-name> and nested refs such as agent/<agent-name>/lane. Before creating nested refs, inspect the remote. If the legacy flat branch exists, do not repeatedly attempt creation and do not delete, force-update or rewrite it. Preferred resolution is an owner-approved rename of the legacy branch to agent/<agent-name>-baseline, preserving its history; then create agent/<agent-name>/lane from the agreed baseline. If rename is unavailable or not authorized, use the collision-safe namespace agent-<agent-name>/lane and agent-<agent-name>/<task-type>/<task-name>. This fallback is a complete valid workflow, not a blocker. Record the chosen namespace and base commit in the handoff. Migrate to the preferred namespace only as a separate, owner-approved operation.
+**Git ref collision rule:** Git cannot have both a branch named agent/<agent-name> and nested refs such as agent/<agent-name>/lane. Before creating nested refs, inspect the remote. If the legacy flat branch exists, do not repeatedly attempt creation and do not delete, force-update or rewrite it. Preferred resolution is an owner-approved rename of the legacy branch to agent/<agent-name>-baseline, preserving its history; then create agent/<agent-name>/lane from the agreed baseline. If rename is unavailable or not authorized, use the collision-safe namespace agent-<agent-name>/lane and agent-<agent-name>/<task-name>. In this fallback only, the task type may be encoded in the task name when useful (for example, `agent-chatgpt/rademan-redesign`). This fallback is a complete valid workflow, not a blocker. Record the chosen namespace and base commit in the handoff. Migrate to the preferred namespace only as a separate, owner-approved operation.
 
 ## 3. Starting a task
 
@@ -59,7 +59,7 @@ For each assignment:
 1. Confirm the agent name, task outcome, scope and intended base lane.
 2. Inspect live remote branch state and the relevant issue/PR. When a local checkout is available, inspect local status and uncommitted work separately.
 3. Select the preferred namespace unless the Git ref collision rule requires the fallback. Start from the current head of that namespace's lane. If no lane exists, create it from the agreed stable base only when authorized.
-4. Create a dedicated task branch under the same namespace and type. Do not implement multiple unrelated assignments directly on the persistent lane.
+4. Create a dedicated task branch under the same namespace. In the fallback namespace, use one concise task-name segment; add a task-type prefix to that segment only when it improves clarity. Do not implement multiple unrelated assignments directly on the persistent lane.
 5. Identify likely file ownership, shared contracts, dependencies and overlap with other active agent tasks.
 6. Record the task branch, base commit and linked issue in the task/PR description when tracking is useful.
 
