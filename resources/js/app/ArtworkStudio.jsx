@@ -12,7 +12,7 @@ const statusGuidance = {
     rejected: 'این اثر رد شده است. بازخورد مدیر را بخوانید و در صورت امکان با ویرایش اثر دوباره ارسال کنید.',
     changes_requested: 'مدیر برای این اثر اصلاحاتی درخواست کرده است. بازخورد را بررسی کنید، اثر را ویرایش و دوباره برای بررسی ارسال کنید.',
 };
-const inputClass = 'mt-2 w-full border border-border bg-canvas px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-terracotta focus-visible:ring-2 focus-visible:ring-focus';
+const inputClass = 'mt-2 w-full border border-border bg-canvas px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-accent focus-visible:ring-2 focus-visible:ring-focus';
 
 export default function ArtworkStudio({ user, hasProfile }) {
     const [artworkPage, setArtworkPage] = useState(1);
@@ -66,7 +66,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
 
 
     if (user?.role !== 'artist') return null;
-    if (!hasProfile) return <EmptyState title="ابتدا پروفایل هنرمند را تکمیل کنید" description="برای ثبت و مدیریت اثر، نام نمایشی پروفایل خود را ذخیره کنید." action={<Link to="/dashboard/artist/profile" className="text-sm font-bold text-terracotta-strong underline">تکمیل پروفایل</Link>} />;
+    if (!hasProfile) return <EmptyState title="ابتدا پروفایل هنرمند را تکمیل کنید" description="برای ثبت و مدیریت اثر، نام نمایشی پروفایل خود را ذخیره کنید." action={<Link to="/dashboard/artist/profile" className="text-sm font-bold text-accent-strong underline">تکمیل پروفایل</Link>} />;
 
     const updateForm = (event) => setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
     const clearImageInput = () => {
