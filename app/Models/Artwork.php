@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;\nuse Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Artwork extends Model
 {
@@ -51,5 +52,15 @@ class Artwork extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function likes(): HasMany
+    {
+        return $this->hasMany(ArtworkLike::class);
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(ArtworkComment::class);
     }
 }
