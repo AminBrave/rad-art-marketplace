@@ -165,6 +165,98 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
         finally:
             context.close()
 
+    def test_message_attachment_failure_keeps_file_and_retries_idempotently(self):
+        context = self.browser.new_context(
+            viewport={"width": 1024, "height": 812},
+            reduced_motion="reduce",
+            ignore_https_errors=IGNORE_HTTPS_ERRORS,
+        )
+        page = context.new_page()
+        page.set_default_timeout(15000)
+        thread = {
+            "id": 7,
+            "participant": {"id": 2, "name": "هنرمند آزمایشی"},
+            "last_message": {"body": "برای شروع گفتگو پیام بفرستید"},
+            "last_message_at": "2026-11-24T08:00:00Z",
+            "unread_count": 0,
+            "contexts": [],
+        }
+        message_client_ids = []
+        attachment_attempts = 0
+
+        def api_fixture(route):
+            nonlocal attachment_attempts
+            url = route.request.url
+            method = route.request.method
+            if url.endswith("/api/v1/auth/me"):
+                payload = {"data": {"id": 1, "name": "خریدار آزمایشی", "email": "buyer@example.test", "role": "buyer"}}
+            elif url.endswith("/api/v1/notifications/preferences"):
+                payload = {"data": {"in_app_messages": True, "email_messages": False, "email_available": False}}
+            elif url.endswith("/api/v1/notifications"):
+                payload = {"data": [], "current_page": 1, "last_page": 1, "per_page": 20, "total": 0, "unread_count": 0}
+            elif url.endswith("/api/v1/buyer/conversations"):
+                payload = {"data": [thread], "current_page": 1, "last_page": 1, "per_page": 20, "total": 1}
+            elif url.endswith("/api/v1/conversations/7/messages") and method == "GET":
+                payload = {"data": [], "current_page": 1, "last_page": 1, "sync_cursor": None}
+            elif url.endswith("/api/v1/conversations/7/messages") and method == "POST":
+                import json
+                message_client_ids.append(json.loads(route.request.post_data)["client_message_id"])
+                payload = {"data": {
+                    "id": 71,
+                    "conversation_id": 7,
+                    "sender_user_id": 1,
+                    "body": "فایل پیوست",
+                    "created_at": "2026-11-24T08:01:00Z",
+                    "sender": {"id": 1, "name": "خریدار آزمایشی"},
+                    "attachments": [],
+                    "reactions": [],
+                    "reply_to": None,
+                }}
+            elif url.endswith("/api/v1/conversations/7/messages/71/attachments") and method == "POST":
+                attachment_attempts += 1
+                if attachment_attempts == 1:
+                    route.fulfill(status=500, content_type="application/json", body='{"message":"Upload failed"}')
+                    return
+                payload = {"data": {
+                    "id": 91,
+                    "name": "reference.pdf",
+                    "mime_type": "application/pdf",
+                    "size_bytes": 12,
+                }}
+            elif url.endswith("/api/v1/conversations/7/safety"):
+                payload = {"data": {"blocked_by_me": False, "blocked_by_other": False}}
+            elif url.endswith("/api/v1/conversations/7"):
+                payload = {"data": thread}
+            elif url.endswith("/api/v1/conversations/7/read") and method == "PATCH":
+                payload = {"data": None}
+            else:
+                payload = {"data": []}
+            route.fulfill(status=200, content_type="application/json", body=__import__("json").dumps(payload))
+
+        page.route("**/api/v1/**", api_fixture)
+        try:
+            response = page.goto(BASE_URL + "/dashboard/buyer/messages?conversation=7", wait_until="commit")
+            self.assertIsNotNone(response, "No document response for buyer messaging")
+            page.get_by_role("button", name="ارسال پیام").wait_for(state="visible")
+            page.locator('input[type="file"][accept*="application/pdf"]').set_input_files({
+                "name": "reference.pdf",
+                "mimeType": "application/pdf",
+                "buffer": b"%PDF-1.4\\n%%EOF",
+            })
+
+            page.get_by_role("button", name="ارسال پیام").click()
+            page.get_by_text("پیام ذخیره شد، اما بارگذاری پیوست انجام نشد.", exact=False).wait_for(state="visible")
+            self.assertEqual(attachment_attempts, 1)
+            self.assertTrue(page.get_by_text("reference.pdf").is_visible())
+
+            page.get_by_role("button", name="ارسال پیام").click()
+            page.get_by_text("reference.pdf").wait_for(state="hidden")
+            self.assertEqual(attachment_attempts, 2)
+            self.assertEqual(len(message_client_ids), 2)
+            self.assertEqual(message_client_ids[0], message_client_ids[1], "Retry must reuse the idempotency key")
+        finally:
+            context.close()
+
     def test_authenticated_workspaces_respect_rtl_and_viewport_widths(self):
         workspace_roles = (
             ("/dashboard/buyer", "buyer"),
