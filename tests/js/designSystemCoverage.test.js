@@ -29,6 +29,8 @@ test('the new design foundation is loaded once and the old adapter architecture 
     assert.ok(base.includes('--rd-canvas:#fafafa'));
     assert.ok(base.includes(":root[data-theme='dark']"));
     assert.ok(system.includes('Rademan app-first component language'));
+    assert.doesNotMatch(base, /--color-(?:terracotta|sand|olive)/);
+    assert.doesNotMatch(system, /(?:bg|text|border)-(?:terracotta|sand|olive)/);
     assert.equal(stylesheetFiles.some((path) => path.endsWith('instagram.css')), false);
     assert.equal(stylesheetFiles.some((path) => path.endsWith('application-shell.css')), false);
 });
