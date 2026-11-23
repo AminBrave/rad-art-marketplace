@@ -27,7 +27,11 @@ class ArtworkInteractionController extends Controller
         ]);
 
         if ($created === 1) {
-            event('artwork.liked', [$artwork, $request->user()]);
+            $likeId = (int) DB::table('artwork_likes')
+                ->where('artwork_id', $artwork->id)
+                ->where('user_id', $request->user()->id)
+                ->value('id');
+            event('artwork.liked', [$artwork, $request->user(), $likeId]);
         }
 
         return response()->json([
