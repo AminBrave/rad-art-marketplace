@@ -163,7 +163,7 @@ export default function HomePage() {
             <section aria-label="چطور در راد آرت کشف کنیم" className="border-b border-border bg-surface-muted">
                 <div className="mx-auto grid max-w-content gap-0 px-page-gutter sm:grid-cols-3">
                     {editorialSteps.map((step) => (
-                        <article key={step.number} className="grid grid-cols-[3rem_1fr] gap-4 border-b border-border py-6 last:border-b-0 sm:border-b-0 sm:border-s-0 sm:py-8 sm:ps-6 sm:first:ps-0">
+                        <article key={step.number} className="grid grid-cols-[3rem_1fr] gap-4 border-b border-border py-6 last:border-b-0 sm:border-b-0 sm:border-s sm:py-8 sm:ps-6 sm:first:border-s-0 sm:first:ps-0">
                             <span dir="ltr" className="pt-1 font-latin text-xs font-bold tracking-widest text-terracotta-strong">{step.number}</span>
                             <div>
                                 <h2 className="text-lg font-extrabold">{step.title}</h2>
