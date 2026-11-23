@@ -153,3 +153,14 @@ Work proceeds in vertical slices, but the coverage ledger remains the source of 
 ### Still open
 
 All unchecked route, state, breakpoint, accessibility and regression items in sections 2–7 remain open until individually reviewed. In particular, do not infer that a shared-component update alone completes every consumer route. Continue with route-specific review of authentication and public information pages, artist profile editing and artwork studio, every admin workflow, messaging inbox/history/safety/attachment states, notification preferences, and all responsive/theme combinations.
+
+### Slice B — role workspaces, authoring, overlays and loading consistency (implemented; fresh verification pending)
+
+- Refreshed the role-aware workspace shell, desktop navigation rail and mobile navigation treatment in `resources/js/app/Layouts.jsx`.
+- Restyled sign-in/registration and the artist profile editor without changing authentication or profile mutation behavior in `AuthPage.jsx` and `RoutingPages.jsx`.
+- Refined artist artwork editor and portfolio image frames in `ArtworkStudio.jsx`; image validation, upload progress, edit/re-submit flow and API mutations remain intact.
+- Aligned message composer framing with the updated design system in `MessageComposer.jsx`.
+- Updated shared dialog and confirmation dialog framing in `Dialog.jsx` and `AlertDialog.jsx`.
+- Updated route-specific and reusable loading skeletons in `RoutingPages.jsx` and `skeletons.jsx` to better match the revised page geometry.
+
+**Verification state:** no GitHub Actions PR workflow runs are associated with the latest commit. These changes still require a fresh local lint/build/test/browser pass and manual visual inspection in both themes and at the required viewport widths.
