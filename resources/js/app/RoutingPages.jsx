@@ -394,7 +394,7 @@ export function ArtistProfileSettings() {
                 description="اطلاعات معرفی و وضعیت نمایش عمومی پروفایل خود را مدیریت کنید."
             />
             {profileError && <p role="alert" className="mt-4 text-sm text-warning">{profileError}</p>}
-            <form onSubmit={save} className="mt-6 grid gap-5 sm:grid-cols-2">
+            <form onSubmit={save} className="mt-6 grid gap-5 border-y border-border py-6 sm:grid-cols-2">
                 <FormField label="نام نمایشی" required error={errors.display_name?.join(' ')} className="sm:col-span-2"><TextInput name="display_name" value={form.display_name ?? ''} onChange={update} required maxLength="120" /></FormField>
                 <FormField label="درباره هنرمند" error={errors.bio?.join(' ')} className="sm:col-span-2"><TextareaField name="bio" value={form.bio ?? ''} onChange={update} rows={4} maxLength="2000" /></FormField>
                 <FormField label="شهر" error={errors.city?.join(' ')}><TextInput name="city" value={form.city ?? ''} onChange={update} maxLength="120" /></FormField>
