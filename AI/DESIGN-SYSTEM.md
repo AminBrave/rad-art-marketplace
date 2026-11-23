@@ -101,6 +101,6 @@ Semantic overrides live in `resources/css/instagram.css`; theme selection remain
 - Public Discover is an application surface, not a brochure site: a compact top bar, a persistent desktop icon rail, a mobile bottom tab bar and a focused content canvas replace the old marketing header/footer.
 - Buyer, Artist and Admin workspaces share the same app-first geometry: compact sticky context bar, persistent desktop navigation, mobile bottom navigation, safe-area-aware controls and content that can scroll independently.
 - The UI is mobile-first and installable as a Progressive Web App. The web manifest, app icon and service worker are maintained under `public/`; registration is production-only from `resources/js/app.jsx`.
-- Offline behavior is intentionally conservative: public documents and same-origin static assets may be cached after successful network responses. Authentication, API, dashboard, admin and conversation responses must never enter the shared service-worker cache. Offline messaging and background sync are not promised.
+- Offline behavior is intentionally conservative: a static offline fallback and same-origin static assets are cached. HTML navigation responses, authentication, API, dashboard, admin and conversation responses are never stored in the shared service-worker cache. Offline messaging and background sync are not promised.
 - PWA installability and offline behavior must be checked in real browsers (Android Chrome, desktop Chromium and iOS Safari); a manifest and worker alone do not prove a successful installation experience.
 
