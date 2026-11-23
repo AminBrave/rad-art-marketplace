@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { ArrowLeft, ArrowUpLeft, MoveUpLeft } from 'lucide-react';
+import { ArrowLeft, ArrowUpLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ArtworkCard, ArtistCard, ArtworkCardSkeleton, ArtistCardSkeleton, EmptyState, ErrorState, MediaImage, Skeleton } from '../components/ui';
 
@@ -302,7 +302,7 @@ export default function HomePage() {
                     </div>
                     <Link to="/register" className="inline-flex min-h-12 items-center justify-center gap-3 bg-paper px-6 text-sm font-bold text-ink no-underline transition-colors hover:bg-sand">
                         شروع به‌عنوان هنرمند
-                        <MoveUpLeft size={17} aria-hidden="true" />
+                        <ArrowUpLeft size={17} aria-hidden="true" />
                     </Link>
                 </div>
             </section>
