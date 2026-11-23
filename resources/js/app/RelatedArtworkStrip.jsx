@@ -1,4 +1,4 @@
-import { MediaImage } from '../components/ui';
+import { MediaImage, Button } from '../components/ui';
 import { Link } from 'react-router-dom';
 import { Image as ImageIcon } from 'lucide-react';
 
@@ -31,7 +31,7 @@ export default function RelatedArtworkStrip({ contexts, role, onSelectArtwork })
                     const className = "inline-flex min-w-0 max-w-48 min-h-[2.35rem] shrink-0 items-center gap-[.4rem] whitespace-nowrap rounded-full border border-border bg-surface-muted pe-[.6rem] ps-[.25rem] py-[.2rem] text-[11px] font-semibold leading-tight text-ink no-underline transition-colors hover:border-terracotta hover:bg-surface hover:text-terracotta-strong motion-reduce:transition-none";
 
                     return role === 'buyer' ? (
-                        <button
+                        <Button variant="ghost"
                             key={artwork.slug}
                             type="button"
                             role="listitem"
@@ -40,7 +40,7 @@ export default function RelatedArtworkStrip({ contexts, role, onSelectArtwork })
                             className={className}
                         >
                             {chipContent}
-                        </button>
+                        </Button>
                     ) : (
                         <Link
                             key={artwork.slug}
