@@ -39,6 +39,15 @@ test('component primitives provide semantic slots without losing Radix accessibi
     for (const contract of ['aria-busy={loading || undefined}', "'aria-describedby': describedBy", "'aria-invalid': error ? true", 'SelectPrimitive.Root', 'CheckboxPrimitive.Root', 'focus-visible:outline']) {
         assert.ok(primitives.includes(contract), 'Missing interaction contract ' + contract);
     }
+    for (const slot of ['data-ui="box"', 'data-ui="flex"', 'data-ui="grid"', 'data-ui="container"', 'data-ui="section"', 'data-ui="avatar"', 'data-ui="card"', 'data-ui="callout"', 'data-ui="progress"', 'data-ui="table"', 'data-ui="data-list"']) {
+        assert.ok(layout.includes(slot), 'Missing layout slot ' + slot);
+    }
+    for (const slot of ['data-ui="tabs-list"', 'data-ui="tabs-trigger"', 'data-ui="menu-content"', 'data-ui="menu-trigger"', 'data-ui="pagination"']) {
+        assert.ok(navigation.includes(slot), 'Missing navigation slot ' + slot);
+    }
+    for (const slot of ['data-ui="skeleton"', 'data-ui="empty-state"', 'data-ui="error-state"', 'data-ui="success-state"', 'data-ui="toast"', 'data-ui="media-image"']) {
+        assert.ok(feedback.includes(slot), 'Missing feedback slot ' + slot);
+    }
     for (const component of ['export const Box', 'export const Grid', 'export const Container', 'export function Avatar', 'export const Card', 'export const Callout', 'export const Progress']) {
         assert.ok(layout.includes(component), 'Missing layout primitive ' + component);
     }
