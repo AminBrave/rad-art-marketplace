@@ -55,6 +55,7 @@ export function AdminDashboardHome() {
         { to: '/admin/users', eyebrow: 'حساب‌ها', title: 'مدیریت کاربران', description: 'مرور حساب‌ها و مدیریت نقش‌های مجاز در سامانه', symbol: '◎' },
         { to: '/admin/editorial', eyebrow: 'انتخاب سردبیر', title: 'مجموعه‌های منتخب', description: 'تنظیم مجموعه‌ها و انتخاب هنرمندان برجسته', symbol: '✳' },
         { to: '/admin/message-reports', eyebrow: 'اعتماد و ایمنی', title: 'گزارش‌های پیام', description: 'رسیدگی به گزارش‌ها و بررسی محتوای علامت‌گذاری‌شده', symbol: '⚑' },
+        { to: '/admin/artwork-comment-reports', eyebrow: 'گفت‌وگوی عمومی', title: 'گزارش دیدگاه‌ها', description: 'بررسی دیدگاه‌های گزارش‌شده در صفحه آثار', symbol: '≋' },
     ];
 
     return (
@@ -76,8 +77,8 @@ export function AdminDashboardHome() {
                 </>}
             </section>
 
-            <section className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,.8fr)]">
-                <div className="border border-border bg-paper p-5 sm:p-7">
+            <section className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,.8fr)]">
+                <div className="border-y border-border bg-transparent py-6 sm:py-7">
                     <SectionHeader eyebrow="اولویت امروز" title="صف بررسی آثار" actions={<Link to="/admin/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">مشاهده صف</Link>} />
                     {loading ? <div aria-hidden="true" className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]"><Skeleton className="aspect-square w-full rounded-none sm:max-w-32" /><div className="grid gap-3"><SkeletonLines lines={3} /><SkeletonLines lines={1} /></div></div> : summary.latest ? (
                         <div className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]">
@@ -96,7 +97,7 @@ export function AdminDashboardHome() {
                     )}
                 </div>
 
-                <aside className="border border-border bg-surface-muted p-5 sm:p-7">
+                <aside className="border-y border-border bg-surface-muted/60 py-6 sm:px-6 sm:py-7">
                     <SectionHeader eyebrow="راهنمای عملیات" title="رسیدگی منظم و قابل پیگیری" className="border-0 pb-0" />
                     <p className="mt-3 text-sm leading-7 text-muted">تصمیم‌های انتشار را همراه با توضیح ثبت کنید، نقش‌ها را با دقت مدیریت کنید و گزارش‌های ایمنی را از مسیر اختصاصی بررسی کنید.</p>
                     <Link to="/admin/artworks" className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 py-3 text-sm font-bold text-inverse transition-colors hover:bg-terracotta">شروع بررسی آثار <span aria-hidden="true" className="mr-3">←</span></Link>
@@ -105,10 +106,11 @@ export function AdminDashboardHome() {
 
             <section aria-labelledby="admin-shortcuts-heading">
                 <SectionHeader id="admin-shortcuts-heading" eyebrow="دسترسی سریع" title="بخش‌های مدیریتی" />
-                <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                    {shortcuts.map((item) => <Link key={item.to} to={item.to} className="group flex min-h-44 flex-col border border-border bg-paper p-5 transition-all hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
-                        <div className="flex items-center justify-between gap-3"><span aria-hidden="true" className="grid h-10 w-10 place-items-center bg-surface-muted text-lg text-terracotta-strong">{item.symbol}</span><span className="text-[10px] font-bold text-muted">{item.eyebrow}</span></div>
-                        <h3 className="mt-5 font-black">{item.title}</h3>
+                <div className="mt-6 grid gap-x-6 gap-y-4 sm:grid-cols-2 xl:grid-cols-3">
+                    {shortcuts.map((item, index) => <Link key={item.to} to={item.to} className="group flex min-h-40 flex-col border-t border-border py-5 transition-colors hover:border-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+                        <div className="flex items-center justify-between gap-3"><span dir="ltr" className="font-latin text-[10px] font-bold tracking-widest text-terracotta-strong">AREA / 0{index + 1}</span><span aria-hidden="true" className="text-lg text-muted transition-colors group-hover:text-terracotta-strong">{item.symbol}</span></div>
+                        <p className="mt-3 text-[10px] font-bold text-muted">{item.eyebrow}</p>
+                        <h3 className="mt-1 font-black text-ink">{item.title}</h3>
                         <p className="mt-2 text-xs leading-6 text-muted">{item.description}</p>
                         <span className="mt-auto pt-4 text-xs font-bold text-terracotta-strong">ورود به بخش <span aria-hidden="true">←</span></span>
                     </Link>)}
