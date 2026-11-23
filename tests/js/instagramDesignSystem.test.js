@@ -5,6 +5,8 @@ import { getContrastRatio } from '../../resources/js/lib/colorAccessibility.js';
 
 const css = readFileSync(new URL('../../resources/css/instagram.css', import.meta.url), 'utf8');
 const entry = readFileSync(new URL('../../resources/js/app.jsx', import.meta.url), 'utf8');
+const themeContext = readFileSync(new URL('../../resources/js/app/ThemeContext.jsx', import.meta.url), 'utf8');
+const blade = readFileSync(new URL('../../resources/views/app.blade.php', import.meta.url), 'utf8');
 
 function block(selector) {
     const escaped = selector.replace(/[.*+?^$\{\}()|[\]\\]/g, '\\$&');
@@ -39,11 +41,13 @@ test('primary text, secondary text, action labels and focus remain readable in b
     ]) {
         const primary = value(theme, '--rd-text-primary');
         const secondary = value(theme, '--rd-text-secondary');
+        const tertiary = value(theme, '--rd-text-tertiary');
         const actionText = value(theme, '--rd-action-text');
         const focus = value(theme, '--rd-focus');
         for (const surface of surfaces) {
             assert.ok(getContrastRatio(primary, surface) >= 4.5, name + ' primary text must meet AA on ' + surface);
             assert.ok(getContrastRatio(secondary, surface) >= 4.5, name + ' secondary text must meet AA on ' + surface);
+            assert.ok(getContrastRatio(tertiary, surface) >= 4.5, name + ' tertiary text must meet AA on ' + surface);
             assert.ok(getContrastRatio(actionText, surface) >= 4.5, name + ' action text must meet AA on ' + surface);
             assert.ok(getContrastRatio(focus, surface) >= 3, name + ' focus must meet the non-text contrast threshold on ' + surface);
         }
@@ -55,4 +59,7 @@ test('the production entry loads the theme layer without replacing the existing 
     assert.ok(entry.includes("import '../css/instagram.css';"));
     assert.ok(entry.includes("import { ThemeProvider } from './app/ThemeContext';"));
     assert.ok(entry.includes('<ThemeProvider>'));
+    assert.ok(themeContext.includes("resolvedTheme === 'dark' ? '#000000' : '#FAFAFA'"));
+    assert.ok(blade.includes('name="theme-color" content="#FAFAFA"'));
+    assert.ok(blade.includes('dark ? "#000000" : "#FAFAFA"'));
 });
