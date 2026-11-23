@@ -55,7 +55,8 @@ export default function HomePage() {
     const error = artworksQuery.isError && !artworksQuery.data;
     const hero = artworks[0];
     const recentWorks = artworks.slice(1, 9);
-    const spotlightArtists = featuredArtists.length ? featuredArtists.map((item) => item.artist).filter(Boolean).slice(0, 6) : artists.slice(0, 6);
+    const curatedArtists = featuredArtists.map((item) => item.artist).filter(Boolean).slice(0, 6);
+    const spotlightArtists = curatedArtists.length ? curatedArtists : artists.slice(0, 6);
 
     return (
         <main data-page="home" className="min-w-0 overflow-x-clip" dir="rtl">
