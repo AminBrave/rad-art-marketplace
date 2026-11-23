@@ -163,7 +163,7 @@ export function AdminArtworkModeration() {
             ]);
         } catch (e) { setActionError(e.response?.status === 403 ? 'سرور اجازه انجام این عملیات را نداد.' : e.response?.data?.errors?.note?.[0] ?? e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.'); }
     };
-    return <section className="space-y-6" dir="rtl">
+    return <section data-page="admin-artworks" className="space-y-6" dir="rtl">
         <PageHeader eyebrow="مدیریت آثار" title="صف بررسی و انتشار" description="فقط آثار در انتظار بررسی قابل تصمیم‌گیری‌اند. رد اثر یا درخواست اصلاح به توضیح نیاز دارد." actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
         <div className="flex flex-wrap gap-2" aria-label="فیلتر وضعیت آثار">{statuses.map((item) => <Button key={item.value} size="sm" variant={status === item.value ? 'primary' : 'outline'} aria-pressed={status === item.value} onClick={() => chooseStatus(item.value)}>{item.label}</Button>)}</div>
         {message && <SuccessState title={message} />}{error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
@@ -233,7 +233,7 @@ export function AdminUsersPage() {
             setActionError(e.response?.status === 403 ? 'سرور اجازه تغییر نقش این حساب را نداد.' : e.response?.data?.errors?.role?.[0] ?? e.response?.data?.message ?? 'تغییر نقش کاربر انجام نشد.');
         }
     };
-    return <section className="space-y-6" dir="rtl">
+    return <section data-page="admin-users" className="space-y-6" dir="rtl">
         <PageHeader eyebrow="مدیریت حساب‌ها" title="کاربران" description="فهرست حساب‌ها و مدیریت نقش‌های مجاز. ارتقای هر حساب به مدیر، مرحله تأیید جداگانه دارد." actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
         <div className="grid gap-3 sm:grid-cols-2">
             <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">حساب‌های این صفحه</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</p></div>
@@ -316,7 +316,7 @@ export function AdminMessageReportsPage() {
             setActionError(e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.');
         }
     };
-    return <section className="space-y-6" dir="rtl">
+    return <section data-page="admin-message-reports" className="space-y-6" dir="rtl">
         <PageHeader eyebrow="ایمنی گفتگوها" title="گزارش‌های پیام" description="گزارش‌ها را با توجه به زمینه گفتگو بررسی کنید. حذف پیام یک اقدام برگشت‌ناپذیر در این پنل است و پیش از اجرا تأیید جداگانه می‌خواهد." actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
         <div className="grid gap-3 sm:grid-cols-2">
             <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">گزارش‌های این صفحه</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</p></div>
@@ -415,7 +415,7 @@ export function AdminArtworkCommentReportsPage() {
         }
     };
 
-    return <section className="space-y-6" dir="rtl">
+    return <section data-page="admin-comment-reports" className="space-y-6" dir="rtl">
         <PageHeader
             eyebrow="اعتماد و ایمنی محتوا"
             title="گزارش دیدگاه‌های آثار"
