@@ -8,3 +8,77 @@
 @media(max-width:1279px){[data-experience=discover] [data-testid=public-navigation-rail]{display:none!important}[data-experience=discover] [data-testid=public-bottom-navigation]{display:grid!important}[data-experience=discover] #main-content{margin-inline:0;padding-bottom:calc(64px + env(safe-area-inset-bottom))}[data-experience=discover] #main-content>main{width:calc(100% - 2*var(--rd-gutter))}[data-experience=discover]>.app-topbar>a:first-child{display:flex}}
 @media(max-width:767px){[data-experience=discover] main>section:first-child{gap:28px}[data-experience=discover] main>section:first-child h1{font-size:clamp(2.15rem,10vw,3.3rem)}[data-experience=artist],[data-experience=buyer],[data-experience=admin]{padding-bottom:calc(64px + env(safe-area-inset-bottom))}[data-experience=artist] aside,[data-experience=buyer] aside,[data-experience=admin] aside{display:none}[data-experience] table{display:block;overflow-x:auto;white-space:nowrap}}
 @media(display-mode:standalone){body{padding-top:env(safe-area-inset-top)}[data-testid=public-bottom-navigation],[data-testid=authenticated-bottom-navigation]{padding-bottom:max(env(safe-area-inset-bottom),8px)}}
+
+/* Page compositions */
+[data-page=home]>section:first-child{align-items:center}
+[data-page=home]>section:first-child>div:first-child{padding-block:clamp(18px,3vw,40px)}
+[data-page=home]>section:first-child>div:last-child{max-width:520px}
+[data-page=home]>section:nth-child(2){border-block:1px solid var(--rd-line);background:var(--rd-surface-2)}
+[data-page=home]>section:nth-child(2)>div>div{padding:16px;border-inline-start:2px solid var(--rd-accent)}
+[data-page=home]>section:nth-child(n+3)>div>div:first-child h2{font-size:clamp(1.5rem,2.5vw,2rem)}
+[data-page=home] a[class*=border]:hover{border-color:var(--rd-accent)}
+[data-page=artwork-catalogue] [aria-label="فیلتر و مرتب‌سازی آثار"]{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;border:1px solid var(--rd-line);border-radius:18px;background:var(--rd-surface);padding:18px}
+[data-page=artwork-catalogue] [aria-label="فیلتر و مرتب‌سازی آثار"]>*{min-width:0}
+[data-page=artist-directory]>header{border:1px solid var(--rd-line);border-radius:20px;background:var(--rd-surface-2)}
+[data-page=artist-directory]>header:before{opacity:.35}
+[data-page=artist-profile]>header{border:0;border-radius:18px;background:var(--rd-surface-2);padding:clamp(20px,4vw,36px)}
+[data-page=artist-profile] [aria-labelledby=artist-portfolio-heading]{margin-top:clamp(28px,4vw,56px)}
+[data-page=artwork-detail] [data-ui=page-heading]{margin-top:24px}
+[data-page=auth]{display:grid;min-height:calc(100dvh - var(--rd-topbar));place-items:center;padding-block:40px}
+[data-page=auth]>section{width:min(100%,480px);border:1px solid var(--rd-line);border-radius:24px;background:var(--rd-surface);padding:clamp(22px,4vw,40px);box-shadow:var(--rd-shadow-2)}
+[data-page=auth]>section>h1{font-size:clamp(1.8rem,4vw,2.4rem);letter-spacing:-.04em}
+[data-page=public-info]{max-width:800px}
+[data-page=public-info]>h1{font-size:clamp(2rem,4vw,3rem);letter-spacing:-.04em}
+[data-page=public-info] section{border-color:var(--rd-line)}
+[data-page=collections] [data-ui=page-heading]{margin-bottom:24px}
+[data-page=collections] a.group,[data-page=collections] main>div>a{border-radius:18px}
+[data-page=buyer-home] [data-ui=workspace-hero],[data-page=artist-home] [data-ui=workspace-hero],[data-page=admin-home] [data-ui=workspace-hero]{min-height:190px;padding:clamp(22px,4vw,40px)}
+[data-page=buyer-home] [data-ui=workspace-hero] h1,[data-page=artist-home] [data-ui=workspace-hero] h1,[data-page=admin-home] [data-ui=workspace-hero] h1{max-width:22ch;font-size:clamp(1.6rem,3.4vw,2.5rem);line-height:1.35}
+[data-page=buyer-home] [data-ui=workspace-hero]>span,[data-page=artist-home] [data-ui=workspace-hero]>span,[data-page=admin-home] [data-ui=workspace-hero]>span{display:none}
+[data-page=buyer-home] [data-ui=surface],[data-page=artist-home] [data-ui=surface]{border-radius:18px}
+[data-page=admin-home] [aria-label="شاخص‌های عملیاتی"]>[data-ui=metric]{min-height:150px;padding:22px}
+[data-page=admin-home] [aria-label="شاخص‌های عملیاتی"]>[data-ui=metric]>span:nth-child(2){font-size:2.4rem}
+[data-page=messaging]{border:1px solid var(--rd-line);border-radius:18px;background:var(--rd-surface);box-shadow:var(--rd-shadow-2)}
+[data-page=messaging]>div.grid{border:0;border-radius:18px;background:transparent;box-shadow:none}
+[data-page=messaging] button,[data-page=messaging] input{border-radius:12px}
+[data-page=messaging] [role=separator]{background:var(--rd-line)}
+[data-ui=artwork-card]{border:1px solid var(--rd-line);border-radius:18px;background:var(--rd-surface);box-shadow:none}
+[data-ui=artwork-card] [data-ui=artwork-media]{background:var(--rd-surface-2)}
+[data-ui=artist-card]{border:1px solid var(--rd-line);border-radius:18px;background:var(--rd-surface)}
+[data-ui=artist-avatar]{border:2px solid var(--rd-surface);box-shadow:0 0 0 1px var(--rd-line)}
+[data-ui=button][data-variant=primary]{background:var(--rd-accent);color:#fff}
+[data-ui=button][data-variant=secondary]{background:var(--rd-surface-2);color:var(--rd-text);border-color:var(--rd-line)}
+[data-ui=button][data-variant=outline]{background:var(--rd-surface);color:var(--rd-text);border-color:var(--rd-line-strong)}
+[data-ui=button][data-variant=ghost]{background:transparent;color:var(--rd-text)}
+[data-ui=button][data-variant=danger]{background:var(--rd-negative);color:#fff}
+[data-ui=badge]{border-radius:999px;padding:4px 10px}
+[data-ui=badge][data-variant=accent]{background:var(--rd-accent-soft);color:var(--rd-accent)}
+[data-ui=surface]{background:var(--rd-surface)}
+[data-ui=form-field]>label{font-size:.84rem;font-weight:700}
+[data-ui=icon-button]{border-radius:999px}
+[data-ui=workspace-shell]>.grid{align-items:start}
+[data-ui=workspace-shell] aside>div:first-child{border-radius:14px;background:var(--rd-surface-2)}
+[data-ui=workspace-shell] aside nav a{padding-inline:12px}
+[data-ui=workspace-shell] header [data-ui=badge]{font-size:10px}
+[data-experience=discover] [data-testid=public-navigation-rail]{width:76px;border-inline-end:1px solid var(--rd-line);background:var(--rd-surface)}
+[data-experience=discover] [data-testid=public-navigation-rail]::before{content:"ر";display:grid;place-items:center;width:44px;height:44px;margin:4px auto 22px;border-radius:14px;background:var(--rd-text);color:var(--rd-inverse);font-size:24px;font-weight:900}
+[data-experience=discover] [data-testid=public-navigation-rail] nav a{height:48px;width:48px;margin-inline:auto;border-radius:14px}
+[data-experience=discover] [data-testid=public-navigation-rail] nav a[aria-current=page]{background:var(--rd-accent-soft);color:var(--rd-accent)}
+[data-experience=discover] [data-testid=public-bottom-navigation] a[aria-current=page]{color:var(--rd-accent)}
+@media(min-width:1440px){
+ [data-experience=discover] [data-testid=public-navigation-rail]{width:220px;padding:20px 14px}
+ [data-experience=discover] [data-testid=public-navigation-rail] nav{align-items:stretch}
+ [data-experience=discover] [data-testid=public-navigation-rail] nav a{width:100%;justify-content:flex-start;gap:16px;padding-inline:14px}
+ [data-experience=discover] [data-testid=public-navigation-rail] nav a .sr-only{position:static;width:auto;height:auto;margin:0;overflow:visible;clip:auto;white-space:nowrap;font-size:14px;font-weight:650}
+ [data-experience=discover] #main-content{margin-inline-start:220px}
+ [data-experience=discover]>.app-topbar{margin-inline-start:220px}
+}
+@media(max-width:900px){
+ [data-page=artwork-catalogue] [aria-label="فیلتر و مرتب‌سازی آثار"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:640px){
+ [data-page=artwork-catalogue] [aria-label="فیلتر و مرتب‌سازی آثار"]{grid-template-columns:1fr}
+ [data-page=auth]{min-height:calc(100dvh - var(--rd-nav-mobile));padding:24px 0}
+ [data-page=auth]>section{border-radius:18px;padding:22px}
+ [data-page=messaging]{border-radius:0;border-inline:0}
+}
