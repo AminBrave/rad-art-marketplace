@@ -6,21 +6,24 @@ This document defines how independent agents collaborate safely, how task branch
 
 Use three layers:
 
-1. Agent lane — a persistent branch owned by one agent identity, such as agent/chatgpt or agent/claude.
-2. Task branch — a short-lived branch for one bounded assignment, created under that agent's lane and isolated from other tasks.
+1. Agent lane — a persistent branch owned by one agent identity, named agent/<agent-name>/lane, such as agent/chatgpt/lane or agent/claude/lane.
+2. Task branch — a short-lived branch for one bounded assignment, named agent/<agent-name>/<task-type>/<task-name> and isolated from other tasks.
 3. Integration branch — an owner-directed place to combine selected agent lanes or task results before promotion to main.
 
 The default flow:
 
     main
-     ├── agent/chatgpt
-     │    ├── feature/chatgpt/<task>
-     │    └── fix/chatgpt/<task>
-     ├── agent/claude
-     │    ├── feature/claude/<task>
-     │    └── docs/claude/<task>
-     └── agent/<other-agent>
-          └── <type>/<other-agent>/<task>
+     └── agent/
+          ├── chatgpt/
+          │    ├── lane
+          │    ├── feature/<task-name>
+          │    └── fix/<task-name>
+          ├── claude/
+          │    ├── lane
+          │    └── docs/<task-name>
+          └── <other-agent>/
+               ├── lane
+               └── <task-type>/<task-name>
 
     Selected agent lane(s) -> owner-directed integration -> integration
     integration -> reviewed release promotion -> main
@@ -33,18 +36,18 @@ Each independently working agent uses one stable, unique, lowercase agent ID. Ke
 
 | Purpose | Pattern | Example |
 |---|---|---|
-| Persistent agent lane | agent/<agent-id> | agent/chatgpt |
-| Feature task | feature/<agent-id>/<issue>-<slug> | feature/chatgpt/123-artist-search |
-| Bug fix | fix/<agent-id>/<issue>-<slug> | fix/claude/456-message-state |
-| Refactor | refactor/<agent-id>/<issue>-<slug> | refactor/chatgpt/234-query-hooks |
-| Design/UI | design/<agent-id>/<issue>-<slug> | design/claude/321-profile-layout |
-| Documentation | docs/<agent-id>/<issue>-<slug> | docs/chatgpt/789-dev-guide |
-| Tests/quality | test/<agent-id>/<issue>-<slug> | test/claude/555-message-tests |
-| Security | security/<agent-id>/<issue>-<slug> | security/chatgpt/654-upload-checks |
-| Chore/tooling | chore/<agent-id>/<issue>-<slug> | chore/agent-x/888-scripts |
+| Persistent agent lane | agent/<agent-name>/lane | agent/chatgpt/lane |
+| Feature task | agent/<agent-name>/feature/<task-name> | agent/chatgpt/feature/123-artist-search |
+| Bug fix | agent/<agent-name>/fix/<task-name> | agent/claude/fix/456-message-state |
+| Refactor | agent/<agent-name>/refactor/<task-name> | agent/chatgpt/refactor/234-query-hooks |
+| Design/UI | agent/<agent-name>/design/<task-name> | agent/claude/design/321-profile-layout |
+| Documentation | agent/<agent-name>/docs/<task-name> | agent/chatgpt/docs/789-dev-guide |
+| Tests/quality | agent/<agent-name>/test/<task-name> | agent/claude/test/555-message-tests |
+| Security | agent/<agent-name>/security/<task-name> | agent/chatgpt/security/654-upload-checks |
+| Chore/tooling | agent/<agent-name>/chore/<task-name> | agent/agent-x/chore/888-scripts |
 | Integration workstream | integration/<slug> | integration/messaging-refresh |
 
-Use the GitHub issue number when one exists; a concise unique slug is acceptable for small assigned tasks without an issue. Avoid branch names based on temporary model versions or session dates. An agent identity represents the working lane, not a particular model release.
+The required hierarchy is agent/<agent-name>/<task-type>/<task-name>. Use a stable lowercase agent name, a short task type (feature, fix, refactor, design, docs, test, security or chore), and a concise kebab-case task name. Include the issue number in the task name when one exists; otherwise use a descriptive unique slug. Avoid model versions and session dates. The persistent lane is agent/<agent-name>/lane. Git cannot have both agent/<agent-name> and nested refs below it, which is why the explicit /lane segment is required.
 
 ## 3. Starting a task
 
@@ -52,8 +55,8 @@ For each assignment:
 
 1. Confirm the agent ID, task outcome, scope and intended base lane.
 2. Inspect live remote branch state and the relevant issue/PR. When a local checkout is available, inspect local status and uncommitted work separately.
-3. Start from the current head of that agent's lane. If the lane does not exist, create it from the agreed stable base only when that is part of the authorized task.
-4. Create a dedicated task branch. Do not implement multiple unrelated assignments directly on the persistent lane.
+3. Start from the current head of agent/<agent-name>/lane. If the lane does not exist, create it from the agreed stable base only when that is part of the authorized task.
+4. Create a dedicated task branch named agent/<agent-name>/<task-type>/<task-name>. Do not implement multiple unrelated assignments directly on the persistent lane.
 5. Identify likely file ownership, shared contracts, dependencies and overlap with other active agent tasks.
 6. Record the task branch, base commit and linked issue in the task/PR description when tracking is useful.
 
@@ -74,10 +77,10 @@ Parallelism should be limited by actual independence, not by a target number of 
 
 ## 5. Updating and merging task branches into their lane
 
-1. Open a PR from the task branch to its owning agent/<agent-id> lane when PR-based review is useful or required by the team's repository settings.
+1. Open a PR from the task branch to its owning agent/<agent-name>/lane when PR-based review is useful or required by the team's repository settings.
 2. Link the relevant issue and state outcome, scope, exclusions, affected contracts, risks and verification.
 3. Review the diff and relevant callers. Run suitable local checks; inspect any CI status that starts automatically under repository configuration.
-4. Merge only into the matching agent lane. Do not target main or a different agent lane.
+4. Merge only into the matching agent/<agent-name>/lane. Do not target main or a different agent lane.
 5. After a task merges, other open task branches based on the old lane head may need updating. Rebase only the task branch (never rewrite the shared lane), or merge the updated lane into the task branch when appropriate. Resolve conflicts deliberately and rerun affected checks.
 6. Close the task when its acceptance criteria are met in the agent lane. Clearly state that it is lane-complete, not yet integrated or released.
 
@@ -153,7 +156,7 @@ Do not trigger, rerun, cancel or approve CI workflows manually unless the user r
 ## 11. Handoff format
 
 For each task, report:
-- Agent ID, task branch and base lane.
+- Agent name, task branch and base lane.
 - Issue and PR links where applicable.
 - Outcome and key files/contracts changed.
 - Verification actually performed and remaining gaps.
