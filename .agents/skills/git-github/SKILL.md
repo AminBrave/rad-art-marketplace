@@ -32,6 +32,10 @@ Each agent works only in its own task branches and lane. Task PRs target agent/<
 
 ## Commits and PRs
 - Keep commits coherent and use specific imperative messages.
+- Define a bounded task scope before editing: outcome, in-scope and excluded work, related files, dependencies and acceptance checks.
+- Group all related files needed for one task into one task-level commit by default. Commit by coherent outcome, not by file: never create a commit solely because another file changed, and avoid repeated tiny commits for successive edits to one file.
+- Use separate commits only for genuinely distinct, independently reviewable tasks or meaningful standalone checkpoints. Keep unrelated tasks separate without fragmenting one task into excessive commits.
+- For a multi-task batch, use a small number of clear task-level commits and review the complete diff/history before pushing.
 - Use PRs for substantial, collaborative or review-sensitive work; small direct task-branch commits may be appropriate.
 - Link the issue when one exists. Describe outcome, scope, risks, compatibility and actual verification.
 - Include related backend, frontend and Playwright test additions/updates in the same task branch and PR. Explain justified obsolete-test removals and state why no test changes were needed when applicable.

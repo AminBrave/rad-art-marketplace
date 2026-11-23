@@ -154,6 +154,11 @@ Rademan uses persistent agent lanes and isolated task branches to support parall
 
 Use GitHub issues, PRs and a project board when they improve parallel coordination, ownership, review and handoff. Assign one primary owner per independent task, define observable acceptance criteria, coordinate shared files/contracts, and keep task and integration status distinct.
 
+Treat each user assignment as a bounded unit of work. Before editing, identify the task's outcome, included and excluded scope, affected behavior/files, dependencies and acceptance checks. Keep implementation and necessary tests/docs for that outcome together; do not expand into unrelated cleanup. If a request contains genuinely independent outcomes, split them into separately scoped tasks.
+
+**Commit batching:** Commit by task or independently reviewable outcome, not by file. A single task that changes several related files should normally produce one coherent commit containing all of them. Do not create a commit for every changed file, every small edit or each code change within a file. Create another commit only when it represents a meaningful, self-contained checkpoint (for example, a distinct task, an independently useful fix, or a necessary follow-up). Keep commits focused, reviewable and reasonably sized; avoid both fragmented commit noise and unrelated changes bundled together. Use clear imperative messages that describe the task-level outcome.
+
+
 Follow AI/DEVELOPMENT-WORKFLOW.md for the complete branch, integration and delivery model, and AI/TASK-MANAGEMENT.md for issue and board practices. These are stable collaboration defaults that the user may explicitly change.
 
 ## 14. Continuous improvement

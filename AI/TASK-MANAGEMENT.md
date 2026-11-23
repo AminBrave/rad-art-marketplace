@@ -106,6 +106,13 @@ A useful PR should state:
 
 Keep PRs focused. Combine changes only when they are tightly coupled and should be reviewed and reverted together. Do not mark work as released merely because its PR merged into an agent lane.
 
+### Commit grouping by task
+
+- Scope work around an outcome, not around individual files. One bounded task can legitimately update multiple related implementation, test and documentation files.
+- Group those related files into one coherent task-level commit by default; do not create one commit per changed file or per small edit.
+- Use additional commits only for distinct independently reviewable tasks or meaningful checkpoints. Keep unrelated outcomes separate, but avoid fragmented histories and excessive commits for incremental edits to the same file.
+- For a batch of tasks, make the task boundaries explicit and use a small number of outcome-based commits, each with a clear imperative message.
+
 ## 7. Completion and stale work
 
 A task is complete when its acceptance criteria are met in the declared target lane, affected tests are synchronized with the resulting code, and verification is honestly represented. Its integration or release status may still be pending.

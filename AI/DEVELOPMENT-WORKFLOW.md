@@ -86,6 +86,15 @@ Parallelism should be limited by actual independence, not by a target number of 
 
 For very small tasks or workflows that do not use PRs, a direct commit to the agent's own task branch is reasonable. Keep the persistent lane protected from unrelated direct edits.
 
+### Task scope and commit batching
+
+- Define the task boundary before implementation: intended outcome, in-scope behavior and files, explicit non-goals, dependencies and acceptance/verification criteria.
+- Keep all files required to deliver one coherent task together. A task may touch backend, frontend, tests, configuration and documentation; file count does not determine task count.
+- Commit related files together in one task-level commit by default. Never make a separate commit merely because a file changed, and do not create repeated commits for successive small edits to the same file.
+- Split work into multiple commits only when there are distinct, independently understandable outcomes or a useful intermediate checkpoint that should stand on its own. Each commit should be coherent and reviewable, not an arbitrary slice of the file list.
+- If a user requests multiple independent tasks, keep their scopes distinct and create a small number of task-level commits—one per independently reviewable task/outcome, not one per file. Do not bundle unrelated tasks just to reduce the count.
+- Before pushing, review the complete task diff and commit history to ensure related changes are grouped, unrelated changes are excluded, and commit messages describe outcomes.
+
 ## 6. Cross-agent integration
 
 Cross-agent integration happens only when the user asks for it or clearly authorizes the integration scope.
