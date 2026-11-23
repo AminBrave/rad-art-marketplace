@@ -9,8 +9,8 @@ import { formatArtworkPrice } from '../utils/formatArtworkPrice';
 
 function ArtworkImage({ artwork }) {
     return (
-        <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-surface-muted p-3 sm:p-6 lg:aspect-[4/5] lg:p-8">
-            <span aria-hidden="true" className="absolute inset-3 border border-border/70 sm:inset-5" />
+        <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden border border-ink bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))] p-3 sm:p-6 lg:aspect-[4/5] lg:p-8">
+            <span aria-hidden="true" className="absolute inset-3 border border-ink/15 sm:inset-5" />
             <MediaImage
                 src={artwork.image_url}
                 alt={artwork.title}
@@ -74,7 +74,7 @@ export default function ArtworkDetailPage() {
                 <span aria-current="page" className="text-ink">جزئیات اثر</span>
             </nav>
             {!artwork ? (
-                <section className="mt-8 border border-border bg-paper p-8">
+                <section className="mt-8 border-y-2 border-ink bg-transparent px-5 py-8 sm:px-8">
                     <h1 className="text-2xl font-black">{status === 403 ? 'دسترسی به این اثر مجاز نیست' : 'اثر در دسترس نیست'}</h1>
                     <p className="mt-3 text-sm leading-7 text-muted">{status === 403 ? 'سرور اجازه مشاهده این اثر را صادر نکرد.' : 'این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.'}</p>
                     {artworkQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-danger">ارتباط با سرور برقرار نشد. <Button variant="ghost" type="button" onClick={() => artworkQuery.refetch()} className="inline p-0 font-bold underline">تلاش دوباره</Button></p>}
@@ -87,7 +87,7 @@ export default function ArtworkDetailPage() {
                             <ArtworkImage artwork={artwork} />
                             <p className="mt-3 text-xs leading-6 text-muted">تصویر اثر با حفظ نسبت و جزئیات اصلی نمایش داده شده است.</p>
                         </div>
-                        <div className="border-y border-border bg-transparent py-6 sm:py-9 lg:sticky lg:top-28 lg:border-y-0 lg:py-2">
+                        <div className="border-y-2 border-ink bg-transparent py-6 sm:py-9 lg:sticky lg:top-28 lg:border-y-0 lg:py-2">
                             <p className="text-[11px] font-extrabold tracking-[.14em] text-terracotta-strong">پرونده اثر <span className="mx-1 text-subtle">/</span> {artwork.category?.name}</p>
                             <h1 className="mt-3 text-3xl font-black leading-relaxed tracking-tight sm:text-4xl">{artwork.title}</h1>
                             <Link to={'/artists/' + artwork.artist.slug} className="mt-3 inline-block text-sm font-semibold text-terracotta-strong underline">{artwork.artist.display_name}</Link>
