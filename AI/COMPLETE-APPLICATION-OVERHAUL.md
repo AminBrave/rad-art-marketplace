@@ -131,3 +131,25 @@ Before the overhaul can be called complete, run and report the current repositor
 7. Regression suite, visual QA, documentation and PR handoff.
 
 Work proceeds in vertical slices, but the coverage ledger remains the source of truth until every applicable item is verified.
+
+## 9. Current implementation log
+
+### Slice A — shared editorial foundation (implemented; fresh verification pending)
+
+- Updated shared artwork and artist card treatments in `resources/js/components/ui/cards.jsx`.
+- Refined shared button, page-header, section-header, workspace-hero, metric-card and surface treatments in `resources/js/components/ui/primitives.jsx`.
+- Updated centered dialog and alert-dialog framing in `resources/js/components/ui/Dialog.jsx` and `AlertDialog.jsx`.
+- Refreshed public header/footer identity in `resources/js/app/Layouts.jsx`.
+- Elevated homepage hero, featured artwork framing and category rhythm in `resources/js/app/HomePage.jsx`.
+- Refined catalogue filter composition in `resources/js/app/ArtworkCatalogue.jsx` and artist directory introduction in `resources/js/app/ArtistDirectoryPage.jsx`.
+- Refined collection index hierarchy in `resources/js/app/EditorialPages.jsx`.
+- Improved buyer onboarding and artist workspace identity/content hierarchy in `BuyerWorkspace.jsx` and `ArtistWorkspaceOverview.jsx`.
+- Refined artwork detail framing and messaging composer surfaces in `ArtworkDetailPage.jsx` and `MessageComposer.jsx`.
+- Aligned route fallbacks and reusable loading skeletons with the updated visual grammar in `RoutingPages.jsx` and `components/ui/skeletons.jsx`.
+- Documented the editorial visual language in `AI/DESIGN-SYSTEM.md`.
+
+**Verification state:** the user confirmed the previous local test suite passed before this slice. No fresh lint, build, automated test, browser, keyboard, screen-reader, or visual-regression run has been observed after these edits. This slice is therefore implemented but not yet verified.
+
+### Still open
+
+All unchecked route, state, breakpoint, accessibility and regression items in sections 2–7 remain open until individually reviewed. In particular, do not infer that a shared-component update alone completes every consumer route. Continue with route-specific review of authentication and public information pages, artist profile editing and artwork studio, every admin workflow, messaging inbox/history/safety/attachment states, notification preferences, and all responsive/theme combinations.
