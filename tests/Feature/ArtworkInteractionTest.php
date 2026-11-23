@@ -177,6 +177,34 @@ final class ArtworkInteractionTest extends TestCase
             ->assertJsonPath('data.0.replies.0.id', $reply->id);
     }
 
+    public function test_comment_deep_links_return_the_page_containing_the_root_thread(): void
+    {
+        [$artist, , $artwork] = $this->artworkFixture();
+        $buyer = $this->user('social-deep-link-buyer@example.test', User::ROLE_BUYER);
+        $target = null;
+
+        for ($index = 1; $index <= 21; $index++) {
+            $target = ArtworkComment::query()->create([
+                'artwork_id' => $artwork->id,
+                'user_id' => $buyer->id,
+                'body' => 'دیدگاه '.$index,
+            ]);
+        }
+
+        $reply = ArtworkComment::query()->create([
+            'artwork_id' => $artwork->id,
+            'user_id' => $artist->id,
+            'parent_id' => $target->id,
+            'body' => 'پاسخ عمیق',
+        ]);
+
+        $this->getJson('/api/v1/artworks/'.$artwork->slug.'/comments?comment_id='.$reply->id)
+            ->assertOk()
+            ->assertJsonPath('current_page', 2)
+            ->assertJsonPath('data.0.id', $target->id)
+            ->assertJsonPath('data.0.replies.0.id', $reply->id);
+    }
+
     public function test_admin_can_review_report_remove_comment_and_record_audit(): void
     {
         [, , $artwork] = $this->artworkFixture();
