@@ -28,7 +28,7 @@ export default {
                 info: { DEFAULT: 'var(--rd-info)', surface: 'color-mix(in srgb,var(--rd-info) 9%,var(--rd-surface))' },
                 accent: { DEFAULT: 'var(--rd-accent)', surface: 'var(--rd-accent-soft)' },
                 inverse: 'var(--rd-inverse)',
-                focus: 'var(--rd-accent)',
+                focus: 'var(--rd-focus)',
             },
             fontFamily: {
                 sans: ['Vazirmatn', 'Inter', 'sans-serif'],
