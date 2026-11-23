@@ -55,7 +55,14 @@ def install_auth_bootstrap(page, user):
         if replacements != 1:
             raise AssertionError("The app shell must contain exactly one Blade auth bootstrap script.")
 
-        route.fulfill(response=response, body=html)
+        # route.fetch() returns decoded text, so do not forward the original
+        # compression/length headers with the rewritten HTML body.
+        headers = {
+            name: value
+            for name, value in response.headers.items()
+            if name.lower() not in {"content-encoding", "content-length", "transfer-encoding"}
+        }
+        route.fulfill(status=response.status, headers=headers, body=html)
 
     page.route("**/*", rewrite_navigation)
 
