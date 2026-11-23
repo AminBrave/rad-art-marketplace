@@ -6,8 +6,7 @@ import { queryClient } from './lib/queryClient';
 import AppRouter from './app/AppRouter';
 import { ThemeProvider } from './app/ThemeContext';
 import './bootstrap';
-import '../css/instagram.css';
-import '../css/application-shell.css';
+import '../css/rademan.css';
 import { auditColorAccessibility } from './lib/colorAccessibility';
 
 
