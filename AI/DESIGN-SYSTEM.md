@@ -103,7 +103,8 @@ Use semantic slots from `data-ui` for visual component styling. Shared component
 - Validate light and dark states, including dialogs, dropdowns, notifications and message bubbles.
 
 ## PWA and privacy
-- Persian RTL standalone manifest and application icon live under `public/`.
+- Persian RTL standalone manifest and 192px/512px raster plus SVG application icons live under `public/`.
+- Chromium-based browsers expose an in-app install action when `beforeinstallprompt` is available. On iOS, users install through Safari's Share menu and Add to Home Screen.
 - Service worker registration is production-only.
 - The worker caches a static offline fallback and eligible same-origin versioned assets only. It must never cache HTML navigations, API responses, authentication, dashboards, admin or private conversations.
 - Offline messaging, background sync and private-data persistence are not supported claims.
