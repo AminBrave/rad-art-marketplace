@@ -4,11 +4,11 @@ import { PageContainer } from './primitives';
 export function ArtworkCardSkeleton({ className = '' }) {
     return (
         <article aria-hidden="true" className={`group min-w-0 ${className}`}>
-            <div className="relative overflow-hidden bg-surface-muted">
+            <div className="relative overflow-hidden bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))]">
                 <Skeleton className="aspect-[4/5] w-full rounded-none" />
                 <span aria-hidden="true" className="pointer-events-none absolute inset-0 border border-[color:color-mix(in_srgb,var(--color-ink)_5%,transparent)]" />
             </div>
-            <div className="grid gap-1.5 px-0.5 pb-2 pt-4">
+            <div className="grid gap-1.5 border-b border-border px-0.5 pb-4 pt-4">
                 <div className="flex min-h-5 items-center justify-between gap-3"><Skeleton className="h-3 w-20 rounded-sm" /><Skeleton className="h-3 w-3 rounded-full" /></div>
                 <div className="grid gap-1.5"><Skeleton className="h-5 w-4/5 rounded-sm" /><Skeleton className="h-5 w-3/5 rounded-sm" /></div>
                 <Skeleton className="mt-1 h-4 w-2/5 rounded-sm" />
@@ -22,7 +22,7 @@ export function ArtistCardSkeleton({ className = '' }) {
     return (
         <article aria-hidden="true" className={`grid min-w-0 content-start gap-3 border-y border-border bg-transparent py-5 sm:py-6 ${className}`} dir="rtl">
             <div className="flex items-start justify-between gap-4">
-                <Skeleton className="h-14 w-14 shrink-0 rounded-full" />
+                <Skeleton className="h-16 w-16 shrink-0 rounded-none" />
                 <Skeleton className="mt-1 h-3 w-24 rounded-sm" />
             </div>
             <div className="mt-2 grid gap-2"><Skeleton className="h-7 w-2/3 rounded-sm" /><Skeleton className="h-3 w-1/3 rounded-sm" /></div>
@@ -206,7 +206,7 @@ export function AdminDashboardSkeleton() {
                         <div className="grid content-start gap-3"><Skeleton className="h-6 w-24 rounded-full" /><Skeleton className="h-5 w-2/3 rounded-sm" /><Skeleton className="h-3 w-1/2 rounded-sm" /><Skeleton className="mt-2 h-4 w-36 rounded-sm" /></div>
                     </div>
                 </div>
-                <aside className="border border-border bg-surface-muted p-5 sm:p-7">
+                <aside className="border-y border-border bg-surface-muted px-5 py-5 sm:py-7">
                     <div className="grid gap-2"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-6 w-2/3 rounded-sm" /></div>
                     <div className="mt-3 grid gap-2"><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-5/6 rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div>
                     <Skeleton className="mt-5 h-11 w-40 rounded-sm" />
@@ -259,7 +259,7 @@ export function WorkspaceIdentitySkeleton({ announce = true }) {
                 <div className="mt-2 flex gap-3"><Skeleton className="h-10 w-32 rounded-sm" /><Skeleton className="h-10 w-28 rounded-sm" /></div>
             </div>
             <div className="grid justify-items-center gap-3 border-t border-border pt-5 lg:border-r lg:border-t-0 lg:pt-0">
-                <Skeleton className="h-3 w-20 rounded-sm" /><Skeleton className="h-10 w-20 rounded-sm" /><Skeleton className="h-2 w-full rounded-full" />
+                <Skeleton className="h-3 w-20 rounded-sm" /><Skeleton className="h-10 w-20 rounded-sm" /><Skeleton className="h-1.5 w-full rounded-none" />
             </div>
         </section>
     );
@@ -386,7 +386,7 @@ export function BuyerDashboardSkeleton() {
             <section className="border-t border-border pt-6">
                 <div className="grid gap-2"><Skeleton className="h-3 w-36 rounded-sm" /><Skeleton className="h-6 w-48 rounded-sm" /><Skeleton className="h-3 w-full max-w-2xl rounded-sm" /></div>
                 <div className="mt-5 grid gap-4 md:grid-cols-3">
-                    {[0, 1, 2].map((item) => <article key={item} className="grid gap-3 border-r-2 border-sand bg-surface-muted p-4"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-5 w-3/4 rounded-sm" /><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-5/6 rounded-sm" /></article>)}
+                    {[0, 1, 2].map((item) => <article key={item} className="grid gap-3 border-t-2 border-ink bg-transparent pt-4"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-5 w-3/4 rounded-sm" /><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-5/6 rounded-sm" /></article>)}
                 </div>
             </section>
         </section>
