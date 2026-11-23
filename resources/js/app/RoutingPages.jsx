@@ -10,9 +10,6 @@ const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
 
 const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
 
-function LoadingBlock({ className = '' }) {
-    return <Skeleton height={null} className={className} />;
-}
 
 function WorkspaceAuthLoading({ children }) {
     const { pathname } = useLocation();
