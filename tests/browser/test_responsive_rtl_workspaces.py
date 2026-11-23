@@ -96,6 +96,75 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
         finally:
             context.close()
 
+    def test_messaging_mobile_conversation_transition_and_desktop_split_view(self):
+        context = self.browser.new_context(
+            viewport={"width": 375, "height": 812},
+            reduced_motion="reduce",
+            ignore_https_errors=IGNORE_HTTPS_ERRORS,
+        )
+        page = context.new_page()
+        page.set_default_timeout(15000)
+        thread = {
+            "id": 7,
+            "participant": {"id": 2, "name": "هنرمند آزمایشی"},
+            "last_message": {"body": "برای شروع گفتگو پیام بفرستید"},
+            "last_message_at": "2026-11-24T08:00:00Z",
+            "unread_count": 0,
+            "contexts": [],
+        }
+
+        def api_fixture(route):
+            url = route.request.url
+            method = route.request.method
+            if url.endswith("/api/v1/auth/me"):
+                payload = {"data": {"id": 1, "name": "خریدار آزمایشی", "email": "buyer@example.test", "role": "buyer"}}
+            elif url.endswith("/api/v1/notifications/preferences"):
+                payload = {"data": {"in_app_messages": True, "email_messages": False, "email_available": False}}
+            elif url.endswith("/api/v1/notifications"):
+                payload = {"data": [], "current_page": 1, "last_page": 1, "per_page": 20, "total": 0, "unread_count": 0}
+            elif url.endswith("/api/v1/buyer/conversations"):
+                payload = {"data": [thread], "current_page": 1, "last_page": 1, "per_page": 20, "total": 1}
+            elif url.endswith("/api/v1/conversations/7/messages"):
+                payload = {"data": [], "current_page": 1, "last_page": 1, "sync_cursor": None}
+            elif url.endswith("/api/v1/conversations/7/safety"):
+                payload = {"data": {"blocked_by_me": False, "blocked_by_other": False}}
+            elif url.endswith("/api/v1/conversations/7"):
+                payload = {"data": thread}
+            elif url.endswith("/api/v1/conversations/7/read") and method == "PATCH":
+                payload = {"data": None}
+            else:
+                payload = {"data": []}
+            route.fulfill(status=200, content_type="application/json", body=__import__("json").dumps(payload))
+
+        page.route("**/api/v1/**", api_fixture)
+        try:
+            response = page.goto(BASE_URL + "/dashboard/buyer/messages", wait_until="commit")
+            self.assertIsNotNone(response, "No document response for buyer messaging")
+            page.locator("aside[aria-label='فهرست گفتگوها']").wait_for(state="visible")
+            thread_button = page.locator("aside[aria-label='فهرست گفتگوها'] button").filter(has_text="هنرمند آزمایشی").first
+            thread_button.wait_for(state="visible")
+            self.assertFalse(page.get_by_role("button", name="بازگشت به گفتگوها").is_visible())
+
+            thread_button.click()
+            page.get_by_role("button", name="بازگشت به گفتگوها").wait_for(state="visible")
+            self.assertFalse(page.locator("aside[aria-label='فهرست گفتگوها']").is_visible())
+            self.assertTrue(page.get_by_role("heading", name="هنرمند آزمایشی").is_visible())
+
+            page.set_viewport_size({"width": 1024, "height": 812})
+            page.evaluate("() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))")
+            self.assertTrue(page.locator("aside[aria-label='فهرست گفتگوها']").is_visible())
+            dimensions = page.evaluate(
+                "() => ({ viewport: document.documentElement.clientWidth, document: document.documentElement.scrollWidth })"
+            )
+            self.assertLessEqual(dimensions["document"], dimensions["viewport"] + 1, dimensions)
+
+            page.set_viewport_size({"width": 375, "height": 812})
+            page.get_by_role("button", name="بازگشت به گفتگوها").click()
+            page.locator("aside[aria-label='فهرست گفتگوها']").wait_for(state="visible")
+            self.assertFalse(page.get_by_role("button", name="بازگشت به گفتگوها").is_visible())
+        finally:
+            context.close()
+
     def test_authenticated_workspaces_respect_rtl_and_viewport_widths(self):
         workspace_roles = (
             ("/dashboard/buyer", "buyer"),
