@@ -20,7 +20,6 @@
   --rd-accent:#0064d9;
   --rd-link:#0064d9;
   --rd-focus:#0064d9;
-  --rd-accent-hover:#0054b8;
   --rd-accent-soft:#eaf3ff;
   --rd-positive:#137a43;
   --rd-warning:#8a5200;
@@ -44,7 +43,6 @@
   --rd-font:'Vazirmatn','Inter',sans-serif;
   --rd-leading:1.75;
   --rd-control:44px;
-  --rd-motion:180ms;
   --color-canvas:var(--rd-canvas);
   --color-ink:var(--rd-text);
   --color-paper:var(--rd-surface);
@@ -106,7 +104,7 @@
   --rd-accent:#0064d9;
   --rd-link:#80bdff;
   --rd-focus:#80bdff;
-  --rd-accent-hover:#0054b8;
+  
   --rd-accent-soft:#10243a;
   --rd-positive:#4ade80;
   --rd-warning:#facc15;
@@ -133,14 +131,14 @@
     color-scheme:dark;
     --rd-canvas:#000;--rd-surface:#121212;--rd-surface-2:#1c1c1c;--rd-surface-3:#262626;
     --rd-text:#f5f5f5;--rd-text-2:#b3b3b3;--rd-text-3:#b3b3b3;--rd-line:#262626;--rd-line-strong:#777777;
-    --rd-accent:#0064d9;--rd-link:#80bdff;--rd-focus:#80bdff;--rd-accent-hover:#0054b8;--rd-accent-soft:#10243a;--rd-positive:#4ade80;
+    --rd-accent:#0064d9;--rd-link:#80bdff;--rd-focus:#80bdff;--rd-accent-soft:#10243a;--rd-positive:#4ade80;
     --rd-warning:#facc15;--rd-negative:#f87171;--rd-info:#60a5fa;--rd-inverse:#050505;
     --color-ink:var(--rd-text);--color-paper:var(--rd-surface);--color-canvas:var(--rd-canvas);
     --color-text:var(--rd-text);--color-text-muted:var(--rd-text-2);--color-text-subtle:var(--rd-text-3);
     --color-border:var(--rd-line);--color-border-strong:var(--rd-line-strong);--color-surface:var(--rd-surface);
     --color-surface-muted:var(--rd-surface-2);--color-action:var(--rd-accent);--color-action-text:var(--rd-link);
     --color-accent:var(--rd-accent);--color-accent-strong:var(--rd-link);--color-line:var(--rd-line);
-    --color-success:var(--rd-positive);--color-focus:var(--rd-focus);--color-success:var(--rd-positive);
+    --color-success:var(--rd-positive);--color-focus:var(--rd-focus);
     --color-danger:var(--rd-negative);--color-warning:var(--rd-warning);--color-info:var(--rd-info);
     --color-inverse-text:var(--rd-inverse);--color-accent-surface:var(--rd-accent-soft);
     --color-message-own:var(--rd-accent-soft);--color-message-peer:var(--rd-surface-3);
