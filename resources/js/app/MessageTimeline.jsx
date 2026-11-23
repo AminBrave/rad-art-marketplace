@@ -66,7 +66,7 @@ export default function MessageTimeline({
         {editingId === message.id ? (
         <form onSubmit={(event) => onSaveEdit(event, message)} className="space-y-2 rounded-lg has-[textarea:focus-visible]:outline has-[textarea:focus-visible]:outline-2 has-[textarea:focus-visible]:outline-focus has-[textarea:focus-visible]:outline-offset-[3px]">
         <TextareaField dir="auto" aria-label="متن ویرایش‌شده پیام" autoFocus value={editDraft} onChange={(event) => onSetEditDraft(event.target.value)} rows={3} maxLength={5000} className="w-full rounded-sm border border-border bg-surface p-2 text-sm text-ink outline-none focus:border-border focus:outline-none focus-visible:outline-none focus:ring-0" />
-        <div className="flex gap-2"><Button variant="ghost" disabled={!editDraft.trim() || actionId === message.id} className="bg-ink px-3 py-1.5 text-xs font-bold text-inverse disabled:opacity-50">ذخیره</Button><Button variant="ghost" type="button" onClick={() => onSetEditingId(null)} className="px-3 py-1.5 text-xs text-muted">انصراف</Button></div>
+        <div className="flex gap-2"><Button variant="ghost" type="submit" disabled={!editDraft.trim() || actionId === message.id} className="bg-ink px-3 py-1.5 text-xs font-bold text-inverse disabled:opacity-50">ذخیره</Button><Button variant="ghost" type="button" onClick={() => onSetEditingId(null)} className="px-3 py-1.5 text-xs text-muted">انصراف</Button></div>
         </form>
         ) : <p dir="auto" className={'whitespace-pre-wrap break-words text-sm leading-[1.65] ' + (deleted ? 'italic text-muted' : '')}>{message.body ?? 'این پیام حذف شده است.'}</p>}
         <div className="mt-[.55rem] flex flex-wrap items-center justify-between gap-2 text-[10px] text-subtle">
