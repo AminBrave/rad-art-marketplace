@@ -356,6 +356,16 @@ Never cache authenticated API responses, private workspace data, messages, or pr
 - Added a browser regression scenario that forces the first attachment upload to fail and checks that the file remains selected, retry succeeds, and both message submissions reuse the same client message ID.
 - Browser scenario is committed but has not been executed; no full frontend/browser run is claimed.
 
+## 14.4 In-flight conversation switching refinement
+
+- Track the active send transaction by its originating conversation while preserving the existing single-flight send lock.
+- Show a live sending indicator on the originating conversation's inbox row, so progress remains discoverable after the user switches threads or returns to the inbox.
+- When another conversation is selected during a send, explain that a send is still running elsewhere and that a second message cannot be submitted until it finishes. This reflects the existing single-flight behavior instead of implying that the newly selected conversation is uploading.
+- Preserve upload phase and percentage when switching away and back while the request remains in flight; clear the transient progress state when the transaction settles.
+- Keep send failures in a conversation-keyed in-memory map so an upload failure that completes while another thread is open is still explained when the user returns to its conversation. Successful retry clears that conversation's error.
+- Added focused source-level regression assertions for conversation ownership of send state, inbox status, alternate-thread feedback, and failure restoration. These assertions have not been executed in this GitHub editing session.
+- No concurrent-send behavior, cancellation semantics, API endpoint, or backend contract was changed.
+
 ## 15. Delivery discipline
 
 - Follow `AGENTS.md` and `AI/DEVELOPMENT-WORKFLOW.md`.
