@@ -33,8 +33,9 @@ class ArtworkComment extends Model
 
     public function replies(): HasMany
     {
-        return $this->hasMany(self::class, 'parent_id')
-            ->where('artwork_id', $this->artwork_id)
-            ->oldest();
+        // Scope to the artwork in the consuming query. Referencing the current
+        // model's artwork_id here breaks eager loading because Eloquent builds
+        // the relation from an unhydrated model with a null artwork_id.
+        return $this->hasMany(self::class, 'parent_id')->oldest();
     }
 }
