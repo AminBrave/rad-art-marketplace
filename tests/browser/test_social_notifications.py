@@ -63,7 +63,7 @@ def install_auth_bootstrap(page, user):
         html = response.text()
         html, replacements = re.subn(
             r'<script\b[^>]*\bid=["\']rad-auth-bootstrap["\'][^>]*>.*?</script>',
-            f'<script type="application/json" id="rad-auth-bootstrap">{payload}</script>',
+            lambda _: f'<script type="application/json" id="rad-auth-bootstrap">{payload}</script>',
             html,
             count=1,
             flags=re.DOTALL,
