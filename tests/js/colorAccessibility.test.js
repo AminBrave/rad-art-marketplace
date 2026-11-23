@@ -20,7 +20,7 @@ test('all semantic text colors meet WCAG AA on every neutral RAD surface', () =>
     const backgrounds = ['--color-canvas', '--color-paper', '--color-surface-muted'];
     const foregrounds = [
         '--color-text', '--color-text-muted', '--color-text-subtle',
-        '--color-action-text', '--color-terracotta', '--color-success',
+        '--color-action-text', '--color-accent', '--color-success',
         '--color-danger', '--color-warning', '--color-info',
     ];
 
@@ -58,7 +58,7 @@ test('focus indicators and essential control borders meet the 3:1 non-text thres
 });
 
 test('the Telegram-inspired message bubble surface retains readable RAD ink contrast', () => {
-    const brand = parseColor(token('--color-terracotta'));
+    const brand = parseColor(token('--color-accent'));
     const white = parseColor('#FFFFFF');
     const ownBubble = {
         r: white.r * 0.88 + brand.r * 0.12,
@@ -92,7 +92,7 @@ test('semantic status badges preserve readable text on their own tinted surfaces
         ['--color-danger', 0.10],
         ['--color-warning', 0.10],
         ['--color-info', 0.10],
-        ['--color-terracotta-strong', 0.10],
+        ['--color-accent-strong', 0.10],
     ];
     for (const [foreground, tint] of states) {
         const ratio = getContrastRatio(token(foreground), mixWithWhite(token(foreground), tint));
