@@ -87,7 +87,7 @@ export function PublicLayout() {
                         </span>
                     </Link>
 
-                    <nav aria-label="ناوبری اصلی" className="hidden items-center gap-5 xl:flex">
+                    <nav aria-label="ناوبری اصلی" className={`hidden items-center gap-3 ${user ? 'xl:flex' : 'lg:flex'} xl:gap-5`}>
                         {publicLinks.map((item) => (
                             <NavLink key={item.to} to={item.to} className={navClass}>{item.label}</NavLink>
                         ))}
@@ -120,7 +120,7 @@ export function PublicLayout() {
                             <button
                                 type="button"
                                 aria-label="باز کردن منوی اصلی"
-                                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus xl:hidden"
+                                className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${user ? 'xl:hidden' : 'lg:hidden'}`}
                             >
                                 <Menu size={19} aria-hidden="true" />
                             </button>
