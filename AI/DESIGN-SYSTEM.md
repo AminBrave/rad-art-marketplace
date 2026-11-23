@@ -57,7 +57,7 @@ Semantic overrides live in `resources/css/instagram.css`; theme selection remain
 - Artwork remains the visual focal point; preserve image aspect ratios and object-fit intent.
 
 ## Component principles
-- Navigation: concise labels, clear active state, consistent icons and responsive adaptation.
+- Navigation: concise labels, clear active state, consistent icons, a persistent desktop rail and a mobile bottom tab bar.
 - Artwork tiles: image-first, predictable ratios, restrained metadata and obvious open/detail affordance.
 - Artist identity: avatar, name, location/bio and existing profile actions; story-ring styling is decorative only and must not imply unseen story functionality.
 - Buttons: blue for primary actions, neutral for secondary actions, red for destructive actions.
@@ -67,9 +67,9 @@ Semantic overrides live in `resources/css/instagram.css`; theme selection remain
 - Messaging: preserve the current conversation list + active thread model, contextual artwork, composer, attachments, message actions, read state and safety controls.
 
 ## Responsive behavior
-- Phone: one-column content, touch-sized controls, no horizontal page overflow, safe-area-aware fixed elements and a clear return path from a conversation to its list.
+- Phone: one-column content, touch-sized controls, a persistent bottom tab bar, no horizontal page overflow, safe-area-aware fixed elements and a clear return path from a conversation to its list.
 - Tablet: compact navigation and two-column content where it improves scanning.
-- Desktop: centered content, image grids, persistent workspace navigation and efficient two-pane messaging.
+- Desktop: centered content, a persistent Discover navigation rail, image grids, persistent workspace navigation and efficient two-pane messaging.
 - Do not hide essential actions or data at any breakpoint.
 
 ## Accessibility and quality
