@@ -52,6 +52,7 @@ export default function ArtworkEngagement({ artwork, slug }) {
     const [replyTo, setReplyTo] = useState(null);
     const [reportTarget, setReportTarget] = useState(null);
     const [reportReason, setReportReason] = useState('spam');
+    const [reportMessage, setReportMessage] = useState('');
     const [shareMessage, setShareMessage] = useState('');
     const canInteract = ['buyer', 'artist'].includes(user?.role);
     const commentTargetId = typeof window !== 'undefined' && /^#comment-\d+$/.test(window.location.hash)
@@ -107,7 +108,10 @@ export default function ArtworkEngagement({ artwork, slug }) {
         mutationFn: () => axios.post('/api/v1/artworks/' + encodeURIComponent(slug) + '/comments/' + reportTarget.id + '/reports', {
             reason: reportReason,
         }),
-        onSuccess: () => setReportTarget(null),
+        onSuccess: () => {
+            setReportTarget(null);
+            setReportMessage('گزارش شما ثبت شد و برای بررسی ارسال شد.');
+        },
     });
 
     const shareArtwork = async () => {
@@ -184,8 +188,9 @@ export default function ArtworkEngagement({ artwork, slug }) {
                 <p className="mt-6 text-sm text-muted"><Link to="/login" state={{ from: { pathname: '/artworks/' + slug } }} className="font-bold text-terracotta-strong underline">وارد شوید</Link> تا دیدگاه بنویسید یا پاسخ دهید.</p>
             )}
 
+            {reportMessage && <p role="status" className="mt-4 text-xs text-muted">{reportMessage}</p>}
             {reportTarget && (
-                <form onSubmit={(event) => { event.preventDefault(); reportMutation.mutate(); }} className="mt-4 border border-border p-4">
+                <form onSubmit={(event) => { event.preventDefault(); setReportMessage(''); reportMutation.mutate(); }} className="mt-4 border border-border p-4">
                     <p className="text-sm font-bold">گزارش دیدگاه</p>
                     <label htmlFor="artwork-report-reason" className="mt-3 block text-xs text-muted">دلیل گزارش</label>
                     <select id="artwork-report-reason" value={reportReason} onChange={(event) => setReportReason(event.target.value)} className="mt-1 border border-border bg-surface px-3 py-2 text-sm">
@@ -202,6 +207,7 @@ export default function ArtworkEngagement({ artwork, slug }) {
                 </form>
             )}
 
+            {deleteMutation.isError && <p role="alert" className="mt-3 text-xs text-danger">حذف دیدگاه انجام نشد. دوباره تلاش کنید.</p>}
             <div className="mt-7">
                 {commentsQuery.isPending ? <p className="py-6 text-sm text-muted">در حال دریافت دیدگاه‌ها...</p> : null}
                 {commentsQuery.isError ? <div className="py-6 text-sm text-danger" role="alert">دریافت دیدگاه‌ها انجام نشد. <button type="button" onClick={() => commentsQuery.refetch()} className="underline">تلاش دوباره</button></div> : null}
