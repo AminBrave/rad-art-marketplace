@@ -8,7 +8,7 @@ function CommentItem({ comment, user, onReply, onDelete, onReport }) {
     const canDelete = user && comment.is_mine && !comment.is_deleted;
 
     return (
-        <article className="border-b border-border py-4 last:border-b-0">
+        <article id={'comment-' + comment.id} className="border-b border-border py-4 last:border-b-0">
             <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                     <p className="text-sm font-bold">{comment.user?.name || 'کاربر'}</p>
@@ -26,7 +26,7 @@ function CommentItem({ comment, user, onReply, onDelete, onReport }) {
             {comment.replies?.length > 0 && (
                 <div className="mt-4 border-r-2 border-border pr-4">
                     {comment.replies.map((reply) => (
-                        <div key={reply.id} className="border-b border-border py-3 last:border-b-0">
+                        <div id={'comment-' + reply.id} key={reply.id} className="border-b border-border py-3 last:border-b-0">
                             <div className="flex items-start justify-between gap-3">
                                 <div>
                                     <p className="text-xs font-bold">{reply.user?.name || 'کاربر'}</p>
