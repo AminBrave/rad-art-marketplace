@@ -22,7 +22,7 @@ This is the human operating manual for developing Rademan with ordinary chat-bas
 
 **Authority is purpose-specific:** explicit current owner direction defines product intent and task authorization; `AGENTS.md` defines safety and operating rules; the latest `main` source, migrations, configuration, tests and observed runtime establish implementation facts; live GitHub issues/PRs establish task scope and review status. Historical documents, old skills and #150 vision comments are not implementation authority when they conflict with current owner direction or latest main.
 
-The target Rademan experience and design direction is documented in [`AI/DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md). The legacy RAD component catalogue is historical reference only; the product refactor retains five brand color anchors and rebuilds the rest of the design system.
+The target Rademan experience and design direction is documented in [`AI/DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md). The active component catalogue is `AI/RAD-COMPONENT-CATALOGUE.md`; it defines semantic component slots and shared primitives for the new application system.
 
 The practical issue-to-release sequence, PR review checklist and verification matrix are documented in [`AI/DEVELOPMENT-WORKFLOW.md`](DEVELOPMENT-WORKFLOW.md). `AGENTS.md` remains authoritative for all permission and safety rules.
 
