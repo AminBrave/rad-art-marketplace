@@ -104,7 +104,7 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
             bootstrap.type = 'application/json';
             bootstrap.id = 'rad-auth-bootstrap';
             bootstrap.textContent = JSON.stringify(bootstrapUser);
-            document.documentElement.insertBefore(bootstrap, document.documentElement.firstChild);
+            document.head.appendChild(bootstrap);
         """.replace("__BOOTSTRAP_USER__", json.dumps(bootstrap_user, ensure_ascii=False)))
         page.route(
             re.compile(r".*/api/v1/artworks/social-journey-artwork$"),
