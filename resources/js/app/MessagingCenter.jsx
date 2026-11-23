@@ -45,6 +45,7 @@ export default function MessagingCenter({ role }) {
     const [filePreview, setFilePreview] = useState('');
     const [pendingMessageId, setPendingMessageId] = useState(null);
     const [uploadProgress, setUploadProgress] = useState(0);
+    const [uploading, setUploading] = useState(false);
     const [replyTo, setReplyTo] = useState(null);
     const [pendingArtwork, setPendingArtwork] = useState(null);
     const [editingId, setEditingId] = useState(null);
@@ -140,6 +141,7 @@ export default function MessagingCenter({ role }) {
         setDraft(active ? (draftsByConversationRef.current.get(Number(active)) ?? '') : '');
         setSelectedFile(active ? (filesByConversationRef.current.get(Number(active)) ?? null) : null);
         setUploadProgress(0);
+        setUploading(false);
         setReplyTo(null);
         setEditingId(null);
         setEditDraft('');
@@ -399,6 +401,9 @@ export default function MessagingCenter({ role }) {
         const messageClientId = pendingMessageId || (window.crypto?.randomUUID?.() ?? ('msg-' + Date.now() + '-' + Math.random().toString(36).slice(2)));
         setPendingMessageId(messageClientId);
         pendingIdsByConversationRef.current.set(Number(conversationId), messageClientId);
+        let messageCreated = false;
+        setUploading(false);
+        setUploadProgress(0);
         try {
             const { data } = await request({ method: 'post', url: '/api/v1/conversations/' + conversationId + '/messages', data: {
                 body: body || 'فایل پیوست',
@@ -407,10 +412,12 @@ export default function MessagingCenter({ role }) {
                 client_message_id: messageClientId,
             } });
             let savedMessage = data.data;
+            messageCreated = true;
             const attachmentAlreadySaved = selectedFile && savedMessage.attachments?.some((attachment) =>
                 attachment.name === selectedFile.name && Number(attachment.size_bytes) === Number(selectedFile.size)
             );
             if (selectedFile && !attachmentAlreadySaved) {
+                setUploading(true);
                 const formData = new FormData();
                 formData.append('file', selectedFile);
                 const uploaded = await request({
@@ -453,9 +460,12 @@ export default function MessagingCenter({ role }) {
             if (Number(activeConversationRef.current) === Number(conversationId)) {
                 setError(requestError.response?.status === 503 && pendingArtwork
                     ? 'برای ارسال کارت اثر، پایگاه داده هنوز به‌روزرسانی نشده است. کارت اثر را حذف کنید تا پیام عادی ارسال شود؛ سپس مدیر فنی باید مهاجرت پایگاه داده را اجرا کند.'
-                    : 'ارسال پیام یا پیوست انجام نشد. وضعیت اتصال و پاسخ سرور را بررسی و دوباره تلاش کنید.');
+                    : messageCreated && selectedFile
+                        ? 'پیام ذخیره شد، اما بارگذاری پیوست انجام نشد. فایل همچنان انتخاب‌شده است؛ برای تلاش دوباره ارسال را بزنید.'
+                        : 'ارسال پیام انجام نشد. وضعیت اتصال و پاسخ سرور را بررسی و دوباره تلاش کنید.');
             }
         } finally {
+            setUploading(false);
             sendingMessageRef.current = false;
             setSending(false);
         }
@@ -727,6 +737,7 @@ export default function MessagingCenter({ role }) {
                                 selectedFile={selectedFile}
                                 sending={sending}
                                 uploadProgress={uploadProgress}
+                                uploading={uploading}
                             />}
                         </>
                     )}
