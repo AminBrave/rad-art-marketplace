@@ -42,7 +42,7 @@ This is a source-level audit, not a runtime verification. No tests, builds, brow
 ## Follow-up app-shell and PWA pass
 - The React public layout now uses a compact app bar and the existing desktop navigation rail / mobile bottom tabs; the previous public marketing header and footer markup were removed.
 - `resources/css/application-shell.css` establishes shared responsive app-shell geometry, touch sizing, safe-area behavior, primitive shape and desktop/mobile navigation rules.
-- Added `public/manifest.webmanifest`, `public/pwa-icon.svg` and `public/sw.js`; the production React entry registers the worker. The worker bypasses API, auth, dashboard, admin and private workspace paths and only caches successful public documents/static assets.
+- Added `public/manifest.webmanifest`, `public/pwa-icon.svg` and `public/sw.js`; the production React entry registers the worker. The worker bypasses API/auth requests, never caches HTML navigation or private workspace data, and caches only a static offline fallback plus successful same-origin static assets.
 - Added `tests/js/pwaApplicationShell.test.js` and updated design-system stylesheet coverage.
 - This remains a source-level implementation. Tests/builds/browser checks have not yet been executed; installability, offline behavior, visual fidelity and all responsive role workflows remain unverified.
 
