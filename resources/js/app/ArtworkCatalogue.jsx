@@ -95,15 +95,15 @@ export default function ArtworkCatalogue() {
         <PageContainer as="main" className="min-w-0 max-w-full box-border min-h-[65vh] py-10 lg:py-14" dir="rtl">
             <PageHeader eyebrow="آرشیو عمومی راد آرت" title="گالری آثار" description="در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید." />
 
-            <section aria-label="فیلتر و مرتب‌سازی آثار" className="mt-8 border-y border-border bg-surface-muted/70 px-4 py-5 sm:px-6 sm:py-6 lg:px-7">
-                <div className="mb-5 flex flex-wrap items-center justify-between gap-2">
+            <section aria-label="فیلتر و مرتب‌سازی آثار" className="relative mt-8 border-y-2 border-ink bg-surface-muted/70 px-4 py-6 sm:px-6 sm:py-7 lg:px-8">
+                <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
                     <div>
                         <p className="text-[11px] font-extrabold tracking-[.12em] text-terracotta-strong">جست‌وجوی هدفمند</p>
                         <h2 className="mt-1 text-base font-black">آثاری را پیدا کنید که با نگاه شما هم‌مسیرند</h2>
                     </div>
                     <span className="text-xs text-muted">{activeFilterCount ? activeFilterCount.toLocaleString('fa-IR') + ' معیار انتخاب‌شده' : 'همه آثار عمومی'}</span>
                 </div>
-                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(18rem,1.5fr)_repeat(2,minmax(11rem,1fr))]">
+                <div className="grid gap-3.5 md:grid-cols-2 xl:grid-cols-[minmax(20rem,1.7fr)_repeat(2,minmax(11rem,1fr))]">
                     <SearchField value={searchInput} onChange={(event) => setSearchInput(event.target.value)} onSearch={submitSearch} label="جست‌وجو در آثار و هنرمندان" placeholder="عنوان، توضیحات، تکنیک یا نام هنرمند…" />
                     <SelectField value={category} onChange={(event) => updateFilters({ category: event.target.value })} aria-label="فیلتر دسته‌بندی">
                         <option value="">همه دسته‌ها</option>
@@ -139,7 +139,7 @@ export default function ArtworkCatalogue() {
                     {sort !== 'newest' && <Button variant="outline" type="button" onClick={() => updateFilters({ sort: 'newest' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{filters.sorts?.find((item) => item.value === sort)?.label ?? sort}<X size={12} aria-hidden="true" /></Button>}
                 </div>
             )}
-            <div className="mt-8 flex flex-wrap items-end justify-between gap-3 border-b border-border pb-4">
+            <div className="mt-9 flex flex-wrap items-end justify-between gap-3 border-b-2 border-ink pb-4">
                 <div>
                     <p className="text-[11px] font-bold tracking-[.12em] text-terracotta-strong">آرشیو آثار</p>
                     <p aria-live="polite" className="mt-1 text-sm font-semibold text-ink">{loading ? 'در حال دریافت آثار…' : meta.total.toLocaleString('fa-IR') + ' اثر'}</p>
