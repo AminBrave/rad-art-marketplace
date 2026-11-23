@@ -49,7 +49,7 @@ export default function ArtistWorkspaceOverview() {
     const progress = Math.round((completedProfileSteps / profileSteps.length) * 100);
 
     return (
-        <section className="space-y-8" dir="rtl">
+        <section data-page="artist-home" className="space-y-8" dir="rtl">
             <WorkspaceHero
                 eyebrow="استودیوی هنرمند / نمای کلی"
                 title={<>خوش آمدید، {user?.name}</>}
