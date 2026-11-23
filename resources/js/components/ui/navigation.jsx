@@ -30,7 +30,9 @@ export function TabsContent({ className = '', ...props }) {
     return <TabsPrimitive.Content data-ui="tabs-content" className={cn('pt-5 outline-none focus-visible:ring-2 focus-visible:ring-accent-strong', className)} {...props} />;
 }
 
-export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
+export function DropdownMenuTrigger({ className = '', ...props }) {
+    return <DropdownMenuPrimitive.Trigger data-ui="menu-trigger" className={className} {...props} />;
+}
 
 export function DropdownMenuContent({ className = '', sideOffset = 6, ...props }) {
     return (
