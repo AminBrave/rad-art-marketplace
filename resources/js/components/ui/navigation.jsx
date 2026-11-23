@@ -9,6 +9,7 @@ export const Tabs = TabsPrimitive.Root;
 export function TabsList({ className = '', ...props }) {
     return (
         <TabsPrimitive.List
+            data-ui="tabs-list"
             className={cn('inline-flex max-w-full flex-wrap gap-1 border-b border-border', className)}
             {...props}
         />
@@ -18,6 +19,7 @@ export function TabsList({ className = '', ...props }) {
 export function TabsTrigger({ className = '', ...props }) {
     return (
         <TabsPrimitive.Trigger
+            data-ui="tabs-trigger"
             className={cn('min-h-11 border-b-2 border-transparent px-4 py-2 text-sm font-semibold text-muted outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-terracotta-strong data-[state=active]:border-terracotta data-[state=active]:text-ink disabled:cursor-not-allowed disabled:opacity-50', className)}
             {...props}
         />
@@ -25,7 +27,7 @@ export function TabsTrigger({ className = '', ...props }) {
 }
 
 export function TabsContent({ className = '', ...props }) {
-    return <TabsPrimitive.Content className={cn('pt-5 outline-none focus-visible:ring-2 focus-visible:ring-terracotta-strong', className)} {...props} />;
+    return <TabsPrimitive.Content data-ui="tabs-content" className={cn('pt-5 outline-none focus-visible:ring-2 focus-visible:ring-terracotta-strong', className)} {...props} />;
 }
 
 export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
@@ -33,6 +35,7 @@ export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
 export function DropdownMenuContent({ className = '', sideOffset = 6, ...props }) {
     return (
         <DropdownMenuPrimitive.Content
+            data-ui="menu-content"
             sideOffset={sideOffset}
             align="end"
             dir="rtl"
@@ -45,6 +48,7 @@ export function DropdownMenuContent({ className = '', sideOffset = 6, ...props }
 export function DropdownMenuItem({ className = '', ...props }) {
     return (
         <DropdownMenuPrimitive.Item
+            data-ui="menu-item"
             className={cn('flex min-h-10 cursor-pointer items-center rounded-sm px-3 py-2 text-sm outline-none focus:bg-surface-muted focus:text-ink data-[disabled]:pointer-events-none data-[disabled]:opacity-40', className)}
             {...props}
         />
@@ -52,11 +56,11 @@ export function DropdownMenuItem({ className = '', ...props }) {
 }
 
 export function DropdownMenuLabel({ className = '', ...props }) {
-    return <DropdownMenuPrimitive.Label className={cn('px-3 py-2 text-xs font-bold text-muted', className)} {...props} />;
+    return <DropdownMenuPrimitive.Label data-ui="menu-label" className={cn('px-3 py-2 text-xs font-bold text-muted', className)} {...props} />;
 }
 
 export function DropdownMenuSeparator({ className = '', ...props }) {
-    return <DropdownMenuPrimitive.Separator className={cn('my-1 h-px bg-border', className)} {...props} />;
+    return <DropdownMenuPrimitive.Separator data-ui="menu-separator" className={cn('my-1 h-px bg-border', className)} {...props} />;
 }
 
 export function DropdownMenu(props) {
@@ -73,7 +77,7 @@ DropdownMenu.Separator = DropdownMenuSeparator;
 
 export function Breadcrumbs({ items = [], className = '' }) {
     return (
-        <nav aria-label="مسیر صفحه" className={cn('text-sm text-muted', className)}>
+        <nav data-ui="breadcrumbs" aria-label="مسیر صفحه" className={cn('text-sm text-muted', className)}>
             <ol className="flex flex-wrap items-center gap-2 text-sm text-muted">
                 {items.map((item, index) => {
                     const current = index === items.length - 1;
@@ -102,7 +106,7 @@ export function Pagination({ currentPage = 1, lastPage = 1, onPageChange, disabl
         : [...new Set([1, page - 1, page, page + 1, lastPage].filter((number) => number >= 1 && number <= lastPage))];
 
     return (
-        <nav aria-label="صفحه‌بندی" className={cn('flex flex-wrap items-center justify-between gap-3', className)}>
+        <nav data-ui="pagination" aria-label="صفحه‌بندی" className={cn('flex flex-wrap items-center justify-between gap-3', className)}>
             <Button variant="outline" size="sm" disabled={disabled || page <= 1} onClick={() => onPageChange(page - 1)}>قبلی</Button>
             <div className="flex flex-wrap items-center gap-1" dir="ltr">
                 {visiblePages.map((number, index) => (
