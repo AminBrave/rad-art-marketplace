@@ -7,7 +7,7 @@ import { cn } from '../../lib/utils';
 
 const buttonVariants = {
     primary: 'bg-accent text-inverse enabled:hover:bg-accent-strong',
-    secondary: 'border-border bg-surface-muted text-ink enabled:hover:border-border-strong enabled:hover:bg-border',
+    secondary: 'border-border bg-surface-muted text-ink enabled:hover:border-border-strong',
     outline: 'border-border-strong bg-paper text-ink enabled:hover:border-accent enabled:hover:text-accent-strong',
     ghost: 'bg-transparent text-ink hover:bg-surface-muted',
     danger: 'bg-danger text-inverse enabled:hover:bg-danger',
