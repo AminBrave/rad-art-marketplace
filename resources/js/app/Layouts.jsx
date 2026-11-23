@@ -52,7 +52,7 @@ function PublicNavigation({ user }) {
 
     return (
         <>
-            <aside data-testid="public-navigation-rail" className="fixed inset-y-[60px] end-0 z-30 hidden w-[76px] border-s border-border bg-paper xl:flex">
+            <aside data-ui="public-navigation-rail" data-testid="public-navigation-rail" className="fixed inset-y-[60px] end-0 z-30 hidden w-[76px] border-s border-border bg-paper xl:flex">
                 <nav aria-label="ناوبری اصلی" className="flex w-full flex-col items-center gap-2 px-2 py-5">
                     {items.map(({ to, label, Icon, end }) => (
                         <NavLink
@@ -73,7 +73,7 @@ function PublicNavigation({ user }) {
                 </nav>
             </aside>
             {!user && (
-                <nav data-testid="public-bottom-navigation" aria-label="ناوبری اصلی موبایل" className="fixed inset-x-0 bottom-0 z-50 grid h-[60px] grid-flow-col auto-cols-fr border-t border-border bg-paper pb-[env(safe-area-inset-bottom)] xl:hidden">
+                <nav data-ui="public-bottom-navigation" data-testid="public-bottom-navigation" aria-label="ناوبری اصلی موبایل" className="fixed inset-x-0 bottom-0 z-50 grid h-[60px] grid-flow-col auto-cols-fr border-t border-border bg-paper pb-[env(safe-area-inset-bottom)] xl:hidden">
                     {items.map(({ to, label, Icon, end }) => (
                         <NavLink
                             key={to}
@@ -112,7 +112,7 @@ export function PublicLayout() {
             <a href="#main-content" className="sr-only z-[60] bg-paper px-4 py-3 text-ink focus:not-sr-only focus:fixed focus:inset-x-4 focus:top-4">
                 رفتن به محتوای اصلی
             </a>
-            <header className="app-topbar sticky top-0 z-40 flex min-h-16 items-center justify-between gap-3 border-b border-border bg-paper/95 px-page-gutter backdrop-blur">
+            <header data-ui="app-topbar" className="app-topbar sticky top-0 z-40 flex min-h-16 items-center justify-between gap-3 border-b border-border bg-paper/95 px-page-gutter backdrop-blur">
                 <Link to="/" aria-label="راد آرت، خانه" className="flex shrink-0 items-center gap-2 text-ink no-underline">
                     <span className="grid h-10 w-10 place-items-center rounded-xl bg-ink text-xl font-black text-inverse">ر</span>
                     <span className="text-lg font-black tracking-tight">راد<span className="text-accent-strong">آرت</span></span>
@@ -456,6 +456,7 @@ const workspaceNavigationLabels = {
 function AuthenticatedBottomNavigation({ primaryLinks }) {
     return (
         <div
+            data-ui="authenticated-bottom-navigation"
             data-testid="authenticated-bottom-navigation"
             className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-[color:color-mix(in_srgb,var(--color-paper)_92%,transparent)] pb-[env(safe-area-inset-bottom)] shadow-raised backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-paper)_86%,transparent)] lg:hidden"
         >
@@ -510,7 +511,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
     return (
         <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <div data-ui="workspace-shell" data-experience={user?.role ?? 'workspace'} className={isMessagingRoute ? "flex h-dvh flex-col overflow-hidden bg-canvas text-ink" : "min-h-screen bg-canvas text-ink"} dir="rtl">
-            <header className="sticky top-0 z-40 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] shadow-soft backdrop-blur">
+            <header data-ui="workspace-topbar" className="sticky top-0 z-40 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] shadow-soft backdrop-blur">
                 <div className="mx-auto flex min-h-[4.5rem] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-20 sm:gap-4">
                     <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
                         <Link to="/" className="group grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-lg font-black text-inverse shadow-soft no-underline transition-colors hover:bg-accent sm:h-12 sm:w-12 sm:text-xl" aria-label="راد آرت، صفحه اصلی">
@@ -640,11 +641,11 @@ export function WorkspaceLayout({ title, links, outletContext }) {
 
             <div className={isMessagingRoute ? 'mx-auto grid h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-h-0 min-w-0 max-w-content flex-none grid-cols-1 grid-rows-[minmax(0,1fr)] gap-0 px-page-gutter py-page-gutter sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:gap-4 sm:py-4 lg:h-[calc(100dvh-5rem)] lg:grid-cols-[15rem_minmax(0,1fr)] lg:grid-rows-1 lg:gap-8 lg:py-8' : 'mx-auto grid min-w-0 max-w-content gap-5 px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-8 lg:pb-8'}>
                 {isMessagingRoute && <div className="hidden lg:block" aria-hidden="true" />}
-                <aside className={isMessagingRoute
+                <aside data-ui="workspace-sidebar" className={isMessagingRoute
                     ? 'hidden min-w-0 rounded-xl border border-border bg-paper p-3 shadow-soft lg:fixed lg:top-28 lg:right-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))] lg:z-30 lg:block lg:h-fit lg:max-h-[calc(100dvh_-_8rem)] lg:w-60 lg:overflow-y-auto'
                     : 'hidden min-w-0 rounded-xl border border-border bg-paper p-3 shadow-soft lg:sticky lg:top-24 lg:block lg:h-fit'}>
                     <div className="mb-4 rounded-xl bg-surface-muted p-4">
-                        <p className="text-[10px] font-extrabold tracking-wide text-muted">RAD ART / WORKSPACE</p>
+                        <p className="text-[10px] font-extrabold tracking-wide text-muted">RADEMAN / WORKSPACE</p>
                         <p className="mt-1 text-sm font-extrabold text-ink">{title}</p>
                         <p className="mt-1 truncate text-xs text-muted">{user?.name}</p>
                     </div>
@@ -671,7 +672,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     </nav>
                 </aside>
 
-                <main className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden lg:col-start-2' : 'min-w-0'}>
+                <main data-ui="workspace-content" className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden lg:col-start-2' : 'min-w-0'}>
                     <Outlet context={outletContext} />
                 </main>
             </div>
