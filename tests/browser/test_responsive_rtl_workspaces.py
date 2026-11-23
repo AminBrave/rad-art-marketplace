@@ -1,3 +1,4 @@
+import json
 import unittest
 
 from playwright.sync_api import sync_playwright
@@ -6,6 +7,22 @@ from config import BASE_URL, IGNORE_HTTPS_ERRORS
 
 VIEWPORTS = (320, 375, 768, 1024, 1440)
 PUBLIC_ROUTES = ("/", "/artworks", "/artists", "/login")
+
+
+
+
+def install_authenticated_app_shell(page, user):
+    """Override the server-rendered auth bootstrap for an isolated browser fixture."""
+    def fulfill_shell(route):
+        response = route.fetch()
+        html = response.text()
+        marker = '<script type="application/json" id="rad-auth-bootstrap">null</script>'
+        replacement = '<script type="application/json" id="rad-auth-bootstrap">' + json.dumps(user, ensure_ascii=False) + '</script>'
+        if marker not in html:
+            raise AssertionError("Expected the guest auth bootstrap in the app shell")
+        route.fulfill(response=response, body=html.replace(marker, replacement, 1))
+
+    page.route("**/dashboard/buyer/messages**", fulfill_shell)
 
 
 class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
@@ -137,6 +154,7 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
             route.fulfill(status=200, content_type="application/json", body=__import__("json").dumps(payload))
 
         page.route("**/api/v1/**", api_fixture)
+        install_authenticated_app_shell(page, {"id": 1, "name": "خریدار آزمایشی", "email": "buyer@example.test", "role": "buyer"})
         try:
             response = page.goto(BASE_URL + "/dashboard/buyer/messages", wait_until="commit")
             self.assertIsNotNone(response, "No document response for buyer messaging")
@@ -234,6 +252,7 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
             route.fulfill(status=200, content_type="application/json", body=__import__("json").dumps(payload))
 
         page.route("**/api/v1/**", api_fixture)
+        install_authenticated_app_shell(page, {"id": 1, "name": "خریدار آزمایشی", "email": "buyer@example.test", "role": "buyer"})
         try:
             response = page.goto(BASE_URL + "/dashboard/buyer/messages?conversation=7", wait_until="commit")
             self.assertIsNotNone(response, "No document response for buyer messaging")
