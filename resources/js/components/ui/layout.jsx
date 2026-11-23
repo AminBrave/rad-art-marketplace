@@ -115,20 +115,20 @@ export const Kbd = forwardRef(function Kbd({ className = '', ...props }, ref) {
 });
 
 export function AccessibleIcon({ label, children }) {
-    return <span role="img" aria-label={label}>{children}</span>;
+    return <span data-ui="accessible-icon" role="img" aria-label={label}>{children}</span>;
 }
 
 export function VisuallyHidden({ as: Element = 'span', className = '', ...props }) {
-    return <Element className={cn('sr-only', className)} {...props} />;
+    return <Element data-ui="visually-hidden" className={cn('sr-only', className)} {...props} />;
 }
 
 export const Table = forwardRef(function Table({ className = '', ...props }, ref) {
-    return <div className="w-full min-w-0 overflow-x-auto"><table ref={ref} className={cn('w-full border-collapse text-start text-sm', className)} {...props} /></div>;
+    return <div data-ui="table-scroll" className="w-full min-w-0 overflow-x-auto"><table data-ui="table" ref={ref} className={cn('w-full border-collapse text-start text-sm', className)} {...props} /></div>;
 });
 
 export const DataList = forwardRef(function DataList({ className = '', ...props }, ref) {
-    return <dl ref={ref} className={cn('grid min-w-0 gap-3', className)} {...props} />;
+    return <dl data-ui="data-list" ref={ref} className={cn('grid min-w-0 gap-3', className)} {...props} />;
 });
 
 export const DataListItem = forwardRef(function DataListItem({ label, value, className = '', ...props }, ref) {
-    return <div ref={ref} className={cn('grid min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-3 border-b border-border py-2 last:border-0', className)} {...props}><dt className="text-sm text-muted">{label}</dt><dd className="min-w-0 break-words text-sm font-semibold text-ink">{value}</dd></div>;});
+    return <div data-ui="data-list-item" ref={ref} className={cn('grid min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-3 border-b border-border py-2 last:border-0', className)} {...props}><dt className="text-sm text-muted">{label}</dt><dd className="min-w-0 break-words text-sm font-semibold text-ink">{value}</dd></div>;});
