@@ -86,19 +86,11 @@
   --header-height:var(--rd-topbar);
   --workspace-bottom-nav-height:var(--rd-nav-mobile);
   --workspace-bottom-nav-primary-height:var(--rd-nav-mobile);
-  --radius-sm:var(--rd-radius-1);
-  --radius-md:var(--rd-radius-2);
-  --radius-lg:var(--rd-radius-3);
-  --radius-xl:var(--rd-radius-4);
-  --radius-card:var(--rd-radius-3);
   --shadow-soft:var(--rd-shadow-1);
   --shadow-raised:var(--rd-shadow-2);
   --text-xs:.75rem;--text-sm:.875rem;--text-base:1rem;--text-lg:1.125rem;
   --text-xl:1.25rem;--text-2xl:1.5rem;--text-3xl:1.875rem;--text-4xl:2.25rem;--text-5xl:3rem;
   --leading-copy:var(--rd-leading);--leading-heading:1.22;--leading-tight:1.1;--leading-relaxed:1.7;
-  --space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;--space-5:1.25rem;
-  --space-6:1.5rem;--space-8:2rem;--space-10:2.5rem;--space-12:3rem;--space-16:4rem;
-  --space-20:5rem;--space-24:6rem;
 }
 :root[data-theme='dark'] {
   color-scheme:dark;
