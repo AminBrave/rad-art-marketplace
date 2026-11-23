@@ -327,6 +327,14 @@ Never cache authenticated API responses, private workspace data, messages, or pr
 - Adding speculative product features that do not exist in the current backend.
 - Caching private workspace or messaging data for offline use.
 
+## 14.1 Admin workflow refinement progress
+
+- Refined the user-management list hierarchy while preserving role choices, self-admin protection, explicit confirmation before granting admin access, mutation feedback, and pagination.
+- Refined message-report and artwork-comment-report review layouts to improve report identity, status visibility, and separation of reported content from review actions.
+- Preserved existing review/dismiss/remove actions, explicit destructive-action confirmation, notes, API endpoints, query invalidation, and pagination.
+- These are presentation refinements only; no new moderation policy, user lifecycle action, or backend capability was introduced.
+- Admin curation and messaging still require a separate review pass; no claim of end-to-end verification is made.
+
 ## 15. Delivery discipline
 
 - Follow `AGENTS.md` and `AI/DEVELOPMENT-WORKFLOW.md`.
