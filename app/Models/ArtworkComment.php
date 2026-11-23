@@ -27,7 +27,8 @@ class ArtworkComment extends Model
 
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(self::class, 'parent_id');
+        return $this->belongsTo(self::class, 'parent_id')
+            ->where('artwork_id', $this->artwork_id);
     }
 
     public function replies(): HasMany
