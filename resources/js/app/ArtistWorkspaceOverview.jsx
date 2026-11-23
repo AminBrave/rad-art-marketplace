@@ -98,7 +98,7 @@ export default function ArtistWorkspaceOverview() {
                             <span aria-hidden="true" className={step.done ? 'text-success' : 'text-muted'}>{step.done ? '✓' : '○'}</span>
                             <span className={step.done ? 'text-muted line-through' : 'font-semibold text-ink'}>{step.label}</span>
                         </li>)}
-                        <li className="flex items-center gap-3 border border-border bg-paper px-4 py-3 text-sm">
+                        <li className="flex min-h-12 items-center gap-3 border-b border-border py-3 text-sm">
                             <span aria-hidden="true" className={hasArtwork ? 'text-success' : 'text-muted'}>{hasArtwork ? '✓' : '○'}</span>
                             <span className={hasArtwork ? 'text-muted line-through' : 'font-semibold text-ink'}>ثبت اولین اثر برای بررسی</span>
                         </li>
@@ -133,7 +133,7 @@ export default function ArtistWorkspaceOverview() {
                                 </ul>
                             )}
                         </div>
-                        <div className="border border-border bg-paper p-5 sm:p-6">
+                        <div className="border-t border-border pt-5 sm:pt-6">
                             <SectionHeader eyebrow="ارتباط با خریداران" title="پیام‌های مستقیم" actions={<Link to="/dashboard/artist/messages" className="text-xs font-bold text-terracotta-strong underline underline-offset-4">رفتن به پیام‌ها</Link>} />
                             <div className="py-6"><p className="max-w-lg text-sm leading-7 text-muted">گفت‌وگوهای مستقیم با خریداران را از صندوق پیام‌ها مدیریت کنید.</p><Link to="/dashboard/artist/messages" className="mt-3 inline-flex text-sm font-bold text-terracotta-strong underline">بازکردن صندوق پیام‌ها</Link></div>
                         </div>
