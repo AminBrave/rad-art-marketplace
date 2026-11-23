@@ -386,7 +386,7 @@ export function BuyerDashboardSkeleton() {
             <section className="border-t border-border pt-6">
                 <div className="grid gap-2"><Skeleton className="h-3 w-36 rounded-sm" /><Skeleton className="h-6 w-48 rounded-sm" /><Skeleton className="h-3 w-full max-w-2xl rounded-sm" /></div>
                 <div className="mt-5 grid gap-4 md:grid-cols-3">
-                    {[0, 1, 2].map((item) => <article key={item} className="grid gap-3 border-r-2 border-sand bg-surface-muted p-4"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-5 w-3/4 rounded-sm" /><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-5/6 rounded-sm" /></article>)}
+                    {[0, 1, 2].map((item) => <article key={item} className="grid gap-3 border-r-2 border-line bg-surface-muted p-4"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-5 w-3/4 rounded-sm" /><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-5/6 rounded-sm" /></article>)}
                 </div>
             </section>
         </section>
@@ -437,13 +437,13 @@ export function ArtistProfileSkeleton() {
             <span className="sr-only">در حال دریافت پروفایل هنرمند…</span>
             <nav aria-hidden="true" className="flex items-center gap-2"><Skeleton className="h-3 w-10 rounded-sm" /><Skeleton className="h-3 w-2 rounded-sm" /><Skeleton className="h-3 w-16 rounded-sm" /><Skeleton className="h-3 w-2 rounded-sm" /><Skeleton className="h-3 w-24 rounded-sm" /></nav>
             <section className="relative mt-6 overflow-hidden border border-border bg-paper">
-                <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1.5 bg-terracotta" />
+                <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1.5 bg-accent" />
                 <div className="grid lg:grid-cols-[minmax(0,1fr)_18rem]">
                     <div className="relative px-6 pb-8 pt-9 sm:px-10 sm:pb-10 sm:pt-12 lg:px-12">
                         <Skeleton className="h-3 w-24 rounded-sm" />
                         <Skeleton className="mt-4 h-11 w-2/3 max-w-lg rounded-sm sm:h-14" />
                         <Skeleton className="mt-4 h-4 w-24 rounded-sm" />
-                        <div className="mt-7 grid max-w-3xl gap-2 border-r-2 border-sand pr-5"><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-11/12 rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div>
+                        <div className="mt-7 grid max-w-3xl gap-2 border-r-2 border-line pr-5"><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-11/12 rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div>
                         <div className="mt-7 flex gap-5"><Skeleton className="h-4 w-24 rounded-sm" /><Skeleton className="h-4 w-28 rounded-sm" /></div>
                     </div>
                     <aside className="grid content-between gap-6 border-t border-border bg-surface-muted p-6 sm:p-8 lg:border-r lg:border-t-0">
