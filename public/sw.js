@@ -1,6 +1,6 @@
 const VERSION = 'rad-art-shell-v2';
 const SHELL_CACHE = VERSION;
-const APP_SHELL = ['/manifest.webmanifest', '/favicon.svg', '/pwa-icon.svg', '/offline.html'];
+const APP_SHELL = ['/manifest.webmanifest', '/favicon.svg', '/pwa-icon.svg', '/pwa-icon-192.png', '/pwa-icon-512.png', '/offline.html'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(SHELL_CACHE).then((cache) => cache.addAll(APP_SHELL)));
