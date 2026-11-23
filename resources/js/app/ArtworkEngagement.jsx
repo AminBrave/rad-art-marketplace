@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { Button, TextareaField } from '../components/ui';
+import { Button, TextareaField, SelectField } from '../components/ui';
 
 function CommentItem({ comment, user, onReply, onDelete, onReport }) {
     const canDelete = user && comment.is_mine && !comment.is_deleted;
@@ -199,12 +199,12 @@ export default function ArtworkEngagement({ artwork, slug }) {
                 <form onSubmit={(event) => { event.preventDefault(); setReportMessage(''); reportMutation.mutate(); }} className="mt-4 border border-border p-4">
                     <p className="text-sm font-bold">گزارش دیدگاه</p>
                     <label htmlFor="artwork-report-reason" className="mt-3 block text-xs text-muted">دلیل گزارش</label>
-                    <select id="artwork-report-reason" value={reportReason} onChange={(event) => setReportReason(event.target.value)} className="mt-1 border border-border bg-surface px-3 py-2 text-sm">
+                    <SelectField id="artwork-report-reason" value={reportReason} onChange={(event) => setReportReason(event.target.value)} className="mt-1">
                         <option value="spam">هرزنامه</option>
                         <option value="harassment">آزار یا توهین</option>
                         <option value="copyright">نقض حقوق اثر</option>
                         <option value="other">سایر</option>
-                    </select>
+                    </SelectField>
                     <div className="mt-3 flex gap-3">
                         <Button variant="ghost" type="submit" disabled={reportMutation.isPending} className="bg-ink px-3 py-2 text-xs font-bold text-inverse">ارسال گزارش</Button>
                         <Button variant="ghost" type="button" onClick={() => setReportTarget(null)} className="px-3 py-2 text-xs underline">انصراف</Button>
