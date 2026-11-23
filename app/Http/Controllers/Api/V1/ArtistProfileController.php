@@ -89,7 +89,7 @@ class ArtistProfileController extends Controller
             'data' => [
                 ... $this->payload($artistProfile),
                 'artworks' => $artworks->getCollection()
-                    ->map(fn (Artwork $artwork): array => $this->publicArtworkPayload($artwork))
+                    ->map(fn (Artwork $artwork): array => $this->publicArtworkPayload($artwork, $artistProfile->is_public))
                     ->values(),
                 'artworks_pagination' => [
                     'current_page' => $artworks->currentPage(),
@@ -142,9 +142,9 @@ class ArtistProfileController extends Controller
         ];
     }
 
-    private function publicArtworkPayload(Artwork $artwork): array
+    private function publicArtworkPayload(Artwork $artwork, bool $includeEngagement): array
     {
-        return [
+        $payload = [
             'id' => $artwork->id,
             'slug' => $artwork->slug,
             'title' => $artwork->title,
@@ -155,10 +155,15 @@ class ArtistProfileController extends Controller
             'price' => $artwork->price,
             'availability' => $artwork->availability,
             'image_url' => route('api.v1.artworks.image', $artwork->slug),
-            'likes_count' => (int) ($artwork->likes_count ?? 0),
-            'comments_count' => (int) ($artwork->comments_count ?? 0),
-            'liked_by_me' => (bool) ($artwork->liked_by_me ?? false),
             'category' => ['id' => $artwork->category->id, 'name' => $artwork->category->name, 'slug' => $artwork->category->slug],
         ];
+
+        if ($includeEngagement) {
+            $payload['likes_count'] = (int) ($artwork->likes_count ?? 0);
+            $payload['comments_count'] = (int) ($artwork->comments_count ?? 0);
+            $payload['liked_by_me'] = (bool) ($artwork->liked_by_me ?? false);
+        }
+
+        return $payload;
     }
 }
