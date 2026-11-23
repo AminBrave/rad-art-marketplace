@@ -114,7 +114,7 @@ export default function ArtworkCatalogue() {
                     </SelectField>
                     <div className="flex items-center justify-between gap-3">
                         <p className="text-xs text-muted">{activeFilterCount ? activeFilterCount.toLocaleString('fa-IR') + ' فیلتر فعال' : 'بدون فیلتر'}</p>
-                        {activeFilterCount > 0 && <button type="button" onClick={clearFilters} className="text-sm font-bold text-terracotta-strong underline underline-offset-4">پاک‌کردن فیلترها</button>}
+                        {activeFilterCount > 0 && <button type="button" onClick={clearFilters} className="text-sm font-bold text-accent-strong underline underline-offset-4">پاک‌کردن فیلترها</button>}
                     </div>
                 </div>
                 {filtersError && <p role="status" className="mt-3 text-xs text-muted">برخی گزینه‌های فیلتر بارگذاری نشدند؛ می‌توانید با جست‌وجو و دسته‌بندی ادامه دهید.</p>}
