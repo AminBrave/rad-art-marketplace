@@ -4,11 +4,11 @@ export function getWorkspacePrimaryLinks(role) {
             { to: '/dashboard/artist', label: 'نمای کلی', end: true, shortLabel: 'خانه' },
             { to: '/dashboard/artist/artworks', label: 'کتابخانه محتوا', shortLabel: 'محتوا' },
             { to: '/dashboard/artist/profile', label: 'پروفایل هنرمند', shortLabel: 'پروفایل' },
-            { to: '/dashboard/artist/messages', label: 'درخواست‌ها', shortLabel: 'درخواست‌ها' },
+            { to: '/dashboard/artist/messages', label: 'پیام‌ها', shortLabel: 'پیام‌ها' },
         ],
         buyer: [
             { to: '/dashboard/buyer', label: 'نمای کلی', end: true, shortLabel: 'خانه' },
-            { to: '/dashboard/buyer/messages', label: 'درخواست‌ها', shortLabel: 'درخواست‌ها' },
+            { to: '/dashboard/buyer/messages', label: 'پیام‌ها', shortLabel: 'پیام‌ها' },
         ],
         admin: [
             { to: '/admin', label: 'نمای کلی', end: true, shortLabel: 'خانه' },
