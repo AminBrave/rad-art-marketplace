@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
-import { ArtistCard, ArtistCardSkeleton, EmptyState, ErrorState, SearchField, PageContainer, SectionHeader } from '../components/ui';
+import { ArtistCard, ArtistCardSkeleton, EmptyState, ErrorState, SearchField, PageContainer, SectionHeader, Button } from '../components/ui';
 
 export default function ArtistDirectoryPage() {
     const [params, setParams] = useSearchParams();
@@ -86,9 +86,9 @@ export default function ArtistDirectoryPage() {
 
             {!loading && !error && meta.last_page > 1 && (
                 <nav aria-label="صفحه‌بندی هنرمندان" className="mt-10 flex items-center justify-center gap-4">
-                    <button type="button" disabled={page <= 1} onClick={() => updatePage(page - 1)} className="min-h-11 border border-border px-5 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40">قبلی</button>
+                    <Button variant="outline" type="button" disabled={page <= 1} onClick={() => updatePage(page - 1)} className="min-h-11 border border-border px-5 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40">قبلی</Button>
                     <span className="text-sm text-muted">صفحه {meta.current_page.toLocaleString('fa-IR')} از {meta.last_page.toLocaleString('fa-IR')}</span>
-                    <button type="button" disabled={page >= meta.last_page} onClick={() => updatePage(page + 1)} className="min-h-11 border border-border px-5 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40">بعدی</button>
+                    <Button variant="outline" type="button" disabled={page >= meta.last_page} onClick={() => updatePage(page + 1)} className="min-h-11 border border-border px-5 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40">بعدی</Button>
                 </nav>
             )}
         </PageContainer>
