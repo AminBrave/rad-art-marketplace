@@ -240,7 +240,7 @@ test('Page and section headers retain the requested heading hierarchy', () => {
 
     assert.match(page, /<h2[^>]*>مدیریت آثار<\/h2>/);
     assert.match(page, /فضای هنرمند/);
-    assert.match(page, /before:bg-terracotta/);
+    assert.match(page, /before:bg-accent/);
     assert.match(section, /<h3[^>]*id="recent-work"[^>]*>آثار اخیر<\/h3>/);
 
     const hero = renderToStaticMarkup(
@@ -253,9 +253,9 @@ test('Page and section headers retain the requested heading hierarchy', () => {
 
     assert.match(hero, /<header dir="rtl"/);
     assert.match(hero, /rounded-xl border border-ink bg-ink/);
-    assert.match(hero, /bg-terracotta/);
+    assert.match(hero, /bg-accent/);
     assert.match(hero, /text-inverse/);
-    assert.match(hero, /text-sand/);
+    assert.match(hero, /text-muted/);
     assert.doesNotMatch(hero, /border-b border-border/);
     assert.match(hero, /خوش آمدید/);
 });
