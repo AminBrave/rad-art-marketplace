@@ -187,10 +187,12 @@ final class ArtworkInteractionTest extends TestCase
             ->assertCreated()
             ->json('data.id');
 
-        $reportId = $this->postJson('/api/v1/artworks/'.$artwork->slug.'/comments/'.$commentId.'/reports', [
-            'reason' => 'spam',
-            'details' => 'گزارش آزمایشی',
-        ])->assertCreated()->json('data.id');
+        $reporter = $this->user('social-report-reporter@example.test', User::ROLE_BUYER);
+        $reportId = $this->actingAs($reporter)
+            ->postJson('/api/v1/artworks/'.$artwork->slug.'/comments/'.$commentId.'/reports', [
+                'reason' => 'spam',
+                'details' => 'گزارش آزمایشی',
+            ])->assertCreated()->json('data.id');
 
         $this->actingAs($admin)
             ->getJson('/api/v1/admin/artwork-comment-reports')
