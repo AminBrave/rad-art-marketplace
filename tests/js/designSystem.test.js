@@ -403,18 +403,18 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(workspaceLayout.includes('data-experience={user?.role ?? \'workspace\'}'));
 });
 
-test('product and design guidance defines the new Rademan experience architecture', () => {
+test('product and design guidance defines the Instagram-inspired Rademan experience architecture', () => {
     for (const principle of [
-        'coherent, contemporary visual-content platform',
+        "Instagram's recognizable interface principles",
         'Product information architecture',
         'Buyer Studio',
         'Artist Studio',
         'Admin Console',
-        'single canonical Inquiries destination',
-        'Light, dark and system theme behavior',
-        'Mobile-first PWA',
-        'Messaging preservation contract',
-        'latest `main` branch establishes what exists',
+        'existing canonical buyer–artist conversation inbox',
+        'Explicit light, dark and system preference',
+        'Responsive behavior',
+        'Messaging: preserve the current conversation list + active thread model',
+        'WCAG 2.2 AA',
     ]) assert.ok(designSystem.includes(principle), 'Missing current product/design principle: ' + principle);
 });
 test('auth bootstrap resolves session state before React mounts without caching personalized HTML', () => {
