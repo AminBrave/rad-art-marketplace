@@ -50,13 +50,13 @@ export default function ArtistDirectoryPage() {
                 <span>خانه</span><span className="mx-2" aria-hidden="true">/</span><span aria-current="page" className="text-ink">هنرمندان</span>
             </nav>
 
-            <header className="relative mt-6 overflow-hidden border-y border-border bg-surface-muted px-6 py-10 sm:px-10 sm:py-14 lg:px-14">
+            <header className="relative mt-6 overflow-hidden border-y-2 border-ink bg-ink px-6 py-10 text-inverse sm:px-10 sm:py-14 lg:px-14">
                 <div aria-hidden="true" className="absolute -left-10 -top-16 h-56 w-56 rounded-full border border-[color:color-mix(in_srgb,var(--color-sand)_80%,transparent)]" />
                 <div aria-hidden="true" className="absolute -left-2 -top-8 h-40 w-40 rounded-full border border-[color:color-mix(in_srgb,var(--color-sand)_70%,transparent)]" />
                 <div className="relative max-w-3xl">
-                    <p className="text-xs font-bold tracking-wide text-terracotta-strong">جامعه خلاق راد آرت</p>
-                    <h1 className="mt-4 text-4xl font-black leading-tight sm:text-5xl">هنرمند را کشف کنید.</h1>
-                    <p className="mt-5 max-w-2xl text-sm leading-8 text-muted sm:text-base">
+                    <p className="text-xs font-bold tracking-[.12em] text-sand">جامعه خلاق راد آرت</p>
+                    <h1 className="mt-4 text-4xl font-black leading-[1.2] tracking-[-.05em] text-inverse sm:text-6xl">هنرمند را کشف کنید.</h1>
+                    <p className="mt-5 max-w-2xl text-sm leading-8 text-[color:color-mix(in_srgb,var(--color-inverse-text)_78%,transparent)] sm:text-base">
                         با هنرمندان مستقل آشنا شوید؛ از نگاه و مسیر هنری آن‌ها بخوانید و مجموعه آثار تأییدشده‌شان را ببینید.
                     </p>
                     <div className="mt-8 max-w-2xl">
