@@ -141,7 +141,7 @@ AI should act as a capable engineering partner: understand the task, recommend b
 
 ## 13. Git, multi-agent collaboration and delivery
 
-Rademan uses persistent agent lanes and isolated task branches to support parallel work. Each active agent works in its own agent/<agent-id> lane, creates a short-lived task branch, and targets only its own lane for task integration. Cross-agent integration is owner-directed; ordinary task work does not target main.
+Rademan uses persistent agent lanes and isolated task branches to support parallel work. Each active agent uses agent/<agent-name>/lane as its persistent lane, creates short-lived task branches named agent/<agent-name>/<task-type>/<task-name>, and targets only its own lane for task integration. Cross-agent integration is owner-directed; ordinary task work does not target main.
 
 Use GitHub issues, PRs and a project board when they improve parallel coordination, ownership, review and handoff. Assign one primary owner per independent task, define observable acceptance criteria, coordinate shared files/contracts, and keep task and integration status distinct.
 
