@@ -268,7 +268,7 @@ final class ArtworkInteractionTest extends TestCase
 
     public function test_social_endpoints_hide_pending_and_private_artworks(): void
     {
-        [, $profile, $artwork] = $this->artworkFixture();
+        [$artist, $profile, $artwork] = $this->artworkFixture();
         $pending = $profile->artworks()->create([
             'category_id' => $artwork->category_id,
             'slug' => 'social-pending-work',
@@ -284,6 +284,13 @@ final class ArtworkInteractionTest extends TestCase
             'status' => Artwork::STATUS_REJECTED,
         ]);
         $profile->update(['is_public' => false]);
+
+        $this->actingAs($artist)
+            ->getJson('/api/v1/artworks/'.$artwork->slug)
+            ->assertOk()
+            ->assertJsonMissingPath('data.likes_count')
+            ->assertJsonMissingPath('data.comments_count')
+            ->assertJsonMissingPath('data.liked_by_me');
 
         $this->getJson('/api/v1/artworks/'.$artwork->slug.'/comments')->assertNotFound();
         $this->getJson('/api/v1/artworks/'.$pending->slug.'/comments')->assertNotFound();
