@@ -106,7 +106,7 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
                 }
                 return originalGetElementById.call(this, id);
             };
-        """.replace("PLACEHOLDER", JSON.stringify(bootstrap_user)))
+        """.replace("PLACEHOLDER", json.dumps(bootstrap_user, ensure_ascii=False)))
         page.route(
             re.compile(r".*/api/v1/artworks/social-journey-artwork$"),
             lambda route: route.fulfill(
