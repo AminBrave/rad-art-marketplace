@@ -19,20 +19,22 @@ class ArtworkInteractionController extends Controller
     {
         $this->ensurePublicArtwork($artwork);
 
-        $created = DB::table('artwork_likes')->insertOrIgnore([
-            'artwork_id' => $artwork->id,
-            'user_id' => $request->user()->id,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        DB::transaction(function () use ($request, $artwork): void {
+            $created = DB::table('artwork_likes')->insertOrIgnore([
+                'artwork_id' => $artwork->id,
+                'user_id' => $request->user()->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
-        if ($created === 1) {
-            $likeId = (int) DB::table('artwork_likes')
-                ->where('artwork_id', $artwork->id)
-                ->where('user_id', $request->user()->id)
-                ->value('id');
-            event('artwork.liked', [$artwork, $request->user(), $likeId]);
-        }
+            if ($created === 1) {
+                $likeId = (int) DB::table('artwork_likes')
+                    ->where('artwork_id', $artwork->id)
+                    ->where('user_id', $request->user()->id)
+                    ->value('id');
+                event('artwork.liked', [$artwork, $request->user(), $likeId]);
+            }
+        });
 
         return response()->json([
             'data' => [
@@ -118,15 +120,19 @@ class ArtworkInteractionController extends Controller
             }
         }
 
-        $comment = ArtworkComment::query()->create([
-            'artwork_id' => $artwork->id,
-            'user_id' => $request->user()->id,
-            'parent_id' => $parent?->id,
-            'body' => $body,
-        ]);
+        $comment = DB::transaction(function () use ($artwork, $request, $parent, $body): ArtworkComment {
+            $comment = ArtworkComment::query()->create([
+                'artwork_id' => $artwork->id,
+                'user_id' => $request->user()->id,
+                'parent_id' => $parent?->id,
+                'body' => $body,
+            ]);
 
-        $comment->load(['user:id,role', 'user.artistProfile:id,user_id,display_name,is_public']);
-        event($parent ? 'artwork.comment.replied' : 'artwork.commented', [$artwork, $comment, $request->user()]);
+            $comment->load(['user:id,role', 'user.artistProfile:id,user_id,display_name,is_public']);
+            event($parent ? 'artwork.comment.replied' : 'artwork.commented', [$artwork, $comment, $request->user()]);
+
+            return $comment;
+        });
 
         return response()->json([
             'message' => 'دیدگاه ثبت شد.',
