@@ -195,7 +195,7 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
                 body=json.dumps(comments_payload(replies), ensure_ascii=False),
             )
 
-        page.route("**/api/v1/artworks/social-journey-artwork/comments**", comments_route)
+        page.route(re.compile(r".*/api/v1/artworks/social-journey-artwork/comments(?:\\?.*)?$"), comments_route)
         try:
             page.goto(BASE_URL + "/artworks/social-journey-artwork", wait_until="domcontentloaded")
             page.get_by_role("heading", name="گفت‌وگو درباره اثر").wait_for()
@@ -260,7 +260,7 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
                 body=json.dumps(comments_payload(replies), ensure_ascii=False),
             )
 
-        page.route("**/api/v1/artworks/social-journey-artwork/comments**", comments_route)
+        page.route(re.compile(r".*/api/v1/artworks/social-journey-artwork/comments(?:\\?.*)?$"), comments_route)
         try:
             page.goto(BASE_URL + "/artworks/social-journey-artwork", wait_until="domcontentloaded")
             page.get_by_role("heading", name="گفت‌وگو درباره اثر").wait_for()
