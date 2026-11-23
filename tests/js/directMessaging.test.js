@@ -145,7 +145,8 @@ test('in-flight sends and recoverable failures remain associated with their orig
     assert.ok(messaging.includes('sendErrorsByConversationRef.current.get(Number(active))'));
     assert.ok(messaging.includes('sendingInAnotherConversation={sending && Number(sendingConversationId) !== Number(active)}'));
     assert.ok(messageComposer.includes('در حال ارسال در گفتگوی دیگر'));
-    assert.ok(messagingInbox.includes('sendingConversationId={sendingConversationId}') === false, 'The inbox panel receives the active send ID from its parent render.');
+    assert.ok(messaging.includes('sendingConversationId={sendingConversationId}'));
+    assert.ok(messagingInbox.includes('    sendingConversationId,'));
     assert.ok(messagingInbox.includes('Number(sendingConversationId) === Number(thread.id)'));
     assert.ok(messagingInbox.includes('در حال ارسال پیام و پیوست'));
     assert.ok(messagingInbox.includes('role="status" aria-live="polite"'));
