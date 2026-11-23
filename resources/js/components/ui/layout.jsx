@@ -8,92 +8,92 @@ import { cn } from '../../lib/utils';
  */
 
 export const Box = forwardRef(function Box({ as: Element = 'div', className = '', ...props }, ref) {
-    return <Element ref={ref} className={cn('min-w-0', className)} {...props} />;
+    return <Element data-ui="box" ref={ref} className={cn('min-w-0', className) {...props} />;
 });
 
 export const Flex = forwardRef(function Flex({ as: Element = 'div', direction = 'row', align, justify, wrap = false, gap, className = '', style, ...props }, ref) {
     const directions = { row: 'flex-row', column: 'flex-col', 'row-reverse': 'flex-row-reverse', 'column-reverse': 'flex-col-reverse' };
     const alignments = { start: 'items-start', center: 'items-center', end: 'items-end', stretch: 'items-stretch', baseline: 'items-baseline' };
     const justifications = { start: 'justify-start', center: 'justify-center', end: 'justify-end', between: 'justify-between', around: 'justify-around', evenly: 'justify-evenly' };
-    return <Element ref={ref} className={cn('flex min-w-0', directions[direction] ?? directions.row, alignments[align], justifications[justify], wrap && 'flex-wrap', className)} style={{ ...(gap !== undefined ? { gap: typeof gap === 'number' ? `${gap * 0.25}rem` : gap } : {}), ...style }} {...props} />;
+    return <Element data-ui="flex" ref={ref} className={cn('flex min-w-0', directions[direction] ?? directions.row, alignments[align], justifications[justify], wrap && 'flex-wrap', className)} style={{ ...(gap !== undefined ? { gap: typeof gap === 'number' ? `${gap * 0.25}rem` : gap } : {}), ...style }} {...props} />;
 });
 
 export const Grid = forwardRef(function Grid({ as: Element = 'div', columns, gap, className = '', style, ...props }, ref) {
     const columnClasses = { 1: 'grid-cols-1', 2: 'grid-cols-2', 3: 'grid-cols-3', 4: 'grid-cols-4', 5: 'grid-cols-5', 6: 'grid-cols-6', 12: 'grid-cols-12' };
-    return <Element ref={ref} className={cn('grid min-w-0', columnClasses[columns], className)} style={{ ...(gap !== undefined ? { gap: typeof gap === 'number' ? `${gap * 0.25}rem` : gap } : {}), ...style }} {...props} />;
+    return <Element data-ui="grid" ref={ref} className={cn('grid min-w-0', columnClasses[columns], className)} style={{ ...(gap !== undefined ? { gap: typeof gap === 'number' ? `${gap * 0.25}rem` : gap } : {}), ...style }} {...props} />;
 });
 
 export const Container = forwardRef(function Container({ as: Element = 'div', width = 'wide', className = '', ...props }, ref) {
     const widths = { reading: 'max-w-[var(--content-reading-width)]', wide: 'max-w-[var(--content-width)]', full: 'max-w-none' };
-    return <Element ref={ref} className={cn('mx-auto w-[min(calc(100%_-_2_*_var(--page-gutter)),100%)] min-w-0', widths[width] ?? widths.wide, className)} {...props} />;
+    return <Element data-ui="container" ref={ref} className={cn('mx-auto w-[min(calc(100%_-_2_*_var(--page-gutter)),100%)] min-w-0', widths[width] ?? widths.wide, className)} {...props} />;
 });
 
 export const Section = forwardRef(function Section({ as: Element = 'section', className = '', ...props }, ref) {
-    return <Element ref={ref} className={cn('min-w-0', className)} {...props} />;
+    return <Element data-ui="section" ref={ref} className={cn('min-w-0', className)} {...props} />;
 });
 
 export const Inset = forwardRef(function Inset({ as: Element = 'div', side = 'all', className = '', ...props }, ref) {
     const spacing = { all: 'p-4', inline: 'px-4', block: 'py-4', start: 'ps-4', end: 'pe-4', top: 'pt-4', bottom: 'pb-4' };
-    return <Element ref={ref} className={cn(spacing[side] ?? spacing.all, className)} {...props} />;
+    return <Element data-ui="inset" ref={ref} className={cn(spacing[side] ?? spacing.all, className) {...props} />;
 });
 
 export const Heading = forwardRef(function Heading({ as: Element = 'h2', size = 'md', className = '', ...props }, ref) {
     const sizes = { xs: 'text-xs font-bold', sm: 'text-sm font-bold', md: 'text-lg font-extrabold leading-heading', lg: 'text-2xl font-extrabold leading-heading', xl: 'text-3xl font-extrabold leading-heading' };
-    return <Element ref={ref} className={cn('text-ink', sizes[size] ?? sizes.md, className)} {...props} />;
+    return <Element data-ui="heading" ref={ref} className={cn('text-ink', sizes[size] ?? sizes.md, className) {...props} />;
 });
 
 export const Text = forwardRef(function Text({ as: Element = 'p', size = 'md', color = 'ink', className = '', ...props }, ref) {
     const sizes = { xs: 'text-xs leading-6', sm: 'text-sm leading-7', md: 'text-sm leading-7 sm:text-base', lg: 'text-lg leading-8' };
     const colors = { ink: 'text-ink', muted: 'text-muted', subtle: 'text-subtle', inverse: 'text-inverse', accent: 'text-terracotta-strong' };
-    return <Element ref={ref} className={cn('min-w-0', sizes[size] ?? sizes.md, colors[color] ?? colors.ink, className)} {...props} />;
+    return <Element data-ui="text" ref={ref} className={cn('min-w-0', sizes[size] ?? sizes.md, colors[color] ?? colors.ink, className) {...props} />;
 });
 
 export const Strong = forwardRef(function Strong({ className = '', ...props }, ref) {
-    return <strong ref={ref} className={cn('font-bold text-ink', className)} {...props} />;
+    return <strong data-ui="strong" ref={ref} className={cn('font-bold text-ink', className) {...props} />;
 });
 
 export const Em = forwardRef(function Em({ className = '', ...props }, ref) {
-    return <em ref={ref} className={cn('italic', className)} {...props} />;
+    return <em data-ui="em" ref={ref} className={cn('italic', className) {...props} />;
 });
 
 export const Code = forwardRef(function Code({ className = '', ...props }, ref) {
-    return <code ref={ref} dir="ltr" className={cn('rounded-sm bg-surface-muted px-1.5 py-0.5 font-mono text-[.9em] text-ink', className)} {...props} />;
+    return <code data-ui="code" ref={ref} dir="ltr" className={cn('rounded-sm bg-surface-muted px-1.5 py-0.5 font-mono text-[.9em] text-ink', className)} {...props} />;
 });
 
 export const Quote = forwardRef(function Quote({ className = '', ...props }, ref) {
-    return <q ref={ref} className={cn('text-ink', className)} {...props} />;
+    return <q data-ui="quote" ref={ref} className={cn('text-ink', className) {...props} />;
 });
 
 export const Blockquote = forwardRef(function Blockquote({ className = '', ...props }, ref) {
-    return <blockquote ref={ref} className={cn('border-s-2 border-sand ps-4 text-muted', className)} {...props} />;
+    return <blockquote data-ui="blockquote" ref={ref} className={cn('border-s-2 border-sand ps-4 text-muted', className)} {...props} />;
 });
 
 export const Separator = forwardRef(function Separator({ orientation = 'horizontal', decorative = true, className = '', ...props }, ref) {
-    return <div ref={ref} role={decorative ? 'none' : 'separator'} aria-orientation={decorative ? undefined : orientation} className={cn(orientation === 'vertical' ? 'h-full w-px' : 'h-px w-full', 'shrink-0 bg-border', className)} {...props} />;
+    return <div data-ui="separator" ref={ref} role={decorative ? 'none' : 'separator'} aria-orientation={decorative ? undefined : orientation} className={cn(orientation === 'vertical' ? 'h-full w-px' : 'h-px w-full', 'shrink-0 bg-border', className)} {...props} />;
 });
 
 export const AspectRatio = forwardRef(function AspectRatio({ ratio = 1, className = '', style, ...props }, ref) {
-    return <div ref={ref} className={cn('relative w-full overflow-hidden', className)} style={{ aspectRatio: ratio, ...style }} {...props} />;
+    return <div data-ui="aspect-ratio" ref={ref} className={cn('relative w-full overflow-hidden', className)} style={{ aspectRatio: ratio, ...style }} {...props} />;
 });
 
 export function Avatar({ src, alt = '', fallback, size = 'md', className = '', ...props }) {
     const [failed, setFailed] = useState(false);
     const dimensions = { sm: 'h-8 w-8 text-xs', md: 'h-10 w-10 text-sm', lg: 'h-14 w-14 text-base', xl: 'h-20 w-20 text-xl' };
     return (
-        <span role={alt ? "img" : undefined} aria-label={alt || undefined} aria-hidden={alt ? undefined : true} className={cn('inline-grid shrink-0 place-items-center overflow-hidden rounded-full border border-border bg-surface-muted font-bold text-muted', dimensions[size] ?? dimensions.md, className)} {...props}>
+        <span data-ui="avatar" role={alt ? "img" : undefined} aria-label={alt || undefined} aria-hidden={alt ? undefined : true} className={cn('inline-grid shrink-0 place-items-center overflow-hidden rounded-full border border-border bg-surface-muted font-bold text-muted', dimensions[size] ?? dimensions.md, className)} {...props}>
             {src && !failed ? <img src={src} alt="" className="h-full w-full object-cover" onError={() => setFailed(true)} /> : <span aria-hidden="true">{fallback ?? (alt ? Array.from(alt.trim())[0] : '?')}</span>}
         </span>
     );
 }
 
 export const Card = forwardRef(function Card({ as: Element = 'article', interactive = false, className = '', ...props }, ref) {
-    return <Element ref={ref} className={cn('min-w-0 rounded-lg border border-border bg-paper', interactive && 'transition-colors hover:border-border-strong', className)} {...props} />;
+    return <Element data-ui="card" ref={ref} className={cn('min-w-0 rounded-lg border border-border bg-paper', interactive && 'transition-colors hover:border-border-strong', className)} {...props} />;
 });
 
 export const Callout = forwardRef(function Callout({ as: Element = 'aside', variant = 'info', title, children, className = '', ...props }, ref) {
     const variants = { info: 'border-s-terracotta bg-accent-surface', success: 'border-s-success bg-success-surface', warning: 'border-s-warning bg-warning-surface', danger: 'border-s-danger bg-danger-surface' };
     return (
-        <Element ref={ref} role={props.role ?? 'note'} className={cn('min-w-0 rounded-md border border-border border-s-4 p-4 text-ink', variants[variant] ?? variants.info, className)} {...props}>
+        <Element data-ui="callout" ref={ref} role={props.role ?? 'note'} className={cn('min-w-0 rounded-md border border-border border-s-4 p-4 text-ink', variants[variant] ?? variants.info, className)} {...props}>
             {title && <p className="font-bold">{title}</p>}
             {children && <div className={cn(title && 'mt-1', 'text-sm leading-7')}>{children}</div>}
         </Element>
@@ -103,15 +103,15 @@ export const Callout = forwardRef(function Callout({ as: Element = 'aside', vari
 export const Progress = forwardRef(function Progress({ value = 0, max = 100, label, className = '', ...props }, ref) {
     const safeMax = Number.isFinite(Number(max)) && Number(max) > 0 ? Number(max) : 100;
     const safeValue = Math.min(safeMax, Math.max(0, Number(value) || 0));
-    return <progress ref={ref} value={safeValue} max={safeMax} aria-label={label} className={cn('block h-2 w-full overflow-hidden rounded-full accent-terracotta', className)} {...props} />;
+    return <progress data-ui="progress" ref={ref} value={safeValue} max={safeMax} aria-label={label} className={cn('block h-2 w-full overflow-hidden rounded-full accent-terracotta', className)} {...props} />;
 });
 
 export function Spinner({ label = 'در حال بارگذاری', className = '' }) {
-    return <span role="status" aria-label={label} className={cn('inline-block h-5 w-5 animate-spin rounded-full border-2 border-current border-e-transparent text-terracotta motion-reduce:animate-none', className)} />;
+    return <span data-ui="spinner" role="status" aria-label={label} className={cn('inline-block h-5 w-5 animate-spin rounded-full border-2 border-current border-e-transparent text-terracotta motion-reduce:animate-none', className)} />;
 }
 
 export const Kbd = forwardRef(function Kbd({ className = '', ...props }, ref) {
-    return <kbd ref={ref} dir="ltr" className={cn('inline-flex min-h-6 items-center rounded border border-border bg-surface-muted px-1.5 font-mono text-[.7rem] text-muted', className)} {...props} />;
+    return <kbd data-ui="kbd" ref={ref} dir="ltr" className={cn('inline-flex min-h-6 items-center rounded border border-border bg-surface-muted px-1.5 font-mono text-[.7rem] text-muted', className)} {...props} />;
 });
 
 export function AccessibleIcon({ label, children }) {
