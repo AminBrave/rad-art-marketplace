@@ -27,9 +27,9 @@ See AI/DEVELOPMENT-GUIDE.md for the central engineering guide.
 
 Rademan supports parallel work by multiple agents. Follow AI/DEVELOPMENT-WORKFLOW.md for lane isolation, task branches, integration and handoff.
 
-- Each active agent has a dedicated persistent lane named agent/<agent-id> (existing lanes include agent/chatgpt and agent/claude).
-- Each task uses its own short-lived branch under the same agent identity, for example feature/chatgpt/123-artist-search or fix/claude/456-message-read-state.
-- Task branches merge into their owning agent lane, never directly into another agent's lane or main.
+- Each active agent has a dedicated persistent lane named agent/<agent-name>/lane (for example, agent/chatgpt/lane and agent/claude/lane).
+- Each task uses the tree structure agent/<agent-name>/<task-type>/<task-name>, for example agent/chatgpt/feature/123-artist-search or agent/claude/fix/456-message-read-state.
+- Task branches merge into their owning agent/<agent-name>/lane, never directly into another agent's lane or main.
 - Cross-agent integration is an explicit owner-directed activity using the integration branch/workflow.
 - Keep parallel tasks independent; coordinate shared files and contracts before overlapping edits.
 - Do not invent a new agent lane if the identity is unclear. Confirm the agent ID and intended base.
