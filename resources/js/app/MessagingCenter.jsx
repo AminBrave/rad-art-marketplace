@@ -141,8 +141,10 @@ export default function MessagingCenter({ role }) {
         latestMessageIdRef.current = null;
         setDraft(active ? (draftsByConversationRef.current.get(Number(active)) ?? '') : '');
         setSelectedFile(active ? (filesByConversationRef.current.get(Number(active)) ?? null) : null);
-        setUploadProgress(0);
-        setUploading(false);
+        if (!sendingMessageRef.current) {
+            setUploadProgress(0);
+            setUploading(false);
+        }
         setReplyTo(null);
         setEditingId(null);
         setEditDraft('');
@@ -468,6 +470,7 @@ export default function MessagingCenter({ role }) {
             }
         } finally {
             setUploading(false);
+            setUploadProgress(0);
             sendingMessageRef.current = false;
             setSending(false);
             setSendingConversationId(null);
