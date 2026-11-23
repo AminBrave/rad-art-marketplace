@@ -94,19 +94,18 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
         )
         page = context.new_page()
         page.set_default_timeout(15000)
-        # AuthProvider reads the Blade bootstrap synchronously before it calls /auth/me.
-        # Mock the bootstrap element itself so the app renders as the intended account.
+        # AuthProvider reads this JSON script synchronously during its first render.
+        # Insert a real element before the Blade body bootstrap so getElementById sees
+        # the test identity rather than the unauthenticated development session.
         bootstrap_user = BUYER if authenticated else None
         page.add_init_script("""
-            const bootstrapUser = "PLACEHOLDER";
-            const originalGetElementById = Document.prototype.getElementById;
-            Document.prototype.getElementById = function (id) {
-                if (id === 'rad-auth-bootstrap') {
-                    return { textContent: JSON.stringify(bootstrapUser) };
-                }
-                return originalGetElementById.call(this, id);
-            };
-        """.replace("PLACEHOLDER", json.dumps(bootstrap_user, ensure_ascii=False)))
+            const bootstrapUser = __BOOTSTRAP_USER__;
+            const bootstrap = document.createElement('script');
+            bootstrap.type = 'application/json';
+            bootstrap.id = 'rad-auth-bootstrap';
+            bootstrap.textContent = JSON.stringify(bootstrapUser);
+            document.documentElement.insertBefore(bootstrap, document.documentElement.firstChild);
+        """.replace("__BOOTSTRAP_USER__", json.dumps(bootstrap_user, ensure_ascii=False)))
         page.route(
             re.compile(r".*/api/v1/artworks/social-journey-artwork$"),
             lambda route: route.fulfill(
