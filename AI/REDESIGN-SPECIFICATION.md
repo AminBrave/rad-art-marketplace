@@ -6,7 +6,14 @@
 **Responsive strategy:** Mobile-first, adaptive navigation  
 **Scope:** Full frontend experience; preserve backend contracts and authorization
 
-This document turns the approved redesign direction into a branch-specific implementation contract. It describes intended work, not completed implementation.
+This document turns the approved redesign direction into a branch-specific implementation contract. It distinguishes intended work from verified implementation progress.
+
+## Implementation status
+
+- The legacy `agent/chatgpt` ref is preserved. Because Git cannot create nested refs beneath it, the workflow's collision-safe namespace is used: persistent lane `agent-chatgpt/lane` and task branch `agent-chatgpt/rademan-redesign`.
+- Stage 0 source inventory is underway. The inspected repository confirms the existing React/Laravel foundation, RTL shell, semantic tokens, responsive workspace shell and route-level lazy loading.
+- First implementation slice: mobile workspace navigation now prioritizes frequent destinations. Artist and buyer navigation retain their existing primary destinations; admin mobile navigation is limited to four high-frequency destinations while all six admin destinations remain available in the desktop sidebar and mobile drawer. Regression tests were added; execution is pending because no local project runtime is attached to this GitHub editing session.
+- PWA audit: the inspected repository tree contains no web manifest or service-worker file, and `vite.config.js` has no PWA plugin. PWA implementation remains deferred until install icons, offline behavior and cache-safety tests can be verified together.
 
 ## 1. Product experience
 
