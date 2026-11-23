@@ -150,3 +150,10 @@
 [data-ui=search-field]{display:flex;min-width:0;align-items:center;gap:8px}
 [data-ui=search-field] input{min-width:0;flex:1}
 [data-ui=search-field] button{flex:0 0 auto}
+
+[data-ui=app-topbar],[data-ui=workspace-topbar]{z-index:45;border-color:var(--rd-line);background:color-mix(in srgb,var(--rd-surface) 94%,transparent);backdrop-filter:blur(18px)}
+[data-ui=workspace-sidebar]{min-width:0;border-color:var(--rd-line);border-radius:18px;background:var(--rd-surface);box-shadow:none}
+[data-ui=workspace-content]{min-width:0}
+[data-ui=public-navigation-rail]{z-index:40}
+[data-ui=public-bottom-navigation],[data-ui=authenticated-bottom-navigation]{z-index:60}
+[data-ui=authenticated-bottom-navigation] a{min-width:0}
