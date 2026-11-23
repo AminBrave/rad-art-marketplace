@@ -19,7 +19,7 @@ const routes = [
   ['security-review', /security|auth|permission|authorization|privacy|upload|file access|secret|threat/i],
   ['code-review', /review|inspect diff|pull request review|audit code/i],
   ['quality-engineering', /test|testing|quality|lint|build|accessibility|performance|coverage|ci/i],
-  ['git-github', /git|github|branch|commit|pull request|\\bpr\\b|merge|release|workflow|issue|agent lane|parallel agent|integration branch|project board|kanban/i],
+  ['git-github', /git|github|branch|commit|pull request|merge|release|workflow|issue|agent lane|parallel agent|integration branch|project board|kanban/i],
   ['operations-reliability', /deploy|deployment|runtime|observability|backup|incident|reliability|operations/i],
   ['documentation-maintenance', /documentation|docs|markdown|agent|skill|instructions|readme/i],
 ];
