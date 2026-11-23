@@ -78,7 +78,7 @@ export function AdminDashboardHome() {
 
             <section className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,.8fr)]">
                 <div className="border border-border bg-paper p-5 sm:p-7">
-                    <SectionHeader eyebrow="اولویت امروز" title="صف بررسی آثار" actions={<Link to="/admin/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">مشاهده صف</Link>} />
+                    <SectionHeader eyebrow="اولویت امروز" title="صف بررسی آثار" actions={<Link to="/admin/artworks" className="text-sm font-bold text-accent-strong underline underline-offset-4">مشاهده صف</Link>} />
                     {loading ? <div aria-hidden="true" className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]"><Skeleton className="aspect-square w-full rounded-none sm:max-w-32" /><div className="grid gap-3"><SkeletonLines lines={3} /><SkeletonLines lines={1} /></div></div> : summary.latest ? (
                         <div className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]">
                             <div className="aspect-square overflow-hidden bg-surface-muted">
@@ -88,7 +88,7 @@ export function AdminDashboardHome() {
                                 <Badge variant="warning">{statusLabels[summary.latest.status] ?? summary.latest.status}</Badge>
                                 <h3 className="mt-3 text-lg font-black">{summary.latest.title}</h3>
                                 <p className="mt-2 text-sm text-muted">{summary.latest.artist?.display_name ?? 'هنرمند نامشخص'} · {dateLabel(summary.latest.created_at)}</p>
-                                <Link to="/admin/artworks" className="mt-auto pt-5 text-sm font-bold text-terracotta-strong underline underline-offset-4">رفتن به بررسی اثر</Link>
+                                <Link to="/admin/artworks" className="mt-auto pt-5 text-sm font-bold text-accent-strong underline underline-offset-4">رفتن به بررسی اثر</Link>
                             </div>
                         </div>
                     ) : (
@@ -99,18 +99,18 @@ export function AdminDashboardHome() {
                 <aside className="border border-border bg-surface-muted p-5 sm:p-7">
                     <SectionHeader eyebrow="راهنمای عملیات" title="رسیدگی منظم و قابل پیگیری" className="border-0 pb-0" />
                     <p className="mt-3 text-sm leading-7 text-muted">تصمیم‌های انتشار را همراه با توضیح ثبت کنید، نقش‌ها را با دقت مدیریت کنید و گزارش‌های ایمنی را از مسیر اختصاصی بررسی کنید.</p>
-                    <Link to="/admin/artworks" className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 py-3 text-sm font-bold text-inverse transition-colors hover:bg-terracotta">شروع بررسی آثار <span aria-hidden="true" className="mr-3">←</span></Link>
+                    <Link to="/admin/artworks" className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 py-3 text-sm font-bold text-inverse transition-colors hover:bg-accent">شروع بررسی آثار <span aria-hidden="true" className="mr-3">←</span></Link>
                 </aside>
             </section>
 
             <section aria-labelledby="admin-shortcuts-heading">
                 <SectionHeader id="admin-shortcuts-heading" eyebrow="دسترسی سریع" title="بخش‌های مدیریتی" />
                 <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                    {shortcuts.map((item) => <Link key={item.to} to={item.to} className="group flex min-h-44 flex-col border border-border bg-paper p-5 transition-all hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
-                        <div className="flex items-center justify-between gap-3"><span aria-hidden="true" className="grid h-10 w-10 place-items-center bg-surface-muted text-lg text-terracotta-strong">{item.symbol}</span><span className="text-[10px] font-bold text-muted">{item.eyebrow}</span></div>
+                    {shortcuts.map((item) => <Link key={item.to} to={item.to} className="group flex min-h-44 flex-col border border-border bg-paper p-5 transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
+                        <div className="flex items-center justify-between gap-3"><span aria-hidden="true" className="grid h-10 w-10 place-items-center bg-surface-muted text-lg text-accent-strong">{item.symbol}</span><span className="text-[10px] font-bold text-muted">{item.eyebrow}</span></div>
                         <h3 className="mt-5 font-black">{item.title}</h3>
                         <p className="mt-2 text-xs leading-6 text-muted">{item.description}</p>
-                        <span className="mt-auto pt-4 text-xs font-bold text-terracotta-strong">ورود به بخش <span aria-hidden="true">←</span></span>
+                        <span className="mt-auto pt-4 text-xs font-bold text-accent-strong">ورود به بخش <span aria-hidden="true">←</span></span>
                     </Link>)}
                 </div>
             </section>
@@ -175,7 +175,7 @@ export function AdminArtworkModeration() {
                         <div className="min-w-0 p-5"><div className="flex flex-wrap items-start justify-between gap-2"><h2 className="font-bold">{artwork.title}</h2><Badge variant={artwork.status === 'approved' ? 'success' : artwork.status === 'rejected' ? 'danger' : artwork.status === 'pending_review' ? 'warning' : 'info'}>{statusLabels[artwork.status] ?? artwork.status}</Badge></div>
                             <p className="mt-2 text-xs text-muted">{artwork.artist?.display_name ?? '—'} · {artwork.category?.name ?? '—'}</p>
                             <dl className="mt-4 grid grid-cols-2 gap-3 text-xs">{artwork.medium && <div><dt className="text-muted">تکنیک</dt><dd className="mt-1 font-semibold">{artwork.medium}</dd></div>}{artwork.dimensions && <div><dt className="text-muted">ابعاد</dt><dd className="mt-1 font-semibold">{artwork.dimensions}</dd></div>}{artwork.year && <div><dt className="text-muted">سال</dt><dd className="mt-1 font-semibold">{artwork.year}</dd></div>}<div><dt className="text-muted">تاریخ ثبت</dt><dd className="mt-1 font-semibold">{dateLabel(artwork.created_at)}</dd></div></dl>
-                            {artwork.description && <p className="mt-4 line-clamp-4 text-sm leading-7 text-muted">{artwork.description}</p>}{artwork.rejection_note && <p className="mt-3 border-s-2 border-sand bg-surface-muted p-3 text-xs leading-6 text-muted">یادداشت ثبت‌شده: {artwork.rejection_note}</p>}
+                            {artwork.description && <p className="mt-4 line-clamp-4 text-sm leading-7 text-muted">{artwork.description}</p>}{artwork.rejection_note && <p className="mt-3 border-s-2 border-line bg-surface-muted p-3 text-xs leading-6 text-muted">یادداشت ثبت‌شده: {artwork.rejection_note}</p>}
                         </div>
                     </div>
                     {actionable && <div className="border-t border-border p-5"><FormField label="توضیح برای هنرمند" hint="برای رد اثر یا درخواست اصلاح الزامی است؛ حداکثر ۲۰۰۰ نویسه."><TextareaField value={notes[artwork.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [artwork.id]: event.target.value }))} maxLength={2000} rows={3} /></FormField><div className="mt-4 flex flex-wrap gap-2"><Button size="sm" onClick={() => moderate(artwork, 'approve')} loading={busyId === artwork.id} disabled={busyId !== null}>تأیید و انتشار</Button><Button size="sm" variant="outline" onClick={() => moderate(artwork, 'request_changes')} disabled={busyId !== null}>درخواست اصلاح</Button><Button size="sm" variant="danger" onClick={() => moderate(artwork, 'reject')} disabled={busyId !== null}>رد اثر</Button></div></div>}
@@ -239,7 +239,7 @@ export function AdminUsersPage() {
             <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">حساب‌های این صفحه</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</p></div>
             <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">کل حساب‌ها</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</p></div>
         </div>
-        <p className="border-s-2 border-sand bg-surface-muted p-4 text-xs leading-7 text-muted">نقش‌های قابل انتخاب «هنرمند» و «مدیر» هستند. ایجاد خریدار از مسیر ثبت‌نام انجام می‌شود و حذف یا تعلیق حساب پشتیبانی نمی‌شود. مدیر نمی‌تواند نقش مدیریتی حساب خودش را حذف کند.</p>
+        <p className="border-s-2 border-line bg-surface-muted p-4 text-xs leading-7 text-muted">نقش‌های قابل انتخاب «هنرمند» و «مدیر» هستند. ایجاد خریدار از مسیر ثبت‌نام انجام می‌شود و حذف یا تعلیق حساب پشتیبانی نمی‌شود. مدیر نمی‌تواند نقش مدیریتی حساب خودش را حذف کند.</p>
         {message && <SuccessState title={message} />}{error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
         {loading ? <AdminUserCardsSkeleton count={4} /> : !result?.data?.length ? <EmptyState title="کاربری برای نمایش وجود ندارد" /> : <>
             <div className="grid gap-3 xl:grid-cols-2">{result.data.map((item) => {
@@ -329,12 +329,12 @@ export function AdminMessageReportsPage() {
                 const confirmingRemoval = confirmRemovalId === report.id;
                 return <article key={report.id} className="overflow-hidden border border-border bg-paper">
                     <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border bg-[color:color-mix(in_srgb,var(--color-surface-muted)_70%,transparent)] p-4 sm:p-5">
-                        <div><p className="text-xs font-bold text-terracotta-strong">گزارش شماره {report.id}</p><h2 className="mt-1 font-black">{report.reason}</h2><p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? 'کاربر'} · {dateLabel(report.created_at)}</p></div>
+                        <div><p className="text-xs font-bold text-accent-strong">گزارش شماره {report.id}</p><h2 className="mt-1 font-black">{report.reason}</h2><p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? 'کاربر'} · {dateLabel(report.created_at)}</p></div>
                         <Badge variant={isOpen ? 'warning' : report.status === 'dismissed' ? 'neutral' : 'success'}>{isOpen ? 'در انتظار بررسی' : report.status === 'dismissed' ? 'رد گزارش' : 'بررسی‌شده'}</Badge>
                     </div>
                     <div className="space-y-4 p-4 sm:p-5">
                         {report.details && <div><p className="text-xs font-bold text-muted">شرح گزارش</p><p className="mt-2 whitespace-pre-line text-sm leading-7">{report.details}</p></div>}
-                        {report.message ? <div className="border-s-2 border-terracotta bg-surface-muted p-4"><p className="text-[11px] font-bold text-muted">پیام علامت‌گذاری‌شده</p><blockquote className="mt-2 whitespace-pre-line text-sm leading-7">{report.message.body ?? 'متن پیام حذف شده است.'}</blockquote></div> : <p className="text-xs text-muted">متن پیام مرتبط در دسترس نیست.</p>}
+                        {report.message ? <div className="border-s-2 border-accent bg-surface-muted p-4"><p className="text-[11px] font-bold text-muted">پیام علامت‌گذاری‌شده</p><blockquote className="mt-2 whitespace-pre-line text-sm leading-7">{report.message.body ?? 'متن پیام حذف شده است.'}</blockquote></div> : <p className="text-xs text-muted">متن پیام مرتبط در دسترس نیست.</p>}
                         {isOpen && <>
                             <label className="block text-xs font-semibold text-muted">یادداشت رسیدگی (اختیاری)<textarea value={notes[report.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [report.id]: event.target.value }))} maxLength={1000} rows={2} className="w-full min-h-11 rounded-md border border-border-strong bg-paper px-3.5 py-2 font-sans text-sm text-ink transition-colors placeholder:text-subtle focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:bg-surface-muted disabled:opacity-65 aria-[invalid=true]:border-danger mt-2 w-full" placeholder="خلاصه تصمیم یا زمینه بررسی…" /></label>
                             <div className="flex flex-wrap gap-2">
@@ -444,7 +444,7 @@ export function AdminArtworkCommentReportsPage() {
                     return <article key={report.id} className="overflow-hidden border border-border bg-paper">
                         <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border bg-surface-muted p-4 sm:p-5">
                             <div>
-                                <p className="text-xs font-bold text-terracotta-strong">گزارش شماره {report.id}</p>
+                                <p className="text-xs font-bold text-accent-strong">گزارش شماره {report.id}</p>
                                 <h2 className="mt-1 font-black">{report.reason}</h2>
                                 <p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? 'کاربر'} · {dateLabel(report.created_at)}</p>
                             </div>
@@ -457,11 +457,11 @@ export function AdminArtworkCommentReportsPage() {
                                 <p className="text-xs font-bold text-muted">شرح گزارش</p>
                                 <p className="mt-2 whitespace-pre-line break-words text-sm leading-7">{report.details}</p>
                             </div>}
-                            <div className="border-s-2 border-terracotta bg-surface-muted p-4">
+                            <div className="border-s-2 border-accent bg-surface-muted p-4">
                                 <p className="text-[11px] font-bold text-muted">دیدگاه گزارش‌شده</p>
                                 <blockquote className="mt-2 whitespace-pre-line break-words text-sm leading-7">{report.comment?.body ?? 'متن دیدگاه حذف شده است.'}</blockquote>
                                 <p className="mt-2 text-xs text-muted">نویسنده: {report.comment?.author ?? 'کاربر'}</p>
-                                {report.comment?.artwork?.slug && <Link to={'/artworks/' + report.comment.artwork.slug + '#comment-' + report.comment.id} className="mt-2 inline-block text-xs font-bold text-terracotta-strong underline">{report.comment.artwork.title || 'مشاهده اثر'}</Link>}
+                                {report.comment?.artwork?.slug && <Link to={'/artworks/' + report.comment.artwork.slug + '#comment-' + report.comment.id} className="mt-2 inline-block text-xs font-bold text-accent-strong underline">{report.comment.artwork.title || 'مشاهده اثر'}</Link>}
                             </div>
                             {isOpen && <>
                                 <label className="block text-xs font-semibold text-muted">
