@@ -195,7 +195,7 @@ export default function HomePage() {
             </section>
 
             <section aria-labelledby="categories-title" className="border-y border-border bg-paper">
-                <div className="mx-auto max-w-content px-page-gutter py-14 sm:py-18">
+                <div className="mx-auto max-w-content px-page-gutter py-14 sm:py-16">
                     <SectionHeading
                         id="categories-title"
                         eyebrow="FIND YOUR PERSPECTIVE / 02"
@@ -249,7 +249,7 @@ export default function HomePage() {
 
             {(collections.length > 0 || featuredArtists.length > 0) && (
                 <section aria-label="مجموعه‌ها و هنرمندان منتخب" className="border-y border-border bg-surface-muted">
-                    <div className="mx-auto max-w-content px-page-gutter py-14 sm:py-18">
+                    <div className="mx-auto max-w-content px-page-gutter py-14 sm:py-16">
                         {collections.length > 0 && (
                             <div>
                                 <SectionHeading
