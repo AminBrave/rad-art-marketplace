@@ -136,7 +136,8 @@ test('public catalogue, artist directory and artwork detail use shared page layo
     assert.ok(publicPages[0].includes('PageContainer') && publicPages[0].includes('PageHeader'));
     assert.ok(publicPages[1].includes('PageContainer') && publicPages[1].includes('SectionHeader'));
     assert.ok(publicPages[2].includes('PageContainer'));
-    assert.ok(buyerWorkspace.includes('WorkspaceHero') && buyerWorkspace.includes('<Surface'));
+    assert.ok(buyerWorkspace.includes('WorkspaceHero') && buyerWorkspace.includes('<SectionHeader'));
+    assert.ok(buyerWorkspace.includes('border-y border-border'), 'Buyer Studio uses editorial section boundaries instead of an unnecessary nested Surface.');
     assert.ok(designSystem.includes('Product information architecture'));
 });
 
@@ -264,7 +265,14 @@ test('messaging status banners preserve accessible presentation and remain a ded
 
 test('messaging conversation filters use the shared RAD-styled Radix Tabs primitive', () => {
     assert.ok(messagingInbox.includes('<Tabs value={threadFilter} onValueChange={setThreadFilter} dir="rtl"'));
-    assert.ok(messagingInbox.split('inline-flex flex-row min-w-0 w-full items-center justify-center gap-1.5').length - 1 === 3, 'All inbox filter icons and labels use the same centered RTL row alignment.');
+    const filterTriggerClasses = [...messagingInbox.matchAll(/<TabsTrigger[^>]*className="([^"]+)"/g)].map((match) => match[1]);
+    assert.equal(filterTriggerClasses.length, 3, 'All three inbox filters use the shared Tabs primitive.');
+    for (const className of filterTriggerClasses) {
+        assert.match(className, /inline-flex/);
+        assert.match(className, /flex-row/);
+        assert.match(className, /items-center/);
+        assert.match(className, /justify-center/);
+    }
     assert.ok(messagingInbox.includes('<TabsContent value={threadFilter} dir="rtl"'));
     assert.ok(messagingInbox.includes('<ul dir="rtl" className="min-h-0 flex-1 divide-y'));
     assert.ok(messagingInbox.includes('<TabsList aria-label="فیلتر گفتگوها"'));
@@ -291,7 +299,7 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.doesNotMatch(messaging, /RAD \/ MESSAGES|ارتباط مستقیم|PageHeader/);
     assert.doesNotMatch(layouts, /ناوبری فضای کاری|RAD \/ MENU/);
     assert.ok(messageTimeline.includes('min-w-0 w-fit max-w-[88%]'));
-    assert.ok(messagingInbox.includes('min-h-[4.25rem] w-full items-center gap-2'));
+    assert.ok(messagingInbox.includes('min-h-[4.75rem] w-full items-center gap-3'));
     assert.ok(messagingInbox.includes('absolute end-1 top-1/2 -translate-y-1/2'));
     assert.ok(messageTimeline.includes('mt-[.55rem] flex flex-wrap items-center justify-between gap-2 text-[10px] text-subtle'));
     assert.ok(messageComposer.includes('max-h-28 min-h-[2.35rem] max-sm:min-h-9 w-full resize-none'));
@@ -368,7 +376,7 @@ test('shared dialogs retain outside-click and Escape dismissal behavior', () => 
 });
 
 test('responsive workspace navigation supports mobile task access and desktop role navigation', () => {
-    const bottomStart = layouts.indexOf('function AuthenticatedBottomNavigation({ primaryLinks })');
+    const bottomStart = layouts.indexOf('function AuthenticatedBottomNavigation({ mobileLinks })');
     const bottomEnd = layouts.indexOf('export function WorkspaceLayout', bottomStart);
     const bottomNavigation = layouts.slice(bottomStart, bottomEnd);
     const workspaceStart = layouts.indexOf('export function WorkspaceLayout');
@@ -379,9 +387,9 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(bottomNavigation.includes('fixed inset-x-0 bottom-0 z-50'));
     assert.ok(bottomNavigation.includes('pb-[env(safe-area-inset-bottom)]'));
     assert.ok(bottomNavigation.includes('lg:hidden'));
-    assert.ok(bottomNavigation.includes('primaryLinks.map((item)'));
-    assert.ok(layouts.includes('user && <AuthenticatedBottomNavigation primaryLinks={getWorkspacePrimaryLinks(user.role)} />'));
-    assert.ok(workspaceLayout.includes('<AuthenticatedBottomNavigation primaryLinks={links} />'));
+    assert.ok(bottomNavigation.includes('mobileLinks.map((item)'));
+    assert.ok(layouts.includes('user && <AuthenticatedBottomNavigation mobileLinks={getWorkspaceMobileLinks(user.role)} />'));
+    assert.ok(workspaceLayout.includes('<AuthenticatedBottomNavigation mobileLinks={getWorkspaceMobileLinks(user.role)} />'));
 
     assert.ok(workspaceLayout.includes('<DialogTrigger asChild>'));
     assert.ok(workspaceLayout.includes('aria-label="باز کردن منوی حساب کاربری"'));
@@ -405,17 +413,14 @@ test('responsive workspace navigation supports mobile task access and desktop ro
 
 test('product and design guidance defines the new Rademan experience architecture', () => {
     for (const principle of [
-        'coherent, contemporary visual-content platform',
-        'Product information architecture',
-        'Buyer Studio',
-        'Artist Studio',
-        'Admin Console',
-        'single canonical Inquiries destination',
-        'Light, dark and system theme behavior',
-        'Mobile-first PWA',
-        'Messaging preservation contract',
-        'latest `main` branch establishes what exists',
-    ]) assert.ok(designSystem.includes(principle), 'Missing current product/design principle: ' + principle);
+        'distinctive, usable art platform',
+        'Current experience context',
+        'Visual system',
+        'Accessibility and localization',
+        'Responsive and installable experiences',
+        'Messaging experience',
+        'Implementation references',
+    ]) assert.ok(designSystem.includes(principle), 'Missing current product/design guidance: ' + principle);
 });
 test('auth bootstrap resolves session state before React mounts without caching personalized HTML', () => {
     assert.ok(bootShell.includes('id="rad-auth-bootstrap"'));
