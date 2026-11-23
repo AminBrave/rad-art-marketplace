@@ -16,7 +16,7 @@ export default function ConversationHeader({
     children,
 }) {
     return (
-        <header className="relative z-20 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_96%,transparent)] shadow-soft backdrop-blur after:absolute after:inset-x-0 after:top-0 after:h-1 after:bg-terracotta">
+        <header className="relative z-20 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_96%,transparent)] shadow-soft backdrop-blur after:absolute after:inset-x-0 after:top-0 after:h-1 after:bg-accent">
             <div className="flex min-h-[3.5rem] min-w-0 items-center gap-2 px-3 py-2 pt-3 md:min-h-[3.75rem] md:gap-3 md:px-4">
                 <Tooltip content="بازگشت به گفتگوها">
                     <button
@@ -57,7 +57,7 @@ export default function ConversationHeader({
                             <Link
                                 to={'/artists/' + selected.artist.slug}
                                 dir="auto"
-                                className="block w-fit max-w-full truncate text-sm font-extrabold leading-6 text-ink transition hover:text-terracotta-strong focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus sm:text-base"
+                                className="block w-fit max-w-full truncate text-sm font-extrabold leading-6 text-ink transition hover:text-accent-strong focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus sm:text-base"
                             >
                                 {selected.participant.name ?? 'مشاهده هنرمند'}
                             </Link>
