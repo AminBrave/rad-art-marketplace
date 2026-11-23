@@ -150,7 +150,7 @@ AI should act as a capable engineering partner: understand the task, recommend b
 
 ## 13. Git, multi-agent collaboration and delivery
 
-Rademan uses persistent agent lanes and isolated task branches to support parallel work. The preferred namespace is agent/<agent-name>/lane with task branches named agent/<agent-name>/<task-type>/<task-name>. Git cannot create nested refs below a legacy flat branch named agent/<agent-name>; if that ref cannot be renamed safely, use the documented collision-safe agent-<agent-name>/ namespace until an owner-approved migration. Never delete or rewrite a legacy ref merely to satisfy naming convention. Task integration targets only the matching lane; cross-agent integration is owner-directed, and ordinary task work does not target main.
+Rademan uses persistent agent lanes and isolated task branches to support parallel work. The preferred namespace is agent/<agent-name>/lane with task branches named agent/<agent-name>/<task-type>/<task-name>. Git cannot create nested refs below a legacy flat branch named agent/<agent-name>; if that ref cannot be renamed safely, use the documented collision-safe agent-<agent-name>/ namespace (lane at `/lane`, task branch at `/<task-name>`) until an owner-approved migration. Never delete or rewrite a legacy ref merely to satisfy naming convention. Task integration targets only the matching lane; cross-agent integration is owner-directed, and ordinary task work does not target main.
 
 Use GitHub issues, PRs and a project board when they improve parallel coordination, ownership, review and handoff. Assign one primary owner per independent task, define observable acceptance criteria, coordinate shared files/contracts, and keep task and integration status distinct.
 
