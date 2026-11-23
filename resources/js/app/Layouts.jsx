@@ -98,11 +98,9 @@ function PublicNavigation({ user }) {
 export function PublicLayout() {
     const { user, logout } = useAuth();
     const [logoutError, setLogoutError] = useState('');
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const { pathname } = useLocation();
 
     const handleLogout = async () => {
-        setMobileMenuOpen(false);
         setLogoutError('');
         try {
             await logout();
@@ -111,138 +109,32 @@ export function PublicLayout() {
         }
     };
 
-    useEffect(() => setMobileMenuOpen(false), [pathname]);
-
-    const publicLinks = [
-        { to: '/artworks', label: 'کشف آثار' },
-        { to: '/artists', label: 'هنرمندان' },
-        { to: '/collections', label: 'مجموعه‌های منتخب' },
-        { to: '/about', label: 'درباره ما' },
-        { to: '/help', label: 'راهنما' },
-    ];
-    const navClass = ({ isActive }) => [
-        'relative inline-flex min-h-11 items-center whitespace-nowrap px-1 text-sm font-semibold transition-colors',
-        'after:absolute after:inset-x-1 after:bottom-0 after:h-0.5 after:origin-center after:scale-x-0 after:bg-terracotta after:transition-transform',
-        isActive
-            ? 'text-terracotta-strong after:scale-x-100'
-            : 'text-muted hover:text-ink',
-    ].join(' ');
-
     return (
-        <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <div data-experience="discover" className={user ? "min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:pb-0" : "min-h-screen bg-canvas text-ink"} dir="rtl">
             <a href="#main-content" className="sr-only z-[60] bg-paper px-4 py-3 text-ink focus:not-sr-only focus:fixed focus:inset-x-4 focus:top-4">
                 رفتن به محتوای اصلی
             </a>
-            <header className="sticky top-0 z-40 border-b border-border bg-[color:color-mix(in_srgb,var(--color-canvas)_94%,transparent)] backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-canvas)_88%,transparent)]">
-                <div className="mx-auto flex min-h-[var(--header-height)] max-w-content items-center justify-between gap-2 px-page-gutter sm:gap-4">
-                    <Link to="/" className="group flex shrink-0 items-center gap-2 text-ink no-underline sm:gap-3" aria-label="راد آرت، صفحه اصلی">
-                        <span className="grid h-10 w-10 place-items-center rounded-md bg-ink text-lg font-black text-inverse transition-colors group-hover:bg-terracotta sm:h-11 sm:w-11 sm:text-xl">ر</span>
-                        <span className="flex flex-col leading-tight">
-                            <span className="text-lg font-black tracking-tight sm:text-xl">راد<span className="text-terracotta-strong">آرت</span></span>
-                            <span dir="ltr" className="mt-1 hidden text-[9px] font-semibold tracking-[.2em] text-muted sm:block">INDEPENDENT ART</span>
-                        </span>
-                    </Link>
-
-                    <nav aria-label="ناوبری اصلی" className="hidden items-center gap-5 xl:flex">
-                        {publicLinks.map((item) => (
-                            <NavLink key={item.to} to={item.to} className={navClass}>{item.label}</NavLink>
-                        ))}
-                    </nav>
-
-                    <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-                        <ThemeControl />
-                        {user ? (
-                            <>
-                                <span className="hidden max-w-36 truncate text-sm font-semibold text-ink 2xl:inline">{user.name}</span>
-                                <Badge variant="accent" className="hidden md:inline-flex">{roleLabels[user.role] ?? user.role}</Badge>
-                                <Link
-                                    to={user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist'}
-                                    className="hidden min-h-10 items-center px-2 text-sm font-bold text-terracotta-strong underline-offset-4 hover:underline sm:inline-flex"
-                                >
-                                    فضای کاربری
-                                </Link>
-                                <Button variant="outline" size="sm" className="hidden sm:inline-flex" onClick={handleLogout}>خروج</Button>
-                            </>
-                        ) : (
-                            <>
-                                <Link to="/login" className="hidden min-h-10 items-center px-2 text-sm font-bold text-ink transition-colors hover:text-terracotta-strong sm:inline-flex">ورود</Link>
-                                <Link to="/register" className="inline-flex min-h-10 items-center justify-center rounded-md bg-ink px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
-                                    ثبت‌نام
-                                </Link>
-                            </>
-                        )}
-                        <span className="mx-1 hidden h-7 w-px bg-border xl:block" aria-hidden="true" />
-                        <DialogTrigger asChild>
-                            <button
-                                type="button"
-                                aria-label="باز کردن منوی اصلی"
-                                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus xl:hidden"
-                            >
-                                <Menu size={19} aria-hidden="true" />
-                            </button>
-                        </DialogTrigger>
-                    </div>
+            <header className="app-topbar sticky top-0 z-40 flex min-h-16 items-center justify-between gap-3 border-b border-border bg-paper/95 px-page-gutter backdrop-blur">
+                <Link to="/" aria-label="راد آرت، خانه" className="flex shrink-0 items-center gap-2 text-ink no-underline">
+                    <span className="grid h-10 w-10 place-items-center rounded-xl bg-ink text-xl font-black text-inverse">ر</span>
+                    <span className="text-lg font-black tracking-tight">راد<span className="text-terracotta-strong">آرت</span></span>
+                </Link>
+                <Link to="/artworks" className="hidden min-h-10 min-w-0 max-w-md flex-1 items-center gap-2 rounded-full border border-border bg-surface-muted px-4 text-sm text-muted no-underline transition-colors hover:border-border-strong sm:flex">
+                    <Search size={17} aria-hidden="true" />
+                    <span>جست‌وجوی آثار، هنرمندان و مجموعه‌ها</span>
+                </Link>
+                <div className="flex shrink-0 items-center gap-2">
+                    <ThemeControl />
+                    {user ? (
+                        <>
+                            <Link to={user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist'} className="hidden min-h-10 items-center rounded-full bg-surface-muted px-4 text-xs font-bold text-ink no-underline sm:inline-flex">فضای کاربری</Link>
+                            <Button variant="ghost" size="sm" onClick={handleLogout} className="hidden sm:inline-flex">خروج</Button>
+                        </>
+                    ) : (
+                        <Link to="/login" className="inline-flex min-h-10 items-center rounded-full bg-ink px-4 text-sm font-bold text-inverse no-underline">ورود</Link>
+                    )}
                 </div>
-
-                <DialogContent
-                    placement="drawer"
-                    className="flex flex-col px-4 py-5"
-                >
-                    <div className="mb-5 flex items-center justify-between border-b border-border pb-4">
-                        <div>
-                            <DialogTitle className="text-base font-extrabold text-ink">ناوبری اصلی</DialogTitle>
-                            <DialogDescription className="mt-1 text-xs text-muted">بخش‌های مختلف راد آرت</DialogDescription>
-                        </div>
-                        <DialogClose asChild>
-                            <button
-                                type="button"
-                                aria-label="بستن منو"
-                                className="grid h-10 w-10 place-items-center rounded-lg text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
-                            >
-                                <X size={19} aria-hidden="true" />
-                            </button>
-                        </DialogClose>
-                    </div>
-                    <nav aria-label="ناوبری موبایل" className="min-h-0 flex-1 overflow-y-auto">
-                        <div className="mx-auto grid max-w-content gap-1">
-                            {publicLinks.map((item) => (
-                                <NavLink
-                                    key={item.to}
-                                    to={item.to}
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className={({ isActive }) => [
-                                        'flex min-h-12 items-center rounded-md px-4 text-sm font-semibold transition-colors',
-                                        isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
-                                    ].join(' ')}
-                                >
-                                    {item.label}
-                                </NavLink>
-                            ))}
-                            <div className="my-2 border-t border-border" />
-                            {user ? (
-                                <>
-                                    <Link
-                                        to={user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist'}
-                                        onClick={() => setMobileMenuOpen(false)}
-                                        className="flex min-h-12 items-center rounded-md px-4 text-sm font-bold text-terracotta-strong hover:bg-accent-surface"
-                                    >
-                                        فضای کاربری
-                                    </Link>
-                                    <button type="button" onClick={handleLogout} className="flex min-h-12 items-center rounded-md px-4 text-right text-sm font-semibold text-muted hover:bg-surface-muted hover:text-ink">
-                                        خروج از حساب
-                                    </button>
-                                </>
-                            ) : (
-                                <>
-                                    <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center rounded-md px-4 text-sm font-semibold text-muted hover:bg-surface-muted">ورود</Link>
-                                    <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center rounded-md px-4 text-sm font-bold text-terracotta-strong hover:bg-accent-surface">ساخت حساب کاربری</Link>
-                                </>
-                            )}
-                        </div>
-                    </nav>
-                </DialogContent>
-                {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{logoutError}</p>}
+                {logoutError && <p role="alert" className="sr-only">{logoutError}</p>}
             </header>
 
             <PublicNavigation user={user} />
@@ -251,47 +143,9 @@ export function PublicLayout() {
                 <Outlet />
             </div>
 
-            <footer className="border-t border-border bg-surface-muted">
-                <div className="mx-auto max-w-content px-page-gutter pb-10 pt-12 sm:pb-12 sm:pt-16">
-                    <div className="grid gap-10 border-b border-border pb-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr] lg:gap-16 lg:pb-12">
-                        <div className="max-w-md">
-                            <Link to="/" className="inline-flex items-center gap-3 text-ink no-underline" aria-label="راد آرت، صفحه اصلی">
-                                <span className="grid h-10 w-10 place-items-center rounded-md bg-ink text-lg font-black text-inverse">ر</span>
-                                <span className="text-xl font-black">راد<span className="text-terracotta-strong">آرت</span></span>
-                            </Link>
-                            <p className="mt-5 text-sm leading-8 text-muted">
-                                فضایی برای کشف آثار هنری مستقل، شناخت هنرمندان و ارتباط درباره هنر.
-                            </p>
-                            <Link to="/artworks" className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-md border border-border-strong px-4 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong">
-                                گشت‌وگذار در گالری
-                                <span aria-hidden="true">←</span>
-                            </Link>
-                        </div>
-
-                        <nav aria-label="پیوندهای کشف" className="flex flex-col items-start gap-3">
-                            <h2 className="mb-1 text-sm font-extrabold text-ink">برای کشف</h2>
-                            <Link to="/artworks" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">گالری آثار</Link>
-                            <Link to="/artists" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">هنرمندان</Link>
-                            <Link to="/collections" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">مجموعه‌های منتخب</Link>
-                        </nav>
-
-                        <nav aria-label="پیوندهای راد آرت" className="flex flex-col items-start gap-3">
-                            <h2 className="mb-1 text-sm font-extrabold text-ink">راد آرت</h2>
-                            <Link to="/about" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">درباره ما</Link>
-                            <Link to="/help" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">راهنما</Link>
-                            <Link to="/contact" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">تماس با ما</Link>
-                        </nav>
-                    </div>
-
-                    <div className="flex flex-col gap-2 pt-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
-                        <p>راد آرت — گالری هنر مستقل معاصر</p>
-                        <p dir="ltr" className="font-latin tracking-wide">RAD ART · DISCOVER INDEPENDENT ART</p>
-                    </div>
-                </div>
-            </footer>
             {user && <AuthenticatedBottomNavigation primaryLinks={getWorkspacePrimaryLinks(user.role)} />}
         </div>
-        </Dialog>
+
     );
 }
 
