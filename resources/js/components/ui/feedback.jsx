@@ -8,6 +8,7 @@ const skeletonClasses = 'block bg-[linear-gradient(100deg,var(--color-skeleton-b
 export function Skeleton({ className = '', width, height = '1rem', rounded = 'md' }) {
     return (
         <span
+            data-ui="skeleton"
             aria-hidden="true"
             className={`${skeletonClasses} ${rounded === 'full' ? 'rounded-full' : rounded === 'lg' ? 'rounded-lg' : 'rounded-md'} ${className}`}
             style={{ width, height }}
@@ -118,6 +119,7 @@ export function Toast({ open, title, description, variant = 'info', onDismiss, d
     return (
         <ToastPrimitive.Provider duration={duration}>
             <ToastPrimitive.Root
+                data-ui="toast"
                 open={isOpen}
                 onOpenChange={handleOpenChange}
                 type={variant === 'error' ? 'foreground' : 'background'}
@@ -137,6 +139,7 @@ export function Toast({ open, title, description, variant = 'info', onDismiss, d
                 )}
             </ToastPrimitive.Root>
             <ToastPrimitive.Viewport
+                data-ui="toast-viewport"
                 label="اعلان‌ها"
                 dir="rtl"
                 className="fixed top-4 start-4 z-[100] flex w-[min(24rem,calc(100vw-2rem))] flex-col gap-2 outline-none"
