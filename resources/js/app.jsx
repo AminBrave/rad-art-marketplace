@@ -7,7 +7,18 @@ import AppRouter from './app/AppRouter';
 import { ThemeProvider } from './app/ThemeContext';
 import './bootstrap';
 import '../css/instagram.css';
+import '../css/application-shell.css';
 import { auditColorAccessibility } from './lib/colorAccessibility';
+
+
+// Register the conservative same-origin app shell cache in production only.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch((error) => {
+            if (import.meta.env.DEV) console.warn('Rademan offline support could not be enabled.', error);
+        });
+    }, { once: true });
+}
 
 if (import.meta.env.DEV && typeof window !== 'undefined') {
     window.__RAD_COLOR_A11Y_CHECK__ = (root = document) => {
