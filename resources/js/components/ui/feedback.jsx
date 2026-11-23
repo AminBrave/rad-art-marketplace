@@ -172,6 +172,7 @@ export function MediaImage({
 
     return (
         <span
+            data-ui="media-image"
             className={`relative isolate block overflow-hidden bg-surface-muted ${unavailable ? 'min-h-32' : ''} ${className}`}
             aria-busy={!loaded && !unavailable}
         >
