@@ -82,3 +82,32 @@
  [data-page=auth]>section{border-radius:18px;padding:22px}
  [data-page=messaging]{border-radius:0;border-inline:0}
 }
+
+/* Semantic component slots shared by every product route */
+[data-ui=box],[data-ui=flex],[data-ui=grid],[data-ui=container],[data-ui=section],[data-ui=inset]{min-width:0}
+[data-ui=heading]{color:var(--rd-text);letter-spacing:-.025em}
+[data-ui=text]{color:var(--rd-text)}
+[data-ui=code],[data-ui=kbd]{border:1px solid var(--rd-line);border-radius:8px;background:var(--rd-surface-2);color:var(--rd-text)}
+[data-ui=blockquote]{border-color:var(--rd-accent)}
+[data-ui=separator]{background:var(--rd-line)}
+[data-ui=avatar]{background:var(--rd-surface-2);border-color:var(--rd-line)}
+[data-ui=card]{border-color:var(--rd-line);border-radius:18px;background:var(--rd-surface);box-shadow:none}
+[data-ui=callout]{border-radius:14px}
+[data-ui=progress]{accent-color:var(--rd-accent)}
+[data-ui=spinner]{color:var(--rd-accent)}
+[data-ui=tabs-list]{border:1px solid var(--rd-line);border-radius:999px;background:var(--rd-surface-2);padding:4px}
+[data-ui=tabs-trigger]{min-height:38px;border:0;border-radius:999px;padding:8px 14px}
+[data-ui=tabs-trigger][data-state=active]{background:var(--rd-surface);color:var(--rd-text);box-shadow:var(--rd-shadow-1)}
+[data-ui=menu-content],[data-ui=dialog],[data-ui=alert-dialog]{border:1px solid var(--rd-line);border-radius:16px;background:var(--rd-surface);color:var(--rd-text);box-shadow:var(--rd-shadow-3)}
+[data-ui=menu-item]{border-radius:10px}
+[data-ui=menu-item][data-highlighted]{background:var(--rd-surface-2);color:var(--rd-text)}
+[data-ui=tooltip]{border:1px solid var(--rd-line);border-radius:10px;background:var(--rd-text);color:var(--rd-inverse)}
+[data-ui=empty-state]{border-color:var(--rd-line);border-radius:18px;background:var(--rd-surface)}
+[data-ui=empty-state]>span:first-child{background:var(--rd-accent)}
+[data-ui=error-state]{border-color:color-mix(in srgb,var(--rd-negative) 35%,var(--rd-line));border-radius:14px}
+[data-ui=success-state]{border-radius:14px}
+[data-ui=permission-state]{border-radius:14px}
+[data-ui=upload-feedback]{border-radius:14px}
+[data-ui=media-image]{background:var(--rd-surface-2)}
+[data-ui=toast]{border-radius:14px;border-color:var(--rd-line);background:var(--rd-surface);box-shadow:var(--rd-shadow-3)}
+[data-ui=toast-viewport]{gap:10px}
