@@ -92,3 +92,19 @@ The application uses a layered component model. Page files compose user journeys
 ### Review and migration rules
 
 Before adding or changing a control, search the shared UI barrel and reuse the closest component. When a repeated pattern has materially different semantics, add an explicit variant to the shared component rather than creating a one-off page implementation. Review all route-level screens for raw interactive controls, duplicated Tailwind strings, inconsistent labels, focus treatment, and error handling. Exceptions must be intentional and documented (for example, a custom canvas editor or a specialized native browser interaction).
+
+## Complete-overhaul visual language
+
+The current overhaul uses an art-journal/editorial direction rather than a generic rounded SaaS dashboard. Apply these rules consistently across public pages, artist/buyer workspaces, administration, messaging, loading states and overlays:
+
+- **Artwork is the primary visual content.** Give images generous space, preserve their full composition with `object-contain` where the work itself is the subject, and use cropping only when the image's role is editorial/ambient. Never distort artwork to fill a frame.
+- **Use typography and composition for hierarchy.** Prefer strong page titles, concise eyebrow labels, generous vertical rhythm, clear metadata groupings and deliberate asymmetry over piles of cards.
+- **Reduce unnecessary containers.** Use open layouts, dividers, tonal sections and border-led groupings. Reserve filled/raised surfaces for a real interaction or information grouping; do not wrap every item in a card.
+- **Keep shapes disciplined.** Favor square or subtly rounded editorial frames. Use pill shapes only when the meaning is status, count, avatar, or a genuinely compact control.
+- **Use semantic color roles.** Terracotta is the primary accent, ink anchors high-contrast editorial regions, and olive/success/warning/danger are reserved for meaning. Verify both explicit themes and system theme.
+- **Keep interaction feedback precise.** Hover and focus should reveal affordance without shifting content unexpectedly. Motion is restrained and must respect reduced-motion preferences.
+- **Loading states mirror the final composition.** Skeletons must match the page's geometry, tonal regions, spacing and content density; a rounded generic placeholder is not an acceptable substitute for a bespoke page frame.
+- **Preserve responsive intent.** A mobile layout may change ordering, density, navigation and controls, but must retain the same information and actions without horizontal overflow.
+- **Maintain bidirectional correctness.** Use logical spacing and borders where possible. Apply `dir="auto"` or explicit LTR treatment to user-provided Latin names, URLs, identifiers and mixed-direction content where needed.
+
+The complete route-by-route, state-by-state and quality-gate ledger is maintained in `AI/COMPLETE-APPLICATION-OVERHAUL.md`. Treat it as the coverage source of truth; this section defines the visual grammar, not a claim that every route has already passed review.
