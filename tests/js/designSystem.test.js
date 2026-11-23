@@ -5,6 +5,7 @@ import test from 'node:test';
 const css = readFileSync(new URL('../../resources/css/app.css', import.meta.url), 'utf8');
 const tailwind = readFileSync(new URL('../../tailwind.config.js', import.meta.url), 'utf8');
 const primitives = readFileSync(new URL('../../resources/js/components/ui/primitives.jsx', import.meta.url), 'utf8');
+const uiIndex = readFileSync(new URL('../../resources/js/components/ui/index.js', import.meta.url), 'utf8');
 const cards = readFileSync(new URL('../../resources/js/components/ui/cards.jsx', import.meta.url), 'utf8');
 const feedback = readFileSync(new URL('../../resources/js/components/ui/feedback.jsx', import.meta.url), 'utf8');
 const navigation = readFileSync(new URL('../../resources/js/components/ui/navigation.jsx', import.meta.url), 'utf8');
@@ -603,4 +604,34 @@ test('messaging composer height is driven by its send control and compact paddin
     assert.ok(messageComposer.includes('relative flex min-w-0 items-center gap-1.5 rounded-[1rem]'));
     assert.ok(messageComposer.includes('min-h-[2.35rem] max-sm:min-h-9 w-full resize-none'));
     assert.doesNotMatch(messageComposer, /relative flex min-h-\[3\.1rem\] items-end/);
+});
+
+
+test('production forms and actions reuse the shared UI component contract', () => {
+    assert.ok(primitives.includes('export const TextInput = forwardRef'));
+    assert.ok(primitives.includes('export const TextareaField = forwardRef'));
+    assert.ok(primitives.includes('export const FileInput = forwardRef'));
+    assert.ok(primitives.includes("'aria-invalid': error ? true"));
+    assert.ok(uiIndex.includes('TextInput, TextareaField, FileInput, SelectField, Checkbox'));
+
+    for (const [name, source] of [
+        ['artist profile', routeLoading],
+        ['artwork studio', artworkStudio],
+        ['authentication', authPage],
+        ['admin console', adminWorkspace],
+        ['editorial tools', editorialPages],
+        ['messaging composer', messageComposer],
+        ['messaging inbox', messagingInbox],
+        ['artwork engagement', readFileSync(new URL('../../resources/js/app/ArtworkEngagement.jsx', import.meta.url), 'utf8')],
+        ['public artwork gallery', artworkGallery],
+        ['artwork catalogue', artworkCatalogue],
+        ['artist profile page', artistProfile],
+    ]) {
+        assert.doesNotMatch(source, /<(?:input|textarea|select|button)\\b/, `${name} should use shared controls and action primitives`);
+    }
+
+    assert.ok(routeLoading.includes('<FormField label="نام نمایشی"'));
+    assert.ok(artworkStudio.includes('<TextInput name="title"'));
+    assert.ok(messageComposer.includes('<FileInput'));
+    assert.ok(messageComposer.includes('<Button variant="ghost" type="submit"'));
 });
