@@ -92,7 +92,7 @@ test('messaging remains a canonical feature with conversation selection and cont
 test('feedback and documentation use the new design-system language', () => {
     assert.ok(feedback.includes('animate-skeleton-shimmer'));
     assert.ok(feedback.includes('ToastPrimitive.Viewport'));
-    assert.ok(docs.includes('Rademan application system'));
+    assert.ok(docs.includes('Rademan — application design system'));
     assert.ok(docs.includes('Buyer Studio'));
     assert.ok(docs.includes('WCAG 2.2 AA'));
 });
