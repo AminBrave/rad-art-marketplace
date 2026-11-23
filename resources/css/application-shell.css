@@ -120,3 +120,46 @@ img, video { max-width: 100%; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* Shared component primitives */
+button:not([class*="rounded-full"]), [role="button"]:not([class*="rounded-full"]) {
+  border-radius: 10px;
+}
+button:disabled, [role="button"][aria-disabled="true"] { cursor: not-allowed; }
+:where(input[type="text"], input[type="email"], input[type="password"], input[type="search"], input[type="url"], input[type="number"], input[type="tel"], textarea, select) {
+  width: 100%;
+  min-height: 44px;
+  padding-inline: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  box-shadow: none;
+}
+:where(input, textarea, select)::placeholder { color: var(--color-text-muted); opacity: 1; }
+:where(input, textarea, select):focus-visible {
+  border-color: var(--color-focus);
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+:where(textarea) { min-height: 112px; padding-block: 12px; }
+:where([role="dialog"], [data-radix-dialog-content]) {
+  border-color: var(--color-border);
+  border-radius: 18px;
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+:where(table) { border-color: var(--color-border); }
+:where(th) { color: var(--color-text-muted); font-weight: 700; }
+:where(td, th) { padding: .75rem 1rem; border-color: var(--color-border); }
+:where(article) { min-width: 0; }
+:where(.app-topbar) { min-height: var(--app-topbar-height); }
+:where(.app-topbar a:focus-visible, [data-testid="public-navigation-rail"] a:focus-visible, [data-testid="public-bottom-navigation"] a:focus-visible) {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+:where(.bg-accent-surface) { background-color: color-mix(in srgb, var(--color-action) 9%, var(--color-paper)); }
+:where(.text-terracotta-strong) { color: var(--color-action-text); }
+:where(.bg-terracotta) { background-color: var(--color-action); }
+:where(.border-terracotta) { border-color: var(--color-action); }
+main[aria-label="در حال بارگذاری راد آرت"] > .flex.min-h-14 { display: none; }
