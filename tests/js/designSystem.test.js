@@ -39,7 +39,7 @@ test('component primitives provide semantic slots without losing Radix accessibi
     for (const contract of ['aria-busy={loading || undefined}', "'aria-describedby': describedBy", "'aria-invalid': error ? true", 'SelectPrimitive.Root', 'CheckboxPrimitive.Root', 'focus-visible:outline']) {
         assert.ok(primitives.includes(contract), 'Missing interaction contract ' + contract);
     }
-    for (const component of ['export const Box', 'export const Grid', 'export const Container', 'export const Avatar', 'export const Card', 'export const Callout', 'export const Progress']) {
+    for (const component of ['export const Box', 'export const Grid', 'export const Container', 'export function Avatar', 'export const Card', 'export const Callout', 'export const Progress']) {
         assert.ok(layout.includes(component), 'Missing layout primitive ' + component);
     }
 });
