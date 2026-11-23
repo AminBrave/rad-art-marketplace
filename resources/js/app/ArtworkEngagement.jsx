@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 
 function CommentItem({ comment, user, onReply, onDelete, onReport }) {
-    const canDelete = user && comment.user?.id === user.id && !comment.is_deleted;
+    const canDelete = user && comment.is_mine && !comment.is_deleted;
 
     return (
         <article className="border-b border-border py-4 last:border-b-0">
@@ -20,7 +20,7 @@ function CommentItem({ comment, user, onReply, onDelete, onReport }) {
             {!comment.is_deleted && user && (
                 <div className="mt-2 flex flex-wrap gap-4">
                     {comment.parent_id === null && <button type="button" onClick={() => onReply(comment)} className="text-xs font-semibold text-terracotta-strong underline">پاسخ</button>}
-                    {comment.user?.id !== user.id && <button type="button" onClick={() => onReport(comment)} className="text-xs text-muted underline">گزارش دیدگاه</button>}
+                    {!comment.is_mine && <button type="button" onClick={() => onReport(comment)} className="text-xs text-muted underline">گزارش دیدگاه</button>}
                 </div>
             )}
             {comment.replies?.length > 0 && (
@@ -32,10 +32,10 @@ function CommentItem({ comment, user, onReply, onDelete, onReport }) {
                                     <p className="text-xs font-bold">{reply.user?.name || 'کاربر'}</p>
                                     <p className="mt-1 text-[11px] text-muted">{reply.created_at ? new Date(reply.created_at).toLocaleDateString('fa-IR') : ''}</p>
                                 </div>
-                                {user && reply.user?.id === user.id && !reply.is_deleted && <button type="button" onClick={() => onDelete(reply.id)} className="text-xs text-muted underline hover:text-danger">حذف</button>}
+                                {user && reply.is_mine && !reply.is_deleted && <button type="button" onClick={() => onDelete(reply.id)} className="text-xs text-muted underline hover:text-danger">حذف</button>}
                             </div>
                             <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-7">{reply.is_deleted ? 'این پاسخ حذف شده است.' : reply.body}</p>
-                            {!reply.is_deleted && user && reply.user?.id !== user.id && <button type="button" onClick={() => onReport(reply)} className="mt-2 text-xs text-muted underline">گزارش پاسخ</button>}
+                            {!reply.is_deleted && user && !reply.is_mine && <button type="button" onClick={() => onReport(reply)} className="mt-2 text-xs text-muted underline">گزارش پاسخ</button>}
                         </div>
                     ))}
                 </div>
