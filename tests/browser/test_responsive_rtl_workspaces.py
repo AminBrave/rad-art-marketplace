@@ -1,5 +1,6 @@
 import json
 import unittest
+from urllib.parse import urlparse
 
 from playwright.sync_api import sync_playwright
 
@@ -133,7 +134,7 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
         }
 
         def api_fixture(route):
-            url = route.request.url
+            url = urlparse(route.request.url).path
             method = route.request.method
             if url.endswith("/api/v1/auth/me"):
                 payload = {"data": {"id": 1, "name": "خریدار آزمایشی", "email": "buyer@example.test", "role": "buyer"}}
@@ -206,7 +207,7 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
 
         def api_fixture(route):
             nonlocal attachment_attempts
-            url = route.request.url
+            url = urlparse(route.request.url).path
             method = route.request.method
             if url.endswith("/api/v1/auth/me"):
                 payload = {"data": {"id": 1, "name": "خریدار آزمایشی", "email": "buyer@example.test", "role": "buyer"}}
@@ -268,7 +269,7 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
             page.get_by_role("button", name="ارسال پیام").click()
             page.get_by_text("پیام ذخیره شد، اما بارگذاری پیوست انجام نشد.", exact=False).wait_for(state="visible")
             self.assertEqual(attachment_attempts, 1)
-            self.assertTrue(page.get_by_text("reference.pdf").is_visible())
+            self.assertTrue(page.get_by_text("reference.pdf", exact=True).is_visible())
 
             page.get_by_role("button", name="ارسال پیام").click()
             page.wait_for_function("() => document.querySelector('input[type=file]')?.files.length === 0")
@@ -294,7 +295,7 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
             page.set_default_timeout(15000)
 
             def api_fixture(route):
-                url = route.request.url
+                url = urlparse(route.request.url).path
                 if url.endswith("/api/v1/auth/me"):
                     payload = {"data": {"id": 1, "name": "کاربر آزمایشی", "email": "test@example.test", "role": role}}
                 elif url.endswith("/api/v1/notifications/preferences"):
