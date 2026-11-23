@@ -390,8 +390,9 @@ Never cache authenticated API responses, private workspace data, messages, or pr
 The component overhaul is layered on this redesign branch. It is not a replacement for the previous editorial redesign.
 
 - Shared text controls now forward refs; shared file input support is available through the UI barrel.
+- The UI catalog has also been reviewed: pagination and toast dismissal use shared actions; cards and dialogs use the shared Tailwind class-merging helper; navigation and feedback components no longer define local native action buttons.
 - Artist profile settings, artwork management, authentication, editorial collection/featured-artist forms, admin report notes, and messaging search/composer use shared form primitives.
-- Public discovery, artist profile, workspace layout, admin status filters, conversation header, message timeline, and artwork engagement actions have been migrated toward the shared button primitive.
+- Public discovery, artist profile, workspace layout, admin status filters, conversation header, message timeline, artwork engagement, related-artwork actions, notification banners, pagination, toast dismissal and the development-only specimen have been migrated to the shared button primitive.
 - These changes preserve the existing API payloads, routes, role boundaries and message transaction behavior.
-- This is an initial migration slice, not evidence that every route or component has been audited. Remaining route-level controls and visual compositions must be reviewed and migrated before the overhaul is considered complete.
+- A source-level regression test now checks the migrated route and component surfaces for raw input, textarea, select and button elements. Native controls remain appropriate inside the shared primitives themselves. This is a broad migration pass, not evidence that every visual composition has been redesigned; route-by-route visual review and fresh runtime verification are still required.
 - Build, lint, automated tests, responsive browser tests and keyboard/screen-reader verification must be run against the updated head before delivery claims are made.
