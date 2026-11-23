@@ -78,7 +78,7 @@ export default function ArtworkEngagement({ artwork, slug }) {
         if (!commentsQuery.isSuccess || !hash.startsWith('#comment-')) return;
         const target = document.getElementById(hash.slice(1));
         target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, [commentsQuery.data, commentsQuery.isSuccess]);
+    }, [commentsQuery.data, commentsQuery.isSuccess, hash]);
 
     const refreshArtwork = () => queryClient.invalidateQueries({ queryKey: ['artwork', slug] });
     const refreshComments = () => queryClient.invalidateQueries({ queryKey: ['artwork-comments', slug] });
