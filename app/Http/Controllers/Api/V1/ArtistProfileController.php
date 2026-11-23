@@ -85,9 +85,18 @@ class ArtistProfileController extends Controller
             ->orderByDesc('id')
             ->simplePaginate(12, ['*'], 'artworks_page');
 
+        $followData = $artistProfile->is_public ? [
+            'followers_count' => $artistProfile->followers()->count(),
+            'is_following' => $request->user()
+                ? $artistProfile->followers()->where('follower_user_id', $request->user()->id)->exists()
+                : false,
+        ] : [];
+
         return response()->json([
             'data' => [
                 ... $this->payload($artistProfile),
+                ...$followData,
+                'is_own_profile' => $request->user()?->id === $artistProfile->user_id,
                 'artworks' => $artworks->getCollection()
                     ->map(fn (Artwork $artwork): array => $this->publicArtworkPayload($artwork, $artistProfile->is_public))
                     ->values(),
