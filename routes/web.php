@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\AdminMessageReportController;
 use App\Http\Controllers\Api\V1\AdminUserController;
 use App\Http\Controllers\Api\V1\ArtistArtworkController;
 use App\Http\Controllers\Api\V1\ArtistProfileController;
+use App\Http\Controllers\Api\V1\ArtistFollowController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ArtworkInteractionController;
 use App\Http\Controllers\Api\V1\ConversationController;
@@ -127,6 +128,11 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
         Route::get('/artworks', [AdminArtworkModerationController::class, 'index'])->name('artworks.index');
         Route::patch('/artworks/{artwork}/moderation', [AdminArtworkModerationController::class, 'update'])->name('artworks.moderation');
         Route::patch('/users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.role');
+    });
+
+    Route::middleware(['auth', 'role:buyer,artist'])->group(function (): void {
+        Route::post('/artists/{artistProfile:slug}/follow', [ArtistFollowController::class, 'follow'])->middleware('throttle:30,1')->name('artists.follow');
+        Route::delete('/artists/{artistProfile:slug}/follow', [ArtistFollowController::class, 'unfollow'])->middleware('throttle:30,1')->name('artists.unfollow');
     });
 });
 
