@@ -383,3 +383,15 @@ Never cache authenticated API responses, private workspace data, messages, or pr
 - Expose the send button's busy state in its accessible name and retain native disabled semantics during safety checks and in-flight sends.
 - Respect reduced-motion preferences on composer transitions and attachment removal; the global reduced-motion stylesheet also suppresses spinner animation duration.
 - No messaging API, upload, keyboard-send, or transaction semantics changed.
+
+
+## 16. Component-based overhaul — implementation baseline
+
+The component overhaul is layered on this redesign branch. It is not a replacement for the previous editorial redesign.
+
+- Shared text controls now forward refs; shared file input support is available through the UI barrel.
+- Artist profile settings, artwork management, authentication, editorial collection/featured-artist forms, admin report notes, and messaging search/composer use shared form primitives.
+- Public discovery, artist profile, workspace layout, admin status filters, conversation header, message timeline, and artwork engagement actions have been migrated toward the shared button primitive.
+- These changes preserve the existing API payloads, routes, role boundaries and message transaction behavior.
+- This is an initial migration slice, not evidence that every route or component has been audited. Remaining route-level controls and visual compositions must be reviewed and migrated before the overhaul is considered complete.
+- Build, lint, automated tests, responsive browser tests and keyboard/screen-reader verification must be run against the updated head before delivery claims are made.
