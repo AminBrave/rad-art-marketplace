@@ -138,6 +138,11 @@ final class ArtworkInteractionTest extends TestCase
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['parent_id']);
 
+        $this->postJson('/api/v1/artworks/'.$artwork->slug.'/comments', [
+            'body' => 'شناسه والد نامعتبر',
+            'parent_id' => 0,
+        ])->assertUnprocessable();
+
         $this->postJson('/api/v1/artworks/'.$otherArtwork->slug.'/comments', [
             'body' => 'پاسخ به اثر دیگر',
             'parent_id' => $root->id,
