@@ -73,8 +73,8 @@ test('public navigation uses existing destinations in desktop and mobile Instagr
         assert.ok(layouts.includes(route), 'Public navigation must retain ' + route);
     }
     assert.ok(layouts.includes('const accountTo = user'));
-    assert.ok(css.includes("[data-testid='public-navigation-rail']"));
-    assert.ok(css.includes("[data-testid='public-bottom-navigation']"));
+    assert.ok(css.includes('[data-testid="public-navigation-rail"]'));
+    assert.ok(css.includes('[data-testid="public-bottom-navigation"]'));
 });
 
 test('artwork and artist cards use image-first post/profile structures without changing destinations', () => {
