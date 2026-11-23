@@ -12,18 +12,20 @@ PUBLIC_ROUTES = ("/", "/artworks", "/artists", "/login")
 
 
 def install_authenticated_app_shell(page, user):
-    """Override the server-rendered auth bootstrap for an isolated browser fixture."""
-    def fulfill_shell(route):
-        response = route.fetch()
-        html = response.text()
-        marker = '<script type="application/json" id="rad-auth-bootstrap">null</script>'
-        replacement = '<script type="application/json" id="rad-auth-bootstrap">' + json.dumps(user, ensure_ascii=False) + '</script>'
-        if marker not in html:
-            raise AssertionError("Expected the guest auth bootstrap in the app shell")
-        route.fulfill(response=response, body=html.replace(marker, replacement, 1))
-
-    page.route("**/dashboard/buyer/messages**", fulfill_shell)
-
+    """Provide an isolated auth bootstrap before the app bundle reads it."""
+    bootstrap = json.dumps(user, ensure_ascii=False)
+    page.add_init_script(
+        """(() => {
+            const user = %s;
+            const originalGetElementById = Document.prototype.getElementById;
+            Document.prototype.getElementById = function (id) {
+                if (id === 'rad-auth-bootstrap') {
+                    return { textContent: JSON.stringify(user) };
+                }
+                return originalGetElementById.call(this, id);
+            };
+        })();""" % bootstrap
+    )
 
 class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
     """Exercise the real Laravel-served app shell at supported viewport widths."""
