@@ -21,7 +21,7 @@ function ThemeControl() {
             onClick={cycleTheme}
             aria-label={`تغییر پوسته؛ حالت فعلی: ${label}`}
             title={`پوسته: ${label}`}
-            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-surface text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-surface text-ink transition-colors hover:border-accent hover:bg-surface-muted hover:text-accent-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
         >
             <Icon size={18} strokeWidth={1.9} aria-hidden="true" />
             <span className="sr-only">تغییر پوسته</span>
@@ -63,7 +63,7 @@ function PublicNavigation({ user }) {
                             title={label}
                             className={({ isActive }) => [
                                 'flex h-12 w-12 items-center justify-center rounded-lg text-ink transition-colors hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
-                                isActive ? 'bg-surface-muted text-terracotta-strong' : 'text-muted',
+                                isActive ? 'bg-surface-muted text-accent-strong' : 'text-muted',
                             ].join(' ')}
                         >
                             <Icon size={22} strokeWidth={1.9} aria-hidden="true" />
@@ -82,7 +82,7 @@ function PublicNavigation({ user }) {
                             aria-label={label}
                             className={({ isActive }) => [
                                 'flex min-w-0 flex-col items-center justify-center gap-1 text-[10px] font-semibold no-underline transition-colors',
-                                isActive ? 'text-terracotta-strong' : 'text-muted',
+                                isActive ? 'text-accent-strong' : 'text-muted',
                             ].join(' ')}
                         >
                             <Icon size={20} strokeWidth={1.9} aria-hidden="true" />
@@ -115,7 +115,7 @@ export function PublicLayout() {
             <header className="app-topbar sticky top-0 z-40 flex min-h-16 items-center justify-between gap-3 border-b border-border bg-paper/95 px-page-gutter backdrop-blur">
                 <Link to="/" aria-label="راد آرت، خانه" className="flex shrink-0 items-center gap-2 text-ink no-underline">
                     <span className="grid h-10 w-10 place-items-center rounded-xl bg-ink text-xl font-black text-inverse">ر</span>
-                    <span className="text-lg font-black tracking-tight">راد<span className="text-terracotta-strong">آرت</span></span>
+                    <span className="text-lg font-black tracking-tight">راد<span className="text-accent-strong">آرت</span></span>
                 </Link>
                 <Link to="/artworks" className="hidden min-h-10 min-w-0 max-w-md flex-1 items-center gap-2 rounded-full border border-border bg-surface-muted px-4 text-sm text-muted no-underline transition-colors hover:border-border-strong sm:flex">
                     <Search size={17} aria-hidden="true" />
@@ -301,11 +301,11 @@ function NotificationBell({ user }) {
                     aria-expanded={open}
                     aria-haspopup="dialog"
                     aria-controls="workspace-notification-panel"
-                    className="relative inline-flex min-h-11 items-center gap-2 rounded-md border border-border-strong bg-paper px-3.5 py-2 text-sm font-bold text-ink shadow-soft transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                    className="relative inline-flex min-h-11 items-center gap-2 rounded-md border border-border-strong bg-paper px-3.5 py-2 text-sm font-bold text-ink shadow-soft transition-colors hover:border-accent hover:bg-surface-muted hover:text-accent-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
                 >
                     <Bell aria-hidden="true" size={17} strokeWidth={1.8} />
                     <span className="hidden sm:inline">اعلان‌ها</span>
-                    {unreadCount > 0 && <span className="min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-[10px] font-extrabold tabular-nums text-inverse" aria-live="polite">{unreadCount > 99 ? '۹۹+' : unreadCount.toLocaleString('fa-IR')}</span>}
+                    {unreadCount > 0 && <span className="min-w-5 rounded-full bg-accent px-1.5 py-0.5 text-[10px] font-extrabold tabular-nums text-inverse" aria-live="polite">{unreadCount > 99 ? '۹۹+' : unreadCount.toLocaleString('fa-IR')}</span>}
                 </button>
             </DialogTrigger>
             <DialogContent
@@ -313,7 +313,7 @@ function NotificationBell({ user }) {
                 placement="drawer"
                 className="!w-[min(25rem,100vw)] !p-0 flex flex-col !overflow-hidden text-right"
             >
-                <div className="h-1 shrink-0 bg-terracotta" aria-hidden="true" />
+                <div className="h-1 shrink-0 bg-accent" aria-hidden="true" />
                 <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
                     <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
@@ -327,7 +327,7 @@ function NotificationBell({ user }) {
                             type="button"
                             onClick={markAll}
                             disabled={busy || unreadCount === 0}
-                            className="inline-flex min-h-9 items-center gap-1.5 rounded-md px-2 text-[11px] font-bold text-terracotta-strong transition-colors hover:bg-accent-surface disabled:cursor-not-allowed disabled:opacity-40"
+                            className="inline-flex min-h-9 items-center gap-1.5 rounded-md px-2 text-[11px] font-bold text-accent-strong transition-colors hover:bg-accent-surface disabled:cursor-not-allowed disabled:opacity-40"
                         >
                             <CheckCheck size={14} aria-hidden="true" />
                             <span>خواندن همه</span>
@@ -369,10 +369,10 @@ function NotificationBell({ user }) {
                                                 'group flex w-full items-start gap-3 rounded-lg border p-3 text-right transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:opacity-50',
                                                 item.read_at
                                                     ? 'border-border bg-paper hover:border-border-strong hover:bg-surface-muted'
-                                                    : 'border-[color:color-mix(in_srgb,var(--color-terracotta)_24%,var(--color-border))] bg-accent-surface hover:border-terracotta',
+                                                    : 'border-[color:color-mix(in_srgb,var(--color-accent)_24%,var(--color-border))] bg-accent-surface hover:border-accent',
                                             ].join(' ')}
                                         >
-                                            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-surface-muted text-terracotta-strong">
+                                            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-surface-muted text-accent-strong">
                                                 <ItemIcon size={17} aria-hidden="true" />
                                             </span>
                                             <span className="min-w-0 flex-1">
@@ -384,7 +384,7 @@ function NotificationBell({ user }) {
                                                 {item.comment_preview && <span className="mt-1 block line-clamp-2 text-xs leading-6 text-muted">{item.comment_preview}</span>}
                                                 <span className="mt-1 block text-[11px] tabular-nums text-muted">{notificationDate(item.created_at)}</span>
                                             </span>
-                                            {!item.read_at && <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-terracotta" />}
+                                            {!item.read_at && <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" />}
                                         </button>
                                     </li>
                                 );
@@ -475,7 +475,7 @@ function AuthenticatedBottomNavigation({ primaryLinks }) {
                             className={({ isActive }) => [
                                 'relative flex min-w-0 flex-col items-center justify-center gap-1 rounded-md px-1 text-[10px] font-bold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus motion-reduce:transition-none',
                                 isActive
-                                    ? 'text-terracotta-strong after:absolute after:inset-x-1/4 after:top-0 after:h-0.5 after:rounded-full after:bg-terracotta'
+                                    ? 'text-accent-strong after:absolute after:inset-x-1/4 after:top-0 after:h-0.5 after:rounded-full after:bg-accent'
                                     : 'text-muted hover:bg-surface-muted hover:text-ink',
                             ].join(' ')}
                         >
@@ -513,11 +513,11 @@ export function WorkspaceLayout({ title, links, outletContext }) {
             <header className="sticky top-0 z-40 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] shadow-soft backdrop-blur">
                 <div className="mx-auto flex min-h-[4.5rem] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-20 sm:gap-4">
                     <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
-                        <Link to="/" className="group grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-lg font-black text-inverse shadow-soft no-underline transition-colors hover:bg-terracotta sm:h-12 sm:w-12 sm:text-xl" aria-label="راد آرت، صفحه اصلی">
+                        <Link to="/" className="group grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-lg font-black text-inverse shadow-soft no-underline transition-colors hover:bg-accent sm:h-12 sm:w-12 sm:text-xl" aria-label="راد آرت، صفحه اصلی">
                             <span className="transition-transform group-hover:scale-110">ر</span>
                         </Link>
                         <div className="min-w-0">
-                            <Link to="/" className="text-base font-black tracking-tight text-ink no-underline sm:text-lg">راد<span className="text-terracotta-strong">آرت</span></Link>
+                            <Link to="/" className="text-base font-black tracking-tight text-ink no-underline sm:text-lg">راد<span className="text-accent-strong">آرت</span></Link>
                             <div className="mt-0.5 flex min-w-0 items-center gap-1.5 sm:mt-1 sm:gap-2">
                                 <span className="max-w-[9.5rem] truncate text-[11px] font-semibold text-muted sm:max-w-none sm:text-xs">{title}</span>
                                 <span aria-hidden="true" className="h-1 w-1 shrink-0 rounded-full bg-border-strong" />
@@ -532,7 +532,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
 
                         <div className="hidden min-w-0 items-center gap-3 lg:flex">
                             <span className="max-w-44 truncate border-e border-border pe-3 text-sm font-bold text-ink">{user?.name}</span>
-                            <Link to="/" className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border-strong bg-paper px-4 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+                            <Link to="/" className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border-strong bg-paper px-4 text-sm font-bold text-ink no-underline transition-colors hover:border-accent hover:bg-surface-muted hover:text-accent-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
                                 مشاهده سایت
                             </Link>
                             <Button variant="outline" size="sm" onClick={handleLogout} className="min-h-10 gap-2">
@@ -544,7 +544,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                             <button
                                 type="button"
                                 aria-label="باز کردن منوی حساب کاربری"
-                                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus lg:hidden"
+                                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border-strong bg-paper text-ink transition-colors hover:border-accent hover:bg-surface-muted hover:text-accent-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus lg:hidden"
                             >
                                 <Menu size={20} aria-hidden="true" />
                             </button>
@@ -589,7 +589,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                     onClick={() => setMobileMenuOpen(false)}
                                     className={({ isActive }) => [
                                         'flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
-                                        isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
+                                        isActive ? 'bg-accent-surface text-accent-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
                                     ].join(' ')}
                                 >
                                     {item.label}
@@ -610,7 +610,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                     onClick={() => setMobileMenuOpen(false)}
                                     className={({ isActive }) => [
                                         'flex min-h-10 items-center rounded-lg px-3 text-sm font-medium no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
-                                        isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
+                                        isActive ? 'bg-accent-surface text-accent-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
                                     ].join(' ')}
                                 >
                                     {item.label}
@@ -624,7 +624,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     <Link
                         to="/"
                         onClick={() => setMobileMenuOpen(false)}
-                        className="flex min-h-11 items-center justify-center rounded-lg border border-border-strong bg-paper px-4 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong"
+                        className="flex min-h-11 items-center justify-center rounded-lg border border-border-strong bg-paper px-4 text-sm font-bold text-ink no-underline transition-colors hover:border-accent hover:text-accent-strong"
                     >
                         مشاهده سایت
                     </Link>
@@ -659,7 +659,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                     className={({ isActive }) => [
                                         'relative inline-flex min-h-11 w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus motion-reduce:transition-none',
                                         isActive
-                                            ? 'bg-accent-surface text-terracotta-strong after:absolute after:inset-y-2 after:right-0 after:w-1 after:rounded-full after:bg-terracotta'
+                                            ? 'bg-accent-surface text-accent-strong after:absolute after:inset-y-2 after:right-0 after:w-1 after:rounded-full after:bg-accent'
                                             : 'bg-transparent text-muted hover:bg-surface-muted hover:text-ink',
                                     ].join(' ')}
                                 >
