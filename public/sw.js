@@ -1,4 +1,4 @@
-const VERSION = 'rad-art-shell-v1';
+const VERSION = 'rad-art-shell-v2';
 const SHELL_CACHE = VERSION;
 const APP_SHELL = ['/manifest.webmanifest', '/favicon.svg', '/pwa-icon.svg', '/offline.html'];
 
