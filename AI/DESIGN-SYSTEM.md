@@ -32,6 +32,10 @@ Choose semantic tokens, typography, spacing, grids, radii, elevation, icons and 
 
 ## Accessibility and localization
 
+### Accessible controls, form states, dialogs, menus, notifications
+
+Use the shared Radix-backed primitives for controls and overlays where they fit. Every form control needs a programmatic label, associated help/error text where applicable, visible keyboard focus, and a clear disabled or busy state. Dialogs and menus must preserve keyboard navigation and their expected Escape/outside-dismiss behavior. Notifications and asynchronous updates should use concise, appropriately scoped live announcements rather than making entire interactive regions live.
+
 - Prefer semantic HTML and native platform behavior.
 - Provide meaningful names, labels, focus states and keyboard interactions.
 - Maintain sufficient contrast and do not communicate meaning through color alone.
