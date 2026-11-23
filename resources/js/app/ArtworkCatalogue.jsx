@@ -91,7 +91,7 @@ export default function ArtworkCatalogue() {
     };
 
     return (
-        <PageContainer as="main" className="min-w-0 max-w-full box-border min-h-[65vh] py-10 lg:py-14" dir="rtl">
+        <PageContainer as="main" data-page="artwork-catalogue" className="min-w-0 max-w-full box-border min-h-[65vh] py-10 lg:py-14" dir="rtl">
             <PageHeader eyebrow="آرشیو عمومی راد آرت" title="گالری آثار" description="در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید." />
 
             <section aria-label="فیلتر و مرتب‌سازی آثار" className="mt-7 border border-border bg-surface-muted p-4 sm:p-5 lg:p-6">
