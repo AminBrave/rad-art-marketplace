@@ -250,7 +250,7 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
             self.assertTrue(page.get_by_text("reference.pdf").is_visible())
 
             page.get_by_role("button", name="ارسال پیام").click()
-            self.assertEqual(page.locator('input[type="file"]').evaluate("(element) => element.files.length"), 0)
+            page.wait_for_function("() => document.querySelector('input[type=file]')?.files.length === 0")
             self.assertEqual(attachment_attempts, 2)
             self.assertEqual(len(message_client_ids), 2)
             self.assertEqual(message_client_ids[0], message_client_ids[1], "Retry must reuse the idempotency key")
