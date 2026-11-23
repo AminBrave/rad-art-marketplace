@@ -23,11 +23,12 @@
 - Artist artwork management has create/edit/upload and review-status presentation (`ArtworkStudio.jsx`).
 - Buyer overview is primarily a discovery/inquiry launchpad rather than a data-rich buyer activity dashboard (`BuyerWorkspace.jsx`).
 - Existing role navigation is centralized in `workspaceNavigation.js`.
+- The redesign adds `resources/css/instagram.css` as a semantic visual adapter, responsive public navigation in `Layouts.jsx`, and image-first artwork/artist cards in `resources/js/components/ui/cards.jsx`.
 
 ## Confirmed gaps against the approved direction
 - The inspected branch already includes a `ThemeContext` with explicit light/dark/system preference and semantic light/dark CSS token sets. The earlier dark-theme gap statement was incorrect; the new Instagram layer overrides those semantic roles while retaining the existing theme provider.
 - The recursive repository tree at the evidence commit contains no web app manifest or service-worker implementation; installability is not established by this audit.
-- The product owner requested an Instagram-inspired redesign while preserving Rademan's art-marketplace capabilities. `resources/css/instagram.css` is the new visual adapter; `AI/DESIGN-SYSTEM.md`, `AI/PROJECT.md` and the UI/UX skill define the new direction.
+- The product owner requested an Instagram-inspired redesign while preserving Rademan's art-marketplace capabilities. The new visual adapter and navigation/card changes are on `agent/instagram-design-system`; `AI/DESIGN-SYSTEM.md`, `AI/PROJECT.md` and the UI/UX skill define the new direction.
 - Current role navigation labels/organization differ from the approved Discover / Buyer Studio / Artist Studio / Admin Console IA.
 
 ## Entrypoint and test inventory
