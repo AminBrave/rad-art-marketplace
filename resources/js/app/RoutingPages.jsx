@@ -255,7 +255,7 @@ function AuthUnavailable() {
         <div className="mx-auto max-w-xl px-6 py-20 text-center" dir="rtl">
             <h1 className="text-2xl font-black">ارتباط با حساب کاربری برقرار نشد</h1>
             <p className="mt-3 text-sm leading-7 text-muted">{authError}</p>
-            <button type="button" onClick={refreshUser} className="mt-6 rounded-full bg-ink px-5 py-3 text-sm font-bold text-inverse">تلاش دوباره</button>
+            <Button variant="ghost" type="button" onClick={refreshUser} className="mt-6 rounded-full bg-ink px-5 py-3 text-sm font-bold text-inverse">تلاش دوباره</Button>
         </div>
     );
 }
