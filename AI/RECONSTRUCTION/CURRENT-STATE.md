@@ -2,6 +2,7 @@
 
 **Snapshot date:** 2026-11-23  
 **Inspected ref:** agent/chatgpt  
+**Inspected commit:** ee4437bd8587b5b7b32aa27bc32f9dd37f1e4c3b  
 **Purpose:** concise source-backed orientation for future work. This is a point-in-time observation, not a target architecture or a restriction on future user requests.
 
 Re-inspect the relevant files before relying on any statement below. Update or remove this snapshot when it becomes stale.
