@@ -627,7 +627,7 @@ test('production forms and actions reuse the shared UI component contract', () =
         ['artwork catalogue', artworkCatalogue],
         ['artist profile page', artistProfile],
     ]) {
-        assert.doesNotMatch(source, /<(?:input|textarea|select|button)\\b/, `${name} should use shared controls and action primitives`);
+        assert.doesNotMatch(source, /<(?:input|textarea|select|button)\b/, `${name} should use shared controls and action primitives`);
     }
 
     assert.ok(routeLoading.includes('<FormField label="نام نمایشی"'));
