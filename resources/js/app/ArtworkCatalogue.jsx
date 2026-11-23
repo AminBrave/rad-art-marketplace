@@ -103,7 +103,7 @@ export default function ArtworkCatalogue() {
                     </div>
                     <span className="text-xs text-muted">{activeFilterCount ? activeFilterCount.toLocaleString('fa-IR') + ' معیار انتخاب‌شده' : 'همه آثار عمومی'}</span>
                 </div>
-                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(18rem,1.5fr)_repeat(2,minmax(11rem,1fr)]
+                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(18rem,1.5fr)_repeat(2,minmax(11rem,1fr))]"
                     <SearchField value={searchInput} onChange={(event) => setSearchInput(event.target.value)} onSearch={submitSearch} label="جست‌وجو در آثار و هنرمندان" placeholder="عنوان، توضیحات، تکنیک یا نام هنرمند…" />
                     <SelectField value={category} onChange={(event) => updateFilters({ category: event.target.value })} aria-label="فیلتر دسته‌بندی">
                         <option value="">همه دسته‌ها</option>
@@ -156,10 +156,10 @@ export default function ArtworkCatalogue() {
                 <EmptyState className="mt-8" title="اثری با این مشخصات پیدا نشد" description="عبارت جست‌وجو یا گزینه‌های فیلتر را تغییر دهید." />
             )}
             {!loading && !error && meta.last_page > 1 && (
-                <nav aria-label="صفحه‌بندی آثار" className="mt-10 flex items-center justify-center gap-4">
-                    <button type="button" disabled={page <= 1} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page - 1)]]))} className="border border-border px-4 py-2 text-sm font-semibold disabled:opacity-40">قبلی</button>
-                    <span className="text-sm text-muted">صفحه {meta.current_page.toLocaleString('fa-IR')} از {meta.last_page.toLocaleString('fa-IR')}</span>
-                    <button type="button" disabled={page >= meta.last_page} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page + 1)]]))} className="border border-border px-4 py-2 text-sm font-semibold disabled:opacity-40">بعدی</button>
+                <nav aria-label="صفحه‌بندی آثار" className="mt-12 flex items-center justify-center gap-3 border-t border-border pt-7">
+                    <button type="button" disabled={page <= 1} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page - 1)]]))} className="inline-flex min-h-11 items-center gap-2 border border-border px-4 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40"><ArrowLeft size={15} aria-hidden="true" />قبلی</button>
+                    <span className="px-2 text-sm tabular-nums text-muted">صفحه {meta.current_page.toLocaleString('fa-IR')} از {meta.last_page.toLocaleString('fa-IR')}</span>
+                    <button type="button" disabled={page >= meta.last_page} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page + 1)]]))} className="inline-flex min-h-11 items-center gap-2 border border-border px-4 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40">بعدی<ArrowLeft size={15} aria-hidden="true" className="rotate-180" /></button>
                 </nav>
             )}
         </PageContainer>
