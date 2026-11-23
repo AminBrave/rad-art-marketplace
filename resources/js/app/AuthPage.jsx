@@ -59,10 +59,10 @@ export default function AuthPage({ initialMode = 'login' }) {
 
     return (
         <main className="mx-auto max-w-xl px-5 py-12 sm:px-8" dir="rtl">
-            <section className="rounded-3xl border border-border-strong bg-paper p-6 shadow-sm sm:p-9">
+            <section className="border-y-2 border-ink bg-paper p-6 sm:p-9">
                 <Link to="/" className="text-sm font-bold text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2">بازگشت به راد آرت</Link>
-                <h1 className="mt-5 text-2xl font-black">{mode === 'register' ? 'ساخت حساب کاربری' : 'ورود به حساب'}</h1>
-                <div className="mt-6 flex gap-5 border-b border-border pb-4">
+                <h1 className="mt-5 text-3xl font-black tracking-tight">{mode === 'register' ? 'ساخت حساب کاربری' : 'ورود به حساب'}</h1>
+                <div className="mt-7 flex gap-5 border-b-2 border-ink pb-4">
                     <Button variant="ghost" type="button" onClick={() => { setMode('login'); setErrors({}); setMessage(''); }} className={`focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2 ${mode === 'login' ? 'font-extrabold text-terracotta-strong' : 'text-muted'}`}>ورود</Button>
                     <Button variant="ghost" type="button" onClick={() => { setMode('register'); setErrors({}); setMessage(''); }} className={`focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2 ${mode === 'register' ? 'font-extrabold text-terracotta-strong' : 'text-muted'}`}>ثبت‌نام</Button>
                 </div>
@@ -76,7 +76,7 @@ export default function AuthPage({ initialMode = 'login' }) {
                     {mode === 'register' && <FormField label="تکرار گذرواژه" required><TextInput type="password" name="password_confirmation" value={form.password_confirmation} onChange={update} required minLength="10" autoComplete="new-password" dir="ltr" className="text-left" /></FormField>}
                     {errors.form?.map((item) => <p key={item} role="alert" className="text-sm text-danger">{item}</p>)}
                     {message && <p role="status" className="text-sm text-muted">{message}</p>}
-                    <Button variant="ghost" type="submit" disabled={busy} className="w-full rounded-xl bg-ink px-6 py-3.5 font-bold text-inverse transition hover:bg-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2 disabled:cursor-wait disabled:opacity-60">{busy ? 'لطفاً صبر کنید…' : mode === 'register' ? 'ایجاد حساب' : 'ورود به حساب'}</Button>
+                    <Button variant="ghost" type="submit" disabled={busy} className="w-full rounded-sm bg-ink px-6 py-3.5 font-bold text-inverse transition hover:bg-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2 disabled:cursor-wait disabled:opacity-60">{busy ? 'لطفاً صبر کنید…' : mode === 'register' ? 'ایجاد حساب' : 'ورود به حساب'}</Button>
                 </form>
                 <p className="mt-5 text-xs leading-6 text-subtle">ثبت‌نام عمومی فقط برای خریدار و هنرمند فعال است. حساب مدیر باید از سمت سرور ایجاد شود.</p>
             </section>
