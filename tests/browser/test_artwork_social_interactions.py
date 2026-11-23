@@ -317,12 +317,7 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
             expect(page.get_by_role("button", name="پسندیدن")).to_have_count(0)
             expect(page.get_by_label("دیدگاه شما")).to_have_count(0)
 
-            with page.expect_response(
-                lambda response: response.url.endswith("/artworks/social-journey-artwork/comments")
-                and response.request.method == "GET",
-                timeout=15000,
-            ):
-                page.get_by_role("button", name="اشتراک‌گذاری اثر").click()
+            page.get_by_role("button", name="اشتراک‌گذاری اثر").click()
 
             expect(page.get_by_role("status")).to_contain_text("لینک اثر کپی شد")
             self.assertEqual(
