@@ -47,6 +47,7 @@ export default {
                 raised: 'var(--shadow-raised)',
             },
             maxWidth: { content: 'var(--content-width)' },
+            spacing: { 'page-gutter': 'var(--page-gutter)' },
         },
     },
     plugins: [],
