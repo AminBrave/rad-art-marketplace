@@ -30,7 +30,7 @@ export function SkeletonLines({ lines = 3, className = '' }) {
 export function EmptyState({ title, description, action, className = '' }) {
     return (
         <section data-ui="empty-state" className={`grid justify-items-center gap-3 rounded-md border border-dashed border-border bg-surface px-5 py-10 text-center ${className}`} dir="rtl">
-            <span aria-hidden="true" className="h-2 w-10 rounded-full bg-sand" />
+            <span aria-hidden="true" className="h-2 w-10 rounded-full bg-line" />
             <h2 className="text-base font-bold text-ink">{title}</h2>
             {description && <p className="max-w-lg text-sm leading-7 text-muted">{description}</p>}
             {action}
@@ -51,7 +51,7 @@ export function ErrorState({ title = 'مشکلی پیش آمد', description, on
 export function SuccessState({ title, description, className = '' }) {
     return (
         <div data-ui="success-state" role="status" className={`rounded-md border border-border border-s-2 border-s-success bg-surface px-4 py-3 ${className}`} dir="rtl">
-            <p className="font-semibold text-olive">{title}</p>
+            <p className="font-semibold text-success">{title}</p>
             {description && <p className="mt-1 text-sm leading-6 text-muted">{description}</p>}
         </div>
     );
@@ -79,7 +79,7 @@ export function UploadFeedback({ fileName, status = 'idle', progress = 0, messag
         <div data-ui="upload-feedback" className="grid gap-2 rounded-md border border-border bg-paper p-3 text-sm" dir="rtl">
             <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="font-semibold text-ink">{fileName || 'فایل انتخاب‌شده'}</span>
-                <span className={status === 'error' ? 'text-danger' : status === 'success' ? 'text-olive' : 'text-muted'}>
+                <span className={status === 'error' ? 'text-danger' : status === 'success' ? 'text-success' : 'text-muted'}>
                     {labels[status] ?? message}
                 </span>
             </div>
@@ -92,7 +92,7 @@ export function UploadFeedback({ fileName, status = 'idle', progress = 0, messag
                     aria-valuenow={safeProgress}
                     className="h-2 overflow-hidden rounded-full bg-surface-muted"
                 >
-                    <span className="block h-full bg-terracotta transition-[width]" style={{ width: `${safeProgress}%` }} />
+                    <span className="block h-full bg-accent transition-[width]" style={{ width: `${safeProgress}%` }} />
                 </div>
             )}
             {message && <p className="text-xs leading-6 text-muted">{message}</p>}
@@ -106,7 +106,7 @@ export function Toast({ open, title, description, variant = 'info', onDismiss, d
     const variants = {
         success: 'border-s-success',
         error: 'border-s-danger',
-        info: 'border-s-terracotta',
+        info: 'border-s-accent',
     };
 
     const handleOpenChange = (nextOpen) => {
@@ -180,12 +180,12 @@ export function MediaImage({
                 <span
                     role={alt ? 'img' : 'status'}
                     aria-label={alt ? `${alt}: تصویر در دسترس نیست` : undefined}
-                    className="absolute inset-0 grid min-h-32 place-items-center overflow-hidden bg-[radial-gradient(ellipse_at_18%_20%,color-mix(in_srgb,var(--color-sand)_55%,transparent),transparent_42%),radial-gradient(ellipse_at_82%_78%,color-mix(in_srgb,var(--color-terracotta)_18%,transparent),transparent_45%),linear-gradient(135deg,var(--color-paper),var(--color-surface-muted))] text-center"
+                    className="absolute inset-0 grid min-h-32 place-items-center overflow-hidden bg-[radial-gradient(ellipse_at_18%_20%,color-mix(in_srgb,var(--color-line)_55%,transparent),transparent_42%),radial-gradient(ellipse_at_82%_78%,color-mix(in_srgb,var(--color-accent)_18%,transparent),transparent_45%),linear-gradient(135deg,var(--color-paper),var(--color-surface-muted))] text-center"
                 >
-                    <span aria-hidden="true" className="pointer-events-none absolute -end-8 -top-10 h-36 w-36 rounded-full border border-terracotta/20" />
-                    <span aria-hidden="true" className="pointer-events-none absolute -start-10 -bottom-16 h-44 w-44 rounded-full border border-sand/70" />
+                    <span aria-hidden="true" className="pointer-events-none absolute -end-8 -top-10 h-36 w-36 rounded-full border border-accent/20" />
+                    <span aria-hidden="true" className="pointer-events-none absolute -start-10 -bottom-16 h-44 w-44 rounded-full border border-line/70" />
                     <span className="relative z-10 flex flex-col items-center gap-2 px-4 pb-10 text-sm font-semibold text-muted">
-                        <span className="grid h-14 w-14 place-items-center rounded-full border border-terracotta/30 bg-paper/80 text-terracotta shadow-sm">
+                        <span className="grid h-14 w-14 place-items-center rounded-full border border-accent/30 bg-paper/80 text-accent shadow-sm">
                             <ImageOff size={27} strokeWidth={1.5} aria-hidden="true" />
                         </span>
                         <span className="tracking-wide">تصویر در دسترس نیست</span>
