@@ -134,7 +134,7 @@ test('UploadFeedback clamps progress to the valid accessible range', () => {
     assert.match(html, /width:100%/);
 });
 
-test('MediaImage reserves its frame and exposes the RAD skeleton while loading', () => {
+test('MediaImage reserves its frame and exposes the Rademan skeleton while loading', () => {
     const html = renderToStaticMarkup(
         React.createElement(feedback.MediaImage, {
             src: '/storage/artworks/sample.webp',
