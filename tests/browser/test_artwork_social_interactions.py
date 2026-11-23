@@ -136,7 +136,11 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
             route.fulfill(
                 status=200,
                 content_type="application/json",
-                body=json.dumps(comments_payload(comments), ensure_ascii=False),
+                body=json.dumps({
+                    **comments_payload(),
+                    "data": [ROOT_COMMENT, *comments],
+                    "total": 1 + len(comments),
+                }, ensure_ascii=False),
             )
 
         page.route("**/api/v1/artworks/social-journey-artwork/comments**", comments_route)
@@ -280,14 +284,30 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
         finally:
             context.close()
 
-    def test_like_toggle_sends_expected_mutation_and_updates_accessible_state(self):
+    def test_buyer_can_like_and_unlike_artwork_with_refreshed_accessible_state(self):
         context, page = self.new_page()
+        state = {"liked": False, "likes_count": 4}
         mutations = []
+
+        def artwork_route(route):
+            route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({"data": {
+                    **ARTWORK,
+                    "liked_by_me": state["liked"],
+                    "likes_count": state["likes_count"],
+                }}, ensure_ascii=False),
+            )
 
         def likes_route(route):
             mutations.append(route.request.method)
+            state["liked"] = route.request.method == "POST"
+            state["likes_count"] += 1 if state["liked"] else -1
             route.fulfill(status=204, body="")
 
+        page.unroute("**/api/v1/artworks/social-journey-artwork")
+        page.route("**/api/v1/artworks/social-journey-artwork", artwork_route)
         page.route("**/api/v1/artworks/social-journey-artwork/likes", likes_route)
         try:
             page.goto(BASE_URL + "/artworks/social-journey-artwork", wait_until="domcontentloaded")
@@ -301,6 +321,19 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
             ):
                 like.click()
 
-            self.assertEqual(mutations, ["POST"])
+            liked = page.get_by_role("button", name="پسندیده‌اید")
+            expect(liked).to_have_attribute("aria-pressed", "true")
+            expect(page.get_by_text("۵ پسند", exact=True)).to_be_visible()
+
+            with page.expect_response(
+                lambda response: response.url.endswith("/likes")
+                and response.request.method == "DELETE",
+                timeout=15000,
+            ):
+                liked.click()
+
+            expect(page.get_by_role("button", name="پسندیدن")).to_have_attribute("aria-pressed", "false")
+            expect(page.get_by_text("۴ پسند", exact=True)).to_be_visible()
+            self.assertEqual(mutations, ["POST", "DELETE"])
         finally:
             context.close()
