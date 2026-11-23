@@ -11,5 +11,7 @@ Read AGENTS.md first. It is the concise entry point for repository context and u
 - Consider Persian RTL, responsive behavior and accessibility when relevant to the user experience.
 - Run proportionate checks when useful and safe; report exactly what was and was not verified.
 - Keep documentation concise and update the canonical reference when implementation or user direction changes.
+- For parallel agents, use one persistent agent/<agent-id> lane per agent and one isolated task branch per assignment. Task PRs target only their owning agent lane; cross-agent integration is owner-directed.
+- Coordinate shared files and API/data contracts before parallel edits. Use GitHub issues/PRs and the existing project board when they improve task ownership and handoff.
 
-See AI/DEVELOPMENT-GUIDE.md for the central engineering guide.
+See AI/DEVELOPMENT-GUIDE.md for the central engineering guide and AI/DEVELOPMENT-WORKFLOW.md for branch lanes and integration.
