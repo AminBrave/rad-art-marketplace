@@ -14,7 +14,6 @@ export default {
             colors: {
                 canvas: 'var(--rd-canvas)',
                 ink: 'var(--rd-text)',
-                success: 'var(--rd-positive)',
                 paper: 'var(--rd-surface)',
                 muted: 'var(--rd-text-2)',
                 subtle: 'var(--rd-text-3)',
