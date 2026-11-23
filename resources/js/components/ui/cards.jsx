@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Heart, ArrowUpLeft, MapPin } from 'lucide-react';
+import { ArrowLeft, ArrowUpLeft, MapPin } from 'lucide-react';
 import { formatArtworkPrice } from '../../utils/formatArtworkPrice';
 import { MediaImage } from './feedback';
 
@@ -36,7 +36,7 @@ export function ArtworkCard({ artwork, className = '' }) {
                 </div>
                 <div className="flex items-center justify-between border-t border-border pt-2 text-[11px] text-muted">
                     <span>اثر منتخب در راد آرت</span>
-                    <span className="inline-flex items-center gap-1"><Heart size={13}/> کشف اثر</span>
+                    <span className="inline-flex items-center gap-1">جزئیات اثر <ArrowLeft size={13}/></span>
                 </div>
             </div>
         </article>
