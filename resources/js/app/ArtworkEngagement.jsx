@@ -116,7 +116,17 @@ export default function ArtworkEngagement({ artwork, slug }) {
             }
             setShareMessage('امکان کپی خودکار وجود ندارد. نشانی اثر: ' + url);
         } catch (error) {
-            if (error?.name !== 'AbortError') setShareMessage('اشتراک‌گذاری انجام نشد. دوباره تلاش کنید.');
+            if (error?.name === 'AbortError') return;
+            try {
+                if (navigator.clipboard?.writeText) {
+                    await navigator.clipboard.writeText(url);
+                    setShareMessage('اشتراک‌گذاری مستقیم در دسترس نبود؛ لینک اثر کپی شد.');
+                    return;
+                }
+            } catch {
+                // Fall through to the accessible manual-copy message.
+            }
+            setShareMessage('اشتراک‌گذاری انجام نشد. نشانی اثر: ' + url);
         }
     };
 
