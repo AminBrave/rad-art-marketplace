@@ -1,89 +1,92 @@
-# Rademan — experience and design direction
+# Rademan — Instagram-inspired design system
 
-> This is the target design brief, not a specification to preserve the legacy RAD component system. Confirm implementation facts in the latest `main` branch.
+## Purpose
+Rademan adopts Instagram's recognizable interface principles—minimal chrome, image-first discovery, compact typography, clear dividers, simple controls, blue primary actions, profile-led identity and predictable responsive navigation—while retaining Rademan's existing art-marketplace capabilities and brand identity.
 
-## Design objective
-Build a coherent, contemporary visual-content platform for discovering artists and artworks and continuing into direct buyer–artist conversations. Use an art-editorial language for public discovery and a focused professional workspace language for authenticated tasks.
+This is a design-language reference, not a request to reproduce Instagram's proprietary assets, copy, social graph or product features.
 
-Retain only Rademan's five brand color anchors: Ivory `#F7F5F0`, Charcoal `#242320`, Terracotta `#A64F31`, Sand `#D8C9B7`, Olive `#536052`. Everything else—tokens, typography, spacing, grid, component architecture, navigation, interaction patterns and responsive rules—is open for redesign.
+## Product integrity
+Keep the existing product experiences and backend contracts:
+- **Discover:** home, artworks, artwork detail, artists, artist profiles, editorial collections, information pages and authentication.
+- **Buyer Studio:** buyer overview and the existing canonical buyer–artist conversation inbox.
+- **Artist Studio:** artist overview, profile management, artwork/content management and the existing canonical conversation inbox.
+- **Admin Console:** overview, users and roles, artwork moderation, editorial curation, message reports and trust/safety.
+- Preserve likes, comments, follows and notifications only where implemented in the current application.
 
-## Product information architecture
-### Discover — public
-- Home / editorial entry
-- Artworks catalogue and artwork detail
-- Artists directory and artist profile
-- Editorial collections and collection detail
-- About, Help, Contact
-- Contextual “Start inquiry” entry points that open the existing buyer–artist conversation flow
+Do not add checkout, orders, payments, saved collections, Instagram login/import or other unimplemented features. Keep existing URLs, API contracts, role boundaries, server-side authorization and conversation identity intact.
 
-### Buyer Studio
-- Overview
-- Inquiries (existing messaging)
-- Account/preferences only where the current implementation supports them
-- Discover remains a shared public destination, not a duplicated buyer catalogue
+## Visual foundations
 
-### Artist Studio
-- Overview
-- Content library (existing artwork management)
-- Public profile management
-- Inquiries (existing messaging)
+### Color
+The five Rademan identity anchors remain available:
+- Ivory `#F7F5F0`
+- Charcoal `#242320`
+- Terracotta `#A64F31`
+- Sand `#D8C9B7`
+- Olive `#536052`
 
-### Admin Console
-- Overview
-- Artwork review/moderation
-- Editorial collections and featured-artist curation
-- Message reports / trust and safety
-- User and role governance
+The interface uses Instagram-inspired semantic roles rather than using brand anchors as every component color.
 
-Do not add Saved, checkout, orders, analytics, artist-owned collection management, social engagement, Instagram integration or other unverified destinations.
+| Role | Light | Dark |
+|---|---|---|
+| Canvas | `#FAFAFA` | `#000000` |
+| Surface | `#FFFFFF` | `#121212` |
+| Raised surface | `#FFFFFF` | `#1C1C1C` |
+| Muted surface | `#F5F5F5` | `#262626` |
+| Primary text | `#262626` | `#F5F5F5` |
+| Secondary text | `#737373` | `#A8A8A8` |
+| Divider | `#DBDBDB` | `#363636` |
+| Primary action | `#0095F6` | `#0095F6` |
+| Destructive | `#ED4956` | `#FF6673` |
 
-## Navigation principles
-- Keep public discovery navigation distinct from role-specific workspace navigation.
-- Give Buyer and Artist a single canonical Inquiries destination backed by existing messaging routes and state.
-- Overview previews may deep-link into that canonical conversation; do not create a second inbox.
-- On mobile, prioritize the active task and a clear list ↔ conversation back path. Keep the composer keyboard-safe and message history independently scrollable.
-- On desktop, messaging should use an efficient conversation list + active conversation layout.
-- Use role-aware navigation without treating client-side guards as authorization; backend controls remain authoritative.
-- Navigation labels and exact placement are proposals until reconciled with current source and owner-approved IA.
+Semantic overrides live in `resources/css/instagram.css`; theme selection remains owned by `ThemeContext`. Explicit light, dark and system preference are supported.
 
-## Visual and interaction system
-The first foundation slice is implemented on `refactor/rademan-product-foundation`: `--rd-*` semantic tokens, Tailwind semantic/brand color bindings, theme provider and public/workspace theme controls. Existing `--color-*` values remain as compatibility aliases during migration; new feature work should consume semantic roles. The legacy visual system is not the target.
+### Typography
+- Keep Vazirmatn for Persian-first content and Inter for Latin metadata.
+- Use a compact hierarchy: strong page title, restrained supporting text, medium-weight card labels and legible metadata.
+- Keep Persian RTL as the default; use explicit LTR islands for email, URLs, code, numeric identifiers and Latin metadata.
 
+### Shape, spacing and elevation
+- Use compact 3–8px corner radii for controls and cards; preserve circular avatar and pill affordances.
+- Prefer 1px dividers and flat surfaces over elevated card stacks.
+- Keep a consistent 4px spacing rhythm and comfortable touch targets (44px where practical).
+- Artwork remains the visual focal point; preserve image aspect ratios and object-fit intent.
 
-1. Semantic design tokens for surfaces, text, borders, focus, status, overlays and elevation.
-2. Typography scale validated for Persian-first RTL and mixed Persian/Latin content. Select fonts based on glyph coverage, readability and loading performance; do not assume a font choice before testing.
-3. Responsive layout primitives and artwork-focused grids with intentional image ratios.
-4. Accessible controls, form states, dialogs, menus, notifications, empty/loading/error states and feedback.
-5. Motion used sparingly, with reduced-motion support.
-6. Light, dark and system theme behavior across every surface, including messaging, media, forms, dialogs and statuses.
+## Component principles
+- Navigation: concise labels, clear active state, consistent icons and responsive adaptation.
+- Artwork tiles: image-first, predictable ratios, restrained metadata and obvious open/detail affordance.
+- Artist identity: avatar, name, location/bio and existing profile actions; story-ring styling is decorative only and must not imply unseen story functionality.
+- Buttons: blue for primary actions, neutral for secondary actions, red for destructive actions.
+- Forms: clear labels, helper/error text, visible focus and consistent disabled/loading states.
+- Dialogs and menus: clear hierarchy, predictable dismissal, keyboard support and focus return.
+- Feedback: consistent skeleton, empty, error, success and permission states in both themes.
+- Messaging: preserve the current conversation list + active thread model, contextual artwork, composer, attachments, message actions, read state and safety controls.
 
-## Theme and accessibility
-- The current branch implements a browser-persisted light/dark/system cycle control, system preference tracking and semantic theme tokens. This is local to the browser, not synchronized to the user account. Visual/accessibility verification across all surfaces remains outstanding.
-- Meet WCAG 2.2 AA contrast and keyboard/focus expectations.
-- Never rely on color alone for status or actions.
-- Validate RTL, focus order, touch targets, zoom/reflow, reduced motion, screen-reader names and validation feedback.
+## Responsive behavior
+- Phone: one-column content, touch-sized controls, no horizontal page overflow, safe-area-aware fixed elements and a clear return path from a conversation to its list.
+- Tablet: compact navigation and two-column content where it improves scanning.
+- Desktop: centered content, image grids, persistent workspace navigation and efficient two-pane messaging.
+- Do not hide essential actions or data at any breakpoint.
 
-## Mobile-first PWA
-Design for phone viewport and touch first, then tablet and desktop. Verify install metadata, manifest/icons, service-worker lifecycle, standalone display, safe-area and viewport behavior before claiming PWA readiness. Private conversations and workspace data must not be placed in unsafe shared caches. Offline messaging/background sync are not implied.
+## Accessibility and quality
+- Target WCAG 2.2 AA contrast in both themes.
+- Preserve semantic HTML, accessible names, keyboard navigation, visible focus, validation feedback and reduced-motion preferences.
+- Never communicate status by color alone.
+- Test Persian RTL, mixed Persian/Latin content, zoom/reflow, touch targets, dialogs, forms, menus and all major page states.
 
-## Messaging preservation contract
-The current messaging subsystem is a core product capability. Redesign its shell and ergonomics without silently changing contracts or behavior:
-- Preserve conversation identity, list/detail/history, pagination/sync and current polling semantics.
-- Preserve message composer, send/retry, replies, editing/deletion, attachments, artwork references and reactions where confirmed in source.
-- Preserve read state, archive/mute, report/block and safety behavior where confirmed.
-- Preserve user-scoped cache isolation and conversation state restoration where confirmed.
-- Preserve artwork/artist origin context and buyer-only direct-conversation creation constraints where enforced.
-- Preserve server-side participant authorization and role boundaries.
-- Trace current implementation before modifying any of these.
+## Implementation map
+- Theme state: `resources/js/app/ThemeContext.jsx`
+- App entry: `resources/js/app.jsx`
+- Theme layer: `resources/css/instagram.css`
+- Existing utility foundation: `resources/css/app.css` and `tailwind.config.js`
+- Route and role shell: `resources/js/app/AppRouter.jsx`, `Layouts.jsx`, `RoutingPages.jsx`, `workspaceNavigation.js`
+- Feature screens remain in `resources/js/app/`; shared primitives remain in `resources/js/components/ui/`.
 
-## Implementation source map
-- Router: `resources/js/app/AppRouter.jsx`
-- Role navigation: `resources/js/app/workspaceNavigation.js`
-- Layouts: `resources/js/app/Layouts.jsx`, `resources/js/app/RoutingPages.jsx`
-- Messaging shell: `resources/js/app/MessagingCenter.jsx`, `MessagingInboxPanel.jsx`, `ConversationHeader.jsx`, `MessageTimeline.jsx`, `MessageComposer.jsx`, `RelatedArtworkStrip.jsx`, `MessagingStatusBanners.jsx`
-- Messaging data/cache: `useMessagingQueries.js`, `messagingQueryUtils.js`
-- Styling: `resources/css/app.css`
-These are starting points; follow callers and backend request paths before implementation.
-
-## Decision rule
-This document describes target experience principles. The latest `main` branch establishes what exists. Product-owner direction establishes what should change. If an old component catalogue, legacy design guide or skill conflicts with this refactor, update that guidance rather than preserving the old design system.
+## Acceptance criteria
+- [ ] All existing routes and actor capabilities remain reachable.
+- [ ] Light, dark and system themes are coherent across public, workspace, admin and messaging screens.
+- [ ] Artwork and artist content remain image-led with consistent grid behavior.
+- [ ] Navigation and controls are usable on phone, tablet and desktop.
+- [ ] RTL, mixed-direction text, focus, keyboard and reduced-motion behavior remain supported.
+- [ ] Existing API, authorization, messaging and data contracts are unchanged.
+- [ ] Updated visual tests and browser journeys pass before release.
