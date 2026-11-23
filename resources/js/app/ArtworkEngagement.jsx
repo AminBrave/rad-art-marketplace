@@ -123,13 +123,13 @@ export default function ArtworkEngagement({ artwork, slug }) {
         const url = window.location.origin + '/artworks/' + encodeURIComponent(slug);
         setShareMessage('');
         try {
-            if (typeof navigator.share === 'function') {
-                await navigator.share({ title: artwork.title, url });
+            if (typeof window.navigator.share === 'function') {
+                await window.navigator.share({ title: artwork.title, url });
                 setShareMessage('لینک اثر به اشتراک گذاشته شد.');
                 return;
             }
-            if (navigator.clipboard?.writeText) {
-                await navigator.clipboard.writeText(url);
+            if (window.navigator.clipboard?.writeText) {
+                await window.navigator.clipboard.writeText(url);
                 setShareMessage('لینک اثر کپی شد.');
                 return;
             }
@@ -137,8 +137,8 @@ export default function ArtworkEngagement({ artwork, slug }) {
         } catch (error) {
             if (error?.name === 'AbortError') return;
             try {
-                if (navigator.clipboard?.writeText) {
-                    await navigator.clipboard.writeText(url);
+                if (window.navigator.clipboard?.writeText) {
+                    await window.navigator.clipboard.writeText(url);
                     setShareMessage('اشتراک‌گذاری مستقیم در دسترس نبود؛ لینک اثر کپی شد.');
                     return;
                 }
