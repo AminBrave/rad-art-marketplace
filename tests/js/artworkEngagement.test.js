@@ -28,7 +28,8 @@ test('Artwork comments expose bounded plain-text input, reply controls and moder
     assert.match(component, /aria-label="صفحه‌بندی دیدگاه‌ها"/);
 });
 
-test('Artwork detail page renders the engagement panel without replacing Inquiries', () => {
+test('Artwork detail page renders engagement only when public social counts are present and preserves Inquiries', () => {
+    assert.match(detailPage, /typeof artwork\.likes_count === 'number' && typeof artwork\.comments_count === 'number'/);
     assert.match(detailPage, /<ArtworkEngagement artwork=\{artwork\} slug=\{slug\} \/>/);
     assert.match(detailPage, /dashboard\/buyer\/messages/);
 });
