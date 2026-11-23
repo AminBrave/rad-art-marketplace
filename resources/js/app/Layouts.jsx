@@ -5,7 +5,7 @@ import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Heart, Images, Layout
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { getWorkspaceMobileLinks } from './workspaceNavigation';
-import { useTheme } from './ThemeContext';
+import { useTheme } from './useTheme';
 import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, Checkbox, NotificationListSkeleton } from '../components/ui';
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
