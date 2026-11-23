@@ -134,3 +134,5 @@
 [data-page=artwork-catalogue] [data-ui=artwork-grid]{gap:16px}
 [data-page=artwork-catalogue] [data-ui=pagination]{gap:14px}
 @media(max-width:767px){[data-page=artwork-catalogue] [data-ui=filter-grid]{grid-template-columns:1fr}[data-page=artwork-catalogue] [data-ui=filter-grid]>form[role=search]{grid-template-columns:1fr}}
+
+[data-experience=discover] [data-testid=public-navigation-rail]{inset-inline-start:0;inset-inline-end:auto;top:var(--rd-topbar);bottom:0}
