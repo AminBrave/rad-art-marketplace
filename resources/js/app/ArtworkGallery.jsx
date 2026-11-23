@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { formatArtworkPrice } from '../utils/formatArtworkPrice';
-import { MediaImage, SelectField } from '../components/ui';
+import { MediaImage, SelectField, TextInput, Button } from '../components/ui';
 
 export default function ArtworkGallery({ user }) {
     const detailSlug = window.location.pathname.match(/^[/]artworks[/]([^/]+)$/)?.[1];
@@ -74,12 +74,12 @@ export default function ArtworkGallery({ user }) {
                     <p className="mt-3 text-sm leading-7 text-muted">آثاری که بررسی و برای نمایش عمومی تأیید شده‌اند.</p>
                 </div>
                 <form onSubmit={(event) => { event.preventDefault(); setSearch(searchInput.trim()); }} className="flex flex-wrap gap-2">
-                    <input value={searchInput} onChange={(event) => setSearchInput(event.target.value)} aria-label="جست‌وجو در آثار" placeholder="جست‌وجوی عنوان یا تکنیک…" className="min-w-[220px] rounded-full border border-border-strong bg-paper px-4 py-2.5 text-sm outline-none focus:border-terracotta" />
+                    <TextInput value={searchInput} onChange={(event) => setSearchInput(event.target.value)} aria-label="جست‌وجو در آثار" placeholder="جست‌وجوی عنوان یا تکنیک…" className="min-w-[220px] rounded-full px-4 py-2.5" />
                     <SelectField value={category} onChange={(event) => setCategory(event.target.value)} aria-label="فیلتر دسته‌بندی" className="min-h-11 w-auto rounded-full border-border-strong bg-paper px-4 py-2.5 text-sm">
                         <option value="">همه دسته‌ها</option>
                         {categories.map((item) => <option key={item.id} value={item.slug}>{item.name}</option>)}
                     </SelectField>
-                    <button className="rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-inverse">جست‌وجو</button>
+                    <Button variant="ghost" type="submit" className="rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-inverse">جست‌وجو</Button>
                 </form>
             </div>
             {loading ? <p className="mt-8 text-sm text-muted">در حال بارگذاری آثار…</p> : error ? (
