@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { ArrowLeft, Compass, Grid3X3, Users } from 'lucide-react';
+import { ArrowLeft, Compass, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ArtworkCard, ArtistCard, ArtworkCardSkeleton, ArtistCardSkeleton, EmptyState, ErrorState, MediaImage, Skeleton } from '../components/ui';
 
@@ -55,7 +55,7 @@ export default function HomePage() {
     const error = artworksQuery.isError && !artworksQuery.data;
     const hero = artworks[0];
     const recentWorks = artworks.slice(1, 9);
-    const spotlightArtists = featuredArtists.length ? featuredArtists.slice(0, 6) : artists.slice(0, 6);
+    const spotlightArtists = featuredArtists.length ? featuredArtists.map((item) => item.artist).filter(Boolean).slice(0, 6) : artists.slice(0, 6);
 
     return (
         <main data-page="home" className="min-w-0 overflow-x-clip" dir="rtl">
@@ -154,14 +154,21 @@ export default function HomePage() {
                         </div>
                         <Link to="/collections" className="text-xs font-bold text-terracotta-strong no-underline">همه مجموعه‌ها</Link>
                     </div>
-                    {collections.length ? <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    {collections.length > 0 && <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                         {collections.slice(0,3).map((item) => <Link key={item.id} to={'/collections/' + item.slug} className="group rounded-2xl border border-border bg-paper p-5 text-ink no-underline transition-colors hover:border-terracotta">
                             <span className="text-[11px] font-bold text-terracotta-strong">{Number(item.artwork_count ?? 0).toLocaleString('fa-IR')} اثر منتخب</span>
                             <h3 className="mt-3 text-lg font-extrabold">{item.title}</h3>
                             <p className="mt-2 line-clamp-3 text-xs leading-7 text-muted">{item.intro || 'انتخابی از آثار تأییدشده هنرمندان راد آرت.'}</p>
                             <span className="mt-5 inline-flex items-center gap-1 text-xs font-bold text-terracotta-strong">مشاهده مجموعه <ArrowLeft size={14}/></span>
                         </Link>)}
-                    </div> : null}
+                    </div>}
+                    {featuredArtists.length > 0 && <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {featuredArtists.slice(0,3).filter((item) => item.artist?.slug).map((item) => <Link key={item.id} to={'/artists/' + item.artist.slug} className="rounded-2xl border border-border bg-paper p-5 text-ink no-underline hover:border-terracotta">
+                            <span className="text-[11px] font-bold text-terracotta-strong">هنرمند منتخب</span>
+                            <h3 className="mt-2 text-base font-extrabold">{item.artist.display_name}</h3>
+                            <p className="mt-2 line-clamp-3 text-xs leading-7 text-muted">{item.editorial_intro || item.artist.bio || 'پورتفولیوی عمومی این هنرمند را ببینید.'}</p>
+                        </Link>)}
+                    </div>}
                 </section>
             )}
         </main>
