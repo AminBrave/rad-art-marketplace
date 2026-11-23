@@ -5,7 +5,7 @@ import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-rou
 import { useAuth } from './AuthContext';
 import { WorkspaceLayout } from './Layouts';
 import { getWorkspacePrimaryLinks } from './workspaceNavigation';
-import { Skeleton, ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, ArtistWorkspaceOverviewSkeleton, BuyerDashboardSkeleton, FormFieldSkeleton, ArtworkStudioListSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, AdminEditorialSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton, PageHeader, WorkspaceHero, Checkbox } from '../components/ui';
+import { Skeleton, ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, ArtistWorkspaceOverviewSkeleton, BuyerDashboardSkeleton, FormFieldSkeleton, ArtworkStudioListSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, AdminEditorialSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton, PageHeader, WorkspaceHero, Checkbox, FormField, TextInput, TextareaField, Button } from '../components/ui';
 const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
 
 const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
@@ -394,32 +394,15 @@ export function ArtistProfileSettings() {
                 description="اطلاعات معرفی و وضعیت نمایش عمومی پروفایل خود را مدیریت کنید."
             />
             {profileError && <p role="alert" className="mt-4 text-sm text-warning">{profileError}</p>}
-            <form onSubmit={save} className="mt-6 grid gap-4 sm:grid-cols-2">
-                <label className="text-sm font-semibold sm:col-span-2">نام نمایشی
-                    <input name="display_name" value={form.display_name ?? ''} onChange={update} required maxLength="120" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3" />
-                    {errors.display_name?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
-                </label>
-                <label className="text-sm font-semibold sm:col-span-2">درباره هنرمند
-                    <textarea name="bio" value={form.bio ?? ''} onChange={update} rows="4" maxLength="2000" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3 leading-7" />
-                    {errors.bio?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
-                </label>
-                <label className="text-sm font-semibold">شهر
-                    <input name="city" value={form.city ?? ''} onChange={update} maxLength="120" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3" />
-                    {errors.city?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
-                </label>
-                <label className="text-sm font-semibold">شناسه اینستاگرام
-                    <input name="instagram_handle" value={form.instagram_handle ?? ''} onChange={update} maxLength="30" dir="ltr" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3 text-left" />
-                    {errors.instagram_handle?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
-                </label>
-                <label className="text-sm font-semibold sm:col-span-2">وب‌سایت
-                    <input name="website_url" type="url" value={form.website_url ?? ''} onChange={update} dir="ltr" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3 text-left placeholder:text-muted" placeholder="https://example.com" />
-                    {errors.website_url?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
-                </label>
-                <Checkbox name="is_public" checked={Boolean(form.is_public)} onChange={update} className="flex min-h-11 items-center gap-3 text-sm font-semibold sm:col-span-2">
-                    نمایش عمومی پروفایل
-                </Checkbox>
+            <form onSubmit={save} className="mt-6 grid gap-5 sm:grid-cols-2">
+                <FormField label="نام نمایشی" required error={errors.display_name?.join(' ')} className="sm:col-span-2"><TextInput name="display_name" value={form.display_name ?? ''} onChange={update} required maxLength="120" /></FormField>
+                <FormField label="درباره هنرمند" error={errors.bio?.join(' ')} className="sm:col-span-2"><TextareaField name="bio" value={form.bio ?? ''} onChange={update} rows={4} maxLength="2000" /></FormField>
+                <FormField label="شهر" error={errors.city?.join(' ')}><TextInput name="city" value={form.city ?? ''} onChange={update} maxLength="120" /></FormField>
+                <FormField label="شناسه اینستاگرام" error={errors.instagram_handle?.join(' ')}><TextInput name="instagram_handle" value={form.instagram_handle ?? ''} onChange={update} maxLength="30" dir="ltr" className="text-left" /></FormField>
+                <FormField label="وب‌سایت" error={errors.website_url?.join(' ')} className="sm:col-span-2"><TextInput name="website_url" type="url" value={form.website_url ?? ''} onChange={update} dir="ltr" className="text-left" placeholder="https://example.com" /></FormField>
+                <Checkbox name="is_public" checked={Boolean(form.is_public)} onChange={update} className="flex min-h-11 items-center gap-3 text-sm font-semibold sm:col-span-2">نمایش عمومی پروفایل</Checkbox>
                 <div className="sm:col-span-2">
-                    <button disabled={busy} className="rounded-xl bg-ink px-6 py-3 font-bold text-inverse disabled:opacity-60">{busy ? 'در حال ذخیره…' : 'ذخیره پروفایل'}</button>
+                    <Button type="submit" disabled={busy} loading={busy}>{busy ? 'در حال ذخیره…' : 'ذخیره پروفایل'}</Button>{busy ? 'در حال ذخیره…' : 'ذخیره پروفایل'}</button>
                     {profile?.slug && <Link to={'/artists/' + profile.slug} className="mr-4 text-sm font-semibold text-terracotta-strong underline">{profile.is_public ? 'پیش‌نمایش پروفایل عمومی' : 'پیش‌نمایش خصوصی پروفایل'}</Link>}
                     {profile?.slug && !profile.is_public && <p className="mt-3 text-xs leading-6 text-muted sm:col-span-2">این پیش‌نمایش فقط برای شما و مدیران مجاز قابل مشاهده است؛ بازدیدکنندگان عمومی به پروفایل خصوصی دسترسی ندارند.</p>}
                     <p className="mt-2 text-xs text-muted sm:col-span-2">{(form.bio?.length ?? 0).toLocaleString('fa-IR')} از ۲۰۰۰ نویسه برای معرفی هنری استفاده شده است.</p>
