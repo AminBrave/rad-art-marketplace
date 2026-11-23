@@ -46,7 +46,7 @@
   --rd-motion:180ms;
   --rd-text-primary:var(--rd-text);--rd-text-secondary:var(--rd-text-2);--rd-text-tertiary:var(--rd-text-3);
   --rd-border-subtle:var(--rd-line);--rd-border-strong:var(--rd-line-strong);--rd-action:var(--rd-accent);--rd-action-hover:var(--rd-link);
-  --rd-success:var(--rd-positive);--rd-danger:var(--rd-negative);--rd-warning:var(--rd-warning);--rd-info:var(--rd-info);
+  --rd-success:var(--rd-positive);--rd-danger:var(--rd-negative);
   --rd-font-sans:var(--rd-font);--rd-space-4:1rem;
   --rd-canvas:#fafafa;
   --color-canvas:var(--rd-canvas);
