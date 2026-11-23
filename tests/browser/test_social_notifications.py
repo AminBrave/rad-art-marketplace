@@ -158,6 +158,7 @@ class SocialNotificationBrowserTests(unittest.TestCase):
             page.goto(BASE_URL + "/dashboard/buyer/messages", wait_until="domcontentloaded")
             page.get_by_role("heading", name="پیام‌ها").wait_for()
             expect(page.get_by_role("link", name="پیام‌ها")).to_be_visible()
+            expect(page.get_by_test_id("authenticated-bottom-navigation").get_by_text("پیام‌ها", exact=True)).to_be_visible()
             page.get_by_role("button", name=re.compile("^اعلان‌ها")).click()
 
             notification = page.get_by_role(
@@ -215,6 +216,7 @@ class SocialNotificationBrowserTests(unittest.TestCase):
             page.goto(BASE_URL + "/dashboard/buyer/messages", wait_until="domcontentloaded")
             page.get_by_role("heading", name="پیام‌ها").wait_for()
             expect(page.get_by_role("link", name="پیام‌ها")).to_be_visible()
+            expect(page.get_by_test_id("authenticated-bottom-navigation").get_by_text("پیام‌ها", exact=True)).to_be_visible()
             page.get_by_role("button", name=re.compile("^اعلان‌ها")).click()
             for title in (
                 "خریدار شما را دنبال کرد",
