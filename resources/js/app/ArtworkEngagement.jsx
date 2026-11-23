@@ -19,7 +19,7 @@ function CommentItem({ comment, user, onReply, onDelete, onReport }) {
             <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-8">{comment.is_deleted ? 'این دیدگاه حذف شده است.' : comment.body}</p>
             {!comment.is_deleted && user && (
                 <div className="mt-2 flex flex-wrap gap-4">
-                    {comment.parent_id === null && <button type="button" onClick={() => onReply(comment)} className="text-xs font-semibold text-terracotta-strong underline">پاسخ</button>}
+                    {comment.parent_id === null && <button type="button" onClick={() => onReply(comment)} className="text-xs font-semibold text-accent-strong underline">پاسخ</button>}
                     {!comment.is_mine && <button type="button" onClick={() => onReport(comment)} className="text-xs text-muted underline">گزارش دیدگاه</button>}
                 </div>
             )}
@@ -160,7 +160,7 @@ export default function ArtworkEngagement({ artwork, slug }) {
                     <h2 id="artwork-engagement-title" className="text-xl font-black">گفت‌وگو درباره اثر</h2>
                     <p className="mt-1 text-xs text-muted">تعامل با اثر هنری و گفت‌وگوی محترمانه با جامعه رادمن</p>
                 </div>
-                <button type="button" onClick={shareArtwork} className="border border-border px-4 py-2 text-sm font-semibold hover:border-terracotta-strong">اشتراک‌گذاری اثر</button>
+                <button type="button" onClick={shareArtwork} className="border border-border px-4 py-2 text-sm font-semibold hover:border-accent-strong">اشتراک‌گذاری اثر</button>
             </div>
             {shareMessage && <p role="status" className="mt-3 break-words text-xs text-muted">{shareMessage}</p>}
 
@@ -182,7 +182,7 @@ export default function ArtworkEngagement({ artwork, slug }) {
                 <form onSubmit={(event) => { event.preventDefault(); if (draft.trim() && !commentMutation.isPending) commentMutation.mutate(); }} className="mt-6">
                     {replyTo && <div className="mb-2 flex items-center justify-between text-xs text-muted"><span>در پاسخ به {replyTo.user?.name || 'کاربر'}</span><button type="button" onClick={() => setReplyTo(null)} className="underline">لغو پاسخ</button></div>}
                     <label htmlFor="artwork-comment-body" className="mb-2 block text-sm font-semibold">{replyTo ? 'پاسخ شما' : 'دیدگاه شما'}</label>
-                    <textarea id="artwork-comment-body" value={draft} onChange={(event) => setDraft(event.target.value)} rows={3} maxLength={2000} required placeholder="دیدگاه خود را بنویسید..." className="w-full resize-y border border-border bg-surface px-3 py-3 text-sm leading-7 outline-none focus:border-terracotta-strong" />
+                    <textarea id="artwork-comment-body" value={draft} onChange={(event) => setDraft(event.target.value)} rows={3} maxLength={2000} required placeholder="دیدگاه خود را بنویسید..." className="w-full resize-y border border-border bg-surface px-3 py-3 text-sm leading-7 outline-none focus:border-accent-strong" />
                     <div className="mt-2 flex items-center justify-between gap-3">
                         <span className="text-xs text-muted">{draft.length.toLocaleString('fa-IR')} / ۲۰۰۰</span>
                         <button type="submit" disabled={!draft.trim() || commentMutation.isPending} className="bg-ink px-4 py-2 text-sm font-bold text-inverse disabled:opacity-50">{commentMutation.isPending ? 'در حال ثبت...' : 'ثبت دیدگاه'}</button>
@@ -190,7 +190,7 @@ export default function ArtworkEngagement({ artwork, slug }) {
                     {commentMutation.isError && <p role="alert" className="mt-2 text-xs text-danger">ثبت دیدگاه انجام نشد. متن را بررسی و دوباره تلاش کنید.</p>}
                 </form>
             ) : (
-                <p className="mt-6 text-sm text-muted"><Link to="/login" state={{ from: { pathname: '/artworks/' + slug } }} className="font-bold text-terracotta-strong underline">وارد شوید</Link> تا دیدگاه بنویسید یا پاسخ دهید.</p>
+                <p className="mt-6 text-sm text-muted"><Link to="/login" state={{ from: { pathname: '/artworks/' + slug } }} className="font-bold text-accent-strong underline">وارد شوید</Link> تا دیدگاه بنویسید یا پاسخ دهید.</p>
             )}
 
             {reportMessage && <p role="status" className="mt-4 text-xs text-muted">{reportMessage}</p>}
