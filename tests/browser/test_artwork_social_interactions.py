@@ -71,37 +71,25 @@ def reply_resource(body):
 
 
 def install_auth_bootstrap(page, user):
-    """Replace the real Blade auth payload before the React entry point runs."""
-    payload = json.dumps(user, ensure_ascii=False)
-
-    def rewrite_navigation(route):
-        if not route.request.is_navigation_request():
-            route.continue_()
-            return
-
-        response = route.fetch()
-        html = response.text()
-        html, replacements = re.subn(
-            r'<script\b[^>]*\bid=["\']rad-auth-bootstrap["\'][^>]*>.*?</script>',
-            lambda _: f'<script type="application/json" id="rad-auth-bootstrap">{payload}</script>',
-            html,
-            count=1,
-            flags=re.DOTALL,
-        )
-        if replacements != 1:
-            raise AssertionError("The app shell must contain exactly one Blade auth bootstrap script.")
-
-        # route.fetch() returns decoded text, so do not forward the original
-        # compression/length headers with the rewritten HTML body.
-        headers = {
-            name: value
-            for name, value in response.headers.items()
-            if name.lower() not in {"content-encoding", "content-length", "transfer-encoding"}
-        }
-        route.fulfill(status=response.status, headers=headers, body=html)
-
-    page.route("**/*", rewrite_navigation)
-
+    """Replace the existing Blade auth payload before the deferred app module runs."""
+    payload_literal = json.dumps(json.dumps(user, ensure_ascii=False), ensure_ascii=False)
+    page.add_init_script(
+        """
+        (() => {
+            const payload = PAYLOAD_LITERAL;
+            const replaceBootstrap = () => {
+                const bootstrap = document.getElementById('rad-auth-bootstrap');
+                if (!bootstrap) return false;
+                bootstrap.textContent = payload;
+                observer.disconnect();
+                return true;
+            };
+            const observer = new MutationObserver(replaceBootstrap);
+            observer.observe(document, { childList: true, subtree: true });
+            replaceBootstrap();
+        })();
+        """.replace("PAYLOAD_LITERAL", payload_literal)
+    )
 
 class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
     """Every API call is intercepted; these tests never mutate dev records."""
