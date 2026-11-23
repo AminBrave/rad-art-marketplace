@@ -95,3 +95,12 @@ Semantic overrides live in `resources/css/instagram.css`; theme selection remain
 - [ ] RTL, mixed-direction text, focus, keyboard and reduced-motion behavior remain supported.
 - [ ] Existing API, authorization, messaging and data contracts are unchanged.
 - [ ] Updated visual tests and browser journeys pass before release.
+
+## App shell and PWA contract
+
+- Public Discover is an application surface, not a brochure site: a compact top bar, a persistent desktop icon rail, a mobile bottom tab bar and a focused content canvas replace the old marketing header/footer.
+- Buyer, Artist and Admin workspaces share the same app-first geometry: compact sticky context bar, persistent desktop navigation, mobile bottom navigation, safe-area-aware controls and content that can scroll independently.
+- The UI is mobile-first and installable as a Progressive Web App. The web manifest, app icon and service worker are maintained under `public/`; registration is production-only from `resources/js/app.jsx`.
+- Offline behavior is intentionally conservative: public documents and same-origin static assets may be cached after successful network responses. Authentication, API, dashboard, admin and conversation responses must never enter the shared service-worker cache. Offline messaging and background sync are not promised.
+- PWA installability and offline behavior must be checked in real browsers (Android Chrome, desktop Chromium and iOS Safari); a manifest and worker alone do not prove a successful installation experience.
+
