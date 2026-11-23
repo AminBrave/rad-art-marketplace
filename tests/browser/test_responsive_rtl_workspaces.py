@@ -81,6 +81,18 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
                         dimensions["viewport"] + 1,
                         f"Horizontal body overflow on {route_path} at {width}px: {dimensions}",
                     )
+                if route_path == "/":
+                    self.assertTrue(page.locator("#home-hero-title").is_visible())
+                    landmarks_valid = page.locator("main section[aria-labelledby]").evaluate_all(
+                        "(sections) => sections.every((section) => Boolean(document.getElementById(section.getAttribute(\"aria-labelledby\"))))"
+                    )
+                    self.assertTrue(landmarks_valid, "Editorial section landmarks must reference existing headings.")
+                    page.set_viewport_size({"width": 375, "height": 812})
+                    self.assertFalse(page.get_by_role("navigation", name="ناوبری اصلی").is_visible())
+                    self.assertTrue(page.get_by_role("button", name="باز کردن منوی اصلی").is_visible())
+                    page.set_viewport_size({"width": 1024, "height": 812})
+                    self.assertTrue(page.get_by_role("navigation", name="ناوبری اصلی").is_visible())
+                    self.assertFalse(page.get_by_role("button", name="باز کردن منوی اصلی").is_visible())
         finally:
             context.close()
 
