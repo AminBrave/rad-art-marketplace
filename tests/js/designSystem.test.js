@@ -84,7 +84,7 @@ test('shared primitives express accessible component contracts with semantic Tai
     assert.ok(primitives.includes('aria-busy={loading || undefined}'));
     assert.ok(primitives.includes("'aria-describedby': describedBy"));
     assert.ok(primitives.includes("'aria-invalid': error ? true"));
-    assert.ok(primitives.includes('bg-accent-surface px-3 py-1.5'));
+    assert.ok(primitives.includes('bg-accent-surface text-terracotta-strong'));
     assert.ok(primitives.includes('before:bg-terracotta'));
     assert.ok(primitives.includes('before:bg-sand'));
     assert.ok(primitives.includes('text-[clamp(1.75rem,3.2vw,2.6rem)]'));
@@ -143,7 +143,7 @@ test('public catalogue, artist directory and artwork detail use shared page layo
 });
 
 test('public and role-based workspaces use shared semantic shell utilities', () => {
-    for (const utility of ['min-h-screen bg-canvas text-ink', 'sticky top-0 z-40 border-b border-border', 'grid min-w-0 max-w-content', 'rounded-xl border border-border bg-paper']) {
+    for (const utility of ['min-h-screen bg-canvas text-ink', 'sticky top-0 z-40 border-b-2 border-ink', 'grid min-w-0 max-w-content', 'border-y-2 border-ink bg-paper']) {
         assert.ok(layouts.includes(utility), 'Missing shell utility: ' + utility);
     }
     assert.doesNotMatch(layouts, /ra-[a-z]/);
@@ -156,7 +156,7 @@ test('navigation and dialog primitives use Tailwind state and focus utilities', 
     assert.ok(navigation.includes('aria-current="page"'));
     assert.ok(dialog.includes('bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]'));
     assert.ok(dialog.includes('max-h-[min(88dvh,48rem)]'));
-    assert.ok(dialog.includes('rounded-xl border border-border-strong bg-paper'));
+    assert.ok(dialog.includes('rounded-sm border-y-2 border-ink bg-paper'));
     assert.doesNotMatch(navigation, /ra-[a-z]/);
     assert.doesNotMatch(dialog, /ra-[a-z]/);
 });
@@ -200,7 +200,7 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     assert.ok(dialog.includes('bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]'));
     assert.doesNotMatch(layouts, /document\.body\.style\.overflow|addEventListener\('keydown', closeOnEscape/);
     assert.ok(layouts.includes('lg:hidden'));
-    assert.ok(layouts.includes('hidden min-w-0 rounded-xl border border-border bg-paper'));
+    assert.ok(layouts.includes('hidden min-w-0 border-y-2 border-ink bg-paper'));
     assert.ok(adminWorkspace.includes('<PageHeader'));
     assert.ok(artistWorkspace.includes('<WorkspaceHero'));
     assert.ok(buyerWorkspace.includes('<WorkspaceHero'));
@@ -601,7 +601,7 @@ test('Radix checkbox form bridge cannot expand a page to the full available row 
 });
 
 test('messaging composer height is driven by its send control and compact padding', () => {
-    assert.ok(messageComposer.includes('relative flex min-w-0 items-center gap-1.5 rounded-[1rem]'));
+    assert.ok(messageComposer.includes('relative flex min-w-0 items-center gap-1.5 rounded-sm border border-border-strong bg-surface'));
     assert.ok(messageComposer.includes('min-h-[2.35rem] max-sm:min-h-9 w-full resize-none'));
     assert.doesNotMatch(messageComposer, /relative flex min-h-\[3\.1rem\] items-end/);
 });
