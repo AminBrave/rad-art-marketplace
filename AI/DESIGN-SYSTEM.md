@@ -74,7 +74,7 @@ Semantic overrides live in `resources/css/instagram.css`; theme selection remain
 
 ## Accessibility and quality
 - Target WCAG 2.2 AA contrast in both themes.
-- Provide accessible controls, form states, dialogs, menus, notifications and feedback in both themes.
+- Accessible controls, form states, dialogs, menus, notifications and feedback are consistent in both themes.
 - Preserve semantic HTML, accessible names, keyboard navigation, visible focus, validation feedback and reduced-motion preferences.
 - Never communicate status by color alone.
 - Test Persian RTL, mixed Persian/Latin content, zoom/reflow, touch targets, dialogs, forms, menus and all major page states.
