@@ -14,7 +14,7 @@ const routes = [
   ['architecture-design', /architecture|design pattern|module|boundary|system design|scalability|migration plan/i],
   ['laravel-backend', /laravel|php|eloquent|api|backend|migration|database|controller|model|policy|middleware/i],
   ['react-frontend', /react|javascript|frontend|front-end|component|route|rtl|persian|css|vite/i],
-  ['ui-ux-design', /user experience|journey|navigation|layout|visual|responsive|accessibility|rtl|\\bui\\b|\\bux\\b/i],
+  ['ui-ux-design', /user experience|journey|navigation|layout|visual|responsive|accessibility|rtl|\bui\b|\bux\b/i],
   ['debugging', /bug|debug|error|exception|regression|broken|fails|failure/i],
   ['security-review', /security|auth|permission|authorization|privacy|upload|file access|secret|threat/i],
   ['code-review', /review|inspect diff|pull request review|audit code/i],
