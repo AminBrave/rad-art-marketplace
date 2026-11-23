@@ -89,7 +89,7 @@ export default function ArtistProfilePage() {
     const primaryActionClass = 'inline-flex min-h-11 items-center justify-center rounded-md border border-transparent bg-terracotta px-5 py-2.5 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
 
     return (
-        <main className="mx-auto min-h-[65vh] w-full min-w-0 max-w-7xl overflow-x-clip px-5 pb-16 pt-8 sm:px-8 sm:pt-12 lg:px-10" dir="rtl">
+        <main data-page="artist-profile" className="mx-auto min-h-[65vh] w-full min-w-0 max-w-7xl overflow-x-clip px-5 pb-16 pt-8 sm:px-8 sm:pt-12 lg:px-10" dir="rtl">
             <nav aria-label="مسیر صفحه" className="flex min-w-0 max-w-full flex-wrap items-center break-words text-xs text-muted">
                 <Link to="/" className="hover:text-terracotta-strong">خانه</Link><span className="mx-2" aria-hidden="true">/</span>
                 <Link to="/artists" className="hover:text-terracotta-strong">هنرمندان</Link><span className="mx-2" aria-hidden="true">/</span>
