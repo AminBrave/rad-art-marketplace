@@ -98,10 +98,13 @@ class ArtworkInteractionController extends Controller
             ->with([
                 'user:id,role',
                 'user.artistProfile:id,user_id,display_name,is_public',
-                'replies' => fn ($query) => $query->withTrashed()->with([
-                    'user:id,role',
-                    'user.artistProfile:id,user_id,display_name,is_public',
-                ]),
+                'replies' => fn ($query) => $query
+                    ->withTrashed()
+                    ->where('artwork_id', $artwork->id)
+                    ->with([
+                        'user:id,role',
+                        'user.artistProfile:id,user_id,display_name,is_public',
+                    ]),
             ])
             ->oldest()
             ->orderBy('id')
@@ -125,6 +128,8 @@ class ArtworkInteractionController extends Controller
         $validated = $request->validate([
             'body' => ['required', 'string', 'max:2000'],
             'parent_id' => ['nullable', 'integer'],
+        ], [
+            'body.required' => 'متن دیدگاه نمی‌تواند خالی باشد.',
         ]);
 
         $body = trim($validated['body']);
