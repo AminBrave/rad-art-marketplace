@@ -19,7 +19,7 @@
     @endphp
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#F7F5F0" id="rad-theme-color">
+    <meta name="theme-color" content="#FAFAFA" id="rad-theme-color">
     <script>
         (() => {
             try {
@@ -28,7 +28,7 @@
                 const dark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
                 document.documentElement.dataset.theme = theme;
                 document.documentElement.style.colorScheme = dark ? "dark" : "light";
-                document.getElementById("rad-theme-color")?.setAttribute("content", dark ? "#171815" : "#F7F5F0");
+                document.getElementById("rad-theme-color")?.setAttribute("content", dark ? "#000000" : "#FAFAFA");
             } catch {
                 document.documentElement.dataset.theme = "system";
             }
