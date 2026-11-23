@@ -323,3 +323,97 @@ tr + tr { border-color: var(--rd-border-subtle); }
         transition-duration: .01ms !important;
     }
 }
+
+
+/* Workspace shell: keep the existing role navigation, but remove the legacy dashboard-card framing. */
+[data-experience='buyer'] > header,
+[data-experience='artist'] > header,
+[data-experience='admin'] > header {
+    background: var(--rd-surface) !important;
+    border-bottom: 1px solid var(--rd-border-subtle) !important;
+    box-shadow: none !important;
+}
+[data-experience='buyer'] > header > div,
+[data-experience='artist'] > header > div,
+[data-experience='admin'] > header > div {
+    min-height: 60px !important;
+}
+[data-experience='buyer'] > div > aside,
+[data-experience='artist'] > div > aside,
+[data-experience='admin'] > div > aside {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+[data-experience='buyer'] > div > aside > div:first-child,
+[data-experience='artist'] > div > aside > div:first-child,
+[data-experience='admin'] > div > aside > div:first-child {
+    border-bottom: 1px solid var(--rd-border-subtle);
+    border-radius: 0 !important;
+    background: transparent !important;
+    padding: 0 0 1rem !important;
+}
+[data-experience='buyer'] > div > aside nav a,
+[data-experience='artist'] > div > aside nav a,
+[data-experience='admin'] > div > aside nav a {
+    border-radius: 6px !important;
+    min-height: 44px;
+}
+[data-experience='buyer'] > div > aside nav a[aria-current='page'],
+[data-experience='artist'] > div > aside nav a[aria-current='page'],
+[data-experience='admin'] > div > aside nav a[aria-current='page'] {
+    background: color-mix(in srgb, var(--rd-action) 10%, var(--rd-surface)) !important;
+    color: var(--rd-action-text) !important;
+}
+[data-testid='authenticated-bottom-navigation'] {
+    background: color-mix(in srgb, var(--rd-surface) 96%, transparent) !important;
+    border-top: 1px solid var(--rd-border-subtle) !important;
+    box-shadow: none !important;
+    backdrop-filter: blur(18px);
+}
+[data-testid='authenticated-bottom-navigation'] a[aria-current='page'] {
+    color: var(--rd-action-text) !important;
+}
+[data-experience='buyer'] main,
+[data-experience='artist'] main,
+[data-experience='admin'] main {
+    min-width: 0;
+}
+[data-experience='buyer'] main > header,
+[data-experience='artist'] main > header,
+[data-experience='admin'] main > header {
+    border-color: var(--rd-border-subtle);
+}
+
+/* Keep public discovery and authenticated workspaces visually related. */
+[data-experience='discover'] main,
+[data-experience='buyer'] main,
+[data-experience='artist'] main,
+[data-experience='admin'] main {
+    color: var(--rd-text-primary);
+}
+[data-experience='discover'] main > header,
+[data-experience='buyer'] main > header,
+[data-experience='artist'] main > header,
+[data-experience='admin'] main > header {
+    border-color: var(--rd-border-subtle);
+}
+[data-experience='discover'] main section,
+[data-experience='buyer'] main section,
+[data-experience='artist'] main section,
+[data-experience='admin'] main section {
+    border-color: var(--rd-border-subtle);
+}
+
+/* Keep the theme control visually quiet and consistent with Instagram's chrome. */
+[data-experience] button[aria-label*='پوسته'] {
+    border-color: transparent !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: var(--rd-text-primary) !important;
+}
+[data-experience] button[aria-label*='پوسته']:hover {
+    background: var(--rd-surface-muted) !important;
+}
