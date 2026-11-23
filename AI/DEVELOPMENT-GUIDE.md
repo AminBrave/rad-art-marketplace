@@ -98,7 +98,7 @@ See [SECURITY.md](SECURITY.md) for the focused security reference.
 
 ## 9. Testing and quality
 
-Tests are valuable executable descriptions of expected behavior, but existing tests may encode implementation details or obsolete product assumptions. Review their relevance when requirements change.
+Tests are maintained product and engineering assets: they must describe the current supported behavior, not preserve obsolete implementation assumptions. Every code or behavior change includes a review of affected backend, frontend and Playwright tests.
 
 Choose test layers according to risk:
 - Unit tests for deterministic domain logic.
@@ -109,7 +109,16 @@ Choose test layers according to risk:
 
 Prefer observable outcomes and durable invariants over brittle implementation snapshots. Include important failure, boundary and unauthorized cases. Do not chase arbitrary coverage percentages or add redundant tests without value.
 
-Run relevant checks when the environment is suitable. Report exact commands and results; do not imply that unrun checks passed.
+Test lifecycle is part of the change:
+- Add tests for new behavior and meaningful edge cases at the most appropriate layer.
+- Update tests when behavior, API/data contracts, UI states, interactions or expected outcomes change.
+- Remove tests when their underlying code or supported behavior is removed, after checking for remaining callers and coverage obligations. Remove genuinely redundant or invalid tests when justified.
+- Never delete, skip or weaken a failing test solely to make a change green. Diagnose whether the implementation or the expectation is wrong.
+- When replacing or moving code, carry forward the valuable behavioral coverage to the new implementation.
+- Keep backend unit/feature/integration tests, frontend component/interaction tests and Playwright end-to-end tests aligned. Use Playwright for important user journeys and cross-layer contracts, not as a duplicate of every unit assertion.
+- Include test changes with the implementation in the same task branch and PR. If no test change is appropriate, state why.
+
+Run relevant checks when the environment is suitable. Report exact commands and results; identify unrun suites and blockers. Do not imply that unrun checks passed.
 
 ## 10. Performance and reliability
 
