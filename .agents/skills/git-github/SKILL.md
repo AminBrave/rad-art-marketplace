@@ -1,25 +1,54 @@
 ---
 name: git-github
-description: Work with Git branches, commits, issues, pull requests and repository collaboration in a task-appropriate way.
+description: Coordinate Git branches, parallel agent lanes, commits, pull requests and GitHub project work for Rademan.
 ---
 
-# Git and GitHub
+# Git, GitHub and multi-agent collaboration
 
 ## Purpose
-Use version control and GitHub to protect work, support collaboration and make changes reviewable.
+Protect independent work, coordinate multiple agents and make changes easy to review and integrate.
 
-## Approach
-1. Confirm repository, branch, base and requested scope.
-2. Inspect current remote state and local status separately; remote data does not reveal local uncommitted work.
-3. Choose a branch strategy appropriate to the task and user's workflow.
-4. Keep commits focused and describe their actual contents.
-5. Use issues and PRs when they improve coordination or review; do not create them mechanically.
-6. Review current issue/PR status before relying on it. Historical records do not define future product direction.
-7. Protect shared history and avoid destructive operations without clear authorization.
-8. Describe exactly which operations were performed and provide relevant links.
+## Start with the task
+1. Confirm repository, agent identity, assigned task, target lane and scope.
+2. Inspect live remote branch/issue/PR state. If using a local checkout, inspect local status and uncommitted changes independently.
+3. Read AI/DEVELOPMENT-WORKFLOW.md for the complete lane and integration workflow.
+4. Choose a task-specific branch. Never assume remote state includes another workspace's uncommitted work.
 
-## Rademan context
-There is no mandatory permanent agent lane or branch naming scheme in this skill. Follow the user's requested workflow and the repository's current collaboration setup. Prefer isolated branches for substantial changes when that protects concurrent work.
+## Branch model
+- Persistent lane: agent/<agent-id>; existing IDs include chatgpt and claude.
+- Task branch: <type>/<agent-id>/<issue>-<slug>, e.g. feature/chatgpt/123-search or docs/claude/234-guide.
+- Integration branch: integration or a scoped integration/<workstream>, used only for owner-directed cross-agent integration.
+- main is the stable shared baseline and release destination, not an ordinary task target.
+
+Each agent works only in its own task branches and lane. Task PRs target the matching agent lane. Do not merge, cherry-pick, copy or rebase commits into another agent's lane without an explicit integration task. Keep shared lane history stable; update/rebase only short-lived task branches when needed.
+
+## Parallel work
+- Give each independent task its own branch and primary owner.
+- Check shared-file and interface overlap before starting concurrent work.
+- Coordinate ownership for central routes, schemas, navigation, design tokens and shared components.
+- Avoid simultaneous edits to the same files; serialize or divide work by clear interfaces.
+- After another task merges into the same lane, update dependent task branches carefully and rerun relevant checks.
+- Keep a clear handoff of branch, base commit, files owned, contracts and verification status.
+
+## Commits and PRs
+- Keep commits coherent and use specific imperative messages.
+- Use PRs for substantial, collaborative or review-sensitive work; small direct task-branch commits may be appropriate.
+- Link the issue when one exists. Describe outcome, scope, risks, compatibility and actual verification.
+- PRs from task branches target their owning agent lane. Cross-agent PRs target the agreed integration branch only after owner authorization.
+- A task merged into an agent lane is lane-complete, not automatically integrated or released.
+- Never merge to main as part of ordinary task work.
+
+## Safe Git practices
+- Do not overwrite uncommitted work or assume local and remote states are identical.
+- Never force-push, rewrite shared history, delete persistent agent lanes, move published tags or change repository protections as routine cleanup.
+- Fetch the latest file/blob SHA before GitHub Contents API updates and use the exact branch and path.
+- Inspect scripts and environment before stateful tests or data operations.
+- Run relevant local checks when useful and safe. Report commands and actual results.
+- Read-only inspection of CI is fine; do not manually dispatch, rerun, cancel or approve workflows unless the user requests it.
+- Merge, release, deployment and destructive operations require clear authorization for the target and scope.
+
+## Project management
+Use issues and a board when they improve parallel coordination. Assign one primary owner per task, define observable acceptance criteria, track real dependencies and avoid duplicate or speculative backlog items. Use the existing board configuration rather than inventing fields. See AI/TASK-MANAGEMENT.md.
 
 ## Deliverable
-A clear report of branch, files/commits changed, issue or PR links where relevant, and any operation not performed.
+Report agent ID, task branch, base lane, changed files/contracts, issue/PR links, verification, lane-merge status and whether cross-agent integration remains pending.
