@@ -6,6 +6,10 @@ This document describes useful design principles and the current product context
 
 Create a distinctive, usable art platform that makes artwork discovery and artist–audience interaction feel clear and considered. Choose the right experience for the requested users, task and device rather than forcing every feature into a pre-existing layout.
 
+## Product information architecture
+
+Organize discovery, artist presentation, buyer journeys and administrative work around clear user goals. Keep navigation, page hierarchy and content relationships coherent across public pages and role-based workspaces; verify route behavior and permissions before changing the information architecture.
+
 ## Current experience context
 
 The current product is organized around public discovery, buyer experiences, artist experiences and administration. Current navigation and route behavior live in the application; inspect them before changing or documenting them.
