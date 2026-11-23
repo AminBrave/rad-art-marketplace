@@ -12,6 +12,9 @@ const layout = read('resources/js/components/ui/layout.jsx');
 const navigation = read('resources/js/components/ui/navigation.jsx');
 const feedback = read('resources/js/components/ui/feedback.jsx');
 const cards = read('resources/js/components/ui/cards.jsx');
+const home = read('resources/js/app/HomePage.jsx');
+const catalogue = read('resources/js/app/ArtworkCatalogue.jsx');
+const pages = ['resources/js/app/ArtworkDetailPage.jsx', 'resources/js/app/ArtistDirectoryPage.jsx', 'resources/js/app/ArtistProfilePage.jsx', 'resources/js/app/AuthPage.jsx', 'resources/js/app/PublicInfoPages.jsx', 'resources/js/app/BuyerWorkspace.jsx', 'resources/js/app/ArtistWorkspaceOverview.jsx', 'resources/js/app/AdminWorkspace.jsx', 'resources/js/app/MessagingCenter.jsx'].map(read);
 const layouts = read('resources/js/app/Layouts.jsx');
 const router = read('resources/js/app/AppRouter.jsx');
 const theme = read('resources/js/app/ThemeContext.jsx');
@@ -46,6 +49,18 @@ test('shared primitives expose semantic slots and retain accessible interaction 
     for (const behavior of ['aria-busy={loading || undefined}', "'aria-describedby': describedBy", "'aria-invalid': error ? true", 'SelectPrimitive.Root', 'CheckboxPrimitive.Root', 'focus-visible:outline']) {
         assert.ok(primitives.includes(behavior), 'Missing accessibility contract ' + behavior);
     }
+});
+
+test('Discover and catalogue use a feed-first composition with semantic filters and results', () => {
+    assert.ok(home.includes('data-page="home"'));
+    assert.ok(home.includes('home-intro'));
+    assert.ok(home.includes('home-categories'));
+    assert.ok(home.includes('home-feed'));
+    assert.ok(home.includes('home-creators'));
+    assert.ok(catalogue.includes('data-page="artwork-catalogue"'));
+    assert.ok(catalogue.includes('data-ui="filter-panel"'));
+    assert.ok(catalogue.includes('data-ui="artwork-grid"'));
+    for (const page of pages) assert.ok(page.includes('data-page='), 'A feature route is missing its page composition marker.');
 });
 
 test('artwork and artist cards are image-led and preserve canonical destinations', () => {
