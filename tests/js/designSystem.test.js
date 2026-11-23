@@ -628,6 +628,7 @@ test('production forms and actions reuse the shared UI component contract', () =
         ['artist profile page', artistProfile],
         ['artwork detail', artworkDetail],
         ['workspace layouts', layouts],
+        ['shared navigation primitives', navigation],
         ['message timeline', messageTimeline],
         ['conversation header', conversationHeader],
         ['related artwork strip', relatedArtworkStrip],
