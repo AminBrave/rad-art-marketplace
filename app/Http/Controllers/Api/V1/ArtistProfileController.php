@@ -79,6 +79,8 @@ class ArtistProfileController extends Controller
         $artworks = $artistProfile->artworks()
             ->where('status', Artwork::STATUS_APPROVED)
             ->with('category')
+            ->withCount(['likes', 'comments'])
+            ->when($request->user(), fn ($query) => $query->withExists(['likes as liked_by_me' => fn ($likes) => $likes->where('user_id', $request->user()->id)]))
             ->latest()
             ->orderByDesc('id')
             ->simplePaginate(12, ['*'], 'artworks_page');
@@ -153,6 +155,9 @@ class ArtistProfileController extends Controller
             'price' => $artwork->price,
             'availability' => $artwork->availability,
             'image_url' => route('api.v1.artworks.image', $artwork->slug),
+            'likes_count' => (int) ($artwork->likes_count ?? 0),
+            'comments_count' => (int) ($artwork->comments_count ?? 0),
+            'liked_by_me' => (bool) ($artwork->liked_by_me ?? false),
             'category' => ['id' => $artwork->category->id, 'name' => $artwork->category->name, 'slug' => $artwork->category->slug],
         ];
     }
