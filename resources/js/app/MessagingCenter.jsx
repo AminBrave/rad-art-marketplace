@@ -712,7 +712,7 @@ export default function MessagingCenter({ role }) {
                                 draftRef={draftRef}
                                 fileInputRef={fileInputRef}
                                 filePreview={filePreview}
-                                onCancelReply={() => setReplyTo(null)}
+                                onCancelReply={() => { setReplyTo(null); draftRef.current?.focus(); }}
                                 onDraftChange={setDraft}
                                 onFileChange={(event) => {
                                     const file = event.target.files?.[0] ?? null;
@@ -728,6 +728,7 @@ export default function MessagingCenter({ role }) {
                                 }}
                                 onRemoveArtwork={() => {
                                     setPendingArtwork(null);
+                                    draftRef.current?.focus();
                                     setParams((current) => {
                                         const next = new URLSearchParams(current);
                                         next.delete('artwork');
@@ -737,7 +738,7 @@ export default function MessagingCenter({ role }) {
                                 onRemoveFile={() => {
                                     setSelectedFile(null);
                                     filesByConversationRef.current.delete(Number(active));
-                                    if (fileInputRef.current) fileInputRef.current.value = '';
+                                    if (fileInputRef.current) { fileInputRef.current.value = ''; fileInputRef.current.focus(); }
                                 }}
                                 onSubmit={send}
                                 pendingArtwork={pendingArtwork}
