@@ -57,6 +57,12 @@ test('the design system remains semantic and avoids deprecated palette shade uti
         return [...source.matchAll(forbidden)].map((match) => relative(root, path) + ': ' + match[0]);
     });
     assert.deepEqual(violations, []);
+    const retiredVocabulary = /(?:--color-(?:terracotta|sand|olive)|\b(?:bg|text|border)-(?:terracotta|sand|olive)(?:-strong)?\b)/;
+    for (const path of sources) {
+        assert.doesNotMatch(readFileSync(path, 'utf8'), retiredVocabulary, relative(root, path) + ' still contains retired design tokens.');
+    }
+    const tailwind = readFileSync(resolve(root, 'tailwind.config.js'), 'utf8');
+    assert.doesNotMatch(tailwind, /editorial-(?:1|2|3|4|5|6|8|10|12|16|20|24)/);
 });
 
 test('the app shell preserves Blade PWA metadata and reduced-motion behavior', () => {
