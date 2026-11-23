@@ -16,7 +16,7 @@ function token(name) {
     return value;
 }
 
-test('all semantic text colors meet WCAG AA on every neutral RAD surface', () => {
+test('all semantic text colors meet WCAG AA on every neutral Rademan surface', () => {
     const backgrounds = ['--color-canvas', '--color-paper', '--color-surface-muted'];
     const foregrounds = [
         '--color-text', '--color-text-muted', '--color-text-subtle',
