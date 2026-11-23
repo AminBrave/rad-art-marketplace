@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { RouteLoading } from './RoutingPages';
-import { SelectField } from '../components/ui';
+import { SelectField, FormField, TextInput, Button } from '../components/ui';
 
 export default function AuthPage({ initialMode = 'login' }) {
     const [mode, setMode] = useState(initialMode);
@@ -68,27 +68,12 @@ export default function AuthPage({ initialMode = 'login' }) {
                 </div>
                 <form onSubmit={submit} className="mt-6 space-y-4">
                     {mode === 'register' && <>
-                        <label className="block text-sm font-semibold">نوع حساب
-                            <SelectField name="role" value={form.role} onChange={update} aria-label="نوع حساب" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2">
-                                <option value="buyer">خریدار</option><option value="artist">هنرمند</option>
-                            </SelectField>
-                        </label>
-                        <label className="block text-sm font-semibold">نام و نام خانوادگی
-                            <input name="name" value={form.name} onChange={update} required maxLength="120" autoComplete="name" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2" />
-                            {errors.name?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
-                        </label>
+                        <FormField label="نوع حساب"><SelectField name="role" value={form.role} onChange={update}><option value="buyer">خریدار</option><option value="artist">هنرمند</option></SelectField></FormField>
+                        <FormField label="نام و نام خانوادگی" required error={errors.name?.join(' ')}><TextInput name="name" value={form.name} onChange={update} required maxLength="120" autoComplete="name" /></FormField>
                     </>}
-                    <label className="block text-sm font-semibold">ایمیل
-                        <input type="email" name="email" value={form.email} onChange={update} required autoComplete="email" dir="ltr" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2" />
-                        {errors.email?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
-                    </label>
-                    <label className="block text-sm font-semibold">گذرواژه
-                        <input type="password" name="password" value={form.password} onChange={update} required minLength="10" autoComplete={mode === 'register' ? 'new-password' : 'current-password'} dir="ltr" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2" />
-                        {errors.password?.map((item) => <span key={item} className="mt-1 block text-xs text-danger">{item}</span>)}
-                    </label>
-                    {mode === 'register' && <label className="block text-sm font-semibold">تکرار گذرواژه
-                        <input type="password" name="password_confirmation" value={form.password_confirmation} onChange={update} required minLength="10" autoComplete="new-password" dir="ltr" className="mt-2 w-full rounded-xl border border-border-strong bg-paper px-4 py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2" />
-                    </label>}
+                    <FormField label="ایمیل" required error={errors.email?.join(' ')}><TextInput type="email" name="email" value={form.email} onChange={update} required autoComplete="email" dir="ltr" className="text-left" /></FormField>
+                    <FormField label="گذرواژه" required error={errors.password?.join(' ')}><TextInput type="password" name="password" value={form.password} onChange={update} required minLength="10" autoComplete={mode === 'register' ? 'new-password' : 'current-password'} dir="ltr" className="text-left" /></FormField>
+                    {mode === 'register' && <FormField label="تکرار گذرواژه" required><TextInput type="password" name="password_confirmation" value={form.password_confirmation} onChange={update} required minLength="10" autoComplete="new-password" dir="ltr" className="text-left" /></FormField>}
                     {errors.form?.map((item) => <p key={item} role="alert" className="text-sm text-danger">{item}</p>)}
                     {message && <p role="status" className="text-sm text-muted">{message}</p>}
                     <button disabled={busy} className="w-full rounded-xl bg-ink px-6 py-3.5 font-bold text-inverse transition hover:bg-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2 disabled:cursor-wait disabled:opacity-60">{busy ? 'لطفاً صبر کنید…' : mode === 'register' ? 'ایجاد حساب' : 'ورود به حساب'}</button>
