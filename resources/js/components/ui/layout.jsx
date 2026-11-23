@@ -8,7 +8,7 @@ import { cn } from '../../lib/utils';
  */
 
 export const Box = forwardRef(function Box({ as: Element = 'div', className = '', ...props }, ref) {
-    return <Element data-ui="box" ref={ref} className={cn('min-w-0', className) {...props} />;
+    return <Element data-ui="box" ref={ref} className={cn('min-w-0', className)} {...props} />;
 });
 
 export const Flex = forwardRef(function Flex({ as: Element = 'div', direction = 'row', align, justify, wrap = false, gap, className = '', style, ...props }, ref) {
@@ -34,26 +34,26 @@ export const Section = forwardRef(function Section({ as: Element = 'section', cl
 
 export const Inset = forwardRef(function Inset({ as: Element = 'div', side = 'all', className = '', ...props }, ref) {
     const spacing = { all: 'p-4', inline: 'px-4', block: 'py-4', start: 'ps-4', end: 'pe-4', top: 'pt-4', bottom: 'pb-4' };
-    return <Element data-ui="inset" ref={ref} className={cn(spacing[side] ?? spacing.all, className) {...props} />;
+    return <Element data-ui="inset" ref={ref} className={cn(spacing[side] ?? spacing.all, className)} {...props} />;
 });
 
 export const Heading = forwardRef(function Heading({ as: Element = 'h2', size = 'md', className = '', ...props }, ref) {
     const sizes = { xs: 'text-xs font-bold', sm: 'text-sm font-bold', md: 'text-lg font-extrabold leading-heading', lg: 'text-2xl font-extrabold leading-heading', xl: 'text-3xl font-extrabold leading-heading' };
-    return <Element data-ui="heading" ref={ref} className={cn('text-ink', sizes[size] ?? sizes.md, className) {...props} />;
+    return <Element data-ui="heading" ref={ref} className={cn('text-ink', sizes[size] ?? sizes.md, className)} {...props} />;
 });
 
 export const Text = forwardRef(function Text({ as: Element = 'p', size = 'md', color = 'ink', className = '', ...props }, ref) {
     const sizes = { xs: 'text-xs leading-6', sm: 'text-sm leading-7', md: 'text-sm leading-7 sm:text-base', lg: 'text-lg leading-8' };
     const colors = { ink: 'text-ink', muted: 'text-muted', subtle: 'text-subtle', inverse: 'text-inverse', accent: 'text-terracotta-strong' };
-    return <Element data-ui="text" ref={ref} className={cn('min-w-0', sizes[size] ?? sizes.md, colors[color] ?? colors.ink, className) {...props} />;
+    return <Element data-ui="text" ref={ref} className={cn('min-w-0', sizes[size] ?? sizes.md, colors[color] ?? colors.ink, className)} {...props} />;
 });
 
 export const Strong = forwardRef(function Strong({ className = '', ...props }, ref) {
-    return <strong data-ui="strong" ref={ref} className={cn('font-bold text-ink', className) {...props} />;
+    return <strong data-ui="strong" ref={ref} className={cn('font-bold text-ink', className)} {...props} />;
 });
 
 export const Em = forwardRef(function Em({ className = '', ...props }, ref) {
-    return <em data-ui="em" ref={ref} className={cn('italic', className) {...props} />;
+    return <em data-ui="em" ref={ref} className={cn('italic', className)} {...props} />;
 });
 
 export const Code = forwardRef(function Code({ className = '', ...props }, ref) {
@@ -61,7 +61,7 @@ export const Code = forwardRef(function Code({ className = '', ...props }, ref) 
 });
 
 export const Quote = forwardRef(function Quote({ className = '', ...props }, ref) {
-    return <q data-ui="quote" ref={ref} className={cn('text-ink', className) {...props} />;
+    return <q data-ui="quote" ref={ref} className={cn('text-ink', className)} {...props} />;
 });
 
 export const Blockquote = forwardRef(function Blockquote({ className = '', ...props }, ref) {
