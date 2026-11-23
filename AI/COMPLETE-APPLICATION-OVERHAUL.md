@@ -164,3 +164,12 @@ All unchecked route, state, breakpoint, accessibility and regression items in se
 - Updated route-specific and reusable loading skeletons in `RoutingPages.jsx` and `skeletons.jsx` to better match the revised page geometry.
 
 **Verification state:** no GitHub Actions PR workflow runs are associated with the latest commit. These changes still require a fresh local lint/build/test/browser pass and manual visual inspection in both themes and at the required viewport widths.
+
+### Slice C — administration, public information and recovery states (implemented; fresh verification pending)
+
+- Updated the admin dashboard's artwork preview to preserve the complete artwork image and refined report metrics into the editorial surface system in `AdminWorkspace.jsx`.
+- Refined public About/Help/Contact reading hierarchy in `PublicInfoPages.jsx`.
+- Restyled unauthorized and not-found recovery pages in `RoutingPages.jsx`.
+- Kept moderation decisions, role-change confirmation, report review, destructive confirmations and all server-side permission checks unchanged.
+
+**Verification state:** these additions are also unverified by a fresh local run. No route is marked complete in the ledger solely because this visual pass has been applied.
