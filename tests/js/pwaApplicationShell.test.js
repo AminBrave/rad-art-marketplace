@@ -24,6 +24,8 @@ test('PWA worker never caches private navigation or API responses', () => {
     assert.match(worker, /request\.mode === 'navigate'/);
     assert.match(worker, /caches\.match\('\/offline\.html'\)/);
     assert.match(worker, /APP_SHELL = \[[^\]]*offline\.html/);
+    assert.ok(worker.includes('pwa-icon-192.png'));
+    assert.ok(worker.includes('pwa-icon-512.png'));
     assert.match(worker, /versionedAsset = url\.pathname\.startsWith\('\/build\/'\)/);
     assert.doesNotMatch(worker, /cache\.put\(request, copy\)[\s\S]*request\.mode === 'navigate'/);
 });
