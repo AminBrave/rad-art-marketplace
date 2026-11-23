@@ -44,7 +44,7 @@ export const Heading = forwardRef(function Heading({ as: Element = 'h2', size = 
 
 export const Text = forwardRef(function Text({ as: Element = 'p', size = 'md', color = 'ink', className = '', ...props }, ref) {
     const sizes = { xs: 'text-xs leading-6', sm: 'text-sm leading-7', md: 'text-sm leading-7 sm:text-base', lg: 'text-lg leading-8' };
-    const colors = { ink: 'text-ink', muted: 'text-muted', subtle: 'text-subtle', inverse: 'text-inverse', accent: 'text-terracotta-strong' };
+    const colors = { ink: 'text-ink', muted: 'text-muted', subtle: 'text-subtle', inverse: 'text-inverse', accent: 'text-accent-strong' };
     return <Element data-ui="text" ref={ref} className={cn('min-w-0', sizes[size] ?? sizes.md, colors[color] ?? colors.ink, className)} {...props} />;
 });
 
@@ -65,7 +65,7 @@ export const Quote = forwardRef(function Quote({ className = '', ...props }, ref
 });
 
 export const Blockquote = forwardRef(function Blockquote({ className = '', ...props }, ref) {
-    return <blockquote data-ui="blockquote" ref={ref} className={cn('border-s-2 border-sand ps-4 text-muted', className)} {...props} />;
+    return <blockquote data-ui="blockquote" ref={ref} className={cn('border-s-2 border-line ps-4 text-muted', className)} {...props} />;
 });
 
 export const Separator = forwardRef(function Separator({ orientation = 'horizontal', decorative = true, className = '', ...props }, ref) {
@@ -91,7 +91,7 @@ export const Card = forwardRef(function Card({ as: Element = 'article', interact
 });
 
 export const Callout = forwardRef(function Callout({ as: Element = 'aside', variant = 'info', title, children, className = '', ...props }, ref) {
-    const variants = { info: 'border-s-terracotta bg-accent-surface', success: 'border-s-success bg-success-surface', warning: 'border-s-warning bg-warning-surface', danger: 'border-s-danger bg-danger-surface' };
+    const variants = { info: 'border-s-accent bg-accent-surface', success: 'border-s-success bg-success-surface', warning: 'border-s-warning bg-warning-surface', danger: 'border-s-danger bg-danger-surface' };
     return (
         <Element data-ui="callout" ref={ref} role={props.role ?? 'note'} className={cn('min-w-0 rounded-md border border-border border-s-4 p-4 text-ink', variants[variant] ?? variants.info, className)} {...props}>
             {title && <p className="font-bold">{title}</p>}
@@ -103,11 +103,11 @@ export const Callout = forwardRef(function Callout({ as: Element = 'aside', vari
 export const Progress = forwardRef(function Progress({ value = 0, max = 100, label, className = '', ...props }, ref) {
     const safeMax = Number.isFinite(Number(max)) && Number(max) > 0 ? Number(max) : 100;
     const safeValue = Math.min(safeMax, Math.max(0, Number(value) || 0));
-    return <progress data-ui="progress" ref={ref} value={safeValue} max={safeMax} aria-label={label} className={cn('block h-2 w-full overflow-hidden rounded-full accent-terracotta', className)} {...props} />;
+    return <progress data-ui="progress" ref={ref} value={safeValue} max={safeMax} aria-label={label} className={cn('block h-2 w-full overflow-hidden rounded-full accent-accent', className)} {...props} />;
 });
 
 export function Spinner({ label = 'در حال بارگذاری', className = '' }) {
-    return <span data-ui="spinner" role="status" aria-label={label} className={cn('inline-block h-5 w-5 animate-spin rounded-full border-2 border-current border-e-transparent text-terracotta motion-reduce:animate-none', className)} />;
+    return <span data-ui="spinner" role="status" aria-label={label} className={cn('inline-block h-5 w-5 animate-spin rounded-full border-2 border-current border-e-transparent text-accent motion-reduce:animate-none', className)} />;
 }
 
 export const Kbd = forwardRef(function Kbd({ className = '', ...props }, ref) {
