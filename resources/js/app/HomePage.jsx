@@ -83,7 +83,7 @@ export default function HomePage() {
                 {hero ? (
                     <Link to={'/artworks/' + hero.slug} className="home-feature group relative block min-w-0 overflow-hidden rounded-2xl border border-border bg-paper p-2 text-ink no-underline">
                         <div className="aspect-[4/5] overflow-hidden rounded-xl bg-surface-muted">
-                            <MediaImage src={hero.image_url} alt={hero.title} className="h-full w-full" imageClassName="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" loading="eager" fetchPriority="high" decoding="async" />
+                            <MediaImage src={hero.image_url} alt={hero.title} className="h-full w-full" imageClassName="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]" loading="eager" fetchPriority="high" decoding="async" />
                         </div>
                         <div className="flex items-center justify-between gap-3 px-3 py-3">
                             <span className="min-w-0">
