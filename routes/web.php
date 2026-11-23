@@ -3,12 +3,14 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Api\V1\AdminArtworkModerationController;
-use App\Http\Controllers\Api\V1\AdminEditorialController;\nuse App\Http\Controllers\Api\V1\AdminArtworkCommentReportController;
+use App\Http\Controllers\Api\V1\AdminEditorialController;
+use App\Http\Controllers\Api\V1\AdminArtworkCommentReportController;
 use App\Http\Controllers\Api\V1\AdminMessageReportController;
 use App\Http\Controllers\Api\V1\AdminUserController;
 use App\Http\Controllers\Api\V1\ArtistArtworkController;
 use App\Http\Controllers\Api\V1\ArtistProfileController;
-use App\Http\Controllers\Api\V1\AuthController;\nuse App\Http\Controllers\Api\V1\ArtworkInteractionController;
+use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\ArtworkInteractionController;
 use App\Http\Controllers\Api\V1\ConversationController;
 use App\Http\Controllers\Api\V1\DirectConversationController;
 use App\Http\Controllers\Api\V1\MessageAttachmentController;
@@ -87,7 +89,8 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
     Route::get('/categories', [PublicArtworkController::class, 'categories'])->name('categories.index');
     Route::get('/artwork-filters', [PublicArtworkController::class, 'filters'])->name('artworks.filters');
     Route::get('/artworks', [PublicArtworkController::class, 'index'])->name('artworks.index');
-    Route::get('/artworks/{artwork:slug}/image', [PublicArtworkController::class, 'image'])->name('artworks.image');\n    Route::get('/artworks/{artwork:slug}/comments', [ArtworkInteractionController::class, 'comments'])->name('artworks.comments.index');
+    Route::get('/artworks/{artwork:slug}/image', [PublicArtworkController::class, 'image'])->name('artworks.image');
+    Route::get('/artworks/{artwork:slug}/comments', [ArtworkInteractionController::class, 'comments'])->name('artworks.comments.index');
     Route::get('/artworks/{artwork:slug}', [PublicArtworkController::class, 'show'])->name('artworks.show');
 
     Route::middleware(['auth', 'role:artist,admin'])->group(function (): void {
@@ -106,7 +109,9 @@ Route::prefix('api/v1')->name('api.v1.')->group(function (): void {
     });
 
     Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function (): void {
-        Route::get('/artwork-comment-reports', [AdminArtworkCommentReportController::class, 'index'])->name('artwork-comment-reports.index');\n        Route::patch('/artwork-comment-reports/{report}', [AdminArtworkCommentReportController::class, 'update'])->name('artwork-comment-reports.update');\n        Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+        Route::get('/artwork-comment-reports', [AdminArtworkCommentReportController::class, 'index'])->name('artwork-comment-reports.index');
+        Route::patch('/artwork-comment-reports/{report}', [AdminArtworkCommentReportController::class, 'update'])->name('artwork-comment-reports.update');
+        Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
         Route::get('/message-reports', [AdminMessageReportController::class, 'adminIndex'])->name('message-reports.index');
         Route::patch('/message-reports/{report}', [AdminMessageReportController::class, 'adminUpdate'])->name('message-reports.update');
         Route::prefix('editorial')->name('editorial.')->group(function (): void {
