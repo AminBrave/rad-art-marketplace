@@ -8,6 +8,7 @@ const entry = readFileSync(new URL('../../resources/js/app.jsx', import.meta.url
 const themeContext = readFileSync(new URL('../../resources/js/app/ThemeContext.jsx', import.meta.url), 'utf8');
 const blade = readFileSync(new URL('../../resources/views/app.blade.php', import.meta.url), 'utf8');
 const layouts = readFileSync(new URL('../../resources/js/app/Layouts.jsx', import.meta.url), 'utf8');
+const cards = readFileSync(new URL('../../resources/js/components/ui/cards.jsx', import.meta.url), 'utf8');
 
 function block(selector) {
     const escaped = selector.replace(/[.*+?^$\{\}()|[\]\\]/g, '\\$&');
@@ -74,4 +75,13 @@ test('public navigation uses existing destinations in desktop and mobile Instagr
     assert.ok(layouts.includes('const accountTo = user'));
     assert.ok(css.includes("[data-testid='public-navigation-rail']"));
     assert.ok(css.includes("[data-testid='public-bottom-navigation']"));
+});
+
+test('artwork and artist cards use image-first post/profile structures without changing destinations', () => {
+    assert.ok(cards.includes('MediaImage src={artwork.image_url}'));
+    assert.ok(cards.includes('aspect-[4/5]'));
+    assert.ok(cards.includes('`/artworks/${artwork.slug}`'));
+    assert.ok(cards.includes('artist?.display_name'));
+    assert.ok(cards.includes('`/artists/${artist.slug}`'));
+    assert.ok(cards.includes('formatArtworkPrice(artwork.price)'));
 });
