@@ -168,7 +168,7 @@ button,input,select,textarea{font:inherit}
 button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
 img,video{display:block;max-width:100%}
 a{color:var(--rd-link);text-underline-offset:.2em}
-:focus-visible{outline:2px solid var(--rd-accent);outline-offset:3px}
+:focus-visible{outline:2px solid var(--rd-focus);outline-offset:3px}
 ::selection{background:color-mix(in srgb,var(--rd-accent) 22%,transparent);color:var(--rd-text)}
 [dir=ltr]{font-family:'Inter',sans-serif}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
