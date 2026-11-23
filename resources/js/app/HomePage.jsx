@@ -1,6 +1,6 @@
-
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { ArrowLeft, Compass, Grid3X3, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ArtworkCard, ArtistCard, ArtworkCardSkeleton, ArtistCardSkeleton, EmptyState, ErrorState, MediaImage, Skeleton } from '../components/ui';
 
@@ -8,10 +8,7 @@ export default function HomePage() {
     const artworksQuery = useQuery({
         queryKey: ['home', 'artworks'],
         queryFn: async ({ signal }) => {
-            const { data } = await axios.get('/api/v1/artworks', {
-                params: { per_page: 7, sort: 'newest' },
-                signal,
-            });
+            const { data } = await axios.get('/api/v1/artworks', { params: { per_page: 9, sort: 'newest' }, signal });
             return data.data ?? [];
         },
         staleTime: 60_000,
@@ -27,7 +24,7 @@ export default function HomePage() {
     const artistsQuery = useQuery({
         queryKey: ['home', 'artists'],
         queryFn: async ({ signal }) => {
-            const { data } = await axios.get('/api/v1/artists', { params: { per_page: 3 }, signal });
+            const { data } = await axios.get('/api/v1/artists', { params: { per_page: 6 }, signal });
             return data.data ?? [];
         },
         staleTime: 60_000,
@@ -35,7 +32,7 @@ export default function HomePage() {
     const collectionsQuery = useQuery({
         queryKey: ['home', 'collections'],
         queryFn: async ({ signal }) => {
-            const { data } = await axios.get('/api/v1/collections', { params: { per_page: 3 }, signal });
+            const { data } = await axios.get('/api/v1/collections', { params: { per_page: 4 }, signal });
             return data.data ?? [];
         },
         staleTime: 60_000,
@@ -54,83 +51,119 @@ export default function HomePage() {
     const artists = artistsQuery.data ?? [];
     const collections = collectionsQuery.data ?? [];
     const featuredArtists = featuredArtistsQuery.data ?? [];
-    const loading = artworksQuery.isPending || categoriesQuery.isPending || artistsQuery.isPending
-        || (artworksQuery.isFetching && !artworksQuery.data);
-    const error = artworksQuery.isError && !artworksQuery.data && !loading && !artworksQuery.isFetching;
+    const loading = artworksQuery.isPending || categoriesQuery.isPending || artistsQuery.isPending;
+    const error = artworksQuery.isError && !artworksQuery.data;
     const hero = artworks[0];
-    const recentWorks = artworks.slice(1, 7);
-    const spotlight = artists[0];
+    const recentWorks = artworks.slice(1, 9);
+    const spotlightArtists = featuredArtists.length ? featuredArtists.slice(0, 6) : artists.slice(0, 6);
 
     return (
-        <main data-page="home" className="overflow-hidden" dir="rtl">
-            <section className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[1fr_.9fr] lg:gap-16 lg:px-10 lg:py-24">
-                <div className="max-w-2xl">
-                    <p className="mb-6 inline-flex items-center gap-3 text-xs font-bold tracking-[.08em] text-terracotta-strong"><span className="h-px w-10 bg-terracotta" />گالری هنر مستقل معاصر <span className="text-subtle">/</span> ART &amp; CULTURE</p>
-                    <h1 className="max-w-2xl text-4xl font-black leading-[1.5] tracking-tight sm:text-5xl lg:text-[4.25rem]">هنر را کشف کنید؛ <span className="relative inline-block text-terracotta-strong">فراتر از قاب.</span></h1>
-                    <p className="mt-6 max-w-xl text-base leading-9 text-muted sm:text-lg">راد آرت فضایی برای دیدن آثار تأییدشده، شناخت جهان هنرمندان مستقل و آغاز ارتباطی مستقیم درباره هنر است.</p>
-                    <div className="mt-9 flex flex-wrap gap-3">
-                        <Link to="/artworks" className="bg-ink px-7 py-3.5 text-sm font-bold text-inverse transition-colors hover:bg-terracotta">ورود به گالری آثار</Link>
-                        <Link to="/artists" className="border border-border px-7 py-3.5 text-sm font-bold transition-colors hover:border-terracotta">شناخت هنرمندان</Link>
+        <main data-page="home" className="min-w-0 overflow-x-clip" dir="rtl">
+            <section className="home-intro grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(300px,.82fr)]">
+                <div className="min-w-0">
+                    <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-accent-surface px-3 py-1.5 text-xs font-bold text-terracotta-strong">
+                        <Compass size={15} aria-hidden="true" />
+                        کشف هنر مستقل
                     </div>
-                    <p className="mt-8 text-xs leading-6 text-muted">نمایش عمومی فقط برای آثار تأییدشده و پروفایل‌های عمومی فعال است.</p>
-                </div>
-                <div className="relative mx-auto w-full max-w-xl lg:me-0">
-                    <div aria-hidden="true" className="absolute -left-4 -top-4 h-24 w-24 border border-sand" />
-                    {hero ? (
-                        <Link to={'/artworks/' + hero.slug} className="group relative block bg-surface-muted p-2 sm:p-3">
-                            <div className="aspect-[4/5] overflow-hidden bg-paper">
-                                <MediaImage src={hero.image_url} alt={hero.title} className="h-full w-full" imageClassName="object-contain transition-transform duration-500 group-hover:scale-[1.02]" loading="eager" fetchPriority="high" decoding="async" />
-                            </div>
-                            <div className="flex items-center justify-between gap-4 px-2 py-4">
-                                <div><p className="text-xs text-muted">تازه در گالری</p><p className="mt-1 font-bold">{hero.title}</p><p className="mt-1 text-xs text-muted">{hero.artist?.display_name}</p></div>
-                                <span className="shrink-0 text-sm font-bold text-terracotta-strong">مشاهده اثر ←</span>
-                            </div>
+                    <h1 className="max-w-[15ch] text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+                        هنر تازه را از نگاه خالقانش ببینید.
+                    </h1>
+                    <p className="mt-5 max-w-xl text-sm leading-8 text-muted sm:text-base">
+                        آثار، هنرمندان و مجموعه‌های منتخب را مرور کنید؛ مسیر کشف خود را با دیدن کارهای تازه آغاز کنید.
+                    </p>
+                    <div className="mt-7 flex flex-wrap gap-3">
+                        <Link to="/artworks" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-terracotta px-5 py-2.5 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong">
+                            ورود به گالری <ArrowLeft size={16} aria-hidden="true" />
                         </Link>
-                    ) : (
-                        <div className="relative aspect-[4/5] overflow-hidden bg-sand p-8"><div className="absolute inset-8 border border-[color:color-mix(in_srgb,var(--color-paper)_70%,transparent)]" /><div className="absolute left-[12%] top-[12%] h-[48%] w-[48%] rounded-full bg-terracotta" /><div className="absolute bottom-[12%] right-[10%] h-[58%] w-[48%] rounded-t-full bg-olive" /><div className="absolute bottom-8 left-8 text-xs font-bold tracking-[.25em] text-ink">ART / PEOPLE / STORIES</div></div>
-                    )}
-                </div>
-            </section>
-
-            <section className="border-y border-border bg-surface-muted">
-                <div className="mx-auto grid max-w-7xl gap-8 px-5 py-12 sm:grid-cols-3 sm:px-8 lg:px-10">
-                    {[['۰۱ / کشف', 'دیدن با نگاه تازه', 'در میان آثار تأییدشده جست‌وجو کنید و دسته‌ها و تکنیک‌های گوناگون را بشناسید.'], ['۰۲ / شناخت', 'آشنایی با خالق اثر', 'پروفایل عمومی هنرمندان، معرفی و نمونه‌کارهای تأییدشده آن‌ها را ببینید.'], ['۰۳ / ارتباط', 'گفت‌وگو درباره هنر', 'خریداران ثبت‌نام‌شده می‌توانند درباره یک اثر یا هنرمند درخواست ارتباط بفرستند.']].map(([eyebrow, title, body]) => (
-                        <div key={eyebrow}><span className="text-xs font-bold text-terracotta-strong">{eyebrow}</span><h2 className="mt-3 text-xl font-extrabold">{title}</h2><p className="mt-2 text-sm leading-7 text-muted">{body}</p></div>
-                    ))}
-                </div>
-            </section>
-
-            <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10">
-                <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-bold text-terracotta-strong">تازه‌رسیده‌ها</p><h2 className="mt-2 text-3xl font-black">تازه در گالری</h2><p className="mt-2 text-sm text-muted">آخرین آثاری که برای نمایش عمومی تأیید شده‌اند.</p></div><Link to="/artworks" className="text-sm font-bold text-terracotta-strong underline">همه آثار</Link></div>
-                {error ? <ErrorState className="mt-8" title="دریافت محتوای گالری ممکن نشد" description="برای دریافت دوباره تلاش کنید." onRetry={() => artworksQuery.refetch()} /> : loading ? <div className="mt-8 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}</div> : recentWorks.length ? <div className="mt-8 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">{recentWorks.map((item) => <ArtworkCard key={item.id} artwork={item} />)}</div> : <EmptyState className="mt-8" title="هنوز اثر دیگری برای نمایش نیست" description="آثار تازه پس از تأیید در این بخش قرار می‌گیرند." />}
-            </section>
-
-            <section className="border-y border-border bg-paper">
-                <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 lg:px-10">
-                    <div><p className="text-xs font-bold text-terracotta-strong">مسیرهای موضوعی</p><h2 className="mt-2 text-2xl font-black">از کجا شروع کنیم؟</h2><p className="mt-2 text-sm leading-7 text-muted">دسته‌بندی‌های فعال گالری را مرور کنید و به جهان هر شاخه هنری وارد شوید.</p></div>
-                    <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                        {loading ? [0, 1, 2, 3].map((item) => <Skeleton key={item} height={null} className="h-24 w-full rounded-none" />) : categories.length ? categories.slice(0, 8).map((category, index) => <Link key={category.id} to={'/artworks?category=' + encodeURIComponent(category.slug)} className="group flex min-h-24 items-end justify-between border border-border bg-canvas p-5 transition-colors hover:border-terracotta hover:bg-surface-muted"><span><span className="block text-xs text-muted">۰{index + 1}</span><span className="mt-2 block font-bold text-ink">{category.name}</span></span><span aria-hidden="true" className="text-xl text-terracotta-strong transition-transform group-hover:-translate-x-1">←</span></Link>) : <p className="text-sm text-muted">دسته‌بندی فعالی برای نمایش وجود ندارد.</p>}
+                        <Link to="/artists" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-paper px-5 py-2.5 text-sm font-bold text-ink no-underline hover:border-border-strong">
+                            <Users size={16} aria-hidden="true" /> هنرمندان
+                        </Link>
                     </div>
                 </div>
+                {hero ? (
+                    <Link to={'/artworks/' + hero.slug} className="home-feature group relative block min-w-0 overflow-hidden rounded-2xl border border-border bg-paper p-2 text-ink no-underline">
+                        <div className="aspect-[4/5] overflow-hidden rounded-xl bg-surface-muted">
+                            <MediaImage src={hero.image_url} alt={hero.title} className="h-full w-full" imageClassName="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" loading="eager" fetchPriority="high" decoding="async" />
+                        </div>
+                        <div className="flex items-center justify-between gap-3 px-3 py-3">
+                            <span className="min-w-0">
+                                <span className="block text-[10px] font-bold text-muted">تازه در گالری</span>
+                                <span className="mt-1 block truncate text-sm font-bold">{hero.title}</span>
+                                <span className="mt-0.5 block truncate text-xs text-muted">{hero.artist?.display_name}</span>
+                            </span>
+                            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-surface-2 text-ink"><ArrowLeft size={17}/></span>
+                        </div>
+                    </Link>
+                ) : (
+                    <div className="home-feature overflow-hidden rounded-2xl border border-border bg-surface-2 p-3">
+                        <Skeleton className="aspect-[4/5] w-full rounded-xl" />
+                    </div>
+                )}
             </section>
 
-            <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10">
-                <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-bold text-terracotta-strong">چهره‌های گالری</p><h2 className="mt-2 text-3xl font-black">هنرمندان راد آرت</h2><p className="mt-2 text-sm text-muted">با هنرمندانی آشنا شوید که پروفایل عمومی خود را منتشر کرده‌اند.</p></div><Link to="/artists" className="text-sm font-bold text-terracotta-strong underline">دیدن همه هنرمندان</Link></div>
-                {loading ? <div className="mt-8 grid gap-4 sm:grid-cols-3">{[0, 1, 2].map((item) => <ArtistCardSkeleton key={item} />)}</div> : artists.length ? <div className="mt-8 grid gap-4 sm:grid-cols-3">{artists.map((artist) => <ArtistCard key={artist.id} artist={artist} />)}</div> : <p className="mt-6 text-sm text-muted">هنرمندان دارای پروفایل عمومی در این بخش معرفی می‌شوند.</p>}
-                {spotlight && <div className="mt-8 flex flex-col gap-4 border border-border bg-surface-muted p-6 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-xs font-bold text-terracotta-strong">نقطه شروع پیشنهادی</p><h3 className="mt-2 text-xl font-black">{spotlight.display_name}</h3><p className="mt-2 max-w-2xl text-sm leading-7 text-muted">{spotlight.bio || 'پورتفولیوی عمومی این هنرمند را ببینید و با آثار تأییدشده او آشنا شوید.'}</p></div><Link to={'/artists/' + spotlight.slug} className="shrink-0 text-sm font-bold text-terracotta-strong underline">ورود به پورتفولیو</Link></div>}
-            </section>
-
-            {(collections.length > 0 || featuredArtists.length > 0) && <section className="border-y border-border bg-surface-muted"><div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 lg:px-10">
-                {collections.length > 0 && <div><div className="flex items-end justify-between gap-4"><div><p className="text-xs font-bold text-terracotta-strong">روایت‌های منتخب</p><h2 className="mt-2 text-2xl font-black">مجموعه‌های سردبیر</h2></div><Link to="/collections" className="text-sm font-bold text-terracotta-strong underline">همه مجموعه‌ها</Link></div><div className="mt-6 grid gap-4 sm:grid-cols-3">{collections.slice(0, 3).map((item) => <Link key={item.id} to={'/collections/' + item.slug} className="border border-border bg-paper p-5 hover:border-terracotta"><p className="text-xs text-terracotta-strong">{item.artwork_count} اثر منتخب</p><h3 className="mt-2 font-black">{item.title}</h3><p className="mt-2 line-clamp-3 text-sm leading-7 text-muted">{item.intro || 'انتخابی از آثار تأییدشده راد آرت'}</p></Link>)}</div></div>}
-                {featuredArtists.length > 0 && <div className="mt-10"><p className="text-xs font-bold text-terracotta-strong">چهره‌های منتخب</p><div className="mt-4 grid gap-4 sm:grid-cols-3">{featuredArtists.slice(0, 3).map((item) => <Link key={item.id} to={'/artists/' + item.artist.slug} className="border border-border bg-paper p-5"><h3 className="font-black">{item.artist.display_name}</h3><p className="mt-2 text-sm leading-7 text-muted">{item.editorial_intro || item.artist.bio || 'با پورتفولیوی این هنرمند آشنا شوید.'}</p></Link>)}</div></div>}
-            </div></section>}
-
-            <section className="bg-ink text-inverse">
-                <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-5 py-14 sm:px-8 md:flex-row md:items-center lg:px-10">
-                    <div><p className="text-xs font-bold text-sand">دعوت به مشارکت</p><h2 className="mt-2 text-2xl font-black">جهان هنری خود را با دیگران به اشتراک بگذارید.</h2><p className="mt-3 max-w-2xl text-sm leading-7 text-[color:color-mix(in_srgb,var(--color-inverse-text)_70%,transparent)]">هنرمندان می‌توانند حساب بسازند، پروفایل خود را تکمیل کنند و آثارشان را برای بررسی ارسال کنند.</p></div>
-                    <Link to="/register" className="shrink-0 bg-paper px-6 py-3 font-bold text-ink">شروع به‌عنوان هنرمند</Link>
+            <section className="home-categories" aria-label="دسته‌بندی‌های آثار">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                    <h2 className="text-sm font-extrabold">کاوش بر اساس دسته</h2>
+                    <Link to="/artworks" className="text-xs font-bold text-terracotta-strong no-underline">همه دسته‌ها</Link>
+                </div>
+                <div className="flex gap-2 overflow-x-auto pb-2">
+                    {categoriesQuery.isPending ? [0,1,2,3,4].map((item) => <Skeleton key={item} className="h-10 w-24 shrink-0 rounded-full"/>)
+                        : categories.slice(0, 12).map((category) => (
+                            <Link key={category.id} to={'/artworks?category=' + encodeURIComponent(category.slug)} className="inline-flex min-h-10 shrink-0 items-center rounded-full border border-border bg-paper px-4 text-xs font-semibold text-ink no-underline transition-colors hover:border-terracotta hover:bg-accent-surface">
+                                {category.name}
+                            </Link>
+                        ))}
                 </div>
             </section>
+
+            <section className="home-feed" aria-labelledby="home-recent-heading">
+                <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+                    <div>
+                        <p className="text-xs font-bold text-terracotta-strong">تازه‌منتشرشده‌ها</p>
+                        <h2 id="home-recent-heading" className="mt-1 text-2xl font-black tracking-tight sm:text-3xl">تازه در گالری</h2>
+                        <p className="mt-2 text-xs leading-6 text-muted">آثار تأییدشده‌ای که به‌تازگی به مجموعه راد آرت پیوسته‌اند.</p>
+                    </div>
+                    <Link to="/artworks" className="inline-flex min-h-10 items-center gap-1 text-xs font-bold text-terracotta-strong no-underline">دیدن همه آثار <ArrowLeft size={14}/></Link>
+                </div>
+                {error ? <ErrorState title="دریافت محتوای گالری ممکن نشد" description="برای دریافت دوباره تلاش کنید." onRetry={() => artworksQuery.refetch()} />
+                    : loading ? <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{[0,1,2,3,4,5].map((item) => <ArtworkCardSkeleton key={item}/>)}</div>
+                    : recentWorks.length ? <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{recentWorks.map((item) => <ArtworkCard key={item.id} artwork={item}/>)}</div>
+                    : <EmptyState title="هنوز اثر تازه‌ای برای نمایش نیست" description="آثار پس از تأیید در این بخش قرار می‌گیرند."/>}
+            </section>
+
+            <section className="home-creators" aria-labelledby="home-artists-heading">
+                <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+                    <div>
+                        <p className="text-xs font-bold text-terracotta-strong">جامعه خلاق</p>
+                        <h2 id="home-artists-heading" className="mt-1 text-2xl font-black tracking-tight sm:text-3xl">هنرمندان راد آرت</h2>
+                        <p className="mt-2 text-xs leading-6 text-muted">با خالق آثار آشنا شوید و پورتفولیوی عمومی او را ببینید.</p>
+                    </div>
+                    <Link to="/artists" className="inline-flex min-h-10 items-center gap-1 text-xs font-bold text-terracotta-strong no-underline">همه هنرمندان <ArrowLeft size={14}/></Link>
+                </div>
+                {artistsQuery.isPending ? <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{[0,1,2].map((item) => <ArtistCardSkeleton key={item}/>)}</div>
+                    : artists.length ? <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{spotlightArtists.map((artist) => <ArtistCard key={artist.id} artist={artist}/>)}</div>
+                    : <EmptyState title="هنرمندی برای نمایش وجود ندارد" description="پروفایل‌های عمومی هنرمندان در این بخش نمایش داده می‌شوند."/>}
+            </section>
+
+            {(collections.length > 0 || featuredArtists.length > 0) && (
+                <section className="home-collections" aria-labelledby="home-collections-heading">
+                    <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+                        <div>
+                            <p className="text-xs font-bold text-terracotta-strong">انتخاب سردبیر</p>
+                            <h2 id="home-collections-heading" className="mt-1 text-2xl font-black tracking-tight">مجموعه‌های منتخب</h2>
+                        </div>
+                        <Link to="/collections" className="text-xs font-bold text-terracotta-strong no-underline">همه مجموعه‌ها</Link>
+                    </div>
+                    {collections.length ? <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {collections.slice(0,3).map((item) => <Link key={item.id} to={'/collections/' + item.slug} className="group rounded-2xl border border-border bg-paper p-5 text-ink no-underline transition-colors hover:border-terracotta">
+                            <span className="text-[11px] font-bold text-terracotta-strong">{Number(item.artwork_count ?? 0).toLocaleString('fa-IR')} اثر منتخب</span>
+                            <h3 className="mt-3 text-lg font-extrabold">{item.title}</h3>
+                            <p className="mt-2 line-clamp-3 text-xs leading-7 text-muted">{item.intro || 'انتخابی از آثار تأییدشده هنرمندان راد آرت.'}</p>
+                            <span className="mt-5 inline-flex items-center gap-1 text-xs font-bold text-terracotta-strong">مشاهده مجموعه <ArrowLeft size={14}/></span>
+                        </Link>)}
+                    </div> : null}
+                </section>
+            )}
         </main>
     );
 }
