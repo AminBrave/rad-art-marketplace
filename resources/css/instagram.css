@@ -417,3 +417,41 @@ tr + tr { border-color: var(--rd-border-subtle); }
 [data-experience] button[aria-label*='پوسته']:hover {
     background: var(--rd-surface-muted) !important;
 }
+
+
+/* Discover navigation mirrors Instagram's persistent desktop rail and mobile tab bar. */
+[data-testid='public-navigation-rail'] {
+    background: var(--rd-surface) !important;
+    border-color: var(--rd-border-subtle) !important;
+}
+[data-testid='public-navigation-rail'] a[aria-current='page'] {
+    background: var(--rd-surface-muted) !important;
+    color: var(--rd-action-text) !important;
+}
+[data-testid='public-bottom-navigation'] {
+    height: calc(60px + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+    background: color-mix(in srgb, var(--rd-surface) 96%, transparent) !important;
+    border-color: var(--rd-border-subtle) !important;
+    backdrop-filter: blur(18px);
+}
+[data-testid='public-bottom-navigation'] a[aria-current='page'] {
+    color: var(--rd-action-text) !important;
+}
+@media (min-width: 1280px) {
+    [data-experience='discover'] > header nav[aria-label='ناوبری اصلی'] {
+        display: none !important;
+    }
+    [data-experience='discover'] #main-content,
+    [data-experience='discover'] > footer {
+        margin-inline-end: 76px;
+    }
+}
+@media (max-width: 1279px) {
+    [data-experience='discover'] #main-content {
+        padding-bottom: 1rem;
+    }
+    [data-experience='discover'] > footer {
+        padding-bottom: calc(60px + env(safe-area-inset-bottom));
+    }
+}
