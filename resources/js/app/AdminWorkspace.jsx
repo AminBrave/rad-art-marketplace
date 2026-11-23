@@ -248,12 +248,12 @@ export function AdminUsersPage() {
                 const selected = drafts[item.id] ?? (item.role === 'buyer' ? '' : item.role);
                 const selfAdmin = item.id === user?.id && item.role === 'admin';
                 const needsAdminConfirmation = confirmAdminId === item.id && selected === 'admin' && item.role !== 'admin';
-                return <article key={item.id} className="min-w-0 border border-border bg-paper p-5">
+                return <article key={item.id} className="min-w-0 border-t border-border bg-transparent py-5 first:border-t-0 sm:px-1">
                     <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div className="min-w-0"><h2 className="break-words font-bold">{item.name}</h2><p dir="ltr" className="mt-1 break-all text-left text-xs text-muted">{item.email}</p></div>
+                        <div className="min-w-0"><p className="mb-1 text-[10px] font-bold tracking-wide text-muted">حساب کاربری · {item.id}</p><h2 className="break-words font-bold">{item.name}</h2><p dir="ltr" className="mt-1 break-all text-left text-xs text-muted">{item.email}</p></div>
                         <Badge variant={item.role === 'admin' ? 'accent' : item.role === 'artist' ? 'info' : 'neutral'}>{roleLabels[item.role] ?? item.role}</Badge>
                     </div>
-                    <div className="mt-5 border-t border-border pt-4">
+                    <div className="mt-5 border-t border-border/70 pt-4">
                         {selfAdmin ? <p className="text-xs leading-6 text-muted">این حساب مدیر فعلی است؛ تغییر نقش حساب خودتان از این صفحه امکان‌پذیر نیست.</p> : <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
                             <SelectField aria-label={'نقش جدید برای ' + item.name} value={selected} disabled={busyId === item.id} onChange={(event) => { setDrafts((current) => ({ ...current, [item.id]: event.target.value })); setConfirmAdminId(null); }} className="w-full">
                                 {item.role === 'buyer' && <option value="">انتخاب نقش</option>}
@@ -329,14 +329,14 @@ export function AdminMessageReportsPage() {
             <div className="space-y-4">{result.data.map((report) => {
                 const isOpen = report.status === 'open';
                 const confirmingRemoval = confirmRemovalId === report.id;
-                return <article key={report.id} className="overflow-hidden border border-border bg-paper">
-                    <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border bg-[color:color-mix(in_srgb,var(--color-surface-muted)_70%,transparent)] p-4 sm:p-5">
+                return <article key={report.id} className="overflow-hidden border-t-2 border-border bg-transparent first:border-t-0">
+                    <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border bg-surface-muted/60 px-4 py-5 sm:px-6">
                         <div><p className="text-xs font-bold text-terracotta-strong">گزارش شماره {report.id}</p><h2 className="mt-1 font-black">{report.reason}</h2><p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? 'کاربر'} · {dateLabel(report.created_at)}</p></div>
                         <Badge variant={isOpen ? 'warning' : report.status === 'dismissed' ? 'neutral' : 'success'}>{isOpen ? 'در انتظار بررسی' : report.status === 'dismissed' ? 'رد گزارش' : 'بررسی‌شده'}</Badge>
                     </div>
-                    <div className="space-y-4 p-4 sm:p-5">
+                    <div className="space-y-5 px-4 py-5 sm:px-6">
                         {report.details && <div><p className="text-xs font-bold text-muted">شرح گزارش</p><p className="mt-2 whitespace-pre-line text-sm leading-7">{report.details}</p></div>}
-                        {report.message ? <div className="border-s-2 border-terracotta bg-surface-muted p-4"><p className="text-[11px] font-bold text-muted">پیام علامت‌گذاری‌شده</p><blockquote className="mt-2 whitespace-pre-line text-sm leading-7">{report.message.body ?? 'متن پیام حذف شده است.'}</blockquote></div> : <p className="text-xs text-muted">متن پیام مرتبط در دسترس نیست.</p>}
+                        {report.message ? <div className="border-s-2 border-terracotta bg-surface-muted/70 p-4 sm:p-5"><p className="text-[11px] font-bold tracking-wide text-muted">محتوای مورد گزارش</p><blockquote className="mt-2 whitespace-pre-line text-sm leading-7">{report.message.body ?? 'متن پیام حذف شده است.'}</blockquote></div> : <p className="text-xs text-muted">متن پیام مرتبط در دسترس نیست.</p>}
                         {isOpen && <>
                             <label className="block text-xs font-semibold text-muted">یادداشت رسیدگی (اختیاری)<textarea value={notes[report.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [report.id]: event.target.value }))} maxLength={1000} rows={2} className="w-full min-h-11 rounded-md border border-border-strong bg-paper px-3.5 py-2 font-sans text-sm text-ink transition-colors placeholder:text-subtle focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:bg-surface-muted disabled:opacity-65 aria-[invalid=true]:border-danger mt-2 w-full" placeholder="خلاصه تصمیم یا زمینه بررسی…" /></label>
                             <div className="flex flex-wrap gap-2">
@@ -443,8 +443,8 @@ export function AdminArtworkCommentReportsPage() {
                 {result.data.map((report) => {
                     const isOpen = report.status === 'open';
                     const confirmingRemoval = confirmRemovalId === report.id;
-                    return <article key={report.id} className="overflow-hidden border border-border bg-paper">
-                        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border bg-surface-muted p-4 sm:p-5">
+                    return <article key={report.id} className="overflow-hidden border-t-2 border-border bg-transparent first:border-t-0">
+                        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border bg-surface-muted/60 px-4 py-5 sm:px-6">
                             <div>
                                 <p className="text-xs font-bold text-terracotta-strong">گزارش شماره {report.id}</p>
                                 <h2 className="mt-1 font-black">{report.reason}</h2>
@@ -454,12 +454,12 @@ export function AdminArtworkCommentReportsPage() {
                                 {isOpen ? 'در انتظار بررسی' : report.status === 'dismissed' ? 'رد گزارش' : 'بررسی‌شده'}
                             </Badge>
                         </div>
-                        <div className="space-y-4 p-4 sm:p-5">
+                        <div className="space-y-5 px-4 py-5 sm:px-6">
                             {report.details && <div>
                                 <p className="text-xs font-bold text-muted">شرح گزارش</p>
                                 <p className="mt-2 whitespace-pre-line break-words text-sm leading-7">{report.details}</p>
                             </div>}
-                            <div className="border-s-2 border-terracotta bg-surface-muted p-4">
+                            <div className="border-s-2 border-terracotta bg-surface-muted/70 p-4 sm:p-5">
                                 <p className="text-[11px] font-bold text-muted">دیدگاه گزارش‌شده</p>
                                 <blockquote className="mt-2 whitespace-pre-line break-words text-sm leading-7">{report.comment?.body ?? 'متن دیدگاه حذف شده است.'}</blockquote>
                                 <p className="mt-2 text-xs text-muted">نویسنده: {report.comment?.author ?? 'کاربر'}</p>
