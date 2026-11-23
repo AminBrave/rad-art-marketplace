@@ -58,7 +58,7 @@ export function AdminDashboardHome() {
     ];
 
     return (
-        <section className="space-y-8" dir="rtl">
+        <section data-page="admin-home" className="space-y-8" dir="rtl">
             <WorkspaceHero
                 eyebrow="مرکز کنترل راد آرت"
                 title={<>خوش آمدید، {user?.name ?? 'مدیر'}</>}
