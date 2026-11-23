@@ -27,6 +27,8 @@ test('Artwork comments expose bounded plain-text input, reply controls and moder
     assert.match(component, /parent_id: replyTo\.id/);
     assert.match(component, /reports'/);
     assert.match(component, /گزارش دیدگاه/);
+    assert.match(component, /گزارش شما ثبت شد/);
+    assert.match(component, /deleteMutation\.isError/);
     assert.match(component, /aria-label="صفحه‌بندی دیدگاه‌ها"/);
 });
 
