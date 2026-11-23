@@ -32,7 +32,7 @@ Rademan supports parallel work by multiple agents. Follow AI/DEVELOPMENT-WORKFLO
 - Task branches merge into their owning agent/<agent-name>/lane, never directly into another agent's lane or main.
 - Cross-agent integration is an explicit owner-directed activity using the integration branch/workflow.
 - Keep parallel tasks independent; coordinate shared files and contracts before overlapping edits.
-- Do not invent a new agent lane if the identity is unclear. Confirm the agent ID and intended base.
+- Do not invent a new agent lane if the identity is unclear. Confirm the agent name and intended base.
 
 ## 5. GitHub task management
 
