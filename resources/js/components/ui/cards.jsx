@@ -12,18 +12,18 @@ export function ArtworkCard({ artwork, className = '' }) {
     return (
         <article className={cn('group min-w-0', className)}>
             <Link to={`/artworks/${artwork.slug}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus">
-                <div className="relative overflow-hidden bg-surface-muted">
-                    <div className="flex aspect-[4/5] items-center justify-center bg-surface-muted p-0">
-                        <MediaImage src={artwork.image_url} alt={title} variant="card" className="h-full w-full" imageClassName="object-contain transition-transform duration-300 group-hover:scale-[1.02]" />
+                <div className="relative overflow-hidden bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))]">
+                    <div className="flex aspect-[4/5] items-center justify-center bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))] p-3 sm:p-4">
+                        <MediaImage src={artwork.image_url} alt={title} variant="card" className="h-full w-full" imageClassName="object-contain transition-transform duration-700 ease-out group-hover:scale-[1.045]" />
                     </div>
                     <span aria-hidden="true" className="pointer-events-none absolute inset-0 border border-[color:color-mix(in_srgb,var(--color-ink)_5%,transparent)] transition-colors group-hover:border-[color:color-mix(in_srgb,var(--color-terracotta)_50%,transparent)]" />
                 </div>
-                <div className="grid gap-1.5 px-0.5 pb-2 pt-4">
+                <div className="grid gap-1.5 border-b border-border px-0.5 pb-4 pt-4 transition-colors group-hover:border-terracotta/60">
                     <div className="flex min-h-5 items-center justify-between gap-3">
                         {artwork.category?.name ? <span className="text-[11px] font-semibold text-terracotta-strong">{artwork.category.name}</span> : <span />}
                         <span className="text-[11px] text-subtle transition-transform group-hover:-translate-x-1" aria-hidden="true">←</span>
                     </div>
-                    <h3 className="line-clamp-2 text-base font-bold leading-7 text-ink transition-colors group-hover:text-terracotta-strong">{title}</h3>
+                    <h3 className="line-clamp-2 text-base font-extrabold leading-7 text-ink transition-colors group-hover:text-terracotta-strong">{title}</h3>
                     {artistName && <p className="text-sm text-muted">{artistName}</p>}
                     <p className="mt-1 text-sm font-semibold text-ink">{price}</p>
                 </div>
@@ -38,10 +38,10 @@ export function ArtistCard({ artist, className = '' }) {
     const initial = name.trim().slice(0, 1) || 'ه';
 
     return (
-        <article className={cn('group relative min-w-0 overflow-hidden border border-border bg-paper transition duration-300 hover:-translate-y-1 hover:border-border-strong hover:shadow-soft', className)} dir="rtl">
+        <article className={cn('group relative min-w-0 overflow-hidden border-y border-border bg-transparent transition-colors duration-300 hover:border-terracotta', className)} dir="rtl">
             <Link to={artist.slug ? `/artists/${artist.slug}` : '/artists'} className="flex h-full flex-col p-5 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus sm:p-6">
                 <div className="flex items-start justify-between gap-4">
-                    <div className="grid h-14 w-14 shrink-0 place-items-center rounded-full border border-sand bg-surface-muted text-xl font-black text-terracotta-strong transition-colors group-hover:bg-ink group-hover:text-inverse" aria-hidden="true">
+                    <div className="grid h-16 w-16 shrink-0 place-items-center border border-sand bg-surface-muted text-2xl font-black text-terracotta-strong transition-colors duration-300 group-hover:border-ink group-hover:bg-ink group-hover:text-inverse" aria-hidden="true">
                         {initial}
                     </div>
                     <span className="pt-1 text-[11px] font-semibold tracking-wide text-subtle">هنرمند راد آرت</span>
