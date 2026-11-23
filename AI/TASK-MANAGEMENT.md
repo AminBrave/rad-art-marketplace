@@ -50,8 +50,10 @@ Use a concise description. Include only relevant fields:
     ## Dependencies and coordination
     Related issues/PRs, shared files, API contracts or blockers.
 
-    ## Verification
-    Relevant checks and expected evidence.
+    ## Tests and verification
+    - Backend/frontend/Playwright tests to add or update.
+    - Tests made obsolete by removed behavior, with rationale for removal.
+    - Relevant commands and expected evidence.
 
 For very small tasks, a short title and acceptance checklist may be enough. Do not force empty template sections.
 
@@ -98,6 +100,7 @@ A useful PR should state:
 - Scope and meaningful exclusions.
 - Important contracts, migrations, configuration or compatibility changes.
 - Security, privacy, accessibility, RTL or performance considerations where relevant.
+- Tests added, updated or removed, with a brief rationale for removals or for making no test changes.
 - Verification performed, not performed and any known risks.
 - Integration status and any dependencies on other agent lanes.
 
@@ -105,6 +108,6 @@ Keep PRs focused. Combine changes only when they are tightly coupled and should 
 
 ## 7. Completion and stale work
 
-A task is complete when its acceptance criteria are met in the declared target lane and verification is honestly represented. Its integration or release status may still be pending.
+A task is complete when its acceptance criteria are met in the declared target lane, affected tests are synchronized with the resulting code, and verification is honestly represented. Its integration or release status may still be pending.
 
 Close or update stale issues when their scope is superseded, duplicated or no longer desired. Preserve useful history without treating it as a future commitment. Do not automatically convert every observation, idea or review suggestion into a new issue.
