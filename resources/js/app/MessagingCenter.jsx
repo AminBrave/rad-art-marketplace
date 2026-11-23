@@ -53,6 +53,7 @@ export default function MessagingCenter({ role }) {
     const [loadingOlder, setLoadingOlder] = useState(false);
     const [newMessageCount, setNewMessageCount] = useState(0);
     const [sending, setSending] = useState(false);
+    const [sendingConversationId, setSendingConversationId] = useState(null);
     const [actionId, setActionId] = useState(null);
     const [error, setError] = useState('');
     const [olderMessagesError, setOlderMessagesError] = useState('');
@@ -397,6 +398,7 @@ export default function MessagingCenter({ role }) {
         if ((!body && !selectedFile) || !active || sendingMessageRef.current || safetyLoading || safety.blocked_by_me || safety.blocked_by_other) return;
         sendingMessageRef.current = true;
         setSending(true);
+        setSendingConversationId(Number(conversationId));
         setError('');
         const messageClientId = pendingMessageId || (window.crypto?.randomUUID?.() ?? ('msg-' + Date.now() + '-' + Math.random().toString(36).slice(2)));
         setPendingMessageId(messageClientId);
@@ -468,6 +470,7 @@ export default function MessagingCenter({ role }) {
             setUploading(false);
             sendingMessageRef.current = false;
             setSending(false);
+            setSendingConversationId(null);
         }
     };
 
@@ -592,6 +595,7 @@ export default function MessagingCenter({ role }) {
             <div className="grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden border-y border-border bg-surface lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]">
                 <MessagingInboxPanel
                     active={active}
+                    sendingConversationId={sendingConversationId}
                     hasMoreThreads={hasMoreThreads}
                     inboxQuery={inboxQuery}
                     loadThreads={loadThreads}
@@ -736,6 +740,7 @@ export default function MessagingCenter({ role }) {
                                 safetyLoading={safetyLoading}
                                 selectedFile={selectedFile}
                                 sending={sending}
+                                sendingInAnotherConversation={sending && Number(sendingConversationId) !== Number(active)}
                                 uploadProgress={uploadProgress}
                                 uploading={uploading}
                             />}
