@@ -59,7 +59,7 @@ export default function ArtistWorkspaceOverview() {
 
             {profileError && <ErrorState title="پروفایل دریافت نشد" description={profileError} />}
             {profileLoading ? <WorkspaceIdentitySkeleton /> : (
-                <section className="grid gap-5 border border-border bg-paper p-5 sm:p-7 lg:grid-cols-[1fr_15rem] lg:items-center">
+                <section className="grid gap-6 border-y border-border bg-transparent py-6 sm:py-8 lg:grid-cols-[minmax(0,1fr)_15rem] lg:items-center">
                     <div>
                         <div className="flex flex-wrap items-center gap-3">
                             <p className="text-xs font-bold text-terracotta-strong">هویت هنری شما</p>
@@ -72,12 +72,12 @@ export default function ArtistWorkspaceOverview() {
                             {profile?.slug && <Link to={'/artists/' + profile.slug} className="inline-flex min-h-11 items-center border border-border px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-terracotta">{profile.is_public ? 'پیش‌نمایش عمومی' : 'پیش‌نمایش خصوصی'}</Link>}
                         </div>
                     </div>
-                    <div className="border-t border-border pt-5 lg:border-r lg:border-t-0 lg:pr-6 lg:pt-0">
+                    <div className="border-t border-border pt-5 lg:border-r lg:border-t-0 lg:pr-7 lg:pt-0">
                         <div className="flex items-end justify-between gap-3">
                             <span className="text-xs font-semibold text-muted">تکمیل پروفایل</span>
                             <span className="text-2xl font-black tabular-nums text-ink">{progress.toLocaleString('fa-IR')}٪</span>
                         </div>
-                        <div className="mt-3 h-2 overflow-hidden bg-surface-muted" role="progressbar" aria-label="تکمیل فیلدهای پروفایل" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
+                        <div className="mt-3 h-1.5 overflow-hidden bg-surface-muted" role="progressbar" aria-label="تکمیل فیلدهای پروفایل" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
                             <div className="h-full bg-terracotta transition-all" style={{ width: progress + '%' }} />
                         </div>
                         <p className="mt-3 text-xs leading-6 text-muted">{completedProfileSteps.toLocaleString('fa-IR')} از ۵ بخش تکمیل شده</p>
@@ -86,15 +86,15 @@ export default function ArtistWorkspaceOverview() {
             )}
 
             {!profileLoading && (
-                <section aria-labelledby="artist-setup-heading" className="border border-border bg-surface-muted p-5 sm:p-7">
+                <section aria-labelledby="artist-setup-heading" className="border-t border-border bg-transparent pt-6 sm:pt-7">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                         <div className="min-w-0 flex-1">
                             <SectionHeader id="artist-setup-heading" eyebrow="چک‌لیست شروع" title="پایه‌های حضور حرفه‌ای" description="این موارد به کامل‌تر شدن پروفایل عمومی شما کمک می‌کنند؛ رتبه یا امتیاز هنری نیستند." />
                         </div>
                         <span className="text-xs font-bold text-muted">{(completedProfileSteps + (hasArtwork ? 1 : 0)).toLocaleString('fa-IR')} از ۶ گام</span>
                     </div>
-                    <ol className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                        {profileSteps.map((step) => <li key={step.label} className="flex items-center gap-3 border border-border bg-paper px-4 py-3 text-sm">
+                    <ol className="mt-6 grid gap-x-6 gap-y-4 sm:grid-cols-2 xl:grid-cols-3">
+                        {profileSteps.map((step) => <li key={step.label} className="flex min-h-12 items-center gap-3 border-b border-border py-3 text-sm">
                             <span aria-hidden="true" className={step.done ? 'text-success' : 'text-muted'}>{step.done ? '✓' : '○'}</span>
                             <span className={step.done ? 'text-muted line-through' : 'font-semibold text-ink'}>{step.label}</span>
                         </li>)}
@@ -121,12 +121,12 @@ export default function ArtistWorkspaceOverview() {
                         description={errors.join(' ')}
                         onRetry={() => artworksQuery.refetch()}
                     />}
-                    <section className="grid gap-5 xl:grid-cols-2">
-                        <div className="border border-border bg-paper p-5 sm:p-6">
+                    <section className="grid gap-8 xl:grid-cols-2">
+                        <div className="border-t border-border pt-5 sm:pt-6">
                             <SectionHeader eyebrow="پورتفولیو" title="آخرین آثار" actions={<Link to="/dashboard/artist/artworks" className="text-xs font-bold text-terracotta-strong underline underline-offset-4">مدیریت همه آثار</Link>} />
                             {loading ? <div className="mt-5"><ArtistRecentWorkSkeleton /></div> : artworks.length === 0 ? <EmptyState className="mt-5" title="هنوز اثری ثبت نشده" description="اولین اثر خود را ثبت کنید تا برای بررسی ارسال شود." action={<Link to="/dashboard/artist/artworks" className="text-sm font-bold text-terracotta-strong underline">ثبت اثر</Link>} /> : (
-                                <ul className="divide-y divide-border">
-                                    {artworks.slice(0, 4).map((item) => <li key={item.id} className="flex items-center justify-between gap-3 py-4">
+                                <ul className="mt-2 divide-y divide-border">
+                                    {artworks.slice(0, 4).map((item) => <li key={item.id} className="flex min-h-[4.5rem] items-center justify-between gap-3 py-4">
                                         <div className="min-w-0"><p className="truncate text-sm font-bold text-ink">{item.title}</p>{item.category?.name && <p className="mt-1 text-xs text-muted">{item.category.name}</p>}</div>
                                         <StatusLabel status={item.status} />
                                     </li>)}
@@ -135,7 +135,7 @@ export default function ArtistWorkspaceOverview() {
                         </div>
                         <div className="border border-border bg-paper p-5 sm:p-6">
                             <SectionHeader eyebrow="ارتباط با خریداران" title="پیام‌های مستقیم" actions={<Link to="/dashboard/artist/messages" className="text-xs font-bold text-terracotta-strong underline underline-offset-4">رفتن به پیام‌ها</Link>} />
-                            <div className="py-7"><p className="text-sm leading-7 text-muted">گفت‌وگوهای مستقیم با خریداران را از صندوق پیام‌ها مدیریت کنید.</p><Link to="/dashboard/artist/messages" className="mt-3 inline-flex text-sm font-bold text-terracotta-strong underline">بازکردن صندوق پیام‌ها</Link></div>
+                            <div className="py-6"><p className="max-w-lg text-sm leading-7 text-muted">گفت‌وگوهای مستقیم با خریداران را از صندوق پیام‌ها مدیریت کنید.</p><Link to="/dashboard/artist/messages" className="mt-3 inline-flex text-sm font-bold text-terracotta-strong underline">بازکردن صندوق پیام‌ها</Link></div>
                         </div>
                     </section>
                 </>
