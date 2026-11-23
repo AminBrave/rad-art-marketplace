@@ -51,7 +51,7 @@ test('the new app shell defines responsive rails, mobile tabs, standalone safe a
 });
 
 test('the design system remains semantic and avoids deprecated palette shade utilities', () => {
-    const forbidden = /(?:^|[\\s'"\\x60])(?:[a-z][\\w-]*:)*(?:bg|text|border|ring)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\\d{2,3}/g;
+    const forbidden = /(?:^|[\s'"\x60])(?:[a-z][\w-]*:)*(?:bg|text|border|ring)-(?:red|green|blue|amber|emerald|orange|yellow|purple|pink|indigo|cyan|teal|lime|sky|rose|violet|fuchsia|stone|zinc|gray|slate|neutral)-\d{2,3}/g;
     const violations = sources.flatMap((path) => {
         const source = readFileSync(path, 'utf8');
         return [...source.matchAll(forbidden)].map((match) => relative(root, path) + ': ' + match[0]);
