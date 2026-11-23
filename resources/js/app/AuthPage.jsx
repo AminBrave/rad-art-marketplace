@@ -76,7 +76,7 @@ export default function AuthPage({ initialMode = 'login' }) {
                     {mode === 'register' && <FormField label="تکرار گذرواژه" required><TextInput type="password" name="password_confirmation" value={form.password_confirmation} onChange={update} required minLength="10" autoComplete="new-password" dir="ltr" className="text-left" /></FormField>}
                     {errors.form?.map((item) => <p key={item} role="alert" className="text-sm text-danger">{item}</p>)}
                     {message && <p role="status" className="text-sm text-muted">{message}</p>}
-                    <Button variant="ghost" disabled={busy} className="w-full rounded-xl bg-ink px-6 py-3.5 font-bold text-inverse transition hover:bg-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2 disabled:cursor-wait disabled:opacity-60">{busy ? 'لطفاً صبر کنید…' : mode === 'register' ? 'ایجاد حساب' : 'ورود به حساب'}</button>
+                    <Button variant="ghost" type="submit" disabled={busy} className="w-full rounded-xl bg-ink px-6 py-3.5 font-bold text-inverse transition hover:bg-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2 disabled:cursor-wait disabled:opacity-60">{busy ? 'لطفاً صبر کنید…' : mode === 'register' ? 'ایجاد حساب' : 'ورود به حساب'}</Button>
                 </form>
                 <p className="mt-5 text-xs leading-6 text-subtle">ثبت‌نام عمومی فقط برای خریدار و هنرمند فعال است. حساب مدیر باید از سمت سرور ایجاد شود.</p>
             </section>
