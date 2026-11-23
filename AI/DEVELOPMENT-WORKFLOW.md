@@ -4,12 +4,12 @@ This document defines how independent agents collaborate safely, how task branch
 
 ## 1. Operating model
 
-Use three layers:
+Use four layers:
 
 1. Agent lane — normally a persistent branch named agent/<agent-name>/lane.
 2. Task branch — normally a short-lived branch named agent/<agent-name>/<task-type>/<task-name>.
 3. Collision fallback — when a legacy branch named agent/<agent-name> already exists and cannot be renamed safely, use agent-<agent-name>/lane and agent-<agent-name>/<task-name> until the legacy ref is migrated.
-3. Integration branch — an owner-directed place to combine selected agent lanes or task results before promotion to main.
+4. Integration branch — an owner-directed place to combine selected agent lanes or task results before promotion to main.
 
 The default flow:
 
@@ -48,7 +48,7 @@ Each independently working agent uses one stable, unique, lowercase agent name. 
 | Chore/tooling | agent/<agent-name>/chore/<task-name> | agent/agent-x/chore/888-scripts |
 | Integration workstream | integration/<slug> | integration/messaging-refresh |
 
-The preferred task hierarchy is agent/<agent-name>/<task-type>/<task-name>; the preferred persistent lane is agent/<agent-name>/lane. Use a stable lowercase agent name, a short task type (feature, fix, refactor, design, docs, test, security or chore), and a concise kebab-case task name. Include an issue number when one exists; otherwise use a descriptive unique slug. Avoid model versions and session dates.
+The preferred task hierarchy is agent/<agent-name>/<task-type>/<task-name>; the preferred persistent lane is agent/<agent-name>/lane. Use a stable lowercase agent name, a short task type (feature, fix, refactor, design, docs, test, security or chore), and a concise kebab-case task name. Include an issue number when one exists; otherwise use a descriptive unique slug. Avoid model versions and session dates. When the collision fallback is active, the task branch uses the single-segment form agent-<agent-name>/<task-name>; encode the task type in the slug only when it improves clarity.
 
 **Git ref collision rule:** Git cannot have both a branch named agent/<agent-name> and nested refs such as agent/<agent-name>/lane. Before creating nested refs, inspect the remote. If the legacy flat branch exists, do not repeatedly attempt creation and do not delete, force-update or rewrite it. Preferred resolution is an owner-approved rename of the legacy branch to agent/<agent-name>-baseline, preserving its history; then create agent/<agent-name>/lane from the agreed baseline. If rename is unavailable or not authorized, use the collision-safe namespace agent-<agent-name>/lane and agent-<agent-name>/<task-name>. In this fallback only, the task type may be encoded in the task name when useful (for example, `agent-chatgpt/rademan-redesign`). This fallback is a complete valid workflow, not a blocker. Record the chosen namespace and base commit in the handoff. Migrate to the preferred namespace only as a separate, owner-approved operation.
 
