@@ -525,6 +525,7 @@ const workspaceNavigationIcons = {
     '/admin/users': Users,
     '/admin/artworks': ClipboardCheck,
     '/admin/message-reports': Flag,
+    '/admin/artwork-comment-reports': Flag,
     '/admin/editorial': BookOpen,
 };
 
@@ -538,22 +539,25 @@ const workspaceNavigationLabels = {
     '/admin': 'خانه',
     '/admin/users': 'کاربران',
     '/admin/artworks': 'آثار',
-    '/admin/message-reports': 'ایمنی',
+    '/admin/message-reports': 'پیام‌ها',
+    '/admin/artwork-comment-reports': 'دیدگاه‌ها',
     '/admin/editorial': 'سردبیری',
 };
 
 function AuthenticatedBottomNavigation({ primaryLinks }) {
+    const mobileLinks = primaryLinks.filter((item) => item.mobilePrimary !== false);
+
     return (
         <div
             data-testid="authenticated-bottom-navigation"
             className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-[color:color-mix(in_srgb,var(--color-paper)_92%,transparent)] pb-[env(safe-area-inset-bottom)] shadow-raised backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-paper)_86%,transparent)] lg:hidden"
         >
             <nav aria-label="بخش‌های اصلی حساب کاربری" data-nav-priority="primary" className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2">
-                {primaryLinks.map((item) => {
+                {mobileLinks.map((item) => {
                     const Icon = workspaceNavigationIcons[item.to] ?? LayoutDashboard;
                     const isMessagesLink = item.to.endsWith('/messages');
-                    const accessibleLabel = isMessagesLink ? 'پیام‌ها' : item.label;
-                    const visibleLabel = isMessagesLink ? 'پیام‌ها' : item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label;
+                    const accessibleLabel = item.label;
+                    const visibleLabel = item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label;
                     return (
                         <NavLink
                             key={item.to}
