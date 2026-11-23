@@ -24,11 +24,11 @@ export default function RelatedArtworkStrip({ contexts, role, onSelectArtwork })
                                 )}
                             </span>
                             <span className="max-w-[7.5rem] truncate">{artwork.title}</span>
-                            {role === 'buyer' && <span className="border-s border-border ps-[.4rem] text-[9px] text-terracotta-strong">پاسخ</span>}
+                            {role === 'buyer' && <span className="border-s border-border ps-[.4rem] text-[9px] text-accent-strong">پاسخ</span>}
                         </>
                     );
 
-                    const className = "inline-flex min-w-0 max-w-48 min-h-[2.35rem] shrink-0 items-center gap-[.4rem] whitespace-nowrap rounded-full border border-border bg-surface-muted pe-[.6rem] ps-[.25rem] py-[.2rem] text-[11px] font-semibold leading-tight text-ink no-underline transition-colors hover:border-terracotta hover:bg-surface hover:text-terracotta-strong motion-reduce:transition-none";
+                    const className = "inline-flex min-w-0 max-w-48 min-h-[2.35rem] shrink-0 items-center gap-[.4rem] whitespace-nowrap rounded-full border border-border bg-surface-muted pe-[.6rem] ps-[.25rem] py-[.2rem] text-[11px] font-semibold leading-tight text-ink no-underline transition-colors hover:border-accent hover:bg-surface hover:text-accent-strong motion-reduce:transition-none";
 
                     return role === 'buyer' ? (
                         <button
