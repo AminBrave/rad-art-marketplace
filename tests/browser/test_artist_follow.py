@@ -34,6 +34,32 @@ def artist_payload(is_following=False, followers_count=12, is_own_profile=False)
     }
 
 
+def install_auth_bootstrap(page, user):
+    """Replace the real Blade auth payload before the React entry point runs."""
+    payload = json.dumps(user, ensure_ascii=False)
+
+    def rewrite_navigation(route):
+        if not route.request.is_navigation_request():
+            route.continue_()
+            return
+
+        response = route.fetch()
+        html = response.text()
+        html, replacements = re.subn(
+            r'<script\\b[^>]*\\bid=["\\']rad-auth-bootstrap["\\'][^>]*>.*?</script>',
+            f'<script type="application/json" id="rad-auth-bootstrap">{payload}</script>',
+            html,
+            count=1,
+            flags=re.DOTALL,
+        )
+        if replacements != 1:
+            raise AssertionError("The app shell must contain exactly one Blade auth bootstrap script.")
+
+        route.fulfill(response=response, body=html)
+
+    page.route("**/*", rewrite_navigation)
+
+
 class ArtistFollowBrowserTests(unittest.TestCase):
     """All API responses are intercepted; these tests do not mutate dev data."""
 
@@ -58,16 +84,7 @@ class ArtistFollowBrowserTests(unittest.TestCase):
         )
         page = context.new_page()
         page.set_default_timeout(15000)
-        # Insert a real JSON script before the Blade body bootstrap. AuthProvider
-        # reads the first matching element synchronously during its initial render.
-        page.add_init_script("""
-            const bootstrapUser = __BOOTSTRAP_USER__;
-            const bootstrap = document.createElement('script');
-            bootstrap.type = 'application/json';
-            bootstrap.id = 'rad-auth-bootstrap';
-            bootstrap.textContent = JSON.stringify(bootstrapUser);
-            document.head.appendChild(bootstrap);
-        """.replace("__BOOTSTRAP_USER__", json.dumps(auth_user, ensure_ascii=False)))
+        install_auth_bootstrap(page, auth_user)
         return context, page
 
     def test_buyer_can_follow_then_unfollow_public_artist(self):
