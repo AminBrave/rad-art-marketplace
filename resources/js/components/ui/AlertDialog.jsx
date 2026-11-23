@@ -2,14 +2,15 @@ import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog';
 import { cn } from '../../lib/utils';
 
 export const AlertDialog = AlertDialogPrimitive.Root;
-export const AlertDialogTrigger = AlertDialogPrimitive.Trigger;
-export const AlertDialogCancel = AlertDialogPrimitive.Cancel;
-export const AlertDialogAction = AlertDialogPrimitive.Action;
+export function AlertDialogTrigger(props) { return <AlertDialogPrimitive.Trigger data-ui="alert-dialog-trigger" {...props} />; }
+export function AlertDialogCancel(props) { return <AlertDialogPrimitive.Cancel data-ui="alert-dialog-cancel" {...props} />; }
+export function AlertDialogAction(props) { return <AlertDialogPrimitive.Action data-ui="alert-dialog-action" {...props} />; }
 
 export function AlertDialogContent({ className = '', overlayClassName = '', ...props }) {
     return (
         <AlertDialogPrimitive.Portal>
             <AlertDialogPrimitive.Overlay
+                data-ui="alert-dialog-overlay"
                 className={cn('fixed inset-0 z-[80] bg-[color:var(--color-overlay)] backdrop-blur-sm', overlayClassName)}
             />
             <AlertDialogPrimitive.Content
