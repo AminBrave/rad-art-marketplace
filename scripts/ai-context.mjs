@@ -47,8 +47,12 @@ const references = new Set();
 if (selected.includes('architecture-design')) references.add('AI/ARCHITECTURE.md');
 if (selected.includes('ui-ux-design') || selected.includes('react-frontend')) references.add('AI/DESIGN-SYSTEM.md');
 if (selected.includes('security-review')) references.add('AI/SECURITY.md');
+if (selected.includes('git-github')) {
+  references.add('AI/DEVELOPMENT-WORKFLOW.md');
+  references.add('AI/TASK-MANAGEMENT.md');
+}
 for (const reference of references) read(reference);
 for (const skill of selected) read(`.agents/skills/${skill}/SKILL.md`);
 
 console.log('\n========== TASK HANDOFF ==========');
-console.log('Follow the current user request. State important assumptions and acceptance criteria when useful. Choose proportionate verification for the changed boundaries. Update the relevant canonical documentation when it becomes inaccurate. Treat historical issues, PRs and AI notes as context only, not as future requirements.');
+console.log('Follow the current user request. State important assumptions and acceptance criteria when useful. Choose proportionate verification for the changed boundaries. Update the relevant canonical documentation when it becomes inaccurate. Use the assigned agent lane and a separate task branch. Coordinate shared files and contracts before parallel edits. Keep cross-agent integration owner-directed. Treat historical issues, PRs and AI notes as context only, not as future requirements.');
