@@ -209,7 +209,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                     <div className="mb-4 grid gap-3 sm:grid-cols-2">
                         {[0, 1].map((item) => <div key={item} className="border border-border bg-paper p-4"><Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="mt-2 h-8 w-16 rounded-sm" /></div>)}
                     </div>
-                    <div className="mb-6 grid gap-2 border-s-2 border-sand bg-surface-muted p-4"><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div>
+                    <div className="mb-6 grid gap-2 border-s-2 border-line bg-surface-muted p-4"><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div>
                     <AdminUserCardsSkeleton count={4} announce={false} />
                 </>
             ) : pathname === '/admin/message-reports' ? (
@@ -330,12 +330,12 @@ export function ArtistDashboardHome() {
             {profileLoading ? <p className="mt-5 text-sm text-muted">در حال دریافت پروفایل…</p> : (
                 <div className="mt-6 rounded-xl bg-canvas p-4">
                     <p className="font-semibold">{profile?.slug ? 'پروفایل هنرمند شما آماده است.' : 'برای شروع، پروفایل هنرمند خود را تکمیل کنید.'}</p>
-                    <Link to="/dashboard/artist/profile" className="mt-3 inline-block text-sm font-bold text-terracotta-strong underline">مدیریت پروفایل</Link>
+                    <Link to="/dashboard/artist/profile" className="mt-3 inline-block text-sm font-bold text-accent-strong underline">مدیریت پروفایل</Link>
                 </div>
             )}
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                <Link to="/dashboard/artist/artworks" className="rounded-xl border border-border p-5 font-bold hover:border-terracotta">مدیریت آثار</Link>
-                <Link to="/dashboard/artist/messages" className="rounded-xl border border-border p-5 font-bold hover:border-terracotta">پیام‌های مستقیم</Link>
+                <Link to="/dashboard/artist/artworks" className="rounded-xl border border-border p-5 font-bold hover:border-accent">مدیریت آثار</Link>
+                <Link to="/dashboard/artist/messages" className="rounded-xl border border-border p-5 font-bold hover:border-accent">پیام‌های مستقیم</Link>
             </div>
         </section>
     );
@@ -423,7 +423,7 @@ export function ArtistProfileSettings() {
                 </Checkbox>
                 <div className="sm:col-span-2">
                     <button disabled={busy} className="rounded-xl bg-ink px-6 py-3 font-bold text-inverse disabled:opacity-60">{busy ? 'در حال ذخیره…' : 'ذخیره پروفایل'}</button>
-                    {profile?.slug && <Link to={'/artists/' + profile.slug} className="mr-4 text-sm font-semibold text-terracotta-strong underline">{profile.is_public ? 'پیش‌نمایش پروفایل عمومی' : 'پیش‌نمایش خصوصی پروفایل'}</Link>}
+                    {profile?.slug && <Link to={'/artists/' + profile.slug} className="mr-4 text-sm font-semibold text-accent-strong underline">{profile.is_public ? 'پیش‌نمایش پروفایل عمومی' : 'پیش‌نمایش خصوصی پروفایل'}</Link>}
                     {profile?.slug && !profile.is_public && <p className="mt-3 text-xs leading-6 text-muted sm:col-span-2">این پیش‌نمایش فقط برای شما و مدیران مجاز قابل مشاهده است؛ بازدیدکنندگان عمومی به پروفایل خصوصی دسترسی ندارند.</p>}
                     <p className="mt-2 text-xs text-muted sm:col-span-2">{(form.bio?.length ?? 0).toLocaleString('fa-IR')} از ۲۰۰۰ نویسه برای معرفی هنری استفاده شده است.</p>
                 </div>
@@ -454,7 +454,7 @@ export function AdminWorkspaceLayout() {
 export function PublicInfoPage({ title, description }) {
     return (
         <main className="mx-auto max-w-4xl px-6 py-16 sm:px-8" dir="rtl">
-            <p className="text-sm font-bold text-terracotta-strong">راد آرت</p>
+            <p className="text-sm font-bold text-accent-strong">راد آرت</p>
             <h1 className="mt-3 text-3xl font-black">{title}</h1>
             <p className="mt-5 leading-8 text-muted">{description}</p>
             <p className="mt-6 rounded-xl border border-border bg-paper p-5 text-sm text-muted">این صفحه در نقشه مسیرهای MVP 2 ثبت شده و محتوای کامل آن در مرحله محتوای عمومی تکمیل می‌شود.</p>
@@ -466,7 +466,7 @@ export function UnauthorizedPage() {
     const { user } = useAuth();
     return (
         <main className="mx-auto max-w-2xl px-6 py-20 text-center" dir="rtl">
-            <p className="text-sm font-bold text-terracotta-strong">۴۰۳</p>
+            <p className="text-sm font-bold text-accent-strong">۴۰۳</p>
             <h1 className="mt-3 text-3xl font-black">دسترسی به این بخش مجاز نیست</h1>
             <p className="mt-4 leading-8 text-muted">نقش این حساب اجازه ورود به این فضای کاربری را ندارد. مجوزهای واقعی همچنان در سمت سرور بررسی می‌شوند.</p>
             <Link to={user ? (user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist') : '/'} className="mt-7 inline-block rounded-full bg-ink px-6 py-3 font-bold text-inverse">بازگشت</Link>
@@ -477,7 +477,7 @@ export function UnauthorizedPage() {
 export function NotFoundPage() {
     return (
         <main className="mx-auto max-w-2xl px-6 py-20 text-center" dir="rtl">
-            <p className="text-sm font-bold text-terracotta-strong">۴۰۴</p>
+            <p className="text-sm font-bold text-accent-strong">۴۰۴</p>
             <h1 className="mt-3 text-3xl font-black">این صفحه پیدا نشد</h1>
             <p className="mt-4 leading-8 text-muted">نشانی واردشده معتبر نیست یا صفحه جابه‌جا شده است.</p>
             <Link to="/" className="mt-7 inline-block rounded-full bg-ink px-6 py-3 font-bold text-inverse">بازگشت به صفحه اصلی</Link>
