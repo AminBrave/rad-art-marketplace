@@ -19,20 +19,20 @@ const routes = [
   ['security-review', /security|auth|permission|authorization|privacy|upload|file access|secret|threat/i],
   ['code-review', /review|inspect diff|pull request review|audit code/i],
   ['quality-engineering', /test|testing|quality|lint|build|accessibility|performance|coverage|ci/i],
-  ['git-github', /git|github|branch|commit|pull request|\\bpr\\b|merge|release|workflow|issue/i],
+  ['git-github', /git|github|branch|commit|pull request|\bpr\b|merge|release|workflow|issue/i],
   ['operations-reliability', /deploy|deployment|runtime|observability|backup|incident|reliability|operations/i],
   ['documentation-maintenance', /documentation|docs|markdown|agent|skill|instructions|readme/i],
 ];
 const selected = task ? [...new Set(routes.filter(([, pattern]) => pattern.test(task)).map(([name]) => name))] : [];
 
-function read(path, optional = false) {
+function read(path) {
   const absolute = resolve(root, path);
   if (!existsSync(absolute)) {
-    if (!optional) console.error(`[ai-context] Context file not found: ${path}`);
-    if (!optional) process.exitCode = 1;
+    console.error(`[ai-context] Context file not found: ${path}`);
+    process.exitCode = 1;
     return;
   }
-  console.log(`\\n========== ${path} ==========`);
+  console.log(`\n========== ${path} ==========`);
   console.log(readFileSync(absolute, 'utf8').trim());
 }
 
@@ -42,6 +42,13 @@ console.log(`Selected skills: ${selected.length ? selected.join(', ') : '(none)'
 read('AGENTS.md');
 read('AI/DEVELOPMENT-GUIDE.md');
 read('AI/PROJECT.md');
+
+const references = new Set();
+if (selected.includes('architecture-design')) references.add('AI/ARCHITECTURE.md');
+if (selected.includes('ui-ux-design') || selected.includes('react-frontend')) references.add('AI/DESIGN-SYSTEM.md');
+if (selected.includes('security-review')) references.add('AI/SECURITY.md');
+for (const reference of references) read(reference);
 for (const skill of selected) read(`.agents/skills/${skill}/SKILL.md`);
-console.log('\\n========== TASK HANDOFF ==========');
+
+console.log('\n========== TASK HANDOFF ==========');
 console.log('Follow the current user request. State important assumptions and acceptance criteria when useful. Choose proportionate verification for the changed boundaries. Update the relevant canonical documentation when it becomes inaccurate. Treat historical issues, PRs and AI notes as context only, not as future requirements.');
