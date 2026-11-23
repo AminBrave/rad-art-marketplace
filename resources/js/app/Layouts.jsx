@@ -551,13 +551,16 @@ function AuthenticatedBottomNavigation({ primaryLinks }) {
             <nav aria-label="بخش‌های اصلی حساب کاربری" data-nav-priority="primary" className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2">
                 {primaryLinks.map((item) => {
                     const Icon = workspaceNavigationIcons[item.to] ?? LayoutDashboard;
+                    const isMessagesLink = item.to.endsWith('/messages');
+                    const accessibleLabel = isMessagesLink ? 'پیام‌ها' : item.label;
+                    const visibleLabel = isMessagesLink ? 'پیام‌ها' : item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label;
                     return (
                         <NavLink
                             key={item.to}
                             to={item.to}
                             end={item.end}
-                            aria-label={item.label}
-                            title={item.label}
+                            aria-label={accessibleLabel}
+                            title={accessibleLabel}
                             className={({ isActive }) => [
                                 'relative flex min-w-0 flex-col items-center justify-center gap-1 rounded-md px-1 text-[10px] font-bold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus motion-reduce:transition-none',
                                 isActive
@@ -566,7 +569,7 @@ function AuthenticatedBottomNavigation({ primaryLinks }) {
                             ].join(' ')}
                         >
                             <Icon size={19} strokeWidth={1.9} aria-hidden="true" />
-                            <span className="max-w-full truncate">{item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label}</span>
+                            <span className="max-w-full truncate">{visibleLabel}</span>
                         </NavLink>
                     );
                 })}
