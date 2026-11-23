@@ -1,106 +1,124 @@
-# Rademan — Instagram-inspired design system
+# Rademan — application design system
 
-## Purpose
-Rademan adopts Instagram's recognizable interface principles—minimal chrome, image-first discovery, compact typography, clear dividers, simple controls, blue primary actions, profile-led identity and predictable responsive navigation—while retaining Rademan's existing art-marketplace capabilities and brand identity.
+## Product direction
+Rademan is a visual art discovery and marketplace application. The interface borrows interaction principles from Instagram—image-first browsing, creator identity, compact navigation, simple controls and a continuous content rhythm—but uses a Rademan-owned design language. This is a product-wide UI system, not a theme skin or a reproduction of Instagram.
 
-This is a design-language reference, not a request to reproduce Instagram's proprietary assets, copy, social graph or product features.
+The system replaces the previous editorial/card-heavy visual architecture. The prior Instagram adapter and application-shell stylesheets have been removed. All active screens use one token foundation, one component language and one responsive application shell.
 
-## Product information architecture
+## Product surfaces
+- **Discover:** home feed, artwork catalogue, artwork detail, artist directory, artist profiles, editorial collections, public information and authentication.
+- **Buyer Studio:** buyer home, notifications and canonical buyer–artist conversations.
+- **Artist Studio:** overview, profile settings, artwork/content studio and canonical conversations.
+- **Admin Console:** operations overview, user and role governance, artwork moderation, editorial curation, message reports and artwork-comment reports.
+- **Messaging:** shared conversation inbox, thread history, contextual artwork, replies, attachments, reactions, message actions and safety controls.
 
-The visual redesign applies consistently to the existing Discover, Buyer Studio, Artist Studio and Admin Console routes. It changes presentation and navigation ergonomics, not the underlying capabilities or role permissions.
+Do not add checkout, orders, payment processing, saved collections, Instagram import or other unsupported product features.
 
-## Product integrity
-Keep the existing product experiences and backend contracts:
-- **Discover:** home, artworks, artwork detail, artists, artist profiles, editorial collections, information pages and authentication.
-- **Buyer Studio:** buyer overview and the existing canonical buyer–artist conversation inbox.
-- **Artist Studio:** artist overview, profile management, artwork/content management and the existing canonical conversation inbox.
-- **Admin Console:** overview, users and roles, artwork moderation, editorial curation, message reports and trust/safety.
-- Preserve likes, comments, follows and notifications only where implemented in the current application.
+## Foundation
+### Single source of truth
+- `resources/css/app.css`: global tokens, light/dark palettes, typography, semantic aliases, spacing, shape, responsive dimensions and reset.
+- `resources/css/rademan.css`: application shell, page compositions, responsive navigation and cross-product component presentation.
+- `tailwind.config.js`: utilities resolve through the semantic token set; do not duplicate literal colors.
+- `resources/js/components/ui/`: reusable React primitives, layout, navigation, feedback, cards, dialogs and form controls.
+- `resources/js/app/ThemeContext.jsx`: explicit system/light/dark selection and browser theme metadata.
+- `resources/js/app/Layouts.jsx`: public shell, role workspace shell, notifications and responsive navigation.
 
-Do not add checkout, orders, payments, saved collections, Instagram login/import or other unimplemented features. Keep existing URLs, API contracts, role boundaries, server-side authorization and conversation identity intact.
+There is no active `instagram.css` or `application-shell.css` adapter.
 
-## Visual foundations
-
-### Color
-The five Rademan identity anchors remain available:
-- Ivory `#F7F5F0`
-- Charcoal `#242320`
-- Terracotta `#A64F31`
-- Sand `#D8C9B7`
-- Olive `#536052`
-
-The interface uses Instagram-inspired semantic roles rather than using brand anchors as every component color.
-
+### Color and theme
 | Role | Light | Dark |
 |---|---|---|
 | Canvas | `#FAFAFA` | `#000000` |
 | Surface | `#FFFFFF` | `#121212` |
-| Raised surface | `#FFFFFF` | `#1C1C1C` |
-| Muted surface | `#F5F5F5` | `#262626` |
-| Primary text | `#262626` | `#F5F5F5` |
-| Secondary text | `#737373` | `#A8A8A8` |
-| Divider | `#DBDBDB` | `#363636` |
-| Primary action | `#0095F6` | `#0095F6` |
-| Destructive | `#ED4956` | `#FF6673` |
+| Secondary surface | `#F5F5F5` | `#1C1C1C` |
+| Elevated/tertiary surface | `#EFEFEF` | `#262626` |
+| Primary text | `#171717` | `#F5F5F5` |
+| Secondary text | `#737373` | `#B3B3B3` |
+| Divider | `#DBDBDB` | `#262626` |
+| Primary action | `#0064D9` | `#0064D9` |
+| Link/focus accent | `#0064D9` | `#80BDFF` |
+| Positive | `#16834A` | `#4ADE80` |
+| Destructive | `#DC2626` | `#F87171` |
 
-Semantic overrides live in `resources/css/instagram.css`; theme selection remains owned by `ThemeContext`. Explicit light, dark and system preference are supported.
+System preference applies unless the user selects a fixed theme. Theme tokens must be consumed through semantic variables; page components must not hardcode palette values.
 
-### Typography
-- Keep Vazirmatn for Persian-first content and Inter for Latin metadata.
-- Use a compact hierarchy: strong page title, restrained supporting text, medium-weight card labels and legible metadata.
-- Keep Persian RTL as the default; use explicit LTR islands for email, URLs, code, numeric identifiers and Latin metadata.
+### Typography and direction
+- Persian-first typography uses Vazirmatn; Latin metadata uses Inter.
+- RTL is the default for product surfaces. URLs, email addresses, codes, numeric identifiers and Latin-only strings use explicit LTR islands.
+- Page titles are strong and compact; supporting copy and metadata remain quieter but readable.
+- Content must reflow with long Persian names, bios, titles and mixed-direction strings.
 
-### Shape, spacing and elevation
-- Use compact 3–8px corner radii for controls and cards; preserve circular avatar and pill affordances.
-- Prefer 1px dividers and flat surfaces over elevated card stacks.
-- Keep a consistent 4px spacing rhythm and comfortable touch targets (44px where practical).
-- Artwork remains the visual focal point; preserve image aspect ratios and object-fit intent.
+### Geometry and layout
+- 4px spacing rhythm with consistent page gutters.
+- Controls target 44px touch height where practical.
+- Compact 8/12/18/24px radius scale; pill geometry is reserved for status, tabs and selected actions.
+- Prefer flat surfaces and subtle dividers. Use elevation only for menus, dialogs and transient overlays.
+- Artwork media is the visual focal point; never distort uploaded artwork to fit a card.
 
-## Component principles
-- Navigation: concise labels, clear active state, consistent icons, a persistent desktop rail and a mobile bottom tab bar.
-- Artwork tiles: image-first, predictable ratios, restrained metadata and obvious open/detail affordance.
-- Artist identity: avatar, name, location/bio and existing profile actions; story-ring styling is decorative only and must not imply unseen story functionality.
-- Buttons: blue for primary actions, neutral for secondary actions, red for destructive actions.
-- Forms: clear labels, helper/error text, visible focus and consistent disabled/loading states.
-- Dialogs and menus: clear hierarchy, predictable dismissal, keyboard support and focus return.
-- Feedback: consistent skeleton, empty, error, success and permission states in both themes.
-- Messaging: preserve the current conversation list + active thread model, contextual artwork, composer, attachments, message actions, read state and safety controls.
+## Application shell
+### Discover
+- Compact top app bar.
+- Desktop navigation rail, icon-only at compact widths and labeled on wide desktop.
+- Mobile bottom tab navigation with safe-area padding.
+- Centered responsive content canvas and image-led artwork/artist grids.
+- No marketing-site footer or legacy brochure header.
 
-## Responsive behavior
-- Phone: one-column content, touch-sized controls, a persistent bottom tab bar, no horizontal page overflow, safe-area-aware fixed elements and a clear return path from a conversation to its list.
-- Tablet: compact navigation and two-column content where it improves scanning.
-- Desktop: centered content, a persistent Discover navigation rail, image grids, persistent workspace navigation and efficient two-pane messaging.
-- Do not hide essential actions or data at any breakpoint.
+### Workspaces
+- Shared compact application bar.
+- Persistent role navigation on desktop.
+- Mobile bottom navigation and an accessible navigation drawer.
+- Workspace content is independent of the shell and must remain usable at 320px and up.
+- Messaging retains a two-pane desktop experience and a clear list/thread transition on mobile.
 
-## Accessibility and quality
-- Target WCAG 2.2 AA contrast in both themes.
-- Accessible controls, form states, dialogs, menus, notifications and feedback are consistent in both themes.
-- Preserve semantic HTML, accessible names, keyboard navigation, visible focus, validation feedback and reduced-motion preferences.
-- Never communicate status by color alone.
-- Test Persian RTL, mixed Persian/Latin content, zoom/reflow, touch targets, dialogs, forms, menus and all major page states.
+### Page compositions
+Every product section uses the same visual primitives while retaining its own task hierarchy:
+- Home/discovery: editorial feed entry, featured artwork, new work, categories, artists and collections.
+- Catalogue: search, filters, sort, count, image grid and pagination.
+- Artwork detail: artwork-first presentation, artist context, metadata, availability and existing contact actions.
+- Artist directory/profile: searchable creator index, profile identity, follow action and approved portfolio.
+- Authentication: focused single-column sign-in/register surface.
+- Buyer Studio: conversation entry, activity and discovery actions.
+- Artist Studio: profile readiness, work status, artwork management and messages.
+- Admin Console: operational metrics, review queue, moderation and governance tools.
+- Messaging: inbox, thread, composer, attachment and safety workflows.
 
-## Implementation map
-- Theme state: `resources/js/app/ThemeContext.jsx`
-- App entry: `resources/js/app.jsx`
-- Theme layer: `resources/css/instagram.css`
-- Existing utility foundation: `resources/css/app.css` and `tailwind.config.js`
-- Route and role shell: `resources/js/app/AppRouter.jsx`, `Layouts.jsx`, `RoutingPages.jsx`, `workspaceNavigation.js`
-- Feature screens remain in `resources/js/app/`; shared primitives remain in `resources/js/components/ui/`.
+## Shared component contracts
+Use semantic slots from `data-ui` for visual component styling. Shared components should own behavior and accessibility; pages should compose them rather than create one-off buttons, inputs, badges, dialogs, cards or skeletons.
 
-## Acceptance criteria
-- [ ] All existing routes and actor capabilities remain reachable.
-- [ ] Light, dark and system themes are coherent across public, workspace, admin and messaging screens.
-- [ ] Artwork and artist content remain image-led with consistent grid behavior.
-- [ ] Navigation and controls are usable on phone, tablet and desktop.
-- [ ] RTL, mixed-direction text, focus, keyboard and reduced-motion behavior remain supported.
-- [ ] Existing API, authorization, messaging and data contracts are unchanged.
-- [ ] Updated visual tests and browser journeys pass before release.
+- Button variants: primary, secondary, outline, ghost and destructive.
+- Badge/status: neutral, success, warning, danger, info and accent.
+- Surface/card/metric: consistent borders, spacing and density.
+- Page and section headings: consistent hierarchy without decorative bars.
+- Form field/input/textarea/select/checkbox: labels, hints, errors, focus and disabled state.
+- Navigation/tabs/dropdowns/dialogs: keyboard, focus return, dismissal and active state.
+- Feedback: skeleton, empty, error, success, permission and toast states.
+- Artwork/artist cards: image-first media and creator identity.
 
-## App shell and PWA contract
+## Accessibility
+- Target WCAG 2.2 AA for text and interactive contrast.
+- Preserve semantic HTML, accessible names, keyboard navigation and visible focus.
+- Never communicate state by color alone.
+- Respect reduced-motion preferences.
+- Support 200% zoom, narrow viewport reflow, touch targets, safe areas and keyboard-safe forms.
+- Validate light and dark states, including dialogs, dropdowns, notifications and message bubbles.
 
-- Public Discover is an application surface, not a brochure site: a compact top bar, a persistent desktop icon rail, a mobile bottom tab bar and a focused content canvas replace the old marketing header/footer.
-- Buyer, Artist and Admin workspaces share the same app-first geometry: compact sticky context bar, persistent desktop navigation, mobile bottom navigation, safe-area-aware controls and content that can scroll independently.
-- The UI is mobile-first and installable as a Progressive Web App. The web manifest, app icon and service worker are maintained under `public/`; registration is production-only from `resources/js/app.jsx`.
-- Offline behavior is intentionally conservative: a static offline fallback and same-origin static assets are cached. HTML navigation responses, authentication, API, dashboard, admin and conversation responses are never stored in the shared service-worker cache. Offline messaging and background sync are not promised.
-- PWA installability and offline behavior must be checked in real browsers (Android Chrome, desktop Chromium and iOS Safari); a manifest and worker alone do not prove a successful installation experience.
+## PWA and privacy
+- Persian RTL standalone manifest and application icon live under `public/`.
+- Service worker registration is production-only.
+- The worker caches a static offline fallback and eligible same-origin versioned assets only. It must never cache HTML navigations, API responses, authentication, dashboards, admin or private conversations.
+- Offline messaging, background sync and private-data persistence are not supported claims.
+- Verify installability and offline fallback in actual Android, iOS and desktop browsers before release.
 
+## Engineering boundaries
+Preserve Laravel controllers, API resources, authorization, route contracts, TanStack Query behavior, authentication, role restrictions, conversation identity, messaging safety and storage semantics. A design change must not weaken server-side policy or change data behavior.
+
+## Acceptance checklist
+- [ ] Every public and authenticated route uses the new design language.
+- [ ] Old visual adapter files and legacy demo screens are absent from the active bundle.
+- [ ] Light, dark and system palettes work across every page.
+- [ ] Desktop navigation, tablet layout and mobile tabs are usable.
+- [ ] Messaging remains canonical and functional.
+- [ ] All forms, tables, cards, dialogs, empty/error/loading states use shared primitives.
+- [ ] Persian RTL, mixed-direction text, focus, keyboard and reduced motion are supported.
+- [ ] PWA install and offline behavior are verified on real devices.
+- [ ] Tests, production build and browser journeys pass before release.
