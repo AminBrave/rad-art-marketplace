@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Heart, Home, Images, LayoutDashboard, Menu, MessageCircle, Monitor, Moon, Search, Sun, UserRound, Users, X } from 'lucide-react';
+import { Bell, BookOpen, CheckCheck, ClipboardCheck, Download, Flag, Heart, Home, Images, LayoutDashboard, Menu, MessageCircle, Monitor, Moon, Search, Sun, UserRound, Users, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { getWorkspacePrimaryLinks } from './workspaceNavigation';
@@ -9,6 +9,42 @@ import { useTheme } from './ThemeContext';
 import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, Checkbox, NotificationListSkeleton } from '../components/ui';
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
+
+function PWAInstallControl() {
+    const [installPrompt, setInstallPrompt] = useState(null);
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return undefined;
+        const onBeforeInstall = (event) => {
+            event.preventDefault();
+            setInstallPrompt(event);
+        };
+        const onInstalled = () => setInstallPrompt(null);
+        window.addEventListener('beforeinstallprompt', onBeforeInstall);
+        window.addEventListener('appinstalled', onInstalled);
+        return () => {
+            window.removeEventListener('beforeinstallprompt', onBeforeInstall);
+            window.removeEventListener('appinstalled', onInstalled);
+        };
+    }, []);
+
+    if (!installPrompt) return null;
+    const install = async () => {
+        try {
+            await installPrompt.prompt();
+            await installPrompt.userChoice;
+        } finally {
+            setInstallPrompt(null);
+        }
+    };
+
+    return (
+        <Button type="button" variant="ghost" size="sm" onClick={install} className="h-10 shrink-0 gap-2 px-3 text-xs">
+            <Download size={15} aria-hidden="true" />
+            <span className="hidden sm:inline">نصب برنامه</span>
+        </Button>
+    );
+}
 
 function ThemeControl() {
     const { theme, cycleTheme } = useTheme();
@@ -122,6 +158,7 @@ export function PublicLayout() {
                     <span>جست‌وجوی آثار، هنرمندان و مجموعه‌ها</span>
                 </Link>
                 <div className="flex shrink-0 items-center gap-2">
+                    <PWAInstallControl />
                     <ThemeControl />
                     {user ? (
                         <>
