@@ -175,7 +175,7 @@ test('form controls and helper hints use accessible shared Radix primitives', ()
     assert.ok(editorialPages.includes('<AlertDialogAction asChild>'));
     assert.ok(editorialPages.includes('event.preventDefault(); publish(collection, false)'));
     assert.ok(editorialPages.includes('<AlertDialogTitle>'));
-    assert.ok(messageTimeline.includes("DropdownMenu } from '../components/ui'"));
+    assert.match(messageTimeline, /import\s*\{[^}]*\bDropdownMenu\b[^}]*\}\s*from\s*['"]\.\.\/components\/ui['"]/);
     assert.doesNotMatch(messaging, /@radix-ui/);
     assert.ok(messagingInbox.includes('<Tooltip content="گزینه‌های گفتگو">'));
     assert.ok(messageTimeline.includes('<Tooltip content="افزودن واکنش">'));
@@ -336,7 +336,7 @@ test('messaging is viewport-locked between the authenticated app header and bott
 
 test('messaging chat geometry follows RTL logical flow and uses Radix collision-aware overlays', () => {
     assert.ok(messageTimeline.includes('<div dir="rtl" ref={containerRef}'));
-    assert.ok(messageTimeline.includes("DropdownMenu } from '../components/ui'"));
+    assert.match(messageTimeline, /import\s*\{[^}]*\bDropdownMenu\b[^}]*\}\s*from\s*['"]\.\.\/components\/ui['"]/);
     assert.doesNotMatch(messaging + messageTimeline, /@radix-ui/);
     assert.ok(messageTimeline.split('<DropdownMenu.Root').length - 1 >= 2, 'Message reaction and action overlays use Radix.');
     assert.ok(messageTimeline.includes('<DropdownMenu.Portal>'));
@@ -642,5 +642,5 @@ test('production forms and actions reuse the shared UI component contract', () =
     assert.ok(routeLoading.includes('<FormField label="نام نمایشی"'));
     assert.ok(artworkStudio.includes('<TextInput name="title"'));
     assert.ok(messageComposer.includes('<FileInput'));
-    assert.ok(messageComposer.includes('<Button variant="ghost" type="submit"'));
+    assert.match(messageComposer, /<Button\b(?=[^>]*\btype="submit")(?=[^>]*\bvariant="ghost")[^>]*>/);
 });
