@@ -167,7 +167,7 @@ export function AdminArtworkModeration() {
     };
     return <section className="space-y-6" dir="rtl">
         <PageHeader eyebrow="مدیریت آثار" title="صف بررسی و انتشار" description="فقط آثار در انتظار بررسی قابل تصمیم‌گیری‌اند. رد اثر یا درخواست اصلاح به توضیح نیاز دارد." actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
-        <nav className="flex flex-wrap gap-x-5 gap-y-2 border-b border-border" aria-label="فیلتر وضعیت آثار">{statuses.map((item) => <button key={item.value} type="button" aria-pressed={status === item.value} onClick={() => chooseStatus(item.value)} className={"min-h-11 border-b-2 px-1 text-sm font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none " + (status === item.value ? 'border-terracotta text-terracotta-strong' : 'border-transparent text-muted hover:border-border-strong hover:text-ink')}>{item.label}</button>)}</nav>
+        <nav className="flex flex-wrap gap-x-5 gap-y-2 border-b border-border" aria-label="فیلتر وضعیت آثار">{statuses.map((item) => <Button variant="ghost" key={item.value} type="button" aria-pressed={status === item.value} onClick={() => chooseStatus(item.value)} className={"min-h-11 border-b-2 px-1 text-sm font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none " + (status === item.value ? 'border-terracotta text-terracotta-strong' : 'border-transparent text-muted hover:border-border-strong hover:text-ink')}>{item.label}</Button>)}</nav>
         {message && <SuccessState title={message} />}{error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
         {loading ? <ArtworkModerationSkeleton count={4} /> : !result?.data?.length ? <EmptyState title="اثری در این وضعیت وجود ندارد" description="با انتخاب وضعیت دیگر می‌توانید سوابق تصمیم‌ها را مرور کنید." /> : <>
             <div className="grid gap-x-6 gap-y-8 xl:grid-cols-2">{result.data.map((artwork) => {
@@ -335,7 +335,7 @@ export function AdminMessageReportsPage() {
                         {report.details && <div><p className="text-xs font-bold text-muted">شرح گزارش</p><p className="mt-2 whitespace-pre-line text-sm leading-7">{report.details}</p></div>}
                         {report.message ? <div className="border-s-2 border-terracotta bg-surface-muted/50 p-4 sm:p-5"><p className="text-[11px] font-bold tracking-wide text-muted">محتوای مورد گزارش</p><blockquote className="mt-2 whitespace-pre-line text-sm leading-7">{report.message.body ?? 'متن پیام حذف شده است.'}</blockquote></div> : <p className="text-xs text-muted">متن پیام مرتبط در دسترس نیست.</p>}
                         {isOpen && <>
-                            <label className="block text-xs font-semibold text-muted">یادداشت رسیدگی (اختیاری)<textarea value={notes[report.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [report.id]: event.target.value }))} maxLength={1000} rows={2} className="w-full min-h-11 rounded-md border border-border-strong bg-paper px-3.5 py-2 font-sans text-sm text-ink transition-colors placeholder:text-subtle focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:bg-surface-muted disabled:opacity-65 aria-[invalid=true]:border-danger mt-2 w-full" placeholder="خلاصه تصمیم یا زمینه بررسی…" /></label>
+                            <FormField label="یادداشت رسیدگی (اختیاری)"><TextareaField value={notes[report.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [report.id]: event.target.value }))} maxLength={1000} rows={2} placeholder="خلاصه تصمیم یا زمینه بررسی…" /></FormField>
                             <div className="flex flex-wrap gap-2">
                                 <Button size="sm" variant="primary" disabled={busyId !== null} loading={busyId === report.id} onClick={() => review(report, 'reviewed')}>ثبت بررسی</Button>
                                 <Button size="sm" variant="outline" disabled={busyId !== null} onClick={() => review(report, 'dismissed')}>رد گزارش</Button>
@@ -463,17 +463,7 @@ export function AdminArtworkCommentReportsPage() {
                                 {report.comment?.artwork?.slug && <Link to={'/artworks/' + report.comment.artwork.slug + '#comment-' + report.comment.id} className="mt-2 inline-block text-xs font-bold text-terracotta-strong underline">{report.comment.artwork.title || 'مشاهده اثر'}</Link>}
                             </div>
                             {isOpen && <>
-                                <label className="block text-xs font-semibold text-muted">
-                                    یادداشت رسیدگی (اختیاری)
-                                    <textarea
-                                        value={notes[report.id] ?? ''}
-                                        onChange={(event) => setNotes((current) => ({ ...current, [report.id]: event.target.value }))}
-                                        maxLength={1000}
-                                        rows={2}
-                                        className="mt-2 min-h-11 w-full border border-border-strong bg-paper px-3.5 py-2 text-sm text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
-                                        placeholder="خلاصه تصمیم یا زمینه بررسی…"
-                                    />
-                                </label>
+                                <FormField label="یادداشت رسیدگی (اختیاری)"><TextareaField value={notes[report.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [report.id]: event.target.value }))} maxLength={1000} rows={2} placeholder="خلاصه تصمیم یا زمینه بررسی…" /></FormField>
                                 <div className="flex flex-wrap gap-2">
                                     <Button size="sm" variant="primary" disabled={busyId !== null} loading={busyId === report.id} onClick={() => review(report, 'reviewed')}>ثبت بررسی</Button>
                                     <Button size="sm" variant="outline" disabled={busyId !== null} onClick={() => review(report, 'dismissed')}>رد گزارش</Button>
