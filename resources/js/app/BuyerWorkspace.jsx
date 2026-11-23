@@ -26,9 +26,9 @@ export function BuyerDashboardHome() {
             <section className="border-t border-border pt-6">
                 <SectionHeader eyebrow="شروع یک تجربه تازه" title="از کجا شروع کنید؟" actions={<Link to="/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">رفتن به گالری</Link>} />
                 <ol className="mt-6 grid gap-6 md:grid-cols-3 md:gap-7">
-                    <li className="border-t-2 border-sand pt-4"><span className="text-xs font-extrabold tracking-[.12em] text-terracotta-strong">۰۱ / کشف</span><h3 className="mt-3 font-bold">آثار و سبک‌ها را ببینید</h3><p className="mt-2 text-sm leading-7 text-muted">در گالری جست‌وجو کنید و جزئیات هر اثر را بخوانید.</p></li>
-                    <li className="border-r-2 border-sand bg-surface-muted p-4"><span className="text-xs font-bold text-terracotta-strong">۰۲ / ارتباط</span><h3 className="mt-2 font-bold">به هنرمند پیام بدهید</h3><p className="mt-2 text-sm leading-7 text-muted">از صفحه اثر یا پروفایل عمومی هنرمند، گفت‌وگوی مستقیم را آغاز کنید.</p></li>
-                    <li className="border-r-2 border-sand bg-surface-muted p-4"><span className="text-xs font-bold text-terracotta-strong">۰۳ / ادامه</span><h3 className="mt-2 font-bold">گفت‌وگو را پیگیری کنید</h3><p className="mt-2 text-sm leading-7 text-muted">پاسخ‌ها و پیوست‌های جدید را در صندوق پیام‌ها دنبال کنید.</p></li>
+                    <li className="border-t-2 border-ink pt-4"><span className="text-xs font-extrabold tracking-[.12em] text-terracotta-strong">۰۱ / کشف</span><h3 className="mt-3 font-bold">آثار و سبک‌ها را ببینید</h3><p className="mt-2 text-sm leading-7 text-muted">در گالری جست‌وجو کنید و جزئیات هر اثر را بخوانید.</p></li>
+                    <li className="border-t-2 border-ink pt-4"><span className="text-xs font-extrabold tracking-[.12em] text-terracotta-strong">۰۲ / ارتباط</span><h3 className="mt-3 font-bold">به هنرمند پیام بدهید</h3><p className="mt-2 text-sm leading-7 text-muted">از صفحه اثر یا پروفایل عمومی هنرمند، گفت‌وگوی مستقیم را آغاز کنید.</p></li>
+                    <li className="border-t-2 border-ink pt-4"><span className="text-xs font-extrabold tracking-[.12em] text-terracotta-strong">۰۳ / ادامه</span><h3 className="mt-3 font-bold">گفت‌وگو را پیگیری کنید</h3><p className="mt-2 text-sm leading-7 text-muted">پاسخ‌ها و پیوست‌های جدید را در صندوق پیام‌ها دنبال کنید.</p></li>
                 </ol>
             </section>
         </section>
