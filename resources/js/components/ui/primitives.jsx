@@ -363,7 +363,7 @@ export function SearchField({
     };
 
     return (
-        <form onSubmit={submit} role="search" className={cn('flex min-w-0 flex-col gap-2 sm:flex-row [&>input]:min-w-0 [&>input]:flex-1', className)}>
+        <form data-ui="search-field" onSubmit={submit} role="search" className={cn('flex min-w-0 flex-col gap-2 sm:flex-row [&>input]:min-w-0 [&>input]:flex-1', className)}>
             <label className="sr-only" htmlFor={searchId}>{label}</label>
             <TextInput
                 id={searchId}
