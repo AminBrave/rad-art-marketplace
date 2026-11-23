@@ -1,6 +1,6 @@
 const VERSION = 'rad-art-shell-v1';
 const SHELL_CACHE = VERSION;
-const APP_SHELL = ['/manifest.webmanifest', '/favicon.svg', '/pwa-icon.svg'];
+const APP_SHELL = ['/manifest.webmanifest', '/favicon.svg', '/pwa-icon.svg', '/offline.html'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(SHELL_CACHE).then((cache) => cache.addAll(APP_SHELL)));
@@ -20,16 +20,9 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET' || url.origin !== self.location.origin) return;
   if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/sanctum/') || url.pathname.startsWith('/login') || url.pathname.startsWith('/logout') || url.pathname.startsWith('/register')) return;
   if (request.mode === 'navigate') {
-    const publicDocument = !url.pathname.startsWith('/dashboard/') && !url.pathname.startsWith('/admin') && !['/login', '/register', '/logout'].includes(url.pathname);
-    event.respondWith(fetch(request).then((response) => {
-      if (publicDocument && response.ok && response.type === 'basic') {
-        const copy = response.clone();
-        caches.open(SHELL_CACHE).then((cache) => cache.put(request, copy));
-      }
-      return response;
-    }).catch(async () => {
-      const cached = publicDocument ? await caches.match(request) || await caches.match('/') : null;
-      return cached || new Response('اتصال اینترنت در دسترس نیست. پس از اتصال دوباره تلاش کنید.', {
+    event.respondWith(fetch(request).catch(async () => {
+      const offline = await caches.match('/offline.html');
+      return offline || new Response('اتصال اینترنت در دسترس نیست.', {
         status: 503,
         headers: { 'Content-Type': 'text/plain; charset=utf-8' },
       });
