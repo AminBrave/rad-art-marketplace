@@ -6,9 +6,9 @@ import { Tooltip } from './Tooltip';
 import { cn } from '../../lib/utils';
 
 const buttonVariants = {
-    primary: 'bg-terracotta text-inverse enabled:hover:bg-terracotta-strong',
+    primary: 'bg-accent text-inverse enabled:hover:bg-accent-strong',
     secondary: 'border-border bg-surface-muted text-ink enabled:hover:border-border-strong enabled:hover:bg-border',
-    outline: 'border-border-strong bg-paper text-ink enabled:hover:border-terracotta enabled:hover:text-terracotta-strong',
+    outline: 'border-border-strong bg-paper text-ink enabled:hover:border-accent enabled:hover:text-accent-strong',
     ghost: 'bg-transparent text-ink hover:bg-surface-muted',
     danger: 'bg-danger text-inverse enabled:hover:bg-danger',
 };
@@ -57,7 +57,7 @@ export const IconButton = forwardRef(function IconButton({ children, label, titl
                 ref={ref}
                 type="button"
                 aria-label={tooltipLabel}
-                className={cn('inline-flex items-center justify-center rounded-md border border-border-strong bg-paper p-0 text-ink transition-colors enabled:hover:border-terracotta enabled:hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus shrink-0', dimensions[size] ?? dimensions.md, className)}
+                className={cn('inline-flex items-center justify-center rounded-md border border-border-strong bg-paper p-0 text-ink transition-colors enabled:hover:border-accent enabled:hover:text-accent-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus shrink-0', dimensions[size] ?? dimensions.md, className)}
                 {...props}
             >
                 {children}
@@ -72,7 +72,7 @@ const badgeVariants = {
     warning: 'bg-warning-surface text-warning',
     danger: 'bg-danger-surface text-danger',
     info: 'bg-info-surface text-info',
-    accent: 'bg-accent-surface text-terracotta-strong',
+    accent: 'bg-accent-surface text-accent-strong',
 };
 
 export function Badge({ children, variant = 'neutral', className = '' }) {
@@ -99,7 +99,7 @@ export function PageHeader({ eyebrow, title, description, actions, level = 1, cl
     return (
         <header data-ui="page-heading" dir="rtl" className={cn('flex min-w-0 flex-col gap-3 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between sm:gap-6', className)}>
             <div className="min-w-0 max-w-[58rem]">
-                {eyebrow && <p className="text-xs font-bold text-terracotta-strong">{eyebrow}</p>}
+                {eyebrow && <p className="text-xs font-bold text-accent-strong">{eyebrow}</p>}
                 <Heading className={cn('mt-1 text-[clamp(1.8rem,3.8vw,3rem)] font-black leading-heading tracking-tight text-ink', titleClassName)}>{title}</Heading>
                 {description && <p className={cn('mt-2 max-w-3xl text-sm leading-7 text-muted sm:text-base', descriptionClassName)}>{description}</p>}
             </div>
@@ -113,7 +113,7 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
     return (
         <header data-ui="section-heading" dir="rtl" className={cn('flex min-w-0 flex-col gap-2 sm:flex-row sm:items-end sm:justify-between sm:gap-4', className)}>
             <div className="min-w-0">
-                {eyebrow && <p className="text-xs font-bold text-terracotta-strong">{eyebrow}</p>}
+                {eyebrow && <p className="text-xs font-bold text-accent-strong">{eyebrow}</p>}
                 <Heading id={id} className="mt-1 text-xl font-extrabold leading-heading tracking-tight text-ink sm:text-2xl">{title}</Heading>
                 {description && <p className="mt-2 max-w-3xl text-sm leading-7 text-muted">{description}</p>}
             </div>
@@ -126,7 +126,7 @@ export function WorkspaceHero({ eyebrow, title, description, actions, className 
     return (
         <section data-ui="workspace-hero" dir="rtl" className={cn('flex min-w-0 flex-col gap-4 rounded-2xl border border-border bg-surface-muted p-5 sm:p-7 lg:p-9', className)}>
             <div className="max-w-3xl">
-                {eyebrow && <p className="text-xs font-bold text-terracotta-strong">{eyebrow}</p>}
+                {eyebrow && <p className="text-xs font-bold text-accent-strong">{eyebrow}</p>}
                 <h1 className="mt-2 text-[clamp(1.55rem,3vw,2.5rem)] font-black leading-heading tracking-tight text-ink">{title}</h1>
                 {description && <p className="mt-3 max-w-2xl text-sm leading-8 text-muted">{description}</p>}
             </div>
@@ -142,7 +142,7 @@ export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, cla
         <Element data-ui="metric" {...destinationProps} className={cn('flex min-h-32 min-w-0 flex-col justify-between rounded-2xl border border-border bg-paper p-5 text-ink no-underline', to && 'transition-colors hover:border-border-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus', className)}>
             <span className="flex items-center justify-between gap-3">
                 <span className="text-sm font-semibold text-muted">{label}</span>
-                {eyebrow && <span className="text-[10px] font-bold text-terracotta-strong">{eyebrow}</span>}
+                {eyebrow && <span className="text-[10px] font-bold text-accent-strong">{eyebrow}</span>}
             </span>
             <span className="mt-4 text-3xl font-black tabular-nums text-ink">{value ?? '—'}</span>
             {detail && <span className="mt-2 text-xs leading-relaxed text-muted">{detail}</span>}
@@ -279,7 +279,7 @@ export function SelectField({
                                 className="relative flex min-h-10 cursor-pointer select-none items-center rounded-sm py-2 ps-3 pe-9 text-sm outline-none data-[highlighted]:bg-surface-muted data-[highlighted]:text-ink data-[disabled]:pointer-events-none data-[disabled]:opacity-40"
                             >
                                 <SelectPrimitive.ItemText>{option.props.children}</SelectPrimitive.ItemText>
-                                <SelectPrimitive.ItemIndicator className="absolute end-2 inline-flex items-center text-terracotta-strong">
+                                <SelectPrimitive.ItemIndicator className="absolute end-2 inline-flex items-center text-accent-strong">
                                     <Check size={15} aria-hidden="true" />
                                 </SelectPrimitive.ItemIndicator>
                             </SelectPrimitive.Item>
@@ -335,7 +335,7 @@ export function Checkbox({
         >
             <span
                 aria-hidden="true"
-                className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded border border-border-strong bg-paper text-inverse transition-colors group-focus-visible:ring-2 group-focus-visible:ring-focus group-data-[state=checked]:border-terracotta group-data-[state=checked]:bg-terracotta group-data-[state=indeterminate]:border-terracotta group-data-[state=indeterminate]:bg-terracotta"
+                className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded border border-border-strong bg-paper text-inverse transition-colors group-focus-visible:ring-2 group-focus-visible:ring-focus group-data-[state=checked]:border-accent group-data-[state=checked]:bg-accent group-data-[state=indeterminate]:border-accent group-data-[state=indeterminate]:bg-accent"
             >
                 <CheckboxPrimitive.Indicator className="flex items-center justify-center">
                     <Check size={14} strokeWidth={3} aria-hidden="true" />
