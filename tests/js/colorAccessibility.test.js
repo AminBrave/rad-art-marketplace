@@ -57,7 +57,7 @@ test('focus indicators and essential control borders meet the 3:1 non-text thres
     }
 });
 
-test('the Rademan message bubble surface retains readable RAD ink contrast', () => {
+test('the Rademan message bubble surface retains readable Rademan text contrast', () => {
     const brand = parseColor(token('--color-accent'));
     const white = parseColor('#FFFFFF');
     const ownBubble = {
