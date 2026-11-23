@@ -10,12 +10,12 @@ const editorialSteps = [
     { number: '03', title: 'ارتباط', description: 'برای گفت‌وگو درباره یک اثر یا هنرمند، مسیر ارتباط را آغاز کنید.' },
 ];
 
-function SectionHeading({ eyebrow, title, description, to, linkLabel }) {
+function SectionHeading({ id, eyebrow, title, description, to, linkLabel }) {
     return (
         <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
                 <p className="text-[11px] font-extrabold tracking-[.12em] text-terracotta-strong">{eyebrow}</p>
-                <h2 className="mt-2 text-2xl font-black leading-tight tracking-tight sm:text-3xl">{title}</h2>
+                <h2 id={id} className="mt-2 text-2xl font-black leading-tight tracking-tight sm:text-3xl">{title}</h2>
                 {description && <p className="mt-2 max-w-2xl text-sm leading-7 text-muted">{description}</p>}
             </div>
             {to && (
@@ -162,7 +162,7 @@ export default function HomePage() {
 
             <section aria-label="چطور در راد آرت کشف کنیم" className="border-b border-border bg-surface-muted">
                 <div className="mx-auto grid max-w-content gap-0 px-page-gutter sm:grid-cols-3">
-                    {editorialSteps.map((step, index) => (
+                    {editorialSteps.map((step) => (
                         <article key={step.number} className="grid grid-cols-[3rem_1fr] gap-4 border-b border-border py-6 last:border-b-0 sm:border-b-0 sm:border-s-0 sm:py-8 sm:ps-6 sm:first:ps-0">
                             <span dir="ltr" className="pt-1 font-latin text-xs font-bold tracking-widest text-terracotta-strong">{step.number}</span>
                             <div>
@@ -176,6 +176,7 @@ export default function HomePage() {
 
             <section aria-labelledby="recent-works-title" className="mx-auto max-w-content px-page-gutter py-14 sm:py-20">
                 <SectionHeading
+                    id="recent-works-title"
                     eyebrow="THE GALLERY / 01"
                     title="تازه در گالری"
                     description="آثاری که به‌تازگی برای نمایش عمومی تأیید شده‌اند."
@@ -196,6 +197,7 @@ export default function HomePage() {
             <section aria-labelledby="categories-title" className="border-y border-border bg-paper">
                 <div className="mx-auto max-w-content px-page-gutter py-14 sm:py-18">
                     <SectionHeading
+                        id="categories-title"
                         eyebrow="FIND YOUR PERSPECTIVE / 02"
                         title="از کجا شروع کنیم؟"
                         description="دسته‌بندی‌های فعال گالری را مرور کنید و به جهان هر شاخه هنری وارد شوید."
@@ -216,6 +218,7 @@ export default function HomePage() {
 
             <section aria-labelledby="artists-title" className="mx-auto max-w-content px-page-gutter py-14 sm:py-20">
                 <SectionHeading
+                    id="artists-title"
                     eyebrow="THE PEOPLE / 03"
                     title="هنرمندان، فراتر از آثار"
                     description="با هنرمندانی آشنا شوید که پروفایل عمومی خود را در راد آرت منتشر کرده‌اند."
@@ -245,11 +248,12 @@ export default function HomePage() {
             </section>
 
             {(collections.length > 0 || featuredArtists.length > 0) && (
-                <section aria-labelledby="collections-title" className="border-y border-border bg-surface-muted">
+                <section aria-label="مجموعه‌ها و هنرمندان منتخب" className="border-y border-border bg-surface-muted">
                     <div className="mx-auto max-w-content px-page-gutter py-14 sm:py-18">
                         {collections.length > 0 && (
                             <div>
                                 <SectionHeading
+                                    id="collections-title"
                                     eyebrow="CURATED STORIES / 04"
                                     title="روایت‌هایی از نگاه سردبیر"
                                     description="مجموعه‌هایی برای دیدن آثار در کنار یکدیگر و کشف ارتباط‌های تازه."
