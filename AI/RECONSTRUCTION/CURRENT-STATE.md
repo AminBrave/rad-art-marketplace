@@ -1,6 +1,6 @@
 # Rademan reconstruction — current state
 
-**Evidence baseline:** `main` at `4db615e7ff271446640dd79ad2aa1c24553f7966` (2026-11-21). This document records implementation evidence at that commit. Re-check source before implementation if the branch changes.
+**Evidence baseline:** product-owner-supplied `agent/chatgpt` branch (inspected 2026-11-23), before the Instagram-inspired design layer was added. This is a source inspection snapshot, not a runtime verification.
 
 ## Stack and application shape
 - PHP / Laravel backend; React 18 frontend; React Router; TanStack Query; Vite. Exact dependency ranges are in `package.json`.
@@ -25,9 +25,9 @@
 - Existing role navigation is centralized in `workspaceNavigation.js`.
 
 ## Confirmed gaps against the approved direction
-- Current CSS sets `color-scheme: light` and defines one light token set; a complete dark theme is not established in the inspected CSS.
+- The inspected branch already includes a `ThemeContext` with explicit light/dark/system preference and semantic light/dark CSS token sets. The earlier dark-theme gap statement was incorrect; the new Instagram layer overrides those semantic roles while retaining the existing theme provider.
 - The recursive repository tree at the evidence commit contains no web app manifest or service-worker implementation; installability is not established by this audit.
-- At the audited main commit, the visual system and project guidance still described the legacy RAD design system. Product owner direction is to retain only five brand color anchors and rebuild the rest; documentation has now been aligned on the working branch.
+- The product owner requested an Instagram-inspired redesign while preserving Rademan's art-marketplace capabilities. `resources/css/instagram.css` is the new visual adapter; `AI/DESIGN-SYSTEM.md`, `AI/PROJECT.md` and the UI/UX skill define the new direction.
 - Current role navigation labels/organization differ from the approved Discover / Buyer Studio / Artist Studio / Admin Console IA.
 
 ## Entrypoint and test inventory
@@ -36,4 +36,4 @@
 - Browser coverage includes buyer–artist messaging, public discovery-to-messaging entry points, artist workspace, artwork catalogue, admin moderation, editorial collections, attachment/history/inbox/cache resilience. Existence of test files is not proof that tests pass; none were executed.
 
 ## Evidence limits
-This is a source-level audit, not a runtime verification. No tests, builds, browser automation, migrations, CI or deployment were run. Route behavior, data access and security conclusions must be verified against full relevant call paths and tests before modifying them. Do not infer that absence from a partial file proves absence elsewhere; use the complete tree and search before implementation.
+This is a source-level audit, not a runtime verification. No tests, builds, browser automation, migrations, CI or deployment were run for this design refactor. Route behavior, data access and security conclusions must be verified against full relevant call paths and tests before modifying them. Do not infer that absence from a partial file proves absence elsewhere; use the complete tree and search before implementation.
