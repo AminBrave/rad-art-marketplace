@@ -33,6 +33,6 @@ For this task, the product owner's supplied `agent/chatgpt` branch is the baseli
 - The product is an installable, Persian RTL PWA with a standalone display mode, responsive app navigation and safe-area-aware mobile controls.
 - Public discovery uses a compact app bar, desktop navigation rail and mobile tab bar; legacy marketing header/footer are removed from the React public layout.
 - Workspaces retain their role-specific navigation and workflows while adopting the same compact application shell and mobile navigation behavior.
-- The service worker caches only public navigations and same-origin static assets. It must bypass APIs, authentication endpoints, dashboards, admin and private conversations. Offline mutation, messaging sync and private-data caching are out of scope.
+- The service worker caches a static offline fallback and same-origin static assets only; it never caches HTML navigation, APIs, authentication, dashboards, admin or private conversations. Offline mutation, messaging sync and private-data caching are out of scope.
 - Verify install prompts, icon rendering, update lifecycle, offline fallback and responsive behavior on actual target browsers before claiming PWA release readiness.
 
