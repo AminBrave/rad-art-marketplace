@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Artwork;
 use App\Models\ArtworkComment;
 use App\Models\ArtworkCommentReport;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -56,15 +57,19 @@ class ArtworkInteractionController extends Controller
             ->where('artwork_id', $artwork->id)
             ->whereNull('parent_id')
             ->with([
-                'user:id,name',
-                'replies' => fn ($query) => $query->withTrashed()->with('user:id,name'),
+                'user:id,role',
+                'user.artistProfile:id,user_id,display_name,is_public',
+                'replies' => fn ($query) => $query->withTrashed()->with([
+                    'user:id,role',
+                    'user.artistProfile:id,user_id,display_name,is_public',
+                ]),
             ])
             ->oldest()
             ->paginate(20);
 
         return response()->json([
             'data' => $comments->getCollection()
-                ->map(fn (ArtworkComment $comment): array => $this->commentPayload($comment))
+                ->map(fn (ArtworkComment $comment): array => $this->commentPayload($comment, $request->user()))
                 ->values(),
             'current_page' => $comments->currentPage(),
             'last_page' => $comments->lastPage(),
@@ -112,11 +117,11 @@ class ArtworkInteractionController extends Controller
             'body' => $body,
         ]);
 
-        $comment->load('user:id,name');
+        $comment->load(['user:id,role', 'user.artistProfile:id,user_id,display_name,is_public']);
 
         return response()->json([
             'message' => 'دیدگاه ثبت شد.',
-            'data' => $this->commentPayload($comment),
+            'data' => $this->commentPayload($comment, $request->user()),
         ], 201);
     }
 
@@ -136,6 +141,7 @@ class ArtworkInteractionController extends Controller
     {
         $this->ensurePublicArtwork($artwork);
         abort_unless($comment->artwork_id === $artwork->id && ! $comment->trashed(), 404);
+        abort_unless($comment->user_id !== $request->user()->id, 403);
 
         $validated = $request->validate([
             'reason' => ['required', 'string', 'in:spam,harassment,copyright,other'],
@@ -174,7 +180,7 @@ class ArtworkInteractionController extends Controller
     /**
      * @return array<string, mixed>
      */
-    private function commentPayload(ArtworkComment $comment): array
+    private function commentPayload(ArtworkComment $comment, ?User $viewer): array
     {
         return [
             'id' => $comment->id,
@@ -182,10 +188,8 @@ class ArtworkInteractionController extends Controller
             'body' => $comment->trashed() ? null : $comment->body,
             'is_deleted' => $comment->trashed(),
             'created_at' => $comment->created_at?->toISOString(),
-            'user' => $comment->user ? [
-                'id' => $comment->user->id,
-                'name' => $comment->user->name,
-            ] : null,
+            'user' => $comment->user ? ['name' => $this->publicAuthorName($comment->user)] : null,
+            'is_mine' => $viewer !== null && $comment->user_id === $viewer->id,
             'replies' => $comment->relationLoaded('replies')
                 ? $comment->replies->map(fn (ArtworkComment $reply): array => [
                     'id' => $reply->id,
@@ -193,12 +197,19 @@ class ArtworkInteractionController extends Controller
                     'body' => $reply->trashed() ? null : $reply->body,
                     'is_deleted' => $reply->trashed(),
                     'created_at' => $reply->created_at?->toISOString(),
-                    'user' => $reply->user ? [
-                        'id' => $reply->user->id,
-                        'name' => $reply->user->name,
-                    ] : null,
+                    'user' => $reply->user ? ['name' => $this->publicAuthorName($reply->user)] : null,
+                    'is_mine' => $viewer !== null && $reply->user_id === $viewer->id,
                 ])->values()
                 : [],
         ];
+    }
+
+    private function publicAuthorName(User $user): string
+    {
+        if ($user->isArtist() && $user->artistProfile?->is_public) {
+            return (string) $user->artistProfile->display_name;
+        }
+
+        return $user->isBuyer() ? 'خریدار' : 'هنرمند';
     }
 }
