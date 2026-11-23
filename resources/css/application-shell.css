@@ -35,7 +35,7 @@ img, video { max-width: 100%; }
   margin: .25rem auto 1.5rem;
   border-radius: 14px;
   background: var(--color-ink);
-  color: var(--color-inverse);
+  color: var(--color-inverse-text);
   font-size: 1.5rem;
   font-weight: 900;
 }
