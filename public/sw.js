@@ -29,7 +29,7 @@ self.addEventListener('fetch', (event) => {
     }));
     return;
   }
-  const versionedAsset = url.pathname.startsWith('/build/') || url.pathname.startsWith('/fonts/');
+  const versionedAsset = url.pathname.startsWith('/build/');
   if (versionedAsset && ['style', 'script', 'font'].includes(request.destination)) {
     event.respondWith(
       caches.match(request).then((cached) => {
