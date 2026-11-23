@@ -1,69 +1,53 @@
 ---
 name: ui-ux-design
-description: Design and review Rademan's Discover, Buyer Studio, Artist Studio and Admin Console experiences, including journeys, IA, interaction, responsive behavior, accessibility and Persian RTL.
+description: Design and review Rademan's Instagram-inspired Discover, Buyer Studio, Artist Studio and Admin Console experiences, including responsive behavior, accessibility and Persian RTL.
 ---
 
 # UI and UX Design
 
 ## Purpose
-Use this skill for product journeys, navigation, page structure, interaction design, visual hierarchy, design-system work, usability reviews and interface specifications. Follow `AI/PROJECT.md` and `AI/DESIGN-SYSTEM.md` for current product direction. The latest `main` source establishes what exists; this skill is a procedure, not an implementation authority.
+Design and review the complete Rademan experience using the approved Instagram-inspired visual language. The current task baseline is the product-owner-supplied `agent/chatgpt` branch; do not consult historical issues or pull requests as design or implementation authority.
 
 ## Product experience model
-Design across four connected experiences:
-1. **Discover (public):** artwork, artist and editorial collection discovery, with contextual entry into buyer–artist conversations.
+1. **Discover:** public artwork, artist and editorial collection discovery, with contextual entry into buyer–artist conversations.
 2. **Buyer Studio:** buyer overview and one canonical Inquiries destination.
-3. **Artist Studio:** artist overview, content library, profile and one canonical Inquiries destination.
-4. **Admin Console:** operational overview, artwork moderation, editorial curation, reports/trust and safety, user/role governance.
+3. **Artist Studio:** artist overview, artwork/content library, profile management and one canonical Inquiries destination.
+4. **Admin Console:** operational overview, artwork moderation, editorial curation, reports/trust and safety, and user/role governance.
 
-“Inquiries” is the existing buyer–artist messaging/chat capability. It is not a contact form or a separate lead-management product. Treat messaging as a core system to preserve.
+“Inquiries” is the existing buyer–artist messaging capability. It is not a new contact form or separate lead-management product.
+
+## Visual direction
+- Follow Instagram's recognizable visual language: image-first content, compact typography, restrained chrome, clear dividers, simple controls, blue primary actions, profile-led identity and responsive navigation.
+- Preserve Rademan's five identity anchors: Ivory `#F7F5F0`, Charcoal `#242320`, Terracotta `#A64F31`, Sand `#D8C9B7`, Olive `#536052`. Use semantic interface colors independently of these brand anchors.
+- Support explicit light, dark and system themes. The shared theme state lives in `resources/js/app/ThemeContext.jsx`; the Instagram-inspired semantic adapter is `resources/css/instagram.css`.
+- Keep Vazirmatn for Persian-first content and Inter for Latin metadata. Persian RTL and mixed Persian/Latin content are first-class.
+- Prefer flat surfaces, compact radii, subtle dividers, consistent spacing and image-led grids over heavy cards and decorative effects.
+- Do not copy Instagram assets, proprietary content, social graph or unimplemented product features.
 
 ## Design workflow
-1. Identify actor, task, intent, entry point, context, constraints and expected outcome.
-2. Inspect the latest `main` branch and trace the actual route, shared shell, components, API states, responsive behavior and related journey.
-3. Define information architecture and navigation before visual styling. Separate confirmed routes/capabilities from proposals.
-4. Specify interaction behavior, state transitions, keyboard behavior, focus entry/return, dismissal, validation, feedback and recovery paths.
-5. Cover loading, empty, populated, error, permission denied, disabled, submitting, success and stale states where relevant.
-6. Rebuild the design system from first principles. Retain only the five brand anchors: Ivory #F7F5F0, Charcoal #242320, Terracotta #A64F31, Sand #D8C9B7 and Olive #536052. Do not inherit the legacy RAD tokens or component catalogue as mandatory constraints.
-7. Design mobile-first for phone, then progressively enhance tablet and desktop. Account for safe areas, keyboard, long Persian labels, image ratios, overflow and fixed navigation clearance.
-8. Design accessibly: semantic HTML, accessible names, keyboard support, visible focus, sensible focus management, sufficient contrast, reduced motion and status cues beyond color.
-9. Validate through source-backed inspection and authorized review/testing. Distinguish inspected from tested.
-10. Hand off structure, flow, component responsibilities, interaction/state matrix, responsive rules, content notes and observable acceptance criteria.
+1. Identify the actor, task, entry point, context and expected outcome.
+2. Inspect the current branch's routes, layouts, page components, shared primitives and API state before changing behavior.
+3. Separate existing capabilities from visual proposals. Do not invent routes or product features.
+4. Define navigation, hierarchy, interaction and responsive behavior before applying page-level polish.
+5. Cover loading, empty, populated, error, permission-denied, disabled, submitting and success states.
+6. Design phone-first, then tablet and desktop. Account for safe areas, keyboard, long Persian labels, image ratios and overflow.
+7. Preserve semantic HTML, accessible names, keyboard/focus behavior, contrast and reduced motion. Target WCAG 2.2 AA.
+8. Validate source-backed behavior and run the relevant tests/build before claiming verification. Clearly distinguish implementation from tests actually executed.
 
 ## Messaging preservation
-Before changing messaging UX, inspect current frontend, query/cache, API routes, controllers, actions, models, policies, migrations and tests. Preserve existing conversation identity, buyer/artist roles, participant authorization, list/history/pagination, polling/sync behavior, composer, contextual artwork references, drafts, attachments, message actions, read state, archive/mute and safety workflows where confirmed in source. Keep artwork-/artist-originated context. Do not create duplicate inboxes or alter API/data/permission contracts as a design side effect.
+Preserve conversation identity, buyer/artist roles, participant authorization, list/history/pagination, polling/sync behavior, composer, contextual artwork references, attachments, message actions, read state, archive/mute and safety workflows where confirmed in source. Keep the existing canonical inbox; do not create a second messaging destination or alter API/data/permission contracts as a design side effect.
 
-Mobile messaging must provide a clear conversation-list ↔ active-conversation path, keyboard-safe composer and independently usable history scrolling. Desktop should make the conversation list and active thread efficient. These are target usability requirements, not claims about current runtime behavior.
-
-## Visual system and themes
-- Use only the five brand colors as identity anchors; design semantic color roles and all other foundations anew.
-- Complete light and dark themes are required target behavior; system preference and explicit light/dark/system choice should be considered against current settings architecture.
-- Validate contrast and all semantic states in both themes.
-- Select typography after testing Persian glyph coverage, readability, mixed Persian/Latin text and loading performance.
-- Use logical CSS properties and deliberate LTR islands for URLs, email, code and Latin metadata.
-- Target WCAG 2.2 AA; never rely on color alone. Respect reduced motion.
+Mobile messaging must provide a clear conversation-list ↔ active-conversation path, keyboard-safe composer and independently usable history scrolling. Desktop should retain efficient conversation-list + active-thread behavior.
 
 ## PWA and privacy
-Treat installability as a target, not an existing fact. Inspect manifest, icons, service worker, lifecycle and runtime behavior before claiming PWA readiness. Do not propose unsafe caching of private workspace or chat data. Offline messaging/background sync are not implied.
-
-## Source map
-Start with `resources/js/app/AppRouter.jsx`, `workspaceNavigation.js`, `Layouts.jsx`, `RoutingPages.jsx`, `resources/css/app.css` and relevant page components. For messaging inspect `MessagingCenter.jsx`, `MessagingInboxPanel.jsx`, `ConversationHeader.jsx`, `MessageTimeline.jsx`, `MessageComposer.jsx`, `RelatedArtworkStrip.jsx`, `MessagingStatusBanners.jsx`, `useMessagingQueries.js` and their backend call paths. Follow callers rather than assuming file names prove behavior.
-
-## Test alignment for redesigns
-- A UI redesign is not complete when only the interface changes: update the affected component, interaction, responsive, accessibility and end-to-end tests in the same implementation change.
-- Retire tests that encode superseded layouts, legacy RAD tokens, old component-library behavior or obsolete navigation patterns. Replace them with tests for the approved IA, semantic design tokens, themes, mobile/desktop behavior and observable actor journeys.
-- Preserve equivalent or stronger checks for keyboard/focus behavior, accessible names, RTL/mixed-direction content, contrast-relevant theme roles, messaging continuity and permission boundaries.
-- Do not modify production UI to satisfy a test that merely encodes the retired design. First establish whether the test or implementation conflicts with the approved design; ask if unclear.
+Treat installability as a verified runtime property, not an assumption. Do not cache private workspace or conversation data in unsafe shared caches. Offline messaging/background sync are not implied.
 
 ## Design handoff checklist
-- [ ] Actor, goal, entry point and outcome are explicit.
-- [ ] Latest main and current route/call path were inspected.
-- [ ] Confirmed capabilities are separated from proposals.
-- [ ] Navigation and primary action are clear; no invented routes.
-- [ ] Messaging preservation and access boundaries are explicit where relevant.
-- [ ] Loading/empty/error/permission/success states are specified.
+- [ ] Existing routes, product capabilities and role boundaries are preserved.
+- [ ] Instagram-inspired visual language is consistent across all four product experiences.
+- [ ] Light, dark and system themes cover every surface.
 - [ ] Phone, tablet and desktop behavior is addressed.
-- [ ] Persian RTL and mixed-direction content are addressed.
-- [ ] Keyboard, focus, semantic names, contrast and reduced motion are addressed.
-- [ ] Light/dark theme behavior is covered.
-- [ ] API/data/security implications and unresolved decisions are called out.
-- [ ] Acceptance criteria describe observable behavior.
+- [ ] Persian RTL and mixed-direction content are correct.
+- [ ] Keyboard, focus, accessible names, contrast and reduced motion are covered.
+- [ ] Messaging continuity, safety and authorization are preserved.
+- [ ] Relevant tests/builds are run and results are reported accurately.
