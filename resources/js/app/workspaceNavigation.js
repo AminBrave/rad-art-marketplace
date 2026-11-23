@@ -14,7 +14,7 @@ const workspaceLinks = {
         { to: '/admin/artworks', label: 'بازبینی آثار', shortLabel: 'آثار', mobilePrimary: true },
         { to: '/admin/editorial', label: 'سردبیری و گزینش', shortLabel: 'سردبیری', mobilePrimary: true },
         { to: '/admin/users', label: 'مدیریت کاربران', shortLabel: 'کاربران', mobilePrimary: true },
-        { to: '/admin/message-reports', label: 'گزارش پیام‌ها', shortLabel: 'پیام‌ها', mobilePrimary: false },
+        { to: '/admin/message-reports', label: 'ایمنی پیام‌ها', shortLabel: 'ایمنی', mobilePrimary: false },
         { to: '/admin/artwork-comment-reports', label: 'گزارش دیدگاه‌ها', shortLabel: 'دیدگاه‌ها', mobilePrimary: false },
     ],
 };
