@@ -41,4 +41,4 @@ Radix primitives own keyboard behavior, focus management, dismissal and ARIA rel
 - Presentation: `resources/css/rademan.css`
 - Tailwind aliases: `tailwind.config.js`
 - Component exports: `resources/js/components/ui/index.js`
-- Design tests: `tests/js/designSystem.test.js`, `tests/js/designSystemCoverage.test.js`, `tests/js/instagramDesignSystem.test.js`, `tests/js/pwaApplicationShell.test.js`
+- Design tests: `tests/js/designSystem.test.js`, `tests/js/designSystemCoverage.test.js`, `tests/js/rademanDesignSystem.test.js`, `tests/js/pwaApplicationShell.test.js`
