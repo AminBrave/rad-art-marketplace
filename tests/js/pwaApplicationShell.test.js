@@ -15,7 +15,8 @@ test('PWA manifest declares a Persian RTL standalone application', () => {
     assert.equal(manifest.dir, 'rtl');
     assert.equal(manifest.display, 'standalone');
     assert.equal(manifest.start_url, '/');
-    assert.ok(manifest.icons.some((icon) => icon.purpose.includes('maskable')));
+    assert.ok(manifest.icons.some((icon) => icon.sizes === '192x192' && icon.type === 'image/png'));
+    assert.ok(manifest.icons.some((icon) => icon.sizes === '512x512' && icon.purpose.includes('maskable')));
 });
 
 test('PWA worker never caches private navigation or API responses', () => {
@@ -30,5 +31,6 @@ test('PWA worker never caches private navigation or API responses', () => {
 test('PWA is linked from Blade and registered by the production entrypoint', () => {
     assert.match(blade, /rel="manifest" href="\/manifest\.webmanifest"/);
     assert.match(blade, /apple-mobile-web-app-capable/);
+    assert.match(blade, /apple-touch-icon" sizes="192x192" href="\\/pwa-icon-192\\.png"/);
     assert.match(entry, /navigator\.serviceWorker\.register\('\/sw\.js'/);
 });
