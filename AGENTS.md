@@ -18,23 +18,23 @@ Keep each layer focused; do not copy whole policies between files.
 | Source, tests, configuration and runtime | Evidence of actual implementation and behavior | Product intent or authorization |
 | GitHub issues, PRs and Workboard (when configured) | Authorization records, task scope, review evidence and live progress | A substitute for source inspection or permission |
 
-Authority is purpose-specific: current explicit owner direction defines product intent and authorized task scope; this contract defines default safety boundaries and explicit permission gates; latest main source/runtime establishes implementation facts; live GitHub records establish task/review status. Historical vision records are consulted only when the owner explicitly selects them. AI/SESSION.md is only a concise handoff and never outranks those sources. Skills and playbook guidance must defer to their owning project documents.
+Authority is purpose-specific: current explicit owner direction defines product intent and authorized task scope; this contract defines default safety boundaries and explicit permission gates; the owner-selected task baseline and its current branch establish implementation facts; live GitHub records establish task/review status. When the owner specifies a baseline branch, inspect it rather than silently substituting main. Historical vision records are consulted only when the owner explicitly selects them. AI/SESSION.md is only a concise handoff and never outranks those sources. Skills and playbook guidance must defer to their owning project documents.
 
 - Rademan's current product direction is a mobile-first, installable visual-content platform connecting artists and buyers through artwork discovery and direct messaging. See `AI/PROJECT.md`.
 - Recorded stack: PHP 8.3+ and Laravel 13; React 18, JavaScript, React Router 7, TanStack Query 5 and Vite. Confirm installed versions in manifests before relying on version-specific APIs.
-- Rebuild the design system from first principles; retain only the five brand color anchors documented in `AI/PROJECT.md`. Do not treat the legacy RAD design system or component catalogue as a constraint.
+- Use the Rademan application design system in `AI/DESIGN-SYSTEM.md` and `AI/RAD-COMPONENT-CATALOGUE.md`. It is the active system: one token foundation, one responsive shell and shared semantic primitives. Do not reintroduce the superseded adapter stylesheets or legacy demo screens.
 - Do not assume checkout, orders, shipping, payouts, subscriptions, commissions, booking, escrow or other commerce capabilities exist unless current source and approved product decisions prove they do.
-- Implementation facts come from the latest main source, migrations, tests, configuration and observed runtime behavior. Product intent comes from current owner direction and `AI/PROJECT.md`. Task status comes from live GitHub issues/PRs and the Rademan Workboard Kanban Project. Chat history and model memory are not authoritative.
+- Implementation facts come from the owner-selected baseline source, migrations, tests, configuration and observed runtime behavior. Product intent comes from current owner direction and `AI/PROJECT.md`. Task status comes from live GitHub issues/PRs and the Rademan Workboard Kanban Project. Chat history and model memory are not authoritative.
 
 ## 1A. Rademan product refactor authority
 
 - The current owner-approved product direction is recorded in `AI/PROJECT.md`; the target experience direction is in `AI/DESIGN-SYSTEM.md`; the source-backed reconstruction baseline is in `AI/RECONSTRUCTION/`.
-- For implementation facts, inspect the latest `main` branch and relevant current source, migrations, configuration and tests. Record the inspected main SHA. Do not use stale documentation, old skills, historical issue text or old permission statements as implementation authority when they conflict with latest main or current owner direction.
-- Update repository documentation and agent skills as derived guidance whenever they conflict with the refactor. Retire or clearly label legacy catalogues and playbooks rather than silently treating them as design constraints.
+- For implementation facts, inspect the branch explicitly selected by the owner and relevant source, migrations, configuration and tests. Record its SHA. Do not silently substitute `main` when the owner has supplied a different baseline. Do not use stale documentation, old skills, historical issue text or old permission statements as implementation authority when they conflict with the selected baseline or current owner direction.
+- Update repository documentation and agent skills as derived guidance whenever they conflict with the refactor. Keep the active component catalogue aligned with the new design system; retire obsolete adapter and demo implementations rather than silently retaining them.
 - Product direction does not authorize weakening backend authorization, privacy controls, safety controls or platform constraints. Inspect actual server-side enforcement; never bypass it because a document is stale.
 - “Inquiries” is the existing buyer–artist messaging subsystem. Preserve its identity, state, context, data contracts and access boundaries; do not replace it with a contact form or a new inbox.
 - Target experiences: public Discover, Buyer Studio, Artist Studio and Admin Console. Mobile-first installable PWA is the target; do not claim PWA/offline capabilities without source and runtime evidence.
-- Retain only the brand color anchors Ivory #F7F5F0, Charcoal #242320, Terracotta #A64F31, Sand #D8C9B7 and Olive #536052. Redesign all other visual-system foundations.
+- Use the Rademan-owned semantic light/dark palette and component language defined in `AI/DESIGN-SYSTEM.md`; Instagram is an interaction reference, not a source of copied assets or an old CSS adapter.
 
 ## 2. Non-negotiable permissions
 
@@ -58,7 +58,7 @@ At the start of a task, read this file first. Then classify the task and select 
 - Cross-chat continuation or project-wide planning: read `AI/SESSION.md` and the referenced live issue/PR.
 - Product discovery, opportunity assessment, customer research or experiment design: load `.agents/skills/product-discovery/SKILL.md`; read `AI/PROJECT.md`; retrieve a historical #150 record only when explicitly selected by the owner.
 - Feature planning, requirements, acceptance criteria or delivery slicing: load `.agents/skills/feature-planning/SKILL.md` and follow `AI/TASK-MANAGEMENT.md`.
-- UI/UX, user journeys, information architecture, interaction design, visual design or design-system changes: load `.agents/skills/ui-ux-design/SKILL.md` and `AI/DESIGN-SYSTEM.md`; treat `AI/RAD-COMPONENT-CATALOGUE.md` as legacy reference only; inspect current shared UI source and follow the new design direction.
+- UI/UX, user journeys, information architecture, interaction design, visual design or design-system changes: load `.agents/skills/ui-ux-design/SKILL.md`, `AI/DESIGN-SYSTEM.md` and the active `AI/RAD-COMPONENT-CATALOGUE.md`; inspect shared UI source and follow the current semantic component architecture.
 - Laravel, API, database or backend work: load `.agents/skills/laravel-backend/SKILL.md`.
 - React, routing, frontend or UI implementation: load `.agents/skills/react-frontend/SKILL.md`.
 - Bug or regression: load `.agents/skills/debugging/SKILL.md`.
