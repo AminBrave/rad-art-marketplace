@@ -26,7 +26,7 @@
     <meta name="apple-mobile-web-app-title" content="راد آرت">
     <meta name="application-name" content="راد آرت">
     <link rel="manifest" href="/manifest.webmanifest">
-    <link rel="apple-touch-icon" href="/pwa-icon.svg">
+    <link rel="apple-touch-icon" sizes="192x192" href="/pwa-icon-192.png">
     <script>
         (() => {
             try {
