@@ -136,7 +136,7 @@ class ArtworkInteractionController extends Controller
         }
 
         $parent = null;
-        if (! empty($validated['parent_id'])) {
+        if (isset($validated['parent_id'])) {
             $parent = ArtworkComment::query()
                 ->where('artwork_id', $artwork->id)
                 ->whereNull('parent_id')
