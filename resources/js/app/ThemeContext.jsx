@@ -24,7 +24,7 @@ function applyTheme(theme, prefersDark) {
 
     document.documentElement.dataset.theme = theme;
     document.documentElement.style.colorScheme = resolvedTheme;
-    document.getElementById('rad-theme-color')?.setAttribute('content', resolvedTheme === 'dark' ? '#171815' : '#F7F5F0');
+    document.getElementById('rad-theme-color')?.setAttribute('content', resolvedTheme === 'dark' ? '#000000' : '#FAFAFA');
 }
 
 export function ThemeProvider({ children }) {
