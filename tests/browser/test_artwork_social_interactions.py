@@ -116,7 +116,7 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
             viewport={"width": 390, "height": 844},
             is_mobile=True,
             has_touch=True,
-            ignore_https_errors=IGNORE_HTTPS_ERRORS,
+            ignore_https_errors=True,
         )
         page = context.new_page()
         page.set_default_timeout(15000)
