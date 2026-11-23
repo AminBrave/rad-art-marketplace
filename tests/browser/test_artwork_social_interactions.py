@@ -284,6 +284,54 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
         finally:
             context.close()
 
+    def test_guest_can_read_comments_share_artwork_and_cannot_mutate_social_state(self):
+        context, page = self.new_page()
+        page.unroute("**/api/v1/auth/me")
+        page.route(
+            "**/api/v1/auth/me",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body='{"data":null}',
+            ),
+        )
+        page.add_init_script("""
+            Object.defineProperty(navigator, 'share', { configurable: true, value: undefined });
+            Object.defineProperty(navigator, 'clipboard', {
+                configurable: true,
+                value: { writeText: async (value) => { window.__copiedArtworkUrl = value; } },
+            });
+        """)
+        page.route(
+            "**/api/v1/artworks/social-journey-artwork/comments**",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps(comments_payload(), ensure_ascii=False),
+            ),
+        )
+        try:
+            page.goto(BASE_URL + "/artworks/social-journey-artwork", wait_until="domcontentloaded")
+            page.get_by_text(ROOT_COMMENT["body"], exact=True).wait_for()
+            expect(page.get_by_role("link", name="برای پسندیدن وارد شوید")).to_be_visible()
+            expect(page.get_by_role("button", name="پسندیدن")).to_have_count(0)
+            expect(page.get_by_label("دیدگاه شما")).to_have_count(0)
+
+            with page.expect_response(
+                lambda response: response.url.endswith("/artworks/social-journey-artwork/comments")
+                and response.request.method == "GET",
+                timeout=15000,
+            ):
+                page.get_by_role("button", name="اشتراک‌گذاری اثر").click()
+
+            expect(page.get_by_role("status")).to_contain_text("لینک اثر کپی شد")
+            self.assertEqual(
+                page.evaluate("window.__copiedArtworkUrl"),
+                BASE_URL + "/artworks/social-journey-artwork",
+            )
+        finally:
+            context.close()
+
     def test_buyer_can_like_and_unlike_artwork_with_refreshed_accessible_state(self):
         context, page = self.new_page()
         state = {"liked": False, "likes_count": 4}
