@@ -21,7 +21,7 @@ function ThemeControl() {
             onClick={cycleTheme}
             aria-label={`تغییر پوسته؛ حالت فعلی: ${label}`}
             title={`پوسته: ${label}`}
-            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-surface text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+            className="min-h-0 p-0 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-surface text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
         >
             <Icon size={18} strokeWidth={1.9} aria-hidden="true" />
             <span className="sr-only">تغییر پوسته</span>
@@ -80,7 +80,7 @@ export function PublicLayout() {
             <header className="sticky top-0 z-40 border-b border-border bg-[color:color-mix(in_srgb,var(--color-canvas)_94%,transparent)] backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-canvas)_88%,transparent)]">
                 <div className="mx-auto flex min-h-[var(--header-height)] max-w-content items-center justify-between gap-2 px-page-gutter sm:gap-4">
                     <Link to="/" className="group flex shrink-0 items-center gap-2 text-ink no-underline sm:gap-3" aria-label="راد آرت، صفحه اصلی">
-                        <span className="grid h-10 w-10 place-items-center rounded-md bg-ink text-lg font-black text-inverse transition-colors group-hover:bg-terracotta sm:h-11 sm:w-11 sm:text-xl">ر</span>
+                        <span className="min-h-0 p-0 grid h-10 w-10 place-items-center rounded-md bg-ink text-lg font-black text-inverse transition-colors group-hover:bg-terracotta sm:h-11 sm:w-11 sm:text-xl">ر</span>
                         <span className="flex flex-col leading-tight">
                             <span className="text-lg font-black tracking-tight sm:text-xl">راد<span className="text-terracotta-strong">آرت</span></span>
                             <span dir="ltr" className="mt-1 hidden text-[9px] font-semibold tracking-[.2em] text-muted sm:block">INDEPENDENT ART</span>
@@ -141,7 +141,7 @@ export function PublicLayout() {
                             <Button variant="ghost"
                                 type="button"
                                 aria-label="بستن منو"
-                                className="grid h-10 w-10 place-items-center rounded-lg text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
+                                className="min-h-0 p-0 grid h-10 w-10 place-items-center rounded-lg text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                             >
                                 <X size={19} aria-hidden="true" />
                             </Button>
@@ -197,7 +197,7 @@ export function PublicLayout() {
                     <div className="grid gap-10 border-b border-border pb-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr] lg:gap-16 lg:pb-12">
                         <div className="max-w-md">
                             <Link to="/" className="inline-flex items-center gap-3 text-ink no-underline" aria-label="راد آرت، صفحه اصلی">
-                                <span className="grid h-10 w-10 place-items-center rounded-md bg-ink text-lg font-black text-inverse">ر</span>
+                                <span className="min-h-0 p-0 grid h-10 w-10 place-items-center rounded-md bg-ink text-lg font-black text-inverse">ر</span>
                                 <span className="text-xl font-black">راد<span className="text-terracotta-strong">آرت</span></span>
                             </Link>
                             <p className="mt-5 text-sm leading-8 text-muted">
@@ -425,7 +425,7 @@ function NotificationBell({ user }) {
                             <Button variant="ghost"
                                 type="button"
                                 aria-label="بستن اعلان‌ها"
-                                className="grid h-9 w-9 place-items-center rounded-md text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
+                                className="min-h-0 p-0 grid h-9 w-9 place-items-center rounded-md text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                             >
                                 <X size={17} aria-hidden="true" />
                             </Button>
@@ -440,7 +440,7 @@ function NotificationBell({ user }) {
                         <div className="space-y-2 py-1"><NotificationListSkeleton count={3} /></div>
                     ) : items.length === 0 ? (
                         <div className="flex min-h-44 flex-col items-center justify-center rounded-lg border border-dashed border-border bg-surface-muted px-5 py-7 text-center">
-                            <span className="grid h-11 w-11 place-items-center rounded-full bg-paper text-muted shadow-soft"><Bell size={19} aria-hidden="true" /></span>
+                            <span className="min-h-0 p-0 grid h-11 w-11 place-items-center rounded-full bg-paper text-muted shadow-soft"><Bell size={19} aria-hidden="true" /></span>
                             <p className="mt-3 text-sm font-bold text-ink">هنوز اعلانی ندارید</p>
                             <p className="mt-1 text-xs leading-6 text-muted">فعالیت‌های تازه در این بخش نمایش داده می‌شوند.</p>
                         </div>
@@ -461,7 +461,7 @@ function NotificationBell({ user }) {
                                                     : 'border-[color:color-mix(in_srgb,var(--color-terracotta)_24%,var(--color-border))] bg-accent-surface hover:border-terracotta',
                                             ].join(' ')}
                                         >
-                                            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-surface-muted text-terracotta-strong">
+                                            <span className="min-h-0 p-0 grid h-10 w-10 shrink-0 place-items-center rounded-md bg-surface-muted text-terracotta-strong">
                                                 <ItemIcon size={17} aria-hidden="true" />
                                             </span>
                                             <span className="min-w-0 flex-1">
@@ -603,7 +603,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
             <header className="sticky top-0 z-40 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] shadow-soft backdrop-blur">
                 <div className="mx-auto flex min-h-[4.5rem] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-20 sm:gap-4">
                     <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
-                        <Link to="/" className="group grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-lg font-black text-inverse shadow-soft no-underline transition-colors hover:bg-terracotta sm:h-12 sm:w-12 sm:text-xl" aria-label="راد آرت، صفحه اصلی">
+                        <Link to="/" className="min-h-0 p-0 group grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-lg font-black text-inverse shadow-soft no-underline transition-colors hover:bg-terracotta sm:h-12 sm:w-12 sm:text-xl" aria-label="راد آرت، صفحه اصلی">
                             <span className="transition-transform group-hover:scale-110">ر</span>
                         </Link>
                         <div className="min-w-0">
@@ -634,7 +634,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                             <Button variant="ghost"
                                 type="button"
                                 aria-label="باز کردن منوی حساب کاربری"
-                                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus lg:hidden"
+                                className="min-h-0 p-0 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus lg:hidden"
                             >
                                 <Menu size={20} aria-hidden="true" />
                             </Button>
@@ -650,7 +650,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
             >
                 <div className="flex items-center justify-between border-b border-border px-5 py-5">
                     <div className="flex min-w-0 items-center gap-3">
-                        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-lg font-black text-inverse">ر</span>
+                        <span className="min-h-0 p-0 grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-lg font-black text-inverse">ر</span>
                         <div className="min-w-0">
                             <DialogTitle className="text-sm font-extrabold text-ink">فضای کاری</DialogTitle>
                             <DialogDescription className="mt-1 max-w-48 truncate text-xs text-muted">{user?.name}</DialogDescription>
@@ -660,7 +660,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                         <Button variant="ghost"
                             type="button"
                             aria-label="بستن منو"
-                            className="grid h-10 w-10 shrink-0 place-items-center rounded-lg text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
+                            className="min-h-0 p-0 grid h-10 w-10 shrink-0 place-items-center rounded-lg text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                         >
                             <X size={19} aria-hidden="true" />
                         </Button>
