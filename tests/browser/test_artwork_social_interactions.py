@@ -120,11 +120,17 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
             if route.request.method == "POST":
                 payload = route.request.post_data_json
                 created.append(payload)
-                comments.append(reply_resource(payload["body"]))
+                created_comment = {
+                    **reply_resource(payload["body"]),
+                    "id": 101,
+                    "parent_id": None,
+                    "replies": [],
+                }
+                comments.append(created_comment)
                 route.fulfill(
                     status=201,
                     content_type="application/json",
-                    body=json.dumps({"data": comments[-1]}, ensure_ascii=False),
+                    body=json.dumps({"data": created_comment}, ensure_ascii=False),
                 )
                 return
             route.fulfill(
@@ -215,6 +221,7 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
     def test_failed_reply_keeps_draft_and_offers_retry(self):
         context, page = self.new_page()
         attempts = {"count": 0}
+        replies = []
 
         def comments_route(route):
             if route.request.method == "POST":
@@ -226,16 +233,18 @@ class ArtworkSocialInteractionBrowserTests(unittest.TestCase):
                         body=json.dumps({"message": "Temporary failure"}),
                     )
                     return
+                created_reply = reply_resource("پاسخ پس از تلاش مجدد")
+                replies.append(created_reply)
                 route.fulfill(
                     status=201,
                     content_type="application/json",
-                    body=json.dumps({"data": reply_resource("پاسخ پس از تلاش مجدد")}, ensure_ascii=False),
+                    body=json.dumps({"data": created_reply}, ensure_ascii=False),
                 )
                 return
             route.fulfill(
                 status=200,
                 content_type="application/json",
-                body=json.dumps(comments_payload(), ensure_ascii=False),
+                body=json.dumps(comments_payload(replies), ensure_ascii=False),
             )
 
         page.route("**/api/v1/artworks/social-journey-artwork/comments**", comments_route)
