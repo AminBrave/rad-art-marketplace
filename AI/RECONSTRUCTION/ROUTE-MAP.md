@@ -1,6 +1,6 @@
 # Rademan reconstruction — route map
 
-**Evidence baseline:** `main` at `4db615e7ff271446640dd79ad2aa1c24553f7966`. Frontend route declarations: `resources/js/app/AppRouter.jsx`. Backend browser/API declarations: `routes/web.php`.
+**Evidence baseline:** product-owner-supplied `agent/chatgpt` branch (2026-11-23). Frontend route declarations: `resources/js/app/AppRouter.jsx`. Backend browser/API declarations: `routes/web.php`. The Instagram-inspired redesign preserves these route contracts.
 
 ## Current frontend routes
 
@@ -30,8 +30,8 @@
 
 ## Proposed navigation mapping
 - Discover: retain the current public routes.
-- Buyer: keep current overview and messages destinations; relabel messages as Inquiries in the UI while preserving the URL unless a separate route migration is approved.
-- Artist: consolidate the artist artworks destination as Content Library; keep profile and messages behavior, with Inquiries as the product label.
+- Buyer: keep current overview and messages destinations; present messages as Inquiries in the UI while preserving the URL unless a separate route migration is approved.
+- Artist: present the artist artworks destination as Content Library; keep profile and messages behavior, with Inquiries as the product label.
 - Admin: map existing routes to Overview, Content Review, Reports & Trust, Curation, and Users & Roles. Reorder navigation without changing route contracts by default.
 
 ## Backend route observations
