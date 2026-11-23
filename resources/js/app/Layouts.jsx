@@ -98,8 +98,6 @@ function PublicNavigation({ user }) {
 export function PublicLayout() {
     const { user, logout } = useAuth();
     const [logoutError, setLogoutError] = useState('');
-    const { pathname } = useLocation();
-
     const handleLogout = async () => {
         setLogoutError('');
         try {
