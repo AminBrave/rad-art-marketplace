@@ -157,3 +157,6 @@
 [data-ui=public-navigation-rail]{z-index:40}
 [data-ui=public-bottom-navigation],[data-ui=authenticated-bottom-navigation]{z-index:60}
 [data-ui=authenticated-bottom-navigation] a{min-width:0}
+
+[data-ui=dialog-overlay],[data-ui=alert-dialog-overlay]{background:var(--rd-overlay);backdrop-filter:blur(6px)}
+[data-ui=dialog-trigger],[data-ui=dialog-close],[data-ui=alert-dialog-trigger],[data-ui=alert-dialog-cancel],[data-ui=alert-dialog-action]{touch-action:manipulation}
