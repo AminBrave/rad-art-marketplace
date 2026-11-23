@@ -153,6 +153,11 @@ final class ArtworkInteractionTest extends TestCase
             'body' => 'پاسخ به اثر دیگر',
             'parent_id' => $root->id,
         ])->assertUnprocessable()->assertJsonValidationErrors(['parent_id']);
+
+        $this->getJson('/api/v1/artworks/'.$artwork->slug.'/comments')
+            ->assertOk()
+            ->assertJsonCount(1, 'data.0.replies')
+            ->assertJsonPath('data.0.replies.0.id', $reply->id);
     }
 
     public function test_only_comment_author_can_delete_and_deleted_parent_keeps_replies_visible(): void
