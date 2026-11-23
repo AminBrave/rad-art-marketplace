@@ -31,6 +31,9 @@ export const Button = forwardRef(function Button({
 }, ref) {
     return (
         <button
+            data-ui="button"
+            data-variant={variant}
+            data-size={size}
             ref={ref}
             type={type}
             disabled={disabled || loading}
@@ -50,6 +53,7 @@ export const IconButton = forwardRef(function IconButton({ children, label, titl
     return (
         <Tooltip content={tooltipLabel}>
             <button
+                data-ui="icon-button"
                 ref={ref}
                 type="button"
                 aria-label={tooltipLabel}
@@ -73,7 +77,7 @@ const badgeVariants = {
 
 export function Badge({ children, variant = 'neutral', className = '' }) {
     return (
-        <span className={cn('inline-flex items-center gap-1 rounded-sm px-3 py-1 text-xs font-bold leading-[1.5]', badgeVariants[variant] ?? badgeVariants.neutral, className)}>
+        <span data-ui="badge" data-variant={variant} className={cn('inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold leading-[1.5]', badgeVariants[variant] ?? badgeVariants.neutral, className)}>
             {children}
         </span>
     );
@@ -93,7 +97,7 @@ export function PageContainer({ as: Element = 'div', width = 'wide', className =
 export function PageHeader({ eyebrow, title, description, actions, level = 1, className = '', titleClassName = '', descriptionClassName = '' }) {
     const Heading = level === 2 ? 'h2' : 'h1';
     return (
-        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-6 border-b border-border pb-7 pt-3 pr-5 before:absolute before:bottom-7 before:right-0 before:top-4 before:w-1 before:rounded-full before:bg-terracotta max-sm:items-stretch max-sm:flex-col max-sm:gap-4 max-sm:pb-6 max-sm:before:bottom-6', className)}>
+        <header data-ui="page-heading" dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-6 border-b border-border pb-7 pt-3 pr-5 before:absolute before:bottom-7 before:right-0 before:top-4 before:w-1 before:rounded-full before:bg-terracotta max-sm:items-stretch max-sm:flex-col max-sm:gap-4 max-sm:pb-6 max-sm:before:bottom-6', className)}>
             <div className="min-w-0 max-w-[56rem]">
                 {eyebrow && <p className="inline-flex items-center gap-2 rounded-full border border-border bg-accent-surface px-3 py-1.5 text-[11px] font-extrabold leading-none tracking-[.025em] text-terracotta-strong before:h-1.5 before:w-1.5 before:shrink-0 before:rounded-full before:bg-terracotta">{eyebrow}</p>}
                 <Heading className={cn('mt-3 text-[clamp(1.75rem,3.2vw,2.6rem)] font-extrabold leading-heading tracking-[-.035em] text-ink', titleClassName)}>{title}</Heading>
@@ -107,7 +111,7 @@ export function PageHeader({ eyebrow, title, description, actions, level = 1, cl
 export function SectionHeader({ id, eyebrow, title, description, actions, className = '', level = 2 }) {
     const Heading = level === 3 ? 'h3' : 'h2';
     return (
-        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-4 border-b border-border pb-4 pr-4 before:absolute before:bottom-4 before:right-0 before:top-1 before:w-[3px] before:rounded-full before:bg-sand max-sm:items-stretch max-sm:flex-col', className)}>
+        <header data-ui="section-heading" dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-4 border-b border-border pb-4 pr-4 before:absolute before:bottom-4 before:right-0 before:top-1 before:w-[3px] before:rounded-full before:bg-sand max-sm:items-stretch max-sm:flex-col', className)}>
             <div className="min-w-0">
                 {eyebrow && <p className="inline-flex items-center gap-1.5 text-[11px] font-extrabold tracking-[.025em] text-terracotta-strong before:h-1 before:w-1 before:rounded-full before:bg-terracotta">{eyebrow}</p>}
                 <Heading id={id} className="mt-1.5 text-lg font-extrabold leading-heading tracking-[-.02em] text-ink sm:text-xl">{title}</Heading>
@@ -120,7 +124,7 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
 
 export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
     return (
-        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-6 overflow-hidden rounded-xl border border-ink bg-ink p-[clamp(1.5rem,4vw,2.5rem)] text-inverse max-md:items-stretch max-md:flex-col', className)}>
+        <header data-ui="workspace-hero" dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-6 overflow-hidden rounded-xl border border-ink bg-ink p-[clamp(1.5rem,4vw,2.5rem)] text-inverse max-md:items-stretch max-md:flex-col', className)}>
             <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-1.5 bg-terracotta" />
             <span aria-hidden="true" className="pointer-events-none absolute -right-16 -top-24 aspect-square w-60 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]" />
             <span aria-hidden="true" className="pointer-events-none absolute -right-4 -top-12 aspect-square w-44 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]" />
@@ -138,7 +142,7 @@ export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, cla
     const Element = as ?? (to ? 'a' : 'article');
     const destinationProps = to ? (Element === 'a' ? { href: to } : { to }) : {};
     return (
-        <Element {...destinationProps} className={cn('flex min-h-36 min-w-0 flex-col justify-between rounded-md border border-border bg-paper p-5 text-ink no-underline', to && 'transition duration-200 hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus', className)}>
+        <Element data-ui="metric" {...destinationProps} className={cn('flex min-h-36 min-w-0 flex-col justify-between rounded-md border border-border bg-paper p-5 text-ink no-underline', to && 'transition duration-200 hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus', className)}>
             <span className="flex items-center justify-between gap-3">
                 <span className="text-sm font-semibold text-muted">{label}</span>
                 {eyebrow && <span className="text-[10px] font-bold text-terracotta-strong">{eyebrow}</span>}
@@ -157,7 +161,7 @@ const surfaceVariants = {
 };
 
 export function Surface({ as: Element = 'section', variant = 'default', className = '', children, ...props }) {
-    return <Element className={cn(surfaceVariants[variant] ?? surfaceVariants.default, className)} {...props}>{children}</Element>;
+    return <Element data-ui="surface" data-variant={variant} className={cn(surfaceVariants[variant] ?? surfaceVariants.default, className)} {...props}>{children}</Element>;
 }
 
 
@@ -197,7 +201,7 @@ export function FormField({ id, label, hint, error, required = false, children, 
         : children;
 
     return (
-        <div className={cn('grid gap-2', className)}>
+        <div data-ui="form-field" className={cn('grid gap-2', className)}>
             <label id={`${fieldId}-label`} htmlFor={fieldId} className="text-sm font-semibold text-ink">
                 {label}
                 {required && <span aria-hidden="true" className="ms-1 text-danger">*</span>}
@@ -210,11 +214,11 @@ export function FormField({ id, label, hint, error, required = false, children, 
 }
 
 export function TextInput({ className = '', ...props }) {
-    return <input className={`${controlClass} ${className}`} {...props} />;
+    return <input data-ui="input" className={`${controlClass} ${className}`} {...props} />;
 }
 
 export function TextareaField({ className = '', rows = 4, ...props }) {
-    return <textarea rows={rows} className={cn(controlClass, 'min-h-28 resize-y leading-copy', className)} {...props} />;
+    return <textarea data-ui="textarea" rows={rows} className={cn(controlClass, 'min-h-28 resize-y leading-copy', className)} {...props} />;
 }
 
 const emptySelectValue = '__radix_empty_option__';
@@ -252,6 +256,7 @@ export function SelectField({
             dir={dir}
         >
             <SelectPrimitive.Trigger
+                data-ui="select"
                 className={cn(controlClass, 'flex items-center justify-between gap-3 text-start', className)}
                 {...triggerProps}
             >
@@ -313,6 +318,7 @@ export function Checkbox({
 
     return (
         <CheckboxPrimitive.Root
+            data-ui="checkbox"
             checked={checked}
             defaultChecked={defaultChecked}
             onCheckedChange={(nextChecked) => onChange?.({
