@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { formatArtworkPrice } from '../../utils/formatArtworkPrice';
 import { MediaImage } from './feedback';
+import { cn } from '../../lib/utils';
 
 export function ArtworkCard({ artwork, className = '' }) {
     if (!artwork) return null;
@@ -9,7 +10,7 @@ export function ArtworkCard({ artwork, className = '' }) {
     const price = formatArtworkPrice(artwork.price);
 
     return (
-        <article className={`group min-w-0 ${className}`}>
+        <article className={cn('group min-w-0', className)}>
             <Link to={`/artworks/${artwork.slug}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus">
                 <div className="relative overflow-hidden bg-surface-muted">
                     <div className="flex aspect-[4/5] items-center justify-center bg-surface-muted p-0">
@@ -37,7 +38,7 @@ export function ArtistCard({ artist, className = '' }) {
     const initial = name.trim().slice(0, 1) || 'ه';
 
     return (
-        <article className={`group relative min-w-0 overflow-hidden border border-border bg-paper transition duration-300 hover:-translate-y-1 hover:border-border-strong hover:shadow-soft ${className}`} dir="rtl">
+        <article className={cn('group relative min-w-0 overflow-hidden border border-border bg-paper transition duration-300 hover:-translate-y-1 hover:border-border-strong hover:shadow-soft', className)} dir="rtl">
             <Link to={artist.slug ? `/artists/${artist.slug}` : '/artists'} className="flex h-full flex-col p-5 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus sm:p-6">
                 <div className="flex items-start justify-between gap-4">
                     <div className="grid h-14 w-14 shrink-0 place-items-center rounded-full border border-sand bg-surface-muted text-xl font-black text-terracotta-strong transition-colors group-hover:bg-ink group-hover:text-inverse" aria-hidden="true">
