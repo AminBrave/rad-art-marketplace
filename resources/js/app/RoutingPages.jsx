@@ -144,23 +144,23 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
     if (isMessaging) {
         return (
             <section className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden font-sans" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
-                <div className="grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden rounded-lg border border-border bg-surface shadow-soft lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]">
+                <div className="grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden border-y border-border bg-surface lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]">
                     <aside className={hasRequestedConversation ? 'hidden h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e lg:flex' : 'flex h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e'}>
-                        <div className="shrink-0 border-b border-border bg-paper px-3 py-2.5">
+                        <div className="shrink-0 border-b border-border bg-paper px-4 py-4 sm:px-5">
                             <div className="flex items-start justify-between gap-3"><div className="grid min-w-0 flex-1 gap-2"><Skeleton className="h-4 w-20 rounded-sm" /><Skeleton className="h-3 w-40 rounded-sm" /></div><Skeleton className="h-6 w-16 rounded-full" /></div>
                         </div>
-                        <div className="shrink-0 space-y-2 border-b border-border bg-surface-muted p-2.5">
+                        <div className="shrink-0 space-y-3 border-b border-border bg-paper px-3 py-3 sm:px-4">
                             <Skeleton className="h-10 w-full rounded-md" />
-                            <div className="grid grid-cols-3 gap-0 overflow-hidden rounded-md border border-border"><Skeleton className="h-10 rounded-none" /><Skeleton className="h-10 rounded-none" /><Skeleton className="h-10 rounded-none" /></div>
+                            <div className="grid grid-cols-3 gap-0 border-b border-border"><Skeleton className="h-10 rounded-none" /><Skeleton className="h-10 rounded-none" /><Skeleton className="h-10 rounded-none" /></div>
                         </div>
                         <ConversationInboxSkeleton count={6} announce={false} className="min-h-0 flex-1" />
                     </aside>
                     <div className={hasRequestedConversation ? 'flex h-full min-h-0 min-w-0 flex-col bg-canvas' : 'hidden h-full min-h-0 min-w-0 flex-col bg-canvas lg:flex'}>
                         {hasRequestedConversation ? <>
                             <div className="flex items-center gap-3 border-b border-border p-5"><Skeleton className="h-10 w-10 shrink-0 rounded-full" /><div className="grid min-w-0 flex-1 gap-2"><Skeleton className="h-4 w-40 rounded-sm" /><Skeleton className="h-3 w-28 rounded-sm" /></div><Skeleton className="h-8 w-8 rounded-full" /></div>
-                            <div className="border-b border-border bg-surface-muted px-5 py-3"><Skeleton className="h-3 w-28 rounded-sm" /></div>
+                            <div className="border-b border-border bg-paper px-4 py-3 sm:px-5"><Skeleton className="h-3 w-28 rounded-sm" /></div>
                             <MessageHistorySkeleton count={5} announce={false} className="min-h-0 flex-1 overflow-y-auto overscroll-contain" />
-                            <div className="border-t border-border p-5"><Skeleton className="h-12 w-full rounded-full" /></div>
+                            <div className="border-t border-border bg-paper px-2.5 pb-[max(.5rem,env(safe-area-inset-bottom))] pt-2 sm:px-3 sm:py-2"><Skeleton className="h-12 w-full rounded-2xl" /></div>
                         </> : <div className="m-auto p-8 text-center"><Skeleton className="h-4 w-56 rounded-sm" /></div>}
                     </div>
                 </div>
