@@ -8,7 +8,7 @@ description: Implement or review Rademan React 18 JavaScript UI, routing, TanSta
 ## First inspect
 - Confirm installed versions in package.json and lockfile; this project uses React 18 and JavaScript.
 - Trace route -> page -> component -> hook/query -> API client -> backend contract.
-- Inspect current shared tokens, primitives and nearby components, but do not treat the legacy RAD design system as a constraint. The product refactor retains only the five Rademan brand color anchors and rebuilds the rest.
+- Inspect the current Rademan token foundation, semantic UI slots and shared primitives in `AI/DESIGN-SYSTEM.md` and `AI/RAD-COMPONENT-CATALOGUE.md`. Do not reintroduce retired adapters or legacy visual vocabulary.
 - Reuse existing React Router 7 and TanStack Query 5 patterns.
 
 ## Engineering rules
@@ -18,7 +18,7 @@ description: Implement or review Rademan React 18 JavaScript UI, routing, TanSta
 4. Keep components cohesive and composable. Avoid premature abstractions, excessive prop drilling, redundant state and effects that can be derived.
 5. Use semantic HTML, accessible names, correct roles, keyboard interaction, visible focus and logical focus management.
 6. Build mobile-first across Discover, Buyer Studio, Artist Studio and Admin Console. Preserve Persian-first copy, RTL direction, mixed Persian/Latin text, numerals, long labels, responsive behavior and overflow handling.
-7. Use the new semantic design tokens and shared primitives established by the refactor. Retain only the brand color anchors Ivory #F7F5F0, Charcoal #242320, Terracotta #A64F31, Sand #D8C9B7 and Olive #536052; do not preserve legacy RAD tokens by default.
+7. Use the new Rademan semantic tokens and shared primitives. Avoid legacy color names and page-specific ad hoc visual systems.
 8. Respect reduced-motion preferences and do not communicate status through color alone.
 9. Treat frontend route guards as presentation only. Backend authorization must protect the data and action.
 10. Keep rendering and bundle costs proportionate; avoid unnecessary dependencies and expensive rerenders.
