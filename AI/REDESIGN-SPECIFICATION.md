@@ -11,8 +11,10 @@ This document turns the approved redesign direction into a branch-specific imple
 ## Implementation status
 
 - The legacy `agent/chatgpt` ref is preserved. Because Git cannot create nested refs beneath it, the workflow's collision-safe namespace is used: persistent lane `agent-chatgpt/lane` and task branch `agent-chatgpt/rademan-redesign`.
-- Stage 0 source inventory is underway. The inspected repository confirms the existing React/Laravel foundation, RTL shell, semantic tokens, responsive workspace shell and route-level lazy loading.
+- Stage 0 baseline review is complete for the shared application shell and primary Discover routes; a broader route-by-route feature inventory remains in progress. The inspected repository confirms the existing React/Laravel foundation, RTL shell, semantic tokens, responsive workspace shell and route-level lazy loading.
 - First implementation slice: mobile workspace navigation now prioritizes frequent destinations. Artist and buyer navigation retain their existing primary destinations; admin mobile navigation is limited to four high-frequency destinations while all six admin destinations remain available in the desktop sidebar and mobile drawer. Regression tests were added. The three focused Node tests passed against local copies of the current navigation module and test source; the full repository lint, frontend suite, browser suite and production build remain unrun because no complete local project runtime is attached to this GitHub editing session.
+- Discover implementation: rebuilt the homepage composition around a stronger editorial masthead, image-led hero, clear discovery pathways, quieter section hierarchy, curated collections and artist spotlight. Existing API queries, artwork routes, public-visibility rules, loading/error/empty states and lazy route loading are preserved.
+- Public shell refinement: desktop public navigation is now exposed from the large breakpoint for signed-out visitors, while signed-in visitors retain the wider breakpoint to protect header space for account controls. Mobile navigation remains a drawer.
 - PWA audit: the inspected repository tree contains no web manifest or service-worker file, and `vite.config.js` has no PWA plugin. PWA implementation remains deferred until install icons, offline behavior and cache-safety tests can be verified together.
 
 ## 1. Product experience
@@ -239,7 +241,7 @@ Never cache authenticated API responses, private workspace data, messages, or pr
 - Capture representative mobile and desktop baselines.
 - Confirm current dependencies and PWA assets/configuration.
 
-**Exit:** inventory and regression baseline are complete.
+**Exit:** inventory and regression baseline are complete. (Shared shell and Discover route review completed; remaining feature areas still being inventoried.)
 
 ### Stage 1 — Shared foundations and shells
 - Consolidate tokens without breaking compatibility aliases.
