@@ -111,3 +111,17 @@
 [data-ui=media-image]{background:var(--rd-surface-2)}
 [data-ui=toast]{border-radius:14px;border-color:var(--rd-line);background:var(--rd-surface);box-shadow:var(--rd-shadow-3)}
 [data-ui=toast-viewport]{gap:10px}
+
+/* Discover feed primitives */
+[data-page=home]>.home-intro{padding-block:clamp(28px,5vw,72px);border-bottom:1px solid var(--rd-line)}
+[data-page=home]>.home-intro>div:first-child{padding-inline:clamp(4px,2vw,24px)}
+[data-page=home]>.home-intro h1{max-width:14ch;font-size:clamp(2.35rem,5vw,4.6rem);line-height:1.14;letter-spacing:-.045em}
+[data-page=home]>.home-feature{max-width:520px;justify-self:end}
+[data-page=home]>.home-categories{padding-block:24px;border-bottom:1px solid var(--rd-line)}
+[data-page=home]>.home-feed,[data-page=home]>.home-creators,[data-page=home]>.home-collections{padding-block:clamp(30px,4vw,56px);border-bottom:1px solid var(--rd-line)}
+[data-page=home] .home-feature img{object-fit:cover}
+[data-page=home] .home-feature:hover{border-color:var(--rd-line-strong)}
+[data-page=home] .home-categories a{white-space:nowrap}
+[data-page=home] .home-creators [data-ui=artist-card]{min-height:128px}
+[data-page=home] .home-collections a{min-height:170px}
+@media(max-width:767px){[data-page=home]>.home-intro{padding-block:26px}[data-page=home]>.home-feature{justify-self:stretch;max-width:none}[data-page=home]>.home-categories{padding-block:18px}}
