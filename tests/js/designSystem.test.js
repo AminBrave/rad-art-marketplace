@@ -629,6 +629,7 @@ test('production forms and actions reuse the shared UI component contract', () =
         ['artwork detail', artworkDetail],
         ['workspace layouts', layouts],
         ['shared navigation primitives', navigation],
+        ['feedback components', feedback],
         ['message timeline', messageTimeline],
         ['conversation header', conversationHeader],
         ['related artwork strip', relatedArtworkStrip],
