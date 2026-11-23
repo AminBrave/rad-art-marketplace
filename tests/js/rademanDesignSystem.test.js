@@ -8,6 +8,9 @@ const components = read('resources/css/rademan.css');
 const entry = read('resources/js/app.jsx');
 const tailwind = read('tailwind.config.js');
 const primitives = read('resources/js/components/ui/primitives.jsx');
+const layout = read('resources/js/components/ui/layout.jsx');
+const navigation = read('resources/js/components/ui/navigation.jsx');
+const feedback = read('resources/js/components/ui/feedback.jsx');
 const cards = read('resources/js/components/ui/cards.jsx');
 const layouts = read('resources/js/app/Layouts.jsx');
 const router = read('resources/js/app/AppRouter.jsx');
@@ -37,6 +40,9 @@ test('shared primitives expose semantic slots and retain accessible interaction 
     for (const component of ['data-ui="button"', 'data-ui="badge"', 'data-ui="page-heading"', 'data-ui="section-heading"', 'data-ui="workspace-hero"', 'data-ui="surface"', 'data-ui="metric"', 'data-ui="form-field"', 'data-ui="input"', 'data-ui="textarea"', 'data-ui="select"', 'data-ui="checkbox"']) {
         assert.ok(primitives.includes(component), 'Missing component contract ' + component);
     }
+    for (const slot of ['data-ui="box"', 'data-ui="flex"', 'data-ui="grid"', 'data-ui="container"', 'data-ui="card"', 'data-ui="avatar"', 'data-ui="table"']) assert.ok(layout.includes(slot), 'Missing layout primitive ' + slot);
+    for (const slot of ['data-ui="tabs-list"', 'data-ui="menu-content"', 'data-ui="menu-trigger"', 'data-ui="breadcrumbs"']) assert.ok(navigation.includes(slot), 'Missing navigation primitive ' + slot);
+    for (const slot of ['data-ui="skeleton"', 'data-ui="empty-state"', 'data-ui="error-state"', 'data-ui="toast"', 'data-ui="media-image"']) assert.ok(feedback.includes(slot), 'Missing feedback primitive ' + slot);
     for (const behavior of ['aria-busy={loading || undefined}', "'aria-describedby': describedBy", "'aria-invalid': error ? true", 'SelectPrimitive.Root', 'CheckboxPrimitive.Root', 'focus-visible:outline']) {
         assert.ok(primitives.includes(behavior), 'Missing accessibility contract ' + behavior);
     }
