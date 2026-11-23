@@ -38,7 +38,7 @@ export function CollectionDetailPage() {
     if (collectionQuery.isPending) return <CollectionDetailSkeleton />;
     if (collectionQuery.isError || !item) return <main className="mx-auto max-w-7xl px-5 py-12" dir="rtl"><ErrorState title="این مجموعه در دسترس نیست" description="ممکن است انتشار آن متوقف شده باشد یا نشانی تغییر کرده باشد." onRetry={() => collectionQuery.refetch()} /><Link className="mt-5 inline-block text-sm font-bold underline" to="/collections">بازگشت به مجموعه‌ها</Link></main>;
 
-    return <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl">
+    return <main data-page="collection-detail" className="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl">
         <nav aria-label="مسیر صفحه" className="text-sm text-muted"><Link to="/" className="underline">خانه</Link><span className="mx-2">/</span><Link to="/collections" className="underline">مجموعه‌ها</Link></nav>
         <PageHeader eyebrow="روایت منتخب راد آرت" title={item.title} description={item.intro} className="mt-7 max-w-3xl" descriptionClassName="whitespace-pre-line leading-8" />
         {item.artworks?.length ? <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{item.artworks.map((artwork) => <ArtworkCard key={artwork.id} artwork={artwork} />)}</div> : <EmptyState className="mt-8" title="اثری در این مجموعه موجود نیست" />}
@@ -154,7 +154,7 @@ export function AdminEditorialPage() {
             setMessage(data.message); await refreshEditorialQueries();
         } catch (e) { setActionError(e.response?.data?.message || 'ذخیره انتخاب هنرمندان انجام نشد.'); }
     };
-    return <section className="space-y-8" dir="rtl">
+    return <section data-page="admin-editorial" className="space-y-8" dir="rtl">
         <PageHeader eyebrow="سردبیری راد آرت" title="مجموعه‌ها و هنرمندان منتخب" description="فقط آثار تأییدشده و پروفایل‌های عمومی در خروجی عمومی نمایش داده می‌شوند. تغییرات انتشار ثبت رویداد می‌شوند." />
         {message && <SuccessState title={message} />}{error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
         {loading ? <AdminEditorialSkeleton /> : <>
