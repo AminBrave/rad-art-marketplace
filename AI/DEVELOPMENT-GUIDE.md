@@ -139,11 +139,13 @@ AI should act as a capable engineering partner: understand the task, recommend b
 - Do not treat previous AI output, old prompts, issue text or PR descriptions as current requirements.
 - If a user asks for a new approach, evaluate it on its merits rather than defending the agent's default framework.
 
-## 13. Git, collaboration and delivery
+## 13. Git, multi-agent collaboration and delivery
 
-Use branches, commits, issues and pull requests when they improve isolation, traceability and review. Follow the user's requested workflow when clear.
+Rademan uses persistent agent lanes and isolated task branches to support parallel work. Each active agent works in its own agent/<agent-id> lane, creates a short-lived task branch, and targets only its own lane for task integration. Cross-agent integration is owner-directed; ordinary task work does not target main.
 
-Protect shared work and avoid irreversible operations without clear authorization. Keep changes understandable and report the actual repository state. Do not create a task board, milestone, branch convention or PR ceremony merely because a template suggests one.
+Use GitHub issues, PRs and a project board when they improve parallel coordination, ownership, review and handoff. Assign one primary owner per independent task, define observable acceptance criteria, coordinate shared files/contracts, and keep task and integration status distinct.
+
+Follow AI/DEVELOPMENT-WORKFLOW.md for the complete branch, integration and delivery model, and AI/TASK-MANAGEMENT.md for issue and board practices. These are stable collaboration defaults that the user may explicitly change.
 
 ## 14. Continuous improvement
 
