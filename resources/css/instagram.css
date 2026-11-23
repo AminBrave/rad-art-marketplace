@@ -1,0 +1,325 @@
+/*
+ * Rademan Instagram-inspired design layer
+ * Rebuilds the visual language without changing product routes, API contracts,
+ * role boundaries or the five Rademan brand anchors.
+ */
+:root {
+    color-scheme: light;
+    --rd-canvas: #fafafa;
+    --rd-surface: #ffffff;
+    --rd-surface-raised: #ffffff;
+    --rd-surface-muted: #f5f5f5;
+    --rd-text-primary: #262626;
+    --rd-text-secondary: #737373;
+    --rd-text-tertiary: #8e8e8e;
+    --rd-border-subtle: #dbdbdb;
+    --rd-border-strong: #c7c7c7;
+    --rd-action: #0095f6;
+    --rd-action-hover: #1877f2;
+    --rd-action-text: #0095f6;
+    --rd-focus: #0095f6;
+    --rd-success: #16834a;
+    --rd-danger: #ed4956;
+    --rd-warning: #b7791f;
+    --rd-info: #0095f6;
+    --rd-inverse-text: #ffffff;
+    --rd-overlay: rgb(0 0 0 / 58%);
+    --rd-skeleton-base: #efefef;
+    --rd-skeleton-highlight: #f8f8f8;
+    --rd-message-own: #e7f3ff;
+    --rd-message-peer: #efefef;
+    --rd-radius-sm: 0.25rem;
+    --rd-radius-md: 0.375rem;
+    --rd-radius-lg: 0.5rem;
+    --rd-radius-xl: 0.625rem;
+    --rd-shadow-soft: 0 1px 2px rgb(0 0 0 / 5%);
+    --rd-shadow-raised: 0 4px 16px rgb(0 0 0 / 12%);
+    --rd-header-height: 3.75rem;
+    --rd-workspace-nav-height: 3.75rem;
+    --rd-page-gutter: clamp(1rem, 3vw, 2rem);
+
+    --color-canvas: #fafafa;
+    --color-ink: #262626;
+    --color-terracotta: #0095f6;
+    --color-terracotta-strong: #1877f2;
+    --color-paper: #ffffff;
+    --color-text: #262626;
+    --color-text-muted: #737373;
+    --color-text-subtle: #8e8e8e;
+    --color-border: #dbdbdb;
+    --color-border-strong: #c7c7c7;
+    --color-surface: #ffffff;
+    --color-surface-muted: #f5f5f5;
+    --color-action: #0095f6;
+    --color-action-text: #0095f6;
+    --color-focus: #0095f6;
+    --color-success: #16834a;
+    --color-danger: #ed4956;
+    --color-warning: #b7791f;
+    --color-info: #0095f6;
+    --color-inverse-text: #ffffff;
+    --color-skeleton-base: #efefef;
+    --color-skeleton-highlight: #f8f8f8;
+    --color-message-own: #e7f3ff;
+    --color-message-peer: #efefef;
+    --radius-sm: var(--rd-radius-sm);
+    --radius-md: var(--rd-radius-md);
+    --radius-lg: var(--rd-radius-lg);
+    --radius-xl: var(--rd-radius-xl);
+    --radius-card: var(--rd-radius-lg);
+    --shadow-soft: var(--rd-shadow-soft);
+    --shadow-raised: var(--rd-shadow-raised);
+}
+
+:root[data-theme='dark'] {
+    color-scheme: dark;
+    --rd-canvas: #000000;
+    --rd-surface: #121212;
+    --rd-surface-raised: #1c1c1c;
+    --rd-surface-muted: #262626;
+    --rd-text-primary: #f5f5f5;
+    --rd-text-secondary: #a8a8a8;
+    --rd-text-tertiary: #8e8e8e;
+    --rd-border-subtle: #363636;
+    --rd-border-strong: #555555;
+    --rd-action: #0095f6;
+    --rd-action-hover: #4cb5ff;
+    --rd-action-text: #4cb5ff;
+    --rd-focus: #4cb5ff;
+    --rd-success: #58c98b;
+    --rd-danger: #ff6673;
+    --rd-warning: #e9b45b;
+    --rd-info: #4cb5ff;
+    --rd-inverse-text: #ffffff;
+    --rd-overlay: rgb(0 0 0 / 78%);
+    --rd-skeleton-base: #262626;
+    --rd-skeleton-highlight: #333333;
+    --rd-message-own: #12304a;
+    --rd-message-peer: #262626;
+    --rd-shadow-soft: 0 1px 2px rgb(0 0 0 / 35%);
+    --rd-shadow-raised: 0 8px 24px rgb(0 0 0 / 45%);
+
+    --color-canvas: #000000;
+    --color-ink: #f5f5f5;
+    --color-terracotta: #0095f6;
+    --color-terracotta-strong: #4cb5ff;
+    --color-paper: #121212;
+    --color-text: #f5f5f5;
+    --color-text-muted: #a8a8a8;
+    --color-text-subtle: #8e8e8e;
+    --color-border: #363636;
+    --color-border-strong: #555555;
+    --color-surface: #121212;
+    --color-surface-muted: #262626;
+    --color-action: #0095f6;
+    --color-action-text: #4cb5ff;
+    --color-focus: #4cb5ff;
+    --color-success: #58c98b;
+    --color-danger: #ff6673;
+    --color-warning: #e9b45b;
+    --color-info: #4cb5ff;
+    --color-inverse-text: #ffffff;
+    --color-skeleton-base: #262626;
+    --color-skeleton-highlight: #333333;
+    --color-message-own: #12304a;
+    --color-message-peer: #262626;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']):not([data-theme='dark']) {
+        color-scheme: dark;
+        --rd-canvas: #000000;
+        --rd-surface: #121212;
+        --rd-surface-raised: #1c1c1c;
+        --rd-surface-muted: #262626;
+        --rd-text-primary: #f5f5f5;
+        --rd-text-secondary: #a8a8a8;
+        --rd-text-tertiary: #8e8e8e;
+        --rd-border-subtle: #363636;
+        --rd-border-strong: #555555;
+        --rd-action: #0095f6;
+        --rd-action-hover: #4cb5ff;
+        --rd-action-text: #4cb5ff;
+        --rd-focus: #4cb5ff;
+        --rd-success: #58c98b;
+        --rd-danger: #ff6673;
+        --rd-warning: #e9b45b;
+        --rd-info: #4cb5ff;
+        --rd-inverse-text: #ffffff;
+        --rd-overlay: rgb(0 0 0 / 78%);
+        --rd-skeleton-base: #262626;
+        --rd-skeleton-highlight: #333333;
+        --rd-message-own: #12304a;
+        --rd-message-peer: #262626;
+        --rd-shadow-soft: 0 1px 2px rgb(0 0 0 / 35%);
+        --rd-shadow-raised: 0 8px 24px rgb(0 0 0 / 45%);
+        --color-canvas: #000000;
+        --color-ink: #f5f5f5;
+        --color-terracotta: #0095f6;
+        --color-terracotta-strong: #4cb5ff;
+        --color-paper: #121212;
+        --color-text: #f5f5f5;
+        --color-text-muted: #a8a8a8;
+        --color-text-subtle: #8e8e8e;
+        --color-border: #363636;
+        --color-border-strong: #555555;
+        --color-surface: #121212;
+        --color-surface-muted: #262626;
+        --color-action: #0095f6;
+        --color-action-text: #4cb5ff;
+        --color-focus: #4cb5ff;
+        --color-success: #58c98b;
+        --color-danger: #ff6673;
+        --color-warning: #e9b45b;
+        --color-info: #4cb5ff;
+        --color-inverse-text: #ffffff;
+        --color-skeleton-base: #262626;
+        --color-skeleton-highlight: #333333;
+        --color-message-own: #12304a;
+        --color-message-peer: #262626;
+    }
+}
+
+html, body {
+    background: var(--rd-canvas);
+    color: var(--rd-text-primary);
+}
+body {
+    font-family: 'Vazirmatn', 'Inter', sans-serif;
+    line-height: 1.65;
+}
+a { text-underline-offset: 0.2em; }
+:focus-visible { outline: 2px solid var(--rd-focus); outline-offset: 2px; }
+
+/* Instagram's restrained geometry: crisp edges, subtle dividers, no heavy cards. */
+.rounded-sm { border-radius: 3px !important; }
+.rounded-md { border-radius: 5px !important; }
+.rounded-lg { border-radius: 7px !important; }
+.rounded-xl, .rounded-2xl, .rounded-3xl { border-radius: 9px !important; }
+.shadow-soft, .shadow-raised, .shadow-sm, .shadow-md, .shadow-lg { box-shadow: 0 1px 2px rgb(0 0 0 / 5%) !important; }
+.border-border { border-color: var(--rd-border-subtle) !important; }
+.bg-canvas { background-color: var(--rd-canvas) !important; }
+.bg-paper, .bg-surface { background-color: var(--rd-surface) !important; }
+.bg-surface-muted { background-color: var(--rd-surface-muted) !important; }
+.text-ink { color: var(--rd-text-primary) !important; }
+.text-muted { color: var(--rd-text-secondary) !important; }
+.text-subtle { color: var(--rd-text-tertiary) !important; }
+.text-terracotta, .text-terracotta-strong { color: var(--rd-action-text) !important; }
+.border-terracotta { border-color: var(--rd-action) !important; }
+.bg-terracotta { background-color: var(--rd-action) !important; }
+.bg-accent-surface { background-color: color-mix(in srgb, var(--rd-action) 9%, var(--rd-surface)) !important; }
+
+/* Primary actions use Instagram blue; preserve neutral brand surfaces and logo marks. */
+button.bg-ink, a.bg-ink, [role='button'].bg-ink,
+button.bg-terracotta, a.bg-terracotta {
+    background-color: var(--rd-action) !important;
+    border-color: var(--rd-action) !important;
+    color: #ffffff !important;
+}
+button.bg-ink:hover, a.bg-ink:hover, button.bg-terracotta:hover, a.bg-terracotta:hover {
+    background-color: var(--rd-action-hover) !important;
+}
+button[class*='border-terracotta'], a[class*='border-terracotta'] { border-color: var(--rd-action) !important; }
+input, textarea, select, [role='combobox'] {
+    border-color: var(--rd-border-strong);
+    background-color: var(--rd-surface);
+    color: var(--rd-text-primary);
+}
+input::placeholder, textarea::placeholder { color: var(--rd-text-tertiary); opacity: 1; }
+
+/* Top navigation and page chrome. */
+[data-experience='discover'] > header {
+    background: color-mix(in srgb, var(--rd-surface) 96%, transparent) !important;
+    border-bottom: 1px solid var(--rd-border-subtle) !important;
+    box-shadow: none !important;
+    backdrop-filter: blur(16px);
+}
+[data-experience='discover'] > header > div:first-child {
+    min-height: 60px;
+}
+[data-experience='discover'] nav a[aria-current='page'] {
+    color: var(--rd-text-primary) !important;
+}
+[data-experience='discover'] footer {
+    background: var(--rd-surface) !important;
+    border-color: var(--rd-border-subtle) !important;
+}
+
+/* Artwork cards become a clean, image-led discovery grid. */
+article.group {
+    border-color: var(--rd-border-subtle);
+    border-radius: 7px;
+}
+article.group > a > div:first-child {
+    border-radius: 4px;
+    background: var(--rd-surface-muted);
+}
+article.group h3 { font-weight: 600; letter-spacing: -0.015em; }
+article.group a:hover h3 { color: var(--rd-action) !important; }
+article.group .rounded-full { border-radius: 9999px !important; }
+
+/* Artist identity surfaces echo story avatars without inventing social features. */
+article.group .rounded-full,
+[data-artist-avatar],
+[data-profile-avatar] {
+    outline: 2px solid var(--rd-surface);
+    outline-offset: 2px;
+}
+[data-story-ring] {
+    background: conic-gradient(#feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5, #feda75);
+    border-radius: 9999px;
+    padding: 2px;
+}
+
+/* Shared panels, forms, dialogs, tables and feedback states. */
+[class*='border-border'][class*='bg-paper'],
+[class*='border-border'][class*='bg-surface'] {
+    border-color: var(--rd-border-subtle);
+}
+[role='dialog'], [data-radix-popper-content-wrapper] > div {
+    border-color: var(--rd-border-subtle) !important;
+    background: var(--rd-surface) !important;
+    color: var(--rd-text-primary);
+}
+[role='tablist'] { border-color: var(--rd-border-subtle); }
+[role='tab'][data-state='active'] { border-color: var(--rd-text-primary) !important; color: var(--rd-text-primary) !important; }
+table { border-color: var(--rd-border-subtle); }
+th { color: var(--rd-text-secondary); font-weight: 600; }
+tr + tr { border-color: var(--rd-border-subtle); }
+[role='alert'], [role='status'] { color: inherit; }
+::selection { background: color-mix(in srgb, var(--rd-action) 22%, transparent); }
+
+/* Messaging keeps the established two-pane workflow and participant context. */
+[data-messaging], [data-messaging] * { scrollbar-color: var(--rd-border-strong) transparent; }
+[data-messaging] [data-message-own], [data-message='own'] {
+    background: var(--rd-message-own);
+}
+[data-messaging] [data-message-peer], [data-message='peer'] {
+    background: var(--rd-message-peer);
+}
+
+/* Phone-first navigation clearance, readable tap targets and safe areas. */
+@media (max-width: 767px) {
+    body { padding-bottom: env(safe-area-inset-bottom); }
+    [data-experience='discover'] > header {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+    }
+    [data-experience='discover'] > header button,
+    [data-experience='discover'] > header a {
+        min-height: 42px;
+    }
+    main { scroll-margin-top: 64px; }
+}
+@media (min-width: 768px) {
+    [data-experience='discover'] main { min-height: 55vh; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
+}
