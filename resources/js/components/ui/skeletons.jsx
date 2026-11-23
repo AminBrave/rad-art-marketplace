@@ -3,7 +3,7 @@ import { PageContainer } from './primitives';
 
 export function ArtworkCardSkeleton({ className = '' }) {
     return (
-        <article aria-hidden="true" className={`group min-w-0 ${className}`}>
+        <article data-ui="artwork-card-skeleton" aria-hidden="true" className={`group min-w-0 ${className}`}>
             <div className="relative overflow-hidden bg-surface-muted">
                 <Skeleton className="aspect-[4/5] w-full rounded-none" />
                 <span aria-hidden="true" className="pointer-events-none absolute inset-0 border border-[color:color-mix(in_srgb,var(--color-ink)_5%,transparent)]" />
@@ -20,7 +20,7 @@ export function ArtworkCardSkeleton({ className = '' }) {
 
 export function ArtistCardSkeleton({ className = '' }) {
     return (
-        <article aria-hidden="true" className={`grid min-w-0 content-start gap-3 border border-border bg-paper p-5 sm:p-6 ${className}`} dir="rtl">
+        <article data-ui="artist-card-skeleton" aria-hidden="true" className={`grid min-w-0 content-start gap-3 border border-border bg-paper p-5 sm:p-6 ${className}`} dir="rtl">
             <div className="flex items-start justify-between gap-4">
                 <Skeleton className="h-14 w-14 shrink-0 rounded-full" />
                 <Skeleton className="mt-1 h-3 w-24 rounded-sm" />
@@ -34,7 +34,7 @@ export function ArtistCardSkeleton({ className = '' }) {
 
 export function FormFieldSkeleton({ className = '', controlClassName = 'h-11' }) {
     return (
-        <div aria-hidden="true" className={`grid min-w-0 gap-2 ${className}`}>
+        <div data-ui="form-field-skeleton" aria-hidden="true" className={`grid min-w-0 gap-2 ${className}`}>
             <Skeleton className="h-4 w-28 rounded-sm" />
             <Skeleton className={`w-full rounded-sm ${controlClassName}`} />
         </div>
@@ -44,6 +44,7 @@ export function FormFieldSkeleton({ className = '', controlClassName = 'h-11' })
 export function ArtworkStudioListSkeleton({ count = 3, className = '', announce = true }) {
     return (
         <section
+            data-ui="artwork-studio-list-skeleton"
             role={announce ? 'status' : undefined}
             aria-live={announce ? 'polite' : undefined}
             aria-busy={announce ? 'true' : undefined}
@@ -77,6 +78,7 @@ export function ArtworkStudioListSkeleton({ count = 3, className = '', announce 
 export function ConversationInboxSkeleton({ count = 6, className = '', announce = true }) {
     return (
         <div
+            data-ui="conversation-inbox-skeleton"
             role={announce ? 'status' : undefined}
             aria-live={announce ? 'polite' : undefined}
             aria-busy={announce ? 'true' : undefined}
