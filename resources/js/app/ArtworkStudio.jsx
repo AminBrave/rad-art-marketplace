@@ -154,9 +154,9 @@ export default function ArtworkStudio({ user, hasProfile }) {
             title="مدیریت آثار"
             description="آثار جدید و ویرایش‌شده پس از ثبت دوباره برای بررسی مدیر ارسال می‌شوند. فقط آثار تأییدشده در گالری عمومی نمایش داده می‌شوند."
         />
-        <section id="artwork-editor" className="border border-border bg-paper p-5 sm:p-7">
+        <section id="artwork-editor" className="border-y border-border bg-transparent py-6 sm:py-8">
             <div className="mb-6 flex flex-wrap items-start justify-between gap-3"><SectionHeader title={editingId ? 'ویرایش اثر' : 'ثبت اثر جدید'} description="فیلدهای الزامی با علامت * مشخص شده‌اند." className="min-w-0 flex-1 border-0 pb-0" />{editingId && <Button variant="outline" size="sm" onClick={resetForm}>انصراف از ویرایش</Button>}</div>
-            <form onSubmit={saveArtwork} className="grid gap-5 sm:grid-cols-2">
+            <form onSubmit={saveArtwork} className="grid gap-x-5 gap-y-6 sm:grid-cols-2">
                 <FormField label="عنوان اثر" required error={errors.title?.[0]}><input name="title" value={form.title} onChange={updateForm} required maxLength={160} className={inputClass} /></FormField>
                 <FormField label="دسته‌بندی" required error={errors.category_id?.[0]}><SelectField name="category_id" value={form.category_id} onChange={updateForm} required className={inputClass}><option value="">انتخاب دسته‌بندی</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</SelectField></FormField>
                 <FormField label="تکنیک / متریال" error={errors.medium?.[0]}><input name="medium" value={form.medium} onChange={updateForm} maxLength={120} className={inputClass} placeholder="مثلاً رنگ روغن، آبرنگ…" /></FormField>
@@ -170,7 +170,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
                     <input id="artwork-image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required={!editingId} onChange={chooseImage} aria-describedby="artwork-image-help" className="mt-2 block w-full border border-border bg-canvas px-3 py-3 text-sm file:ml-3 file:border-0 file:bg-surface-muted file:px-3 file:py-2 file:font-semibold" />
                     <p id="artwork-image-help" className="mt-2 text-xs leading-6 text-muted">JPG، JPEG، PNG یا WebP؛ حداکثر ۵ مگابایت و ۶۰۰۰ × ۶۰۰۰ پیکسل. ابعاد تصویر پیش از ارسال بررسی می‌شود.</p>
                     {fieldError('image')}{imageError && <p role="alert" className="mt-1 text-xs text-danger">{imageError}</p>}
-                    {imagePreview && <div className="mt-4 max-w-sm border border-border p-2"><MediaImage src={imagePreview} alt="پیش‌نمایش تصویر انتخاب‌شده" className="aspect-[4/3] max-h-64 w-full" imageClassName="object-contain" loading="eager" /></div>}
+                    {imagePreview && <div className="mt-4 max-w-sm border border-border bg-paper p-2"><MediaImage src={imagePreview} alt="پیش‌نمایش تصویر انتخاب‌شده" className="aspect-[4/3] max-h-64 w-full" imageClassName="object-contain" loading="eager" /></div>}
                     <UploadFeedback fileName={image?.name} status={busy ? 'uploading' : uploadProgress === 100 ? 'success' : 'idle'} progress={uploadProgress} />
                 </div>
                 <div className="flex flex-wrap items-center gap-3 sm:col-span-2"><Button type="submit" disabled={busy || Boolean(imageError)} loading={busy}>{editingId ? 'ذخیره و ارسال دوباره برای بررسی' : 'ثبت اثر برای بررسی'}</Button>{message && <p role="status" className="text-sm text-muted">{message}</p>}</div>
@@ -180,16 +180,16 @@ export default function ArtworkStudio({ user, hasProfile }) {
             <SectionHeader title="آثار ثبت‌شده شما" actions={<Button variant="outline" size="sm" onClick={() => artworksQuery.refetch()} disabled={loading}>بروزرسانی</Button>} />
             {loadError && <ErrorState title="دریافت آثار ناموفق بود" description={loadError} onRetry={() => { artworksQuery.refetch(); categoriesQuery.refetch(); }} />}
             {loading ? <ArtworkStudioListSkeleton count={3} /> : artworks.length === 0 ? <EmptyState title="هنوز اثری ثبت نکرده‌اید" description="با فرم بالا اولین اثر خود را برای بررسی ارسال کنید." /> :
-                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{artworks.map((item) => <article key={item.id} className="overflow-hidden border border-border bg-paper">
-                    <div className="flex aspect-[4/3] items-center justify-center bg-surface-muted p-3"><MediaImage src={item.image_url} alt={item.title} className="h-full w-full" imageClassName="object-contain" loading="lazy" decoding="async" /></div>
-                    <div className="space-y-3 p-4"><div className="flex flex-wrap items-start justify-between gap-2"><h3 className="font-bold">{item.title}</h3><Badge variant={item.status === 'approved' ? 'success' : item.status === 'rejected' ? 'danger' : item.status === 'changes_requested' ? 'warning' : 'neutral'}>{statusLabels[item.status] ?? item.status}</Badge></div>
+                <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 xl:grid-cols-3">{artworks.map((item) => <article key={item.id} className="min-w-0 border-b border-border pb-6">
+                    <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-surface-muted p-4 sm:p-5"><MediaImage src={item.image_url} alt={item.title} className="h-full w-full" imageClassName="object-contain" loading="lazy" decoding="async" /></div>
+                    <div className="space-y-3 pt-4"><div className="flex flex-wrap items-start justify-between gap-2"><h3 className="font-bold">{item.title}</h3><Badge variant={item.status === 'approved' ? 'success' : item.status === 'rejected' ? 'danger' : item.status === 'changes_requested' ? 'warning' : 'neutral'}>{statusLabels[item.status] ?? item.status}</Badge></div>
                         <p className="text-xs text-muted">{item.category?.name}</p>
                         <p className="text-xs leading-6 text-muted">{statusGuidance[item.status] ?? 'وضعیت این اثر از سوی سرور تعیین شده است.'}</p>
                         {item.rejection_note && <div className="border-s-2 border-danger bg-surface-muted p-3 text-xs leading-6 text-danger"><p className="mb-1 font-bold">بازخورد مدیر</p>{item.rejection_note}</div>}
                         <Button variant="outline" size="sm" onClick={() => editArtwork(item)}>ویرایش اثر</Button></div>
                 </article>)}</div>}
             {artworks.length > 0 && !loading && (
-                <nav aria-label="صفحه‌بندی آثار ثبت‌شده" className="flex items-center justify-center gap-4">
+                <nav aria-label="صفحه‌بندی آثار ثبت‌شده" className="flex items-center justify-center gap-3 border-t border-border pt-6">
                     <Button variant="outline" size="sm" disabled={loading || artworkPage <= 1} onClick={() => setArtworkPage((current) => Math.max(1, current - 1))}>قبلی</Button>
                     <span className="text-xs text-muted">صفحه {(artworksQuery.data?.current_page ?? artworkPage).toLocaleString('fa-IR')}</span>
                     <Button variant="outline" size="sm" disabled={loading || !hasMoreArtworks} onClick={() => setArtworkPage((current) => current + 1)}>بعدی</Button>
