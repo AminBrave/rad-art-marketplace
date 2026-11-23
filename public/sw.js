@@ -29,7 +29,8 @@ self.addEventListener('fetch', (event) => {
     }));
     return;
   }
-  if (['style', 'script', 'image', 'font'].includes(request.destination)) {
+  const versionedAsset = url.pathname.startsWith('/build/') || url.pathname.startsWith('/fonts/');
+  if (versionedAsset && ['style', 'script', 'font'].includes(request.destination)) {
     event.respondWith(
       caches.match(request).then((cached) => {
         const network = fetch(request).then((response) => {
