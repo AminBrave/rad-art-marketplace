@@ -389,7 +389,7 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(bottomNavigation.includes('lg:hidden'));
     assert.ok(bottomNavigation.includes('mobileLinks.map((item)'));
     assert.ok(layouts.includes('user && <AuthenticatedBottomNavigation mobileLinks={getWorkspaceMobileLinks(user.role)} />'));
-    assert.ok(workspaceLayout.includes('<AuthenticatedBottomNavigation mobileLinks={getWorkspaceMobileLinks(user.role)} />'));
+    assert.ok(workspaceLayout.includes('<AuthenticatedBottomNavigation mobileLinks={getWorkspaceMobileLinks(user?.role)} />'));
 
     assert.ok(workspaceLayout.includes('<DialogTrigger asChild>'));
     assert.ok(workspaceLayout.includes('aria-label="باز کردن منوی حساب کاربری"'));
