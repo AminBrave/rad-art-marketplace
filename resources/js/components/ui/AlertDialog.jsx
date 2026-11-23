@@ -22,9 +22,9 @@ export function AlertDialogContent({ className = '', overlayClassName = '', ...p
 }
 
 export function AlertDialogTitle({ className = '', ...props }) {
-    return <AlertDialogPrimitive.Title className={cn('text-base font-extrabold text-ink sm:text-lg', className)} {...props} />;
+    return <AlertDialogPrimitive.Title data-ui="alert-dialog-title" className={cn('text-base font-extrabold text-ink sm:text-lg', className)} {...props} />;
 }
 
 export function AlertDialogDescription({ className = '', ...props }) {
-    return <AlertDialogPrimitive.Description className={cn('mt-2 text-sm leading-7 text-muted', className)} {...props} />;
+    return <AlertDialogPrimitive.Description data-ui="alert-dialog-description" className={cn('mt-2 text-sm leading-7 text-muted', className)} {...props} />;
 }
