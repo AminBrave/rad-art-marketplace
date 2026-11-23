@@ -1,0 +1,20 @@
+{
+  "id": "/",
+  "name": "راد آرت | گالری هنر مستقل",
+  "short_name": "راد آرت",
+  "description": "کشف آثار هنری، دنبال‌کردن هنرمندان و ارتباط در بازار هنر مستقل",
+  "lang": "fa",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#fafafa",
+  "theme_color": "#fafafa",
+  "categories": ["art", "shopping", "social"],
+  "icons": [
+    { "src": "/pwa-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/pwa-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
