@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { WorkspaceHero, SectionHeader, Surface } from '../components/ui';
+import { WorkspaceHero, SectionHeader } from '../components/ui';
 
 export function BuyerDashboardHome() {
     return (
