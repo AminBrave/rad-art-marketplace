@@ -7,6 +7,8 @@ const detailPage = readFileSync(new URL('../../resources/js/app/ArtworkDetailPag
 
 test('Artwork engagement keeps reads public and gates mutations to eligible signed-in roles', () => {
     assert.match(component, /\/api\/v1\/artworks\/.*\/comments\?page=/);
+    assert.match(component, /comment_id=/);
+    assert.match(component, /const currentPage = pagination\.current_page \?\? page/);
     assert.match(component, /\['buyer', 'artist'\]\.includes\(user\?\.role\)/);
     assert.match(component, /axios\.post\('\/api\/v1\/artworks\/'/);
     assert.match(component, /aria-pressed=\{Boolean\(artwork\.liked_by_me\)\}/);
