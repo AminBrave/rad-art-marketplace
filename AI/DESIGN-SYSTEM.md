@@ -1,89 +1,57 @@
-# Rademan — experience and design direction
+# Rademan — design and experience guidance
 
-> This is the target design brief, not a specification to preserve the legacy RAD component system. Confirm implementation facts in the latest `main` branch.
+This document describes useful design principles and the current product context. It is guidance, not a fixed specification. The user's latest direction can change the information architecture, visual language, interaction model, platform priorities or design system.
 
 ## Design objective
-Build a coherent, contemporary visual-content platform for discovering artists and artworks and continuing into direct buyer–artist conversations. Use an art-editorial language for public discovery and a focused professional workspace language for authenticated tasks.
 
-Retain only Rademan's five brand color anchors: Ivory `#F7F5F0`, Charcoal `#242320`, Terracotta `#A64F31`, Sand `#D8C9B7`, Olive `#536052`. Everything else—tokens, typography, spacing, grid, component architecture, navigation, interaction patterns and responsive rules—is open for redesign.
+Create a distinctive, usable art platform that makes artwork discovery and artist–audience interaction feel clear and considered. Choose the right experience for the requested users, task and device rather than forcing every feature into a pre-existing layout.
 
-## Product information architecture
-### Discover — public
-- Home / editorial entry
-- Artworks catalogue and artwork detail
-- Artists directory and artist profile
-- Editorial collections and collection detail
-- About, Help, Contact
-- Contextual “Start inquiry” entry points that open the existing buyer–artist conversation flow
+## Current experience context
 
-### Buyer Studio
-- Overview
-- Inquiries (existing messaging)
-- Account/preferences only where the current implementation supports them
-- Discover remains a shared public destination, not a duplicated buyer catalogue
+The current product is organized around public discovery, buyer experiences, artist experiences and administration. Current navigation and route behavior live in the application; inspect them before changing or documenting them.
 
-### Artist Studio
-- Overview
-- Content library (existing artwork management)
-- Public profile management
-- Inquiries (existing messaging)
+Do not assume that current labels, role boundaries, routes or page composition are permanent. Follow the user's requested product model and update the implementation and documentation coherently.
 
-### Admin Console
-- Overview
-- Artwork review/moderation
-- Editorial collections and featured-artist curation
-- Message reports / trust and safety
-- User and role governance
+## Design workflow
 
-Do not add Saved, checkout, orders, analytics, artist-owned collection management, social engagement, Instagram integration or other unverified destinations.
+1. Understand the users, task, context, content and constraints.
+2. Inspect the current screen, shared components, tokens, routes and related states.
+3. Explore suitable interaction and layout approaches; explain meaningful alternatives when a decision matters.
+4. Design loading, empty, error, success, disabled, permission and recovery states as relevant.
+5. Consider mobile, tablet, desktop, keyboard, assistive technology, RTL and mixed-direction content.
+6. Implement with appropriate reusable patterns without creating abstractions for their own sake.
+7. Review the result against the intended user outcome and revise where needed.
 
-## Navigation principles
-- Keep public discovery navigation distinct from role-specific workspace navigation.
-- Give Buyer and Artist a single canonical Inquiries destination backed by existing messaging routes and state.
-- Overview previews may deep-link into that canonical conversation; do not create a second inbox.
-- On mobile, prioritize the active task and a clear list ↔ conversation back path. Keep the composer keyboard-safe and message history independently scrollable.
-- On desktop, messaging should use an efficient conversation list + active conversation layout.
-- Use role-aware navigation without treating client-side guards as authorization; backend controls remain authoritative.
-- Navigation labels and exact placement are proposals until reconciled with current source and owner-approved IA.
+Use the smallest process that fits the work. A small UI fix does not require a full discovery exercise or design specification.
 
-## Visual and interaction system
-The first foundation slice is implemented on `refactor/rademan-product-foundation`: `--rd-*` semantic tokens, Tailwind semantic/brand color bindings, theme provider and public/workspace theme controls. Existing `--color-*` values remain as compatibility aliases during migration; new feature work should consume semantic roles. The legacy visual system is not the target.
+## Visual system
 
+The existing brand colors—Ivory #F7F5F0, Charcoal #242320, Terracotta #A64F31, Sand #D8C9B7 and Olive #536052—can inform the visual identity. They are not immutable.
 
-1. Semantic design tokens for surfaces, text, borders, focus, status, overlays and elevation.
-2. Typography scale validated for Persian-first RTL and mixed Persian/Latin content. Select fonts based on glyph coverage, readability and loading performance; do not assume a font choice before testing.
-3. Responsive layout primitives and artwork-focused grids with intentional image ratios.
-4. Accessible controls, form states, dialogs, menus, notifications, empty/loading/error states and feedback.
-5. Motion used sparingly, with reduced-motion support.
-6. Light, dark and system theme behavior across every surface, including messaging, media, forms, dialogs and statuses.
+Choose semantic tokens, typography, spacing, grids, radii, elevation, icons and motion to support the design. Reuse current components when they fit; refactor or replace them when that produces a better result. Do not follow the legacy RAD catalogue as a specification.
 
-## Theme and accessibility
-- The current branch implements a browser-persisted light/dark/system cycle control, system preference tracking and semantic theme tokens. This is local to the browser, not synchronized to the user account. Visual/accessibility verification across all surfaces remains outstanding.
-- Meet WCAG 2.2 AA contrast and keyboard/focus expectations.
-- Never rely on color alone for status or actions.
-- Validate RTL, focus order, touch targets, zoom/reflow, reduced motion, screen-reader names and validation feedback.
+## Accessibility and localization
 
-## Mobile-first PWA
-Design for phone viewport and touch first, then tablet and desktop. Verify install metadata, manifest/icons, service-worker lifecycle, standalone display, safe-area and viewport behavior before claiming PWA readiness. Private conversations and workspace data must not be placed in unsafe shared caches. Offline messaging/background sync are not implied.
+- Prefer semantic HTML and native platform behavior.
+- Provide meaningful names, labels, focus states and keyboard interactions.
+- Maintain sufficient contrast and do not communicate meaning through color alone.
+- Respect reduced-motion preferences.
+- Test RTL direction, mixed Persian/Latin text, numbers, punctuation and alignment where relevant.
+- Treat WCAG guidance as a design and evaluation reference; describe the actual scope of any conformance assessment accurately.
 
-## Messaging preservation contract
-The current messaging subsystem is a core product capability. Redesign its shell and ergonomics without silently changing contracts or behavior:
-- Preserve conversation identity, list/detail/history, pagination/sync and current polling semantics.
-- Preserve message composer, send/retry, replies, editing/deletion, attachments, artwork references and reactions where confirmed in source.
-- Preserve read state, archive/mute, report/block and safety behavior where confirmed.
-- Preserve user-scoped cache isolation and conversation state restoration where confirmed.
-- Preserve artwork/artist origin context and buyer-only direct-conversation creation constraints where enforced.
-- Preserve server-side participant authorization and role boundaries.
-- Trace current implementation before modifying any of these.
+## Responsive and installable experiences
 
-## Implementation source map
-- Router: `resources/js/app/AppRouter.jsx`
-- Role navigation: `resources/js/app/workspaceNavigation.js`
-- Layouts: `resources/js/app/Layouts.jsx`, `resources/js/app/RoutingPages.jsx`
-- Messaging shell: `resources/js/app/MessagingCenter.jsx`, `MessagingInboxPanel.jsx`, `ConversationHeader.jsx`, `MessageTimeline.jsx`, `MessageComposer.jsx`, `RelatedArtworkStrip.jsx`, `MessagingStatusBanners.jsx`
-- Messaging data/cache: `useMessagingQueries.js`, `messagingQueryUtils.js`
-- Styling: `resources/css/app.css`
-These are starting points; follow callers and backend request paths before implementation.
+Design for the devices and usage context relevant to the feature. If installability or offline behavior is requested, inspect the manifest, icons, service worker, lifecycle, storage and network behavior before making implementation claims. Protect private workspace and messaging data when considering caching or offline support.
 
-## Decision rule
-This document describes target experience principles. The latest `main` branch establishes what exists. Product-owner direction establishes what should change. If an old component catalogue, legacy design guide or skill conflicts with this refactor, update that guidance rather than preserving the old design system.
+## Messaging experience
+
+The application currently has buyer–artist messaging. Inspect the current conversation identity, list/history, composer, contextual artwork, permissions, synchronization, attachments and safety flows before changing it. Avoid accidental duplicate destinations or data-contract changes. These are considerations for informed design, not a prohibition on user-requested redesign.
+
+## Implementation references
+
+- Application routes: resources/js/app/AppRouter.jsx
+- Workspace navigation: resources/js/app/workspaceNavigation.js
+- Shared UI: resources/js/components/ui/
+- Global styles and tokens: resources/css/app.css
+
+Verify these paths and their current contents before relying on them.
