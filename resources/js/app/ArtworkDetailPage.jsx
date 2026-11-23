@@ -9,7 +9,8 @@ import { formatArtworkPrice } from '../utils/formatArtworkPrice';
 
 function ArtworkImage({ artwork }) {
     return (
-        <div className="flex aspect-[4/3] items-center justify-center overflow-hidden border border-border bg-surface-muted p-3 sm:p-6 lg:aspect-[4/5] lg:p-8">
+        <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-surface-muted p-3 sm:p-6 lg:aspect-[4/5] lg:p-8">
+            <span aria-hidden="true" className="absolute inset-3 border border-border/70 sm:inset-5" />
             <MediaImage
                 src={artwork.image_url}
                 alt={artwork.title}
@@ -81,21 +82,24 @@ export default function ArtworkDetailPage() {
                 </section>
             ) : (
                 <>
-                    <article className="mt-7 grid items-start gap-8 lg:grid-cols-[1.15fr_.85fr] lg:gap-10">
-                        <ArtworkImage artwork={artwork} />
+                    <article className="mt-8 grid items-start gap-8 lg:grid-cols-[1.15fr_.85fr] lg:gap-12">
+                        <div className="min-w-0">
+                            <ArtworkImage artwork={artwork} />
+                            <p className="mt-3 text-xs leading-6 text-muted">تصویر اثر با حفظ نسبت و جزئیات اصلی نمایش داده شده است.</p>
+                        </div>
                         <div className="border-y border-border bg-transparent py-6 sm:py-9 lg:sticky lg:top-28 lg:border-y-0 lg:py-2">
-                            <p className="text-sm font-bold text-terracotta-strong">{artwork.category?.name}</p>
+                            <p className="text-[11px] font-extrabold tracking-[.14em] text-terracotta-strong">پرونده اثر <span className="mx-1 text-subtle">/</span> {artwork.category?.name}</p>
                             <h1 className="mt-3 text-3xl font-black leading-relaxed tracking-tight sm:text-4xl">{artwork.title}</h1>
                             <Link to={'/artists/' + artwork.artist.slug} className="mt-3 inline-block text-sm font-semibold text-terracotta-strong underline">{artwork.artist.display_name}</Link>
                             {artwork.description && <p className="mt-7 whitespace-pre-line text-sm leading-9 text-muted">{artwork.description}</p>}
-                            <dl className="mt-7 grid grid-cols-2 gap-x-5 gap-y-6 border-y border-border py-6 text-sm">
+                            <dl className="mt-8 grid grid-cols-2 gap-x-5 gap-y-6 border-y border-border py-7 text-sm">
                                 {artwork.medium && <div><dt className="text-xs text-muted">تکنیک / مواد</dt><dd className="mt-1 font-semibold">{artwork.medium}</dd></div>}
                                 {artwork.dimensions && <div><dt className="text-xs text-muted">ابعاد</dt><dd className="mt-1 font-semibold">{artwork.dimensions}</dd></div>}
                                 {artwork.year && <div><dt className="text-xs text-muted">سال خلق</dt><dd className="mt-1 font-semibold">{artwork.year.toLocaleString('fa-IR')}</dd></div>}
                                 <div><dt className="text-xs text-muted">قیمت</dt><dd className="mt-1 font-semibold">{formatArtworkPrice(artwork.price)}</dd></div>
                             </dl>
                             <p className="mt-5 inline-flex items-center gap-2 text-sm text-muted"><span aria-hidden="true" className="h-2 w-2 rounded-full bg-olive" />وضعیت: {availabilityLabel(artwork.availability)}</p>
-                            {user?.role === 'buyer' && <div className="mt-7 flex flex-wrap gap-3">
+                            {user?.role === 'buyer' && <div className="mt-8 flex flex-wrap gap-3">
                                 <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(artwork.artist.slug) + '&artwork=' + encodeURIComponent(artwork.slug)} className="inline-flex items-center bg-ink px-5 py-3 text-sm font-bold text-inverse hover:bg-terracotta">پیام مستقیم درباره این اثر</Link>
                             </div>}
                             {!user && <Link to="/login" state={{ from: { pathname: '/artworks/' + slug } }} className="mt-7 inline-block text-sm font-bold text-terracotta-strong underline">برای ارسال پیام مستقیم وارد شوید</Link>}
