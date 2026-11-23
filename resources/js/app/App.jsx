@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import ArtworkGallery from './ArtworkGallery';
 import ArtworkStudio from './ArtworkStudio';
 import DesignFoundation from './DesignFoundation';
-import { Tabs, TabsList, TabsTrigger, TabsContent, SelectField, Checkbox } from '../components/ui';
+import { Tabs, TabsList, TabsTrigger, TabsContent, SelectField, Checkbox, FormField, TextInput, TextareaField, Button } from '../components/ui';
 
 const highlights = [
     { number: '01', title: 'هنر اصیل', description: 'آثار منتخب هنرمندان مستقل را کشف کنید.' },
@@ -211,9 +211,7 @@ export default function App() {
                         <span className="rounded-full bg-surface-muted px-3 py-2 text-xs font-bold text-terracotta-strong">
                             {user.role === 'admin' ? 'مدیر' : user.role === 'buyer' ? 'خریدار' : 'هنرمند'}
                         </span>
-                        <button onClick={logout} className="rounded-full border border-border-strong px-4 py-2.5 font-semibold transition hover:border-terracotta hover:text-terracotta-strong">
-                            خروج
-                        </button>
+                        <Button variant="outline" type="button" onClick={logout} className="rounded-full px-4 py-2.5">خروج</Button>
                     </div>
                 ) : (
                     <a href="#account" className="rounded-full border border-border-strong px-5 py-2.5 text-sm font-semibold transition hover:border-terracotta hover:text-terracotta-strong">
@@ -309,42 +307,13 @@ export default function App() {
                             </TabsList>
                             <TabsContent value={authMode} className="pt-0">
                         <form onSubmit={submitAuth} className="space-y-4">
-                            {authMode === 'register' && (
-                                <label className="block text-sm font-semibold">
-                                    نوع حساب
-                                    <SelectField name="role" value={form.role} onChange={updateForm} aria-label="نوع حساب" className="mt-2 w-full rounded-xl border border-border bg-surface-muted px-4 py-3">
-                                        <option value="buyer">خریدار</option>
-                                        <option value="artist">هنرمند</option>
-                                    </SelectField>
-                                </label>
-                            )}
-                            {authMode === 'register' && (
-                                <label className="block text-sm font-semibold">
-                                    نام و نام خانوادگی
-                                    <input name="name" value={form.name} onChange={updateForm} required maxLength="120" autoComplete="name" className="mt-2 w-full rounded-xl border border-border bg-surface-muted px-4 py-3 outline-none focus:border-terracotta" />
-                                    {authErrors.name?.map((message) => <span key={message} className="mt-1 block text-xs text-danger">{message}</span>)}
-                                </label>
-                            )}
-                            <label className="block text-sm font-semibold">
-                                ایمیل
-                                <input type="email" name="email" value={form.email} onChange={updateForm} required autoComplete="email" dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-surface-muted px-4 py-3 text-left outline-none focus:border-terracotta" />
-                                {authErrors.email?.map((message) => <span key={message} className="mt-1 block text-xs text-danger">{message}</span>)}
-                            </label>
-                            <label className="block text-sm font-semibold">
-                                گذرواژه
-                                <input type="password" name="password" value={form.password} onChange={updateForm} required minLength="10" autoComplete={authMode === 'register' ? 'new-password' : 'current-password'} dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-surface-muted px-4 py-3 text-left outline-none focus:border-terracotta" />
-                                {authErrors.password?.map((message) => <span key={message} className="mt-1 block text-xs text-danger">{message}</span>)}
-                            </label>
-                            {authMode === 'register' && (
-                                <label className="block text-sm font-semibold">
-                                    تکرار گذرواژه
-                                    <input type="password" name="password_confirmation" value={form.password_confirmation} onChange={updateForm} required minLength="10" autoComplete="new-password" dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-surface-muted px-4 py-3 text-left outline-none focus:border-terracotta" />
-                                </label>
-                            )}
+                            {authMode === 'register' && <FormField label="نوع حساب"><SelectField name="role" value={form.role} onChange={updateForm}><option value="buyer">خریدار</option><option value="artist">هنرمند</option></SelectField></FormField>}
+                            {authMode === 'register' && <FormField label="نام و نام خانوادگی" required error={authErrors.name?.join(' ')}><TextInput name="name" value={form.name} onChange={updateForm} required maxLength="120" autoComplete="name" /></FormField>}
+                            <FormField label="ایمیل" required error={authErrors.email?.join(' ')}><TextInput type="email" name="email" value={form.email} onChange={updateForm} required autoComplete="email" dir="ltr" className="text-left" /></FormField>
+                            <FormField label="گذرواژه" required error={authErrors.password?.join(' ')}><TextInput type="password" name="password" value={form.password} onChange={updateForm} required minLength="10" autoComplete={authMode === 'register' ? 'new-password' : 'current-password'} dir="ltr" className="text-left" /></FormField>
+                            {authMode === 'register' && <FormField label="تکرار گذرواژه" required><TextInput type="password" name="password_confirmation" value={form.password_confirmation} onChange={updateForm} required minLength="10" autoComplete="new-password" dir="ltr" className="text-left" /></FormField>}
                             {authErrors.form?.map((message) => <p key={message} role="alert" className="text-sm text-danger">{message}</p>)}
-                            <button disabled={busy} className="w-full rounded-xl bg-ink px-6 py-3.5 font-bold text-inverse transition hover:bg-terracotta disabled:cursor-wait disabled:opacity-60">
-                                {busy ? 'لطفاً صبر کنید…' : authMode === 'register' ? (form.role === 'buyer' ? 'ایجاد حساب خریدار' : 'ایجاد حساب هنرمند') : 'ورود به حساب'}
-                            </button>
+                            <Button type="submit" disabled={busy} loading={busy} className="w-full bg-ink text-inverse hover:bg-terracotta">{busy ? 'لطفاً صبر کنید…' : authMode === 'register' ? (form.role === 'buyer' ? 'ایجاد حساب خریدار' : 'ایجاد حساب هنرمند') : 'ورود به حساب'}</Button>
                         </form>
                             </TabsContent>
                         </Tabs>
@@ -363,39 +332,15 @@ export default function App() {
                             <p className="mt-2 text-sm leading-7 text-muted">اطلاعات معرفی خود را تکمیل کنید. ایمیل و نقش حساب از بخش پروفایل قابل تغییر نیستند.</p>
                         </div>
                         <form onSubmit={saveProfile} className="space-y-4">
-                            <label className="block text-sm font-semibold">
-                                نام نمایشی
-                                <input name="display_name" value={profile.display_name} onChange={updateProfileForm} required maxLength="120" className="mt-2 w-full rounded-xl border border-border bg-surface-muted px-4 py-3 outline-none focus:border-terracotta" />
-                                {profileErrors.display_name?.map((message) => <span key={message} className="mt-1 block text-xs text-danger">{message}</span>)}
-                            </label>
-                            <label className="block text-sm font-semibold">
-                                درباره هنرمند
-                                <textarea name="bio" value={profile.bio ?? ''} onChange={updateProfileForm} rows="4" maxLength="2000" className="mt-2 w-full rounded-xl border border-border bg-surface-muted px-4 py-3 leading-7 outline-none focus:border-terracotta" placeholder="درباره مسیر هنری و زمینه فعالیت خود بنویسید…" />
-                                {profileErrors.bio?.map((message) => <span key={message} className="mt-1 block text-xs text-danger">{message}</span>)}
-                            </label>
+                            <FormField label="نام نمایشی" required error={profileErrors.display_name?.join(' ')}><TextInput name="display_name" value={profile.display_name} onChange={updateProfileForm} required maxLength="120" /></FormField>
+                            <FormField label="درباره هنرمند" error={profileErrors.bio?.join(' ')}><TextareaField name="bio" value={profile.bio ?? ''} onChange={updateProfileForm} rows={4} maxLength={2000} placeholder="درباره مسیر هنری و زمینه فعالیت خود بنویسید…" /></FormField>
                             <div className="grid gap-4 sm:grid-cols-2">
-                                <label className="block text-sm font-semibold">
-                                    شهر
-                                    <input name="city" value={profile.city ?? ''} onChange={updateProfileForm} maxLength="120" className="mt-2 w-full rounded-xl border border-border bg-surface-muted px-4 py-3 outline-none focus:border-terracotta" />
-                                    {profileErrors.city?.map((message) => <span key={message} className="mt-1 block text-xs text-danger">{message}</span>)}
-                                </label>
-                                <label className="block text-sm font-semibold">
-                                    شناسه اینستاگرام
-                                    <input name="instagram_handle" value={profile.instagram_handle ?? ''} onChange={updateProfileForm} maxLength="30" dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-surface-muted px-4 py-3 text-left outline-none focus:border-terracotta" placeholder="your.handle" />
-                                    {profileErrors.instagram_handle?.map((message) => <span key={message} className="mt-1 block text-xs text-danger">{message}</span>)}
-                                </label>
+                                <FormField label="شهر" error={profileErrors.city?.join(' ')}><TextInput name="city" value={profile.city ?? ''} onChange={updateProfileForm} maxLength="120" /></FormField>
+                                <FormField label="شناسه اینستاگرام" error={profileErrors.instagram_handle?.join(' ')}><TextInput name="instagram_handle" value={profile.instagram_handle ?? ''} onChange={updateProfileForm} maxLength="30" dir="ltr" className="text-left" placeholder="your.handle" /></FormField>
                             </div>
-                            <label className="block text-sm font-semibold">
-                                وب‌سایت
-                                <input name="website_url" type="url" value={profile.website_url ?? ''} onChange={updateProfileForm} dir="ltr" className="mt-2 w-full rounded-xl border border-border bg-surface-muted px-4 py-3 text-left outline-none focus:border-terracotta" placeholder="https://example.com" />
-                                {profileErrors.website_url?.map((message) => <span key={message} className="mt-1 block text-xs text-danger">{message}</span>)}
-                            </label>
-                            <Checkbox name="is_public" checked={Boolean(profile.is_public)} onChange={updateProfileForm} className="flex min-h-11 items-center gap-3 text-sm font-semibold">
-                                نمایش عمومی پروفایل
-                            </Checkbox>
-                            <button disabled={profileBusy} className="w-full rounded-xl bg-ink px-6 py-3.5 font-bold text-inverse transition hover:bg-terracotta disabled:cursor-wait disabled:opacity-60">
-                                {profileBusy ? 'در حال ذخیره…' : 'ذخیره پروفایل'}
-                            </button>
+                            <FormField label="وب‌سایت" error={profileErrors.website_url?.join(' ')}><TextInput name="website_url" type="url" value={profile.website_url ?? ''} onChange={updateProfileForm} dir="ltr" className="text-left" placeholder="https://example.com" /></FormField>
+                            <Checkbox name="is_public" checked={Boolean(profile.is_public)} onChange={updateProfileForm} className="flex min-h-11 items-center gap-3 text-sm font-semibold">نمایش عمومی پروفایل</Checkbox>
+                            <Button type="submit" disabled={profileBusy} loading={profileBusy} className="w-full bg-ink text-inverse hover:bg-terracotta">{profileBusy ? 'در حال ذخیره…' : 'ذخیره پروفایل'}</Button>
                         </form>
                         {profileMessage && <p role="status" className="mt-4 text-sm text-terracotta-strong">{profileMessage}</p>}
                         {profile.slug && profile.is_public && (
@@ -425,9 +370,7 @@ export default function App() {
                                             <td>{item.role === 'admin' ? 'مدیر' : item.role === 'buyer' ? 'خریدار' : 'هنرمند'}</td>
                                             <td>
                                                 {item.id !== user.id && (
-                                                    <button onClick={() => changeRole(item, item.role === 'admin' ? 'artist' : 'admin')} className="rounded-full border border-border-strong px-3 py-1.5 text-xs font-semibold hover:border-terracotta">
-                                                        {item.role === 'admin' ? 'تبدیل به هنرمند' : 'ارتقا به مدیر'}
-                                                    </button>
+                                                    <Button variant="outline" type="button" onClick={() => changeRole(item, item.role === 'admin' ? 'artist' : 'admin')} size="sm" className="rounded-full">{item.role === 'admin' ? 'تبدیل به هنرمند' : 'ارتقا به مدیر'}</Button>
                                                 )}
                                             </td>
                                         </tr>
