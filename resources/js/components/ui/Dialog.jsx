@@ -7,7 +7,7 @@ export const DialogClose = DialogPrimitive.Close;
 export function DialogContent({ children, className = '', overlayClassName = '', placement = 'center', ...props }) {
     return (
         <DialogPrimitive.Portal>
-            <DialogPrimitive.Overlay data-ui="dialog-overlay" className={`fixed inset-0 z-50 bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)] ${overlayClassName}`} />
+            <DialogPrimitive.Overlay data-ui="dialog-overlay" className={`fixed inset-0 z-50 bg-[color:var(--color-overlay)] backdrop-blur-sm ${overlayClassName}`} />
             <DialogPrimitive.Content
                 data-ui="dialog"
                 dir="rtl"
