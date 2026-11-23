@@ -1,6 +1,6 @@
 # Rademan UI/UX Redesign Specification
 
-**Target baseline:** `agent/chatgpt`  
+**Target baseline:** `agent/chatgpt` (existing working branch; legacy flat ref retained until an owner-approved migration)  
 **Product direction:** Editorial Contemporary Art  
 **Primary locale:** Persian (RTL), with English (LTR) support  
 **Responsive strategy:** Mobile-first, adaptive navigation  
