@@ -136,6 +136,21 @@ test('attachment upload and private image preview enforce participant, type, siz
     assert.ok(attachments.includes("'X-Content-Type-Options' => 'nosniff'"));
 });
 
+test('in-flight sends and recoverable failures remain associated with their originating conversation', () => {
+    assert.ok(messaging.includes('const [sendingConversationId, setSendingConversationId] = useState(null)'));
+    assert.ok(messaging.includes('setSendingConversationId(Number(conversationId))'));
+    assert.ok(messaging.includes('setSendingConversationId(null)'));
+    assert.ok(messaging.includes('if (!sendingMessageRef.current) {'));
+    assert.ok(messaging.includes('sendErrorsByConversationRef.current.set(Number(conversationId), sendError)'));
+    assert.ok(messaging.includes('sendErrorsByConversationRef.current.get(Number(active))'));
+    assert.ok(messaging.includes('sendingInAnotherConversation={sending && Number(sendingConversationId) !== Number(active)}'));
+    assert.ok(messageComposer.includes('در حال ارسال در گفتگوی دیگر'));
+    assert.ok(messagingInbox.includes('sendingConversationId={sendingConversationId}') === false, 'The inbox panel receives the active send ID from its parent render.');
+    assert.ok(messagingInbox.includes('Number(sendingConversationId) === Number(thread.id)'));
+    assert.ok(messagingInbox.includes('در حال ارسال پیام و پیوست'));
+    assert.ok(messagingInbox.includes('role="status" aria-live="polite"'));
+});
+
 test('direct messaging routes remain available in the authenticated workspace', () => {
     assert.ok(routes.includes("Route::post('/conversations/direct'"));
     assert.ok(routes.includes("Route::get('/conversations/{conversation}/messages'"));
