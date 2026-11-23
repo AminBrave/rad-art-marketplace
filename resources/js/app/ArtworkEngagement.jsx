@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -63,6 +63,12 @@ export default function ArtworkEngagement({ artwork, slug }) {
         },
         enabled: Boolean(slug),
     });
+
+    useEffect(() => {
+        if (!commentsQuery.isSuccess || !window.location.hash.startsWith('#comment-')) return;
+        const target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+        target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, [commentsQuery.data, commentsQuery.isSuccess]);
 
     const refreshArtwork = () => queryClient.invalidateQueries({ queryKey: ['artwork', slug] });
     const refreshComments = () => queryClient.invalidateQueries({ queryKey: ['artwork-comments', slug] });
