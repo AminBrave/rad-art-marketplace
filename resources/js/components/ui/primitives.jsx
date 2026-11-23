@@ -209,13 +209,17 @@ export function FormField({ id, label, hint, error, required = false, children, 
     );
 }
 
-export function TextInput({ className = '', ...props }) {
-    return <input className={`${controlClass} ${className}`} {...props} />;
-}
+export const TextInput = forwardRef(function TextInput({ className = '', ...props }, ref) {
+    return <input ref={ref} className={cn(controlClass, className)} {...props} />;
+});
 
-export function TextareaField({ className = '', rows = 4, ...props }) {
-    return <textarea rows={rows} className={cn(controlClass, 'min-h-28 resize-y leading-copy', className)} {...props} />;
-}
+export const TextareaField = forwardRef(function TextareaField({ className = '', rows = 4, ...props }, ref) {
+    return <textarea ref={ref} rows={rows} className={cn(controlClass, 'min-h-28 resize-y leading-copy', className)} {...props} />;
+});
+
+export const FileInput = forwardRef(function FileInput({ className = '', ...props }, ref) {
+    return <input ref={ref} type="file" className={cn(controlClass, 'cursor-pointer file:ms-3 file:rounded-sm file:border-0 file:bg-surface-muted file:px-3 file:py-2 file:font-semibold', className)} {...props} />;
+});
 
 const emptySelectValue = '__radix_empty_option__';
 
