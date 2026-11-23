@@ -102,7 +102,9 @@ export default function ArtworkDetailPage() {
                             {user && user.role !== 'buyer' && <p className="mt-7 text-xs leading-6 text-muted">ارسال پیام مستقیم از حساب خریدار امکان‌پذیر است.</p>}
                         </div>
                     </article>
-                    <ArtworkEngagement artwork={artwork} slug={slug} />
+                    {typeof artwork.likes_count === 'number' && typeof artwork.comments_count === 'number' && (
+                        <ArtworkEngagement artwork={artwork} slug={slug} />
+                    )}
                     {artwork.related_artworks?.length > 0 && (
                         <section className="mt-16 border-t border-border pt-10 lg:mt-20 lg:pt-14">
                             <div className="flex flex-wrap items-end justify-between gap-3">
