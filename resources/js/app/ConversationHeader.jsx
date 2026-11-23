@@ -1,4 +1,4 @@
-import { Tooltip, DropdownMenu } from '../components/ui';
+import { Tooltip, DropdownMenu, Button } from '../components/ui';
 import { Link } from 'react-router-dom';
 import { Ban, ChevronRight, Flag, MoreVertical, ShieldCheck } from 'lucide-react';
 
@@ -19,14 +19,14 @@ export default function ConversationHeader({
         <header className="relative z-20 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_96%,transparent)] shadow-soft backdrop-blur after:absolute after:inset-x-0 after:top-0 after:h-1 after:bg-terracotta">
             <div className="flex min-h-[3.5rem] min-w-0 items-center gap-2 px-3 py-2 pt-3 md:min-h-[3.75rem] md:gap-3 md:px-4">
                 <Tooltip content="بازگشت به گفتگوها">
-                    <button
+                    <Button variant="ghost"
                         type="button"
                         aria-label="بازگشت به گفتگوها"
                         className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-canvas text-ink transition hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:hidden"
                         onClick={onBack}
                     >
                         <ChevronRight size={19} aria-hidden="true" />
-                    </button>
+                    </Button>
                 </Tooltip>
                 {selected?.artist?.slug ? (
                     <Tooltip content="مشاهده پروفایل هنرمند">
@@ -76,13 +76,13 @@ export default function ConversationHeader({
                 <DropdownMenu.Root dir="rtl" open={openPopover === 'conversation'} onOpenChange={onPopoverOpenChange}>
                     <Tooltip content="گزینه‌های بیشتر">
                         <DropdownMenu.Trigger asChild>
-                            <button
+                            <Button variant="ghost"
                                 type="button"
                                 aria-label="گزینه‌های بیشتر گفتگو"
                                 className="flex h-10 w-10 items-center justify-center rounded-full border border-transparent bg-surface-muted text-muted transition-colors hover:border-border-strong hover:bg-surface hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"
                             >
                                 <MoreVertical size={19} aria-hidden="true" />
-                            </button>
+                            </Button>
                         </DropdownMenu.Trigger>
                     </Tooltip>
                     <DropdownMenu.Portal>
