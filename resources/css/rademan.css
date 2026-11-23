@@ -64,7 +64,7 @@
 [data-experience=discover] [data-testid=public-navigation-rail]::before{content:"ر";display:grid;place-items:center;width:44px;height:44px;margin:4px auto 22px;border-radius:14px;background:var(--rd-text);color:var(--rd-inverse);font-size:24px;font-weight:900}
 [data-experience=discover] [data-testid=public-navigation-rail] nav a{height:48px;width:48px;margin-inline:auto;border-radius:14px}
 [data-experience=discover] [data-testid=public-navigation-rail] nav a[aria-current=page]{background:var(--rd-accent-soft);color:var(--rd-link)}
-[data-experience=discover] [data-testid=public-bottom-navigation] a[aria-current=page]{color:var(--rd-accent)}
+[data-experience=discover] [data-testid=public-bottom-navigation] a[aria-current=page]{color:var(--rd-link)}
 @media(min-width:1440px){
  [data-experience=discover] [data-testid=public-navigation-rail]{width:220px;padding:20px 14px}
  [data-experience=discover] [data-testid=public-navigation-rail] nav{align-items:stretch}
