@@ -320,7 +320,7 @@ export function ArtistWorkspaceLayout() {
 export function ArtistDashboardHome() {
     const { user, profile, profileLoading, profileError } = useOutletContext();
     return (
-        <section className="space-y-6" dir="rtl">
+        <section data-page="artist-settings" className="space-y-6" dir="rtl">
             <WorkspaceHero
                 eyebrow="فضای هنرمند"
                 title={<>خوش آمدید، {user.name}</>}
@@ -465,7 +465,7 @@ export function PublicInfoPage({ title, description }) {
 export function UnauthorizedPage() {
     const { user } = useAuth();
     return (
-        <main className="mx-auto max-w-2xl px-6 py-20 text-center" dir="rtl">
+        <main data-page="error-state" className="mx-auto max-w-2xl px-6 py-20 text-center" dir="rtl">
             <p className="text-sm font-bold text-accent-strong">۴۰۳</p>
             <h1 className="mt-3 text-3xl font-black">دسترسی به این بخش مجاز نیست</h1>
             <p className="mt-4 leading-8 text-muted">نقش این حساب اجازه ورود به این فضای کاربری را ندارد. مجوزهای واقعی همچنان در سمت سرور بررسی می‌شوند.</p>
