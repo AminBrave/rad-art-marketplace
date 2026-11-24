@@ -36,7 +36,7 @@ export function DropdownMenuContent({ className = '', sideOffset = 6, ...props }
             sideOffset={sideOffset}
             align="end"
             dir="rtl"
-            className={cn('z-50 min-w-44 rounded-editorial border border-border bg-paper p-1.5 text-ink shadow-raised outline-none', className)}
+            className={cn('z-50 min-w-44  border border-border bg-paper p-1.5 text-ink shadow-raised outline-none', className)}
             {...props}
         />
     );
@@ -45,7 +45,7 @@ export function DropdownMenuContent({ className = '', sideOffset = 6, ...props }
 export function DropdownMenuItem({ className = '', ...props }) {
     return (
         <DropdownMenuPrimitive.Item
-            className={cn('flex min-h-10 cursor-pointer items-center rounded-sm px-3 py-2 text-sm outline-none focus:bg-surface-muted focus:text-ink data-[disabled]:pointer-events-none data-[disabled]:opacity-40', className)}
+            className={cn('flex min-h-10 cursor-pointer items-center  px-3 py-2 text-sm outline-none focus:bg-surface-muted focus:text-ink data-[disabled]:pointer-events-none data-[disabled]:opacity-40', className)}
             {...props}
         />
     );
@@ -116,7 +116,7 @@ export function Pagination({ currentPage = 1, lastPage = 1, onPageChange, disabl
                             aria-current={number === page ? 'page' : undefined}
                             disabled={disabled}
                             onClick={() => onPageChange(number)}
-                            className={cn('h-9 min-h-9 min-w-9 rounded-control px-2 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-terracotta-strong disabled:opacity-50', number === page ? 'bg-ink text-inverse' : 'text-ink hover:bg-surface-muted')}
+                            className={cn('h-9 min-h-9 min-w-9  px-2 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-terracotta-strong disabled:opacity-50', number === page ? 'bg-ink text-inverse' : 'text-ink hover:bg-surface-muted')}
                         >
                             {number}
                         </Button>
