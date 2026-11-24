@@ -1,5 +1,5 @@
 import { Skeleton } from './feedback';
-import { PageContainer } from './primitives';
+import { Container, Section } from './layout';
 
 export function ArtworkCardSkeleton({ className = '' }) {
     return (
@@ -190,13 +190,14 @@ export function ArtistRecentWorkSkeleton({ announce = true }) {
 }
 export function AdminDashboardSkeleton() {
     return (
-        <section role="status" aria-live="polite" aria-busy="true" aria-label="در حال دریافت پنل مدیریت" className="grid gap-8" dir="rtl">
-            <header className="grid gap-4 overflow-hidden border-y-2 border-ink bg-ink p-6 sm:p-8">
+        <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال دریافت پنل مدیریت" className="w-full grid gap-8" dir="rtl">
+            <Section as="header" bleed className="overflow-hidden border-y border-divider-section bg-ink"><Container width="wide" className="grid gap-4 p-6 sm:p-8">
                 <Skeleton className="h-3 w-28 rounded-sm" />
                 <Skeleton className="h-9 w-2/3 max-w-xl rounded-sm sm:h-11" />
                 <div className="grid max-w-3xl gap-2"><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div>
                 <Skeleton className="h-11 w-40 rounded-sm" />
-            </header>
+            </Container></Section>
+            <Container width="wide" className="grid gap-8">
             <DashboardMetricSkeleton count={3} announce={false} />
             <section className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,.8fr)]">
                 <div className="border-y border-border bg-transparent py-5 sm:p-7">
@@ -223,7 +224,7 @@ export function AdminDashboardSkeleton() {
                     ))}
                 </div>
             </section>
-        </section>
+        </Container></div>
     );
 }
 
@@ -249,7 +250,7 @@ export function WorkspaceIdentitySkeleton({ announce = true }) {
             aria-busy={announce ? 'true' : undefined}
             aria-label={announce ? 'در حال دریافت اطلاعات پروفایل هنرمند' : undefined}
             aria-hidden={announce ? undefined : 'true'}
-            className="grid gap-5 border-y-2 border-ink bg-transparent py-6 sm:py-7 lg:grid-cols-[1fr_15rem] lg:items-center"
+            className="grid gap-5 border-y border-divider-section bg-transparent py-6 sm:py-7 lg:grid-cols-[1fr_15rem] lg:items-center"
         >
             <div className="grid gap-3">
                 <div className="flex items-center gap-3"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-6 w-24 rounded-full" /></div>
@@ -325,7 +326,7 @@ export function CollectionCardSkeleton({ count = 3, announce = true }) {
 export function AdminEditorialSkeleton({ announce = true }) {
     return (
         <div role={announce ? 'status' : undefined} aria-live={announce ? 'polite' : undefined} aria-busy={announce ? 'true' : undefined} aria-label={announce ? 'در حال دریافت محتوای سردبیری' : undefined} aria-hidden={announce ? undefined : 'true'} className="grid gap-8">
-            <section className="grid gap-4 border-y-2 border-ink bg-transparent py-5 sm:py-7">
+            <section className="grid gap-4 border-y border-divider-section bg-transparent py-5 sm:py-7">
                 <Skeleton className="h-7 w-44 rounded-sm" />
                 <div className="grid gap-2"><Skeleton className="h-4 w-28 rounded-sm" /><Skeleton className="h-11 w-full rounded-sm" /></div>
                 <div className="grid gap-2"><Skeleton className="h-4 w-32 rounded-sm" /><Skeleton className="h-28 w-full rounded-sm" /><Skeleton className="h-3 w-2/3 rounded-sm" /></div>
@@ -333,19 +334,19 @@ export function AdminEditorialSkeleton({ announce = true }) {
                 <div className="flex gap-2"><Skeleton className="h-10 w-32 rounded-sm" /><Skeleton className="h-10 w-32 rounded-sm" /></div>
             </section>
             <section className="grid gap-4"><div className="flex items-center justify-between gap-3"><Skeleton className="h-6 w-40 rounded-sm" /><Skeleton className="h-9 w-28 rounded-sm" /></div>{[0, 1, 2].map((item) => <article key={item} className="grid gap-4 border border-border bg-paper p-5"><div className="flex items-start justify-between gap-3"><div className="grid flex-1 gap-2"><Skeleton className="h-5 w-2/3 rounded-sm" /><Skeleton className="h-3 w-1/3 rounded-sm" /><Skeleton className="h-3 w-1/2 rounded-sm" /></div><Skeleton className="h-4 w-16 rounded-sm" /></div><div className="flex flex-wrap gap-2 border-t border-border pt-4"><Skeleton className="h-9 w-24 rounded-sm" /><Skeleton className="h-9 w-24 rounded-sm" /><Skeleton className="h-9 w-24 rounded-sm" /><Skeleton className="h-9 w-24 rounded-sm" /></div></article>)}</section>
-            <section className="grid gap-4 border-y-2 border-ink bg-transparent py-5 sm:py-7"><Skeleton className="h-6 w-40 rounded-sm" /><Skeleton className="h-4 w-full max-w-xl rounded-sm" /><div className="grid gap-3 sm:grid-cols-2">{[0, 1, 2, 3].map((item) => <div key={item} className="grid gap-3 border border-border p-3"><div className="flex items-center gap-3"><Skeleton className="h-4 w-4 rounded-sm" /><Skeleton className="h-4 w-2/3 rounded-sm" /></div><Skeleton className="h-10 w-full rounded-sm" /></div>)}</div><Skeleton className="h-10 w-40 rounded-sm" /></section>
+            <section className="grid gap-4 border-y border-divider-section bg-transparent py-5 sm:py-7"><Skeleton className="h-6 w-40 rounded-sm" /><Skeleton className="h-4 w-full max-w-xl rounded-sm" /><div className="grid gap-3 sm:grid-cols-2">{[0, 1, 2, 3].map((item) => <div key={item} className="grid gap-3 border border-border p-3"><div className="flex items-center gap-3"><Skeleton className="h-4 w-4 rounded-sm" /><Skeleton className="h-4 w-2/3 rounded-sm" /></div><Skeleton className="h-10 w-full rounded-sm" /></div>)}</div><Skeleton className="h-10 w-40 rounded-sm" /></section>
         </div>
     );
 }
 
 export function CollectionDetailSkeleton() {
     return (
-        <PageContainer as="main" className="min-h-[65vh] py-12" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت مجموعه منتخب">
+        <Container as="div" width="wide" className="min-h-[65vh] py-12" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت مجموعه منتخب">
             <span className="sr-only">در حال دریافت مجموعه منتخب…</span>
             <nav aria-hidden="true" className="flex items-center gap-2"><Skeleton className="h-3 w-10 rounded-sm" /><Skeleton className="h-3 w-2 rounded-sm" /><Skeleton className="h-3 w-20 rounded-sm" /></nav>
             <header className="mt-7 max-w-3xl border-b border-border pb-8"><Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="mt-3 h-10 w-2/3 rounded-sm" /><div className="mt-5 grid gap-2"><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div></header>
             <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}</div>
-        </PageContainer>
+        </Container>
     );
 }
 
@@ -359,60 +360,63 @@ export function NotificationListSkeleton({ count = 3 }) {
 
 export function ArtistWorkspaceOverviewSkeleton() {
     return (
-        <section role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فضای هنرمند" className="grid gap-8" dir="rtl">
-            <header className="grid gap-4 overflow-hidden rounded-2xl bg-ink p-6 sm:p-8">
+        <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فضای هنرمند" className="w-full grid gap-8" dir="rtl">
+            <Section as="header" bleed className="overflow-hidden border-y border-divider-section bg-ink"><Container width="wide" className="grid gap-4 p-6 sm:p-8">
                 <Skeleton className="h-3 w-36 rounded-sm" />
                 <Skeleton className="h-9 w-2/3 max-w-xl rounded-sm sm:h-11" />
                 <div className="grid max-w-3xl gap-2"><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div>
                 <Skeleton className="h-11 w-40 rounded-sm" />
-            </header>
+            </Container></Section>
+            <Container width="wide">
             <WorkspaceIdentitySkeleton announce={false} />
-        </section>
+            </Container>
+        </div>
     );
 }
 export function BuyerDashboardSkeleton() {
     return (
-        <section role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فضای خریدار" className="grid gap-7" dir="rtl">
-            <header className="grid gap-4 overflow-hidden rounded-2xl bg-ink p-6 sm:p-8">
+        <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فضای خریدار" className="w-full grid gap-7" dir="rtl">
+            <Section as="header" bleed className="overflow-hidden border-y border-divider-section bg-ink"><Container width="wide" className="grid gap-4 p-6 sm:p-8">
                 <Skeleton className="h-3 w-36 rounded-sm" />
                 <Skeleton className="h-9 w-full max-w-2xl rounded-sm sm:h-11" />
                 <div className="grid max-w-3xl gap-2"><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div>
                 <div className="flex flex-wrap gap-3"><Skeleton className="h-11 w-36 rounded-sm" /><Skeleton className="h-11 w-40 rounded-sm" /></div>
-            </header>
-            <section className="border-y-2 border-ink bg-transparent py-5 sm:py-7">
+            </Container></Section>
+            <Container width="wide" className="grid gap-7">
+            <section className="border-y border-divider-section bg-transparent py-5 sm:py-7">
                 <div className="flex items-start justify-between gap-4"><div className="grid min-w-0 flex-1 gap-2"><Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="h-6 w-40 rounded-sm" /><Skeleton className="h-3 w-full max-w-2xl rounded-sm" /><Skeleton className="h-3 w-4/5 max-w-xl rounded-sm" /></div><Skeleton className="h-12 w-12 shrink-0 rounded-sm" /></div>
                 <Skeleton className="mt-6 h-11 w-40 rounded-sm" />
             </section>
             <section className="border-t border-border pt-6">
                 <div className="grid gap-2"><Skeleton className="h-3 w-36 rounded-sm" /><Skeleton className="h-6 w-48 rounded-sm" /><Skeleton className="h-3 w-full max-w-2xl rounded-sm" /></div>
                 <div className="mt-5 grid gap-4 md:grid-cols-3">
-                    {[0, 1, 2].map((item) => <article key={item} className="grid gap-3 border-t-2 border-ink bg-transparent pt-4"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-5 w-3/4 rounded-sm" /><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-5/6 rounded-sm" /></article>)}
+                    {[0, 1, 2].map((item) => <article key={item} className="grid gap-3 border-t border-divider-group bg-transparent pt-4"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-5 w-3/4 rounded-sm" /><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-5/6 rounded-sm" /></article>)}
                 </div>
             </section>
-        </section>
+        </Container></div>
     );
 }
 
 export function HomePageSkeleton() {
     return (
-        <main role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی صفحه اصلی" className="overflow-hidden">
-            <section className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[1fr_.9fr] lg:gap-16 lg:px-10 lg:py-24">
+        <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی صفحه اصلی" className="w-full overflow-hidden">
+            <Container as="section" width="wide" className="grid items-center gap-10 py-12 sm:py-16 lg:grid-cols-[1fr_.9fr] lg:gap-16 lg:py-24">
                 <div className="grid max-w-2xl content-center gap-5"><Skeleton className="h-4 w-56 rounded-sm" /><Skeleton className="h-12 w-11/12 rounded-sm sm:h-14" /><Skeleton className="h-12 w-3/4 rounded-sm sm:h-14" /><div className="mt-2 grid gap-2"><Skeleton className="h-4 w-full max-w-xl rounded-sm" /><Skeleton className="h-4 w-4/5 rounded-sm" /></div><div className="mt-4 flex flex-wrap gap-3"><Skeleton className="h-12 w-40 rounded-sm" /><Skeleton className="h-12 w-36 rounded-sm" /></div><Skeleton className="mt-2 h-3 w-64 rounded-sm" /></div>
                 <div className="relative mx-auto w-full max-w-xl lg:me-0"><Skeleton className="aspect-[4/5] w-full rounded-none" /><div className="flex items-center justify-between gap-4 px-2 py-4"><div className="grid flex-1 gap-2"><Skeleton className="h-3 w-20 rounded-sm" /><Skeleton className="h-5 w-2/3 rounded-sm" /><Skeleton className="h-3 w-1/3 rounded-sm" /></div><Skeleton className="h-4 w-24 rounded-sm" /></div></div>
-            </section>
-            <section className="border-y border-border bg-surface-muted"><div className="mx-auto grid max-w-7xl gap-8 px-5 py-12 sm:grid-cols-3 sm:px-8 lg:px-10">{[0, 1, 2].map((item) => <div key={item} className="grid content-start gap-3"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-6 w-3/4 rounded-sm" /><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-11/12 rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div>)}</div></section>
-            <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10"><div className="grid gap-3 border-b border-border pb-5"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-8 w-48 rounded-sm" /><Skeleton className="h-3 w-64 max-w-full rounded-sm" /></div><div className="mt-8 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}</div></section>
-            <section className="border-y border-border bg-paper"><div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 lg:px-10"><Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="mt-2 h-7 w-52 rounded-sm" /><div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{[0, 1, 2, 3, 4, 5, 6, 7].map((item) => <Skeleton key={item} className="h-24 w-full rounded-none" />)}</div></div></section>
-            <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10"><div className="flex items-end justify-between gap-4 border-b border-border pb-5"><div className="grid gap-2"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-8 w-52 rounded-sm" /><Skeleton className="h-3 w-64 max-w-full rounded-sm" /></div><Skeleton className="h-4 w-20 rounded-sm" /></div><div className="mt-8 grid gap-4 sm:grid-cols-3">{[0, 1, 2].map((item) => <ArtistCardSkeleton key={item} />)}</div></section>
-            <section className="border-y border-border bg-surface-muted"><div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 lg:px-10"><Skeleton className="h-7 w-48 rounded-sm" /><div className="mt-6 grid gap-4 sm:grid-cols-3">{[0, 1, 2].map((item) => <div key={item} className="grid gap-3 border border-border bg-paper p-5"><Skeleton className="h-3 w-20 rounded-sm" /><Skeleton className="h-5 w-4/5 rounded-sm" /><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div>)}</div></div></section>
-            <section className="bg-ink"><div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-5 py-14 sm:px-8 md:flex-row md:items-center lg:px-10"><div className="grid flex-1 gap-3"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-8 w-2/3 max-w-lg rounded-sm" /><Skeleton className="h-3 w-full max-w-2xl rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div><Skeleton className="h-12 w-40 rounded-sm" /></div></section>
-        </main>
+            </Container>
+            <section className="border-y border-border bg-surface-muted"><Container className="grid gap-8 py-12 sm:grid-cols-3">{[0, 1, 2].map((item) => <div key={item} className="grid content-start gap-3"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-6 w-3/4 rounded-sm" /><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-11/12 rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div>)}</Container></section>
+            <Container as="section" width="wide" className="py-16"><div className="grid gap-3 border-b border-border pb-5"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-8 w-48 rounded-sm" /><Skeleton className="h-3 w-64 max-w-full rounded-sm" /></div><div className="mt-8 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}</div></Container>
+            <section className="border-y border-border bg-paper"><Container className="py-14"><Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="mt-2 h-7 w-52 rounded-sm" /><div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{[0, 1, 2, 3, 4, 5, 6, 7].map((item) => <Skeleton key={item} className="h-24 w-full rounded-none" />)}</div></Container></section>
+            <Container as="section" width="wide" className="py-16"><div className="flex items-end justify-between gap-4 border-b border-border pb-5"><div className="grid gap-2"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-8 w-52 rounded-sm" /><Skeleton className="h-3 w-64 max-w-full rounded-sm" /></div><Skeleton className="h-4 w-20 rounded-sm" /></div><div className="mt-8 grid gap-4 sm:grid-cols-3">{[0, 1, 2].map((item) => <ArtistCardSkeleton key={item} />)}</div></Container>
+            <section className="border-y border-border bg-surface-muted"><Container className="py-14"><Skeleton className="h-7 w-48 rounded-sm" /><div className="mt-6 grid gap-4 sm:grid-cols-3">{[0, 1, 2].map((item) => <div key={item} className="grid gap-3 border border-border bg-paper p-5"><Skeleton className="h-3 w-20 rounded-sm" /><Skeleton className="h-5 w-4/5 rounded-sm" /><Skeleton className="h-3 w-full rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div>)}</div></Container></section>
+            <section className="bg-ink"><Container className="flex flex-col items-start justify-between gap-6 py-14 md:flex-row md:items-center"><div className="grid flex-1 gap-3"><Skeleton className="h-3 w-24 rounded-sm" /><Skeleton className="h-8 w-2/3 max-w-lg rounded-sm" /><Skeleton className="h-3 w-full max-w-2xl rounded-sm" /><Skeleton className="h-3 w-4/5 rounded-sm" /></div><Skeleton className="h-12 w-40 rounded-sm" /></Container></section>
+        </div>
     );
 }
 
 export function ArtworkDetailSkeleton() {
     return (
-        <PageContainer as="main" className="min-h-[65vh] py-10 lg:py-14" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت اثر هنری">
+        <Container as="div" width="wide" className="min-h-[65vh] py-10 lg:py-14" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت اثر هنری">
             <span className="sr-only">در حال دریافت اثر هنری…</span>
             <nav aria-hidden="true" className="flex items-center gap-2"><Skeleton className="h-3 w-10 rounded-sm" /><Skeleton className="h-3 w-2 rounded-sm" /><Skeleton className="h-3 w-20 rounded-sm" /><Skeleton className="h-3 w-2 rounded-sm" /><Skeleton className="h-3 w-16 rounded-sm" /></nav>
             <article className="mt-7 grid items-start gap-8 lg:grid-cols-[1.15fr_.85fr] lg:gap-10">
@@ -427,16 +431,16 @@ export function ArtworkDetailSkeleton() {
                     <Skeleton className="mt-7 h-12 w-52 rounded-sm" />
                 </div>
             </article>
-        </PageContainer>
+        </Container>
     );
 }
 
 export function ArtistProfileSkeleton() {
     return (
-        <PageContainer as="main" className="min-h-[65vh] pb-16 pt-8 sm:pt-12" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت پروفایل هنرمند">
+        <Container as="div" width="wide" className="min-h-[65vh] pb-16 pt-8 sm:pt-12" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت پروفایل هنرمند">
             <span className="sr-only">در حال دریافت پروفایل هنرمند…</span>
             <nav aria-hidden="true" className="flex items-center gap-2"><Skeleton className="h-3 w-10 rounded-sm" /><Skeleton className="h-3 w-2 rounded-sm" /><Skeleton className="h-3 w-16 rounded-sm" /><Skeleton className="h-3 w-2 rounded-sm" /><Skeleton className="h-3 w-24 rounded-sm" /></nav>
-            <section className="relative mt-6 overflow-hidden border-y-2 border-ink bg-paper">
+            <section className="relative mt-6 overflow-hidden border-y border-divider-section bg-paper">
                 <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1.5 bg-terracotta" />
                 <div className="grid lg:grid-cols-[minmax(0,1fr)_18rem]">
                     <div className="relative px-6 pb-8 pt-9 sm:px-10 sm:pb-10 sm:pt-12 lg:px-12">
@@ -457,6 +461,6 @@ export function ArtistProfileSkeleton() {
                 <div className="mt-6 flex gap-2"><Skeleton className="h-10 w-24 rounded-full" /><Skeleton className="h-10 w-20 rounded-full" /><Skeleton className="h-10 w-28 rounded-full" /></div>
                 <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{[0, 1, 2, 3, 4, 5, 6, 7].map((item) => <ArtworkCardSkeleton key={item} />)}</div>
             </section>
-        </PageContainer>
+        </Container>
     );
 }
