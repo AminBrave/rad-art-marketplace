@@ -306,7 +306,7 @@ test('route canvases stay full-width and route content uses shared section conta
     assert.match(css, /\.rd-page-frame\s*\{[^}]*width:\s*100%;[^}]*margin:\s*0;/s);
     assert.ok(layoutPrimitives.includes("bleed && 'rd-bleed'"));
     assert.match(css, /\.rd-bleed\s*\{[^}]*width:\s*auto;[^}]*max-width:\s*100vw;/s);
-    assert.doesNotMatch(css.match(/\.rd-bleed\s*\{[^}]*\}/s)?.[0] ?? '', /width:\s*100vw/);
+    assert.doesNotMatch(css.match(/\.rd-bleed\s*\{[^}]*\}/s)?.[0] ?? '', /(?:^|[;\s])width:\s*100vw/);
     assert.ok(css.includes('.rd-workspace-main .rd-bleed .rd-container:not(.rd-container--reading):not(.rd-container--full)'));
     assert.ok(css.includes('overflow-x: clip;'), 'Viewport bleed must not create document-level horizontal scrolling.');
     assert.ok(css.includes('--rd-workspace-sidebar-width: 15rem'));
