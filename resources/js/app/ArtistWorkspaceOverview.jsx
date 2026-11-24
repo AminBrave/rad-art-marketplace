@@ -55,7 +55,7 @@ export default function ArtistWorkspaceOverview() {
                     eyebrow={t("استودیوی هنرمند")}
                     title={<>{t('خوش آمدید، ')}{user?.name}</>}
                     description={t("وضعیت آثار و ارتباط‌های خود را در یک نگاه دنبال کنید.")}
-                    actions={<><Link to={profile?.slug ? '/artists/' + profile.slug : '/dashboard/artist/profile'} className="inline-flex min-h-11 items-center justify-center border border-terracotta bg-terracotta px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong">{profile?.slug ? t(t("پیش‌نمایش پروفایل")) : t(t("تکمیل پروفایل"))}</Link><Link to="/dashboard/artist/artworks" className="inline-flex min-h-11 items-center justify-center border border-border px-4 py-2 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta">{t("مدیریت آثار")}</Link></>}
+                    actions={<><Link to={profile?.slug ? '/artists/' + profile.slug : '/dashboard/artist/profile'} className="inline-flex min-h-11 items-center justify-center border border-terracotta bg-terracotta px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong">{profile?.slug ? t("پیش‌نمایش پروفایل")) : t("تکمیل پروفایل"))}</Link><Link to="/dashboard/artist/artworks" className="inline-flex min-h-11 items-center justify-center border border-border px-4 py-2 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta">{t("مدیریت آثار")}</Link></>}
                 />
 
                 {profileError && <ErrorState title={t("پروفایل دریافت نشد")} description={profileError} />}
