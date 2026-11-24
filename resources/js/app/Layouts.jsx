@@ -37,6 +37,16 @@ function ThemeControl() {
 
 export function PublicLayout() {
     const { user, logout } = useAuth();
+    const artistProfileQuery = useQuery({
+        queryKey: ['artist-profile', 'me', user?.id],
+        queryFn: async ({ signal }) => {
+            const { data } = await axios.get('/api/v1/artist-profile/me', { signal });
+            return data.data ?? null;
+        },
+        enabled: user?.role === 'artist' && Boolean(user?.id),
+        staleTime: 60_000,
+    });
+    const profileHref = artistProfileQuery.data?.slug ? '/artists/' + artistProfileQuery.data.slug : '/dashboard/artist/profile';
     const [logoutError, setLogoutError] = useState('');
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const { pathname } = useLocation();
@@ -97,10 +107,10 @@ export function PublicLayout() {
                                 <span className="hidden max-w-36 truncate text-sm font-semibold text-ink 2xl:inline">{user.name}</span>
                                 <Badge variant="accent" className="hidden md:inline-flex">{roleLabels[user.role] ?? user.role}</Badge>
                                 <Link
-                                    to={user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist'}
-                                    className="hidden min-h-10 items-center px-2 text-sm font-bold text-terracotta-strong underline-offset-4 hover:underline sm:inline-flex"
+                                    to={user.role === 'artist' ? profileHref : user.role === 'admin' ? '/admin' : '/dashboard/buyer'}
+                                    className="hidden min-h-11 items-center justify-center border border-terracotta bg-terracotta px-4 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong sm:inline-flex"
                                 >
-                                    فضای کاربری
+                                    {user.role === 'artist' ? 'پیش‌نمایش پروفایل' : user.role === 'admin' ? 'مدیریت' : 'حساب کاربری'}
                                 </Link>
                                 <Button variant="outline" size="sm" className="hidden sm:inline-flex" onClick={handleLogout}>خروج</Button>
                             </>
@@ -227,7 +237,7 @@ export function PublicLayout() {
                     </div>
                 </div>
             </footer>
-            {user && <AuthenticatedBottomNavigation mobileLinks={getWorkspaceMobileLinks(user.role)} />}
+            {user && <PublicBottomNavigation user={user} profileHref={profileHref} />}
         </div>
         </Dialog>
     );
@@ -473,6 +483,25 @@ const workspaceNavigationLabels = {
     '/admin/settings': 'تنظیمات',
 };
 
+function PublicBottomNavigation({ user, profileHref }) {
+    const items = [
+        { to: '/artworks', label: 'گالری', Icon: Images },
+        { to: '/artists', label: 'هنرمندان', Icon: Users },
+        { to: '/collections', label: 'مجموعه‌ها', Icon: BookOpen },
+        { to: user.role === 'artist' ? profileHref : user.role === 'admin' ? '/admin' : '/dashboard/buyer', label: user.role === 'artist' ? 'پروفایل' : user.role === 'admin' ? 'مدیریت' : 'حساب من', Icon: UserRound, primary: true },
+    ];
+    return (
+        <div data-testid="public-bottom-navigation" className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] pb-[env(safe-area-inset-bottom)] shadow-raised backdrop-blur lg:hidden">
+            <nav aria-label="ناوبری بخش‌های عمومی" className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2">
+                {items.map(({ to, label, Icon, primary }) => <NavLink key={label} to={to} end={to === '/artists' || to === '/artworks' || to === '/collections'} aria-label={label} className={({ isActive }) => [
+                    'relative flex min-w-0 flex-col items-center justify-center gap-1 px-1 text-[10px] font-bold leading-tight no-underline transition-colors',
+                    primary ? 'border-x border-terracotta bg-terracotta text-inverse' : isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink',
+                ].join(' ')}><Icon size={19} strokeWidth={1.9} aria-hidden="true" /><span className="max-w-full truncate">{label}</span></NavLink>)}
+            </nav>
+        </div>
+    );
+}
+
 function AuthenticatedBottomNavigation({ mobileLinks }) {
     return (
         <div
@@ -512,6 +541,14 @@ export function WorkspaceLayout({ title, links, outletContext }) {
     const { user, logout } = useAuth();
     const { pathname } = useLocation();
     const isMessagingRoute = pathname.endsWith('/messages');
+    const workspaceLinks = user?.role === 'artist'
+        ? links.map((item) => item.to === '/dashboard/artist/profile'
+            ? (outletContext?.profile?.slug
+                ? { ...item, to: '/artists/' + outletContext.profile.slug, label: 'پیش‌نمایش پروفایل', shortLabel: 'پروفایل' }
+                : { ...item, label: 'تکمیل پروفایل', shortLabel: 'تکمیل' })
+            : item)
+        : links;
+    const mobileWorkspaceLinks = workspaceLinks.filter((item) => item.mobilePrimary !== false);
     const [logoutError, setLogoutError] = useState('');
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const handleLogout = async () => {
@@ -599,7 +636,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     <nav aria-label="بخش‌های اصلی فضای کاربری">
                         <h3 className="mb-2 px-3 text-xs font-extrabold text-ink">فضای کاربری</h3>
                         <div className="grid gap-1">
-                            {links.map((item) => (
+                            {workspaceLinks.map((item) => (
                                 <NavLink
                                     key={item.to}
                                     to={item.to}
@@ -667,7 +704,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                         <p className="mt-1 truncate text-xs text-muted">{user?.name}</p>
                     </div>
                     <nav aria-label="ناوبری فضای کاربری" className="flex w-full min-w-0 flex-col gap-1">
-                        {links.map((item) => {
+                        {workspaceLinks.map((item) => {
                             const Icon = workspaceNavigationIcons[item.to] ?? LayoutDashboard;
                             return (
                                 <NavLink
@@ -695,7 +732,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                         : <div className="rd-page-frame rd-page-frame--workspace"><Outlet context={outletContext} /></div>}
                 </main>
             </div>
-            <AuthenticatedBottomNavigation mobileLinks={getWorkspaceMobileLinks(user?.role)} />
+            <AuthenticatedBottomNavigation mobileLinks={mobileWorkspaceLinks} />
         </div>
         </Dialog>
     );
