@@ -9,35 +9,35 @@ function CommentItem({ comment, user, onReply, onDelete, onReport }) {
     const canDelete = user && comment.is_mine && !comment.is_deleted;
 
     return (
-        <article id={'comment-' + comment.id} className="border-b border-border py-4 last:border-b-0">
-            <div className="flex items-start justify-between gap-3">
+        <article id={'comment-' + comment.id} className="min-w-0 border border-border bg-paper p-4 sm:p-5" aria-label="دیدگاه">
+            <header className="flex min-w-0 items-start justify-between gap-3">
                 <div className="min-w-0">
-                    <p className="text-sm font-bold">{comment.user?.name || 'کاربر'}</p>
-                    <p className="mt-1 text-xs text-muted">{comment.created_at ? new Date(comment.created_at).toLocaleDateString('fa-IR') : ''}</p>
+                    <p className="break-words text-sm font-bold text-ink">{comment.user?.name || 'کاربر'}</p>
+                    <time className="mt-1 block text-xs text-muted">{comment.created_at ? new Date(comment.created_at).toLocaleDateString('fa-IR') : ''}</time>
                 </div>
                 {canDelete && <Button variant="ghost" type="button" onClick={() => onDelete(comment.id)} className="shrink-0 text-xs text-muted underline hover:text-danger">حذف</Button>}
-            </div>
-            <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-8">{comment.is_deleted ? 'این دیدگاه حذف شده است.' : comment.body}</p>
+            </header>
+            <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-8 text-ink">{comment.is_deleted ? 'این دیدگاه حذف شده است.' : comment.body}</p>
             {!comment.is_deleted && user && (
-                <div className="mt-2 flex flex-wrap gap-4">
+                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-divider-group pt-3">
                     {comment.parent_id === null && <Button variant="ghost" type="button" onClick={() => onReply(comment)} className="text-xs font-semibold text-terracotta-strong underline">پاسخ</Button>}
                     {!comment.is_mine && <Button variant="ghost" type="button" onClick={() => onReport(comment)} className="text-xs text-muted underline">گزارش دیدگاه</Button>}
                 </div>
             )}
             {comment.replies?.length > 0 && (
-                <div className="mt-4 border-r-2 border-border pr-4">
+                <div role="group" aria-label="پاسخ‌های این دیدگاه" className="mt-5 space-y-3 border-r-2 border-terracotta/40 pr-3 sm:pr-5">
                     {comment.replies.map((reply) => (
-                        <div id={'comment-' + reply.id} key={reply.id} className="border-b border-border py-3 last:border-b-0">
-                            <div className="flex items-start justify-between gap-3">
-                                <div>
-                                    <p className="text-xs font-bold">{reply.user?.name || 'کاربر'}</p>
-                                    <p className="mt-1 text-[11px] text-muted">{reply.created_at ? new Date(reply.created_at).toLocaleDateString('fa-IR') : ''}</p>
+                        <article id={'comment-' + reply.id} key={reply.id} className="min-w-0 border border-border bg-surface-muted p-3 sm:p-4">
+                            <header className="flex min-w-0 items-start justify-between gap-3">
+                                <div className="min-w-0">
+                                    <p className="break-words text-xs font-bold text-ink">{reply.user?.name || 'کاربر'}</p>
+                                    <time className="mt-1 block text-[11px] text-muted">{reply.created_at ? new Date(reply.created_at).toLocaleDateString('fa-IR') : ''}</time>
                                 </div>
-                                {user && reply.is_mine && !reply.is_deleted && <Button variant="ghost" type="button" onClick={() => onDelete(reply.id)} className="text-xs text-muted underline hover:text-danger">حذف</Button>}
-                            </div>
-                            <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-7">{reply.is_deleted ? 'این پاسخ حذف شده است.' : reply.body}</p>
+                                {user && reply.is_mine && !reply.is_deleted && <Button variant="ghost" type="button" onClick={() => onDelete(reply.id)} className="shrink-0 text-xs text-muted underline hover:text-danger">حذف</Button>}
+                            </header>
+                            <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-7 text-ink">{reply.is_deleted ? 'این پاسخ حذف شده است.' : reply.body}</p>
                             {!reply.is_deleted && user && !reply.is_mine && <Button variant="ghost" type="button" onClick={() => onReport(reply)} className="mt-2 text-xs text-muted underline">گزارش پاسخ</Button>}
-                        </div>
+                        </article>
                     ))}
                 </div>
             )}
@@ -214,7 +214,7 @@ export default function ArtworkEngagement({ artwork, slug }) {
             )}
 
             {deleteMutation.isError && <p role="alert" className="mt-3 text-xs text-danger">حذف دیدگاه انجام نشد. دوباره تلاش کنید.</p>}
-            <div className="mt-7">
+            <div className="mt-7 space-y-3">
                 {commentsQuery.isPending ? <p className="py-6 text-sm text-muted">در حال دریافت دیدگاه‌ها...</p> : null}
                 {commentsQuery.isError ? <div className="py-6 text-sm text-danger" role="alert">دریافت دیدگاه‌ها انجام نشد. <Button variant="ghost" type="button" onClick={() => commentsQuery.refetch()} className="underline">تلاش دوباره</Button></div> : null}
                 {!commentsQuery.isPending && !commentsQuery.isError && comments.length === 0 ? <p className="py-6 text-sm text-muted">هنوز دیدگاهی ثبت نشده است.</p> : null}
