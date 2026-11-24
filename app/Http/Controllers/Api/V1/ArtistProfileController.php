@@ -36,7 +36,9 @@ class ArtistProfileController extends Controller
                 'display_name' => $profile->display_name,
                 'display_name_en' => $profile->display_name_en,
                 'bio' => $profile->bio ? Str::limit($profile->bio, 220) : null,
+                'bio_en' => $profile->bio_en ? Str::limit($profile->bio_en, 220) : null,
                 'city' => $profile->city,
+                'city_en' => $profile->city_en,
             ]);
 
         return response()->json($profiles);
