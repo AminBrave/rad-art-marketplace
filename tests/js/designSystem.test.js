@@ -145,7 +145,7 @@ test('route canvases stay full-width and route content uses shared section conta
     assert.ok(homePage.includes('<Container className=\"grid gap-0 sm:grid-cols-3\">'));
     assert.ok(homePage.includes('<Container as=\"section\" width=\"wide\"'));
     for (const source of [homePage, editorialPages, authPage, publicInfoPages, artistProfile]) {
-        assert.doesNotMatch(source, String.raw`<main\\b`, 'Route content must not create a nested main landmark.');
+        assert.ok(!source.includes('<main '), 'Route content must not create a nested main landmark.');
     }
 });
 
