@@ -29,7 +29,7 @@ Brand anchors (CSS variables):
 - Sand: `--rd-brand-sand` — `#D8C9B7`
 - Olive: `--rd-brand-olive` — `#536052`
 
-Components should consume semantic roles rather than hard-code brand values:
+CSS `--rd-*` variables are the canonical token source. Tailwind maps directly to them. Legacy `--color-*`, `--text-*`, `--space-*` and related names are one-way compatibility aliases; do not add new consumers of those aliases. Components should consume semantic roles rather than hard-code brand values:
 - Canvas and surfaces: `--rd-canvas`, `--rd-surface`, `--rd-surface-raised`, `--rd-surface-muted`
 - Text: `--rd-text-primary`, `--rd-text-secondary`, `--rd-text-tertiary`
 - Rules: `--rd-border-subtle`, `--rd-border-strong`, `--rd-divider-section`, `--rd-divider-group`, `--rd-divider-nested`
@@ -70,11 +70,11 @@ Spacing uses a 4px base scale: `--rd-space-1` to `--rd-space-24` (0.25rem to 6re
 - `--rd-header-height` and `--rd-workspace-nav-height`.
 - `--rd-control-height-sm|md|lg`.
 
-Use shared `PageContainer` or `Container` for consistent page widths. Page-level composition should not independently invent horizontal gutters on every route.
+Use the canonical `Container` for consistent section widths. `PageContainer` is a compatibility alias for older imports and should not be used in new code. Page-level composition should not independently invent horizontal gutters on every route.
 
 ### 2.5 Shape, elevation and media
 
-Current shape tokens: `--rd-radius-sm|md|lg|xl|pill`; elevation tokens: `--rd-shadow-soft` and `--rd-shadow-raised`. Artwork ratios include `--rd-artwork-ratio` (4:3) and `--rd-portrait-ratio` (4:5).
+Current shape tokens: `--rd-radius-sm|md|lg|xl|pill`; Tailwind semantic radii include `rounded-control`, `rounded-editorial`, `rounded-card`, `rounded-panel` and `rounded-pill`. Buttons and icon buttons enforce `rounded-control`; card and dialog surfaces use the appropriate surface radius. Elevation tokens: `--rd-shadow-soft` and `--rd-shadow-raised`. Artwork ratios include `--rd-artwork-ratio` (4:3) and `--rd-portrait-ratio` (4:5).
 
 Artwork itself should remain undistorted. Use `object-contain` when the complete work is the subject; use `object-cover` only for a deliberate editorial crop, avatar or ambient image. Keep the media frame and its internal padding intentional; the image should occupy the available frame without erasing the frame's breathing room.
 
@@ -107,7 +107,7 @@ Artwork itself should remain undistorted. Use `object-contain` when the complete
 </section>
 ```
 
-For long-form copy, use `<Container width="reading">`; for genuinely edge-to-edge content, use `<Container width="full">`.
+For long-form copy, use `<Container width="reading">`; for genuinely edge-to-edge content, use `<Container width="full">`. Use `<Section bleed>` when a section must break out of a constrained workspace column and span the viewport.
 
 ### Gestalt application
 
