@@ -34,8 +34,8 @@ export const Container = forwardRef(function Container({ as: Element = 'div', wi
     return <Element ref={ref} className={cn('min-w-0', widths[width] ?? widths.wide, className)} {...props} />;
 });
 
-export const Section = forwardRef(function Section({ as: Element = 'section', className = '', ...props }, ref) {
-    return <Element ref={ref} className={cn('min-w-0', className)} {...props} />;
+export const Section = forwardRef(function Section({ as: Element = 'section', bleed = false, className = '', ...props }, ref) {
+    return <Element ref={ref} className={cn('min-w-0', bleed && 'rd-bleed', className)} {...props} />;
 });
 
 export const Inset = forwardRef(function Inset({ as: Element = 'div', side = 'all', className = '', ...props }, ref) {
