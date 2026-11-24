@@ -94,10 +94,12 @@ class PublicArtworkController extends Controller
                     PersianSearch::whereLike($nested, 'medium', $term, 'or');
                     $nested->orWhereHas(
                         'artistProfile',
-                        fn ($artist) => PersianSearch::where(function ($nestedArtist) use ($term): void {
-                            PersianSearch::whereLike($nestedArtist, 'display_name', $term);
-                            PersianSearch::whereLike($nestedArtist, 'display_name_en', $term, 'or');
-                        }),
+                        function ($artist) use ($term): void {
+                            $artist->where(function ($nestedArtist) use ($term): void {
+                                PersianSearch::whereLike($nestedArtist, 'display_name', $term);
+                                PersianSearch::whereLike($nestedArtist, 'display_name_en', $term, 'or');
+                            });
+                        },
                     );
                 });
             })
