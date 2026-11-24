@@ -6,7 +6,7 @@ import { useAuth } from './AuthContext';
 import { useTheme } from './useTheme';
 import { WorkspaceLayout } from './Layouts';
 import { getWorkspacePrimaryLinks } from './workspaceNavigation';
-import { Skeleton, ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, ArtistWorkspaceOverviewSkeleton, BuyerDashboardSkeleton, FormFieldSkeleton, ArtworkStudioListSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, AdminEditorialSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton, PageHeader, WorkspaceHero, Checkbox, FormField, TextInput, TextareaField, Button, Container, Section } from '../components/ui';
+import { Skeleton, ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, ArtistWorkspaceOverviewSkeleton, BuyerDashboardSkeleton, FormFieldSkeleton, ArtworkStudioListSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, AdminEditorialSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton, PageHeader, SectionHeader, WorkspaceHero, Checkbox, FormField, TextInput, TextareaField, Button, Container, Section } from '../components/ui';
 const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
 
 const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
@@ -398,31 +398,45 @@ export function WorkspaceSettingsPage() {
     };
 
     return (
-        <Container as="section" width="wide" className="space-y-7" dir="rtl">
+        <Container as="section" width="wide" className="space-y-8" dir="rtl">
             <PageHeader eyebrow="حساب کاربری" title="تنظیمات" description="ترجیحات نمایش و اعلان‌های فضای کاربری را از یک بخش مدیریت کنید." />
-            <section className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_15rem]">
-                <div className="min-w-0 border-y border-divider-section bg-paper p-5 sm:p-6">
-                    <p className="text-xs font-bold text-terracotta-strong">نمایش</p>
-                    <h2 className="mt-2 text-lg font-extrabold text-ink">پوسته محیط کاربری</h2>
-                    <p className="mt-2 text-sm leading-7 text-muted">ظاهر راد آرت را با نور محیط یا ترجیح خود هماهنگ کنید.</p>
+
+            <section className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_16rem]" aria-labelledby="appearance-settings-title">
+                <div className="min-w-0 border border-divider-group bg-paper p-5 sm:p-6">
+                    <SectionHeader id="appearance-settings-title" eyebrow="نمایش" title="پوسته محیط کاربری" description="ظاهر راد آرت را با نور محیط یا ترجیح خود هماهنگ کنید." />
                 </div>
-                <div className="flex flex-col justify-center gap-3 border-y border-divider-section bg-surface-muted p-5">
-                    <span className="text-xs font-semibold text-muted">حالت فعلی: {theme === 'dark' ? 'تیره' : theme === 'light' ? 'روشن' : 'هماهنگ با دستگاه'}</span>
+                <div className="flex flex-col justify-center gap-3 border border-divider-group bg-surface-muted p-5">
+                    <div>
+                        <p className="text-[11px] font-semibold text-muted">حالت فعلی</p>
+                        <p className="mt-1 text-sm font-bold text-ink">{theme === 'dark' ? 'تیره' : theme === 'light' ? 'روشن' : 'هماهنگ با دستگاه'}</p>
+                    </div>
                     <Button type="button" variant="outline" onClick={cycleTheme}>تغییر پوسته</Button>
                 </div>
             </section>
+
             {user?.role !== 'admin' && (
-                <section className="space-y-4">
-                    <div>
-                        <p className="text-xs font-bold text-terracotta-strong">اعلان‌ها</p>
-                        <h2 className="mt-2 text-lg font-extrabold text-ink">اعلان‌های درون‌برنامه‌ای</h2>
-                        <p className="mt-2 text-sm leading-7 text-muted">مشخص کنید کدام رویدادها در صندوق اعلان‌های شما نمایش داده شوند. تغییرات به‌صورت خودکار ذخیره می‌شوند.</p>
-                    </div>
+                <section className="space-y-4" aria-labelledby="notification-settings-title">
+                    <SectionHeader
+                        id="notification-settings-title"
+                        eyebrow="اعلان‌ها"
+                        title="اعلان‌های درون‌برنامه‌ای"
+                        description="رویدادهایی را که می‌خواهید در صندوق اعلان‌ها ببینید انتخاب کنید."
+                        actions={<span className="text-[11px] font-semibold text-muted">{updatePreference.isPending ? 'در حال ذخیره…' : 'ذخیره خودکار'}</span>}
+                    />
                     {preferencesQuery.isError ? <p role="alert" className="text-sm text-danger">دریافت تنظیمات اعلان‌ها انجام نشد. صفحه را دوباره بارگذاری کنید.</p> : preferencesQuery.isPending ? <p className="text-sm text-muted">در حال دریافت تنظیمات…</p> : (
-                        <div className="grid gap-3 sm:grid-cols-2">
+                        <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
                             {preferenceOptions.map(([key, label, description]) => (
-                                <Checkbox key={key} checked={Boolean(preferences[key])} disabled={updatePreference.isPending || preferencesQuery.isPending || preferencesQuery.isError} onChange={(event) => changePreference(key, event.target.checked)} className="flex min-h-20 items-start gap-3 border-y border-divider-group bg-paper p-4 text-sm leading-6">
-                                    <span className="min-w-0"><strong className="block font-bold text-ink">{label}</strong><span className="mt-1 block text-xs text-muted">{description}</span></span>
+                                <Checkbox
+                                    key={key}
+                                    checked={Boolean(preferences[key])}
+                                    disabled={updatePreference.isPending || preferencesQuery.isPending || preferencesQuery.isError}
+                                    onChange={(event) => changePreference(key, event.target.checked)}
+                                    className="flex min-h-24 w-full items-start gap-3 border border-divider-group bg-paper p-4 text-sm leading-6 transition-colors hover:border-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                                >
+                                    <span className="min-w-0 flex-1">
+                                        <strong className="block font-bold text-ink">{label}</strong>
+                                        <span className="mt-1 block text-xs leading-6 text-muted">{description}</span>
+                                    </span>
                                 </Checkbox>
                             ))}
                         </div>
