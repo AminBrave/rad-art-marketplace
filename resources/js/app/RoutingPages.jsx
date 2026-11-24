@@ -63,7 +63,7 @@ function WorkspaceAuthLoading({ children }) {
             </div>
 
             {isMessagingRoute && (
-                <aside className="fixed right-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))] top-28 z-30 hidden h-fit max-h-[calc(100dvh_-_8rem)] w-60 overflow-hidden border-y border-border bg-paper p-3 lg:block" aria-hidden="true">
+                <aside className="fixed end-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))] top-28 z-30 hidden h-fit max-h-[calc(100dvh_-_8rem)] w-60 overflow-hidden border-y border-border bg-paper p-3 lg:block" aria-hidden="true">
                     <div className="grid gap-1">{navigationRows.map((item) => <Skeleton key={item} className="h-10 w-full rounded-md" />)}</div>
                 </aside>
             )}
