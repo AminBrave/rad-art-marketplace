@@ -68,8 +68,26 @@ export const Blockquote = forwardRef(function Blockquote({ className = '', ...pr
     return <blockquote ref={ref} className={cn('border-s-2 border-sand ps-4 text-muted', className)} {...props} />;
 });
 
-export const Separator = forwardRef(function Separator({ orientation = 'horizontal', decorative = true, className = '', ...props }, ref) {
-    return <div ref={ref} role={decorative ? 'none' : 'separator'} aria-orientation={decorative ? undefined : orientation} className={cn(orientation === 'vertical' ? 'h-full w-px' : 'h-px w-full', 'shrink-0 bg-border', className)} {...props} />;
+export const Separator = forwardRef(function Separator({ orientation = 'horizontal', decorative = true, tone = 'group', className = '', ...props }, ref) {
+    const tones = {
+        section: 'bg-divider-section',
+        group: 'bg-divider-group',
+        nested: 'bg-divider-nested',
+    };
+    return <div
+        ref={ref}
+        role={decorative ? 'none' : 'separator'}
+        aria-orientation={decorative ? undefined : orientation}
+        className={cn(
+            orientation === 'vertical'
+                ? 'h-full w-[var(--rd-line-width)]'
+                : 'h-[var(--rd-line-width)] w-full',
+            'shrink-0',
+            tones[tone] ?? tones.group,
+            className,
+        )}
+        {...props}
+    />;
 });
 
 export const AspectRatio = forwardRef(function AspectRatio({ ratio = 1, className = '', style, ...props }, ref) {
