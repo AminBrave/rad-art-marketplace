@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { ArrowLeft, ArrowUpLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ArtworkCard, ArtistCard, ArtworkCardSkeleton, ArtistCardSkeleton, EmptyState, ErrorState, MediaImage, Skeleton, Container } from '../components/ui';
+import { ArtworkCard, ArtistCard, ArtworkCardSkeleton, ArtistCardSkeleton, EmptyState, ErrorState, MediaImage, Skeleton, Container, Card } from '../components/ui';
 
 const editorialSteps = [
     { number: '01', title: 'کشف', description: 'در میان آثار تأییدشده جست‌وجو کنید و مسیرهای تازه‌ای برای دیدن پیدا کنید.' },
@@ -160,16 +160,20 @@ export default function HomePage() {
                 </Container>
             </section>
 
-            <section aria-label="چطور در راد آرت کشف کنیم" className="border-b border-border bg-surface-muted">
-                <Container className="grid gap-0 sm:grid-cols-3">
+            <section aria-label="چطور در راد آرت کشف کنیم" className="bg-surface-muted py-8 sm:py-10">
+                <Container width="wide" className="grid gap-4 sm:grid-cols-3" dir="rtl">
                     {editorialSteps.map((step) => (
-                        <article key={step.number} className="grid grid-cols-[3rem_1fr] gap-4 border-b border-border py-6 last:border-b-0 sm:border-b-0 sm:border-s sm:py-8 sm:ps-6 sm:first:border-s-0 sm:first:ps-0">
+                        <Card
+                            as="article"
+                            key={step.number}
+                            className="grid min-w-0 grid-cols-[3rem_minmax(0,1fr)] items-start gap-4 bg-paper p-5 sm:p-6"
+                        >
                             <span dir="ltr" className="pt-1 font-latin text-xs font-bold tracking-widest text-terracotta-strong">{step.number}</span>
-                            <div>
-                                <h2 className="text-lg font-extrabold">{step.title}</h2>
+                            <div className="min-w-0">
+                                <h2 className="text-lg font-extrabold text-ink">{step.title}</h2>
                                 <p className="mt-2 text-sm leading-7 text-muted">{step.description}</p>
                             </div>
-                        </article>
+                        </Card>
                     ))}
                 </Container>
             </section>
@@ -233,17 +237,29 @@ export default function HomePage() {
                     <p className="mt-6 text-sm text-muted">هنرمندان دارای پروفایل عمومی در این بخش معرفی می‌شوند.</p>
                 )}
                 {spotlight && (
-                    <div className="mt-8 grid gap-6 border-y border-border py-7 sm:grid-cols-[1fr_auto] sm:items-center">
-                        <div>
-                            <p className="text-[10px] font-extrabold tracking-[.14em] text-terracotta-strong">ARTIST SPOTLIGHT</p>
-                            <h3 className="mt-2 text-xl font-black">{spotlight.display_name}</h3>
-                            <p className="mt-2 max-w-3xl text-sm leading-8 text-muted">{spotlight.bio || 'پورتفولیوی عمومی این هنرمند را ببینید و با آثار تأییدشده او آشنا شوید.'}</p>
+                    <Card
+                        as="article"
+                        className="mt-8 grid min-w-0 overflow-hidden border-ink bg-ink text-inverse sm:grid-cols-[minmax(0,1fr)_15rem]"
+                        dir="rtl"
+                    >
+                        <div className="flex min-w-0 flex-col justify-center p-6 sm:p-8 lg:p-10">
+                            <p className="text-[10px] font-extrabold tracking-[.14em] text-sand">ARTIST SPOTLIGHT / هنرمند منتخب</p>
+                            <h3 className="mt-3 break-words text-2xl font-black leading-heading text-inverse sm:text-3xl">{spotlight.display_name}</h3>
+                            {spotlight.city && <p className="mt-2 text-xs font-semibold text-inverse/70">{spotlight.city}</p>}
+                            <p className="mt-4 max-w-3xl text-sm leading-8 text-inverse/80">{spotlight.bio || 'پورتفولیوی عمومی این هنرمند را ببینید و با آثار تأییدشده او آشنا شوید.'}</p>
+                            <Link to={'/artists/' + spotlight.slug} className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 border border-sand/50 px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:border-sand hover:bg-inverse hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+                                ورود به پورتفولیو
+                                <ArrowLeft size={16} aria-hidden="true" />
+                            </Link>
                         </div>
-                        <Link to={'/artists/' + spotlight.slug} className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-terracotta-strong underline-offset-4 hover:underline">
-                            ورود به پورتفولیو
-                            <ArrowLeft size={16} aria-hidden="true" />
-                        </Link>
-                    </div>
+                        <div className="relative grid min-h-48 place-items-center border-t border-sand/30 bg-surface-muted p-8 text-ink sm:border-t-0 sm:border-s">
+                            <span aria-hidden="true" className="absolute start-5 top-4 font-latin text-[10px] font-bold tracking-[.2em] text-muted">RAD / PEOPLE</span>
+                            <span aria-hidden="true" className="grid h-28 w-28 place-items-center border border-ink bg-paper text-5xl font-black text-terracotta-strong sm:h-36 sm:w-36">
+                                {(spotlight.display_name || 'ه').trim().slice(0, 1)}
+                            </span>
+                            <span aria-hidden="true" className="absolute bottom-4 end-5 font-latin text-[10px] font-bold tracking-widest text-muted">FEATURED ARTIST</span>
+                        </div>
+                    </Card>
                 )}
             </Container>
 
