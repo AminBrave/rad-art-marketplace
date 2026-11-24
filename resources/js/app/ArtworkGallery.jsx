@@ -55,7 +55,7 @@ export default function ArtworkGallery({ user }) {
                                 {detail.description && <p className="mt-6 whitespace-pre-line leading-8 text-ink">{detail.description}</p>}
                                 <p className="mt-6 font-bold">{formatArtworkPrice(detail.price)}</p>
                                 <p className="mt-2 text-sm text-muted">{detail.availability === 'available' ? 'موجود' : detail.availability === 'sold' ? 'فروخته‌شده' : 'برای فروش نیست'}</p>
-                                <a href={'/artists/' + detail.artist.slug} className="mt-8 inline-block rounded-full bg-ink px-5 py-3 text-sm font-bold text-inverse">مشاهده پروفایل هنرمند: {detail.artist.display_name}</a>
+                                <a href={'/artists/' + detail.artist.slug} className="mt-8 inline-block rounded-control bg-ink px-5 py-3 text-sm font-bold text-inverse">مشاهده پروفایل هنرمند: {detail.artist.display_name}</a>
                                 {user?.role === 'buyer' && <a href={'/dashboard/buyer/messages?artist=' + encodeURIComponent(detail.artist.slug) + '&artwork=' + encodeURIComponent(detail.slug)} className="mt-7 inline-flex bg-ink px-5 py-3 text-sm font-bold text-inverse transition hover:bg-terracotta">پیام مستقیم درباره این اثر</a>}
                                 {!user && <a href="/#account" className="mt-6 inline-block text-sm font-bold text-terracotta-strong underline">برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید</a>}
                             </div>
