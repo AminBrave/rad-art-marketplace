@@ -87,42 +87,42 @@ export default function HomePage() {
 
     return (
         <div className="w-full min-w-0 overflow-hidden" dir="rtl">
-            <section aria-labelledby="home-hero-title" className="relative border-b border-border bg-canvas">
+            <section aria-labelledby="home-hero-title" className="relative isolate border-b border-[color:var(--rd-hero-line)] bg-[radial-gradient(ellipse_at_82%_12%,var(--rd-hero-glow),transparent_36%),linear-gradient(125deg,var(--rd-hero-background),var(--rd-hero-background-alt))]">
                 <Container className="pb-16 pt-10 sm:pb-20 sm:pt-16 lg:pb-24 lg:pt-20">
-                    <div className="mb-8 flex items-center justify-between border-y border-ink py-3.5 text-[10px] font-extrabold tracking-[.18em] text-muted sm:text-xs">
+                    <div className="mb-8 flex items-center justify-between border-y border-[color:var(--rd-hero-line)] py-3.5 text-[10px] font-extrabold tracking-[.18em] text-[color:var(--rd-hero-muted)] sm:text-xs">
                         <span>گالری هنر مستقل معاصر</span>
                         <span dir="ltr" className="font-latin">RAD ART / DISCOVER &amp; CONNECT</span>
                     </div>
                     <div className="grid items-center gap-10 lg:grid-cols-[.82fr_1.18fr] lg:gap-16">
                         <div className="relative z-10 order-2 max-w-2xl py-2 lg:order-1 lg:py-10">
-                            <p className="mb-5 flex items-center gap-3 text-xs font-extrabold text-terracotta-strong">
-                                <span className="h-px w-9 bg-terracotta" />
+                            <p className="mb-5 flex items-center gap-3 text-xs font-extrabold text-[color:var(--rd-hero-accent)]">
+                                <span className="h-px w-9 bg-[color:var(--rd-hero-accent)]" />
                                 هنر معاصر، از نگاه مستقل
                             </p>
-                            <h1 id="home-hero-title" className="max-w-2xl text-[2.55rem] font-black leading-[1.38] tracking-[-.055em] sm:text-6xl sm:leading-[1.24] lg:text-[5rem]">
+                            <h1 id="home-hero-title" className="max-w-2xl text-[2.55rem] font-black leading-[1.38] tracking-[-.055em] text-[color:var(--rd-hero-foreground)] sm:text-6xl sm:leading-[1.24] lg:text-[5rem]">
                                 هر اثر،
-                                <span className="block text-terracotta-strong">آغاز یک نگاه تازه.</span>
+                                <span className="block text-[color:var(--rd-hero-accent)]">آغاز یک نگاه تازه.</span>
                             </h1>
-                            <p className="mt-7 max-w-xl text-base leading-9 text-muted sm:text-lg">
+                            <p className="mt-7 max-w-xl text-base leading-9 text-[color:var(--rd-hero-muted)] sm:text-lg">
                                 راد آرت جایی برای مکث، کشف آثار هنری مستقل، شناخت هنرمندان و شکل‌گرفتن گفت‌وگوهایی تازه درباره هنر است.
                             </p>
                             <div className="mt-8 flex flex-wrap items-center gap-3">
-                                <Link to="/artworks" className="inline-flex min-h-12 items-center justify-center gap-3 bg-ink px-6 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+                                <Link to="/artworks" className="inline-flex min-h-12 items-center justify-center gap-3 bg-[color:var(--rd-hero-foreground)] px-6 text-sm font-bold text-[color:var(--rd-hero-background)] no-underline transition-colors hover:bg-[color:var(--rd-hero-accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
                                     ورود به گالری آثار
                                     <ArrowLeft size={17} aria-hidden="true" />
                                 </Link>
-                                <Link to="/artists" className="inline-flex min-h-12 items-center justify-center border border-border-strong bg-transparent px-6 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong">
+                                <Link to="/artists" className="inline-flex min-h-12 items-center justify-center border border-[color:var(--rd-hero-line)] bg-transparent px-6 text-sm font-bold text-[color:var(--rd-hero-foreground)] no-underline transition-colors hover:border-[color:var(--rd-hero-accent)] hover:text-[color:var(--rd-hero-accent)]">
                                     آشنایی با هنرمندان
                                 </Link>
                             </div>
-                            <p className="mt-7 text-xs leading-6 text-muted">نمایش عمومی به آثار تأییدشده و پروفایل‌های عمومی محدود است.</p>
+                            <p className="mt-7 text-xs leading-6 text-[color:var(--rd-hero-muted)]">نمایش عمومی به آثار تأییدشده و پروفایل‌های عمومی محدود است.</p>
                         </div>
 
                         <div className="relative order-1 mx-auto w-full max-w-2xl lg:order-2">
                             <div aria-hidden="true" className="absolute -left-3 -top-3 hidden h-24 w-24 border border-sand sm:block lg:-left-5 lg:-top-5 lg:h-32 lg:w-32" />
                             <div aria-hidden="true" className="absolute -bottom-4 -right-4 hidden h-28 w-28 bg-surface-muted sm:block lg:-bottom-6 lg:-right-6 lg:h-40 lg:w-40" />
                             {hero ? (
-                                <Link to={'/artworks/' + hero.slug} className="group relative block border border-ink bg-ink p-2 sm:p-3">
+                                <Link to={'/artworks/' + hero.slug} className="group relative block border border-[color:var(--rd-hero-line)] bg-paper p-2 shadow-soft sm:p-3">
                                     <div className="relative aspect-[5/4] overflow-hidden bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))] sm:aspect-[4/3] lg:aspect-[5/4]">
                                         <MediaImage
                                             src={hero.image_url}
@@ -133,7 +133,7 @@ export default function HomePage() {
                                             fetchPriority="high"
                                             decoding="async"
                                         />
-                                        <span className="absolute right-4 top-4 bg-ink px-3 py-2 text-[10px] font-bold text-inverse backdrop-blur sm:right-5 sm:top-5 sm:text-xs">در گالری راد آرت</span>
+                                        <span className="absolute right-4 top-4 bg-[color:var(--rd-hero-background)] px-3 py-2 text-[10px] font-bold text-[color:var(--rd-hero-foreground)] backdrop-blur sm:right-5 sm:top-5 sm:text-xs">در گالری راد آرت</span>
                                     </div>
                                     <div className="flex flex-wrap items-center justify-between gap-3 px-2 pb-1 pt-4 sm:px-3">
                                         <div className="min-w-0">
@@ -148,8 +148,8 @@ export default function HomePage() {
                                     </div>
                                 </Link>
                             ) : (
-                                <div className="relative aspect-[5/4] overflow-hidden bg-sand sm:aspect-[4/3] lg:aspect-[5/4]">
-                                    <div aria-hidden="true" className="absolute inset-5 border border-ink/20 sm:inset-8" />
+                                <div className="relative aspect-[5/4] overflow-hidden bg-[linear-gradient(135deg,var(--rd-hero-background-alt),var(--rd-surface-muted))] sm:aspect-[4/3] lg:aspect-[5/4]">
+                                    <div aria-hidden="true" className="absolute inset-5 border border-[color:var(--rd-hero-line)] sm:inset-8" />
                                     <div aria-hidden="true" className="absolute left-[12%] top-[12%] h-[48%] w-[48%]  bg-terracotta" />
                                     <div aria-hidden="true" className="absolute bottom-[12%] right-[10%] h-[58%] w-[48%]  bg-olive" />
                                     <span className="absolute bottom-8 left-8 font-latin text-[10px] font-bold tracking-[.25em] text-ink">ART / PEOPLE / STORIES</span>
@@ -239,25 +239,25 @@ export default function HomePage() {
                 {spotlight && (
                     <Card
                         as="article"
-                        className="mt-8 grid min-w-0 overflow-hidden border-ink bg-ink text-inverse sm:grid-cols-[minmax(0,1fr)_15rem]"
+                        className="rd-hero-panel mt-8 grid min-w-0 overflow-hidden border border-[color:var(--rd-hero-line)] sm:grid-cols-[minmax(0,1fr)_15rem]"
                         dir="rtl"
                     >
                         <div className="flex min-w-0 flex-col justify-center p-6 sm:p-8 lg:p-10">
-                            <p className="text-[10px] font-extrabold tracking-[.14em] text-sand">ARTIST SPOTLIGHT / هنرمند منتخب</p>
-                            <h3 className="mt-3 break-words text-2xl font-black leading-heading text-inverse sm:text-3xl">{spotlight.display_name}</h3>
-                            {spotlight.city && <p className="mt-2 text-xs font-semibold text-inverse/70">{spotlight.city}</p>}
-                            <p className="mt-4 max-w-3xl text-sm leading-8 text-inverse/80">{spotlight.bio || 'پورتفولیوی عمومی این هنرمند را ببینید و با آثار تأییدشده او آشنا شوید.'}</p>
-                            <Link to={'/artists/' + spotlight.slug} className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 border border-sand/50 px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:border-sand hover:bg-inverse hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+                            <p className="text-[10px] font-extrabold tracking-[.14em] text-[color:var(--rd-hero-accent)]">ARTIST SPOTLIGHT / هنرمند منتخب</p>
+                            <h3 className="mt-3 break-words text-2xl font-black leading-heading text-[color:var(--rd-hero-foreground)] sm:text-3xl">{spotlight.display_name}</h3>
+                            {spotlight.city && <p className="mt-2 text-xs font-semibold text-[color:var(--rd-hero-muted)]">{spotlight.city}</p>}
+                            <p className="mt-4 max-w-3xl text-sm leading-8 text-[color:var(--rd-hero-muted)]">{spotlight.bio || 'پورتفولیوی عمومی این هنرمند را ببینید و با آثار تأییدشده او آشنا شوید.'}</p>
+                            <Link to={'/artists/' + spotlight.slug} className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 border border-[color:var(--rd-hero-line)] px-4 py-2 text-sm font-bold text-[color:var(--rd-hero-foreground)] no-underline transition-colors hover:border-[color:var(--rd-hero-accent)] hover:bg-[color:var(--rd-hero-foreground)] hover:text-[color:var(--rd-hero-background)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
                                 ورود به پورتفولیو
                                 <ArrowLeft size={16} aria-hidden="true" />
                             </Link>
                         </div>
-                        <div className="relative grid min-h-48 place-items-center border-t border-sand/30 bg-surface-muted p-8 text-ink sm:border-t-0 sm:border-s">
-                            <span aria-hidden="true" className="absolute start-5 top-4 font-latin text-[10px] font-bold tracking-[.2em] text-muted">RAD / PEOPLE</span>
-                            <span aria-hidden="true" className="grid h-28 w-28 place-items-center border border-ink bg-paper text-5xl font-black text-terracotta-strong sm:h-36 sm:w-36">
+                        <div className="relative grid min-h-48 place-items-center border-t border-[color:var(--rd-hero-line)] bg-[color:var(--rd-hero-background-alt)] p-8 text-[color:var(--rd-hero-foreground)] sm:border-t-0 sm:border-s">
+                            <span aria-hidden="true" className="absolute start-5 top-4 font-latin text-[10px] font-bold tracking-[.2em] text-[color:var(--rd-hero-muted)]">RAD / PEOPLE</span>
+                            <span aria-hidden="true" className="grid h-28 w-28 place-items-center border border-[color:var(--rd-hero-line)] bg-[color:var(--rd-hero-background)] text-5xl font-black text-[color:var(--rd-hero-accent)] sm:h-36 sm:w-36">
                                 {(spotlight.display_name || 'ه').trim().slice(0, 1)}
                             </span>
-                            <span aria-hidden="true" className="absolute bottom-4 end-5 font-latin text-[10px] font-bold tracking-widest text-muted">FEATURED ARTIST</span>
+                            <span aria-hidden="true" className="absolute bottom-4 end-5 font-latin text-[10px] font-bold tracking-widest text-[color:var(--rd-hero-muted)]">FEATURED ARTIST</span>
                         </div>
                     </Card>
                 )}
@@ -309,14 +309,14 @@ export default function HomePage() {
                 </section>
             )}
 
-            <section className="bg-ink text-inverse">
+            <section className="rd-hero-panel border-y border-[color:var(--rd-hero-line)]">
                 <Container className="grid gap-8 py-16 sm:py-24 md:grid-cols-[1fr_auto] md:items-center">
                     <div>
-                        <p className="text-[10px] font-extrabold tracking-[.16em] text-sand">BECOME PART OF THE STORY</p>
-                        <h2 className="mt-3 max-w-3xl text-2xl font-black leading-relaxed sm:text-3xl">جهان هنری خود را با دیگران به اشتراک بگذارید.</h2>
-                        <p className="mt-3 max-w-2xl text-sm leading-8 text-[color:color-mix(in_srgb,var(--color-inverse-text)_72%,transparent)]">هنرمندان می‌توانند حساب بسازند، پروفایل خود را تکمیل کنند و آثارشان را برای بررسی ارسال کنند.</p>
+                        <p className="text-[10px] font-extrabold tracking-[.16em] text-[color:var(--rd-hero-accent)]">BECOME PART OF THE STORY</p>
+                        <h2 className="mt-3 max-w-3xl text-2xl font-black leading-relaxed text-[color:var(--rd-hero-foreground)] sm:text-3xl">جهان هنری خود را با دیگران به اشتراک بگذارید.</h2>
+                        <p className="mt-3 max-w-2xl text-sm leading-8 text-[color:var(--rd-hero-muted)]">هنرمندان می‌توانند حساب بسازند، پروفایل خود را تکمیل کنند و آثارشان را برای بررسی ارسال کنند.</p>
                     </div>
-                    <Link to="/register" className="inline-flex min-h-12 items-center justify-center gap-3 bg-paper px-6 text-sm font-bold text-ink no-underline transition-colors hover:bg-sand">
+                    <Link to="/register" className="inline-flex min-h-12 items-center justify-center gap-3 bg-[color:var(--rd-hero-foreground)] px-6 text-sm font-bold text-[color:var(--rd-hero-background)] no-underline transition-colors hover:bg-[color:var(--rd-hero-accent)]">
                         شروع به‌عنوان هنرمند
                         <ArrowUpLeft size={17} aria-hidden="true" />
                     </Link>
