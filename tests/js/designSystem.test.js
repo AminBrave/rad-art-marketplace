@@ -95,6 +95,7 @@ test('editorial hero surfaces define readable light and dark semantic palettes',
     assert.ok(css.includes(':root[data-theme=\'dark\']'));
     assert.ok(css.includes('@media (prefers-color-scheme: dark)'));
     assert.ok(css.includes('.rd-hero-surface'));
+    assert.ok(primitives.includes('rd-hero-surface') && primitives.includes('text-[color:var(--rd-hero-foreground)]'), 'Shared PageHeader and WorkspaceHero use theme-aware foregrounds.');
     assert.ok(homePage.includes('text-[color:var(--rd-hero-foreground)]'));
     assert.ok(publicPages[1].includes('text-[color:var(--rd-hero-foreground)]'));
     assert.ok(routeLoading.includes('rd-hero-surface'), 'Artist directory loading state mirrors the theme-aware hero.');
