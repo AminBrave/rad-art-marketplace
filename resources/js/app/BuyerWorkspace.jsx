@@ -3,7 +3,7 @@ import { WorkspaceHero, SectionHeader, Container } from '../components/ui';
 
 export function BuyerDashboardHome() {
     return (
-        <div className="w-full space-y-7" dir="rtl">
+        <div className="w-full space-y-7">
             <WorkspaceHero
                 eyebrow="فضای اختصاصی خریدار"
                 title="هنر مورد علاقه‌تان را کشف کنید و گفت‌وگو را ادامه دهید."
