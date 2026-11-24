@@ -73,7 +73,7 @@ export default function ConversationHeader({
                     )}
                     <p className="truncate text-[11px] leading-5 text-muted">گفتگوی خصوصی مستقیم</p>
                 </div>
-                <DropdownMenu.Root dir="rtl" open={openPopover === 'conversation'} onOpenChange={onPopoverOpenChange}>
+                <DropdownMenu.Root open={openPopover === 'conversation'} onOpenChange={onPopoverOpenChange}>
                     <Tooltip content="گزینه‌های بیشتر">
                         <DropdownMenu.Trigger asChild>
                             <Button variant="ghost"
@@ -87,7 +87,7 @@ export default function ConversationHeader({
                     </Tooltip>
                     <DropdownMenu.Portal>
                         <DropdownMenu.Content
-                            dir="rtl"
+                           
                             side="bottom"
                             align="end"
                             sideOffset={8}
