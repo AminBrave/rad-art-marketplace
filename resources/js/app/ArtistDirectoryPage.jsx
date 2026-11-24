@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
-import { ArtistCard, ArtistCardSkeleton, EmptyState, ErrorState, SearchField, PageContainer, SectionHeader, Button } from '../components/ui';
+import { ArtistCard, ArtistCardSkeleton, EmptyState, ErrorState, SearchField, PageContainer, SectionHeader, Button, Section, Container } from '../components/ui';
 
 export default function ArtistDirectoryPage() {
     const [params, setParams] = useSearchParams();
@@ -50,7 +50,9 @@ export default function ArtistDirectoryPage() {
                 <span>خانه</span><span className="mx-2" aria-hidden="true">/</span><span aria-current="page" className="text-ink">هنرمندان</span>
             </nav>
 
-            <header className="relative mt-6 overflow-hidden border-y-2 border-ink bg-ink px-6 py-10 text-inverse sm:px-10 sm:py-14 lg:px-14">
+            <Section bleed className="mt-6 overflow-hidden bg-ink text-inverse">
+                <Container width="wide">
+                    <header className="relative px-6 py-10 sm:px-10 sm:py-14 lg:px-14">
                 <div aria-hidden="true" className="absolute -left-10 -top-16 h-56 w-56 rounded-full border border-[color:color-mix(in_srgb,var(--color-sand)_80%,transparent)]" />
                 <div aria-hidden="true" className="absolute -left-2 -top-8 h-40 w-40 rounded-full border border-[color:color-mix(in_srgb,var(--color-sand)_70%,transparent)]" />
                 <div className="relative max-w-3xl">
@@ -63,7 +65,9 @@ export default function ArtistDirectoryPage() {
                         <SearchField value={input} onChange={(event) => setInput(event.target.value)} onSearch={submitSearch} label="جست‌وجوی هنرمند" placeholder="نام هنرمند یا شهر…" />
                     </div>
                 </div>
-            </header>
+                    </header>
+                </Container>
+            </Section>
 
             <section className="mt-10" aria-labelledby="artist-directory-heading">
                 <SectionHeader
