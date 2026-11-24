@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { formatArtworkPrice } from '../utils/formatArtworkPrice';
-import { MediaImage, SelectField, TextInput, Button } from '../components/ui';
+import { MediaImage, SelectField, TextInput, Button, Container } from '../components/ui';
 
 export default function ArtworkGallery({ user }) {
     const detailSlug = window.location.pathname.match(/^[/]artworks[/]([^/]+)$/)?.[1];
@@ -39,14 +39,15 @@ export default function ArtworkGallery({ user }) {
 
     if (detailSlug) {
         return (
-            <main className="min-h-screen bg-canvas px-6 py-12 text-ink" dir="rtl">
+            <main className="min-h-screen w-full bg-canvas py-12 text-ink" dir="rtl">
+                <Container width="wide">
                 <article className="mx-auto max-w-4xl rounded-3xl border border-border bg-paper p-6 shadow-sm sm:p-10">
                     <a href="/" className="font-black text-terracotta-strong">بازگشت به راد آرت</a>
                     {loading ? <p className="mt-10 text-muted">در حال دریافت اثر…</p> : error || !detail ? (
                         <div className="mt-10"><h1 className="text-2xl font-black">اثر در دسترس نیست</h1><p className="mt-3 text-muted">این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.</p></div>
                     ) : (
                         <div className="mt-8 grid gap-8 md:grid-cols-[1.1fr_.9fr]">
-                            <MediaImage src={detail.image_url} alt={detail.title} className="aspect-[4/3] w-full rounded-2xl" imageClassName="object-cover" loading="eager" fetchPriority="high" />
+                            <MediaImage src={detail.image_url} alt={detail.title} className="aspect-[4/3] w-full" imageClassName="object-contain" loading="eager" fetchPriority="high" />
                             <div>
                                 <p className="text-sm font-bold text-terracotta-strong">{detail.category.name}</p>
                                 <h1 className="mt-3 text-3xl font-black leading-relaxed">{detail.title}</h1>
@@ -61,12 +62,13 @@ export default function ArtworkGallery({ user }) {
                         </div>
                     )}
                 </article>
+                </Container>
             </main>
         );
     }
 
     return (
-        <section id="artworks" className="mx-auto max-w-7xl px-6 py-20 lg:px-10" dir="rtl">
+        <Container as="section" width="wide" id="artworks" className="py-20" dir="rtl">
             <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
                 <div>
                     <p className="text-sm font-bold text-terracotta-strong">کاتالوگ راد آرت</p>
@@ -101,6 +103,6 @@ export default function ArtworkGallery({ user }) {
                     ))}
                 </div>
             )}
-        </section>
+        </Container>
     );
 }
