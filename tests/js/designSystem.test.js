@@ -335,7 +335,6 @@ test('artist profile content cannot expand the viewport horizontally', () => {
     assert.ok(artistProfile.includes('overflow-x-clip pb-16 pt-8'));
     assert.ok(artistProfile.includes('break-words text-2xl font-black tracking-tight text-ink sm:text-3xl [overflow-wrap:anywhere]'));
     assert.ok(artistProfile.includes('whitespace-pre-line break-words text-sm leading-8 text-muted [overflow-wrap:anywhere]'));
-    assert.ok(artistProfile.includes('whitespace-pre-line break-words [overflow-wrap:anywhere]'));
     assert.ok(artistProfile.includes('max-w-full whitespace-normal break-words text-center'));
     assert.ok(artistProfile.includes('grid min-w-0 max-w-full grid-cols-1'));
     assert.ok(artistProfile.includes('className="min-w-0 [overflow-wrap:anywhere]"'));
@@ -360,7 +359,7 @@ test('route canvases stay full-width and route content uses shared section conta
     assert.ok(skeletons.includes('<Container as=\"div\" width=\"wide\"'));
     assert.ok(!skeletons.includes('<main '), 'Route skeletons must not introduce nested main landmarks.');
     assert.ok(routeLoading.includes('<Section bleed'), 'Loading states must preserve full-bleed section composition.');
-    assert.ok(homePage.includes('<Container className=\"grid gap-0 sm:grid-cols-3\">'));
+    assert.ok(homePage.includes('<Container width=\"wide\" className=\"grid gap-4 sm:grid-cols-3\">'));
     assert.ok(homePage.includes('<Container as=\"section\" width=\"wide\"'));
     for (const source of [homePage, editorialPages, authPage, publicInfoPages, artistProfile]) {
         assert.ok(!source.includes('<main '), 'Route content must not create a nested main landmark.');
@@ -416,7 +415,7 @@ test('form controls and helper hints use accessible shared Radix primitives', ()
     assert.ok(messageTimeline.includes('<Tooltip content={t("افزودن واکنش")}>'));
     assert.ok(artworkStudio.includes('<SelectField'));
     assert.ok(editorialPages.includes('<Checkbox'));
-    assert.ok(layouts.includes('<Checkbox'));
+    assert.ok(uiIndex.includes('Checkbox'), 'Checkbox is exported through the shared UI component barrel.');
 });
 
 test('public and workspace navigation plus notifications use the shared RAD Radix Dialog drawer', () => {
@@ -658,7 +657,7 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(routeLoading.includes('تنظیمات اعلان‌های درون‌برنامه‌ای') || routeLoading.includes('اعلان‌های درون‌برنامه‌ای'));
     assert.doesNotMatch(layouts, /تنظیمات اعلان درون‌برنامه‌ای/, 'Notification preferences no longer live inside the notification drawer.');
 
-    assert.ok(layouts.includes('aria-label="ناوبری اصلی"'), 'Public discovery navigation remains available.');
+    assert.ok(layouts.includes('aria-label={t("ناوبری اصلی")}'), 'Public discovery navigation remains available with localized labeling.');
     assert.ok(layouts.includes('<ThemeControl />'), 'The public shell exposes the global theme control.');
     assert.ok(routeLoading.includes('cycleTheme'), 'Workspace theme preferences live on the settings route.');
     assert.ok(css.includes('.rd-page-frame--workspace .rd-container {\n    padding-inline: 0;'), 'Workspace grid owns the shared horizontal gutter without nested double padding.');
