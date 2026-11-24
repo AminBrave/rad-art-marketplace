@@ -782,6 +782,21 @@ const english = {
     "گفتگوهای بیشتر": "More conversations",
     "در حال آماده‌سازی گفتگوی مستقیم و اتصال آن به اثر…": "Preparing the direct conversation and linking it to the artwork…",
     "آثار مرتبط:": "Related artworks:",
+    "دریافت صف بررسی آثار انجام نشد.": "Could not load the artwork review queue.",
+    "دریافت تعداد کاربران انجام نشد.": "Could not load the user count.",
+    "دریافت گزارش‌های پیام انجام نشد.": "Could not load message reports.",
+    "دریافت آمار مدیریت انجام نشد.": "Could not load admin statistics.",
+    "مرکز کنترل راد آرت": "Rad Art control center",
+    "بدون تصویر": "No image",
+    "هنرمند نامشخص": "Unknown artist",
+    "در حال بارگذاری": "Loading",
+    "فایل انتخاب‌شده": "Selected file",
+    "پیشرفت بارگذاری": "Upload progress",
+    "بستن اعلان": "Dismiss notification",
+    "تصویر در دسترس نیست": "Image unavailable",
+    "خطا در نمایش تصویر": "Image display error",
+    "فایل پیدا نشد یا دریافت آن ناموفق بود.": "The file could not be found or loaded.",
+    "نشانی تصویر ثبت نشده است.": "No image URL was provided.",
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 
