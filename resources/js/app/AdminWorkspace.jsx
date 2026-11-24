@@ -15,14 +15,14 @@ const statuses = [
 ];
 const statusLabels = Object.fromEntries(statuses.map((item) => [item.value, item.label]));
 const roleLabels = { buyer: 'خریدار', artist: 'هنرمند', admin: 'مدیر' };
-const dateLabel = (value) => {
+const dateLabel = (value, locale = 'fa') => {
     if (!value) return '—';
     const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? '—' : date.toLocaleDateString('fa-IR', { dateStyle: 'medium' });
+    return Number.isNaN(date.getTime()) ? '—' : date.toLocaleDateString(locale === 'fa' ? 'fa-IR' : 'en-US', { dateStyle: 'medium' });
 };
 
 export function AdminDashboardHome() {
-    const { t } = useLanguage();
+    const { t, locale } = useLanguage();
     const { user } = useAuth();
     const dashboardQuery = useQuery({
         queryKey: ['admin', 'dashboard', user?.id],
@@ -91,7 +91,7 @@ export function AdminDashboardHome() {
                             <div className="flex min-w-0 flex-col items-start">
                                 <Badge variant="warning">{statusLabels[summary.latest.status] ?? summary.latest.status}</Badge>
                                 <h3 className="mt-3 text-lg font-black">{summary.latest.title}</h3>
-                                <p className="mt-2 text-sm text-muted">{summary.latest.artist?.display_name ?? 'هنرمند نامشخص'} · {dateLabel(summary.latest.created_at)}</p>
+                                <p className="mt-2 text-sm text-muted">{summary.latest.artist?.display_name ?? 'هنرمند نامشخص'} · {dateLabel(summary.latest.created_at, locale)}</p>
                                 <Link to="/admin/artworks" className="mt-auto pt-5 text-sm font-bold text-terracotta-strong underline underline-offset-4">{t("رفتن به بررسی اثر")}</Link>
                             </div>
                         </div>
@@ -181,7 +181,7 @@ export function AdminArtworkModeration() {
                     <div className="grid sm:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)]"><div className="aspect-[3/4] overflow-hidden bg-surface-muted p-3 sm:aspect-[3/4]"><MediaImage src={artwork.image_url} alt={'تصویر اثر ' + artwork.title} className="h-56 w-full sm:h-full sm:min-h-64" imageClassName="object-cover" loading="lazy" decoding="async" /></div>
                         <div className="min-w-0 py-4 sm:px-1"><div className="flex flex-wrap items-start justify-between gap-2"><h2 className="font-bold">{artwork.title}</h2><Badge variant={artwork.status === 'approved' ? 'success' : artwork.status === 'rejected' ? 'danger' : artwork.status === 'pending_review' ? 'warning' : 'info'}>{statusLabels[artwork.status] ?? artwork.status}</Badge></div>
                             <p className="mt-2 text-xs text-muted">{artwork.artist?.display_name ?? '—'} · {artwork.category?.name ?? '—'}</p>
-                            <dl className="mt-4 grid grid-cols-2 gap-3 text-xs">{artwork.medium && <div><dt className="text-muted">{t("تکنیک")}</dt><dd className="mt-1 font-semibold">{artwork.medium}</dd></div>}{artwork.dimensions && <div><dt className="text-muted">{t("ابعاد")}</dt><dd className="mt-1 font-semibold">{artwork.dimensions}</dd></div>}{artwork.year && <div><dt className="text-muted">سال</dt><dd className="mt-1 font-semibold">{artwork.year}</dd></div>}<div><dt className="text-muted">تاریخ ثبت</dt><dd className="mt-1 font-semibold">{dateLabel(artwork.created_at)}</dd></div></dl>
+                            <dl className="mt-4 grid grid-cols-2 gap-3 text-xs">{artwork.medium && <div><dt className="text-muted">{t("تکنیک")}</dt><dd className="mt-1 font-semibold">{artwork.medium}</dd></div>}{artwork.dimensions && <div><dt className="text-muted">{t("ابعاد")}</dt><dd className="mt-1 font-semibold">{artwork.dimensions}</dd></div>}{artwork.year && <div><dt className="text-muted">سال</dt><dd className="mt-1 font-semibold">{artwork.year}</dd></div>}<div><dt className="text-muted">تاریخ ثبت</dt><dd className="mt-1 font-semibold">{dateLabel(artwork.created_at, locale)}</dd></div></dl>
                             {artwork.description && <p className="mt-4 line-clamp-4 text-sm leading-7 text-muted">{artwork.description}</p>}{artwork.rejection_note && <p className="mt-3 border-s-2 border-sand bg-surface-muted p-3 text-xs leading-6 text-muted">یادداشت ثبت‌شده: {artwork.rejection_note}</p>}
                         </div>
                     </div>
@@ -335,7 +335,7 @@ export function AdminMessageReportsPage() {
                 const confirmingRemoval = confirmRemovalId === report.id;
                 return <article key={report.id} className="overflow-hidden border-t border-border bg-transparent pt-1">
                     <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border py-5">
-                        <div><p className="text-xs font-bold text-terracotta-strong">گزارش شماره {report.id}</p><h2 className="mt-1 font-black">{report.reason}</h2><p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? 'کاربر'} · {dateLabel(report.created_at)}</p></div>
+                        <div><p className="text-xs font-bold text-terracotta-strong">گزارش شماره {report.id}</p><h2 className="mt-1 font-black">{report.reason}</h2><p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? 'کاربر'} · {dateLabel(report.created_at, locale)}</p></div>
                         <Badge variant={isOpen ? 'warning' : report.status === 'dismissed' ? 'neutral' : 'success'}>{isOpen ? 'در انتظار بررسی' : report.status === 'dismissed' ? t("رد گزارش") : t("بررسی‌شده")}</Badge>
                     </div>
                     <div className="space-y-5 py-5">
@@ -453,7 +453,7 @@ export function AdminArtworkCommentReportsPage() {
                             <div>
                                 <p className="text-xs font-bold text-terracotta-strong">گزارش شماره {report.id}</p>
                                 <h2 className="mt-1 font-black">{report.reason}</h2>
-                                <p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? 'کاربر'} · {dateLabel(report.created_at)}</p>
+                                <p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? 'کاربر'} · {dateLabel(report.created_at, locale)}</p>
                             </div>
                             <Badge variant={isOpen ? 'warning' : report.status === 'dismissed' ? 'neutral' : 'success'}>
                                 {isOpen ? 'در انتظار بررسی' : report.status === 'dismissed' ? t("رد گزارش") : t("بررسی‌شده")}
