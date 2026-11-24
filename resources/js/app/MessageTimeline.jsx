@@ -72,7 +72,7 @@ export default function MessageTimeline({
         </form>
         ) : <p dir="auto" className={'whitespace-pre-wrap break-words text-sm leading-[1.65] ' + (deleted ? 'italic text-muted' : '')}>{message.body ?? t("این پیام حذف شده است.")}</p>}
         <div className="mt-[.55rem] flex flex-wrap items-center justify-between gap-2 text-[10px] text-subtle">
-        <span className={own ? 'text-muted' : 'text-muted'}>{formatTimeLabel(message.created_at)} {message.edited_at && !deleted ? '· ویرایش‌شده' : ''}</span>
+        <span className={own ? 'text-muted' : 'text-muted'}>{formatTimeLabel(message.created_at)} {message.edited_at && !deleted ? '· ' + t('ویرایش‌شده') : ''}</span>
         {own && !deleted && <span aria-label={message.read_at ? t("پیام خوانده شده") : t("پیام ارسال شده")} className="text-muted">{message.read_at ? t("✓✓ خوانده‌شده") : t("✓ ارسال‌شده")}</span>}
         </div>
         {!deleted && (
