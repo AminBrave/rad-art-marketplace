@@ -164,6 +164,8 @@ test('route canvases stay full-width and route content uses shared section conta
     assert.ok(css.includes('--rd-workspace-column-gap: 2rem'));
     assert.ok(css.includes('var(--rd-workspace-sidebar-width) - var(--rd-workspace-column-gap)'));
     assert.ok(layouts.includes('rd-workspace-main min-w-0'));
+    assert.ok(layouts.includes('lg:grid-cols-[var(--rd-workspace-sidebar-width)_minmax(0,1fr)]'));
+    assert.ok(layouts.includes('lg:gap-[var(--rd-workspace-column-gap)]'));
     assert.ok(layoutPrimitives.includes('rd-container--wide'));
     assert.ok(skeletons.includes('<Section as=\"header\" bleed'));
     assert.ok(skeletons.includes('<Container as=\"div\" width=\"wide\"'));
