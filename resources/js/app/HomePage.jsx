@@ -91,14 +91,14 @@ export default function HomePage() {
     return (
         <div className="w-full min-w-0">
             <section aria-labelledby="home-hero-title" className="relative isolate border-b border-[color:var(--rd-hero-line)] rd-hero-surface">
-                <div aria-hidden="true" className="pointer-events-none absolute end-[8%] top-16 z-0 hidden h-24 w-24 border border-sand sm:block lg:top-20 lg:h-32 lg:w-32" />
-                <div aria-hidden="true" className="pointer-events-none absolute end-[3%] bottom-16 z-0 hidden h-28 w-28 bg-surface-muted sm:block lg:bottom-20 lg:h-40 lg:w-40" />
                 <Container className="pb-16 pt-10 sm:pb-20 sm:pt-16 lg:pb-24 lg:pt-20">
                     <div className="mb-8 flex items-center justify-between border-y border-[color:var(--rd-hero-line)] py-3.5 text-[10px] font-extrabold tracking-[.18em] text-[color:var(--rd-hero-muted)] sm:text-xs">
                         <span>{t('گالری هنر مستقل معاصر')}</span>
                         <span dir="ltr" className="font-latin">RAD ART / DISCOVER &amp; CONNECT</span>
                     </div>
-                    <div className="flex w-full min-w-0 flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
+                    <div className="relative isolate flex w-full min-w-0 flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
+                        <span aria-hidden="true" className="pointer-events-none absolute end-6 top-0 z-0 hidden h-20 w-20 border border-[color:var(--rd-hero-line)] sm:block lg:end-10 lg:h-28 lg:w-28" />
+                        <span aria-hidden="true" className="pointer-events-none absolute end-12 top-6 z-0 hidden h-20 w-20 border-e border-t border-[color:var(--rd-hero-accent)] sm:block lg:end-16 lg:top-8 lg:h-28 lg:w-28" />
                         <div className="relative z-10 order-2 w-full min-w-0 max-w-2xl py-2 lg:order-none lg:flex-1 lg:py-10">
                             <p className="mb-5 flex items-center gap-3 text-xs font-extrabold text-[color:var(--rd-hero-accent)]">
                                 <span className="h-px w-9 bg-[color:var(--rd-hero-accent)]" />
