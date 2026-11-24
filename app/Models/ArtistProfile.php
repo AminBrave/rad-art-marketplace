@@ -13,8 +13,11 @@ class ArtistProfile extends Model
     protected $fillable = [
         'slug',
         'display_name',
+        'display_name_en',
         'bio',
+        'bio_en',
         'city',
+        'city_en',
         'website_url',
         'instagram_handle',
         'is_public',

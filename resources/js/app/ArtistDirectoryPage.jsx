@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
-import { ArtistCard, ArtistCardSkeleton, EmptyState, ErrorState, SearchField, PageContainer, SectionHeader } from '../components/ui';
+import { useLanguage } from './LanguageContext';
+import { ArtistCard, ArtistCardSkeleton, EmptyState, ErrorState, SearchField, SectionHeader, Button, Section, Container } from '../components/ui';
 
 export default function ArtistDirectoryPage() {
+    const { t, locale } = useLanguage();
     const [params, setParams] = useSearchParams();
     const query = params.get('q') ?? '';
     const page = Math.max(1, Number.parseInt(params.get('page') ?? '1', 10) || 1);
@@ -45,52 +47,58 @@ export default function ArtistDirectoryPage() {
     const submitSearch = (value) => setParams(value.trim() ? { q: value.trim() } : {});
 
     return (
-        <PageContainer as="main" className="min-h-[65vh] pb-16 pt-8 sm:pt-12" dir="rtl">
-            <nav aria-label="مسیر صفحه" className="text-xs text-muted">
-                <span>خانه</span><span className="mx-2" aria-hidden="true">/</span><span aria-current="page" className="text-ink">هنرمندان</span>
+        <div className="w-full min-w-0 min-h-[65vh] pb-16 pt-8 sm:pt-12">
+            <Container width="wide">
+            <nav aria-label={t("مسیر صفحه")} className="text-xs text-muted">
+                <span>{t("خانه")}</span><span className="mx-2" aria-hidden="true">/</span><span aria-current="page" className="text-ink">{t("هنرمندان")}</span>
             </nav>
+            </Container>
 
-            <header className="relative mt-6 overflow-hidden border-y border-border bg-surface-muted px-6 py-10 sm:px-10 sm:py-14 lg:px-14">
-                <div aria-hidden="true" className="absolute -left-10 -top-16 h-56 w-56 rounded-full border border-[color:color-mix(in_srgb,var(--color-sand)_80%,transparent)]" />
-                <div aria-hidden="true" className="absolute -left-2 -top-8 h-40 w-40 rounded-full border border-[color:color-mix(in_srgb,var(--color-sand)_70%,transparent)]" />
-                <div className="relative max-w-3xl">
-                    <p className="text-xs font-bold tracking-wide text-terracotta-strong">جامعه خلاق راد آرت</p>
-                    <h1 className="mt-4 text-4xl font-black leading-tight sm:text-5xl">هنرمند را کشف کنید.</h1>
-                    <p className="mt-5 max-w-2xl text-sm leading-8 text-muted sm:text-base">
-                        با هنرمندان مستقل آشنا شوید؛ از نگاه و مسیر هنری آن‌ها بخوانید و مجموعه آثار تأییدشده‌شان را ببینید.
+            <Section bleed className="mt-6 border-y border-[color:var(--rd-hero-line)] rd-hero-surface">
+                <Container width="wide">
+                    <header className="relative isolate px-6 py-10 sm:px-10 sm:py-14 lg:px-14">
+                <div aria-hidden="true" className="pointer-events-none absolute -start-10 -top-16 h-56 w-56 border border-[color:var(--rd-hero-line)]" />
+                <div aria-hidden="true" className="pointer-events-none absolute -start-2 -top-8 h-40 w-40 border border-[color:var(--rd-hero-accent)]" />
+                <div className="relative z-10 max-w-3xl">
+                    <p className="text-xs font-bold tracking-[.12em] text-[color:var(--rd-hero-accent)]">{t("جامعه خلاق راد آرت")}</p>
+                    <h1 className="mt-4 text-4xl font-black leading-[1.2] tracking-[-.05em] text-[color:var(--rd-hero-foreground)] sm:text-6xl">{t("هنرمند را کشف کنید.")}</h1>
+                    <p className="mt-5 max-w-2xl text-sm leading-8 text-[color:var(--rd-hero-muted)] sm:text-base">
+                        {t("با هنرمندان مستقل آشنا شوید؛ از نگاه و مسیر هنری آن‌ها بخوانید و مجموعه آثار تأییدشده‌شان را ببینید.")}
                     </p>
                     <div className="mt-8 max-w-2xl">
-                        <SearchField value={input} onChange={(event) => setInput(event.target.value)} onSearch={submitSearch} label="جست‌وجوی هنرمند" placeholder="نام هنرمند یا شهر…" />
+                        <SearchField value={input} onChange={(event) => setInput(event.target.value)} onSearch={submitSearch} label={t("جست‌وجوی هنرمند")} placeholder={t("نام هنرمند یا شهر…")} />
                     </div>
                 </div>
-            </header>
+                    </header>
+                </Container>
+            </Section>
 
-            <section className="mt-10" aria-labelledby="artist-directory-heading">
+            <Container as="section" width="wide" className="mt-10" aria-labelledby="artist-directory-heading">
                 <SectionHeader
                     id="artist-directory-heading"
-                    eyebrow="جامعه هنرمندان"
-                    title={query ? 'نتایج جست‌وجو' : 'چهره‌های خلاق'}
-                    actions={<p className="text-xs text-muted" aria-live="polite">{loading ? 'در حال دریافت هنرمندان…' : meta.total.toLocaleString('fa-IR') + ' هنرمند'}{artistsQuery.isFetching && !loading ? ' · به‌روزرسانی…' : ''}</p>}
+                    eyebrow={t("جامعه هنرمندان")}
+                    title={query ? t('نتایج جست‌وجو') : t('چهره‌های خلاق')}
+                    actions={<p className="text-xs text-muted" aria-live="polite">{loading ? t('در حال دریافت هنرمندان…') : meta.total.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('هنرمند')}{artistsQuery.isFetching && !loading ? ' · ' + t('به‌روزرسانی…') : ''}</p>}
                 />
 
                 {loading ? (
                     <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((item) => <ArtistCardSkeleton key={item} />)}</div>
                 ) : error ? (
-                    <ErrorState className="mt-8" title="دریافت فهرست هنرمندان ممکن نشد" description="لطفاً دوباره تلاش کنید." onRetry={() => artistsQuery.refetch()} />
+                    <ErrorState className="mt-8" title={t("دریافت فهرست هنرمندان ممکن نشد")} description={t("لطفاً دوباره تلاش کنید.")} onRetry={() => artistsQuery.refetch()} />
                 ) : artists.length ? (
                     <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">{artists.map((artist) => <ArtistCard key={artist.id} artist={artist} />)}</div>
                 ) : (
-                    <EmptyState className="mt-8" title="هنرمندی پیدا نشد" description="نام یا شهر دیگری را جست‌وجو کنید." />
+                    <EmptyState className="mt-8" title={t("هنرمندی پیدا نشد")} description={t("نام یا شهر دیگری را جست‌وجو کنید.")} />
                 )}
-            </section>
+            </Container>
 
             {!loading && !error && meta.last_page > 1 && (
-                <nav aria-label="صفحه‌بندی هنرمندان" className="mt-10 flex items-center justify-center gap-4">
-                    <button type="button" disabled={page <= 1} onClick={() => updatePage(page - 1)} className="min-h-11 border border-border px-5 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40">قبلی</button>
-                    <span className="text-sm text-muted">صفحه {meta.current_page.toLocaleString('fa-IR')} از {meta.last_page.toLocaleString('fa-IR')}</span>
-                    <button type="button" disabled={page >= meta.last_page} onClick={() => updatePage(page + 1)} className="min-h-11 border border-border px-5 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40">بعدی</button>
-                </nav>
+                <Container as="nav" width="wide" className="mt-10 flex items-center justify-center gap-4" aria-label={t("صفحه‌بندی هنرمندان")}>
+                    <Button variant="outline" type="button" disabled={page <= 1} onClick={() => updatePage(page - 1)} className="min-h-11 border border-border px-5 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40">{t("قبلی")}</Button>
+                    <span className="text-sm text-muted">{locale === 'fa' ? `صفحه ${meta.current_page.toLocaleString('fa-IR')} از ${meta.last_page.toLocaleString('fa-IR')}` : `Page ${meta.current_page.toLocaleString('en-US')} of ${meta.last_page.toLocaleString('en-US')}`}</span>
+                    <Button variant="outline" type="button" disabled={page >= meta.last_page} onClick={() => updatePage(page + 1)} className="min-h-11 border border-border px-5 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40">{t("بعدی")}</Button>
+                </Container>
             )}
-        </PageContainer>
+        </div>
     );
 }

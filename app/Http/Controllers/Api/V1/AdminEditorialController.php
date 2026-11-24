@@ -30,9 +30,9 @@ class AdminEditorialController extends Controller
         $artworks = Artwork::query()->where('status', Artwork::STATUS_APPROVED)
             ->whereHas('artistProfile', fn ($query) => $query->where('is_public', true))
             ->with('artistProfile')->orderBy('title')->limit(200)->get()
-            ->map(fn (Artwork $artwork) => ['id' => $artwork->id, 'title' => $artwork->title, 'artist' => $artwork->artistProfile->display_name]);
+            ->map(fn (Artwork $artwork) => ['id' => $artwork->id, 'title' => $artwork->title, 'title_en' => $artwork->title_en, 'artist' => $artwork->artistProfile->display_name, 'artist_en' => $artwork->artistProfile->display_name_en]);
 
-        $artists = ArtistProfile::query()->where('is_public', true)->orderBy('display_name')->limit(200)->get(['id', 'display_name', 'slug']);
+        $artists = ArtistProfile::query()->where('is_public', true)->orderBy('display_name')->limit(200)->get(['id', 'display_name', 'display_name_en', 'slug']);
 
         return response()->json(['data' => ['artworks' => $artworks, 'artists' => $artists]]);
     }
@@ -41,7 +41,9 @@ class AdminEditorialController extends Controller
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:160'],
+            'title_en' => ['nullable', 'string', 'max:160'],
             'intro' => ['nullable', 'string', 'max:2000'],
+            'intro_en' => ['nullable', 'string', 'max:2000'],
             'artwork_ids' => ['sometimes', 'array', 'max:30'],
             'artwork_ids.*' => ['integer', 'distinct', 'exists:artworks,id'],
             'publish' => ['sometimes', 'boolean'],
@@ -52,7 +54,8 @@ class AdminEditorialController extends Controller
 
         $collection = DB::transaction(function () use ($validated, $request, $slug): CuratedCollection {
             $collection = CuratedCollection::create([
-                'slug' => $slug, 'title' => $validated['title'], 'intro' => $validated['intro'] ?? null,
+                'slug' => $slug, 'title' => $validated['title'], 'title_en' => $validated['title_en'] ?? null,
+                'intro' => $validated['intro'] ?? null, 'intro_en' => $validated['intro_en'] ?? null,
                 'status' => ($validated['publish'] ?? false) ? 'published' : 'draft',
                 'position' => (int) CuratedCollection::max('position') + 1,
                 'published_at' => ($validated['publish'] ?? false) ? now() : null,
@@ -71,7 +74,9 @@ class AdminEditorialController extends Controller
     {
         $validated = $request->validate([
             'title' => ['sometimes', 'required', 'string', 'max:160'],
+            'title_en' => ['sometimes', 'nullable', 'string', 'max:160'],
             'intro' => ['sometimes', 'nullable', 'string', 'max:2000'],
+            'intro_en' => ['sometimes', 'nullable', 'string', 'max:2000'],
             'artwork_ids' => ['sometimes', 'array', 'max:30'],
             'artwork_ids.*' => ['integer', 'distinct', 'exists:artworks,id'],
         ]);
@@ -80,7 +85,7 @@ class AdminEditorialController extends Controller
         }
 
         DB::transaction(function () use ($request, $collection, $validated): void {
-            $collection->fill(array_intersect_key($validated, array_flip(['title', 'intro'])));
+            $collection->fill(array_intersect_key($validated, array_flip(['title', 'title_en', 'intro', 'intro_en'])));
             $collection->updated_by = $request->user()->id;
             $collection->save();
             if (array_key_exists('artwork_ids', $validated)) {
@@ -129,10 +134,11 @@ class AdminEditorialController extends Controller
                 'id' => $selection->id,
                 'artist_profile_id' => $selection->artist_profile_id,
                 'editorial_intro' => $selection->editorial_intro,
+                'editorial_intro_en' => $selection->editorial_intro_en,
                 'starts_at' => $selection->starts_at?->toISOString(),
                 'ends_at' => $selection->ends_at?->toISOString(),
                 'is_published' => $selection->is_published,
-                'artist' => ['display_name' => $selection->artistProfile->display_name, 'slug' => $selection->artistProfile->slug],
+                'artist' => ['display_name' => $selection->artistProfile->display_name, 'display_name_en' => $selection->artistProfile->display_name_en, 'slug' => $selection->artistProfile->slug],
             ]);
 
         return response()->json(['data' => $items]);
@@ -144,6 +150,7 @@ class AdminEditorialController extends Controller
             'selections' => ['present', 'array', 'max:30'],
             'selections.*.artist_profile_id' => ['required', 'integer', 'distinct', 'exists:artist_profiles,id'],
             'selections.*.editorial_intro' => ['nullable', 'string', 'max:500'],
+            'selections.*.editorial_intro_en' => ['nullable', 'string', 'max:500'],
             'selections.*.starts_at' => ['nullable', 'date'],
             'selections.*.ends_at' => ['nullable', 'date', 'after_or_equal:selections.*.starts_at'],
         ]);
@@ -187,7 +194,7 @@ class AdminEditorialController extends Controller
     {
         return [
             'id' => $collection->id, 'slug' => $collection->slug, 'title' => $collection->title,
-            'intro' => $collection->intro, 'status' => $collection->status, 'position' => $collection->position,
+            'title_en' => $collection->title_en, 'intro' => $collection->intro, 'intro_en' => $collection->intro_en, 'status' => $collection->status, 'position' => $collection->position,
             'published_at' => $collection->published_at?->toISOString(),
             'artwork_ids' => $collection->artworks->pluck('id')->all(),
             'artwork_count' => $collection->artworks->count(),

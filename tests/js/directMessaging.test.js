@@ -48,7 +48,7 @@ test('status banners are presentational while messaging parent retains retry own
 });
 
 test('message composer supports accessible text entry, IME-safe Enter send and multiline input', () => {
-    assert.ok(messageComposer.includes('aria-label="متن پیام"'));
+    assert.ok(messageComposer.includes('aria-label={t("متن پیام")}'));
     assert.ok(messageComposer.includes("event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing"));
     assert.ok(messageComposer.includes('event.currentTarget.form?.requestSubmit()'));
     assert.ok(messageComposer.includes('maxLength={5000}'));
@@ -136,8 +136,38 @@ test('attachment upload and private image preview enforce participant, type, siz
     assert.ok(attachments.includes("'X-Content-Type-Options' => 'nosniff'"));
 });
 
+test('in-flight sends and recoverable failures remain associated with their originating conversation', () => {
+    assert.ok(messaging.includes('const [sendingConversationId, setSendingConversationId] = useState(null)'));
+    assert.ok(messaging.includes('setSendingConversationId(Number(conversationId))'));
+    assert.ok(messaging.includes('setSendingConversationId(null)'));
+    assert.ok(messaging.includes('if (!sendingMessageRef.current) {'));
+    assert.ok(messaging.includes('sendErrorsByConversationRef.current.set(Number(conversationId), sendError)'));
+    assert.ok(messaging.includes('sendErrorsByConversationRef.current.get(Number(active))'));
+    assert.ok(messaging.includes('sendingInAnotherConversation={sending && Number(sendingConversationId) !== Number(active)}'));
+    assert.ok(messageComposer.includes('در حال ارسال در گفتگوی دیگر'));
+    assert.ok(messaging.includes('sendingConversationId={sendingConversationId}'));
+    assert.ok(messagingInbox.includes('    sendingConversationId,'));
+    assert.ok(messagingInbox.includes('Number(sendingConversationId) === Number(thread.id)'));
+    assert.ok(messagingInbox.includes('در حال ارسال پیام و پیوست'));
+    assert.ok(messagingInbox.includes('role="status" aria-live="polite"'));
+});
+
 test('direct messaging routes remain available in the authenticated workspace', () => {
     assert.ok(routes.includes("Route::post('/conversations/direct'"));
     assert.ok(routes.includes("Route::get('/conversations/{conversation}/messages'"));
     assert.ok(routes.includes("Route::post('/conversations/{conversation}/messages'"));
+});
+
+
+test('message composer exposes attachment guidance and restores keyboard focus after dismissing context or files', () => {
+    assert.ok(messageComposer.includes('aria-label={t("ارسال پیام")}'));
+    assert.ok(messageComposer.includes('htmlFor="message-attachment-input"'));
+    assert.ok(messageComposer.includes('aria-describedby="message-attachment-help"'));
+    assert.ok(messageComposer.includes('حداکثر حجم ۱۰ مگابایت'));
+    assert.ok(messageComposer.includes('role="group" aria-label={t("پاسخ انتخاب‌شده")}'));
+    assert.ok(messageComposer.includes('role="status" aria-live="polite" aria-atomic="true"'));
+    assert.ok(messageComposer.includes("aria-label={sending ? t('در حال ارسال پیام') : t('ارسال پیام')}"));
+    assert.ok(messaging.includes('setReplyTo(null); draftRef.current?.focus();'));
+    assert.ok(messaging.includes('draftRef.current?.focus();\n                                    setParams'));
+    assert.ok(messaging.includes('fileInputRef.current.focus()'));
 });

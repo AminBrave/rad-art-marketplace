@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class CuratedCollection extends Model
 {
-    protected $fillable = ['slug', 'title', 'intro', 'status', 'position', 'published_at', 'created_by', 'updated_by'];
+    protected $fillable = ['slug', 'title', 'title_en', 'intro', 'intro_en', 'status', 'position', 'published_at', 'created_by', 'updated_by'];
 
     protected function casts(): array
     {

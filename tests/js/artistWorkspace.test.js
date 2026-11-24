@@ -14,7 +14,7 @@ test('artist onboarding progress is derived from named profile fields and actual
     }
     assert.ok(overview.includes('counts.artworks'));
     assert.ok(overview.includes('aria-valuenow={progress}'));
-    assert.ok(overview.includes('ثبت اولین اثر برای بررسی'));
+    assert.ok(overview.includes('اولین اثر خود را ثبت کنید تا برای بررسی ارسال شود'));
     assert.ok(!/analytics|engagement|reach|impressions/i.test(overview));
 });
 

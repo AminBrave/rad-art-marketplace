@@ -14,13 +14,13 @@ test('Notification center renders social activity and preserves message notifica
     assert.match(layout, /conversation=/);
 });
 
-test('Notification center exposes pagination and independent in-app preference controls', () => {
+test('Notification center exposes pagination and independent read controls', () => {
     assert.match(layout, /صفحه‌بندی اعلان‌ها/);
-    assert.match(layout, /in_app_follows/);
-    assert.match(layout, /in_app_artwork_likes/);
-    assert.match(layout, /in_app_artwork_comments/);
-    assert.match(layout, /in_app_comment_replies/);
-    assert.match(layout, /in_app_messages/);
+    assert.match(layout, /setPage\(\(value\) => value - 1\)/);
+    assert.match(layout, /setPage\(\(value\) => value \+ 1\)/);
+    assert.match(layout, /markOneRead/);
+    assert.match(layout, /markAllRead/);
+    assert.match(layout, /notificationsQuery\.isFetching/);
 });
 
 test('Notification API keeps reads recipient-scoped and includes social notification types', () => {

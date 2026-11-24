@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useLanguage } from './LanguageContext';
 import MessagingInboxPanel from './MessagingInboxPanel';
 import ConversationHeader from './ConversationHeader';
 import MessageTimeline from './MessageTimeline';
@@ -11,19 +12,20 @@ import { useMessagingQueries } from './useMessagingQueries';
 import { useAuth } from './AuthContext';
 import { useSearchParams } from 'react-router-dom';
 
-function timeLabel(value) {
+function timeLabel(value, locale) {
     if (!value) return '';
     const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? '' : date.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+    return Number.isNaN(date.getTime()) ? '' : date.toLocaleTimeString(locale === 'fa' ? 'fa-IR' : 'en-US', { hour: '2-digit', minute: '2-digit' });
 }
 
-function dayLabel(value) {
+function dayLabel(value, locale) {
     if (!value) return '';
     const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? '' : date.toLocaleDateString('fa-IR', { dateStyle: 'medium' });
+    return Number.isNaN(date.getTime()) ? '' : date.toLocaleDateString(locale === 'fa' ? 'fa-IR' : 'en-US', { dateStyle: 'medium' });
 }
 
 export default function MessagingCenter({ role }) {
+    const { t, locale } = useLanguage();
     const { user } = useAuth();
     const [params, setParams] = useSearchParams();
     const endpoint = role === 'artist' ? '/api/v1/artist/conversations' : '/api/v1/buyer/conversations';
@@ -39,12 +41,13 @@ export default function MessagingCenter({ role }) {
     const hasMoreThreads = Boolean(inboxQuery.hasNextPage);
     const loadingMoreThreads = inboxQuery.isFetchingNextPage;
     const messagesLoading = messagesQuery.isLoading;
-    const messagesError = messagesQuery.isError && messages.length === 0 ? 'دریافت پیام‌ها انجام نشد. دوباره تلاش کنید.' : '';
+    const messagesError = messagesQuery.isError && messages.length === 0 ? t("دریافت پیام‌ها انجام نشد. دوباره تلاش کنید.") : '';
     const [draft, setDraft] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
     const [filePreview, setFilePreview] = useState('');
     const [pendingMessageId, setPendingMessageId] = useState(null);
     const [uploadProgress, setUploadProgress] = useState(0);
+    const [uploading, setUploading] = useState(false);
     const [replyTo, setReplyTo] = useState(null);
     const [pendingArtwork, setPendingArtwork] = useState(null);
     const [editingId, setEditingId] = useState(null);
@@ -52,6 +55,7 @@ export default function MessagingCenter({ role }) {
     const [loadingOlder, setLoadingOlder] = useState(false);
     const [newMessageCount, setNewMessageCount] = useState(0);
     const [sending, setSending] = useState(false);
+    const [sendingConversationId, setSendingConversationId] = useState(null);
     const [actionId, setActionId] = useState(null);
     const [error, setError] = useState('');
     const [olderMessagesError, setOlderMessagesError] = useState('');
@@ -78,6 +82,7 @@ export default function MessagingCenter({ role }) {
     const draftsByConversationRef = useRef(new Map());
     const filesByConversationRef = useRef(new Map());
     const pendingIdsByConversationRef = useRef(new Map());
+    const sendErrorsByConversationRef = useRef(new Map());
     const directStartKeyRef = useRef(null);
     const directStartRequestRef = useRef(null);
     const shouldStickToBottomRef = useRef(true);
@@ -110,7 +115,7 @@ export default function MessagingCenter({ role }) {
             }
             await loadThreads();
         } catch {
-            setError('به‌روزرسانی وضعیت گفتگو انجام نشد.');
+            setError(t("به‌روزرسانی وضعیت گفتگو انجام نشد."));
         }
     };
 
@@ -139,14 +144,17 @@ export default function MessagingCenter({ role }) {
         latestMessageIdRef.current = null;
         setDraft(active ? (draftsByConversationRef.current.get(Number(active)) ?? '') : '');
         setSelectedFile(active ? (filesByConversationRef.current.get(Number(active)) ?? null) : null);
-        setUploadProgress(0);
+        if (!sendingMessageRef.current) {
+            setUploadProgress(0);
+            setUploading(false);
+        }
         setReplyTo(null);
         setEditingId(null);
         setEditDraft('');
         setPendingMessageId(active ? (pendingIdsByConversationRef.current.get(Number(active)) ?? null) : null);
         setActionId(null);
         setOpenPopover(null);
-        setError('');
+        setError(active ? (sendErrorsByConversationRef.current.get(Number(active)) ?? '') : '');
         setNotice('');
         if (fileInputRef.current) fileInputRef.current.value = '';
         if (draftRef.current) draftRef.current.style.height = 'auto';
@@ -229,10 +237,10 @@ export default function MessagingCenter({ role }) {
                     directStartKeyRef.current = null;
                     setDirectStartError(
                         requestError.response?.status === 403
-                            ? 'شروع گفتگو به‌دلیل محدودیت دسترسی یا تنظیمات ایمنی ممکن نیست.'
+                            ? t("شروع گفتگو به‌دلیل محدودیت دسترسی یا تنظیمات ایمنی ممکن نیست.")
                             : requestError.response?.status === 404
-                                ? 'این هنرمند یا اثر دیگر برای نمایش عمومی در دسترس نیست.'
-                                : 'شروع گفتگوی مستقیم انجام نشد. اتصال را بررسی کنید و دوباره تلاش کنید.',
+                                ? t("این هنرمند یا اثر دیگر برای نمایش عمومی در دسترس نیست.")
+                                : t("شروع گفتگوی مستقیم انجام نشد. اتصال را بررسی کنید و دوباره تلاش کنید."),
                     );
                 }
             } finally {
@@ -249,7 +257,7 @@ export default function MessagingCenter({ role }) {
             if (directStartRequestRef.current === controller) directStartRequestRef.current = null;
             if (directStartKeyRef.current === requestKey) directStartKeyRef.current = null;
         };
-    }, [artistSlug, artworkSlug, role, setParams, directStartAttempt, request, setThreads]);
+    }, [artistSlug, artworkSlug, role, setParams, directStartAttempt, request, setThreads, t]);
 
     useEffect(() => {
         hasOlderMessagesRef.current = Boolean(messagesQuery.data?.hasOlder);
@@ -304,8 +312,8 @@ export default function MessagingCenter({ role }) {
 
     useEffect(() => {
         setSafetyLoading(Boolean(active) && safetyQuery.isLoading);
-        if (active && safetyQuery.isError) setError('وضعیت ایمنی گفتگو دریافت نشد.');
-    }, [active, safetyQuery.isLoading, safetyQuery.isError]);
+        if (active && safetyQuery.isError) setError(t("وضعیت ایمنی گفتگو دریافت نشد."));
+    }, [active, safetyQuery.isLoading, safetyQuery.isError, t]);
 
     useEffect(() => {
         if (!detailQuery.data || threads.some((thread) => Number(thread.id) === Number(active))) return;
@@ -375,14 +383,14 @@ export default function MessagingCenter({ role }) {
             hasOlderMessagesRef.current = Number(data.current_page ?? 1) < Number(data.last_page ?? 1);
             setMessagesMeta({ hasOlder: hasOlderMessagesRef.current });
         } catch {
-            if (Number(activeConversationRef.current) === Number(conversationId)) setOlderMessagesError('دریافت پیام‌های قدیمی‌تر انجام نشد. دوباره تلاش کنید.');
+            if (Number(activeConversationRef.current) === Number(conversationId)) setOlderMessagesError(t("دریافت پیام‌های قدیمی‌تر انجام نشد. دوباره تلاش کنید."));
         } finally {
             if (Number(activeConversationRef.current) === Number(conversationId)) {
                 historyLoadingRef.current = false;
                 setLoadingOlder(false);
             }
         }
-    }, [messagesQuery.data?.hasOlder, setMessages, setMessagesMeta, fetchOlderMessages]);
+    }, [messagesQuery.data?.hasOlder, setMessages, setMessagesMeta, fetchOlderMessages, t]);
 
     const replaceMessage = (updated) => {
         setMessages((current) => current.map((message) => message.id === updated.id ? updated : message));
@@ -395,22 +403,29 @@ export default function MessagingCenter({ role }) {
         if ((!body && !selectedFile) || !active || sendingMessageRef.current || safetyLoading || safety.blocked_by_me || safety.blocked_by_other) return;
         sendingMessageRef.current = true;
         setSending(true);
+        setSendingConversationId(Number(conversationId));
         setError('');
+        sendErrorsByConversationRef.current.delete(Number(conversationId));
         const messageClientId = pendingMessageId || (window.crypto?.randomUUID?.() ?? ('msg-' + Date.now() + '-' + Math.random().toString(36).slice(2)));
         setPendingMessageId(messageClientId);
         pendingIdsByConversationRef.current.set(Number(conversationId), messageClientId);
+        let messageCreated = false;
+        setUploading(false);
+        setUploadProgress(0);
         try {
             const { data } = await request({ method: 'post', url: '/api/v1/conversations/' + conversationId + '/messages', data: {
-                body: body || 'فایل پیوست',
+                body: body || t("فایل پیوست"),
                 reply_to_id: replyTo?.id ?? null,
                 artwork_id: pendingArtwork?.id ?? null,
                 client_message_id: messageClientId,
             } });
             let savedMessage = data.data;
+            messageCreated = true;
             const attachmentAlreadySaved = selectedFile && savedMessage.attachments?.some((attachment) =>
                 attachment.name === selectedFile.name && Number(attachment.size_bytes) === Number(selectedFile.size)
             );
             if (selectedFile && !attachmentAlreadySaved) {
+                setUploading(true);
                 const formData = new FormData();
                 formData.append('file', selectedFile);
                 const uploaded = await request({
@@ -430,6 +445,7 @@ export default function MessagingCenter({ role }) {
             }
             if (Number(activeConversationRef.current) === Number(conversationId)) setMessages((current) => current.some((item) => item.id === savedMessage.id) ? current.map((item) => item.id === savedMessage.id ? savedMessage : item) : [...current, savedMessage]);
             pendingIdsByConversationRef.current.delete(Number(conversationId));
+            sendErrorsByConversationRef.current.delete(Number(conversationId));
             draftsByConversationRef.current.delete(Number(conversationId));
             filesByConversationRef.current.delete(Number(conversationId));
             if (Number(activeConversationRef.current) === Number(conversationId)) {
@@ -450,14 +466,19 @@ export default function MessagingCenter({ role }) {
             }
             loadThreads();
         } catch (requestError) {
-            if (Number(activeConversationRef.current) === Number(conversationId)) {
-                setError(requestError.response?.status === 503 && pendingArtwork
-                    ? 'برای ارسال کارت اثر، پایگاه داده هنوز به‌روزرسانی نشده است. کارت اثر را حذف کنید تا پیام عادی ارسال شود؛ سپس مدیر فنی باید مهاجرت پایگاه داده را اجرا کند.'
-                    : 'ارسال پیام یا پیوست انجام نشد. وضعیت اتصال و پاسخ سرور را بررسی و دوباره تلاش کنید.');
-            }
+            const sendError = requestError.response?.status === 503 && pendingArtwork
+                ? t("برای ارسال کارت اثر، پایگاه داده هنوز به‌روزرسانی نشده است. کارت اثر را حذف کنید تا پیام عادی ارسال شود؛ سپس مدیر فنی باید مهاجرت پایگاه داده را اجرا کند.")
+                : messageCreated && selectedFile
+                    ? t("پیام ذخیره شد، اما بارگذاری پیوست انجام نشد. فایل همچنان انتخاب‌شده است؛ برای تلاش دوباره ارسال را بزنید.")
+                    : t("ارسال پیام یا پیوست انجام نشد. وضعیت اتصال و پاسخ سرور را بررسی و دوباره تلاش کنید.");
+            sendErrorsByConversationRef.current.set(Number(conversationId), sendError);
+            if (Number(activeConversationRef.current) === Number(conversationId)) setError(sendError);
         } finally {
+            setUploading(false);
+            setUploadProgress(0);
             sendingMessageRef.current = false;
             setSending(false);
+            setSendingConversationId(null);
         }
     };
 
@@ -476,7 +497,7 @@ export default function MessagingCenter({ role }) {
                 setEditDraft('');
             }
         } catch {
-            if (Number(activeConversationRef.current) === Number(conversationId)) setError('ویرایش پیام انجام نشد. دوباره تلاش کنید.');
+            if (Number(activeConversationRef.current) === Number(conversationId)) setError(t("ویرایش پیام انجام نشد. دوباره تلاش کنید."));
         } finally {
             if (Number(activeConversationRef.current) === Number(conversationId)) setActionId(null);
         }
@@ -484,7 +505,7 @@ export default function MessagingCenter({ role }) {
 
     const deleteMessage = async (message) => {
         const conversationId = active;
-        if (actionId || !window.confirm('این پیام برای هر دو طرف حذف شود؟')) return;
+        if (actionId || !window.confirm(t("این پیام برای هر دو طرف حذف شود؟"))) return;
         setActionId(message.id);
         try {
             const { data } = await request({ method: 'delete', url: '/api/v1/conversations/' + conversationId + '/messages/' + message.id });
@@ -493,7 +514,7 @@ export default function MessagingCenter({ role }) {
                 loadThreads();
             }
         } catch {
-            if (Number(activeConversationRef.current) === Number(conversationId)) setError('حذف پیام انجام نشد. دوباره تلاش کنید.');
+            if (Number(activeConversationRef.current) === Number(conversationId)) setError(t("حذف پیام انجام نشد. دوباره تلاش کنید."));
         } finally {
             if (Number(activeConversationRef.current) === Number(conversationId)) setActionId(null);
         }
@@ -501,25 +522,25 @@ export default function MessagingCenter({ role }) {
 
     const reportMessage = async (message) => {
         const conversationId = active;
-        const details = window.prompt('دلیل گزارش این پیام را کوتاه توضیح دهید:');
+        const details = window.prompt(t("دلیل گزارش این پیام را کوتاه توضیح دهید:"));
         if (details === null) return;
         try {
             await request({ method: 'post', url: '/api/v1/conversations/' + conversationId + '/messages/' + message.id + '/report', data: { reason: 'other', details } });
-            if (Number(activeConversationRef.current) === Number(conversationId)) setNotice('گزارش شما برای بررسی ثبت شد.');
+            if (Number(activeConversationRef.current) === Number(conversationId)) setNotice(t("گزارش شما برای بررسی ثبت شد."));
         } catch {
-            if (Number(activeConversationRef.current) === Number(conversationId)) setError('ثبت گزارش انجام نشد. دوباره تلاش کنید.');
+            if (Number(activeConversationRef.current) === Number(conversationId)) setError(t("ثبت گزارش انجام نشد. دوباره تلاش کنید."));
         }
     };
 
     const reportConversation = async () => {
         const conversationId = active;
-        const details = window.prompt('دلیل گزارش این گفتگو را کوتاه توضیح دهید:');
+        const details = window.prompt(t("دلیل گزارش این گفتگو را کوتاه توضیح دهید:"));
         if (details === null) return;
         try {
             await request({ method: 'post', url: '/api/v1/conversations/' + conversationId + '/report', data: { reason: 'other', details } });
-            if (Number(activeConversationRef.current) === Number(conversationId)) setNotice('گزارش گفتگو برای بررسی ثبت شد.');
+            if (Number(activeConversationRef.current) === Number(conversationId)) setNotice(t("گزارش گفتگو برای بررسی ثبت شد."));
         } catch {
-            if (Number(activeConversationRef.current) === Number(conversationId)) setError('ثبت گزارش گفتگو انجام نشد.');
+            if (Number(activeConversationRef.current) === Number(conversationId)) setError(t("ثبت گزارش گفتگو انجام نشد."));
         }
     };
 
@@ -530,17 +551,17 @@ export default function MessagingCenter({ role }) {
                 await request({ method: 'delete', url: '/api/v1/conversations/' + conversationId + '/block' });
                 if (Number(activeConversationRef.current) === Number(conversationId)) {
                     setSafety((current) => ({ ...current, blocked_by_me: false }));
-                    setNotice('مسدودسازی برداشته شد.');
+                    setNotice(t("مسدودسازی برداشته شد."));
                 }
-            } else if (window.confirm('با مسدودسازی این کاربر، ارسال پیام در این گفتگو برای هر دو طرف متوقف می‌شود. ادامه می‌دهید؟')) {
+            } else if (window.confirm(t("با مسدودسازی این کاربر، ارسال پیام در این گفتگو برای هر دو طرف متوقف می‌شود. ادامه می‌دهید؟"))) {
                 await request({ method: 'post', url: '/api/v1/conversations/' + conversationId + '/block' });
                 if (Number(activeConversationRef.current) === Number(conversationId)) {
                     setSafety((current) => ({ ...current, blocked_by_me: true }));
-                    setNotice('کاربر مسدود شد.');
+                    setNotice(t("کاربر مسدود شد."));
                 }
             }
         } catch {
-            if (Number(activeConversationRef.current) === Number(conversationId)) setError('به‌روزرسانی وضعیت مسدودسازی انجام نشد.');
+            if (Number(activeConversationRef.current) === Number(conversationId)) setError(t("به‌روزرسانی وضعیت مسدودسازی انجام نشد."));
         }
     };
 
@@ -556,7 +577,7 @@ export default function MessagingCenter({ role }) {
             } });
             if (Number(activeConversationRef.current) === Number(conversationId)) replaceMessage(data.data);
         } catch {
-            if (Number(activeConversationRef.current) === Number(conversationId)) setError('ثبت واکنش انجام نشد. دوباره تلاش کنید.');
+            if (Number(activeConversationRef.current) === Number(conversationId)) setError(t("ثبت واکنش انجام نشد. دوباره تلاش کنید."));
         } finally { setActionId(null); }
     };
 
@@ -569,7 +590,7 @@ export default function MessagingCenter({ role }) {
     }, [role, artworkSlug, selected]);
 
     return (
-        <section className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden font-sans" dir="rtl">
+        <section aria-label="مرکز پیام‌ها" className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden font-sans">
             <MessagingStatusBanners
                 notice={notice}
                 error={error}
@@ -579,9 +600,10 @@ export default function MessagingCenter({ role }) {
                 onRetryInbox={loadThreads}
                 onRetryDirectStart={() => setDirectStartAttempt((attempt) => attempt + 1)}
             />
-            <div className="grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden rounded-lg border border-border bg-surface shadow-soft lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]">
+            <div className="grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden border-y border-border bg-surface lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]">
                 <MessagingInboxPanel
                     active={active}
+                    sendingConversationId={sendingConversationId}
                     hasMoreThreads={hasMoreThreads}
                     inboxQuery={inboxQuery}
                     loadThreads={loadThreads}
@@ -609,8 +631,8 @@ export default function MessagingCenter({ role }) {
                     threads={threads}
                     updateThreadSetting={updateThreadSetting}
                 />
-                <div dir="rtl" className={active ? 'flex h-full min-h-0 min-w-0 flex-col bg-canvas' : 'hidden h-full min-h-0 min-w-0 flex-col bg-canvas lg:flex'}>
-                    {!active ? <div className="m-auto p-8 text-center text-sm text-muted">برای مشاهده پیام‌ها یک گفتگو را انتخاب کنید.</div> : (
+                <div className={active ? 'flex h-full min-h-0 min-w-0 flex-col bg-canvas' : 'hidden h-full min-h-0 min-w-0 flex-col bg-canvas lg:flex'}>
+                    {!active ? <div className="m-auto p-8 text-center text-sm text-muted">{t("برای مشاهده پیام‌ها یک گفتگو را انتخاب کنید.")}</div> : (
                         <>
                             <ConversationHeader
                                 avatarInitial={avatarInitial}
@@ -654,8 +676,8 @@ export default function MessagingCenter({ role }) {
                                 editDraft={editDraft}
                                 editingId={editingId}
                                 focusComposerAfterMenuCloseRef={focusComposerAfterMenuCloseRef}
-                                formatDayLabel={dayLabel}
-                                formatTimeLabel={timeLabel}
+                                formatDayLabel={(value) => dayLabel(value, locale)}
+                                formatTimeLabel={(value) => timeLabel(value, locale)}
                                 loadingOlder={loadingOlder}
                                 messages={messages}
                                 messagesError={messagesError}
@@ -687,17 +709,17 @@ export default function MessagingCenter({ role }) {
                                 openPopover={openPopover}
                                 userId={user?.id}
                             />
-                            {safetyLoading ? <p role="status" className="rounded-md border-t border-border bg-surface-muted p-4 text-sm text-muted">در حال بررسی وضعیت ایمنی گفتگو…</p> : safety.blocked_by_me || safety.blocked_by_other ? <p role="status" className="border-t border-border bg-surface-muted p-4 text-sm text-muted">{safety.blocked_by_me ? 'این کاربر را مسدود کرده‌اید؛ برای ادامه گفتگو ابتدا مسدودسازی را بردارید.' : 'این گفتگو به‌دلیل تنظیمات ایمنی امکان ارسال پیام ندارد.'}</p> : <MessageComposer
+                            {safetyLoading ? <p role="status" className="rounded-editorial border-t border-border bg-surface-muted p-4 text-sm text-muted">{t("در حال بررسی وضعیت ایمنی گفتگو…")}</p> : safety.blocked_by_me || safety.blocked_by_other ? <p role="status" className="border-t border-border bg-surface-muted p-4 text-sm text-muted">{safety.blocked_by_me ? 'این کاربر را مسدود کرده‌اید؛ برای ادامه گفتگو ابتدا مسدودسازی را بردارید.' : 'این گفتگو به‌دلیل تنظیمات ایمنی امکان ارسال پیام ندارد.'}</p> : <MessageComposer
                                 draft={draft}
                                 draftRef={draftRef}
                                 fileInputRef={fileInputRef}
                                 filePreview={filePreview}
-                                onCancelReply={() => setReplyTo(null)}
+                                onCancelReply={() => { setReplyTo(null); draftRef.current?.focus(); }}
                                 onDraftChange={setDraft}
                                 onFileChange={(event) => {
                                     const file = event.target.files?.[0] ?? null;
                                     if (file && file.size > 10 * 1024 * 1024) {
-                                        setError('حجم فایل نباید بیشتر از ۱۰ مگابایت باشد.');
+                                        setError(t("حجم فایل نباید بیشتر از ۱۰ مگابایت باشد."));
                                         event.target.value = '';
                                         return;
                                     }
@@ -708,6 +730,7 @@ export default function MessagingCenter({ role }) {
                                 }}
                                 onRemoveArtwork={() => {
                                     setPendingArtwork(null);
+                                    draftRef.current?.focus();
                                     setParams((current) => {
                                         const next = new URLSearchParams(current);
                                         next.delete('artwork');
@@ -717,7 +740,7 @@ export default function MessagingCenter({ role }) {
                                 onRemoveFile={() => {
                                     setSelectedFile(null);
                                     filesByConversationRef.current.delete(Number(active));
-                                    if (fileInputRef.current) fileInputRef.current.value = '';
+                                    if (fileInputRef.current) { fileInputRef.current.value = ''; fileInputRef.current.focus(); }
                                 }}
                                 onSubmit={send}
                                 pendingArtwork={pendingArtwork}
@@ -726,7 +749,9 @@ export default function MessagingCenter({ role }) {
                                 safetyLoading={safetyLoading}
                                 selectedFile={selectedFile}
                                 sending={sending}
+                                sendingInAnotherConversation={sending && Number(sendingConversationId) !== Number(active)}
                                 uploadProgress={uploadProgress}
+                                uploading={uploading}
                             />}
                         </>
                     )}

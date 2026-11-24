@@ -32,7 +32,7 @@ test('Artwork comments expose bounded plain-text input, reply controls and moder
     assert.match(component, /گزارش دیدگاه/);
     assert.match(component, /گزارش شما ثبت شد/);
     assert.match(component, /deleteMutation\.isError/);
-    assert.match(component, /aria-label="صفحه‌بندی دیدگاه‌ها"/);
+    assert.match(component, /aria-label=\{t\("صفحه‌بندی دیدگاه‌ها"\)\}/);
 });
 
 test('Artwork detail page renders engagement only when public social counts are present and preserves Inquiries', () => {
