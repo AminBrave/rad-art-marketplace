@@ -329,9 +329,10 @@
  * second, narrower page grid. Reading measures remain inner content constraints.
  */
 .rd-page-frame {
-    width: min(calc(100% - 2 * var(--page-gutter)), var(--content-width));
+    width: 100%;
     min-width: 0;
-    margin-inline: auto;
+    max-width: none;
+    margin: 0;
 }
 
 .rd-page-frame--workspace {
@@ -339,10 +340,7 @@
 }
 
 @media (max-width: 639px) {
-    .rd-page-frame {
-        width: calc(100% - 2 * var(--page-gutter));
-    }
-
+    .rd-page-frame,
     .rd-page-frame--workspace {
         width: 100%;
     }
