@@ -32,6 +32,7 @@ class ArtistProfileController extends Controller
                 'id' => $profile->id,
                 'slug' => $profile->slug,
                 'display_name' => $profile->display_name,
+                'display_name_en' => $profile->display_name_en,
                 'bio' => $profile->bio ? Str::limit($profile->bio, 220) : null,
                 'city' => $profile->city,
             ]);
@@ -129,8 +130,11 @@ class ArtistProfileController extends Controller
     {
         return $request->validate([
             'display_name' => ['required', 'string', 'max:120'],
+            'display_name_en' => ['nullable', 'string', 'max:120'],
             'bio' => ['nullable', 'string', 'max:2000'],
+            'bio_en' => ['nullable', 'string', 'max:2000'],
             'city' => ['nullable', 'string', 'max:120'],
+            'city_en' => ['nullable', 'string', 'max:120'],
             'website_url' => ['nullable', 'url', 'max:255'],
             'instagram_handle' => ['nullable', 'string', 'regex:/^[A-Za-z0-9._]{1,30}$/'],
             'is_public' => ['required', 'boolean'],
@@ -144,7 +148,9 @@ class ArtistProfileController extends Controller
             'slug' => $profile->slug,
             'display_name' => $profile->display_name,
             'bio' => $profile->bio,
+            'bio_en' => $profile->bio_en,
             'city' => $profile->city,
+            'city_en' => $profile->city_en,
             'website_url' => $profile->website_url,
             'instagram_handle' => $profile->instagram_handle,
             'is_public' => $profile->is_public,
