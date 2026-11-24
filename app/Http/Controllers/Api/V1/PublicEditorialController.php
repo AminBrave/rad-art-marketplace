@@ -87,8 +87,8 @@ class PublicEditorialController extends Controller
             'city' => $artwork->city, 'city_en' => $artwork->city_en, 'medium' => $artwork->medium, 'year' => $artwork->year,
             'price' => $artwork->price, 'availability' => $artwork->availability,
             'image_url' => route('api.v1.artworks.image', $artwork->slug),
-            'category' => ['name' => $artwork->category->name, 'name_en' => $artwork->category->name_en, 'slug => $artwork->category->slug],
-            'artist' => ['display_name' => $artwork->artistProfile->display_name, 'display_name_en' => $artwork->artistProfile->display_name_en, 'city' => $artwork->artistProfile->city, 'city_en' => $artwork->artistProfile->city_en, 'slug => $artwork->artistProfile->slug],
+            'category' => ['name' => $artwork->category->name, 'name_en' => $artwork->category->name_en, 'slug' => $artwork->category->slug],
+            'artist' => ['display_name' => $artwork->artistProfile->display_name, 'display_name_en' => $artwork->artistProfile->display_name_en, 'city' => $artwork->artistProfile->city, 'city_en' => $artwork->artistProfile->city_en, 'slug' => $artwork->artistProfile->slug],
         ];
     }
 }
