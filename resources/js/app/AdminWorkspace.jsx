@@ -101,7 +101,7 @@ export function AdminDashboardHome() {
                 <aside className="border-y border-border bg-surface-muted/60 py-6 sm:px-6 sm:py-7">
                     <SectionHeader eyebrow="راهنمای عملیات" title="رسیدگی منظم و قابل پیگیری" className="border-0 pb-0" />
                     <p className="mt-3 text-sm leading-7 text-muted">تصمیم‌های انتشار را همراه با توضیح ثبت کنید، نقش‌ها را با دقت مدیریت کنید و گزارش‌های ایمنی را از مسیر اختصاصی بررسی کنید.</p>
-                    <Link to="/admin/artworks" className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 py-3 text-sm font-bold text-inverse transition-colors hover:bg-terracotta">شروع بررسی آثار <span aria-hidden="true" className="mr-3">←</span></Link>
+                    <Link to="/admin/artworks" className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 py-3 text-sm font-bold text-inverse transition-colors hover:bg-terracotta">شروع بررسی آثار <span aria-hidden="true" className="ms-3">←</span></Link>
                 </aside>
             </section>
 
@@ -249,7 +249,7 @@ export function AdminUsersPage() {
                 const needsAdminConfirmation = confirmAdminId === item.id && selected === 'admin' && item.role !== 'admin';
                 return <article key={item.id} className="min-w-0 border-t border-border bg-transparent py-5">
                     <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div className="min-w-0"><p className="mb-1 text-[10px] font-bold tracking-wide text-muted">حساب کاربری · {item.id}</p><h2 className="break-words font-bold">{item.name}</h2><p dir="ltr" className="mt-1 break-all text-end text-xs text-muted">{item.email}</p></div>
+                        <div className="min-w-0"><p className="mb-1 text-[10px] font-bold tracking-wide text-muted">حساب کاربری · {item.id}</p><h2 className="break-words font-bold">{item.name}</h2><p dir="ltr" className="mt-1 break-all text-start text-xs text-muted">{item.email}</p></div>
                         <Badge variant={item.role === 'admin' ? 'accent' : item.role === 'artist' ? 'info' : 'neutral'}>{roleLabels[item.role] ?? item.role}</Badge>
                     </div>
                     <div className="mt-5 border-t border-border/70 pt-4">
