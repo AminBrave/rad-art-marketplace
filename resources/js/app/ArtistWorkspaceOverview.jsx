@@ -94,8 +94,8 @@ export default function ArtistWorkspaceOverview() {
                 <section aria-label={t("آمار آثار")} className="grid gap-3 sm:grid-cols-3">
                     {loading ? <DashboardMetricSkeleton count={3} /> : <>
                         <DashboardMetricCard as={Link} label={t("مجموع آثار")} value={formatCount(counts.artworks, locale)} detail="تمام آثار ثبت‌شده" to="/dashboard/artist/artworks" />
-                        <DashboardMetricCard as={Link} label={t("منتشرشده")} value={published.toLocaleString('fa-IR')} detail="قابل مشاهده در گالری" to="/dashboard/artist/artworks" />
-                        <DashboardMetricCard as={Link} label={t("در انتظار بررسی")} value={pending.toLocaleString('fa-IR')} detail="نیازمند تصمیم انتشار" to="/dashboard/artist/artworks" />
+                        <DashboardMetricCard as={Link} label={t("منتشرشده")} value={published.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail="قابل مشاهده در گالری" to="/dashboard/artist/artworks" />
+                        <DashboardMetricCard as={Link} label={t("در انتظار بررسی")} value={pending.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail="نیازمند تصمیم انتشار" to="/dashboard/artist/artworks" />
                     </>}
                 </section>
 
