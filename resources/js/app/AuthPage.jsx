@@ -47,12 +47,12 @@ export default function AuthPage({ initialMode = 'login' }) {
             navigate(target, { replace: true });
         } catch (error) {
             if (error.response?.status === 422) {
-                setErrors(error.response.data.errors ?? { form: [error.response.data.message] });
-                setMessage(error.response.data.message ?? 'لطفاً اطلاعات ورود را بررسی کنید.');
+                setErrors(Object.fromEntries(Object.entries(error.response.data.errors ?? { form: [error.response.data.message] }).map(([key, messages]) => [key, messages.map(t)])));
+                setMessage(t(error.response.data.message ?? 'لطفاً اطلاعات ورود را بررسی کنید.'));
             } else if (error.response?.status === 429) {
-                setMessage('تعداد تلاش‌ها زیاد است. کمی بعد دوباره امتحان کنید.');
+                setMessage(t('تعداد تلاش‌ها زیاد است. کمی بعد دوباره امتحان کنید.'));
             } else {
-                setMessage('ورود یا ثبت‌نام انجام نشد. اتصال را بررسی و دوباره تلاش کنید.');
+                setMessage(t('ورود یا ثبت‌نام انجام نشد. اتصال را بررسی و دوباره تلاش کنید.'));
             }
         } finally {
             submittingRef.current = false;
@@ -76,7 +76,7 @@ export default function AuthPage({ initialMode = 'login' }) {
                     <FormField label={t("ایمیل")} required error={errors.email?.join(' ')}><TextInput type="email" name="email" value={form.email} onChange={update} required autoComplete="email" dir="ltr" className="text-start" /></FormField>
                     <FormField label={t("گذرواژه")} required error={errors.password?.join(' ')}><TextInput type="password" name="password" value={form.password} onChange={update} required minLength="10" autoComplete={mode === 'register' ? 'new-password' : 'current-password'} dir="ltr" className="text-start" /></FormField>
                     {mode === 'register' && <FormField label={t("تکرار گذرواژه")} required><TextInput type="password" name="password_confirmation" value={form.password_confirmation} onChange={update} required minLength="10" autoComplete="new-password" dir="ltr" className="text-start" /></FormField>}
-                    {errors.form?.map((item) => <p key={item} role="alert" className="text-sm text-danger">{item}</p>)}
+                    {errors.form?.map((item) => <p key={item} role="alert" className="text-sm text-danger">{t(item)}</p>)}
                     {message && <p role="status" className="text-sm text-muted">{t(message)}</p>}
                     <Button variant="ghost" type="submit" disabled={busy} className="w-full rounded-sm bg-ink px-6 py-3.5 font-bold text-inverse transition hover:bg-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2 disabled:cursor-wait disabled:opacity-60">{busy ? t('لطفاً صبر کنید…') : mode === 'register' ? t('ایجاد حساب') : t('ورود به حساب')}</Button>
                 </form>
