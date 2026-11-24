@@ -89,7 +89,7 @@ export default function HomePage() {
         <div className="w-full min-w-0 overflow-hidden" dir="rtl">
             <section aria-labelledby="home-hero-title" className="relative border-b border-border bg-canvas">
                 <Container className="pb-12 pt-8 sm:pb-16 sm:pt-12 lg:pb-20 lg:pt-14">
-                    <div className="mb-8 flex items-center justify-between border-y-2 border-ink py-3.5 text-[10px] font-extrabold tracking-[.18em] text-muted sm:text-xs">
+                    <div className="mb-8 flex items-center justify-between border-y border-ink py-3.5 text-[10px] font-extrabold tracking-[.18em] text-muted sm:text-xs">
                         <span>گالری هنر مستقل معاصر</span>
                         <span dir="ltr" className="font-latin">RAD ART / DISCOVER &amp; CONNECT</span>
                     </div>
