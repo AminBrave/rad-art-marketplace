@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AlertTriangle, ImageOff } from 'lucide-react';
 import { Button } from './primitives';
+import { useLanguage } from '../../app/LanguageContext';
 import * as ToastPrimitive from '@radix-ui/react-toast';
 
 const skeletonClasses = 'block bg-[linear-gradient(100deg,var(--color-skeleton-base)_25%,var(--color-skeleton-highlight)_42%,var(--color-skeleton-base)_62%)] [background-size:200%_100%] animate-skeleton-shimmer motion-reduce:animate-none';
@@ -16,12 +17,13 @@ export function Skeleton({ className = '', width, height = '1rem' }) {
 }
 
 export function SkeletonLines({ lines = 3, className = '' }) {
+    const { t } = useLanguage();
     return (
-        <div aria-label="در حال بارگذاری" role="status" className={`grid gap-3 ${className}`}>
+        <div aria-label={t("در حال بارگذاری")} role="status" className={`grid gap-3 ${className}`}>
             {Array.from({ length: lines }, (_, index) => (
                 <Skeleton key={index} width={index === lines - 1 ? '68%' : '100%'} height="0.8rem" />
             ))}
-            <span className="sr-only">در حال بارگذاری…</span>
+            <span className="sr-only" >{t('در حال بارگذاری…')}</span>
         </div>
     );
 }
@@ -30,19 +32,20 @@ export function EmptyState({ title, description, action, className = '' }) {
     return (
         <section className={`grid justify-items-center gap-3  border border-dashed border-border bg-surface px-5 py-10 text-center ${className}`}>
             <span aria-hidden="true" className="h-2 w-10  bg-sand" />
-            <h2 className="text-base font-bold text-ink">{title}</h2>
-            {description && <p className="max-w-lg text-sm leading-7 text-muted">{description}</p>}
+            <h2 className="text-base font-bold text-ink">{t(title)}</h2>
+            {description && <p className="max-w-lg text-sm leading-7 text-muted">{t(description)}</p>}
             {action}
         </section>
     );
 }
 
 export function ErrorState({ title = 'مشکلی پیش آمد', description, onRetry, retryLabel = 'تلاش دوباره', className = '' }) {
+    const { t } = useLanguage();
     return (
         <section role="alert" className={`grid justify-items-start gap-3  border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-surface p-5 ${className}`}>
             <h2 className="font-bold text-danger">{title}</h2>
             {description && <p className="text-sm leading-7 text-muted">{description}</p>}
-            {onRetry && <Button variant="outline" size="sm" onClick={onRetry}>{retryLabel}</Button>}
+            {onRetry && <Button variant="outline" size="sm" onClick={onRetry}>{t(retryLabel)}</Button>}
         </section>
     );
 }
@@ -57,6 +60,7 @@ export function SuccessState({ title, description, className = '' }) {
 }
 
 export function PermissionState({ title = 'دسترسی مجاز نیست', description, className = '' }) {
+    const { t } = useLanguage();
     return (
         <section role="status" className={` border border-border bg-surface-muted p-5 ${className}`}>
             <h2 className="font-bold text-ink">{title}</h2>
@@ -66,6 +70,7 @@ export function PermissionState({ title = 'دسترسی مجاز نیست', desc
 }
 
 export function UploadFeedback({ fileName, status = 'idle', progress = 0, message }) {
+    const { t } = useLanguage();
     if (status === 'idle' && !message) return null;
     const safeProgress = Math.max(0, Math.min(100, Number(progress) || 0));
     const labels = {
@@ -79,13 +84,13 @@ export function UploadFeedback({ fileName, status = 'idle', progress = 0, messag
             <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="font-semibold text-ink">{fileName || 'فایل انتخاب‌شده'}</span>
                 <span className={status === 'error' ? 'text-danger' : status === 'success' ? 'text-olive' : 'text-muted'}>
-                    {labels[status] ?? message}
+                    {t(labels[status] ?? message)}
                 </span>
             </div>
             {status === 'uploading' && (
                 <div
                     role="progressbar"
-                    aria-label="پیشرفت بارگذاری"
+                    aria-label={t('پیشرفت بارگذاری')}
                     aria-valuemin={0}
                     aria-valuemax={100}
                     aria-valuenow={safeProgress}
@@ -94,12 +99,13 @@ export function UploadFeedback({ fileName, status = 'idle', progress = 0, messag
                     <span className="block h-full bg-terracotta transition-[width]" style={{ width: `${safeProgress}%` }} />
                 </div>
             )}
-            {message && <p className="text-xs leading-6 text-muted">{message}</p>}
+            {message && <p className="text-xs leading-6 text-muted">{t(message)}</p>}
         </div>
     );
 }
 
 export function Toast({ open, title, description, variant = 'info', onDismiss, duration = Infinity }) {
+    const { t } = useLanguage();
     const [internalOpen, setInternalOpen] = useState(true);
     const isOpen = open ?? internalOpen;
     const variants = {
@@ -125,19 +131,19 @@ export function Toast({ open, title, description, variant = 'info', onDismiss, d
                 className={`flex w-full items-start justify-between gap-4  border-s-4 border-border bg-paper p-4 text-ink shadow-soft ${variants[variant] ?? variants.info}`}
             >
                 <div>
-                    <ToastPrimitive.Title className="font-bold text-ink">{title}</ToastPrimitive.Title>
-                    {description && <ToastPrimitive.Description className="mt-1 text-sm leading-6 text-muted">{description}</ToastPrimitive.Description>}
+                    <ToastPrimitive.Title className="font-bold text-ink">{t(title)}</ToastPrimitive.Title>
+                    {description && <ToastPrimitive.Description className="mt-1 text-sm leading-6 text-muted">{t(description)}</ToastPrimitive.Description>}
                 </div>
                 {onDismiss && (
                     <ToastPrimitive.Close asChild>
-                        <Button variant="ghost" type="button" aria-label="بستن اعلان" className="min-h-0  px-2 py-1 text-muted hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
+                        <Button variant="ghost" type="button" aria-label={t("بستن اعلان")} className="min-h-0  px-2 py-1 text-muted hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
                             ×
                         </Button>
                     </ToastPrimitive.Close>
                 )}
             </ToastPrimitive.Root>
             <ToastPrimitive.Viewport
-                label="اعلان‌ها"
+                label={t("اعلان‌ها")}
                
                 className="fixed top-4 start-4 z-[100] flex w-[min(24rem,calc(100vw-2rem))] flex-col gap-2 outline-none"
             />
@@ -158,6 +164,7 @@ export function MediaImage({
     height,
     variant,
 }) {
+    const { t } = useLanguage();
     const imageSrc = src && variant
         ? `${src}${src.includes('?') ? '&' : '?'}variant=${encodeURIComponent(variant)}`
         : src;
@@ -175,7 +182,7 @@ export function MediaImage({
             {unavailable ? (
                 <span
                     role={alt ? 'img' : 'status'}
-                    aria-label={alt ? `${alt}: تصویر در دسترس نیست` : undefined}
+                    aria-label={alt ? `${alt}: ${t('تصویر در دسترس نیست')}` : undefined}
                     className="absolute inset-0 grid min-h-32 place-items-center overflow-hidden bg-[radial-gradient(ellipse_at_18%_20%,color-mix(in_srgb,var(--color-sand)_55%,transparent),transparent_42%),radial-gradient(ellipse_at_82%_78%,color-mix(in_srgb,var(--color-terracotta)_18%,transparent),transparent_45%),linear-gradient(135deg,var(--color-paper),var(--color-surface-muted))] text-center"
                 >
                     <span aria-hidden="true" className="pointer-events-none absolute -end-8 -top-10 h-36 w-36  border border-terracotta/20" />
@@ -184,7 +191,7 @@ export function MediaImage({
                         <span className="grid h-14 w-14 place-items-center  border border-terracotta/30 bg-paper/80 text-terracotta shadow-sm">
                             <ImageOff size={27} strokeWidth={1.5} aria-hidden="true" />
                         </span>
-                        <span className="tracking-wide">تصویر در دسترس نیست</span>
+                        <span className="tracking-wide" >{t('تصویر در دسترس نیست')}</span>
                     </span>
                     <span
                         role="note"
@@ -193,11 +200,11 @@ export function MediaImage({
                     >
                         <AlertTriangle size={15} className="mt-0.5 shrink-0" aria-hidden="true" />
                         <span className="min-w-0">
-                            <span className="block font-bold">خطا در نمایش تصویر</span>
+                            <span className="block font-bold" >{t('خطا در نمایش تصویر')}</span>
                             <span className="block opacity-95">
                                 {imageSrc
-                                    ? 'فایل پیدا نشد یا دریافت آن ناموفق بود.'
-                                    : 'نشانی تصویر ثبت نشده است.'}
+                                    ? t('فایل پیدا نشد یا دریافت آن ناموفق بود.')
+                                    : t('نشانی تصویر ثبت نشده است.')}
                             </span>
                         </span>
                     </span>
