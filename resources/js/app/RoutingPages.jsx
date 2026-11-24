@@ -15,7 +15,7 @@ const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', ins
 function WorkspaceAuthLoading({ children }) {
     const { pathname } = useLocation();
     const isMessagingRoute = pathname.endsWith('/messages');
-    const navigationCount = pathname.startsWith('/admin') ? 6 : pathname.startsWith('/dashboard/buyer') ? 2 : 4;
+    const navigationCount = pathname.startsWith('/admin') ? 7 : pathname.startsWith('/dashboard/buyer') ? 3 : 5;
     const navigationRows = Array.from({ length: navigationCount }, (_, index) => index);
 
     return (
