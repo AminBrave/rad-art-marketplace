@@ -208,12 +208,12 @@ export default function HomePage() {
                     />
                     <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                         {loading ? [0, 1, 2, 3].map((item) => <Skeleton key={item} height={null} className="h-28 w-full " />) : categories.length ? categories.slice(0, 8).map((category, index) => (
-                            <Link key={category.id} to={'/artworks?category=' + encodeURIComponent(category.slug)} className="group flex min-h-32 items-end justify-between border-y border-border bg-canvas p-5 no-underline transition-colors hover:border-terracotta hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
-                                <span>
+                            <Link key={category.id} to={'/artworks?category=' + encodeURIComponent(category.slug)} dir="rtl" className="group flex min-h-32 items-center gap-4 border border-border bg-canvas p-5 text-right no-underline transition-colors hover:border-terracotta hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+                                <span className="min-w-0 flex-1">
                                     <span dir="ltr" className="block font-latin text-[10px] font-bold tracking-widest text-terracotta-strong">0{index + 1}</span>
-                                    <span className="mt-2 block font-bold text-ink">{category.name}</span>
+                                    <span className="mt-2 block break-words font-bold text-ink">{category.name}</span>
                                 </span>
-                                <ArrowUpLeft size={18} className="shrink-0 text-muted transition-transform group-hover:-translate-x-1 group-hover:-translate-y-1 group-hover:text-terracotta-strong" aria-hidden="true" />
+                                <ArrowUpLeft size={18} className="shrink-0 text-muted transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-terracotta-strong" aria-hidden="true" />
                             </Link>
                         )) : <p className="text-sm text-muted">دسته‌بندی فعالی برای نمایش وجود ندارد.</p>}
                     </div>
