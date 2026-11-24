@@ -9,14 +9,14 @@ import { formatArtworkPrice } from '../utils/formatArtworkPrice';
 
 function ArtworkImage({ artwork }) {
     return (
-        <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden border border-ink bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))] p-3 sm:p-6 lg:aspect-[4/5] lg:p-8">
+        <div className="relative flex aspect-[3/4] items-center justify-center overflow-hidden border border-ink bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))] p-3 sm:p-6 lg:aspect-[3/4] lg:p-8">
             <span aria-hidden="true" className="absolute inset-3 border border-ink/15 sm:inset-5" />
             <MediaImage
                 src={artwork.image_url}
                 alt={artwork.title}
                 variant="detail"
                 className="h-full max-h-[78vh] w-full"
-                imageClassName="object-contain"
+                imageClassName="object-cover"
                 loading="eager"
                 fetchPriority="high"
                 decoding="async"
