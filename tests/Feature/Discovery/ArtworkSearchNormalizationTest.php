@@ -61,6 +61,29 @@ final class ArtworkSearchNormalizationTest extends TestCase
             ->assertJsonMissing(['slug' => $ordinary->slug]);
     }
 
+    public function test_public_search_matches_english_artwork_titles_descriptions_and_city(): void
+    {
+        $profile = $this->publicArtistProfile();
+        $artwork = $profile->artworks()->create([
+            'category_id' => $this->category()->id,
+            'slug' => 'english-search-artwork',
+            'title' => 'اثر آبی',
+            'title_en' => 'Blue abstract study',
+            'description' => 'شرح فارسی',
+            'description_en' => 'A study in blue and light',
+            'city' => 'تهران',
+            'city_en' => 'Tehran',
+            'image_path' => 'artworks/english-search-artwork.jpg',
+            'status' => Artwork::STATUS_APPROVED,
+            'availability' => 'available',
+        ]);
+
+        $this->getJson('/api/v1/artworks?q='.urlencode('blue abstract'))
+            ->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.slug', $artwork->slug);
+        $this->getJson('/api/v1/artworks?q='.urlencode('Tehran'))
+            ->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.slug', $artwork->slug);
+    }
+
     private function publicArtistProfile(): ArtistProfile
     {
         $user = User::query()->create([
