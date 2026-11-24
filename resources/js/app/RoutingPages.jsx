@@ -399,7 +399,7 @@ export function WorkspaceSettingsPage() {
     };
 
     return (
-        <Container as="section" width="wide" className="space-y-8">
+        <section className="min-w-0 mx-auto w-full max-w-content space-y-8">
             <PageHeader bleed={false} eyebrow="حساب کاربری" title="تنظیمات" description="ترجیحات نمایش و اعلان‌های فضای کاربری را از یک بخش مدیریت کنید." />
 
             <section className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_16rem]" aria-labelledby="appearance-settings-title">
@@ -446,7 +446,7 @@ export function WorkspaceSettingsPage() {
                 </section>
             )}
             {error && <p role="alert" className="text-sm text-danger">{error}</p>}
-        </Container>
+        </section>
     );
 }
 
@@ -500,7 +500,7 @@ export function ArtistProfileSettings() {
     if (profileLoading) return <RouteLoading label={t("در حال دریافت پروفایل هنرمند…")} />;
 
     return (
-        <Container as="section" width="wide" className="space-y-6">
+        <section className="min-w-0 mx-auto w-full max-w-content space-y-6">
             <PageHeader bleed={false}
                 eyebrow={t("استودیوی هنرمند")}
                 title={t("پروفایل هنرمند")}
@@ -522,7 +522,7 @@ export function ArtistProfileSettings() {
                 </div>
             </form>
             {message && <p role="status" className="mt-4 text-sm text-muted">{message}</p>}
-        </Container>
+        </section>
     );
 }
 
