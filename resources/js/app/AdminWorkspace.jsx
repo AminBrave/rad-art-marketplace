@@ -186,7 +186,7 @@ export function AdminArtworkModeration() {
                             {artwork.description && <p className="mt-4 line-clamp-4 text-sm leading-7 text-muted">{localizedValue(artwork, 'description', locale)}</p>}{artwork.rejection_note && <p className="mt-3 border-s-2 border-sand bg-surface-muted p-3 text-xs leading-6 text-muted">{t('یادداشت ثبت‌شده:')} {t(artwork.rejection_note)}</p>}
                         </div>
                     </div>
-                    {actionable && <div className="mt-4 border-t border-border py-5 sm:px-1"><FormField label={t("توضیح برای هنرمند")} hint={t("برای رد اثر یا درخواست اصلاح الزامی است؛ حداکثر ۲۰۰۰ نویسه.")}><TextareaField value={notes[artwork.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [artwork.id]: event.target.value }))} maxLength={2000} rows={3} /></FormField><div className="mt-4 flex flex-wrap gap-2"><Button size="sm" onClick={() => moderate(artwork, 'approve')} loading={busyId === artwork.id} disabled={busyId !== null}>تأیید و انتشار</Button><Button size="sm" variant="outline" onClick={() => moderate(artwork, 'request_changes')} disabled={busyId !== null}>درخواست اصلاح</Button><Button size="sm" variant="danger" onClick={() => moderate(artwork, 'reject')} disabled={busyId !== null}>رد اثر</Button></div></div>}
+                    {actionable && <div className="mt-4 border-t border-border py-5 sm:px-1"><FormField label={t("توضیح برای هنرمند")} hint={t("برای رد اثر یا درخواست اصلاح الزامی است؛ حداکثر ۲۰۰۰ نویسه.")}><TextareaField value={notes[artwork.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [artwork.id]: event.target.value }))} maxLength={2000} rows={3} /></FormField><div className="mt-4 flex flex-wrap gap-2"><Button size="sm" onClick={() => moderate(artwork, 'approve')} loading={busyId === artwork.id} disabled={busyId !== null}{t('تأیید و انتشار')}</Button><Button size="sm" variant="outline" onClick={() => moderate(artwork, 'request_changes')} disabled={busyId !== null}{t('درخواست اصلاح')}</Button><Button size="sm" variant="danger" onClick={() => moderate(artwork, 'reject')} disabled={busyId !== null}{t('رد اثر')}</Button></div></div>}
                 </article>;
             })}</div>
             <Pagination currentPage={result.current_page ?? page} lastPage={result.last_page ?? 1} onPageChange={changePage} disabled={loading || busyId !== null} /><p className="text-center text-xs text-muted">{result.total ?? result.data.length} {t('اثر در این فهرست')}</p>
@@ -244,7 +244,7 @@ export function AdminUsersPage() {
     };
     return <section className="min-w-0 mx-auto w-full max-w-content space-y-6">
         <PageHeader bleed={false} eyebrow={t("مدیریت حساب‌ها")} title={t("کاربران")} description={t("فهرست حساب‌ها و مدیریت نقش‌های مجاز. ارتقای هر حساب به مدیر، مرحله تأیید جداگانه دارد.")} actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>{t("به‌روزرسانی")}</Button>} />
-        <dl className="grid grid-cols-2 gap-4 border-y border-border py-4 sm:max-w-xl sm:gap-8"><div><dt className="text-xs text-muted">{t("حساب‌های این صفحه")}</dt><dd className="mt-1 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') ?? '—'}</dd></div><div><dt className="text-xs text-muted">کل حساب‌ها</dt><dd className="mt-1 text-2xl font-black tabular-nums">{result?.total?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') ?? '—'}</dd></div></dl>
+        <dl className="grid grid-cols-2 gap-4 border-y border-border py-4 sm:max-w-xl sm:gap-8"><div><dt className="text-xs text-muted">{t("حساب‌های این صفحه")}</dt><dd className="mt-1 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') ?? '—'}</dd></div><div><dt className="text-xs text-muted">{t('کل حساب‌ها')}</dt><dd className="mt-1 text-2xl font-black tabular-nums">{result?.total?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') ?? '—'}</dd></div></dl>
         <p className="border-s-2 border-sand py-2 pe-4 text-xs leading-7 text-muted">{t("نقش‌های قابل انتخاب «هنرمند» و «مدیر» هستند. ایجاد خریدار از مسیر ثبت‌نام انجام می‌شود و حذف یا تعلیق حساب پشتیبانی نمی‌شود. مدیر نمی‌تواند نقش مدیریتی حساب خودش را حذف کند.")}</p>
         {message && <SuccessState title={message} />}{error && <ErrorState title={t("عملیات انجام نشد")} description={error} onRetry={load} />}
         {loading ? <AdminUserCardsSkeleton count={4} /> : !result?.data?.length ? <EmptyState title={t("کاربری برای نمایش وجود ندارد")} /> : <>
@@ -336,12 +336,12 @@ export function AdminMessageReportsPage() {
                 const confirmingRemoval = confirmRemovalId === report.id;
                 return <article key={report.id} className="overflow-hidden border-t border-border bg-transparent pt-1">
                     <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border py-5">
-                        <div><p className="text-xs font-bold text-terracotta-strong">{t('گزارش شماره')} {report.id}</p><h2 className="mt-1 font-black">{report.reason}</h2><p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? t("کاربر")} · {dateLabel(report.created_at, locale)}</p></div>
+                        <div><p className="text-xs font-bold text-terracotta-strong">{t('گزارش شماره')} {report.id}</p><h2 className="mt-1 font-black">{report.reason}</h2><p className="mt-2 text-xs text-muted" >{t('گزارش‌دهنده:')} {report.reporter?.name ?? t("کاربر")} · {dateLabel(report.created_at, locale)}</p></div>
                         <Badge variant={isOpen ? 'warning' : report.status === 'dismissed' ? 'neutral' : 'success'}>{isOpen ? t("در انتظار بررسی") : report.status === 'dismissed' ? t("رد گزارش") : t("بررسی‌شده")}</Badge>
                     </div>
                     <div className="space-y-5 py-5">
                         {report.details && <div><p className="text-xs font-bold text-muted">{t("شرح گزارش")}</p><p className="mt-2 whitespace-pre-line text-sm leading-7">{report.details}</p></div>}
-                        {report.message ? <div className="border-s-2 border-terracotta bg-surface-muted/50 p-4 sm:p-5"><p className="text-[11px] font-bold tracking-wide text-muted">{t("محتوای مورد گزارش")}</p><blockquote className="mt-2 whitespace-pre-line text-sm leading-7">{report.message.body ?? 'متن پیام حذف شده است.'}</blockquote></div> : <p className="text-xs text-muted">متن پیام مرتبط در دسترس نیست.</p>}
+                        {report.message ? <div className="border-s-2 border-terracotta bg-surface-muted/50 p-4 sm:p-5"><p className="text-[11px] font-bold tracking-wide text-muted">{t("محتوای مورد گزارش")}</p><blockquote className="mt-2 whitespace-pre-line text-sm leading-7">{report.message.body ?? t('متن پیام حذف شده است.')}</blockquote></div> : <p className="text-xs text-muted" >{t('متن پیام مرتبط در دسترس نیست.')}</p>}
                         {isOpen && <>
                             <FormField label={t("یادداشت رسیدگی (اختیاری)")}><TextareaField value={notes[report.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [report.id]: event.target.value }))} maxLength={1000} rows={2} placeholder={t("خلاصه تصمیم یا زمینه بررسی…")} /></FormField>
                             <div className="flex flex-wrap gap-2">
@@ -452,7 +452,7 @@ export function AdminArtworkCommentReportsPage() {
                     return <article key={report.id} className="overflow-hidden border-t border-border bg-transparent pt-1">
                         <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border py-5">
                             <div>
-                                <p className="text-xs font-bold text-terracotta-strong">گزارش شماره {report.id}</p>
+                                <p className="text-xs font-bold text-terracotta-strong" >{t('گزارش شماره')} {report.id}</p>
                                 <h2 className="mt-1 font-black">{report.reason}</h2>
                                 <p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? t("کاربر")} · {dateLabel(report.created_at, locale)}</p>
                             </div>
@@ -468,7 +468,7 @@ export function AdminArtworkCommentReportsPage() {
                             <div className="border-s-2 border-terracotta bg-surface-muted/50 p-4 sm:p-5">
                                 <p className="text-[11px] font-bold text-muted">{t("دیدگاه گزارش‌شده")}</p>
                                 <blockquote className="mt-2 whitespace-pre-line break-words text-sm leading-7">{report.comment?.body ?? t("متن دیدگاه حذف شده است.")}</blockquote>
-                                <p className="mt-2 text-xs text-muted">نویسنده: {report.comment?.author ?? t("کاربر")}</p>
+                                <p className="mt-2 text-xs text-muted" >{t('نویسنده:')} {report.comment?.author ?? t("کاربر")}</p>
                                 {report.comment?.artwork?.slug && <Link to={'/artworks/' + report.comment.artwork.slug + '#comment-' + report.comment.id} className="mt-2 inline-block text-xs font-bold text-terracotta-strong underline">{report.comment.artwork.title || t("مشاهده اثر")}</Link>}
                             </div>
                             {isOpen && <>
