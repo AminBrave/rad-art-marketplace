@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLanguage } from './LanguageContext';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -21,6 +22,7 @@ const dateLabel = (value) => {
 };
 
 export function AdminDashboardHome() {
+    const { t } = useLanguage();
     const { user } = useAuth();
     const dashboardQuery = useQuery({
         queryKey: ['admin', 'dashboard', user?.id],
@@ -63,24 +65,24 @@ export function AdminDashboardHome() {
             <WorkspaceHero
                 eyebrow="مرکز کنترل راد آرت"
                 title={<>خوش آمدید، {user?.name ?? 'مدیر'}</>}
-                description="از اینجا صف انتشار، حساب‌های کاربری، مجموعه‌های سردبیری و گزارش‌های ایمنی را مدیریت کنید. شاخص‌ها از داده‌های واقعی سامانه دریافت می‌شوند."
-                actions={<Button variant="secondary" onClick={load} loading={loading}>به‌روزرسانی آمار</Button>}
+                description={t("از اینجا صف انتشار، حساب‌های کاربری، مجموعه‌های سردبیری و گزارش‌های ایمنی را مدیریت کنید. شاخص‌ها از داده‌های واقعی سامانه دریافت می‌شوند.")}
+                actions={<Button variant="secondary" onClick={load} loading={loading}>{t("به‌روزرسانی آمار")}</Button>}
             />
 
             <Container width="wide" className="space-y-8">
-            {errors.length > 0 && <ErrorState title="بخشی از اطلاعات دریافت نشد" description={errors.join(' ')} onRetry={load} />}
+            {errors.length > 0 && <ErrorState title={t("بخشی از اطلاعات دریافت نشد")} description={errors.join(' ')} onRetry={load} />}
 
-            <section aria-label="شاخص‌های عملیاتی" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            <section aria-label={t("شاخص‌های عملیاتی")} className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                 {loading ? <DashboardMetricSkeleton count={3} /> : <>
-                    <DashboardMetricCard as={Link} label="آثار در انتظار بررسی" value={summary.pending?.toLocaleString('fa-IR')} detail="تعداد کل آثار منتظر تصمیم انتشار" to="/admin/artworks" eyebrow="انتشار" />
-                    <DashboardMetricCard as={Link} label="حساب‌های کاربری" value={summary.users?.toLocaleString('fa-IR')} detail="تعداد کل حساب‌های ثبت‌شده" to="/admin/users" eyebrow="جامعه" />
-                    <DashboardMetricCard as={Link} label="گزارش‌های پیام" value={summary.reports?.toLocaleString('fa-IR')} detail="مجموع گزارش‌های ثبت‌شده برای رسیدگی" to="/admin/message-reports" eyebrow="ایمنی" />
+                    <DashboardMetricCard as={Link} label={t("آثار در انتظار بررسی")} value={summary.pending?.toLocaleString('fa-IR')} detail="تعداد کل آثار منتظر تصمیم انتشار" to="/admin/artworks" eyebrow="انتشار" />
+                    <DashboardMetricCard as={Link} label={t("حساب‌های کاربری")} value={summary.users?.toLocaleString('fa-IR')} detail="تعداد کل حساب‌های ثبت‌شده" to="/admin/users" eyebrow="جامعه" />
+                    <DashboardMetricCard as={Link} label={t("گزارش‌های پیام")} value={summary.reports?.toLocaleString('fa-IR')} detail="مجموع گزارش‌های ثبت‌شده برای رسیدگی" to="/admin/message-reports" eyebrow="ایمنی" />
                 </>}
             </section>
 
             <section className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,.8fr)]">
                 <div className="border-y border-border bg-transparent py-6 sm:py-7">
-                    <SectionHeader eyebrow="اولویت امروز" title="صف بررسی آثار" actions={<Link to="/admin/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">مشاهده صف</Link>} />
+                    <SectionHeader eyebrow={t("اولویت امروز")} title={t("صف بررسی آثار")} actions={<Link to="/admin/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">{t("مشاهده صف")}</Link>} />
                     {loading ? <div aria-hidden="true" className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]"><Skeleton className="aspect-[3/4] w-full rounded-none sm:max-w-32" /><div className="grid gap-3"><SkeletonLines lines={3} /><SkeletonLines lines={1} /></div></div> : summary.latest ? (
                         <div className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]">
                             <div className="aspect-[3/4] overflow-hidden bg-surface-muted p-3">
@@ -90,7 +92,7 @@ export function AdminDashboardHome() {
                                 <Badge variant="warning">{statusLabels[summary.latest.status] ?? summary.latest.status}</Badge>
                                 <h3 className="mt-3 text-lg font-black">{summary.latest.title}</h3>
                                 <p className="mt-2 text-sm text-muted">{summary.latest.artist?.display_name ?? 'هنرمند نامشخص'} · {dateLabel(summary.latest.created_at)}</p>
-                                <Link to="/admin/artworks" className="mt-auto pt-5 text-sm font-bold text-terracotta-strong underline underline-offset-4">رفتن به بررسی اثر</Link>
+                                <Link to="/admin/artworks" className="mt-auto pt-5 text-sm font-bold text-terracotta-strong underline underline-offset-4">{t("رفتن به بررسی اثر")}</Link>
                             </div>
                         </div>
                     ) : (
@@ -99,14 +101,14 @@ export function AdminDashboardHome() {
                 </div>
 
                 <aside className="border-y border-border bg-surface-muted/60 py-6 sm:px-6 sm:py-7">
-                    <SectionHeader eyebrow="راهنمای عملیات" title="رسیدگی منظم و قابل پیگیری" className="border-0 pb-0" />
-                    <p className="mt-3 text-sm leading-7 text-muted">تصمیم‌های انتشار را همراه با توضیح ثبت کنید، نقش‌ها را با دقت مدیریت کنید و گزارش‌های ایمنی را از مسیر اختصاصی بررسی کنید.</p>
+                    <SectionHeader eyebrow={t("راهنمای عملیات")} title={t("رسیدگی منظم و قابل پیگیری")} className="border-0 pb-0" />
+                    <p className="mt-3 text-sm leading-7 text-muted">{t("تصمیم‌های انتشار را همراه با توضیح ثبت کنید، نقش‌ها را با دقت مدیریت کنید و گزارش‌های ایمنی را از مسیر اختصاصی بررسی کنید.")}</p>
                     <Link to="/admin/artworks" className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 py-3 text-sm font-bold text-inverse transition-colors hover:bg-terracotta">شروع بررسی آثار <span aria-hidden="true" className="ms-3">←</span></Link>
                 </aside>
             </section>
 
             <section aria-labelledby="admin-shortcuts-heading">
-                <SectionHeader id="admin-shortcuts-heading" eyebrow="دسترسی سریع" title="بخش‌های مدیریتی" />
+                <SectionHeader id="admin-shortcuts-heading" eyebrow={t("دسترسی سریع")} title={t("بخش‌های مدیریتی")} />
                 <div className="mt-6 grid gap-x-6 gap-y-4 sm:grid-cols-2 xl:grid-cols-3">
                     {shortcuts.map((item, index) => <Link key={item.to} to={item.to} className="group flex min-h-40 flex-col border-t border-border py-5 transition-colors hover:border-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
                         <div className="flex items-center justify-between gap-3"><span dir="ltr" className="font-latin text-[10px] font-bold tracking-widest text-terracotta-strong">AREA / 0{index + 1}</span><span aria-hidden="true" className="text-lg text-muted transition-colors group-hover:text-terracotta-strong">{item.symbol}</span></div>
@@ -168,21 +170,21 @@ export function AdminArtworkModeration() {
         } catch (e) { setActionError(e.response?.status === 403 ? 'سرور اجازه انجام این عملیات را نداد.' : e.response?.data?.errors?.note?.[0] ?? e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.'); }
     };
     return <Container as="section" width="wide" className="space-y-6">
-        <PageHeader eyebrow="مدیریت آثار" title="صف بررسی و انتشار" description="فقط آثار در انتظار بررسی قابل تصمیم‌گیری‌اند. رد اثر یا درخواست اصلاح به توضیح نیاز دارد." actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
-        <nav className="flex flex-wrap gap-x-5 gap-y-2 border-b border-border" aria-label="فیلتر وضعیت آثار">{statuses.map((item) => <Button variant="ghost" key={item.value} type="button" aria-pressed={status === item.value} onClick={() => chooseStatus(item.value)} className={"min-h-11 border-b-2 px-1 text-sm font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none " + (status === item.value ? 'border-terracotta text-terracotta-strong' : 'border-transparent text-muted hover:border-border-strong hover:text-ink')}>{item.label}</Button>)}</nav>
-        {message && <SuccessState title={message} />}{error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
-        {loading ? <ArtworkModerationSkeleton count={4} /> : !result?.data?.length ? <EmptyState title="اثری در این وضعیت وجود ندارد" description="با انتخاب وضعیت دیگر می‌توانید سوابق تصمیم‌ها را مرور کنید." /> : <>
+        <PageHeader eyebrow={t("مدیریت آثار")} title={t("صف بررسی و انتشار")} description={t("فقط آثار در انتظار بررسی قابل تصمیم‌گیری‌اند. رد اثر یا درخواست اصلاح به توضیح نیاز دارد.")} actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
+        <nav className="flex flex-wrap gap-x-5 gap-y-2 border-b border-border" aria-label={t("فیلتر وضعیت آثار")}>{statuses.map((item) => <Button variant="ghost" key={item.value} type="button" aria-pressed={status === item.value} onClick={() => chooseStatus(item.value)} className={"min-h-11 border-b-2 px-1 text-sm font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none " + (status === item.value ? 'border-terracotta text-terracotta-strong' : 'border-transparent text-muted hover:border-border-strong hover:text-ink')}>{item.label}</Button>)}</nav>
+        {message && <SuccessState title={message} />}{error && <ErrorState title={t("عملیات انجام نشد")} description={error} onRetry={load} />}
+        {loading ? <ArtworkModerationSkeleton count={4} /> : !result?.data?.length ? <EmptyState title={t("اثری در این وضعیت وجود ندارد")} description={t("با انتخاب وضعیت دیگر می‌توانید سوابق تصمیم‌ها را مرور کنید.")} /> : <>
             <div className="grid gap-x-6 gap-y-8 xl:grid-cols-2">{result.data.map((artwork) => {
                 const actionable = artwork.status === 'pending_review';
                 return <article key={artwork.id} className="min-w-0 border-y border-ink bg-transparent py-4">
                     <div className="grid sm:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)]"><div className="aspect-[3/4] overflow-hidden bg-surface-muted p-3 sm:aspect-[3/4]"><MediaImage src={artwork.image_url} alt={'تصویر اثر ' + artwork.title} className="h-56 w-full sm:h-full sm:min-h-64" imageClassName="object-cover" loading="lazy" decoding="async" /></div>
                         <div className="min-w-0 py-4 sm:px-1"><div className="flex flex-wrap items-start justify-between gap-2"><h2 className="font-bold">{artwork.title}</h2><Badge variant={artwork.status === 'approved' ? 'success' : artwork.status === 'rejected' ? 'danger' : artwork.status === 'pending_review' ? 'warning' : 'info'}>{statusLabels[artwork.status] ?? artwork.status}</Badge></div>
                             <p className="mt-2 text-xs text-muted">{artwork.artist?.display_name ?? '—'} · {artwork.category?.name ?? '—'}</p>
-                            <dl className="mt-4 grid grid-cols-2 gap-3 text-xs">{artwork.medium && <div><dt className="text-muted">تکنیک</dt><dd className="mt-1 font-semibold">{artwork.medium}</dd></div>}{artwork.dimensions && <div><dt className="text-muted">ابعاد</dt><dd className="mt-1 font-semibold">{artwork.dimensions}</dd></div>}{artwork.year && <div><dt className="text-muted">سال</dt><dd className="mt-1 font-semibold">{artwork.year}</dd></div>}<div><dt className="text-muted">تاریخ ثبت</dt><dd className="mt-1 font-semibold">{dateLabel(artwork.created_at)}</dd></div></dl>
+                            <dl className="mt-4 grid grid-cols-2 gap-3 text-xs">{artwork.medium && <div><dt className="text-muted">{t("تکنیک")}</dt><dd className="mt-1 font-semibold">{artwork.medium}</dd></div>}{artwork.dimensions && <div><dt className="text-muted">{t("ابعاد")}</dt><dd className="mt-1 font-semibold">{artwork.dimensions}</dd></div>}{artwork.year && <div><dt className="text-muted">سال</dt><dd className="mt-1 font-semibold">{artwork.year}</dd></div>}<div><dt className="text-muted">تاریخ ثبت</dt><dd className="mt-1 font-semibold">{dateLabel(artwork.created_at)}</dd></div></dl>
                             {artwork.description && <p className="mt-4 line-clamp-4 text-sm leading-7 text-muted">{artwork.description}</p>}{artwork.rejection_note && <p className="mt-3 border-s-2 border-sand bg-surface-muted p-3 text-xs leading-6 text-muted">یادداشت ثبت‌شده: {artwork.rejection_note}</p>}
                         </div>
                     </div>
-                    {actionable && <div className="mt-4 border-t border-border py-5 sm:px-1"><FormField label="توضیح برای هنرمند" hint="برای رد اثر یا درخواست اصلاح الزامی است؛ حداکثر ۲۰۰۰ نویسه."><TextareaField value={notes[artwork.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [artwork.id]: event.target.value }))} maxLength={2000} rows={3} /></FormField><div className="mt-4 flex flex-wrap gap-2"><Button size="sm" onClick={() => moderate(artwork, 'approve')} loading={busyId === artwork.id} disabled={busyId !== null}>تأیید و انتشار</Button><Button size="sm" variant="outline" onClick={() => moderate(artwork, 'request_changes')} disabled={busyId !== null}>درخواست اصلاح</Button><Button size="sm" variant="danger" onClick={() => moderate(artwork, 'reject')} disabled={busyId !== null}>رد اثر</Button></div></div>}
+                    {actionable && <div className="mt-4 border-t border-border py-5 sm:px-1"><FormField label={t("توضیح برای هنرمند")} hint={t("برای رد اثر یا درخواست اصلاح الزامی است؛ حداکثر ۲۰۰۰ نویسه.")}><TextareaField value={notes[artwork.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [artwork.id]: event.target.value }))} maxLength={2000} rows={3} /></FormField><div className="mt-4 flex flex-wrap gap-2"><Button size="sm" onClick={() => moderate(artwork, 'approve')} loading={busyId === artwork.id} disabled={busyId !== null}>تأیید و انتشار</Button><Button size="sm" variant="outline" onClick={() => moderate(artwork, 'request_changes')} disabled={busyId !== null}>درخواست اصلاح</Button><Button size="sm" variant="danger" onClick={() => moderate(artwork, 'reject')} disabled={busyId !== null}>رد اثر</Button></div></div>}
                 </article>;
             })}</div>
             <Pagination currentPage={result.current_page ?? page} lastPage={result.last_page ?? 1} onPageChange={changePage} disabled={loading || busyId !== null} /><p className="text-center text-xs text-muted">{result.total ?? result.data.length} اثر در این فهرست</p>
@@ -238,11 +240,11 @@ export function AdminUsersPage() {
         }
     };
     return <Container as="section" width="wide" className="space-y-6">
-        <PageHeader eyebrow="مدیریت حساب‌ها" title="کاربران" description="فهرست حساب‌ها و مدیریت نقش‌های مجاز. ارتقای هر حساب به مدیر، مرحله تأیید جداگانه دارد." actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
-        <dl className="grid grid-cols-2 gap-4 border-y border-border py-4 sm:max-w-xl sm:gap-8"><div><dt className="text-xs text-muted">حساب‌های این صفحه</dt><dd className="mt-1 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</dd></div><div><dt className="text-xs text-muted">کل حساب‌ها</dt><dd className="mt-1 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</dd></div></dl>
+        <PageHeader eyebrow={t("مدیریت حساب‌ها")} title="کاربران" description={t("فهرست حساب‌ها و مدیریت نقش‌های مجاز. ارتقای هر حساب به مدیر، مرحله تأیید جداگانه دارد.")} actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
+        <dl className="grid grid-cols-2 gap-4 border-y border-border py-4 sm:max-w-xl sm:gap-8"><div><dt className="text-xs text-muted">{t("حساب‌های این صفحه")}</dt><dd className="mt-1 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</dd></div><div><dt className="text-xs text-muted">کل حساب‌ها</dt><dd className="mt-1 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</dd></div></dl>
         <p className="border-s-2 border-sand py-2 pe-4 text-xs leading-7 text-muted">نقش‌های قابل انتخاب «هنرمند» و «مدیر» هستند. ایجاد خریدار از مسیر ثبت‌نام انجام می‌شود و حذف یا تعلیق حساب پشتیبانی نمی‌شود. مدیر نمی‌تواند نقش مدیریتی حساب خودش را حذف کند.</p>
-        {message && <SuccessState title={message} />}{error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
-        {loading ? <AdminUserCardsSkeleton count={4} /> : !result?.data?.length ? <EmptyState title="کاربری برای نمایش وجود ندارد" /> : <>
+        {message && <SuccessState title={message} />}{error && <ErrorState title={t("عملیات انجام نشد")} description={error} onRetry={load} />}
+        {loading ? <AdminUserCardsSkeleton count={4} /> : !result?.data?.length ? <EmptyState title={t("کاربری برای نمایش وجود ندارد")} /> : <>
             <div className="grid gap-x-6 gap-y-2 xl:grid-cols-2">{result.data.map((item) => {
                 const selected = drafts[item.id] ?? (item.role === 'buyer' ? '' : item.role);
                 const selfAdmin = item.id === user?.id && item.role === 'admin';
@@ -253,15 +255,15 @@ export function AdminUsersPage() {
                         <Badge variant={item.role === 'admin' ? 'accent' : item.role === 'artist' ? 'info' : 'neutral'}>{roleLabels[item.role] ?? item.role}</Badge>
                     </div>
                     <div className="mt-5 border-t border-border/70 pt-4">
-                        {selfAdmin ? <p className="text-xs leading-6 text-muted">این حساب مدیر فعلی است؛ تغییر نقش حساب خودتان از این صفحه امکان‌پذیر نیست.</p> : <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+                        {selfAdmin ? <p className="text-xs leading-6 text-muted">{t("این حساب مدیر فعلی است؛ تغییر نقش حساب خودتان از این صفحه امکان‌پذیر نیست.")}</p> : <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
                             <SelectField aria-label={'نقش جدید برای ' + item.name} value={selected} disabled={busyId === item.id} onChange={(event) => { setDrafts((current) => ({ ...current, [item.id]: event.target.value })); setConfirmAdminId(null); }} className="w-full">
-                                {item.role === 'buyer' && <option value="">انتخاب نقش</option>}
-                                <option value="artist">هنرمند</option><option value="admin">مدیر</option>
+                                {item.role === 'buyer' && <option value="">{t("انتخاب نقش")}</option>}
+                                <option value="artist">{t("هنرمند")}</option><option value="admin">{t("مدیر")}</option>
                             </SelectField>
-                            <Button size="sm" variant="outline" disabled={busyId !== null || !selected || selected === item.role} loading={busyId === item.id} onClick={() => updateRole(item)}>ثبت تغییر</Button>
+                            <Button size="sm" variant="outline" disabled={busyId !== null || !selected || selected === item.role} loading={busyId === item.id} onClick={() => updateRole(item)}>{t("ثبت تغییر")}</Button>
                         </div>}
                         {needsAdminConfirmation && <div className="mt-4 border border-[color:color-mix(in_srgb,var(--color-warning)_30%,transparent)] bg-[color:color-mix(in_srgb,var(--color-warning)_5%,transparent)] p-3">
-                            <p className="text-xs leading-6 text-ink">این تغییر دسترسی مدیریتی می‌دهد و امکان مدیریت کاربران و محتوای سامانه را فعال می‌کند. آیا ارتقا را تأیید می‌کنید؟</p>
+                            <p className="text-xs leading-6 text-ink">{t("این تغییر دسترسی مدیریتی می‌دهد و امکان مدیریت کاربران و محتوای سامانه را فعال می‌کند. آیا ارتقا را تأیید می‌کنید؟")}</p>
                             <div className="mt-3 flex flex-wrap gap-2"><Button size="sm" onClick={() => updateRole(item)} loading={busyId === item.id}>تأیید ارتقا به مدیر</Button><Button size="sm" variant="ghost" onClick={() => setConfirmAdminId(null)} disabled={busyId !== null}>انصراف</Button></div>
                         </div>}
                     </div>
@@ -318,12 +320,12 @@ export function AdminMessageReportsPage() {
         }
     };
     return <Container as="section" width="wide" className="space-y-6">
-        <PageHeader eyebrow="ایمنی گفتگوها" title="گزارش‌های پیام" description="گزارش‌ها را با توجه به زمینه گفتگو بررسی کنید. حذف پیام یک اقدام برگشت‌ناپذیر در این پنل است و پیش از اجرا تأیید جداگانه می‌خواهد." actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
+        <PageHeader eyebrow="ایمنی گفتگوها" title={t("گزارش‌های پیام")} description="گزارش‌ها را با توجه به زمینه گفتگو بررسی کنید. حذف پیام یک اقدام برگشت‌ناپذیر در این پنل است و پیش از اجرا تأیید جداگانه می‌خواهد." actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
         <div className="grid gap-3 sm:grid-cols-2">
             <div className="border-y border-border bg-transparent py-4"><p className="text-xs text-muted">گزارش‌های این صفحه</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</p></div>
             <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">کل گزارش‌ها</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</p></div>
         </div>
-        {message && <SuccessState title={message} />}{error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
+        {message && <SuccessState title={message} />}{error && <ErrorState title={t("عملیات انجام نشد")} description={error} onRetry={load} />}
         {loading ? <MessageReportsSkeleton count={3} /> : !result?.data?.length ? <EmptyState title="گزارش بازی وجود ندارد" description="گزارش‌های جدید پس از ثبت از سوی یکی از طرفین گفتگو در اینجا نمایش داده می‌شوند." /> : <>
             <div className="space-y-4">{result.data.map((report) => {
                 const isOpen = report.status === 'open';
@@ -434,7 +436,7 @@ export function AdminArtworkCommentReportsPage() {
             </div>
         </div>
         {message && <SuccessState title={message} />}
-        {error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
+        {error && <ErrorState title={t("عملیات انجام نشد")} description={error} onRetry={load} />}
         {loading ? <MessageReportsSkeleton count={3} /> : !result?.data?.length ? (
             <EmptyState title="گزارشی برای نمایش وجود ندارد" description="گزارش دیدگاه‌های آثار پس از ثبت در این بخش نمایش داده می‌شوند." />
         ) : <>
