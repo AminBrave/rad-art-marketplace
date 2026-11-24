@@ -41,7 +41,7 @@ class ArtworkResource extends JsonResource
                 'id' => $this->category->id,
                 'name' => $this->category->name,
                 'name_en' => $this->category->name_en,
-                'slug => $this->category->slug,
+                'slug' => $this->category->slug,
             ],
             'artist' => [
                 'display_name' => $this->artistProfile->display_name,
