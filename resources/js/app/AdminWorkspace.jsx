@@ -37,17 +37,17 @@ export function AdminDashboardHome() {
             if (responses[0].status === 'fulfilled') {
                 summary.pending = responses[0].value.data.total ?? null;
                 summary.latest = responses[0].value.data.data?.[0] ?? null;
-            } else errors.push('دریافت صف بررسی آثار انجام نشد.');
+            } else errors.push(t('دریافت صف بررسی آثار انجام نشد.'));
             if (responses[1].status === 'fulfilled') summary.users = responses[1].value.data.total ?? null;
-            else errors.push('دریافت تعداد کاربران انجام نشد.');
+            else errors.push(t('دریافت تعداد کاربران انجام نشد.'));
             if (responses[2].status === 'fulfilled') summary.reports = responses[2].value.data.total ?? null;
-            else errors.push('دریافت گزارش‌های پیام انجام نشد.');
+            else errors.push(t('دریافت گزارش‌های پیام انجام نشد.'));
             return { summary, errors };
         },
         enabled: user?.role === 'admin' && Boolean(user?.id),
     });
     const summary = dashboardQuery.data?.summary ?? { pending: null, users: null, reports: null, latest: null };
-    const errors = dashboardQuery.data?.errors ?? (dashboardQuery.isError ? ['دریافت آمار مدیریت انجام نشد.'] : []);
+    const errors = dashboardQuery.data?.errors ?? (dashboardQuery.isError ? [t('دریافت آمار مدیریت انجام نشد.')] : []);
     const loading = dashboardQuery.isPending;
     const load = () => dashboardQuery.refetch();
 
@@ -63,7 +63,7 @@ export function AdminDashboardHome() {
     return (
         <div className="w-full space-y-8">
             <WorkspaceHero
-                eyebrow="مرکز کنترل راد آرت"
+                eyebrow={t('مرکز کنترل راد آرت')}
                 title={<>خوش آمدید، {user?.name ?? 'مدیر'}</>}
                 description={t("از اینجا صف انتشار، حساب‌های کاربری، مجموعه‌های سردبیری و گزارش‌های ایمنی را مدیریت کنید. شاخص‌ها از داده‌های واقعی سامانه دریافت می‌شوند.")}
                 actions={<Button variant="secondary" onClick={load} loading={loading}>{t("به‌روزرسانی آمار")}</Button>}
@@ -86,24 +86,24 @@ export function AdminDashboardHome() {
                     {loading ? <div aria-hidden="true" className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]"><Skeleton className="aspect-[3/4] w-full rounded-none sm:max-w-32" /><div className="grid gap-3"><SkeletonLines lines={3} /><SkeletonLines lines={1} /></div></div> : summary.latest ? (
                         <div className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]">
                             <div className="aspect-[3/4] overflow-hidden bg-surface-muted p-3">
-                                <MediaImage src={summary.latest.image_url} alt={'تصویر اثر ' + summary.latest.title} className="h-full w-full" imageClassName="object-cover" loading="lazy" decoding="async" fallback={<div className="grid h-full place-items-center text-xs text-muted">بدون تصویر</div>} />
+                                <MediaImage src={summary.latest.image_url} alt={'تصویر اثر ' + summary.latest.title} className="h-full w-full" imageClassName="object-cover" loading="lazy" decoding="async" fallback={<div className="grid h-full place-items-center text-xs text-muted">{t('بدون تصویر')}</div>} />
                             </div>
                             <div className="flex min-w-0 flex-col items-start">
                                 <Badge variant="warning">{t(statusLabels[summary.latest.status] ?? summary.latest.status)}</Badge>
                                 <h3 className="mt-3 text-lg font-black">{summary.latest.title}</h3>
-                                <p className="mt-2 text-sm text-muted">{summary.latest.artist?.display_name ?? 'هنرمند نامشخص'} · {dateLabel(summary.latest.created_at, locale)}</p>
+                                <p className="mt-2 text-sm text-muted">{summary.latest.artist?.display_name ?? t('هنرمند نامشخص')} · {dateLabel(summary.latest.created_at, locale)}</p>
                                 <Link to="/admin/artworks" className="mt-auto pt-5 text-sm font-bold text-terracotta-strong underline underline-offset-4">{t("رفتن به بررسی اثر")}</Link>
                             </div>
                         </div>
                     ) : (
-                        <p className="mt-5 text-sm leading-7 text-muted">{summary.pending === 0 ? 'در حال حاضر اثری در صف بررسی نیست.' : 'نمونه‌ای از صف بررسی در دسترس نیست.'}</p>
+                        <p className="mt-5 text-sm leading-7 text-muted">{t(summary.pending === 0 ? 'در حال حاضر اثری در صف بررسی نیست.' : 'نمونه‌ای از صف بررسی در دسترس نیست.')}</p>
                     )}
                 </div>
 
                 <aside className="border-y border-border bg-surface-muted/60 py-6 sm:px-6 sm:py-7">
                     <SectionHeader eyebrow={t("راهنمای عملیات")} title={t("رسیدگی منظم و قابل پیگیری")} className="border-0 pb-0" />
                     <p className="mt-3 text-sm leading-7 text-muted">{t("تصمیم‌های انتشار را همراه با توضیح ثبت کنید، نقش‌ها را با دقت مدیریت کنید و گزارش‌های ایمنی را از مسیر اختصاصی بررسی کنید.")}</p>
-                    <Link to="/admin/artworks" className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 py-3 text-sm font-bold text-inverse transition-colors hover:bg-terracotta">شروع بررسی آثار <span aria-hidden="true" className="ms-3 rtl:rotate-180">→</span></Link>
+                    <Link to="/admin/artworks" className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 py-3 text-sm font-bold text-inverse transition-colors hover:bg-terracotta"{t('شروع بررسی آثار')} <span aria-hidden="true" className="ms-3 rtl:rotate-180">→</span></Link>
                 </aside>
             </section>
 
@@ -115,7 +115,7 @@ export function AdminDashboardHome() {
                         <p className="mt-3 text-[10px] font-bold text-muted">{item.eyebrow}</p>
                         <h3 className="mt-1 font-black text-ink">{item.title}</h3>
                         <p className="mt-2 text-xs leading-6 text-muted">{item.description}</p>
-                        <span className="mt-auto pt-4 text-xs font-bold text-terracotta-strong">ورود به بخش <span aria-hidden="true" className="rtl:rotate-180">→</span></span>
+                        <span className="mt-auto pt-4 text-xs font-bold text-terracotta-strong">{t('ورود به بخش')} <span aria-hidden="true" className="rtl:rotate-180">→</span></span>
                     </Link>)}
                 </div>
             </section>
@@ -178,17 +178,17 @@ export function AdminArtworkModeration() {
             <div className="grid gap-x-6 gap-y-8 xl:grid-cols-2">{result.data.map((artwork) => {
                 const actionable = artwork.status === 'pending_review';
                 return <article key={artwork.id} className="min-w-0 border-y border-ink bg-transparent py-4">
-                    <div className="grid sm:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)]"><div className="aspect-[3/4] overflow-hidden bg-surface-muted p-3 sm:aspect-[3/4]"><MediaImage src={artwork.image_url} alt={'تصویر اثر ' + artwork.title} className="h-56 w-full sm:h-full sm:min-h-64" imageClassName="object-cover" loading="lazy" decoding="async" /></div>
+                    <div className="grid sm:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)]"><div className="aspect-[3/4] overflow-hidden bg-surface-muted p-3 sm:aspect-[3/4]"><MediaImage src={artwork.image_url} alt={t('تصویر اثر ') + artwork.title} className="h-56 w-full sm:h-full sm:min-h-64" imageClassName="object-cover" loading="lazy" decoding="async" /></div>
                         <div className="min-w-0 py-4 sm:px-1"><div className="flex flex-wrap items-start justify-between gap-2"><h2 className="font-bold">{artwork.title}</h2><Badge variant={artwork.status === 'approved' ? 'success' : artwork.status === 'rejected' ? 'danger' : artwork.status === 'pending_review' ? 'warning' : 'info'}>{t(statusLabels[artwork.status] ?? artwork.status)}</Badge></div>
                             <p className="mt-2 text-xs text-muted">{artwork.artist?.display_name ?? '—'} · {artwork.category?.name ?? '—'}</p>
                             <dl className="mt-4 grid grid-cols-2 gap-3 text-xs">{artwork.medium && <div><dt className="text-muted">{t("تکنیک")}</dt><dd className="mt-1 font-semibold">{artwork.medium}</dd></div>}{artwork.dimensions && <div><dt className="text-muted">{t("ابعاد")}</dt><dd className="mt-1 font-semibold">{artwork.dimensions}</dd></div>}{artwork.year && <div><dt className="text-muted">{t("سال")}</dt><dd className="mt-1 font-semibold">{artwork.year}</dd></div>}<div><dt className="text-muted">{t("تاریخ ثبت")}</dt><dd className="mt-1 font-semibold">{dateLabel(artwork.created_at, locale)}</dd></div></dl>
-                            {artwork.description && <p className="mt-4 line-clamp-4 text-sm leading-7 text-muted">{artwork.description}</p>}{artwork.rejection_note && <p className="mt-3 border-s-2 border-sand bg-surface-muted p-3 text-xs leading-6 text-muted">یادداشت ثبت‌شده: {artwork.rejection_note}</p>}
+                            {artwork.description && <p className="mt-4 line-clamp-4 text-sm leading-7 text-muted">{artwork.description}</p>}{artwork.rejection_note && <p className="mt-3 border-s-2 border-sand bg-surface-muted p-3 text-xs leading-6 text-muted">{t('یادداشت ثبت‌شده:')} {t(artwork.rejection_note)}</p>}
                         </div>
                     </div>
                     {actionable && <div className="mt-4 border-t border-border py-5 sm:px-1"><FormField label={t("توضیح برای هنرمند")} hint={t("برای رد اثر یا درخواست اصلاح الزامی است؛ حداکثر ۲۰۰۰ نویسه.")}><TextareaField value={notes[artwork.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [artwork.id]: event.target.value }))} maxLength={2000} rows={3} /></FormField><div className="mt-4 flex flex-wrap gap-2"><Button size="sm" onClick={() => moderate(artwork, 'approve')} loading={busyId === artwork.id} disabled={busyId !== null}>تأیید و انتشار</Button><Button size="sm" variant="outline" onClick={() => moderate(artwork, 'request_changes')} disabled={busyId !== null}>درخواست اصلاح</Button><Button size="sm" variant="danger" onClick={() => moderate(artwork, 'reject')} disabled={busyId !== null}>رد اثر</Button></div></div>}
                 </article>;
             })}</div>
-            <Pagination currentPage={result.current_page ?? page} lastPage={result.last_page ?? 1} onPageChange={changePage} disabled={loading || busyId !== null} /><p className="text-center text-xs text-muted">{result.total ?? result.data.length} اثر در این فهرست</p>
+            <Pagination currentPage={result.current_page ?? page} lastPage={result.last_page ?? 1} onPageChange={changePage} disabled={loading || busyId !== null} /><p className="text-center text-xs text-muted">{result.total ?? result.data.length} {t('اثر در این فهرست')}</p>
         </>}
     </section>;
 }
@@ -253,7 +253,7 @@ export function AdminUsersPage() {
                 const needsAdminConfirmation = confirmAdminId === item.id && selected === 'admin' && item.role !== 'admin';
                 return <article key={item.id} className="min-w-0 border-t border-border bg-transparent py-5">
                     <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div className="min-w-0"><p className="mb-1 text-[10px] font-bold tracking-wide text-muted">حساب کاربری · {item.id}</p><h2 className="break-words font-bold">{item.name}</h2><p dir="ltr" className="mt-1 break-all text-start text-xs text-muted">{item.email}</p></div>
+                        <div className="min-w-0"><p className="mb-1 text-[10px] font-bold tracking-wide text-muted">{t('حساب کاربری')} · {item.id}</p><h2 className="break-words font-bold">{item.name}</h2><p dir="ltr" className="mt-1 break-all text-start text-xs text-muted">{item.email}</p></div>
                         <Badge variant={item.role === 'admin' ? 'accent' : item.role === 'artist' ? 'info' : 'neutral'}>{t(roleLabels[item.role] ?? item.role)}</Badge>
                     </div>
                     <div className="mt-5 border-t border-border/70 pt-4">
@@ -335,7 +335,7 @@ export function AdminMessageReportsPage() {
                 const confirmingRemoval = confirmRemovalId === report.id;
                 return <article key={report.id} className="overflow-hidden border-t border-border bg-transparent pt-1">
                     <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border py-5">
-                        <div><p className="text-xs font-bold text-terracotta-strong">گزارش شماره {report.id}</p><h2 className="mt-1 font-black">{report.reason}</h2><p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? t("کاربر")} · {dateLabel(report.created_at, locale)}</p></div>
+                        <div><p className="text-xs font-bold text-terracotta-strong">{t('گزارش شماره')} {report.id}</p><h2 className="mt-1 font-black">{report.reason}</h2><p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? t("کاربر")} · {dateLabel(report.created_at, locale)}</p></div>
                         <Badge variant={isOpen ? 'warning' : report.status === 'dismissed' ? 'neutral' : 'success'}>{isOpen ? t("در انتظار بررسی") : report.status === 'dismissed' ? t("رد گزارش") : t("بررسی‌شده")}</Badge>
                     </div>
                     <div className="space-y-5 py-5">
