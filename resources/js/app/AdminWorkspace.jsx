@@ -103,7 +103,7 @@ export function AdminDashboardHome() {
                 <aside className="border-y border-border bg-surface-muted/60 py-6 sm:px-6 sm:py-7">
                     <SectionHeader eyebrow={t("راهنمای عملیات")} title={t("رسیدگی منظم و قابل پیگیری")} className="border-0 pb-0" />
                     <p className="mt-3 text-sm leading-7 text-muted">{t("تصمیم‌های انتشار را همراه با توضیح ثبت کنید، نقش‌ها را با دقت مدیریت کنید و گزارش‌های ایمنی را از مسیر اختصاصی بررسی کنید.")}</p>
-                    <Link to="/admin/artworks" className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 py-3 text-sm font-bold text-inverse transition-colors hover:bg-terracotta">شروع بررسی آثار <span aria-hidden="true" className="ms-3">←</span></Link>
+                    <Link to="/admin/artworks" className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 py-3 text-sm font-bold text-inverse transition-colors hover:bg-terracotta">شروع بررسی آثار <span aria-hidden="true" className="ms-3 rtl:rotate-180">→</span></Link>
                 </aside>
             </section>
 
@@ -115,7 +115,7 @@ export function AdminDashboardHome() {
                         <p className="mt-3 text-[10px] font-bold text-muted">{item.eyebrow}</p>
                         <h3 className="mt-1 font-black text-ink">{item.title}</h3>
                         <p className="mt-2 text-xs leading-6 text-muted">{item.description}</p>
-                        <span className="mt-auto pt-4 text-xs font-bold text-terracotta-strong">ورود به بخش <span aria-hidden="true">←</span></span>
+                        <span className="mt-auto pt-4 text-xs font-bold text-terracotta-strong">ورود به بخش <span aria-hidden="true" className="rtl:rotate-180">→</span></span>
                     </Link>)}
                 </div>
             </section>
