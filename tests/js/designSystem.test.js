@@ -513,7 +513,7 @@ test('workspace first-paint skeleton uses the same constrained shell as the load
     assert.ok(bootShell.includes("lg:grid-cols-[15rem_minmax(0,1fr)]"));
     assert.ok(bootShell.includes("$isMessagingRoute = request()->is('dashboard/artist/messages', 'dashboard/buyer/messages')"));
     assert.ok(bootShell.includes('workspace-bottom-nav-primary-height'));
-    assert.ok(bootShell.includes("$workspaceNavigationCount = request()->is('admin*') ? 5 : (request()->is('dashboard/buyer*') ? 2 : 4)"));
+    assert.ok(bootShell.includes("$workspaceNavigationCount = request()->is('admin*') ? 7 : (request()->is('dashboard/buyer*') ? 3 : 5)"));
     assert.ok(routeLoading.includes("pathname.startsWith('/dashboard/buyer') ? 2 : 4"));
     assert.ok(bootShell.includes('h-dvh flex-col overflow-hidden'));
 });
