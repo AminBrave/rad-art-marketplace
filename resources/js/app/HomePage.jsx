@@ -130,7 +130,7 @@ export default function HomePage() {
                                     <div className="relative aspect-[3/4] w-full overflow-hidden bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))]">
                                         <MediaImage
                                             src={hero.image_url}
-                                            alt={hero.title}
+                                            alt={localizedValue(hero, 'title', locale)}
                                             className="h-full w-full"
                                             imageClassName="object-cover transition-transform duration-700 group-hover:scale-[1.025]"
                                             loading="eager"
@@ -249,7 +249,7 @@ export default function HomePage() {
                             <p className="text-[10px] font-extrabold tracking-[.14em] text-[color:var(--rd-hero-accent)]">ARTIST SPOTLIGHT / {t('هنرمند منتخب')}</p>
                             <h3 className="mt-3 break-words text-2xl font-black leading-heading text-[color:var(--rd-hero-foreground)] sm:text-3xl">{localizedValue(spotlight, 'display_name', locale)}</h3>
                             {spotlight.city && <p className="mt-2 text-xs font-semibold text-[color:var(--rd-hero-muted)]">{localizedValue(spotlight, 'city', locale)}</p>}
-                            <p className="mt-4 max-w-3xl text-sm leading-8 text-[color:var(--rd-hero-muted)]">{spotlight.bio || t('پورتفولیوی عمومی این هنرمند را ببینید و با آثار تأییدشده او آشنا شوید.')}</p>
+                            <p className="mt-4 max-w-3xl text-sm leading-8 text-[color:var(--rd-hero-muted)]">{localizedValue(spotlight, 'bio', locale) || t('پورتفولیوی عمومی این هنرمند را ببینید و با آثار تأییدشده او آشنا شوید.')}</p>
                             <Link to={'/artists/' + spotlight.slug} className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 border border-[color:var(--rd-hero-line)] px-4 py-2 text-sm font-bold text-[color:var(--rd-hero-foreground)] no-underline transition-colors hover:border-[color:var(--rd-hero-accent)] hover:bg-[color:var(--rd-hero-foreground)] hover:text-[color:var(--rd-hero-background)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
                                 {t('ورود به پورتفولیو')}
                                 <ArrowLeft size={16} aria-hidden="true" />
