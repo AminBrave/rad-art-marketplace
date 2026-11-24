@@ -16,7 +16,7 @@ export default function RelatedArtworkStrip({ contexts, role, onSelectArtwork })
                 {artworks.map((artwork) => {
                     const chipContent = (
                         <>
-                            <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-border text-muted">
+                            <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rd-shine relative overflow-hidden bg-border text-muted">
                                 {artwork.image_url ? (
                                     <MediaImage src={artwork.image_url} alt="" className="h-full w-full" imageClassName="object-cover" loading="lazy" decoding="async" />
                                 ) : (
@@ -28,7 +28,7 @@ export default function RelatedArtworkStrip({ contexts, role, onSelectArtwork })
                         </>
                     );
 
-                    const className = "inline-flex min-w-0 max-w-48 min-h-[2.35rem] shrink-0 items-center gap-[.4rem] whitespace-nowrap rounded-full border border-border bg-surface-muted pe-[.6rem] ps-[.25rem] py-[.2rem] text-[11px] font-semibold leading-tight text-ink no-underline transition-colors hover:border-terracotta hover:bg-surface hover:text-terracotta-strong motion-reduce:transition-none";
+                    const className = "inline-flex min-w-0 max-w-48 min-h-[2.35rem] shrink-0 items-center gap-[.4rem] whitespace-nowrap border border-border bg-surface-muted pe-[.6rem] ps-[.25rem] py-[.2rem] text-[11px] font-semibold leading-tight text-ink no-underline transition-colors hover:border-terracotta hover:bg-surface hover:text-terracotta-strong motion-reduce:transition-none";
 
                     return role === 'buyer' ? (
                         <Button variant="ghost"
