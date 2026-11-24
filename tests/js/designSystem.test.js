@@ -265,9 +265,9 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     const heroEnd = primitives.indexOf('\n}', heroStart);
     assert.ok(heroStart >= 0 && heroEnd > heroStart);
     const hero = primitives.slice(heroStart, heroEnd);
-    assert.ok(hero.includes('border-y border-ink bg-ink'), 'The workspace hero uses the editorial ink band rather than a rounded card.');
+    assert.ok(hero.includes('border-y border-divider-section bg-ink'), 'The workspace hero uses the editorial ink band rather than a rounded card.');
     assert.ok(hero.includes('overflow-hidden'), 'The hero clips its decorative editorial elements.');
-    assert.ok(hero.includes('px-[clamp(1.25rem,4vw,3.25rem)]'), 'The hero uses responsive horizontal spacing.');
+    assert.ok(hero.includes('Container width={bleed ? "wide" : "full"}') && hero.includes('px-page-gutter'), 'The hero uses responsive horizontal spacing.');
     assert.ok(hero.includes('max-md:items-stretch max-md:flex-col'), 'Hero actions and copy stack cleanly on smaller screens.');
     assert.ok(hero.includes('inset-y-0 right-0 w-1.5 bg-terracotta'));
     assert.ok(hero.includes('text-inverse'));
