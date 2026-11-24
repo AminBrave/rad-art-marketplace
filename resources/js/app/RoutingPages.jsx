@@ -84,6 +84,7 @@ function WorkspaceAuthLoading({ children }) {
 }
 
 export function RouteLoading({ label = 'در حال آماده‌سازی صفحه…' }) {
+    const { t } = useLanguage();
     const { pathname, search } = useLocation();
     const isWorkspace = pathname === '/dashboard' || pathname.startsWith('/dashboard/') || pathname.startsWith('/admin');
     const hasHeaderAction = ['/admin/artworks', '/admin/users', '/admin/message-reports'].includes(pathname);
@@ -125,8 +126,8 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
 
     if (pathname === '/dashboard/artist/profile') {
         return (
-            <Container as="div" width="wide" className="min-h-[65vh] py-10 lg:py-14" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
-                <span className="sr-only">{label}</span>
+            <Container as="div" width="wide" className="min-h-[65vh] py-10 lg:py-14" role="status" aria-live="polite" aria-busy="true" aria-label={t(label)}>
+                <span className="sr-only">{t(label)}</span>
                 <div className="mb-8 grid gap-3 border-b border-ink pb-6"><Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="h-9 w-2/3 max-w-sm rounded-sm" /><Skeleton className="h-4 w-full max-w-xl rounded-sm" /></div>
                 <section className="grid gap-4 sm:grid-cols-2">
                     <FormFieldSkeleton className="sm:col-span-2" />
@@ -252,12 +253,13 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
     );
 }
 function AuthUnavailable() {
+    const { t } = useLanguage();
     const { authError, refreshUser } = useAuth();
     return (
         <div className="mx-auto max-w-xl px-6 py-20 text-center">
-            <h1 className="text-2xl font-black">ارتباط با حساب کاربری برقرار نشد</h1>
-            <p className="mt-3 text-sm leading-7 text-muted">{authError}</p>
-            <Button variant="ghost" type="button" onClick={refreshUser} className="mt-6 rounded-full bg-ink px-5 py-3 text-sm font-bold text-inverse">تلاش دوباره</Button>
+            <h1 className="text-2xl font-black">{t('ارتباط با حساب کاربری برقرار نشد')}</h1>
+            <p className="mt-3 text-sm leading-7 text-muted">{t(authError)}</p>
+            <Button variant="ghost" type="button" onClick={refreshUser} className="mt-6 rounded-full bg-ink px-5 py-3 text-sm font-bold text-inverse"{t('تلاش دوباره')}</Button>
         </div>
     );
 }
@@ -317,25 +319,26 @@ export function ArtistWorkspaceLayout() {
 }
 
 export function ArtistDashboardHome() {
+    const { t, locale } = useLanguage();
     const { user, profile, profileLoading, profileError } = useOutletContext();
     return (
         <div className="w-full space-y-6">
             <WorkspaceHero
-                eyebrow="فضای هنرمند"
-                title={<>خوش آمدید، {user.name}</>}
-                description="پروفایل و آثار ارسالی خود را مدیریت کنید و از بخش پیام‌های مستقیم با خریداران در ارتباط باشید."
+                eyebrow={t('فضای هنرمند')}
+                title={<>{t('خوش آمدید، ')}{user.name}</>}
+                description={t('پروفایل و آثار ارسالی خود را مدیریت کنید و از بخش پیام‌های مستقیم با خریداران در ارتباط باشید.')}
             />
             <Container width="wide" className="space-y-6">
             {profileError && <p role="alert" className="mt-5 text-sm text-warning">{t(profileError)}</p>}
-            {profileLoading ? <p className="mt-5 text-sm text-muted">در حال دریافت پروفایل…</p> : (
+            {profileLoading ? <p className="mt-5 text-sm text-muted">{t('در حال دریافت پروفایل…')}</p> : (
                 <div className="mt-6 rounded-xl bg-canvas p-4">
-                    <p className="font-semibold">{profile?.slug ? 'پروفایل هنرمند شما آماده است.' : 'برای شروع، پروفایل هنرمند خود را تکمیل کنید.'}</p>
-                    <Link to="/dashboard/artist/profile" className="mt-3 inline-block text-sm font-bold text-terracotta-strong underline">مدیریت پروفایل</Link>
+                    <p className="font-semibold">{t(profile?.slug ? 'پروفایل هنرمند شما آماده است.' : 'برای شروع، پروفایل هنرمند خود را تکمیل کنید.')}</p>
+                    <Link to="/dashboard/artist/profile" className="mt-3 inline-block text-sm font-bold text-terracotta-strong underline"{t('مدیریت پروفایل')}</Link>
                 </div>
             )}
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                <Link to="/dashboard/artist/artworks" className="rounded-xl border border-border p-5 font-bold hover:border-terracotta">مدیریت آثار</Link>
-                <Link to="/dashboard/artist/messages" className="rounded-xl border border-border p-5 font-bold hover:border-terracotta">پیام‌های مستقیم</Link>
+                <Link to="/dashboard/artist/artworks" className="rounded-xl border border-border p-5 font-bold hover:border-terracotta"{t('مدیریت آثار')}</Link>
+                <Link to="/dashboard/artist/messages" className="rounded-xl border border-border p-5 font-bold hover:border-terracotta"{t('پیام‌های مستقیم')}</Link>
             </div>
             </Container>
         </div>
@@ -344,6 +347,7 @@ export function ArtistDashboardHome() {
 
 
 export function WorkspaceSettingsPage() {
+    const { t } = useLanguage();
     const { user } = useAuth();
     const { theme, cycleTheme } = useTheme();
     const queryClient = useQueryClient();
@@ -382,11 +386,11 @@ export function WorkspaceSettingsPage() {
         in_app_artwork_comments: true, in_app_comment_replies: true,
     };
     const preferenceOptions = [
-        ['in_app_messages', 'پیام‌های جدید', 'هنگامی که پیام تازه‌ای در فضای کاربری دریافت می‌کنید'],
-        ['in_app_follows', 'دنبال‌کننده‌های تازه', 'هنگامی که کاربری شما را دنبال می‌کند'],
-        ['in_app_artwork_likes', 'پسندیدن آثار', 'هنگامی که کسی یکی از آثار شما را می‌پسندد'],
-        ['in_app_artwork_comments', 'دیدگاه‌های آثار', 'هنگامی که کسی درباره یکی از آثار شما دیدگاه می‌نویسد'],
-        ['in_app_comment_replies', 'پاسخ به دیدگاه‌ها', 'هنگامی که کسی به دیدگاه شما پاسخ می‌دهد'],
+        ['in_app_messages', t('پیام‌های جدید'), t('هنگامی که پیام تازه‌ای در فضای کاربری دریافت می‌کنید')],
+        ['in_app_follows', t('دنبال‌کننده‌های تازه'), t('هنگامی که کاربری شما را دنبال می‌کند')],
+        ['in_app_artwork_likes', t('پسندیدن آثار'), t('هنگامی که کسی یکی از آثار شما را می‌پسندد')],
+        ['in_app_artwork_comments', t('دیدگاه‌های آثار'), t('هنگامی که کسی درباره یکی از آثار شما دیدگاه می‌نویسد')],
+        ['in_app_comment_replies', t('پاسخ به دیدگاه‌ها'), t('هنگامی که کسی به دیدگاه شما پاسخ می‌دهد')],
     ];
     const [error, setError] = useState('');
     const changePreference = async (key, enabled) => {
@@ -394,24 +398,24 @@ export function WorkspaceSettingsPage() {
         try {
             await updatePreference.mutateAsync({ key, enabled });
         } catch {
-            setError('ذخیره تنظیمات انجام نشد. دوباره تلاش کنید.');
+            setError(t('ذخیره تنظیمات انجام نشد. دوباره تلاش کنید.'));
         }
     };
 
     return (
         <section className="min-w-0 mx-auto w-full max-w-content space-y-8">
-            <PageHeader bleed={false} eyebrow="حساب کاربری" title="تنظیمات" description="ترجیحات نمایش و اعلان‌های فضای کاربری را از یک بخش مدیریت کنید." />
+            <PageHeader bleed={false} eyebrow={t('حساب کاربری')} title={t('تنظیمات')} description={t('ترجیحات نمایش و اعلان‌های فضای کاربری را از یک بخش مدیریت کنید.')} />
 
             <section className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_16rem]" aria-labelledby="appearance-settings-title">
                 <div className="min-w-0 border border-divider-group bg-paper p-5 sm:p-6">
-                    <SectionHeader id="appearance-settings-title" eyebrow="نمایش" title="پوسته محیط کاربری" description="ظاهر راد آرت را با نور محیط یا ترجیح خود هماهنگ کنید." />
+                    <SectionHeader id="appearance-settings-title" eyebrow={t('نمایش')} title={t('پوسته محیط کاربری')} description={t('ظاهر راد آرت را با نور محیط یا ترجیح خود هماهنگ کنید.')} />
                 </div>
                 <div className="flex flex-col justify-center gap-3 border border-divider-group bg-surface-muted p-5">
                     <div>
                         <p className="text-[11px] font-semibold text-muted">حالت فعلی</p>
                         <p className="mt-1 text-sm font-bold text-ink">{theme === 'dark' ? 'تیره' : theme === 'light' ? 'روشن' : 'هماهنگ با دستگاه'}</p>
                     </div>
-                    <Button type="button" variant="outline" onClick={cycleTheme}>تغییر پوسته</Button>
+                    <Button type="button" variant="outline" onClick={cycleTheme}>{t('تغییر پوسته')}</Button>
                 </div>
             </section>
 
@@ -419,10 +423,10 @@ export function WorkspaceSettingsPage() {
                 <section className="space-y-4" aria-labelledby="notification-settings-title">
                     <SectionHeader
                         id="notification-settings-title"
-                        eyebrow="اعلان‌ها"
-                        title="اعلان‌های درون‌برنامه‌ای"
-                        description="رویدادهایی را که می‌خواهید در صندوق اعلان‌ها ببینید انتخاب کنید."
-                        actions={<span className="text-[11px] font-semibold text-muted">{updatePreference.isPending ? 'در حال ذخیره…' : 'ذخیره خودکار'}</span>}
+                        eyebrow={t('اعلان‌ها')}
+                        title={t('اعلان‌های درون‌برنامه‌ای')}
+                        description={t('رویدادهایی را که می‌خواهید در صندوق اعلان‌ها ببینید انتخاب کنید.')}
+                        actions={<span className="text-[11px] font-semibold text-muted">{updatePreference.isPending ? 'در حال ذخیره…' : t('ذخیره خودکار')}</span>}
                     />
                     {preferencesQuery.isError ? <p role="alert" className="text-sm text-danger"{t('دریافت تنظیمات اعلان‌ها انجام نشد. صفحه را دوباره بارگذاری کنید.')}</p> : preferencesQuery.isPending ? <p className="text-sm text-muted">در حال دریافت تنظیمات…</p> : (
                         <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
@@ -442,7 +446,7 @@ export function WorkspaceSettingsPage() {
                             ))}
                         </div>
                     )}
-                    <p className="text-xs leading-6 text-muted">اعلان ایمیلی و پیامکی در این نسخه غیرفعال است.</p>
+                    <p className="text-xs leading-6 text-muted">{t('اعلان ایمیلی و پیامکی در این نسخه غیرفعال است.')}</p>
                 </section>
             )}
             {error && <p role="alert" className="text-sm text-danger">{t(error)}</p>}
