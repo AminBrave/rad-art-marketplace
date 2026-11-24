@@ -94,6 +94,7 @@ export default function ComponentShowcase() {
                 <div className="grid content-start gap-3">
                     <h3 className="font-bold">الگوی معرفی فضای کاربری</h3>
                     <WorkspaceHero
+                        bleed={false}
                         eyebrow="استودیوی هنرمند"
                         title="همه چیز برای مدیریت حرفه‌ای"
                         description="الگوی مشترک معرفی فضاهای هنرمند، خریدار و مدیر؛ با سلسله‌مراتب و رنگ‌های یکسان."
