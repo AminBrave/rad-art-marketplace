@@ -75,7 +75,7 @@ Use the canonical `Container` for consistent section widths. `PageContainer` is 
 
 ### 2.5 Shape, elevation and media
 
-Current shape tokens: `--rd-radius-sm|md|lg|xl|pill`; Tailwind semantic radii include `rounded-control`, `rounded-editorial`, `rounded-card`, `rounded-panel` and `rounded-pill`. Buttons, icon buttons and form controls enforce `rounded-control`; card and dialog surfaces use the appropriate surface radius. Elevation tokens: `--rd-shadow-soft` and `--rd-shadow-raised`. Artwork ratios include `--rd-artwork-ratio` (4:3) and `--rd-portrait-ratio` (4:5).
+The canonical shape token is `--rd-radius-0: 0`; legacy radius aliases and Tailwind radius utilities resolve to this token. Shared components express square geometry directly and do not depend on radius utilities or global CSS overrides. Elevation tokens: `--rd-shadow-soft` and `--rd-shadow-raised`. Artwork ratios include `--rd-artwork-ratio` (4:3) and `--rd-portrait-ratio` (4:5).
 
 Artwork itself should remain undistorted. Use `object-contain` when the complete work is the subject; use `object-cover` only for a deliberate editorial crop, avatar or ambient image. Keep the media frame and its internal padding intentional; the image should occupy the available frame without erasing the frame's breathing room.
 
