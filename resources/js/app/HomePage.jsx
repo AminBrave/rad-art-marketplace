@@ -150,8 +150,8 @@ export default function HomePage() {
                             ) : (
                                 <div className="relative aspect-[5/4] overflow-hidden bg-sand sm:aspect-[4/3] lg:aspect-[5/4]">
                                     <div aria-hidden="true" className="absolute inset-5 border border-ink/20 sm:inset-8" />
-                                    <div aria-hidden="true" className="absolute left-[12%] top-[12%] h-[48%] w-[48%] rounded-full bg-terracotta" />
-                                    <div aria-hidden="true" className="absolute bottom-[12%] right-[10%] h-[58%] w-[48%] rounded-t-full bg-olive" />
+                                    <div aria-hidden="true" className="absolute left-[12%] top-[12%] h-[48%] w-[48%]  bg-terracotta" />
+                                    <div aria-hidden="true" className="absolute bottom-[12%] right-[10%] h-[58%] w-[48%]  bg-olive" />
                                     <span className="absolute bottom-8 left-8 font-latin text-[10px] font-bold tracking-[.25em] text-ink">ART / PEOPLE / STORIES</span>
                                 </div>
                             )}
@@ -207,7 +207,7 @@ export default function HomePage() {
                         description="دسته‌بندی‌های فعال گالری را مرور کنید و به جهان هر شاخه هنری وارد شوید."
                     />
                     <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                        {loading ? [0, 1, 2, 3].map((item) => <Skeleton key={item} height={null} className="h-28 w-full rounded-none" />) : categories.length ? categories.slice(0, 8).map((category, index) => (
+                        {loading ? [0, 1, 2, 3].map((item) => <Skeleton key={item} height={null} className="h-28 w-full " />) : categories.length ? categories.slice(0, 8).map((category, index) => (
                             <Link key={category.id} to={'/artworks?category=' + encodeURIComponent(category.slug)} className="group flex min-h-32 items-end justify-between border-y border-border bg-canvas p-5 no-underline transition-colors hover:border-terracotta hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
                                 <span>
                                     <span dir="ltr" className="block font-latin text-[10px] font-bold tracking-widest text-terracotta-strong">0{index + 1}</span>
