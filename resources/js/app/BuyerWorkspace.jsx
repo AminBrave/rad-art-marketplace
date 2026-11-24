@@ -3,7 +3,7 @@ import { WorkspaceHero, SectionHeader, Container } from '../components/ui';
 
 export function BuyerDashboardHome() {
     return (
-        <Container as="section" width="wide" className="space-y-7" dir="rtl">
+        <div className="w-full space-y-7" dir="rtl">
             <WorkspaceHero
                 eyebrow="فضای اختصاصی خریدار"
                 title="هنر مورد علاقه‌تان را کشف کنید و گفت‌وگو را ادامه دهید."
@@ -14,6 +14,7 @@ export function BuyerDashboardHome() {
                 </>}
             />
 
+            <Container width="wide" className="space-y-7">
             <section aria-labelledby="buyer-messages-heading" className="grid gap-5 border-y border-border py-6 sm:py-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
                 <div className="min-w-0">
                     <p className="text-[11px] font-extrabold tracking-[.14em] text-terracotta-strong">ارتباط‌های شما</p>
@@ -31,6 +32,7 @@ export function BuyerDashboardHome() {
                     <li className="border-t-2 border-ink pt-4"><span className="text-xs font-extrabold tracking-[.12em] text-terracotta-strong">۰۳ / ادامه</span><h3 className="mt-3 font-bold">گفت‌وگو را پیگیری کنید</h3><p className="mt-2 text-sm leading-7 text-muted">پاسخ‌ها و پیوست‌های جدید را در صندوق پیام‌ها دنبال کنید.</p></li>
                 </ol>
             </section>
-        </Container>
+            </Container>
+        </div>
     );
 }
