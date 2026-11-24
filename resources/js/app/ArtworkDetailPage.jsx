@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import { useLanguage } from './LanguageContext';
 import ArtworkEngagement from './ArtworkEngagement';
 import { ArtworkCard, ArtworkDetailSkeleton, MediaImage, Container, Button } from '../components/ui';
 import { formatArtworkPrice } from '../utils/formatArtworkPrice';
@@ -35,6 +36,7 @@ function availabilityLabel(value) {
 export default function ArtworkDetailPage() {
     const { slug } = useParams();
     const { user } = useAuth();
+    const { t, locale } = useLanguage();
     const artworkQuery = useQuery({
         queryKey: ['artwork', slug, user?.id ?? 'guest'],
         queryFn: async ({ signal }) => {
@@ -68,42 +70,42 @@ export default function ArtworkDetailPage() {
 
     return (
         <Container as="div" width="wide" className="min-h-[65vh] py-10 lg:py-14">
-            <nav aria-label="مسیر صفحه" className="text-sm text-muted">
-                <Link to="/" className="hover:text-terracotta-strong">خانه</Link><span className="mx-2" aria-hidden="true">/</span>
-                <Link to="/artworks" className="hover:text-terracotta-strong">گالری آثار</Link><span className="mx-2" aria-hidden="true">/</span>
-                <span aria-current="page" className="text-ink">جزئیات اثر</span>
+            <nav aria-label={t("مسیر صفحه")} className="text-sm text-muted">
+                <Link to="/" className="hover:text-terracotta-strong">{t("خانه")}</Link><span className="mx-2" aria-hidden="true">/</span>
+                <Link to="/artworks" className="hover:text-terracotta-strong">{t("گالری آثار")}</Link><span className="mx-2" aria-hidden="true">/</span>
+                <span aria-current="page" className="text-ink">{t("جزئیات اثر")}</span>
             </nav>
             {!artwork ? (
                 <section className="mt-8 border-y border-ink bg-transparent px-5 py-8 sm:px-8">
                     <h1 className="text-2xl font-black">{status === 403 ? 'دسترسی به این اثر مجاز نیست' : 'اثر در دسترس نیست'}</h1>
                     <p className="mt-3 text-sm leading-7 text-muted">{status === 403 ? 'سرور اجازه مشاهده این اثر را صادر نکرد.' : 'این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.'}</p>
-                    {artworkQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-danger">ارتباط با سرور برقرار نشد. <Button variant="ghost" type="button" onClick={() => artworkQuery.refetch()} className="inline p-0 font-bold underline">تلاش دوباره</Button></p>}
-                    <Link to="/artworks" className="mt-5 inline-block font-bold text-terracotta-strong underline">بازگشت به گالری</Link>
+                    {artworkQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-danger">{t("ارتباط با سرور برقرار نشد.")} <Button variant="ghost" type="button" onClick={() => artworkQuery.refetch()} className="inline p-0 font-bold underline">{t("تلاش دوباره")}</Button></p>}
+                    <Link to="/artworks" className="mt-5 inline-block font-bold text-terracotta-strong underline">{t("بازگشت به گالری")}</Link>
                 </section>
             ) : (
                 <>
                     <article className="mt-8 grid items-start gap-8 lg:grid-cols-[1.15fr_.85fr] lg:gap-12">
                         <div className="min-w-0">
                             <ArtworkImage artwork={artwork} />
-                            <p className="mt-3 text-xs leading-6 text-muted">تصویر اثر با حفظ نسبت و جزئیات اصلی نمایش داده شده است.</p>
+                            <p className="mt-3 text-xs leading-6 text-muted">{t("تصویر اثر با حفظ نسبت و جزئیات اصلی نمایش داده شده است.")}</p>
                         </div>
                         <div className="border-y border-ink bg-transparent py-6 sm:py-9 lg:sticky lg:top-28 lg:border-y-0 lg:py-2">
-                            <p className="text-[11px] font-extrabold tracking-[.14em] text-terracotta-strong">پرونده اثر <span className="mx-1 text-subtle">/</span> {artwork.category?.name}</p>
+                            <p className="text-[11px] font-extrabold tracking-[.14em] text-terracotta-strong">{t("پرونده اثر")} <span className="mx-1 text-subtle">/</span> {artwork.category?.name}</p>
                             <h1 className="mt-3 text-3xl font-black leading-relaxed tracking-tight sm:text-4xl">{artwork.title}</h1>
                             <Link to={'/artists/' + artwork.artist.slug} className="mt-3 inline-block text-sm font-semibold text-terracotta-strong underline">{artwork.artist.display_name}</Link>
                             {artwork.description && <p className="mt-7 whitespace-pre-line text-sm leading-9 text-muted">{artwork.description}</p>}
                             <dl className="mt-8 grid grid-cols-2 gap-x-5 gap-y-6 border-y border-border py-7 text-sm">
-                                {artwork.medium && <div><dt className="text-xs text-muted">تکنیک / مواد</dt><dd className="mt-1 font-semibold">{artwork.medium}</dd></div>}
-                                {artwork.dimensions && <div><dt className="text-xs text-muted">ابعاد</dt><dd className="mt-1 font-semibold">{artwork.dimensions}</dd></div>}
-                                {artwork.year && <div><dt className="text-xs text-muted">سال خلق</dt><dd className="mt-1 font-semibold">{artwork.year.toLocaleString('fa-IR')}</dd></div>}
-                                <div><dt className="text-xs text-muted">قیمت</dt><dd className="mt-1 font-semibold">{formatArtworkPrice(artwork.price)}</dd></div>
+                                {artwork.medium && <div><dt className="text-xs text-muted">{t("تکنیک / مواد")}</dt><dd className="mt-1 font-semibold">{artwork.medium}</dd></div>}
+                                {artwork.dimensions && <div><dt className="text-xs text-muted">{t("ابعاد")}</dt><dd className="mt-1 font-semibold">{artwork.dimensions}</dd></div>}
+                                {artwork.year && <div><dt className="text-xs text-muted">{t("سال خلق")}</dt><dd className="mt-1 font-semibold">{artwork.year.toLocaleString(locale === "fa" ? "fa-IR" : "en-US")}</dd></div>}
+                                <div><dt className="text-xs text-muted">{t("قیمت")}</dt><dd className="mt-1 font-semibold">{formatArtworkPrice(artwork.price)}</dd></div>
                             </dl>
                             <p className="mt-5 inline-flex items-center gap-2 text-sm text-muted"><span aria-hidden="true" className="h-2 w-2 rounded-full bg-olive" />وضعیت: {availabilityLabel(artwork.availability)}</p>
                             {user?.role === 'buyer' && <div className="mt-8 flex flex-wrap gap-3">
-                                <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(artwork.artist.slug) + '&artwork=' + encodeURIComponent(artwork.slug)} className="inline-flex items-center bg-ink px-5 py-3 text-sm font-bold text-inverse hover:bg-terracotta">پیام مستقیم درباره این اثر</Link>
+                                <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(artwork.artist.slug) + '&artwork=' + encodeURIComponent(artwork.slug)} className="inline-flex items-center bg-ink px-5 py-3 text-sm font-bold text-inverse hover:bg-terracotta">{t("پیام مستقیم درباره این اثر")}</Link>
                             </div>}
-                            {!user && <Link to="/login" state={{ from: { pathname: '/artworks/' + slug } }} className="mt-7 inline-block text-sm font-bold text-terracotta-strong underline">برای ارسال پیام مستقیم وارد شوید</Link>}
-                            {user && user.role !== 'buyer' && <p className="mt-7 text-xs leading-6 text-muted">ارسال پیام مستقیم از حساب خریدار امکان‌پذیر است.</p>}
+                            {!user && <Link to="/login" state={{ from: { pathname: '/artworks/' + slug } }} className="mt-7 inline-block text-sm font-bold text-terracotta-strong underline">{t("برای ارسال پیام مستقیم وارد شوید")}</Link>}
+                            {user && user.role !== 'buyer' && <p className="mt-7 text-xs leading-6 text-muted">{t("ارسال پیام مستقیم از حساب خریدار امکان‌پذیر است.")}</p>}
                         </div>
                     </article>
                     {typeof artwork.likes_count === 'number' && typeof artwork.comments_count === 'number' && (
@@ -112,8 +114,8 @@ export default function ArtworkDetailPage() {
                     {artwork.related_artworks?.length > 0 && (
                         <section className="mt-16 border-t border-border pt-10 lg:mt-20 lg:pt-14">
                             <div className="flex flex-wrap items-end justify-between gap-3">
-                                <div><p className="text-xs font-bold text-terracotta-strong">ادامه مسیر کشف</p><h2 className="mt-2 text-2xl font-black">آثار مرتبط</h2><p className="mt-2 text-sm text-muted">آثاری از همین دسته یا همین هنرمند</p></div>
-                                <Link to="/artworks" className="text-sm font-bold text-terracotta-strong underline">مشاهده همه آثار</Link>
+                                <div><p className="text-xs font-bold text-terracotta-strong">{t("ادامه مسیر کشف")}</p><h2 className="mt-2 text-2xl font-black">{t("آثار مرتبط")}</h2><p className="mt-2 text-sm text-muted">{t("آثاری از همین دسته یا همین هنرمند")}</p></div>
+                                <Link to="/artworks" className="text-sm font-bold text-terracotta-strong underline">{t("مشاهده همه آثار")}</Link>
                             </div>
                             <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{artwork.related_artworks.map((item) => <ArtworkCard key={item.id} artwork={item} />)}</div>
                         </section>
