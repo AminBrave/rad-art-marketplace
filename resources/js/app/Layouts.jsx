@@ -31,7 +31,7 @@ function ThemeControl() {
             title={`${t('پوسته:')} ${label}`}
             className="min-h-0 p-0 inline-flex h-11 w-11 shrink-0 items-center justify-center border border-border bg-surface text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong">
             <Icon size={18} strokeWidth={1.9} aria-hidden="true" />
-            <span className="sr-only">تغییر پوسته</span>
+            <span className="sr-only">{t('تغییر پوسته')}</span>
         </Button>
     );
 }
@@ -106,7 +106,7 @@ export function PublicLayout() {
             </a>
             <header className="sticky top-0 z-40 border-b border-divider-section bg-[color:color-mix(in_srgb,var(--color-canvas)_96%,transparent)] backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-canvas)_90%,transparent)]">
                 <div className="mx-auto flex min-h-[var(--header-height)] max-w-content items-center justify-between gap-2 px-page-gutter sm:gap-5">
-                    <Link to="/" className="group flex shrink-0 items-center gap-2 text-ink no-underline sm:gap-3" aria-label="راد آرت، صفحه اصلی">
+                    <Link to="/" className="group flex shrink-0 items-center gap-2 text-ink no-underline sm:gap-3" aria-label={t('راد آرت، صفحه اصلی')}>
                         <span className="min-h-0 p-0 grid h-10 w-10 place-items-center bg-ink text-lg font-black text-inverse transition-colors group-hover:bg-terracotta sm:h-11 sm:w-11 sm:text-xl">ر</span>
                         <span className="flex flex-col leading-tight">
                             <span className="text-xl font-black tracking-[-.06em] sm:text-2xl">راد<span className="text-terracotta-strong">آرت</span></span>
@@ -133,13 +133,13 @@ export function PublicLayout() {
                                 >
                                     {t(user.role === 'artist' ? 'پیش‌نمایش پروفایل' : user.role === 'admin' ? 'مدیریت' : 'حساب کاربری')}
                                 </Link>
-                                <Button variant="outline" size="sm" className="hidden sm:inline-flex" onClick={handleLogout}>خروج</Button>
+                                <Button variant="outline" size="sm" className="hidden sm:inline-flex" onClick={handleLogout}>{t('خروج')}</Button>
                             </>
                         ) : (
                             <>
-                                <Link to="/login" className="hidden min-h-10 items-center px-2 text-sm font-bold text-ink transition-colors hover:text-terracotta-strong sm:inline-flex">ورود</Link>
+                                <Link to="/login" className="hidden min-h-10 items-center px-2 text-sm font-bold text-ink transition-colors hover:text-terracotta-strong sm:inline-flex">{t('ورود')}</Link>
                                 <Link to="/register" className="inline-flex min-h-10 items-center justify-center border border-border bg-ink px-5 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:border-terracotta hover:bg-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
-                                    ثبت‌نام
+                                    {t('ثبت‌نام')}
                                 </Link>
                             </>
                         )}
@@ -147,7 +147,7 @@ export function PublicLayout() {
                         <DialogTrigger asChild>
                             <Button variant="ghost"
                                 type="button"
-                                aria-label="باز کردن منوی اصلی"
+                                aria-label={t('باز کردن منوی اصلی')}
                                 className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${user ? 'xl:hidden' : 'lg:hidden'}`}
                             >
                                 <Menu size={19} aria-hidden="true" />
@@ -168,7 +168,7 @@ export function PublicLayout() {
                         <DialogClose asChild>
                             <Button variant="ghost"
                                 type="button"
-                                aria-label="بستن منو"
+                                aria-label={t('بستن منو')}
                                 className="min-h-0 p-0 grid h-10 w-10 place-items-center rounded-lg text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                             >
                                 <X size={19} aria-hidden="true" />
@@ -206,8 +206,8 @@ export function PublicLayout() {
                                 </>
                             ) : (
                                 <>
-                                    <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center rounded-md px-4 text-sm font-semibold text-muted hover:bg-surface-muted">ورود</Link>
-                                    <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center rounded-md px-4 text-sm font-bold text-terracotta-strong hover:bg-accent-surface">ساخت حساب کاربری</Link>
+                                    <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center rounded-md px-4 text-sm font-semibold text-muted hover:bg-surface-muted">{t('ورود')}</Link>
+                                    <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center rounded-md px-4 text-sm font-bold text-terracotta-strong hover:bg-accent-surface">{t('ساخت حساب کاربری')}</Link>
                                 </>
                             )}
                         </div>
@@ -224,36 +224,36 @@ export function PublicLayout() {
                 <div className="mx-auto max-w-content px-page-gutter pb-10 pt-14 sm:pb-14 sm:pt-20">
                     <div className="grid gap-10 border-b border-divider-section pb-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr] lg:gap-16 lg:pb-14">
                         <div className="max-w-md">
-                            <Link to="/" className="inline-flex items-center gap-3 text-ink no-underline" aria-label="راد آرت، صفحه اصلی">
+                            <Link to="/" className="inline-flex items-center gap-3 text-ink no-underline" aria-label={t('راد آرت، صفحه اصلی')}>
                                 <span className="min-h-0 p-0 grid h-10 w-10 place-items-center rounded-md bg-ink text-lg font-black text-inverse">ر</span>
                                 <span className="text-xl font-black">راد<span className="text-terracotta-strong">آرت</span></span>
                             </Link>
                             <p className="mt-5 text-sm leading-8 text-muted">
-                                فضایی برای کشف آثار هنری مستقل، شناخت هنرمندان و ارتباط درباره هنر.
+                                {t('فضایی برای کشف آثار هنری مستقل، شناخت هنرمندان و ارتباط درباره هنر.')}
                             </p>
                             <Link to="/artworks" className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-control border border-border-strong px-4 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong">
-                                گشت‌وگذار در گالری
+                                {t('گشت‌وگذار در گالری')}
                                 <span aria-hidden="true">←</span>
                             </Link>
                         </div>
 
                         <nav aria-label="پیوندهای کشف" className="flex flex-col items-start gap-3">
-                            <h2 className="mb-1 text-sm font-extrabold text-ink">برای کشف</h2>
-                            <Link to="/artworks" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">گالری آثار</Link>
-                            <Link to="/artists" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">هنرمندان</Link>
-                            <Link to="/collections" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">مجموعه‌های منتخب</Link>
+                            <h2 className="mb-1 text-sm font-extrabold text-ink">{t('برای کشف')}</h2>
+                            <Link to="/artworks" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">{t('گالری آثار')}</Link>
+                            <Link to="/artists" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">{t('هنرمندان')}</Link>
+                            <Link to="/collections" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">{t('مجموعه‌های منتخب')}</Link>
                         </nav>
 
                         <nav aria-label="پیوندهای راد آرت" className="flex flex-col items-start gap-3">
-                            <h2 className="mb-1 text-sm font-extrabold text-ink">راد آرت</h2>
-                            <Link to="/about" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">درباره ما</Link>
-                            <Link to="/help" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">راهنما</Link>
-                            <Link to="/contact" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">تماس با ما</Link>
+                            <h2 className="mb-1 text-sm font-extrabold text-ink">{t('راد آرت')}</h2>
+                            <Link to="/about" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">{t('درباره ما')}</Link>
+                            <Link to="/help" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">{t('راهنما')}</Link>
+                            <Link to="/contact" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">{t('تماس با ما')}</Link>
                         </nav>
                     </div>
 
                     <div className="flex flex-col gap-2 pt-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
-                        <p>راد آرت — گالری هنر مستقل معاصر</p>
+                        <p>{t('راد آرت — گالری هنر مستقل معاصر')}</p>
                         <p dir="ltr" className="font-latin tracking-wide">RAD ART · DISCOVER INDEPENDENT ART</p>
                     </div>
                 </div>
@@ -272,7 +272,7 @@ function notificationDate(value, locale = 'fa') {
 }
 
 function NotificationBell({ user }) {
-    const { locale } = useLanguage();
+    const { t, locale } = useLanguage();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [open, setOpen] = useState(false);
@@ -360,14 +360,14 @@ function NotificationBell({ user }) {
             <DialogTrigger asChild>
                 <Button variant="ghost"
                     type="button"
-                    aria-label={unreadCount > 0 ? `اعلان‌ها، ${unreadCount.toLocaleString('fa-IR')} خوانده‌نشده` : 'اعلان‌ها'}
+                    aria-label={unreadCount > 0 ? `${t('اعلان‌ها')}، ${unreadCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} ${t('خوانده‌نشده')}` : t('اعلان‌ها')}
                     aria-expanded={open}
                     aria-haspopup="dialog"
                     aria-controls="workspace-notification-panel"
                     className="relative inline-flex min-h-11 items-center gap-2 rounded-md border border-border-strong bg-paper px-3.5 py-2 text-sm font-bold text-ink shadow-soft transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
                 >
                     <Bell aria-hidden="true" size={17} strokeWidth={1.8} />
-                    <span className="hidden sm:inline">اعلان‌ها</span>
+                    <span className="hidden sm:inline">{t("اعلان‌ها")}</span>
                     {unreadCount > 0 && <span className="min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-[10px] font-extrabold tabular-nums text-inverse" aria-live="polite">{unreadCount > 99 ? '۹۹+' : unreadCount.toLocaleString('fa-IR')}</span>}
                 </Button>
             </DialogTrigger>
@@ -380,10 +380,10 @@ function NotificationBell({ user }) {
                 <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
                     <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
-                            <DialogTitle className="text-base tracking-tight">اعلان‌ها</DialogTitle>
-                            {unreadCount > 0 && <Badge variant="accent">{unreadCount.toLocaleString('fa-IR')} جدید</Badge>}
+                            <DialogTitle className="text-base tracking-tight">{t("اعلان‌ها")}</DialogTitle>
+                            {unreadCount > 0 && <Badge variant="accent">{unreadCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} {t("جدید")}</Badge>}
                         </div>
-                        <DialogDescription className="mt-1 text-xs leading-6">خبرهای تازه درباره پیام‌ها، آثار و هنرمندان</DialogDescription>
+                        <DialogDescription className="mt-1 text-xs leading-6">{t("خبرهای تازه درباره پیام‌ها، آثار و هنرمندان")}</DialogDescription>
                     </div>
                     <div className="flex shrink-0 items-center gap-1">
                         <Button variant="ghost"
@@ -393,12 +393,12 @@ function NotificationBell({ user }) {
                             className="inline-flex min-h-9 items-center gap-1.5 rounded-md px-2 text-[11px] font-bold text-terracotta-strong transition-colors hover:bg-accent-surface disabled:cursor-not-allowed disabled:opacity-40"
                         >
                             <CheckCheck size={14} aria-hidden="true" />
-                            <span>خواندن همه</span>
+                            <span>{t("خواندن همه")}</span>
                         </Button>
                         <DialogClose asChild>
                             <Button variant="ghost"
                                 type="button"
-                                aria-label="بستن اعلان‌ها"
+                                aria-label={t("بستن اعلان‌ها")}
                                 className="min-h-0 p-0 grid h-9 w-9 place-items-center rounded-md text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                             >
                                 <X size={17} aria-hidden="true" />
@@ -407,7 +407,7 @@ function NotificationBell({ user }) {
                     </div>
                 </div>
 
-                {error && <p role="alert" className="mx-4 mt-3 rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_20%,transparent)] bg-danger-surface px-3 py-2 text-xs leading-6 text-danger sm:mx-5">{error}</p>}
+                {error && <p role="alert" className="mx-4 mt-3 rounded-md border border-[color:color-mix(in_srgb,var(--color-danger)_20%,transparent)] bg-danger-surface px-3 py-2 text-xs leading-6 text-danger sm:mx-5">{t(error)}</p>}
 
                 <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-4">
                     {loading ? (
@@ -415,8 +415,8 @@ function NotificationBell({ user }) {
                     ) : items.length === 0 ? (
                         <div className="flex min-h-44 flex-col items-center justify-center rounded-lg border border-dashed border-border bg-surface-muted px-5 py-7 text-center">
                             <span className="min-h-0 p-0 grid h-11 w-11 place-items-center rounded-full bg-paper text-muted shadow-soft"><Bell size={19} aria-hidden="true" /></span>
-                            <p className="mt-3 text-sm font-bold text-ink">هنوز اعلانی ندارید</p>
-                            <p className="mt-1 text-xs leading-6 text-muted">فعالیت‌های تازه در این بخش نمایش داده می‌شوند.</p>
+                            <p className="mt-3 text-sm font-bold text-ink">{t("هنوز اعلانی ندارید")}</p>
+                            <p className="mt-1 text-xs leading-6 text-muted">{t("فعالیت‌های تازه در این بخش نمایش داده می‌شوند.")}</p>
                         </div>
                     ) : (
                         <ul className="space-y-2">
@@ -441,7 +441,7 @@ function NotificationBell({ user }) {
                                             <span className="min-w-0 flex-1">
                                                 <span className="flex flex-wrap items-center justify-between gap-2">
                                                     <strong className="text-sm font-bold leading-6 text-ink">{item.title}</strong>
-                                                    {!item.read_at && <Badge variant="accent" className="px-2 py-0.5 text-[10px]">جدید</Badge>}
+                                                    {!item.read_at && <Badge variant="accent" className="px-2 py-0.5 text-[10px]">{t("جدید")}</Badge>}
                                                 </span>
                                                 {item.artwork_title && <span className="mt-1 block truncate text-xs text-muted">{item.artwork_title}</span>}
                                                 {item.comment_preview && <span className="mt-1 block line-clamp-2 text-xs leading-6 text-muted">{item.comment_preview}</span>}
@@ -455,10 +455,10 @@ function NotificationBell({ user }) {
                         </ul>
                     )}
                     {!loading && lastPage > 1 && (
-                        <nav aria-label="صفحه‌بندی اعلان‌ها" className="mt-4 flex items-center justify-between gap-3">
-                            <Button variant="ghost" type="button" disabled={page <= 1 || notificationsQuery.isFetching} onClick={() => setPage((value) => value - 1)} className="border border-border px-3 py-2 text-xs disabled:opacity-40">جدیدتر</Button>
-                            <span className="text-xs tabular-nums text-muted">{page.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} of {lastPage.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</span>
-                            <Button variant="ghost" type="button" disabled={page >= lastPage || notificationsQuery.isFetching} onClick={() => setPage((value) => value + 1)} className="border border-border px-3 py-2 text-xs disabled:opacity-40">قدیمی‌تر</Button>
+                        <nav aria-label={t("صفحه‌بندی اعلان‌ها")} className="mt-4 flex items-center justify-between gap-3">
+                            <Button variant="ghost" type="button" disabled={page <= 1 || notificationsQuery.isFetching} onClick={() => setPage((value) => value - 1)} className="border border-border px-3 py-2 text-xs disabled:opacity-40">{t("جدیدتر")}</Button>
+                            <span className="text-xs tabular-nums text-muted">{locale === 'fa' ? `${page.toLocaleString('fa-IR')} از ${lastPage.toLocaleString('fa-IR')}` : `${page.toLocaleString('en-US')} of ${lastPage.toLocaleString('en-US')}`}</span>
+                            <Button variant="ghost" type="button" disabled={page >= lastPage || notificationsQuery.isFetching} onClick={() => setPage((value) => value + 1)} className="border border-border px-3 py-2 text-xs disabled:opacity-40">{t("قدیمی‌تر")}</Button>
                         </nav>
                     )}
                 </div>
@@ -607,7 +607,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
             <header className="sticky top-0 z-40 shrink-0 border-b border-divider-section bg-[color:color-mix(in_srgb,var(--color-paper)_96%,transparent)] backdrop-blur">
                 <div className="mx-auto flex min-h-[4.5rem] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-20 sm:gap-4">
                     <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
-                        <Link to="/" className="min-h-0 p-0 group grid h-10 w-10 shrink-0 place-items-center bg-ink text-lg font-black text-inverse shadow-soft no-underline transition-colors hover:bg-terracotta sm:h-12 sm:w-12 sm:text-xl" aria-label="راد آرت، صفحه اصلی">
+                        <Link to="/" className="min-h-0 p-0 group grid h-10 w-10 shrink-0 place-items-center bg-ink text-lg font-black text-inverse shadow-soft no-underline transition-colors hover:bg-terracotta sm:h-12 sm:w-12 sm:text-xl" aria-label={t('راد آرت، صفحه اصلی')}>
                             <span className="transition-transform group-hover:scale-110">ر</span>
                         </Link>
                         <div className="min-w-0">
@@ -630,7 +630,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                 مشاهده سایت
                             </Link>
                             <Button variant="outline" size="sm" onClick={handleLogout} className="min-h-10 gap-2">
-                                <span>خروج</span>
+                                <span>{t("خروج")}</span>
                             </Button>
                         </div>
 
@@ -656,14 +656,14 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     <div className="flex min-w-0 items-center gap-3">
                         <span className="min-h-0 p-0 grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-lg font-black text-inverse">ر</span>
                         <div className="min-w-0">
-                            <DialogTitle className="text-sm font-extrabold text-ink">فضای کاری</DialogTitle>
+                            <DialogTitle className="text-sm font-extrabold text-ink">{t("فضای کاری")}</DialogTitle>
                             <DialogDescription className="mt-1 max-w-48 truncate text-xs text-muted">{user?.name}</DialogDescription>
                         </div>
                     </div>
                     <DialogClose asChild>
                         <Button variant="ghost"
                             type="button"
-                            aria-label="بستن منو"
+                            aria-label={t('بستن منو')}
                             className="min-h-0 p-0 grid h-10 w-10 shrink-0 place-items-center rounded-lg text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                         >
                             <X size={19} aria-hidden="true" />
@@ -672,7 +672,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                 </div>
 
                 <div className="min-h-0 flex-1 overflow-y-auto px-4 py-5">
-                    <nav aria-label="بخش‌های اصلی فضای کاربری">
+                    <nav aria-label={t("بخش‌های اصلی فضای کاربری")}>
                         <h3 className="mb-2 px-3 text-xs font-extrabold text-ink">{t("فضای کاربری")}</h3>
                         <div className="grid gap-1">
                             {workspaceLinks.map((item) => (
@@ -742,7 +742,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                         <p className="mt-1 text-sm font-extrabold text-ink">{title}</p>
                         <p className="mt-1 truncate text-xs text-muted">{user?.name}</p>
                     </div>
-                    <nav aria-label="ناوبری فضای کاربری" className="flex w-full min-w-0 flex-col gap-1">
+                    <nav aria-label={t("ناوبری فضای کاربری")} className="flex w-full min-w-0 flex-col gap-1">
                         {workspaceLinks.map((item) => {
                             const Icon = item.to.startsWith('/artists/') ? UserRound : workspaceNavigationIcons[item.to] ?? LayoutDashboard;
                             return (
