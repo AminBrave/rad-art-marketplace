@@ -64,7 +64,7 @@ export const Em = forwardRef(function Em({ className = '', ...props }, ref) {
 });
 
 export const Code = forwardRef(function Code({ className = '', ...props }, ref) {
-    return <code ref={ref} dir="ltr" className={cn('rounded-sm bg-surface-muted px-1.5 py-0.5 font-mono text-[.9em] text-ink', className)} {...props} />;
+    return <code ref={ref} dir="ltr" className={cn(' bg-surface-muted px-1.5 py-0.5 font-mono text-[.9em] text-ink', className)} {...props} />;
 });
 
 export const Quote = forwardRef(function Quote({ className = '', ...props }, ref) {
@@ -105,20 +105,20 @@ export function Avatar({ src, alt = '', fallback, size = 'md', className = '', .
     const [failed, setFailed] = useState(false);
     const dimensions = { sm: 'h-8 w-8 text-xs', md: 'h-10 w-10 text-sm', lg: 'h-14 w-14 text-base', xl: 'h-20 w-20 text-xl' };
     return (
-        <span role={alt ? "img" : undefined} aria-label={alt || undefined} aria-hidden={alt ? undefined : true} className={cn('inline-grid shrink-0 place-items-center overflow-hidden rounded-full border border-border bg-surface-muted font-bold text-muted', dimensions[size] ?? dimensions.md, className)} {...props}>
+        <span role={alt ? "img" : undefined} aria-label={alt || undefined} aria-hidden={alt ? undefined : true} className={cn('inline-grid shrink-0 place-items-center overflow-hidden  border border-border bg-surface-muted font-bold text-muted', dimensions[size] ?? dimensions.md, className)} {...props}>
             {src && !failed ? <img src={src} alt="" className="h-full w-full object-cover" onError={() => setFailed(true)} /> : <span aria-hidden="true">{fallback ?? (alt ? Array.from(alt.trim())[0] : '?')}</span>}
         </span>
     );
 }
 
 export const Card = forwardRef(function Card({ as: Element = 'article', interactive = false, className = '', ...props }, ref) {
-    return <Element ref={ref} className={cn('min-w-0 rounded-card border border-divider-group bg-paper', interactive && 'transition-colors hover:border-border-strong', className)} {...props} />;
+    return <Element ref={ref} className={cn('min-w-0  border border-divider-group bg-paper', interactive && 'transition-colors hover:border-border-strong', className)} {...props} />;
 });
 
 export const Callout = forwardRef(function Callout({ as: Element = 'aside', variant = 'info', title, children, className = '', ...props }, ref) {
     const variants = { info: 'border-s-terracotta bg-accent-surface', success: 'border-s-success bg-success-surface', warning: 'border-s-warning bg-warning-surface', danger: 'border-s-danger bg-danger-surface' };
     return (
-        <Element ref={ref} role={props.role ?? 'note'} className={cn('min-w-0 rounded-editorial border border-divider-group border-s-4 p-4 text-ink', variants[variant] ?? variants.info, className)} {...props}>
+        <Element ref={ref} role={props.role ?? 'note'} className={cn('min-w-0  border border-divider-group border-s-4 p-4 text-ink', variants[variant] ?? variants.info, className)} {...props}>
             {title && <p className="font-bold">{title}</p>}
             {children && <div className={cn(title && 'mt-1', 'text-sm leading-7')}>{children}</div>}
         </Element>
@@ -128,15 +128,15 @@ export const Callout = forwardRef(function Callout({ as: Element = 'aside', vari
 export const Progress = forwardRef(function Progress({ value = 0, max = 100, label, className = '', ...props }, ref) {
     const safeMax = Number.isFinite(Number(max)) && Number(max) > 0 ? Number(max) : 100;
     const safeValue = Math.min(safeMax, Math.max(0, Number(value) || 0));
-    return <progress ref={ref} value={safeValue} max={safeMax} aria-label={label} className={cn('block h-2 w-full overflow-hidden rounded-full accent-terracotta', className)} {...props} />;
+    return <progress ref={ref} value={safeValue} max={safeMax} aria-label={label} className={cn('block h-2 w-full overflow-hidden  accent-terracotta', className)} {...props} />;
 });
 
 export function Spinner({ label = 'در حال بارگذاری', className = '' }) {
-    return <span role="status" aria-label={label} className={cn('inline-block h-5 w-5 animate-spin rounded-full border-2 border-current border-e-transparent text-terracotta motion-reduce:animate-none', className)} />;
+    return <span role="status" aria-label={label} className={cn('inline-block h-5 w-5 animate-spin  border-2 border-current border-e-transparent text-terracotta motion-reduce:animate-none', className)} />;
 }
 
 export const Kbd = forwardRef(function Kbd({ className = '', ...props }, ref) {
-    return <kbd ref={ref} dir="ltr" className={cn('inline-flex min-h-6 items-center rounded border border-border bg-surface-muted px-1.5 font-mono text-[.7rem] text-muted', className)} {...props} />;
+    return <kbd ref={ref} dir="ltr" className={cn('inline-flex min-h-6 items-center  border border-border bg-surface-muted px-1.5 font-mono text-[.7rem] text-muted', className)} {...props} />;
 });
 
 export function AccessibleIcon({ label, children }) {
