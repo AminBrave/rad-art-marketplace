@@ -257,7 +257,7 @@ export default function MessagingCenter({ role }) {
             if (directStartRequestRef.current === controller) directStartRequestRef.current = null;
             if (directStartKeyRef.current === requestKey) directStartKeyRef.current = null;
         };
-    }, [artistSlug, artworkSlug, role, setParams, directStartAttempt, request, setThreads]);
+    }, [artistSlug, artworkSlug, role, setParams, directStartAttempt, request, setThreads, t]);
 
     useEffect(() => {
         hasOlderMessagesRef.current = Boolean(messagesQuery.data?.hasOlder);
@@ -313,7 +313,7 @@ export default function MessagingCenter({ role }) {
     useEffect(() => {
         setSafetyLoading(Boolean(active) && safetyQuery.isLoading);
         if (active && safetyQuery.isError) setError(t("وضعیت ایمنی گفتگو دریافت نشد."));
-    }, [active, safetyQuery.isLoading, safetyQuery.isError]);
+    }, [active, safetyQuery.isLoading, safetyQuery.isError, t]);
 
     useEffect(() => {
         if (!detailQuery.data || threads.some((thread) => Number(thread.id) === Number(active))) return;
@@ -390,7 +390,7 @@ export default function MessagingCenter({ role }) {
                 setLoadingOlder(false);
             }
         }
-    }, [messagesQuery.data?.hasOlder, setMessages, setMessagesMeta, fetchOlderMessages]);
+    }, [messagesQuery.data?.hasOlder, setMessages, setMessagesMeta, fetchOlderMessages, t]);
 
     const replaceMessage = (updated) => {
         setMessages((current) => current.map((message) => message.id === updated.id ? updated : message));
