@@ -166,7 +166,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
                 <FormField label="توضیحات اثر" error={errors.description?.[0]} className="sm:col-span-2"><TextareaField name="description" value={form.description} onChange={updateForm} rows={4} maxLength={3000} /></FormField>
                 <div className="sm:col-span-2">
                     <label htmlFor="artwork-image" className="block text-sm font-semibold text-ink">تصویر اثر {editingId ? '(اختیاری؛ برای جایگزینی تصویر)' : '*'}</label>
-                    <FileInput id="artwork-image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required={!editingId} onChange={chooseImage} aria-describedby="artwork-image-help" className="mt-2 bg-canvas px-3 py-3 file:ml-3" />
+                    <FileInput id="artwork-image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required={!editingId} onChange={chooseImage} aria-describedby="artwork-image-help" className="mt-2 bg-canvas px-3 py-3 file:ms-3" />
                     <p id="artwork-image-help" className="mt-2 text-xs leading-6 text-muted">JPG، JPEG، PNG یا WebP؛ حداکثر ۵ مگابایت و ۶۰۰۰ × ۶۰۰۰ پیکسل. ابعاد تصویر پیش از ارسال بررسی می‌شود.</p>
                     {fieldError('image')}{imageError && <p role="alert" className="mt-1 text-xs text-danger">{imageError}</p>}
                     {imagePreview && <div className="mt-4 max-w-sm border-y border-border bg-paper p-2"><MediaImage src={imagePreview} alt="پیش‌نمایش تصویر انتخاب‌شده" className="aspect-[3/4] max-h-64 w-full" imageClassName="object-cover" loading="eager" /></div>}
