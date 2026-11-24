@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
-import { WorkspaceHero, SectionHeader } from '../components/ui';
+import { WorkspaceHero, SectionHeader, Container } from '../components/ui';
 
 export function BuyerDashboardHome() {
     return (
-        <section className="space-y-7" dir="rtl">
+        <Container as="section" width="wide" className="space-y-7" dir="rtl">
             <WorkspaceHero
                 eyebrow="فضای اختصاصی خریدار"
                 title="هنر مورد علاقه‌تان را کشف کنید و گفت‌وگو را ادامه دهید."
@@ -31,6 +31,6 @@ export function BuyerDashboardHome() {
                     <li className="border-t-2 border-ink pt-4"><span className="text-xs font-extrabold tracking-[.12em] text-terracotta-strong">۰۳ / ادامه</span><h3 className="mt-3 font-bold">گفت‌وگو را پیگیری کنید</h3><p className="mt-2 text-sm leading-7 text-muted">پاسخ‌ها و پیوست‌های جدید را در صندوق پیام‌ها دنبال کنید.</p></li>
                 </ol>
             </section>
-        </section>
+        </Container>
     );
 }
