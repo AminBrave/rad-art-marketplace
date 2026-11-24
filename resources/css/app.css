@@ -502,14 +502,14 @@ video {
 }
 
 .rd-message-bubble--own::before {
-    right: -6px;
-    border-right: 1px solid color-mix(in srgb, var(--color-action) 16%, var(--color-border));
-    border-bottom: 1px solid color-mix(in srgb, var(--color-action) 16%, var(--color-border));
+    inset-inline-end: -6px;
+    border-inline-end: 1px solid color-mix(in srgb, var(--color-action) 16%, var(--color-border));
+    border-block-end: 1px solid color-mix(in srgb, var(--color-action) 16%, var(--color-border));
 }
 
 .rd-message-bubble--peer::before {
-    left: -6px;
-    border-left: 1px solid var(--color-border);
-    border-top: 1px solid var(--color-border);
+    inset-inline-start: -6px;
+    border-inline-start: 1px solid var(--color-border);
+    border-block-start: 1px solid var(--color-border);
 }
 
