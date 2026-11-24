@@ -54,7 +54,7 @@
 - [x] Messaging: preserve its intentional split-pane/immersive behavior; normalize composer controls, message actions, attachment surfaces and status feedback without constraining the conversation canvas.
 
 ### Phase 5 — cleanup and enforcement
-- [ ] Audit remaining raw buttons and form controls; migrate to shared primitives when semantics match.
+- [x] Audit application route files for raw buttons and native form controls; all route actions/forms use shared primitives or intentional semantic links. Remaining work is styling and semantic review of specialized links/controls.
 - [x] Normalize structural dividers and shared surface/control radii; one-way token aliases and derived state surfaces now resolve from canonical `--rd-*` values.
 - [ ] Remove obsolete token aliases only after a repository-wide usage check proves they are unused.
 - [x] Add/update static regression assertions for container modes, semantic class merging, button radius, theme-aware aliases, workspace bleed alignment and skeleton composition.
