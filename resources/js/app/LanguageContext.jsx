@@ -133,7 +133,7 @@ const english = {
     "هنرمندان می‌توانند حساب بسازند، پروفایل خود را تکمیل کنند و آثارشان را برای بررسی ارسال کنند.": "Artists can create an account, complete their profile, and submit artworks for review.",
     "اثر": "artwork",
     "باز کردن منوی حساب کاربری": "Open account menu",
-    "ساخت حساب کاربری": "Create account",
+    "ساخت حساب کاربری": "Create an account",
     "پاسخ": "Reply",
     "RAD ART / WORKSPACE": "RAD ART / WORKSPACE",
     "اعلان‌ها،": "Notifications,",
@@ -146,7 +146,22 @@ const english = {
     "آثار تأییدشده": "Approved artworks",
     "هنرمندان مستقل": "Independent artists",
     "درباره راد آرت": "About Rad Art",
-    "ناوبری فضای کاربری": "Workspace navigation"
+    "ناوبری فضای کاربری": "Workspace navigation",
+    "در حال بررسی حساب کاربری…": "Checking your account…",
+    "وضعیت حساب دریافت نشد. صفحه را دوباره بارگذاری کنید.": "Could not retrieve account status. Reload the page.",
+    "بازگشت به راد آرت": "Back to Rad Art",
+    "ورود به حساب": "Sign in to your account",
+    "نوع حساب": "Account type",
+    "نام و نام خانوادگی": "Full name",
+    "ایمیل": "Email",
+    "گذرواژه": "Password",
+    "تکرار گذرواژه": "Confirm password",
+    "لطفاً صبر کنید…": "Please wait…",
+    "ایجاد حساب": "Create account",
+    "ثبت‌نام عمومی فقط برای خریدار و هنرمند فعال است. حساب مدیر باید از سمت سرور ایجاد شود.": "Public registration is available for buyers and artists only. Administrator accounts must be created by the server.",
+    "لطفاً اطلاعات ورود را بررسی کنید.": "Please check your sign-in details.",
+    "تعداد تلاش‌ها زیاد است. کمی بعد دوباره امتحان کنید.": "Too many attempts. Please try again later.",
+    "ورود یا ثبت‌نام انجام نشد. اتصال را بررسی و دوباره تلاش کنید.": "Sign-in or registration failed. Check your connection and try again."
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 
