@@ -102,7 +102,7 @@ The application uses a layered component model. Page files compose user journeys
 
 ### Section rhythm
 
-- Separate major page sections with generous, consistent vertical breathing room. The shared `Section` and section-level `Container` primitives use `py-16 sm:py-24` as the baseline; full-bleed backgrounds remain independent from the inner content width.
+- Separate major page sections with generous, consistent vertical breathing room. The `Section` primitive owns major-section spacing (`py-16 sm:py-24`). `Container` owns width and gutters only; it never adds implicit vertical padding. Workspace shells provide the page gutter, so nested workspace containers remain padding-free.
 - Keep spacing inside cards and between related controls tighter than spacing between major sections. Do not compensate for section rhythm with extra borders or decorative separators.
 
 ### Card and surface contract
@@ -143,7 +143,7 @@ The public route-level `<main>` and workspace `.rd-page-frame` are content canva
 
 The current overhaul uses an art-journal/editorial direction rather than a generic SaaS dashboard. Apply these rules consistently across public pages, artist/buyer workspaces, administration, messaging, loading states and overlays:
 
-- **Artwork is the primary visual content.** Give images generous space, preserve their full composition with `object-contain` where the work itself is the subject, and use cropping only when the image's role is editorial/ambient. Never distort artwork to fill a frame.
+- **Artwork is the primary visual content.** Give images generous space, use a consistent 3:4 portrait frame throughout discovery, detail, studio and administration views. Keep a passepartout around the media and use `object-cover` inside that frame; never distort the source image.
 - **Use typography and composition for hierarchy.** Prefer strong page titles, concise eyebrow labels, generous vertical rhythm, clear metadata groupings and deliberate asymmetry over piles of cards.
 - **Reduce unnecessary containers.** Use open layouts, dividers, tonal sections and border-led groupings. Reserve filled/raised surfaces for a real interaction or information grouping; do not wrap every item in a card.
 - **Keep geometry consistent.** All elements, controls, media frames, cards, overlays and decorative shapes use zero corner radius. Express hierarchy through spacing, border tint, surface and typography—not rounded silhouettes.
