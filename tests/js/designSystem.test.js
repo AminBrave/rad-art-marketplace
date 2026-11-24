@@ -197,7 +197,8 @@ test('public and role-based workspaces use shared semantic shell utilities', () 
     assert.doesNotMatch(layouts, /ra-[a-z]/);
 });
 
-test('navigation and dialog primitives use Tailwind state and focus utilities', () => {    assert.ok(navigation.includes('data-[state=active]:border-terracotta'));
+test('navigation and dialog primitives use Tailwind state and focus utilities', () => {
+    assert.ok(navigation.includes('data-[state=active]:border-terracotta'));
     assert.ok(navigation.includes('data-[disabled]:pointer-events-none'));
     assert.ok(navigation.includes('focus-visible:ring-2'));
     assert.ok(navigation.includes('aria-current="page"'));
@@ -397,7 +398,8 @@ test('messaging chat geometry follows RTL logical flow and uses Radix collision-
     assert.ok(messageTimeline.includes('min-w-0 flex-wrap items-center justify-end gap-1.5'));
     assert.ok(messageTimeline.includes('overflow-x-hidden overflow-y-auto'));
     assert.ok(messagingInbox.includes('absolute end-1 top-1/2 -translate-y-1/2'));
-    assert.ok(messageComposer.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));    assert.ok(messageComposer.includes('ps-10 pe-3 py-[.4rem]'));
+    assert.ok(messageComposer.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
+    assert.ok(messageComposer.includes('ps-10 pe-3 py-[.4rem]'));
     assert.doesNotMatch(messaging, /getChatPopoverPosition|toggleChatPopover|createPortal|data-chat-popover-boundary/);
 });
 
@@ -597,3 +599,100 @@ test('loading skeletons mirror the main structures of the major project surfaces
     for (const component of [
         'ArtworkStudioListSkeleton',
         'ConversationInboxSkeleton',
+        'MessageHistorySkeleton',
+        'AdminRecordListSkeleton',
+        'AdminUserCardsSkeleton',
+        'ArtworkModerationSkeleton',
+        'MessageReportsSkeleton',
+        'DashboardMetricSkeleton',
+        'ArtistRecentWorkSkeleton',
+        'WorkspaceIdentitySkeleton',
+        'CollectionCardSkeleton',
+        'CollectionDetailSkeleton',
+        'AdminEditorialSkeleton',
+        'NotificationListSkeleton',
+        'HomePageSkeleton',
+    ]) assert.ok(skeletons.includes('export function ' + component), 'Missing skeleton: ' + component);
+    assert.ok(artworkStudio.includes('<ArtworkStudioListSkeleton count={3} />'));
+    assert.ok(adminWorkspace.includes('<ArtworkModerationSkeleton count={4} />'));
+    assert.ok(adminWorkspace.includes('<AdminUserCardsSkeleton count={4} />'));
+    assert.ok(adminWorkspace.includes('<MessageReportsSkeleton count={3} />'));
+    assert.ok(messagingInbox.includes('<ConversationInboxSkeleton count={6} />'));
+    assert.ok(messageTimeline.includes('<MessageHistorySkeleton count={5}'));
+    assert.ok(skeletons.includes('aspect-[4/3]'));
+    assert.ok(skeletons.includes('aspect-[4/5]'));
+    assert.ok(skeletons.includes('aria-label="در حال آماده‌سازی صفحه اصلی"'));
+    assert.ok(skeletons.includes('sm:min-h-64'));
+});
+
+
+test('artwork-origin messages persist and render a reply-style artwork reference for both participants', () => {
+    assert.ok(messaging.includes('artwork_id: pendingArtwork?.id ?? null'));
+    assert.ok(messageTimeline.includes('message.artwork &&'));
+    assert.ok(messageTimeline.includes("to={'/artworks/' + message.artwork.slug}"));
+    assert.ok(messaging.includes('setPendingArtwork(artwork)'));
+    assert.ok(messageComposer.includes('پاسخ درباره این اثر'), 'The extracted composer renders the selected artwork reply context.');
+    assert.ok(messageTimeline.includes('اثر مورد گفتگو'));
+    assert.ok(relatedArtworkStrip.includes("aria-label={'ارسال پیام درباره ' + artwork.title}"), 'The related-artwork strip owns the buyer artwork-selection control.');
+    assert.ok(conversationApi.includes("Schema::hasColumn('messages', 'artwork_id')"));
+    assert.ok(conversationApi.includes("'artwork_id' => $supportsArtworkReferences"));
+    assert.ok(conversationApi.includes("$message->relationLoaded('artwork')"));
+    assert.ok(conversationApi.includes("'image_url' => '/api/v1/artworks/'.$artwork->slug.'/image'"));
+    assert.ok(conversationApi.includes("$artwork->artistProfile?->user_id"));
+    assert.ok(messageModel.includes("'artwork_id'"));
+    assert.ok(messageModel.includes('function artwork(): BelongsTo'));
+});
+
+test('Radix checkbox form bridge cannot expand a page to the full available row width', () => {
+    const checkboxStart = primitives.indexOf('export function Checkbox({');
+    const checkboxEnd = primitives.indexOf('\n}\n\nexport function SearchField', checkboxStart);
+    const checkbox = primitives.slice(checkboxStart, checkboxEnd);
+    assert.ok(checkboxStart >= 0 && checkboxEnd > checkboxStart);
+    assert.ok(checkbox.includes('group inline-flex w-fit min-w-0 max-w-full min-h-11'), 'Labeled checkboxes must size to their content and remain shrinkable.');
+    assert.doesNotMatch(checkbox, /group inline-flex min-h-11 items-center/);
+});
+
+test('messaging composer height is driven by its send control and compact padding', () => {
+    assert.ok(messageComposer.includes('relative flex min-w-0 items-center gap-1.5 rounded-sm border border-border-strong bg-surface'));
+    assert.ok(messageComposer.includes('min-h-[2.35rem] max-sm:min-h-9 w-full resize-none'));
+    assert.doesNotMatch(messageComposer, /relative flex min-h-\[3\.1rem\] items-end/);
+});
+
+
+test('production forms and actions reuse the shared UI component contract', () => {
+    assert.ok(primitives.includes('export const TextInput = forwardRef'));
+    assert.ok(primitives.includes('export const TextareaField = forwardRef'));
+    assert.ok(primitives.includes('export const FileInput = forwardRef'));
+    assert.ok(primitives.includes("'aria-invalid': error ? true"));
+    assert.ok(uiIndex.includes('TextInput, TextareaField, FileInput, SelectField, Checkbox'));
+
+    for (const [name, source] of [
+        ['artist profile', routeLoading],
+        ['artwork studio', artworkStudio],
+        ['authentication', authPage],
+        ['admin console', adminWorkspace],
+        ['editorial tools', editorialPages],
+        ['messaging composer', messageComposer],
+        ['messaging inbox', messagingInbox],
+        ['artwork engagement', readFileSync(new URL('../../resources/js/app/ArtworkEngagement.jsx', import.meta.url), 'utf8')],
+        ['public artwork gallery', artworkGallery],
+        ['artwork catalogue', artworkCatalogue],
+        ['artist profile page', artistProfile],
+        ['artwork detail', artworkDetail],
+        ['workspace layouts', layouts],
+        ['shared navigation primitives', navigation],
+        ['feedback components', feedback],
+        ['message timeline', messageTimeline],
+        ['conversation header', conversationHeader],
+        ['related artwork strip', relatedArtworkStrip],
+        ['messaging status banners', messagingStatusBanners],
+        ['development specimen', legacyApp],
+    ]) {
+        assert.doesNotMatch(source, /<(?:input|textarea|select|button)\b/, `${name} should use shared controls and action primitives`);
+    }
+
+    assert.ok(routeLoading.includes('<FormField label="نام نمایشی"'));
+    assert.ok(artworkStudio.includes('<TextInput name="title"'));
+    assert.ok(messageComposer.includes('<FileInput'));
+    assert.match(messageComposer, /<Button\b(?=[^>]*\btype="submit")(?=[^>]*\bvariant="ghost")[^>]*>/);
+});
