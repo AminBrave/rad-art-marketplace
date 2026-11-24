@@ -47,9 +47,9 @@
 - [ ] Remove route-local max-width/gutter wrappers where they duplicate Container; move full-bleed backgrounds to outer sections.
 
 ### Phase 4 — workspace route migration
-- [ ] `Layouts.jsx`: workspace grid and shell allow section-owned full-bleed backgrounds while preserving navigation rails.
-- [ ] `BuyerWorkspace.jsx`, `ArtistWorkspaceOverview.jsx`, artist workspace pages.
-- [ ] `AdminWorkspace.jsx` and admin feature pages.
+- [x] `Layouts.jsx`: remove normal workspace shell gutters so route containers own them; add viewport bleed alignment around the desktop navigation rail.
+- [x] `BuyerWorkspace.jsx`, `ArtistWorkspaceOverview.jsx`, `ArtworkStudio.jsx`, and `ArtistProfileSettings`: use section content containers; WorkspaceHero is full-bleed with aligned inner content.
+- [x] `AdminWorkspace.jsx` and `EditorialPages.jsx` admin editorial tools: use shared containers.
 - [ ] Messaging: preserve its intentional split-pane/immersive behavior; normalize shared controls without constraining the conversation canvas.
 
 ### Phase 5 — cleanup and enforcement
