@@ -243,7 +243,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                 <>
                     {isWorkspace && <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2].map((item) => <Skeleton key={item} className="h-28 w-full rounded-md" />)}</div>}
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                        {[0, 1, 2, 3, 4, 5].map((item) => <div key={item} className="overflow-hidden border border-border bg-paper"><Skeleton className="aspect-[4/3] w-full rounded-none" /><div className="grid gap-3 p-4"><Skeleton className="h-3 w-20 rounded-sm" /><Skeleton className="h-5 w-4/5 rounded-sm" /><Skeleton className="h-4 w-2/5 rounded-sm" /></div></div>)}
+                        {[0, 1, 2, 3, 4, 5].map((item) => <div key={item} className="overflow-hidden border border-border bg-paper"><Skeleton className="aspect-[3/4] w-full rounded-none" /><div className="grid gap-3 p-4"><Skeleton className="h-3 w-20 rounded-sm" /><Skeleton className="h-5 w-4/5 rounded-sm" /><Skeleton className="h-4 w-2/5 rounded-sm" /></div></div>)}
                     </div>
                 </>
             )}
