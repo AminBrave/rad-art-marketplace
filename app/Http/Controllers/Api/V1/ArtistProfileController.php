@@ -151,6 +151,7 @@ class ArtistProfileController extends Controller
             'id' => $profile->id,
             'slug' => $profile->slug,
             'display_name' => $profile->display_name,
+            'display_name_en' => $profile->display_name_en,
             'bio' => $profile->bio,
             'bio_en' => $profile->bio_en,
             'city' => $profile->city,
