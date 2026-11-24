@@ -165,8 +165,8 @@ All shared components are exported through `resources/js/components/ui/index.js`
 | `Box` | Minimal semantic wrapper with ref forwarding. |
 | `Flex` | Flex layout with direction, alignment, justification, wrap and gap. |
 | `Grid` | Grid layout with configured column count and gap. |
-| `Container` | Wide, reading or full-width centered container. |
-| `Section` | Semantic section wrapper. |
+| `Container` | Canonical wide, reading or full-width content wrapper; the only implementation of section content widths. |
+| `Section` | Semantic section wrapper; `bleed` opts into a viewport-width background/content region when nested in a constrained shell. |
 | `Inset` | Logical or physical padding helper. |
 | `Heading`, `Text`, `Strong`, `Em` | Semantic typography helpers. |
 | `Code`, `Quote`, `Blockquote` | Inline/block quotation and code treatments. |
