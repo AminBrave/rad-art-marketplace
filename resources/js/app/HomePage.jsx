@@ -87,7 +87,7 @@ export default function HomePage() {
 
     return (
         <div className="w-full min-w-0 overflow-hidden" dir="rtl">
-            <section aria-labelledby="home-hero-title" className="relative isolate border-b border-[color:var(--rd-hero-line)] bg-[radial-gradient(ellipse_at_82%_12%,var(--rd-hero-glow),transparent_36%),linear-gradient(125deg,var(--rd-hero-background),var(--rd-hero-background-alt))]">
+            <section aria-labelledby="home-hero-title" className="relative isolate border-b border-[color:var(--rd-hero-line)] rd-hero-surface">
                 <Container className="pb-16 pt-10 sm:pb-20 sm:pt-16 lg:pb-24 lg:pt-20">
                     <div className="mb-8 flex items-center justify-between border-y border-[color:var(--rd-hero-line)] py-3.5 text-[10px] font-extrabold tracking-[.18em] text-[color:var(--rd-hero-muted)] sm:text-xs">
                         <span>گالری هنر مستقل معاصر</span>
@@ -239,7 +239,7 @@ export default function HomePage() {
                 {spotlight && (
                     <Card
                         as="article"
-                        className="rd-hero-panel mt-8 grid min-w-0 overflow-hidden border border-[color:var(--rd-hero-line)] sm:grid-cols-[minmax(0,1fr)_15rem]"
+                        className="rd-hero-surface mt-8 grid min-w-0 overflow-hidden border border-[color:var(--rd-hero-line)] sm:grid-cols-[minmax(0,1fr)_15rem]"
                         dir="rtl"
                     >
                         <div className="flex min-w-0 flex-col justify-center p-6 sm:p-8 lg:p-10">
@@ -309,7 +309,7 @@ export default function HomePage() {
                 </section>
             )}
 
-            <section className="rd-hero-panel border-y border-[color:var(--rd-hero-line)]">
+            <section className="rd-hero-surface border-y border-[color:var(--rd-hero-line)]">
                 <Container className="grid gap-8 py-16 sm:py-24 md:grid-cols-[1fr_auto] md:items-center">
                     <div>
                         <p className="text-[10px] font-extrabold tracking-[.16em] text-[color:var(--rd-hero-accent)]">BECOME PART OF THE STORY</p>
