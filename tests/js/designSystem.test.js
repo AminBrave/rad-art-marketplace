@@ -56,7 +56,7 @@ const publicInfoPages = readFileSync(new URL('../../resources/js/app/PublicInfoP
 const designSystem = readFileSync(new URL('../../AI/DESIGN-SYSTEM.md', import.meta.url), 'utf8');
 
 test('hero headers omit decorative squares and accent pseudo-elements', () => {
-    assert.doesNotMatch(primitives, /rd-hero-decoration|before:bg-\\[color:var\\(--rd-hero-accent\\)\\]/);
+    assert.doesNotMatch(primitives, /rd-hero-decoration|before:bg-\[color:var\(--rd-hero-accent\)\]/);
 });
 
 test('workspace full-bleed content mirrors its horizontal offset in RTL', () => {
