@@ -27,7 +27,7 @@ export const Container = forwardRef(function Container({ as: Element = 'div', wi
     // Each section owns its own content width and gutters. "full" is
     // intentionally edge-to-edge for sections with viewport-wide backgrounds.
     const widths = {
-        reading: 'mx-auto w-full max-w-[var(--content-reading-width)] px-page-gutter',
+        reading: 'mx-auto w-full max-w-content-reading px-page-gutter',
         wide: 'mx-auto w-full max-w-content px-page-gutter',
         full: 'w-full max-w-none',
     };
