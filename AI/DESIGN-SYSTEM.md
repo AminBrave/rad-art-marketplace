@@ -99,10 +99,10 @@ Before adding or changing a control, search the shared UI barrel and reuse the c
 
 ## Section-owned content width and full-bleed composition
 
-The route-level `<main>` is a full-width canvas. It must not own the content maximum width, centering margin or horizontal page gutters. Each section owns its own background and content width.
+The public route-level `<main>` and workspace `.rd-page-frame` are content canvases, not content-width containers. The workspace shell may place a navigation rail beside the main column; `Section bleed` expands a section background to the viewport and keeps its inner container aligned with that column. Each section owns its own background and content width.
 
 - Use the canonical `Container` from `resources/js/components/ui/layout.jsx`; `PageContainer` is a compatibility alias for existing imports only.
-- Use `Section bleed` for full-viewport backgrounds when a section is nested in a constrained workspace column; its inner `Container` keeps content aligned to the workspace grid.
+- Use `Section bleed` for full-viewport backgrounds when a section is nested in a workspace column; its inner wide/reading `Container` is offset to align with the workspace content grid.
 - `width="wide"` provides the standard centered content measure and page gutters.
 - `width="reading"` provides the long-form reading measure and the same page gutters.
 - `width="full"` provides edge-to-edge content without a max-width or automatic gutters.
