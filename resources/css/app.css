@@ -331,7 +331,7 @@
 .rd-page-frame {
     width: min(calc(100% - 2 * var(--page-gutter)), var(--content-width));
     min-width: 0;
-    margin-inline: auto;
+    margin: 0;
 }
 
 .rd-page-frame--workspace {
