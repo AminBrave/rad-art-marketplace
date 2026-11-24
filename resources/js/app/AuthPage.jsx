@@ -73,7 +73,7 @@ export default function AuthPage({ initialMode = 'login' }) {
                         <FormField label={t("نوع حساب")}><SelectField name="role" value={form.role} onChange={update}><option value="buyer">{t("خریدار")}</option><option value="artist">{t("هنرمند")}</option></SelectField></FormField>
                         <FormField label={t("نام و نام خانوادگی")} required error={errors.name?.join(' ')}><TextInput name="name" value={form.name} onChange={update} required maxLength="120" autoComplete="name" /></FormField>
                     </>}
-                    <FormField label={t("ایمیل")} required error={errors.email?.join(' ')}><TextInput type="email" name="email" value={form.email} onChange={update} required autoComplete="email" dir="ltr" className="text-end" /></FormField>
+                    <FormField label={t("ایمیل")} required error={errors.email?.join(' ')}><TextInput type="email" name="email" value={form.email} onChange={update} required autoComplete="email" dir="ltr" className="text-start" /></FormField>
                     <FormField label={t("گذرواژه")} required error={errors.password?.join(' ')}><TextInput type="password" name="password" value={form.password} onChange={update} required minLength="10" autoComplete={mode === 'register' ? 'new-password' : 'current-password'} dir="ltr" className="text-end" /></FormField>
                     {mode === 'register' && <FormField label={t("تکرار گذرواژه")} required><TextInput type="password" name="password_confirmation" value={form.password_confirmation} onChange={update} required minLength="10" autoComplete="new-password" dir="ltr" className="text-end" /></FormField>}
                     {errors.form?.map((item) => <p key={item} role="alert" className="text-sm text-danger">{item}</p>)}
