@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from './LanguageContext';
+import { localizedValue } from '../utils/localizedContent';
 import { ArtistCard, ArtistCardSkeleton, EmptyState, ErrorState, SearchField, SectionHeader, Button, Section, Container } from '../components/ui';
 
 export default function ArtistDirectoryPage() {
