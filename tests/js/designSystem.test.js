@@ -85,8 +85,18 @@ test('homepage discovery groups and artist spotlight use reusable card structure
     assert.ok(homePage.includes('grid-cols-[3rem_minmax(0,1fr)]'));
     assert.ok(homePage.includes('bg-surface-muted py-16 sm:py-24'));
     assert.ok(homePage.includes('ARTIST SPOTLIGHT / هنرمند منتخب'));
-    assert.ok(homePage.includes('border-ink bg-ink text-inverse'));
+    assert.ok(homePage.includes('rd-hero-surface') && homePage.includes('border border-[color:var(--rd-hero-line)]'));
     assert.ok(homePage.includes('<Card'));
+});
+
+test('editorial hero surfaces define readable light and dark semantic palettes', () => {
+    assert.ok(css.includes('--rd-hero-background: #EAE4D9;'));
+    assert.ok(css.includes('--rd-hero-background: #20211D;'));
+    assert.ok(css.includes(':root[data-theme=\'dark\']'));
+    assert.ok(css.includes('@media (prefers-color-scheme: dark)'));
+    assert.ok(css.includes('.rd-hero-surface'));
+    assert.ok(homePage.includes('text-[color:var(--rd-hero-foreground)]'));
+    assert.ok(publicPages[1].includes('text-[color:var(--rd-hero-foreground)]'));
 });
 
 test('buttons enforce square geometry and shared alignment', () => {
@@ -231,7 +241,7 @@ test('route canvases stay full-width and route content uses shared section conta
 test('public catalogue, artist directory and artwork detail use shared page layout primitives', () => {
     assert.ok(publicPages[0].includes('Container') && publicPages[0].includes('PageHeader'));
     assert.ok(publicPages[1].includes('Container') && publicPages[1].includes('SectionHeader'));
-    assert.ok(publicPages[1].includes('<Section bleed'), 'Artist directory hero background must be full-bleed.');
+    assert.ok(publicPages[1].includes('<Section bleed') && publicPages[1].includes('rd-hero-surface'), 'Artist directory hero uses the shared adaptive full-bleed surface.');
     assert.ok(publicPages[2].includes('Container') && publicPages[2].includes('width=\"wide\"'));
     assert.ok(buyerWorkspace.includes('WorkspaceHero') && buyerWorkspace.includes('<SectionHeader'));
     assert.ok(buyerWorkspace.includes('border-y border-border'), 'Buyer Studio uses editorial section boundaries instead of an unnecessary nested Surface.');
@@ -313,13 +323,14 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     const heroEnd = primitives.indexOf('\n}', heroStart);
     assert.ok(heroStart >= 0 && heroEnd > heroStart);
     const hero = primitives.slice(heroStart, heroEnd);
-    assert.ok(hero.includes('border-y border-divider-section bg-surface-muted'), 'The workspace hero uses a calm semantic surface rather than a heavy dark banner.');
+    assert.ok(hero.includes('rd-hero-surface'), 'The workspace hero uses the shared editorial surface.');
     assert.doesNotMatch(hero, /overflow-hidden|bg-ink|text-inverse/, 'The hero must not clip descendants or force inverse text colors.');
-    assert.ok(hero.includes('Container width={bleed ? "wide" : "full"}'), 'The hero delegates width and horizontal spacing to the shared Container.');
+    assert.ok(hero.includes('text-[color:var(--rd-hero-foreground)]') && hero.includes('text-[color:var(--rd-hero-muted)]'));
+    assert.ok(hero.includes('<Container width="wide"'), 'The hero delegates width and horizontal spacing to the shared Container.');
     assert.ok(layoutPrimitives.includes("wide: 'mx-auto w-full max-w-content px-page-gutter'"), 'The shared wide Container owns the responsive horizontal gutter.');
     assert.ok(hero.includes('max-md:items-stretch max-md:flex-col'), 'Hero actions and copy stack cleanly on smaller screens.');
     assert.ok(hero.includes('min-w-0 max-w-full flex-wrap'), 'Hero actions can shrink and wrap without widening the page.');
-    assert.ok(hero.includes('text-terracotta-strong'));
+    assert.ok(hero.includes('text-[color:var(--rd-hero-accent)]'));
     assert.ok(!artworkStudio.includes('className="border-0 pb-0 pt-0"'));
 });;
 
