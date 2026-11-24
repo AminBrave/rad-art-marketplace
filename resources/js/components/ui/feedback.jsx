@@ -28,7 +28,7 @@ export function SkeletonLines({ lines = 3, className = '' }) {
 
 export function EmptyState({ title, description, action, className = '' }) {
     return (
-        <section className={`grid justify-items-center gap-3  border border-dashed border-border bg-surface px-5 py-10 text-center ${className}`} dir="rtl">
+        <section className={`grid justify-items-center gap-3  border border-dashed border-border bg-surface px-5 py-10 text-center ${className}`}>
             <span aria-hidden="true" className="h-2 w-10  bg-sand" />
             <h2 className="text-base font-bold text-ink">{title}</h2>
             {description && <p className="max-w-lg text-sm leading-7 text-muted">{description}</p>}
@@ -39,7 +39,7 @@ export function EmptyState({ title, description, action, className = '' }) {
 
 export function ErrorState({ title = 'مشکلی پیش آمد', description, onRetry, retryLabel = 'تلاش دوباره', className = '' }) {
     return (
-        <section role="alert" className={`grid justify-items-start gap-3  border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-surface p-5 ${className}`} dir="rtl">
+        <section role="alert" className={`grid justify-items-start gap-3  border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-surface p-5 ${className}`}>
             <h2 className="font-bold text-danger">{title}</h2>
             {description && <p className="text-sm leading-7 text-muted">{description}</p>}
             {onRetry && <Button variant="outline" size="sm" onClick={onRetry}>{retryLabel}</Button>}
@@ -49,7 +49,7 @@ export function ErrorState({ title = 'مشکلی پیش آمد', description, on
 
 export function SuccessState({ title, description, className = '' }) {
     return (
-        <div role="status" className={` border border-border border-s-2 border-s-success bg-surface px-4 py-3 ${className}`} dir="rtl">
+        <div role="status" className={` border border-border border-s-2 border-s-success bg-surface px-4 py-3 ${className}`}>
             <p className="font-semibold text-olive">{title}</p>
             {description && <p className="mt-1 text-sm leading-6 text-muted">{description}</p>}
         </div>
@@ -58,7 +58,7 @@ export function SuccessState({ title, description, className = '' }) {
 
 export function PermissionState({ title = 'دسترسی مجاز نیست', description, className = '' }) {
     return (
-        <section role="status" className={` border border-border bg-surface-muted p-5 ${className}`} dir="rtl">
+        <section role="status" className={` border border-border bg-surface-muted p-5 ${className}`}>
             <h2 className="font-bold text-ink">{title}</h2>
             {description && <p className="mt-2 text-sm leading-7 text-muted">{description}</p>}
         </section>
@@ -75,7 +75,7 @@ export function UploadFeedback({ fileName, status = 'idle', progress = 0, messag
     };
 
     return (
-        <div className="grid gap-2  border border-border bg-paper p-3 text-sm" dir="rtl">
+        <div className="grid gap-2  border border-border bg-paper p-3 text-sm">
             <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="font-semibold text-ink">{fileName || 'فایل انتخاب‌شده'}</span>
                 <span className={status === 'error' ? 'text-danger' : status === 'success' ? 'text-olive' : 'text-muted'}>
@@ -121,7 +121,7 @@ export function Toast({ open, title, description, variant = 'info', onDismiss, d
                 open={isOpen}
                 onOpenChange={handleOpenChange}
                 type={variant === 'error' ? 'foreground' : 'background'}
-                dir="rtl"
+               
                 className={`flex w-full items-start justify-between gap-4  border-s-4 border-border bg-paper p-4 text-ink shadow-soft ${variants[variant] ?? variants.info}`}
             >
                 <div>
@@ -138,7 +138,7 @@ export function Toast({ open, title, description, variant = 'info', onDismiss, d
             </ToastPrimitive.Root>
             <ToastPrimitive.Viewport
                 label="اعلان‌ها"
-                dir="rtl"
+               
                 className="fixed top-4 start-4 z-[100] flex w-[min(24rem,calc(100vw-2rem))] flex-col gap-2 outline-none"
             />
         </ToastPrimitive.Provider>
@@ -189,7 +189,7 @@ export function MediaImage({
                     <span
                         role="note"
                         className="absolute inset-x-0 bottom-0 z-20 flex items-start gap-2 border-t border-danger bg-danger px-3 py-2 text-start text-[11px] font-medium leading-5 text-white shadow-lg"
-                        dir="rtl"
+                       
                     >
                         <AlertTriangle size={15} className="mt-0.5 shrink-0" aria-hidden="true" />
                         <span className="min-w-0">
