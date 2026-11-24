@@ -477,10 +477,3 @@ a {
     border-top: 1px solid var(--color-border);
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .rd-shine::after,
-    .rd-shine--decorative::after {
-        animation: none;
-        content: none;
-    }
-}
