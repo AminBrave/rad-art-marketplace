@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { useLanguage } from './LanguageContext';
+import { localizedValue } from '../utils/localizedContent';
 import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, SelectField, PageHeader, Button, Container, Section } from '../components/ui';
 
 const emptyFilters = { mediums: [], availability: [], sorts: [] };
@@ -132,7 +133,7 @@ export default function ArtworkCatalogue() {
                     <SearchField value={searchInput} onChange={(event) => setSearchInput(event.target.value)} onSearch={submitSearch} label={t("جست‌وجو در آثار و هنرمندان")} placeholder={t("عنوان، توضیحات، تکنیک یا نام هنرمند…")} />
                     <SelectField value={category} onChange={(event) => updateFilters({ category: event.target.value })} aria-label={t("فیلتر دسته‌بندی")}>
                         <option value="">{t("همه دسته‌ها")}</option>
-                        {categories.map((item) => <option key={item.id} value={item.slug}>{t(item.name)}</option>)}
+                        {categories.map((item) => <option key={item.id} value={item.slug}>{localizedValue(item, 'name', locale)}</option>)}
                     </SelectField>
                     <SelectField value={medium} onChange={(event) => updateFilters({ medium: event.target.value })} aria-label={t("فیلتر تکنیک و مواد")}>
                         <option value="">{t("همه تکنیک‌ها")}</option>
@@ -140,7 +141,7 @@ export default function ArtworkCatalogue() {
                     </SelectField>
                     <SelectField value={availability} onChange={(event) => updateFilters({ availability: event.target.value })} aria-label={t("فیلتر وضعیت اثر")}>
                         <option value="">{t("همه وضعیت‌ها")}</option>
-                        {(filters.availability ?? []).map((item) => <option key={item.value} value={item.value}>{t(item.label)}</option>)}
+                        {(filters.availability ?? []).map((item) => <option key={item.value} value={item.value}>{locale === 'en' ? (item.label_en || item.label) : item.label}</option>)}
                     </SelectField>
                     <SelectField value={sort} onChange={(event) => updateFilters({ sort: event.target.value })} aria-label={t("مرتب‌سازی آثار")}>
                         {(filters.sorts?.length ? filters.sorts : [{ value: 'newest', label: t('جدیدترین') }]).map((item) => <option key={item.value} value={item.value}>{t(item.label)}</option>)}
@@ -162,8 +163,8 @@ export default function ArtworkCatalogue() {
                     {search && <Button variant="outline" type="button" onClick={() => updateFilters({ q: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{search}<X size={12} aria-hidden="true" /></Button>}
                     {category && <Button variant="outline" type="button" onClick={() => updateFilters({ category: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{categories.find((item) => item.slug === category)?.name ?? category}<X size={12} aria-hidden="true" /></Button>}
                     {medium && <Button variant="outline" type="button" onClick={() => updateFilters({ medium: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{medium}<X size={12} aria-hidden="true" /></Button>}
-                    {availability && <Button variant="outline" type="button" onClick={() => updateFilters({ availability: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{filters.availability?.find((item) => item.value === availability)?.label ?? availability}<X size={12} aria-hidden="true" /></Button>}
-                    {sort !== 'newest' && <Button variant="outline" type="button" onClick={() => updateFilters({ sort: 'newest' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{filters.sorts?.find((item) => item.value === sort)?.label ?? sort}<X size={12} aria-hidden="true" /></Button>}
+                    {availability && <Button variant="outline" type="button" onClick={() => updateFilters({ availability: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{filters.availability?.find((item) => item.value === availability)?.[locale === 'en' ? 'label_en' : 'label'] ?? availability}<X size={12} aria-hidden="true" /></Button>}
+                    {sort !== 'newest' && <Button variant="outline" type="button" onClick={() => updateFilters({ sort: 'newest' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{filters.sorts?.find((item) => item.value === sort)?.[locale === 'en' ? 'label_en' : 'label'] ?? sort}<X size={12} aria-hidden="true" /></Button>}
                 </div>
             )}
             <div className="mt-9 flex flex-wrap items-end justify-between gap-3 border-b border-ink pb-4">
