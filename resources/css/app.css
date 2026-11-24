@@ -300,6 +300,9 @@
     }
 
     .rd-workspace-main .rd-bleed .rd-workspace-bleed-content {
+        width: calc(min(100vw, var(--rd-content-width)) - 17rem);
+        max-width: none;
+        margin-inline: auto;
         transform: translateX(calc(-1 * var(--rd-workspace-bleed-offset)));
     }
 }
