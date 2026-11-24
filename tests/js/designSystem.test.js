@@ -99,6 +99,9 @@ test('messaging avatars and artwork chips use square geometry, message tails, an
     assert.ok(css.includes('rd-shine-sequence 8s'));
     assert.ok(css.includes('calc(var(--rd-shine-index, 0) * 500ms)'));
     assert.ok(css.includes('rd-shine-hover 850ms'));
+    assert.ok(css.includes('.rd-shine::after {\n    content: "";\n    position: absolute;\n    z-index: 2;\n    inset: 0;'), 'The glass highlight must span the complete square surface, not a narrow detached strip.');
+    assert.ok(css.includes('background-size: 240% 100%'));
+    assert.ok(relatedArtworkStrip.includes("'--rd-shine-index': index"), 'Related artwork squares use a staggered shine sequence.');
     assert.ok(css.includes('prefers-reduced-motion: reduce'));
 });
 
