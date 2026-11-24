@@ -115,7 +115,7 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
 export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
     return (
         <Container width="wide" className="py-3 sm:py-4">
-            <header dir="rtl" className={cn('relative isolate flex min-w-0 items-center justify-between gap-8 border border-[color:var(--rd-hero-line)] bg-[radial-gradient(ellipse_at_88%_8%,var(--rd-hero-glow),transparent_38%),linear-gradient(125deg,var(--rd-hero-background),var(--rd-hero-background-alt))] px-6 py-8 text-[color:var(--rd-hero-foreground)] sm:px-9 sm:py-10 lg:px-12 lg:py-12 max-md:items-stretch max-md:flex-col max-md:gap-5', className)}>
+            <header dir="rtl" className={cn('relative isolate flex min-w-0 items-center justify-between gap-8 border border-[color:var(--rd-hero-line)] rd-hero-surface px-6 py-8 text-[color:var(--rd-hero-foreground)] sm:px-9 sm:py-10 lg:px-12 lg:py-12 max-md:items-stretch max-md:flex-col max-md:gap-5', className)}>
                 <span aria-hidden="true" className="pointer-events-none absolute end-6 top-6 hidden h-20 w-20 border border-[color:var(--rd-hero-line)] sm:block lg:end-10 lg:top-8 lg:h-28 lg:w-28" />
                 <span aria-hidden="true" className="pointer-events-none absolute end-12 top-12 hidden h-20 w-20 border-e border-t border-[color:var(--rd-hero-accent)]/60 sm:block lg:end-16 lg:top-14 lg:h-28 lg:w-28" />
                 <div className="relative z-10 min-w-0 max-w-[46rem]">
