@@ -697,6 +697,8 @@ const english = {
     "ثبت اثر برای بررسی": "Submit artwork for review",
     "وضعیت این اثر از سوی سرور تعیین شده است.": "This artwork’s status is determined by the server.",
     "آمار آثار دریافت نشد.": "Could not load artwork statistics.",
+    "ثبت اثر جدید": "Add new artwork",
+    "گزینه‌های گفتگو": "Conversation options",
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 
