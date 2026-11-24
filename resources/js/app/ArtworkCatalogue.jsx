@@ -112,7 +112,7 @@ export default function ArtworkCatalogue() {
     }, [artworksQuery.hasNextPage, artworksQuery.fetchNextPage, loadingMore, error]);
 
     return (
-        <div className="w-full min-w-0 min-h-[65vh] py-10 lg:py-14" dir="rtl">
+        <div className="w-full min-w-0 min-h-[65vh] py-10 lg:py-14">
             <Container width="wide">
                 <PageHeader eyebrow="آرشیو عمومی راد آرت" title="گالری آثار" description="در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید." />
             </Container>
