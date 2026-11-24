@@ -9,7 +9,7 @@
 1. CSS custom properties in `resources/css/app.css` are the canonical design-token source.
 2. Tailwind maps utilities to those semantic tokens; it does not introduce a competing palette or scale.
 3. Shared React components own reusable visual and interaction patterns.
-4. Route-level `<main>` elements remain full-width canvases.
+4. Public `<main>` and workspace `.rd-page-frame` remain unconstrained by content widths/gutters; workspace main columns sit beside the navigation rail and full-bleed sections compensate for that offset.
 5. Each section owns its background and uses the shared `Container` for its content measure:
    - `wide`: standard content width and page gutters.
    - `reading`: long-form measure and page gutters.
@@ -36,12 +36,13 @@
 - [x] `feedback.jsx`, `Dialog.jsx`, `AlertDialog.jsx`, `Tooltip.jsx`: normalize surface radii and structural borders.
 - [x] `skeletons.jsx` and `RoutingPages.jsx`: align public/workspace loading states with Container widths, full-bleed hero/filter sections and no nested main landmarks.
 - [x] `DesignFoundation.jsx`: render the specimen inside the canonical Container; `ComponentShowcase.jsx` already exercises shared variants.
+- [x] `App.jsx`: reduce the development-only legacy entry to the design-system specimen; production routing remains in `AppRouter.jsx`.
 - [ ] Remaining route-local controls and specialized navigation still need a repository-wide audit.
 
 ### Phase 3 — public route migration
 - [x] `HomePage.jsx`, `EditorialPages.jsx`, `PublicInfoPages.jsx`.
 - [x] `ArtworkCatalogue.jsx`, `ArtworkDetailPage.jsx` (shared section widths and full-bleed filter section).
-- [x] `ArtworkGallery.jsx`, `ArtworkStudio.jsx`.
+- [x] `ArtworkGallery.jsx`.
 - [x] `ArtistDirectoryPage.jsx`, `ArtistProfilePage.jsx`.
 - [x] `AuthPage.jsx` and `RoutingPages.jsx`.
 - [ ] Finish auditing remaining route-local max-width/gutter wrappers and migrate full-bleed backgrounds where still needed.
@@ -69,7 +70,7 @@
 
 ## Acceptance criteria
 
-- Main route canvases span available viewport width and do not own content gutters.
+- Public main and workspace content frames fill their shell's available width without owning content max-widths or gutters.
 - Full-bleed section backgrounds reach both viewport edges without horizontal overflow.
 - Wide and reading content align to consistent tokens across public and workspace routes.
 - A single implementation owns each shared component pattern.
