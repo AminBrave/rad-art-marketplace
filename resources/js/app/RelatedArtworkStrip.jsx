@@ -16,7 +16,7 @@ export default function RelatedArtworkStrip({ contexts, role, onSelectArtwork })
         <div className="flex w-full min-w-0 items-center gap-[.45rem] border-t border-border bg-surface-muted px-5 py-[.45rem] max-md:px-[.65rem] md:gap-[.55rem]">
             <span className="shrink-0 text-[11px] font-semibold text-muted">{t('آثار مرتبط:')}</span>
             <div className="flex min-w-0 flex-1 flex-row items-center gap-[.4rem] overflow-x-auto overflow-y-hidden px-[.05rem] py-[.1rem] [scrollbar-width:none] [overscroll-behavior-inline:contain]" role="list" aria-label={t("آثار مرتبط")}>
-                {artworks.map((artwork, index) => {
+                {artworks.map((artwork) => {
                     const chipContent = (
                         <>
                             <span className="relative inline-flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden bg-border text-muted">
