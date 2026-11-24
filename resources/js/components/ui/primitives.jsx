@@ -227,7 +227,6 @@ export function SelectField({
     name,
     required = false,
     disabled = false,
-   ,
     placeholder,
     ...triggerProps
 }) {
