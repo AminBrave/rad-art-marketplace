@@ -49,98 +49,90 @@ export default function ArtistWorkspaceOverview() {
     const progress = Math.round((completedProfileSteps / profileSteps.length) * 100);
 
     return (
-        <div className="w-full space-y-8" dir="rtl">
+        <div className="w-full space-y-7" dir="rtl">
             <WorkspaceHero
-                eyebrow="استودیوی هنرمند / نمای کلی"
+                eyebrow="استودیوی هنرمند"
                 title={<>خوش آمدید، {user?.name}</>}
-                description="اینجا نقطه شروع مدیریت حضور هنری شماست؛ پروفایل را کامل کنید، آثار را برای بررسی بفرستید و ارتباط‌ها را دنبال کنید."
-                actions={<Link to="/dashboard/artist/artworks" className="inline-flex min-h-11 items-center justify-center rounded-control border border-transparent bg-terracotta px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">ثبت یا مدیریت اثر</Link>}
+                description="وضعیت حضور هنری، آثار و ارتباط‌های خود را از این نمای کلی دنبال کنید."
+                actions={<Link to="/dashboard/artist/artworks" className="inline-flex min-h-11 items-center justify-center rounded-control bg-terracotta px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong">مدیریت آثار</Link>}
             />
 
-            <Container width="wide" className="space-y-8">
-            {profileError && <ErrorState title="پروفایل دریافت نشد" description={profileError} />}
-            {profileLoading ? <WorkspaceIdentitySkeleton /> : (
-                <section className="grid gap-8 border-y border-ink bg-transparent py-7 sm:py-9 lg:grid-cols-[minmax(0,1fr)_15rem] lg:items-center">
-                    <div>
-                        <div className="flex flex-wrap items-center gap-3">
-                            <p className="text-xs font-bold text-terracotta-strong">هویت هنری شما</p>
-                            <Badge variant={profile?.is_public ? 'success' : 'neutral'}>{profile?.is_public ? 'پروفایل عمومی' : 'پروفایل خصوصی'}</Badge>
+            <Container width="wide" className="space-y-7">
+                {profileError && <ErrorState title="پروفایل دریافت نشد" description={profileError} />}
+
+                <section aria-label="خلاصه وضعیت هنرمند" className="grid gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(16rem,.65fr)]">
+                    <article className="min-w-0 rounded-xl border border-border bg-paper p-5 shadow-soft sm:p-6">
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                                <p className="text-xs font-bold text-terracotta-strong">هویت هنری</p>
+                                <h2 className="mt-2 text-xl font-extrabold text-ink">{profileReady ? profile.display_name : 'پروفایل هنری شما هنوز کامل نیست'}</h2>
+                            </div>
+                            {!profileLoading && <Badge variant={profile?.is_public ? 'success' : 'neutral'}>{profile?.is_public ? 'نمایش عمومی' : 'نمایش خصوصی'}</Badge>}
                         </div>
-                        <h2 className="mt-2 text-xl font-black text-ink">{profileReady ? profile.display_name : 'پروفایل هنری خود را بسازید'}</h2>
-                        <p className="mt-2 max-w-2xl text-sm leading-7 text-muted">{profileReady ? (profile.is_public ? 'پروفایل شما برای بازدیدکنندگان قابل مشاهده است. آن را به‌روز نگه دارید تا مخاطبان با مسیر هنری شما آشنا شوند.' : 'پروفایل شما هنوز عمومی نیست. اطلاعات را تکمیل و وضعیت نمایش آن را بررسی کنید.') : 'با معرفی خود و افزودن اطلاعات حرفه‌ای، حضور عمومی‌تان در راد آرت را شکل دهید.'}</p>
-                        <div className="mt-5 flex flex-wrap gap-3">
-                            <Link to="/dashboard/artist/profile" className="inline-flex min-h-11 items-center bg-ink px-4 py-2.5 text-sm font-bold text-inverse transition-colors hover:bg-terracotta">{profileReady ? 'ویرایش پروفایل' : 'تکمیل پروفایل'}</Link>
-                            {profile?.slug && <Link to={'/artists/' + profile.slug} className="inline-flex min-h-11 items-center border border-border px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-terracotta">{profile.is_public ? 'پیش‌نمایش عمومی' : 'پیش‌نمایش خصوصی'}</Link>}
+                        <p className="mt-3 max-w-2xl text-sm leading-7 text-muted">
+                            {profileReady
+                                ? (profile.is_public ? 'پروفایل شما برای بازدیدکنندگان قابل مشاهده است. اطلاعات را به‌روز نگه دارید.' : 'پروفایل شما عمومی نیست؛ پیش از انتشار، اطلاعات و وضعیت نمایش را بررسی کنید.')
+                                : 'اطلاعات حرفه‌ای و معرفی هنری خود را تکمیل کنید تا مخاطبان بتوانند با مسیر هنری شما آشنا شوند.'}
+                        </p>
+                        <div className="mt-5 flex flex-wrap gap-2">
+                            <Link to="/dashboard/artist/profile" className="inline-flex min-h-10 items-center justify-center rounded-control bg-ink px-4 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta">{profileReady ? 'ویرایش پروفایل' : 'تکمیل پروفایل'}</Link>
+                            {profile?.slug && <Link to={'/artists/' + profile.slug} className="inline-flex min-h-10 items-center justify-center rounded-control border border-border-strong px-4 text-sm font-semibold text-ink no-underline hover:border-terracotta">{profile.is_public ? 'مشاهده پروفایل' : 'پیش‌نمایش خصوصی'}</Link>}
                         </div>
-                    </div>
-                    <div className="border-t border-ink pt-5 lg:border-r lg:border-t-0 lg:pr-7 lg:pt-0">
-                        <div className="flex items-end justify-between gap-3">
-                            <span className="text-xs font-semibold text-muted">تکمیل پروفایل</span>
-                            <span className="text-2xl font-black tabular-nums text-ink">{progress.toLocaleString('fa-IR')}٪</span>
+                    </article>
+
+                    <article className="rounded-xl border border-border bg-surface-muted p-5 sm:p-6">
+                        <div className="flex items-center justify-between gap-3">
+                            <h2 className="text-sm font-bold text-ink">تکمیل پروفایل</h2>
+                            {profileLoading ? <span className="text-xs text-muted">در حال بارگذاری…</span> : <strong className="text-2xl font-extrabold tabular-nums text-ink">{progress.toLocaleString('fa-IR')}٪</strong>}
                         </div>
-                        <div className="mt-3 h-1.5 overflow-hidden bg-surface-muted" role="progressbar" aria-label="تکمیل فیلدهای پروفایل" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
-                            <div className="h-full bg-terracotta transition-all" style={{ width: progress + '%' }} />
+                        <div className="mt-4 h-2 overflow-hidden rounded-full bg-border" role="progressbar" aria-label="تکمیل فیلدهای پروفایل" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
+                            <div className="h-full rounded-full bg-terracotta transition-all" style={{ width: progress + '%' }} />
                         </div>
-                        <p className="mt-3 text-xs leading-6 text-muted">{completedProfileSteps.toLocaleString('fa-IR')} از ۵ بخش تکمیل شده</p>
+                        <p className="mt-3 text-xs leading-6 text-muted">{completedProfileSteps.toLocaleString('fa-IR')} از ۵ بخش اصلی پروفایل تکمیل شده است.</p>
+                        <Link to="/dashboard/artist/profile" className="mt-4 inline-flex text-xs font-bold text-terracotta-strong underline underline-offset-4">مشاهده موارد تکمیل پروفایل</Link>
+                    </article>
+                </section>
+
+                <section aria-label="آمار آثار" className="grid gap-3 sm:grid-cols-3">
+                    {loading ? <DashboardMetricSkeleton count={3} /> : <>
+                        <DashboardMetricCard as={Link} label="مجموع آثار" value={formatCount(counts.artworks)} detail="تمام آثار ثبت‌شده در استودیوی شما" to="/dashboard/artist/artworks" eyebrow="پورتفولیو" />
+                        <DashboardMetricCard as={Link} label="منتشرشده" value={published.toLocaleString('fa-IR')} detail="آثار قابل مشاهده در گالری" to="/dashboard/artist/artworks" eyebrow="انتشار" />
+                        <DashboardMetricCard as={Link} label="در انتظار بررسی" value={pending.toLocaleString('fa-IR')} detail="آثاری که هنوز تصمیم نهایی نگرفته‌اند" to="/dashboard/artist/artworks" eyebrow="نیازمند پیگیری" />
+                    </>}
+                </section>
+
+                {errors.length > 0 && <ErrorState title="بخشی از اطلاعات بارگذاری نشد" description={errors.join(' ')} onRetry={() => artworksQuery.refetch()} />}
+
+                <section className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(17rem,.8fr)]">
+                    <article className="min-w-0 rounded-xl border border-border bg-paper p-5 shadow-soft sm:p-6">
+                        <SectionHeader eyebrow="پورتفولیو" title="آخرین آثار" actions={<Link to="/dashboard/artist/artworks" className="text-xs font-bold text-terracotta-strong underline underline-offset-4">همه آثار</Link>} />
+                        {loading ? <div className="mt-5"><ArtistRecentWorkSkeleton /></div> : artworks.length === 0 ? (
+                            <EmptyState className="mt-4" title="هنوز اثری ثبت نشده" description="اولین اثر خود را ثبت کنید تا برای بررسی ارسال شود." action={<Link to="/dashboard/artist/artworks" className="text-sm font-bold text-terracotta-strong underline">ثبت اولین اثر</Link>} />
+                        ) : (
+                            <ul className="mt-3 divide-y divide-border">
+                                {artworks.slice(0, 4).map((item) => <li key={item.id} className="flex min-h-[4.5rem] items-center justify-between gap-3 py-3">
+                                    <div className="min-w-0"><p className="truncate text-sm font-bold text-ink">{item.title}</p>{item.category?.name && <p className="mt-1 text-xs text-muted">{item.category.name}</p>}</div>
+                                    <StatusLabel status={item.status} />
+                                </li>)}
+                            </ul>
+                        )}
+                    </article>
+
+                    <div className="grid content-start gap-4">
+                        <article className="rounded-xl border border-border bg-paper p-5 shadow-soft">
+                            <SectionHeader eyebrow="ارتباط" title="پیام‌های مستقیم" />
+                            <p className="mt-3 text-sm leading-7 text-muted">گفت‌وگوهای خود با خریداران را از صندوق پیام‌ها پیگیری کنید.</p>
+                            <Link to="/dashboard/artist/messages" className="mt-4 inline-flex min-h-10 items-center text-sm font-bold text-terracotta-strong underline underline-offset-4">بازکردن صندوق پیام‌ها</Link>
+                        </article>
+                        <article className="rounded-xl border border-border bg-paper p-5 shadow-soft">
+                            <SectionHeader eyebrow="مدیریت حساب" title="دسترسی‌های سریع" />
+                            <div className="mt-3 grid gap-2">
+                                <Link to="/dashboard/artist/profile" className="flex min-h-11 items-center justify-between rounded-control bg-surface-muted px-3 text-sm font-semibold text-ink no-underline hover:bg-accent-surface">پروفایل هنرمند <span aria-hidden="true">←</span></Link>
+                                <Link to="/dashboard/artist/settings" className="flex min-h-11 items-center justify-between rounded-control bg-surface-muted px-3 text-sm font-semibold text-ink no-underline hover:bg-accent-surface">تنظیمات <span aria-hidden="true">←</span></Link>
+                            </div>
+                        </article>
                     </div>
                 </section>
-            )}
-
-            {!profileLoading && (
-                <section aria-labelledby="artist-setup-heading" className="border-t border-border bg-transparent pt-6 sm:pt-7">
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div className="min-w-0 flex-1">
-                            <SectionHeader id="artist-setup-heading" eyebrow="چک‌لیست شروع" title="پایه‌های حضور حرفه‌ای" description="این موارد به کامل‌تر شدن پروفایل عمومی شما کمک می‌کنند؛ رتبه یا امتیاز هنری نیستند." />
-                        </div>
-                        <span className="text-xs font-bold text-muted">{(completedProfileSteps + (hasArtwork ? 1 : 0)).toLocaleString('fa-IR')} از ۶ گام</span>
-                    </div>
-                    <ol className="mt-6 grid gap-x-6 gap-y-4 sm:grid-cols-2 xl:grid-cols-3">
-                        {profileSteps.map((step) => <li key={step.label} className="flex min-h-12 items-center gap-3 border-b border-border py-3 text-sm">
-                            <span aria-hidden="true" className={step.done ? 'text-success' : 'text-muted'}>{step.done ? '✓' : '○'}</span>
-                            <span className={step.done ? 'text-muted line-through' : 'font-semibold text-ink'}>{step.label}</span>
-                        </li>)}
-                        <li className="flex min-h-12 items-center gap-3 border-b border-border py-3 text-sm">
-                            <span aria-hidden="true" className={hasArtwork ? 'text-success' : 'text-muted'}>{hasArtwork ? '✓' : '○'}</span>
-                            <span className={hasArtwork ? 'text-muted line-through' : 'font-semibold text-ink'}>ثبت اولین اثر برای بررسی</span>
-                        </li>
-                    </ol>
-                </section>
-            )}
-
-            {!profileLoading && profileReady && (
-                <>
-                    <section aria-label="آمار فضای هنرمند" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                        {loading ? <DashboardMetricSkeleton count={4} /> : <>
-                            <DashboardMetricCard as={Link} label="مجموع آثار" value={formatCount(counts.artworks)} detail="تمام آثار ثبت‌شده در استودیوی شما" to="/dashboard/artist/artworks" eyebrow="پورتفولیو" />
-                            <DashboardMetricCard as={Link} label="منتشرشده" value={published.toLocaleString('fa-IR')} detail="آثاری که در گالری عمومی نمایش داده می‌شوند" to="/dashboard/artist/artworks" eyebrow="عمومی" />
-                            <DashboardMetricCard as={Link} label="در انتظار بررسی" value={pending.toLocaleString('fa-IR')} detail="آثاری که هنوز بررسی نهایی نشده‌اند" to="/dashboard/artist/artworks" eyebrow="بررسی" />
-                            <DashboardMetricCard as={Link} label="پیام‌های مستقیم" value="صندوق پیام‌ها" detail="گفت‌وگو با خریداران" to="/dashboard/artist/messages" eyebrow="ارتباط" />
-                        </>}
-                    </section>
-                    {errors.length > 0 && <ErrorState
-                        title="بخشی از اطلاعات بارگذاری نشد"
-                        description={errors.join(' ')}
-                        onRetry={() => artworksQuery.refetch()}
-                    />}
-                    <section className="grid gap-8 xl:grid-cols-2">
-                        <div className="border-t border-ink pt-5 sm:pt-6">
-                            <SectionHeader eyebrow="پورتفولیو" title="آخرین آثار" actions={<Link to="/dashboard/artist/artworks" className="text-xs font-bold text-terracotta-strong underline underline-offset-4">مدیریت همه آثار</Link>} />
-                            {loading ? <div className="mt-5"><ArtistRecentWorkSkeleton /></div> : artworks.length === 0 ? <EmptyState className="mt-5" title="هنوز اثری ثبت نشده" description="اولین اثر خود را ثبت کنید تا برای بررسی ارسال شود." action={<Link to="/dashboard/artist/artworks" className="text-sm font-bold text-terracotta-strong underline">ثبت اثر</Link>} /> : (
-                                <ul className="mt-2 divide-y divide-border">
-                                    {artworks.slice(0, 4).map((item) => <li key={item.id} className="flex min-h-[4.5rem] items-center justify-between gap-3 py-4">
-                                        <div className="min-w-0"><p className="truncate text-sm font-bold text-ink">{item.title}</p>{item.category?.name && <p className="mt-1 text-xs text-muted">{item.category.name}</p>}</div>
-                                        <StatusLabel status={item.status} />
-                                    </li>)}
-                                </ul>
-                            )}
-                        </div>
-                        <div className="border-t border-border pt-5 sm:pt-6">
-                            <SectionHeader eyebrow="ارتباط با خریداران" title="پیام‌های مستقیم" actions={<Link to="/dashboard/artist/messages" className="text-xs font-bold text-terracotta-strong underline underline-offset-4">رفتن به پیام‌ها</Link>} />
-                            <div className="py-6"><p className="max-w-lg text-sm leading-7 text-muted">گفت‌وگوهای مستقیم با خریداران را از صندوق پیام‌ها مدیریت کنید.</p><Link to="/dashboard/artist/messages" className="mt-3 inline-flex text-sm font-bold text-terracotta-strong underline">بازکردن صندوق پیام‌ها</Link></div>
-                        </div>
-                    </section>
-                </>
-            )}
             </Container>
         </div>
     );
