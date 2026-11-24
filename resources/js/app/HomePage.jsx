@@ -119,11 +119,11 @@ export default function HomePage() {
                         </div>
 
                         <div className="relative order-1 mx-auto w-full max-w-2xl lg:order-2 lg:max-w-[28rem] lg:justify-self-center">
-                            <div aria-hidden="true" className="rd-shine absolute -left-3 -top-3 hidden h-24 w-24 border border-sand sm:block lg:-left-5 lg:-top-5 lg:h-32 lg:w-32" style={{ '--rd-shine-index': 0 }} />
+                            <div aria-hidden="true" className="rd-shine rd-shine--ambient absolute -left-3 -top-3 hidden h-24 w-24 border border-sand sm:block lg:-left-5 lg:-top-5 lg:h-32 lg:w-32" style={{ '--rd-shine-index': 0 }} />
                             <div aria-hidden="true" className="rd-shine absolute -bottom-4 -right-4 hidden h-28 w-28 bg-surface-muted sm:block lg:-bottom-6 lg:-right-6 lg:h-40 lg:w-40" style={{ '--rd-shine-index': 1 }} />
                             {hero ? (
                                 <Link to={'/artworks/' + hero.slug} className="group relative block border border-[color:var(--rd-hero-line)] bg-paper p-2 shadow-soft sm:p-3">
-                                    <div className="rd-shine relative aspect-[3/4] w-full overflow-hidden bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))]" style={{ '--rd-shine-index': 0 }}>
+                                    <div className="rd-shine rd-shine--ambient relative aspect-[3/4] w-full overflow-hidden bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))]" style={{ '--rd-shine-index': 0 }}>
                                         <MediaImage
                                             src={hero.image_url}
                                             alt={hero.title}
