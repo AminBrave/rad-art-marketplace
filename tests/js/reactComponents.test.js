@@ -252,10 +252,10 @@ test('Page and section headers retain the requested heading hierarchy', () => {
     );
 
     assert.doesNotMatch(hero, /dir="rtl"/);
-    assert.match(hero, /class="[^"]*rd-hero-surface[^"]*border border-\[color:var\(--rd-hero-line\)\]/);
     assert.match(hero, /class="[^"]*rd-container[^"]*max-w-content/);
     assert.doesNotMatch(hero, /rd-container--wide/);
     assert.match(hero, /rd-hero-surface/);
+    assert.match(hero, /border border-\\[color:var\\(--rd-hero-line\\)\\]/);
     assert.match(hero, /text-\[color:var\(--rd-hero-foreground\)\]/);
     assert.match(hero, /text-\[color:var\(--rd-hero-muted\)\]/);
     assert.doesNotMatch(hero, /border-b border-border/);
