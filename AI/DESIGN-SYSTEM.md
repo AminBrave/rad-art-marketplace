@@ -97,15 +97,27 @@ The application uses a layered component model. Page files compose user journeys
 
 Before adding or changing a control, search the shared UI barrel and reuse the closest component. When a repeated pattern has materially different semantics, add an explicit variant to the shared component rather than creating a one-off page implementation. Review all route-level screens for raw interactive controls, duplicated Tailwind strings, inconsistent labels, focus treatment, and error handling. Exceptions must be intentional and documented (for example, a custom canvas editor or a specialized native browser interaction).
 
-## One canonical page container and alignment grid
+## Section-owned content width and full-bleed composition
 
-Every route must use the same main-content container: one maximum width, one responsive page-gutter scale and one shared alignment grid. This applies to public pages, buyer/artist workspaces, admin, settings, messaging, forms, dashboards and detail pages. Different route shells may change navigation and task layout, but never the outer content width or page alignment.
+The route-level `<main>` is a full-width canvas. It must not own the content maximum width, centering margin or horizontal page gutters. Each section owns its own background and content width.
 
-The application shell owns the page container. Route pages and sections inherit it; they must not add competing `max-w-*`, centered wrappers or extra page-level horizontal padding. Page headers, section headers, cards, grids, forms, tables, toolbars and footer content align to the same logical start/end guides. Internal columns may vary to suit the task, but their edges derive from the common grid.
+- Use the canonical `Container` from `resources/js/components/ui/layout.jsx`.
+- `width="wide"` provides the standard centered content measure and page gutters.
+- `width="reading"` provides the long-form reading measure and the same page gutters.
+- `width="full"` provides edge-to-edge content without a max-width or automatic gutters.
+- Put full-width backgrounds on the outer `<section>`; put aligned content inside `<Container width="wide">`.
+- Do not recreate content widths with route-specific `max-w-*`, `mx-auto` and `px-*` combinations when the shared Container expresses the intended role.
+- Public and workspace shells may differ in navigation chrome, but ordinary section content must use the same width tokens and alignment conventions.
+- Keep messaging, editors and media viewers as explicit immersive exceptions.
 
-Full-bleed backgrounds and media may extend beyond the grid as deliberate composition, while meaningful content remains aligned. Reading-width text is an inner measure, not a second page container. Immersive full-viewport experiences are explicit exceptions, not templates for ordinary routes.
+```jsx
+<section className="w-full bg-surface-muted py-12">
+    <Container width="wide">
+        {/* Section content */}
+    </Container>
+</section>
+```
 
-Use Gestalt principles to make this shared grid feel coherent: alignment and continuity connect sections; proximity groups related content; similarity reinforces repeated patterns; common region is reserved for genuine groups; whitespace and typography establish hierarchy. Never create a different outer container to make one section feel more important. See the canonical contract and review gate in `AI/DESIGN-SYSTEM-CATALOGUE.md`.
 
 ## Complete-overhaul visual language
 
