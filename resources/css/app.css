@@ -458,8 +458,11 @@ a {
 }
 
 .rd-hero-surface,
-.rd-hero-surface > * {
+.rd-hero-surface :where(*, *::before, *::after) {
     min-width: 0;
+}
+
+.rd-hero-surface > * {
     max-width: 100%;
 }
 
