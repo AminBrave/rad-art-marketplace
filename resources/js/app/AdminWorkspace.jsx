@@ -174,7 +174,7 @@ export function AdminArtworkModeration() {
         {loading ? <ArtworkModerationSkeleton count={4} /> : !result?.data?.length ? <EmptyState title="اثری در این وضعیت وجود ندارد" description="با انتخاب وضعیت دیگر می‌توانید سوابق تصمیم‌ها را مرور کنید." /> : <>
             <div className="grid gap-x-6 gap-y-8 xl:grid-cols-2">{result.data.map((artwork) => {
                 const actionable = artwork.status === 'pending_review';
-                return <article key={artwork.id} className="min-w-0 border-y-2 border-ink bg-transparent py-4">
+                return <article key={artwork.id} className="min-w-0 border-y border-ink bg-transparent py-4">
                     <div className="grid sm:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)]"><div className="aspect-[5/4] overflow-hidden bg-surface-muted sm:aspect-auto"><MediaImage src={artwork.image_url} alt={'تصویر اثر ' + artwork.title} className="h-56 w-full sm:h-full sm:min-h-64" imageClassName="object-cover" loading="lazy" decoding="async" /></div>
                         <div className="min-w-0 py-4 sm:px-1"><div className="flex flex-wrap items-start justify-between gap-2"><h2 className="font-bold">{artwork.title}</h2><Badge variant={artwork.status === 'approved' ? 'success' : artwork.status === 'rejected' ? 'danger' : artwork.status === 'pending_review' ? 'warning' : 'info'}>{statusLabels[artwork.status] ?? artwork.status}</Badge></div>
                             <p className="mt-2 text-xs text-muted">{artwork.artist?.display_name ?? '—'} · {artwork.category?.name ?? '—'}</p>
@@ -328,7 +328,7 @@ export function AdminMessageReportsPage() {
             <div className="space-y-4">{result.data.map((report) => {
                 const isOpen = report.status === 'open';
                 const confirmingRemoval = confirmRemovalId === report.id;
-                return <article key={report.id} className="overflow-hidden border-t-2 border-border bg-transparent pt-1">
+                return <article key={report.id} className="overflow-hidden border-t border-border bg-transparent pt-1">
                     <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border py-5">
                         <div><p className="text-xs font-bold text-terracotta-strong">گزارش شماره {report.id}</p><h2 className="mt-1 font-black">{report.reason}</h2><p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? 'کاربر'} · {dateLabel(report.created_at)}</p></div>
                         <Badge variant={isOpen ? 'warning' : report.status === 'dismissed' ? 'neutral' : 'success'}>{isOpen ? 'در انتظار بررسی' : report.status === 'dismissed' ? 'رد گزارش' : 'بررسی‌شده'}</Badge>
@@ -442,7 +442,7 @@ export function AdminArtworkCommentReportsPage() {
                 {result.data.map((report) => {
                     const isOpen = report.status === 'open';
                     const confirmingRemoval = confirmRemovalId === report.id;
-                    return <article key={report.id} className="overflow-hidden border-t-2 border-border bg-transparent pt-1">
+                    return <article key={report.id} className="overflow-hidden border-t border-border bg-transparent pt-1">
                         <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border py-5">
                             <div>
                                 <p className="text-xs font-bold text-terracotta-strong">گزارش شماره {report.id}</p>
