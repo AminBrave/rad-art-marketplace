@@ -77,7 +77,7 @@ export function PublicLayout() {
         try {
             await logout();
         } catch {
-            setLogoutError('خروج انجام نشد. اتصال را بررسی کنید.');
+            setLogoutError(t('خروج انجام نشد. اتصال را بررسی کنید.'));
         }
     };
 
@@ -201,7 +201,7 @@ export function PublicLayout() {
                                         {t(user.role === 'artist' ? 'پیش‌نمایش پروفایل' : user.role === 'admin' ? 'مدیریت' : 'حساب کاربری')}
                                     </Link>
                                     <Button variant="ghost" type="button" onClick={handleLogout} className="flex min-h-12 items-center rounded-md px-4 text-start text-sm font-semibold text-muted hover:bg-surface-muted hover:text-ink">
-                                        خروج از حساب
+                                        {t('خروج از حساب')}
                                     </Button>
                                 </>
                             ) : (
@@ -213,7 +213,7 @@ export function PublicLayout() {
                         </div>
                     </nav>
                 </DialogContent>
-                {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{logoutError}</p>}
+                {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{t(logoutError)}</p>}
             </header>
 
             <main id="main-content" className="rd-page-frame">
@@ -326,7 +326,7 @@ function NotificationBell({ user }) {
     const lastPage = notificationsQuery.data?.lastPage ?? 1;
     const loading = notificationsQuery.isPending;
     const busy = markOneRead.isPending || markAllRead.isPending;
-    const error = actionError || (notificationsQuery.isError ? 'دریافت اعلان‌ها انجام نشد.' : '');
+    const error = actionError || (notificationsQuery.isError ? t('دریافت اعلان‌ها انجام نشد.') : '');
 
     const openNotification = async (item) => {
         if (busy) return;
@@ -339,7 +339,7 @@ function NotificationBell({ user }) {
                 ? inbox + '?conversation=' + encodeURIComponent(item.conversation_id)
                 : '/'));
         } catch {
-            setActionError('بازکردن اعلان انجام نشد. دوباره تلاش کنید.');
+            setActionError(t('بازکردن اعلان انجام نشد. دوباره تلاش کنید.'));
         }
     };
 
@@ -349,7 +349,7 @@ function NotificationBell({ user }) {
         try {
             await markAllRead.mutateAsync();
         } catch {
-            setActionError('به‌روزرسانی اعلان‌ها انجام نشد.');
+            setActionError(t('به‌روزرسانی اعلان‌ها انجام نشد.'));
         }
     };
 
@@ -627,7 +627,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                         <div className="hidden min-w-0 items-center gap-3 lg:flex">
                             <span className="max-w-44 truncate border-e border-border pe-3 text-sm font-bold text-ink">{user?.name}</span>
                             <Link to="/" className="inline-flex min-h-10 items-center gap-2 rounded-control border border-border-strong bg-paper px-4 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
-                                مشاهده سایت
+                                {t('مشاهده سایت')}
                             </Link>
                             <Button variant="outline" size="sm" onClick={handleLogout} className="min-h-10 gap-2">
                                 <span>{t("خروج")}</span>
@@ -637,7 +637,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                         <DialogTrigger asChild>
                             <Button variant="ghost"
                                 type="button"
-                                aria-label="باز کردن منوی حساب کاربری"
+                                aria-label={t('باز کردن منوی حساب کاربری')}
                                 className="min-h-0 p-0 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus lg:hidden"
                             >
                                 <Menu size={20} aria-hidden="true" />
@@ -694,7 +694,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
 
                     <div className="my-5 border-t border-border" />
 
-                    <nav aria-label="پیوندهای تکمیلی سایت">
+                    <nav aria-label={t('پیوندهای تکمیلی سایت')}>
                         <h3 className="mb-2 px-3 text-xs font-extrabold text-muted">{t("کشف")}</h3>
                         <div className="grid gap-1">
                             {publicSecondaryLinks.map((item) => (
@@ -727,7 +727,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                         onClick={handleLogout}
                         className="mt-2 flex min-h-11 w-full items-center justify-center rounded-lg px-4 text-sm font-bold text-danger transition-colors hover:bg-danger-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                     >
-                        خروج از حساب
+                        {t('خروج از حساب')}
                     </Button>
                 </div>
             </DialogContent>
