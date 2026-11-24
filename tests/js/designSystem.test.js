@@ -284,8 +284,7 @@ test('shared primitives express accessible component contracts with semantic Tai
     assert.ok(primitives.includes("'aria-describedby': describedBy"));
     assert.ok(primitives.includes("'aria-invalid': error ? true"));
     assert.ok(primitives.includes('bg-accent-surface text-terracotta-strong'));
-    assert.ok(primitives.includes('before:bg-terracotta'));
-    assert.ok(primitives.includes('before:bg-terracotta'));
+    assert.doesNotMatch(primitives, /before:bg-terracotta/);
     assert.ok(primitives.includes('text-[clamp(1.75rem,3.2vw,2.6rem)]'));
     assert.ok(primitives.includes('max-sm:w-full max-sm:pb-0'));
     assert.doesNotMatch(primitives, /ra-[a-z]/);
