@@ -12,16 +12,16 @@ import { useMessagingQueries } from './useMessagingQueries';
 import { useAuth } from './AuthContext';
 import { useSearchParams } from 'react-router-dom';
 
-function timeLabel(value) {
+function timeLabel(value, locale) {
     if (!value) return '';
     const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? '' : date.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+    return Number.isNaN(date.getTime()) ? '' : date.toLocaleTimeString(locale === 'fa' ? 'fa-IR' : 'en-US', { hour: '2-digit', minute: '2-digit' });
 }
 
-function dayLabel(value) {
+function dayLabel(value, locale) {
     if (!value) return '';
     const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? '' : date.toLocaleDateString('fa-IR', { dateStyle: 'medium' });
+    return Number.isNaN(date.getTime()) ? '' : date.toLocaleDateString(locale === 'fa' ? 'fa-IR' : 'en-US', { dateStyle: 'medium' });
 }
 
 export default function MessagingCenter({ role }) {
@@ -676,8 +676,8 @@ export default function MessagingCenter({ role }) {
                                 editDraft={editDraft}
                                 editingId={editingId}
                                 focusComposerAfterMenuCloseRef={focusComposerAfterMenuCloseRef}
-                                formatDayLabel={dayLabel}
-                                formatTimeLabel={timeLabel}
+                                formatDayLabel={(value) => dayLabel(value, locale)}
+                                formatTimeLabel={(value) => timeLabel(value, locale)}
                                 loadingOlder={loadingOlder}
                                 messages={messages}
                                 messagesError={messagesError}
