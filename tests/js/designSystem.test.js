@@ -19,6 +19,7 @@ const showcase = readFileSync(new URL('../../resources/js/app/ComponentShowcase.
 const publicPages = ['ArtworkCatalogue.jsx', 'ArtistDirectoryPage.jsx', 'ArtworkDetailPage.jsx'].map((file) => readFileSync(new URL('../../resources/js/app/' + file, import.meta.url), 'utf8'));
 const layouts = readFileSync(new URL('../../resources/js/app/Layouts.jsx', import.meta.url), 'utf8');
 const appRouter = readFileSync(new URL('../../resources/js/app/AppRouter.jsx', import.meta.url), 'utf8');
+const workspaceNavigation = readFileSync(new URL('../../resources/js/app/workspaceNavigation.js', import.meta.url), 'utf8');
 const buyerWorkspace = readFileSync(new URL('../../resources/js/app/BuyerWorkspace.jsx', import.meta.url), 'utf8');
 const routeLoading = readFileSync(new URL('../../resources/js/app/RoutingPages.jsx', import.meta.url), 'utf8');
 const queryClient = readFileSync(new URL('../../resources/js/lib/queryClient.js', import.meta.url), 'utf8');
@@ -453,6 +454,16 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(workspaceLayout.includes('links.map((item)'));
     assert.ok(workspaceLayout.includes('lg:sticky'));
     assert.ok(workspaceLayout.includes('lg:block'));
+    assert.ok(workspaceLayout.includes('max-w-content gap-5 px-page-gutter'), 'Workspace sidebar and content share the header/footer container gutters.');
+    assert.doesNotMatch(workspaceLayout, /<ThemeControl \/>/, 'Workspace preferences are centralized on the settings route.');
+    assert.ok(layouts.includes("'/dashboard/artist/settings': SettingsIcon"));
+    assert.ok(layouts.includes("'/dashboard/buyer/settings': SettingsIcon"));
+    assert.ok(layouts.includes("'/admin/settings': SettingsIcon"));
+    assert.ok(workspaceNavigation.includes("label: 'تنظیمات'"));
+    assert.ok(appRouter.includes('<Route path="settings" element={<WorkspaceSettingsPage />} />'));
+    assert.ok(routeLoading.includes('export function WorkspaceSettingsPage()'));
+    assert.ok(routeLoading.includes('تنظیمات اعلان‌های درون‌برنامه‌ای') || routeLoading.includes('اعلان‌های درون‌برنامه‌ای'));
+    assert.doesNotMatch(layouts, /تنظیمات اعلان درون‌برنامه‌ای/, 'Notification preferences no longer live inside the notification drawer.');
 
     assert.ok(layouts.includes('aria-label="ناوبری اصلی"'), 'Public discovery navigation remains available.');
     assert.ok(layouts.includes('<ThemeControl />'), 'Public and workspace shells expose theme selection.');
