@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useOutletContext } from 'react-router-dom';
-import { EmptyState, ErrorState, StatusBadge, Badge, WorkspaceHero, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton, ArtistRecentWorkSkeleton, WorkspaceIdentitySkeleton } from '../components/ui';
+import { EmptyState, ErrorState, StatusBadge, Badge, WorkspaceHero, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton, ArtistRecentWorkSkeleton, WorkspaceIdentitySkeleton, Container } from '../components/ui';
 
 const statusLabels = {
     pending_review: 'در انتظار بررسی', approved: 'منتشرشده', rejected: 'ردشده',
@@ -49,7 +49,7 @@ export default function ArtistWorkspaceOverview() {
     const progress = Math.round((completedProfileSteps / profileSteps.length) * 100);
 
     return (
-        <section className="space-y-8" dir="rtl">
+        <Container as="section" width="wide" className="space-y-8" dir="rtl">
             <WorkspaceHero
                 eyebrow="استودیوی هنرمند / نمای کلی"
                 title={<>خوش آمدید، {user?.name}</>}
@@ -140,6 +140,6 @@ export default function ArtistWorkspaceOverview() {
                     </section>
                 </>
             )}
-        </section>
+        </Container>
     );
 }
