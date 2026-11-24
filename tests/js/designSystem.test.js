@@ -66,11 +66,11 @@ test('workspace full-bleed content mirrors its horizontal offset in RTL', () => 
 
 test('workspace page headers opt out of viewport bleed', () => {
     for (const source of [adminWorkspace, artworkStudio, routeLoading]) {
-        assert.doesNotMatch(source, /<PageHeader(?![^>]*\\bbleed=\\{false\\})/);
+        assert.doesNotMatch(source, /<PageHeader(?![^>]*\bbleed=\{false\})/);
     }
     const adminEditorialStart = editorialPages.indexOf('export function AdminEditorialPage');
     assert.ok(adminEditorialStart >= 0);
-    assert.match(editorialPages.slice(adminEditorialStart), /<PageHeader bleed=\\{false\\}/);
+    assert.match(editorialPages.slice(adminEditorialStart), /<PageHeader bleed=\{false\}/);
 });
 
 test('workspace heroes stay inside the dashboard content column', () => {
