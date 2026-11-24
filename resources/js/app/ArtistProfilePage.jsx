@@ -3,7 +3,7 @@ import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-q
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { ArtworkCard, EmptyState, ErrorState, ArtistProfileSkeleton, PageHeader, SectionHeader, Button, Container } from '../components/ui';
+import { ArtworkCard, EmptyState, ErrorState, ArtistProfileSkeleton, SectionHeader, Button, Container } from '../components/ui';
 
 export default function ArtistProfilePage() {
     const { slug } = useParams();
@@ -98,34 +98,39 @@ export default function ArtistProfilePage() {
 
             {profile ? (
                 <>
-                    <PageHeader
-                            eyebrow="پرونده هنرمند"
-                            title={profile.display_name}
-                            titleClassName="break-words [overflow-wrap:anywhere]"
-                            descriptionClassName="break-words [overflow-wrap:anywhere]"
-                            description={(
-                                <span className="block min-w-0 max-w-full">
-                                    {profile.city && <span className="mb-2 inline-flex max-w-full flex-wrap items-center gap-2 break-words font-semibold text-ink"><span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-terracotta" />{profile.city}</span>}
-                                    {profile.bio && <span className="block whitespace-pre-line break-words [overflow-wrap:anywhere]">{profile.bio}</span>}
-                                </span>
-                            )}
-                            actions={(
-                                <>
-                                    {canFollow && <Button variant="outline" type="button" disabled={followMutation.isPending} onClick={() => followMutation.mutate()} aria-pressed={Boolean(followState.is_following)} className={primaryActionClass}>{followMutation.isPending ? 'در حال به‌روزرسانی…' : followState.is_following ? 'دنبال می‌کنید' : 'دنبال کردن هنرمند'}</Button>}
-                                    {!user && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className={actionClass}>برای دنبال کردن وارد شوید</Link>}
-                                    {profile.website_url && <a href={profile.website_url} target="_blank" rel="noreferrer" className={`${actionClass} max-w-full whitespace-normal break-words text-center`}>وب‌سایت هنرمند ↗</a>}
-                                    {profile.instagram_handle && <a href={'https://instagram.com/' + profile.instagram_handle} target="_blank" rel="noreferrer" className={`${actionClass} max-w-full whitespace-normal break-words text-center`}>اینستاگرام ↗</a>}
-                                    {user?.role === 'buyer' && <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(profile.slug)} className={`${primaryActionClass} max-w-full whitespace-normal break-words text-center`}>ارسال پیام به هنرمند</Link>}
-                                    {!user && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className={`${primaryActionClass} max-w-full whitespace-normal break-words text-center`}>ورود برای ارتباط با هنرمند</Link>}
-                                </>
-                            )}
-                    />
+                    <section aria-label="پروفایل هنرمند" className="mt-7 grid min-w-0 gap-6 border-y border-border bg-paper p-5 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-8 sm:p-8 lg:grid-cols-[13rem_minmax(0,1fr)] lg:p-10">
+                        <div className="flex items-start justify-center sm:justify-start">
+                            <div aria-hidden="true" className="grid aspect-square w-28 place-items-center border border-[color:var(--rd-hero-line)] bg-[color:var(--rd-hero-background)] text-5xl font-black text-[color:var(--rd-hero-accent)] sm:w-36 lg:w-44">
+                                {(profile.display_name || 'ه').trim().slice(0, 1)}
+                            </div>
+                        </div>
+                        <div className="min-w-0">
+                            <div className="flex min-w-0 flex-wrap items-center gap-3">
+                                <h1 className="min-w-0 break-words text-2xl font-black tracking-tight text-ink sm:text-3xl [overflow-wrap:anywhere]">{profile.display_name}</h1>
+                                {profile.is_own_profile && <span className="border border-border bg-surface-muted px-2 py-1 text-[10px] font-bold text-muted">پروفایل شما</span>}
+                            </div>
+                            <div className="mt-5 flex flex-wrap items-center gap-x-8 gap-y-3 border-y border-divider-group py-3 text-sm">
+                                <span><strong className="font-black tabular-nums">{allArtworks.length.toLocaleString('fa-IR')}</strong><span className="ms-1.5 text-muted">اثر</span></span>
+                                {followState.followers_count !== undefined && followState.followers_count !== null && <span><strong className="font-black tabular-nums">{Number(followState.followers_count).toLocaleString('fa-IR')}</strong><span className="ms-1.5 text-muted">دنبال‌کننده</span></span>}
+                                {profile.city && <span className="text-muted">{profile.city}</span>}
+                            </div>
+                            {profile.bio && <p className="mt-4 whitespace-pre-line break-words text-sm leading-8 text-muted [overflow-wrap:anywhere]">{profile.bio}</p>}
+                            <div className="mt-5 flex min-w-0 flex-wrap items-center gap-2">
+                                {canFollow && <Button variant="outline" type="button" disabled={followMutation.isPending} onClick={() => followMutation.mutate()} aria-pressed={Boolean(followState.is_following)} className={primaryActionClass}>{followMutation.isPending ? 'در حال به‌روزرسانی…' : followState.is_following ? 'دنبال می‌کنید' : 'دنبال کردن'}</Button>}
+                                {!user && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className={primaryActionClass}>دنبال کردن</Link>}
+                                {profile.website_url && <a href={profile.website_url} target="_blank" rel="noreferrer" className={actionClass}>وب‌سایت ↗</a>}
+                                {profile.instagram_handle && <a href={'https://instagram.com/' + profile.instagram_handle} target="_blank" rel="noreferrer" className={actionClass}>اینستاگرام ↗</a>}
+                                {user?.role === 'buyer' && <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(profile.slug)} className={primaryActionClass}>ارسال پیام</Link>}
+                                {!user && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className={actionClass}>ورود برای ارتباط</Link>}
+                            </div>
+                        </div>
+                    </section>
                     {user && user.role !== 'buyer' && (
                         <p className="mt-4 text-xs leading-6 text-muted">برای ارسال پیام مستقیم، از حساب خریدار استفاده کنید.</p>
                     )}
                     {followMutation.isError && <p role="alert" className="mt-3 text-xs text-danger">به‌روزرسانی دنبال‌کردن هنرمند انجام نشد. دوباره تلاش کنید.</p>}
                     <div className="mt-5 flex min-w-0 max-w-full flex-wrap items-center gap-x-3 gap-y-2 break-words text-xs text-muted">
-                            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-muted px-3 py-1.5">
+                            <span className="inline-flex items-center gap-2 border border-border bg-surface-muted px-3 py-1.5">
                                 <span className="h-1.5 w-1.5 rounded-full bg-olive" aria-hidden="true" />
                                 پورتفولیوی عمومی
                             </span>
