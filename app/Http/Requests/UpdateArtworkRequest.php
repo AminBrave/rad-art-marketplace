@@ -22,7 +22,7 @@ class UpdateArtworkRequest extends FormRequest
             'description' => ['nullable', 'string', 'max:3000'],
             'description_en' => ['nullable', 'string', 'max:3000'],
             'city' => ['nullable', 'string', 'max:120'],
-            'city_en' => ['nullable', 'string', 'max:120']
+            'city_en' => ['nullable', 'string', 'max:120'],
             'category_id' => ['required', 'integer', Rule::exists('categories', 'id')->where('is_active', true)],
             'medium' => ['nullable', 'string', 'max:120'],
             'dimensions' => ['nullable', 'string', 'max:120'],
