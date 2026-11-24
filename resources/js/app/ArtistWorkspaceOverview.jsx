@@ -9,12 +9,13 @@ const statusLabels = {
     changes_requested: 'نیازمند اصلاح',
 };
 
-function formatCount(value) {
-    return typeof value === 'number' ? value.toLocaleString('fa-IR') : (value ?? '—');
+function formatCount(value, locale) {
+    return typeof value === 'number' ? value.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') : (value ?? '—');
 }
 
 function StatusLabel({ status }) {
-    return <StatusBadge status={status} label={statusLabels[status] ?? status ?? 'نامشخص'} className="shrink-0" />;
+    const { t, locale } = useLanguage();
+    return <StatusBadge status={status} label={t(statusLabels[status] ?? status ?? 'نامشخص')} className="shrink-0" />;
 }
 
 export default function ArtistWorkspaceOverview() {
@@ -54,7 +55,7 @@ export default function ArtistWorkspaceOverview() {
                     eyebrow="استودیوی هنرمند"
                     title={<>خوش آمدید، {user?.name}</>}
                     description={t("وضعیت آثار و ارتباط‌های خود را در یک نگاه دنبال کنید.")}
-                    actions={<><Link to={profile?.slug ? '/artists/' + profile.slug : '/dashboard/artist/profile'} className="inline-flex min-h-11 items-center justify-center border border-terracotta bg-terracotta px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong">{profile?.slug ? 'پیش‌نمایش پروفایل' : 'تکمیل پروفایل'}</Link><Link to="/dashboard/artist/artworks" className="inline-flex min-h-11 items-center justify-center border border-border px-4 py-2 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta">مدیریت آثار</Link></>}
+                    actions={<><Link to={profile?.slug ? '/artists/' + profile.slug : '/dashboard/artist/profile'} className="inline-flex min-h-11 items-center justify-center border border-terracotta bg-terracotta px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong">{profile?.slug ? t('پیش‌نمایش پروفایل') : t('تکمیل پروفایل')}</Link><Link to="/dashboard/artist/artworks" className="inline-flex min-h-11 items-center justify-center border border-border px-4 py-2 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta">مدیریت آثار</Link></>}
                 />
 
                 {profileError && <ErrorState title={t("پروفایل دریافت نشد")} description={profileError} />}
@@ -80,19 +81,19 @@ export default function ArtistWorkspaceOverview() {
                         <div className="min-w-0 flex-1">
                             <div className="flex items-center justify-between gap-2 text-xs">
                                 <span className="font-semibold text-muted">{t("تکمیل پروفایل")}</span>
-                                <strong className="tabular-nums text-ink">{profileLoading ? '—' : progress.toLocaleString('fa-IR') + '٪'}</strong>
+                                <strong className="tabular-nums text-ink">{profileLoading ? '—' : progress.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + '٪'}</strong>
                             </div>
                             <div className="mt-2 h-1.5 bg-border" role="progressbar" aria-label={t("تکمیل فیلدهای پروفایل")} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
                                 <div className="h-full bg-terracotta transition-all" style={{ width: progress + '%' }} />
                             </div>
                         </div>
-                        <Link to="/dashboard/artist/profile" className="shrink-0 text-xs font-bold text-terracotta-strong underline underline-offset-4">{profileReady ? 'ویرایش' : 'تکمیل'}</Link>
+                        <Link to="/dashboard/artist/profile" className="shrink-0 text-xs font-bold text-terracotta-strong underline underline-offset-4">{profileReady ? t('ویرایش') : t('تکمیل')}</Link>
                     </div>
                 </section>
 
                 <section aria-label={t("آمار آثار")} className="grid gap-3 sm:grid-cols-3">
                     {loading ? <DashboardMetricSkeleton count={3} /> : <>
-                        <DashboardMetricCard as={Link} label={t("مجموع آثار")} value={formatCount(counts.artworks)} detail="تمام آثار ثبت‌شده" to="/dashboard/artist/artworks" />
+                        <DashboardMetricCard as={Link} label={t("مجموع آثار")} value={formatCount(counts.artworks, locale)} detail="تمام آثار ثبت‌شده" to="/dashboard/artist/artworks" />
                         <DashboardMetricCard as={Link} label={t("منتشرشده")} value={published.toLocaleString('fa-IR')} detail="قابل مشاهده در گالری" to="/dashboard/artist/artworks" />
                         <DashboardMetricCard as={Link} label={t("در انتظار بررسی")} value={pending.toLocaleString('fa-IR')} detail="نیازمند تصمیم انتشار" to="/dashboard/artist/artworks" />
                     </>}
@@ -104,7 +105,7 @@ export default function ArtistWorkspaceOverview() {
                     <div className="min-w-0">
                         <SectionHeader eyebrow={t("پورتفولیو")} title={t("آخرین آثار")} actions={<Link to="/dashboard/artist/artworks" className="text-xs font-bold text-terracotta-strong underline underline-offset-4">{t("همه آثار")}</Link>} />
                         {loading ? <div className="mt-4"><ArtistRecentWorkSkeleton /></div> : artworks.length === 0 ? (
-                            <EmptyState className="mt-4" title={t("هنوز اثری ثبت نشده")} description={t("اولین اثر خود را ثبت کنید تا برای بررسی ارسال شود.")} action={<Link to="/dashboard/artist/artworks" className="text-sm font-bold text-terracotta-strong underline">ثبت اولین اثر</Link>} />
+                            <EmptyState className="mt-4" title={t("هنوز اثری ثبت نشده")} description={t("اولین اثر خود را ثبت کنید تا برای بررسی ارسال شود.")} action={<Link to="/dashboard/artist/artworks" className="text-sm font-bold text-terracotta-strong underline">{t("ثبت اولین اثر")}</Link>} />
                         ) : (
                             <ul className="mt-2 divide-y divide-divider-nested">
                                 {artworks.slice(0, 4).map((item) => <li key={item.id} className="flex min-h-16 items-center justify-between gap-3 py-3">
@@ -125,7 +126,7 @@ export default function ArtistWorkspaceOverview() {
                                 <span><span className="block">{t("پروفایل هنرمند")}</span><span className="mt-1 block text-xs font-normal text-muted">{t("اطلاعات و معرفی هنری")}</span></span><span aria-hidden="true">←</span>
                             </Link>
                             <Link to="/dashboard/artist/settings" className="flex min-h-14 items-center justify-between border-b border-divider-nested py-3 text-sm font-semibold text-ink no-underline transition-colors hover:text-terracotta-strong">
-                                <span><span className="block">تنظیمات</span><span className="mt-1 block text-xs font-normal text-muted">{t("پوسته و اعلان‌ها")}</span></span><span aria-hidden="true">←</span>
+                                <span><span className="block">{t("تنظیمات")}</span><span className="mt-1 block text-xs font-normal text-muted">{t("پوسته و اعلان‌ها")}</span></span><span aria-hidden="true">←</span>
                             </Link>
                         </div>
                     </div>
