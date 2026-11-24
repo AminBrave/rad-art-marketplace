@@ -85,8 +85,8 @@ export default function ArtistProfilePage() {
     if (profileQuery.isPending) return <ArtistProfileSkeleton />;
 
     const status = profileQuery.error?.response?.status ?? 0;
-    const actionClass = 'inline-flex min-h-10 items-center justify-center rounded-md border border-border bg-transparent px-4 py-2 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
-    const primaryActionClass = 'inline-flex min-h-11 items-center justify-center rounded-md border border-transparent bg-terracotta px-5 py-2.5 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
+    const actionClass = 'inline-flex min-h-10 items-center justify-center rounded-control border border-border bg-transparent px-4 py-2 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
+    const primaryActionClass = 'inline-flex min-h-11 items-center justify-center rounded-control border border-transparent bg-terracotta px-5 py-2.5 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
 
     return (
         <Container as="div" width="wide" className="min-h-[65vh] overflow-x-clip pb-16 pt-8 sm:pt-12" dir="rtl">
