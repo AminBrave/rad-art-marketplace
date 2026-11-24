@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useLanguage } from './LanguageContext';
 import axios from 'axios';
 import { Link, useOutletContext } from 'react-router-dom';
-import { EmptyState, ErrorState, StatusBadge, Badge, PageHeader, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton, ArtistRecentWorkSkeleton, Container } from '../components/ui';
+import { EmptyState, ErrorState, StatusBadge, Badge, PageHeader, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton, ArtistRecentWorkSkeleton } from '../components/ui';
 import { localizedValue } from '../utils/localizedContent';
 
 const statusLabels = {
@@ -15,7 +15,7 @@ function formatCount(value, locale) {
 }
 
 function StatusLabel({ status }) {
-    const { t, locale } = useLanguage();
+    const { t } = useLanguage();
     return <StatusBadge status={status} label={t(statusLabels[status] ?? status ?? 'نامشخص')} className="shrink-0" />;
 }
 
