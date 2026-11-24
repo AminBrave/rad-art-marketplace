@@ -87,7 +87,7 @@ export const PageContainer = Container;
 export function PageHeader({ eyebrow, title, description, actions, level = 1, className = '', titleClassName = '', descriptionClassName = '' }) {
     const Heading = level === 2 ? 'h2' : 'h1';
     return (
-        <header dir="rtl" className={cn('rd-hero-surface relative isolate flex min-w-0 items-end justify-between gap-6 border border-[color:var(--rd-hero-line)] px-6 py-6 sm:px-8 sm:py-8 before:absolute before:bottom-6 before:right-0 before:top-6 before:w-1.5 before:bg-[color:var(--rd-hero-accent)] max-sm:items-stretch max-sm:flex-col max-sm:gap-4 max-sm:before:bottom-6', className)}>
+        <header className={cn('rd-hero-surface relative isolate flex min-w-0 items-end justify-between gap-6 border border-[color:var(--rd-hero-line)] px-6 py-6 sm:px-8 sm:py-8 before:absolute before:bottom-6 before:right-0 before:top-6 before:w-1.5 before:bg-[color:var(--rd-hero-accent)] max-sm:items-stretch max-sm:flex-col max-sm:gap-4 max-sm:before:bottom-6', className)}>
             <span aria-hidden="true" className="pointer-events-none absolute end-6 top-6 h-12 w-12 border border-[color:var(--rd-hero-line)] sm:end-8 sm:top-8 sm:h-16 sm:w-16" />
             <div className="relative z-10 min-w-0 max-w-[56rem]">
                 {eyebrow && <p className="inline-flex items-center gap-2 border-s-2 border-[color:var(--rd-hero-accent)] bg-transparent px-3 py-1 text-[11px] font-extrabold leading-none tracking-[.06em] text-[color:var(--rd-hero-accent)]">{eyebrow}</p>}
@@ -102,7 +102,7 @@ export function PageHeader({ eyebrow, title, description, actions, level = 1, cl
 export function SectionHeader({ id, eyebrow, title, description, actions, className = '', level = 2 }) {
     const Heading = level === 3 ? 'h3' : 'h2';
     return (
-        <header dir="rtl" className={cn('flex min-w-0 items-end justify-between gap-4 border-b border-divider-group pb-3 max-sm:items-stretch max-sm:flex-col', className)}>
+        <header className={cn('flex min-w-0 items-end justify-between gap-4 border-b border-divider-group pb-3 max-sm:items-stretch max-sm:flex-col', className)}>
             <div className="min-w-0">
                 {eyebrow && <p className="inline-flex items-center gap-2 text-[11px] font-bold tracking-[.04em] text-terracotta-strong before:h-px before:w-5 before:bg-terracotta">{eyebrow}</p>}
                 <Heading id={id} className="mt-1 text-lg font-bold leading-heading tracking-[-.02em] text-ink">{title}</Heading>
@@ -116,7 +116,7 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
 export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
     return (
         <Container width="wide" className="my-3 sm:my-4">
-            <header dir="rtl" className={cn('relative isolate flex min-w-0 items-center justify-between gap-8 border border-[color:var(--rd-hero-line)] rd-hero-surface px-6 py-8 text-[color:var(--rd-hero-foreground)] sm:px-9 sm:py-10 lg:px-12 lg:py-12 max-md:items-stretch max-md:flex-col max-md:gap-5', className)}>
+            <header className={cn('relative isolate flex min-w-0 items-center justify-between gap-8 border border-[color:var(--rd-hero-line)] rd-hero-surface px-6 py-8 text-[color:var(--rd-hero-foreground)] sm:px-9 sm:py-10 lg:px-12 lg:py-12 max-md:items-stretch max-md:flex-col max-md:gap-5', className)}>
                 <span aria-hidden="true" className="pointer-events-none absolute end-6 top-6 hidden h-20 w-20 border border-[color:var(--rd-hero-line)] sm:block lg:end-10 lg:top-8 lg:h-28 lg:w-28" />
                 <span aria-hidden="true" className="pointer-events-none absolute end-12 top-12 hidden h-20 w-20 border-e border-t border-[color:var(--rd-hero-accent)] sm:block lg:end-16 lg:top-14 lg:h-28 lg:w-28" />
                 <div className="relative z-10 min-w-0 max-w-[46rem]">
@@ -227,7 +227,7 @@ export function SelectField({
     name,
     required = false,
     disabled = false,
-    dir = 'rtl',
+   ,
     placeholder,
     ...triggerProps
 }) {
