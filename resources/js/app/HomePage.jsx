@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowUpLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from './LanguageContext';
 import { ArtworkCard, ArtistCard, ArtworkCardSkeleton, ArtistCardSkeleton, EmptyState, ErrorState, MediaImage, Skeleton, Container, Card } from '../components/ui';
+import { localizedValue } from '../utils/localizedContent';
 
 const editorialSteps = [
     { number: '01', title: 'کشف', description: 'در میان آثار تأییدشده جست‌وجو کنید و مسیرهای تازه‌ای برای دیدن پیدا کنید.' },
@@ -141,8 +142,8 @@ export default function HomePage() {
                                     <div className="flex flex-wrap items-center justify-between gap-3 px-2 pb-1 pt-4 sm:px-3">
                                         <div className="min-w-0">
                                             <p className="text-[10px] font-bold text-terracotta-strong">{t('تازه در گالری')}</p>
-                                            <p className="mt-1 truncate text-sm font-extrabold text-ink sm:text-base">{hero.title}</p>
-                                            <p className="mt-1 truncate text-xs text-muted">{hero.artist?.display_name || t('هنرمند راد آرت')}</p>
+                                            <p className="mt-1 truncate text-sm font-extrabold text-ink sm:text-base">{localizedValue(hero, 'title', locale)}</p>
+                                            <p className="mt-1 truncate text-xs text-muted">{localizedValue(hero.artist, 'display_name', locale) || t('هنرمند راد آرت')}</p>
                                         </div>
                                         <span className="inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-bold text-terracotta-strong">
                                             {t('مشاهده اثر')}
@@ -214,7 +215,7 @@ export default function HomePage() {
                             <Link key={category.id} to={'/artworks?category=' + encodeURIComponent(category.slug)} className="group flex min-h-32 items-center gap-4 border border-border bg-canvas p-5 text-start no-underline transition-colors hover:border-terracotta hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
                                 <span className="min-w-0 flex-1">
                                     <span lang="en" className="block font-latin text-[10px] font-bold tracking-widest text-terracotta-strong">0{index + 1}</span>
-                                    <span className="mt-2 block break-words font-bold text-ink">{category.name}</span>
+                                    <span className="mt-2 block break-words font-bold text-ink">{localizedValue(category, 'name', locale)}</span>
                                 </span>
                                 <ArrowUpLeft size={18} className="shrink-0 text-muted transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-terracotta-strong" aria-hidden="true" />
                             </Link>
@@ -246,8 +247,8 @@ export default function HomePage() {
                     >
                         <div className="flex min-w-0 flex-col justify-center p-6 sm:p-8 lg:p-10">
                             <p className="text-[10px] font-extrabold tracking-[.14em] text-[color:var(--rd-hero-accent)]">ARTIST SPOTLIGHT / {t('هنرمند منتخب')}</p>
-                            <h3 className="mt-3 break-words text-2xl font-black leading-heading text-[color:var(--rd-hero-foreground)] sm:text-3xl">{spotlight.display_name}</h3>
-                            {spotlight.city && <p className="mt-2 text-xs font-semibold text-[color:var(--rd-hero-muted)]">{spotlight.city}</p>}
+                            <h3 className="mt-3 break-words text-2xl font-black leading-heading text-[color:var(--rd-hero-foreground)] sm:text-3xl">{localizedValue(spotlight, 'display_name', locale)}</h3>
+                            {spotlight.city && <p className="mt-2 text-xs font-semibold text-[color:var(--rd-hero-muted)]">{localizedValue(spotlight, 'city', locale)}</p>}
                             <p className="mt-4 max-w-3xl text-sm leading-8 text-[color:var(--rd-hero-muted)]">{spotlight.bio || t('پورتفولیوی عمومی این هنرمند را ببینید و با آثار تأییدشده او آشنا شوید.')}</p>
                             <Link to={'/artists/' + spotlight.slug} className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 border border-[color:var(--rd-hero-line)] px-4 py-2 text-sm font-bold text-[color:var(--rd-hero-foreground)] no-underline transition-colors hover:border-[color:var(--rd-hero-accent)] hover:bg-[color:var(--rd-hero-foreground)] hover:text-[color:var(--rd-hero-background)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
                                 {t('ورود به پورتفولیو')}
@@ -284,8 +285,8 @@ export default function HomePage() {
                                             <span lang="en" className="font-latin text-[10px] font-bold tracking-widest text-terracotta-strong">SELECTION / 0{index + 1}</span>
                                             <div className="mt-auto pt-10">
                                                 <p className="text-xs text-muted">{item.artwork_count} {t('اثر منتخب')}</p>
-                                                <h3 className="mt-2 text-xl font-black text-ink">{item.title}</h3>
-                                                <p className="mt-2 line-clamp-3 text-sm leading-7 text-muted">{item.intro || 'انتخابی از آثار تأییدشده راد آرت'}</p>
+                                                <h3 className="mt-2 text-xl font-black text-ink">{localizedValue(item, 'title', locale)}</h3>
+                                                <p className="mt-2 line-clamp-3 text-sm leading-7 text-muted">{localizedValue(item, 'intro', locale) || (locale === 'en' ? 'A selection of approved Rad Art works.' : 'انتخابی از آثار تأییدشده راد آرت')}</p>
                                                 <span className="mt-4 inline-flex items-center gap-2 text-xs font-bold text-terracotta-strong">{t('مشاهده مجموعه')} <ArrowLeft size={14} aria-hidden="true" /></span>
                                             </div>
                                         </Link>
@@ -300,8 +301,8 @@ export default function HomePage() {
                                 <div className="mt-6 grid gap-4 sm:grid-cols-3">
                                     {featuredArtists.slice(0, 3).map((item) => (
                                         <Link key={item.id} to={'/artists/' + item.artist.slug} className="border-s-2 border-sand bg-paper p-5 no-underline transition-colors hover:border-terracotta">
-                                            <h3 className="font-black text-ink">{item.artist.display_name}</h3>
-                                            <p className="mt-2 text-sm leading-7 text-muted">{item.editorial_intro || item.artist.bio || t('با پورتفولیوی این هنرمند آشنا شوید.')}</p>
+                                            <h3 className="font-black text-ink">{localizedValue(item.artist, 'display_name', locale)}</h3>
+                                            <p className="mt-2 text-sm leading-7 text-muted">{item.editorial_intro_en && locale === 'en' ? item.editorial_intro_en : item.editorial_intro || localizedValue(item.artist, 'bio', locale) || t('با پورتفولیوی این هنرمند آشنا شوید.')}</p>
                                         </Link>
                                     ))}
                                 </div>
