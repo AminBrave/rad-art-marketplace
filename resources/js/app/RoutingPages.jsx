@@ -259,7 +259,7 @@ function AuthUnavailable() {
         <div className="mx-auto max-w-xl px-6 py-20 text-center">
             <h1 className="text-2xl font-black">{t('ارتباط با حساب کاربری برقرار نشد')}</h1>
             <p className="mt-3 text-sm leading-7 text-muted">{t(authError)}</p>
-            <Button variant="ghost" type="button" onClick={refreshUser} className="mt-6 rounded-full bg-ink px-5 py-3 text-sm font-bold text-inverse"{t('تلاش دوباره')}</Button>
+            <Button variant="ghost" type="button" onClick={refreshUser} className="mt-6 rounded-full bg-ink px-5 py-3 text-sm font-bold text-inverse">{t('تلاش دوباره')}</Button>
         </div>
     );
 }
@@ -333,12 +333,12 @@ export function ArtistDashboardHome() {
             {profileLoading ? <p className="mt-5 text-sm text-muted">{t('در حال دریافت پروفایل…')}</p> : (
                 <div className="mt-6 rounded-xl bg-canvas p-4">
                     <p className="font-semibold">{t(profile?.slug ? 'پروفایل هنرمند شما آماده است.' : 'برای شروع، پروفایل هنرمند خود را تکمیل کنید.')}</p>
-                    <Link to="/dashboard/artist/profile" className="mt-3 inline-block text-sm font-bold text-terracotta-strong underline"{t('مدیریت پروفایل')}</Link>
+                    <Link to="/dashboard/artist/profile" className="mt-3 inline-block text-sm font-bold text-terracotta-strong underline">{t('مدیریت پروفایل')}</Link>
                 </div>
             )}
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                <Link to="/dashboard/artist/artworks" className="rounded-xl border border-border p-5 font-bold hover:border-terracotta"{t('مدیریت آثار')}</Link>
-                <Link to="/dashboard/artist/messages" className="rounded-xl border border-border p-5 font-bold hover:border-terracotta"{t('پیام‌های مستقیم')}</Link>
+                <Link to="/dashboard/artist/artworks" className="rounded-xl border border-border p-5 font-bold hover:border-terracotta">{t('مدیریت آثار')}</Link>
+                <Link to="/dashboard/artist/messages" className="rounded-xl border border-border p-5 font-bold hover:border-terracotta">{t('پیام‌های مستقیم')}</Link>
             </div>
             </Container>
         </div>
