@@ -45,7 +45,7 @@ export default function ArtistDirectoryPage() {
     const submitSearch = (value) => setParams(value.trim() ? { q: value.trim() } : {});
 
     return (
-        <div className="w-full min-w-0 min-h-[65vh] pb-16 pt-8 sm:pt-12" dir="rtl">
+        <div className="w-full min-w-0 min-h-[65vh] pb-16 pt-8 sm:pt-12">
             <Container width="wide">
             <nav aria-label="مسیر صفحه" className="text-xs text-muted">
                 <span>خانه</span><span className="mx-2" aria-hidden="true">/</span><span aria-current="page" className="text-ink">هنرمندان</span>
