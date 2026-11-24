@@ -51,7 +51,7 @@ export default function ArtistWorkspaceOverview() {
                     eyebrow="استودیوی هنرمند"
                     title={<>خوش آمدید، {user?.name}</>}
                     description="وضعیت آثار و ارتباط‌های خود را در یک نگاه دنبال کنید."
-                    actions={<Link to="/dashboard/artist/artworks" className="inline-flex min-h-10 items-center justify-center bg-terracotta px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong">مدیریت آثار</Link>}
+                    actions={<><Link to={profile?.slug ? '/artists/' + profile.slug : '/dashboard/artist/profile'} className="inline-flex min-h-11 items-center justify-center border border-terracotta bg-terracotta px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong">{profile?.slug ? 'پیش‌نمایش پروفایل' : 'تکمیل پروفایل'}</Link><Link to="/dashboard/artist/artworks" className="inline-flex min-h-11 items-center justify-center border border-border px-4 py-2 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta">مدیریت آثار</Link></>}
                 />
 
                 {profileError && <ErrorState title="پروفایل دریافت نشد" description={profileError} />}
@@ -68,6 +68,10 @@ export default function ArtistWorkspaceOverview() {
                                 ? (profile.is_public ? 'پروفایل شما برای بازدیدکنندگان قابل مشاهده است.' : 'برای نمایش عمومی، وضعیت و اطلاعات پروفایل را بررسی کنید.')
                                 : 'اطلاعات حرفه‌ای خود را تکمیل کنید تا مخاطبان با مسیر هنری شما آشنا شوند.'}
                         </p>
+                    </div>
+                    <div className="flex min-w-0 flex-wrap items-center gap-3 sm:shrink-0">
+                        {profile?.slug && <Link to={'/artists/' + profile.slug} className="inline-flex min-h-10 items-center border border-terracotta px-3 text-xs font-bold text-terracotta-strong no-underline hover:bg-accent-surface">پیش‌نمایش عمومی</Link>}
+                        <Link to="/dashboard/artist/profile" className="inline-flex min-h-10 items-center border border-border px-3 text-xs font-bold text-ink no-underline hover:border-terracotta">ویرایش پروفایل</Link>
                     </div>
                     <div className="flex min-w-0 items-center gap-4 sm:w-64 sm:shrink-0">
                         <div className="min-w-0 flex-1">
