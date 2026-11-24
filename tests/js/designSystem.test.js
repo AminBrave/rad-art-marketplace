@@ -86,6 +86,8 @@ test('artwork catalogue uses accessible infinite pagination and workspace contai
 
 
 test('messaging avatars and artwork chips use square geometry, message tails, and sequenced glass shine', () => {
+    assert.ok(primitives.includes("'rd-shine relative isolate overflow-hidden inline-flex min-h-11"), 'Shared action buttons carry the shine effect.');
+    assert.ok(primitives.includes("'rd-shine relative isolate overflow-hidden inline-flex items-center justify-center"), 'Icon buttons carry the shine effect.');
     assert.ok(messagingInbox.includes('rd-shine relative overflow-hidden border border-border'));
     assert.doesNotMatch(messagingInbox, /h-10 w-10[^\n]*rounded-full/);
     assert.ok(conversationHeader.includes('rd-shine relative flex h-full w-full'));
@@ -109,6 +111,8 @@ test('homepage hero artwork remains visible in a responsive 3:4 frame on all vie
     assert.doesNotMatch(homePage, /w-full min-w-0 overflow-hidden["']/);
     assert.ok(homePage.includes('relative aspect-[3/4] w-full overflow-hidden'));
     assert.ok(homePage.includes('rd-shine relative aspect-[3/4] w-full overflow-hidden'));
+    assert.ok(homePage.includes('lg:grid-cols-[minmax(0,1.1fr)_minmax(20rem,.9fr)]'));
+    assert.ok(homePage.includes('lg:max-w-[28rem] lg:justify-self-center'), 'Desktop hero artwork stays portrait without overwhelming the text column.');
     assert.doesNotMatch(homePage, /sm:aspect-\[3\/4\]|lg:aspect-\[3\/4\]/);
 });
 
