@@ -60,7 +60,7 @@ export default function ArtistWorkspaceOverview() {
             <Container width="wide" className="space-y-8">
             {profileError && <ErrorState title="پروفایل دریافت نشد" description={profileError} />}
             {profileLoading ? <WorkspaceIdentitySkeleton /> : (
-                <section className="grid gap-8 border-y-2 border-ink bg-transparent py-7 sm:py-9 lg:grid-cols-[minmax(0,1fr)_15rem] lg:items-center">
+                <section className="grid gap-8 border-y border-ink bg-transparent py-7 sm:py-9 lg:grid-cols-[minmax(0,1fr)_15rem] lg:items-center">
                     <div>
                         <div className="flex flex-wrap items-center gap-3">
                             <p className="text-xs font-bold text-terracotta-strong">هویت هنری شما</p>
@@ -73,7 +73,7 @@ export default function ArtistWorkspaceOverview() {
                             {profile?.slug && <Link to={'/artists/' + profile.slug} className="inline-flex min-h-11 items-center border border-border px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-terracotta">{profile.is_public ? 'پیش‌نمایش عمومی' : 'پیش‌نمایش خصوصی'}</Link>}
                         </div>
                     </div>
-                    <div className="border-t-2 border-ink pt-5 lg:border-r lg:border-t-0 lg:pr-7 lg:pt-0">
+                    <div className="border-t border-ink pt-5 lg:border-r lg:border-t-0 lg:pr-7 lg:pt-0">
                         <div className="flex items-end justify-between gap-3">
                             <span className="text-xs font-semibold text-muted">تکمیل پروفایل</span>
                             <span className="text-2xl font-black tabular-nums text-ink">{progress.toLocaleString('fa-IR')}٪</span>
@@ -123,7 +123,7 @@ export default function ArtistWorkspaceOverview() {
                         onRetry={() => artworksQuery.refetch()}
                     />}
                     <section className="grid gap-8 xl:grid-cols-2">
-                        <div className="border-t-2 border-ink pt-5 sm:pt-6">
+                        <div className="border-t border-ink pt-5 sm:pt-6">
                             <SectionHeader eyebrow="پورتفولیو" title="آخرین آثار" actions={<Link to="/dashboard/artist/artworks" className="text-xs font-bold text-terracotta-strong underline underline-offset-4">مدیریت همه آثار</Link>} />
                             {loading ? <div className="mt-5"><ArtistRecentWorkSkeleton /></div> : artworks.length === 0 ? <EmptyState className="mt-5" title="هنوز اثری ثبت نشده" description="اولین اثر خود را ثبت کنید تا برای بررسی ارسال شود." action={<Link to="/dashboard/artist/artworks" className="text-sm font-bold text-terracotta-strong underline">ثبت اثر</Link>} /> : (
                                 <ul className="mt-2 divide-y divide-border">
