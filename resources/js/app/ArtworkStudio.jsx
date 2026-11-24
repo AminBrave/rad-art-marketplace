@@ -123,7 +123,9 @@ export default function ArtworkStudio({ user, hasProfile }) {
         savingArtworkRef.current = true;
         setErrors({}); setMessage(''); setUploadProgress(0);
         const payload = new FormData();
-        Object.entries(form).forEach(([key, value]) => { if (value !== '') payload.append(key, value); });
+        Object.entries(form).forEach(([key, value]) => {
+            if (value !== '' || ['title_en', 'description_en', 'city', 'city_en'].includes(key)) payload.append(key, value);
+        });
         if (image) payload.append('image', image);
         if (editingId) payload.append('_method', 'PATCH');
         try {
