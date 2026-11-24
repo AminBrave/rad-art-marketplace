@@ -118,7 +118,7 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
 
 export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
     return (
-        <section className="rd-bleed rd-hero-surface my-3 border-y border-[color:var(--rd-hero-line)] sm:my-4">
+        <section className="rd-hero-surface my-3 border-y border-[color:var(--rd-hero-line)] sm:my-4">
             <Container width="wide" className="py-8 sm:py-10 lg:py-12">
                 <header className={cn('relative isolate flex min-w-0 items-center justify-between gap-8 text-[color:var(--rd-hero-foreground)] max-md:items-stretch max-md:flex-col max-md:gap-5', className)}>
                     <div className="relative z-10 min-w-0 max-w-[46rem]">
