@@ -119,7 +119,10 @@ test('Rademan semantic design tokens are declared centrally and resolve through 
     assert.ok(css.includes('--color-overlay: var(--rd-overlay)'));
     assert.ok(css.includes('--rd-message-own:'));
     assert.ok(css.includes('--rd-success:'));
-    assert.ok(css.includes('--color-success-surface:'));
+    assert.ok(css.includes('--rd-success-surface:'));
+    assert.ok(css.includes('--color-success-surface: var(--rd-success-surface)'));
+    assert.ok(tailwind.includes('var(--rd-success-surface)'));
+    assert.ok(tailwind.includes('var(--rd-shadow-soft)'));
     assert.ok(css.includes('--color-action-text: var(--rd-action-text)'));
     assert.doesNotMatch(css, /--color-[\w-]+:\s*#[0-9a-f]/i);
     assert.ok(css.includes(":root[data-theme='dark']"));
