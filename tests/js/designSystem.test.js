@@ -115,7 +115,7 @@ test('Rademan semantic design tokens are declared centrally and resolve through 
 });
 
 test('shared layout and form primitives expose semantic utility compositions', () => {
-    for (const utility of ['max-w-content', 'max-w-[var(--content-reading-width)]', 'full: \'w-full max-w-none\'', 'rd-bleed']) {
+    for (const utility of ['max-w-content', 'max-w-content-reading', 'full: \'w-full max-w-none\'', 'rd-bleed']) {
         assert.ok(layoutPrimitives.includes(utility), 'Missing canonical layout utility contract: ' + utility);
     }
     for (const component of ['Container', 'Section', 'Separator', 'Card']) {
