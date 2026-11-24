@@ -88,15 +88,15 @@ export default function HomePage() {
     return (
         <div className="w-full min-w-0" dir="rtl">
             <section aria-labelledby="home-hero-title" className="relative isolate border-b border-[color:var(--rd-hero-line)] rd-hero-surface">
+                <div aria-hidden="true" className="rd-shine rd-shine--ambient pointer-events-none absolute -left-3 -top-3 z-0 hidden h-24 w-24 border border-sand sm:block lg:-left-5 lg:-top-5 lg:h-32 lg:w-32" style={{ '--rd-shine-index': 0 }} />
+                <div aria-hidden="true" className="rd-shine rd-shine--ambient pointer-events-none absolute -bottom-4 -right-4 z-0 hidden h-28 w-28 bg-surface-muted sm:block lg:-bottom-6 lg:-right-6 lg:h-40 lg:w-40" style={{ '--rd-shine-index': 1 }} />
                 <Container className="pb-16 pt-10 sm:pb-20 sm:pt-16 lg:pb-24 lg:pt-20">
                     <div className="mb-8 flex items-center justify-between border-y border-[color:var(--rd-hero-line)] py-3.5 text-[10px] font-extrabold tracking-[.18em] text-[color:var(--rd-hero-muted)] sm:text-xs">
                         <span>گالری هنر مستقل معاصر</span>
                         <span dir="ltr" className="font-latin">RAD ART / DISCOVER &amp; CONNECT</span>
                     </div>
-                    <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(20rem,.9fr)] lg:gap-20">
-                        <div aria-hidden="true" className="rd-shine rd-shine--ambient pointer-events-none absolute -left-3 -top-3 z-0 hidden h-24 w-24 border border-sand sm:block lg:-left-5 lg:-top-5 lg:h-32 lg:w-32" style={{ '--rd-shine-index': 0 }} />
-                        <div aria-hidden="true" className="rd-shine rd-shine--ambient pointer-events-none absolute -bottom-4 -right-4 z-0 hidden h-28 w-28 bg-surface-muted sm:block lg:-bottom-6 lg:-right-6 lg:h-40 lg:w-40" style={{ '--rd-shine-index': 1 }} />
-                        <div className="relative z-10 order-2 max-w-2xl py-2 lg:order-1 lg:py-10">
+                    <div className="flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:gap-20">
+                        <div className="relative z-10 order-2 w-full max-w-2xl py-2 lg:order-none lg:w-[55%] lg:py-10">
                             <p className="mb-5 flex items-center gap-3 text-xs font-extrabold text-[color:var(--rd-hero-accent)]">
                                 <span className="h-px w-9 bg-[color:var(--rd-hero-accent)]" />
                                 هنر معاصر، از نگاه مستقل
@@ -120,7 +120,7 @@ export default function HomePage() {
                             <p className="mt-7 text-xs leading-6 text-[color:var(--rd-hero-muted)]">نمایش عمومی به آثار تأییدشده و پروفایل‌های عمومی محدود است.</p>
                         </div>
 
-                        <div className="relative z-10 order-1 mx-auto w-full max-w-2xl lg:order-2 lg:max-w-[28rem] lg:justify-self-center">
+                        <div className="relative z-10 order-1 mx-auto w-full max-w-2xl lg:order-none lg:w-[45%] lg:max-w-[28rem]">
                             {hero ? (
                                 <Link to={'/artworks/' + hero.slug} className="group relative block border border-[color:var(--rd-hero-line)] bg-paper p-2 shadow-soft sm:p-3">
                                     <div className="rd-shine rd-shine--ambient relative aspect-[3/4] w-full overflow-hidden bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))]" style={{ '--rd-shine-index': 0 }}>
