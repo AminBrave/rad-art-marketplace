@@ -3,8 +3,7 @@ import { useLanguage } from './LanguageContext';
 import { Link } from 'react-router-dom';
 import { Ban, ChevronRight, Flag, MoreVertical, ShieldCheck } from 'lucide-react';
 
-export default function ConversationHeader
-    const { t } = useLanguage();({
+export default function ConversationHeader({
     avatarInitial,
     avatarTone,
     onBack,
