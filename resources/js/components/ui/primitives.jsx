@@ -114,16 +114,18 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
 
 export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
     return (
-        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-8 overflow-hidden border-y border-divider-section bg-ink px-[clamp(1.25rem,4vw,3.25rem)] py-[clamp(1.75rem,4vw,3rem)] text-inverse max-md:items-stretch max-md:flex-col', className)}>
+        <header dir="rtl" className={cn('rd-bleed relative overflow-hidden border-y border-divider-section bg-ink text-inverse', className)}>
             <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-1.5 bg-terracotta" />
             <span aria-hidden="true" className="pointer-events-none absolute -right-16 -top-24 aspect-square w-60 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]" />
             <span aria-hidden="true" className="pointer-events-none absolute -right-4 -top-12 aspect-square w-44 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]" />
-            <div className="relative z-10 max-w-[46rem]">
-                {eyebrow && <p className="text-xs font-bold text-sand">{eyebrow}</p>}
-                <h1 className="mt-3 text-[clamp(1.5rem,3vw,2rem)] font-extrabold leading-heading text-inverse">{title}</h1>
-                {description && <p className="mt-3 text-sm leading-copy text-[color:color-mix(in_srgb,var(--color-inverse-text)_80%,transparent)]">{description}</p>}
-            </div>
-            {actions && <div className="relative z-10 flex flex-wrap gap-2 max-md:w-full">{actions}</div>}
+            <Container width="wide" className="relative z-10 flex min-w-0 items-end justify-between gap-8 py-[clamp(1.75rem,4vw,3rem)] max-md:items-stretch max-md:flex-col">
+                <div className="relative z-10 max-w-[46rem]">
+                    {eyebrow && <p className="text-xs font-bold text-sand">{eyebrow}</p>}
+                    <h1 className="mt-3 text-[clamp(1.5rem,3vw,2rem)] font-extrabold leading-heading text-inverse">{title}</h1>
+                    {description && <p className="mt-3 text-sm leading-copy text-[color:color-mix(in_srgb,var(--color-inverse-text)_80%,transparent)]">{description}</p>}
+                </div>
+                {actions && <div className="relative z-10 flex flex-wrap gap-2 max-md:w-full">{actions}</div>}
+            </Container>
         </header>
     );
 }
