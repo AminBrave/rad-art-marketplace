@@ -851,6 +851,16 @@ const english = {
     "دیدگاه حذف شد.": "Comment deleted.",
     "گزارش شما ثبت شد.": "Your report has been submitted.",
     "گزارش بررسی شد.": "Report reviewed.",
+    "حالت فعلی": "Current mode",
+    "در حال دریافت تنظیمات…": "Loading settings…",
+    "از ۲۰۰۰ نویسه برای معرفی هنری استفاده شده است.": "of 2,000 characters used for your artist bio.",
+    "این صفحه در نقشه مسیرهای MVP 2 ثبت شده و محتوای کامل آن در مرحله محتوای عمومی تکمیل می‌شود.": "This page is listed in the MVP 2 roadmap. Its full public content will be added in a later phase.",
+    "دسترسی به این بخش مجاز نیست": "Access to this section is not permitted",
+    "نقش این حساب اجازه ورود به این فضای کاربری را ندارد. مجوزهای واقعی همچنان در سمت سرور بررسی می‌شوند.": "This account role cannot access this workspace. Permissions are still enforced by the server.",
+    "بازگشت": "Go back",
+    "این صفحه پیدا نشد": "Page not found",
+    "نشانی واردشده معتبر نیست یا صفحه جابه‌جا شده است.": "The address is invalid or the page may have moved.",
+    "بازگشت به صفحه اصلی": "Back to homepage",
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 
