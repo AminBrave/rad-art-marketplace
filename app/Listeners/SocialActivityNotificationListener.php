@@ -72,6 +72,7 @@ class SocialActivityNotificationListener
             'in_app_artwork_comments',
             [
                 'actor_name' => $this->publicActorName($actor),
+                'actor_name_en' => $this->publicActorNameEnglish($actor),
                 'artwork_slug' => $artwork->slug,
                 'artwork_title' => $artwork->title,
                 'artwork_title_en' => $artwork->title_en,
