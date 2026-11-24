@@ -91,8 +91,8 @@ export default function HomePage() {
     return (
         <div className="w-full min-w-0">
             <section aria-labelledby="home-hero-title" className="relative isolate border-b border-[color:var(--rd-hero-line)] rd-hero-surface">
-                <div aria-hidden="true" className="pointer-events-none absolute -left-3 -top-3 z-0 hidden h-24 w-24 border border-sand sm:block lg:-left-5 lg:-top-5 lg:h-32 lg:w-32" />
-                <div aria-hidden="true" className="pointer-events-none absolute -bottom-4 -right-4 z-0 hidden h-28 w-28 bg-surface-muted sm:block lg:-bottom-6 lg:-right-6 lg:h-40 lg:w-40" />
+                <div aria-hidden="true" className="pointer-events-none absolute -start-3 -top-3 z-0 hidden h-24 w-24 border border-sand sm:block lg:-start-5 lg:-top-5 lg:h-32 lg:w-32" />
+                <div aria-hidden="true" className="pointer-events-none absolute -bottom-4 -end-4 z-0 hidden h-28 w-28 bg-surface-muted sm:block lg:-bottom-6 lg:-end-6 lg:h-40 lg:w-40" />
                 <Container className="pb-16 pt-10 sm:pb-20 sm:pt-16 lg:pb-24 lg:pt-20">
                     <div className="mb-8 flex items-center justify-between border-y border-[color:var(--rd-hero-line)] py-3.5 text-[10px] font-extrabold tracking-[.18em] text-[color:var(--rd-hero-muted)] sm:text-xs">
                         <span>{t('گالری هنر مستقل معاصر')}</span>
@@ -136,7 +136,7 @@ export default function HomePage() {
                                             fetchPriority="high"
                                             decoding="async"
                                         />
-                                        <span className="absolute right-4 top-4 bg-[color:var(--rd-hero-background)] px-3 py-2 text-[10px] font-bold text-[color:var(--rd-hero-foreground)] backdrop-blur sm:right-5 sm:top-5 sm:text-xs">{t('در گالری راد آرت')}</span>
+                                        <span className="absolute end-4 top-4 bg-[color:var(--rd-hero-background)] px-3 py-2 text-[10px] font-bold text-[color:var(--rd-hero-foreground)] backdrop-blur sm:end-5 sm:top-5 sm:text-xs">{t('در گالری راد آرت')}</span>
                                     </div>
                                     <div className="flex flex-wrap items-center justify-between gap-3 px-2 pb-1 pt-4 sm:px-3">
                                         <div className="min-w-0">
@@ -153,9 +153,9 @@ export default function HomePage() {
                             ) : (
                                 <div className="relative aspect-[3/4] w-full overflow-hidden bg-[linear-gradient(135deg,var(--rd-hero-background-alt),var(--rd-surface-muted))]">
                                     <div aria-hidden="true" className="absolute inset-5 border border-[color:var(--rd-hero-line)] sm:inset-8" />
-                                    <div aria-hidden="true" className="absolute left-[12%] top-[12%] h-[48%] w-[48%] bg-[color:var(--rd-hero-accent)]" />
-                                    <div aria-hidden="true" className="absolute bottom-[12%] right-[10%] h-[58%] w-[48%] bg-[color:var(--rd-hero-background)]" />
-                                    <span className="absolute bottom-8 left-8 font-latin text-[10px] font-bold tracking-[.25em] text-[color:var(--rd-hero-foreground)]">ART / PEOPLE / STORIES</span>
+                                    <div aria-hidden="true" className="absolute start-[12%] top-[12%] h-[48%] w-[48%] bg-[color:var(--rd-hero-accent)]" />
+                                    <div aria-hidden="true" className="absolute bottom-[12%] end-[10%] h-[58%] w-[48%] bg-[color:var(--rd-hero-background)]" />
+                                    <span className="absolute bottom-8 start-8 font-latin text-[10px] font-bold tracking-[.25em] text-[color:var(--rd-hero-foreground)]">ART / PEOPLE / STORIES</span>
                                 </div>
                             )}
                         </div>
