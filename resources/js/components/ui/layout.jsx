@@ -24,8 +24,14 @@ export const Grid = forwardRef(function Grid({ as: Element = 'div', columns, gap
 });
 
 export const Container = forwardRef(function Container({ as: Element = 'div', width = 'wide', className = '', ...props }, ref) {
-    const widths = { reading: 'max-w-[var(--content-reading-width)]', wide: 'max-w-[var(--content-width)]', full: 'max-w-none' };
-    return <Element ref={ref} className={cn('mx-auto w-[min(calc(100%_-_2_*_var(--page-gutter)),100%)] min-w-0', widths[width] ?? widths.wide, className)} {...props} />;
+    // The application shell supplies the canonical page width and gutters.
+    // This component only constrains intentional inner reading measures.
+    const widths = {
+        reading: 'mx-auto w-full max-w-[var(--content-reading-width)]',
+        wide: 'w-full max-w-none',
+        full: 'w-full max-w-none',
+    };
+    return <Element ref={ref} className={cn('min-w-0', widths[width] ?? widths.wide, className)} {...props} />;
 });
 
 export const Section = forwardRef(function Section({ as: Element = 'section', className = '', ...props }, ref) {
