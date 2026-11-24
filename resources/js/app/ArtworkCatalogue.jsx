@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 import { ArrowLeft, X } from 'lucide-react';
-import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, SelectField, PageContainer, PageHeader, Button } from '../components/ui';
+import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, SelectField, PageHeader, Button, Container, Section } from '../components/ui';
 
 const emptyFilters = { mediums: [], availability: [], sorts: [] };
 
@@ -92,10 +92,12 @@ export default function ArtworkCatalogue() {
     };
 
     return (
-        <PageContainer as="div" className="min-w-0 max-w-full box-border min-h-[65vh] py-10 lg:py-14" dir="rtl">
-            <PageHeader eyebrow="آرشیو عمومی راد آرت" title="گالری آثار" description="در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید." />
+        <div className="w-full min-w-0 min-h-[65vh] py-10 lg:py-14" dir="rtl">
+            <Container width="wide">
+                <PageHeader eyebrow="آرشیو عمومی راد آرت" title="گالری آثار" description="در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید." />
+            </Container>
 
-            <section aria-label="فیلتر و مرتب‌سازی آثار" className="relative mt-8 border-y-2 border-ink bg-surface-muted/70 px-4 py-6 sm:px-6 sm:py-7 lg:px-8">
+            <Section as="section" bleed aria-label="فیلتر و مرتب‌سازی آثار" className="relative mt-8 border-y border-divider-section bg-surface-muted/70 py-6 sm:py-7">
                 <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
                     <div>
                         <p className="text-[11px] font-extrabold tracking-[.12em] text-terracotta-strong">جست‌وجوی هدفمند</p>
@@ -127,8 +129,10 @@ export default function ArtworkCatalogue() {
                 </div>
                 {filtersError && <p role="status" className="mt-3 text-xs text-muted">برخی گزینه‌های فیلتر بارگذاری نشدند؛ می‌توانید با جست‌وجو و دسته‌بندی ادامه دهید.</p>}
                 {filtersLoading && <p className="mt-3 text-xs text-muted">در حال آماده‌سازی گزینه‌های فیلتر…</p>}
-            </section>
+            </Container>
+            </Section>
 
+            <Container width="wide">
             {activeFilterCount > 0 && (
                 <div className="mt-6 flex flex-wrap items-center gap-2" aria-label="معیارهای فعال">
                     <span className="me-1 text-xs font-bold text-muted">انتخاب شما:</span>
@@ -162,6 +166,7 @@ export default function ArtworkCatalogue() {
                     <Button variant="outline" type="button" disabled={page >= meta.last_page} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page + 1)]]))} className="inline-flex min-h-11 items-center gap-2 border border-border px-4 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40">بعدی<ArrowLeft size={15} aria-hidden="true" className="rotate-180" /></Button>
                 </nav>
             )}
-        </PageContainer>
+            </Container>
+        </div>
     );
 }
