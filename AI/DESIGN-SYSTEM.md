@@ -97,6 +97,16 @@ The application uses a layered component model. Page files compose user journeys
 
 Before adding or changing a control, search the shared UI barrel and reuse the closest component. When a repeated pattern has materially different semantics, add an explicit variant to the shared component rather than creating a one-off page implementation. Review all route-level screens for raw interactive controls, duplicated Tailwind strings, inconsistent labels, focus treatment, and error handling. Exceptions must be intentional and documented (for example, a custom canvas editor or a specialized native browser interaction).
 
+## One canonical page container and alignment grid
+
+Every route must use the same main-content container: one maximum width, one responsive page-gutter scale and one shared alignment grid. This applies to public pages, buyer/artist workspaces, admin, settings, messaging, forms, dashboards and detail pages. Different route shells may change navigation and task layout, but never the outer content width or page alignment.
+
+The application shell owns the page container. Route pages and sections inherit it; they must not add competing `max-w-*`, centered wrappers or extra page-level horizontal padding. Page headers, section headers, cards, grids, forms, tables, toolbars and footer content align to the same logical start/end guides. Internal columns may vary to suit the task, but their edges derive from the common grid.
+
+Full-bleed backgrounds and media may extend beyond the grid as deliberate composition, while meaningful content remains aligned. Reading-width text is an inner measure, not a second page container. Immersive full-viewport experiences are explicit exceptions, not templates for ordinary routes.
+
+Use Gestalt principles to make this shared grid feel coherent: alignment and continuity connect sections; proximity groups related content; similarity reinforces repeated patterns; common region is reserved for genuine groups; whitespace and typography establish hierarchy. Never create a different outer container to make one section feel more important. See the canonical contract and review gate in `AI/DESIGN-SYSTEM-CATALOGUE.md`.
+
 ## Complete-overhaul visual language
 
 The current overhaul uses an art-journal/editorial direction rather than a generic rounded SaaS dashboard. Apply these rules consistently across public pages, artist/buyer workspaces, administration, messaging, loading states and overlays:
