@@ -5,11 +5,11 @@ import * as ToastPrimitive from '@radix-ui/react-toast';
 
 const skeletonClasses = 'block bg-[linear-gradient(100deg,var(--color-skeleton-base)_25%,var(--color-skeleton-highlight)_42%,var(--color-skeleton-base)_62%)] [background-size:200%_100%] animate-skeleton-shimmer motion-reduce:animate-none';
 
-export function Skeleton({ className = '', width, height = '1rem',  = 'md' }) {
+export function Skeleton({ className = '', width, height = '1rem' }) {
     return (
         <span
             aria-hidden="true"
-            className={`${skeletonClasses} ${ === 'full' ? '' :  === 'lg' ? '' : ''} ${className}`}
+            className={`${skeletonClasses} ${className}`}
             style={{ width, height }}
         />
     );
