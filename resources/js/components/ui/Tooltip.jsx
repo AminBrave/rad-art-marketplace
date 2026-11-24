@@ -22,7 +22,7 @@ export function Tooltip({
                         side={side}
                         sideOffset={sideOffset}
                         dir="rtl"
-                        className={cn('z-[100] max-w-64 rounded-editorial bg-ink px-3 py-2 text-xs font-medium leading-6 text-inverse shadow-raised', className)}
+                        className={cn('z-[100] max-w-64  bg-ink px-3 py-2 text-xs font-medium leading-6 text-inverse shadow-raised', className)}
                     >
                         {content}
                         <TooltipPrimitive.Arrow className="fill-ink" />
