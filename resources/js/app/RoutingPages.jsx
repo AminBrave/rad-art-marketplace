@@ -571,7 +571,7 @@ export function UnauthorizedPage() {
             <p className="text-sm font-bold text-terracotta-strong">۴۰۳</p>
             <h1 className="mt-3 text-4xl font-black tracking-tight" >{t('دسترسی به این بخش مجاز نیست')}</h1>
             <p className="mt-4 leading-8 text-muted">{t('نقش این حساب اجازه ورود به این فضای کاربری را ندارد. مجوزهای واقعی همچنان در سمت سرور بررسی می‌شوند.')}</p>
-            <Link to={user ? (user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist') : '/'} className="mt-8 inline-flex min-h-12 items-center border border-ink bg-ink px-6 py-3 font-bold text-inverse transition-colors hover:border-terracotta hover:bg-terracotta"{t('بازگشت')}</Link>
+            <Link to={user ? (user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist') : '/'} className="mt-8 inline-flex min-h-12 items-center border border-ink bg-ink px-6 py-3 font-bold text-inverse transition-colors hover:border-terracotta hover:bg-terracotta">{t('بازگشت')}</Link>
         </Container>
     );
 }
@@ -583,7 +583,7 @@ export function NotFoundPage() {
             <p className="text-sm font-bold text-terracotta-strong">۴۰۴</p>
             <h1 className="mt-3 text-4xl font-black tracking-tight" >{t('این صفحه پیدا نشد')}</h1>
             <p className="mt-4 leading-8 text-muted">{t('نشانی واردشده معتبر نیست یا صفحه جابه‌جا شده است.')}</p>
-            <Link to="/" className="mt-8 inline-flex min-h-12 items-center border border-ink bg-ink px-6 py-3 font-bold text-inverse transition-colors hover:border-terracotta hover:bg-terracotta"{t('بازگشت به صفحه اصلی')}</Link>
+            <Link to="/" className="mt-8 inline-flex min-h-12 items-center border border-ink bg-ink px-6 py-3 font-bold text-inverse transition-colors hover:border-terracotta hover:bg-terracotta">{t('بازگشت به صفحه اصلی')}</Link>
         </Container>
     );
 }
