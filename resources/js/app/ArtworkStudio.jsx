@@ -147,7 +147,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
             savingArtworkRef.current = false;
         }
     };
-    const fieldError = (name) => errors[name]?.map((item) => <span key={item} className="mt-1 block text-xs font-normal text-danger">{item}</span>);
+    const fieldError = (name) => errors[name]?.map((item) => <span key={item} className="mt-1 block text-xs font-normal text-danger">{t(item)}</span>);
 
     return <section className="min-w-0 mx-auto w-full max-w-content space-y-7">
         <PageHeader bleed={false}
@@ -171,7 +171,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
                 <FormField label={t("شهر محل اثر")} error={errors.city?.[0]}><TextInput name="city" value={form.city} onChange={updateForm} maxLength={120} /></FormField>
                 <FormField label={t("شهر محل اثر به انگلیسی")} error={errors.city_en?.[0]}><TextInput name="city_en" value={form.city_en} onChange={updateForm} maxLength={120} dir="ltr" className="text-start" /></FormField>
                 <div className="sm:col-span-2">
-                    <label htmlFor="artwork-image" className="block text-sm font-semibold text-ink">تصویر اثر {editingId ? t("(اختیاری؛ برای جایگزینی تصویر)") : '*'}</label>
+                    <label htmlFor="artwork-image" className="block text-sm font-semibold text-ink"{t('تصویر اثر')} {editingId ? t("(اختیاری؛ برای جایگزینی تصویر)") : '*'}</label>
                     <FileInput id="artwork-image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required={!editingId} onChange={chooseImage} aria-describedby="artwork-image-help" className="mt-2 bg-canvas px-3 py-3 file:ms-3" />
                     <p id="artwork-image-help" className="mt-2 text-xs leading-6 text-muted">{t("JPG، JPEG، PNG یا WebP؛ حداکثر ۵ مگابایت و ۶۰۰۰ × ۶۰۰۰ پیکسل. ابعاد تصویر پیش از ارسال بررسی می‌شود.")}</p>
                     {fieldError('image')}{imageError && <p role="alert" className="mt-1 text-xs text-danger">{imageError}</p>}
