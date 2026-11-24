@@ -145,8 +145,8 @@ export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, cla
 const surfaceVariants = {
     default: 'border border-divider-group bg-surface',
     muted: 'border border-divider-group bg-surface-muted',
-    raised: 'border-y border-divider-group bg-surface shadow-soft',
-    interactive: 'border-y border-divider-group bg-surface transition-colors hover:border-terracotta hover:bg-surface-muted focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus',
+    raised: 'border border-divider-group bg-surface shadow-soft',
+    interactive: 'border border-divider-group bg-surface transition-colors hover:border-terracotta hover:bg-surface-muted focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus',
 };
 
 export function Surface({ as: Element = 'section', variant = 'default', className = '', children, ...props }) {
