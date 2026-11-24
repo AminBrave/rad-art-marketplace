@@ -292,6 +292,10 @@
         margin-inline-start: calc(50% - 50vw - var(--rd-workspace-bleed-offset));
         margin-inline-end: calc(50% - 50vw + var(--rd-workspace-bleed-offset));
     }
+
+    .rd-workspace-main .rd-bleed .rd-workspace-bleed-content {
+        transform: translateX(calc(-1 * var(--rd-workspace-bleed-offset)));
+    }
 }
 
 /*
