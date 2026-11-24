@@ -67,7 +67,7 @@ export default function ArtworkDetailPage() {
     if (loading) return <ArtworkDetailSkeleton />;
 
     return (
-        <Container as="div" width="wide" className="min-h-[65vh] py-10 lg:py-14" dir="rtl">
+        <Container as="div" width="wide" className="min-h-[65vh] py-10 lg:py-14">
             <nav aria-label="مسیر صفحه" className="text-sm text-muted">
                 <Link to="/" className="hover:text-terracotta-strong">خانه</Link><span className="mx-2" aria-hidden="true">/</span>
                 <Link to="/artworks" className="hover:text-terracotta-strong">گالری آثار</Link><span className="mx-2" aria-hidden="true">/</span>
