@@ -1,0 +1,292 @@
+# Rademan — UI, UX & Design System Catalogue
+
+**Catalogue status:** implementation reference for the current redesign branch  
+**Branch:** `agent-chatgpt/rademan-redesign`  
+**Product direction:** editorial art marketplace, Persian-first RTL, adaptive navigation  
+**Source of truth:** the exported shared UI surface in `resources/js/components/ui/index.js`, implementation files under `resources/js/components/ui/`, global tokens in `resources/css/app.css`, and the current application shells/routes.
+
+This catalogue records what is implemented in the codebase at the time of writing. It is not a claim that every route, component state, viewport, or accessibility criterion has passed visual QA. Where implementation and the intended design language diverge, the catalogue calls out the gap rather than silently describing the intended state as current behavior.
+
+## 1. Product experience principles
+
+1. **Artwork leads.** Artwork is the primary content; metadata, pricing, artist identity and actions support it.
+2. **Editorial rather than generic SaaS.** Use considered typography, whitespace, strong hierarchy, deliberate composition and restrained surface treatments.
+3. **Role-aware, visually coherent.** Public discovery, buyer, artist and admin areas share semantic tokens and component patterns while navigation and density adapt to each task.
+4. **Persian-first and bidirectional.** RTL is the default. Latin names, URLs, identifiers, prices, email addresses and mixed-direction user content must remain legible.
+5. **Clarity before decoration.** Status, availability, ownership, permissions and next actions must be explicit.
+6. **State-complete UX.** Loading, empty, no-results, validation, error, permission, disabled, busy, success, upload and recovery states are first-class.
+7. **Responsive by intent.** Mobile may change navigation, order and density, but not remove essential information or actions.
+8. **Preserve product behavior.** UI changes must not alter API contracts, route permissions, moderation semantics, privacy, messaging delivery or mutation behavior.
+
+## 2. Visual foundations
+
+### 2.1 Brand palette and semantic color roles
+
+Brand anchors (CSS variables):
+- Ivory: `--rd-brand-ivory` — `#F7F5F0`
+- Charcoal: `--rd-brand-charcoal` — `#242320`
+- Terracotta: `--rd-brand-terracotta` — `#A64F31`
+- Sand: `--rd-brand-sand` — `#D8C9B7`
+- Olive: `--rd-brand-olive` — `#536052`
+
+Components should consume semantic roles rather than hard-code brand values:
+- Canvas and surfaces: `--rd-canvas`, `--rd-surface`, `--rd-surface-raised`, `--rd-surface-muted`
+- Text: `--rd-text-primary`, `--rd-text-secondary`, `--rd-text-tertiary`
+- Rules: `--rd-border-subtle`, `--rd-border-strong`, `--rd-divider-section`, `--rd-divider-group`, `--rd-divider-nested`
+- Actions and states: `--rd-action`, `--rd-action-hover`, `--rd-action-text`, `--rd-focus`, `--rd-success`, `--rd-warning`, `--rd-danger`, `--rd-info`
+- Overlay and loading: `--rd-overlay`, `--rd-skeleton-base`, `--rd-skeleton-highlight`
+- Messaging: `--rd-message-own`, `--rd-message-peer`
+
+The dark theme is declared under `:root[data-theme='dark']`; semantic roles adapt while brand anchors remain stable. Theme review must include surfaces, text, dividers, controls, feedback, overlays, focus and skeletons.
+
+### 2.2 Divider and border hierarchy
+
+All structural rules use the shared `--rd-line-width: 1px`. Importance is expressed by tint, not thickness:
+- **Section boundary:** `--rd-divider-section` — strongest structural separator.
+- **Peer group boundary:** `--rd-divider-group` — quieter separation between related groups.
+- **Nested boundary:** `--rd-divider-nested` — lightest separation within a group.
+
+Use proximity, alignment and whitespace before adding a line. Use similarity for repeated controls, common region for true groups, and avoid stacking a card border, inner border and separator around the same content. A child separator must never visually outweigh its parent boundary.
+
+Tailwind semantic utilities: `border-divider-section`, `border-divider-group`, `border-divider-nested`; the shared `Separator` supports `tone="section|group|nested"`.
+
+### 2.3 Typography
+
+- Persian primary family: Vazirmatn (`--rd-font-persian`).
+- Latin companion family: Inter (`--rd-font-latin`).
+- Combined stack: `--rd-font-sans`.
+- Semantic sizes: `--rd-text-xs` through `--rd-text-5xl`.
+- Line-height roles: `--rd-leading-copy`, `--rd-leading-heading`, `--rd-leading-tight`, `--rd-leading-relaxed`.
+- Weight roles: regular, medium, semibold, bold and extrabold.
+
+Use heading typography for hierarchy, readable line lengths for long-form copy, tabular numerals for metrics, and explicit LTR/auto direction for identifiers or mixed-direction content when necessary.
+
+### 2.4 Spacing, page width and responsive geometry
+
+Spacing uses a 4px base scale: `--rd-space-1` to `--rd-space-24` (0.25rem to 6rem). Layout tokens include:
+- `--rd-content-width`: overall content maximum.
+- `--rd-content-wide-width`: wide content container.
+- `--rd-content-reading-width`: long-form reading measure.
+- `--rd-page-gutter`: fluid page edge spacing.
+- `--rd-header-height` and `--rd-workspace-nav-height`.
+- `--rd-control-height-sm|md|lg`.
+
+Use shared `PageContainer` or `Container` for consistent page widths. Page-level composition should not independently invent horizontal gutters on every route.
+
+### 2.5 Shape, elevation and media
+
+Current shape tokens: `--rd-radius-sm|md|lg|xl|pill`; elevation tokens: `--rd-shadow-soft` and `--rd-shadow-raised`. Artwork ratios include `--rd-artwork-ratio` (4:3) and `--rd-portrait-ratio` (4:5).
+
+Artwork itself should remain undistorted. Use `object-contain` when the complete work is the subject; use `object-cover` only for a deliberate editorial crop, avatar or ambient image. Keep the media frame and its internal padding intentional; the image should occupy the available frame without erasing the frame's breathing room.
+
+## 3. Layout and composition patterns
+
+### Page frame
+- Use one shared page-width and gutter contract across public pages and workspaces.
+- Keep the page title, description and primary actions in a predictable header region.
+- Use section headings to establish content hierarchy.
+- Avoid unnecessary nested panels. A surface/card should represent a meaningful interaction or information group.
+
+### Editorial page header
+`PageHeader` supports eyebrow, title, description, actions and heading level. Current implementation uses RTL alignment, a terracotta leading accent and a section boundary. On narrow screens, actions and content stack.
+
+### Section header
+`SectionHeader` supports eyebrow, title, description, actions and heading level. It uses a lighter group boundary and a secondary accent, establishing a lower level than the page header.
+
+### Workspace hero
+`WorkspaceHero` is a high-emphasis dark/ink region with inverse text, terracotta accent and optional actions. Reserve it for workspace identity or a meaningful overview, not every page section.
+
+### Surfaces and cards
+`Surface` offers default, muted, raised and interactive variants. Use a filled/raised treatment only when it improves grouping or interaction affordance. `Card` is a bordered content region; `Callout` is reserved for contextual feedback or important notes.
+
+### Gestalt rules
+- **Proximity:** related labels, values, controls and metadata should be close.
+- **Similarity:** repeated controls and content items share visual grammar.
+- **Common region:** use a surface only for content that genuinely belongs together.
+- **Continuity:** align repeated elements and preserve predictable reading paths.
+- **Figure/ground:** artwork and primary actions should remain visually distinct from supporting metadata.
+- **Hierarchy:** communicate importance with typography, spacing, semantic color and tonal dividers—not arbitrary border thickness.
+
+## 4. Shared component catalogue
+
+All shared components are exported through `resources/js/components/ui/index.js`. Prefer imports from this barrel in route-level code.
+
+### 4.1 Actions and form controls — `primitives.jsx`
+
+| Component | Responsibility | Current API / behavior |
+|---|---|---|
+| `Button` | Text action | `variant`: primary, secondary, outline, ghost, danger; `size`: sm, md, lg; supports loading, disabled, explicit type; forwards ref. |
+| `IconButton` | Icon-only action | Requires accessible `label` or `title`; size sm/md/lg; tooltip; forwards ref. |
+| `Badge` | Compact status/context label | neutral, success, warning, danger, info, accent. |
+| `StatusBadge` | Domain status mapping | Maps known moderation/availability statuses to semantic Badge variants; accepts status and optional display label. |
+| `FormField` | Label and field relationship | Generates ID if absent; supports required marker, hint, error; associates described-by and invalid state with a single child control. |
+| `TextInput` | Single-line input | Shared control baseline; forwards ref and native input props. |
+| `TextareaField` | Multiline input | Shared control baseline, default 4 rows, resizable vertically; forwards ref. |
+| `FileInput` | File selection | Shared control baseline and styled file selector; forwards ref. |
+| `SelectField` | Accessible select | Radix Select wrapper; accepts option children, controlled/uncontrolled value, placeholder, disabled, required, RTL by default. |
+| `Checkbox` | Boolean selection | Radix Checkbox wrapper; supports controlled/uncontrolled usage and label content. |
+| `SearchField` | Search control | Shared search input pattern; see implementation for current props. |
+
+**Form contract:** use `FormField` for labels, required indicators, hints and validation. Use the matching shared control rather than recreating its baseline styles in a page. Set `type="submit"` explicitly on submit buttons. Icon-only controls must have an accessible name. Preserve refs and native attributes for focus management and form integration.
+
+### 4.2 Page structure and semantic composition — `primitives.jsx`, `layout.jsx`
+
+| Component | Responsibility |
+|---|---|
+| `PageContainer` | Centered page width; `wide`, `reading`, `full` modes. |
+| `PageHeader` | Page title, eyebrow, description and actions. |
+| `SectionHeader` | Section-level title, description and actions. |
+| `WorkspaceHero` | High-emphasis workspace introduction. |
+| `Surface` | default, muted, raised and interactive surface variants. |
+| `DashboardMetricCard` | Metric label, value, detail and optional destination. |
+| `Box` | Minimal semantic wrapper with ref forwarding. |
+| `Flex` | Flex layout with direction, alignment, justification, wrap and gap. |
+| `Grid` | Grid layout with configured column count and gap. |
+| `Container` | Wide, reading or full-width centered container. |
+| `Section` | Semantic section wrapper. |
+| `Inset` | Logical or physical padding helper. |
+| `Heading`, `Text`, `Strong`, `Em` | Semantic typography helpers. |
+| `Code`, `Quote`, `Blockquote` | Inline/block quotation and code treatments. |
+| `Separator` | Horizontal/vertical 1px rule with section/group/nested tone. |
+| `AspectRatio` | Ratio-constrained media/content frame. |
+| `Avatar` | Image with fallback and size variants. |
+| `Card` | Bordered paper surface, optionally interactive. |
+| `Callout` | info, success, warning and danger contextual note. |
+| `Progress`, `Spinner`, `Kbd` | Progress, loading and keyboard hint primitives. |
+| `AccessibleIcon`, `VisuallyHidden` | Accessible naming and visually-hidden content. |
+| `Table` | Responsive horizontal-scroll wrapper for semantic table. |
+| `DataList`, `DataListItem` | Label/value information layout with nested dividers. |
+
+### 4.3 Navigation — `navigation.jsx`
+
+- `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`: Radix tabs with active and focus styling.
+- `DropdownMenu`, `DropdownMenuTrigger`, `DropdownMenuContent`, `DropdownMenuItem`, `DropdownMenuLabel`, `DropdownMenuSeparator`: accessible menu composition; content defaults to RTL and end alignment.
+- `Breadcrumbs`: page path with current-page semantics.
+- `Pagination`: previous/next and compact page selection; hides when fewer than two pages exist.
+
+Use navigation components for navigation, not generic clickable containers. Preserve current-page semantics and keyboard behavior.
+
+### 4.4 Dialogs, overlays and tooltip
+
+- `Dialog`, `DialogTrigger`, `DialogClose`, `DialogContent`, `DialogTitle`, `DialogDescription`: shared Radix dialog surface and responsive placement.
+- `AlertDialog`, `AlertDialogTrigger`, `AlertDialogCancel`, `AlertDialogAction`, `AlertDialogContent`, `AlertDialogTitle`, `AlertDialogDescription`: confirmation flow for consequential actions.
+- `Tooltip`: supplemental context for controls; never the only accessible name.
+
+Keep dialog focus contained and restored, support Escape/outside dismissal where appropriate, and use alert dialogs for decisions with consequences.
+
+### 4.5 Feedback and media — `feedback.jsx`
+
+| Component | Responsibility |
+|---|---|
+| `Skeleton`, `SkeletonLines` | Loading placeholders; match destination geometry and respect reduced motion. |
+| `MediaImage` | Image loading, skeleton, error fallback and optional image variant. |
+| `EmptyState` | No-content/no-results explanation with optional action. |
+| `ErrorState` | Error explanation and optional retry action. |
+| `SuccessState` | Concise success feedback. |
+| `PermissionState` | Access restriction explanation. |
+| `UploadFeedback` | File name, upload state, progress and message. |
+| `Toast` | Transient success/error/info notification. |
+
+Image states must be meaningful and must not collapse the reserved media frame. Provide useful alt text when the image conveys content; use empty alt for decorative media.
+
+### 4.6 Domain cards and skeletons
+
+- `ArtworkCard`: artwork image in a portrait frame using `MediaImage` with `object-contain`; shows category, title, artist and formatted price; links to artwork detail.
+- `ArtistCard`: artist identity, initial/avatar treatment, city, biography excerpt and profile link.
+- Skeleton exports include artwork/artist cards, artwork detail, artist profile, forms, studio lists, conversation inbox/history, admin lists/dashboard, collection cards/details, notifications and homepage.
+
+Domain cards should present real data only. Do not fabricate ratings, sales, availability or other marketplace facts.
+
+## 5. Interaction states and behavior
+
+Every relevant control or page must account for:
+- Rest, hover, focus-visible, pressed, selected/current, expanded/collapsed.
+- Disabled and busy/submitting states.
+- Loading and background refresh.
+- Empty and no-results states.
+- Client validation and server validation errors.
+- Network/server failure and retry/recovery.
+- Permission denied, private or unavailable content.
+- Success confirmation and destructive-action confirmation.
+- Long content, missing optional fields and malformed/unavailable media.
+
+Focus must be visible and must not cause layout shifts. Hover must not be the only affordance. Reduced-motion preferences must be respected.
+
+## 6. Responsive, RTL and accessibility standards
+
+### Responsive behavior
+- Public navigation and workspace navigation adapt between wide and narrow layouts.
+- Workspaces use desktop navigation rails and compact mobile navigation patterns; messaging has a dedicated split-view/mobile transition.
+- Account for safe-area insets, sticky/fixed elements, mobile browser chrome and virtual keyboard.
+- Avoid horizontal page overflow; tables may use a local horizontal-scroll wrapper when necessary.
+- Test at 320, 360, 390, 430, 768, 1024, 1280 and 1440px widths.
+
+### RTL and mixed direction
+- RTL is the default for Persian-first surfaces.
+- Prefer logical properties/utilities (`ps`, `pe`, `start`, `end`) over hard-coded left/right.
+- Use `dir="ltr"` for code, keyboard shortcuts and page-number sequences when appropriate.
+- Use `dir="auto"` or explicit direction for user-provided names, identifiers, URLs and mixed-direction strings.
+- Verify numerals, punctuation, currency and text truncation in both directions.
+
+### Accessibility
+- Use semantic HTML and heading order.
+- Associate labels, hints and errors with controls.
+- Give icon-only actions accessible names.
+- Maintain keyboard operation, visible focus, dialog focus management and escape behavior.
+- Announce asynchronous status changes without making entire interactive regions live.
+- Do not communicate state by color alone.
+- Review contrast in both themes and for disabled, placeholder, focus and status states.
+- Respect reduced motion and touch target needs.
+
+## 7. Component ownership and implementation rules
+
+- `primitives.jsx`: low-level controls and shared page primitives.
+- `layout.jsx`: semantic layout, typography, grouping and data-display primitives.
+- `navigation.jsx`: navigation and menu patterns.
+- `feedback.jsx`: feedback, loading and media states.
+- `cards.jsx`: reusable marketplace domain cards.
+- `skeletons.jsx`: page/feature loading compositions.
+- `index.js`: public shared UI export surface.
+- `resources/js/app/`: route-level composition and feature orchestration.
+
+Pages should compose shared components rather than reimplement common controls. Add a shared variant when a pattern is reused with materially different semantics. Keep domain/API orchestration out of generic primitives. Preserve native semantic elements when no shared component adds value.
+
+## 8. Known implementation gaps to resolve
+
+These are code-level observations, not claims about the rendered result:
+1. **Radius consistency is not yet fully normalized.** The current Button base uses `rounded-sm`, IconButton uses `rounded-md`, Badge uses `rounded-sm`, and several page-level controls still define their own radius utilities. If a single button radius is the accepted rule, normalize all button-like primitives and audit consumers.
+2. **Border strategy is mixed.** The semantic divider tokens are available, but some components still use `border-border`, `border-border-strong`, `border-dashed` or direct `h-px` rules. Migrate only where the rule is structural; retain stronger borders for actual control boundaries where appropriate.
+3. **Card treatment is intentionally not universal.** `ArtworkCard` and `ArtistCard` use different compositions; some shared `Card`/ `Surface` consumers still need route-level visual review to ensure grouped content is coherent.
+4. **Image behavior is role-dependent.** Artwork uses containment, while avatars and editorial imagery may use cover. Audit each usage rather than applying one global object-fit rule.
+5. **API documentation depth varies.** Some components have concise contracts documented here; for exact props, inspect the source implementation and its TypeScript/JSDoc if available.
+6. **Visual verification remains open.** The existence of tokens and components does not prove pixel-level consistency, accessibility conformance or responsive correctness.
+
+## 9. Quality checklist for future changes
+
+Before considering a component or page complete:
+- [ ] Reuse the shared export where an equivalent component exists.
+- [ ] Confirm semantic HTML, accessible name, labels and descriptions.
+- [ ] Check hover, focus, pressed, disabled, busy and error states.
+- [ ] Check Persian RTL and mixed Latin/number content.
+- [ ] Check light and dark themes.
+- [ ] Check narrow, medium and wide viewports.
+- [ ] Check image loading, missing media and fallback geometry.
+- [ ] Apply Gestalt grouping; remove redundant borders and containers.
+- [ ] Preserve route, API, authorization and mutation contracts.
+- [ ] Add/update tests for changed behavior and run relevant checks.
+- [ ] Record browser/manual visual QA separately from automated test results.
+
+## 10. Source map
+
+- Tokens and global styles: `resources/css/app.css`
+- Tailwind semantic mappings: `tailwind.config.js`
+- Shared export surface: `resources/js/components/ui/index.js`
+- Controls/page primitives: `resources/js/components/ui/primitives.jsx`
+- Layout and semantic primitives: `resources/js/components/ui/layout.jsx`
+- Navigation: `resources/js/components/ui/navigation.jsx`
+- Feedback/media: `resources/js/components/ui/feedback.jsx`
+- Domain cards: `resources/js/components/ui/cards.jsx`
+- Loading compositions: `resources/js/components/ui/skeletons.jsx`
+- Public/workspace shells: `resources/js/app/Layouts.jsx`
+- Route and overhaul coverage ledger: `AI/COMPLETE-APPLICATION-OVERHAUL.md`
+- Design principles and implementation contract: `AI/DESIGN-SYSTEM.md`
