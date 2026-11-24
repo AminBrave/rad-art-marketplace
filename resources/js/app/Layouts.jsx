@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Heart, Images, LayoutDashboard, Menu, MessageCircle, Settings as SettingsIcon, UserRound, Users, X } from 'lucide-react';
+import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Heart, Images, LayoutDashboard, Menu, MessageCircle, Monitor, Moon, Settings as SettingsIcon, Sun, UserRound, Users, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { getWorkspaceMobileLinks } from './workspaceNavigation';
+import { useTheme } from './useTheme';
 import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, Checkbox, NotificationListSkeleton } from '../components/ui';
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
@@ -17,6 +18,22 @@ const publicSecondaryLinks = [
     { to: '/help', label: 'راهنما' },
     { to: '/contact', label: 'تماس' },
 ];
+
+function ThemeControl() {
+    const { theme, cycleTheme } = useTheme();
+    const Icon = theme === 'dark' ? Moon : theme === 'light' ? Sun : Monitor;
+    const label = theme === 'dark' ? 'تیره' : theme === 'light' ? 'روشن' : 'هماهنگ با دستگاه';
+
+    return (
+        <Button variant="ghost" type="button" onClick={cycleTheme}
+            aria-label={`تغییر پوسته؛ حالت فعلی: ${label}`}
+            title={`پوسته: ${label}`}
+            className="min-h-0 p-0 inline-flex h-11 w-11 shrink-0 items-center justify-center border border-border bg-surface text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong">
+            <Icon size={18} strokeWidth={1.9} aria-hidden="true" />
+            <span className="sr-only">تغییر پوسته</span>
+        </Button>
+    );
+}
 
 export function PublicLayout() {
     const { user, logout } = useAuth();
@@ -74,6 +91,7 @@ export function PublicLayout() {
                     </nav>
 
                     <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+                        <ThemeControl />
                         {user ? (
                             <>
                                 <span className="hidden max-w-36 truncate text-sm font-semibold text-ink 2xl:inline">{user.name}</span>
