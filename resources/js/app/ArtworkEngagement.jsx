@@ -26,7 +26,7 @@ function CommentItem({ comment, user, onReply, onDelete, onReport }) {
                 </div>
             )}
             {comment.replies?.length > 0 && (
-                <div role="group" aria-label={t("پاسخ‌های این دیدگاه")} className="mt-5 space-y-3 border-r-2 border-terracotta/40 pr-3 sm:pr-5">
+                <div role="group" aria-label={t("پاسخ‌های این دیدگاه")} className="mt-5 space-y-3 border-s-2 border-terracotta/40 ps-3 sm:ps-5">
                     {comment.replies.map((reply) => (
                         <article id={'comment-' + reply.id} key={reply.id} className="min-w-0 border border-border bg-surface-muted p-3 sm:p-4">
                             <header className="flex min-w-0 items-start justify-between gap-3">
