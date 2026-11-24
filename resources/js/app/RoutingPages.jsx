@@ -509,12 +509,12 @@ export function ArtistProfileSettings() {
                 <FormField label="نام نمایشی" required error={errors.display_name?.join(' ')} className="sm:col-span-2"><TextInput name="display_name" value={form.display_name ?? ''} onChange={update} required maxLength="120" /></FormField>
                 <FormField label="درباره هنرمند" error={errors.bio?.join(' ')} className="sm:col-span-2"><TextareaField name="bio" value={form.bio ?? ''} onChange={update} rows={4} maxLength="2000" /></FormField>
                 <FormField label="شهر" error={errors.city?.join(' ')}><TextInput name="city" value={form.city ?? ''} onChange={update} maxLength="120" /></FormField>
-                <FormField label="شناسه اینستاگرام" error={errors.instagram_handle?.join(' ')}><TextInput name="instagram_handle" value={form.instagram_handle ?? ''} onChange={update} maxLength="30" dir="ltr" className="text-end" /></FormField>
+                <FormField label="شناسه اینستاگرام" error={errors.instagram_handle?.join(' ')}><TextInput name="instagram_handle" value={form.instagram_handle ?? ''} onChange={update} maxLength="30" dir="ltr" className="text-start" /></FormField>
                 <FormField label="وب‌سایت" error={errors.website_url?.join(' ')} className="sm:col-span-2"><TextInput name="website_url" type="url" value={form.website_url ?? ''} onChange={update} dir="ltr" className="text-end" placeholder="https://example.com" /></FormField>
                 <Checkbox name="is_public" checked={Boolean(form.is_public)} onChange={update} className="flex min-h-11 items-center gap-3 text-sm font-semibold sm:col-span-2">نمایش عمومی پروفایل</Checkbox>
                 <div className="sm:col-span-2">
                     <Button type="submit" disabled={busy} loading={busy}>{busy ? 'در حال ذخیره…' : 'ذخیره پروفایل'}</Button>
-                    {profile?.slug && <Link to={'/artists/' + profile.slug} className="mr-4 text-sm font-semibold text-terracotta-strong underline">{profile.is_public ? 'پیش‌نمایش پروفایل عمومی' : 'پیش‌نمایش خصوصی پروفایل'}</Link>}
+                    {profile?.slug && <Link to={'/artists/' + profile.slug} className="ms-4 text-sm" font-semibold text-terracotta-strong underline">{profile.is_public ? 'پیش‌نمایش پروفایل عمومی' : 'پیش‌نمایش خصوصی پروفایل'}</Link>}
                     {profile?.slug && !profile.is_public && <p className="mt-3 text-xs leading-6 text-muted sm:col-span-2">این پیش‌نمایش فقط برای شما و مدیران مجاز قابل مشاهده است؛ بازدیدکنندگان عمومی به پروفایل خصوصی دسترسی ندارند.</p>}
                     <p className="mt-2 text-xs text-muted sm:col-span-2">{(form.bio?.length ?? 0).toLocaleString('fa-IR')} از ۲۰۰۰ نویسه برای معرفی هنری استفاده شده است.</p>
                 </div>
