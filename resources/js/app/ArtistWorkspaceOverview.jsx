@@ -46,7 +46,7 @@ export default function ArtistWorkspaceOverview() {
 
     return (
         <div className="w-full" dir="rtl">
-            <Container width="wide" className="space-y-7">
+            <div className="rd-container min-w-0 mx-auto w-full max-w-content space-y-7">
                 <PageHeader
                     eyebrow="استودیوی هنرمند"
                     title={<>خوش آمدید، {user?.name}</>}
@@ -123,7 +123,7 @@ export default function ArtistWorkspaceOverview() {
                         </div>
                     </div>
                 </section>
-            </Container>
+            </div>
         </div>
     );
 }
