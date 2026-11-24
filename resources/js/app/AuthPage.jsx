@@ -59,7 +59,7 @@ export default function AuthPage({ initialMode = 'login' }) {
 
     return (
         <Container as="div" width="reading" className="py-12" dir="rtl">
-            <section className="border-y-2 border-ink bg-paper p-6 sm:p-9">
+            <section className="border-y border-ink bg-paper p-6 sm:p-9">
                 <Link to="/" className="text-sm font-bold text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2">بازگشت به راد آرت</Link>
                 <h1 className="mt-5 text-3xl font-black tracking-tight">{mode === 'register' ? 'ساخت حساب کاربری' : 'ورود به حساب'}</h1>
                 <div className="mt-7 flex gap-5 border-b-2 border-ink pb-4">
