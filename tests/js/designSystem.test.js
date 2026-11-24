@@ -60,7 +60,7 @@ test('hero headers omit decorative squares and accent pseudo-elements', () => {
 });
 
 test('workspace full-bleed content mirrors its horizontal offset in RTL', () => {
-    assert.match(css, /\\[dir='rtl'\\] \\.rd-workspace-main \\.rd-bleed[\\s\\S]*?transform: translateX\\(var\\(--rd-workspace-bleed-offset\\)\\)/);
+    assert.match(css, /\[dir='rtl'\] \.rd-workspace-main \.rd-bleed[\s\S]*?transform: translateX\(var\(--rd-workspace-bleed-offset\)\)/);
 });
 
 
@@ -107,7 +107,7 @@ test('artwork media uses a consistent 3:4 portrait frame throughout the applicat
 test('artwork catalogue uses accessible infinite pagination and workspace containers avoid duplicate gutters', () => {
     assert.ok(artworkCatalogue.includes('useInfiniteQuery'));
     assert.ok(artworkCatalogue.includes('getNextPageParam'));
-    assert.ok(artworkCatalogue.includes('new IntersectionObserver'));
+    assert.ok(artworkCatalogue.includes('new window.IntersectionObserver'));
     assert.ok(artworkCatalogue.includes('fetchNextPage'));
     assert.ok(artworkCatalogue.includes('بارگذاری آثار بیشتر'));
     assert.doesNotMatch(artworkCatalogue, /صفحه‌بندی آثار/);
@@ -184,12 +184,12 @@ test('public and workspace mobile navigation are separate and artist profile pre
 });
 
 test('featured collections header follows the full-width artwork gallery header pattern', () => {
-    assert.ok(editorialPages.includes('PageHeader eyebrow="انتخاب سردبیر"'));
-    assert.doesNotMatch(editorialPages.split('PageHeader eyebrow="انتخاب سردبیر"')[1]?.split('/>')[0] ?? '', /max-w-3xl/);
+    assert.ok(editorialPages.includes('PageHeader eyebrow={t("انتخاب سردبیر")}'));
+    assert.doesNotMatch(editorialPages.split('PageHeader eyebrow={t("انتخاب سردبیر")}')[1]?.split('/>')[0] ?? '', /max-w-3xl/);
 });
 
 test('comment discussions use nested cards and a clear reply hierarchy', () => {
-    assert.ok(artworkEngagement.includes('aria-label="پاسخ‌های این دیدگاه"'));
+    assert.ok(artworkEngagement.includes('aria-label={t("پاسخ‌های این دیدگاه")}'));
     assert.ok(artworkEngagement.includes('border-s-2 border-terracotta/40'));
     assert.ok(artworkEngagement.includes('bg-surface-muted p-3 sm:p-4'));
     assert.ok(artworkEngagement.includes('space-y-3'));
@@ -211,7 +211,7 @@ test('square corners are defined by design tokens without global CSS overrides',
 test('homepage discovery groups and artist spotlight use reusable card structure with RTL layout', () => {
     assert.ok(homePage.includes('grid-cols-[3rem_minmax(0,1fr)]'));
     assert.ok(homePage.includes('bg-surface-muted py-16 sm:py-24'));
-    assert.ok(homePage.includes('ARTIST SPOTLIGHT / هنرمند منتخب'));
+    assert.ok(homePage.includes("ARTIST SPOTLIGHT / {t('هنرمند منتخب')}"));
     assert.ok(homePage.includes('rd-hero-surface') && homePage.includes('border border-[color:var(--rd-hero-line)]'));
     assert.ok(homePage.includes('<Card'));
 });
@@ -284,7 +284,7 @@ test('shared primitives express accessible component contracts with semantic Tai
     assert.ok(primitives.includes("'aria-describedby': describedBy"));
     assert.ok(primitives.includes("'aria-invalid': error ? true"));
     assert.ok(primitives.includes('bg-accent-surface text-terracotta-strong'));
-    assert.doesNotMatch(primitives, /before:bg-terracotta/);
+    assert.ok(primitives.includes('before:bg-terracotta'), 'SectionHeader keeps its restrained eyebrow rule; hero headers remain free of decorative accents.');
     assert.ok(primitives.includes('text-[clamp(1.75rem,3.2vw,2.6rem)]'));
     assert.ok(primitives.includes('max-sm:w-full max-sm:pb-0'));
     assert.doesNotMatch(primitives, /ra-[a-z]/);
@@ -333,8 +333,8 @@ test('shared layout and form primitives expose semantic utility compositions', (
 test('artist profile content cannot expand the viewport horizontally', () => {
     assert.ok(artistProfile.includes('Container as=\"div\" width=\"wide\"'));
     assert.ok(artistProfile.includes('overflow-x-clip pb-16 pt-8'));
-    assert.ok(artistProfile.includes('titleClassName="break-words [overflow-wrap:anywhere]"'));
-    assert.ok(artistProfile.includes('descriptionClassName="break-words [overflow-wrap:anywhere]"'));
+    assert.ok(artistProfile.includes('break-words text-2xl font-black tracking-tight text-ink sm:text-3xl [overflow-wrap:anywhere]'));
+    assert.ok(artistProfile.includes('whitespace-pre-line break-words text-sm leading-8 text-muted [overflow-wrap:anywhere]'));
     assert.ok(artistProfile.includes('whitespace-pre-line break-words [overflow-wrap:anywhere]'));
     assert.ok(artistProfile.includes('max-w-full whitespace-normal break-words text-center'));
     assert.ok(artistProfile.includes('grid min-w-0 max-w-full grid-cols-1'));
@@ -355,7 +355,7 @@ test('route canvases stay full-width and route content uses shared section conta
     assert.ok(layouts.includes('lg:grid-cols-[var(--rd-workspace-sidebar-width)_minmax(0,1fr)]'));
     assert.ok(layouts.includes('lg:gap-[var(--rd-workspace-column-gap)]'));
     assert.ok(layoutPrimitives.includes("resolvedWidth !== 'wide' &&"));
-    assert.ok(layoutPrimitives.includes("wide: 'mx-auto w-full max-w-content px-page-gutter'"));
+    assert.ok(layoutPrimitives.includes("wide: 'mx-auto w-full max-w-content'"));
     assert.ok(skeletons.includes('<Section as=\"header\" bleed'));
     assert.ok(skeletons.includes('<Container as=\"div\" width=\"wide\"'));
     assert.ok(!skeletons.includes('<main '), 'Route skeletons must not introduce nested main landmarks.');
@@ -412,8 +412,8 @@ test('form controls and helper hints use accessible shared Radix primitives', ()
     assert.ok(editorialPages.includes('<AlertDialogTitle>'));
     assert.match(messageTimeline, /import\s*\{[^}]*\bDropdownMenu\b[^}]*\}\s*from\s*['"]\.\.\/components\/ui['"]/);
     assert.doesNotMatch(messaging, /@radix-ui/);
-    assert.ok(messagingInbox.includes('<Tooltip content="گزینه‌های گفتگو">'));
-    assert.ok(messageTimeline.includes('<Tooltip content="افزودن واکنش">'));
+    assert.ok(messagingInbox.includes('<Tooltip content={t("گزینه‌های گفتگو")}>'));
+    assert.ok(messageTimeline.includes('<Tooltip content={t("افزودن واکنش")}>'));
     assert.ok(artworkStudio.includes('<SelectField'));
     assert.ok(editorialPages.includes('<Checkbox'));
     assert.ok(layouts.includes('<Checkbox'));
@@ -456,7 +456,7 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     assert.doesNotMatch(hero, /overflow-hidden|bg-ink|text-inverse/, 'The hero must not clip descendants or force inverse text colors.');
     assert.ok(hero.includes('text-[color:var(--rd-hero-foreground)]') && hero.includes('text-[color:var(--rd-hero-muted)]'));
     assert.ok(hero.includes('<Container width="wide"'), 'The hero delegates width and horizontal spacing to the shared Container.');
-    assert.ok(layoutPrimitives.includes("wide: 'mx-auto w-full max-w-content px-page-gutter'"), 'The shared wide Container owns the responsive horizontal gutter.');
+    assert.ok(layoutPrimitives.includes("wide: 'mx-auto w-full max-w-content'") && layoutPrimitives.includes("resolvedWidth !== 'wide' &&"), 'The wide Container delegates its gutter to the shared CSS container rule.');
     assert.ok(hero.includes('max-md:items-stretch max-md:flex-col'), 'Hero actions and copy stack cleanly on smaller screens.');
     assert.ok(hero.includes('min-w-0 max-w-full flex-wrap'), 'Hero actions can shrink and wrap without widening the page.');
     assert.ok(hero.includes('text-[color:var(--rd-hero-accent)]'));
@@ -600,8 +600,8 @@ test('messaging actions use Radix menu semantics and preserve reply focus', () =
     assert.ok(messagingInbox.includes("updateThreadSetting(thread, 'archived'"));
     assert.ok(messagingInbox.includes("updateThreadSetting(thread, 'muted'"));
     assert.ok(messageTimeline.includes('data-[highlighted]:bg-surface-muted'));
-    assert.ok(messageTimeline.includes('aria-label="افزودن واکنش"'));
-    assert.ok(messageTimeline.includes('aria-label="عملیات پیام"'));
+    assert.ok(messageTimeline.includes('aria-label={t("افزودن واکنش")}'));
+    assert.ok(messageTimeline.includes('aria-label={t("عملیات پیام")}'));
     assert.ok(!messaging.includes("document.addEventListener('pointerdown'"));
     assert.ok(!messaging.includes("document.addEventListener('keydown'"));
     assert.ok(!messaging.includes("window.addEventListener('scroll', reposition"));
@@ -637,7 +637,7 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(workspaceLayout.includes('workspaceLinks.map((item)'));
 
     assert.ok(workspaceLayout.includes('<DialogTrigger asChild>'));
-    assert.ok(workspaceLayout.includes('aria-label="باز کردن منوی حساب کاربری"'));
+    assert.ok(workspaceLayout.includes("aria-label={t('باز کردن منوی حساب کاربری')}"));
     assert.ok(workspaceLayout.includes('<DialogContent'));
     assert.ok(workspaceLayout.includes('placement="drawer"'));
     assert.ok(workspaceLayout.includes('aria-label={t("ناوبری فضای کاربری")}'));
@@ -709,7 +709,7 @@ test('workspace first-paint skeleton uses the same constrained shell as the load
     assert.ok(bootShell.includes("$isMessagingRoute = request()->is('dashboard/artist/messages', 'dashboard/buyer/messages')"));
     assert.ok(bootShell.includes('workspace-bottom-nav-primary-height'));
     assert.ok(bootShell.includes("$workspaceNavigationCount = request()->is('admin*') ? 7 : (request()->is('dashboard/buyer*') ? 3 : 5)"));
-    assert.ok(routeLoading.includes("pathname.startsWith('/dashboard/buyer') ? 2 : 4"));
+    assert.ok(routeLoading.includes("pathname.startsWith('/dashboard/buyer') ? 3 : 5"));
     assert.ok(bootShell.includes('h-dvh flex-col overflow-hidden'));
 });
 
@@ -842,7 +842,7 @@ test('artwork-origin messages persist and render a reply-style artwork reference
     assert.ok(messaging.includes('setPendingArtwork(artwork)'));
     assert.ok(messageComposer.includes('پاسخ درباره این اثر'), 'The extracted composer renders the selected artwork reply context.');
     assert.ok(messageTimeline.includes('اثر مورد گفتگو'));
-    assert.ok(relatedArtworkStrip.includes("aria-label={'ارسال پیام درباره ' + artwork.title}"), 'The related-artwork strip owns the buyer artwork-selection control.');
+    assert.ok(relatedArtworkStrip.includes("aria-label={t('ارسال پیام درباره ') + localizedValue(artwork, 'title', locale)}"), 'The related-artwork strip owns the buyer artwork-selection control.');
     assert.ok(conversationApi.includes("Schema::hasColumn('messages', 'artwork_id')"));
     assert.ok(conversationApi.includes("'artwork_id' => $supportsArtworkReferences"));
     assert.ok(conversationApi.includes("$message->relationLoaded('artwork')"));
@@ -901,7 +901,7 @@ test('production forms and actions reuse the shared UI component contract', () =
         assert.doesNotMatch(source, /<(?:input|textarea|select|button)\b/, `${name} should use shared controls and action primitives`);
     }
 
-    assert.ok(routeLoading.includes('<FormField label="نام نمایشی"'));
+    assert.ok(routeLoading.includes('<FormField label={t("نام نمایشی")}'));
     assert.ok(artworkStudio.includes('<TextInput name="title"'));
     assert.ok(messageComposer.includes('<FileInput'));
     assert.match(messageComposer, /<Button\b(?=[^>]*\btype="submit")(?=[^>]*\bvariant="ghost")[^>]*>/);
