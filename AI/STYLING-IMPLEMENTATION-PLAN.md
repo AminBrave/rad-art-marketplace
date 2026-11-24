@@ -20,7 +20,13 @@
 
 ## File-by-file sequence
 
-### Phase 1 — foundation and ownership
+### Current implementation status
+
+The foundation, shared container/section architecture, public-route migrations, workspace-route migrations, loading skeletons, and shared control/surface normalization have been applied on this branch. The remaining work is the final audit of route-specific arbitrary values and class duplication, followed by browser-based visual and responsive verification.
+
+Regression tests have been added or updated, but they have **not been executed** in this session. The repository's available color-accessibility workflow is manually dispatched; no workflow run or browser test result is available for the current branch head.
+
+## Phase 1 — foundation and ownership
 - [x] `resources/js/components/ui/layout.jsx`: canonical Container implementation.
 - [x] `resources/js/components/ui/primitives.jsx`: retain PageContainer as a compatibility alias; begin shared button-radius normalization.
 - [x] `resources/css/app.css`: document full-width main-frame behavior and add the explicit full-bleed section breakout utility; token alias/theme audit remains open.
