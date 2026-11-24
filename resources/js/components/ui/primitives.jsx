@@ -131,7 +131,7 @@ export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, cla
     const Element = as ?? (to ? 'a' : 'article');
     const destinationProps = to ? (Element === 'a' ? { href: to } : { to }) : {};
     return (
-        <Element {...destinationProps} className={cn('flex min-h-36 min-w-0 flex-col justify-between border-y border-divider-group bg-transparent p-5 text-ink no-underline transition-colors hover:border-terracotta', to && 'transition duration-200 hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus', className)}>
+        <Element {...destinationProps} className={cn('flex min-h-36 min-w-0 flex-col justify-between border border-divider-group bg-paper p-5 text-ink no-underline transition-colors hover:border-terracotta', to && 'transition duration-200 hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus', className)}>
             <span className="flex items-center justify-between gap-3">
                 <span className="text-sm font-semibold text-muted">{label}</span>
                 {eyebrow && <span className="text-[10px] font-bold text-terracotta-strong">{eyebrow}</span>}
@@ -143,8 +143,8 @@ export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, cla
 }
 
 const surfaceVariants = {
-    default: 'border-y border-divider-group bg-surface',
-    muted: 'border-y border-divider-group bg-surface-muted',
+    default: 'border border-divider-group bg-surface',
+    muted: 'border border-divider-group bg-surface-muted',
     raised: 'border-y border-divider-group bg-surface shadow-soft',
     interactive: 'border-y border-divider-group bg-surface transition-colors hover:border-terracotta hover:bg-surface-muted focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus',
 };
