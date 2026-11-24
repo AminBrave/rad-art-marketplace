@@ -400,7 +400,7 @@ export function WorkspaceSettingsPage() {
 
     return (
         <Container as="section" width="wide" className="space-y-8">
-            <PageHeader eyebrow="حساب کاربری" title="تنظیمات" description="ترجیحات نمایش و اعلان‌های فضای کاربری را از یک بخش مدیریت کنید." />
+            <PageHeader bleed={false} eyebrow="حساب کاربری" title="تنظیمات" description="ترجیحات نمایش و اعلان‌های فضای کاربری را از یک بخش مدیریت کنید." />
 
             <section className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_16rem]" aria-labelledby="appearance-settings-title">
                 <div className="min-w-0 border border-divider-group bg-paper p-5 sm:p-6">
@@ -501,7 +501,7 @@ export function ArtistProfileSettings() {
 
     return (
         <Container as="section" width="wide" className="space-y-6">
-            <PageHeader
+            <PageHeader bleed={false}
                 eyebrow={t("استودیوی هنرمند")}
                 title={t("پروفایل هنرمند")}
                 description={t("اطلاعات معرفی و وضعیت نمایش عمومی پروفایل خود را مدیریت کنید.")}
