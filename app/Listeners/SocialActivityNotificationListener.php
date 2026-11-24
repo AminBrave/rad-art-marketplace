@@ -25,8 +25,10 @@ class SocialActivityNotificationListener
             'in_app_follows',
             [
                 'actor_name' => $this->publicActorName($actor),
+                'actor_name_en' => $this->publicActorNameEnglish($actor),
                 'artist_slug' => $artistProfile->slug,
                 'artist_name' => $artistProfile->display_name,
+                'artist_name_en' => $artistProfile->display_name_en,
                 'target_url' => '/artists/'.$artistProfile->slug,
             ],
             'follow:'.$followId.':'.$recipient->id,
@@ -47,8 +49,10 @@ class SocialActivityNotificationListener
                 'actor_name' => $this->publicActorName($actor),
                 'artwork_slug' => $artwork->slug,
                 'artwork_title' => $artwork->title,
+                'artwork_title_en' => $artwork->title_en,
                 'artist_slug' => $artistProfile?->slug,
                 'artist_name' => $artistProfile?->display_name,
+                'artist_name_en' => $artistProfile?->display_name_en,
                 'target_url' => '/artworks/'.$artwork->slug,
             ],
             'like:'.$likeId.':'.$recipient->id,
@@ -98,6 +102,7 @@ class SocialActivityNotificationListener
                     'artwork_title' => $artwork->title,
                     'artist_slug' => $artist?->slug,
                     'artist_name' => $artist?->display_name,
+                    'artist_name_en' => $artist?->display_name_en,
                     'comment_id' => $comment->id,
                     'parent_comment_id' => $parent?->id,
                     'comment_preview' => Str::limit($comment->body, 120),
@@ -124,6 +129,15 @@ class SocialActivityNotificationListener
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+    }
+
+    private function publicActorNameEnglish(User $actor): string
+    {
+        if ($actor->isArtist() && $actor->artistProfile?->is_public) {
+            return (string) ($actor->artistProfile->display_name_en ?: $actor->artistProfile->display_name);
+        }
+
+        return $actor->isBuyer() ? 'Buyer' : 'Artist';
     }
 
     private function publicActorName(User $actor): string
