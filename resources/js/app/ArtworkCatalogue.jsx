@@ -98,6 +98,7 @@ export default function ArtworkCatalogue() {
             </Container>
 
             <Section as="section" bleed aria-label="فیلتر و مرتب‌سازی آثار" className="relative mt-8 border-y border-divider-section bg-surface-muted/70 py-6 sm:py-7">
+                <Container width="wide">
                 <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
                     <div>
                         <p className="text-[11px] font-extrabold tracking-[.12em] text-terracotta-strong">جست‌وجوی هدفمند</p>
