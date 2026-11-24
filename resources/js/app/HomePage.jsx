@@ -220,7 +220,7 @@ export default function HomePage() {
                 </Container>
             </section>
 
-            <Container as="section" width="wide" aria-labelledby="artists-title" className="py-14 sm:py-20">
+            <Container as="section" width="wide" aria-labelledby="artists-title" className="py-16 sm:py-24">
                 <SectionHeading
                     id="artists-title"
                     eyebrow="THE PEOPLE / 03"
