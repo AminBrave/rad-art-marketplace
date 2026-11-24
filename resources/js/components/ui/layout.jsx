@@ -32,11 +32,12 @@ export const Container = forwardRef(function Container({ as: Element = 'div', wi
         full: 'w-full max-w-none',
     };
     const resolvedWidth = Object.prototype.hasOwnProperty.call(widths, width) ? width : 'wide';
-    return <Element ref={ref} className={cn('rd-container min-w-0', `rd-container--${resolvedWidth}`, widths[resolvedWidth], className)} {...props} />;
+    const sectionSpacing = Element === 'section' ? 'py-14 sm:py-20' : '';
+    return <Element ref={ref} className={cn('rd-container min-w-0', `rd-container--${resolvedWidth}`, widths[resolvedWidth], sectionSpacing, className)} {...props} />;
 });
 
 export const Section = forwardRef(function Section({ as: Element = 'section', bleed = false, className = '', ...props }, ref) {
-    return <Element ref={ref} className={cn('min-w-0', bleed && 'rd-bleed', className)} {...props} />;
+    return <Element ref={ref} className={cn('min-w-0 py-14 sm:py-20', bleed && 'rd-bleed', className)} {...props} />;
 });
 
 export const Inset = forwardRef(function Inset({ as: Element = 'div', side = 'all', className = '', ...props }, ref) {
