@@ -36,7 +36,7 @@ export const Button = forwardRef(function Button({
             type={type}
             disabled={disabled || loading}
             aria-busy={loading || undefined}
-            className={cn('inline-flex min-h-11 items-center justify-center gap-2 border border-transparent px-4 py-2 text-sm font-bold leading-[1.4] tracking-[-.01em] text-ink no-underline transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus', buttonVariants[variant] ?? buttonVariants.primary, buttonSizes[size] ?? buttonSizes.md, className, 'rounded-none whitespace-nowrap')}
+            className={cn('rd-shine relative isolate overflow-hidden inline-flex min-h-11 items-center justify-center gap-2 border border-transparent px-4 py-2 text-sm font-bold leading-[1.4] tracking-[-.01em] text-ink no-underline transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus', buttonVariants[variant] ?? buttonVariants.primary, buttonSizes[size] ?? buttonSizes.md, className, 'rounded-none whitespace-nowrap')}
             {...props}
         >
             {loading && <span aria-hidden="true" className="h-4 w-4 animate-spin  border-2 border-current border-e-transparent" />}
@@ -54,7 +54,7 @@ export const IconButton = forwardRef(function IconButton({ children, label, titl
                 ref={ref}
                 type="button"
                 aria-label={tooltipLabel}
-                className={cn('inline-flex items-center justify-center border border-border-strong bg-paper p-0 text-ink transition-colors enabled:hover:border-terracotta enabled:hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus shrink-0', dimensions[size] ?? dimensions.md, className, 'rounded-none shrink-0')}
+                className={cn('rd-shine relative isolate overflow-hidden inline-flex items-center justify-center border border-border-strong bg-paper p-0 text-ink transition-colors enabled:hover:border-terracotta enabled:hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus shrink-0', dimensions[size] ?? dimensions.md, className, 'rounded-none shrink-0')}
                 {...props}
             >
                 {children}
