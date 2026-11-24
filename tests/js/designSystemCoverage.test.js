@@ -77,6 +77,7 @@ test('project stylesheets define tokens, base rules and only approved layout pri
         '.rd-workspace-main',
         '.rd-page-frame',
         '.rd-page-frame--workspace',
+        '.rd-container',
         '.rd-container--reading',
         '.rd-container--full',
         '.rd-hero-surface',
