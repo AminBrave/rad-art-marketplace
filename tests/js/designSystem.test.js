@@ -64,7 +64,7 @@ test('artwork and artist cards preserve matte spacing with cover imagery and car
 test('artwork media uses a consistent 3:4 portrait frame throughout the application', () => {
     assert.ok(css.includes('--rd-artwork-ratio: 3 / 4;'));
     for (const source of [cards, artworkGallery, artworkDetail, artworkStudio, adminWorkspace, homePage, skeletons, routeLoading, bootShell]) {
-        assert.doesNotMatch(source, /aspect-\\[(?:4\\/3|4\\/5|5\\/4)\\]/, 'Artwork surfaces must use the shared portrait proportion.');
+        assert.doesNotMatch(source, /aspect-\[(?:4\/3|4\/5|5\/4)\]/, 'Artwork surfaces must use the shared portrait proportion.');
     }
     assert.ok(cards.includes('imageClassName="object-cover'));
     assert.ok(artworkDetail.includes('imageClassName="object-cover'));
