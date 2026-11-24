@@ -4,7 +4,6 @@ import axios from 'axios';
 import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Heart, Images, LayoutDashboard, Menu, MessageCircle, Monitor, Moon, Settings as SettingsIcon, Sun, UserRound, Users, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { getWorkspaceMobileLinks } from './workspaceNavigation';
 import { useTheme } from './useTheme';
 import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, NotificationListSkeleton } from '../components/ui';
 
@@ -173,11 +172,11 @@ export function PublicLayout() {
                             {user ? (
                                 <>
                                     <Link
-                                        to={user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist'}
+                                        to={user.role === 'artist' ? profileHref : user.role === 'admin' ? '/admin' : '/dashboard/buyer'}
                                         onClick={() => setMobileMenuOpen(false)}
                                         className="flex min-h-12 items-center rounded-md px-4 text-sm font-bold text-terracotta-strong hover:bg-accent-surface"
                                     >
-                                        فضای کاربری
+                                        {user.role === 'artist' ? 'پیش‌نمایش پروفایل' : user.role === 'admin' ? 'مدیریت' : 'حساب کاربری'}
                                     </Link>
                                     <Button variant="ghost" type="button" onClick={handleLogout} className="flex min-h-12 items-center rounded-md px-4 text-right text-sm font-semibold text-muted hover:bg-surface-muted hover:text-ink">
                                         خروج از حساب
