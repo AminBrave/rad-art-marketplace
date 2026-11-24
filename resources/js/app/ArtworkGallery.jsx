@@ -45,9 +45,9 @@ export default function ArtworkGallery({ user }) {
             <main className="min-h-screen w-full bg-canvas py-12 text-ink">
                 <Container width="wide">
                 <article className="mx-auto max-w-4xl rounded-card border border-border bg-paper p-6 shadow-sm sm:p-10">
-                    <a href="/" className="font-black text-terracotta-strong"{t('بازگشت به راد آرت')}</a>
+                    <a href="/" className="font-black text-terracotta-strong">{t('بازگشت به راد آرت')}</a>
                     {loading ? <p className="mt-10 text-muted">{t('در حال دریافت اثر…')}</p> : error || !detail ? (
-                        <div className="mt-10"><h1 className="text-2xl font-black" >{t('اثر در دسترس نیست')}</h1><p className="mt-3 text-muted">{t('این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.')}</p></div>
+                        <div className="mt-10"><h1 className="text-2xl font-black">{t('اثر در دسترس نیست')}</h1><p className="mt-3 text-muted">{t('این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.')}</p></div>
                     ) : (
                         <div className="mt-8 grid gap-8 md:grid-cols-[1.1fr_.9fr]">
                             <div className="aspect-[3/4] w-full bg-surface-muted p-3 sm:p-5"><MediaImage src={detail.image_url} alt={localizedValue(detail, 'title', locale)} className="h-full w-full" imageClassName="object-cover" loading="eager" fetchPriority="high" /></div>
@@ -58,9 +58,9 @@ export default function ArtworkGallery({ user }) {
                                 {localizedValue(detail, 'description', locale) && <p className="mt-6 whitespace-pre-line leading-8 text-ink">{localizedValue(detail, 'description', locale)}</p>}
                                 <p className="mt-6 font-bold">{formatArtworkPrice(detail.price, locale)}</p>
                                 <p className="mt-2 text-sm text-muted">{t(detail.availability === 'available' ? 'قابل استعلام' : detail.availability === 'sold' ? 'فروخته‌شده' : 'برای فروش نیست')}</p>
-                                <a href={'/artists/' + detail.artist.slug} className="mt-8 inline-block rounded-control bg-ink px-5 py-3 text-sm font-bold text-inverse"{t('مشاهده پروفایل هنرمند:')} {localizedValue(detail.artist, 'display_name', locale)}</a>
-                                {user?.role === 'buyer' && <a href={'/dashboard/buyer/messages?artist=' + encodeURIComponent(detail.artist.slug) + '&artwork=' + encodeURIComponent(detail.slug)} className="mt-7 inline-flex bg-ink px-5 py-3 text-sm font-bold text-inverse transition hover:bg-terracotta"{t('پیام مستقیم درباره این اثر')}</a>}
-                                {!user && <a href="/#account" className="mt-6 inline-block text-sm font-bold text-terracotta-strong underline"{t('برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید')}</a>}
+                                <a href={'/artists/' + detail.artist.slug} className="mt-8 inline-block rounded-control bg-ink px-5 py-3 text-sm font-bold text-inverse">{t('مشاهده پروفایل هنرمند:')} {localizedValue(detail.artist, 'display_name', locale)}</a>
+                                {user?.role === 'buyer' && <a href={'/dashboard/buyer/messages?artist=' + encodeURIComponent(detail.artist.slug) + '&artwork=' + encodeURIComponent(detail.slug)} className="mt-7 inline-flex bg-ink px-5 py-3 text-sm font-bold text-inverse transition hover:bg-terracotta">{t('پیام مستقیم درباره این اثر')}</a>}
+                                {!user && <a href="/#account" className="mt-6 inline-block text-sm font-bold text-terracotta-strong underline">{t('برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید')}</a>}
                             </div>
                         </div>
                     )}
@@ -74,17 +74,17 @@ export default function ArtworkGallery({ user }) {
         <Container as="section" width="wide" id="artworks" className="py-20">
             <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
                 <div>
-                    <p className="text-sm font-bold text-terracotta-strong"{t('کاتالوگ راد آرت')}</p>
-                    <h2 className="mt-2 text-3xl font-black"{t('آثار منتخب هنرمندان')}</h2>
+                    <p className="text-sm font-bold text-terracotta-strong">{t('کاتالوگ راد آرت')}</p>
+                    <h2 className="mt-2 text-3xl font-black">{t('آثار منتخب هنرمندان')}</h2>
                     <p className="mt-3 text-sm leading-7 text-muted">{t('آثاری که بررسی و برای نمایش عمومی تأیید شده‌اند.')}</p>
                 </div>
                 <form onSubmit={(event) => { event.preventDefault(); setSearch(searchInput.trim()); }} className="flex flex-wrap gap-2">
                     <TextInput value={searchInput} onChange={(event) => setSearchInput(event.target.value)} aria-label={t("جست‌وجو در آثار")} placeholder={t("جست‌وجوی عنوان یا تکنیک…")} className="min-w-[220px] rounded-control px-4 py-2.5" />
                     <SelectField value={category} onChange={(event) => setCategory(event.target.value)} aria-label={t("فیلتر دسته‌بندی")} className="min-h-11 w-auto rounded-control border-border-strong bg-paper px-4 py-2.5 text-sm">
-                        <option value=""{t('همه دسته‌ها')}</option>
+                        <option value="">{t('همه دسته‌ها')}</option>
                         {categories.map((item) => <option key={item.id} value={item.slug}>{localizedValue(item, 'name', locale)}</option>)}
                     </SelectField>
-                    <Button variant="ghost" type="submit" className="rounded-control bg-ink px-5 py-2.5 text-sm font-bold text-inverse"{t('جست‌وجو')}</Button>
+                    <Button variant="ghost" type="submit" className="rounded-control bg-ink px-5 py-2.5 text-sm font-bold text-inverse">{t('جست‌وجو')}</Button>
                 </form>
             </div>
             {loading ? <p className="mt-8 text-sm text-muted">{t('در حال بارگذاری آثار…')}</p> : error ? (
