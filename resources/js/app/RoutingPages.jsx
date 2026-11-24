@@ -317,12 +317,13 @@ export function ArtistWorkspaceLayout() {
 export function ArtistDashboardHome() {
     const { user, profile, profileLoading, profileError } = useOutletContext();
     return (
-        <section className="space-y-6" dir="rtl">
+        <div className="w-full space-y-6" dir="rtl">
             <WorkspaceHero
                 eyebrow="فضای هنرمند"
                 title={<>خوش آمدید، {user.name}</>}
                 description="پروفایل و آثار ارسالی خود را مدیریت کنید و از بخش پیام‌های مستقیم با خریداران در ارتباط باشید."
             />
+            <Container width="wide" className="space-y-6">
             {profileError && <p role="alert" className="mt-5 text-sm text-warning">{profileError}</p>}
             {profileLoading ? <p className="mt-5 text-sm text-muted">در حال دریافت پروفایل…</p> : (
                 <div className="mt-6 rounded-xl bg-canvas p-4">
@@ -334,7 +335,8 @@ export function ArtistDashboardHome() {
                 <Link to="/dashboard/artist/artworks" className="rounded-xl border border-border p-5 font-bold hover:border-terracotta">مدیریت آثار</Link>
                 <Link to="/dashboard/artist/messages" className="rounded-xl border border-border p-5 font-bold hover:border-terracotta">پیام‌های مستقیم</Link>
             </div>
-        </section>
+            </Container>
+        </div>
     );
 }
 
