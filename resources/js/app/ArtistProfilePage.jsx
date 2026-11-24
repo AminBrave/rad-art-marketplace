@@ -115,9 +115,9 @@ export default function ArtistProfilePage() {
                             <div className="mt-5 flex flex-wrap items-center gap-x-8 gap-y-3 border-y border-divider-group py-3 text-sm">
                                 <span><strong className="font-black tabular-nums">{allArtworks.length.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</strong><span className="ms-1.5 text-muted">{t("اثر")}</span></span>
                                 {followState.followers_count !== undefined && followState.followers_count !== null && <span><strong className="font-black tabular-nums">{Number(followState.followers_count).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</strong><span className="ms-1.5 text-muted">{t("دنبال‌کننده")}</span></span>}
-                                {profile.city && <span className="text-muted">{localizedValue(profile, 'city', locale)}</span>}
+                                {localizedValue(profile, 'city', locale) && <span className="text-muted">{localizedValue(profile, 'city', locale)}</span>}
                             </div>
-                            {profile.bio && <p className="mt-4 whitespace-pre-line break-words text-sm leading-8 text-muted [overflow-wrap:anywhere]">{profile.bio}</p>}
+                            {localizedValue(profile, 'bio', locale) && <p className="mt-4 whitespace-pre-line break-words text-sm leading-8 text-muted [overflow-wrap:anywhere]">{localizedValue(profile, 'bio', locale)}</p>}
                             <div className="mt-5 flex min-w-0 flex-wrap items-center gap-2">
                                 {canFollow && <Button variant="outline" type="button" disabled={followMutation.isPending} onClick={() => followMutation.mutate()} aria-pressed={Boolean(followState.is_following)} className={primaryActionClass}>{followMutation.isPending ? t('در حال به‌روزرسانی…') : followState.is_following ? t('دنبال می‌کنید') : t('دنبال کردن')}</Button>}
                                 {!user && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className={primaryActionClass}>{t("دنبال کردن")}</Link>}
