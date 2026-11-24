@@ -319,7 +319,7 @@ export function ArtistWorkspaceLayout() {
 }
 
 export function ArtistDashboardHome() {
-    const { t, locale } = useLanguage();
+    const { t } = useLanguage();
     const { user, profile, profileLoading, profileError } = useOutletContext();
     return (
         <div className="w-full space-y-6">
