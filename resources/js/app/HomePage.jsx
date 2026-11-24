@@ -142,7 +142,7 @@ export default function HomePage() {
                                         <div className="min-w-0">
                                             <p className="text-[10px] font-bold text-terracotta-strong">{t('تازه در گالری')}</p>
                                             <p className="mt-1 truncate text-sm font-extrabold text-ink sm:text-base">{hero.title}</p>
-                                            <p className="mt-1 truncate text-xs text-muted">{hero.artist?.display_name || '{t('هنرمند راد آرت')}'}</p>
+                                            <p className="mt-1 truncate text-xs text-muted">{hero.artist?.display_name || t('هنرمند راد آرت')}</p>
                                         </div>
                                         <span className="inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-bold text-terracotta-strong">
                                             {t('مشاهده اثر')}
@@ -185,19 +185,19 @@ export default function HomePage() {
                 <SectionHeading
                     id="recent-works-title"
                     eyebrow="THE GALLERY / 01"
-                    title="{t('تازه در گالری')}"
+                    title={t('تازه در گالری')}
                     description="آثاری که به‌تازگی برای نمایش عمومی تأیید شده‌اند."
                     to="/artworks"
-                    linkLabel="{t('دیدن همه آثار')}"
+                    linkLabel={t('دیدن همه آثار')}
                 />
                 {error ? (
-                    <ErrorState className="mt-8" title="{t('دریافت محتوای گالری ممکن نشد')}" description="{t('برای دریافت دوباره تلاش کنید.')}" onRetry={() => artworksQuery.refetch()} />
+                    <ErrorState className="mt-8" title={t('دریافت محتوای گالری ممکن نشد')} description={t('برای دریافت دوباره تلاش کنید.')} onRetry={() => artworksQuery.refetch()} />
                 ) : loading ? (
                     <div className="mt-8 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}</div>
                 ) : recentWorks.length ? (
                     <div className="mt-8 grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">{recentWorks.map((item) => <ArtworkCard key={item.id} artwork={item} />)}</div>
                 ) : (
-                    <EmptyState className="mt-8" title="{t('هنوز اثر دیگری برای نمایش نیست')}" description="{t('آثار تازه پس از تأیید در این بخش قرار می‌گیرند.')}" />
+                    <EmptyState className="mt-8" title={t('هنوز اثر دیگری برای نمایش نیست')} description={t('آثار تازه پس از تأیید در این بخش قرار می‌گیرند.')} />
                 )}
             </Container>
 
@@ -206,8 +206,8 @@ export default function HomePage() {
                     <SectionHeading
                         id="categories-title"
                         eyebrow="FIND YOUR PERSPECTIVE / 02"
-                        title="{t('از کجا شروع کنیم؟')}"
-                        description="{t('دسته‌بندی‌های فعال گالری را مرور کنید و به جهان هر شاخه هنری وارد شوید.')}"
+                        title={t('از کجا شروع کنیم؟')}
+                        description={t('دسته‌بندی‌های فعال گالری را مرور کنید و به جهان هر شاخه هنری وارد شوید.')}
                     />
                     <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                         {loading ? [0, 1, 2, 3].map((item) => <Skeleton key={item} height={null} className="h-28 w-full " />) : categories.length ? categories.slice(0, 8).map((category, index) => (
@@ -227,10 +227,10 @@ export default function HomePage() {
                 <SectionHeading
                     id="artists-title"
                     eyebrow="THE PEOPLE / 03"
-                    title="{t('هنرمندان، فراتر از آثار')}"
-                    description="{t('با هنرمندانی آشنا شوید که پروفایل عمومی خود را در راد آرت منتشر کرده‌اند.')}"
+                    title={t('هنرمندان، فراتر از آثار')}
+                    description={t('با هنرمندانی آشنا شوید که پروفایل عمومی خود را در راد آرت منتشر کرده‌اند.')}
                     to="/artists"
-                    linkLabel="{t('دیدن همه هنرمندان')}"
+                    linkLabel={t('دیدن همه هنرمندان')}
                 />
                 {loading ? (
                     <div className="mt-8 grid gap-4 sm:grid-cols-3">{[0, 1, 2].map((item) => <ArtistCardSkeleton key={item} />)}</div>
@@ -248,7 +248,7 @@ export default function HomePage() {
                             <p className="text-[10px] font-extrabold tracking-[.14em] text-[color:var(--rd-hero-accent)]">ARTIST SPOTLIGHT / هنرمند منتخب</p>
                             <h3 className="mt-3 break-words text-2xl font-black leading-heading text-[color:var(--rd-hero-foreground)] sm:text-3xl">{spotlight.display_name}</h3>
                             {spotlight.city && <p className="mt-2 text-xs font-semibold text-[color:var(--rd-hero-muted)]">{spotlight.city}</p>}
-                            <p className="mt-4 max-w-3xl text-sm leading-8 text-[color:var(--rd-hero-muted)]">{spotlight.bio || '{t('پورتفولیوی عمومی این هنرمند را ببینید و با آثار تأییدشده او آشنا شوید.')}'}</p>
+                            <p className="mt-4 max-w-3xl text-sm leading-8 text-[color:var(--rd-hero-muted)]">{spotlight.bio || t('پورتفولیوی عمومی این هنرمند را ببینید و با آثار تأییدشده او آشنا شوید.')}</p>
                             <Link to={'/artists/' + spotlight.slug} className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 border border-[color:var(--rd-hero-line)] px-4 py-2 text-sm font-bold text-[color:var(--rd-hero-foreground)] no-underline transition-colors hover:border-[color:var(--rd-hero-accent)] hover:bg-[color:var(--rd-hero-foreground)] hover:text-[color:var(--rd-hero-background)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
                                 {t('ورود به پورتفولیو')}
                                 <ArrowLeft size={16} aria-hidden="true" />
@@ -273,10 +273,10 @@ export default function HomePage() {
                                 <SectionHeading
                                     id="collections-title"
                                     eyebrow="CURATED STORIES / 04"
-                                    title="{t('روایت‌هایی از نگاه سردبیر')}"
-                                    description="{t('مجموعه‌هایی برای دیدن آثار در کنار یکدیگر و کشف ارتباط‌های تازه.')}"
+                                    title={t('روایت‌هایی از نگاه سردبیر')}
+                                    description={t('مجموعه‌هایی برای دیدن آثار در کنار یکدیگر و کشف ارتباط‌های تازه.')}
                                     to="/collections"
-                                    linkLabel="{t('همه مجموعه‌ها')}"
+                                    linkLabel={t('همه مجموعه‌ها')}
                                 />
                                 <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                     {collections.slice(0, 3).map((item, index) => (
@@ -301,7 +301,7 @@ export default function HomePage() {
                                     {featuredArtists.slice(0, 3).map((item) => (
                                         <Link key={item.id} to={'/artists/' + item.artist.slug} className="border-s-2 border-sand bg-paper p-5 no-underline transition-colors hover:border-terracotta">
                                             <h3 className="font-black text-ink">{item.artist.display_name}</h3>
-                                            <p className="mt-2 text-sm leading-7 text-muted">{item.editorial_intro || item.artist.bio || '{t('با پورتفولیوی این هنرمند آشنا شوید.')}'}</p>
+                                            <p className="mt-2 text-sm leading-7 text-muted">{item.editorial_intro || item.artist.bio || t('با پورتفولیوی این هنرمند آشنا شوید.')}</p>
                                         </Link>
                                     ))}
                                 </div>
