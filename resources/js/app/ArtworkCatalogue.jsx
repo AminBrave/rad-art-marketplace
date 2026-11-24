@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
-import { ArrowLeft, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, SelectField, PageHeader, Button, Container, Section } from '../components/ui';
 
 const emptyFilters = { mediums: [], availability: [], sorts: [] };
@@ -14,8 +14,8 @@ export default function ArtworkCatalogue() {
     const medium = params.get('medium') ?? '';
     const availability = params.get('availability') ?? '';
     const sort = params.get('sort') ?? 'newest';
-    const page = Math.max(1, Number.parseInt(params.get('page') ?? '1', 10) || 1);
     const [searchInput, setSearchInput] = useState(search);
+    const loadMoreRef = useRef(null);
 
     useEffect(() => setSearchInput(search), [search]);
 
@@ -35,9 +35,10 @@ export default function ArtworkCatalogue() {
         staleTime: 5 * 60_000,
     });
 
-    const artworksQuery = useQuery({
-        queryKey: ['artworks', { search, category, medium, availability, sort, page }],
-        queryFn: async ({ signal }) => {
+    const artworksQuery = useInfiniteQuery({
+        queryKey: ['artworks', { search, category, medium, availability, sort }],
+        initialPageParam: 1,
+        queryFn: async ({ signal, pageParam }) => {
             const { data } = await axios.get('/api/v1/artworks', {
                 params: {
                     q: search || undefined,
@@ -45,27 +46,32 @@ export default function ArtworkCatalogue() {
                     medium: medium || undefined,
                     availability: availability || undefined,
                     sort: sort === 'newest' ? undefined : sort,
-                    page,
+                    page: pageParam,
                 },
                 signal,
             });
 
             return data;
         },
-        placeholderData: (previousData) => previousData,
+        getNextPageParam: (lastPage) => (
+            lastPage.current_page < lastPage.last_page ? lastPage.current_page + 1 : undefined
+        ),
         staleTime: 30_000,
     });
 
     const categories = filtersQuery.data?.categories ?? [];
     const filters = filtersQuery.data?.filters ?? emptyFilters;
-    const artworks = artworksQuery.data?.data ?? [];
+    const artworkPages = artworksQuery.data?.pages ?? [];
+    const artworks = artworkPages.flatMap((pageData) => pageData.data ?? []);
+    const latestPage = artworkPages[artworkPages.length - 1];
     const meta = {
-        current_page: artworksQuery.data?.current_page ?? page,
-        last_page: artworksQuery.data?.last_page ?? 1,
-        total: artworksQuery.data?.total ?? 0,
+        current_page: latestPage?.current_page ?? 1,
+        last_page: latestPage?.last_page ?? 1,
+        total: latestPage?.total ?? 0,
     };
     const loading = artworksQuery.isPending;
     const error = artworksQuery.isError;
+    const loadingMore = artworksQuery.isFetchingNextPage;
     const filtersLoading = filtersQuery.isPending;
     const filtersError = filtersQuery.isError;
 
@@ -90,6 +96,20 @@ export default function ArtworkCatalogue() {
         setSearchInput('');
         setParams({});
     };
+
+    useEffect(() => {
+        const sentinel = loadMoreRef.current;
+        if (!sentinel || !artworksQuery.hasNextPage || loadingMore || error) return undefined;
+
+        const observer = new IntersectionObserver((entries) => {
+            if (entries.some((entry) => entry.isIntersecting)) {
+                artworksQuery.fetchNextPage();
+            }
+        }, { rootMargin: '640px 0px' });
+
+        observer.observe(sentinel);
+        return () => observer.disconnect();
+    }, [artworksQuery.hasNextPage, artworksQuery.fetchNextPage, loadingMore, error]);
 
     return (
         <div className="w-full min-w-0 min-h-[65vh] py-10 lg:py-14" dir="rtl">
@@ -160,12 +180,20 @@ export default function ArtworkCatalogue() {
             ) : (
                 <EmptyState className="mt-8" title="اثری با این مشخصات پیدا نشد" description="عبارت جست‌وجو یا گزینه‌های فیلتر را تغییر دهید." />
             )}
-            {!loading && !error && meta.last_page > 1 && (
-                <nav aria-label="صفحه‌بندی آثار" className="mt-12 flex items-center justify-center gap-3 border-t border-border pt-7">
-                    <Button variant="outline" type="button" disabled={page <= 1} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page - 1)]]))} className="inline-flex min-h-11 items-center gap-2 border border-border px-4 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40"><ArrowLeft size={15} aria-hidden="true" />قبلی</Button>
-                    <span className="px-2 text-sm tabular-nums text-muted">صفحه {meta.current_page.toLocaleString('fa-IR')} از {meta.last_page.toLocaleString('fa-IR')}</span>
-                    <Button variant="outline" type="button" disabled={page >= meta.last_page} onClick={() => setParams(Object.fromEntries([...params.entries(), ['page', String(page + 1)]]))} className="inline-flex min-h-11 items-center gap-2 border border-border px-4 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40">بعدی<ArrowLeft size={15} aria-hidden="true" className="rotate-180" /></Button>
-                </nav>
+            {!loading && !error && artworks.length > 0 && (
+                <div className="mt-10 flex min-h-16 flex-col items-center justify-center gap-3 border-t border-border pt-6" aria-live="polite">
+                    {artworksQuery.isFetchNextPageError && <p role="alert" className="text-sm text-danger">دریافت آثار بیشتر انجام نشد.</p>}
+                    {artworksQuery.hasNextPage ? (
+                        <>
+                            <span ref={loadMoreRef} className="h-px w-full" aria-hidden="true" />
+                            <Button type="button" variant="outline" disabled={loadingMore} onClick={() => artworksQuery.fetchNextPage()}>
+                                {loadingMore ? 'در حال دریافت آثار…' : 'بارگذاری آثار بیشتر'}
+                            </Button>
+                        </>
+                    ) : (
+                        <p className="text-xs text-muted">همه {meta.total.toLocaleString('fa-IR')} اثر نمایش داده شدند.</p>
+                    )}
+                </div>
             )}
             </Container>
         </div>
