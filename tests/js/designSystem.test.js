@@ -55,7 +55,7 @@ const editorialPages = readFileSync(new URL('../../resources/js/app/EditorialPag
 const publicInfoPages = readFileSync(new URL('../../resources/js/app/PublicInfoPages.jsx', import.meta.url), 'utf8');
 const designSystem = readFileSync(new URL('../../AI/DESIGN-SYSTEM.md', import.meta.url), 'utf8');
 
-test('artwork and artist cards preserve matte spacing with cover imagery and card surfaces', () => {
+test('hero headers omit decorative squares and accent pseudo-elements', () => {\n    assert.doesNotMatch(primitives, /rd-hero-decoration|before:bg-\\[color:var\\(--rd-hero-accent\\)\\]/);\n});\n\ntest('workspace full-bleed content mirrors its horizontal offset in RTL', () => {\n    assert.match(css, /\\[dir='rtl'\\] \\.rd-workspace-main \\.rd-bleed[\\s\\S]*?transform: translateX\\(var\\(--rd-workspace-bleed-offset\\)\\)/);\n});\n\ntest('artwork and artist cards preserve matte spacing with cover imagery and card surfaces', () => {
     assert.ok(cards.includes('p-3 sm:p-4'), 'Artwork images retain passepartout spacing.');
     assert.ok(cards.includes('imageClassName="object-cover'), 'Artwork imagery covers its padded media frame.');
     assert.ok(cards.includes('bg-paper'), 'Artist cards use the shared card surface.');
@@ -534,7 +534,8 @@ test('messaging is viewport-locked between the authenticated app header and bott
     assert.ok(layouts.includes('sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.ok(layouts.includes('lg:h-[calc(100dvh-5rem)]'));
     assert.ok(layouts.includes("lg:fixed lg:top-28"));
-    assert.ok(layouts.includes("lg:end-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))]"));
+    assert.ok(routeLoading.includes("fixed start-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))]"));
+    assert.ok(layouts.includes("lg:start-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))]"));
     assert.ok(layouts.includes("lg:max-h-[calc(100dvh_-_8rem)] lg:w-60 lg:overflow-y-auto"));
     assert.ok(layouts.includes('{isMessagingRoute && <div className="hidden lg:block" aria-hidden="true" />}'));
     assert.ok(layouts.includes("overflow-hidden lg:col-start-2"));
