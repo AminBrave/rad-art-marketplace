@@ -38,6 +38,13 @@ The existing brand colors—Ivory #F7F5F0, Charcoal #242320, Terracotta #A64F31,
 
 CSS `--rd-*` variables are the canonical design-token source; Tailwind maps directly to them. Legacy `--color-*`, `--text-*`, `--space-*` and related aliases are one-way compatibility bridges and should not be used by new code. Choose semantic tokens, typography, spacing, grids, radii, elevation, icons and motion to support the design. Reuse current components when they fit; refactor or replace them when that produces a better result. Do not follow the legacy RAD catalogue as a specification.
 
+### Editorial hero surfaces
+
+- Use the shared `.rd-hero-surface` for prominent page heroes and editorial feature panels. It composes a restrained radial accent with a layered surface instead of using `bg-ink` or inverse-text shortcuts.
+- Hero foreground, muted copy, accent, border and glow use dedicated `--rd-hero-*` semantic tokens. Define both explicit dark-theme and system-dark values; do not infer hero contrast from the generic `ink` or `inverse` roles.
+- Keep headings and supporting copy on the hero foreground/muted roles, and make actions contrast against the active hero palette. Decorative geometry must remain non-interactive, avoid clipping content and respect the zero-radius visual language.
+- Apply the same surface to the homepage, artist directory, artist spotlight, registration CTA and workspace welcome heroes. Their skeleton/loading states should use the same theme-aware background.
+
 ## Accessibility and localization
 
 ### Accessible controls, form states, dialogs, menus, notifications
