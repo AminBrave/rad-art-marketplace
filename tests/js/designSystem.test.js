@@ -424,7 +424,7 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     assert.ok(layouts.includes('<Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>'));
     assert.ok(layouts.includes('<DialogTrigger asChild>'));
     assert.ok(layouts.includes('<DialogContent'));
-    assert.ok(layouts.includes('<DialogTitle className="text-base tracking-tight">اعلان‌ها</DialogTitle>'), 'The notification drawer exposes its visible title through Radix DialogTitle.');
+    assert.ok(layouts.includes('<DialogTitle className="text-base tracking-tight">{t("اعلان‌ها")}</DialogTitle>'), 'The notification drawer exposes its visible title through Radix DialogTitle.');
     assert.ok(layouts.includes('<DialogClose asChild>'));
     assert.ok(layouts.includes('workspace-notification-panel'));
     assert.ok(layouts.includes('placement="drawer"'));
