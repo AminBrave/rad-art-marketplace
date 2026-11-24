@@ -512,38 +512,13 @@ video {
 
 
 
-/* Hero ornamentation deliberately flips to the opposite physical edge in RTL. */
-@layer components {
-    [dir='rtl'] .rd-hero-decoration {
-        inset-inline-start: 1.5rem;
-        inset-inline-end: auto;
-    }
 
-    [dir='rtl'] .rd-hero-decoration-secondary {
-        inset-inline-start: 3rem;
-        inset-inline-end: auto;
-        border-inline-start-width: 1px;
-        border-inline-end-width: 0;
-    }
 
-    [dir='rtl'] .rd-hero-header::before {
-        inset-inline-start: 0;
-        inset-inline-end: auto;
-    }
-
-    @media (min-width: 640px) {
-        [dir='rtl'] .rd-hero-decoration {
-            inset-inline-start: 2rem;
-        }
-    }
-
-    @media (min-width: 1024px) {
-        [dir='rtl'] .rd-hero-decoration {
-            inset-inline-start: 2.5rem;
-        }
-
-        [dir='rtl'] .rd-hero-decoration-secondary {
-            inset-inline-start: 4rem;
-        }
+/* In RTL the workspace content column is on the left, so full-bleed inner
+   content shifts right to remain centered on the viewport. */
+@media (min-width: 1024px) {
+    [dir='rtl'] .rd-workspace-main .rd-bleed .rd-container:not(.rd-container--reading):not(.rd-container--full),
+    [dir='rtl'] .rd-workspace-main .rd-bleed .rd-container--reading {
+        transform: translateX(var(--rd-workspace-bleed-offset));
     }
 }
