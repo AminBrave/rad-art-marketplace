@@ -188,9 +188,9 @@ export function PublicLayout() {
                 {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{logoutError}</p>}
             </header>
 
-            <div id="main-content">
+            <main id="main-content" className="rd-page-frame">
                 <Outlet />
-            </div>
+            </main>
 
             <footer className="border-t border-border bg-surface-muted">
                 <div className="mx-auto max-w-content px-page-gutter pb-10 pt-14 sm:pb-14 sm:pt-20">
@@ -762,7 +762,9 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                 </aside>
 
                 <main className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden lg:col-start-2' : 'min-w-0'}>
-                    <Outlet context={outletContext} />
+                    {isMessagingRoute
+                        ? <Outlet context={outletContext} />
+                        : <div className="rd-page-frame rd-page-frame--workspace"><Outlet context={outletContext} /></div>}
                 </main>
             </div>
             <AuthenticatedBottomNavigation mobileLinks={getWorkspaceMobileLinks(user?.role)} />
