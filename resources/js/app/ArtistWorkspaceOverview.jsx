@@ -120,13 +120,13 @@ export default function ArtistWorkspaceOverview() {
                         <SectionHeader eyebrow={t("حساب کاربری")} title={t("دسترسی سریع")} />
                         <div className="mt-2 grid gap-2">
                             <Link to="/dashboard/artist/messages" className="flex min-h-14 items-center justify-between border-b border-divider-nested py-3 text-sm font-semibold text-ink no-underline transition-colors hover:text-terracotta-strong">
-                                <span><span className="block">{t("پیام‌های مستقیم")}</span><span className="mt-1 block text-xs font-normal text-muted">{t("گفت‌وگو با خریداران")}</span></span><span aria-hidden="true">←</span>
+                                <span><span className="block">{t("پیام‌های مستقیم")}</span><span className="mt-1 block text-xs font-normal text-muted">{t("گفت‌وگو با خریداران")}</span></span><span aria-hidden="true" className="rtl:rotate-180">→</span>
                             </Link>
                             <Link to="/dashboard/artist/profile" className="flex min-h-14 items-center justify-between border-b border-divider-nested py-3 text-sm font-semibold text-ink no-underline transition-colors hover:text-terracotta-strong">
-                                <span><span className="block">{t("پروفایل هنرمند")}</span><span className="mt-1 block text-xs font-normal text-muted">{t("اطلاعات و معرفی هنری")}</span></span><span aria-hidden="true">←</span>
+                                <span><span className="block">{t("پروفایل هنرمند")}</span><span className="mt-1 block text-xs font-normal text-muted">{t("اطلاعات و معرفی هنری")}</span></span><span aria-hidden="true" className="rtl:rotate-180">→</span>
                             </Link>
                             <Link to="/dashboard/artist/settings" className="flex min-h-14 items-center justify-between border-b border-divider-nested py-3 text-sm font-semibold text-ink no-underline transition-colors hover:text-terracotta-strong">
-                                <span><span className="block">{t("تنظیمات")}</span><span className="mt-1 block text-xs font-normal text-muted">{t("پوسته و اعلان‌ها")}</span></span><span aria-hidden="true">←</span>
+                                <span><span className="block">{t("تنظیمات")}</span><span className="mt-1 block text-xs font-normal text-muted">{t("پوسته و اعلان‌ها")}</span></span><span aria-hidden="true" className="rtl:rotate-180">→</span>
                             </Link>
                         </div>
                     </div>
