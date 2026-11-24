@@ -17,8 +17,8 @@ function StatusLabel({ status }) {
     return <StatusBadge status={status} label={statusLabels[status] ?? status ?? 'نامشخص'} className="shrink-0" />;
 }
 
-export default function ArtistWorkspaceOverview
-    const { t } = useLanguage();() {
+export default function ArtistWorkspaceOverview() {
+    const { t } = useLanguage();
     const { user, profile, profileLoading, profileError } = useOutletContext();
     const artworksQuery = useQuery({
         queryKey: ['artist-workspace', 'artworks', user?.id],
