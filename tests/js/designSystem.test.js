@@ -91,6 +91,8 @@ test('shared primitives express accessible component contracts with semantic Tai
     assert.ok(primitives.includes('bg-terracotta text-inverse'));
     assert.ok(primitives.includes('focus-visible:outline'));
     assert.ok(primitives.includes("className, 'rounded-control')"), 'Button and IconButton enforce the shared control radius.');
+    assert.ok(primitives.includes("cn(controlClass, className, 'rounded-control')"));
+    assert.ok(primitives.includes("className, 'rounded-control')}"), 'Form controls enforce the shared control radius after consumer classes.');
     assert.ok(primitives.includes('aria-[invalid=true]:border-danger'));
     assert.ok(primitives.includes('aria-busy={loading || undefined}'));
     assert.ok(primitives.includes("'aria-describedby': describedBy"));
