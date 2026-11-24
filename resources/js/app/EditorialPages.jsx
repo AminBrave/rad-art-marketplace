@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { ArtworkCard, EmptyState, ErrorState, Button, FormField, TextInput, TextareaField, SuccessState, Checkbox, AlertDialog, AlertDialogTrigger, AlertDialogCancel, AlertDialogAction, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, CollectionCardSkeleton, CollectionDetailSkeleton, AdminEditorialSkeleton, PageHeader, SectionHeader } from '../components/ui';
+import { ArtworkCard, EmptyState, ErrorState, Button, FormField, TextInput, TextareaField, SuccessState, Checkbox, AlertDialog, AlertDialogTrigger, AlertDialogCancel, AlertDialogAction, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, CollectionCardSkeleton, CollectionDetailSkeleton, AdminEditorialSkeleton, PageHeader, SectionHeader, Container } from '../components/ui';
 
 export function CollectionIndexPage() {
     const collectionsQuery = useQuery({
@@ -16,10 +16,10 @@ export function CollectionIndexPage() {
     });
     const items = collectionsQuery.data ?? [];
 
-    return <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl">
+    return <Container as="div" width="wide" className="min-h-[65vh] py-12" dir="rtl">
         <PageHeader eyebrow="انتخاب سردبیر" title="مجموعه‌های منتخب" description="روایت‌های موضوعی و انتخاب‌های هنری راد آرت؛ هر مجموعه مسیری تازه برای کشف آثار است." className="max-w-3xl" />
         {collectionsQuery.isError ? <ErrorState className="mt-8" title="دریافت مجموعه‌ها ممکن نشد" description="لطفاً دوباره تلاش کنید." onRetry={() => collectionsQuery.refetch()} /> : collectionsQuery.isPending ? <div className="mt-9"><CollectionCardSkeleton count={6} /></div> : items.length ? <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{items.map((item) => <Link key={item.id} to={'/collections/' + item.slug} className="group border-y border-border bg-transparent px-1 py-7 transition-colors hover:border-terracotta sm:px-2"><p className="text-xs text-terracotta-strong">{item.artwork_count} اثر منتخب</p><h2 className="mt-3 text-2xl font-black tracking-tight group-hover:text-terracotta-strong">{item.title}</h2><p className="mt-3 line-clamp-4 text-sm leading-7 text-muted">{item.intro || 'انتخابی از آثار تأییدشده هنرمندان راد آرت.'}</p><span className="mt-6 inline-flex min-h-10 items-center text-sm font-bold underline underline-offset-4">مشاهده مجموعه</span></Link>)}</div> : <EmptyState className="mt-8" title="هنوز مجموعه‌ای منتشر نشده است" description="مجموعه‌های منتخب پس از آماده‌سازی در این بخش نمایش داده می‌شوند." />}
-    </main>;
+    </Container>;
 }
 
 export function CollectionDetailPage() {
@@ -36,9 +36,9 @@ export function CollectionDetailPage() {
     const item = collectionQuery.data ?? null;
 
     if (collectionQuery.isPending) return <CollectionDetailSkeleton />;
-    if (collectionQuery.isError || !item) return <main className="mx-auto max-w-7xl px-5 py-12" dir="rtl"><ErrorState title="این مجموعه در دسترس نیست" description="ممکن است انتشار آن متوقف شده باشد یا نشانی تغییر کرده باشد." onRetry={() => collectionQuery.refetch()} /><Link className="mt-5 inline-block text-sm font-bold underline" to="/collections">بازگشت به مجموعه‌ها</Link></main>;
+    if (collectionQuery.isError || !item) return <Container as="div" width="wide" className="py-12" dir="rtl"><ErrorState title="این مجموعه در دسترس نیست" description="ممکن است انتشار آن متوقف شده باشد یا نشانی تغییر کرده باشد." onRetry={() => collectionQuery.refetch()} /><Link className="mt-5 inline-block text-sm font-bold underline" to="/collections">بازگشت به مجموعه‌ها</Link></Container>;
 
-    return <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl">
+    return <Container as="div" width="wide" className="min-h-[65vh] py-12" dir="rtl">
         <nav aria-label="مسیر صفحه" className="text-sm text-muted"><Link to="/" className="underline">خانه</Link><span className="mx-2">/</span><Link to="/collections" className="underline">مجموعه‌ها</Link></nav>
         <PageHeader eyebrow="روایت منتخب راد آرت" title={item.title} description={item.intro} className="mt-7 max-w-3xl" descriptionClassName="whitespace-pre-line leading-8" />
         {item.artworks?.length ? <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{item.artworks.map((artwork) => <ArtworkCard key={artwork.id} artwork={artwork} />)}</div> : <EmptyState className="mt-8" title="اثری در این مجموعه موجود نیست" />}
