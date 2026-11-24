@@ -288,6 +288,7 @@ const english = {
     "ارتباط درباره آثار": "Artwork enquiries",
     "اگر حساب خریدار دارید، از صفحه اثر یا پروفایل عمومی هنرمند درخواست خصوصی خود را ثبت کنید. وضعیت درخواست را می‌توانید در فضای خریدار پیگیری کنید.": "If you have a buyer account, submit a private request from an artwork page or an artist’s public profile. Track its status in your buyer workspace.",
     "مشاهده گالری": "View gallery",
+    "آشنایی با هنرمندان": "Meet the artists",
     "فضای اختصاصی خریدار": "Your buyer workspace",
     "هنر مورد علاقه‌تان را کشف کنید و گفت‌وگو را ادامه دهید.": "Discover art you love and continue the conversation.",
     "از میان آثار و هنرمندان مستقل جست‌وجو کنید و گفت‌وگوهای مستقیم خود را با هنرمندان در یک فضای منظم دنبال کنید.": "Explore independent artworks and artists, and keep your conversations organized in one place.",
