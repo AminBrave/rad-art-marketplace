@@ -104,6 +104,7 @@ class SocialActivityNotificationListener
                     'actor_name_en' => $this->publicActorNameEnglish($actor),
                     'artwork_slug' => $artwork->slug,
                     'artwork_title' => $artwork->title,
+                    'artwork_title_en' => $artwork->title_en,
                     'artist_slug' => $artist?->slug,
                     'artist_name' => $artist?->display_name,
                     'artist_name_en' => $artist?->display_name_en,
