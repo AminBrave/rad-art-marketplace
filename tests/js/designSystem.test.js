@@ -55,7 +55,15 @@ const editorialPages = readFileSync(new URL('../../resources/js/app/EditorialPag
 const publicInfoPages = readFileSync(new URL('../../resources/js/app/PublicInfoPages.jsx', import.meta.url), 'utf8');
 const designSystem = readFileSync(new URL('../../AI/DESIGN-SYSTEM.md', import.meta.url), 'utf8');
 
-test('hero headers omit decorative squares and accent pseudo-elements', () => {\n    assert.doesNotMatch(primitives, /rd-hero-decoration|before:bg-\\[color:var\\(--rd-hero-accent\\)\\]/);\n});\n\ntest('workspace full-bleed content mirrors its horizontal offset in RTL', () => {\n    assert.match(css, /\\[dir='rtl'\\] \\.rd-workspace-main \\.rd-bleed[\\s\\S]*?transform: translateX\\(var\\(--rd-workspace-bleed-offset\\)\\)/);\n});\n\ntest('artwork and artist cards preserve matte spacing with cover imagery and card surfaces', () => {
+test('hero headers omit decorative squares and accent pseudo-elements', () => {
+    assert.doesNotMatch(primitives, /rd-hero-decoration|before:bg-\\[color:var\\(--rd-hero-accent\\)\\]/);
+});
+
+test('workspace full-bleed content mirrors its horizontal offset in RTL', () => {
+    assert.match(css, /\\[dir='rtl'\\] \\.rd-workspace-main \\.rd-bleed[\\s\\S]*?transform: translateX\\(var\\(--rd-workspace-bleed-offset\\)\\)/);
+});
+
+test('artwork and artist cards preserve matte spacing with cover imagery and card surfaces', () => {
     assert.ok(cards.includes('p-3 sm:p-4'), 'Artwork images retain passepartout spacing.');
     assert.ok(cards.includes('imageClassName="object-cover'), 'Artwork imagery covers its padded media frame.');
     assert.ok(cards.includes('bg-paper'), 'Artist cards use the shared card surface.');
