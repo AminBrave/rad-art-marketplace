@@ -517,7 +517,7 @@ test('ArtworkStudioListSkeleton mirrors the loaded artwork cards and announces i
     const html = renderToStaticMarkup(React.createElement(skeletons.ArtworkStudioListSkeleton, { count: 2 }));
     assert.match(html, /role="status"/);
     assert.match(html, /در حال دریافت آثار هنرمند/);
-    assert.match(html, /flex aspect-\[4\/3\] items-center justify-center bg-surface-muted p-3/);
+    assert.match(html, /flex aspect-\[3\/4\] items-center justify-center bg-surface-muted p-3/);
     assert.match(html, /space-y-3 p-4/);
     assert.equal((html.match(/<article/g) ?? []).length, 2);
 });
@@ -538,7 +538,7 @@ test('MessageHistorySkeleton retains a single loading announcement and the messa
     assert.match(html, /role="status"/);
     assert.match(html, /در حال دریافت پیام‌ها/);
     assert.match(html, /w-\[min\(78%,28rem\)\]/);
-    assert.equal((html.match(/rounded-\[20px\]/g) ?? []).length, 4);
+    assert.equal((html.match(/border border-border p-4/g) ?? []).length, 4);
 });
 
 test('ArtistRecentWorkSkeleton keeps the semantic list structure of the loaded workspace', () => {
