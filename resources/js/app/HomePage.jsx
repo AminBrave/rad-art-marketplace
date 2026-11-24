@@ -88,7 +88,7 @@ export default function HomePage() {
     return (
         <div className="w-full min-w-0 overflow-hidden" dir="rtl">
             <section aria-labelledby="home-hero-title" className="relative border-b border-border bg-canvas">
-                <Container className="pb-12 pt-8 sm:pb-16 sm:pt-12 lg:pb-20 lg:pt-14">
+                <Container className="pb-16 pt-10 sm:pb-20 sm:pt-16 lg:pb-24 lg:pt-20">
                     <div className="mb-8 flex items-center justify-between border-y border-ink py-3.5 text-[10px] font-extrabold tracking-[.18em] text-muted sm:text-xs">
                         <span>گالری هنر مستقل معاصر</span>
                         <span dir="ltr" className="font-latin">RAD ART / DISCOVER &amp; CONNECT</span>
@@ -160,7 +160,7 @@ export default function HomePage() {
                 </Container>
             </section>
 
-            <section aria-label="چطور در راد آرت کشف کنیم" className="bg-surface-muted py-14 sm:py-20">
+            <section aria-label="چطور در راد آرت کشف کنیم" className="bg-surface-muted py-16 sm:py-24">
                 <Container width="wide" className="grid gap-4 sm:grid-cols-3" dir="rtl">
                     {editorialSteps.map((step) => (
                         <Card
@@ -178,7 +178,7 @@ export default function HomePage() {
                 </Container>
             </section>
 
-            <Container as="section" width="wide" aria-labelledby="recent-works-title" className="py-14 sm:py-20">
+            <Container as="section" width="wide" aria-labelledby="recent-works-title" className="py-16 sm:py-24">
                 <SectionHeading
                     id="recent-works-title"
                     eyebrow="THE GALLERY / 01"
@@ -265,7 +265,7 @@ export default function HomePage() {
 
             {(collections.length > 0 || featuredArtists.length > 0) && (
                 <section aria-label="مجموعه‌ها و هنرمندان منتخب" className="border-y border-border bg-surface-muted">
-                    <Container className="py-14 sm:py-16">
+                    <Container className="py-16 sm:py-24">
                         {collections.length > 0 && (
                             <div>
                                 <SectionHeading
