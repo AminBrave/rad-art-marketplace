@@ -43,7 +43,7 @@ test('all literal frontend translation keys exist exactly once in the English di
     const missing = [];
     for (const path of files) {
         const source = readFileSync(path, 'utf8');
-        for (const match of source.matchAll(/\bt\(\s*(["'])((?:\\.|(?!\1)[\s\S])*)\1\s*\)/g)) {
+        for (const match of source.matchAll(/\bt\(\s*(["'\x60])((?:\\.|(?!\1)[\s\S])*)\1\s*\)/g)) {
             const key = match[2];
             if (!key.includes(String.fromCharCode(36) + '{') && !known.has(key)) {
                 missing.push(relative(root, path) + ': ' + key);
