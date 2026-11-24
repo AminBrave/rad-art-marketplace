@@ -869,6 +869,7 @@ const english = {
     "مواد ترکیبی": "Mixed media",
     "تأییدشده": "Approved",
     "قابل استعلام": "Ask artist",
+    "ارسال پیام درباره ": "Send a message about ",
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 
