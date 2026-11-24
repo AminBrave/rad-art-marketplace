@@ -1,5 +1,6 @@
 import { forwardRef, useState } from 'react';
 import { cn } from '../../lib/utils';
+import { useLanguage } from '../../app/LanguageContext';
 
 /**
  * RAD's semantic/layout catalogue.
@@ -133,7 +134,8 @@ export const Progress = forwardRef(function Progress({ value = 0, max = 100, lab
 });
 
 export function Spinner({ label = 'در حال بارگذاری', className = '' }) {
-    return <span role="status" aria-label={label} className={cn('inline-block h-5 w-5 animate-spin  border-2 border-current border-e-transparent text-terracotta motion-reduce:animate-none', className)} />;
+    const { t } = useLanguage();
+    return <span role="status" aria-label={t(label)} className={cn('inline-block h-5 w-5 animate-spin  border-2 border-current border-e-transparent text-terracotta motion-reduce:animate-none', className)} />;
 }
 
 export const Kbd = forwardRef(function Kbd({ className = '', ...props }, ref) {
