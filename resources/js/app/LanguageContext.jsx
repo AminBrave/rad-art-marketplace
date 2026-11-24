@@ -652,6 +652,11 @@ const english = {
     "غیرفعال‌کردن اعلان‌ها": "Disable notifications",
     "در حال بارگذاری…": "Loading…",
     "نمایش گفتگوهای بیشتر": "Load more conversations",
+    "سال": "Year",
+    "تاریخ ثبت": "Date submitted",
+    "گزارش شماره": "Report number",
+    "کاربر": "User",
+    "تأیید": "Confirm",
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 
