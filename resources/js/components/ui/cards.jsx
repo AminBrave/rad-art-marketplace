@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import { formatArtworkPrice } from '../../utils/formatArtworkPrice';
+import { useLanguage } from '../../app/LanguageContext';
+import { localizedValue } from '../../utils/localizedContent';
 import { MediaImage } from './feedback';
 import { cn } from '../../lib/utils';
 
@@ -20,7 +22,7 @@ export function ArtworkCard({ artwork, className = '' }) {
                 </div>
                 <div className="grid gap-1.5 border-b border-border px-0.5 pb-4 pt-4 transition-colors group-hover:border-terracotta/60">
                     <div className="flex min-h-5 items-center justify-between gap-3">
-                        {artwork.category?.name ? <span className="text-[11px] font-semibold text-terracotta-strong">{artwork.category.name}</span> : <span />}
+                        {localizedValue(artwork.category, 'name', locale) ? <span className="text-[11px] font-semibold text-terracotta-strong">{localizedValue(artwork.category, 'name', locale)}</span> : <span />}
                         <span className="text-[11px] text-subtle transition-transform group-hover:-translate-x-1" aria-hidden="true">←</span>
                     </div>
                     <h3 className="line-clamp-2 text-base font-extrabold leading-7 text-ink transition-colors group-hover:text-terracotta-strong">{title}</h3>
@@ -48,7 +50,7 @@ export function ArtistCard({ artist, className = '' }) {
                 </div>
                 <div className="mt-5 min-w-0 flex-1">
                     <h3 className="text-lg font-black leading-8 text-ink transition-colors group-hover:text-terracotta-strong">{name}</h3>
-                    {artist.city && <p className="mt-1 text-xs font-medium text-muted">{artist.city}</p>}
+                    {localizedValue(artist, 'city', locale) && <p className="mt-1 text-xs font-medium text-muted">{localizedValue(artist, 'city', locale)}</p>}
                     {artist.bio ? (
                         <p className="mt-4 line-clamp-3 text-sm leading-7 text-muted">{artist.bio}</p>
                     ) : (
