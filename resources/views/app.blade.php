@@ -78,7 +78,7 @@
     @php
         $isWorkspace = request()->is('dashboard', 'dashboard/*', 'admin*');
         $isMessagingRoute = request()->is('dashboard/artist/messages', 'dashboard/buyer/messages');
-        $workspaceNavigationCount = request()->is('admin*') ? 5 : (request()->is('dashboard/buyer*') ? 2 : 4);
+        $workspaceNavigationCount = request()->is('admin*') ? 7 : (request()->is('dashboard/buyer*') ? 3 : 5);
         $isArtworkDetail = request()->is('artworks/*');
         $isArtistProfile = request()->is('artists/*');
         $isCollectionDetail = request()->is('collections/*');
