@@ -535,7 +535,8 @@ a {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .rd-shine::after {
+    .rd-shine::after,
+    .rd-shine--decorative::after {
         animation: none;
         content: none;
     }
