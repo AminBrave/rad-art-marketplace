@@ -1,8 +1,10 @@
 import { Tooltip, DropdownMenu, Button } from '../components/ui';
+import { useLanguage } from './LanguageContext';
 import { Link } from 'react-router-dom';
 import { Ban, ChevronRight, Flag, MoreVertical, ShieldCheck } from 'lucide-react';
 
-export default function ConversationHeader({
+export default function ConversationHeader
+    const { t } = useLanguage();({
     avatarInitial,
     avatarTone,
     onBack,
@@ -21,7 +23,7 @@ export default function ConversationHeader({
                 <Tooltip content="بازگشت به گفتگوها">
                     <Button variant="ghost"
                         type="button"
-                        aria-label="بازگشت به گفتگوها"
+                        aria-label={t("بازگشت به گفتگوها")}
                         className="min-h-0 p-0 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-canvas text-ink transition hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:hidden"
                         onClick={onBack}
                     >
@@ -71,14 +73,14 @@ export default function ConversationHeader({
                             {selected?.participant?.name ?? 'گفتگوی خصوصی'}
                         </h2>
                     )}
-                    <p className="truncate text-[11px] leading-5 text-muted">گفتگوی خصوصی مستقیم</p>
+                    <p className="truncate text-[11px] leading-5 text-muted">{t("گفتگوی خصوصی مستقیم")}</p>
                 </div>
                 <DropdownMenu.Root open={openPopover === 'conversation'} onOpenChange={onPopoverOpenChange}>
                     <Tooltip content="گزینه‌های بیشتر">
                         <DropdownMenu.Trigger asChild>
                             <Button variant="ghost"
                                 type="button"
-                                aria-label="گزینه‌های بیشتر گفتگو"
+                                aria-label={t("گزینه‌های بیشتر گفتگو")}
                                 className="min-h-0 p-0 flex h-10 w-10 items-center justify-center rounded-full border border-transparent bg-surface-muted text-muted transition-colors hover:border-border-strong hover:bg-surface hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"
                             >
                                 <MoreVertical size={19} aria-hidden="true" />
@@ -99,7 +101,7 @@ export default function ConversationHeader({
                                 className="flex min-h-10 cursor-pointer items-center gap-2.5 rounded-md px-3 text-start text-xs font-semibold text-ink outline-none transition-colors data-[highlighted]:bg-surface-muted motion-reduce:transition-none"
                             >
                                 <Flag size={15} className="shrink-0 text-muted" aria-hidden="true" />
-                                <span>گزارش گفتگو</span>
+                                <span>{t("گزارش گفتگو")}</span>
                             </DropdownMenu.Item>
                             <DropdownMenu.Item
                                 onSelect={onToggleBlock}
