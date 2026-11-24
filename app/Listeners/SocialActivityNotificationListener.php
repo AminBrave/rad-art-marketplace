@@ -47,6 +47,7 @@ class SocialActivityNotificationListener
             'in_app_artwork_likes',
             [
                 'actor_name' => $this->publicActorName($actor),
+                'actor_name_en' => $this->publicActorNameEnglish($actor),
                 'artwork_slug' => $artwork->slug,
                 'artwork_title' => $artwork->title,
                 'artwork_title_en' => $artwork->title_en,
@@ -73,6 +74,7 @@ class SocialActivityNotificationListener
                 'actor_name' => $this->publicActorName($actor),
                 'artwork_slug' => $artwork->slug,
                 'artwork_title' => $artwork->title,
+                'artwork_title_en' => $artwork->title_en,
                 'artist_slug' => $artistProfile?->slug,
                 'artist_name' => $artistProfile?->display_name,
                 'comment_id' => $comment->id,
@@ -98,6 +100,7 @@ class SocialActivityNotificationListener
                 'in_app_comment_replies',
                 [
                     'actor_name' => $this->publicActorName($actor),
+                    'actor_name_en' => $this->publicActorNameEnglish($actor),
                     'artwork_slug' => $artwork->slug,
                     'artwork_title' => $artwork->title,
                     'artist_slug' => $artist?->slug,
