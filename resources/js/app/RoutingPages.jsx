@@ -418,10 +418,10 @@ export function WorkspaceSettingsPage() {
                         <h2 className="mt-2 text-lg font-extrabold text-ink">اعلان‌های درون‌برنامه‌ای</h2>
                         <p className="mt-2 text-sm leading-7 text-muted">مشخص کنید کدام رویدادها در صندوق اعلان‌های شما نمایش داده شوند. تغییرات به‌صورت خودکار ذخیره می‌شوند.</p>
                     </div>
-                    {preferencesQuery.isPending ? <p className="text-sm text-muted">در حال دریافت تنظیمات…</p> : (
+                    {preferencesQuery.isError ? <p role="alert" className="text-sm text-danger">دریافت تنظیمات اعلان‌ها انجام نشد. صفحه را دوباره بارگذاری کنید.</p> : preferencesQuery.isPending ? <p className="text-sm text-muted">در حال دریافت تنظیمات…</p> : (
                         <div className="grid gap-3 sm:grid-cols-2">
                             {preferenceOptions.map(([key, label, description]) => (
-                                <Checkbox key={key} checked={Boolean(preferences[key])} disabled={updatePreference.isPending} onChange={(event) => changePreference(key, event.target.checked)} className="flex min-h-20 items-start gap-3 border-y border-divider-group bg-paper p-4 text-sm leading-6">
+                                <Checkbox key={key} checked={Boolean(preferences[key])} disabled={updatePreference.isPending || preferencesQuery.isPending || preferencesQuery.isError} onChange={(event) => changePreference(key, event.target.checked)} className="flex min-h-20 items-start gap-3 border-y border-divider-group bg-paper p-4 text-sm leading-6">
                                     <span className="min-w-0"><strong className="block font-bold text-ink">{label}</strong><span className="mt-1 block text-xs text-muted">{description}</span></span>
                                 </Checkbox>
                             ))}
