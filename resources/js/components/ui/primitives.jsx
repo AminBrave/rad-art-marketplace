@@ -89,8 +89,7 @@ export function PageHeader({ eyebrow, title, description, actions, level = 1, bl
     return (
         <section className={cn("rd-hero-surface border-y border-[color:var(--rd-hero-line)]", bleed && "rd-bleed")}>
             <Container className="py-6 sm:py-8">
-                <header className={cn('rd-hero-header relative isolate flex min-w-0 items-end justify-between gap-6 before:absolute before:bottom-0 before:end-0 before:top-0 before:w-1.5 before:bg-[color:var(--rd-hero-accent)] max-sm:items-stretch max-sm:flex-col max-sm:gap-4', className)}>
-                    <span aria-hidden="true" className="rd-hero-decoration pointer-events-none absolute end-6 top-0 h-12 w-12 border border-[color:var(--rd-hero-line)] sm:end-8 sm:h-16 sm:w-16" />
+                <header className={cn('relative isolate flex min-w-0 items-end justify-between gap-6 max-sm:items-stretch max-sm:flex-col max-sm:gap-4', className)}>
                     <div className="relative z-10 min-w-0 max-w-[56rem]">
                         {eyebrow && <p className="inline-flex items-center gap-2 border-s-2 border-[color:var(--rd-hero-accent)] bg-transparent px-3 py-1 text-[11px] font-extrabold leading-none tracking-[.06em] text-[color:var(--rd-hero-accent)]">{eyebrow}</p>}
                         <Heading className={cn('mt-3 text-[clamp(1.75rem,3.2vw,2.6rem)] font-extrabold leading-heading tracking-[-.035em] text-[color:var(--rd-hero-foreground)]', titleClassName)}>{title}</Heading>
@@ -121,9 +120,7 @@ export function WorkspaceHero({ eyebrow, title, description, actions, className 
     return (
         <section className="rd-bleed rd-hero-surface my-3 border-y border-[color:var(--rd-hero-line)] sm:my-4">
             <Container width="wide" className="py-8 sm:py-10 lg:py-12">
-                <header className={cn('rd-hero-header relative isolate flex min-w-0 items-center justify-between gap-8 text-[color:var(--rd-hero-foreground)] max-md:items-stretch max-md:flex-col max-md:gap-5', className)}>
-                    <span aria-hidden="true" className="rd-hero-decoration pointer-events-none absolute end-6 top-0 hidden h-20 w-20 border border-[color:var(--rd-hero-line)] sm:block lg:end-10 lg:h-28 lg:w-28" />
-                    <span aria-hidden="true" className="rd-hero-decoration-secondary pointer-events-none absolute end-12 top-6 hidden h-20 w-20 border-e border-t border-[color:var(--rd-hero-accent)] sm:block lg:end-16 lg:top-8 lg:h-28 lg:w-28" />
+                <header className={cn('relative isolate flex min-w-0 items-center justify-between gap-8 text-[color:var(--rd-hero-foreground)] max-md:items-stretch max-md:flex-col max-md:gap-5', className)}>
                     <div className="relative z-10 min-w-0 max-w-[46rem]">
                         {eyebrow && <p className="text-xs font-bold tracking-wide text-[color:var(--rd-hero-accent)]">{eyebrow}</p>}
                         <h1 className="mt-2 break-words text-[clamp(1.5rem,3vw,2.25rem)] font-extrabold leading-heading tracking-[-.025em] text-[color:var(--rd-hero-foreground)]">{title}</h1>
