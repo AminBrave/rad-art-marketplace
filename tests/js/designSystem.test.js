@@ -97,6 +97,7 @@ test('editorial hero surfaces define readable light and dark semantic palettes',
     assert.ok(css.includes('.rd-hero-surface'));
     assert.ok(homePage.includes('text-[color:var(--rd-hero-foreground)]'));
     assert.ok(publicPages[1].includes('text-[color:var(--rd-hero-foreground)]'));
+    assert.ok(routeLoading.includes('rd-hero-surface'), 'Artist directory loading state mirrors the theme-aware hero.');
 });
 
 test('buttons enforce square geometry and shared alignment', () => {
