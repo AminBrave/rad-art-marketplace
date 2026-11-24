@@ -570,15 +570,18 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(bottomNavigation.includes('pb-[env(safe-area-inset-bottom)]'));
     assert.ok(bottomNavigation.includes('lg:hidden'));
     assert.ok(bottomNavigation.includes('mobileLinks.map((item)'));
-    assert.ok(layouts.includes('user && <AuthenticatedBottomNavigation mobileLinks={getWorkspaceMobileLinks(user.role)} />'));
-    assert.ok(workspaceLayout.includes('<AuthenticatedBottomNavigation mobileLinks={getWorkspaceMobileLinks(user?.role)} />'));
+    assert.ok(layouts.includes('user && <PublicBottomNavigation user={user} profileHref={profileHref} />'));
+    assert.ok(layouts.includes('function PublicBottomNavigation'));
+    assert.ok(workspaceLayout.includes('<AuthenticatedBottomNavigation mobileLinks={mobileWorkspaceLinks} />'));
+    assert.ok(workspaceLayout.includes('outletContext.profile.slug'));
+    assert.ok(workspaceLayout.includes('workspaceLinks.map((item)'));
 
     assert.ok(workspaceLayout.includes('<DialogTrigger asChild>'));
     assert.ok(workspaceLayout.includes('aria-label="باز کردن منوی حساب کاربری"'));
     assert.ok(workspaceLayout.includes('<DialogContent'));
     assert.ok(workspaceLayout.includes('placement="drawer"'));
     assert.ok(workspaceLayout.includes('aria-label="ناوبری فضای کاربری"'));
-    assert.ok(workspaceLayout.includes('links.map((item)'));
+    assert.ok(workspaceLayout.includes('workspaceLinks.map((item)'));
     assert.ok(workspaceLayout.includes('lg:sticky'));
     assert.ok(workspaceLayout.includes('lg:block'));
     assert.ok(workspaceLayout.includes('max-w-content gap-5 px-page-gutter'), 'Workspace sidebar and content share the header/footer container gutters.');
