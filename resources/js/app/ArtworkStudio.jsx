@@ -15,7 +15,7 @@ const statusGuidance = {
 };
 
 export default function ArtworkStudio({ user, hasProfile }) {
-    const { t } = useLanguage();
+    const { t, locale } = useLanguage();
     const [artworkPage, setArtworkPage] = useState(1);
     const queryClient = useQueryClient();
     const categoriesQuery = useQuery({
@@ -192,7 +192,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
             {artworks.length > 0 && !loading && (
                 <nav aria-label={t("صفحه‌بندی آثار ثبت‌شده")} className="flex items-center justify-center gap-3 border-t border-border pt-6">
                     <Button variant="outline" size="sm" disabled={loading || artworkPage <= 1} onClick={() => setArtworkPage((current) => Math.max(1, current - 1))}>{t("قبلی")}</Button>
-                    <span className="text-xs text-muted">صفحه {(artworksQuery.data?.current_page ?? artworkPage).toLocaleString('fa-IR')}</span>
+                    <span className="text-xs text-muted">صفحه {(artworksQuery.data?.current_page ?? artworkPage).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</span>
                     <Button variant="outline" size="sm" disabled={loading || !hasMoreArtworks} onClick={() => setArtworkPage((current) => current + 1)}>{t("بعدی")}</Button>
                 </nav>
             )}
