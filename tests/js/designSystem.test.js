@@ -164,7 +164,7 @@ test('public catalogue, artist directory and artwork detail use shared page layo
 });
 
 test('public and role-based workspaces use shared semantic shell utilities', () => {
-    for (const utility of ['min-h-screen bg-canvas text-ink', 'sticky top-0 z-40 border-b-2 border-ink', 'grid min-w-0 w-full max-w-content', 'border-y-2 border-ink bg-paper']) {
+    for (const utility of ['min-h-screen bg-canvas text-ink', 'sticky top-0 z-40 border-b border-divider-section', 'grid min-w-0 w-full max-w-content', 'border-y border-divider-section bg-paper']) {
         assert.ok(layouts.includes(utility), 'Missing shell utility: ' + utility);
     }
     assert.doesNotMatch(layouts, /ra-[a-z]/);
@@ -177,7 +177,7 @@ test('navigation and dialog primitives use Tailwind state and focus utilities', 
     assert.ok(navigation.includes('aria-current="page"'));
     assert.ok(dialog.includes('bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]'));
     assert.ok(dialog.includes('max-h-[min(88dvh,48rem)]'));
-    assert.ok(dialog.includes('rounded-sm border-y-2 border-ink bg-paper'));
+    assert.ok(dialog.includes('rounded-card border border-border bg-paper'));
     assert.doesNotMatch(navigation, /ra-[a-z]/);
     assert.doesNotMatch(dialog, /ra-[a-z]/);
 });
