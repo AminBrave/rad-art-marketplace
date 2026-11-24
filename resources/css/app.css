@@ -322,6 +322,32 @@
     }
 }
 
+/*
+ * Canonical route content frame.
+ * Public and workspace shells own the same maximum width and responsive gutters.
+ * Route-level PageContainer components fill this frame instead of creating a
+ * second, narrower page grid. Reading measures remain inner content constraints.
+ */
+.rd-page-frame {
+    width: min(calc(100% - 2 * var(--page-gutter)), var(--content-width));
+    min-width: 0;
+    margin-inline: auto;
+}
+
+.rd-page-frame--workspace {
+    width: 100%;
+}
+
+@media (max-width: 639px) {
+    .rd-page-frame {
+        width: calc(100% - 2 * var(--page-gutter));
+    }
+
+    .rd-page-frame--workspace {
+        width: 100%;
+    }
+}
+
 html {
     min-width: 320px;
     scroll-behavior: smooth;
