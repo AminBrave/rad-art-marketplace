@@ -37,7 +37,8 @@ export const Container = forwardRef(function Container({ as: Element = 'div', wi
 });
 
 export const Section = forwardRef(function Section({ as: Element = 'section', bleed = false, className = '', ...props }, ref) {
-    return <Element ref={ref} className={cn('min-w-0 py-14 sm:py-20', bleed && 'rd-bleed', className)} {...props} />;
+    const sectionSpacing = Element === 'section' ? 'py-14 sm:py-20' : '';
+    return <Element ref={ref} className={cn('min-w-0', sectionSpacing, bleed && 'rd-bleed', className)} {...props} />;
 });
 
 export const Inset = forwardRef(function Inset({ as: Element = 'div', side = 'all', className = '', ...props }, ref) {
