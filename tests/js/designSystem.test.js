@@ -104,9 +104,30 @@ test('messaging avatars and artwork chips use square geometry without decorative
 test('homepage hero artwork remains visible in a responsive 3:4 frame on all viewport sizes', () => {
     assert.doesNotMatch(homePage, /w-full min-w-0 overflow-hidden["']/);
     assert.ok(homePage.includes('relative aspect-[3/4] w-full overflow-hidden'));
-    assert.ok(homePage.includes('lg:grid-cols-[minmax(0,1.1fr)_minmax(20rem,.9fr)]'));
+    assert.ok(homePage.includes('lg:flex-row lg:items-center lg:gap-20'));
+    assert.doesNotMatch(homePage, /lg:grid-cols-\[/, 'The homepage hero must not use CSS Grid.');
     assert.ok(homePage.includes('lg:max-w-[28rem] lg:justify-self-center'), 'Desktop hero artwork stays portrait without overwhelming the text column.');
     assert.doesNotMatch(homePage, /sm:aspect-\[3\/4\]|lg:aspect-\[3\/4\]/);
+});
+
+test('public and workspace mobile navigation are separate and artist profile preview is the primary destination', () => {
+    assert.ok(layouts.includes('function PublicBottomNavigation'));
+    assert.ok(layouts.includes('data-testid="public-bottom-navigation"'));
+    assert.ok(layouts.includes('function AuthenticatedBottomNavigation'));
+    assert.ok(layouts.includes('data-testid="authenticated-bottom-navigation"'));
+    assert.ok(layouts.includes("user.role === 'artist' ? profileHref"));
+    assert.ok(layouts.includes("label: 'پیش‌نمایش پروفایل'"));
+    assert.ok(layouts.includes("outletContext.profile.slug"));
+    assert.ok(artistWorkspace.includes('پیش‌نمایش پروفایل'));
+    assert.ok(artistWorkspace.includes('ویرایش پروفایل'));
+    assert.ok(artistProfile.includes('aria-label="پروفایل هنرمند"'));
+    assert.ok(artistProfile.includes('دنبال‌کننده'));
+    assert.ok(artistProfile.includes('grid-cols-[10rem_minmax(0,1fr)]'));
+});
+
+test('featured collections header follows the full-width artwork gallery header pattern', () => {
+    assert.ok(editorialPages.includes('PageHeader eyebrow="انتخاب سردبیر"'));
+    assert.doesNotMatch(editorialPages.split('PageHeader eyebrow="انتخاب سردبیر"')[1]?.split('/>')[0] ?? '', /max-w-3xl/);
 });
 
 test('comment discussions use nested cards and a clear reply hierarchy', () => {
