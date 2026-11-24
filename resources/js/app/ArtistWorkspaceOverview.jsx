@@ -42,7 +42,6 @@ export default function ArtistWorkspaceOverview() {
         { label: 'نمایش عمومی پروفایل', done: Boolean(profile?.slug && profile.is_public) },
     ];
     const completedProfileSteps = profileSteps.filter((step) => step.done).length;
-    const hasArtwork = (counts.artworks ?? 0) > 0;
     const pending = artworks.filter((item) => item.status === 'pending_review').length;
     const published = artworks.filter((item) => item.status === 'approved').length;
     const profileReady = Boolean(profile?.slug && profile?.display_name?.trim());
