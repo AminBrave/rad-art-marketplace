@@ -41,7 +41,7 @@ export default function ArtworkGallery({ user }) {
         return (
             <main className="min-h-screen w-full bg-canvas py-12 text-ink" dir="rtl">
                 <Container width="wide">
-                <article className="mx-auto max-w-4xl rounded-3xl border border-border bg-paper p-6 shadow-sm sm:p-10">
+                <article className="mx-auto max-w-4xl rounded-card border border-border bg-paper p-6 shadow-sm sm:p-10">
                     <a href="/" className="font-black text-terracotta-strong">بازگشت به راد آرت</a>
                     {loading ? <p className="mt-10 text-muted">در حال دریافت اثر…</p> : error || !detail ? (
                         <div className="mt-10"><h1 className="text-2xl font-black">اثر در دسترس نیست</h1><p className="mt-3 text-muted">این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.</p></div>
@@ -76,22 +76,22 @@ export default function ArtworkGallery({ user }) {
                     <p className="mt-3 text-sm leading-7 text-muted">آثاری که بررسی و برای نمایش عمومی تأیید شده‌اند.</p>
                 </div>
                 <form onSubmit={(event) => { event.preventDefault(); setSearch(searchInput.trim()); }} className="flex flex-wrap gap-2">
-                    <TextInput value={searchInput} onChange={(event) => setSearchInput(event.target.value)} aria-label="جست‌وجو در آثار" placeholder="جست‌وجوی عنوان یا تکنیک…" className="min-w-[220px] rounded-full px-4 py-2.5" />
-                    <SelectField value={category} onChange={(event) => setCategory(event.target.value)} aria-label="فیلتر دسته‌بندی" className="min-h-11 w-auto rounded-full border-border-strong bg-paper px-4 py-2.5 text-sm">
+                    <TextInput value={searchInput} onChange={(event) => setSearchInput(event.target.value)} aria-label="جست‌وجو در آثار" placeholder="جست‌وجوی عنوان یا تکنیک…" className="min-w-[220px] rounded-control px-4 py-2.5" />
+                    <SelectField value={category} onChange={(event) => setCategory(event.target.value)} aria-label="فیلتر دسته‌بندی" className="min-h-11 w-auto rounded-control border-border-strong bg-paper px-4 py-2.5 text-sm">
                         <option value="">همه دسته‌ها</option>
                         {categories.map((item) => <option key={item.id} value={item.slug}>{item.name}</option>)}
                     </SelectField>
-                    <Button variant="ghost" type="submit" className="rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-inverse">جست‌وجو</Button>
+                    <Button variant="ghost" type="submit" className="rounded-control bg-ink px-5 py-2.5 text-sm font-bold text-inverse">جست‌وجو</Button>
                 </form>
             </div>
             {loading ? <p className="mt-8 text-sm text-muted">در حال بارگذاری آثار…</p> : error ? (
-                <p role="alert" className="mt-8 rounded-xl bg-paper p-5 text-sm text-danger">دریافت کاتالوگ با خطا روبه‌رو شد.</p>
+                <p role="alert" className="mt-8 rounded-card bg-paper p-5 text-sm text-danger">دریافت کاتالوگ با خطا روبه‌رو شد.</p>
             ) : artworks.length === 0 ? (
-                <p className="mt-8 rounded-xl border border-border bg-paper p-8 text-sm text-muted">هنوز اثری برای نمایش در این دسته‌بندی ثبت نشده است.</p>
+                <p className="mt-8 rounded-card border border-border bg-paper p-8 text-sm text-muted">هنوز اثری برای نمایش در این دسته‌بندی ثبت نشده است.</p>
             ) : (
                 <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {artworks.map((artwork) => (
-                        <a key={artwork.id} href={'/artworks/' + artwork.slug} className="group overflow-hidden rounded-2xl border border-border bg-paper transition hover:-translate-y-1 hover:shadow-lg">
+                        <a key={artwork.id} href={'/artworks/' + artwork.slug} className="group overflow-hidden rounded-card border border-border bg-paper transition hover:-translate-y-1 hover:shadow-lg">
                             <MediaImage src={artwork.image_url} alt={artwork.title} className="aspect-[4/3] w-full" imageClassName="object-cover transition group-hover:scale-[1.02]" loading="lazy" decoding="async" />
                             <div className="p-5">
                                 <p className="text-xs font-bold text-terracotta-strong">{artwork.category.name}</p>
