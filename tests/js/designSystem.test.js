@@ -102,12 +102,14 @@ test('messaging avatars and artwork chips use square geometry without decorative
     assert.ok(css.includes('rd-message-bubble--peer::before'));
 });
 
-test('homepage hero artwork remains visible in a responsive 3:4 frame on all viewport sizes', () => {
+test('homepage hero artwork remains centered in a responsive 3:4 frame without overflowing its content container', () => {
     assert.doesNotMatch(homePage, /w-full min-w-0 overflow-hidden["']/);
     assert.ok(homePage.includes('relative aspect-[3/4] w-full overflow-hidden'));
-    assert.ok(homePage.includes('lg:flex-row lg:items-center lg:gap-20'));
+    assert.ok(homePage.includes('lg:flex-row lg:items-center lg:justify-between lg:gap-16'));
+    assert.ok(homePage.includes('lg:flex-1 lg:py-10'), 'Hero copy flexes into the remaining desktop column width.');
+    assert.ok(homePage.includes('lg:mx-0 lg:w-2/5 lg:max-w-[28rem] lg:shrink-0'), 'Hero artwork has a bounded desktop width without auto margins.');
     assert.doesNotMatch(homePage, /className="grid items-center gap-10 lg:grid-cols-/, 'The homepage hero must not use CSS Grid.');
-    assert.ok(homePage.includes('lg:max-w-[28rem] lg:justify-self-center'), 'Desktop hero artwork stays portrait without overwhelming the text column.');
+    assert.doesNotMatch(homePage, /lg:w-\[55%\]|lg:w-\[45%\]|lg:gap-20/);
     assert.doesNotMatch(homePage, /sm:aspect-\[3\/4\]|lg:aspect-\[3\/4\]/);
 });
 
