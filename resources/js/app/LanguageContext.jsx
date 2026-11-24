@@ -870,6 +870,20 @@ const english = {
     "تأییدشده": "Approved",
     "قابل استعلام": "Ask artist",
     "ارسال پیام درباره ": "Send a message about ",
+    "در حال دریافت اثر…": "Loading artwork…",
+    "اثر در دسترس نیست": "Artwork unavailable",
+    "این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.": "This artwork does not exist or has not been approved for public display.",
+    "مشاهده پروفایل هنرمند:": "View artist profile: ",
+    "برای تماس با هنرمند وارد شوید یا ثبت‌نام کنید": "Sign in or register to contact the artist",
+    "کاتالوگ راد آرت": "Rad Art catalogue",
+    "آثار منتخب هنرمندان": "Selected artworks by artists",
+    "آثاری که بررسی و برای نمایش عمومی تأیید شده‌اند.": "Artworks reviewed and approved for public display.",
+    "جست‌وجو در آثار": "Search artworks",
+    "جست‌وجوی عنوان یا تکنیک…": "Search by title or medium…",
+    "جست‌وجو": "Search",
+    "در حال بارگذاری آثار…": "Loading artworks…",
+    "دریافت کاتالوگ با خطا روبه‌رو شد.": "Could not load the catalogue.",
+    "هنوز اثری برای نمایش در این دسته‌بندی ثبت نشده است.": "No artworks have been submitted in this category yet.",
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 
