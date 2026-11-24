@@ -78,6 +78,8 @@ test('project stylesheets define tokens, base rules and only approved layout pri
         '.rd-page-frame',
         '.rd-page-frame--workspace',
         '.rd-container--reading',
+        '.rd-container--full',
+        '.rd-hero-surface',
     ]);
     for (const path of stylesheetFiles) {
         const source = readFileSync(path, 'utf8');
