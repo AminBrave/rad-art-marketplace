@@ -108,6 +108,7 @@ test('buttons enforce square geometry and shared alignment', () => {
 
 test('section primitives provide consistent vertical rhythm', () => {
     assert.ok(layoutPrimitives.includes("Element === 'section' ? 'py-16 sm:py-24'"));
+    assert.doesNotMatch(layoutPrimitives.slice(layoutPrimitives.indexOf('export const Container'), layoutPrimitives.indexOf('export const Section')), /py-16|py-24/);
 });
 
 test('class composition understands semantic radius and content-width utilities', () => {
@@ -157,7 +158,7 @@ test('shared primitives express accessible component contracts with semantic Tai
     assert.ok(primitives.includes("'aria-invalid': error ? true"));
     assert.ok(primitives.includes('bg-accent-surface text-terracotta-strong'));
     assert.ok(primitives.includes('before:bg-terracotta'));
-    assert.ok(primitives.includes('before:bg-sand'));
+    assert.ok(primitives.includes('before:bg-terracotta'));
     assert.ok(primitives.includes('text-[clamp(1.75rem,3.2vw,2.6rem)]'));
     assert.ok(primitives.includes('max-sm:w-full max-sm:pb-0'));
     assert.doesNotMatch(primitives, /ra-[a-z]/);
@@ -165,7 +166,7 @@ test('shared primitives express accessible component contracts with semantic Tai
 
 test('shared content and feedback components use semantic utility classes', () => {
     assert.ok(cards.includes('bg-surface-muted'));
-    assert.ok(cards.includes('aspect-[4/5]'));
+    assert.ok(cards.includes('aspect-[3/4]'));
     assert.ok(feedback.includes('color-mix(in_srgb,var(--color-danger)_30%,transparent)'));
     assert.ok(feedback.includes('animate-skeleton-shimmer'));
     assert.ok(feedback.includes('border-s-4'));
@@ -310,7 +311,7 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     assert.ok(layouts.includes('lg:hidden'));
     assert.ok(layouts.includes('hidden min-w-0 border-y border-divider-section bg-paper'));
     assert.ok(adminWorkspace.includes('<PageHeader'));
-    assert.ok(artistWorkspace.includes('<WorkspaceHero'));
+    assert.ok(artistWorkspace.includes('<PageHeader'));
     assert.ok(buyerWorkspace.includes('<WorkspaceHero'));
     assert.ok(artistWorkspace.includes('<SectionHeader'));
     assert.ok(buyerWorkspace.includes('<SectionHeader'));
@@ -588,7 +589,7 @@ test('Blade first-paint skeletons use route-specific geometry for studio forms, 
     assert.ok(bootShell.includes('@elseif ($isArtworkStudio)'));
     assert.ok(bootShell.includes('@elseif ($isArtistProfileSettings)'));
     assert.ok(bootShell.includes('@elseif ($isAuthForm)'));
-    assert.ok(bootShell.includes('aspect-[4/5]'));
+    assert.ok(bootShell.includes('aspect-[3/4]'));
     assert.ok(bootShell.includes('h-14 w-14 shrink-0 rounded-full'));
 });
 
@@ -650,6 +651,8 @@ test('shared query cache keeps recently visited data warm and supports stale-whi
     assert.ok(queryClient.includes('refetchOnReconnect: true'));
     assert.ok(artistWorkspace.includes("queryKey: ['artist-workspace', 'artworks', user?.id]"));
     assert.ok(artistWorkspace.includes('enabled: !profileLoading && Boolean(profile?.slug)'));
+    assert.ok(artistWorkspace.includes('className="w-full"'), 'Artist overview uses the compact page frame.');
+    assert.doesNotMatch(artistWorkspace, /rounded-xl border border-border bg-paper p-5 shadow-soft/);
     assert.ok(routeLoading.includes("queryKey: profileKey"));
     assert.ok(routeLoading.includes('queryClient.setQueryData(profileKey, nextProfile)'));
 });
@@ -690,8 +693,8 @@ test('loading skeletons mirror the main structures of the major project surfaces
     assert.ok(adminWorkspace.includes('<MessageReportsSkeleton count={3} />'));
     assert.ok(messagingInbox.includes('<ConversationInboxSkeleton count={6} />'));
     assert.ok(messageTimeline.includes('<MessageHistorySkeleton count={5}'));
-    assert.ok(skeletons.includes('aspect-[4/3]'));
-    assert.ok(skeletons.includes('aspect-[4/5]'));
+    assert.ok(skeletons.includes('aspect-[3/4]'));
+    assert.ok(skeletons.includes('aspect-[3/4]'));
     assert.ok(skeletons.includes('aria-label="در حال آماده‌سازی صفحه اصلی"'));
     assert.ok(skeletons.includes('sm:min-h-64'));
 });
