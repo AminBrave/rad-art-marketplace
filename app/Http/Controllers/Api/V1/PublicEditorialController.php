@@ -45,12 +45,16 @@ class PublicEditorialController extends Controller
             ->map(fn (FeaturedArtistSelection $selection) => [
                 'id' => $selection->id,
                 'editorial_intro' => $selection->editorial_intro,
+                'editorial_intro_en' => $selection->editorial_intro_en,
                 'position' => $selection->position,
                 'artist' => [
                     'slug' => $selection->artistProfile->slug,
                     'display_name' => $selection->artistProfile->display_name,
+                    'display_name_en' => $selection->artistProfile->display_name_en,
                     'bio' => $selection->artistProfile->bio,
+                    'bio_en' => $selection->artistProfile->bio_en,
                     'city' => $selection->artistProfile->city,
+                    'city_en' => $selection->artistProfile->city_en,
                 ],
             ]);
 
@@ -66,7 +70,8 @@ class PublicEditorialController extends Controller
 
     private function collectionPayload(CuratedCollection $collection, bool $includeItems): array
     {
-        $payload = ['id' => $collection->id, 'slug' => $collection->slug, 'title' => $collection->title, 'intro' => $collection->intro, 'published_at' => $collection->published_at?->toISOString(), 'artwork_count' => $collection->artworks->count()];
+        $payload = ['id' => $collection->id, 'slug' => $collection->slug, 'title' => $collection->title, 'title_en' => $collection->title_en,
+            'intro' => $collection->intro, 'intro_en' => $collection->intro_en, 'published_at' => $collection->published_at?->toISOString(), 'artwork_count' => $collection->artworks->count()];
         if ($includeItems) {
             $payload['artworks'] = $collection->artworks->map(fn (Artwork $artwork) => $this->artworkPayload($artwork))->values();
         }
@@ -77,12 +82,13 @@ class PublicEditorialController extends Controller
     private function artworkPayload(Artwork $artwork): array
     {
         return [
-            'id' => $artwork->id, 'slug' => $artwork->slug, 'title' => $artwork->title,
-            'description' => $artwork->description, 'medium' => $artwork->medium, 'year' => $artwork->year,
+            'id' => $artwork->id, 'slug' => $artwork->slug, 'title' => $artwork->title, 'title_en' => $artwork->title_en,
+            'description' => $artwork->description, 'description_en' => $artwork->description_en,
+            'city' => $artwork->city, 'city_en' => $artwork->city_en, 'medium' => $artwork->medium, 'year' => $artwork->year,
             'price' => $artwork->price, 'availability' => $artwork->availability,
             'image_url' => route('api.v1.artworks.image', $artwork->slug),
-            'category' => ['name' => $artwork->category->name, 'slug' => $artwork->category->slug],
-            'artist' => ['display_name' => $artwork->artistProfile->display_name, 'slug' => $artwork->artistProfile->slug],
+            'category' => ['name' => $artwork->category->name, 'name_en' => $artwork->category->name_en, 'slug => $artwork->category->slug],
+            'artist' => ['display_name' => $artwork->artistProfile->display_name, 'display_name_en' => $artwork->artistProfile->display_name_en, 'city' => $artwork->artistProfile->city, 'city_en' => $artwork->artistProfile->city_en, 'slug => $artwork->artistProfile->slug],
         ];
     }
 }
