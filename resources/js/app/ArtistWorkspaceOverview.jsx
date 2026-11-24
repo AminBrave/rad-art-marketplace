@@ -3,6 +3,7 @@ import { useLanguage } from './LanguageContext';
 import axios from 'axios';
 import { Link, useOutletContext } from 'react-router-dom';
 import { EmptyState, ErrorState, StatusBadge, Badge, PageHeader, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton, ArtistRecentWorkSkeleton, Container } from '../components/ui';
+import { localizedValue } from '../utils/localizedContent';
 
 const statusLabels = {
     pending_review: 'در انتظار بررسی', approved: 'منتشرشده', rejected: 'ردشده',
@@ -64,7 +65,7 @@ export default function ArtistWorkspaceOverview() {
                     <div className="min-w-0">
                         <p className="text-xs font-bold text-terracotta-strong">{t("پروفایل هنری")}</p>
                         <div className="mt-1 flex flex-wrap items-center gap-3">
-                            <h2 className="text-lg font-bold text-ink">{profileReady ? profile.display_name  : t('پروفایل هنری شما کامل نیست')}</h2>
+                            <h2 className="text-lg font-bold text-ink">{profileReady ? localizedValue(profile, 'display_name', locale) : t('پروفایل هنری شما کامل نیست')}</h2>
                             {!profileLoading && <Badge variant={profile?.is_public ? 'success' : 'neutral'}>{profile?.is_public ? t('عمومی') : t('خصوصی')}</Badge>}
                         </div>
                         <p className="mt-1 max-w-2xl text-xs leading-6 text-muted">
@@ -109,7 +110,7 @@ export default function ArtistWorkspaceOverview() {
                         ) : (
                             <ul className="mt-2 divide-y divide-divider-nested">
                                 {artworks.slice(0, 4).map((item) => <li key={item.id} className="flex min-h-16 items-center justify-between gap-3 py-3">
-                                    <div className="min-w-0"><p className="truncate text-sm font-bold text-ink">{item.title}</p>{item.category?.name && <p className="mt-1 text-xs text-muted">{item.category.name}</p>}</div>
+                                    <div className="min-w-0"><p className="truncate text-sm font-bold text-ink">{localizedValue(item, 'title', locale)}</p>{localizedValue(item.category, 'name', locale) && <p className="mt-1 text-xs text-muted">{localizedValue(item.category, 'name', locale)}</p>}</div>
                                     <StatusLabel status={item.status} />
                                 </li>)}
                             </ul>
