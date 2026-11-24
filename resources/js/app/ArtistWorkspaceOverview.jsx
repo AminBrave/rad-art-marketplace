@@ -49,7 +49,7 @@ export default function ArtistWorkspaceOverview() {
     const progress = Math.round((completedProfileSteps / profileSteps.length) * 100);
 
     return (
-        <Container as="section" width="wide" className="space-y-8" dir="rtl">
+        <div className="w-full space-y-8" dir="rtl">
             <WorkspaceHero
                 eyebrow="استودیوی هنرمند / نمای کلی"
                 title={<>خوش آمدید، {user?.name}</>}
@@ -57,6 +57,7 @@ export default function ArtistWorkspaceOverview() {
                 actions={<Link to="/dashboard/artist/artworks" className="inline-flex min-h-11 items-center justify-center rounded-md border border-transparent bg-terracotta px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">ثبت یا مدیریت اثر</Link>}
             />
 
+            <Container width="wide" className="space-y-8">
             {profileError && <ErrorState title="پروفایل دریافت نشد" description={profileError} />}
             {profileLoading ? <WorkspaceIdentitySkeleton /> : (
                 <section className="grid gap-8 border-y-2 border-ink bg-transparent py-7 sm:py-9 lg:grid-cols-[minmax(0,1fr)_15rem] lg:items-center">
@@ -140,6 +141,7 @@ export default function ArtistWorkspaceOverview() {
                     </section>
                 </>
             )}
-        </Container>
+            </Container>
+        </div>
     );
 }
