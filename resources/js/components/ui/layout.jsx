@@ -111,13 +111,13 @@ export function Avatar({ src, alt = '', fallback, size = 'md', className = '', .
 }
 
 export const Card = forwardRef(function Card({ as: Element = 'article', interactive = false, className = '', ...props }, ref) {
-    return <Element ref={ref} className={cn('min-w-0 rounded-lg border border-divider-group bg-paper', interactive && 'transition-colors hover:border-border-strong', className)} {...props} />;
+    return <Element ref={ref} className={cn('min-w-0 rounded-card border border-divider-group bg-paper', interactive && 'transition-colors hover:border-border-strong', className)} {...props} />;
 });
 
 export const Callout = forwardRef(function Callout({ as: Element = 'aside', variant = 'info', title, children, className = '', ...props }, ref) {
     const variants = { info: 'border-s-terracotta bg-accent-surface', success: 'border-s-success bg-success-surface', warning: 'border-s-warning bg-warning-surface', danger: 'border-s-danger bg-danger-surface' };
     return (
-        <Element ref={ref} role={props.role ?? 'note'} className={cn('min-w-0 rounded-md border border-divider-group border-s-4 p-4 text-ink', variants[variant] ?? variants.info, className)} {...props}>
+        <Element ref={ref} role={props.role ?? 'note'} className={cn('min-w-0 rounded-editorial border border-divider-group border-s-4 p-4 text-ink', variants[variant] ?? variants.info, className)} {...props}>
             {title && <p className="font-bold">{title}</p>}
             {children && <div className={cn(title && 'mt-1', 'text-sm leading-7')}>{children}</div>}
         </Element>
