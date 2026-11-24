@@ -268,7 +268,7 @@ test('PageContainer and Surface preserve semantic element and variant contracts'
         React.createElement(primitives.Surface, { as: 'article', variant: 'interactive' }, 'جزئیات'),
     );
 
-    assert.match(container, /<main[^>]*max-w-\[var\(--content-reading-width\)\]/);
+    assert.match(container, /<main[^>]*max-w-content-reading/);
     assert.match(container, /محتوا/);
     assert.match(surface, /<article[^>]*focus-within:outline/);
     assert.match(surface, /جزئیات/);
