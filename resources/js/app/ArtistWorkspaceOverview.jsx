@@ -45,7 +45,7 @@ export default function ArtistWorkspaceOverview() {
     const progress = Math.round((completedProfileSteps / profileSteps.length) * 100);
 
     return (
-        <div className="w-full" dir="rtl">
+        <div className="w-full">
             <div className="rd-container min-w-0 mx-auto w-full max-w-content space-y-7">
                 <PageHeader
                     eyebrow="استودیوی هنرمند"
