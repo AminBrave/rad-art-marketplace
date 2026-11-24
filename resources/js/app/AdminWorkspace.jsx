@@ -8,7 +8,7 @@ import { Badge, Button, EmptyState, ErrorState, FormField, Skeleton, Pagination,
 
 const api = '/api/v1/admin';
 const statuses = [
-    { value: 'pending_review', label: 'در انتظار بررسی' },
+    { value: 'pending_review', label: t("در انتظار بررسی") },
     { value: 'approved', label: 'تأییدشده' },
     { value: 'changes_requested', label: 'نیازمند اصلاح' },
     { value: 'rejected', label: 'ردشده' },
@@ -56,7 +56,7 @@ export function AdminDashboardHome() {
         { to: '/admin/artworks', eyebrow: 'محتوا', title: 'بررسی آثار', description: 'صف انتظار، تصمیم‌های انتشار و سوابق اصلاح یا رد آثار', symbol: '▧' },
         { to: '/admin/users', eyebrow: 'حساب‌ها', title: 'مدیریت کاربران', description: 'مرور حساب‌ها و مدیریت نقش‌های مجاز در سامانه', symbol: '◎' },
         { to: '/admin/editorial', eyebrow: 'انتخاب سردبیر', title: 'مجموعه‌های منتخب', description: 'تنظیم مجموعه‌ها و انتخاب هنرمندان برجسته', symbol: '✳' },
-        { to: '/admin/message-reports', eyebrow: 'اعتماد و ایمنی', title: 'گزارش‌های پیام', description: 'رسیدگی به گزارش‌ها و بررسی محتوای علامت‌گذاری‌شده', symbol: '⚑' },
+        { to: '/admin/message-reports', eyebrow: 'اعتماد و ایمنی', title: t("گزارش‌های پیام"), description: 'رسیدگی به گزارش‌ها و بررسی محتوای علامت‌گذاری‌شده', symbol: '⚑' },
         { to: '/admin/artwork-comment-reports', eyebrow: 'گفت‌وگوی عمومی', title: 'گزارش دیدگاه‌ها', description: 'بررسی دیدگاه‌های گزارش‌شده در صفحه آثار', symbol: '≋' },
     ];
 
@@ -181,7 +181,7 @@ export function AdminArtworkModeration() {
                     <div className="grid sm:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)]"><div className="aspect-[3/4] overflow-hidden bg-surface-muted p-3 sm:aspect-[3/4]"><MediaImage src={artwork.image_url} alt={'تصویر اثر ' + artwork.title} className="h-56 w-full sm:h-full sm:min-h-64" imageClassName="object-cover" loading="lazy" decoding="async" /></div>
                         <div className="min-w-0 py-4 sm:px-1"><div className="flex flex-wrap items-start justify-between gap-2"><h2 className="font-bold">{artwork.title}</h2><Badge variant={artwork.status === 'approved' ? 'success' : artwork.status === 'rejected' ? 'danger' : artwork.status === 'pending_review' ? 'warning' : 'info'}>{statusLabels[artwork.status] ?? artwork.status}</Badge></div>
                             <p className="mt-2 text-xs text-muted">{artwork.artist?.display_name ?? '—'} · {artwork.category?.name ?? '—'}</p>
-                            <dl className="mt-4 grid grid-cols-2 gap-3 text-xs">{artwork.medium && <div><dt className="text-muted">{t("تکنیک")}</dt><dd className="mt-1 font-semibold">{artwork.medium}</dd></div>}{artwork.dimensions && <div><dt className="text-muted">{t("ابعاد")}</dt><dd className="mt-1 font-semibold">{artwork.dimensions}</dd></div>}{artwork.year && <div><dt className="text-muted">سال</dt><dd className="mt-1 font-semibold">{artwork.year}</dd></div>}<div><dt className="text-muted">تاریخ ثبت</dt><dd className="mt-1 font-semibold">{dateLabel(artwork.created_at, locale)}</dd></div></dl>
+                            <dl className="mt-4 grid grid-cols-2 gap-3 text-xs">{artwork.medium && <div><dt className="text-muted">{t("تکنیک")}</dt><dd className="mt-1 font-semibold">{artwork.medium}</dd></div>}{artwork.dimensions && <div><dt className="text-muted">{t("ابعاد")}</dt><dd className="mt-1 font-semibold">{artwork.dimensions}</dd></div>}{artwork.year && <div><dt className="text-muted">{t("سال")}</dt><dd className="mt-1 font-semibold">{artwork.year}</dd></div>}<div><dt className="text-muted">{t("تاریخ ثبت")}</dt><dd className="mt-1 font-semibold">{dateLabel(artwork.created_at, locale)}</dd></div></dl>
                             {artwork.description && <p className="mt-4 line-clamp-4 text-sm leading-7 text-muted">{artwork.description}</p>}{artwork.rejection_note && <p className="mt-3 border-s-2 border-sand bg-surface-muted p-3 text-xs leading-6 text-muted">یادداشت ثبت‌شده: {artwork.rejection_note}</p>}
                         </div>
                     </div>
@@ -335,8 +335,8 @@ export function AdminMessageReportsPage() {
                 const confirmingRemoval = confirmRemovalId === report.id;
                 return <article key={report.id} className="overflow-hidden border-t border-border bg-transparent pt-1">
                     <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border py-5">
-                        <div><p className="text-xs font-bold text-terracotta-strong">گزارش شماره {report.id}</p><h2 className="mt-1 font-black">{report.reason}</h2><p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? 'کاربر'} · {dateLabel(report.created_at, locale)}</p></div>
-                        <Badge variant={isOpen ? 'warning' : report.status === 'dismissed' ? 'neutral' : 'success'}>{isOpen ? 'در انتظار بررسی' : report.status === 'dismissed' ? t("رد گزارش") : t("بررسی‌شده")}</Badge>
+                        <div><p className="text-xs font-bold text-terracotta-strong">گزارش شماره {report.id}</p><h2 className="mt-1 font-black">{report.reason}</h2><p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? t("کاربر")} · {dateLabel(report.created_at, locale)}</p></div>
+                        <Badge variant={isOpen ? 'warning' : report.status === 'dismissed' ? 'neutral' : 'success'}>{isOpen ? t("در انتظار بررسی") : report.status === 'dismissed' ? t("رد گزارش") : t("بررسی‌شده")}</Badge>
                     </div>
                     <div className="space-y-5 py-5">
                         {report.details && <div><p className="text-xs font-bold text-muted">{t("شرح گزارش")}</p><p className="mt-2 whitespace-pre-line text-sm leading-7">{report.details}</p></div>}
@@ -453,10 +453,10 @@ export function AdminArtworkCommentReportsPage() {
                             <div>
                                 <p className="text-xs font-bold text-terracotta-strong">گزارش شماره {report.id}</p>
                                 <h2 className="mt-1 font-black">{report.reason}</h2>
-                                <p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? 'کاربر'} · {dateLabel(report.created_at, locale)}</p>
+                                <p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? t("کاربر")} · {dateLabel(report.created_at, locale)}</p>
                             </div>
                             <Badge variant={isOpen ? 'warning' : report.status === 'dismissed' ? 'neutral' : 'success'}>
-                                {isOpen ? 'در انتظار بررسی' : report.status === 'dismissed' ? t("رد گزارش") : t("بررسی‌شده")}
+                                {isOpen ? t("در انتظار بررسی") : report.status === 'dismissed' ? t("رد گزارش") : t("بررسی‌شده")}
                             </Badge>
                         </div>
                         <div className="space-y-5 py-5">
@@ -467,7 +467,7 @@ export function AdminArtworkCommentReportsPage() {
                             <div className="border-s-2 border-terracotta bg-surface-muted/50 p-4 sm:p-5">
                                 <p className="text-[11px] font-bold text-muted">{t("دیدگاه گزارش‌شده")}</p>
                                 <blockquote className="mt-2 whitespace-pre-line break-words text-sm leading-7">{report.comment?.body ?? t("متن دیدگاه حذف شده است.")}</blockquote>
-                                <p className="mt-2 text-xs text-muted">نویسنده: {report.comment?.author ?? 'کاربر'}</p>
+                                <p className="mt-2 text-xs text-muted">نویسنده: {report.comment?.author ?? t("کاربر")}</p>
                                 {report.comment?.artwork?.slug && <Link to={'/artworks/' + report.comment.artwork.slug + '#comment-' + report.comment.id} className="mt-2 inline-block text-xs font-bold text-terracotta-strong underline">{report.comment.artwork.title || t("مشاهده اثر")}</Link>}
                             </div>
                             {isOpen && <>
