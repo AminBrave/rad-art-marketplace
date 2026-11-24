@@ -252,13 +252,18 @@ test('Page and section headers retain the requested heading hierarchy', () => {
     );
 
     assert.match(hero, /<header dir="rtl"/);
-    assert.match(hero, /<Section as=\"header\" dir=\"rtl\" bleed=\{bleed\}/);
-    assert.match(hero, /width=\{bleed \? \"wide\" : \"full\"\}/);
+    assert.match(hero, /class="[^"]*rd-bleed[^"]*border-y border-divider-section bg-ink/);
+    assert.match(hero, /class="[^"]*rd-container--wide/);
     assert.match(hero, /border-y border-divider-section bg-ink/);
     assert.match(hero, /bg-terracotta/);
     assert.match(hero, /text-inverse/);
     assert.match(hero, /text-sand/);
     assert.doesNotMatch(hero, /border-b border-border/);
+    const embeddedHero = renderToStaticMarkup(
+        React.createElement(primitives.WorkspaceHero, { bleed: false, title: 'نمونه تعبیه‌شده' }),
+    );
+    assert.doesNotMatch(embeddedHero, /rd-bleed/);
+    assert.match(embeddedHero, /rd-container--full/);
     assert.match(hero, /خوش آمدید/);
 });
 
