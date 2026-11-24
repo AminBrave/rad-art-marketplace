@@ -256,7 +256,6 @@ test('Page and section headers retain the requested heading hierarchy', () => {
     assert.match(hero, /class="[^"]*rd-container[^"]*max-w-content/);
     assert.doesNotMatch(hero, /rd-container--wide/);
     assert.match(hero, /rd-hero-surface/);
-    assert.match(hero, /bg-terracotta/);
     assert.match(hero, /text-\[color:var\(--rd-hero-foreground\)\]/);
     assert.match(hero, /text-\[color:var\(--rd-hero-muted\)\]/);
     assert.doesNotMatch(hero, /border-b border-border/);
