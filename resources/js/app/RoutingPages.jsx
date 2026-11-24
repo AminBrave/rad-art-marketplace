@@ -5,7 +5,7 @@ import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-rou
 import { useAuth } from './AuthContext';
 import { WorkspaceLayout } from './Layouts';
 import { getWorkspacePrimaryLinks } from './workspaceNavigation';
-import { Skeleton, ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, ArtistWorkspaceOverviewSkeleton, BuyerDashboardSkeleton, FormFieldSkeleton, ArtworkStudioListSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, AdminEditorialSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton, PageHeader, WorkspaceHero, Checkbox, FormField, TextInput, TextareaField, Button, Container } from '../components/ui';
+import { Skeleton, ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, ArtistWorkspaceOverviewSkeleton, BuyerDashboardSkeleton, FormFieldSkeleton, ArtworkStudioListSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, AdminEditorialSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton, PageHeader, WorkspaceHero, Checkbox, FormField, TextInput, TextareaField, Button, Container, Section } from '../components/ui';
 const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
 
 const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
@@ -123,7 +123,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
 
     if (pathname === '/dashboard/artist/profile') {
         return (
-            <div className="mx-auto min-h-[65vh] max-w-7xl px-5 py-10 sm:px-8 lg:px-10" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
+            <Container as="div" width="wide" className="min-h-[65vh] py-10 lg:py-14" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
                 <span className="sr-only">{label}</span>
                 <div className="mb-8 grid gap-3 border-b border-ink pb-6"><Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="h-9 w-2/3 max-w-sm rounded-sm" /><Skeleton className="h-4 w-full max-w-xl rounded-sm" /></div>
                 <section className="grid gap-4 sm:grid-cols-2">
@@ -134,7 +134,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                     <FormFieldSkeleton className="sm:col-span-2" />
                     <div className="sm:col-span-2"><Skeleton className="h-5 w-48 rounded-sm" /><Skeleton className="mt-4 h-11 w-36 rounded-sm" /></div>
                 </section>
-            </div>
+            </Container>
         );
     }
 
@@ -166,7 +166,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
     }
 
     return (
-        <div className="mx-auto min-h-[65vh] max-w-7xl px-5 py-10 sm:px-8 lg:px-10" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
+        <Container as="div" width="wide" className="min-h-[65vh] py-10 lg:py-14" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
             <span className="sr-only">{label}</span>
             <div className="mb-8 flex items-center justify-between gap-5 border-b border-border pb-6">
                 <div className="grid min-w-0 flex-1 gap-3">
@@ -178,18 +178,18 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
             </div>
             {pathname === '/artworks' ? (
                 <>
-                    <section className="mb-7 grid gap-3 border-y border-ink bg-surface-muted p-4 sm:grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))] sm:p-5">
+                    <Section bleed className="mb-7 border-y border-divider-section bg-surface-muted py-4 sm:py-5"><Container width="wide" className="grid gap-3 sm:grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))]">
                         <Skeleton className="h-11 w-full rounded-md" /><Skeleton className="h-11 w-full rounded-md" /><Skeleton className="h-11 w-full rounded-md" />
-                    </section>
+                    </Container></Section>
                     <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}
                     </section>
                 </>
             ) : pathname === '/artists' ? (
                 <>
-                    <section className="mb-8 grid gap-4 border-y border-ink bg-ink px-6 py-10 sm:px-10">
+                    <Section bleed className="mb-8 border-y border-divider-section bg-ink py-10"><Container width="wide" className="grid gap-4 px-6 sm:px-10">
                         <Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="h-10 w-2/3 max-w-lg rounded-sm" /><Skeleton className="h-4 w-full max-w-2xl rounded-sm" /><Skeleton className="h-11 w-full max-w-2xl rounded-md" />
-                    </section>
+                    </Container></Section>
                     <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                         {[0, 1, 2, 3, 4, 5].map((item) => <ArtistCardSkeleton key={item} />)}
                     </section>
@@ -246,7 +246,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                     </div>
                 </>
             )}
-        </div>
+        </Container>
     );
 }
 function AuthUnavailable() {
