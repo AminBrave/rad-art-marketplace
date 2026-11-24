@@ -6,10 +6,11 @@ import { MediaImage } from './feedback';
 import { cn } from '../../lib/utils';
 
 export function ArtworkCard({ artwork, className = '' }) {
+    const { locale } = useLanguage();
     if (!artwork) return null;
-    const title = artwork.title ?? 'اثر هنری';
-    const artistName = artwork.artist?.display_name ?? artwork.artist?.name ?? '';
-    const price = formatArtworkPrice(artwork.price);
+    const title = localizedValue(artwork, 'title', locale) || (locale === 'en' ? 'Artwork' : 'اثر هنری');
+    const artistName = localizedValue(artwork.artist, 'display_name', locale) || artwork.artist?.name || '';
+    const price = formatArtworkPrice(artwork.price, locale);
 
     return (
         <article className={cn('group min-w-0', className)}>
@@ -35,8 +36,9 @@ export function ArtworkCard({ artwork, className = '' }) {
 }
 
 export function ArtistCard({ artist, className = '' }) {
+    const { locale } = useLanguage();
     if (!artist) return null;
-    const name = artist.display_name ?? artist.name ?? 'هنرمند';
+    const name = localizedValue(artist, 'display_name', locale) || artist.name || (locale === 'en' ? 'Artist' : 'هنرمند');
     const initial = name.trim().slice(0, 1) || 'ه';
 
     return (
@@ -46,19 +48,19 @@ export function ArtistCard({ artist, className = '' }) {
                     <div className="grid h-16 w-16 shrink-0 place-items-center border border-sand bg-surface-muted text-2xl font-black text-terracotta-strong transition-colors duration-300 group-hover:border-ink group-hover:bg-ink group-hover:text-inverse" aria-hidden="true">
                         {initial}
                     </div>
-                    <span className="pt-1 text-[11px] font-semibold tracking-wide text-subtle">هنرمند راد آرت</span>
+                    <span className="pt-1 text-[11px] font-semibold tracking-wide text-subtle">{locale === 'en' ? 'RAD ART ARTIST' : 'هنرمند راد آرت'}</span>
                 </div>
                 <div className="mt-5 min-w-0 flex-1">
                     <h3 className="text-lg font-black leading-8 text-ink transition-colors group-hover:text-terracotta-strong">{name}</h3>
                     {localizedValue(artist, 'city', locale) && <p className="mt-1 text-xs font-medium text-muted">{localizedValue(artist, 'city', locale)}</p>}
-                    {artist.bio ? (
-                        <p className="mt-4 line-clamp-3 text-sm leading-7 text-muted">{artist.bio}</p>
+                    {localizedValue(artist, 'bio', locale) ? (
+                        <p className="mt-4 line-clamp-3 text-sm leading-7 text-muted">{localizedValue(artist, 'bio', locale)}</p>
                     ) : (
-                        <p className="mt-4 text-sm leading-7 text-subtle">برای آشنایی با مسیر هنری و آثار این هنرمند، پروفایل او را ببینید.</p>
+                        <p className="mt-4 text-sm leading-7 text-subtle">{locale === 'en' ? 'Explore this artist’s creative journey and portfolio.' : 'برای آشنایی با مسیر هنری و آثار این هنرمند، پروفایل او را ببینید.'}</p>
                     )}
                 </div>
                 <span className="mt-6 flex items-center justify-between border-t border-border pt-4 text-sm font-bold text-terracotta-strong">
-                    <span>مشاهده پروفایل</span>
+                    <span>{locale === 'en' ? 'View profile' : 'مشاهده پروفایل'}</span>
                     <span aria-hidden="true" className="transition-transform group-hover:-translate-x-1">←</span>
                 </span>
             </Link>
