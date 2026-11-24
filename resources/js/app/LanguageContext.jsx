@@ -776,6 +776,12 @@ const english = {
     "دریافت پروفایل هنرمند انجام نشد. می‌توانید دوباره تلاش کنید.": "Could not load the artist profile. Please try again.",
     "پروفایل هنرمند شما آماده است.": "Your artist profile is ready.",
     "برای شروع، پروفایل هنرمند خود را تکمیل کنید.": "Complete your artist profile to get started.",
+    "گزارش": "Report",
+    "در حال ارسال پیام و پیوست…": "Sending message and attachment…",
+    "فعال کردن اعلان‌ها": "Enable notifications",
+    "گفتگوهای بیشتر": "More conversations",
+    "در حال آماده‌سازی گفتگوی مستقیم و اتصال آن به اثر…": "Preparing the direct conversation and linking it to the artwork…",
+    "آثار مرتبط:": "Related artworks:",
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 
