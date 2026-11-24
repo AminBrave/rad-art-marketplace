@@ -112,18 +112,18 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
     );
 }
 
-export function WorkspaceHero({ eyebrow, title, description, actions, bleed = true, className = '' }) {
+export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
     return (
-        <Section as="header" dir="rtl" bleed={bleed} className={cn('border-y border-divider-section bg-surface-muted', className)}>
-            <Container width={bleed ? "wide" : "full"} className="flex min-w-0 items-center justify-between gap-8 py-7 sm:py-9 max-md:items-stretch max-md:flex-col max-md:gap-5">
+        <Container width="wide" className="py-3 sm:py-4">
+            <header dir="rtl" className={cn('relative flex min-w-0 items-center justify-between gap-8 border-y border-divider-section bg-ink px-6 py-7 text-inverse sm:px-8 sm:py-9 max-md:items-stretch max-md:flex-col max-md:gap-5', className)}>
                 <div className="min-w-0 max-w-[46rem]">
-                    {eyebrow && <p className="text-xs font-bold text-terracotta-strong">{eyebrow}</p>}
-                    <h1 className="mt-2 text-[clamp(1.5rem,3vw,2rem)] font-extrabold leading-heading tracking-[-.025em] text-ink">{title}</h1>
-                    {description && <p className="mt-2 max-w-3xl text-sm leading-copy text-muted">{description}</p>}
+                    {eyebrow && <p className="text-xs font-bold text-inverse/70">{eyebrow}</p>}
+                    <h1 className="mt-2 break-words text-[clamp(1.5rem,3vw,2rem)] font-extrabold leading-heading tracking-[-.025em] text-inverse">{title}</h1>
+                    {description && <p className="mt-2 max-w-3xl text-sm leading-copy text-inverse/75">{description}</p>}
                 </div>
                 {actions && <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2 max-md:w-full">{actions}</div>}
-            </Container>
-        </Section>
+            </header>
+        </Container>
     );
 }
 
