@@ -115,18 +115,19 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
 export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
     return (
         <Container width="wide" className="py-3 sm:py-4">
-            <header dir="rtl" className={cn('relative flex min-w-0 items-center justify-between gap-8 border-y border-divider-section bg-ink px-6 py-7 text-inverse sm:px-8 sm:py-9 max-md:items-stretch max-md:flex-col max-md:gap-5', className)}>
-                <div className="min-w-0 max-w-[46rem]">
-                    {eyebrow && <p className="text-xs font-bold text-inverse/70">{eyebrow}</p>}
-                    <h1 className="mt-2 break-words text-[clamp(1.5rem,3vw,2rem)] font-extrabold leading-heading tracking-[-.025em] text-inverse">{title}</h1>
-                    {description && <p className="mt-2 max-w-3xl text-sm leading-copy text-inverse/75">{description}</p>}
+            <header dir="rtl" className={cn('relative isolate flex min-w-0 items-center justify-between gap-8 border border-[color:var(--rd-hero-line)] bg-[radial-gradient(ellipse_at_88%_8%,var(--rd-hero-glow),transparent_38%),linear-gradient(125deg,var(--rd-hero-background),var(--rd-hero-background-alt))] px-6 py-8 text-[color:var(--rd-hero-foreground)] sm:px-9 sm:py-10 lg:px-12 lg:py-12 max-md:items-stretch max-md:flex-col max-md:gap-5', className)}>
+                <span aria-hidden="true" className="pointer-events-none absolute end-6 top-6 hidden h-20 w-20 border border-[color:var(--rd-hero-line)] sm:block lg:end-10 lg:top-8 lg:h-28 lg:w-28" />
+                <span aria-hidden="true" className="pointer-events-none absolute end-12 top-12 hidden h-20 w-20 border-e border-t border-[color:var(--rd-hero-accent)]/60 sm:block lg:end-16 lg:top-14 lg:h-28 lg:w-28" />
+                <div className="relative z-10 min-w-0 max-w-[46rem]">
+                    {eyebrow && <p className="text-xs font-bold tracking-wide text-[color:var(--rd-hero-accent)]">{eyebrow}</p>}
+                    <h1 className="mt-2 break-words text-[clamp(1.5rem,3vw,2.25rem)] font-extrabold leading-heading tracking-[-.025em] text-[color:var(--rd-hero-foreground)]">{title}</h1>
+                    {description && <p className="mt-3 max-w-3xl text-sm leading-copy text-[color:var(--rd-hero-muted)]">{description}</p>}
                 </div>
-                {actions && <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2 max-md:w-full">{actions}</div>}
+                {actions && <div className="relative z-10 flex min-w-0 max-w-full flex-wrap items-center gap-2 max-md:w-full">{actions}</div>}
             </header>
         </Container>
     );
 }
-
 export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, className = '' }) {
     const Element = as ?? (to ? 'a' : 'article');
     const destinationProps = to ? (Element === 'a' ? { href: to } : { to }) : {};
