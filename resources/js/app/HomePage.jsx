@@ -91,8 +91,8 @@ export default function HomePage() {
     return (
         <div className="w-full min-w-0">
             <section aria-labelledby="home-hero-title" className="relative isolate border-b border-[color:var(--rd-hero-line)] rd-hero-surface">
-                <div aria-hidden="true" className="pointer-events-none absolute -start-3 -top-3 z-0 hidden h-24 w-24 border border-sand sm:block lg:-start-5 lg:-top-5 lg:h-32 lg:w-32" />
-                <div aria-hidden="true" className="pointer-events-none absolute -bottom-4 -end-4 z-0 hidden h-28 w-28 bg-surface-muted sm:block lg:-bottom-6 lg:-end-6 lg:h-40 lg:w-40" />
+                <div aria-hidden="true" className="pointer-events-none absolute end-[8%] top-16 z-0 hidden h-24 w-24 border border-sand sm:block lg:top-20 lg:h-32 lg:w-32" />
+                <div aria-hidden="true" className="pointer-events-none absolute end-[3%] bottom-16 z-0 hidden h-28 w-28 bg-surface-muted sm:block lg:bottom-20 lg:h-40 lg:w-40" />
                 <Container className="pb-16 pt-10 sm:pb-20 sm:pt-16 lg:pb-24 lg:pt-20">
                     <div className="mb-8 flex items-center justify-between border-y border-[color:var(--rd-hero-line)] py-3.5 text-[10px] font-extrabold tracking-[.18em] text-[color:var(--rd-hero-muted)] sm:text-xs">
                         <span>{t('گالری هنر مستقل معاصر')}</span>
