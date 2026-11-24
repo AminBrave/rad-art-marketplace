@@ -27,11 +27,11 @@ function ArtworkImage({ artwork }) {
     );
 }
 
-function availabilityLabel(value) {
-    if (value === 'available') return 'قابل استعلام از هنرمند';
-    if (value === 'sold') return 'فروخته‌شده';
-    if (value === 'not_for_sale') return 'برای فروش ارائه نشده';
-    return 'وضعیت اعلام نشده';
+function availabilityLabel(value, t) {
+    if (value === 'available') return t('قابل استعلام از هنرمند');
+    if (value === 'sold') return t('فروخته‌شده');
+    if (value === 'not_for_sale') return t('برای فروش ارائه نشده');
+    return t('وضعیت اعلام نشده');
 }
 
 export default function ArtworkDetailPage() {
@@ -78,8 +78,8 @@ export default function ArtworkDetailPage() {
             </nav>
             {!artwork ? (
                 <section className="mt-8 border-y border-ink bg-transparent px-5 py-8 sm:px-8">
-                    <h1 className="text-2xl font-black">{status === 403 ? 'دسترسی به این اثر مجاز نیست' : 'اثر در دسترس نیست'}</h1>
-                    <p className="mt-3 text-sm leading-7 text-muted">{status === 403 ? 'سرور اجازه مشاهده این اثر را صادر نکرد.' : 'این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.'}</p>
+                    <h1 className="text-2xl font-black">{t(status === 403 ? 'دسترسی به این اثر مجاز نیست' : 'اثر در دسترس نیست')}</h1>
+                    <p className="mt-3 text-sm leading-7 text-muted">{t(status === 403 ? 'سرور اجازه مشاهده این اثر را صادر نکرد.' : 'این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.')}</p>
                     {artworkQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-danger">{t("ارتباط با سرور برقرار نشد.")} <Button variant="ghost" type="button" onClick={() => artworkQuery.refetch()} className="inline p-0 font-bold underline">{t("تلاش دوباره")}</Button></p>}
                     <Link to="/artworks" className="mt-5 inline-block font-bold text-terracotta-strong underline">{t("بازگشت به گالری")}</Link>
                 </section>
@@ -102,7 +102,7 @@ export default function ArtworkDetailPage() {
                                 {artwork.year && <div><dt className="text-xs text-muted">{t("سال خلق")}</dt><dd className="mt-1 font-semibold">{artwork.year.toLocaleString(locale === "fa" ? "fa-IR" : "en-US")}</dd></div>}
                                 <div><dt className="text-xs text-muted">{t("قیمت")}</dt><dd className="mt-1 font-semibold">{formatArtworkPrice(artwork.price, locale)}</dd></div>
                             </dl>
-                            <p className="mt-5 inline-flex items-center gap-2 text-sm text-muted"><span aria-hidden="true" className="h-2 w-2 rounded-full bg-olive" />وضعیت: {availabilityLabel(artwork.availability)}</p>
+                            <p className="mt-5 inline-flex items-center gap-2 text-sm text-muted"><span aria-hidden="true" className="h-2 w-2 rounded-full bg-olive" />{t('وضعیت')}: {availabilityLabel(artwork.availability, t)}</p>
                             {user?.role === 'buyer' && <div className="mt-8 flex flex-wrap gap-3">
                                 <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(artwork.artist.slug) + '&artwork=' + encodeURIComponent(artwork.slug)} className="inline-flex items-center bg-ink px-5 py-3 text-sm font-bold text-inverse hover:bg-terracotta">{t("پیام مستقیم درباره این اثر")}</Link>
                             </div>}
