@@ -23,7 +23,7 @@ test('all literal frontend translation keys exist exactly once in the English di
     const root = resolve(fileURLToPath(new URL('../..', import.meta.url)));
     const dictionaryPath = resolve(root, 'resources/js/app/LanguageContext.jsx');
     const dictionarySource = readFileSync(dictionaryPath, 'utf8');
-    const dictionaryKeys = [...dictionarySource.matchAll(/^\\s*"((?:[^"\\\\]|\\\\.)+)"\\s*:/gm)].map((match) => match[1]);
+    const dictionaryKeys = [...dictionarySource.matchAll(/^\s*"((?:[^"\\]|\\.)+)"\s*:/gm)].map((match) => match[1]);
 
     assert.equal(new Set(dictionaryKeys).size, dictionaryKeys.length, 'translation dictionary keys must be unique');
 
@@ -32,7 +32,7 @@ test('all literal frontend translation keys exist exactly once in the English di
         for (const entry of readdirSync(directory)) {
             const path = resolve(directory, entry);
             if (statSync(path).isDirectory()) collect(path);
-            else if (/\\.(jsx?|tsx?)$/.test(path) && path !== dictionaryPath) files.push(path);
+            else if (/\.(jsx?|tsx?)$/.test(path) && path !== dictionaryPath) files.push(path);
         }
     };
     collect(resolve(root, 'resources/js/app'));
@@ -43,10 +43,10 @@ test('all literal frontend translation keys exist exactly once in the English di
     const missing = [];
     for (const path of files) {
         const source = readFileSync(path, 'utf8');
-        for (const match of source.matchAll(/\\bt\\(\\s*(['"`])((?:\\\\.|(?!\\1)[\\s\\S])*)\\1\\s*\\)/g)) {
+        for (const match of source.matchAll(/\bt\(\s*(["'])((?:\\.|(?!\1)[\s\S])*)\1\s*\)/g)) {
             const key = match[2];
-            if (!key.includes('${') && !known.has(key)) {
-                missing.push(`${relative(root, path)}: ${key}`);
+            if (!key.includes(String.fromCharCode(36) + '{') && !known.has(key)) {
+                missing.push(relative(root, path) + ': ' + key);
             }
         }
     }
