@@ -87,7 +87,7 @@ export const PageContainer = Container;
 export function PageHeader({ eyebrow, title, description, actions, level = 1, className = '', titleClassName = '', descriptionClassName = '' }) {
     const Heading = level === 2 ? 'h2' : 'h1';
     return (
-        <header className={cn('rd-hero-surface relative isolate flex min-w-0 items-end justify-between gap-6 border border-[color:var(--rd-hero-line)] px-6 py-6 sm:px-8 sm:py-8 before:absolute before:bottom-6 before:right-0 before:top-6 before:w-1.5 before:bg-[color:var(--rd-hero-accent)] max-sm:items-stretch max-sm:flex-col max-sm:gap-4 max-sm:before:bottom-6', className)}>
+        <header className={cn('rd-hero-surface relative isolate flex min-w-0 items-end justify-between gap-6 border border-[color:var(--rd-hero-line)] px-6 py-6 sm:px-8 sm:py-8 before:absolute before:bottom-6 before:end-0 before:top-6 before:w-1.5 before:bg-[color:var(--rd-hero-accent)] max-sm:items-stretch max-sm:flex-col max-sm:gap-4 max-sm:before:bottom-6', className)}>
             <span aria-hidden="true" className="pointer-events-none absolute end-6 top-6 h-12 w-12 border border-[color:var(--rd-hero-line)] sm:end-8 sm:top-8 sm:h-16 sm:w-16" />
             <div className="relative z-10 min-w-0 max-w-[56rem]">
                 {eyebrow && <p className="inline-flex items-center gap-2 border-s-2 border-[color:var(--rd-hero-accent)] bg-transparent px-3 py-1 text-[11px] font-extrabold leading-none tracking-[.06em] text-[color:var(--rd-hero-accent)]">{eyebrow}</p>}
