@@ -5,7 +5,7 @@ import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-rou
 import { useAuth } from './AuthContext';
 import { WorkspaceLayout } from './Layouts';
 import { getWorkspacePrimaryLinks } from './workspaceNavigation';
-import { Skeleton, ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, ArtistWorkspaceOverviewSkeleton, BuyerDashboardSkeleton, FormFieldSkeleton, ArtworkStudioListSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, AdminEditorialSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton, PageHeader, WorkspaceHero, Checkbox, FormField, TextInput, TextareaField, Button } from '../components/ui';
+import { Skeleton, ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, ArtistWorkspaceOverviewSkeleton, BuyerDashboardSkeleton, FormFieldSkeleton, ArtworkStudioListSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, AdminEditorialSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton, PageHeader, WorkspaceHero, Checkbox, FormField, TextInput, TextareaField, Button, Container } from '../components/ui';
 const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
 
 const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
@@ -103,7 +103,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
     if (pathname === '/login' || pathname === '/register') {
         const registering = pathname === '/register';
         return (
-            <main className="mx-auto max-w-xl px-5 py-12 sm:px-8" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فرم حساب کاربری">
+            <Container as="div" width="reading" className="py-12" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فرم حساب کاربری">
                 <section className="border-y-2 border-ink bg-paper p-6 sm:p-9">
                     <Skeleton className="h-4 w-32 rounded-sm" />
                     <Skeleton className="mt-5 h-8 w-2/3 rounded-sm" />
@@ -117,7 +117,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                     </div>
                     <Skeleton className="mt-5 h-3 w-4/5 rounded-sm" />
                 </section>
-            </main>
+            </Container>
         );
     }
 
@@ -433,34 +433,34 @@ export function AdminWorkspaceLayout() {
 
 export function PublicInfoPage({ title, description }) {
     return (
-        <main className="mx-auto max-w-4xl px-6 py-16 sm:px-8" dir="rtl">
+        <Container as="div" width="reading" className="py-16" dir="rtl">
             <p className="text-sm font-bold text-terracotta-strong">راد آرت</p>
             <h1 className="mt-3 text-3xl font-black">{title}</h1>
             <p className="mt-5 leading-8 text-muted">{description}</p>
             <p className="mt-6 border-y border-border bg-surface-muted px-5 py-5 text-sm text-muted">این صفحه در نقشه مسیرهای MVP 2 ثبت شده و محتوای کامل آن در مرحله محتوای عمومی تکمیل می‌شود.</p>
-        </main>
+        </Container>
     );
 }
 
 export function UnauthorizedPage() {
     const { user } = useAuth();
     return (
-        <main className="mx-auto max-w-2xl px-6 py-24 text-center" dir="rtl">
+        <Container as="div" width="reading" className="py-24 text-center" dir="rtl">
             <p className="text-sm font-bold text-terracotta-strong">۴۰۳</p>
             <h1 className="mt-3 text-4xl font-black tracking-tight">دسترسی به این بخش مجاز نیست</h1>
             <p className="mt-4 leading-8 text-muted">نقش این حساب اجازه ورود به این فضای کاربری را ندارد. مجوزهای واقعی همچنان در سمت سرور بررسی می‌شوند.</p>
             <Link to={user ? (user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist') : '/'} className="mt-8 inline-flex min-h-12 items-center border border-ink bg-ink px-6 py-3 font-bold text-inverse transition-colors hover:border-terracotta hover:bg-terracotta">بازگشت</Link>
-        </main>
+        </Container>
     );
 }
 
 export function NotFoundPage() {
     return (
-        <main className="mx-auto max-w-2xl px-6 py-20 text-center" dir="rtl">
+        <Container as="div" width="reading" className="py-20 text-center" dir="rtl">
             <p className="text-sm font-bold text-terracotta-strong">۴۰۴</p>
             <h1 className="mt-3 text-4xl font-black tracking-tight">این صفحه پیدا نشد</h1>
             <p className="mt-4 leading-8 text-muted">نشانی واردشده معتبر نیست یا صفحه جابه‌جا شده است.</p>
             <Link to="/" className="mt-8 inline-flex min-h-12 items-center border border-ink bg-ink px-6 py-3 font-bold text-inverse transition-colors hover:border-terracotta hover:bg-terracotta">بازگشت به صفحه اصلی</Link>
-        </main>
+        </Container>
     );
 }
