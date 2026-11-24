@@ -554,7 +554,7 @@ test('workspace overview skeletons match their loaded hero and content sections 
 
     assert.match(artist, /در حال آماده‌سازی فضای هنرمند/);
     assert.match(artist, /lg:grid-cols-\[1fr_15rem\]/);
-    assert.match(artist, /border-y-2 border-ink bg-transparent py-6 sm:py-7/);
+    assert.match(artist, /border-y border-divider-section bg-transparent py-6 sm:py-7/);
     assert.doesNotMatch(artist, /در حال دریافت شاخص‌ها/);
     assert.equal((artist.match(/role="status"/g) ?? []).length, 1);
 
