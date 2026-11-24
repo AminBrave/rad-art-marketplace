@@ -203,7 +203,7 @@ export function AdminDashboardSkeleton() {
                 <div className="border-y border-border bg-transparent py-5 sm:p-7">
                     <div className="grid gap-2 border-b border-border pb-4"><Skeleton className="h-3 w-24 " /><Skeleton className="h-6 w-40 " /></div>
                     <div className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]">
-                        <Skeleton className="aspect-square w-full  sm:max-w-32" />
+                        <Skeleton className="aspect-[3/4] w-full  sm:max-w-32" />
                         <div className="grid content-start gap-3"><Skeleton className="h-6 w-24 " /><Skeleton className="h-5 w-2/3 " /><Skeleton className="h-3 w-1/2 " /><Skeleton className="mt-2 h-4 w-36 " /></div>
                     </div>
                 </div>
