@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import { useLanguage } from './LanguageContext';
 import { RouteLoading } from './RoutingPages';
 import { SelectField, FormField, TextInput, Button, Container } from '../components/ui';
 
@@ -13,6 +14,7 @@ export default function AuthPage({ initialMode = 'login' }) {
     const [message, setMessage] = useState('');
     const submittingRef = useRef(false);
     const { user, status, setUser } = useAuth();
+    const { t } = useLanguage();
     const location = useLocation();
     const navigate = useNavigate();
     const authMutation = useMutation({
@@ -23,8 +25,8 @@ export default function AuthPage({ initialMode = 'login' }) {
 
     useEffect(() => { setMode(initialMode); }, [initialMode]);
 
-    if (status === 'loading') return <RouteLoading label="در حال بررسی حساب کاربری…" />;
-    if (status === 'error') return <p className="mx-auto max-w-xl px-6 py-16 text-center text-sm text-danger">وضعیت حساب دریافت نشد. صفحه را دوباره بارگذاری کنید.</p>;
+    if (status === 'loading') return <RouteLoading label={t('در حال بررسی حساب کاربری…')} />;
+    if (status === 'error') return <p className="mx-auto max-w-xl px-6 py-16 text-center text-sm text-danger">{t("وضعیت حساب دریافت نشد. صفحه را دوباره بارگذاری کنید.")}</p>;
     if (user) return <Navigate to={location.state?.from?.pathname ?? (user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist')} replace />;
 
     const update = (event) => setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
@@ -60,25 +62,25 @@ export default function AuthPage({ initialMode = 'login' }) {
     return (
         <Container as="div" width="reading" className="py-12">
             <section className="border-y border-ink bg-paper p-6 sm:p-9">
-                <Link to="/" className="text-sm font-bold text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2">بازگشت به راد آرت</Link>
-                <h1 className="mt-5 text-3xl font-black tracking-tight">{mode === 'register' ? 'ساخت حساب کاربری' : 'ورود به حساب'}</h1>
+                <Link to="/" className="text-sm font-bold text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2">{t("بازگشت به راد آرت")}</Link>
+                <h1 className="mt-5 text-3xl font-black tracking-tight">{mode === 'register' ? t('ساخت حساب کاربری') : t('ورود به حساب')}</h1>
                 <div className="mt-7 flex gap-5 border-b-2 border-ink pb-4">
-                    <Button variant="ghost" type="button" onClick={() => { setMode('login'); setErrors({}); setMessage(''); }} className={`focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2 ${mode === 'login' ? 'font-extrabold text-terracotta-strong' : 'text-muted'}`}>ورود</Button>
-                    <Button variant="ghost" type="button" onClick={() => { setMode('register'); setErrors({}); setMessage(''); }} className={`focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2 ${mode === 'register' ? 'font-extrabold text-terracotta-strong' : 'text-muted'}`}>ثبت‌نام</Button>
+                    <Button variant="ghost" type="button" onClick={() => { setMode('login'); setErrors({}); setMessage(''); }} className={`focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2 ${mode === 'login' ? 'font-extrabold text-terracotta-strong' : 'text-muted'}`}>{t("ورود")}</Button>
+                    <Button variant="ghost" type="button" onClick={() => { setMode('register'); setErrors({}); setMessage(''); }} className={`focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2 ${mode === 'register' ? 'font-extrabold text-terracotta-strong' : 'text-muted'}`}>{t("ثبت‌نام")}</Button>
                 </div>
                 <form onSubmit={submit} className="mt-6 space-y-4">
                     {mode === 'register' && <>
-                        <FormField label="نوع حساب"><SelectField name="role" value={form.role} onChange={update}><option value="buyer">خریدار</option><option value="artist">هنرمند</option></SelectField></FormField>
-                        <FormField label="نام و نام خانوادگی" required error={errors.name?.join(' ')}><TextInput name="name" value={form.name} onChange={update} required maxLength="120" autoComplete="name" /></FormField>
+                        <FormField label={t("نوع حساب")}><SelectField name="role" value={form.role} onChange={update}><option value="buyer">{t("خریدار")}</option><option value="artist">{t("هنرمند")}</option></SelectField></FormField>
+                        <FormField label={t("نام و نام خانوادگی")} required error={errors.name?.join(' ')}><TextInput name="name" value={form.name} onChange={update} required maxLength="120" autoComplete="name" /></FormField>
                     </>}
-                    <FormField label="ایمیل" required error={errors.email?.join(' ')}><TextInput type="email" name="email" value={form.email} onChange={update} required autoComplete="email" dir="ltr" className="text-end" /></FormField>
-                    <FormField label="گذرواژه" required error={errors.password?.join(' ')}><TextInput type="password" name="password" value={form.password} onChange={update} required minLength="10" autoComplete={mode === 'register' ? 'new-password' : 'current-password'} dir="ltr" className="text-end" /></FormField>
-                    {mode === 'register' && <FormField label="تکرار گذرواژه" required><TextInput type="password" name="password_confirmation" value={form.password_confirmation} onChange={update} required minLength="10" autoComplete="new-password" dir="ltr" className="text-end" /></FormField>}
+                    <FormField label={t("ایمیل")} required error={errors.email?.join(' ')}><TextInput type="email" name="email" value={form.email} onChange={update} required autoComplete="email" dir="ltr" className="text-end" /></FormField>
+                    <FormField label={t("گذرواژه")} required error={errors.password?.join(' ')}><TextInput type="password" name="password" value={form.password} onChange={update} required minLength="10" autoComplete={mode === 'register' ? 'new-password' : 'current-password'} dir="ltr" className="text-end" /></FormField>
+                    {mode === 'register' && <FormField label={t("تکرار گذرواژه")} required><TextInput type="password" name="password_confirmation" value={form.password_confirmation} onChange={update} required minLength="10" autoComplete="new-password" dir="ltr" className="text-end" /></FormField>}
                     {errors.form?.map((item) => <p key={item} role="alert" className="text-sm text-danger">{item}</p>)}
-                    {message && <p role="status" className="text-sm text-muted">{message}</p>}
-                    <Button variant="ghost" type="submit" disabled={busy} className="w-full rounded-sm bg-ink px-6 py-3.5 font-bold text-inverse transition hover:bg-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2 disabled:cursor-wait disabled:opacity-60">{busy ? 'لطفاً صبر کنید…' : mode === 'register' ? 'ایجاد حساب' : 'ورود به حساب'}</Button>
+                    {message && <p role="status" className="text-sm text-muted">{t(message)}</p>}
+                    <Button variant="ghost" type="submit" disabled={busy} className="w-full rounded-sm bg-ink px-6 py-3.5 font-bold text-inverse transition hover:bg-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2 disabled:cursor-wait disabled:opacity-60">{busy ? t('لطفاً صبر کنید…') : mode === 'register' ? t('ایجاد حساب') : t('ورود به حساب')}</Button>
                 </form>
-                <p className="mt-5 text-xs leading-6 text-subtle">ثبت‌نام عمومی فقط برای خریدار و هنرمند فعال است. حساب مدیر باید از سمت سرور ایجاد شود.</p>
+                <p className="mt-5 text-xs leading-6 text-subtle">{t("ثبت‌نام عمومی فقط برای خریدار و هنرمند فعال است. حساب مدیر باید از سمت سرور ایجاد شود.")}</p>
             </section>
         </Container>
     );
