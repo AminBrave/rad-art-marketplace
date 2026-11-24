@@ -7,6 +7,7 @@ import { useAuth } from './AuthContext';
 import { Button, TextareaField, SelectField } from '../components/ui';
 
 function CommentItem({ comment, user, onReply, onDelete, onReport }) {
+    const { t, locale } = useLanguage();
     const canDelete = user && comment.is_mine && !comment.is_deleted;
 
     return (
