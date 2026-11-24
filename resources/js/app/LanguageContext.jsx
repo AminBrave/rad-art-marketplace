@@ -487,6 +487,13 @@ const english = {
     "بی‌صدا کردن": "Mute",
     "فعال‌کردن اعلان": "Enable notifications",
     "گفتگوها": "Conversations",
+    "تکنیک / متریال": "Medium / materials",
+    "ویرایش اثر": "Edit artwork",
+    "منتشرشده": "Published",
+    "در انتظار بررسی": "Awaiting review",
+    "دیدگاه‌های قبلی": "Previous comments",
+    "دیدگاه‌های بعدی": "Next comments",
+    "راد آرت، صفحه اصلی": "Rad Art home",
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 
