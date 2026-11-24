@@ -469,7 +469,7 @@ export function AdminArtworkCommentReportsPage() {
                                 <p className="text-[11px] font-bold text-muted">{t("دیدگاه گزارش‌شده")}</p>
                                 <blockquote className="mt-2 whitespace-pre-line break-words text-sm leading-7">{report.comment?.body ?? t("متن دیدگاه حذف شده است.")}</blockquote>
                                 <p className="mt-2 text-xs text-muted" >{t('نویسنده:')} {report.comment?.author ?? t("کاربر")}</p>
-                                {report.comment?.artwork?.slug && <Link to={'/artworks/' + report.comment.artwork.slug + '#comment-' + report.comment.id} className="mt-2 inline-block text-xs font-bold text-terracotta-strong underline">{report.comment.artwork.title || t("مشاهده اثر")}</Link>}
+                                {report.comment?.artwork?.slug && <Link to={'/artworks/' + report.comment.artwork.slug + '#comment-' + report.comment.id} className="mt-2 inline-block text-xs font-bold text-terracotta-strong underline">{localizedValue(report.comment.artwork, 'title', locale) || t("مشاهده اثر")}</Link>}
                             </div>
                             {isOpen && <>
                                 <FormField label={t("یادداشت رسیدگی (اختیاری)")}><TextareaField value={notes[report.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [report.id]: event.target.value }))} maxLength={1000} rows={2} placeholder={t("خلاصه تصمیم یا زمینه بررسی…")} /></FormField>
