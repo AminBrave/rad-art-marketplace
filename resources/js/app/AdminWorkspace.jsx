@@ -419,7 +419,7 @@ export function AdminArtworkCommentReportsPage() {
             });
             await queryClient.invalidateQueries({ queryKey: ['admin', 'artwork-comment-reports', user?.id] });
         } catch (e) {
-            setActionError(e.response?.data?.message ?? t("ثبت تصمیم انجام نشد."));
+            setActionError(t(e.response?.data?.message ?? "ثبت تصمیم انجام نشد."));
         }
     };
 
