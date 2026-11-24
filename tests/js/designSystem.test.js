@@ -68,8 +68,21 @@ test('comment discussions use nested cards and a clear reply hierarchy', () => {
     assert.ok(artworkEngagement.includes('space-y-3'));
 });
 
-test('all interface elements use the square-corner shape rule', () => {
-    assert.ok(css.includes(':where(*, *::before, *::after) {\n    border-radius: 0 !important;'));
+test('square corners are defined by design tokens without global CSS overrides', () => {
+    assert.ok(css.includes('--rd-radius-0: 0;'));
+    assert.ok(css.includes('--rd-radius-sm: var(--rd-radius-0);'));
+    assert.doesNotMatch(css, /border-radius:\\s*0\\s*!important/);
+    assert.ok(tailwind.includes("full: 'var(--rd-radius-0)'"));
+    assert.ok(tailwind.includes("card: 'var(--rd-radius-0)'"));
+});
+
+
+test('homepage discovery groups and artist spotlight use reusable card structure with RTL layout', () => {
+    assert.ok(homePage.includes('grid-cols-[3rem_minmax(0,1fr)]'));
+    assert.ok(homePage.includes('bg-surface-muted py-8 sm:py-10'));
+    assert.ok(homePage.includes('ARTIST SPOTLIGHT / هنرمند منتخب'));
+    assert.ok(homePage.includes('border-ink bg-ink text-inverse'));
+    assert.ok(homePage.includes('<Card'));
 });
 
 test('class composition understands semantic radius and content-width utilities', () => {
@@ -101,7 +114,7 @@ test('Tailwind semantic aliases reference CSS variables rather than duplicate li
     assert.ok(tailwind.includes('var(--rd-canvas)'));
     assert.ok(tailwind.includes('var(--rd-text-primary)'));
     assert.ok(tailwind.includes('var(--rd-action)'));
-    assert.ok(tailwind.includes("control: 'var(--rd-radius-sm)'"));
+    assert.ok(tailwind.includes("control: 'var(--rd-radius-0)'"));
     assert.ok(tailwind.includes('var(--rd-success)'));
     assert.ok(css.includes('--text-base: var(--rd-text-base)'));
     assert.ok(css.includes('--space-4: var(--rd-space-4)'));
@@ -110,9 +123,6 @@ test('Tailwind semantic aliases reference CSS variables rather than duplicate li
 test('shared primitives express accessible component contracts with semantic Tailwind utilities', () => {
     assert.ok(primitives.includes('bg-terracotta text-inverse'));
     assert.ok(primitives.includes('focus-visible:outline'));
-    assert.ok(primitives.includes("className, 'rounded-control')"), 'Button and IconButton enforce the shared control radius.');
-    assert.ok(primitives.includes("cn(controlClass, className, 'rounded-control')"));
-    assert.ok(primitives.includes("className, 'rounded-control')}"), 'Form controls enforce the shared control radius after consumer classes.');
     assert.ok(primitives.includes('aria-[invalid=true]:border-danger'));
     assert.ok(primitives.includes('aria-busy={loading || undefined}'));
     assert.ok(primitives.includes("'aria-describedby': describedBy"));
@@ -226,7 +236,7 @@ test('navigation and dialog primitives use Tailwind state and focus utilities', 
     assert.ok(navigation.includes('aria-current="page"'));
     assert.ok(dialog.includes('bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]'));
     assert.ok(dialog.includes('max-h-[min(88dvh,48rem)]'));
-    assert.ok(dialog.includes('rounded-card border border-border bg-paper'));
+    assert.ok(dialog.includes('border border-border bg-paper'));
     assert.doesNotMatch(navigation, /ra-[a-z]/);
     assert.doesNotMatch(dialog, /ra-[a-z]/);
 });
