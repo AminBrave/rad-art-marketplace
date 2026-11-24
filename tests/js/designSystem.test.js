@@ -167,7 +167,8 @@ test('route canvases stay full-width and route content uses shared section conta
     assert.ok(layouts.includes('rd-workspace-main min-w-0'));
     assert.ok(layouts.includes('lg:grid-cols-[var(--rd-workspace-sidebar-width)_minmax(0,1fr)]'));
     assert.ok(layouts.includes('lg:gap-[var(--rd-workspace-column-gap)]'));
-    assert.ok(layoutPrimitives.includes('rd-container--wide'));
+    assert.ok(layoutPrimitives.includes('`rd-container--${resolvedWidth}`'));
+    assert.ok(layoutPrimitives.includes("wide: 'mx-auto w-full max-w-content px-page-gutter'"));
     assert.ok(skeletons.includes('<Section as=\"header\" bleed'));
     assert.ok(skeletons.includes('<Container as=\"div\" width=\"wide\"'));
     assert.ok(!skeletons.includes('<main '), 'Route skeletons must not introduce nested main landmarks.');
@@ -247,7 +248,7 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     assert.ok(dialog.includes('bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]'));
     assert.doesNotMatch(layouts, /document\.body\.style\.overflow|addEventListener\('keydown', closeOnEscape/);
     assert.ok(layouts.includes('lg:hidden'));
-    assert.ok(layouts.includes('hidden min-w-0 border-y-2 border-ink bg-paper'));
+    assert.ok(layouts.includes('hidden min-w-0 border-y border-divider-section bg-paper'));
     assert.ok(adminWorkspace.includes('<PageHeader'));
     assert.ok(artistWorkspace.includes('<WorkspaceHero'));
     assert.ok(buyerWorkspace.includes('<WorkspaceHero'));
@@ -346,7 +347,7 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.doesNotMatch(layouts, /direction:ltr|<aside dir="rtl"|<main dir="rtl"/);
     
     
-    assert.ok(layouts.includes("isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden lg:col-start-2' : 'min-w-0'"));
+    assert.ok(layouts.includes("isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden lg:col-start-2' : 'rd-workspace-main min-w-0'"));
     assert.doesNotMatch(messaging, /RAD \/ MESSAGES|ارتباط مستقیم|PageHeader/);
     assert.doesNotMatch(layouts, /ناوبری فضای کاری|RAD \/ MENU/);
     assert.ok(messageTimeline.includes('min-w-0 w-fit max-w-[88%]'));
