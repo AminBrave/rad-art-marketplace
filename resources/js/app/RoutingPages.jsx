@@ -188,7 +188,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                 </>
             ) : pathname === '/artists' ? (
                 <>
-                    <Section bleed className="mb-8 border-y border-divider-section bg-ink py-10"><Container width="wide" className="grid gap-4 px-6 sm:px-10">
+                    <Section bleed className="rd-hero-surface mb-8 border-y border-[color:var(--rd-hero-line)] py-10"><Container width="wide" className="grid gap-4 px-6 sm:px-10">
                         <Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="h-10 w-2/3 max-w-lg rounded-sm" /><Skeleton className="h-4 w-full max-w-2xl rounded-sm" /><Skeleton className="h-11 w-full max-w-2xl rounded-md" />
                     </Container></Section>
                     <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
