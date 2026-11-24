@@ -36,7 +36,7 @@ Use the smallest process that fits the work. A small UI fix does not require a f
 
 The existing brand colors—Ivory #F7F5F0, Charcoal #242320, Terracotta #A64F31, Sand #D8C9B7 and Olive #536052—can inform the visual identity. They are not immutable.
 
-Choose semantic tokens, typography, spacing, grids, radii, elevation, icons and motion to support the design. Reuse current components when they fit; refactor or replace them when that produces a better result. Do not follow the legacy RAD catalogue as a specification.
+CSS `--rd-*` variables are the canonical design-token source; Tailwind maps directly to them. Legacy `--color-*`, `--text-*`, `--space-*` and related aliases are one-way compatibility bridges and should not be used by new code. Choose semantic tokens, typography, spacing, grids, radii, elevation, icons and motion to support the design. Reuse current components when they fit; refactor or replace them when that produces a better result. Do not follow the legacy RAD catalogue as a specification.
 
 ## Accessibility and localization
 
@@ -101,7 +101,8 @@ Before adding or changing a control, search the shared UI barrel and reuse the c
 
 The route-level `<main>` is a full-width canvas. It must not own the content maximum width, centering margin or horizontal page gutters. Each section owns its own background and content width.
 
-- Use the canonical `Container` from `resources/js/components/ui/layout.jsx`.
+- Use the canonical `Container` from `resources/js/components/ui/layout.jsx`; `PageContainer` is a compatibility alias for existing imports only.
+- Use `Section bleed` for full-viewport backgrounds when a section is nested in a constrained workspace column; its inner `Container` keeps content aligned to the workspace grid.
 - `width="wide"` provides the standard centered content measure and page gutters.
 - `width="reading"` provides the long-form reading measure and the same page gutters.
 - `width="full"` provides edge-to-edge content without a max-width or automatic gutters.
