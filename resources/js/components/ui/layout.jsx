@@ -112,7 +112,7 @@ export function Avatar({ src, alt = '', fallback, size = 'md', className = '', .
 }
 
 export const Card = forwardRef(function Card({ as: Element = 'article', interactive = false, className = '', ...props }, ref) {
-    return <Element ref={ref} className={cn('min-w-0  border border-divider-group bg-paper', interactive && 'transition-colors hover:border-border-strong', className)} {...props} />;
+    return <Element ref={ref} className={cn('min-w-0 border border-divider-group bg-paper', interactive && 'transition-colors hover:border-border-strong', className)} {...props} />;
 });
 
 export const Callout = forwardRef(function Callout({ as: Element = 'aside', variant = 'info', title, children, className = '', ...props }, ref) {
