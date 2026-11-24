@@ -75,8 +75,8 @@ export function AdminDashboardHome() {
             <section aria-label={t("شاخص‌های عملیاتی")} className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                 {loading ? <DashboardMetricSkeleton count={3} /> : <>
                     <DashboardMetricCard as={Link} label={t("آثار در انتظار بررسی")} value={summary.pending?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail="تعداد کل آثار منتظر تصمیم انتشار" to="/admin/artworks" eyebrow="انتشار" />
-                    <DashboardMetricCard as={Link} label={t("حساب‌های کاربری")} value={summary.users?.toLocaleString('fa-IR')} detail="تعداد کل حساب‌های ثبت‌شده" to="/admin/users" eyebrow="جامعه" />
-                    <DashboardMetricCard as={Link} label={t("گزارش‌های پیام")} value={summary.reports?.toLocaleString('fa-IR')} detail="مجموع گزارش‌های ثبت‌شده برای رسیدگی" to="/admin/message-reports" eyebrow="ایمنی" />
+                    <DashboardMetricCard as={Link} label={t("حساب‌های کاربری")} value={summary.users?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail="تعداد کل حساب‌های ثبت‌شده" to="/admin/users" eyebrow="جامعه" />
+                    <DashboardMetricCard as={Link} label={t("گزارش‌های پیام")} value={summary.reports?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail="مجموع گزارش‌های ثبت‌شده برای رسیدگی" to="/admin/message-reports" eyebrow="ایمنی" />
                 </>}
             </section>
 
@@ -243,7 +243,7 @@ export function AdminUsersPage() {
     };
     return <Container as="section" width="wide" className="space-y-6">
         <PageHeader eyebrow={t("مدیریت حساب‌ها")} title={t("کاربران")} description={t("فهرست حساب‌ها و مدیریت نقش‌های مجاز. ارتقای هر حساب به مدیر، مرحله تأیید جداگانه دارد.")} actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>{t("به‌روزرسانی")}</Button>} />
-        <dl className="grid grid-cols-2 gap-4 border-y border-border py-4 sm:max-w-xl sm:gap-8"><div><dt className="text-xs text-muted">{t("حساب‌های این صفحه")}</dt><dd className="mt-1 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</dd></div><div><dt className="text-xs text-muted">کل حساب‌ها</dt><dd className="mt-1 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</dd></div></dl>
+        <dl className="grid grid-cols-2 gap-4 border-y border-border py-4 sm:max-w-xl sm:gap-8"><div><dt className="text-xs text-muted">{t("حساب‌های این صفحه")}</dt><dd className="mt-1 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') ?? '—'}</dd></div><div><dt className="text-xs text-muted">کل حساب‌ها</dt><dd className="mt-1 text-2xl font-black tabular-nums">{result?.total?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') ?? '—'}</dd></div></dl>
         <p className="border-s-2 border-sand py-2 pe-4 text-xs leading-7 text-muted">{t("نقش‌های قابل انتخاب «هنرمند» و «مدیر» هستند. ایجاد خریدار از مسیر ثبت‌نام انجام می‌شود و حذف یا تعلیق حساب پشتیبانی نمی‌شود. مدیر نمی‌تواند نقش مدیریتی حساب خودش را حذف کند.")}</p>
         {message && <SuccessState title={message} />}{error && <ErrorState title={t("عملیات انجام نشد")} description={error} onRetry={load} />}
         {loading ? <AdminUserCardsSkeleton count={4} /> : !result?.data?.length ? <EmptyState title={t("کاربری برای نمایش وجود ندارد")} /> : <>
@@ -325,8 +325,8 @@ export function AdminMessageReportsPage() {
     return <Container as="section" width="wide" className="space-y-6">
         <PageHeader eyebrow={t("ایمنی گفتگوها")} title={t("گزارش‌های پیام")} description={t("گزارش‌ها را با توجه به زمینه گفتگو بررسی کنید. حذف پیام یک اقدام برگشت‌ناپذیر در این پنل است و پیش از اجرا تأیید جداگانه می‌خواهد.")} actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>{t("به‌روزرسانی")}</Button>} />
         <div className="grid gap-3 sm:grid-cols-2">
-            <div className="border-y border-border bg-transparent py-4"><p className="text-xs text-muted">{t("گزارش‌های این صفحه")}</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</p></div>
-            <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">{t("کل گزارش‌ها")}</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</p></div>
+            <div className="border-y border-border bg-transparent py-4"><p className="text-xs text-muted">{t("گزارش‌های این صفحه")}</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') ?? '—'}</p></div>
+            <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">{t("کل گزارش‌ها")}</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.total?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') ?? '—'}</p></div>
         </div>
         {message && <SuccessState title={message} />}{error && <ErrorState title={t("عملیات انجام نشد")} description={error} onRetry={load} />}
         {loading ? <MessageReportsSkeleton count={3} /> : !result?.data?.length ? <EmptyState title={t("گزارش بازی وجود ندارد")} description={t("گزارش‌های جدید پس از ثبت از سوی یکی از طرفین گفتگو در اینجا نمایش داده می‌شوند.")} /> : <>
@@ -432,11 +432,11 @@ export function AdminArtworkCommentReportsPage() {
         <div className="grid gap-3 sm:grid-cols-2">
             <div className="border border-border bg-paper p-4">
                 <p className="text-xs text-muted">{t("گزارش‌های این صفحه")}</p>
-                <p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</p>
+                <p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') ?? '—'}</p>
             </div>
             <div className="border border-border bg-paper p-4">
                 <p className="text-xs text-muted">{t("کل گزارش‌ها")}</p>
-                <p className="mt-2 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</p>
+                <p className="mt-2 text-2xl font-black tabular-nums">{result?.total?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') ?? '—'}</p>
             </div>
         </div>
         {message && <SuccessState title={message} />}
