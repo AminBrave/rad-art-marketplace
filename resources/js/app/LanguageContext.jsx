@@ -929,6 +929,8 @@ export function LanguageProvider({ children }) {
     return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }
 
+// The context hook is intentionally exported beside its provider for a single public API.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useLanguage() {
     const context = useContext(LanguageContext);
     if (!context) throw new Error('useLanguage must be used inside LanguageProvider');
