@@ -77,7 +77,6 @@ test('project stylesheets define tokens, base rules and only approved layout pri
         '.rd-workspace-main',
         '.rd-page-frame',
         '.rd-page-frame--workspace',
-        '.rd-container--wide',
         '.rd-container--reading',
     ]);
     for (const path of stylesheetFiles) {
