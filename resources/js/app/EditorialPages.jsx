@@ -158,7 +158,7 @@ export function AdminEditorialPage() {
             setMessage(data.message); await refreshEditorialQueries();
         } catch (e) { setActionError(e.response?.data?.message || 'ذخیره انتخاب هنرمندان انجام نشد.'); }
     };
-    return <Container as="section" width="wide" className="space-y-8">
+    return <section className="min-w-0 mx-auto w-full max-w-content space-y-8">
         <PageHeader bleed={false} eyebrow={t("سردبیری راد آرت")} title={t("مجموعه‌ها و هنرمندان منتخب")} description={t("فقط آثار تأییدشده و پروفایل‌های عمومی در خروجی عمومی نمایش داده می‌شوند. تغییرات انتشار ثبت رویداد می‌شوند.")} />
         {message && <SuccessState title={message} />}{error && <ErrorState title={t("عملیات انجام نشد")} description={error} onRetry={load} />}
         {loading ? <AdminEditorialSkeleton /> : <>
@@ -208,5 +208,5 @@ export function AdminEditorialPage() {
                 </article>)}</div> : <EmptyState title="مجموعه‌ای ثبت نشده است" />}</section>
             <section className="space-y-5 border-y border-border bg-transparent py-6 sm:py-8"><SectionHeader title={t("هنرمندان منتخب")} description="انتخاب‌ها به ترتیب انتخاب شما در صفحه اصلی نمایش داده می‌شوند. بازه انتشار از طریق API قابل تنظیم است." className="border-0 pb-0" /><div className="grid gap-3 sm:grid-cols-2">{options.artists.map((artist) => <div key={artist.id} className="border-t border-border py-3 first:border-t-0"><Checkbox checked={featuredIds.includes(artist.id)} onChange={(e) => setFeaturedIds((current) => e.target.checked ? [...current, artist.id] : current.filter((id) => id !== artist.id))} className="flex min-h-11 items-center gap-3 text-sm">{artist.display_name}</Checkbox>{featuredIds.includes(artist.id) && <FormField label={'معرفی کوتاه ' + artist.display_name} className="mt-3"><TextInput placeholder="معرفی کوتاه سردبیر" value={featuredIntros[artist.id] || ''} maxLength={500} onChange={(e) => setFeaturedIntros((current) => ({ ...current, [artist.id]: e.target.value }))} /></FormField>}</div>)}</div><Button onClick={saveFeatured} loading={busy}>ذخیره هنرمندان منتخب</Button></section>
         </>}
-    </Container>;
+    </section>;
 }
