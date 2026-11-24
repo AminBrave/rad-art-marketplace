@@ -24,11 +24,11 @@ export const Grid = forwardRef(function Grid({ as: Element = 'div', columns, gap
 });
 
 export const Container = forwardRef(function Container({ as: Element = 'div', width = 'wide', className = '', ...props }, ref) {
-    // The application shell supplies the canonical page width and gutters.
-    // This component only constrains intentional inner reading measures.
+    // Each section owns its own content width and gutters. "full" is
+    // intentionally edge-to-edge for sections with viewport-wide backgrounds.
     const widths = {
-        reading: 'mx-auto w-full max-w-[var(--content-reading-width)]',
-        wide: 'w-full max-w-none',
+        reading: 'mx-auto w-full max-w-[var(--content-reading-width)] px-page-gutter',
+        wide: 'mx-auto w-full max-w-content px-page-gutter',
         full: 'w-full max-w-none',
     };
     return <Element ref={ref} className={cn('min-w-0', widths[width] ?? widths.wide, className)} {...props} />;
