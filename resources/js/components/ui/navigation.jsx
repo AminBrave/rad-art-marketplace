@@ -35,7 +35,7 @@ export function DropdownMenuContent({ className = '', sideOffset = 6, ...props }
         <DropdownMenuPrimitive.Content
             sideOffset={sideOffset}
             align="end"
-            dir="rtl"
+           
             className={cn('z-50 min-w-44  border border-border bg-paper p-1.5 text-ink shadow-raised outline-none', className)}
             {...props}
         />
