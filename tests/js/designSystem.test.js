@@ -178,7 +178,7 @@ test('public and workspace mobile navigation are separate and artist profile pre
     assert.ok(layouts.includes("outletContext?.profile?.slug"));
     assert.ok(artistWorkspace.includes('پیش‌نمایش پروفایل'));
     assert.ok(artistWorkspace.includes('ویرایش پروفایل'));
-    assert.ok(artistProfile.includes('aria-label="پروفایل هنرمند"'));
+    assert.ok(artistProfile.includes('aria-label={t("پروفایل هنرمند")}'));
     assert.ok(artistProfile.includes('دنبال‌کننده'));
     assert.ok(artistProfile.includes('grid-cols-[10rem_minmax(0,1fr)]'));
 });
@@ -190,7 +190,7 @@ test('featured collections header follows the full-width artwork gallery header 
 
 test('comment discussions use nested cards and a clear reply hierarchy', () => {
     assert.ok(artworkEngagement.includes('aria-label="پاسخ‌های این دیدگاه"'));
-    assert.ok(artworkEngagement.includes('border-r-2 border-terracotta/40'));
+    assert.ok(artworkEngagement.includes('border-s-2 border-terracotta/40'));
     assert.ok(artworkEngagement.includes('bg-surface-muted p-3 sm:p-4'));
     assert.ok(artworkEngagement.includes('space-y-3'));
 });
