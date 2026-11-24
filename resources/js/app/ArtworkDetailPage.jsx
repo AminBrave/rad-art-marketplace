@@ -98,7 +98,7 @@ export default function ArtworkDetailPage() {
                             {localizedValue(artwork, 'description', locale) && <p className="mt-7 whitespace-pre-line text-sm leading-9 text-muted">{localizedValue(artwork, 'description', locale)}</p>}
                             <dl className="mt-8 grid grid-cols-2 gap-x-5 gap-y-6 border-y border-border py-7 text-sm">
                                 {localizedValue(artwork, 'city', locale) && <div><dt className="text-xs text-muted">{t("شهر محل اثر")}</dt><dd className="mt-1 font-semibold">{localizedValue(artwork, 'city', locale)}</dd></div>}
-                                {artwork.medium && <div><dt className="text-xs text-muted">{t("تکنیک / مواد")}</dt><dd className="mt-1 font-semibold">{artwork.medium}</dd></div>}
+                                {artwork.medium && <div><dt className="text-xs text-muted">{t("تکنیک / مواد")}</dt><dd className="mt-1 font-semibold">{t(artwork.medium)}</dd></div>}
                                 {artwork.dimensions && <div><dt className="text-xs text-muted">{t("ابعاد")}</dt><dd className="mt-1 font-semibold">{artwork.dimensions}</dd></div>}
                                 {artwork.year && <div><dt className="text-xs text-muted">{t("سال خلق")}</dt><dd className="mt-1 font-semibold">{artwork.year.toLocaleString(locale === "fa" ? "fa-IR" : "en-US")}</dd></div>}
                                 <div><dt className="text-xs text-muted">{t("قیمت")}</dt><dd className="mt-1 font-semibold">{formatArtworkPrice(artwork.price, locale)}</dd></div>
