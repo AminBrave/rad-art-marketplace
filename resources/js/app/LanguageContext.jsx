@@ -87,6 +87,7 @@ const english = {
     "تغییر پوسته؛ حالت فعلی:": "Change theme; current mode:",
     "تغییر پوسته": "Change theme",
     "هنرمند": "Artist",
+    "هنرمند منتخب": "Featured artist",
     "خریدار": "Buyer",
     "مدیر": "Administrator",
     "رفتن به محتوای اصلی": "Skip to main content",
