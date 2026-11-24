@@ -31,10 +31,10 @@ export default function ConversationHeader({
                     </Button>
                 </Tooltip>
                 {selected?.artist?.slug ? (
-                    <Tooltip content="مشاهده پروفایل هنرمند">
+                    <Tooltip content={t("مشاهده پروفایل هنرمند")}>
                         <Link
                             to={'/artists/' + selected.artist.slug}
-                            aria-label={'مشاهده صفحه هنرمند ' + (selected?.participant?.name ?? '')}
+                            aria-label={t("مشاهده صفحه هنرمند ") + (selected?.participant?.name ?? '')}
                             className="min-h-0 p-0 group flex h-11 w-11 aspect-square shrink-0 items-center justify-center text-inherit no-underline transition-[transform,opacity] hover:-translate-y-px hover:opacity-[.88] focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"
                         >
                             <span
@@ -55,13 +55,13 @@ export default function ConversationHeader({
                 )}
                 <div className="min-w-0 flex-1">
                     {role === 'buyer' && selected?.artist?.slug ? (
-                        <Tooltip content={'مشاهده صفحه هنرمند ' + (selected.participant.name ?? '')}>
+                        <Tooltip content={t("مشاهده صفحه هنرمند ") + (selected.participant.name ?? '')}>
                             <Link
                                 to={'/artists/' + selected.artist.slug}
                                 dir="auto"
                                 className="block w-fit max-w-full truncate text-sm font-extrabold leading-6 text-ink transition hover:text-terracotta-strong focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus sm:text-base"
                             >
-                                {selected.participant.name ?? 'مشاهده هنرمند'}
+                                {selected.participant.name ?? t("مشاهده هنرمند")}
                             </Link>
                         </Tooltip>
                     ) : (
@@ -76,7 +76,7 @@ export default function ConversationHeader({
                     <p className="truncate text-[11px] leading-5 text-muted">{t("گفتگوی خصوصی مستقیم")}</p>
                 </div>
                 <DropdownMenu.Root open={openPopover === 'conversation'} onOpenChange={onPopoverOpenChange}>
-                    <Tooltip content="گزینه‌های بیشتر">
+                    <Tooltip content={t("گزینه‌های بیشتر")}>
                         <DropdownMenu.Trigger asChild>
                             <Button variant="ghost"
                                 type="button"
@@ -112,7 +112,7 @@ export default function ConversationHeader({
                                 ) : (
                                     <Ban size={15} className="shrink-0" aria-hidden="true" />
                                 )}
-                                <span>{safety.blocked_by_me ? 'رفع مسدودسازی کاربر' : 'مسدودسازی کاربر'}</span>
+                                <span>{safety.blocked_by_me ? t("رفع مسدودسازی کاربر") : t("مسدودسازی کاربر")}</span>
                             </DropdownMenu.Item>
                         </DropdownMenu.Content>
                     </DropdownMenu.Portal>
