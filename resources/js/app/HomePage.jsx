@@ -258,7 +258,7 @@ export default function HomePage() {
                         <div className="relative grid min-h-48 place-items-center border-t border-[color:var(--rd-hero-line)] bg-[color:var(--rd-hero-background-alt)] p-8 text-[color:var(--rd-hero-foreground)] sm:border-t-0 sm:border-s">
                             <span aria-hidden="true" className="absolute start-5 top-4 font-latin text-[10px] font-bold tracking-[.2em] text-[color:var(--rd-hero-muted)]">RAD / PEOPLE</span>
                             <span aria-hidden="true" className="grid h-28 w-28 place-items-center border border-[color:var(--rd-hero-line)] bg-[color:var(--rd-hero-background)] text-5xl font-black text-[color:var(--rd-hero-accent)] sm:h-36 sm:w-36">
-                                {(spotlight.display_name || 'ه').trim().slice(0, 1)}
+                                {(localizedValue(spotlight, 'display_name', locale) || (locale === 'en' ? 'A' : 'ه')).trim().slice(0, 1)}
                             </span>
                             <span aria-hidden="true" className="absolute bottom-4 end-5 font-latin text-[10px] font-bold tracking-widest text-[color:var(--rd-hero-muted)]">FEATURED ARTIST</span>
                         </div>
