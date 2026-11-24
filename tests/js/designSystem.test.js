@@ -150,8 +150,9 @@ test('route canvases stay full-width and route content uses shared section conta
 });
 
 test('public catalogue, artist directory and artwork detail use shared page layout primitives', () => {
-    assert.ok(publicPages[0].includes('PageContainer') && publicPages[0].includes('PageHeader'));
-    assert.ok(publicPages[1].includes('PageContainer') && publicPages[1].includes('SectionHeader'));
+    assert.ok(publicPages[0].includes('Container') && publicPages[0].includes('PageHeader'));
+    assert.ok(publicPages[1].includes('Container') && publicPages[1].includes('SectionHeader'));
+    assert.ok(publicPages[1].includes('<Section bleed'), 'Artist directory hero background must be full-bleed.');
     assert.ok(publicPages[2].includes('PageContainer'));
     assert.ok(buyerWorkspace.includes('WorkspaceHero') && buyerWorkspace.includes('<SectionHeader'));
     assert.ok(buyerWorkspace.includes('border-y border-border'), 'Buyer Studio uses editorial section boundaries instead of an unnecessary nested Surface.');
