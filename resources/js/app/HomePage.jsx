@@ -98,8 +98,8 @@ export default function HomePage() {
                         <span>{t('گالری هنر مستقل معاصر')}</span>
                         <span dir="ltr" className="font-latin">RAD ART / DISCOVER &amp; CONNECT</span>
                     </div>
-                    <div className="flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:gap-20">
-                        <div className="relative z-10 order-2 w-full max-w-2xl py-2 lg:order-none lg:w-[55%] lg:py-10">
+                    <div className="flex w-full min-w-0 flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
+                        <div className="relative z-10 order-2 w-full min-w-0 max-w-2xl py-2 lg:order-none lg:flex-1 lg:py-10">
                             <p className="mb-5 flex items-center gap-3 text-xs font-extrabold text-[color:var(--rd-hero-accent)]">
                                 <span className="h-px w-9 bg-[color:var(--rd-hero-accent)]" />
                                 {t('هنر معاصر، از نگاه مستقل')}
@@ -123,7 +123,7 @@ export default function HomePage() {
                             <p className="mt-7 text-xs leading-6 text-[color:var(--rd-hero-muted)]">{t('نمایش عمومی به آثار تأییدشده و پروفایل‌های عمومی محدود است.')}</p>
                         </div>
 
-                        <div className="relative z-10 order-1 mx-auto w-full max-w-2xl lg:order-none lg:w-[45%] lg:max-w-[28rem]">
+                        <div className="relative z-10 order-1 mx-auto w-full min-w-0 max-w-2xl lg:order-none lg:mx-0 lg:w-2/5 lg:max-w-[28rem] lg:shrink-0">
                             {hero ? (
                                 <Link to={'/artworks/' + hero.slug} className="group relative block border border-[color:var(--rd-hero-line)] bg-paper p-2 shadow-soft sm:p-3">
                                     <div className="relative aspect-[3/4] w-full overflow-hidden bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))]">
