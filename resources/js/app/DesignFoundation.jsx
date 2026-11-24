@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { auditColorAccessibility } from '../lib/colorAccessibility';
 import ComponentShowcase from './ComponentShowcase';
-import { Button, TextInput } from '../components/ui';
+import { Button, TextInput, Container } from '../components/ui';
 
 const swatches = [
     { name: 'Ivory', value: 'var(--color-canvas)', token: 'canvas' },
@@ -56,7 +56,8 @@ function ColorAccessibilityPanel() {
 
 export default function DesignFoundation() {
     return (
-        <main dir="rtl" className="min-h-screen bg-canvas px-5 py-12 text-ink sm:px-8 lg:px-12">
+        <main dir="rtl" className="min-h-screen w-full bg-canvas py-12 text-ink">
+            <Container width="wide">
             <div className="mx-auto max-w-content">
                 <header className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
                     <a href="/" className="text-xl font-extrabold text-ink no-underline">راد<span className="text-terracotta">آرت</span></a>
@@ -126,6 +127,7 @@ export default function DesignFoundation() {
                 <ComponentShowcase />
                 <footer className="border-t border-border pt-6 text-xs text-muted">Rad Art · Contemporary Art Editorial · MVP 2</footer>
             </div>
+            </Container>
         </main>
     );
 }
