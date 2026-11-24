@@ -188,7 +188,7 @@ export function MediaImage({
                     </span>
                     <span
                         role="note"
-                        className="absolute inset-x-0 bottom-0 z-20 flex items-start gap-2 border-t-2 border-danger bg-danger px-3 py-2 text-start text-[11px] font-medium leading-5 text-white shadow-lg"
+                        className="absolute inset-x-0 bottom-0 z-20 flex items-start gap-2 border-t border-danger bg-danger px-3 py-2 text-start text-[11px] font-medium leading-5 text-white shadow-lg"
                         dir="rtl"
                     >
                         <AlertTriangle size={15} className="mt-0.5 shrink-0" aria-hidden="true" />
