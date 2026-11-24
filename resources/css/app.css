@@ -297,6 +297,14 @@
 }
 
 /*
+ * Rademan uses a strict square-corner visual language. Apply it consistently
+ * to controls, cards, media frames, badges and decorative surfaces.
+ */
+:where(*, *::before, *::after) {
+    border-radius: 0 !important;
+}
+
+/*
  * The workspace grid owns the shared page gutter. Nested section containers
  * keep their width semantics but must not add a second horizontal gutter.
  */
