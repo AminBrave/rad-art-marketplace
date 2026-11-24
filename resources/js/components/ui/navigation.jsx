@@ -116,7 +116,7 @@ export function Pagination({ currentPage = 1, lastPage = 1, onPageChange, disabl
                             aria-current={number === page ? 'page' : undefined}
                             disabled={disabled}
                             onClick={() => onPageChange(number)}
-                            className={cn('h-9 min-h-9 min-w-9 rounded-sm px-2 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-terracotta-strong disabled:opacity-50', number === page ? 'bg-ink text-inverse' : 'text-ink hover:bg-surface-muted')}
+                            className={cn('h-9 min-h-9 min-w-9 rounded-control px-2 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-terracotta-strong disabled:opacity-50', number === page ? 'bg-ink text-inverse' : 'text-ink hover:bg-surface-muted')}
                         >
                             {number}
                         </Button>
