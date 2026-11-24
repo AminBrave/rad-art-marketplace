@@ -867,6 +867,8 @@ const english = {
     "چاپ دیجیتال": "Digital print",
     "مرکب روی کاغذ": "Ink on paper",
     "مواد ترکیبی": "Mixed media",
+    "تأییدشده": "Approved",
+    "قابل استعلام": "Ask artist",
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 
