@@ -49,7 +49,7 @@ export default function ArtistWorkspaceOverview() {
 
     return (
         <div className="w-full">
-            <div className="rd-container min-w-0 mx-auto w-full max-w-content space-y-7">
+            <div className="min-w-0 w-full space-y-7">
                 <PageHeader
                     bleed={false}
                     eyebrow={t("استودیوی هنرمند")}
