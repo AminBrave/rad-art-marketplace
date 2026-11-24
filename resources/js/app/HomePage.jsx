@@ -93,7 +93,7 @@ export default function HomePage() {
                         <span>گالری هنر مستقل معاصر</span>
                         <span dir="ltr" className="font-latin">RAD ART / DISCOVER &amp; CONNECT</span>
                     </div>
-                    <div className="relative grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(20rem,.9fr)] lg:gap-20">
+                    <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(20rem,.9fr)] lg:gap-20">
                         <div aria-hidden="true" className="rd-shine rd-shine--ambient pointer-events-none absolute -left-3 -top-3 z-0 hidden h-24 w-24 border border-sand sm:block lg:-left-5 lg:-top-5 lg:h-32 lg:w-32" style={{ '--rd-shine-index': 0 }} />
                         <div aria-hidden="true" className="rd-shine rd-shine--ambient pointer-events-none absolute -bottom-4 -right-4 z-0 hidden h-28 w-28 bg-surface-muted sm:block lg:-bottom-6 lg:-right-6 lg:h-40 lg:w-40" style={{ '--rd-shine-index': 1 }} />
                         <div className="relative z-10 order-2 max-w-2xl py-2 lg:order-1 lg:py-10">
