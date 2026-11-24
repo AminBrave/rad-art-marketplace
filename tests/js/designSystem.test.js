@@ -76,17 +76,26 @@ test('square corners are defined by design tokens without global CSS overrides',
     assert.ok(tailwind.includes("card: 'var(--rd-radius-0)'"));
     assert.ok(tailwind.includes("pill: 'var(--rd-radius-0)'"));
     for (const source of [primitives, layoutPrimitives, feedback, navigation, dialog, alertDialog, tooltip, skeletons, messageTimeline, messageComposer, homePage]) {
-        assert.doesNotMatch(source, /\brounded(?:-[a-z0-9-]+)?/);
+        assert.doesNotMatch(source, /\brounded(?:-(?!none\b)[a-z0-9-]+)?\b/);
     }
 });
 
 
 test('homepage discovery groups and artist spotlight use reusable card structure with RTL layout', () => {
     assert.ok(homePage.includes('grid-cols-[3rem_minmax(0,1fr)]'));
-    assert.ok(homePage.includes('bg-surface-muted py-8 sm:py-10'));
+    assert.ok(homePage.includes('bg-surface-muted py-14 sm:py-20'));
     assert.ok(homePage.includes('ARTIST SPOTLIGHT / هنرمند منتخب'));
     assert.ok(homePage.includes('border-ink bg-ink text-inverse'));
     assert.ok(homePage.includes('<Card'));
+});
+
+test('buttons enforce square geometry and shared alignment', () => {
+    assert.ok(primitives.includes("className, 'rounded-none whitespace-nowrap'"));
+    assert.ok(primitives.includes("className, 'rounded-none shrink-0'"));
+});
+
+test('section primitives provide consistent vertical rhythm', () => {
+    assert.ok(layoutPrimitives.includes("Element === 'section' ? 'py-14 sm:py-20'"));
 });
 
 test('class composition understands semantic radius and content-width utilities', () => {
