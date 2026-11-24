@@ -79,84 +79,56 @@ Current shape tokens: `--rd-radius-sm|md|lg|xl|pill`; elevation tokens: `--rd-sh
 
 Artwork itself should remain undistorted. Use `object-contain` when the complete work is the subject; use `object-cover` only for a deliberate editorial crop, avatar or ambient image. Keep the media frame and its internal padding intentional; the image should occupy the available frame without erasing the frame's breathing room.
 
-## 3. Shared page container and alignment grid — mandatory
+## 3. Section-owned content width and full-bleed composition — mandatory
 
-**There is one canonical main-content container for every page and route.** Public discovery, artwork/artist detail, buyer workspace, artist workspace, admin, account, messaging, settings, forms and dashboards all inherit the same outer content width, horizontal gutters and alignment grid. Route type, user role, page length or component choice must not create a second page-width system.
+**The route-level `<main>` is a full-width canvas, not a content-width container.** Every section owns its own content measure. This is the required architecture for pages that combine full-bleed backgrounds with consistently aligned content.
 
 ### Canonical contract
 
-- The shared page container is the only owner of the page's maximum width and horizontal page gutters.
-- Use the same `--rd-content-width` and `--rd-page-gutter` values at every route breakpoint. Do not introduce route-specific `max-w-*`, `px-*`, `mx-auto` or bespoke width wrappers that shift the content edges.
-- Every page header, section header, section body, card grid, form, table, toolbar and footer content aligns to the same start/end guides.
-- Sections may use different internal layouts (grid, flex, split view, editorial columns), but their outer edges and shared column lines must derive from the canonical container.
-- Nested components do not restart page gutters or center themselves in a narrower max-width wrapper. They inherit the page grid and use internal spacing only.
-- A full-bleed background, hero image, divider or decorative band may extend outside the content grid; its text, controls and meaningful content must snap back to the same canonical alignment guides.
-- A reading measure may constrain a text block inside the grid, but it must not replace or redefine the outer page container. The reading block aligns to the grid's start edge.
-- Workspace navigation rails and mobile bottom navigation are shell chrome, not alternative content containers. The workspace content region must use the same canonical width and alignment as public pages.
-- Messaging may use a full-height or split-pane interaction layout where required, but its page-level frame and aligned content edges remain anchored to the same shell grid.
+- The public and workspace route-level main elements remain full width (`width: 100%`, no max-width, no horizontal margin or page gutter).
+- Each normal section places its background, border, and vertical rhythm on the outer semantic `<section>`.
+- Section content is constrained independently with the shared `Container` component:
+  - `width="wide"`: centered standard content width with the shared page gutters.
+  - `width="reading"`: centered long-form reading measure with the shared page gutters.
+  - `width="full"`: edge-to-edge content with no maximum width or automatic page gutters.
+- A full-bleed section must not put its background on the constrained inner container. The outer section owns the background; the inner container owns content alignment.
+- Use the same `--rd-content-width`, `--rd-content-reading-width`, and `--rd-page-gutter` tokens across routes. Do not invent route-specific width tokens.
+- Page headers, section headers, card grids, forms, tables and toolbars should use the appropriate section container rather than adding independent centered wrappers.
+- Reading width is an inner content measure. It must not constrain the background or sibling sections.
+- Public and workspace shells may have different navigation chrome, but their ordinary section content follows the same container contract.
+- Messaging, media viewers and editors may use explicit immersive layouts when their task requires them. Keep these exceptions scoped to the experience, not as alternate defaults for ordinary routes.
 
-### Gestalt application to the shared grid
+### Required composition
 
-- **Common region:** the canonical container establishes one coherent page field; do not fragment the page into unrelated width islands.
-- **Alignment:** shared left/right (logical start/end) edges create visual relationships across sections, even when their internal columns differ.
-- **Proximity:** use vertical and horizontal spacing to express related content before adding separators.
-- **Similarity:** repeat the same section gutters, header alignment and grid rhythm across routes.
-- **Continuity:** align headings, controls, cards and data regions to consistent columns so the eye can scan down the page.
-- **Hierarchy:** vary internal column spans, whitespace and typography to establish importance; do not vary the outer container width to manufacture hierarchy.
-- **Closure/common region:** reserve cards and surfaces for actual grouped content. Do not put a second card/container around a section merely to simulate alignment.
+```jsx
+<section className="w-full bg-surface-muted py-12">
+    <Container width="wide">
+        {/* Content aligned to the shared page grid */}
+    </Container>
+</section>
+```
 
-### Required page composition
+For long-form copy, use `<Container width="reading">`; for genuinely edge-to-edge content, use `<Container width="full">`.
 
-1. Application shell provides the canonical main-content frame.
-2. Route page provides semantic page structure (header, sections, content and footer) without a competing outer width/gutter.
-3. Sections align to the shared page guides; internal grids use a shared column system or proportional subdivisions.
-4. Cards, forms and tables occupy their assigned columns and do not add page-level horizontal offsets.
-5. Full-bleed visual treatments may escape the grid, while their content remains aligned.
+### Gestalt application
 
-### Exceptions
-
-Only intentional edge-to-edge experiences (for example, a full-viewport media viewer, immersive editor, or full-height messaging workspace) may opt out of the normal content measure. The exception must be explicit, limited to the experience that needs it, and must not create a new width convention for ordinary pages. Even then, shared headers, controls and exit/navigation affordances should align to the shell grid where practical.
+- **Common region:** the outer section creates the visual region; the inner container establishes content alignment.
+- **Alignment and continuity:** repeat the same wide-container guides across sections, even when backgrounds differ.
+- **Proximity:** use spacing to group related content before adding dividers.
+- **Similarity:** reuse the same container widths and section rhythm across route families.
+- **Hierarchy:** use typography, whitespace, column spans and tonal backgrounds—not arbitrary outer widths.
+- **Figure/ground:** allow artwork and full-bleed media to occupy the viewport when appropriate, while preserving legibility and intentional framing.
 
 ### Review gate
 
-A route is not layout-complete if its main content edges differ from other routes at the same viewport. Compare at identical viewport widths and inspect:
-- page title start/end edges;
-- section heading and section body edges;
-- first and last grid/card columns;
-- form and table edges;
-- toolbar/action alignment;
-- footer content alignment;
-- transitions between public and workspace routes.
-
-Do not approve a route-specific width or gutter adjustment as a local fix. Correct the shared container or grid contract instead.
-
-## 3. Layout and composition patterns
-
-### Page frame
-- Use one shared page-width and gutter contract across public pages and workspaces.
-- Keep the page title, description and primary actions in a predictable header region.
-- Use section headings to establish content hierarchy.
-- Avoid unnecessary nested panels. A surface/card should represent a meaningful interaction or information group.
-
-### Editorial page header
-`PageHeader` supports eyebrow, title, description, actions and heading level. Current implementation uses RTL alignment, a terracotta leading accent and a section boundary. On narrow screens, actions and content stack.
-
-### Section header
-`SectionHeader` supports eyebrow, title, description, actions and heading level. It uses a lighter group boundary and a secondary accent, establishing a lower level than the page header.
-
-### Workspace hero
-`WorkspaceHero` is a high-emphasis dark/ink region with inverse text, terracotta accent and optional actions. Reserve it for workspace identity or a meaningful overview, not every page section.
-
-### Surfaces and cards
-`Surface` offers default, muted, raised and interactive variants. Use a filled/raised treatment only when it improves grouping or interaction affordance. `Card` is a bordered content region; `Callout` is reserved for contextual feedback or important notes.
-
-### Gestalt rules
-- **Proximity:** related labels, values, controls and metadata should be close.
-- **Similarity:** repeated controls and content items share visual grammar.
-- **Common region:** use a surface only for content that genuinely belongs together.
-- **Continuity:** align repeated elements and preserve predictable reading paths.
-- **Figure/ground:** artwork and primary actions should remain visually distinct from supporting metadata.
-- **Hierarchy:** communicate importance with typography, spacing, semantic color and tonal dividers—not arbitrary border thickness.
+A route is not layout-complete until:
+- the main element spans the available viewport width;
+- each section chooses its own content width;
+- full-bleed backgrounds reach both viewport edges without horizontal overflow;
+- constrained content aligns to the same wide-container guides across routes;
+- reading-width content remains narrower without narrowing its section background;
+- workspace and public routes preserve the same ordinary content alignment;
+- immersive exceptions are explicit and do not leak into normal pages.
 
 ## 4. Shared component catalogue
 
@@ -184,7 +156,7 @@ All shared components are exported through `resources/js/components/ui/index.js`
 
 | Component | Responsibility |
 |---|---|
-| `PageContainer` | Centered page width; `wide`, `reading`, `full` modes. |
+| `Container` | Canonical section-owned content width; `wide`, `reading`, `full` modes. |
 | `PageHeader` | Page title, eyebrow, description and actions. |
 | `SectionHeader` | Section-level title, description and actions. |
 | `WorkspaceHero` | High-emphasis workspace introduction. |
