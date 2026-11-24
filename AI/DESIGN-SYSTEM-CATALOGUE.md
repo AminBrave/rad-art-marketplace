@@ -92,7 +92,7 @@ Artwork itself should remain undistorted. Use `object-contain` when the complete
   - `width="reading"`: centered long-form reading measure with the shared page gutters.
   - `width="full"`: edge-to-edge content with no maximum width or automatic page gutters.
 - A full-bleed section must not put its background on the constrained inner container. The outer section owns the background; the inner container owns content alignment.
-- Use the same `--rd-content-width`, `--rd-content-reading-width`, and `--rd-page-gutter` tokens across routes. Do not invent route-specific width tokens.
+- Use the same `--rd-content-width`, `--rd-content-reading-width`, `--rd-page-gutter`, `--rd-workspace-sidebar-width`, and `--rd-workspace-column-gap` tokens across routes. Do not invent route-specific width tokens.
 - Page headers, section headers, card grids, forms, tables and toolbars should use the appropriate section container rather than adding independent centered wrappers.
 - Reading width is an inner content measure. It must not constrain the background or sibling sections.
 - Public and workspace shells may have different navigation chrome, but their ordinary section content follows the same container contract.
