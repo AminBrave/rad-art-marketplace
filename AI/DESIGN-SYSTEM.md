@@ -100,14 +100,14 @@ The application uses a layered component model. Page files compose user journeys
 - Preserve native semantic elements when no shared component adds value (for example, headings, paragraphs, tables, lists, and form/landmark elements).
 - Shared controls must forward refs when consumers need focus management, support controlled and uncontrolled usage where appropriate, and preserve native input attributes.
 
-### Section rhythm
+### Section rhythm and headings
 
-- Separate major page sections with generous, consistent vertical breathing room. The `Section` primitive owns major-section spacing (`py-16 sm:py-24`). `Container` owns width and gutters only; it never adds implicit vertical padding. Workspace shells provide the page gutter, so nested workspace containers remain padding-free.
+- Separate major page sections with generous, consistent vertical breathing room. Use the shared `SectionHeader` for a compact editorial heading: a short accent marker, concise title, optional supporting line and a quiet bottom rule. Avoid large banners or repeated decorative framing for ordinary sections. The `Section` primitive owns major-section spacing (`py-16 sm:py-24`). `Container` owns width and gutters only; it never adds implicit vertical padding. Workspace shells provide the page gutter, so nested workspace containers remain padding-free.
 - Keep spacing inside cards and between related controls tighter than spacing between major sections. Do not compensate for section rhythm with extra borders or decorative separators.
 
 ### Card and surface contract
 
-- Use the shared `Card` for coherent information groups, dashboard metrics, editorial steps, featured people and grouped controls. A card uses a complete one-pixel boundary and a semantic surface; avoid `border-y` plus transparent backgrounds for objects that should read as cards.
+- Use the shared `Card` for coherent information groups, dashboard metrics, editorial steps, featured people and grouped controls. A card uses a complete one-pixel boundary and a semantic surface; keep all corners square and avoid `border-y` plus transparent backgrounds for objects that should read as cards.
 - Use proximity and spacing inside a card before adding nested borders. Use `border-divider-nested` only for true internal separation.
 - Interactive cards need one clear hit target, visible keyboard focus and a hover state that does not depend on color alone. Keep action links/buttons semantically distinct when a card contains multiple actions.
 - Square geometry is owned by `--rd-radius-0` and Tailwind's border-radius theme mapping. Do not add global `*` selectors, `!important`, or component-level radius overrides. Shared components should omit radius utilities; legacy utilities resolve to the zero token during migration.
