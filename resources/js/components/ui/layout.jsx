@@ -32,8 +32,7 @@ export const Container = forwardRef(function Container({ as: Element = 'div', wi
         full: 'w-full max-w-none',
     };
     const resolvedWidth = Object.prototype.hasOwnProperty.call(widths, width) ? width : 'wide';
-    const sectionSpacing = Element === 'section' ? 'py-16 sm:py-24' : '';
-    return <Element ref={ref} className={cn('rd-container min-w-0', `rd-container--${resolvedWidth}`, widths[resolvedWidth], sectionSpacing, className)} {...props} />;
+    return <Element ref={ref} className={cn('rd-container min-w-0', `rd-container--${resolvedWidth}`, widths[resolvedWidth], className)} {...props} />;
 });
 
 export const Section = forwardRef(function Section({ as: Element = 'section', bleed = false, className = '', ...props }, ref) {
