@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -26,6 +27,17 @@ return new class extends Migration
         Schema::table('categories', function (Blueprint $table): void {
             $table->string('name_en', 120)->nullable();
         });
+
+        foreach ([
+            'painting' => 'Painting',
+            'photography' => 'Photography',
+            'sculpture' => 'Sculpture',
+            'digital-art' => 'Digital art',
+            'calligraphy' => 'Calligraphy',
+            'other' => 'Other',
+        ] as $slug => $name) {
+            DB::table('categories')->where('slug', $slug)->update(['name_en' => $name]);
+        }
 
         Schema::table('curated_collections', function (Blueprint $table): void {
             $table->string('title_en', 160)->nullable();
