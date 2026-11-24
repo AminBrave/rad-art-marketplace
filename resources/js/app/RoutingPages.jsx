@@ -387,7 +387,7 @@ export function ArtistProfileSettings() {
     if (profileLoading) return <RouteLoading label="در حال دریافت پروفایل هنرمند…" />;
 
     return (
-        <section className="space-y-6" dir="rtl">
+        <Container as="section" width="wide" className="space-y-6" dir="rtl">
             <PageHeader
                 eyebrow="استودیوی هنرمند"
                 title="پروفایل هنرمند"
@@ -409,7 +409,7 @@ export function ArtistProfileSettings() {
                 </div>
             </form>
             {message && <p role="status" className="mt-4 text-sm text-muted">{message}</p>}
-        </section>
+        </Container>
     );
 }
 
