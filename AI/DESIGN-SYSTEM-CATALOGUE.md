@@ -65,7 +65,6 @@ Use heading typography for hierarchy, readable line lengths for long-form copy, 
 
 Spacing uses a 4px base scale: `--rd-space-1` to `--rd-space-24` (0.25rem to 6rem). Layout tokens include:
 - `--rd-content-width`: overall content maximum.
-- `--rd-content-wide-width`: wide content container.
 - `--rd-content-reading-width`: long-form reading measure.
 - `--rd-page-gutter`: fluid page edge spacing.
 - `--rd-header-height` and `--rd-workspace-nav-height`.
