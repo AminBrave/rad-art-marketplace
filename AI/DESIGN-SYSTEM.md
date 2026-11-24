@@ -129,19 +129,19 @@ The public route-level `<main>` and workspace `.rd-page-frame` are content canva
 
 ## Complete-overhaul visual language
 
-The current overhaul uses an art-journal/editorial direction rather than a generic rounded SaaS dashboard. Apply these rules consistently across public pages, artist/buyer workspaces, administration, messaging, loading states and overlays:
+The current overhaul uses an art-journal/editorial direction rather than a generic SaaS dashboard. Apply these rules consistently across public pages, artist/buyer workspaces, administration, messaging, loading states and overlays:
 
 - **Artwork is the primary visual content.** Give images generous space, preserve their full composition with `object-contain` where the work itself is the subject, and use cropping only when the image's role is editorial/ambient. Never distort artwork to fill a frame.
 - **Use typography and composition for hierarchy.** Prefer strong page titles, concise eyebrow labels, generous vertical rhythm, clear metadata groupings and deliberate asymmetry over piles of cards.
 - **Reduce unnecessary containers.** Use open layouts, dividers, tonal sections and border-led groupings. Reserve filled/raised surfaces for a real interaction or information grouping; do not wrap every item in a card.
-- **Keep shapes disciplined.** Favor square or subtly rounded editorial frames. Use pill shapes only when the meaning is status, count, avatar, or a genuinely compact control.
+- **Keep geometry consistent.** All elements, controls, media frames, cards, overlays and decorative shapes use zero corner radius. Express hierarchy through spacing, border tint, surface and typography—not rounded silhouettes.
 
 - **Use a tonal, one-pixel rule hierarchy.** Every structural border and separator uses the same 1px thickness; communicate importance only through color tint. Page/major-section boundaries use `--rd-divider-section`; boundaries between peer groups and cards use the lighter `--rd-divider-group`; separators between items or subgroups inside a group use the lightest `--rd-divider-nested`. Keep the hierarchy consistent from top to bottom: a nested rule must never visually outweigh the boundary of its parent group. The tokens adapt with the active theme.
 - **Apply Gestalt grouping deliberately.** Use proximity before drawing a line: related labels, values, controls and metadata should read as one unit through spacing and alignment. Use similarity for repeated controls and cards; use common region only when content truly belongs together. Reserve section rules for changes of subject, group rules for peer clusters, and nested rules for subdivisions. Avoid stacking a card border, inner border and divider around the same content; whitespace and alignment should do most of the grouping.
 - **Keep line geometry invariant.** Borders and separators share the `--rd-line-width` token (1px). Do not make an important boundary thicker; change only its semantic tint. Avoid high-contrast default outlines around nested content.
 - **Use semantic color roles.** Terracotta is the primary accent, ink anchors high-contrast editorial regions, and olive/success/warning/danger are reserved for meaning. Verify both explicit themes and system theme.
 - **Keep interaction feedback precise.** Hover and focus should reveal affordance without shifting content unexpectedly. Motion is restrained and must respect reduced-motion preferences.
-- **Loading states mirror the final composition.** Skeletons must match the page's geometry, tonal regions, spacing and content density; a rounded generic placeholder is not an acceptable substitute for a bespoke page frame.
+- **Loading states mirror the final composition.** Skeletons must match the page's geometry, tonal regions, spacing and content density; a generic placeholder with different geometry is not an acceptable substitute for a bespoke page frame.
 - **Preserve responsive intent.** A mobile layout may change ordering, density, navigation and controls, but must retain the same information and actions without horizontal overflow.
 - **Maintain bidirectional correctness.** Use logical spacing and borders where possible. Apply `dir="auto"` or explicit LTR treatment to user-provided Latin names, URLs, identifiers and mixed-direction content where needed.
 
