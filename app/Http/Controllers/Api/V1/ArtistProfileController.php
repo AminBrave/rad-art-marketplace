@@ -22,7 +22,9 @@ class ArtistProfileController extends Controller
                 $term = (string) $request->string('q');
                 $query->where(function ($nested) use ($term): void {
                     PersianSearch::whereLike($nested, 'display_name', $term);
+                    PersianSearch::whereLike($nested, 'display_name_en', $term, 'or');
                     PersianSearch::whereLike($nested, 'city', $term, 'or');
+                    PersianSearch::whereLike($nested, 'city_en', $term, 'or');
                 });
             })
             ->orderBy('display_name')
