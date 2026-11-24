@@ -114,17 +114,14 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
 
 export function WorkspaceHero({ eyebrow, title, description, actions, bleed = true, className = '' }) {
     return (
-        <Section as="header" dir="rtl" bleed={bleed} className={cn('relative overflow-hidden border-y border-divider-section bg-ink text-inverse', className)}>
-            <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-1.5 bg-terracotta" />
-            <span aria-hidden="true" className="pointer-events-none absolute -right-16 -top-24 aspect-square w-60 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]" />
-            <span aria-hidden="true" className="pointer-events-none absolute -right-4 -top-12 aspect-square w-44 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]" />
-            <Container width={bleed ? "wide" : "full"} className="relative z-10 flex min-w-0 items-end justify-between gap-8 py-[clamp(1.75rem,4vw,3rem)] max-md:items-stretch max-md:flex-col">
-                <div className="relative z-10 max-w-[46rem]">
-                    {eyebrow && <p className="text-xs font-bold text-sand">{eyebrow}</p>}
-                    <h1 className="mt-3 text-[clamp(1.5rem,3vw,2rem)] font-extrabold leading-heading text-inverse">{title}</h1>
-                    {description && <p className="mt-3 text-sm leading-copy text-[color:color-mix(in_srgb,var(--color-inverse-text)_80%,transparent)]">{description}</p>}
+        <Section as="header" dir="rtl" bleed={bleed} className={cn('border-y border-divider-section bg-surface-muted', className)}>
+            <Container width={bleed ? "wide" : "full"} className="flex min-w-0 items-center justify-between gap-8 py-7 sm:py-9 max-md:items-stretch max-md:flex-col max-md:gap-5">
+                <div className="min-w-0 max-w-[46rem]">
+                    {eyebrow && <p className="text-xs font-bold text-terracotta-strong">{eyebrow}</p>}
+                    <h1 className="mt-2 text-[clamp(1.5rem,3vw,2rem)] font-extrabold leading-heading tracking-[-.025em] text-ink">{title}</h1>
+                    {description && <p className="mt-2 max-w-3xl text-sm leading-copy text-muted">{description}</p>}
                 </div>
-                {actions && <div className="relative z-10 flex flex-wrap gap-2 max-md:w-full">{actions}</div>}
+                {actions && <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2 max-md:w-full">{actions}</div>}
             </Container>
         </Section>
     );
