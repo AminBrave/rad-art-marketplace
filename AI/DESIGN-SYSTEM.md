@@ -2,6 +2,10 @@
 
 This document describes useful design principles and the current product context. It is guidance, not a fixed specification. The user's latest direction can change the information architecture, visual language, interaction model, platform priorities or design system.
 
+## Current UI catalogue
+
+The implementation-level component and pattern inventory is maintained in [`AI/DESIGN-SYSTEM-CATALOGUE.md`](./DESIGN-SYSTEM-CATALOGUE.md). Use that catalogue alongside this principles document and the [complete application overhaul ledger](./COMPLETE-APPLICATION-OVERHAUL.md). The catalogue records current code behavior and known gaps; it does not imply visual QA completion.
+
 ## Design objective
 
 Create a distinctive, usable art platform that makes artwork discovery and artist–audience interaction feel clear and considered. Choose the right experience for the requested users, task and device rather than forcing every feature into a pre-existing layout.
