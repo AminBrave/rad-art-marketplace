@@ -79,7 +79,6 @@ export default {
             maxWidth: {
                 content: 'var(--rd-content-width)',
                 'content-reading': 'var(--rd-content-reading-width)',
-                'content-wide': 'var(--rd-content-wide-width)',
             },
             spacing: {
                 'page-gutter': 'var(--rd-page-gutter)',
