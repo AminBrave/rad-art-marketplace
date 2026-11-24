@@ -730,6 +730,22 @@ const english = {
     "دریافت تنظیمات اعلان‌ها انجام نشد. صفحه را دوباره بارگذاری کنید.": "Could not load notification settings. Reload the page.",
     "ذخیره تنظیمات انجام نشد. دوباره تلاش کنید.": "Could not save settings. Please try again.",
     "انتخاب‌ها به ترتیب انتخاب شما در صفحه اصلی نمایش داده می‌شوند. بازه انتشار از طریق API قابل تنظیم است.": "Selections appear on the homepage in the order you choose. Publication windows can be configured through the API.",
+    "ذخیره ترتیب": "Save order",
+    "اثر در مجموعه": "artworks in this collection",
+    "جایگاه": "Position",
+    "انتقال به بالا": "Move up",
+    "انتقال به پایین": "Move down",
+    "توقف انتشار": "Unpublish",
+    "توقف انتشار این مجموعه را تأیید می‌کنید؟": "Confirm unpublishing this collection?",
+    "این مجموعه از صفحه عمومی مجموعه‌های منتخب خارج می‌شود؛ محتوای آن حذف نخواهد شد.": "This collection will be removed from the public featured collections page. Its content will not be deleted.",
+    "تأیید توقف انتشار": "Confirm unpublishing",
+    "مجموعه‌ای ثبت نشده است": "No collections have been created",
+    "ترتیب انتخاب، ترتیب نمایش آثار در مجموعه خواهد بود.": "The selection order determines the artwork order in the collection.",
+    "معرفی کوتاه ": "Short introduction: ",
+    "معرفی کوتاه سردبیر": "Short editorial introduction",
+    "ذخیره هنرمندان منتخب": "Save featured artists",
+    "لغو ویرایش": "Cancel editing",
+    "ذخیره و انتشار": "Save and publish",
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 
