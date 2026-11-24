@@ -102,11 +102,11 @@ export function PageHeader({ eyebrow, title, description, actions, level = 1, cl
 export function SectionHeader({ id, eyebrow, title, description, actions, className = '', level = 2 }) {
     const Heading = level === 3 ? 'h3' : 'h2';
     return (
-        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-4 border-b border-divider-group pb-5 pr-4 before:absolute before:bottom-5 before:right-0 before:top-0 before:w-1 before:bg-sand max-sm:items-stretch max-sm:flex-col', className)}>
+        <header dir="rtl" className={cn('flex min-w-0 items-end justify-between gap-4 border-b border-divider-group pb-3 max-sm:items-stretch max-sm:flex-col', className)}>
             <div className="min-w-0">
-                {eyebrow && <p className="inline-flex items-center gap-1.5 text-[11px] font-extrabold tracking-[.025em] text-terracotta-strong before:h-1 before:w-1 before: before:bg-terracotta">{eyebrow}</p>}
-                <Heading id={id} className="mt-1.5 text-lg font-extrabold leading-heading tracking-[-.02em] text-ink sm:text-xl">{title}</Heading>
-                {description && <p className="mt-2 max-w-3xl text-sm leading-7 text-muted">{description}</p>}
+                {eyebrow && <p className="inline-flex items-center gap-2 text-[11px] font-bold tracking-[.04em] text-terracotta-strong before:h-px before:w-5 before:bg-terracotta">{eyebrow}</p>}
+                <Heading id={id} className="mt-1 text-lg font-bold leading-heading tracking-[-.02em] text-ink">{title}</Heading>
+                {description && <p className="mt-1.5 max-w-3xl text-xs leading-6 text-muted">{description}</p>}
             </div>
             {actions && <div className="flex shrink-0 flex-wrap items-center gap-2 max-sm:w-full">{actions}</div>}
         </header>
@@ -115,7 +115,7 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
 
 export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
     return (
-        <Container width="wide" className="py-3 sm:py-4">
+        <Container width="wide" className="my-3 sm:my-4">
             <header dir="rtl" className={cn('relative isolate flex min-w-0 items-center justify-between gap-8 border border-[color:var(--rd-hero-line)] rd-hero-surface px-6 py-8 text-[color:var(--rd-hero-foreground)] sm:px-9 sm:py-10 lg:px-12 lg:py-12 max-md:items-stretch max-md:flex-col max-md:gap-5', className)}>
                 <span aria-hidden="true" className="pointer-events-none absolute end-6 top-6 hidden h-20 w-20 border border-[color:var(--rd-hero-line)] sm:block lg:end-10 lg:top-8 lg:h-28 lg:w-28" />
                 <span aria-hidden="true" className="pointer-events-none absolute end-12 top-12 hidden h-20 w-20 border-e border-t border-[color:var(--rd-hero-accent)] sm:block lg:end-16 lg:top-14 lg:h-28 lg:w-28" />
