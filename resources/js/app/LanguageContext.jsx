@@ -699,6 +699,8 @@ const english = {
     "آمار آثار دریافت نشد.": "Could not load artwork statistics.",
     "ثبت اثر جدید": "Add new artwork",
     "گزینه‌های گفتگو": "Conversation options",
+    "تومان": "Toman",
+    "بارگذاری": "Uploading",
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 
