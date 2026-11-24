@@ -160,7 +160,7 @@ export default function HomePage() {
                 </Container>
             </section>
 
-            <section aria-label="چطور در راد آرت کشف کنیم" className="bg-surface-muted py-8 sm:py-10">
+            <section aria-label="چطور در راد آرت کشف کنیم" className="bg-surface-muted py-14 sm:py-20">
                 <Container width="wide" className="grid gap-4 sm:grid-cols-3" dir="rtl">
                     {editorialSteps.map((step) => (
                         <Card
@@ -199,7 +199,7 @@ export default function HomePage() {
             </Container>
 
             <section aria-labelledby="categories-title" className="border-y border-border bg-paper">
-                <Container className="py-14 sm:py-16">
+                <Container className="py-16 sm:py-24">
                     <SectionHeading
                         id="categories-title"
                         eyebrow="FIND YOUR PERSPECTIVE / 02"
@@ -310,7 +310,7 @@ export default function HomePage() {
             )}
 
             <section className="bg-ink text-inverse">
-                <Container className="grid gap-8 py-12 sm:py-16 md:grid-cols-[1fr_auto] md:items-center">
+                <Container className="grid gap-8 py-16 sm:py-24 md:grid-cols-[1fr_auto] md:items-center">
                     <div>
                         <p className="text-[10px] font-extrabold tracking-[.16em] text-sand">BECOME PART OF THE STORY</p>
                         <h2 className="mt-3 max-w-3xl text-2xl font-black leading-relaxed sm:text-3xl">جهان هنری خود را با دیگران به اشتراک بگذارید.</h2>
