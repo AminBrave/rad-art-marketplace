@@ -52,15 +52,15 @@ export default function ArtistDirectoryPage() {
             </nav>
             </Container>
 
-            <Section bleed className="mt-6 overflow-hidden bg-ink text-inverse">
+            <Section bleed className="mt-6 border-y border-[color:var(--rd-hero-line)] rd-hero-surface">
                 <Container width="wide">
-                    <header className="relative px-6 py-10 sm:px-10 sm:py-14 lg:px-14">
-                <div aria-hidden="true" className="absolute -left-10 -top-16 h-56 w-56 rounded-full border border-[color:color-mix(in_srgb,var(--color-sand)_80%,transparent)]" />
-                <div aria-hidden="true" className="absolute -left-2 -top-8 h-40 w-40 rounded-full border border-[color:color-mix(in_srgb,var(--color-sand)_70%,transparent)]" />
-                <div className="relative max-w-3xl">
-                    <p className="text-xs font-bold tracking-[.12em] text-sand">جامعه خلاق راد آرت</p>
-                    <h1 className="mt-4 text-4xl font-black leading-[1.2] tracking-[-.05em] text-inverse sm:text-6xl">هنرمند را کشف کنید.</h1>
-                    <p className="mt-5 max-w-2xl text-sm leading-8 text-[color:color-mix(in_srgb,var(--color-inverse-text)_78%,transparent)] sm:text-base">
+                    <header className="relative isolate px-6 py-10 sm:px-10 sm:py-14 lg:px-14">
+                <div aria-hidden="true" className="pointer-events-none absolute -left-10 -top-16 h-56 w-56 border border-[color:var(--rd-hero-line)]" />
+                <div aria-hidden="true" className="pointer-events-none absolute -left-2 -top-8 h-40 w-40 border border-[color:var(--rd-hero-accent)]" />
+                <div className="relative z-10 max-w-3xl">
+                    <p className="text-xs font-bold tracking-[.12em] text-[color:var(--rd-hero-accent)]">جامعه خلاق راد آرت</p>
+                    <h1 className="mt-4 text-4xl font-black leading-[1.2] tracking-[-.05em] text-[color:var(--rd-hero-foreground)] sm:text-6xl">هنرمند را کشف کنید.</h1>
+                    <p className="mt-5 max-w-2xl text-sm leading-8 text-[color:var(--rd-hero-muted)] sm:text-base">
                         با هنرمندان مستقل آشنا شوید؛ از نگاه و مسیر هنری آن‌ها بخوانید و مجموعه آثار تأییدشده‌شان را ببینید.
                     </p>
                     <div className="mt-8 max-w-2xl">
