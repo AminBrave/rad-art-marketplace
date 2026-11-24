@@ -550,12 +550,12 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
 });
 
 test('messaging is viewport-locked between the authenticated app header and bottom navigation on mobile', () => {
-    assert.ok(messagingInbox.includes('text-sm font-extrabold leading-6 text-ink">پیام‌ها</h2>'), 'Keep the inbox heading compact inside its panel.');
-    assert.ok(messagingInbox.includes('text-[10px] leading-4 text-muted">یک بستر امن برای ارتباط خریدار با هنرمند.</p>'));
+    assert.ok(messagingInbox.includes('<h2 className="text-sm font-extrabold leading-6 text-ink">{t("پیام‌ها")}</h2>'), 'The inbox heading remains compact inside its panel.');
+    assert.ok(messagingInbox.includes('<p className="mt-0.5 text-[10px] leading-4 text-muted">{t("یک بستر امن برای ارتباط خریدار با هنرمند.")}</p>'));
     assert.doesNotMatch(messageTimeline, /\brounded(?:-[a-z0-9-]+)?/);
     assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden'));
     assert.ok(messaging.includes('grid h-full min-h-0 w-full min-w-0 flex-1'));
-    assert.ok(messagingInbox.includes('divide-y divide-border overflow-y-auto'), 'The inbox list scrolls inside its fixed panel.');
+    assert.ok(messagingInbox.includes('divide-y divide-border/70 overflow-y-auto'), 'The inbox list scrolls inside its fixed panel.');
     const inboxList = messagingInbox.match(/<ul className="([^"]+)"/);
     assert.ok(inboxList, 'The conversation inbox list is present.');
     assert.doesNotMatch(inboxList[1], /scrollbar-gutter/ , 'The inbox list must not reserve a gutter that leaves a blank strip beside its content.');
