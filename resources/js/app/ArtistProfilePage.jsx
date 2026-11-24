@@ -3,7 +3,7 @@ import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-q
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { ArtworkCard, EmptyState, ErrorState, ArtistProfileSkeleton, PageHeader, SectionHeader, Button } from '../components/ui';
+import { ArtworkCard, EmptyState, ErrorState, ArtistProfileSkeleton, PageHeader, SectionHeader, Button, Container } from '../components/ui';
 
 export default function ArtistProfilePage() {
     const { slug } = useParams();
@@ -89,7 +89,7 @@ export default function ArtistProfilePage() {
     const primaryActionClass = 'inline-flex min-h-11 items-center justify-center rounded-md border border-transparent bg-terracotta px-5 py-2.5 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
 
     return (
-        <main className="mx-auto min-h-[65vh] w-full min-w-0 max-w-7xl overflow-x-clip px-5 pb-16 pt-8 sm:px-8 sm:pt-12 lg:px-10" dir="rtl">
+        <Container as="div" width="wide" className="min-h-[65vh] overflow-x-clip pb-16 pt-8 sm:pt-12" dir="rtl">
             <nav aria-label="مسیر صفحه" className="flex min-w-0 max-w-full flex-wrap items-center break-words text-xs text-muted">
                 <Link to="/" className="hover:text-terracotta-strong">خانه</Link><span className="mx-2" aria-hidden="true">/</span>
                 <Link to="/artists" className="hover:text-terracotta-strong">هنرمندان</Link><span className="mx-2" aria-hidden="true">/</span>
@@ -169,6 +169,6 @@ export default function ArtistProfilePage() {
                     {profileQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-danger">ارتباط با سرور برقرار نشد. <Button variant="outline" type="button" onClick={() => profileQuery.refetch()} className="font-bold underline">تلاش دوباره</Button></p>}
                 </section>
             )}
-        </main>
+        </Container>
     );
 }
