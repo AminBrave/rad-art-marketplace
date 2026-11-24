@@ -86,7 +86,7 @@ export default function HomePage() {
     const spotlight = artists[0];
 
     return (
-        <div className="w-full min-w-0 overflow-hidden" dir="rtl">
+        <div className="w-full min-w-0" dir="rtl">
             <section aria-labelledby="home-hero-title" className="relative isolate border-b border-[color:var(--rd-hero-line)] rd-hero-surface">
                 <Container className="pb-16 pt-10 sm:pb-20 sm:pt-16 lg:pb-24 lg:pt-20">
                     <div className="mb-8 flex items-center justify-between border-y border-[color:var(--rd-hero-line)] py-3.5 text-[10px] font-extrabold tracking-[.18em] text-[color:var(--rd-hero-muted)] sm:text-xs">
@@ -119,11 +119,11 @@ export default function HomePage() {
                         </div>
 
                         <div className="relative order-1 mx-auto w-full max-w-2xl lg:order-2">
-                            <div aria-hidden="true" className="absolute -left-3 -top-3 hidden h-24 w-24 border border-sand sm:block lg:-left-5 lg:-top-5 lg:h-32 lg:w-32" />
-                            <div aria-hidden="true" className="absolute -bottom-4 -right-4 hidden h-28 w-28 bg-surface-muted sm:block lg:-bottom-6 lg:-right-6 lg:h-40 lg:w-40" />
+                            <div aria-hidden="true" className="rd-shine absolute -left-3 -top-3 hidden h-24 w-24 border border-sand sm:block lg:-left-5 lg:-top-5 lg:h-32 lg:w-32" />
+                            <div aria-hidden="true" className="rd-shine absolute -bottom-4 -right-4 hidden h-28 w-28 bg-surface-muted sm:block lg:-bottom-6 lg:-right-6 lg:h-40 lg:w-40" />
                             {hero ? (
                                 <Link to={'/artworks/' + hero.slug} className="group relative block border border-[color:var(--rd-hero-line)] bg-paper p-2 shadow-soft sm:p-3">
-                                    <div className="relative aspect-[3/4] overflow-hidden bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))] sm:aspect-[3/4] lg:aspect-[3/4]">
+                                    <div className="relative aspect-[3/4] w-full overflow-hidden bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))]">
                                         <MediaImage
                                             src={hero.image_url}
                                             alt={hero.title}
@@ -148,10 +148,10 @@ export default function HomePage() {
                                     </div>
                                 </Link>
                             ) : (
-                                <div className="relative aspect-[3/4] overflow-hidden bg-[linear-gradient(135deg,var(--rd-hero-background-alt),var(--rd-surface-muted))] sm:aspect-[3/4] lg:aspect-[3/4]">
+                                <div className="relative aspect-[3/4] w-full overflow-hidden bg-[linear-gradient(135deg,var(--rd-hero-background-alt),var(--rd-surface-muted))]">
                                     <div aria-hidden="true" className="absolute inset-5 border border-[color:var(--rd-hero-line)] sm:inset-8" />
-                                    <div aria-hidden="true" className="absolute left-[12%] top-[12%] h-[48%] w-[48%] bg-[color:var(--rd-hero-accent)]" />
-                                    <div aria-hidden="true" className="absolute bottom-[12%] right-[10%] h-[58%] w-[48%] bg-[color:var(--rd-hero-background)]" />
+                                    <div aria-hidden="true" className="rd-shine absolute left-[12%] top-[12%] h-[48%] w-[48%] bg-[color:var(--rd-hero-accent)]" />
+                                    <div aria-hidden="true" className="rd-shine absolute bottom-[12%] right-[10%] h-[58%] w-[48%] bg-[color:var(--rd-hero-background)]" />
                                     <span className="absolute bottom-8 left-8 font-latin text-[10px] font-bold tracking-[.25em] text-[color:var(--rd-hero-foreground)]">ART / PEOPLE / STORIES</span>
                                 </div>
                             )}
