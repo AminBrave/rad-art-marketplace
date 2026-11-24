@@ -331,10 +331,10 @@
 }
 \n
 /*
- * The workspace grid owns the shared page gutter. Nested section containers
- * keep their width semantics but must not add a second horizontal gutter.
+ * The workspace grid owns page gutters and page rhythm. Nested containers
+ * contribute only their width semantics; they never add inner padding.
  */
- .rd-page-frame--workspace .rd-container {
+.rd-page-frame--workspace .rd-container {
     padding: 0;
 }
 
