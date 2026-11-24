@@ -46,13 +46,17 @@ class DemoDatabaseSeeder extends Seeder
         ]);
 
         $categories = [];
+        $categoryNamesEn = [
+            'painting' => 'Painting', 'photography' => 'Photography', 'sculpture' => 'Sculpture',
+            'digital-art' => 'Digital art', 'calligraphy' => 'Calligraphy', 'other' => 'Other',
+        ];
         foreach ([
             'painting' => 'نقاشی', 'photography' => 'عکاسی', 'sculpture' => 'مجسمه‌سازی',
             'digital-art' => 'هنر دیجیتال', 'calligraphy' => 'خوشنویسی', 'other' => 'سایر',
         ] as $slug => $name) {
-            $categories[$slug] = Category::query()->updateOrCreate(['slug' => $slug], ['name' => $name, 'is_active' => true]);
+            $categories[$slug] = Category::query()->updateOrCreate(['slug' => $slug], ['name' => $name, 'name_en' => $categoryNamesEn[$slug], 'is_active' => true]);
         }
-        Category::query()->updateOrCreate(['slug' => 'demo-inactive'], ['name' => 'دسته آزمایشی غیرفعال', 'is_active' => false]);
+        Category::query()->updateOrCreate(['slug' => 'demo-inactive'], ['name' => 'دسته آزمایشی غیرفعال', 'name_en' => 'Inactive demo category', 'is_active' => false]);
 
         $artistData = [
             ['artist', 'آرمان رضایی', 'تهران', 'نقاشی معاصر'],
