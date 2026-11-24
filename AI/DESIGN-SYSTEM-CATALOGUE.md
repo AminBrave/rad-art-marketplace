@@ -81,17 +81,17 @@ Artwork itself should remain undistorted. Use `object-contain` when the complete
 
 ## 3. Section-owned content width and full-bleed composition — mandatory
 
-**The route-level `<main>` is a full-width canvas, not a content-width container.** Every section owns its own content measure. This is the required architecture for pages that combine full-bleed backgrounds with consistently aligned content.
+**The public route-level `<main>` and workspace `.rd-page-frame` are unconstrained content canvases, not content-width containers.** In a workspace, the main column sits beside the navigation rail; a `Section bleed` expands to the viewport and compensates for that rail. Every section owns its own content measure.
 
 ### Canonical contract
 
-- The public and workspace route-level main elements remain full width (`width: 100%`, no max-width, no horizontal margin or page gutter).
+- The public route-level `<main>` and workspace `.rd-page-frame` remain free of content max-widths and page gutters. The workspace shell may define the sidebar/main grid, but it must not add route-content gutters.
 - Each normal section places its background, border, and vertical rhythm on the outer semantic `<section>`.
 - Section content is constrained independently with the shared `Container` component:
   - `width="wide"`: centered standard content width with the shared page gutters.
   - `width="reading"`: centered long-form reading measure with the shared page gutters.
   - `width="full"`: edge-to-edge content with no maximum width or automatic page gutters.
-- A full-bleed section must not put its background on the constrained inner container. The outer section owns the background; the inner container owns content alignment.
+- A full-bleed section must not put its background on the constrained inner container. The outer section owns the background; the inner container owns content alignment. Inside a workspace, the shared bleed rules align the inner wide/reading container with the content column rather than the viewport center.
 - Use the same `--rd-content-width`, `--rd-content-reading-width`, `--rd-page-gutter`, `--rd-workspace-sidebar-width`, and `--rd-workspace-column-gap` tokens across routes. Do not invent route-specific width tokens.
 - Page headers, section headers, card grids, forms, tables and toolbars should use the appropriate section container rather than adding independent centered wrappers.
 - Reading width is an inner content measure. It must not constrain the background or sibling sections.
