@@ -33,11 +33,11 @@ export default function ConversationHeader({
                         <Link
                             to={'/artists/' + selected.artist.slug}
                             aria-label={'مشاهده صفحه هنرمند ' + (selected?.participant?.name ?? '')}
-                            className="min-h-0 p-0 group flex h-11 w-11 aspect-square shrink-0 items-center justify-center rd-shine relative overflow-hidden text-inherit no-underline transition-[transform,opacity] hover:-translate-y-px hover:opacity-[.88] focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"
+                            className="min-h-0 p-0 group flex h-11 w-11 aspect-square shrink-0 items-center justify-center text-inherit no-underline transition-[transform,opacity] hover:-translate-y-px hover:opacity-[.88] focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"
                         >
                             <span
                                 aria-hidden="true"
-                                className={'flex h-full w-full items-center justify-center rd-shine relative overflow-hidden border border-border-strong outline outline-[3px] outline-surface-muted [outline-offset:1px] text-sm font-black [box-shadow:0_1px_2px_color-mix(in_srgb,var(--color-ink)_8%,transparent)] ' + avatarTone(selected?.participant?.name)}
+                                className={'rd-shine relative flex h-full w-full items-center justify-center overflow-hidden border border-border-strong outline outline-[3px] outline-surface-muted [outline-offset:1px] text-sm font-black [box-shadow:0_1px_2px_color-mix(in_srgb,var(--color-ink)_8%,transparent)] ' + avatarTone(selected?.participant?.name)}
                             >
                                 {avatarInitial(selected?.participant?.name)}
                             </span>
