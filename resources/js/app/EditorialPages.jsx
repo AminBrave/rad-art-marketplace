@@ -42,7 +42,7 @@ export function CollectionDetailPage() {
         <nav aria-label="مسیر صفحه" className="text-sm text-muted"><Link to="/" className="underline">خانه</Link><span className="mx-2">/</span><Link to="/collections" className="underline">مجموعه‌ها</Link></nav>
         <PageHeader eyebrow="روایت منتخب راد آرت" title={item.title} description={item.intro} className="mt-7 max-w-3xl" descriptionClassName="whitespace-pre-line leading-8" />
         {item.artworks?.length ? <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{item.artworks.map((artwork) => <ArtworkCard key={artwork.id} artwork={artwork} />)}</div> : <EmptyState className="mt-8" title="اثری در این مجموعه موجود نیست" />}
-    </main>;
+    </Container>;
 }
 
 export function AdminEditorialPage() {
