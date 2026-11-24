@@ -200,7 +200,7 @@ export function PublicLayout() {
                                     >
                                         {t(user.role === 'artist' ? 'پیش‌نمایش پروفایل' : user.role === 'admin' ? 'مدیریت' : 'حساب کاربری')}
                                     </Link>
-                                    <Button variant="ghost" type="button" onClick={handleLogout} className="flex min-h-12 items-center rounded-md px-4 text-right text-sm font-semibold text-muted hover:bg-surface-muted hover:text-ink">
+                                    <Button variant="ghost" type="button" onClick={handleLogout} className="flex min-h-12 items-center rounded-md px-4 text-start text-sm font-semibold text-muted hover:bg-surface-muted hover:text-ink">
                                         خروج از حساب
                                     </Button>
                                 </>
@@ -374,7 +374,7 @@ function NotificationBell({ user }) {
             <DialogContent
                 id="workspace-notification-panel"
                 placement="drawer"
-                className="!w-[min(25rem,100vw)] !p-0 flex flex-col !overflow-hidden text-right"
+                className="!w-[min(25rem,100vw)] !p-0 flex flex-col !overflow-hidden text-start"
             >
                 <div className="h-1 shrink-0 bg-terracotta" aria-hidden="true" />
                 <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
@@ -429,7 +429,7 @@ function NotificationBell({ user }) {
                                             disabled={busy}
                                             onClick={() => openNotification(item)}
                                             className={[
-                                                'group flex w-full items-start gap-3 rounded-lg border p-3 text-right transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:opacity-50',
+                                                'group flex w-full items-start gap-3 rounded-lg border p-3 text-start transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:opacity-50',
                                                 item.read_at
                                                     ? 'border-border bg-paper hover:border-border-strong hover:bg-surface-muted'
                                                     : 'border-[color:color-mix(in_srgb,var(--color-terracotta)_24%,var(--color-border))] bg-accent-surface hover:border-terracotta',
