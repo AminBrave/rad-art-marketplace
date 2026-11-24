@@ -64,6 +64,13 @@ test('workspace full-bleed content mirrors its horizontal offset in RTL', () => 
 });
 
 
+test('dashboard main sections do not use the rd-container component class', () => {
+    for (const source of [adminWorkspace, artworkStudio, routeLoading, editorialPages]) {
+        assert.doesNotMatch(source, /<Container\\s+as="section"\\s+width="wide"/);
+        assert.match(source, /<section className="min-w-0 mx-auto w-full max-w-content/);
+    }
+});
+
 test('workspace page headers opt out of viewport bleed', () => {
     for (const source of [adminWorkspace, artworkStudio, routeLoading]) {
         assert.doesNotMatch(source, /<PageHeader(?![^>]*\bbleed=\{false\})/);
