@@ -491,6 +491,10 @@ a {
     background-size: 240% 100%;
     background-position: 160% 0;
     opacity: 0;
+
+}
+
+.rd-shine--ambient::after {
     animation: rd-shine-sequence 8s ease-in-out infinite;
     animation-delay: calc(var(--rd-shine-index, 0) * 500ms);
 }
