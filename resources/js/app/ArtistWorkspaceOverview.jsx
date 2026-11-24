@@ -48,6 +48,7 @@ export default function ArtistWorkspaceOverview() {
         <div className="w-full">
             <div className="rd-container min-w-0 mx-auto w-full max-w-content space-y-7">
                 <PageHeader
+                    bleed={false}
                     eyebrow="استودیوی هنرمند"
                     title={<>خوش آمدید، {user?.name}</>}
                     description="وضعیت آثار و ارتباط‌های خود را در یک نگاه دنبال کنید."
