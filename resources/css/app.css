@@ -328,6 +328,21 @@
     margin-inline: calc(50% - 50vw);
 }
 
+.rd-workspace-main {
+    --rd-workspace-bleed-offset: 0px;
+}
+
+@media (min-width: 1024px) {
+    .rd-workspace-main {
+        --rd-workspace-bleed-offset: 8.5rem;
+    }
+
+    .rd-workspace-main .rd-bleed {
+        margin-inline-start: calc(50% - 50vw - var(--rd-workspace-bleed-offset));
+        margin-inline-end: calc(50% - 50vw + var(--rd-workspace-bleed-offset));
+    }
+}
+
 /*
  * Route-level main frame is deliberately full width. Sections own their own
  * content width through the shared Container component. Keep this frame free
