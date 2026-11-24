@@ -206,15 +206,15 @@ export function FormField({ id, label, hint, error, required = false, children, 
 }
 
 export const TextInput = forwardRef(function TextInput({ className = '', ...props }, ref) {
-    return <input ref={ref} className={cn(controlClass, className)} {...props} />;
+    return <input ref={ref} className={cn(controlClass, className, 'rounded-control')} {...props} />;
 });
 
 export const TextareaField = forwardRef(function TextareaField({ className = '', rows = 4, ...props }, ref) {
-    return <textarea ref={ref} rows={rows} className={cn(controlClass, 'min-h-28 resize-y leading-copy', className)} {...props} />;
+    return <textarea ref={ref} rows={rows} className={cn(controlClass, 'min-h-28 resize-y leading-copy', className, 'rounded-control')} {...props} />;
 });
 
 export const FileInput = forwardRef(function FileInput({ className = '', ...props }, ref) {
-    return <input ref={ref} type="file" className={cn(controlClass, 'cursor-pointer file:ms-3 file:rounded-sm file:border-0 file:bg-surface-muted file:px-3 file:py-2 file:font-semibold', className)} {...props} />;
+    return <input ref={ref} type="file" className={cn(controlClass, 'cursor-pointer file:ms-3 file:rounded-control file:border-0 file:bg-surface-muted file:px-3 file:py-2 file:font-semibold', className, 'rounded-control') {...props} />;
 });
 
 const emptySelectValue = '__radix_empty_option__';
@@ -252,7 +252,7 @@ export function SelectField({
             dir={dir}
         >
             <SelectPrimitive.Trigger
-                className={cn(controlClass, 'flex items-center justify-between gap-3 text-start', className)}
+                className={cn(controlClass, 'flex items-center justify-between gap-3 text-start', className, 'rounded-control')}
                 {...triggerProps}
             >
                 <SelectPrimitive.Value placeholder={placeholder ?? emptyOption?.props.children} />
