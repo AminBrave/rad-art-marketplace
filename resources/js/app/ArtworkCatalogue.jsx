@@ -144,7 +144,7 @@ export default function ArtworkCatalogue() {
                     {sort !== 'newest' && <Button variant="outline" type="button" onClick={() => updateFilters({ sort: 'newest' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{filters.sorts?.find((item) => item.value === sort)?.label ?? sort}<X size={12} aria-hidden="true" /></Button>}
                 </div>
             )}
-            <div className="mt-9 flex flex-wrap items-end justify-between gap-3 border-b-2 border-ink pb-4">
+            <div className="mt-9 flex flex-wrap items-end justify-between gap-3 border-b border-ink pb-4">
                 <div>
                     <p className="text-[11px] font-bold tracking-[.12em] text-terracotta-strong">آرشیو آثار</p>
                     <p aria-live="polite" className="mt-1 text-sm font-semibold text-ink">{loading ? 'در حال دریافت آثار…' : meta.total.toLocaleString('fa-IR') + ' اثر'}</p>
