@@ -84,6 +84,31 @@ test('artwork catalogue uses accessible infinite pagination and workspace contai
     assert.ok(css.includes('padding: 0;'));
 });
 
+
+test('messaging avatars and artwork chips use square geometry, message tails, and sequenced glass shine', () => {
+    assert.ok(messagingInbox.includes('rd-shine relative overflow-hidden border border-border'));
+    assert.doesNotMatch(messagingInbox, /h-10 w-10[^\n]*rounded-full/);
+    assert.ok(conversationHeader.includes('rd-shine relative flex h-full w-full'));
+    assert.doesNotMatch(conversationHeader, /h-11 w-11[^\n]*rounded-full/);
+    assert.ok(relatedArtworkStrip.includes('rd-shine relative overflow-hidden'));
+    assert.doesNotMatch(relatedArtworkStrip, /rounded-full/);
+    assert.ok(messageTimeline.includes('rd-message-bubble--own'));
+    assert.ok(messageTimeline.includes('rd-message-bubble--peer'));
+    assert.ok(css.includes('rd-message-bubble--own::before'));
+    assert.ok(css.includes('rd-message-bubble--peer::before'));
+    assert.ok(css.includes('rd-shine-sequence 8s'));
+    assert.ok(css.includes('calc(var(--rd-shine-index, 0) * 500ms)'));
+    assert.ok(css.includes('rd-shine-hover 850ms'));
+    assert.ok(css.includes('prefers-reduced-motion: reduce'));
+});
+
+test('homepage hero artwork remains visible in a responsive 3:4 frame on all viewport sizes', () => {
+    assert.doesNotMatch(homePage, /w-full min-w-0 overflow-hidden["']/);
+    assert.ok(homePage.includes('relative aspect-[3/4] w-full overflow-hidden'));
+    assert.ok(homePage.includes('rd-shine relative aspect-[3/4] w-full overflow-hidden'));
+    assert.doesNotMatch(homePage, /sm:aspect-\[3\/4\]|lg:aspect-\[3\/4\]/);
+});
+
 test('comment discussions use nested cards and a clear reply hierarchy', () => {
     assert.ok(artworkEngagement.includes('aria-label="پاسخ‌های این دیدگاه"'));
     assert.ok(artworkEngagement.includes('border-r-2 border-terracotta/40'));
