@@ -277,8 +277,8 @@ Pages should compose shared components rather than reimplement common controls. 
 ## 8. Known implementation gaps to resolve
 
 These are code-level observations, not claims about the rendered result:
-1. **Radius consistency is not yet fully normalized.** The current Button base uses `rounded-sm`, IconButton uses `rounded-md`, Badge uses `rounded-sm`, and several page-level controls still define their own radius utilities. If a single button radius is the accepted rule, normalize all button-like primitives and audit consumers.
-2. **Border strategy is mixed.** The semantic divider tokens are available, but some components still use `border-border`, `border-border-strong`, `border-dashed` or direct `h-px` rules. Migrate only where the rule is structural; retain stronger borders for actual control boundaries where appropriate.
+1. **Shared control radius is normalized; specialized link surfaces remain under audit.** Button, IconButton, form controls and pagination enforce `rounded-control` after consumer classes. Message bubbles, status pills and domain-specific interactive surfaces retain distinct geometry only where their semantics require it.
+2. **Structural divider hierarchy is normalized; control borders remain semantic boundaries.** Structural section/group/nested dividers use 1px rules and semantic tints. Stronger/dashed borders remain for control boundaries, focus, validation or intentional accents; audit remaining route-specific cases.
 3. **Card treatment is intentionally not universal.** `ArtworkCard` and `ArtistCard` use different compositions; some shared `Card`/ `Surface` consumers still need route-level visual review to ensure grouped content is coherent.
 4. **Image behavior is role-dependent.** Artwork uses containment, while avatars and editorial imagery may use cover. Audit each usage rather than applying one global object-fit rule.
 5. **API documentation depth varies.** Some components have concise contracts documented here; for exact props, inspect the source implementation and its TypeScript/JSDoc if available.
