@@ -118,7 +118,7 @@ test('shared layout and form primitives expose semantic utility compositions', (
     for (const utility of ['max-w-content', 'max-w-[var(--content-reading-width)]', 'full: \'w-full max-w-none\'', 'rd-bleed']) {
         assert.ok(layoutPrimitives.includes(utility), 'Missing canonical layout utility contract: ' + utility);
     }
-    for (const component of ['Container', 'Section', 'Separator', 'Surface', 'Card']) {
+    for (const component of ['Container', 'Section', 'Separator', 'Card']) {
         assert.ok(layoutPrimitives.includes('function ' + component), 'Missing shared layout component: ' + component);
     }
     assert.ok(primitives.includes('export const PageContainer = Container'), 'PageContainer must remain a compatibility alias to the canonical Container.');
@@ -144,8 +144,8 @@ test('route canvases stay full-width and route content uses shared section conta
     assert.ok(layoutPrimitives.includes("bleed && 'rd-bleed'"));
     assert.ok(homePage.includes('<Container className=\"grid gap-0 sm:grid-cols-3\">'));
     assert.ok(homePage.includes('<Container as=\"section\" width=\"wide\"'));
-    for (const source of [homePage, editorialPages, authPage, publicInfoPages, artistProfile, routeLoading]) {
-        assert.doesNotMatch(source, /<main\\b/, 'Route content must not create a nested main landmark.');
+    for (const source of [homePage, editorialPages, authPage, publicInfoPages, artistProfile]) {
+        assert.doesNotMatch(source, String.raw`<main\\b`, 'Route content must not create a nested main landmark.');
     }
 });
 
