@@ -93,7 +93,7 @@ export function PageContainer({ as: Element = 'div', width = 'wide', className =
 export function PageHeader({ eyebrow, title, description, actions, level = 1, className = '', titleClassName = '', descriptionClassName = '' }) {
     const Heading = level === 2 ? 'h2' : 'h1';
     return (
-        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-6 border-b border-border pb-8 pt-4 pr-6 before:absolute before:bottom-8 before:right-0 before:top-4 before:w-1.5 before:bg-terracotta max-sm:items-stretch max-sm:flex-col max-sm:gap-4 max-sm:pb-6 max-sm:before:bottom-6', className)}>
+        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-6 border-b border-divider-section pb-8 pt-4 pr-6 before:absolute before:bottom-8 before:right-0 before:top-4 before:w-1.5 before:bg-terracotta max-sm:items-stretch max-sm:flex-col max-sm:gap-4 max-sm:pb-6 max-sm:before:bottom-6', className)}>
             <div className="min-w-0 max-w-[56rem]">
                 {eyebrow && <p className="inline-flex items-center gap-2 border-s-2 border-terracotta bg-transparent px-3 py-1 text-[11px] font-extrabold leading-none tracking-[.06em] text-terracotta-strong">{eyebrow}</p>}
                 <Heading className={cn('mt-3 text-[clamp(1.75rem,3.2vw,2.6rem)] font-extrabold leading-heading tracking-[-.035em] text-ink', titleClassName)}>{title}</Heading>
@@ -107,7 +107,7 @@ export function PageHeader({ eyebrow, title, description, actions, level = 1, cl
 export function SectionHeader({ id, eyebrow, title, description, actions, className = '', level = 2 }) {
     const Heading = level === 3 ? 'h3' : 'h2';
     return (
-        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-4 border-b border-border pb-5 pr-4 before:absolute before:bottom-5 before:right-0 before:top-0 before:w-1 before:bg-sand max-sm:items-stretch max-sm:flex-col', className)}>
+        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-4 border-b border-divider-group pb-5 pr-4 before:absolute before:bottom-5 before:right-0 before:top-0 before:w-1 before:bg-sand max-sm:items-stretch max-sm:flex-col', className)}>
             <div className="min-w-0">
                 {eyebrow && <p className="inline-flex items-center gap-1.5 text-[11px] font-extrabold tracking-[.025em] text-terracotta-strong before:h-1 before:w-1 before:rounded-full before:bg-terracotta">{eyebrow}</p>}
                 <Heading id={id} className="mt-1.5 text-lg font-extrabold leading-heading tracking-[-.02em] text-ink sm:text-xl">{title}</Heading>
@@ -138,7 +138,7 @@ export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, cla
     const Element = as ?? (to ? 'a' : 'article');
     const destinationProps = to ? (Element === 'a' ? { href: to } : { to }) : {};
     return (
-        <Element {...destinationProps} className={cn('flex min-h-36 min-w-0 flex-col justify-between border-y border-border bg-transparent p-5 text-ink no-underline transition-colors hover:border-terracotta', to && 'transition duration-200 hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus', className)}>
+        <Element {...destinationProps} className={cn('flex min-h-36 min-w-0 flex-col justify-between border-y border-divider-group bg-transparent p-5 text-ink no-underline transition-colors hover:border-terracotta', to && 'transition duration-200 hover:-translate-y-0.5 hover:border-terracotta hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus', className)}>
             <span className="flex items-center justify-between gap-3">
                 <span className="text-sm font-semibold text-muted">{label}</span>
                 {eyebrow && <span className="text-[10px] font-bold text-terracotta-strong">{eyebrow}</span>}
@@ -150,10 +150,10 @@ export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, cla
 }
 
 const surfaceVariants = {
-    default: 'border-y border-border bg-surface',
-    muted: 'border-y border-border bg-surface-muted',
-    raised: 'border-y border-border bg-surface shadow-soft',
-    interactive: 'border-y border-border bg-surface transition-colors hover:border-terracotta hover:bg-surface-muted focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus',
+    default: 'border-y border-divider-group bg-surface',
+    muted: 'border-y border-divider-group bg-surface-muted',
+    raised: 'border-y border-divider-group bg-surface shadow-soft',
+    interactive: 'border-y border-divider-group bg-surface transition-colors hover:border-terracotta hover:bg-surface-muted focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus',
 };
 
 export function Surface({ as: Element = 'section', variant = 'default', className = '', children, ...props }) {
