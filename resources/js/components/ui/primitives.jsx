@@ -253,7 +253,6 @@ export function SelectField({
             name={name}
             required={required}
             disabled={disabled}
-            dir={dir}
         >
             <SelectPrimitive.Trigger
                 className={cn(controlClass, 'flex items-center justify-between gap-3 text-start', className, '')}
@@ -268,7 +267,6 @@ export function SelectField({
                 <SelectPrimitive.Content
                     position="popper"
                     sideOffset={4}
-                    dir={dir}
                     className="z-[90] max-h-[var(--radix-select-content-available-height)] min-w-[var(--radix-select-trigger-width)] overflow-hidden  border border-border bg-paper text-ink shadow-raised"
                 >
                     <SelectPrimitive.Viewport className="p-1.5">
