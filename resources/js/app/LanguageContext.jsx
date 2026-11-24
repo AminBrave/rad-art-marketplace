@@ -539,6 +539,17 @@ const english = {
     "در حال دریافت پروفایل هنرمند…": "Loading artist profile…",
     "استودیوی هنرمند": "Artist studio",
     "اطلاعات معرفی و وضعیت نمایش عمومی پروفایل خود را مدیریت کنید.": "Manage your introduction and public profile visibility.",
+    "پروفایل هنری شما کامل نیست": "Your artist profile is incomplete",
+    "عمومی": "Public",
+    "خصوصی": "Private",
+    "پروفایل شما برای بازدیدکنندگان قابل مشاهده است.": "Your profile is visible to visitors.",
+    "برای نمایش عمومی، وضعیت و اطلاعات پروفایل را بررسی کنید.": "Review your profile details and visibility settings to make it public.",
+    "اطلاعات حرفه‌ای خود را تکمیل کنید تا مخاطبان با مسیر هنری شما آشنا شوند.": "Complete your professional details so visitors can learn about your artistic practice.",
+    "ویرایش": "Edit",
+    "نامشخص": "Unknown",
+    "ردشده": "Rejected",
+    "نیازمند اصلاح": "Changes requested",
+    "ثبت اولین اثر": "Submit your first artwork",
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 
