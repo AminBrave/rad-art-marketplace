@@ -39,7 +39,7 @@ export default function ArtworkGallery({ user }) {
 
     if (detailSlug) {
         return (
-            <main className="min-h-screen w-full bg-canvas py-12 text-ink" dir="rtl">
+            <main className="min-h-screen w-full bg-canvas py-12 text-ink">
                 <Container width="wide">
                 <article className="mx-auto max-w-4xl rounded-card border border-border bg-paper p-6 shadow-sm sm:p-10">
                     <a href="/" className="font-black text-terracotta-strong">بازگشت به راد آرت</a>
@@ -68,7 +68,7 @@ export default function ArtworkGallery({ user }) {
     }
 
     return (
-        <Container as="section" width="wide" id="artworks" className="py-20" dir="rtl">
+        <Container as="section" width="wide" id="artworks" className="py-20">
             <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
                 <div>
                     <p className="text-sm font-bold text-terracotta-strong">کاتالوگ راد آرت</p>
