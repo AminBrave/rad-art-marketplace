@@ -157,7 +157,7 @@ export function AdminEditorialPage() {
         try {
             const selections = featuredIds.map((id) => ({ artist_profile_id: id, editorial_intro: featuredIntros[id] || '', editorial_intro_en: featuredIntrosEn[id] || '' }));
             const { data } = await saveFeaturedMutation.mutateAsync(selections);
-            setMessage(data.message); await refreshEditorialQueries();
+            setMessage(t(data.message)); await refreshEditorialQueries();
         } catch (e) { setActionError(t(e.response?.data?.message || 'ذخیره انتخاب هنرمندان انجام نشد.')); }
     };
     return <section className="min-w-0 mx-auto w-full max-w-content space-y-8">
@@ -171,17 +171,17 @@ export function AdminEditorialPage() {
                 <FormField label={t("مقدمه سردبیر")} hint={t("اختیاری؛ حداکثر ۲۰۰۰ نویسه.")}><TextareaField value={intro} onChange={(e) => setIntro(e.target.value)} rows={4} maxLength={2000} /></FormField>
                 <FormField label={t("مقدمه سردبیر به انگلیسی")}><TextareaField value={introEn} onChange={(e) => setIntroEn(e.target.value)} rows={4} maxLength={2000} dir="ltr" className="text-start" /></FormField>
                 <div><p className="mb-2 text-sm font-bold">{t("آثار مجموعه (حداکثر ۳۰ اثر)")}</p><div className="max-h-72 space-y-2 overflow-y-auto border border-border p-3">{options.artworks.map((work) => <Checkbox key={work.id} checked={artworkIds.includes(work.id)} disabled={!artworkIds.includes(work.id) && artworkIds.length >= 30} onChange={(e) => setArtworkIds((current) => e.target.checked ? [...current, work.id] : current.filter((id) => id !== work.id))} className="flex w-full items-start gap-3 py-1 text-sm"><span>{locale === 'en' ? (work.title_en || work.title) : work.title}<span className="block text-xs text-muted">{locale === 'en' ? (work.artist_en || work.artist) : work.artist}</span></span></Checkbox>)}</div><p className="mt-2 text-xs text-muted">{t('ترتیب انتخاب، ترتیب نمایش آثار در مجموعه خواهد بود.')}</p></div>
-                <div className="flex flex-wrap gap-2"><Button onClick={() => saveCollection(false)} loading={busy}>{t(editing ? 'ذخیره تغییرات' : 'ذخیره پیش‌نویس')}</Button>{!editing && <Button variant="outline" disabled={busy} onClick={() => saveCollection(true)}{t('ذخیره و انتشار')}</Button>}{editing && <Button variant="outline" disabled={busy} onClick={reset}{t('لغو ویرایش')}</Button>}</div>
+                <div className="flex flex-wrap gap-2"><Button onClick={() => saveCollection(false)} loading={busy}>{t(editing ? 'ذخیره تغییرات' : 'ذخیره پیش‌نویس')}</Button>{!editing && <Button variant="outline" disabled={busy} onClick={() => saveCollection(true)}>{t('ذخیره و انتشار')}</Button>}{editing && <Button variant="outline" disabled={busy} onClick={reset}>{t('لغو ویرایش')}</Button>}</div>
             </section>
-            <section className="space-y-4"><SectionHeader title={t("مجموعه‌های ثبت‌شده")} actions={<><Button variant="outline" size="sm" onClick={saveCollectionOrder} disabled={busy || collections.length < 2}{t('ذخیره ترتیب')}</Button><Button variant="outline" size="sm" onClick={load} loading={loading}{t('به‌روزرسانی')}</Button></>} />
+            <section className="space-y-4"><SectionHeader title={t("مجموعه‌های ثبت‌شده")} actions={<><Button variant="outline" size="sm" onClick={saveCollectionOrder} disabled={busy || collections.length < 2}>{t('ذخیره ترتیب')}</Button><Button variant="outline" size="sm" onClick={load} loading={loading}>{t('به‌روزرسانی')}</Button></>} />
                 {collections.length ? <div className="grid gap-3">{collections.map((collection, index) => <article key={collection.id} className="border-t border-border bg-transparent py-5 first:border-t-0 sm:px-1">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                         <div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><h3 className="font-black">{localizedValue(collection, 'title', locale)}</h3><span className={collection.status === 'published' ? 'bg-[color:color-mix(in_srgb,var(--color-olive)_10%,transparent)] px-2 py-1 text-[10px] font-bold text-olive' : 'bg-surface-muted px-2 py-1 text-[10px] font-bold text-muted'}>{t(collection.status === 'published' ? 'منتشرشده' : 'پیش‌نویس')}</span></div><p className="mt-2 text-xs text-muted">{(collection.artworks_count ?? 0).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} {t('اثر در مجموعه')}</p><p dir="ltr" className="mt-1 break-all text-start text-[11px] text-muted">{collection.slug}</p></div>
                         <span className="text-xs font-bold text-muted">{t('جایگاه')} {index + 1}</span>
                     </div>
                     <div className="mt-4 flex flex-wrap gap-2 border-t border-border/70 pt-4">
-                        <Button size="sm" variant="outline" disabled={busy || index === 0} onClick={() => moveCollection(index, -1)}{t('انتقال به بالا')}</Button>
-                        <Button size="sm" variant="outline" disabled={busy || index === collections.length - 1} onClick={() => moveCollection(index, 1)}{t('انتقال به پایین')}</Button>
+                        <Button size="sm" variant="outline" disabled={busy || index === 0} onClick={() => moveCollection(index, -1)}>{t('انتقال به بالا')}</Button>
+                        <Button size="sm" variant="outline" disabled={busy || index === collections.length - 1} onClick={() => moveCollection(index, 1)}>{t('انتقال به پایین')}</Button>
                         <Button size="sm" variant="outline" disabled={busy} onClick={() => edit(collection)}>{t("ویرایش مجموعه")}</Button>
                         {collection.status === 'published' ? (
                             <AlertDialog
@@ -189,7 +189,7 @@ export function AdminEditorialPage() {
                                 onOpenChange={(open) => { if (!open && busy) return; setConfirmUnpublishId(open ? collection.id : null); if (open) setActionError(''); }}
                             >
                                 <AlertDialogTrigger asChild>
-                                    <Button size="sm" variant="danger" disabled={busy}{t('توقف انتشار')}</Button>
+                                    <Button size="sm" variant="danger" disabled={busy}>{t('توقف انتشار')}</Button>
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
                                     <AlertDialogTitle>{t('توقف انتشار این مجموعه را تأیید می‌کنید؟')}</AlertDialogTitle>
@@ -197,10 +197,10 @@ export function AdminEditorialPage() {
                                     {actionError && <p role="alert" className="mt-3 text-sm leading-6 text-danger">{t(actionError)}</p>}
                                     <div className="mt-5 flex flex-wrap justify-end gap-2">
                                         <AlertDialogCancel asChild>
-                                            <Button size="sm" variant="ghost" disabled={busy}{t('انصراف')}</Button>
+                                            <Button size="sm" variant="ghost" disabled={busy}>{t('انصراف')}</Button>
                                         </AlertDialogCancel>
                                         <AlertDialogAction asChild>
-                                            <Button size="sm" variant="danger" disabled={busy} onClick={(event) => { event.preventDefault(); publish(collection, false); }}{t('تأیید توقف انتشار')}</Button>
+                                            <Button size="sm" variant="danger" disabled={busy} onClick={(event) => { event.preventDefault(); publish(collection, false); }}>{t('تأیید توقف انتشار')}</Button>
                                         </AlertDialogAction>
                                     </div>
                                 </AlertDialogContent>
