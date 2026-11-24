@@ -34,6 +34,7 @@ CSS `--rd-*` variables are the canonical token source. Tailwind maps directly to
 - Text: `--rd-text-primary`, `--rd-text-secondary`, `--rd-text-tertiary`
 - Rules: `--rd-border-subtle`, `--rd-border-strong`, `--rd-divider-section`, `--rd-divider-group`, `--rd-divider-nested`
 - Actions and states: `--rd-action`, `--rd-action-hover`, `--rd-action-text`, `--rd-focus`, `--rd-success`, `--rd-warning`, `--rd-danger`, `--rd-info`
+- Derived state surfaces: `--rd-success-surface`, `--rd-danger-surface`, `--rd-warning-surface`, `--rd-info-surface`, `--rd-accent-surface`, `--rd-focus-soft`.
 - Overlay and loading: `--rd-overlay`, `--rd-skeleton-base`, `--rd-skeleton-highlight`
 - Messaging: `--rd-message-own`, `--rd-message-peer`
 
