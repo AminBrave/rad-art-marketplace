@@ -1,33 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Heart, Images, LayoutDashboard, Menu, MessageCircle, Monitor, Moon, Sun, UserRound, Users, X } from 'lucide-react';
+import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Heart, Images, LayoutDashboard, Menu, MessageCircle, Settings as SettingsIcon, UserRound, Users, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { getWorkspaceMobileLinks } from './workspaceNavigation';
-import { useTheme } from './useTheme';
 import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, Checkbox, NotificationListSkeleton } from '../components/ui';
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
-
-function ThemeControl() {
-    const { theme, cycleTheme } = useTheme();
-    const Icon = theme === 'dark' ? Moon : theme === 'light' ? Sun : Monitor;
-    const label = theme === 'dark' ? 'تیره' : theme === 'light' ? 'روشن' : 'هماهنگ با دستگاه';
-
-    return (
-        <Button variant="ghost"
-            type="button"
-            onClick={cycleTheme}
-            aria-label={`تغییر پوسته؛ حالت فعلی: ${label}`}
-            title={`پوسته: ${label}`}
-            className="min-h-0 p-0 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-surface text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
-        >
-            <Icon size={18} strokeWidth={1.9} aria-hidden="true" />
-            <span className="sr-only">تغییر پوسته</span>
-        </Button>
-    );
-}
 
 const publicSecondaryLinks = [
     { to: '/artworks', label: 'گالری آثار' },
@@ -94,7 +74,6 @@ export function PublicLayout() {
                     </nav>
 
                     <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-                        <ThemeControl />
                         {user ? (
                             <>
                                 <span className="hidden max-w-36 truncate text-sm font-semibold text-ink 2xl:inline">{user.name}</span>
@@ -250,7 +229,6 @@ function NotificationBell({ user }) {
     const [page, setPage] = useState(1);
     const [actionError, setActionError] = useState('');
     const notificationKey = ['notifications', user?.id, 'list', page];
-    const preferenceKey = ['notifications', user?.id, 'preferences'];
 
     const notificationsQuery = useQuery({
         queryKey: notificationKey,
@@ -265,22 +243,6 @@ function NotificationBell({ user }) {
         enabled: Boolean(user?.id),
         refetchInterval: 30_000,
     });
-    const preferencesQuery = useQuery({
-        queryKey: preferenceKey,
-        queryFn: async ({ signal }) => {
-            const { data } = await axios.get('/api/v1/notifications/preferences', { signal });
-            return data.data ?? {
-                in_app_messages: true,
-                in_app_follows: true,
-                in_app_artwork_likes: true,
-                in_app_artwork_comments: true,
-                in_app_comment_replies: true,
-                email_available: false,
-            };
-        },
-        enabled: Boolean(user?.id),
-    });
-
     const markOneRead = useMutation({
         mutationKey: ['notifications', 'mark-read', user?.id],
         mutationFn: (item) => axios.patch('/api/v1/notifications/' + item.id + '/read'),
@@ -307,37 +269,14 @@ function NotificationBell({ user }) {
             queryClient.invalidateQueries({ queryKey: ['notifications', user?.id, 'list'] });
         },
     });
-    const updatePreference = useMutation({
-        mutationKey: ['notifications', 'update-preference', user?.id],
-        mutationFn: ({ key, enabled }) => axios.patch('/api/v1/notifications/preferences', { [key]: enabled }),
-        onMutate: async ({ key, enabled }) => {
-            await queryClient.cancelQueries({ queryKey: preferenceKey });
-            const previous = queryClient.getQueryData(preferenceKey);
-            queryClient.setQueryData(preferenceKey, (current) => ({ ...(current ?? {}), [key]: enabled }));
-            return { previous };
-        },
-        onError: (_, __, context) => {
-            if (context?.previous) queryClient.setQueryData(preferenceKey, context.previous);
-        },
-        onSuccess: ({ data }) => queryClient.setQueryData(preferenceKey, data.data),
-    });
+
 
     const items = notificationsQuery.data?.items ?? [];
     const unreadCount = notificationsQuery.data?.unreadCount ?? 0;
     const lastPage = notificationsQuery.data?.lastPage ?? 1;
-    const preferences = preferencesQuery.data ?? {
-        in_app_messages: true,
-        in_app_follows: true,
-        in_app_artwork_likes: true,
-        in_app_artwork_comments: true,
-        in_app_comment_replies: true,
-        email_available: false,
-    };
-    const loading = notificationsQuery.isPending || preferencesQuery.isPending;
-    const busy = markOneRead.isPending || markAllRead.isPending || updatePreference.isPending;
-    const error = actionError || (notificationsQuery.isError || preferencesQuery.isError
-        ? 'دریافت اعلان‌ها انجام نشد.'
-        : '');
+    const loading = notificationsQuery.isPending;
+    const busy = markOneRead.isPending || markAllRead.isPending;
+    const error = actionError || (notificationsQuery.isError ? 'دریافت اعلان‌ها انجام نشد.' : '');
 
     const openNotification = async (item) => {
         if (busy) return;
@@ -364,22 +303,7 @@ function NotificationBell({ user }) {
         }
     };
 
-    const changePreference = async (key, enabled) => {
-        setActionError('');
-        try {
-            await updatePreference.mutateAsync({ key, enabled });
-        } catch {
-            setActionError('ذخیره تنظیمات اعلان انجام نشد.');
-        }
-    };
 
-    const preferenceOptions = [
-        ['in_app_messages', 'اعلان پیام‌های جدید', 'پیام تازه در فضای کاربری'],
-        ['in_app_follows', 'دنبال‌کننده‌های تازه', 'وقتی کاربری هنرمند را دنبال می‌کند'],
-        ['in_app_artwork_likes', 'پسندیدن آثار', 'وقتی کسی اثری را می‌پسندد'],
-        ['in_app_artwork_comments', 'دیدگاه‌های آثار', 'وقتی کسی درباره اثر دیدگاه می‌نویسد'],
-        ['in_app_comment_replies', 'پاسخ به دیدگاه‌ها', 'وقتی کسی به دیدگاه پاسخ می‌دهد'],
-    ];
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -489,26 +413,7 @@ function NotificationBell({ user }) {
                     )}
                 </div>
 
-                <div className="shrink-0 border-t border-border bg-surface-muted px-4 py-4 sm:px-5">
-                    <p className="mb-3 text-xs font-bold text-ink">تنظیمات اعلان درون‌برنامه‌ای</p>
-                    <div className="space-y-2">
-                        {preferenceOptions.map(([key, label, description]) => (
-                            <Checkbox
-                                key={key}
-                                checked={Boolean(preferences[key])}
-                                disabled={busy || preferencesQuery.isPending}
-                                onChange={(event) => changePreference(key, event.target.checked)}
-                                className="flex min-h-11 w-full items-start gap-3 rounded-md border border-border bg-paper p-3 text-xs leading-6"
-                            >
-                                <span className="min-w-0">
-                                    <strong className="block font-bold text-ink">{label}</strong>
-                                    <span className="mt-1 block text-[11px] text-muted">{description}</span>
-                                </span>
-                            </Checkbox>
-                        ))}
-                    </div>
-                    <p className="mt-2 text-[10px] leading-5 text-muted">اعلان ایمیلی و پیامکی در این نسخه غیرفعال است.</p>
-                </div>
+
             </DialogContent>
         </Dialog>
     );
@@ -519,14 +424,17 @@ const workspaceNavigationIcons = {
     '/dashboard/artist/profile': UserRound,
     '/dashboard/artist/artworks': Images,
     '/dashboard/artist/messages': MessageCircle,
+    '/dashboard/artist/settings': SettingsIcon,
     '/dashboard/buyer': LayoutDashboard,
     '/dashboard/buyer/messages': MessageCircle,
+    '/dashboard/buyer/settings': SettingsIcon,
     '/admin': LayoutDashboard,
     '/admin/users': Users,
     '/admin/artworks': ClipboardCheck,
     '/admin/message-reports': Flag,
     '/admin/artwork-comment-reports': Flag,
     '/admin/editorial': BookOpen,
+    '/admin/settings': SettingsIcon,
 };
 
 const workspaceNavigationLabels = {
@@ -534,14 +442,17 @@ const workspaceNavigationLabels = {
     '/dashboard/artist/profile': 'پروفایل',
     '/dashboard/artist/artworks': 'محتوا',
     '/dashboard/artist/messages': 'پیام‌ها',
+    '/dashboard/artist/settings': 'تنظیمات',
     '/dashboard/buyer': 'خانه',
     '/dashboard/buyer/messages': 'پیام‌ها',
+    '/dashboard/buyer/settings': 'تنظیمات',
     '/admin': 'خانه',
     '/admin/users': 'کاربران',
     '/admin/artworks': 'آثار',
     '/admin/message-reports': 'ایمنی',
     '/admin/artwork-comment-reports': 'دیدگاه‌ها',
     '/admin/editorial': 'سردبیری',
+    '/admin/settings': 'تنظیمات',
 };
 
 function AuthenticatedBottomNavigation({ mobileLinks }) {
@@ -728,7 +639,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                 </div>
             </DialogContent>
 
-            <div className={isMessagingRoute ? 'mx-auto grid h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-h-0 min-w-0 max-w-content flex-none grid-cols-1 grid-rows-[minmax(0,1fr)] gap-0 px-page-gutter py-page-gutter sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:gap-4 sm:py-4 lg:h-[calc(100dvh-5rem)] lg:grid-cols-[15rem_minmax(0,1fr)] lg:grid-rows-1 lg:gap-8 lg:py-8' : 'mx-auto grid min-w-0 w-full max-w-content gap-5 py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:grid-cols-[var(--rd-workspace-sidebar-width)_minmax(0,1fr)] lg:gap-[var(--rd-workspace-column-gap)] lg:pb-8'}>
+            <div className={isMessagingRoute ? 'mx-auto grid h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-h-0 min-w-0 max-w-content flex-none grid-cols-1 grid-rows-[minmax(0,1fr)] gap-0 px-page-gutter py-page-gutter sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:gap-4 sm:py-4 lg:h-[calc(100dvh-5rem)] lg:grid-cols-[15rem_minmax(0,1fr)] lg:grid-rows-1 lg:gap-8 lg:py-8' : 'mx-auto grid min-w-0 w-full max-w-content gap-5 px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:grid-cols-[var(--rd-workspace-sidebar-width)_minmax(0,1fr)] lg:gap-[var(--rd-workspace-column-gap)] lg:pb-8'}>
                 {isMessagingRoute && <div className="hidden lg:block" aria-hidden="true" />}
                 <aside className={isMessagingRoute
                     ? 'hidden min-w-0 border-y border-divider-section bg-paper px-3 py-4 lg:fixed lg:top-28 lg:right-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))] lg:z-30 lg:block lg:h-fit lg:max-h-[calc(100dvh_-_8rem)] lg:w-60 lg:overflow-y-auto'
