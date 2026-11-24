@@ -151,27 +151,27 @@ export function AdminArtworkModeration() {
     const loading = artworksQuery.isPending;
     const load = () => { setActionError(''); return artworksQuery.refetch(); };
     const error = actionError || (artworksQuery.isError
-        ? (artworksQuery.error.response?.status === 403 ? 'این حساب اجازه مشاهده صف بررسی آثار را ندارد.' : 'دریافت آثار انجام نشد. دوباره تلاش کنید.')
+        ? (artworksQuery.error.response?.status === 403 ? t("این حساب اجازه مشاهده صف بررسی آثار را ندارد.") : t("دریافت آثار انجام نشد. دوباره تلاش کنید."))
         : '');
     const chooseStatus = (value) => { setActionError(''); setMessage(''); setParams(value === 'pending_review' ? {} : { status: value }); };
     const changePage = (next) => setParams({ ...(status !== 'pending_review' ? { status } : {}), ...(next > 1 ? { page: String(next) } : {}) });
     const moderate = async (artwork, action) => {
         const note = (notes[artwork.id] ?? '').trim();
-        if (action !== 'approve' && !note) { setActionError('برای رد اثر یا درخواست اصلاح، نوشتن توضیح الزامی است.'); return; }
+        if (action !== 'approve' && !note) { setActionError(t("برای رد اثر یا درخواست اصلاح، نوشتن توضیح الزامی است.")); return; }
         setActionError(''); setMessage('');
         try {
             const { data } = await moderationMutation.mutateAsync({ artwork, action, note });
-            setMessage(data.message ?? 'تصمیم ثبت شد.'); setNotes((current) => ({ ...current, [artwork.id]: '' })); await Promise.all([
+            setMessage(data.message ?? t("تصمیم ثبت شد.")); setNotes((current) => ({ ...current, [artwork.id]: '' })); await Promise.all([
                 queryClient.invalidateQueries({ queryKey: ['admin', 'artworks', user?.id] }),
                 queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard', user?.id] }),
                 queryClient.invalidateQueries({ queryKey: ['artist-workspace', 'artworks'] }),
                 queryClient.invalidateQueries({ queryKey: ['home', 'artworks'] }),
                 queryClient.invalidateQueries({ queryKey: ['artworks'] }),
             ]);
-        } catch (e) { setActionError(e.response?.status === 403 ? 'سرور اجازه انجام این عملیات را نداد.' : e.response?.data?.errors?.note?.[0] ?? e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.'); }
+        } catch (e) { setActionError(e.response?.status === 403 ? t("سرور اجازه انجام این عملیات را نداد.") : e.response?.data?.errors?.note?.[0] ?? e.response?.data?.message ?? t("ثبت تصمیم انجام نشد.")); }
     };
     return <Container as="section" width="wide" className="space-y-6">
-        <PageHeader eyebrow={t("مدیریت آثار")} title={t("صف بررسی و انتشار")} description={t("فقط آثار در انتظار بررسی قابل تصمیم‌گیری‌اند. رد اثر یا درخواست اصلاح به توضیح نیاز دارد.")} actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
+        <PageHeader eyebrow={t("مدیریت آثار")} title={t("صف بررسی و انتشار")} description={t("فقط آثار در انتظار بررسی قابل تصمیم‌گیری‌اند. رد اثر یا درخواست اصلاح به توضیح نیاز دارد.")} actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>{t("به‌روزرسانی")}</Button>} />
         <nav className="flex flex-wrap gap-x-5 gap-y-2 border-b border-border" aria-label={t("فیلتر وضعیت آثار")}>{statuses.map((item) => <Button variant="ghost" key={item.value} type="button" aria-pressed={status === item.value} onClick={() => chooseStatus(item.value)} className={"min-h-11 border-b-2 px-1 text-sm font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none " + (status === item.value ? 'border-terracotta text-terracotta-strong' : 'border-transparent text-muted hover:border-border-strong hover:text-ink')}>{item.label}</Button>)}</nav>
         {message && <SuccessState title={message} />}{error && <ErrorState title={t("عملیات انجام نشد")} description={error} onRetry={load} />}
         {loading ? <ArtworkModerationSkeleton count={4} /> : !result?.data?.length ? <EmptyState title={t("اثری در این وضعیت وجود ندارد")} description={t("با انتخاب وضعیت دیگر می‌توانید سوابق تصمیم‌ها را مرور کنید.")} /> : <>
@@ -220,12 +220,12 @@ export function AdminUsersPage() {
     const loading = usersQuery.isPending;
     const load = () => { setActionError(''); return usersQuery.refetch(); };
     const error = actionError || (usersQuery.isError
-        ? (usersQuery.error.response?.status === 403 ? 'این حساب اجازه مشاهده کاربران را ندارد.' : 'دریافت فهرست کاربران انجام نشد. دوباره تلاش کنید.')
+        ? (usersQuery.error.response?.status === 403 ? t("این حساب اجازه مشاهده کاربران را ندارد.") : t("دریافت فهرست کاربران انجام نشد. دوباره تلاش کنید."))
         : '');
     const changePage = (next) => setParams(next > 1 ? { page: String(next) } : {});
     const updateRole = async (item) => {
         const role = drafts[item.id] ?? (item.role === 'buyer' ? '' : item.role);
-        if (!['artist', 'admin'].includes(role)) { setActionError('یکی از نقش‌های پشتیبانی‌شده را انتخاب کنید.'); return; }
+        if (!['artist', 'admin'].includes(role)) { setActionError(t("یکی از نقش‌های پشتیبانی‌شده را انتخاب کنید.")); return; }
         if (role === 'admin' && item.role !== 'admin' && confirmAdminId !== item.id) {
             setConfirmAdminId(item.id);
             return;
@@ -236,15 +236,15 @@ export function AdminUsersPage() {
             queryClient.setQueryData(queryKey, (current) => current ? { ...current, data: current.data.map((row) => row.id === item.id ? data.data : row) } : current);
             setDrafts((current) => { const next = { ...current }; delete next[item.id]; return next; });
             setConfirmAdminId(null);
-            setMessage(data.message ?? 'نقش کاربر به‌روزرسانی شد.');
+            setMessage(data.message ?? t("نقش کاربر به‌روزرسانی شد."));
         } catch (e) {
-            setActionError(e.response?.status === 403 ? 'سرور اجازه تغییر نقش این حساب را نداد.' : e.response?.data?.errors?.role?.[0] ?? e.response?.data?.message ?? 'تغییر نقش کاربر انجام نشد.');
+            setActionError(e.response?.status === 403 ? t("سرور اجازه تغییر نقش این حساب را نداد.") : e.response?.data?.errors?.role?.[0] ?? e.response?.data?.message ?? t("تغییر نقش کاربر انجام نشد."));
         }
     };
     return <Container as="section" width="wide" className="space-y-6">
-        <PageHeader eyebrow={t("مدیریت حساب‌ها")} title="کاربران" description={t("فهرست حساب‌ها و مدیریت نقش‌های مجاز. ارتقای هر حساب به مدیر، مرحله تأیید جداگانه دارد.")} actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
+        <PageHeader eyebrow={t("مدیریت حساب‌ها")} title={t("کاربران")} description={t("فهرست حساب‌ها و مدیریت نقش‌های مجاز. ارتقای هر حساب به مدیر، مرحله تأیید جداگانه دارد.")} actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>{t("به‌روزرسانی")}</Button>} />
         <dl className="grid grid-cols-2 gap-4 border-y border-border py-4 sm:max-w-xl sm:gap-8"><div><dt className="text-xs text-muted">{t("حساب‌های این صفحه")}</dt><dd className="mt-1 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</dd></div><div><dt className="text-xs text-muted">کل حساب‌ها</dt><dd className="mt-1 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</dd></div></dl>
-        <p className="border-s-2 border-sand py-2 pe-4 text-xs leading-7 text-muted">نقش‌های قابل انتخاب «هنرمند» و «مدیر» هستند. ایجاد خریدار از مسیر ثبت‌نام انجام می‌شود و حذف یا تعلیق حساب پشتیبانی نمی‌شود. مدیر نمی‌تواند نقش مدیریتی حساب خودش را حذف کند.</p>
+        <p className="border-s-2 border-sand py-2 pe-4 text-xs leading-7 text-muted">{t("نقش‌های قابل انتخاب «هنرمند» و «مدیر» هستند. ایجاد خریدار از مسیر ثبت‌نام انجام می‌شود و حذف یا تعلیق حساب پشتیبانی نمی‌شود. مدیر نمی‌تواند نقش مدیریتی حساب خودش را حذف کند.")}</p>
         {message && <SuccessState title={message} />}{error && <ErrorState title={t("عملیات انجام نشد")} description={error} onRetry={load} />}
         {loading ? <AdminUserCardsSkeleton count={4} /> : !result?.data?.length ? <EmptyState title={t("کاربری برای نمایش وجود ندارد")} /> : <>
             <div className="grid gap-x-6 gap-y-2 xl:grid-cols-2">{result.data.map((item) => {
@@ -266,7 +266,7 @@ export function AdminUsersPage() {
                         </div>}
                         {needsAdminConfirmation && <div className="mt-4 border border-[color:color-mix(in_srgb,var(--color-warning)_30%,transparent)] bg-[color:color-mix(in_srgb,var(--color-warning)_5%,transparent)] p-3">
                             <p className="text-xs leading-6 text-ink">{t("این تغییر دسترسی مدیریتی می‌دهد و امکان مدیریت کاربران و محتوای سامانه را فعال می‌کند. آیا ارتقا را تأیید می‌کنید؟")}</p>
-                            <div className="mt-3 flex flex-wrap gap-2"><Button size="sm" onClick={() => updateRole(item)} loading={busyId === item.id}>تأیید ارتقا به مدیر</Button><Button size="sm" variant="ghost" onClick={() => setConfirmAdminId(null)} disabled={busyId !== null}>انصراف</Button></div>
+                            <div className="mt-3 flex flex-wrap gap-2"><Button size="sm" onClick={() => updateRole(item)} loading={busyId === item.id}>{t("تأیید ارتقا به مدیر")}</Button><Button size="sm" variant="ghost" onClick={() => setConfirmAdminId(null)} disabled={busyId !== null}>{t("انصراف")}</Button></div>
                         </div>}
                     </div>
                 </article>;
@@ -304,7 +304,7 @@ export function AdminMessageReportsPage() {
     const loading = reportsQuery.isPending;
     const load = () => { setActionError(''); return reportsQuery.refetch(); };
     const error = actionError || (reportsQuery.isError
-        ? (reportsQuery.error.response?.status === 403 ? 'دسترسی به گزارش‌های پیام مجاز نیست.' : 'دریافت گزارش‌ها انجام نشد.')
+        ? (reportsQuery.error.response?.status === 403 ? t("دسترسی به گزارش‌های پیام مجاز نیست.") : t("دریافت گزارش‌ها انجام نشد."))
         : '');
     const review = async (report, action) => {
         if (action === 'remove_message' && confirmRemovalId !== report.id) {
@@ -314,44 +314,44 @@ export function AdminMessageReportsPage() {
         setActionError(''); setMessage('');
         try {
             const { data } = await reviewMutation.mutateAsync({ report, action, note: (notes[report.id] ?? '').trim() || null });
-            setMessage(data.message ?? 'تصمیم ثبت شد.');
+            setMessage(data.message ?? t("تصمیم ثبت شد."));
             setConfirmRemovalId(null);
             setNotes((current) => { const next = { ...current }; delete next[report.id]; return next; });
             await queryClient.invalidateQueries({ queryKey: ['admin', 'message-reports', user?.id] });
         } catch (e) {
-            setActionError(e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.');
+            setActionError(e.response?.data?.message ?? t("ثبت تصمیم انجام نشد."));
         }
     };
     return <Container as="section" width="wide" className="space-y-6">
-        <PageHeader eyebrow="ایمنی گفتگوها" title={t("گزارش‌های پیام")} description="گزارش‌ها را با توجه به زمینه گفتگو بررسی کنید. حذف پیام یک اقدام برگشت‌ناپذیر در این پنل است و پیش از اجرا تأیید جداگانه می‌خواهد." actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
+        <PageHeader eyebrow={t("ایمنی گفتگوها")} title={t("گزارش‌های پیام")} description={t("گزارش‌ها را با توجه به زمینه گفتگو بررسی کنید. حذف پیام یک اقدام برگشت‌ناپذیر در این پنل است و پیش از اجرا تأیید جداگانه می‌خواهد.")} actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>{t("به‌روزرسانی")}</Button>} />
         <div className="grid gap-3 sm:grid-cols-2">
-            <div className="border-y border-border bg-transparent py-4"><p className="text-xs text-muted">گزارش‌های این صفحه</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</p></div>
-            <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">کل گزارش‌ها</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</p></div>
+            <div className="border-y border-border bg-transparent py-4"><p className="text-xs text-muted">{t("گزارش‌های این صفحه")}</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</p></div>
+            <div className="border border-border bg-paper p-4"><p className="text-xs text-muted">{t("کل گزارش‌ها")}</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</p></div>
         </div>
         {message && <SuccessState title={message} />}{error && <ErrorState title={t("عملیات انجام نشد")} description={error} onRetry={load} />}
-        {loading ? <MessageReportsSkeleton count={3} /> : !result?.data?.length ? <EmptyState title="گزارش بازی وجود ندارد" description="گزارش‌های جدید پس از ثبت از سوی یکی از طرفین گفتگو در اینجا نمایش داده می‌شوند." /> : <>
+        {loading ? <MessageReportsSkeleton count={3} /> : !result?.data?.length ? <EmptyState title={t("گزارش بازی وجود ندارد")} description={t("گزارش‌های جدید پس از ثبت از سوی یکی از طرفین گفتگو در اینجا نمایش داده می‌شوند.")} /> : <>
             <div className="space-y-4">{result.data.map((report) => {
                 const isOpen = report.status === 'open';
                 const confirmingRemoval = confirmRemovalId === report.id;
                 return <article key={report.id} className="overflow-hidden border-t border-border bg-transparent pt-1">
                     <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border py-5">
                         <div><p className="text-xs font-bold text-terracotta-strong">گزارش شماره {report.id}</p><h2 className="mt-1 font-black">{report.reason}</h2><p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? 'کاربر'} · {dateLabel(report.created_at)}</p></div>
-                        <Badge variant={isOpen ? 'warning' : report.status === 'dismissed' ? 'neutral' : 'success'}>{isOpen ? 'در انتظار بررسی' : report.status === 'dismissed' ? 'رد گزارش' : 'بررسی‌شده'}</Badge>
+                        <Badge variant={isOpen ? 'warning' : report.status === 'dismissed' ? 'neutral' : 'success'}>{isOpen ? 'در انتظار بررسی' : report.status === 'dismissed' ? t("رد گزارش") : t("بررسی‌شده")}</Badge>
                     </div>
                     <div className="space-y-5 py-5">
-                        {report.details && <div><p className="text-xs font-bold text-muted">شرح گزارش</p><p className="mt-2 whitespace-pre-line text-sm leading-7">{report.details}</p></div>}
-                        {report.message ? <div className="border-s-2 border-terracotta bg-surface-muted/50 p-4 sm:p-5"><p className="text-[11px] font-bold tracking-wide text-muted">محتوای مورد گزارش</p><blockquote className="mt-2 whitespace-pre-line text-sm leading-7">{report.message.body ?? 'متن پیام حذف شده است.'}</blockquote></div> : <p className="text-xs text-muted">متن پیام مرتبط در دسترس نیست.</p>}
+                        {report.details && <div><p className="text-xs font-bold text-muted">{t("شرح گزارش")}</p><p className="mt-2 whitespace-pre-line text-sm leading-7">{report.details}</p></div>}
+                        {report.message ? <div className="border-s-2 border-terracotta bg-surface-muted/50 p-4 sm:p-5"><p className="text-[11px] font-bold tracking-wide text-muted">{t("محتوای مورد گزارش")}</p><blockquote className="mt-2 whitespace-pre-line text-sm leading-7">{report.message.body ?? 'متن پیام حذف شده است.'}</blockquote></div> : <p className="text-xs text-muted">متن پیام مرتبط در دسترس نیست.</p>}
                         {isOpen && <>
-                            <FormField label="یادداشت رسیدگی (اختیاری)"><TextareaField value={notes[report.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [report.id]: event.target.value }))} maxLength={1000} rows={2} placeholder="خلاصه تصمیم یا زمینه بررسی…" /></FormField>
+                            <FormField label={t("یادداشت رسیدگی (اختیاری)")}><TextareaField value={notes[report.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [report.id]: event.target.value }))} maxLength={1000} rows={2} placeholder={t("خلاصه تصمیم یا زمینه بررسی…")} /></FormField>
                             <div className="flex flex-wrap gap-2">
-                                <Button size="sm" variant="primary" disabled={busyId !== null} loading={busyId === report.id} onClick={() => review(report, 'reviewed')}>ثبت بررسی</Button>
-                                <Button size="sm" variant="outline" disabled={busyId !== null} onClick={() => review(report, 'dismissed')}>رد گزارش</Button>
-                                {report.message && <Button size="sm" variant="danger" disabled={busyId !== null} onClick={() => review(report, 'remove_message')}>حذف پیام</Button>}
+                                <Button size="sm" variant="primary" disabled={busyId !== null} loading={busyId === report.id} onClick={() => review(report, 'reviewed')}>{t("ثبت بررسی")}</Button>
+                                <Button size="sm" variant="outline" disabled={busyId !== null} onClick={() => review(report, 'dismissed')}>{t("رد گزارش")}</Button>
+                                {report.message && <Button size="sm" variant="danger" disabled={busyId !== null} onClick={() => review(report, 'remove_message')}>{t("حذف پیام")}</Button>}
                             </div>
                             {confirmingRemoval && <div className="border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-[color:color-mix(in_srgb,var(--color-danger)_5%,transparent)] p-4">
-                                <p className="text-sm font-bold text-ink">حذف پیام را تأیید می‌کنید؟</p>
-                                <p className="mt-1 text-xs leading-6 text-muted">این اقدام پیام گزارش‌شده را حذف می‌کند. فقط در صورت احراز تخلف آن را ادامه دهید.</p>
-                                <div className="mt-3 flex flex-wrap gap-2"><Button size="sm" variant="danger" disabled={busyId !== null} loading={busyId === report.id} onClick={() => review(report, 'remove_message')}>بله، حذف پیام</Button><Button size="sm" variant="ghost" disabled={busyId !== null} onClick={() => setConfirmRemovalId(null)}>انصراف</Button></div>
+                                <p className="text-sm font-bold text-ink">{t("حذف پیام را تأیید می‌کنید؟")}</p>
+                                <p className="mt-1 text-xs leading-6 text-muted">{t("این اقدام پیام گزارش‌شده را حذف می‌کند. فقط در صورت احراز تخلف آن را ادامه دهید.")}</p>
+                                <div className="mt-3 flex flex-wrap gap-2"><Button size="sm" variant="danger" disabled={busyId !== null} loading={busyId === report.id} onClick={() => review(report, 'remove_message')}>{t("بله، حذف پیام")}</Button><Button size="sm" variant="ghost" disabled={busyId !== null} onClick={() => setConfirmRemovalId(null)}>{t("انصراف")}</Button></div>
                             </div>}
                         </>}
                     </div>
@@ -392,7 +392,7 @@ export function AdminArtworkCommentReportsPage() {
     const loading = reportsQuery.isPending;
     const load = () => { setActionError(''); return reportsQuery.refetch(); };
     const error = actionError || (reportsQuery.isError
-        ? (reportsQuery.error.response?.status === 403 ? 'دسترسی به گزارش‌های دیدگاه مجاز نیست.' : 'دریافت گزارش‌ها انجام نشد.')
+        ? (reportsQuery.error.response?.status === 403 ? t("دسترسی به گزارش‌های دیدگاه مجاز نیست.") : t("دریافت گزارش‌ها انجام نشد."))
         : '');
 
     const review = async (report, action) => {
@@ -409,7 +409,7 @@ export function AdminArtworkCommentReportsPage() {
                 action,
                 note: (notes[report.id] ?? '').trim() || null,
             });
-            setMessage(data.message ?? 'تصمیم ثبت شد.');
+            setMessage(data.message ?? t("تصمیم ثبت شد."));
             setConfirmRemovalId(null);
             setNotes((current) => {
                 const next = { ...current };
@@ -418,31 +418,31 @@ export function AdminArtworkCommentReportsPage() {
             });
             await queryClient.invalidateQueries({ queryKey: ['admin', 'artwork-comment-reports', user?.id] });
         } catch (e) {
-            setActionError(e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.');
+            setActionError(e.response?.data?.message ?? t("ثبت تصمیم انجام نشد."));
         }
     };
 
     return <Container as="section" width="wide" className="space-y-6">
         <PageHeader
-            eyebrow="اعتماد و ایمنی محتوا"
-            title="گزارش دیدگاه‌های آثار"
-            description="گزارش‌ها را با توجه به متن دیدگاه و زمینه اثر بررسی کنید. حذف دیدگاه پس از تأیید نهایی انجام می‌شود و سابقه رسیدگی ثبت خواهد شد."
-            actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>}
+            eyebrow={t("اعتماد و ایمنی محتوا")}
+            title={t("گزارش دیدگاه‌های آثار")}
+            description={t("گزارش‌ها را با توجه به متن دیدگاه و زمینه اثر بررسی کنید. حذف دیدگاه پس از تأیید نهایی انجام می‌شود و سابقه رسیدگی ثبت خواهد شد.")}
+            actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>{t("به‌روزرسانی")}</Button>}
         />
         <div className="grid gap-3 sm:grid-cols-2">
             <div className="border border-border bg-paper p-4">
-                <p className="text-xs text-muted">گزارش‌های این صفحه</p>
+                <p className="text-xs text-muted">{t("گزارش‌های این صفحه")}</p>
                 <p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</p>
             </div>
             <div className="border border-border bg-paper p-4">
-                <p className="text-xs text-muted">کل گزارش‌ها</p>
+                <p className="text-xs text-muted">{t("کل گزارش‌ها")}</p>
                 <p className="mt-2 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</p>
             </div>
         </div>
         {message && <SuccessState title={message} />}
         {error && <ErrorState title={t("عملیات انجام نشد")} description={error} onRetry={load} />}
         {loading ? <MessageReportsSkeleton count={3} /> : !result?.data?.length ? (
-            <EmptyState title="گزارشی برای نمایش وجود ندارد" description="گزارش دیدگاه‌های آثار پس از ثبت در این بخش نمایش داده می‌شوند." />
+            <EmptyState title={t("گزارشی برای نمایش وجود ندارد")} description={t("گزارش دیدگاه‌های آثار پس از ثبت در این بخش نمایش داده می‌شوند.")} />
         ) : <>
             <div className="space-y-4">
                 {result.data.map((report) => {
@@ -456,33 +456,33 @@ export function AdminArtworkCommentReportsPage() {
                                 <p className="mt-2 text-xs text-muted">گزارش‌دهنده: {report.reporter?.name ?? 'کاربر'} · {dateLabel(report.created_at)}</p>
                             </div>
                             <Badge variant={isOpen ? 'warning' : report.status === 'dismissed' ? 'neutral' : 'success'}>
-                                {isOpen ? 'در انتظار بررسی' : report.status === 'dismissed' ? 'رد گزارش' : 'بررسی‌شده'}
+                                {isOpen ? 'در انتظار بررسی' : report.status === 'dismissed' ? t("رد گزارش") : t("بررسی‌شده")}
                             </Badge>
                         </div>
                         <div className="space-y-5 py-5">
                             {report.details && <div>
-                                <p className="text-xs font-bold text-muted">شرح گزارش</p>
+                                <p className="text-xs font-bold text-muted">{t("شرح گزارش")}</p>
                                 <p className="mt-2 whitespace-pre-line break-words text-sm leading-7">{report.details}</p>
                             </div>}
                             <div className="border-s-2 border-terracotta bg-surface-muted/50 p-4 sm:p-5">
-                                <p className="text-[11px] font-bold text-muted">دیدگاه گزارش‌شده</p>
-                                <blockquote className="mt-2 whitespace-pre-line break-words text-sm leading-7">{report.comment?.body ?? 'متن دیدگاه حذف شده است.'}</blockquote>
+                                <p className="text-[11px] font-bold text-muted">{t("دیدگاه گزارش‌شده")}</p>
+                                <blockquote className="mt-2 whitespace-pre-line break-words text-sm leading-7">{report.comment?.body ?? t("متن دیدگاه حذف شده است.")}</blockquote>
                                 <p className="mt-2 text-xs text-muted">نویسنده: {report.comment?.author ?? 'کاربر'}</p>
-                                {report.comment?.artwork?.slug && <Link to={'/artworks/' + report.comment.artwork.slug + '#comment-' + report.comment.id} className="mt-2 inline-block text-xs font-bold text-terracotta-strong underline">{report.comment.artwork.title || 'مشاهده اثر'}</Link>}
+                                {report.comment?.artwork?.slug && <Link to={'/artworks/' + report.comment.artwork.slug + '#comment-' + report.comment.id} className="mt-2 inline-block text-xs font-bold text-terracotta-strong underline">{report.comment.artwork.title || t("مشاهده اثر")}</Link>}
                             </div>
                             {isOpen && <>
-                                <FormField label="یادداشت رسیدگی (اختیاری)"><TextareaField value={notes[report.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [report.id]: event.target.value }))} maxLength={1000} rows={2} placeholder="خلاصه تصمیم یا زمینه بررسی…" /></FormField>
+                                <FormField label={t("یادداشت رسیدگی (اختیاری)")}><TextareaField value={notes[report.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [report.id]: event.target.value }))} maxLength={1000} rows={2} placeholder={t("خلاصه تصمیم یا زمینه بررسی…")} /></FormField>
                                 <div className="flex flex-wrap gap-2">
-                                    <Button size="sm" variant="primary" disabled={busyId !== null} loading={busyId === report.id} onClick={() => review(report, 'reviewed')}>ثبت بررسی</Button>
-                                    <Button size="sm" variant="outline" disabled={busyId !== null} onClick={() => review(report, 'dismissed')}>رد گزارش</Button>
-                                    <Button size="sm" variant="danger" disabled={busyId !== null} onClick={() => review(report, 'remove_comment')}>حذف دیدگاه</Button>
+                                    <Button size="sm" variant="primary" disabled={busyId !== null} loading={busyId === report.id} onClick={() => review(report, 'reviewed')}>{t("ثبت بررسی")}</Button>
+                                    <Button size="sm" variant="outline" disabled={busyId !== null} onClick={() => review(report, 'dismissed')}>{t("رد گزارش")}</Button>
+                                    <Button size="sm" variant="danger" disabled={busyId !== null} onClick={() => review(report, 'remove_comment')}>{t("حذف دیدگاه")}</Button>
                                 </div>
                                 {confirmingRemoval && <div className="border border-danger/30 bg-danger-surface p-4">
-                                    <p className="text-sm font-bold text-ink">حذف دیدگاه را تأیید می‌کنید؟</p>
-                                    <p className="mt-1 text-xs leading-6 text-muted">متن دیدگاه برای کاربران پنهان می‌شود و اقدام در سابقه رسیدگی ثبت خواهد شد.</p>
+                                    <p className="text-sm font-bold text-ink">{t("حذف دیدگاه را تأیید می‌کنید؟")}</p>
+                                    <p className="mt-1 text-xs leading-6 text-muted">{t("متن دیدگاه برای کاربران پنهان می‌شود و اقدام در سابقه رسیدگی ثبت خواهد شد.")}</p>
                                     <div className="mt-3 flex flex-wrap gap-2">
-                                        <Button size="sm" variant="danger" disabled={busyId !== null} loading={busyId === report.id} onClick={() => review(report, 'remove_comment')}>بله، حذف دیدگاه</Button>
-                                        <Button size="sm" variant="ghost" disabled={busyId !== null} onClick={() => setConfirmRemovalId(null)}>انصراف</Button>
+                                        <Button size="sm" variant="danger" disabled={busyId !== null} loading={busyId === report.id} onClick={() => review(report, 'remove_comment')}>{t("بله، حذف دیدگاه")}</Button>
+                                        <Button size="sm" variant="ghost" disabled={busyId !== null} onClick={() => setConfirmRemovalId(null)}>{t("انصراف")}</Button>
                                     </div>
                                 </div>}
                             </>}
