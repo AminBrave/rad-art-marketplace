@@ -185,7 +185,7 @@ export default function ComponentShowcase() {
                     </div>
                     <div className="grid content-start gap-4">
                         <h3 className="font-bold">تب‌ها</h3>
-                        <Tabs defaultValue="overview" dir="rtl">
+                        <Tabs defaultValue="overview">
                             <TabsList aria-label="تب‌های نمونه">
                                 <TabsTrigger value="overview">نمای کلی</TabsTrigger>
                                 <TabsTrigger value="details">جزئیات</TabsTrigger>
