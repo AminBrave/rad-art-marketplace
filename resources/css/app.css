@@ -105,7 +105,6 @@
     --rd-control-height-md: 2.75rem;
     --rd-control-height-lg: 3rem;
     --rd-content-reading-width: 48rem;
-    --rd-content-wide-width: 80rem;
     --rd-artwork-ratio: 4 / 3;
     --rd-portrait-ratio: 4 / 5;
 
@@ -201,7 +200,6 @@
     --control-height-md: var(--rd-control-height-md);
     --control-height-lg: var(--rd-control-height-lg);
     --content-reading-width: var(--rd-content-reading-width);
-    --content-wide-width: var(--rd-content-wide-width);
     --artwork-ratio: var(--rd-artwork-ratio);
     --portrait-ratio: var(--rd-portrait-ratio);
 }
