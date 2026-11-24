@@ -118,7 +118,7 @@ export function WorkspaceHero({ eyebrow, title, description, actions, className 
         <Container width="wide" className="py-3 sm:py-4">
             <header dir="rtl" className={cn('relative isolate flex min-w-0 items-center justify-between gap-8 border border-[color:var(--rd-hero-line)] rd-hero-surface px-6 py-8 text-[color:var(--rd-hero-foreground)] sm:px-9 sm:py-10 lg:px-12 lg:py-12 max-md:items-stretch max-md:flex-col max-md:gap-5', className)}>
                 <span aria-hidden="true" className="pointer-events-none absolute end-6 top-6 hidden h-20 w-20 border border-[color:var(--rd-hero-line)] sm:block lg:end-10 lg:top-8 lg:h-28 lg:w-28" />
-                <span aria-hidden="true" className="pointer-events-none absolute end-12 top-12 hidden h-20 w-20 border-e border-t border-[color:var(--rd-hero-accent)]/60 sm:block lg:end-16 lg:top-14 lg:h-28 lg:w-28" />
+                <span aria-hidden="true" className="pointer-events-none absolute end-12 top-12 hidden h-20 w-20 border-e border-t border-[color:var(--rd-hero-accent)] sm:block lg:end-16 lg:top-14 lg:h-28 lg:w-28" />
                 <div className="relative z-10 min-w-0 max-w-[46rem]">
                     {eyebrow && <p className="text-xs font-bold tracking-wide text-[color:var(--rd-hero-accent)]">{eyebrow}</p>}
                     <h1 className="mt-2 break-words text-[clamp(1.5rem,3vw,2.25rem)] font-extrabold leading-heading tracking-[-.025em] text-[color:var(--rd-hero-foreground)]">{title}</h1>
