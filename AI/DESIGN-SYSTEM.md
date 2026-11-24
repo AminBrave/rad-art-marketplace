@@ -43,7 +43,7 @@ CSS `--rd-*` variables are the canonical design-token source; Tailwind maps dire
 - Use the shared `.rd-hero-surface` for prominent page heroes and editorial feature panels. It composes a restrained radial accent with a layered surface instead of using `bg-ink` or inverse-text shortcuts.
 - Hero foreground, muted copy, accent, border and glow use dedicated `--rd-hero-*` semantic tokens. Define both explicit dark-theme and system-dark values; do not infer hero contrast from the generic `ink` or `inverse` roles.
 - Keep headings and supporting copy on the hero foreground/muted roles, and make actions contrast against the active hero palette. Decorative geometry must remain non-interactive, avoid clipping content and respect the zero-radius visual language.
-- Apply the same surface to the homepage, artist directory, artist spotlight, registration CTA and workspace welcome heroes. Their skeleton/loading states should use the same theme-aware background.
+- Apply the same surface to the homepage, shared `PageHeader`, artist directory, artist spotlight, registration CTA and workspace welcome heroes. Their skeleton/loading states should use the same theme-aware background.
 
 ## Accessibility and localization
 
