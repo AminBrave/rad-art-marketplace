@@ -522,6 +522,23 @@ const english = {
     "انتخاب هنرمندان": "Select artists",
     "هنرمندان منتخب": "Featured artists",
     "ذخیره انتخاب‌ها": "Save selection",
+    "نام نمایشی": "Display name",
+    "درباره هنرمند": "About the artist",
+    "شهر": "City",
+    "شناسه اینستاگرام": "Instagram handle",
+    "نمایش عمومی پروفایل": "Make profile public",
+    "ذخیره پروفایل": "Save profile",
+    "در حال ذخیره…": "Saving…",
+    "پیش‌نمایش پروفایل عمومی": "Preview public profile",
+    "پیش‌نمایش خصوصی پروفایل": "Preview private profile",
+    "این پیش‌نمایش فقط برای شما و مدیران مجاز قابل مشاهده است؛ بازدیدکنندگان عمومی به پروفایل خصوصی دسترسی ندارند.": "This preview is visible only to you and authorized administrators. Public visitors cannot access a private profile.",
+    " از ۲۰۰۰ نویسه برای معرفی هنری استفاده شده است.": " of 2,000 characters used for your artist bio.",
+    "لطفاً خطاهای فرم را بررسی کنید.": "Please review the form errors.",
+    "این عملیات از سمت سرور مجاز شناخته نشد.": "This action was not authorized by the server.",
+    "ذخیره پروفایل انجام نشد. دوباره تلاش کنید.": "Could not save profile. Please try again.",
+    "در حال دریافت پروفایل هنرمند…": "Loading artist profile…",
+    "استودیوی هنرمند": "Artist studio",
+    "اطلاعات معرفی و وضعیت نمایش عمومی پروفایل خود را مدیریت کنید.": "Manage your introduction and public profile visibility.",
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 
