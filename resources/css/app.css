@@ -117,7 +117,7 @@
     --rd-control-height-md: 2.75rem;
     --rd-control-height-lg: 3rem;
     --rd-content-reading-width: 48rem;
-    --rd-artwork-ratio: 4 / 3;
+    --rd-artwork-ratio: 3 / 4;
     --rd-portrait-ratio: 4 / 5;
 
     /*
@@ -334,8 +334,8 @@
  * The workspace grid owns the shared page gutter. Nested section containers
  * keep their width semantics but must not add a second horizontal gutter.
  */
-.rd-page-frame--workspace .rd-container {
-    padding-inline: 0;
+ .rd-page-frame--workspace .rd-container {
+    padding: 0;
 }
 
 @media (min-width: 1024px) {
