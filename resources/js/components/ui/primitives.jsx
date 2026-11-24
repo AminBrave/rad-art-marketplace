@@ -84,10 +84,10 @@ export function Badge({ children, variant = 'neutral', className = '' }) {
 // Backward-compatible name; Container in layout.jsx is the single implementation.
 export const PageContainer = Container;
 
-export function PageHeader({ eyebrow, title, description, actions, level = 1, className = '', titleClassName = '', descriptionClassName = '' }) {
+export function PageHeader({ eyebrow, title, description, actions, level = 1, bleed = true, className = '', titleClassName = '', descriptionClassName = '' }) {
     const Heading = level === 2 ? 'h2' : 'h1';
     return (
-        <section className="rd-bleed rd-hero-surface border-y border-[color:var(--rd-hero-line)]">
+        <section className={cn("rd-hero-surface border-y border-[color:var(--rd-hero-line)]", bleed && "rd-bleed")}>
             <Container className="py-6 sm:py-8">
                 <header className={cn('relative isolate flex min-w-0 items-end justify-between gap-6 before:absolute before:bottom-0 before:end-0 before:top-0 before:w-1.5 before:bg-[color:var(--rd-hero-accent)] max-sm:items-stretch max-sm:flex-col max-sm:gap-4', className)}>
                     <span aria-hidden="true" className="pointer-events-none absolute end-6 top-0 h-12 w-12 border border-[color:var(--rd-hero-line)] sm:end-8 sm:h-16 sm:w-16" />
