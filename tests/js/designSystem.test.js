@@ -73,6 +73,7 @@ test('Tailwind semantic aliases reference CSS variables rather than duplicate li
     assert.ok(tailwind.includes('var(--rd-canvas)'));
     assert.ok(tailwind.includes('var(--rd-text-primary)'));
     assert.ok(tailwind.includes('var(--rd-action)'));
+    assert.ok(tailwind.includes("control: 'var(--rd-radius-sm)'"));
     assert.ok(tailwind.includes('var(--rd-success)'));
     assert.ok(css.includes('--text-base: var(--rd-text-base)'));
     assert.ok(css.includes('--space-4: var(--rd-space-4)'));
@@ -81,6 +82,7 @@ test('Tailwind semantic aliases reference CSS variables rather than duplicate li
 test('shared primitives express accessible component contracts with semantic Tailwind utilities', () => {
     assert.ok(primitives.includes('bg-terracotta text-inverse'));
     assert.ok(primitives.includes('focus-visible:outline'));
+    assert.ok(primitives.includes("className, 'rounded-control')"), 'Button and IconButton enforce the shared control radius.');
     assert.ok(primitives.includes('aria-[invalid=true]:border-danger'));
     assert.ok(primitives.includes('aria-busy={loading || undefined}'));
     assert.ok(primitives.includes("'aria-describedby': describedBy"));
