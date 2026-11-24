@@ -46,6 +46,15 @@
     --rd-warning: #8A5A12;
     --rd-info: #315F78;
     --rd-inverse-text: #FFFFFF;
+
+    /* Editorial hero roles — independent from inverse text. */
+    --rd-hero-background: #EAE4D9;
+    --rd-hero-background-alt: #F4F0E8;
+    --rd-hero-foreground: #242320;
+    --rd-hero-muted: #625E56;
+    --rd-hero-accent: #9A452B;
+    --rd-hero-line: color-mix(in srgb, var(--rd-hero-foreground) 18%, transparent);
+    --rd-hero-glow: color-mix(in srgb, var(--rd-brand-terracotta) 18%, transparent);
     --rd-overlay: rgb(36 35 32 / 64%);
     --rd-skeleton-base: #EEEAE3;
     --rd-skeleton-highlight: #F8F6F2;
@@ -231,6 +240,13 @@
     --rd-warning: #E6B86B;
     --rd-info: #8DBBD1;
     --rd-inverse-text: #171815;
+    --rd-hero-background: #20211D;
+    --rd-hero-background-alt: #292A25;
+    --rd-hero-foreground: #F2EFE8;
+    --rd-hero-muted: #C0B9AD;
+    --rd-hero-accent: #E7A184;
+    --rd-hero-line: color-mix(in srgb, var(--rd-hero-foreground) 22%, transparent);
+    --rd-hero-glow: color-mix(in srgb, var(--rd-action) 20%, transparent);
     --rd-overlay: rgb(0 0 0 / 72%);
     --rd-skeleton-base: #30312B;
     --rd-skeleton-highlight: #3A3B34;
@@ -272,6 +288,13 @@
         --rd-warning: #E6B86B;
         --rd-info: #8DBBD1;
         --rd-inverse-text: #171815;
+    --rd-hero-background: #20211D;
+    --rd-hero-background-alt: #292A25;
+    --rd-hero-foreground: #F2EFE8;
+    --rd-hero-muted: #C0B9AD;
+    --rd-hero-accent: #E7A184;
+    --rd-hero-line: color-mix(in srgb, var(--rd-hero-foreground) 22%, transparent);
+    --rd-hero-glow: color-mix(in srgb, var(--rd-action) 20%, transparent);
         --rd-overlay: rgb(0 0 0 / 72%);
         --rd-skeleton-base: #30312B;
         --rd-skeleton-highlight: #3A3B34;
