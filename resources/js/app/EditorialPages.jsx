@@ -210,8 +210,30 @@ export function AdminEditorialPage() {
                         )}
                     </div>
                 </article>)}</div> : <EmptyState title="مجموعه‌ای ثبت نشده است" />}</section>
-            <section className="space-y-5 border-y border-border bg-transparent py-6 sm:py-8"><SectionHeader title={t("هنرمندان منتخب")} description={t('انتخاب‌ها به ترتیب انتخاب شما در صفحه اصلی نمایش داده می‌شوند. بازه انتشار از طریق API قابل تنظیم است.')} className="border-0 pb-0" /><div className="grid gap-3 sm:grid-cols-2">{options.artists.map((artist) => <div key={artist.id} className="border-t border-border py-3 first:border-t-0"><Checkbox checked={featuredIds.includes(artist.id)} onChange={(e) => setFeaturedIds((current) => e.target.checked ? [...current, artist.id] : current.filter((id) => id !== artist.id))} className="flex min-h-11 items-center gap-3 text-sm">{locale === 'en' ? (artist.display_name_en || artist.display_name) : artist.display_name}</Checkbox>{featuredIds.includes(artist.id) && <FormField label={t('معرفی کوتاه ') + (locale === 'en' ? (artist.display_name_en || artist.display_name) : artist.display_name)} className="mt-3"><TextInput placeholder={t('معرفی کوتاه سردبیر')} value={featuredIntros[artist.id] || ''} maxLength={500} onChange={(e) => setFeaturedIntros((current) => ({ ...current, [artist.id]: e.target.value }))} /></FormField>
-                        <FormField label={t("معرفی کوتاه هنرمند به انگلیسی")} className="mt-3"><TextInput dir="ltr" className="text-start" value={featuredIntrosEn[artist.id] || ''} maxLength={500} onChange={(e) => setFeaturedIntrosEn((current) => ({ ...current, [artist.id]: e.target.value }))} /></FormField>}</div>)}</div><Button onClick={saveFeatured} loading={busy}>{t('ذخیره هنرمندان منتخب')}</Button></section>
+            <section className="space-y-5 border-y border-border bg-transparent py-6 sm:py-8">
+                <SectionHeader title={t("هنرمندان منتخب")} description={t('انتخاب‌ها به ترتیب انتخاب شما در صفحه اصلی نمایش داده می‌شوند. بازه انتشار از طریق API قابل تنظیم است.')} className="border-0 pb-0" />
+                <div className="grid gap-3 sm:grid-cols-2">
+                    {options.artists.map((artist) => {
+                        const artistName = locale === 'en' ? (artist.display_name_en || artist.display_name) : artist.display_name;
+                        return (
+                            <div key={artist.id} className="border-t border-border py-3 first:border-t-0">
+                                <Checkbox checked={featuredIds.includes(artist.id)} onChange={(e) => setFeaturedIds((current) => e.target.checked ? [...current, artist.id] : current.filter((id) => id !== artist.id))} className="flex min-h-11 items-center gap-3 text-sm">{artistName}</Checkbox>
+                                {featuredIds.includes(artist.id) && (
+                                    <>
+                                        <FormField label={t('معرفی کوتاه ') + artistName} className="mt-3">
+                                            <TextInput placeholder={t('معرفی کوتاه سردبیر')} value={featuredIntros[artist.id] || ''} maxLength={500} onChange={(e) => setFeaturedIntros((current) => ({ ...current, [artist.id]: e.target.value }))} />
+                                        </FormField>
+                                        <FormField label={t("معرفی کوتاه هنرمند به انگلیسی")} className="mt-3">
+                                            <TextInput dir="ltr" className="text-start" value={featuredIntrosEn[artist.id] || ''} maxLength={500} onChange={(e) => setFeaturedIntrosEn((current) => ({ ...current, [artist.id]: e.target.value }))} />
+                                        </FormField>
+                                    </>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
+                <Button onClick={saveFeatured} loading={busy}>{t('ذخیره هنرمندان منتخب')}</Button>
+            </section>
         </>}
     </section>;
 }
