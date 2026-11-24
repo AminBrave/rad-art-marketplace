@@ -150,7 +150,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
     const fieldError = (name) => errors[name]?.map((item) => <span key={item} className="mt-1 block text-xs font-normal text-danger">{item}</span>);
 
     return <Container as="section" width="wide" className="space-y-7">
-        <PageHeader
+        <PageHeader bleed={false}
             eyebrow={t("گالری شخصی")}
             title={t("مدیریت آثار")}
             description={t("آثار جدید و ویرایش‌شده پس از ثبت دوباره برای بررسی مدیر ارسال می‌شوند. فقط آثار تأییدشده در گالری عمومی نمایش داده می‌شوند.")}
