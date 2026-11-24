@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { after, test } from 'node:test';
 import { readFileSync } from 'node:fs';
 import React from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { renderToStaticMarkup as renderToStaticMarkupRaw } from 'react-dom/server';
 import { createServer } from 'vite';
 import react from '@vitejs/plugin-react';
 
@@ -47,6 +47,11 @@ const vite = await createServer({
     appType: 'custom',
     logLevel: 'error',
 });
+
+const language = await vite.ssrLoadModule('/resources/js/app/LanguageContext.jsx');
+const renderToStaticMarkup = (element) => renderToStaticMarkupRaw(
+    React.createElement(language.LanguageProvider, null, element),
+);
 
 const primitives = await vite.ssrLoadModule('/resources/js/components/ui/primitives.jsx');
 const feedback = await vite.ssrLoadModule('/resources/js/components/ui/feedback.jsx');
@@ -240,7 +245,7 @@ test('Page and section headers retain the requested heading hierarchy', () => {
 
     assert.match(page, /<h2[^>]*>مدیریت آثار<\/h2>/);
     assert.match(page, /فضای هنرمند/);
-    assert.match(page, /before:bg-terracotta/);
+    assert.doesNotMatch(page, /before:bg-terracotta/);
     assert.match(section, /<h3[^>]*id="recent-work"[^>]*>آثار اخیر<\/h3>/);
 
     const hero = renderToStaticMarkup(
