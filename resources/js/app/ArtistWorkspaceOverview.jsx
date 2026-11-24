@@ -54,7 +54,7 @@ export default function ArtistWorkspaceOverview() {
                 eyebrow="استودیوی هنرمند / نمای کلی"
                 title={<>خوش آمدید، {user?.name}</>}
                 description="اینجا نقطه شروع مدیریت حضور هنری شماست؛ پروفایل را کامل کنید، آثار را برای بررسی بفرستید و ارتباط‌ها را دنبال کنید."
-                actions={<Link to="/dashboard/artist/artworks" className="inline-flex min-h-11 items-center justify-center rounded-md border border-transparent bg-terracotta px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">ثبت یا مدیریت اثر</Link>}
+                actions={<Link to="/dashboard/artist/artworks" className="inline-flex min-h-11 items-center justify-center rounded-control border border-transparent bg-terracotta px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">ثبت یا مدیریت اثر</Link>}
             />
 
             <Container width="wide" className="space-y-8">
