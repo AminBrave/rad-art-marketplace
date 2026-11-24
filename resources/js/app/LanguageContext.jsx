@@ -861,6 +861,12 @@ const english = {
     "این صفحه پیدا نشد": "Page not found",
     "نشانی واردشده معتبر نیست یا صفحه جابه‌جا شده است.": "The address is invalid or the page may have moved.",
     "بازگشت به صفحه اصلی": "Back to homepage",
+    "رنگ روغن روی بوم": "Oil on canvas",
+    "چاپ فاین‌آرت": "Fine-art print",
+    "چوب و فلز": "Wood and metal",
+    "چاپ دیجیتال": "Digital print",
+    "مرکب روی کاغذ": "Ink on paper",
+    "مواد ترکیبی": "Mixed media",
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 
