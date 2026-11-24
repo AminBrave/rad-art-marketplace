@@ -84,7 +84,7 @@ export function AdminDashboardHome() {
                     {loading ? <div aria-hidden="true" className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]"><Skeleton className="aspect-square w-full rounded-none sm:max-w-32" /><div className="grid gap-3"><SkeletonLines lines={3} /><SkeletonLines lines={1} /></div></div> : summary.latest ? (
                         <div className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]">
                             <div className="aspect-square overflow-hidden bg-surface-muted">
-                                <MediaImage src={summary.latest.image_url} alt={'تصویر اثر ' + summary.latest.title} className="h-full w-full" imageClassName="object-contain" loading="lazy" decoding="async" fallback={<div className="grid h-full place-items-center text-xs text-muted">بدون تصویر</div>} />
+                                <MediaImage src={summary.latest.image_url} alt={'تصویر اثر ' + summary.latest.title} className="h-full w-full" imageClassName="object-cover" loading="lazy" decoding="async" fallback={<div className="grid h-full place-items-center text-xs text-muted">بدون تصویر</div>} />
                             </div>
                             <div className="flex min-w-0 flex-col items-start">
                                 <Badge variant="warning">{statusLabels[summary.latest.status] ?? summary.latest.status}</Badge>
@@ -175,7 +175,7 @@ export function AdminArtworkModeration() {
             <div className="grid gap-x-6 gap-y-8 xl:grid-cols-2">{result.data.map((artwork) => {
                 const actionable = artwork.status === 'pending_review';
                 return <article key={artwork.id} className="min-w-0 border-y border-ink bg-transparent py-4">
-                    <div className="grid sm:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)]"><div className="aspect-[5/4] overflow-hidden bg-surface-muted sm:aspect-auto"><MediaImage src={artwork.image_url} alt={'تصویر اثر ' + artwork.title} className="h-56 w-full sm:h-full sm:min-h-64" imageClassName="object-cover" loading="lazy" decoding="async" /></div>
+                    <div className="grid sm:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)]"><div className="aspect-[3/4] overflow-hidden bg-surface-muted sm:aspect-[3/4]"><MediaImage src={artwork.image_url} alt={'تصویر اثر ' + artwork.title} className="h-56 w-full sm:h-full sm:min-h-64" imageClassName="object-cover" loading="lazy" decoding="async" /></div>
                         <div className="min-w-0 py-4 sm:px-1"><div className="flex flex-wrap items-start justify-between gap-2"><h2 className="font-bold">{artwork.title}</h2><Badge variant={artwork.status === 'approved' ? 'success' : artwork.status === 'rejected' ? 'danger' : artwork.status === 'pending_review' ? 'warning' : 'info'}>{statusLabels[artwork.status] ?? artwork.status}</Badge></div>
                             <p className="mt-2 text-xs text-muted">{artwork.artist?.display_name ?? '—'} · {artwork.category?.name ?? '—'}</p>
                             <dl className="mt-4 grid grid-cols-2 gap-3 text-xs">{artwork.medium && <div><dt className="text-muted">تکنیک</dt><dd className="mt-1 font-semibold">{artwork.medium}</dd></div>}{artwork.dimensions && <div><dt className="text-muted">ابعاد</dt><dd className="mt-1 font-semibold">{artwork.dimensions}</dd></div>}{artwork.year && <div><dt className="text-muted">سال</dt><dd className="mt-1 font-semibold">{artwork.year}</dd></div>}<div><dt className="text-muted">تاریخ ثبت</dt><dd className="mt-1 font-semibold">{dateLabel(artwork.created_at)}</dd></div></dl>
