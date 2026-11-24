@@ -245,7 +245,7 @@ export default function HomePage() {
                         className="rd-hero-surface mt-8 grid min-w-0 overflow-hidden border border-[color:var(--rd-hero-line)] sm:grid-cols-[minmax(0,1fr)_15rem]"
                     >
                         <div className="flex min-w-0 flex-col justify-center p-6 sm:p-8 lg:p-10">
-                            <p className="text-[10px] font-extrabold tracking-[.14em] text-[color:var(--rd-hero-accent)]">ARTIST SPOTLIGHT / هنرمند منتخب</p>
+                            <p className="text-[10px] font-extrabold tracking-[.14em] text-[color:var(--rd-hero-accent)]">ARTIST SPOTLIGHT / {t('هنرمند منتخب')}</p>
                             <h3 className="mt-3 break-words text-2xl font-black leading-heading text-[color:var(--rd-hero-foreground)] sm:text-3xl">{spotlight.display_name}</h3>
                             {spotlight.city && <p className="mt-2 text-xs font-semibold text-[color:var(--rd-hero-muted)]">{spotlight.city}</p>}
                             <p className="mt-4 max-w-3xl text-sm leading-8 text-[color:var(--rd-hero-muted)]">{spotlight.bio || t('پورتفولیوی عمومی این هنرمند را ببینید و با آثار تأییدشده او آشنا شوید.')}</p>
