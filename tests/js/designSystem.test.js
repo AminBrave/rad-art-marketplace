@@ -515,7 +515,7 @@ test('messaging conversation filters use the shared RAD-styled Radix Tabs primit
     }
     assert.ok(messagingInbox.includes('<TabsContent value={threadFilter}'));
     assert.ok(messagingInbox.includes('<ul className="min-h-0 flex-1 divide-y'));
-    assert.ok(messagingInbox.includes('<TabsList aria-label="فیلتر گفتگوها"'));
+    assert.ok(messagingInbox.includes('<TabsList aria-label={t("فیلتر گفتگوها")}'));
     assert.ok(messagingInbox.includes('<TabsTrigger value="all"'));
     assert.ok(messagingInbox.includes('<TabsTrigger value="unread"'));
     assert.ok(messagingInbox.includes('<TabsTrigger value="archived"'));
