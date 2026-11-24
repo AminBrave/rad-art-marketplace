@@ -101,6 +101,8 @@
     --rd-page-gutter: clamp(1rem, 3vw, 2.5rem);
     --rd-header-height: 4.5rem;
     --rd-workspace-nav-height: 4.5rem;
+    --rd-workspace-sidebar-width: 15rem;
+    --rd-workspace-column-gap: 2rem;
     --rd-control-height-sm: 2.25rem;
     --rd-control-height-md: 2.75rem;
     --rd-control-height-lg: 3rem;
@@ -291,7 +293,7 @@
 
 @media (min-width: 1024px) {
     .rd-workspace-main {
-        --rd-workspace-bleed-offset: 8.5rem;
+        --rd-workspace-bleed-offset: calc((var(--rd-workspace-sidebar-width) + var(--rd-workspace-column-gap)) / 2);
     }
 
     .rd-workspace-main .rd-bleed {
@@ -300,7 +302,7 @@
     }
 
     .rd-workspace-main .rd-bleed .rd-workspace-bleed-content {
-        width: calc(min(100vw, var(--rd-content-width)) - 17rem);
+        width: calc(min(100vw, var(--rd-content-width)) - var(--rd-workspace-sidebar-width) - var(--rd-workspace-column-gap));
         max-width: none;
         margin-inline: auto;
         transform: translateX(calc(-1 * var(--rd-workspace-bleed-offset)));
