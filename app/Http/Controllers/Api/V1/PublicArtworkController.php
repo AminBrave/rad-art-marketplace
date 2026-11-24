@@ -26,7 +26,7 @@ class PublicArtworkController extends Controller
             'data' => Category::query()
                 ->where('is_active', true)
                 ->orderBy('name')
-                ->get(['id', 'name', 'slug']),
+                ->get(['id', 'name', 'name_en', 'slug']),
         ]);
     }
 
