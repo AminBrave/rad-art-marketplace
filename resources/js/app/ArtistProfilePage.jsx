@@ -135,7 +135,7 @@ export default function ArtistProfilePage() {
                     <div className="mt-5 flex min-w-0 max-w-full flex-wrap items-center gap-x-3 gap-y-2 break-words text-xs text-muted">
                             <span className="inline-flex items-center gap-2 border border-border bg-surface-muted px-3 py-1.5">
                                 <span className="h-1.5 w-1.5 rounded-full bg-olive" aria-hidden="true" />
-                                پورتفولیوی عمومی
+                                {t('پورتفولیوی عمومی')}
                             </span>
                             <span className="font-semibold tabular-nums">{allArtworks.length.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} {t('اثر بارگذاری‌شده')}</span>
                             {followState.followers_count !== undefined && followState.followers_count !== null && <span className="font-semibold tabular-nums">{Number(followState.followers_count).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} {t('دنبال‌کننده')}</span>}
