@@ -59,7 +59,7 @@ export function AdminDashboardHome() {
     ];
 
     return (
-        <Container as="section" width="wide" className="space-y-8" dir="rtl">
+        <div className="w-full space-y-8" dir="rtl">
             <WorkspaceHero
                 eyebrow="مرکز کنترل راد آرت"
                 title={<>خوش آمدید، {user?.name ?? 'مدیر'}</>}
@@ -67,6 +67,7 @@ export function AdminDashboardHome() {
                 actions={<Button variant="secondary" onClick={load} loading={loading}>به‌روزرسانی آمار</Button>}
             />
 
+            <Container width="wide" className="space-y-8">
             {errors.length > 0 && <ErrorState title="بخشی از اطلاعات دریافت نشد" description={errors.join(' ')} onRetry={load} />}
 
             <section aria-label="شاخص‌های عملیاتی" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -116,7 +117,8 @@ export function AdminDashboardHome() {
                     </Link>)}
                 </div>
             </section>
-        </Container>
+            </Container>
+        </div>
     );
 }
 
