@@ -124,7 +124,7 @@ class NotificationController extends Controller
         $conversationId = (int) ($data['conversation_id'] ?? 0);
 
         $actorNameEn = (string) ($data['actor_name_en'] ?? $data['actor_name'] ?? 'A user');
-        $senderNameEn = (string) ($data['sender_name_en'] ?? $data['sender_name'] ?? 'A user');
+        $senderNameEn = (string) ($data['sender_name_en'] ?? 'Someone');
         $titleEn = match ($kind) {
             'artist_followed' => $actorNameEn.' followed you',
             'artwork_liked' => $actorNameEn.' liked your artwork',
