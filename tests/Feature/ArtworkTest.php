@@ -31,11 +31,18 @@ class ArtworkTest extends TestCase
             'image' => UploadedFile::fake()->image('original.jpg', 1200, 800),
             'artist_profile_id' => 999,
             'status' => Artwork::STATUS_APPROVED,
+            'title_en' => 'Sample artwork',
+            'description_en' => 'An English description.',
+            'city' => 'تهران',
+            'city_en' => 'Tehran',
         ]);
 
         $response->assertCreated()
             ->assertJsonPath('data.status', Artwork::STATUS_PENDING_REVIEW)
-            ->assertJsonPath('data.title', 'اثر آزمایشی');
+            ->assertJsonPath('data.title', 'اثر آزمایشی')
+            ->assertJsonPath('data.title_en', 'Sample artwork')
+            ->assertJsonPath('data.description_en', 'An English description.')
+            ->assertJsonPath('data.city_en', 'Tehran');
 
         $artwork = Artwork::firstOrFail();
         $this->assertSame($profile->id, $artwork->artist_profile_id);
@@ -43,6 +50,10 @@ class ArtworkTest extends TestCase
         $this->assertDatabaseHas('artworks', [
             'artist_profile_id' => $profile->id,
             'status' => Artwork::STATUS_PENDING_REVIEW,
+            'title_en' => 'Sample artwork',
+            'description_en' => 'An English description.',
+            'city' => 'تهران',
+            'city_en' => 'Tehran',
         ]);
     }
 
