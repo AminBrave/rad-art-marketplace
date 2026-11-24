@@ -28,7 +28,7 @@ function ThemeControl() {
     return (
         <Button variant="ghost" type="button" onClick={cycleTheme}
             aria-label={`${t('تغییر پوسته')}؛ ${label}`}
-            title={`پوسته: ${label}`}
+            title={`${t('پوسته:')} ${label}`}
             className="min-h-0 p-0 inline-flex h-11 w-11 shrink-0 items-center justify-center border border-border bg-surface text-ink transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong">
             <Icon size={18} strokeWidth={1.9} aria-hidden="true" />
             <span className="sr-only">تغییر پوسته</span>
@@ -102,7 +102,7 @@ export function PublicLayout() {
         <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <div data-experience="discover" className="min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:pb-0">
             <a href="#main-content" className="sr-only z-[60] bg-paper px-4 py-3 text-ink focus:not-sr-only focus:fixed focus:inset-x-4 focus:top-4">
-                رفتن به محتوای اصلی
+                {t("رفتن به محتوای اصلی")}
             </a>
             <header className="sticky top-0 z-40 border-b border-divider-section bg-[color:color-mix(in_srgb,var(--color-canvas)_96%,transparent)] backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-canvas)_90%,transparent)]">
                 <div className="mx-auto flex min-h-[var(--header-height)] max-w-content items-center justify-between gap-2 px-page-gutter sm:gap-5">
@@ -114,7 +114,7 @@ export function PublicLayout() {
                         </span>
                     </Link>
 
-                    <nav aria-label="ناوبری اصلی" className={`hidden items-center gap-3 ${user ? 'xl:flex' : 'lg:flex'} xl:gap-5`}>
+                    <nav aria-label={t("ناوبری اصلی")} className={`hidden items-center gap-3 ${user ? 'xl:flex' : 'lg:flex'} xl:gap-5`}>
                         {publicLinks.map((item) => (
                             <NavLink key={item.to} to={item.to} className={navClass}>{item.label}</NavLink>
                         ))}
@@ -162,8 +162,8 @@ export function PublicLayout() {
                 >
                     <div className="mb-5 flex items-center justify-between border-b border-border pb-4">
                         <div>
-                            <DialogTitle className="text-base font-extrabold text-ink">ناوبری اصلی</DialogTitle>
-                            <DialogDescription className="mt-1 text-xs text-muted">بخش‌های مختلف راد آرت</DialogDescription>
+                            <DialogTitle className="text-base font-extrabold text-ink">{t("ناوبری اصلی")}</DialogTitle>
+                            <DialogDescription className="mt-1 text-xs text-muted">{t("بخش‌های مختلف راد آرت")}</DialogDescription>
                         </div>
                         <DialogClose asChild>
                             <Button variant="ghost"
@@ -175,7 +175,7 @@ export function PublicLayout() {
                             </Button>
                         </DialogClose>
                     </div>
-                    <nav aria-label="ناوبری موبایل" className="min-h-0 flex-1 overflow-y-auto">
+                    <nav aria-label={t("ناوبری موبایل")} className="min-h-0 flex-1 overflow-y-auto">
                         <div className="mx-auto grid max-w-content gap-1">
                             {publicLinks.map((item) => (
                                 <NavLink
@@ -265,13 +265,14 @@ export function PublicLayout() {
 }
 
 
-function notificationDate(value) {
+function notificationDate(value, locale = 'fa') {
     if (!value) return '';
     const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? '' : date.toLocaleString('fa-IR', { dateStyle: 'short', timeStyle: 'short' });
+    return Number.isNaN(date.getTime()) ? '' : date.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US', { dateStyle: 'short', timeStyle: 'short' });
 }
 
 function NotificationBell({ user }) {
+    const { t, locale } = useLanguage();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [open, setOpen] = useState(false);
@@ -444,7 +445,7 @@ function NotificationBell({ user }) {
                                                 </span>
                                                 {item.artwork_title && <span className="mt-1 block truncate text-xs text-muted">{item.artwork_title}</span>}
                                                 {item.comment_preview && <span className="mt-1 block line-clamp-2 text-xs leading-6 text-muted">{item.comment_preview}</span>}
-                                                <span className="mt-1 block text-[11px] tabular-nums text-muted">{notificationDate(item.created_at)}</span>
+                                                <span className="mt-1 block text-[11px] tabular-nums text-muted">{notificationDate(item.created_at, locale)}</span>
                                             </span>
                                             {!item.read_at && <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-terracotta" />}
                                         </Button>
@@ -456,7 +457,7 @@ function NotificationBell({ user }) {
                     {!loading && lastPage > 1 && (
                         <nav aria-label="صفحه‌بندی اعلان‌ها" className="mt-4 flex items-center justify-between gap-3">
                             <Button variant="ghost" type="button" disabled={page <= 1 || notificationsQuery.isFetching} onClick={() => setPage((value) => value - 1)} className="border border-border px-3 py-2 text-xs disabled:opacity-40">جدیدتر</Button>
-                            <span className="text-xs tabular-nums text-muted">{page.toLocaleString('fa-IR')} از {lastPage.toLocaleString('fa-IR')}</span>
+                            <span className="text-xs tabular-nums text-muted">{page.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} of {lastPage.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</span>
                             <Button variant="ghost" type="button" disabled={page >= lastPage || notificationsQuery.isFetching} onClick={() => setPage((value) => value + 1)} className="border border-border px-3 py-2 text-xs disabled:opacity-40">قدیمی‌تر</Button>
                         </nav>
                     )}
@@ -527,17 +528,13 @@ function PublicBottomNavigation({ user, profileHref }) {
                         'relative flex min-w-0 flex-col items-center justify-center gap-1 px-1 text-[10px] font-semibold leading-tight no-underline transition-colors',
                         isActive ? 'text-terracotta-strong after:absolute after:inset-x-1/3 after:top-0 after:h-0.5 after:bg-terracotta' : 'text-muted hover:text-ink',
                     ].join(' ')}>
-                        <Icon size={21} strokeWidth={isActiveIconActive(to) ? 2.2 : 1.8} aria-hidden="true" />
+                        <Icon size={21} strokeWidth={1.9} aria-hidden="true" />
                         <span className="max-w-full truncate">{label}</span>
                     </NavLink>
                 ))}
             </nav>
         </div>
     );
-}
-
-function isActiveIconActive() {
-    return false;
 }
 
 function AuthenticatedBottomNavigation({ mobileLinks }) {
