@@ -149,7 +149,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
     };
     const fieldError = (name) => errors[name]?.map((item) => <span key={item} className="mt-1 block text-xs font-normal text-danger">{item}</span>);
 
-    return <Container as="section" width="wide" className="space-y-7">
+    return <section className="min-w-0 mx-auto w-full max-w-content space-y-7">
         <PageHeader bleed={false}
             eyebrow={t("گالری شخصی")}
             title={t("مدیریت آثار")}
@@ -197,5 +197,5 @@ export default function ArtworkStudio({ user, hasProfile }) {
                 </nav>
             )}
         </section>
-    </Container>;
+    </section>;
 }
