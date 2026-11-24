@@ -136,7 +136,7 @@
                 <section class="mx-auto min-h-[65vh] max-w-7xl px-5 py-12 sm:px-8 lg:px-10" dir="rtl" aria-hidden="true">
                     <a href="/artworks" tabindex="-1" class="mb-7 block"><span class="{{ $skeletonClass }} h-4 w-28"></span></a>
                     <article class="grid gap-8 lg:grid-cols-[1.15fr_.85fr]">
-                        <div class="flex aspect-[4/3] items-center justify-center overflow-hidden bg-paper p-4 sm:p-8 lg:aspect-[4/5]">
+                        <div class="flex aspect-[3/4] items-center justify-center overflow-hidden bg-paper p-4 sm:p-8 lg:aspect-[3/4]">
                             <span class="{{ $skeletonClass }} h-full w-full"></span>
                         </div>
                         <div class="border border-border bg-paper p-6 sm:p-9">
@@ -165,7 +165,7 @@
                     <header class="mt-7 max-w-3xl border-b border-border pb-8"><span class="{{ $skeletonClass }} h-3 w-28"></span><span class="{{ $skeletonClass }} mt-3 h-10 w-2/3"></span><div class="mt-5 grid gap-2"><span class="{{ $skeletonClass }} h-3 w-full"></span><span class="{{ $skeletonClass }} h-3 w-full"></span><span class="{{ $skeletonClass }} h-3 w-4/5"></span></div></header>
                     <section class="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                         @foreach (range(1, 6) as $item)
-                            <article class="min-w-0"><div class="relative overflow-hidden bg-surface-muted"><span class="{{ $skeletonClass }} block aspect-[4/5] w-full rounded-none"></span></div><div class="grid gap-1.5 px-0.5 pb-2 pt-4"><span class="{{ $skeletonClass }} h-3 w-20"></span><span class="{{ $skeletonClass }} h-5 w-4/5"></span><span class="{{ $skeletonClass }} h-5 w-3/5"></span><span class="{{ $skeletonClass }} h-4 w-2/5"></span><span class="{{ $skeletonClass }} h-4 w-1/3"></span></div></article>
+                            <article class="min-w-0"><div class="relative overflow-hidden bg-surface-muted"><span class="{{ $skeletonClass }} block aspect-[3/4] w-full rounded-none"></span></div><div class="grid gap-1.5 px-0.5 pb-2 pt-4"><span class="{{ $skeletonClass }} h-3 w-20"></span><span class="{{ $skeletonClass }} h-5 w-4/5"></span><span class="{{ $skeletonClass }} h-5 w-3/5"></span><span class="{{ $skeletonClass }} h-4 w-2/5"></span><span class="{{ $skeletonClass }} h-4 w-1/3"></span></div></article>
                         @endforeach
                     </section>
                 </section>
@@ -200,7 +200,7 @@
                             @foreach (range(1, 6) as $item)
                                 <article class="group min-w-0 overflow-hidden border border-border bg-paper">
                                     <a href="#" tabindex="-1" class="block">
-                                        <div class="flex aspect-[4/3] items-center justify-center overflow-hidden bg-surface-muted p-3"><span class="{{ $skeletonClass }} h-full w-full"></span></div>
+                                        <div class="flex aspect-[3/4] items-center justify-center overflow-hidden bg-surface-muted p-3"><span class="{{ $skeletonClass }} h-full w-full"></span></div>
                                         <div class="grid gap-2 p-4"><span class="{{ $skeletonClass }} h-5 w-20"></span><span class="{{ $skeletonClass }} h-6 w-4/5"></span><span class="{{ $skeletonClass }} h-4 w-2/5"></span><span class="{{ $skeletonClass }} h-4 w-1/3"></span></div>
                                     </a>
                                 </article>
@@ -231,7 +231,7 @@
                         <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                             @foreach (range(1, 3) as $item)
                                 <article class="overflow-hidden border border-border bg-paper">
-                                    <div class="flex aspect-[4/3] items-center justify-center bg-surface-muted p-3"><span class="{{ $skeletonClass }} h-full w-full"></span></div>
+                                    <div class="flex aspect-[3/4] items-center justify-center bg-surface-muted p-3"><span class="{{ $skeletonClass }} h-full w-full"></span></div>
                                     <div class="grid gap-3 p-4"><div class="flex justify-between gap-2"><span class="{{ $skeletonClass }} h-5 w-2/3"></span><span class="{{ $skeletonClass }} h-6 w-20 rounded-full"></span></div><span class="{{ $skeletonClass }} h-3 w-1/3"></span><span class="{{ $skeletonClass }} h-3 w-full"></span><span class="{{ $skeletonClass }} h-3 w-4/5"></span><span class="{{ $skeletonClass }} h-9 w-28"></span></div>
                                 </article>
                             @endforeach
@@ -284,7 +284,7 @@
                         </div>
                         <div class="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             @foreach (range(1, 6) as $item)
-                                <article class="min-w-0"><div class="relative overflow-hidden bg-surface-muted"><span class="{{ $skeletonClass }} block aspect-[4/5] w-full rounded-none"></span></div><div class="grid gap-1.5 px-0.5 pb-2 pt-4"><div class="flex min-h-5 items-center justify-between gap-3"><span class="{{ $skeletonClass }} h-3 w-20"></span><span class="{{ $skeletonClass }} h-3 w-3 rounded-full"></span></div><span class="{{ $skeletonClass }} h-5 w-4/5"></span><span class="{{ $skeletonClass }} h-5 w-3/5"></span><span class="{{ $skeletonClass }} h-4 w-2/5"></span><span class="{{ $skeletonClass }} h-4 w-1/3"></span></div></article>
+                                <article class="min-w-0"><div class="relative overflow-hidden bg-surface-muted"><span class="{{ $skeletonClass }} block aspect-[3/4] w-full rounded-none"></span></div><div class="grid gap-1.5 px-0.5 pb-2 pt-4"><div class="flex min-h-5 items-center justify-between gap-3"><span class="{{ $skeletonClass }} h-3 w-20"></span><span class="{{ $skeletonClass }} h-3 w-3 rounded-full"></span></div><span class="{{ $skeletonClass }} h-5 w-4/5"></span><span class="{{ $skeletonClass }} h-5 w-3/5"></span><span class="{{ $skeletonClass }} h-4 w-2/5"></span><span class="{{ $skeletonClass }} h-4 w-1/3"></span></div></article>
                             @endforeach
                         </div>
                     </section>
@@ -355,7 +355,7 @@
                     <section class="mx-auto mt-10 max-w-7xl" dir="rtl">
                         <div class="grid gap-3 border-b border-border pb-6"><span class="{{ $skeletonClass }} h-3 w-24"></span><span class="{{ $skeletonClass }} h-9 w-2/3 max-w-sm"></span><span class="{{ $skeletonClass }} h-4 w-full max-w-xl"></span></div>
                         <div class="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">@foreach (range(1, 3) as $item)<span class="{{ $skeletonClass }} h-28 w-full"></span>@endforeach</div>
-                        <div class="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">@foreach (range(1, 6) as $item)<div class="overflow-hidden border border-border bg-paper"><span class="{{ $skeletonClass }} block aspect-[4/3] w-full"></span><div class="grid gap-3 p-4"><span class="{{ $skeletonClass }} h-3 w-20"></span><span class="{{ $skeletonClass }} h-5 w-4/5"></span><span class="{{ $skeletonClass }} h-4 w-2/5"></span></div></div>@endforeach</div>
+                        <div class="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">@foreach (range(1, 6) as $item)<div class="overflow-hidden border border-border bg-paper"><span class="{{ $skeletonClass }} block aspect-[3/4] w-full"></span><div class="grid gap-3 p-4"><span class="{{ $skeletonClass }} h-3 w-20"></span><span class="{{ $skeletonClass }} h-5 w-4/5"></span><span class="{{ $skeletonClass }} h-4 w-2/5"></span></div></div>@endforeach</div>
                     </section>
                 @endif
             @else
@@ -369,7 +369,7 @@
                         <span class="{{ $skeletonClass }} mt-5 h-12 w-36"></span>
                     </div>
                     <div class="w-full min-w-0">
-                        <span class="{{ $skeletonClass }} aspect-[4/5] w-full"></span>
+                        <span class="{{ $skeletonClass }} aspect-[3/4] w-full"></span>
                         <div class="flex min-h-[4.75rem] items-center justify-between gap-4 px-2 py-4">
                             <div class="grid gap-2"><span class="{{ $skeletonClass }} h-3 w-32"></span><span class="{{ $skeletonClass }} h-4 w-24"></span></div>
                             <span class="{{ $skeletonClass }} h-3 w-20"></span>
@@ -390,7 +390,7 @@
                     <div class="mb-8 flex items-end justify-between gap-4"><div class="grid gap-3"><span class="{{ $skeletonClass }} h-3 w-24"></span><span class="{{ $skeletonClass }} h-8 w-40"></span></div><span class="{{ $skeletonClass }} h-4 w-20"></span></div>
                     <div class="grid grid-cols-1 gap-5 md:grid-cols-3" aria-hidden="true">
                         @foreach (range(1, 3) as $item)
-                            <article class="min-w-0 border border-border bg-paper"><a href="#" tabindex="-1" class="block"><div class="flex aspect-[4/3] items-center justify-center overflow-hidden bg-surface-muted p-3"><span class="{{ $skeletonClass }} aspect-[4/3] w-full"></span></div><div class="grid gap-2 p-4"><span class="{{ $skeletonClass }} h-5 w-20"></span><span class="{{ $skeletonClass }} h-6 w-4/5"></span><span class="{{ $skeletonClass }} h-4 w-2/5"></span><span class="{{ $skeletonClass }} h-4 w-1/3"></span></div></a></article>
+                            <article class="min-w-0 border border-border bg-paper"><a href="#" tabindex="-1" class="block"><div class="flex aspect-[3/4] items-center justify-center overflow-hidden bg-surface-muted p-3"><span class="{{ $skeletonClass }} aspect-[3/4] w-full"></span></div><div class="grid gap-2 p-4"><span class="{{ $skeletonClass }} h-5 w-20"></span><span class="{{ $skeletonClass }} h-6 w-4/5"></span><span class="{{ $skeletonClass }} h-4 w-2/5"></span><span class="{{ $skeletonClass }} h-4 w-1/3"></span></div></a></article>
                         @endforeach
                     </div>
                 </section>
