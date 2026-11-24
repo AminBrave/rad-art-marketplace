@@ -163,14 +163,18 @@ class ArtistProfileController extends Controller
             'id' => $artwork->id,
             'slug' => $artwork->slug,
             'title' => $artwork->title,
+            'title_en' => $artwork->title_en,
             'description' => $artwork->description,
+            'description_en' => $artwork->description_en,
+            'city' => $artwork->city,
+            'city_en' => $artwork->city_en,
             'medium' => $artwork->medium,
             'dimensions' => $artwork->dimensions,
             'year' => $artwork->year,
             'price' => $artwork->price,
             'availability' => $artwork->availability,
             'image_url' => route('api.v1.artworks.image', $artwork->slug),
-            'category' => ['id' => $artwork->category->id, 'name' => $artwork->category->name, 'slug' => $artwork->category->slug],
+            'category' => ['id' => $artwork->category->id, 'name' => $artwork->category->name, 'name_en' => $artwork->category->name_en, 'slug' => $artwork->category->slug],
         ];
 
         if ($includeEngagement) {
