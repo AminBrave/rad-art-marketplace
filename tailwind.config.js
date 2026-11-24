@@ -34,6 +34,11 @@ export default {
                     DEFAULT: 'var(--rd-border-subtle)',
                     strong: 'var(--rd-border-strong)',
                 },
+                divider: {
+                    section: 'var(--rd-divider-section)',
+                    group: 'var(--rd-divider-group)',
+                    nested: 'var(--rd-divider-nested)',
+                },
                 surface: {
                     DEFAULT: 'var(--rd-surface)',
                     muted: 'var(--rd-surface-muted)',
