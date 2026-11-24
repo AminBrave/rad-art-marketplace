@@ -249,7 +249,7 @@ export function AdminUsersPage() {
                 const needsAdminConfirmation = confirmAdminId === item.id && selected === 'admin' && item.role !== 'admin';
                 return <article key={item.id} className="min-w-0 border-t border-border bg-transparent py-5">
                     <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div className="min-w-0"><p className="mb-1 text-[10px] font-bold tracking-wide text-muted">حساب کاربری · {item.id}</p><h2 className="break-words font-bold">{item.name}</h2><p dir="ltr" className="mt-1 break-all text-left text-xs text-muted">{item.email}</p></div>
+                        <div className="min-w-0"><p className="mb-1 text-[10px] font-bold tracking-wide text-muted">حساب کاربری · {item.id}</p><h2 className="break-words font-bold">{item.name}</h2><p dir="ltr" className="mt-1 break-all text-end text-xs text-muted">{item.email}</p></div>
                         <Badge variant={item.role === 'admin' ? 'accent' : item.role === 'artist' ? 'info' : 'neutral'}>{roleLabels[item.role] ?? item.role}</Badge>
                     </div>
                     <div className="mt-5 border-t border-border/70 pt-4">
