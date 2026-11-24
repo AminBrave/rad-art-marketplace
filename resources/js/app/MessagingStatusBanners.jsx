@@ -2,8 +2,7 @@ import { LoaderCircle } from 'lucide-react';
 import { useLanguage } from './LanguageContext';
 import { Button } from '../components/ui';
 
-export default function MessagingStatusBanners
-    const { t } = useLanguage();({
+export default function MessagingStatusBanners({
     notice,
     error,
     inboxError,
@@ -12,6 +11,7 @@ export default function MessagingStatusBanners
     onRetryInbox,
     onRetryDirectStart,
 }) {
+    const { t } = useLanguage();
     return (
         <>
             {notice && <p role="status" className="rounded-md border border-border bg-surface-muted p-3 text-sm">{notice}</p>}
