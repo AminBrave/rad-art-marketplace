@@ -94,7 +94,7 @@ export default function HomePage() {
                 <Container className="pb-16 pt-10 sm:pb-20 sm:pt-16 lg:pb-24 lg:pt-20">
                     <div className="mb-8 flex items-center justify-between border-y border-[color:var(--rd-hero-line)] py-3.5 text-[10px] font-extrabold tracking-[.18em] text-[color:var(--rd-hero-muted)] sm:text-xs">
                         <span>{t('گالری هنر مستقل معاصر')}</span>
-                        <span dir="ltr" className="font-latin">RAD ART / DISCOVER &amp; CONNECT</span>
+                        <span className="font-latin" lang="en">RAD ART / DISCOVER &amp; CONNECT</span>
                     </div>
                     <div className="relative isolate flex w-full min-w-0 flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
                         <span aria-hidden="true" className="pointer-events-none absolute end-6 top-0 z-0 hidden h-20 w-20 border border-[color:var(--rd-hero-line)] sm:block lg:end-10 lg:h-28 lg:w-28" />
@@ -171,7 +171,7 @@ export default function HomePage() {
                             key={step.number}
                             className="grid min-w-0 grid-cols-[3rem_minmax(0,1fr)] items-start gap-4 bg-paper p-5 sm:p-6"
                         >
-                            <span dir="ltr" className="pt-1 font-latin text-xs font-bold tracking-widest text-terracotta-strong">{step.number}</span>
+                            <span lang="en" className="pt-1 font-latin text-xs font-bold tracking-widest text-terracotta-strong">{step.number}</span>
                             <div className="min-w-0">
                                 <h2 className="text-lg font-extrabold text-ink">{t(step.title)}</h2>
                                 <p className="mt-2 text-sm leading-7 text-muted">{t(step.description)}</p>
@@ -213,7 +213,7 @@ export default function HomePage() {
                         {loading ? [0, 1, 2, 3].map((item) => <Skeleton key={item} height={null} className="h-28 w-full " />) : categories.length ? categories.slice(0, 8).map((category, index) => (
                             <Link key={category.id} to={'/artworks?category=' + encodeURIComponent(category.slug)} className="group flex min-h-32 items-center gap-4 border border-border bg-canvas p-5 text-start no-underline transition-colors hover:border-terracotta hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
                                 <span className="min-w-0 flex-1">
-                                    <span dir="ltr" className="block font-latin text-[10px] font-bold tracking-widest text-terracotta-strong">0{index + 1}</span>
+                                    <span lang="en" className="block font-latin text-[10px] font-bold tracking-widest text-terracotta-strong">0{index + 1}</span>
                                     <span className="mt-2 block break-words font-bold text-ink">{category.name}</span>
                                 </span>
                                 <ArrowUpLeft size={18} className="shrink-0 text-muted transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-terracotta-strong" aria-hidden="true" />
@@ -281,7 +281,7 @@ export default function HomePage() {
                                 <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                     {collections.slice(0, 3).map((item, index) => (
                                         <Link key={item.id} to={'/collections/' + item.slug} className="group flex min-h-56 flex-col border border-border bg-paper p-6 no-underline transition-colors hover:border-terracotta">
-                                            <span dir="ltr" className="font-latin text-[10px] font-bold tracking-widest text-terracotta-strong">SELECTION / 0{index + 1}</span>
+                                            <span lang="en" className="font-latin text-[10px] font-bold tracking-widest text-terracotta-strong">SELECTION / 0{index + 1}</span>
                                             <div className="mt-auto pt-10">
                                                 <p className="text-xs text-muted">{item.artwork_count} {t('اثر منتخب')}</p>
                                                 <h3 className="mt-2 text-xl font-black text-ink">{item.title}</h3>
