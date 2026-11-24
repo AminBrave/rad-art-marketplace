@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
-import { ArtistCard, ArtistCardSkeleton, EmptyState, ErrorState, SearchField, PageContainer, SectionHeader, Button, Section, Container } from '../components/ui';
+import { ArtistCard, ArtistCardSkeleton, EmptyState, ErrorState, SearchField, SectionHeader, Button, Section, Container } from '../components/ui';
 
 export default function ArtistDirectoryPage() {
     const [params, setParams] = useSearchParams();
@@ -45,10 +45,12 @@ export default function ArtistDirectoryPage() {
     const submitSearch = (value) => setParams(value.trim() ? { q: value.trim() } : {});
 
     return (
-        <PageContainer as="div" className="min-h-[65vh] pb-16 pt-8 sm:pt-12" dir="rtl">
+        <div className="w-full min-w-0 min-h-[65vh] pb-16 pt-8 sm:pt-12" dir="rtl">
+            <Container width="wide">
             <nav aria-label="مسیر صفحه" className="text-xs text-muted">
                 <span>خانه</span><span className="mx-2" aria-hidden="true">/</span><span aria-current="page" className="text-ink">هنرمندان</span>
             </nav>
+            </Container>
 
             <Section bleed className="mt-6 overflow-hidden bg-ink text-inverse">
                 <Container width="wide">
@@ -69,7 +71,7 @@ export default function ArtistDirectoryPage() {
                 </Container>
             </Section>
 
-            <section className="mt-10" aria-labelledby="artist-directory-heading">
+            <Container as="section" width="wide" className="mt-10" aria-labelledby="artist-directory-heading">
                 <SectionHeader
                     id="artist-directory-heading"
                     eyebrow="جامعه هنرمندان"
@@ -86,15 +88,15 @@ export default function ArtistDirectoryPage() {
                 ) : (
                     <EmptyState className="mt-8" title="هنرمندی پیدا نشد" description="نام یا شهر دیگری را جست‌وجو کنید." />
                 )}
-            </section>
+            </Container>
 
             {!loading && !error && meta.last_page > 1 && (
-                <nav aria-label="صفحه‌بندی هنرمندان" className="mt-10 flex items-center justify-center gap-4">
+                <Container as="nav" width="wide" className="mt-10 flex items-center justify-center gap-4" aria-label="صفحه‌بندی هنرمندان">
                     <Button variant="outline" type="button" disabled={page <= 1} onClick={() => updatePage(page - 1)} className="min-h-11 border border-border px-5 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40">قبلی</Button>
                     <span className="text-sm text-muted">صفحه {meta.current_page.toLocaleString('fa-IR')} از {meta.last_page.toLocaleString('fa-IR')}</span>
                     <Button variant="outline" type="button" disabled={page >= meta.last_page} onClick={() => updatePage(page + 1)} className="min-h-11 border border-border px-5 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40">بعدی</Button>
-                </nav>
+                </Container>
             )}
-        </PageContainer>
+        </div>
     );
 }
