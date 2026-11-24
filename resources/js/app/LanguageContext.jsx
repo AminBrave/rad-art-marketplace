@@ -214,7 +214,26 @@ const english = {
     "عبارت جست‌وجو یا گزینه‌های فیلتر را تغییر دهید.": "Change your search or filter options.",
     "دریافت آثار بیشتر انجام نشد.": "Could not load more artworks.",
     "بارگذاری آثار بیشتر": "Load more artworks",
-    "همه آثار نمایش داده شدند.": "All artworks are displayed."
+    "همه آثار نمایش داده شدند.": "All artworks are displayed.",
+    "جزئیات اثر": "Artwork details",
+    "ارتباط با سرور برقرار نشد.": "Could not connect to the server.",
+    "تلاش دوباره": "Try again",
+    "بازگشت به گالری": "Back to gallery",
+    "تصویر اثر با حفظ نسبت و جزئیات اصلی نمایش داده شده است.": "The artwork image is shown at its original aspect ratio and with its details preserved.",
+    "پرونده اثر": "Artwork details",
+    "تکنیک / مواد": "Medium / materials",
+    "ابعاد": "Dimensions",
+    "سال خلق": "Year created",
+    "قیمت": "Price",
+    "پیام مستقیم درباره این اثر": "Message the artist about this artwork",
+    "برای ارسال پیام مستقیم وارد شوید": "Sign in to send a direct message",
+    "ارسال پیام مستقیم از حساب خریدار امکان‌پذیر است.": "Direct messages are available from buyer accounts.",
+    "ادامه مسیر کشف": "Continue exploring",
+    "آثار مرتبط": "Related artworks",
+    "آثاری از همین دسته یا همین هنرمند": "More from this category or artist",
+    "مشاهده همه آثار": "View all artworks",
+    "این اثر در دسترس نیست": "This artwork is unavailable",
+    "ممکن است انتشار آن متوقف شده باشد یا نشانی تغییر کرده باشد.": "It may have been unpublished or its address may have changed."
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 
