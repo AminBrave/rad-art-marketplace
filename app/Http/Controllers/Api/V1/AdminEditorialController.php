@@ -32,7 +32,7 @@ class AdminEditorialController extends Controller
             ->with('artistProfile')->orderBy('title')->limit(200)->get()
             ->map(fn (Artwork $artwork) => ['id' => $artwork->id, 'title' => $artwork->title, 'title_en' => $artwork->title_en, 'artist' => $artwork->artistProfile->display_name, 'artist_en' => $artwork->artistProfile->display_name_en]);
 
-        $artists = ArtistProfile::query()->where('is_public', true)->orderBy('display_name')->limit(200)->get(['id', 'display_name', 'slug']);
+        $artists = ArtistProfile::query()->where('is_public', true)->orderBy('display_name')->limit(200)->get(['id', 'display_name', 'display_name_en', 'slug']);
 
         return response()->json(['data' => ['artworks' => $artworks, 'artists' => $artists]]);
     }
@@ -138,7 +138,7 @@ class AdminEditorialController extends Controller
                 'starts_at' => $selection->starts_at?->toISOString(),
                 'ends_at' => $selection->ends_at?->toISOString(),
                 'is_published' => $selection->is_published,
-                'artist' => ['display_name' => $selection->artistProfile->display_name, 'slug' => $selection->artistProfile->slug],
+                'artist' => ['display_name' => $selection->artistProfile->display_name, 'display_name_en' => $selection->artistProfile->display_name_en, 'slug' => $selection->artistProfile->slug],
             ]);
 
         return response()->json(['data' => $items]);
