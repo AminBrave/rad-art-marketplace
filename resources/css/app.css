@@ -90,11 +90,12 @@
     --rd-space-24: 6rem;
 
     /* Shape, elevation and responsive layout */
-    --rd-radius-sm: 0.375rem;
-    --rd-radius-md: 0.625rem;
-    --rd-radius-lg: 0.875rem;
-    --rd-radius-xl: 1.125rem;
-    --rd-radius-pill: 9999px;
+    --rd-radius-0: 0;
+    --rd-radius-sm: var(--rd-radius-0);
+    --rd-radius-md: var(--rd-radius-0);
+    --rd-radius-lg: var(--rd-radius-0);
+    --rd-radius-xl: var(--rd-radius-0);
+    --rd-radius-pill: var(--rd-radius-0);
     --rd-shadow-soft: 0 8px 28px rgb(36 35 32 / 6%);
     --rd-shadow-raised: 0 16px 40px rgb(36 35 32 / 12%);
     --rd-content-width: 84rem;
@@ -295,15 +296,7 @@
 .rd-workspace-main {
     --rd-workspace-bleed-offset: 0px;
 }
-
-/*
- * Rademan uses a strict square-corner visual language. Apply it consistently
- * to controls, cards, media frames, badges and decorative surfaces.
- */
-:where(*, *::before, *::after) {
-    border-radius: 0 !important;
-}
-
+\n
 /*
  * The workspace grid owns the shared page gutter. Nested section containers
  * keep their width semantics but must not add a second horizontal gutter.
