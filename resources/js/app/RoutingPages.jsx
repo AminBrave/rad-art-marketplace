@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import { useTheme } from './useTheme';
 import { WorkspaceLayout } from './Layouts';
 import { getWorkspacePrimaryLinks } from './workspaceNavigation';
 import { Skeleton, ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, ArtistWorkspaceOverviewSkeleton, BuyerDashboardSkeleton, FormFieldSkeleton, ArtworkStudioListSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, AdminEditorialSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton, PageHeader, WorkspaceHero, Checkbox, FormField, TextInput, TextareaField, Button, Container, Section } from '../components/ui';
@@ -337,6 +338,100 @@ export function ArtistDashboardHome() {
             </div>
             </Container>
         </div>
+    );
+}
+
+
+export function WorkspaceSettingsPage() {
+    const { user } = useAuth();
+    const { theme, cycleTheme } = useTheme();
+    const queryClient = useQueryClient();
+    const preferenceKey = ['notifications', user?.id, 'preferences'];
+    const preferencesQuery = useQuery({
+        queryKey: preferenceKey,
+        queryFn: async ({ signal }) => {
+            const { data } = await axios.get('/api/v1/notifications/preferences', { signal });
+            return data.data ?? {
+                in_app_messages: true,
+                in_app_follows: true,
+                in_app_artwork_likes: true,
+                in_app_artwork_comments: true,
+                in_app_comment_replies: true,
+                email_available: false,
+            };
+        },
+        enabled: Boolean(user?.id) && user?.role !== 'admin',
+    });
+    const updatePreference = useMutation({
+        mutationKey: ['notifications', 'update-preference', user?.id],
+        mutationFn: ({ key, enabled }) => axios.patch('/api/v1/notifications/preferences', { [key]: enabled }),
+        onMutate: async ({ key, enabled }) => {
+            await queryClient.cancelQueries({ queryKey: preferenceKey });
+            const previous = queryClient.getQueryData(preferenceKey);
+            queryClient.setQueryData(preferenceKey, (current) => ({ ...(current ?? {}), [key]: enabled }));
+            return { previous };
+        },
+        onError: (_, __, context) => {
+            if (context?.previous) queryClient.setQueryData(preferenceKey, context.previous);
+        },
+        onSuccess: ({ data }) => queryClient.setQueryData(preferenceKey, data.data),
+    });
+    const preferences = preferencesQuery.data ?? {
+        in_app_messages: true, in_app_follows: true, in_app_artwork_likes: true,
+        in_app_artwork_comments: true, in_app_comment_replies: true,
+    };
+    const preferenceOptions = [
+        ['in_app_messages', 'پیام‌های جدید', 'هنگامی که پیام تازه‌ای در فضای کاربری دریافت می‌کنید'],
+        ['in_app_follows', 'دنبال‌کننده‌های تازه', 'هنگامی که کاربری شما را دنبال می‌کند'],
+        ['in_app_artwork_likes', 'پسندیدن آثار', 'هنگامی که کسی یکی از آثار شما را می‌پسندد'],
+        ['in_app_artwork_comments', 'دیدگاه‌های آثار', 'هنگامی که کسی درباره یکی از آثار شما دیدگاه می‌نویسد'],
+        ['in_app_comment_replies', 'پاسخ به دیدگاه‌ها', 'هنگامی که کسی به دیدگاه شما پاسخ می‌دهد'],
+    ];
+    const [error, setError] = useState('');
+    const changePreference = async (key, enabled) => {
+        setError('');
+        try {
+            await updatePreference.mutateAsync({ key, enabled });
+        } catch {
+            setError('ذخیره تنظیمات انجام نشد. دوباره تلاش کنید.');
+        }
+    };
+
+    return (
+        <Container as="section" width="wide" className="space-y-7" dir="rtl">
+            <PageHeader eyebrow="حساب کاربری" title="تنظیمات" description="ترجیحات نمایش و اعلان‌های فضای کاربری را از یک بخش مدیریت کنید." />
+            <section className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_15rem]">
+                <div className="min-w-0 border-y border-divider-section bg-paper p-5 sm:p-6">
+                    <p className="text-xs font-bold text-terracotta-strong">نمایش</p>
+                    <h2 className="mt-2 text-lg font-extrabold text-ink">پوسته محیط کاربری</h2>
+                    <p className="mt-2 text-sm leading-7 text-muted">ظاهر راد آرت را با نور محیط یا ترجیح خود هماهنگ کنید.</p>
+                </div>
+                <div className="flex flex-col justify-center gap-3 border-y border-divider-section bg-surface-muted p-5">
+                    <span className="text-xs font-semibold text-muted">حالت فعلی: {theme === 'dark' ? 'تیره' : theme === 'light' ? 'روشن' : 'هماهنگ با دستگاه'}</span>
+                    <Button type="button" variant="outline" onClick={cycleTheme}>تغییر پوسته</Button>
+                </div>
+            </section>
+            {user?.role !== 'admin' && (
+                <section className="space-y-4">
+                    <div>
+                        <p className="text-xs font-bold text-terracotta-strong">اعلان‌ها</p>
+                        <h2 className="mt-2 text-lg font-extrabold text-ink">اعلان‌های درون‌برنامه‌ای</h2>
+                        <p className="mt-2 text-sm leading-7 text-muted">مشخص کنید کدام رویدادها در صندوق اعلان‌های شما نمایش داده شوند. تغییرات به‌صورت خودکار ذخیره می‌شوند.</p>
+                    </div>
+                    {preferencesQuery.isPending ? <p className="text-sm text-muted">در حال دریافت تنظیمات…</p> : (
+                        <div className="grid gap-3 sm:grid-cols-2">
+                            {preferenceOptions.map(([key, label, description]) => (
+                                <Checkbox key={key} checked={Boolean(preferences[key])} disabled={updatePreference.isPending} onChange={(event) => changePreference(key, event.target.checked)} className="flex min-h-20 items-start gap-3 border-y border-divider-group bg-paper p-4 text-sm leading-6">
+                                    <span className="min-w-0"><strong className="block font-bold text-ink">{label}</strong><span className="mt-1 block text-xs text-muted">{description}</span></span>
+                                </Checkbox>
+                            ))}
+                        </div>
+                    )}
+                    <p className="text-xs leading-6 text-muted">اعلان ایمیلی و پیامکی در این نسخه غیرفعال است.</p>
+                </section>
+            )}
+            {error && <p role="alert" className="text-sm text-danger">{error}</p>}
+        </Container>
     );
 }
 
