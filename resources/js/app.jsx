@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { queryClient } from './lib/queryClient';
 import AppRouter from './app/AppRouter';
 import { ThemeProvider } from './app/ThemeContext.jsx';
+import { LanguageProvider } from './app/LanguageContext.jsx';
 import './bootstrap';
 import { auditColorAccessibility } from './lib/colorAccessibility';
 
@@ -37,5 +38,5 @@ const reactRoot = rootContainer[reactRootKey] ?? createRoot(rootContainer);
 rootContainer[reactRootKey] = reactRoot;
 
 reactRoot.render(
-    <React.StrictMode><QueryClientProvider client={queryClient}><ThemeProvider>{RootApp}</ThemeProvider></QueryClientProvider></React.StrictMode>,
+    <React.StrictMode><QueryClientProvider client={queryClient}><LanguageProvider><ThemeProvider>{RootApp}</ThemeProvider></LanguageProvider></QueryClientProvider></React.StrictMode>,
 );
