@@ -335,7 +335,7 @@ test('artist profile content cannot expand the viewport horizontally', () => {
     assert.ok(artistProfile.includes('overflow-x-clip pb-16 pt-8'));
     assert.ok(artistProfile.includes('break-words text-2xl font-black tracking-tight text-ink sm:text-3xl [overflow-wrap:anywhere]'));
     assert.ok(artistProfile.includes('whitespace-pre-line break-words text-sm leading-8 text-muted [overflow-wrap:anywhere]'));
-    assert.ok(artistProfile.includes('max-w-full whitespace-normal break-words text-center'));
+    assert.ok(artistProfile.includes('flex min-w-0 max-w-full flex-wrap items-center gap-x-3 gap-y-2 break-words text-xs text-muted'));
     assert.ok(artistProfile.includes('grid min-w-0 max-w-full grid-cols-1'));
     assert.ok(artistProfile.includes('className="min-w-0 [overflow-wrap:anywhere]"'));
 });
@@ -660,7 +660,7 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(layouts.includes('aria-label={t("ناوبری اصلی")}'), 'Public discovery navigation remains available with localized labeling.');
     assert.ok(layouts.includes('<ThemeControl />'), 'The public shell exposes the global theme control.');
     assert.ok(routeLoading.includes('cycleTheme'), 'Workspace theme preferences live on the settings route.');
-    assert.ok(css.includes('.rd-page-frame--workspace .rd-container {\n    padding-inline: 0;'), 'Workspace grid owns the shared horizontal gutter without nested double padding.');
+    assert.ok(css.includes('.rd-page-frame--workspace .rd-container {\n    padding: 0;'), 'Workspace grid owns the shared horizontal gutter without nested double padding.');
     assert.ok(css.includes('--workspace-bottom-nav-primary-height: var(--rd-workspace-nav-height);'));
     assert.ok(css.includes('--workspace-bottom-nav-height: var(--rd-workspace-nav-height);'));
     assert.doesNotMatch(css, /--workspace-bottom-nav-secondary-height/);
