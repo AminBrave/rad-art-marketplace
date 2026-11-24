@@ -412,8 +412,8 @@ export function WorkspaceSettingsPage() {
                 </div>
                 <div className="flex flex-col justify-center gap-3 border border-divider-group bg-surface-muted p-5">
                     <div>
-                        <p className="text-[11px] font-semibold text-muted">حالت فعلی</p>
-                        <p className="mt-1 text-sm font-bold text-ink">{theme === 'dark' ? 'تیره' : theme === 'light' ? 'روشن' : 'هماهنگ با دستگاه'}</p>
+                        <p className="text-[11px] font-semibold text-muted">{t('حالت فعلی')}</p>
+                        <p className="mt-1 text-sm font-bold text-ink">{t(theme === 'dark' ? 'تیره' : theme === 'light' ? 'روشن' : 'هماهنگ با دستگاه')}</p>
                     </div>
                     <Button type="button" variant="outline" onClick={cycleTheme}>{t('تغییر پوسته')}</Button>
                 </div>
@@ -428,7 +428,7 @@ export function WorkspaceSettingsPage() {
                         description={t('رویدادهایی را که می‌خواهید در صندوق اعلان‌ها ببینید انتخاب کنید.')}
                         actions={<span className="text-[11px] font-semibold text-muted">{updatePreference.isPending ? 'در حال ذخیره…' : t('ذخیره خودکار')}</span>}
                     />
-                    {preferencesQuery.isError ? <p role="alert" className="text-sm text-danger"{t('دریافت تنظیمات اعلان‌ها انجام نشد. صفحه را دوباره بارگذاری کنید.')}</p> : preferencesQuery.isPending ? <p className="text-sm text-muted">در حال دریافت تنظیمات…</p> : (
+                    {preferencesQuery.isError ? <p role="alert" className="text-sm text-danger">{t('دریافت تنظیمات اعلان‌ها انجام نشد. صفحه را دوباره بارگذاری کنید.')}</p> : preferencesQuery.isPending ? <p className="text-sm text-muted">{t('در حال دریافت تنظیمات…')}</p> : (
                         <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
                             {preferenceOptions.map(([key, label, description]) => (
                                 <Checkbox
@@ -510,7 +510,7 @@ export function ArtistProfileSettings() {
                 title={t("پروفایل هنرمند")}
                 description={t("اطلاعات معرفی و وضعیت نمایش عمومی پروفایل خود را مدیریت کنید.")}
             />
-            {profileError && <p role="alert" className="mt-4 text-sm text-warning">{profileError}</p>}
+            {profileError && <p role="alert" className="mt-4 text-sm text-warning">{t(profileError)}</p>}
             <form onSubmit={save} className="mt-6 grid gap-5 border-y border-border py-6 sm:grid-cols-2">
                 <FormField label={t("نام نمایشی")} required error={errors.display_name?.map(t).join(' ')}><TextInput name="display_name" value={form.display_name ?? ''} onChange={update} required maxLength="120" /></FormField>
                 <FormField label={t("نام هنری به انگلیسی")} error={errors.display_name_en?.map(t).join(' ')}><TextInput name="display_name_en" value={form.display_name_en ?? ''} onChange={update} maxLength="120" dir="ltr" className="text-start" /></FormField>
@@ -518,17 +518,17 @@ export function ArtistProfileSettings() {
                 <FormField label={t("درباره هنرمند به انگلیسی")} error={errors.bio_en?.map(t).join(' ')} className="sm:col-span-2"><TextareaField name="bio_en" value={form.bio_en ?? ''} onChange={update} rows={4} maxLength="2000" dir="ltr" className="text-start" /></FormField>
                 <FormField label={t("شهر")} error={errors.city?.map(t).join(' ')}><TextInput name="city" value={form.city ?? ''} onChange={update} maxLength="120" /></FormField>
                 <FormField label={t("شهر به انگلیسی")} error={errors.city_en?.map(t).join(' ')}><TextInput name="city_en" value={form.city_en ?? ''} onChange={update} maxLength="120" dir="ltr" className="text-start" /></FormField>
-                <FormField label={t("شناسه اینستاگرام")} error={errors.instagram_handle?.join(' ')}><TextInput name="instagram_handle" value={form.instagram_handle ?? ''} onChange={update} maxLength="30" dir="ltr" className="text-start" /></FormField>
-                <FormField label={t("وب‌سایت")} error={errors.website_url?.join(' ')} className="sm:col-span-2"><TextInput name="website_url" type="url" value={form.website_url ?? ''} onChange={update} dir="ltr" className="text-start" placeholder="https://example.com" /></FormField>
+                <FormField label={t("شناسه اینستاگرام")} error={errors.instagram_handle?.map(t).join(' ')}><TextInput name="instagram_handle" value={form.instagram_handle ?? ''} onChange={update} maxLength="30" dir="ltr" className="text-start" /></FormField>
+                <FormField label={t("وب‌سایت")} error={errors.website_url?.map(t).join(' ')} className="sm:col-span-2"><TextInput name="website_url" type="url" value={form.website_url ?? ''} onChange={update} dir="ltr" className="text-start" placeholder="https://example.com" /></FormField>
                 <Checkbox name="is_public" checked={Boolean(form.is_public)} onChange={update} className="flex min-h-11 items-center gap-3 text-sm font-semibold sm:col-span-2">{t("نمایش عمومی پروفایل")}</Checkbox>
                 <div className="sm:col-span-2">
                     <Button type="submit" disabled={busy} loading={busy}>{busy ? t('در حال ذخیره…') : t('ذخیره پروفایل')}</Button>
-                    {profile?.slug && <Link to={'/artists/' + profile.slug} className="ms-4 text-sm font-semibold text-terracotta-strong underline">{profile.is_public ? 'پیش‌نمایش پروفایل عمومی' : 'پیش‌نمایش خصوصی پروفایل'}</Link>}
+                    {profile?.slug && <Link to={'/artists/' + profile.slug} className="ms-4 text-sm font-semibold text-terracotta-strong underline">{t(profile.is_public ? 'پیش‌نمایش پروفایل عمومی' : 'پیش‌نمایش خصوصی پروفایل')}</Link>}
                     {profile?.slug && !profile.is_public && <p className="mt-3 text-xs leading-6 text-muted sm:col-span-2">{t("این پیش‌نمایش فقط برای شما و مدیران مجاز قابل مشاهده است؛ بازدیدکنندگان عمومی به پروفایل خصوصی دسترسی ندارند.")}</p>}
-                    <p className="mt-2 text-xs text-muted sm:col-span-2">{(form.bio?.length ?? 0).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} از ۲۰۰۰ نویسه برای معرفی هنری استفاده شده است.</p>
+                    <p className="mt-2 text-xs text-muted sm:col-span-2">{(form.bio?.length ?? 0).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} {t('از ۲۰۰۰ نویسه برای معرفی هنری استفاده شده است.')}</p>
                 </div>
             </form>
-            {message && <p role="status" className="mt-4 text-sm text-muted">{message}</p>}
+            {message && <p role="status" className="mt-4 text-sm text-muted">{t(message)}</p>}
         </section>
     );
 }
@@ -552,35 +552,38 @@ export function AdminWorkspaceLayout() {
 }
 
 export function PublicInfoPage({ title, description }) {
+    const { t } = useLanguage();
     return (
         <Container as="div" width="reading" className="py-16">
             <p className="text-sm font-bold text-terracotta-strong">راد آرت</p>
-            <h1 className="mt-3 text-3xl font-black">{title}</h1>
-            <p className="mt-5 leading-8 text-muted">{description}</p>
-            <p className="mt-6 border-y border-border bg-surface-muted px-5 py-5 text-sm text-muted">این صفحه در نقشه مسیرهای MVP 2 ثبت شده و محتوای کامل آن در مرحله محتوای عمومی تکمیل می‌شود.</p>
+            <h1 className="mt-3 text-3xl font-black">{t(title)}</h1>
+            <p className="mt-5 leading-8 text-muted">{t(description)}</p>
+            <p className="mt-6 border-y border-border bg-surface-muted px-5 py-5 text-sm text-muted">{t('این صفحه در نقشه مسیرهای MVP 2 ثبت شده و محتوای کامل آن در مرحله محتوای عمومی تکمیل می‌شود.')}</p>
         </Container>
     );
 }
 
 export function UnauthorizedPage() {
+    const { t } = useLanguage();
     const { user } = useAuth();
     return (
         <Container as="div" width="reading" className="py-24 text-center">
             <p className="text-sm font-bold text-terracotta-strong">۴۰۳</p>
-            <h1 className="mt-3 text-4xl font-black tracking-tight">دسترسی به این بخش مجاز نیست</h1>
-            <p className="mt-4 leading-8 text-muted">نقش این حساب اجازه ورود به این فضای کاربری را ندارد. مجوزهای واقعی همچنان در سمت سرور بررسی می‌شوند.</p>
-            <Link to={user ? (user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist') : '/'} className="mt-8 inline-flex min-h-12 items-center border border-ink bg-ink px-6 py-3 font-bold text-inverse transition-colors hover:border-terracotta hover:bg-terracotta">بازگشت</Link>
+            <h1 className="mt-3 text-4xl font-black tracking-tight" >{t('دسترسی به این بخش مجاز نیست')}</h1>
+            <p className="mt-4 leading-8 text-muted">{t('نقش این حساب اجازه ورود به این فضای کاربری را ندارد. مجوزهای واقعی همچنان در سمت سرور بررسی می‌شوند.')}</p>
+            <Link to={user ? (user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist') : '/'} className="mt-8 inline-flex min-h-12 items-center border border-ink bg-ink px-6 py-3 font-bold text-inverse transition-colors hover:border-terracotta hover:bg-terracotta"{t('بازگشت')}</Link>
         </Container>
     );
 }
 
 export function NotFoundPage() {
+    const { t } = useLanguage();
     return (
         <Container as="div" width="reading" className="py-20 text-center">
             <p className="text-sm font-bold text-terracotta-strong">۴۰۴</p>
-            <h1 className="mt-3 text-4xl font-black tracking-tight">این صفحه پیدا نشد</h1>
-            <p className="mt-4 leading-8 text-muted">نشانی واردشده معتبر نیست یا صفحه جابه‌جا شده است.</p>
-            <Link to="/" className="mt-8 inline-flex min-h-12 items-center border border-ink bg-ink px-6 py-3 font-bold text-inverse transition-colors hover:border-terracotta hover:bg-terracotta">بازگشت به صفحه اصلی</Link>
+            <h1 className="mt-3 text-4xl font-black tracking-tight" >{t('این صفحه پیدا نشد')}</h1>
+            <p className="mt-4 leading-8 text-muted">{t('نشانی واردشده معتبر نیست یا صفحه جابه‌جا شده است.')}</p>
+            <Link to="/" className="mt-8 inline-flex min-h-12 items-center border border-ink bg-ink px-6 py-3 font-bold text-inverse transition-colors hover:border-terracotta hover:bg-terracotta"{t('بازگشت به صفحه اصلی')}</Link>
         </Container>
     );
 }
