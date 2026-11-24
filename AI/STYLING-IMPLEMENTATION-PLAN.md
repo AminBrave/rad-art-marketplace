@@ -50,14 +50,14 @@
 - [x] `Layouts.jsx`: remove normal workspace shell gutters so route containers own them; add viewport bleed alignment around the desktop navigation rail.
 - [x] `BuyerWorkspace.jsx`, `ArtistWorkspaceOverview.jsx`, `ArtworkStudio.jsx`, and `ArtistProfileSettings`: use section content containers; WorkspaceHero is full-bleed with aligned inner content.
 - [x] `AdminWorkspace.jsx` and `EditorialPages.jsx` admin editorial tools: use shared containers.
-- [ ] Messaging: preserve its intentional split-pane/immersive behavior; normalize shared controls without constraining the conversation canvas.
+- [x] Messaging: preserve its intentional split-pane/immersive behavior; normalize composer controls, message actions, attachment surfaces and status feedback without constraining the conversation canvas.
 
 ### Phase 5 — cleanup and enforcement
 - [ ] Audit remaining raw buttons and form controls; migrate to shared primitives when semantics match.
 - [x] Normalize structural dividers and shared surface/control radii; one-way token aliases and derived state surfaces now resolve from canonical `--rd-*` values.
 - [ ] Remove obsolete token aliases only after a repository-wide usage check proves they are unused.
 - [x] Add/update static regression assertions for container modes, semantic class merging, button radius, theme-aware aliases, workspace bleed alignment and skeleton composition.
-- [ ] Finish route-wide hard-coded color, arbitrary value and duplicate class audits.
+- [ ] Finish route-wide hard-coded color, arbitrary value and duplicate class audits; specialized message bubble geometry remains an intentional immersive exception.
 - [ ] Keep exceptions documented and narrowly scoped.
 
 ### Phase 6 — verification
