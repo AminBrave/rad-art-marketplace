@@ -21,7 +21,7 @@ function WorkspaceAuthLoading({ children }) {
     return (
         <div
             className={isMessagingRoute ? 'flex h-dvh flex-col overflow-hidden bg-canvas text-ink' : 'min-h-screen bg-canvas text-ink'}
-            dir="rtl"
+           
             aria-busy="true"
         >
             <header className="sticky top-0 z-40 shrink-0 border-b border-border bg-paper shadow-soft">
@@ -104,7 +104,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
     if (pathname === '/login' || pathname === '/register') {
         const registering = pathname === '/register';
         return (
-            <Container as="div" width="reading" className="py-12" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فرم حساب کاربری">
+            <Container as="div" width="reading" className="py-12" role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فرم حساب کاربری">
                 <section className="border-y border-ink bg-paper p-6 sm:p-9">
                     <Skeleton className="h-4 w-32 rounded-sm" />
                     <Skeleton className="mt-5 h-8 w-2/3 rounded-sm" />
@@ -124,7 +124,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
 
     if (pathname === '/dashboard/artist/profile') {
         return (
-            <Container as="div" width="wide" className="min-h-[65vh] py-10 lg:py-14" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
+            <Container as="div" width="wide" className="min-h-[65vh] py-10 lg:py-14" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
                 <span className="sr-only">{label}</span>
                 <div className="mb-8 grid gap-3 border-b border-ink pb-6"><Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="h-9 w-2/3 max-w-sm rounded-sm" /><Skeleton className="h-4 w-full max-w-xl rounded-sm" /></div>
                 <section className="grid gap-4 sm:grid-cols-2">
@@ -141,7 +141,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
 
     if (isMessaging) {
         return (
-            <section className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden font-sans" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
+            <section className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden font-sans" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
                 <div className="grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden border-y border-border bg-surface lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]">
                     <aside className={hasRequestedConversation ? 'hidden h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e lg:flex' : 'flex h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e'}>
                         <div className="shrink-0 border-b border-border bg-paper px-4 py-4 sm:px-5">
@@ -167,7 +167,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
     }
 
     return (
-        <Container as="div" width="wide" className="min-h-[65vh] py-10 lg:py-14" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
+        <Container as="div" width="wide" className="min-h-[65vh] py-10 lg:py-14" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
             <span className="sr-only">{label}</span>
             <div className="mb-8 flex items-center justify-between gap-5 border-b border-border pb-6">
                 <div className="grid min-w-0 flex-1 gap-3">
@@ -253,7 +253,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
 function AuthUnavailable() {
     const { authError, refreshUser } = useAuth();
     return (
-        <div className="mx-auto max-w-xl px-6 py-20 text-center" dir="rtl">
+        <div className="mx-auto max-w-xl px-6 py-20 text-center">
             <h1 className="text-2xl font-black">ارتباط با حساب کاربری برقرار نشد</h1>
             <p className="mt-3 text-sm leading-7 text-muted">{authError}</p>
             <Button variant="ghost" type="button" onClick={refreshUser} className="mt-6 rounded-full bg-ink px-5 py-3 text-sm font-bold text-inverse">تلاش دوباره</Button>
@@ -318,7 +318,7 @@ export function ArtistWorkspaceLayout() {
 export function ArtistDashboardHome() {
     const { user, profile, profileLoading, profileError } = useOutletContext();
     return (
-        <div className="w-full space-y-6" dir="rtl">
+        <div className="w-full space-y-6">
             <WorkspaceHero
                 eyebrow="فضای هنرمند"
                 title={<>خوش آمدید، {user.name}</>}
@@ -398,7 +398,7 @@ export function WorkspaceSettingsPage() {
     };
 
     return (
-        <Container as="section" width="wide" className="space-y-8" dir="rtl">
+        <Container as="section" width="wide" className="space-y-8">
             <PageHeader eyebrow="حساب کاربری" title="تنظیمات" description="ترجیحات نمایش و اعلان‌های فضای کاربری را از یک بخش مدیریت کنید." />
 
             <section className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_16rem]" aria-labelledby="appearance-settings-title">
@@ -498,7 +498,7 @@ export function ArtistProfileSettings() {
     if (profileLoading) return <RouteLoading label="در حال دریافت پروفایل هنرمند…" />;
 
     return (
-        <Container as="section" width="wide" className="space-y-6" dir="rtl">
+        <Container as="section" width="wide" className="space-y-6">
             <PageHeader
                 eyebrow="استودیوی هنرمند"
                 title="پروفایل هنرمند"
@@ -544,7 +544,7 @@ export function AdminWorkspaceLayout() {
 
 export function PublicInfoPage({ title, description }) {
     return (
-        <Container as="div" width="reading" className="py-16" dir="rtl">
+        <Container as="div" width="reading" className="py-16">
             <p className="text-sm font-bold text-terracotta-strong">راد آرت</p>
             <h1 className="mt-3 text-3xl font-black">{title}</h1>
             <p className="mt-5 leading-8 text-muted">{description}</p>
@@ -556,7 +556,7 @@ export function PublicInfoPage({ title, description }) {
 export function UnauthorizedPage() {
     const { user } = useAuth();
     return (
-        <Container as="div" width="reading" className="py-24 text-center" dir="rtl">
+        <Container as="div" width="reading" className="py-24 text-center">
             <p className="text-sm font-bold text-terracotta-strong">۴۰۳</p>
             <h1 className="mt-3 text-4xl font-black tracking-tight">دسترسی به این بخش مجاز نیست</h1>
             <p className="mt-4 leading-8 text-muted">نقش این حساب اجازه ورود به این فضای کاربری را ندارد. مجوزهای واقعی همچنان در سمت سرور بررسی می‌شوند.</p>
@@ -567,7 +567,7 @@ export function UnauthorizedPage() {
 
 export function NotFoundPage() {
     return (
-        <Container as="div" width="reading" className="py-20 text-center" dir="rtl">
+        <Container as="div" width="reading" className="py-20 text-center">
             <p className="text-sm font-bold text-terracotta-strong">۴۰۴</p>
             <h1 className="mt-3 text-4xl font-black tracking-tight">این صفحه پیدا نشد</h1>
             <p className="mt-4 leading-8 text-muted">نشانی واردشده معتبر نیست یا صفحه جابه‌جا شده است.</p>
