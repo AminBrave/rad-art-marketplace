@@ -61,6 +61,16 @@ test('artwork and artist cards preserve matte spacing with cover imagery and car
     assert.ok(cards.includes('border border-border bg-paper'), 'Artist cards use a consistent card boundary.');
 });
 
+test('artwork media uses a consistent 3:4 portrait frame throughout the application', () => {
+    assert.ok(css.includes('--rd-artwork-ratio: 3 / 4;'));
+    for (const source of [cards, artworkGallery, artworkDetail, artworkStudio, adminWorkspace, homePage, skeletons, routeLoading, bootShell]) {
+        assert.doesNotMatch(source, /aspect-\\[(?:4\\/3|4\\/5|5\\/4)\\]/, 'Artwork surfaces must use the shared portrait proportion.');
+    }
+    assert.ok(cards.includes('imageClassName="object-cover'));
+    assert.ok(artworkDetail.includes('imageClassName="object-cover'));
+    assert.ok(artworkStudio.includes('imageClassName="object-cover'));
+});
+
 test('comment discussions use nested cards and a clear reply hierarchy', () => {
     assert.ok(artworkEngagement.includes('aria-label="پاسخ‌های این دیدگاه"'));
     assert.ok(artworkEngagement.includes('border-r-2 border-terracotta/40'));
@@ -520,6 +530,9 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(workspaceNavigation.includes("label: 'تنظیمات'"));
     assert.ok(appRouter.includes('<Route path="settings" element={<WorkspaceSettingsPage />} />'));
     assert.ok(routeLoading.includes('export function WorkspaceSettingsPage()'));
+    assert.ok(routeLoading.includes('id="notification-settings-title"'));
+    assert.ok(routeLoading.includes('ذخیره خودکار'));
+    assert.ok(routeLoading.includes('border border-divider-group bg-paper p-4'));
     assert.ok(routeLoading.includes('تنظیمات اعلان‌های درون‌برنامه‌ای') || routeLoading.includes('اعلان‌های درون‌برنامه‌ای'));
     assert.doesNotMatch(layouts, /تنظیمات اعلان درون‌برنامه‌ای/, 'Notification preferences no longer live inside the notification drawer.');
 
