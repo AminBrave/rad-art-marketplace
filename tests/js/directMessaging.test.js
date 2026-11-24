@@ -166,7 +166,7 @@ test('message composer exposes attachment guidance and restores keyboard focus a
     assert.ok(messageComposer.includes('حداکثر حجم ۱۰ مگابایت'));
     assert.ok(messageComposer.includes('role="group" aria-label={t("پاسخ انتخاب‌شده")}'));
     assert.ok(messageComposer.includes('role="status" aria-live="polite" aria-atomic="true"'));
-    assert.ok(messageComposer.includes('aria-label={sending ? "در حال ارسال پیام" : "ارسال پیام"}'));
+    assert.ok(messageComposer.includes("aria-label={sending ? t('در حال ارسال پیام') : t('ارسال پیام')}"));
     assert.ok(messaging.includes('setReplyTo(null); draftRef.current?.focus();'));
     assert.ok(messaging.includes('draftRef.current?.focus();\n                                    setParams'));
     assert.ok(messaging.includes('fileInputRef.current.focus()'));
