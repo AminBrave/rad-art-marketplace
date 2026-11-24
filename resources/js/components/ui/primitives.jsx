@@ -4,7 +4,7 @@ import * as SelectPrimitive from '@radix-ui/react-select';
 import { Check, ChevronDown } from 'lucide-react';
 import { Tooltip } from './Tooltip';
 import { cn } from '../../lib/utils';
-import { Container } from './layout';
+import { Container, Section } from './layout';
 
 const buttonVariants = {
     primary: 'bg-terracotta text-inverse enabled:hover:bg-terracotta-strong',
@@ -114,7 +114,7 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
 
 export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
     return (
-        <header dir="rtl" className={cn('rd-bleed relative overflow-hidden border-y border-divider-section bg-ink text-inverse', className)}>
+        <Section as="header" dir="rtl" bleed className={cn('relative overflow-hidden border-y border-divider-section bg-ink text-inverse', className)}>
             <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-1.5 bg-terracotta" />
             <span aria-hidden="true" className="pointer-events-none absolute -right-16 -top-24 aspect-square w-60 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]" />
             <span aria-hidden="true" className="pointer-events-none absolute -right-4 -top-12 aspect-square w-44 rounded-full border border-[color:color-mix(in_srgb,var(--color-paper)_10%,transparent)]" />
@@ -126,7 +126,7 @@ export function WorkspaceHero({ eyebrow, title, description, actions, className 
                 </div>
                 {actions && <div className="relative z-10 flex flex-wrap gap-2 max-md:w-full">{actions}</div>}
             </Container>
-        </header>
+        </Section>
     );
 }
 
