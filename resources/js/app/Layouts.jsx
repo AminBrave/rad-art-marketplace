@@ -368,7 +368,7 @@ function NotificationBell({ user }) {
                 >
                     <Bell aria-hidden="true" size={17} strokeWidth={1.8} />
                     <span className="hidden sm:inline">{t("اعلان‌ها")}</span>
-                    {unreadCount > 0 && <span className="min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-[10px] font-extrabold tabular-nums text-inverse" aria-live="polite">{unreadCount > 99 ? '۹۹+' : unreadCount.toLocaleString('fa-IR')}</span>}
+                    {unreadCount > 0 && <span className="min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-[10px] font-extrabold tabular-nums text-inverse" aria-live="polite">{unreadCount > 99 ? (locale === 'fa' ? '۹۹+' : '99+') : unreadCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</span>}
                 </Button>
             </DialogTrigger>
             <DialogContent
