@@ -23,6 +23,9 @@
     <script>
         (() => {
             try {
+                const locale = ["fa", "en"].includes(localStorage.getItem("rademan-locale")) ? localStorage.getItem("rademan-locale") : "fa";
+                document.documentElement.lang = locale;
+                document.documentElement.dir = locale === "fa" ? "rtl" : "ltr";
                 const stored = localStorage.getItem("rademan-theme");
                 const theme = ["system", "light", "dark"].includes(stored) ? stored : "system";
                 const dark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
