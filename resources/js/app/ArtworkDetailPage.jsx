@@ -66,7 +66,7 @@ export default function ArtworkDetailPage() {
                 else descriptionTag.setAttribute('content', previousDescription);
             }
         };
-    }, [artwork]);
+    }, [artwork, locale]);
 
     if (loading) return <ArtworkDetailSkeleton />;
 
