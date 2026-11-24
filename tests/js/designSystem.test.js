@@ -466,7 +466,9 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.doesNotMatch(layouts, /تنظیمات اعلان درون‌برنامه‌ای/, 'Notification preferences no longer live inside the notification drawer.');
 
     assert.ok(layouts.includes('aria-label="ناوبری اصلی"'), 'Public discovery navigation remains available.');
-    assert.ok(layouts.includes('<ThemeControl />'), 'Public and workspace shells expose theme selection.');
+    assert.ok(layouts.includes('<ThemeControl />'), 'The public shell exposes the global theme control.');
+    assert.ok(routeLoading.includes('cycleTheme'), 'Workspace theme preferences live on the settings route.');
+    assert.ok(css.includes('.rd-page-frame--workspace .rd-container {\n    padding-inline: 0;'), 'Workspace grid owns the shared horizontal gutter without nested double padding.');
     assert.ok(css.includes('--workspace-bottom-nav-primary-height: var(--rd-workspace-nav-height);'));
     assert.ok(css.includes('--workspace-bottom-nav-height: var(--rd-workspace-nav-height);'));
     assert.doesNotMatch(css, /--workspace-bottom-nav-secondary-height/);
