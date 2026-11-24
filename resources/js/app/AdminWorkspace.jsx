@@ -59,7 +59,7 @@ export function AdminDashboardHome() {
     ];
 
     return (
-        <div className="w-full space-y-8" dir="rtl">
+        <div className="w-full space-y-8">
             <WorkspaceHero
                 eyebrow="مرکز کنترل راد آرت"
                 title={<>خوش آمدید، {user?.name ?? 'مدیر'}</>}
@@ -167,7 +167,7 @@ export function AdminArtworkModeration() {
             ]);
         } catch (e) { setActionError(e.response?.status === 403 ? 'سرور اجازه انجام این عملیات را نداد.' : e.response?.data?.errors?.note?.[0] ?? e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.'); }
     };
-    return <Container as="section" width="wide" className="space-y-6" dir="rtl">
+    return <Container as="section" width="wide" className="space-y-6">
         <PageHeader eyebrow="مدیریت آثار" title="صف بررسی و انتشار" description="فقط آثار در انتظار بررسی قابل تصمیم‌گیری‌اند. رد اثر یا درخواست اصلاح به توضیح نیاز دارد." actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
         <nav className="flex flex-wrap gap-x-5 gap-y-2 border-b border-border" aria-label="فیلتر وضعیت آثار">{statuses.map((item) => <Button variant="ghost" key={item.value} type="button" aria-pressed={status === item.value} onClick={() => chooseStatus(item.value)} className={"min-h-11 border-b-2 px-1 text-sm font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none " + (status === item.value ? 'border-terracotta text-terracotta-strong' : 'border-transparent text-muted hover:border-border-strong hover:text-ink')}>{item.label}</Button>)}</nav>
         {message && <SuccessState title={message} />}{error && <ErrorState title="عملیات انجام نشد" description={error} onRetry={load} />}
@@ -237,7 +237,7 @@ export function AdminUsersPage() {
             setActionError(e.response?.status === 403 ? 'سرور اجازه تغییر نقش این حساب را نداد.' : e.response?.data?.errors?.role?.[0] ?? e.response?.data?.message ?? 'تغییر نقش کاربر انجام نشد.');
         }
     };
-    return <Container as="section" width="wide" className="space-y-6" dir="rtl">
+    return <Container as="section" width="wide" className="space-y-6">
         <PageHeader eyebrow="مدیریت حساب‌ها" title="کاربران" description="فهرست حساب‌ها و مدیریت نقش‌های مجاز. ارتقای هر حساب به مدیر، مرحله تأیید جداگانه دارد." actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
         <dl className="grid grid-cols-2 gap-4 border-y border-border py-4 sm:max-w-xl sm:gap-8"><div><dt className="text-xs text-muted">حساب‌های این صفحه</dt><dd className="mt-1 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</dd></div><div><dt className="text-xs text-muted">کل حساب‌ها</dt><dd className="mt-1 text-2xl font-black tabular-nums">{result?.total?.toLocaleString('fa-IR') ?? '—'}</dd></div></dl>
         <p className="border-s-2 border-sand py-2 pe-4 text-xs leading-7 text-muted">نقش‌های قابل انتخاب «هنرمند» و «مدیر» هستند. ایجاد خریدار از مسیر ثبت‌نام انجام می‌شود و حذف یا تعلیق حساب پشتیبانی نمی‌شود. مدیر نمی‌تواند نقش مدیریتی حساب خودش را حذف کند.</p>
@@ -317,7 +317,7 @@ export function AdminMessageReportsPage() {
             setActionError(e.response?.data?.message ?? 'ثبت تصمیم انجام نشد.');
         }
     };
-    return <Container as="section" width="wide" className="space-y-6" dir="rtl">
+    return <Container as="section" width="wide" className="space-y-6">
         <PageHeader eyebrow="ایمنی گفتگوها" title="گزارش‌های پیام" description="گزارش‌ها را با توجه به زمینه گفتگو بررسی کنید. حذف پیام یک اقدام برگشت‌ناپذیر در این پنل است و پیش از اجرا تأیید جداگانه می‌خواهد." actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button>} />
         <div className="grid gap-3 sm:grid-cols-2">
             <div className="border-y border-border bg-transparent py-4"><p className="text-xs text-muted">گزارش‌های این صفحه</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString('fa-IR') ?? '—'}</p></div>
@@ -416,7 +416,7 @@ export function AdminArtworkCommentReportsPage() {
         }
     };
 
-    return <Container as="section" width="wide" className="space-y-6" dir="rtl">
+    return <Container as="section" width="wide" className="space-y-6">
         <PageHeader
             eyebrow="اعتماد و ایمنی محتوا"
             title="گزارش دیدگاه‌های آثار"
