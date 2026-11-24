@@ -5,11 +5,11 @@ import * as ToastPrimitive from '@radix-ui/react-toast';
 
 const skeletonClasses = 'block bg-[linear-gradient(100deg,var(--color-skeleton-base)_25%,var(--color-skeleton-highlight)_42%,var(--color-skeleton-base)_62%)] [background-size:200%_100%] animate-skeleton-shimmer motion-reduce:animate-none';
 
-export function Skeleton({ className = '', width, height = '1rem', rounded = 'md' }) {
+export function Skeleton({ className = '', width, height = '1rem',  = 'md' }) {
     return (
         <span
             aria-hidden="true"
-            className={`${skeletonClasses} ${rounded === 'full' ? 'rounded-full' : rounded === 'lg' ? 'rounded-lg' : 'rounded-md'} ${className}`}
+            className={`${skeletonClasses} ${ === 'full' ? '' :  === 'lg' ? '' : ''} ${className}`}
             style={{ width, height }}
         />
     );
@@ -28,8 +28,8 @@ export function SkeletonLines({ lines = 3, className = '' }) {
 
 export function EmptyState({ title, description, action, className = '' }) {
     return (
-        <section className={`grid justify-items-center gap-3 rounded-card border border-dashed border-border bg-surface px-5 py-10 text-center ${className}`} dir="rtl">
-            <span aria-hidden="true" className="h-2 w-10 rounded-full bg-sand" />
+        <section className={`grid justify-items-center gap-3  border border-dashed border-border bg-surface px-5 py-10 text-center ${className}`} dir="rtl">
+            <span aria-hidden="true" className="h-2 w-10  bg-sand" />
             <h2 className="text-base font-bold text-ink">{title}</h2>
             {description && <p className="max-w-lg text-sm leading-7 text-muted">{description}</p>}
             {action}
@@ -39,7 +39,7 @@ export function EmptyState({ title, description, action, className = '' }) {
 
 export function ErrorState({ title = 'مشکلی پیش آمد', description, onRetry, retryLabel = 'تلاش دوباره', className = '' }) {
     return (
-        <section role="alert" className={`grid justify-items-start gap-3 rounded-card border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-surface p-5 ${className}`} dir="rtl">
+        <section role="alert" className={`grid justify-items-start gap-3  border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-surface p-5 ${className}`} dir="rtl">
             <h2 className="font-bold text-danger">{title}</h2>
             {description && <p className="text-sm leading-7 text-muted">{description}</p>}
             {onRetry && <Button variant="outline" size="sm" onClick={onRetry}>{retryLabel}</Button>}
@@ -49,7 +49,7 @@ export function ErrorState({ title = 'مشکلی پیش آمد', description, on
 
 export function SuccessState({ title, description, className = '' }) {
     return (
-        <div role="status" className={`rounded-editorial border border-border border-s-2 border-s-success bg-surface px-4 py-3 ${className}`} dir="rtl">
+        <div role="status" className={` border border-border border-s-2 border-s-success bg-surface px-4 py-3 ${className}`} dir="rtl">
             <p className="font-semibold text-olive">{title}</p>
             {description && <p className="mt-1 text-sm leading-6 text-muted">{description}</p>}
         </div>
@@ -58,7 +58,7 @@ export function SuccessState({ title, description, className = '' }) {
 
 export function PermissionState({ title = 'دسترسی مجاز نیست', description, className = '' }) {
     return (
-        <section role="status" className={`rounded-card border border-border bg-surface-muted p-5 ${className}`} dir="rtl">
+        <section role="status" className={` border border-border bg-surface-muted p-5 ${className}`} dir="rtl">
             <h2 className="font-bold text-ink">{title}</h2>
             {description && <p className="mt-2 text-sm leading-7 text-muted">{description}</p>}
         </section>
@@ -75,7 +75,7 @@ export function UploadFeedback({ fileName, status = 'idle', progress = 0, messag
     };
 
     return (
-        <div className="grid gap-2 rounded-editorial border border-border bg-paper p-3 text-sm" dir="rtl">
+        <div className="grid gap-2  border border-border bg-paper p-3 text-sm" dir="rtl">
             <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="font-semibold text-ink">{fileName || 'فایل انتخاب‌شده'}</span>
                 <span className={status === 'error' ? 'text-danger' : status === 'success' ? 'text-olive' : 'text-muted'}>
@@ -89,7 +89,7 @@ export function UploadFeedback({ fileName, status = 'idle', progress = 0, messag
                     aria-valuemin={0}
                     aria-valuemax={100}
                     aria-valuenow={safeProgress}
-                    className="h-2 overflow-hidden rounded-full bg-surface-muted"
+                    className="h-2 overflow-hidden  bg-surface-muted"
                 >
                     <span className="block h-full bg-terracotta transition-[width]" style={{ width: `${safeProgress}%` }} />
                 </div>
@@ -122,7 +122,7 @@ export function Toast({ open, title, description, variant = 'info', onDismiss, d
                 onOpenChange={handleOpenChange}
                 type={variant === 'error' ? 'foreground' : 'background'}
                 dir="rtl"
-                className={`flex w-full items-start justify-between gap-4 rounded-editorial border-s-4 border-border bg-paper p-4 text-ink shadow-soft ${variants[variant] ?? variants.info}`}
+                className={`flex w-full items-start justify-between gap-4  border-s-4 border-border bg-paper p-4 text-ink shadow-soft ${variants[variant] ?? variants.info}`}
             >
                 <div>
                     <ToastPrimitive.Title className="font-bold text-ink">{title}</ToastPrimitive.Title>
@@ -130,7 +130,7 @@ export function Toast({ open, title, description, variant = 'info', onDismiss, d
                 </div>
                 {onDismiss && (
                     <ToastPrimitive.Close asChild>
-                        <Button variant="ghost" type="button" aria-label="بستن اعلان" className="min-h-0 rounded-sm px-2 py-1 text-muted hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
+                        <Button variant="ghost" type="button" aria-label="بستن اعلان" className="min-h-0  px-2 py-1 text-muted hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
                             ×
                         </Button>
                     </ToastPrimitive.Close>
@@ -178,10 +178,10 @@ export function MediaImage({
                     aria-label={alt ? `${alt}: تصویر در دسترس نیست` : undefined}
                     className="absolute inset-0 grid min-h-32 place-items-center overflow-hidden bg-[radial-gradient(ellipse_at_18%_20%,color-mix(in_srgb,var(--color-sand)_55%,transparent),transparent_42%),radial-gradient(ellipse_at_82%_78%,color-mix(in_srgb,var(--color-terracotta)_18%,transparent),transparent_45%),linear-gradient(135deg,var(--color-paper),var(--color-surface-muted))] text-center"
                 >
-                    <span aria-hidden="true" className="pointer-events-none absolute -end-8 -top-10 h-36 w-36 rounded-full border border-terracotta/20" />
-                    <span aria-hidden="true" className="pointer-events-none absolute -start-10 -bottom-16 h-44 w-44 rounded-full border border-sand/70" />
+                    <span aria-hidden="true" className="pointer-events-none absolute -end-8 -top-10 h-36 w-36  border border-terracotta/20" />
+                    <span aria-hidden="true" className="pointer-events-none absolute -start-10 -bottom-16 h-44 w-44  border border-sand/70" />
                     <span className="relative z-10 flex flex-col items-center gap-2 px-4 pb-10 text-sm font-semibold text-muted">
-                        <span className="grid h-14 w-14 place-items-center rounded-full border border-terracotta/30 bg-paper/80 text-terracotta shadow-sm">
+                        <span className="grid h-14 w-14 place-items-center  border border-terracotta/30 bg-paper/80 text-terracotta shadow-sm">
                             <ImageOff size={27} strokeWidth={1.5} aria-hidden="true" />
                         </span>
                         <span className="tracking-wide">تصویر در دسترس نیست</span>
@@ -204,7 +204,7 @@ export function MediaImage({
                 </span>
             ) : (
                 <>
-                    {!loaded && <span aria-hidden="true" className={`${skeletonClasses} absolute inset-0 h-full w-full rounded-none`} />}
+                    {!loaded && <span aria-hidden="true" className={`${skeletonClasses} absolute inset-0 h-full w-full `} />}
                     <img
                         src={imageSrc}
                         alt={alt}
