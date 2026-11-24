@@ -110,38 +110,39 @@
     --rd-portrait-ratio: 4 / 5;
 
     /*
-     * Compatibility aliases for existing Tailwind utilities and feature
-     * components. New components should consume the --rd-* semantic roles.
+     * One-way compatibility aliases. --rd-* tokens are authoritative; legacy
+     * Tailwind utilities and feature CSS consume these aliases during migration.
      */
-    --color-canvas: #F7F5F0;
-    --color-ink: #242320;
-    --color-terracotta: #A64F31;
-    --color-terracotta-strong: #9A452B;
-    --color-sand: #D8C9B7;
-    --color-olive: #536052;
-    --color-paper: #FFFFFF;
-    --color-text: #242320;
-    --color-text-muted: #625E56;
-    --color-text-subtle: #706A61;
-    --color-border: #DED8CF;
-    --color-border-strong: #8F877D;
-    --color-surface: #FFFFFF;
-    --color-surface-muted: #F0EDE6;
-    --color-action: #A64F31;
-    --color-action-text: #9A452B;
-    --color-focus: #A64F31;
-    --color-success: #536052;
-    --color-danger: #A33D32;
-    --color-warning: #8A5A12;
-    --color-info: #315F78;
+    --color-canvas: var(--rd-canvas);
+    --color-ink: var(--rd-text-primary);
+    --color-terracotta: var(--rd-action);
+    --color-terracotta-strong: var(--rd-action-hover);
+    --color-sand: var(--rd-brand-sand);
+    --color-olive: var(--rd-success);
+    --color-paper: var(--rd-surface);
+    --color-text: var(--rd-text-primary);
+    --color-text-muted: var(--rd-text-secondary);
+    --color-text-subtle: var(--rd-text-tertiary);
+    --color-border: var(--rd-border-subtle);
+    --color-border-strong: var(--rd-border-strong);
+    --color-surface: var(--rd-surface);
+    --color-surface-raised: var(--rd-surface-raised);
+    --color-surface-muted: var(--rd-surface-muted);
+    --color-action: var(--rd-action);
+    --color-action-text: var(--rd-action-text);
+    --color-focus: var(--rd-focus);
+    --color-success: var(--rd-success);
+    --color-danger: var(--rd-danger);
+    --color-warning: var(--rd-warning);
+    --color-info: var(--rd-info);
     --color-success-surface: color-mix(in srgb, var(--color-success) 14%, var(--color-surface));
     --color-danger-surface: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface));
     --color-warning-surface: color-mix(in srgb, var(--color-warning) 12%, var(--color-surface));
     --color-info-surface: color-mix(in srgb, var(--color-info) 12%, var(--color-surface));
     --color-accent-surface: color-mix(in srgb, var(--color-action) 10%, var(--color-surface));
-    --color-inverse-text: #FFFFFF;
-    --color-skeleton-base: #EEEAE3;
-    --color-skeleton-highlight: #F8F6F2;
+    --color-inverse-text: var(--rd-inverse-text);
+    --color-skeleton-base: var(--rd-skeleton-base);
+    --color-skeleton-highlight: var(--rd-skeleton-highlight);
     --color-overlay: var(--rd-overlay);
     --overlay-backdrop-blur: 8px;
     --color-focus-soft: color-mix(in srgb, var(--rd-focus) 16%, transparent);
@@ -236,30 +237,6 @@
     --rd-message-peer: var(--rd-surface-raised);
     --rd-shadow-soft: 0 8px 28px rgb(0 0 0 / 18%);
     --rd-shadow-raised: 0 16px 40px rgb(0 0 0 / 28%);
-    --color-canvas: #171815;
-    --color-ink: #F2EFE8;
-    --color-terracotta: #D27A58;
-    --color-terracotta-strong: #E09272;
-    --color-olive: #A4B49A;
-    --color-paper: #22231F;
-    --color-text: #F2EFE8;
-    --color-text-muted: #C0B9AD;
-    --color-text-subtle: #A49C90;
-    --color-border: #41423B;
-    --color-border-strong: #77786F;
-    --color-surface: #22231F;
-    --color-surface-muted: #2B2C27;
-    --color-action: #D27A58;
-    --color-action-text: #E7A184;
-    --color-focus: #E09272;
-    --color-success: #A4B49A;
-    --color-danger: #F08A80;
-    --color-warning: #E6B86B;
-    --color-info: #8DBBD1;
-    --color-inverse-text: #171815;
-    --color-skeleton-base: #30312B;
-    --color-skeleton-highlight: #3A3B34;
-    --color-message-peer: #292A25;
 }
 
 
@@ -295,30 +272,6 @@
         --rd-message-peer: var(--rd-surface-raised);
         --rd-shadow-soft: 0 8px 28px rgb(0 0 0 / 18%);
         --rd-shadow-raised: 0 16px 40px rgb(0 0 0 / 28%);
-    --color-canvas: #171815;
-    --color-ink: #F2EFE8;
-    --color-terracotta: #D27A58;
-    --color-terracotta-strong: #E09272;
-    --color-olive: #A4B49A;
-    --color-paper: #22231F;
-    --color-text: #F2EFE8;
-    --color-text-muted: #C0B9AD;
-    --color-text-subtle: #A49C90;
-    --color-border: #41423B;
-    --color-border-strong: #77786F;
-    --color-surface: #22231F;
-    --color-surface-muted: #2B2C27;
-    --color-action: #D27A58;
-    --color-action-text: #E7A184;
-    --color-focus: #E09272;
-    --color-success: #A4B49A;
-    --color-danger: #F08A80;
-    --color-warning: #E6B86B;
-    --color-info: #8DBBD1;
-    --color-inverse-text: #171815;
-    --color-skeleton-base: #30312B;
-    --color-skeleton-highlight: #3A3B34;
-    --color-message-peer: #292A25;
     }
 }
 
