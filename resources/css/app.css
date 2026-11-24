@@ -329,6 +329,12 @@
 .rd-workspace-main {
     --rd-workspace-bleed-offset: 0px;
 }
+
+/* Content containers own the public-page gutter; workspace shells already provide it. */
+.rd-container--wide,
+.rd-container--reading {
+    padding-inline: var(--rd-page-gutter);
+}
 \n
 /*
  * The workspace grid owns page gutters and page rhythm. Nested containers
