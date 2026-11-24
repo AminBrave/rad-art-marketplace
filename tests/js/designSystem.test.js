@@ -5,6 +5,7 @@ import test from 'node:test';
 const css = readFileSync(new URL('../../resources/css/app.css', import.meta.url), 'utf8');
 const tailwind = readFileSync(new URL('../../tailwind.config.js', import.meta.url), 'utf8');
 const primitives = readFileSync(new URL('../../resources/js/components/ui/primitives.jsx', import.meta.url), 'utf8');
+const layoutPrimitives = readFileSync(new URL('../../resources/js/components/ui/layout.jsx', import.meta.url), 'utf8');
 const uiIndex = readFileSync(new URL('../../resources/js/components/ui/index.js', import.meta.url), 'utf8');
 const cards = readFileSync(new URL('../../resources/js/components/ui/cards.jsx', import.meta.url), 'utf8');
 const feedback = readFileSync(new URL('../../resources/js/components/ui/feedback.jsx', import.meta.url), 'utf8');
@@ -114,23 +115,38 @@ test('Rademan semantic design tokens are declared centrally and resolve through 
 });
 
 test('shared layout and form primitives expose semantic utility compositions', () => {
-    for (const utility of ['max-w-[var(--content-wide-width)]', 'max-w-[var(--content-reading-width)]', 'border-b border-border', 'bg-surface-muted', 'bg-terracotta text-inverse', 'aria-[invalid=true]:border-danger']) {
-        assert.ok(primitives.includes(utility), 'Missing shared utility contract: ' + utility);
+    for (const utility of ['max-w-content', 'max-w-[var(--content-reading-width)]', 'full: \'w-full max-w-none\'', 'rd-bleed']) {
+        assert.ok(layoutPrimitives.includes(utility), 'Missing canonical layout utility contract: ' + utility);
     }
-    for (const component of ['PageContainer', 'PageHeader', 'SectionHeader', 'Surface', 'StatusBadge', 'WorkspaceHero', 'DashboardMetricCard']) {
+    for (const component of ['Container', 'Section', 'Separator', 'Surface', 'Card']) {
+        assert.ok(layoutPrimitives.includes('function ' + component), 'Missing shared layout component: ' + component);
+    }
+    assert.ok(primitives.includes('export const PageContainer = Container'), 'PageContainer must remain a compatibility alias to the canonical Container.');
+    for (const component of ['PageHeader', 'SectionHeader', 'Surface', 'StatusBadge', 'WorkspaceHero', 'DashboardMetricCard']) {
         assert.ok(primitives.includes('function ' + component), 'Missing shared component: ' + component);
     }
     assert.doesNotMatch(primitives, /ra-[a-z]/);
 });
 
 test('artist profile content cannot expand the viewport horizontally', () => {
-    assert.ok(artistProfile.includes('w-full min-w-0 max-w-7xl overflow-x-clip'));
+    assert.ok(artistProfile.includes('Container as=\"div\" width=\"wide\"'));
+    assert.ok(artistProfile.includes('overflow-x-clip pb-16 pt-8'));
     assert.ok(artistProfile.includes('titleClassName="break-words [overflow-wrap:anywhere]"'));
     assert.ok(artistProfile.includes('descriptionClassName="break-words [overflow-wrap:anywhere]"'));
     assert.ok(artistProfile.includes('whitespace-pre-line break-words [overflow-wrap:anywhere]'));
     assert.ok(artistProfile.includes('max-w-full whitespace-normal break-words text-center'));
     assert.ok(artistProfile.includes('grid min-w-0 max-w-full grid-cols-1'));
     assert.ok(artistProfile.includes('className="min-w-0 [overflow-wrap:anywhere]"'));
+});
+
+test('route canvases stay full-width and route content uses shared section containers', () => {
+    assert.match(css, /\.rd-page-frame\s*\{[^}]*width:\s*100%;[^}]*margin:\s*0;/s);
+    assert.ok(layoutPrimitives.includes("bleed && 'rd-bleed'"));
+    assert.ok(homePage.includes('<Container className=\"grid gap-0 sm:grid-cols-3\">'));
+    assert.ok(homePage.includes('<Container as=\"section\" width=\"wide\"'));
+    for (const source of [homePage, editorialPages, authPage, publicInfoPages, artistProfile, routeLoading]) {
+        assert.doesNotMatch(source, /<main\\b/, 'Route content must not create a nested main landmark.');
+    }
 });
 
 test('public catalogue, artist directory and artwork detail use shared page layout primitives', () => {
