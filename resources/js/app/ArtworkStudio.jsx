@@ -183,9 +183,9 @@ export default function ArtworkStudio({ user, hasProfile }) {
             {loading ? <ArtworkStudioListSkeleton count={3} /> : artworks.length === 0 ? <EmptyState title={t("هنوز اثری ثبت نکرده‌اید")} description={t("با فرم بالا اولین اثر خود را برای بررسی ارسال کنید.")} /> :
                 <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 xl:grid-cols-3">{artworks.map((item) => <article key={item.id} className="min-w-0 border-b border-border pb-6">
                     <div className="relative flex aspect-[3/4] items-center justify-center overflow-hidden border border-border bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))] p-4 sm:p-5"><MediaImage src={item.image_url} alt={item.title} className="h-full w-full" imageClassName="object-cover" loading="lazy" decoding="async" /></div>
-                    <div className="space-y-3 pt-4"><div className="flex flex-wrap items-start justify-between gap-2"><h3 className="font-bold">{item.title}</h3><Badge variant={item.status === 'approved' ? 'success' : item.status === 'rejected' ? 'danger' : item.status === 'changes_requested' ? 'warning' : 'neutral'}>{statusLabels[item.status] ?? item.status}</Badge></div>
+                    <div className="space-y-3 pt-4"><div className="flex flex-wrap items-start justify-between gap-2"><h3 className="font-bold">{item.title}</h3><Badge variant={item.status === 'approved' ? 'success' : item.status === 'rejected' ? 'danger' : item.status === 'changes_requested' ? 'warning' : 'neutral'}>{t(statusLabels[item.status] ?? item.status)}</Badge></div>
                         <p className="text-xs text-muted">{item.category?.name}</p>
-                        <p className="text-xs leading-6 text-muted">{statusGuidance[item.status] ?? 'وضعیت این اثر از سوی سرور تعیین شده است.'}</p>
+                        <p className="text-xs leading-6 text-muted">{t(statusGuidance[item.status]) ?? 'وضعیت این اثر از سوی سرور تعیین شده است.'}</p>
                         {item.rejection_note && <div className="border-s-2 border-danger bg-surface-muted p-3 text-xs leading-6 text-danger"><p className="mb-1 font-bold">{t("بازخورد مدیر")}</p>{item.rejection_note}</div>}
                         <Button variant="outline" size="sm" onClick={() => editArtwork(item)}>{t("ویرایش اثر")}</Button></div>
                 </article>)}</div>}
