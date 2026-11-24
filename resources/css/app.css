@@ -469,6 +469,7 @@ a {
 
 .rd-shine {
     isolation: isolate;
+    overflow: hidden;
 }
 
 .rd-shine::after {
