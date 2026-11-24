@@ -43,19 +43,19 @@ class PublicArtworkController extends Controller
                     ->orderBy('medium')
                     ->pluck('medium'),
                 'availability' => [
-                    ['value' => 'available', 'label' => 'قابل استعلام'],
-                    ['value' => 'sold', 'label' => 'فروخته‌شده'],
-                    ['value' => 'not_for_sale', 'label' => 'برای فروش ارائه نشده'],
+                    ['value' => 'available', 'label' => 'قابل استعلام', 'label_en' => 'Available'],
+                    ['value' => 'sold', 'label' => 'فروخته‌شده', 'label_en' => 'Sold'],
+                    ['value' => 'not_for_sale', 'label' => 'برای فروش ارائه نشده', 'label_en' => 'Not for sale'],
                 ],
                 'sorts' => [
-                    ['value' => 'newest', 'label' => 'جدیدترین'],
-                    ['value' => 'oldest', 'label' => 'قدیمی‌ترین'],
-                    ['value' => 'year_desc', 'label' => 'سال خلق: جدید به قدیم'],
-                    ['value' => 'year_asc', 'label' => 'سال خلق: قدیم به جدید'],
-                    ['value' => 'title_asc', 'label' => 'عنوان: الف تا ی'],
-                    ['value' => 'title_desc', 'label' => 'عنوان: ی تا الف'],
-                    ['value' => 'price_asc', 'label' => 'قیمت: کم به زیاد'],
-                    ['value' => 'price_desc', 'label' => 'قیمت: زیاد به کم'],
+                    ['value' => 'newest', 'label' => 'جدیدترین', 'label_en' => 'Newest'],
+                    ['value' => 'oldest', 'label' => 'قدیمی‌ترین', 'label_en' => 'Oldest'],
+                    ['value' => 'year_desc', 'label' => 'سال خلق: جدید به قدیم', 'label_en' => 'Year: newest first'],
+                    ['value' => 'year_asc', 'label' => 'سال خلق: قدیم به جدید', 'label_en' => 'Year: oldest first'],
+                    ['value' => 'title_asc', 'label' => 'عنوان: الف تا ی', 'label_en' => 'Title: A to Z'],
+                    ['value' => 'title_desc', 'label' => 'عنوان: ی تا الف', 'label_en' => 'Title: Z to A'],
+                    ['value' => 'price_asc', 'label' => 'قیمت: کم به زیاد', 'label_en' => 'Price: low to high'],
+                    ['value' => 'price_desc', 'label' => 'قیمت: زیاد به کم', 'label_en' => 'Price: high to low']
                 ],
             ],
         ]);
