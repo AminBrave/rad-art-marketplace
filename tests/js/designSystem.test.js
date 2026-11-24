@@ -117,7 +117,7 @@ test('public and workspace mobile navigation are separate and artist profile pre
     assert.ok(layouts.includes('data-testid="authenticated-bottom-navigation"'));
     assert.ok(layouts.includes("user.role === 'artist' ? profileHref"));
     assert.ok(layouts.includes("label: 'پیش‌نمایش پروفایل'"));
-    assert.ok(layouts.includes("outletContext.profile.slug"));
+    assert.ok(layouts.includes("outletContext?.profile?.slug"));
     assert.ok(artistWorkspace.includes('پیش‌نمایش پروفایل'));
     assert.ok(artistWorkspace.includes('ویرایش پروفایل'));
     assert.ok(artistProfile.includes('aria-label="پروفایل هنرمند"'));
@@ -574,7 +574,7 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(layouts.includes("user?.role === 'buyer' ? '/dashboard/buyer' : '/login'"));
     assert.ok(layouts.includes('function PublicBottomNavigation'));
     assert.ok(workspaceLayout.includes('<AuthenticatedBottomNavigation mobileLinks={mobileWorkspaceLinks} />'));
-    assert.ok(workspaceLayout.includes('outletContext.profile.slug'));
+    assert.ok(workspaceLayout.includes('outletContext?.profile?.slug'));
     assert.ok(workspaceLayout.includes('workspaceLinks.map((item)'));
 
     assert.ok(workspaceLayout.includes('<DialogTrigger asChild>'));
