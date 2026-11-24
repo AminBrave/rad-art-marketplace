@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { after, test } from 'node:test';
 import { readFileSync } from 'node:fs';
 import React from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { renderToStaticMarkup as renderToStaticMarkupRaw } from 'react-dom/server';
 import { createServer } from 'vite';
 import react from '@vitejs/plugin-react';
 
@@ -47,6 +47,11 @@ const vite = await createServer({
     appType: 'custom',
     logLevel: 'error',
 });
+
+const language = await vite.ssrLoadModule('/resources/js/app/LanguageContext.jsx');
+const renderToStaticMarkup = (element) => renderToStaticMarkupRaw(
+    React.createElement(language.LanguageProvider, null, element),
+);
 
 const primitives = await vite.ssrLoadModule('/resources/js/components/ui/primitives.jsx');
 const feedback = await vite.ssrLoadModule('/resources/js/components/ui/feedback.jsx');
@@ -185,7 +190,7 @@ test('EmptyState renders a semantic heading and helpful description', () => {
         }),
     );
 
-    assert.match(html, /<section[^>]*dir="rtl"/);
+    assert.doesNotMatch(html, /dir="rtl"/);
     assert.match(html, /<h2[^>]*>اثری پیدا نشد<\/h2>/);
     assert.match(html, /فیلترها را تغییر دهید/);
 });
@@ -240,7 +245,7 @@ test('Page and section headers retain the requested heading hierarchy', () => {
 
     assert.match(page, /<h2[^>]*>مدیریت آثار<\/h2>/);
     assert.match(page, /فضای هنرمند/);
-    assert.match(page, /before:bg-terracotta/);
+    assert.doesNotMatch(page, /before:bg-terracotta/);
     assert.match(section, /<h3[^>]*id="recent-work"[^>]*>آثار اخیر<\/h3>/);
 
     const hero = renderToStaticMarkup(
@@ -251,12 +256,20 @@ test('Page and section headers retain the requested heading hierarchy', () => {
         }),
     );
 
-    assert.match(hero, /<header dir="rtl"/);
-    assert.match(hero, /rounded-xl border border-ink bg-ink/);
-    assert.match(hero, /bg-terracotta/);
-    assert.match(hero, /text-inverse/);
-    assert.match(hero, /text-sand/);
+    assert.doesNotMatch(hero, /dir="rtl"/);
+    assert.match(hero, /class="[^"]*rd-container[^"]*max-w-content/);
+    assert.doesNotMatch(hero, /rd-container--wide/);
+    assert.match(hero, /rd-hero-surface/);
+    assert.match(hero, /border-y border-\[color:var\(--rd-hero-line\)\]/);
+    assert.match(hero, /text-\[color:var\(--rd-hero-foreground\)\]/);
+    assert.match(hero, /text-\[color:var\(--rd-hero-muted\)\]/);
     assert.doesNotMatch(hero, /border-b border-border/);
+    const embeddedHero = renderToStaticMarkup(
+        React.createElement(primitives.WorkspaceHero, { bleed: false, title: 'نمونه تعبیه‌شده' }),
+    );
+    assert.doesNotMatch(embeddedHero, /rd-bleed/);
+    assert.match(embeddedHero, /rd-container[^\"]*max-w-content/);
+    assert.doesNotMatch(embeddedHero, /rd-container--wide/);
     assert.match(hero, /خوش آمدید/);
 });
 
@@ -268,7 +281,7 @@ test('PageContainer and Surface preserve semantic element and variant contracts'
         React.createElement(primitives.Surface, { as: 'article', variant: 'interactive' }, 'جزئیات'),
     );
 
-    assert.match(container, /<main[^>]*max-w-\[var\(--content-reading-width\)\]/);
+    assert.match(container, /<main[^>]*max-w-content-reading/);
     assert.match(container, /محتوا/);
     assert.match(surface, /<article[^>]*focus-within:outline/);
     assert.match(surface, /جزئیات/);
@@ -430,7 +443,7 @@ test('StatusBadge maps known review states to semantic status surfaces', () => {
     assert.match(unknown, /bg-surface-muted/);
 });
 
-test('WorkspaceHero declares RTL direction and a primary page heading', () => {
+test('WorkspaceHero inherits global direction and renders a primary page heading', () => {
     const html = renderToStaticMarkup(
         React.createElement(primitives.WorkspaceHero, {
             eyebrow: 'فضای هنرمند',
@@ -439,7 +452,7 @@ test('WorkspaceHero declares RTL direction and a primary page heading', () => {
         }),
     );
 
-    assert.match(html, /<header[^>]*dir="rtl"/);
+    assert.doesNotMatch(html, /dir="rtl"/);
     assert.match(html, /<h1[^>]*>مدیریت آثار<\/h1>/);
     assert.match(html, /آثار و پروفایل خود را مدیریت کنید/);
 });
@@ -482,7 +495,7 @@ test('Checkbox uses the Radix checkbox interaction and exposes its accessible st
 
 test('Tabs expose tablist, selected state and linked panel semantics', () => {
     const html = renderToStaticMarkup(
-        React.createElement(navigation.Tabs, { defaultValue: 'artists', dir: 'rtl' },
+        React.createElement(navigation.Tabs, { defaultValue: 'artists' },
             React.createElement(navigation.TabsList, { 'aria-label': 'نوع محتوا' },
                 React.createElement(navigation.TabsTrigger, { value: 'artists' }, 'هنرمندان'),
                 React.createElement(navigation.TabsTrigger, { value: 'artworks' }, 'آثار'),
@@ -496,7 +509,7 @@ test('Tabs expose tablist, selected state and linked panel semantics', () => {
     assert.match(html, /role="tab"/);
     assert.match(html, /aria-selected="true"/);
     assert.match(html, /role="tabpanel"/);
-    assert.match(html, /dir="rtl"/);
+    assert.doesNotMatch(html, /dir="rtl"/);
 });
 
 
@@ -504,7 +517,7 @@ test('ArtworkStudioListSkeleton mirrors the loaded artwork cards and announces i
     const html = renderToStaticMarkup(React.createElement(skeletons.ArtworkStudioListSkeleton, { count: 2 }));
     assert.match(html, /role="status"/);
     assert.match(html, /در حال دریافت آثار هنرمند/);
-    assert.match(html, /flex aspect-\[4\/3\] items-center justify-center bg-surface-muted p-3/);
+    assert.match(html, /flex aspect-\[3\/4\] items-center justify-center bg-surface-muted p-3/);
     assert.match(html, /space-y-3 p-4/);
     assert.equal((html.match(/<article/g) ?? []).length, 2);
 });
@@ -525,7 +538,7 @@ test('MessageHistorySkeleton retains a single loading announcement and the messa
     assert.match(html, /role="status"/);
     assert.match(html, /در حال دریافت پیام‌ها/);
     assert.match(html, /w-\[min\(78%,28rem\)\]/);
-    assert.equal((html.match(/rounded-\[20px\]/g) ?? []).length, 4);
+    assert.equal((html.match(/border border-border p-4/g) ?? []).length, 4);
 });
 
 test('ArtistRecentWorkSkeleton keeps the semantic list structure of the loaded workspace', () => {
@@ -540,14 +553,14 @@ test('workspace overview skeletons match their loaded hero and content sections 
     const artist = renderToStaticMarkup(React.createElement(skeletons.ArtistWorkspaceOverviewSkeleton));
     const buyer = renderToStaticMarkup(React.createElement(skeletons.BuyerDashboardSkeleton));
 
-    assert.match(admin, /bg-ink p-6 sm:p-8/);
+    assert.match(admin, /bg-ink"><div class="[^"]*p-6 sm:p-8/);
     assert.match(admin, /xl:grid-cols-\[minmax\(0,1\.2fr\)_minmax\(18rem,\.8fr\)\]/);
     assert.match(admin, /xl:grid-cols-4/);
     assert.equal((admin.match(/role="status"/g) ?? []).length, 1);
 
     assert.match(artist, /در حال آماده‌سازی فضای هنرمند/);
     assert.match(artist, /lg:grid-cols-\[1fr_15rem\]/);
-    assert.match(artist, /bg-surface-muted p-5 sm:p-7/);
+    assert.match(artist, /border-y border-divider-section bg-transparent py-6 sm:py-7/);
     assert.doesNotMatch(artist, /در حال دریافت شاخص‌ها/);
     assert.equal((artist.match(/role="status"/g) ?? []).length, 1);
 

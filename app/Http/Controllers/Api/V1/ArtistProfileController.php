@@ -22,7 +22,9 @@ class ArtistProfileController extends Controller
                 $term = (string) $request->string('q');
                 $query->where(function ($nested) use ($term): void {
                     PersianSearch::whereLike($nested, 'display_name', $term);
+                    PersianSearch::whereLike($nested, 'display_name_en', $term, 'or');
                     PersianSearch::whereLike($nested, 'city', $term, 'or');
+                    PersianSearch::whereLike($nested, 'city_en', $term, 'or');
                 });
             })
             ->orderBy('display_name')
@@ -32,8 +34,11 @@ class ArtistProfileController extends Controller
                 'id' => $profile->id,
                 'slug' => $profile->slug,
                 'display_name' => $profile->display_name,
+                'display_name_en' => $profile->display_name_en,
                 'bio' => $profile->bio ? Str::limit($profile->bio, 220) : null,
+                'bio_en' => $profile->bio_en ? Str::limit($profile->bio_en, 220) : null,
                 'city' => $profile->city,
+                'city_en' => $profile->city_en,
             ]);
 
         return response()->json($profiles);
@@ -129,8 +134,11 @@ class ArtistProfileController extends Controller
     {
         return $request->validate([
             'display_name' => ['required', 'string', 'max:120'],
+            'display_name_en' => ['nullable', 'string', 'max:120'],
             'bio' => ['nullable', 'string', 'max:2000'],
+            'bio_en' => ['nullable', 'string', 'max:2000'],
             'city' => ['nullable', 'string', 'max:120'],
+            'city_en' => ['nullable', 'string', 'max:120'],
             'website_url' => ['nullable', 'url', 'max:255'],
             'instagram_handle' => ['nullable', 'string', 'regex:/^[A-Za-z0-9._]{1,30}$/'],
             'is_public' => ['required', 'boolean'],
@@ -143,8 +151,11 @@ class ArtistProfileController extends Controller
             'id' => $profile->id,
             'slug' => $profile->slug,
             'display_name' => $profile->display_name,
+            'display_name_en' => $profile->display_name_en,
             'bio' => $profile->bio,
+            'bio_en' => $profile->bio_en,
             'city' => $profile->city,
+            'city_en' => $profile->city_en,
             'website_url' => $profile->website_url,
             'instagram_handle' => $profile->instagram_handle,
             'is_public' => $profile->is_public,
@@ -157,14 +168,18 @@ class ArtistProfileController extends Controller
             'id' => $artwork->id,
             'slug' => $artwork->slug,
             'title' => $artwork->title,
+            'title_en' => $artwork->title_en,
             'description' => $artwork->description,
+            'description_en' => $artwork->description_en,
+            'city' => $artwork->city,
+            'city_en' => $artwork->city_en,
             'medium' => $artwork->medium,
             'dimensions' => $artwork->dimensions,
             'year' => $artwork->year,
             'price' => $artwork->price,
             'availability' => $artwork->availability,
             'image_url' => route('api.v1.artworks.image', $artwork->slug),
-            'category' => ['id' => $artwork->category->id, 'name' => $artwork->category->name, 'slug' => $artwork->category->slug],
+            'category' => ['id' => $artwork->category->id, 'name' => $artwork->category->name, 'name_en' => $artwork->category->name_en, 'slug' => $artwork->category->slug],
         ];
 
         if ($includeEngagement) {

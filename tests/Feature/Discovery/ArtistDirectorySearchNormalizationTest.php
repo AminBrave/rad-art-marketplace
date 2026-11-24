@@ -61,6 +61,17 @@ final class ArtistDirectorySearchNormalizationTest extends TestCase
             ->assertJsonPath('data.0.slug', $literalWildcard->slug);
     }
 
+    public function test_artist_directory_search_matches_english_artist_names_and_cities(): void
+    {
+        $profile = $this->createPublicProfile('english-artist', 'نام فارسی', 'تهران');
+        $profile->update(['display_name_en' => 'Jane Artist', 'city_en' => 'Berlin']);
+
+        $this->getJson('/api/v1/artists?q='.urlencode('Jane Artist'))
+            ->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.slug', $profile->slug);
+        $this->getJson('/api/v1/artists?q='.urlencode('Berlin'))
+            ->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.slug', $profile->slug);
+    }
+
     private function createPublicProfile(string $slug, string $name, ?string $city): ArtistProfile
     {
         $user = User::query()->create([

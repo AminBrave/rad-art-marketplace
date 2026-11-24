@@ -24,7 +24,11 @@ class ArtworkResource extends JsonResource
             'id' => $this->id,
             'slug' => $this->slug,
             'title' => $this->title,
+            'title_en' => $this->title_en,
             'description' => $this->description,
+            'description_en' => $this->description_en,
+            'city' => $this->city,
+            'city_en' => $this->city_en,
             'medium' => $this->medium,
             'dimensions' => $this->dimensions,
             'year' => $this->year,
@@ -36,10 +40,14 @@ class ArtworkResource extends JsonResource
             'category' => [
                 'id' => $this->category->id,
                 'name' => $this->category->name,
+                'name_en' => $this->category->name_en,
                 'slug' => $this->category->slug,
             ],
             'artist' => [
                 'display_name' => $this->artistProfile->display_name,
+                'display_name_en' => $this->artistProfile->display_name_en,
+                'city' => $this->artistProfile->city,
+                'city_en' => $this->artistProfile->city_en,
                 'slug' => $this->artistProfile->slug,
             ],
         ];

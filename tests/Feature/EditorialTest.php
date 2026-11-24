@@ -47,13 +47,15 @@ class EditorialTest extends TestCase
         $second = $this->artwork($artist, 'second-work');
 
         $created = $this->actingAs($admin)->postJson('/api/v1/admin/editorial/collections', [
-            'title' => 'A New Perspective', 'intro' => 'An editorial introduction',
+            'title' => 'A New Perspective', 'title_en' => 'A New Perspective EN', 'intro' => 'An editorial introduction', 'intro_en' => 'An English editorial introduction',
             'artwork_ids' => [$second->id, $first->id], 'publish' => true,
         ])->assertCreated()->assertJsonPath('data.status', 'published');
 
         $slug = $created->json('data.slug');
         $this->getJson('/api/v1/collections')->assertOk()->assertJsonPath('data.0.slug', $slug);
         $this->getJson('/api/v1/collections/'.$slug)->assertOk()
+            ->assertJsonPath('data.title_en', 'A New Perspective EN')
+            ->assertJsonPath('data.intro_en', 'An English editorial introduction')
             ->assertJsonPath('data.artworks.0.id', $second->id)
             ->assertJsonPath('data.artworks.1.id', $first->id);
 
@@ -102,11 +104,14 @@ class EditorialTest extends TestCase
     {
         $public = $this->artist();
         $private = $this->artist('hidden@example.com', false);
-        FeaturedArtistSelection::create(['artist_profile_id' => $public->id, 'position' => 0, 'is_published' => true, 'starts_at' => now()->subDay(), 'ends_at' => now()->addDay()]);
+        $public->update(['display_name_en' => 'Featured Artist']);
+        FeaturedArtistSelection::create(['artist_profile_id' => $public->id, 'editorial_intro' => 'معرفی منتخب', 'editorial_intro_en' => 'Featured introduction', 'position' => 0, 'is_published' => true, 'starts_at' => now()->subDay(), 'ends_at' => now()->addDay()]);
         FeaturedArtistSelection::create(['artist_profile_id' => $private->id, 'position' => 1, 'is_published' => true]);
         FeaturedArtistSelection::create(['artist_profile_id' => $public->id, 'position' => 2, 'is_published' => false]);
         $this->getJson('/api/v1/featured-artists')->assertOk()->assertJsonCount(1, 'data')
-            ->assertJsonPath('data.0.artist.slug', $public->slug);
+            ->assertJsonPath('data.0.artist.slug', $public->slug)
+            ->assertJsonPath('data.0.artist.display_name_en', 'Featured Artist')
+            ->assertJsonPath('data.0.editorial_intro_en', 'Featured introduction');
     }
 
     public function test_admin_editorial_options_only_include_public_artists_and_approved_public_artworks(): void

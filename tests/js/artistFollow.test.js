@@ -10,12 +10,12 @@ test('Public artist profiles expose an accessible follow toggle for eligible acc
     assert.match(page, /profile\?\.is_following/);
     assert.match(page, /profile\?\.followers_count/);
     assert.match(page, /aria-pressed=\{Boolean\(followState\.is_following\)\}/);
-    assert.match(page, /دنبال کردن هنرمند/);
+    assert.match(page, /t\('دنبال کردن'\)/);
     assert.match(page, /دنبال‌کننده/);
 });
 
 test('Guest follow attempts are routed through login and follow errors are announced', () => {
-    assert.match(page, /برای دنبال کردن وارد شوید/);
+    assert.match(page, /to="\/login"[\s\S]*?دنبال کردن/);
     assert.match(page, /role="alert"/);
     assert.match(page, /followState\.is_own_profile/);
 });

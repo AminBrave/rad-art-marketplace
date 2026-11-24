@@ -4,7 +4,7 @@ import { AuthProvider } from './AuthContext';
 import { PublicLayout } from './Layouts';
 import {
     AdminWorkspaceLayout, ArtistArtworkPage,
-    ArtistProfileSettings, ArtistWorkspaceLayout,
+    ArtistProfileSettings, ArtistWorkspaceLayout, WorkspaceSettingsPage,
     BuyerWorkspaceLayout, DashboardIndex,
     NotFoundPage, RequireAuth, RequireRole, RouteLoading, UnauthorizedPage,
 } from './RoutingPages';
@@ -73,6 +73,7 @@ function AppRoutes() {
                 <Route path="/dashboard/artist" element={<RequireRole roles={['artist']}><ArtistWorkspaceLayout /></RequireRole>}>
                     <Route index element={withRouteFallback(<ArtistWorkspaceOverview />)} />
                     <Route path="profile" element={<ArtistProfileSettings />} />
+                    <Route path="settings" element={<WorkspaceSettingsPage />} />
                     <Route path="artworks" element={<ArtistArtworkPage />} />
                     <Route path="messages" element={withRouteFallback(<MessagingCenter role="artist" />)} />
                     <Route path="*" element={<NotFoundPage />} />
@@ -80,6 +81,7 @@ function AppRoutes() {
                 <Route path="/dashboard/buyer" element={<RequireRole roles={['buyer']}><BuyerWorkspaceLayout /></RequireRole>}>
                     <Route index element={withRouteFallback(<BuyerDashboardHome />)} />
                     <Route path="messages" element={withRouteFallback(<MessagingCenter role="buyer" />)} />
+                    <Route path="settings" element={<WorkspaceSettingsPage />} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
                 <Route path="/admin" element={<RequireRole roles={['admin']}><AdminWorkspaceLayout /></RequireRole>}>
@@ -89,6 +91,7 @@ function AppRoutes() {
                     <Route path="message-reports" element={withRouteFallback(<AdminMessageReportsPage />)} />
                     <Route path="artwork-comment-reports" element={withRouteFallback(<AdminArtworkCommentReportsPage />)} />
                     <Route path="editorial" element={withRouteFallback(<AdminEditorialPage />)} />
+                    <Route path="settings" element={<WorkspaceSettingsPage />} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
 

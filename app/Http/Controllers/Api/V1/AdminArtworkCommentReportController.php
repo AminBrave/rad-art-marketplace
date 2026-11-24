@@ -22,7 +22,7 @@ class AdminArtworkCommentReportController extends Controller
                 'reporter:id,name',
                 'comment' => fn ($query) => $query->withTrashed()->with([
                     'user:id,name',
-                    'artwork:id,slug,title',
+                    'artwork:id,slug,title,title_en',
                 ]),
             ])
             ->latest()
@@ -48,6 +48,7 @@ class AdminArtworkCommentReportController extends Controller
                         'artwork' => $report->comment->artwork ? [
                             'slug' => $report->comment->artwork->slug,
                             'title' => $report->comment->artwork->title,
+                            'title_en' => $report->comment->artwork->title_en,
                         ] : null,
                     ] : null,
                 ],

@@ -4,7 +4,8 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 import { queryClient } from './lib/queryClient';
 import AppRouter from './app/AppRouter';
-import { ThemeProvider } from './app/ThemeContext';
+import { ThemeProvider } from './app/ThemeContext.jsx';
+import { LanguageProvider } from './app/LanguageContext.jsx';
 import './bootstrap';
 import { auditColorAccessibility } from './lib/colorAccessibility';
 
@@ -25,6 +26,17 @@ const RootApp = isDesignSystemPreview
     ? <BrowserRouter><Suspense fallback={null}><LegacyApp /></Suspense></BrowserRouter>
     : <AppRouter />;
 
-createRoot(document.getElementById('app')).render(
-    <React.StrictMode><QueryClientProvider client={queryClient}><ThemeProvider>{RootApp}</ThemeProvider></QueryClientProvider></React.StrictMode>,
+const rootContainer = document.getElementById('app');
+if (!rootContainer) {
+    throw new Error('Rademan app root element #app was not found.');
+}
+
+// Keep the React root on the DOM node so repeated entry evaluation (for example,
+// during Vite HMR) reuses it instead of calling createRoot() a second time.
+const reactRootKey = Symbol.for('rademan.react-root');
+const reactRoot = rootContainer[reactRootKey] ?? createRoot(rootContainer);
+rootContainer[reactRootKey] = reactRoot;
+
+reactRoot.render(
+    <React.StrictMode><QueryClientProvider client={queryClient}><LanguageProvider><ThemeProvider>{RootApp}</ThemeProvider></LanguageProvider></QueryClientProvider></React.StrictMode>,
 );

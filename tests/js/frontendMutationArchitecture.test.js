@@ -11,7 +11,6 @@ const mutationModules = [
     'resources/js/app/EditorialPages.jsx',
     'resources/js/app/Layouts.jsx',
     'resources/js/app/useMessagingQueries.js',
-    'resources/js/app/App.jsx',
 ];
 
 const sources = new Map(mutationModules.map((path) => [

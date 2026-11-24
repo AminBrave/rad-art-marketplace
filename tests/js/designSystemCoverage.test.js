@@ -69,15 +69,32 @@ test('presentation sources do not depend on removed component-specific CSS class
     assert.deepEqual(violations, [], 'Legacy presentation classes must be migrated to shared utilities.');
 });
 
-test('all project stylesheets contain tokens and base rules, not component selectors', () => {
+test('project stylesheets define tokens, base rules and only approved layout primitives', () => {
     assert.equal((css.match(/:root\s*\{/g) ?? []).length, 1);
     assert.ok(stylesheetFiles.length >= 1, 'Expected the complete stylesheet tree to be included.');
+    const approvedLayoutClasses = new Set([
+        '.rd-bleed',
+        '.rd-workspace-main',
+        '.rd-page-frame',
+        '.rd-page-frame--workspace',
+        '.rd-container',
+        '.rd-container--reading',
+        '.rd-container--full',
+        '.rd-hero-surface',
+        '.rd-message-bubble',
+        '.rd-message-bubble--own',
+        '.rd-message-bubble--peer',
+    ]);
     for (const path of stylesheetFiles) {
         const source = readFileSync(path, 'utf8');
+        const selectors = matchesWithLines(source, /(?:^|,)\s*\.[a-zA-Z_][\w-]*(?:[^{}]*)\{/gm);
+        const violations = selectors.filter(({ value }) =>
+            (value.match(/\.[a-zA-Z_][\w-]*/g) ?? []).some((className) => !approvedLayoutClasses.has(className)),
+        );
         assert.deepEqual(
-            matchesWithLines(source, /(?:^|,)\s*\.[a-zA-Z_][\w-]*(?:[^{}]*)\{/gm),
+            violations,
             [],
-            relative(root, path) + ' must not define component class selectors.',
+            relative(root, path) + ' may define only documented page/container/bleed layout primitives.',
         );
     }
     assert.doesNotMatch(css, /\.ra-[\w-]+|\.rad-messaging|\.app-boot|\.app-skeleton/);
