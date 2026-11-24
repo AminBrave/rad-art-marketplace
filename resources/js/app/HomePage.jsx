@@ -148,7 +148,7 @@ export default function HomePage() {
                                     </div>
                                 </Link>
                             ) : (
-                                <div className="relative aspect-[5/4] overflow-hidden bg-[linear-gradient(135deg,var(--rd-hero-background-alt),var(--rd-surface-muted))] sm:aspect-[3/4] lg:aspect-[3/4]">
+                                <div className="relative aspect-[3/4] overflow-hidden bg-[linear-gradient(135deg,var(--rd-hero-background-alt),var(--rd-surface-muted))] sm:aspect-[3/4] lg:aspect-[3/4]">
                                     <div aria-hidden="true" className="absolute inset-5 border border-[color:var(--rd-hero-line)] sm:inset-8" />
                                     <div aria-hidden="true" className="absolute left-[12%] top-[12%] h-[48%] w-[48%] bg-[color:var(--rd-hero-accent)]" />
                                     <div aria-hidden="true" className="absolute bottom-[12%] right-[10%] h-[58%] w-[48%] bg-[color:var(--rd-hero-background)]" />
