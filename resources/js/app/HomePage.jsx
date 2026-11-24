@@ -150,9 +150,9 @@ export default function HomePage() {
                             ) : (
                                 <div className="relative aspect-[5/4] overflow-hidden bg-[linear-gradient(135deg,var(--rd-hero-background-alt),var(--rd-surface-muted))] sm:aspect-[4/3] lg:aspect-[5/4]">
                                     <div aria-hidden="true" className="absolute inset-5 border border-[color:var(--rd-hero-line)] sm:inset-8" />
-                                    <div aria-hidden="true" className="absolute left-[12%] top-[12%] h-[48%] w-[48%]  bg-terracotta" />
-                                    <div aria-hidden="true" className="absolute bottom-[12%] right-[10%] h-[58%] w-[48%]  bg-olive" />
-                                    <span className="absolute bottom-8 left-8 font-latin text-[10px] font-bold tracking-[.25em] text-ink">ART / PEOPLE / STORIES</span>
+                                    <div aria-hidden="true" className="absolute left-[12%] top-[12%] h-[48%] w-[48%] bg-[color:var(--rd-hero-accent)]" />
+                                    <div aria-hidden="true" className="absolute bottom-[12%] right-[10%] h-[58%] w-[48%] bg-[color:var(--rd-hero-background)]" />
+                                    <span className="absolute bottom-8 left-8 font-latin text-[10px] font-bold tracking-[.25em] text-[color:var(--rd-hero-foreground)]">ART / PEOPLE / STORIES</span>
                                 </div>
                             )}
                         </div>
