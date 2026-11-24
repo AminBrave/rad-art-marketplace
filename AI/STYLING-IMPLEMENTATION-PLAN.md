@@ -23,13 +23,15 @@
 ### Phase 1 — foundation and ownership
 - [x] `resources/js/components/ui/layout.jsx`: canonical Container implementation.
 - [x] `resources/js/components/ui/primitives.jsx`: retain PageContainer as a compatibility alias; begin shared button-radius normalization.
-- [ ] `resources/css/app.css`: keep semantic tokens authoritative; document full-width main-frame behavior; audit aliases, theme parity and global selectors.
-- [ ] `tailwind.config.js`: map utilities directly to canonical tokens; define semantic content widths and control radius.
+- [x] `resources/css/app.css`: document full-width main-frame behavior and add the explicit full-bleed section breakout utility; token alias/theme audit remains open.
+- [x] `tailwind.config.js`: map typography, spacing, radius and content-width utilities directly to canonical tokens; define semantic content widths and control radius.
 - [ ] `resources/js/components/ui/index.js`: expose the canonical Container and compatibility alias without duplicate implementations.
-- [ ] `AI/DESIGN-SYSTEM.md` and `AI/DESIGN-SYSTEM-CATALOGUE.md`: keep implementation guidance aligned with actual behavior.
+- [x] `AI/DESIGN-SYSTEM.md` and `AI/DESIGN-SYSTEM-CATALOGUE.md`: update guidance to section-owned widths and the canonical Container/Section APIs.
 
 ### Phase 2 — shared component normalization
-- [ ] `primitives.jsx`: Button, IconButton, badges, form fields and shared controls.
+- [x] `primitives.jsx`: unify Container implementation through a PageContainer compatibility alias; enforce shared Button/IconButton radius.
+- [x] `navigation.jsx`: normalize pagination radius.
+- [ ] Remaining primitive/control variants and raw route controls still need audit.
 - [ ] `layout.jsx`: Surface, Card, Separator, typography and data display.
 - [ ] `navigation.jsx`: tabs, menus, breadcrumbs and pagination.
 - [ ] `feedback.jsx`: loading, empty, error, success and media states.
@@ -37,10 +39,11 @@
 - [ ] Component showcase and design foundation: exercise real shared variants.
 
 ### Phase 3 — public route migration
-- [ ] `HomePage.jsx`, `EditorialPages.jsx`, `PublicInfoPages.jsx`.
-- [ ] `ArtworkCatalogue.jsx`, `ArtworkDetailPage.jsx`, `ArtworkGallery.jsx`, `ArtworkStudio.jsx`.
-- [ ] `ArtistDirectoryPage.jsx`, `ArtistProfilePage.jsx`.
-- [ ] `AuthPage.jsx` and `RoutingPages.jsx`.
+- [x] `HomePage.jsx`, `EditorialPages.jsx`, `PublicInfoPages.jsx`.
+- [x] `ArtworkCatalogue.jsx`, `ArtworkDetailPage.jsx` (shared section widths and full-bleed filter section).
+- [ ] `ArtworkGallery.jsx`, `ArtworkStudio.jsx`.
+- [x] `ArtistDirectoryPage.jsx`, `ArtistProfilePage.jsx`.
+- [x] `AuthPage.jsx` and `RoutingPages.jsx`.
 - [ ] Remove route-local max-width/gutter wrappers where they duplicate Container; move full-bleed backgrounds to outer sections.
 
 ### Phase 4 — workspace route migration
