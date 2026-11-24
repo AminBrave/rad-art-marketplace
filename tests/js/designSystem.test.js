@@ -71,7 +71,7 @@ test('comment discussions use nested cards and a clear reply hierarchy', () => {
 test('square corners are defined by design tokens without global CSS overrides', () => {
     assert.ok(css.includes('--rd-radius-0: 0;'));
     assert.ok(css.includes('--rd-radius-sm: var(--rd-radius-0);'));
-    assert.doesNotMatch(css, /border-radius:\\s*0\\s*!important/);
+    assert.doesNotMatch(css, /border-radius:\s*0\s*!important/);
     assert.ok(tailwind.includes("full: 'var(--rd-radius-0)'"));
     assert.ok(tailwind.includes("card: 'var(--rd-radius-0)'"));
     assert.ok(tailwind.includes("pill: 'var(--rd-radius-0)'"));
