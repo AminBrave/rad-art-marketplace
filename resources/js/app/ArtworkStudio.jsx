@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { Badge, Button, EmptyState, ErrorState, FormField, TextInput, TextareaField, FileInput, ArtworkStudioListSkeleton, UploadFeedback, MediaImage, PageHeader, SectionHeader, SelectField } from '../components/ui';
+import { Badge, Button, EmptyState, ErrorState, FormField, TextInput, TextareaField, FileInput, ArtworkStudioListSkeleton, UploadFeedback, MediaImage, PageHeader, SectionHeader, SelectField, Container } from '../components/ui';
 
 const emptyArtwork = { title: '', description: '', category_id: '', medium: '', dimensions: '', year: '', price: '', availability: 'available' };
 const statusLabels = { pending_review: 'در انتظار بررسی', approved: 'تأیید و منتشرشده', rejected: 'ردشده', changes_requested: 'نیازمند اصلاح' };
