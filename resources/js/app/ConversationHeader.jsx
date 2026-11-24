@@ -20,7 +20,7 @@ export default function ConversationHeader({
     return (
         <header className="relative z-20 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_96%,transparent)] shadow-soft backdrop-blur after:absolute after:inset-x-0 after:top-0 after:h-1 after:bg-terracotta">
             <div className="flex min-h-[3.5rem] min-w-0 items-center gap-2 px-3 py-2 pt-3 md:min-h-[3.75rem] md:gap-3 md:px-4">
-                <Tooltip content="بازگشت به گفتگوها">
+                <Tooltip content={t("بازگشت به گفتگوها")}>
                     <Button variant="ghost"
                         type="button"
                         aria-label={t("بازگشت به گفتگوها")}
@@ -67,7 +67,7 @@ export default function ConversationHeader({
                     ) : (
                         <h2
                             dir="auto"
-                            title={selected?.participant?.name ?? 'گفتگوی خصوصی'}
+                            title={selected?.participant?.name ?? t('گفتگوی خصوصی')}
                             className="truncate text-sm font-extrabold leading-6 text-ink sm:text-base"
                         >
                             {selected?.participant?.name ?? 'گفتگوی خصوصی'}
