@@ -74,6 +74,10 @@ test('square corners are defined by design tokens without global CSS overrides',
     assert.doesNotMatch(css, /border-radius:\\s*0\\s*!important/);
     assert.ok(tailwind.includes("full: 'var(--rd-radius-0)'"));
     assert.ok(tailwind.includes("card: 'var(--rd-radius-0)'"));
+    assert.ok(tailwind.includes("pill: 'var(--rd-radius-0)'"));
+    for (const source of [primitives, layoutPrimitives, feedback, dialog, alertDialog, tooltip, skeletons]) {
+        assert.doesNotMatch(source, /\\brounded(?:-[a-z0-9-]+)?/);
+    }
 });
 
 
@@ -121,6 +125,9 @@ test('Tailwind semantic aliases reference CSS variables rather than duplicate li
 });
 
 test('shared primitives express accessible component contracts with semantic Tailwind utilities', () => {
+    assert.ok(primitives.includes('border border-divider-group bg-paper p-5'));
+    assert.ok(primitives.includes("raised: 'border border-divider-group bg-surface shadow-soft'"));
+    assert.ok(primitives.includes("interactive: 'border border-divider-group bg-surface"));
     assert.ok(primitives.includes('bg-terracotta text-inverse'));
     assert.ok(primitives.includes('focus-visible:outline'));
     assert.ok(primitives.includes('aria-[invalid=true]:border-danger'));
