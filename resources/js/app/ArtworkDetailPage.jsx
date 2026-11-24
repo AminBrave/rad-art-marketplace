@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import ArtworkEngagement from './ArtworkEngagement';
-import { ArtworkCard, ArtworkDetailSkeleton, MediaImage, PageContainer, Button } from '../components/ui';
+import { ArtworkCard, ArtworkDetailSkeleton, MediaImage, Container, Button } from '../components/ui';
 import { formatArtworkPrice } from '../utils/formatArtworkPrice';
 
 function ArtworkImage({ artwork }) {
@@ -67,7 +67,7 @@ export default function ArtworkDetailPage() {
     if (loading) return <ArtworkDetailSkeleton />;
 
     return (
-        <PageContainer as="div" className="min-h-[65vh] py-10 lg:py-14" dir="rtl">
+        <Container as="div" width="wide" className="min-h-[65vh] py-10 lg:py-14" dir="rtl">
             <nav aria-label="مسیر صفحه" className="text-sm text-muted">
                 <Link to="/" className="hover:text-terracotta-strong">خانه</Link><span className="mx-2" aria-hidden="true">/</span>
                 <Link to="/artworks" className="hover:text-terracotta-strong">گالری آثار</Link><span className="mx-2" aria-hidden="true">/</span>
@@ -120,6 +120,6 @@ export default function ArtworkDetailPage() {
                     )}
                 </>
             )}
-        </PageContainer>
+        </Container>
     );
 }
