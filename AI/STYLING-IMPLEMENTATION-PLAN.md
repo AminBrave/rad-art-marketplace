@@ -26,6 +26,7 @@
 - [x] `resources/css/app.css`: document full-width main-frame behavior and add the explicit full-bleed section breakout utility; token alias/theme audit remains open.
 - [x] `tailwind.config.js`: map typography, spacing, radius and content-width utilities directly to canonical tokens; define semantic content widths and control radius.
 - [x] `resources/js/components/ui/index.js`: exports the canonical Container and the PageContainer compatibility alias without duplicate implementations.
+- [x] `resources/js/lib/utils.js`: extend Tailwind class merging for semantic radius and content-width utilities.
 - [x] `AI/DESIGN-SYSTEM.md` and `AI/DESIGN-SYSTEM-CATALOGUE.md`: update guidance to section-owned widths and the canonical Container/Section APIs.
 
 ### Phase 2 — shared component normalization
@@ -33,7 +34,7 @@
 - [x] `layout.jsx`: semantic Card/Callout radii and shared Section bleed behavior; Separator remains semantic.
 - [x] `navigation.jsx`: normalize pagination radius and menu surface radius; active tab indicator remains a deliberate 2px state marker.
 - [x] `feedback.jsx`, `Dialog.jsx`, `AlertDialog.jsx`, `Tooltip.jsx`: normalize surface radii and structural borders.
-- [x] `skeletons.jsx`: use semantic surface radius options so skeleton geometry tracks shared components.
+- [x] `skeletons.jsx` and `RoutingPages.jsx`: align public/workspace loading states with Container widths, full-bleed hero/filter sections and no nested main landmarks.
 - [x] `DesignFoundation.jsx`: render the specimen inside the canonical Container; `ComponentShowcase.jsx` already exercises shared variants.
 - [ ] Remaining route-local controls and specialized navigation still need a repository-wide audit.
 
@@ -53,9 +54,9 @@
 
 ### Phase 5 — cleanup and enforcement
 - [ ] Audit remaining raw buttons and form controls; migrate to shared primitives when semantics match.
-- [x] Normalize structural dividers and shared surface/control radii; one-way token aliases now resolve from canonical `--rd-*` values.
+- [x] Normalize structural dividers and shared surface/control radii; one-way token aliases and derived state surfaces now resolve from canonical `--rd-*` values.
 - [ ] Remove obsolete token aliases only after a repository-wide usage check proves they are unused.
-- [x] Add/update static regression assertions for container modes, button radius, theme-aware aliases and full-bleed sections.
+- [x] Add/update static regression assertions for container modes, semantic class merging, button radius, theme-aware aliases, workspace bleed alignment and skeleton composition.
 - [ ] Finish route-wide hard-coded color, arbitrary value and duplicate class audits.
 - [ ] Keep exceptions documented and narrowly scoped.
 
