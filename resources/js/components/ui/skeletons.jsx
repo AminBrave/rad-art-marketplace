@@ -20,7 +20,7 @@ export function ArtworkCardSkeleton({ className = '' }) {
 
 export function ArtistCardSkeleton({ className = '' }) {
     return (
-        <article aria-hidden="true" className={`grid min-w-0 content-start gap-3 border-y border-border bg-transparent py-5 sm:py-6 ${className}`} dir="rtl">
+        <article aria-hidden="true" className={`grid min-w-0 content-start gap-3 border-y border-border bg-transparent py-5 sm:py-6 ${className}`}>
             <div className="flex items-start justify-between gap-4">
                 <Skeleton className="h-16 w-16 shrink-0 " />
                 <Skeleton className="mt-1 h-3 w-24 " />
@@ -86,7 +86,7 @@ export function ConversationInboxSkeleton({ count = 6, className = '', announce 
         >
             <ul
                 aria-hidden="true"
-                dir="rtl"
+               
                 className="min-h-0 h-full divide-y divide-border overflow-y-auto overscroll-contain [scrollbar-width:thin] [scrollbar-color:var(--color-border-strong)_transparent]"
             >
                 {Array.from({ length: count }, (_, index) => (
@@ -117,13 +117,13 @@ export function MessageHistorySkeleton({ count = 5, className = '', announce = t
             aria-busy={announce ? 'true' : undefined}
             aria-label={announce ? 'در حال دریافت پیام‌ها' : undefined}
             aria-hidden={announce ? undefined : 'true'}
-            dir="rtl"
+           
             className={`grid content-end gap-5 p-4 sm:p-6 ${className}`}
         >
             {Array.from({ length: count }, (_, index) => {
                 const own = index % 2 === 1;
                 return (
-                    <div key={index} dir="rtl" className={`flex ${own ? 'justify-start' : 'justify-end'}`}>
+                    <div key={index} className={`flex ${own ? 'justify-start' : 'justify-end'}`}>
                         <div className={`grid w-[min(78%,28rem)] gap-2  border border-border p-4 ${own ? 'bg-[var(--color-message-own)]' : 'bg-[var(--color-message-peer)]'}`}>
                             <Skeleton className={`h-3 ${index % 2 ? 'w-4/5' : 'w-full'} `} />
                             <Skeleton className="h-3 w-3/5 " />
@@ -190,7 +190,7 @@ export function ArtistRecentWorkSkeleton({ announce = true }) {
 }
 export function AdminDashboardSkeleton() {
     return (
-        <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال دریافت پنل مدیریت" className="w-full grid gap-8" dir="rtl">
+        <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال دریافت پنل مدیریت" className="w-full grid gap-8">
             <Section as="header" bleed className="overflow-hidden border-y border-divider-section bg-ink"><Container width="wide" className="grid gap-4 p-6 sm:p-8">
                 <Skeleton className="h-3 w-28 " />
                 <Skeleton className="h-9 w-2/3 max-w-xl  sm:h-11" />
@@ -341,7 +341,7 @@ export function AdminEditorialSkeleton({ announce = true }) {
 
 export function CollectionDetailSkeleton() {
     return (
-        <Container as="div" width="wide" className="min-h-[65vh] py-12" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت مجموعه منتخب">
+        <Container as="div" width="wide" className="min-h-[65vh] py-12" role="status" aria-busy="true" aria-label="در حال دریافت مجموعه منتخب">
             <span className="sr-only">در حال دریافت مجموعه منتخب…</span>
             <nav aria-hidden="true" className="flex items-center gap-2"><Skeleton className="h-3 w-10 " /><Skeleton className="h-3 w-2 " /><Skeleton className="h-3 w-20 " /></nav>
             <header className="mt-7 max-w-3xl border-b border-border pb-8"><Skeleton className="h-3 w-28 " /><Skeleton className="mt-3 h-10 w-2/3 " /><div className="mt-5 grid gap-2"><Skeleton className="h-3 w-full " /><Skeleton className="h-3 w-full " /><Skeleton className="h-3 w-4/5 " /></div></header>
@@ -360,7 +360,7 @@ export function NotificationListSkeleton({ count = 3 }) {
 
 export function ArtistWorkspaceOverviewSkeleton() {
     return (
-        <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فضای هنرمند" className="w-full grid gap-8" dir="rtl">
+        <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فضای هنرمند" className="w-full grid gap-8">
             <Section as="header" bleed className="overflow-hidden border-y border-divider-section bg-ink"><Container width="wide" className="grid gap-4 p-6 sm:p-8">
                 <Skeleton className="h-3 w-36 " />
                 <Skeleton className="h-9 w-2/3 max-w-xl  sm:h-11" />
@@ -375,7 +375,7 @@ export function ArtistWorkspaceOverviewSkeleton() {
 }
 export function BuyerDashboardSkeleton() {
     return (
-        <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فضای خریدار" className="w-full grid gap-7" dir="rtl">
+        <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فضای خریدار" className="w-full grid gap-7">
             <Section as="header" bleed className="overflow-hidden border-y border-divider-section bg-ink"><Container width="wide" className="grid gap-4 p-6 sm:p-8">
                 <Skeleton className="h-3 w-36 " />
                 <Skeleton className="h-9 w-full max-w-2xl  sm:h-11" />
@@ -416,7 +416,7 @@ export function HomePageSkeleton() {
 
 export function ArtworkDetailSkeleton() {
     return (
-        <Container as="div" width="wide" className="min-h-[65vh] py-10 lg:py-14" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت اثر هنری">
+        <Container as="div" width="wide" className="min-h-[65vh] py-10 lg:py-14" role="status" aria-busy="true" aria-label="در حال دریافت اثر هنری">
             <span className="sr-only">در حال دریافت اثر هنری…</span>
             <nav aria-hidden="true" className="flex items-center gap-2"><Skeleton className="h-3 w-10 " /><Skeleton className="h-3 w-2 " /><Skeleton className="h-3 w-20 " /><Skeleton className="h-3 w-2 " /><Skeleton className="h-3 w-16 " /></nav>
             <article className="mt-7 grid items-start gap-8 lg:grid-cols-[1.15fr_.85fr] lg:gap-10">
@@ -437,7 +437,7 @@ export function ArtworkDetailSkeleton() {
 
 export function ArtistProfileSkeleton() {
     return (
-        <Container as="div" width="wide" className="min-h-[65vh] pb-16 pt-8 sm:pt-12" dir="rtl" role="status" aria-busy="true" aria-label="در حال دریافت پروفایل هنرمند">
+        <Container as="div" width="wide" className="min-h-[65vh] pb-16 pt-8 sm:pt-12" role="status" aria-busy="true" aria-label="در حال دریافت پروفایل هنرمند">
             <span className="sr-only">در حال دریافت پروفایل هنرمند…</span>
             <nav aria-hidden="true" className="flex items-center gap-2"><Skeleton className="h-3 w-10 " /><Skeleton className="h-3 w-2 " /><Skeleton className="h-3 w-16 " /><Skeleton className="h-3 w-2 " /><Skeleton className="h-3 w-24 " /></nav>
             <section className="relative mt-6 overflow-hidden border-y border-divider-section bg-paper">
