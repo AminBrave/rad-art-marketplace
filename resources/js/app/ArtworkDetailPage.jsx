@@ -7,6 +7,7 @@ import { useLanguage } from './LanguageContext';
 import ArtworkEngagement from './ArtworkEngagement';
 import { ArtworkCard, ArtworkDetailSkeleton, MediaImage, Container, Button } from '../components/ui';
 import { formatArtworkPrice } from '../utils/formatArtworkPrice';
+import { localizedValue } from '../utils/localizedContent';
 
 function ArtworkImage({ artwork }) {
     return (
@@ -55,8 +56,8 @@ export default function ArtworkDetailPage() {
         const previousTitle = document.title;
         const descriptionTag = document.querySelector('meta[name="description"]');
         const previousDescription = descriptionTag?.getAttribute('content');
-        document.title = artwork.title + ' | راد آرت';
-        if (descriptionTag) descriptionTag.setAttribute('content', artwork.description || ('اثر ' + artwork.title + ' از ' + (artwork.artist?.display_name || 'هنرمندان راد آرت') + '؛ جزئیات اثر و راه ارتباط با هنرمند.'));
+        document.title = localizedValue(artwork, 'title', locale) + (locale === 'en' ? ' | Rad Art' : ' | راد آرت');
+        if (descriptionTag) descriptionTag.setAttribute('content', localizedValue(artwork, 'description', locale) || (locale === 'en' ? localizedValue(artwork, 'title', locale) + ' by ' + localizedValue(artwork.artist, 'display_name', locale) : 'اثر ' + artwork.title + ' از ' + (artwork.artist?.display_name || 'هنرمندان راد آرت') + '؛ جزئیات اثر و راه ارتباط با هنرمند.'));
         return () => {
             document.title = previousTitle;
             if (descriptionTag) {
@@ -91,14 +92,14 @@ export default function ArtworkDetailPage() {
                         </div>
                         <div className="border-y border-ink bg-transparent py-6 sm:py-9 lg:sticky lg:top-28 lg:border-y-0 lg:py-2">
                             <p className="text-[11px] font-extrabold tracking-[.14em] text-terracotta-strong">{t("پرونده اثر")} <span className="mx-1 text-subtle">/</span> {artwork.category?.name}</p>
-                            <h1 className="mt-3 text-3xl font-black leading-relaxed tracking-tight sm:text-4xl">{artwork.title}</h1>
-                            <Link to={'/artists/' + artwork.artist.slug} className="mt-3 inline-block text-sm font-semibold text-terracotta-strong underline">{artwork.artist.display_name}</Link>
-                            {artwork.description && <p className="mt-7 whitespace-pre-line text-sm leading-9 text-muted">{artwork.description}</p>}
+                            <h1 className="mt-3 text-3xl font-black leading-relaxed tracking-tight sm:text-4xl">{localizedValue(artwork, 'title', locale)}</h1>
+                            <Link to={'/artists/' + artwork.artist.slug} className="mt-3 inline-block text-sm font-semibold text-terracotta-strong underline">{localizedValue(artwork.artist, 'display_name', locale)}</Link>
+                            {localizedValue(artwork, 'description', locale) && <p className="mt-7 whitespace-pre-line text-sm leading-9 text-muted">{localizedValue(artwork, 'description', locale)}</p>}
                             <dl className="mt-8 grid grid-cols-2 gap-x-5 gap-y-6 border-y border-border py-7 text-sm">
                                 {artwork.medium && <div><dt className="text-xs text-muted">{t("تکنیک / مواد")}</dt><dd className="mt-1 font-semibold">{artwork.medium}</dd></div>}
                                 {artwork.dimensions && <div><dt className="text-xs text-muted">{t("ابعاد")}</dt><dd className="mt-1 font-semibold">{artwork.dimensions}</dd></div>}
                                 {artwork.year && <div><dt className="text-xs text-muted">{t("سال خلق")}</dt><dd className="mt-1 font-semibold">{artwork.year.toLocaleString(locale === "fa" ? "fa-IR" : "en-US")}</dd></div>}
-                                <div><dt className="text-xs text-muted">{t("قیمت")}</dt><dd className="mt-1 font-semibold">{formatArtworkPrice(artwork.price)}</dd></div>
+                                <div><dt className="text-xs text-muted">{t("قیمت")}</dt><dd className="mt-1 font-semibold">{formatArtworkPrice(artwork.price, locale)}</dd></div>
                             </dl>
                             <p className="mt-5 inline-flex items-center gap-2 text-sm text-muted"><span aria-hidden="true" className="h-2 w-2 rounded-full bg-olive" />وضعیت: {availabilityLabel(artwork.availability)}</p>
                             {user?.role === 'buyer' && <div className="mt-8 flex flex-wrap gap-3">
