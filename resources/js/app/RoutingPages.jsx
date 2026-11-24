@@ -326,7 +326,7 @@ export function ArtistDashboardHome() {
                 description="پروفایل و آثار ارسالی خود را مدیریت کنید و از بخش پیام‌های مستقیم با خریداران در ارتباط باشید."
             />
             <Container width="wide" className="space-y-6">
-            {profileError && <p role="alert" className="mt-5 text-sm text-warning">{profileError}</p>}
+            {profileError && <p role="alert" className="mt-5 text-sm text-warning">{t(profileError)}</p>}
             {profileLoading ? <p className="mt-5 text-sm text-muted">در حال دریافت پروفایل…</p> : (
                 <div className="mt-6 rounded-xl bg-canvas p-4">
                     <p className="font-semibold">{profile?.slug ? 'پروفایل هنرمند شما آماده است.' : 'برای شروع، پروفایل هنرمند خود را تکمیل کنید.'}</p>
@@ -424,7 +424,7 @@ export function WorkspaceSettingsPage() {
                         description="رویدادهایی را که می‌خواهید در صندوق اعلان‌ها ببینید انتخاب کنید."
                         actions={<span className="text-[11px] font-semibold text-muted">{updatePreference.isPending ? 'در حال ذخیره…' : 'ذخیره خودکار'}</span>}
                     />
-                    {preferencesQuery.isError ? <p role="alert" className="text-sm text-danger">دریافت تنظیمات اعلان‌ها انجام نشد. صفحه را دوباره بارگذاری کنید.</p> : preferencesQuery.isPending ? <p className="text-sm text-muted">در حال دریافت تنظیمات…</p> : (
+                    {preferencesQuery.isError ? <p role="alert" className="text-sm text-danger"{t('دریافت تنظیمات اعلان‌ها انجام نشد. صفحه را دوباره بارگذاری کنید.')}</p> : preferencesQuery.isPending ? <p className="text-sm text-muted">در حال دریافت تنظیمات…</p> : (
                         <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
                             {preferenceOptions.map(([key, label, description]) => (
                                 <Checkbox
@@ -445,7 +445,7 @@ export function WorkspaceSettingsPage() {
                     <p className="text-xs leading-6 text-muted">اعلان ایمیلی و پیامکی در این نسخه غیرفعال است.</p>
                 </section>
             )}
-            {error && <p role="alert" className="text-sm text-danger">{error}</p>}
+            {error && <p role="alert" className="text-sm text-danger">{t(error)}</p>}
         </section>
     );
 }
@@ -482,15 +482,15 @@ export function ArtistProfileSettings() {
             const { data } = await profileMutation.mutateAsync(form);
             setProfile(data.data);
             setForm({ ...emptyProfile, ...data.data });
-            setMessage(data.message);
+            setMessage(t(data.message));
         } catch (error) {
             if (error.response?.status === 422) {
                 setErrors(error.response.data.errors ?? {});
-                setMessage('لطفاً خطاهای فرم را بررسی کنید.');
+                setMessage(t('لطفاً خطاهای فرم را بررسی کنید.'));
             } else if (error.response?.status === 403) {
-                setMessage('این عملیات از سمت سرور مجاز شناخته نشد.');
+                setMessage(t('این عملیات از سمت سرور مجاز شناخته نشد.'));
             } else {
-                setMessage('ذخیره پروفایل انجام نشد. دوباره تلاش کنید.');
+                setMessage(t('ذخیره پروفایل انجام نشد. دوباره تلاش کنید.'));
             }
         } finally {
             savingRef.current = false;
@@ -508,12 +508,12 @@ export function ArtistProfileSettings() {
             />
             {profileError && <p role="alert" className="mt-4 text-sm text-warning">{profileError}</p>}
             <form onSubmit={save} className="mt-6 grid gap-5 border-y border-border py-6 sm:grid-cols-2">
-                <FormField label={t("نام نمایشی")} required error={errors.display_name?.join(' ')}><TextInput name="display_name" value={form.display_name ?? ''} onChange={update} required maxLength="120" /></FormField>
-                <FormField label={t("نام هنری به انگلیسی")} error={errors.display_name_en?.join(' ')}><TextInput name="display_name_en" value={form.display_name_en ?? ''} onChange={update} maxLength="120" dir="ltr" className="text-start" /></FormField>
-                <FormField label={t("درباره هنرمند")} error={errors.bio?.join(' ')} className="sm:col-span-2"><TextareaField name="bio" value={form.bio ?? ''} onChange={update} rows={4} maxLength="2000" /></FormField>
-                <FormField label={t("درباره هنرمند به انگلیسی")} error={errors.bio_en?.join(' ')} className="sm:col-span-2"><TextareaField name="bio_en" value={form.bio_en ?? ''} onChange={update} rows={4} maxLength="2000" dir="ltr" className="text-start" /></FormField>
-                <FormField label={t("شهر")} error={errors.city?.join(' ')}><TextInput name="city" value={form.city ?? ''} onChange={update} maxLength="120" /></FormField>
-                <FormField label={t("شهر به انگلیسی")} error={errors.city_en?.join(' ')}><TextInput name="city_en" value={form.city_en ?? ''} onChange={update} maxLength="120" dir="ltr" className="text-start" /></FormField>
+                <FormField label={t("نام نمایشی")} required error={errors.display_name?.map(t).join(' ')}><TextInput name="display_name" value={form.display_name ?? ''} onChange={update} required maxLength="120" /></FormField>
+                <FormField label={t("نام هنری به انگلیسی")} error={errors.display_name_en?.map(t).join(' ')}><TextInput name="display_name_en" value={form.display_name_en ?? ''} onChange={update} maxLength="120" dir="ltr" className="text-start" /></FormField>
+                <FormField label={t("درباره هنرمند")} error={errors.bio?.map(t).join(' ')} className="sm:col-span-2"><TextareaField name="bio" value={form.bio ?? ''} onChange={update} rows={4} maxLength="2000" /></FormField>
+                <FormField label={t("درباره هنرمند به انگلیسی")} error={errors.bio_en?.map(t).join(' ')} className="sm:col-span-2"><TextareaField name="bio_en" value={form.bio_en ?? ''} onChange={update} rows={4} maxLength="2000" dir="ltr" className="text-start" /></FormField>
+                <FormField label={t("شهر")} error={errors.city?.map(t).join(' ')}><TextInput name="city" value={form.city ?? ''} onChange={update} maxLength="120" /></FormField>
+                <FormField label={t("شهر به انگلیسی")} error={errors.city_en?.map(t).join(' ')}><TextInput name="city_en" value={form.city_en ?? ''} onChange={update} maxLength="120" dir="ltr" className="text-start" /></FormField>
                 <FormField label={t("شناسه اینستاگرام")} error={errors.instagram_handle?.join(' ')}><TextInput name="instagram_handle" value={form.instagram_handle ?? ''} onChange={update} maxLength="30" dir="ltr" className="text-start" /></FormField>
                 <FormField label={t("وب‌سایت")} error={errors.website_url?.join(' ')} className="sm:col-span-2"><TextInput name="website_url" type="url" value={form.website_url ?? ''} onChange={update} dir="ltr" className="text-start" placeholder="https://example.com" /></FormField>
                 <Checkbox name="is_public" checked={Boolean(form.is_public)} onChange={update} className="flex min-h-11 items-center gap-3 text-sm font-semibold sm:col-span-2">{t("نمایش عمومی پروفایل")}</Checkbox>
