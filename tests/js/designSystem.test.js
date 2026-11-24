@@ -63,6 +63,14 @@ test('workspace full-bleed content mirrors its horizontal offset in RTL', () => 
     assert.match(css, /\\[dir='rtl'\\] \\.rd-workspace-main \\.rd-bleed[\\s\\S]*?transform: translateX\\(var\\(--rd-workspace-bleed-offset\\)\\)/);
 });
 
+
+test('workspace heroes stay inside the dashboard content column', () => {
+    assert.match(primitives, /<section className="rd-hero-surface my-3 border-y/);
+    assert.doesNotMatch(primitives, /<section className="rd-bleed rd-hero-surface/);
+    assert.ok(artistWorkspace.includes('<div className="min-w-0 w-full space-y-7">'));
+    assert.doesNotMatch(artistWorkspace, /<div className="rd-container min-w-0 mx-auto w-full max-w-content space-y-7">/);
+});
+
 test('artwork and artist cards preserve matte spacing with cover imagery and card surfaces', () => {
     assert.ok(cards.includes('p-3 sm:p-4'), 'Artwork images retain passepartout spacing.');
     assert.ok(cards.includes('imageClassName="object-cover'), 'Artwork imagery covers its padded media frame.');
