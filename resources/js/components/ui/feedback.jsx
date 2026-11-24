@@ -29,6 +29,7 @@ export function SkeletonLines({ lines = 3, className = '' }) {
 }
 
 export function EmptyState({ title, description, action, className = '' }) {
+    const { t } = useLanguage();
     return (
         <section className={`grid justify-items-center gap-3  border border-dashed border-border bg-surface px-5 py-10 text-center ${className}`}>
             <span aria-hidden="true" className="h-2 w-10  bg-sand" />
@@ -43,18 +44,19 @@ export function ErrorState({ title = 'مشکلی پیش آمد', description, on
     const { t } = useLanguage();
     return (
         <section role="alert" className={`grid justify-items-start gap-3  border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-surface p-5 ${className}`}>
-            <h2 className="font-bold text-danger">{title}</h2>
-            {description && <p className="text-sm leading-7 text-muted">{description}</p>}
+            <h2 className="font-bold text-danger">{t(title)}</h2>
+            {description && <p className="text-sm leading-7 text-muted">{t(description)}</p>}
             {onRetry && <Button variant="outline" size="sm" onClick={onRetry}>{t(retryLabel)}</Button>}
         </section>
     );
 }
 
 export function SuccessState({ title, description, className = '' }) {
+    const { t } = useLanguage();
     return (
         <div role="status" className={` border border-border border-s-2 border-s-success bg-surface px-4 py-3 ${className}`}>
-            <p className="font-semibold text-olive">{title}</p>
-            {description && <p className="mt-1 text-sm leading-6 text-muted">{description}</p>}
+            <p className="font-semibold text-olive">{t(title)}</p>
+            {description && <p className="mt-1 text-sm leading-6 text-muted">{t(description)}</p>}
         </div>
     );
 }
@@ -63,8 +65,8 @@ export function PermissionState({ title = 'دسترسی مجاز نیست', desc
     const { t } = useLanguage();
     return (
         <section role="status" className={` border border-border bg-surface-muted p-5 ${className}`}>
-            <h2 className="font-bold text-ink">{title}</h2>
-            {description && <p className="mt-2 text-sm leading-7 text-muted">{description}</p>}
+            <h2 className="font-bold text-ink">{t(title)}</h2>
+            {description && <p className="mt-2 text-sm leading-7 text-muted">{t(description)}</p>}
         </section>
     );
 }
@@ -82,7 +84,7 @@ export function UploadFeedback({ fileName, status = 'idle', progress = 0, messag
     return (
         <div className="grid gap-2  border border-border bg-paper p-3 text-sm">
             <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="font-semibold text-ink">{fileName || 'فایل انتخاب‌شده'}</span>
+                <span className="font-semibold text-ink">{fileName || t('فایل انتخاب‌شده')}</span>
                 <span className={status === 'error' ? 'text-danger' : status === 'success' ? 'text-olive' : 'text-muted'}>
                     {t(labels[status] ?? message)}
                 </span>
