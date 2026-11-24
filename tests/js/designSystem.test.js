@@ -570,7 +570,8 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(bottomNavigation.includes('pb-[env(safe-area-inset-bottom)]'));
     assert.ok(bottomNavigation.includes('lg:hidden'));
     assert.ok(bottomNavigation.includes('mobileLinks.map((item)'));
-    assert.ok(layouts.includes('user && <PublicBottomNavigation user={user} profileHref={profileHref} />'));
+    assert.ok(layouts.includes('<PublicBottomNavigation user={user} profileHref={profileHref} />'));
+    assert.ok(layouts.includes("user?.role === 'buyer' ? '/dashboard/buyer' : '/login'"));
     assert.ok(layouts.includes('function PublicBottomNavigation'));
     assert.ok(workspaceLayout.includes('<AuthenticatedBottomNavigation mobileLinks={mobileWorkspaceLinks} />'));
     assert.ok(workspaceLayout.includes('outletContext.profile.slug'));
