@@ -7,12 +7,12 @@ export function BuyerDashboardHome() {
     return (
         <div className="w-full space-y-7">
             <WorkspaceHero
-                eyebrow="{t("فضای اختصاصی خریدار")}"
-                title="{t("هنر مورد علاقه‌تان را کشف کنید و گفت‌وگو را ادامه دهید.")}"
-                description="{t("از میان آثار و هنرمندان مستقل جست‌وجو کنید و گفت‌وگوهای مستقیم خود را با هنرمندان در یک فضای منظم دنبال کنید.")}"
+                eyebrow={t("فضای اختصاصی خریدار")}
+                title={t("هنر مورد علاقه‌تان را کشف کنید و گفت‌وگو را ادامه دهید.")}
+                description={t("از میان آثار و هنرمندان مستقل جست‌وجو کنید و گفت‌وگوهای مستقیم خود را با هنرمندان در یک فضای منظم دنبال کنید.")}
                 actions={<>
                     <Link to="/artworks" className="inline-flex min-h-11 items-center justify-center rounded-control border border-transparent bg-terracotta px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">{t("کشف آثار هنری")}</Link>
-                    <Link to="/artists" className="inline-flex min-h-11 items-center justify-center rounded-control border border-border-strong bg-paper px-4 py-2 text-sm font-semibold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">آشنایی با هنرمندان</Link>
+                    <Link to="/artists" className="inline-flex min-h-11 items-center justify-center rounded-control border border-border-strong bg-paper px-4 py-2 text-sm font-semibold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">{t("آشنایی با هنرمندان")}</Link>
                 </>}
             />
 
@@ -27,7 +27,7 @@ export function BuyerDashboardHome() {
             </section>
 
             <section className="border-t border-border pt-6">
-                <SectionHeader eyebrow="{t("شروع یک تجربه تازه")}" title="{t("از کجا شروع کنید؟")}" actions={<Link to="/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">{t("رفتن به گالری")}</Link>} />
+                <SectionHeader eyebrow={t("شروع یک تجربه تازه")} title={t("از کجا شروع کنید؟")} actions={<Link to="/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">{t("رفتن به گالری")}</Link>} />
                 <ol className="mt-6 grid gap-6 md:grid-cols-3 md:gap-7">
                     <li className="border-t border-ink pt-4"><span className="text-xs font-extrabold tracking-[.12em] text-terracotta-strong">{t("۰۱ / کشف")}</span><h3 className="mt-3 font-bold">{t("آثار و سبک‌ها را ببینید")}</h3><p className="mt-2 text-sm leading-7 text-muted">{t("در گالری جست‌وجو کنید و جزئیات هر اثر را بخوانید.")}</p></li>
                     <li className="border-t border-ink pt-4"><span className="text-xs font-extrabold tracking-[.12em] text-terracotta-strong">{t("۰۲ / ارتباط")}</span><h3 className="mt-3 font-bold">{t("به هنرمند پیام بدهید")}</h3><p className="mt-2 text-sm leading-7 text-muted">{t("از صفحه اثر یا پروفایل عمومی هنرمند، گفت‌وگوی مستقیم را آغاز کنید.")}</p></li>
