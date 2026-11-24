@@ -79,7 +79,7 @@ The canonical shape token is `--rd-radius-0: 0`; legacy radius aliases and Tailw
 
 Artwork itself should remain undistorted. Use `object-contain` when the complete work is the subject; use `object-cover` only for a deliberate editorial crop, avatar or ambient image. Keep the media frame and its internal padding intentional; the image should occupy the available frame without erasing the frame's breathing room.
 
-## 3. Section-owned content width and full-bleed composition — mandatory
+### 2.6 Card composition\n\n- Use the shared `Card` for meaningful grouped information, metric tiles, featured people and editorial step groups.\n- A card uses a complete one-pixel boundary and a semantic surface (`bg-paper`, `bg-surface` or `bg-surface-muted`); do not style card-like groups as transparent `border-y` strips.\n- Keep nested separators lighter than the card boundary. Prefer proximity and alignment over extra inner borders.\n- Keep standalone editorial sections open; cards are for coherent groups, not every paragraph or list item.\n- The canonical geometry is square across every component. `--rd-radius-0` is the source token; Tailwind's legacy radius utilities resolve to zero during migration, and shared UI components omit radius utilities.\n\n## 3. Section-owned content width and full-bleed composition — mandatory
 
 **The public route-level `<main>` and workspace `.rd-page-frame` are unconstrained content canvases, not content-width containers.** In a workspace, the main column sits beside the navigation rail; a `Section bleed` expands to the viewport and compensates for that rail. Every section owns its own content measure.
 
