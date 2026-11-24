@@ -110,7 +110,7 @@ export function PublicLayout() {
                         <span className="min-h-0 p-0 grid h-10 w-10 place-items-center bg-ink text-lg font-black text-inverse transition-colors group-hover:bg-terracotta sm:h-11 sm:w-11 sm:text-xl">ر</span>
                         <span className="flex flex-col leading-tight">
                             <span className="text-xl font-black tracking-[-.06em] sm:text-2xl">راد<span className="text-terracotta-strong">آرت</span></span>
-                            <span dir="ltr" className="mt-1 hidden text-[9px] font-semibold tracking-[.2em] text-muted sm:block">INDEPENDENT ART</span>
+                            <span className="mt-1 hidden text-[9px] font-semibold tracking-[.2em] text-muted sm:block">INDEPENDENT ART</span>
                         </span>
                     </Link>
 
@@ -254,7 +254,7 @@ export function PublicLayout() {
 
                     <div className="flex flex-col gap-2 pt-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
                         <p>{t('راد آرت — گالری هنر مستقل معاصر')}</p>
-                        <p dir="ltr" className="font-latin tracking-wide">RAD ART · DISCOVER INDEPENDENT ART</p>
+                        <p className="font-latin tracking-wide">RAD ART · DISCOVER INDEPENDENT ART</p>
                     </div>
                 </div>
             </footer>
