@@ -65,7 +65,7 @@ export const Quote = forwardRef(function Quote({ className = '', ...props }, ref
 });
 
 export const Blockquote = forwardRef(function Blockquote({ className = '', ...props }, ref) {
-    return <blockquote ref={ref} className={cn('border-s-2 border-sand ps-4 text-muted', className)} {...props} />;
+    return <blockquote ref={ref} className={cn('border-s-2 border-divider-group ps-4 text-muted', className)} {...props} />;
 });
 
 export const Separator = forwardRef(function Separator({ orientation = 'horizontal', decorative = true, tone = 'group', className = '', ...props }, ref) {
@@ -105,13 +105,13 @@ export function Avatar({ src, alt = '', fallback, size = 'md', className = '', .
 }
 
 export const Card = forwardRef(function Card({ as: Element = 'article', interactive = false, className = '', ...props }, ref) {
-    return <Element ref={ref} className={cn('min-w-0 rounded-lg border border-border bg-paper', interactive && 'transition-colors hover:border-border-strong', className)} {...props} />;
+    return <Element ref={ref} className={cn('min-w-0 rounded-lg border border-divider-group bg-paper', interactive && 'transition-colors hover:border-border-strong', className)} {...props} />;
 });
 
 export const Callout = forwardRef(function Callout({ as: Element = 'aside', variant = 'info', title, children, className = '', ...props }, ref) {
     const variants = { info: 'border-s-terracotta bg-accent-surface', success: 'border-s-success bg-success-surface', warning: 'border-s-warning bg-warning-surface', danger: 'border-s-danger bg-danger-surface' };
     return (
-        <Element ref={ref} role={props.role ?? 'note'} className={cn('min-w-0 rounded-md border border-border border-s-4 p-4 text-ink', variants[variant] ?? variants.info, className)} {...props}>
+        <Element ref={ref} role={props.role ?? 'note'} className={cn('min-w-0 rounded-md border border-divider-group border-s-4 p-4 text-ink', variants[variant] ?? variants.info, className)} {...props}>
             {title && <p className="font-bold">{title}</p>}
             {children && <div className={cn(title && 'mt-1', 'text-sm leading-7')}>{children}</div>}
         </Element>
@@ -149,4 +149,4 @@ export const DataList = forwardRef(function DataList({ className = '', ...props 
 });
 
 export const DataListItem = forwardRef(function DataListItem({ label, value, className = '', ...props }, ref) {
-    return <div ref={ref} className={cn('grid min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-3 border-b border-border py-2 last:border-0', className)} {...props}><dt className="text-sm text-muted">{label}</dt><dd className="min-w-0 break-words text-sm font-semibold text-ink">{value}</dd></div>;});
+    return <div ref={ref} className={cn('grid min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-3 border-b border-divider-nested py-2 last:border-0', className)} {...props}><dt className="text-sm text-muted">{label}</dt><dd className="min-w-0 break-words text-sm font-semibold text-ink">{value}</dd></div>;});
