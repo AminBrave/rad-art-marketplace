@@ -10,7 +10,7 @@ import { getWorkspacePrimaryLinks } from './workspaceNavigation';
 import { Skeleton, ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, ArtistWorkspaceOverviewSkeleton, BuyerDashboardSkeleton, FormFieldSkeleton, ArtworkStudioListSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, AdminEditorialSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton, PageHeader, SectionHeader, WorkspaceHero, Checkbox, FormField, TextInput, TextareaField, Button, Container, Section } from '../components/ui';
 const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
 
-const emptyProfile = { display_name: '', bio: '', city: '', website_url: '', instagram_handle: '', is_public: true };
+const emptyProfile = { display_name: '', display_name_en: '', bio: '', bio_en: '', city: '', city_en: '', website_url: '', instagram_handle: '', is_public: true };
 
 
 function WorkspaceAuthLoading({ children }) {
@@ -508,9 +508,12 @@ export function ArtistProfileSettings() {
             />
             {profileError && <p role="alert" className="mt-4 text-sm text-warning">{profileError}</p>}
             <form onSubmit={save} className="mt-6 grid gap-5 border-y border-border py-6 sm:grid-cols-2">
-                <FormField label={t("نام نمایشی")} required error={errors.display_name?.join(' ')} className="sm:col-span-2"><TextInput name="display_name" value={form.display_name ?? ''} onChange={update} required maxLength="120" /></FormField>
+                <FormField label={t("نام نمایشی")} required error={errors.display_name?.join(' ')}><TextInput name="display_name" value={form.display_name ?? ''} onChange={update} required maxLength="120" /></FormField>
+                <FormField label={t("نام هنری به انگلیسی")} error={errors.display_name_en?.join(' ')}><TextInput name="display_name_en" value={form.display_name_en ?? ''} onChange={update} maxLength="120" dir="ltr" className="text-start" /></FormField>
                 <FormField label={t("درباره هنرمند")} error={errors.bio?.join(' ')} className="sm:col-span-2"><TextareaField name="bio" value={form.bio ?? ''} onChange={update} rows={4} maxLength="2000" /></FormField>
+                <FormField label={t("درباره هنرمند به انگلیسی")} error={errors.bio_en?.join(' ')} className="sm:col-span-2"><TextareaField name="bio_en" value={form.bio_en ?? ''} onChange={update} rows={4} maxLength="2000" dir="ltr" className="text-start" /></FormField>
                 <FormField label={t("شهر")} error={errors.city?.join(' ')}><TextInput name="city" value={form.city ?? ''} onChange={update} maxLength="120" /></FormField>
+                <FormField label={t("شهر به انگلیسی")} error={errors.city_en?.join(' ')}><TextInput name="city_en" value={form.city_en ?? ''} onChange={update} maxLength="120" dir="ltr" className="text-start" /></FormField>
                 <FormField label={t("شناسه اینستاگرام")} error={errors.instagram_handle?.join(' ')}><TextInput name="instagram_handle" value={form.instagram_handle ?? ''} onChange={update} maxLength="30" dir="ltr" className="text-start" /></FormField>
                 <FormField label={t("وب‌سایت")} error={errors.website_url?.join(' ')} className="sm:col-span-2"><TextInput name="website_url" type="url" value={form.website_url ?? ''} onChange={update} dir="ltr" className="text-start" placeholder="https://example.com" /></FormField>
                 <Checkbox name="is_public" checked={Boolean(form.is_public)} onChange={update} className="flex min-h-11 items-center gap-3 text-sm font-semibold sm:col-span-2">{t("نمایش عمومی پروفایل")}</Checkbox>
