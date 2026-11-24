@@ -440,10 +440,10 @@ function NotificationBell({ user }) {
                                             </span>
                                             <span className="min-w-0 flex-1">
                                                 <span className="flex flex-wrap items-center justify-between gap-2">
-                                                    <strong className="text-sm font-bold leading-6 text-ink">{item.title}</strong>
+                                                    <strong className="text-sm font-bold leading-6 text-ink">{locale === 'en' ? (item.title_en || item.title) : item.title}</strong>
                                                     {!item.read_at && <Badge variant="accent" className="px-2 py-0.5 text-[10px]">{t("جدید")}</Badge>}
                                                 </span>
-                                                {item.artwork_title && <span className="mt-1 block truncate text-xs text-muted">{item.artwork_title}</span>}
+                                                {item.artwork_title && <span className="mt-1 block truncate text-xs text-muted">{locale === 'en' ? (item.artwork_title_en || item.artwork_title) : item.artwork_title}</span>}
                                                 {item.comment_preview && <span className="mt-1 block line-clamp-2 text-xs leading-6 text-muted">{item.comment_preview}</span>}
                                                 <span className="mt-1 block text-[11px] tabular-nums text-muted">{notificationDate(item.created_at, locale)}</span>
                                             </span>
