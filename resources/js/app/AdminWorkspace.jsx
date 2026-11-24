@@ -5,10 +5,11 @@ import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { Badge, Button, EmptyState, ErrorState, FormField, Skeleton, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField, WorkspaceHero, PageHeader, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, MediaImage, Container } from '../components/ui';
+import { localizedValue } from '../utils/localizedContent';
 
 const api = '/api/v1/admin';
 const statuses = [
-    { value: 'pending_review', label: t("در انتظار بررسی") },
+    { value: 'pending_review', label: 'در انتظار بررسی' },
     { value: 'approved', label: 'تأییدشده' },
     { value: 'changes_requested', label: 'نیازمند اصلاح' },
     { value: 'rejected', label: 'ردشده' },
@@ -53,18 +54,18 @@ export function AdminDashboardHome() {
 
 
     const shortcuts = [
-        { to: '/admin/artworks', eyebrow: 'محتوا', title: 'بررسی آثار', description: 'صف انتظار، تصمیم‌های انتشار و سوابق اصلاح یا رد آثار', symbol: '▧' },
-        { to: '/admin/users', eyebrow: 'حساب‌ها', title: 'مدیریت کاربران', description: 'مرور حساب‌ها و مدیریت نقش‌های مجاز در سامانه', symbol: '◎' },
-        { to: '/admin/editorial', eyebrow: 'انتخاب سردبیر', title: 'مجموعه‌های منتخب', description: 'تنظیم مجموعه‌ها و انتخاب هنرمندان برجسته', symbol: '✳' },
-        { to: '/admin/message-reports', eyebrow: 'اعتماد و ایمنی', title: t("گزارش‌های پیام"), description: 'رسیدگی به گزارش‌ها و بررسی محتوای علامت‌گذاری‌شده', symbol: '⚑' },
-        { to: '/admin/artwork-comment-reports', eyebrow: 'گفت‌وگوی عمومی', title: 'گزارش دیدگاه‌ها', description: 'بررسی دیدگاه‌های گزارش‌شده در صفحه آثار', symbol: '≋' },
+        { to: '/admin/artworks', eyebrow: t('محتوا'), title: t('بررسی آثار'), description: t('صف انتظار، تصمیم‌های انتشار و سوابق اصلاح یا رد آثار'), symbol: '▧' },
+        { to: '/admin/users', eyebrow: t('حساب‌ها'), title: t('مدیریت کاربران'), description: t('مرور حساب‌ها و مدیریت نقش‌های مجاز در سامانه'), symbol: '◎' },
+        { to: '/admin/editorial', eyebrow: t('انتخاب سردبیر'), title: t('مجموعه‌های منتخب'), description: t('تنظیم مجموعه‌ها و انتخاب هنرمندان برجسته'), symbol: '✳' },
+        { to: '/admin/message-reports', eyebrow: t('اعتماد و ایمنی'), title: t('گزارش‌های پیام'), description: t('رسیدگی به گزارش‌ها و بررسی محتوای علامت‌گذاری‌شده'), symbol: '⚑' },
+        { to: '/admin/artwork-comment-reports', eyebrow: t('گفت‌وگوی عمومی'), title: t('گزارش دیدگاه‌ها'), description: t('بررسی دیدگاه‌های گزارش‌شده در صفحه آثار'), symbol: '≋' },
     ];
 
     return (
         <div className="w-full space-y-8">
             <WorkspaceHero
                 eyebrow={t('مرکز کنترل راد آرت')}
-                title={<>خوش آمدید، {user?.name ?? 'مدیر'}</>}
+                title={<>{t('خوش آمدید، ')}{user?.name ?? t('مدیر')}</>}
                 description={t("از اینجا صف انتشار، حساب‌های کاربری، مجموعه‌های سردبیری و گزارش‌های ایمنی را مدیریت کنید. شاخص‌ها از داده‌های واقعی سامانه دریافت می‌شوند.")}
                 actions={<Button variant="secondary" onClick={load} loading={loading}>{t("به‌روزرسانی آمار")}</Button>}
             />
@@ -74,9 +75,9 @@ export function AdminDashboardHome() {
 
             <section aria-label={t("شاخص‌های عملیاتی")} className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                 {loading ? <DashboardMetricSkeleton count={3} /> : <>
-                    <DashboardMetricCard as={Link} label={t("آثار در انتظار بررسی")} value={summary.pending?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail="تعداد کل آثار منتظر تصمیم انتشار" to="/admin/artworks" eyebrow="انتشار" />
-                    <DashboardMetricCard as={Link} label={t("حساب‌های کاربری")} value={summary.users?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail="تعداد کل حساب‌های ثبت‌شده" to="/admin/users" eyebrow="جامعه" />
-                    <DashboardMetricCard as={Link} label={t("گزارش‌های پیام")} value={summary.reports?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail="مجموع گزارش‌های ثبت‌شده برای رسیدگی" to="/admin/message-reports" eyebrow="ایمنی" />
+                    <DashboardMetricCard as={Link} label={t("آثار در انتظار بررسی")} value={summary.pending?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail={t('تعداد کل آثار منتظر تصمیم انتشار')} to="/admin/artworks" eyebrow={t('انتشار')} />
+                    <DashboardMetricCard as={Link} label={t("حساب‌های کاربری")} value={summary.users?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail={t('تعداد کل حساب‌های ثبت‌شده')} to="/admin/users" eyebrow={t('جامعه')} />
+                    <DashboardMetricCard as={Link} label={t("گزارش‌های پیام")} value={summary.reports?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail={t('مجموع گزارش‌های ثبت‌شده برای رسیدگی')} to="/admin/message-reports" eyebrow={t('ایمنی')} />
                 </>}
             </section>
 
@@ -86,12 +87,12 @@ export function AdminDashboardHome() {
                     {loading ? <div aria-hidden="true" className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]"><Skeleton className="aspect-[3/4] w-full rounded-none sm:max-w-32" /><div className="grid gap-3"><SkeletonLines lines={3} /><SkeletonLines lines={1} /></div></div> : summary.latest ? (
                         <div className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]">
                             <div className="aspect-[3/4] overflow-hidden bg-surface-muted p-3">
-                                <MediaImage src={summary.latest.image_url} alt={'تصویر اثر ' + summary.latest.title} className="h-full w-full" imageClassName="object-cover" loading="lazy" decoding="async" fallback={<div className="grid h-full place-items-center text-xs text-muted">{t('بدون تصویر')}</div>} />
+                                <MediaImage src={summary.latest.image_url} alt={t('تصویر اثر ') + localizedValue(summary.latest, 'title', locale)} className="h-full w-full" imageClassName="object-cover" loading="lazy" decoding="async" fallback={<div className="grid h-full place-items-center text-xs text-muted">{t('بدون تصویر')}</div>} />
                             </div>
                             <div className="flex min-w-0 flex-col items-start">
                                 <Badge variant="warning">{t(statusLabels[summary.latest.status] ?? summary.latest.status)}</Badge>
-                                <h3 className="mt-3 text-lg font-black">{summary.latest.title}</h3>
-                                <p className="mt-2 text-sm text-muted">{summary.latest.artist?.display_name ?? t('هنرمند نامشخص')} · {dateLabel(summary.latest.created_at, locale)}</p>
+                                <h3 className="mt-3 text-lg font-black">{localizedValue(summary.latest, 'title', locale)}</h3>
+                                <p className="mt-2 text-sm text-muted">{localizedValue(summary.latest.artist, 'display_name', locale) || t('هنرمند نامشخص')} · {dateLabel(summary.latest.created_at, locale)}</p>
                                 <Link to="/admin/artworks" className="mt-auto pt-5 text-sm font-bold text-terracotta-strong underline underline-offset-4">{t("رفتن به بررسی اثر")}</Link>
                             </div>
                         </div>
@@ -103,7 +104,7 @@ export function AdminDashboardHome() {
                 <aside className="border-y border-border bg-surface-muted/60 py-6 sm:px-6 sm:py-7">
                     <SectionHeader eyebrow={t("راهنمای عملیات")} title={t("رسیدگی منظم و قابل پیگیری")} className="border-0 pb-0" />
                     <p className="mt-3 text-sm leading-7 text-muted">{t("تصمیم‌های انتشار را همراه با توضیح ثبت کنید، نقش‌ها را با دقت مدیریت کنید و گزارش‌های ایمنی را از مسیر اختصاصی بررسی کنید.")}</p>
-                    <Link to="/admin/artworks" className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 py-3 text-sm font-bold text-inverse transition-colors hover:bg-terracotta"{t('شروع بررسی آثار')} <span aria-hidden="true" className="ms-3 rtl:rotate-180">→</span></Link>
+                    <Link to="/admin/artworks" className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 py-3 text-sm font-bold text-inverse transition-colors hover:bg-terracotta">{t('شروع بررسی آثار')} <span aria-hidden="true" className="ms-3 rtl:rotate-180">→</span></Link>
                 </aside>
             </section>
 
@@ -178,11 +179,11 @@ export function AdminArtworkModeration() {
             <div className="grid gap-x-6 gap-y-8 xl:grid-cols-2">{result.data.map((artwork) => {
                 const actionable = artwork.status === 'pending_review';
                 return <article key={artwork.id} className="min-w-0 border-y border-ink bg-transparent py-4">
-                    <div className="grid sm:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)]"><div className="aspect-[3/4] overflow-hidden bg-surface-muted p-3 sm:aspect-[3/4]"><MediaImage src={artwork.image_url} alt={t('تصویر اثر ') + artwork.title} className="h-56 w-full sm:h-full sm:min-h-64" imageClassName="object-cover" loading="lazy" decoding="async" /></div>
-                        <div className="min-w-0 py-4 sm:px-1"><div className="flex flex-wrap items-start justify-between gap-2"><h2 className="font-bold">{artwork.title}</h2><Badge variant={artwork.status === 'approved' ? 'success' : artwork.status === 'rejected' ? 'danger' : artwork.status === 'pending_review' ? 'warning' : 'info'}>{t(statusLabels[artwork.status] ?? artwork.status)}</Badge></div>
-                            <p className="mt-2 text-xs text-muted">{artwork.artist?.display_name ?? '—'} · {artwork.category?.name ?? '—'}</p>
+                    <div className="grid sm:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)]"><div className="aspect-[3/4] overflow-hidden bg-surface-muted p-3 sm:aspect-[3/4]"><MediaImage src={artwork.image_url} alt={t('تصویر اثر ') + localizedValue(artwork, 'title', locale)} className="h-56 w-full sm:h-full sm:min-h-64" imageClassName="object-cover" loading="lazy" decoding="async" /></div>
+                        <div className="min-w-0 py-4 sm:px-1"><div className="flex flex-wrap items-start justify-between gap-2"><h2 className="font-bold">{localizedValue(artwork, 'title', locale)}</h2><Badge variant={artwork.status === 'approved' ? 'success' : artwork.status === 'rejected' ? 'danger' : artwork.status === 'pending_review' ? 'warning' : 'info'} >{t(statusLabels[artwork.status] ?? artwork.status)}</Badge></div>
+                            <p className="mt-2 text-xs text-muted">{localizedValue(artwork.artist, 'display_name', locale) || '—'} · {localizedValue(artwork.category, 'name', locale) || '—'}</p>
                             <dl className="mt-4 grid grid-cols-2 gap-3 text-xs">{artwork.medium && <div><dt className="text-muted">{t("تکنیک")}</dt><dd className="mt-1 font-semibold">{artwork.medium}</dd></div>}{artwork.dimensions && <div><dt className="text-muted">{t("ابعاد")}</dt><dd className="mt-1 font-semibold">{artwork.dimensions}</dd></div>}{artwork.year && <div><dt className="text-muted">{t("سال")}</dt><dd className="mt-1 font-semibold">{artwork.year}</dd></div>}<div><dt className="text-muted">{t("تاریخ ثبت")}</dt><dd className="mt-1 font-semibold">{dateLabel(artwork.created_at, locale)}</dd></div></dl>
-                            {artwork.description && <p className="mt-4 line-clamp-4 text-sm leading-7 text-muted">{artwork.description}</p>}{artwork.rejection_note && <p className="mt-3 border-s-2 border-sand bg-surface-muted p-3 text-xs leading-6 text-muted">{t('یادداشت ثبت‌شده:')} {t(artwork.rejection_note)}</p>}
+                            {artwork.description && <p className="mt-4 line-clamp-4 text-sm leading-7 text-muted">{localizedValue(artwork, 'description', locale)}</p>}{artwork.rejection_note && <p className="mt-3 border-s-2 border-sand bg-surface-muted p-3 text-xs leading-6 text-muted">{t('یادداشت ثبت‌شده:')} {t(artwork.rejection_note)}</p>}
                         </div>
                     </div>
                     {actionable && <div className="mt-4 border-t border-border py-5 sm:px-1"><FormField label={t("توضیح برای هنرمند")} hint={t("برای رد اثر یا درخواست اصلاح الزامی است؛ حداکثر ۲۰۰۰ نویسه.")}><TextareaField value={notes[artwork.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [artwork.id]: event.target.value }))} maxLength={2000} rows={3} /></FormField><div className="mt-4 flex flex-wrap gap-2"><Button size="sm" onClick={() => moderate(artwork, 'approve')} loading={busyId === artwork.id} disabled={busyId !== null}>تأیید و انتشار</Button><Button size="sm" variant="outline" onClick={() => moderate(artwork, 'request_changes')} disabled={busyId !== null}>درخواست اصلاح</Button><Button size="sm" variant="danger" onClick={() => moderate(artwork, 'reject')} disabled={busyId !== null}>رد اثر</Button></div></div>}
