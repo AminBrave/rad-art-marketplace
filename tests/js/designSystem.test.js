@@ -160,6 +160,10 @@ test('route canvases stay full-width and route content uses shared section conta
     assert.ok(css.includes('.rd-workspace-main .rd-bleed .rd-workspace-bleed-content'));
     assert.ok(layouts.includes('rd-workspace-main min-w-0'));
     assert.ok(primitives.includes('rd-workspace-bleed-content'));
+    assert.ok(skeletons.includes('<Section as=\"header\" bleed'));
+    assert.ok(skeletons.includes('<Container as=\"div\" width=\"wide\"'));
+    assert.ok(!skeletons.includes('<main '), 'Route skeletons must not introduce nested main landmarks.');
+    assert.ok(routeLoading.includes('<Section bleed'), 'Loading states must preserve full-bleed section composition.');
     assert.ok(homePage.includes('<Container className=\"grid gap-0 sm:grid-cols-3\">'));
     assert.ok(homePage.includes('<Container as=\"section\" width=\"wide\"'));
     for (const source of [homePage, editorialPages, authPage, publicInfoPages, artistProfile]) {
