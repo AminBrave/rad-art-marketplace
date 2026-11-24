@@ -46,8 +46,8 @@ function CommentItem({ comment, user, onReply, onDelete, onReport }) {
     );
 }
 
-export default function ArtworkEngagement
-    const { t } = useLanguage();({ artwork, slug }) {
+export default function ArtworkEngagement({ artwork, slug }) {
+    const { t } = useLanguage();
     const { user } = useAuth();
     const queryClient = useQueryClient();
     const [page, setPage] = useState(1);
