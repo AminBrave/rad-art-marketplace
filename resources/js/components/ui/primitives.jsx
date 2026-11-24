@@ -36,10 +36,10 @@ export const Button = forwardRef(function Button({
             type={type}
             disabled={disabled || loading}
             aria-busy={loading || undefined}
-            className={cn('inline-flex min-h-11 items-center justify-center gap-2 border border-transparent px-4 py-2 text-sm font-bold leading-[1.4] tracking-[-.01em] text-ink no-underline transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus', buttonVariants[variant] ?? buttonVariants.primary, buttonSizes[size] ?? buttonSizes.md, className, 'rounded-control')}
+            className={cn('inline-flex min-h-11 items-center justify-center gap-2 border border-transparent px-4 py-2 text-sm font-bold leading-[1.4] tracking-[-.01em] text-ink no-underline transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus', buttonVariants[variant] ?? buttonVariants.primary, buttonSizes[size] ?? buttonSizes.md, className, '')}
             {...props}
         >
-            {loading && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-current border-e-transparent" />}
+            {loading && <span aria-hidden="true" className="h-4 w-4 animate-spin  border-2 border-current border-e-transparent" />}
             {children}
         </button>
     );
@@ -54,7 +54,7 @@ export const IconButton = forwardRef(function IconButton({ children, label, titl
                 ref={ref}
                 type="button"
                 aria-label={tooltipLabel}
-                className={cn('inline-flex items-center justify-center border border-border-strong bg-paper p-0 text-ink transition-colors enabled:hover:border-terracotta enabled:hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus shrink-0', dimensions[size] ?? dimensions.md, className, 'rounded-control')}
+                className={cn('inline-flex items-center justify-center border border-border-strong bg-paper p-0 text-ink transition-colors enabled:hover:border-terracotta enabled:hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus shrink-0', dimensions[size] ?? dimensions.md, className, '')}
                 {...props}
             >
                 {children}
@@ -74,7 +74,7 @@ const badgeVariants = {
 
 export function Badge({ children, variant = 'neutral', className = '' }) {
     return (
-        <span className={cn('inline-flex items-center gap-1 rounded-sm px-3 py-1 text-xs font-bold leading-[1.5]', badgeVariants[variant] ?? badgeVariants.neutral, className)}>
+        <span className={cn('inline-flex items-center gap-1  px-3 py-1 text-xs font-bold leading-[1.5]', badgeVariants[variant] ?? badgeVariants.neutral, className)}>
             {children}
         </span>
     );
@@ -103,7 +103,7 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
     return (
         <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-4 border-b border-divider-group pb-5 pr-4 before:absolute before:bottom-5 before:right-0 before:top-0 before:w-1 before:bg-sand max-sm:items-stretch max-sm:flex-col', className)}>
             <div className="min-w-0">
-                {eyebrow && <p className="inline-flex items-center gap-1.5 text-[11px] font-extrabold tracking-[.025em] text-terracotta-strong before:h-1 before:w-1 before:rounded-full before:bg-terracotta">{eyebrow}</p>}
+                {eyebrow && <p className="inline-flex items-center gap-1.5 text-[11px] font-extrabold tracking-[.025em] text-terracotta-strong before:h-1 before:w-1 before: before:bg-terracotta">{eyebrow}</p>}
                 <Heading id={id} className="mt-1.5 text-lg font-extrabold leading-heading tracking-[-.02em] text-ink sm:text-xl">{title}</Heading>
                 {description && <p className="mt-2 max-w-3xl text-sm leading-7 text-muted">{description}</p>}
             </div>
@@ -171,7 +171,7 @@ export function StatusBadge({ status, label, className = '' }) {
     return <Badge variant={statusVariants[status] ?? 'neutral'} className={className}>{label ?? status ?? 'نامشخص'}</Badge>;
 }
 
-const controlClass = 'w-full min-h-11 rounded-control border border-border-strong bg-paper px-3.5 py-2 font-sans text-sm text-ink transition-colors placeholder:text-subtle focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:bg-surface-muted disabled:opacity-65 aria-[invalid=true]:border-danger';
+const controlClass = 'w-full min-h-11  border border-border-strong bg-paper px-3.5 py-2 font-sans text-sm text-ink transition-colors placeholder:text-subtle focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:bg-surface-muted disabled:opacity-65 aria-[invalid=true]:border-danger';
 
 export function FormField({ id, label, hint, error, required = false, children, className = '' }) {
     const generatedId = useId();
@@ -203,15 +203,15 @@ export function FormField({ id, label, hint, error, required = false, children, 
 }
 
 export const TextInput = forwardRef(function TextInput({ className = '', ...props }, ref) {
-    return <input ref={ref} className={cn(controlClass, className, 'rounded-control')} {...props} />;
+    return <input ref={ref} className={cn(controlClass, className, '')} {...props} />;
 });
 
 export const TextareaField = forwardRef(function TextareaField({ className = '', rows = 4, ...props }, ref) {
-    return <textarea ref={ref} rows={rows} className={cn(controlClass, 'min-h-28 resize-y leading-copy', className, 'rounded-control')} {...props} />;
+    return <textarea ref={ref} rows={rows} className={cn(controlClass, 'min-h-28 resize-y leading-copy', className, '')} {...props} />;
 });
 
 export const FileInput = forwardRef(function FileInput({ className = '', ...props }, ref) {
-    return <input ref={ref} type="file" className={cn(controlClass, 'cursor-pointer file:ms-3 file:rounded-control file:border-0 file:bg-surface-muted file:px-3 file:py-2 file:font-semibold', className, 'rounded-control')} {...props} />;
+    return <input ref={ref} type="file" className={cn(controlClass, 'cursor-pointer file:ms-3 file: file:border-0 file:bg-surface-muted file:px-3 file:py-2 file:font-semibold', className, '')} {...props} />;
 });
 
 const emptySelectValue = '__radix_empty_option__';
@@ -249,7 +249,7 @@ export function SelectField({
             dir={dir}
         >
             <SelectPrimitive.Trigger
-                className={cn(controlClass, 'flex items-center justify-between gap-3 text-start', className, 'rounded-control')}
+                className={cn(controlClass, 'flex items-center justify-between gap-3 text-start', className, '')}
                 {...triggerProps}
             >
                 <SelectPrimitive.Value placeholder={placeholder ?? emptyOption?.props.children} />
@@ -262,7 +262,7 @@ export function SelectField({
                     position="popper"
                     sideOffset={4}
                     dir={dir}
-                    className="z-[90] max-h-[var(--radix-select-content-available-height)] min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-md border border-border bg-paper text-ink shadow-raised"
+                    className="z-[90] max-h-[var(--radix-select-content-available-height)] min-w-[var(--radix-select-trigger-width)] overflow-hidden  border border-border bg-paper text-ink shadow-raised"
                 >
                     <SelectPrimitive.Viewport className="p-1.5">
                         {selectableOptions.map((option) => (
@@ -271,7 +271,7 @@ export function SelectField({
                                 value={String(option.props.value)}
                                 disabled={option.props.disabled}
                                 textValue={typeof option.props.children === 'string' ? option.props.children : undefined}
-                                className="relative flex min-h-10 cursor-pointer select-none items-center rounded-sm py-2 ps-3 pe-9 text-sm outline-none data-[highlighted]:bg-surface-muted data-[highlighted]:text-ink data-[disabled]:pointer-events-none data-[disabled]:opacity-40"
+                                className="relative flex min-h-10 cursor-pointer select-none items-center  py-2 ps-3 pe-9 text-sm outline-none data-[highlighted]:bg-surface-muted data-[highlighted]:text-ink data-[disabled]:pointer-events-none data-[disabled]:opacity-40"
                             >
                                 <SelectPrimitive.ItemText>{option.props.children}</SelectPrimitive.ItemText>
                                 <SelectPrimitive.ItemIndicator className="absolute end-2 inline-flex items-center text-terracotta-strong">
@@ -282,7 +282,7 @@ export function SelectField({
                         {emptyOption && (
                             <SelectPrimitive.Item
                                 value={emptySelectValue}
-                                className="relative flex min-h-10 cursor-pointer select-none items-center rounded-sm py-2 ps-3 pe-9 text-sm outline-none data-[highlighted]:bg-surface-muted data-[highlighted]:text-ink"
+                                className="relative flex min-h-10 cursor-pointer select-none items-center  py-2 ps-3 pe-9 text-sm outline-none data-[highlighted]:bg-surface-muted data-[highlighted]:text-ink"
                             >
                                 <SelectPrimitive.ItemText>{emptyOption.props.children}</SelectPrimitive.ItemText>
                             </SelectPrimitive.Item>
@@ -322,14 +322,14 @@ export function Checkbox({
             className={cn(
                 hasLabel
                     ? 'group inline-flex w-fit min-w-0 max-w-full min-h-11 items-center gap-3 text-start outline-none focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50'
-                    : 'group inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-sm outline-none focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+                    : 'group inline-flex h-5 w-5 shrink-0 items-center justify-center  outline-none focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
                 className,
             )}
             {...props}
         >
             <span
                 aria-hidden="true"
-                className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded border border-border-strong bg-paper text-inverse transition-colors group-focus-visible:ring-2 group-focus-visible:ring-focus group-data-[state=checked]:border-terracotta group-data-[state=checked]:bg-terracotta group-data-[state=indeterminate]:border-terracotta group-data-[state=indeterminate]:bg-terracotta"
+                className="inline-flex h-5 w-5 shrink-0 items-center justify-center  border border-border-strong bg-paper text-inverse transition-colors group-focus-visible:ring-2 group-focus-visible:ring-focus group-data-[state=checked]:border-terracotta group-data-[state=checked]:bg-terracotta group-data-[state=indeterminate]:border-terracotta group-data-[state=indeterminate]:bg-terracotta"
             >
                 <CheckboxPrimitive.Indicator className="flex items-center justify-center">
                     <Check size={14} strokeWidth={3} aria-hidden="true" />
