@@ -296,6 +296,14 @@
     --rd-workspace-bleed-offset: 0px;
 }
 
+/*
+ * The workspace grid owns the shared page gutter. Nested section containers
+ * keep their width semantics but must not add a second horizontal gutter.
+ */
+.rd-page-frame--workspace .rd-container {
+    padding-inline: 0;
+}
+
 @media (min-width: 1024px) {
     .rd-workspace-main {
         --rd-workspace-bleed-offset: calc((var(--rd-workspace-sidebar-width) + var(--rd-workspace-column-gap)) / 2);
