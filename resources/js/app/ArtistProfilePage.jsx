@@ -5,6 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useLanguage } from './LanguageContext';
 import { ArtworkCard, EmptyState, ErrorState, ArtistProfileSkeleton, SectionHeader, Button, Container } from '../components/ui';
+import { localizedValue } from '../utils/localizedContent';
 
 export default function ArtistProfilePage() {
     const { slug } = useParams();
@@ -49,8 +50,8 @@ export default function ArtistProfilePage() {
         const previousTitle = document.title;
         const descriptionTag = document.querySelector('meta[name="description"]');
         const previousDescription = descriptionTag?.getAttribute('content');
-        document.title = profile.display_name + (locale === 'fa' ? ' | هنرمندان راد آرت' : ' | Rad Art Artists');
-        if (descriptionTag) descriptionTag.setAttribute('content', profile.bio || ('پورتفولیوی عمومی ' + profile.display_name + ' در راد آرت؛ آثار تأییدشده و راه ارتباط با هنرمند.'));
+        document.title = localizedValue(profile, 'display_name', locale) + (locale === 'fa' ? ' | هنرمندان راد آرت' : ' | Rad Art Artists');
+        if (descriptionTag) descriptionTag.setAttribute('content', localizedValue(profile, 'bio', locale) || (locale === 'en' ? 'Public portfolio of ' + localizedValue(profile, 'display_name', locale) + ' on Rad Art.' : 'پورتفولیوی عمومی ' + profile.display_name + ' در راد آرت؛ آثار تأییدشده و راه ارتباط با هنرمند.'));
         return () => {
             document.title = previousTitle;
             if (descriptionTag) {
@@ -108,13 +109,13 @@ export default function ArtistProfilePage() {
                         </div>
                         <div className="min-w-0">
                             <div className="flex min-w-0 flex-wrap items-center gap-3">
-                                <h1 className="min-w-0 break-words text-2xl font-black tracking-tight text-ink sm:text-3xl [overflow-wrap:anywhere]">{profile.display_name}</h1>
+                                <h1 className="min-w-0 break-words text-2xl font-black tracking-tight text-ink sm:text-3xl [overflow-wrap:anywhere]">{localizedValue(profile, 'display_name', locale)}</h1>
                                 {profile.is_own_profile && <span className="border border-border bg-surface-muted px-2 py-1 text-[10px] font-bold text-muted">{t("پروفایل شما")}</span>}
                             </div>
                             <div className="mt-5 flex flex-wrap items-center gap-x-8 gap-y-3 border-y border-divider-group py-3 text-sm">
                                 <span><strong className="font-black tabular-nums">{allArtworks.length.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</strong><span className="ms-1.5 text-muted">{t("اثر")}</span></span>
                                 {followState.followers_count !== undefined && followState.followers_count !== null && <span><strong className="font-black tabular-nums">{Number(followState.followers_count).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</strong><span className="ms-1.5 text-muted">{t("دنبال‌کننده")}</span></span>}
-                                {profile.city && <span className="text-muted">{profile.city}</span>}
+                                {profile.city && <span className="text-muted">{localizedValue(profile, 'city', locale)}</span>}
                             </div>
                             {profile.bio && <p className="mt-4 whitespace-pre-line break-words text-sm leading-8 text-muted [overflow-wrap:anywhere]">{profile.bio}</p>}
                             <div className="mt-5 flex min-w-0 flex-wrap items-center gap-2">
@@ -153,14 +154,14 @@ export default function ArtistProfilePage() {
                             <div className="mt-6 flex flex-wrap gap-2" aria-label={t("فیلتر آثار بر اساس دسته")}>
                                 <Button variant="outline" type="button" aria-pressed={!categoryFilter} onClick={() => setCategoryFilter('')} className={`min-h-10 rounded-full border px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${!categoryFilter ? 'border-ink bg-ink text-inverse' : 'border-border bg-paper text-ink hover:border-terracotta'}`}>{t("همه دسته‌ها")}</Button>
                                 {portfolioCategories.map((category) => (
-                                    <Button variant="outline" type="button" key={category.slug} aria-pressed={categoryFilter === category.slug} onClick={() => setCategoryFilter(category.slug)} className={`min-h-10 rounded-full border px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${categoryFilter === category.slug ? 'border-ink bg-ink text-inverse' : 'border-border bg-paper text-ink hover:border-terracotta'}`}>{t(category.name)}</Button>
+                                    <Button variant="outline" type="button" key={category.slug} aria-pressed={categoryFilter === category.slug} onClick={() => setCategoryFilter(category.slug)} className={`min-h-10 rounded-full border px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${categoryFilter === category.slug ? 'border-ink bg-ink text-inverse' : 'border-border bg-paper text-ink hover:border-terracotta'}`}>{localizedValue(category, 'name', locale)}</Button>
                                 ))}
                             </div>
                         )}
 
                         {visibleArtworks.length ? (
                             <div className="mt-7 grid min-w-0 max-w-full grid-cols-1 gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                                {visibleArtworks.map((item) => <ArtworkCard key={item.id} className="min-w-0 [overflow-wrap:anywhere]" artwork={{ ...item, artist: { display_name: profile.display_name, slug: profile.slug } }} />)}
+                                {visibleArtworks.map((item) => <ArtworkCard key={item.id} className="min-w-0 [overflow-wrap:anywhere]" artwork={{ ...item, artist: { display_name: profile.display_name, display_name_en: profile.display_name_en, slug: profile.slug } }} />)}
                             </div>
                         ) : (
                             <EmptyState className="mt-7" title={t(categoryFilter ? 'در این دسته اثری بارگذاری نشده' : 'هنوز اثری برای نمایش وجود ندارد')} description={t('آثار تأییدشده این هنرمند در این بخش نمایش داده می‌شوند.')} />
