@@ -5,7 +5,7 @@ export function ArtworkCardSkeleton({ className = '' }) {
     return (
         <article aria-hidden="true" className={`group min-w-0 ${className}`}>
             <div className="relative overflow-hidden bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))]">
-                <Skeleton className="aspect-[4/5] w-full " />
+                <Skeleton className="aspect-[3/4] w-full " />
                 <span aria-hidden="true" className="pointer-events-none absolute inset-0 border border-[color:color-mix(in_srgb,var(--color-ink)_5%,transparent)]" />
             </div>
             <div className="grid gap-1.5 border-b border-border px-0.5 pb-4 pt-4">
@@ -53,7 +53,7 @@ export function ArtworkStudioListSkeleton({ count = 3, className = '', announce 
         >
             {Array.from({ length: count }, (_, index) => (
                 <article key={index} className="min-w-0 overflow-hidden border-y border-border bg-transparent">
-                    <div className="flex aspect-[4/3] items-center justify-center bg-surface-muted p-3">
+                    <div className="flex aspect-[3/4] items-center justify-center bg-surface-muted p-3">
                         <Skeleton className="h-full w-full " />
                     </div>
                     <div className="space-y-3 p-4">
@@ -402,7 +402,7 @@ export function HomePageSkeleton() {
         <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی صفحه اصلی" className="w-full overflow-hidden">
             <Container as="section" width="wide" className="grid items-center gap-10 py-12 sm:py-16 lg:grid-cols-[1fr_.9fr] lg:gap-16 lg:py-24">
                 <div className="grid max-w-2xl content-center gap-5"><Skeleton className="h-4 w-56 " /><Skeleton className="h-12 w-11/12  sm:h-14" /><Skeleton className="h-12 w-3/4  sm:h-14" /><div className="mt-2 grid gap-2"><Skeleton className="h-4 w-full max-w-xl " /><Skeleton className="h-4 w-4/5 " /></div><div className="mt-4 flex flex-wrap gap-3"><Skeleton className="h-12 w-40 " /><Skeleton className="h-12 w-36 " /></div><Skeleton className="mt-2 h-3 w-64 " /></div>
-                <div className="relative mx-auto w-full max-w-xl lg:me-0"><Skeleton className="aspect-[4/5] w-full " /><div className="flex items-center justify-between gap-4 px-2 py-4"><div className="grid flex-1 gap-2"><Skeleton className="h-3 w-20 " /><Skeleton className="h-5 w-2/3 " /><Skeleton className="h-3 w-1/3 " /></div><Skeleton className="h-4 w-24 " /></div></div>
+                <div className="relative mx-auto w-full max-w-xl lg:me-0"><Skeleton className="aspect-[3/4] w-full " /><div className="flex items-center justify-between gap-4 px-2 py-4"><div className="grid flex-1 gap-2"><Skeleton className="h-3 w-20 " /><Skeleton className="h-5 w-2/3 " /><Skeleton className="h-3 w-1/3 " /></div><Skeleton className="h-4 w-24 " /></div></div>
             </Container>
             <section className="border-y border-border bg-surface-muted"><Container className="grid gap-8 py-12 sm:grid-cols-3">{[0, 1, 2].map((item) => <div key={item} className="grid content-start gap-3"><Skeleton className="h-3 w-24 " /><Skeleton className="h-6 w-3/4 " /><Skeleton className="h-3 w-full " /><Skeleton className="h-3 w-11/12 " /><Skeleton className="h-3 w-4/5 " /></div>)}</Container></section>
             <Container as="section" width="wide" className="py-16"><div className="grid gap-3 border-b border-border pb-5"><Skeleton className="h-3 w-24 " /><Skeleton className="h-8 w-48 " /><Skeleton className="h-3 w-64 max-w-full " /></div><div className="mt-8 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}</div></Container>
@@ -420,7 +420,7 @@ export function ArtworkDetailSkeleton() {
             <span className="sr-only">در حال دریافت اثر هنری…</span>
             <nav aria-hidden="true" className="flex items-center gap-2"><Skeleton className="h-3 w-10 " /><Skeleton className="h-3 w-2 " /><Skeleton className="h-3 w-20 " /><Skeleton className="h-3 w-2 " /><Skeleton className="h-3 w-16 " /></nav>
             <article className="mt-7 grid items-start gap-8 lg:grid-cols-[1.15fr_.85fr] lg:gap-10">
-                <div className="flex aspect-[4/3] items-center justify-center overflow-hidden border border-border bg-surface-muted p-3 sm:p-6 lg:aspect-[4/5] lg:p-8"><Skeleton className="h-full w-full " /></div>
+                <div className="flex aspect-[3/4] items-center justify-center overflow-hidden border border-border bg-surface-muted p-3 sm:p-6 lg:aspect-[3/4] lg:p-8"><Skeleton className="h-full w-full " /></div>
                 <div className="border-y border-border bg-transparent py-6 sm:py-9 lg:sticky lg:top-28 lg:border-y-0 lg:py-2">
                     <Skeleton className="h-4 w-24 " />
                     <Skeleton className="mt-3 h-10 w-4/5 max-w-md  sm:h-12" />
