@@ -86,7 +86,7 @@ export default function HomePage() {
     const spotlight = artists[0];
 
     return (
-        <div className="w-full min-w-0" dir="rtl">
+        <div className="w-full min-w-0">
             <section aria-labelledby="home-hero-title" className="relative isolate border-b border-[color:var(--rd-hero-line)] rd-hero-surface">
                 <div aria-hidden="true" className="pointer-events-none absolute -left-3 -top-3 z-0 hidden h-24 w-24 border border-sand sm:block lg:-left-5 lg:-top-5 lg:h-32 lg:w-32" />
                 <div aria-hidden="true" className="pointer-events-none absolute -bottom-4 -right-4 z-0 hidden h-28 w-28 bg-surface-muted sm:block lg:-bottom-6 lg:-right-6 lg:h-40 lg:w-40" />
@@ -240,7 +240,6 @@ export default function HomePage() {
                     <Card
                         as="article"
                         className="rd-hero-surface mt-8 grid min-w-0 overflow-hidden border border-[color:var(--rd-hero-line)] sm:grid-cols-[minmax(0,1fr)_15rem]"
-                        dir="rtl"
                     >
                         <div className="flex min-w-0 flex-col justify-center p-6 sm:p-8 lg:p-10">
                             <p className="text-[10px] font-extrabold tracking-[.14em] text-[color:var(--rd-hero-accent)]">ARTIST SPOTLIGHT / هنرمند منتخب</p>
