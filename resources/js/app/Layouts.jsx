@@ -272,7 +272,7 @@ function notificationDate(value, locale = 'fa') {
 }
 
 function NotificationBell({ user }) {
-    const { t, locale } = useLanguage();
+    const { locale } = useLanguage();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [open, setOpen] = useState(false);
@@ -613,7 +613,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                         <div className="min-w-0">
                             <Link to="/" className="text-base font-black tracking-tight text-ink no-underline sm:text-lg">راد<span className="text-terracotta-strong">آرت</span></Link>
                             <div className="mt-0.5 flex min-w-0 items-center gap-1.5 sm:mt-1 sm:gap-2">
-                                <span className="max-w-[9.5rem] truncate text-[11px] font-semibold text-muted sm:max-w-none sm:text-xs">{title}</span>
+                                <span className="max-w-[9.5rem] truncate text-[11px] font-semibold text-muted sm:max-w-none sm:text-xs">{t(title)}</span>
                                 <span aria-hidden="true" className="h-1 w-1 shrink-0 rounded-full bg-border-strong" />
                                 <Badge variant="accent" className="shrink-0 px-1.5 py-0.5 text-[9px] sm:px-2 sm:text-[10px]">{t(roleLabels[user?.role] ?? 'فضای کاربری')}</Badge>
                             </div>
@@ -707,7 +707,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                         isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
                                     ].join(' ')}
                                 >
-                                    {item.label}
+                                    {t(item.label)}
                                 </NavLink>
                             ))}
                         </div>
