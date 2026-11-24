@@ -110,6 +110,8 @@ test('Rademan semantic design tokens are declared centrally and resolve through 
     assert.ok(css.includes('--rd-message-own:'));
     assert.ok(css.includes('--rd-success:'));
     assert.ok(css.includes('--color-success-surface:'));
+    assert.ok(css.includes('--color-action-text: var(--rd-action-text)'));
+    assert.doesNotMatch(css, /--color-(?:canvas|ink|terracotta|terracotta-strong|text|text-muted|text-subtle|border|border-strong|surface|surface-muted|action|action-text|focus|success|danger|warning|info|inverse-text):\\s*#/);
     assert.ok(css.includes(":root[data-theme='dark']"));
     assert.ok(css.includes('@media (prefers-color-scheme: dark)'));
 });
@@ -160,7 +162,7 @@ test('public catalogue, artist directory and artwork detail use shared page layo
 });
 
 test('public and role-based workspaces use shared semantic shell utilities', () => {
-    for (const utility of ['min-h-screen bg-canvas text-ink', 'sticky top-0 z-40 border-b-2 border-ink', 'grid min-w-0 max-w-content', 'border-y-2 border-ink bg-paper']) {
+    for (const utility of ['min-h-screen bg-canvas text-ink', 'sticky top-0 z-40 border-b-2 border-ink', 'grid min-w-0 w-full max-w-content', 'border-y-2 border-ink bg-paper']) {
         assert.ok(layouts.includes(utility), 'Missing shell utility: ' + utility);
     }
     assert.doesNotMatch(layouts, /ra-[a-z]/);
