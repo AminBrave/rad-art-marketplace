@@ -74,7 +74,7 @@ export function AdminDashboardHome() {
 
             <section aria-label={t("شاخص‌های عملیاتی")} className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                 {loading ? <DashboardMetricSkeleton count={3} /> : <>
-                    <DashboardMetricCard as={Link} label={t("آثار در انتظار بررسی")} value={summary.pending?.toLocaleString('fa-IR')} detail="تعداد کل آثار منتظر تصمیم انتشار" to="/admin/artworks" eyebrow="انتشار" />
+                    <DashboardMetricCard as={Link} label={t("آثار در انتظار بررسی")} value={summary.pending?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail="تعداد کل آثار منتظر تصمیم انتشار" to="/admin/artworks" eyebrow="انتشار" />
                     <DashboardMetricCard as={Link} label={t("حساب‌های کاربری")} value={summary.users?.toLocaleString('fa-IR')} detail="تعداد کل حساب‌های ثبت‌شده" to="/admin/users" eyebrow="جامعه" />
                     <DashboardMetricCard as={Link} label={t("گزارش‌های پیام")} value={summary.reports?.toLocaleString('fa-IR')} detail="مجموع گزارش‌های ثبت‌شده برای رسیدگی" to="/admin/message-reports" eyebrow="ایمنی" />
                 </>}
@@ -125,6 +125,7 @@ export function AdminDashboardHome() {
 }
 
 export function AdminArtworkModeration() {
+    const { t, locale } = useLanguage();
     const [params, setParams] = useSearchParams();
     const { user } = useAuth();
     const status = statuses.some((item) => item.value === params.get('status')) ? params.get('status') : 'pending_review';
@@ -193,6 +194,7 @@ export function AdminArtworkModeration() {
 }
 
 export function AdminUsersPage() {
+    const { t, locale } = useLanguage();
     const { user } = useAuth();
     const [params, setParams] = useSearchParams();
     const page = Math.max(1, Number(params.get('page')) || 1);
@@ -275,6 +277,7 @@ export function AdminUsersPage() {
 }
 
 export function AdminMessageReportsPage() {
+    const { t, locale } = useLanguage();
     const { user } = useAuth();
     const [params, setParams] = useSearchParams();
     const page = Math.max(1, Number(params.get('page')) || 1);
@@ -360,6 +363,7 @@ export function AdminMessageReportsPage() {
 }
 
 export function AdminArtworkCommentReportsPage() {
+    const { t, locale } = useLanguage();
     const { user } = useAuth();
     const [params, setParams] = useSearchParams();
     const page = Math.max(1, Number(params.get('page')) || 1);
