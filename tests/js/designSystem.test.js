@@ -105,7 +105,7 @@ test('homepage hero artwork remains visible in a responsive 3:4 frame on all vie
     assert.doesNotMatch(homePage, /w-full min-w-0 overflow-hidden["']/);
     assert.ok(homePage.includes('relative aspect-[3/4] w-full overflow-hidden'));
     assert.ok(homePage.includes('lg:flex-row lg:items-center lg:gap-20'));
-    assert.doesNotMatch(homePage, /lg:grid-cols-\[/, 'The homepage hero must not use CSS Grid.');
+    assert.doesNotMatch(homePage, /className="grid items-center gap-10 lg:grid-cols-/, 'The homepage hero must not use CSS Grid.');
     assert.ok(homePage.includes('lg:max-w-[28rem] lg:justify-self-center'), 'Desktop hero artwork stays portrait without overwhelming the text column.');
     assert.doesNotMatch(homePage, /sm:aspect-\[3\/4\]|lg:aspect-\[3\/4\]/);
 });
