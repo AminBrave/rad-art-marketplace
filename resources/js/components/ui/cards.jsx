@@ -13,7 +13,7 @@ export function ArtworkCard({ artwork, className = '' }) {
         <article className={cn('group min-w-0', className)}>
             <Link to={`/artworks/${artwork.slug}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus">
                 <div className="relative overflow-hidden bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))]">
-                    <div className="flex aspect-[4/5] items-center justify-center bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))] p-3 sm:p-4">
+                    <div className="flex aspect-[3/4] items-center justify-center bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))] p-3 sm:p-4">
                         <MediaImage src={artwork.image_url} alt={title} variant="card" className="h-full w-full" imageClassName="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.045]" />
                     </div>
                     <span aria-hidden="true" className="pointer-events-none absolute inset-0 border border-[color:color-mix(in_srgb,var(--color-ink)_5%,transparent)] transition-colors group-hover:border-[color:color-mix(in_srgb,var(--color-terracotta)_50%,transparent)]" />
