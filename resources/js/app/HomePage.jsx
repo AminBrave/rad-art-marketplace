@@ -123,12 +123,12 @@ export default function HomePage() {
                             <div aria-hidden="true" className="absolute -bottom-4 -right-4 hidden h-28 w-28 bg-surface-muted sm:block lg:-bottom-6 lg:-right-6 lg:h-40 lg:w-40" />
                             {hero ? (
                                 <Link to={'/artworks/' + hero.slug} className="group relative block border border-[color:var(--rd-hero-line)] bg-paper p-2 shadow-soft sm:p-3">
-                                    <div className="relative aspect-[5/4] overflow-hidden bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))] sm:aspect-[4/3] lg:aspect-[5/4]">
+                                    <div className="relative aspect-[3/4] overflow-hidden bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))] sm:aspect-[3/4] lg:aspect-[3/4]">
                                         <MediaImage
                                             src={hero.image_url}
                                             alt={hero.title}
                                             className="h-full w-full"
-                                            imageClassName="object-contain transition-transform duration-700 group-hover:scale-[1.025]"
+                                            imageClassName="object-cover transition-transform duration-700 group-hover:scale-[1.025]"
                                             loading="eager"
                                             fetchPriority="high"
                                             decoding="async"
@@ -148,7 +148,7 @@ export default function HomePage() {
                                     </div>
                                 </Link>
                             ) : (
-                                <div className="relative aspect-[5/4] overflow-hidden bg-[linear-gradient(135deg,var(--rd-hero-background-alt),var(--rd-surface-muted))] sm:aspect-[4/3] lg:aspect-[5/4]">
+                                <div className="relative aspect-[5/4] overflow-hidden bg-[linear-gradient(135deg,var(--rd-hero-background-alt),var(--rd-surface-muted))] sm:aspect-[3/4] lg:aspect-[3/4]">
                                     <div aria-hidden="true" className="absolute inset-5 border border-[color:var(--rd-hero-line)] sm:inset-8" />
                                     <div aria-hidden="true" className="absolute left-[12%] top-[12%] h-[48%] w-[48%] bg-[color:var(--rd-hero-accent)]" />
                                     <div aria-hidden="true" className="absolute bottom-[12%] right-[10%] h-[58%] w-[48%] bg-[color:var(--rd-hero-background)]" />
