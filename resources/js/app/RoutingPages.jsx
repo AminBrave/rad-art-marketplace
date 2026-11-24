@@ -104,7 +104,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
         const registering = pathname === '/register';
         return (
             <Container as="div" width="reading" className="py-12" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فرم حساب کاربری">
-                <section className="border-y-2 border-ink bg-paper p-6 sm:p-9">
+                <section className="border-y border-ink bg-paper p-6 sm:p-9">
                     <Skeleton className="h-4 w-32 rounded-sm" />
                     <Skeleton className="mt-5 h-8 w-2/3 rounded-sm" />
                     <div className="mt-6 flex gap-5 border-b border-border pb-4"><Skeleton className="h-4 w-12 rounded-sm" /><Skeleton className="h-4 w-16 rounded-sm" /></div>
@@ -125,7 +125,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
         return (
             <div className="mx-auto min-h-[65vh] max-w-7xl px-5 py-10 sm:px-8 lg:px-10" dir="rtl" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
                 <span className="sr-only">{label}</span>
-                <div className="mb-8 grid gap-3 border-b-2 border-ink pb-6"><Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="h-9 w-2/3 max-w-sm rounded-sm" /><Skeleton className="h-4 w-full max-w-xl rounded-sm" /></div>
+                <div className="mb-8 grid gap-3 border-b border-ink pb-6"><Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="h-9 w-2/3 max-w-sm rounded-sm" /><Skeleton className="h-4 w-full max-w-xl rounded-sm" /></div>
                 <section className="grid gap-4 sm:grid-cols-2">
                     <FormFieldSkeleton className="sm:col-span-2" />
                     <FormFieldSkeleton className="sm:col-span-2" controlClassName="h-28" />
@@ -178,7 +178,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
             </div>
             {pathname === '/artworks' ? (
                 <>
-                    <section className="mb-7 grid gap-3 border-y-2 border-ink bg-surface-muted p-4 sm:grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))] sm:p-5">
+                    <section className="mb-7 grid gap-3 border-y border-ink bg-surface-muted p-4 sm:grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))] sm:p-5">
                         <Skeleton className="h-11 w-full rounded-md" /><Skeleton className="h-11 w-full rounded-md" /><Skeleton className="h-11 w-full rounded-md" />
                     </section>
                     <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -187,7 +187,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                 </>
             ) : pathname === '/artists' ? (
                 <>
-                    <section className="mb-8 grid gap-4 border-y-2 border-ink bg-ink px-6 py-10 sm:px-10">
+                    <section className="mb-8 grid gap-4 border-y border-ink bg-ink px-6 py-10 sm:px-10">
                         <Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="h-10 w-2/3 max-w-lg rounded-sm" /><Skeleton className="h-4 w-full max-w-2xl rounded-sm" /><Skeleton className="h-11 w-full max-w-2xl rounded-md" />
                     </section>
                     <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
