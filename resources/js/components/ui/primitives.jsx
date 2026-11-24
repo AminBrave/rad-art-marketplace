@@ -81,10 +81,10 @@ export function Badge({ children, variant = 'neutral', className = '' }) {
 
 
 const pageWidths = {
-    // The application shell owns the only outer width and page-gutter system.
-    // "wide" fills that frame; "reading" is an intentional inner text measure.
-    wide: 'w-full max-w-none',
-    reading: 'mx-auto w-full max-w-[var(--content-reading-width)]',
+    // Width and gutters are owned by each section's content wrapper, never by
+    // the route-level <main>. Use "full" for edge-to-edge section content.
+    wide: 'mx-auto w-full max-w-content px-page-gutter',
+    reading: 'mx-auto w-full max-w-[var(--content-reading-width)] px-page-gutter',
     full: 'w-full max-w-none',
 };
 
