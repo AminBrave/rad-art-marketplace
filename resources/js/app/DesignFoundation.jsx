@@ -56,7 +56,7 @@ function ColorAccessibilityPanel() {
 
 export default function DesignFoundation() {
     return (
-        <main dir="rtl" className="min-h-screen w-full bg-canvas py-12 text-ink">
+        <main className="min-h-screen w-full bg-canvas py-12 text-ink">
             <Container width="wide">
             <div className="mx-auto max-w-content">
                 <header className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
