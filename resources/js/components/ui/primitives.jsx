@@ -4,7 +4,7 @@ import * as SelectPrimitive from '@radix-ui/react-select';
 import { Check, ChevronDown } from 'lucide-react';
 import { Tooltip } from './Tooltip';
 import { cn } from '../../lib/utils';
-import { Container, Section } from './layout';
+import { Container } from './layout';
 
 const buttonVariants = {
     primary: 'bg-terracotta text-inverse enabled:hover:bg-terracotta-strong',
