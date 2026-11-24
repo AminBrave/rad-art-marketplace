@@ -132,7 +132,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
             const endpoint = editingId ? '/api/v1/artist/artworks/' + editingId : '/api/v1/artist/artworks';
             const { data } = await saveArtworkMutation.mutateAsync({ endpoint, payload });
             resetForm();
-            setMessage(data.message ?? t("اثر ذخیره شد."));
+            setMessage(t(data.message ?? "اثر ذخیره شد."));
             await Promise.all([
                 queryClient.invalidateQueries({ queryKey: ['artist', 'artworks', user?.id] }),
                 queryClient.invalidateQueries({ queryKey: ['artist-workspace', 'artworks', user?.id] }),
@@ -160,18 +160,18 @@ export default function ArtworkStudio({ user, hasProfile }) {
         <section id="artwork-editor" className="border-y border-border bg-transparent py-6 sm:py-8">
             <div className="mb-6 flex flex-wrap items-start justify-between gap-3"><SectionHeader title={editingId ? t('ویرایش اثر') : t("ثبت اثر جدید")} description={t("فیلدهای الزامی با علامت * مشخص شده‌اند.")} className="min-w-0 flex-1 border-0 pb-0" />{editingId && <Button variant="outline" size="sm" onClick={resetForm}>{t('انصراف از ویرایش')}</Button>}</div>
             <form onSubmit={saveArtwork} className="grid gap-x-5 gap-y-6 sm:grid-cols-2">
-                <FormField label={t("عنوان اثر")} required error={errors.title?.[0]}><TextInput name="title" value={form.title} onChange={updateForm} required maxLength={160} /></FormField>
-                <FormField label={t("عنوان اثر به انگلیسی")} error={errors.title_en?.[0]}><TextInput name="title_en" value={form.title_en} onChange={updateForm} maxLength={160} dir="ltr" className="text-start" /></FormField>
-                <FormField label={t("دسته‌بندی")} required error={errors.category_id?.[0]}><SelectField name="category_id" value={form.category_id} onChange={updateForm} required><option value="">{t("انتخاب دسته‌بندی")}</option>{categories.map((category) => <option key={category.id} value={category.id}>{locale === 'en' ? (category.name_en || category.name) : category.name}</option>)}</SelectField></FormField>
-                <FormField label={t("تکنیک / متریال")} error={errors.medium?.[0]}><TextInput name="medium" value={form.medium} onChange={updateForm} maxLength={120} placeholder={t("مثلاً رنگ روغن، آبرنگ…")} /></FormField>
-                <FormField label={t("ابعاد")} error={errors.dimensions?.[0]}><TextInput name="dimensions" value={form.dimensions} onChange={updateForm} maxLength={120} placeholder={t("مثلاً ۵۰ × ۷۰ سانتی‌متر")} /></FormField>
-                <FormField label={t("سال خلق اثر")} error={errors.year?.[0]}><TextInput name="year" type="number" value={form.year} onChange={updateForm} min="1000" max={new Date().getFullYear() + 1} /></FormField>
-                <FormField label={t("قیمت (ریال)")} error={errors.price?.[0]}><TextInput name="price" type="number" value={form.price} onChange={updateForm} min="0" step="1" /></FormField>
-                <FormField label={t("وضعیت دسترس‌پذیری")} required><SelectField name="availability" value={form.availability} onChange={updateForm}><option value="available">{t("موجود")}</option><option value="sold">{t("فروخته‌شده")}</option><option value="not_for_sale">برای فروش نیست</option></SelectField></FormField>
-                <FormField label={t("توضیحات اثر")} error={errors.description?.[0]} className="sm:col-span-2"><TextareaField name="description" value={form.description} onChange={updateForm} rows={4} maxLength={3000} /></FormField>
-                <FormField label={t("توضیحات اثر به انگلیسی")} error={errors.description_en?.[0]} className="sm:col-span-2"><TextareaField name="description_en" value={form.description_en} onChange={updateForm} rows={4} maxLength={3000} dir="ltr" className="text-start" /></FormField>
-                <FormField label={t("شهر محل اثر")} error={errors.city?.[0]}><TextInput name="city" value={form.city} onChange={updateForm} maxLength={120} /></FormField>
-                <FormField label={t("شهر محل اثر به انگلیسی")} error={errors.city_en?.[0]}><TextInput name="city_en" value={form.city_en} onChange={updateForm} maxLength={120} dir="ltr" className="text-start" /></FormField>
+                <FormField label={t("عنوان اثر")} required error={t(errors.title?.[0])}><TextInput name="title" value={form.title} onChange={updateForm} required maxLength={160} /></FormField>
+                <FormField label={t("عنوان اثر به انگلیسی")} error={t(errors.title_en?.[0])}><TextInput name="title_en" value={form.title_en} onChange={updateForm} maxLength={160} dir="ltr" className="text-start" /></FormField>
+                <FormField label={t("دسته‌بندی")} required error={t(errors.category_id?.[0])}><SelectField name="category_id" value={form.category_id} onChange={updateForm} required><option value="">{t("انتخاب دسته‌بندی")}</option>{categories.map((category) => <option key={category.id} value={category.id}>{locale === 'en' ? (category.name_en || category.name) : category.name}</option>)}</SelectField></FormField>
+                <FormField label={t("تکنیک / متریال")} error={t(errors.medium?.[0])}><TextInput name="medium" value={form.medium} onChange={updateForm} maxLength={120} placeholder={t("مثلاً رنگ روغن، آبرنگ…")} /></FormField>
+                <FormField label={t("ابعاد")} error={t(errors.dimensions?.[0])}><TextInput name="dimensions" value={form.dimensions} onChange={updateForm} maxLength={120} placeholder={t("مثلاً ۵۰ × ۷۰ سانتی‌متر")} /></FormField>
+                <FormField label={t("سال خلق اثر")} error={t(errors.year?.[0])}><TextInput name="year" type="number" value={form.year} onChange={updateForm} min="1000" max={new Date().getFullYear() + 1} /></FormField>
+                <FormField label={t("قیمت (ریال)")} error={t(errors.price?.[0])}><TextInput name="price" type="number" value={form.price} onChange={updateForm} min="0" step="1" /></FormField>
+                <FormField label={t("وضعیت دسترس‌پذیری")} required><SelectField name="availability" value={form.availability} onChange={updateForm}><option value="available">{t("موجود")}</option><option value="sold">{t("فروخته‌شده")}</option><option value="not_for_sale">{t("برای فروش نیست")}</option></SelectField></FormField>
+                <FormField label={t("توضیحات اثر")} error={t(errors.description?.[0])} className="sm:col-span-2"><TextareaField name="description" value={form.description} onChange={updateForm} rows={4} maxLength={3000} /></FormField>
+                <FormField label={t("توضیحات اثر به انگلیسی")} error={t(errors.description_en?.[0])} className="sm:col-span-2"><TextareaField name="description_en" value={form.description_en} onChange={updateForm} rows={4} maxLength={3000} dir="ltr" className="text-start" /></FormField>
+                <FormField label={t("شهر محل اثر")} error={t(errors.city?.[0])}><TextInput name="city" value={form.city} onChange={updateForm} maxLength={120} /></FormField>
+                <FormField label={t("شهر محل اثر به انگلیسی")} error={t(errors.city_en?.[0])}><TextInput name="city_en" value={form.city_en} onChange={updateForm} maxLength={120} dir="ltr" className="text-start" /></FormField>
                 <div className="sm:col-span-2">
                     <label htmlFor="artwork-image" className="block text-sm font-semibold text-ink">{t("تصویر اثر")} {editingId ? t("(اختیاری؛ برای جایگزینی تصویر)") : '*'}</label>
                     <FileInput id="artwork-image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required={!editingId} onChange={chooseImage} aria-describedby="artwork-image-help" className="mt-2 bg-canvas px-3 py-3 file:ms-3" />
@@ -191,6 +191,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
                     <div className="relative flex aspect-[3/4] items-center justify-center overflow-hidden border border-border bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))] p-4 sm:p-5"><MediaImage src={item.image_url} alt={locale === 'en' ? (item.title_en || item.title) : item.title} className="h-full w-full" imageClassName="object-cover" loading="lazy" decoding="async" /></div>
                     <div className="space-y-3 pt-4"><div className="flex flex-wrap items-start justify-between gap-2"><h3 className="font-bold">{locale === 'en' ? (item.title_en || item.title) : item.title}</h3><Badge variant={item.status === 'approved' ? 'success' : item.status === 'rejected' ? 'danger' : item.status === 'changes_requested' ? 'warning' : 'neutral'}>{t(statusLabels[item.status] ?? item.status)}</Badge></div>
                         <p className="text-xs text-muted">{locale === 'en' ? (item.category?.name_en || item.category?.name) : item.category?.name}</p>
+                        {(item.city || item.city_en) && <p className="text-xs text-muted">{locale === 'en' ? (item.city_en || item.city) : item.city}</p>}
                         <p className="text-xs leading-6 text-muted">{t(statusGuidance[item.status] ?? "وضعیت این اثر از سوی سرور تعیین شده است.")}</p>
                         {item.rejection_note && <div className="border-s-2 border-danger bg-surface-muted p-3 text-xs leading-6 text-danger"><p className="mb-1 font-bold">{t("بازخورد مدیر")}</p>{item.rejection_note}</div>}
                         <Button variant="outline" size="sm" onClick={() => editArtwork(item)}>{t("ویرایش اثر")}</Button></div>
