@@ -32,7 +32,7 @@ function SectionHeading({ id, eyebrow, title, description, to, linkLabel }) {
 }
 
 export default function HomePage() {
-    const { t } = useLanguage();
+    const { t, locale } = useLanguage();
     const artworksQuery = useQuery({
         queryKey: ['home', 'artworks'],
         queryFn: async ({ signal }) => {
