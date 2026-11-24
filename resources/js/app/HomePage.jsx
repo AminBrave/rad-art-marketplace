@@ -93,7 +93,9 @@ export default function HomePage() {
                         <span>گالری هنر مستقل معاصر</span>
                         <span dir="ltr" className="font-latin">RAD ART / DISCOVER &amp; CONNECT</span>
                     </div>
-                    <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(20rem,.9fr)] lg:gap-20">
+                    <div className="relative grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(20rem,.9fr)] lg:gap-20">
+                        <div aria-hidden="true" className="rd-shine rd-shine--ambient pointer-events-none absolute -left-3 -top-3 z-0 hidden h-24 w-24 border border-sand sm:block lg:-left-5 lg:-top-5 lg:h-32 lg:w-32" style={{ '--rd-shine-index': 0 }} />
+                        <div aria-hidden="true" className="rd-shine rd-shine--ambient pointer-events-none absolute -bottom-4 -right-4 z-0 hidden h-28 w-28 bg-surface-muted sm:block lg:-bottom-6 lg:-right-6 lg:h-40 lg:w-40" style={{ '--rd-shine-index': 1 }} />
                         <div className="relative z-10 order-2 max-w-2xl py-2 lg:order-1 lg:py-10">
                             <p className="mb-5 flex items-center gap-3 text-xs font-extrabold text-[color:var(--rd-hero-accent)]">
                                 <span className="h-px w-9 bg-[color:var(--rd-hero-accent)]" />
@@ -118,9 +120,7 @@ export default function HomePage() {
                             <p className="mt-7 text-xs leading-6 text-[color:var(--rd-hero-muted)]">نمایش عمومی به آثار تأییدشده و پروفایل‌های عمومی محدود است.</p>
                         </div>
 
-                        <div className="relative order-1 mx-auto w-full max-w-2xl lg:order-2 lg:max-w-[28rem] lg:justify-self-center">
-                            <div aria-hidden="true" className="rd-shine rd-shine--ambient absolute -left-3 -top-3 hidden h-24 w-24 border border-sand sm:block lg:-left-5 lg:-top-5 lg:h-32 lg:w-32" style={{ '--rd-shine-index': 0 }} />
-                            <div aria-hidden="true" className="rd-shine absolute -bottom-4 -right-4 hidden h-28 w-28 bg-surface-muted sm:block lg:-bottom-6 lg:-right-6 lg:h-40 lg:w-40" style={{ '--rd-shine-index': 1 }} />
+                        <div className="relative z-10 order-1 mx-auto w-full max-w-2xl lg:order-2 lg:max-w-[28rem] lg:justify-self-center">
                             {hero ? (
                                 <Link to={'/artworks/' + hero.slug} className="group relative block border border-[color:var(--rd-hero-line)] bg-paper p-2 shadow-soft sm:p-3">
                                     <div className="rd-shine rd-shine--ambient relative aspect-[3/4] w-full overflow-hidden bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))]" style={{ '--rd-shine-index': 0 }}>
