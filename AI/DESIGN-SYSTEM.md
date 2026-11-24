@@ -45,6 +45,7 @@ CSS `--rd-*` variables are the canonical design-token source; Tailwind maps dire
 - Keep headings and supporting copy on the hero foreground/muted roles, and make actions contrast against the active hero palette. Decorative geometry must remain non-interactive, avoid clipping content and respect the zero-radius visual language.
 - Apply the same surface to the homepage, shared `PageHeader`, artist directory, artist spotlight, registration CTA and workspace welcome heroes. Their skeleton/loading states should use the same theme-aware background.
 - Hero descendants and media must be shrinkable (`min-width: 0`, `max-width: 100%`). A `.rd-bleed` section must not introduce document-level horizontal scrolling; keep the viewport clipped at the root and never size hero media from intrinsic image width.
+- Hero surface backgrounds span the viewport; all hero content is nested in the shared width-constrained `Container`. For split desktop heroes, use a flexible copy column and a bounded media column with a single gap. Do not combine percentage widths that total 100% with a nonzero gap, and remove auto margins from flex children at desktop breakpoints.
 
 ## Accessibility and localization
 
