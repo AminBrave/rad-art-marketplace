@@ -39,7 +39,7 @@ export function ArtistCard({ artist, className = '' }) {
     const { locale } = useLanguage();
     if (!artist) return null;
     const name = localizedValue(artist, 'display_name', locale) || artist.name || (locale === 'en' ? 'Artist' : 'هنرمند');
-    const initial = name.trim().slice(0, 1) || 'ه';
+    const initial = name.trim().slice(0, 1) || (locale === 'en' ? 'A' : 'ه');
 
     return (
         <article className={cn('group relative min-w-0 overflow-hidden border border-border bg-paper transition-colors duration-300 hover:border-terracotta', className)}>
