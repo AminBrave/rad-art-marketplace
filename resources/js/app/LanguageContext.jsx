@@ -797,6 +797,23 @@ const english = {
     "خطا در نمایش تصویر": "Image display error",
     "فایل پیدا نشد یا دریافت آن ناموفق بود.": "The file could not be found or loaded.",
     "نشانی تصویر ثبت نشده است.": "No image URL was provided.",
+    "بررسی آثار": "Artwork review",
+    "صف انتظار، تصمیم‌های انتشار و سوابق اصلاح یا رد آثار": "Review queue, publication decisions, and revision or rejection history",
+    "حساب‌ها": "Accounts",
+    "مرور حساب‌ها و مدیریت نقش‌های مجاز در سامانه": "Review accounts and manage permitted roles",
+    "تنظیم مجموعه‌ها و انتخاب هنرمندان برجسته": "Configure collections and select featured artists",
+    "اعتماد و ایمنی": "Trust and safety",
+    "رسیدگی به گزارش‌ها و بررسی محتوای علامت‌گذاری‌شده": "Review reports and flagged content",
+    "گفت‌وگوی عمومی": "Community discussion",
+    "بررسی دیدگاه‌های گزارش‌شده در صفحه آثار": "Review comments reported on artwork pages",
+    "انتشار": "Publishing",
+    "جامعه": "Community",
+    "تأیید و انتشار": "Approve and publish",
+    "درخواست اصلاح": "Request changes",
+    "رد اثر": "Reject artwork",
+    "کل حساب‌ها": "Total accounts",
+    "متن پیام حذف شده است.": "The message text has been deleted.",
+    "متن پیام مرتبط در دسترس نیست.": "The related message is unavailable.",
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 
