@@ -39,8 +39,8 @@ export default function ArtworkStudio({ user, hasProfile }) {
     const hasMoreArtworks = Boolean(artworksQuery.data?.next_page_url);
     const loading = artworksQuery.isPending;
     const loadError = artworksQuery.isError
-        ? (artworksQuery.error.response?.status === 403 ? 'این حساب اجازه مدیریت آثار را ندارد.' : 'دریافت آثار انجام نشد. دوباره تلاش کنید.')
-        : categoriesQuery.isError ? 'دریافت دسته‌بندی‌ها انجام نشد.' : '';
+        ? (artworksQuery.error.response?.status === 403 ? t("این حساب اجازه مدیریت آثار را ندارد.") : 'دریافت آثار انجام نشد. دوباره تلاش کنید.')
+        : categoriesQuery.isError ? t("دریافت دسته‌بندی‌ها انجام نشد.") : '';
     const [form, setForm] = useState(emptyArtwork);
     const [image, setImage] = useState(null);
     const [editingId, setEditingId] = useState(null);
@@ -94,10 +94,10 @@ export default function ArtworkStudio({ user, hasProfile }) {
         setErrors((current) => ({ ...current, image: undefined }));
         if (!file) { setImage(null); return; }
         if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-            setImageError('فقط فایل JPG، PNG یا WebP پذیرفته می‌شود.'); input.value = ''; setImage(null); return;
+            setImageError(t("فقط فایل JPG، PNG یا WebP پذیرفته می‌شود.")); input.value = ''; setImage(null); return;
         }
         if (file.size > 5 * 1024 * 1024) {
-            setImageError('حجم تصویر نباید بیشتر از ۵ مگابایت باشد.'); input.value = ''; setImage(null); return;
+            setImageError(t("حجم تصویر نباید بیشتر از ۵ مگابایت باشد.")); input.value = ''; setImage(null); return;
         }
         try {
             const dimensions = await new Promise((resolve, reject) => {
@@ -108,12 +108,12 @@ export default function ArtworkStudio({ user, hasProfile }) {
                 preview.src = url;
             });
             if (dimensions.width > 6000 || dimensions.height > 6000) {
-                setImageError('ابعاد تصویر نباید از ۶۰۰۰ × ۶۰۰۰ پیکسل بیشتر باشد. تصویر کوچک‌تری انتخاب کنید.');
+                setImageError(t("ابعاد تصویر نباید از ۶۰۰۰ × ۶۰۰۰ پیکسل بیشتر باشد. تصویر کوچک‌تری انتخاب کنید."));
                 input.value = ''; setImage(null); return;
             }
             setImage(file);
         } catch {
-            setImageError('خواندن تصویر ممکن نشد. فایل سالم JPG، PNG یا WebP دیگری انتخاب کنید.');
+            setImageError(t("خواندن تصویر ممکن نشد. فایل سالم JPG، PNG یا WebP دیگری انتخاب کنید."));
             input.value = ''; setImage(null);
         }
     };
@@ -130,7 +130,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
             const endpoint = editingId ? '/api/v1/artist/artworks/' + editingId : '/api/v1/artist/artworks';
             const { data } = await saveArtworkMutation.mutateAsync({ endpoint, payload });
             resetForm();
-            setMessage(data.message ?? 'اثر ذخیره شد.');
+            setMessage(data.message ?? t("اثر ذخیره شد."));
             await Promise.all([
                 queryClient.invalidateQueries({ queryKey: ['artist', 'artworks', user?.id] }),
                 queryClient.invalidateQueries({ queryKey: ['artist-workspace', 'artworks', user?.id] }),
@@ -140,9 +140,9 @@ export default function ArtworkStudio({ user, hasProfile }) {
             setArtworkPage(1);
         } catch (error) {
             if (error.response?.status === 422) {
-                setErrors(error.response.data.errors ?? {}); setMessage('لطفاً خطاهای مشخص‌شده را اصلاح کنید.');
-            } else if (error.response?.status === 403) setMessage('سرور اجازه انجام این عملیات را نداد.');
-            else setMessage('ذخیره اثر انجام نشد. اطلاعات فرم حفظ شده است؛ دوباره تلاش کنید.');
+                setErrors(error.response.data.errors ?? {}); setMessage(t("لطفاً خطاهای مشخص‌شده را اصلاح کنید."));
+            } else if (error.response?.status === 403) setMessage(t("سرور اجازه انجام این عملیات را نداد."));
+            else setMessage(t("ذخیره اثر انجام نشد. اطلاعات فرم حفظ شده است؛ دوباره تلاش کنید."));
         } finally {
             savingArtworkRef.current = false;
         }
@@ -151,30 +151,30 @@ export default function ArtworkStudio({ user, hasProfile }) {
 
     return <Container as="section" width="wide" className="space-y-7">
         <PageHeader
-            eyebrow="گالری شخصی"
+            eyebrow={t("گالری شخصی")}
             title={t("مدیریت آثار")}
             description={t("آثار جدید و ویرایش‌شده پس از ثبت دوباره برای بررسی مدیر ارسال می‌شوند. فقط آثار تأییدشده در گالری عمومی نمایش داده می‌شوند.")}
         />
         <section id="artwork-editor" className="border-y border-border bg-transparent py-6 sm:py-8">
-            <div className="mb-6 flex flex-wrap items-start justify-between gap-3"><SectionHeader title={editingId ? 'ویرایش اثر' : 'ثبت اثر جدید'} description={t("فیلدهای الزامی با علامت * مشخص شده‌اند.")} className="min-w-0 flex-1 border-0 pb-0" />{editingId && <Button variant="outline" size="sm" onClick={resetForm}>انصراف از ویرایش</Button>}</div>
+            <div className="mb-6 flex flex-wrap items-start justify-between gap-3"><SectionHeader title={editingId ? 'ویرایش اثر' : t("ثبت اثر جدید")} description={t("فیلدهای الزامی با علامت * مشخص شده‌اند.")} className="min-w-0 flex-1 border-0 pb-0" />{editingId && <Button variant="outline" size="sm" onClick={resetForm}>انصراف از ویرایش</Button>}</div>
             <form onSubmit={saveArtwork} className="grid gap-x-5 gap-y-6 sm:grid-cols-2">
                 <FormField label={t("عنوان اثر")} required error={errors.title?.[0]}><TextInput name="title" value={form.title} onChange={updateForm} required maxLength={160} /></FormField>
                 <FormField label={t("دسته‌بندی")} required error={errors.category_id?.[0]}><SelectField name="category_id" value={form.category_id} onChange={updateForm} required><option value="">{t("انتخاب دسته‌بندی")}</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</SelectField></FormField>
                 <FormField label={t("تکنیک / متریال")} error={errors.medium?.[0]}><TextInput name="medium" value={form.medium} onChange={updateForm} maxLength={120} placeholder={t("مثلاً رنگ روغن، آبرنگ…")} /></FormField>
-                <FormField label="ابعاد" error={errors.dimensions?.[0]}><TextInput name="dimensions" value={form.dimensions} onChange={updateForm} maxLength={120} placeholder="مثلاً ۵۰ × ۷۰ سانتی‌متر" /></FormField>
+                <FormField label={t("ابعاد")} error={errors.dimensions?.[0]}><TextInput name="dimensions" value={form.dimensions} onChange={updateForm} maxLength={120} placeholder={t("مثلاً ۵۰ × ۷۰ سانتی‌متر")} /></FormField>
                 <FormField label={t("سال خلق اثر")} error={errors.year?.[0]}><TextInput name="year" type="number" value={form.year} onChange={updateForm} min="1000" max={new Date().getFullYear() + 1} /></FormField>
                 <FormField label={t("قیمت (ریال)")} error={errors.price?.[0]}><TextInput name="price" type="number" value={form.price} onChange={updateForm} min="0" step="1" /></FormField>
                 <FormField label={t("وضعیت دسترس‌پذیری")} required><SelectField name="availability" value={form.availability} onChange={updateForm}><option value="available">{t("موجود")}</option><option value="sold">{t("فروخته‌شده")}</option><option value="not_for_sale">برای فروش نیست</option></SelectField></FormField>
                 <FormField label={t("توضیحات اثر")} error={errors.description?.[0]} className="sm:col-span-2"><TextareaField name="description" value={form.description} onChange={updateForm} rows={4} maxLength={3000} /></FormField>
                 <div className="sm:col-span-2">
-                    <label htmlFor="artwork-image" className="block text-sm font-semibold text-ink">تصویر اثر {editingId ? '(اختیاری؛ برای جایگزینی تصویر)' : '*'}</label>
+                    <label htmlFor="artwork-image" className="block text-sm font-semibold text-ink">تصویر اثر {editingId ? t("(اختیاری؛ برای جایگزینی تصویر)") : '*'}</label>
                     <FileInput id="artwork-image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required={!editingId} onChange={chooseImage} aria-describedby="artwork-image-help" className="mt-2 bg-canvas px-3 py-3 file:ms-3" />
                     <p id="artwork-image-help" className="mt-2 text-xs leading-6 text-muted">{t("JPG، JPEG، PNG یا WebP؛ حداکثر ۵ مگابایت و ۶۰۰۰ × ۶۰۰۰ پیکسل. ابعاد تصویر پیش از ارسال بررسی می‌شود.")}</p>
                     {fieldError('image')}{imageError && <p role="alert" className="mt-1 text-xs text-danger">{imageError}</p>}
                     {imagePreview && <div className="mt-4 max-w-sm border-y border-border bg-paper p-2"><MediaImage src={imagePreview} alt="پیش‌نمایش تصویر انتخاب‌شده" className="aspect-[3/4] max-h-64 w-full" imageClassName="object-cover" loading="eager" /></div>}
                     <UploadFeedback fileName={image?.name} status={busy ? 'uploading' : uploadProgress === 100 ? 'success' : 'idle'} progress={uploadProgress} />
                 </div>
-                <div className="flex flex-wrap items-center gap-3 sm:col-span-2"><Button type="submit" disabled={busy || Boolean(imageError)} loading={busy}>{editingId ? 'ذخیره و ارسال دوباره برای بررسی' : 'ثبت اثر برای بررسی'}</Button>{message && <p role="status" className="text-sm text-muted">{message}</p>}</div>
+                <div className="flex flex-wrap items-center gap-3 sm:col-span-2"><Button type="submit" disabled={busy || Boolean(imageError)} loading={busy}>{editingId ? t("ذخیره و ارسال دوباره برای بررسی") : t("ثبت اثر برای بررسی")}</Button>{message && <p role="status" className="text-sm text-muted">{message}</p>}</div>
             </form>
         </section>
         <section className="space-y-4">
@@ -185,7 +185,7 @@ export default function ArtworkStudio({ user, hasProfile }) {
                     <div className="relative flex aspect-[3/4] items-center justify-center overflow-hidden border border-border bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))] p-4 sm:p-5"><MediaImage src={item.image_url} alt={item.title} className="h-full w-full" imageClassName="object-cover" loading="lazy" decoding="async" /></div>
                     <div className="space-y-3 pt-4"><div className="flex flex-wrap items-start justify-between gap-2"><h3 className="font-bold">{item.title}</h3><Badge variant={item.status === 'approved' ? 'success' : item.status === 'rejected' ? 'danger' : item.status === 'changes_requested' ? 'warning' : 'neutral'}>{t(statusLabels[item.status] ?? item.status)}</Badge></div>
                         <p className="text-xs text-muted">{item.category?.name}</p>
-                        <p className="text-xs leading-6 text-muted">{t(statusGuidance[item.status]) ?? 'وضعیت این اثر از سوی سرور تعیین شده است.'}</p>
+                        <p className="text-xs leading-6 text-muted">{t(statusGuidance[item.status]) ?? t("وضعیت این اثر از سوی سرور تعیین شده است.")}</p>
                         {item.rejection_note && <div className="border-s-2 border-danger bg-surface-muted p-3 text-xs leading-6 text-danger"><p className="mb-1 font-bold">{t("بازخورد مدیر")}</p>{item.rejection_note}</div>}
                         <Button variant="outline" size="sm" onClick={() => editArtwork(item)}>{t("ویرایش اثر")}</Button></div>
                 </article>)}</div>}
