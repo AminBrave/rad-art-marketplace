@@ -81,7 +81,7 @@ export function AdminDashboardHome() {
             <section className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,.8fr)]">
                 <div className="border-y border-border bg-transparent py-6 sm:py-7">
                     <SectionHeader eyebrow="اولویت امروز" title="صف بررسی آثار" actions={<Link to="/admin/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">مشاهده صف</Link>} />
-                    {loading ? <div aria-hidden="true" className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]"><Skeleton className="aspect-square w-full rounded-none sm:max-w-32" /><div className="grid gap-3"><SkeletonLines lines={3} /><SkeletonLines lines={1} /></div></div> : summary.latest ? (
+                    {loading ? <div aria-hidden="true" className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]"><Skeleton className="aspect-[3/4] w-full rounded-none sm:max-w-32" /><div className="grid gap-3"><SkeletonLines lines={3} /><SkeletonLines lines={1} /></div></div> : summary.latest ? (
                         <div className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]">
                             <div className="aspect-[3/4] overflow-hidden bg-surface-muted">
                                 <MediaImage src={summary.latest.image_url} alt={'تصویر اثر ' + summary.latest.title} className="h-full w-full" imageClassName="object-cover" loading="lazy" decoding="async" fallback={<div className="grid h-full place-items-center text-xs text-muted">بدون تصویر</div>} />
