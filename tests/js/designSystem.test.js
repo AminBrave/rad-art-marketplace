@@ -83,7 +83,7 @@ test('square corners are defined by design tokens without global CSS overrides',
 
 test('homepage discovery groups and artist spotlight use reusable card structure with RTL layout', () => {
     assert.ok(homePage.includes('grid-cols-[3rem_minmax(0,1fr)]'));
-    assert.ok(homePage.includes('bg-surface-muted py-14 sm:py-20'));
+    assert.ok(homePage.includes('bg-surface-muted py-16 sm:py-24'));
     assert.ok(homePage.includes('ARTIST SPOTLIGHT / هنرمند منتخب'));
     assert.ok(homePage.includes('border-ink bg-ink text-inverse'));
     assert.ok(homePage.includes('<Card'));
@@ -95,7 +95,7 @@ test('buttons enforce square geometry and shared alignment', () => {
 });
 
 test('section primitives provide consistent vertical rhythm', () => {
-    assert.ok(layoutPrimitives.includes("Element === 'section' ? 'py-14 sm:py-20'"));
+    assert.ok(layoutPrimitives.includes("Element === 'section' ? 'py-16 sm:py-24'"));
 });
 
 test('class composition understands semantic radius and content-width utilities', () => {
