@@ -100,19 +100,22 @@ export default function ArtworkCatalogue() {
         setParams({});
     };
 
+    const { hasNextPage, fetchNextPage } = artworksQuery;
+
     useEffect(() => {
         const sentinel = loadMoreRef.current;
-        if (!sentinel || !artworksQuery.hasNextPage || loadingMore || error) return undefined;
+        if (!sentinel || !hasNextPage || loadingMore || error) return undefined;
+        if (typeof window.IntersectionObserver !== 'function') return undefined;
 
-        const observer = new IntersectionObserver((entries) => {
+        const observer = new window.IntersectionObserver((entries) => {
             if (entries.some((entry) => entry.isIntersecting)) {
-                artworksQuery.fetchNextPage();
+                fetchNextPage();
             }
         }, { rootMargin: '640px 0px' });
 
         observer.observe(sentinel);
         return () => observer.disconnect();
-    }, [artworksQuery.hasNextPage, artworksQuery.fetchNextPage, loadingMore, error]);
+    }, [hasNextPage, fetchNextPage, loadingMore, error]);
 
     return (
         <div className="w-full min-w-0 min-h-[65vh] py-10 lg:py-14">
