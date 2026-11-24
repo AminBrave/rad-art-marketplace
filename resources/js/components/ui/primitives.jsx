@@ -4,6 +4,7 @@ import * as SelectPrimitive from '@radix-ui/react-select';
 import { Check, ChevronDown } from 'lucide-react';
 import { Tooltip } from './Tooltip';
 import { cn } from '../../lib/utils';
+import { Container } from './layout';
 
 const buttonVariants = {
     primary: 'bg-terracotta text-inverse enabled:hover:bg-terracotta-strong',
@@ -35,7 +36,7 @@ export const Button = forwardRef(function Button({
             type={type}
             disabled={disabled || loading}
             aria-busy={loading || undefined}
-            className={cn('inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-transparent px-4 py-2 text-sm font-bold leading-[1.4] tracking-[-.01em] text-ink no-underline transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus', buttonVariants[variant] ?? buttonVariants.primary, buttonSizes[size] ?? buttonSizes.md, className)}
+            className={cn('inline-flex min-h-11 items-center justify-center gap-2 rounded-[var(--rd-radius-sm)] border border-transparent px-4 py-2 text-sm font-bold leading-[1.4] tracking-[-.01em] text-ink no-underline transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus', buttonVariants[variant] ?? buttonVariants.primary, buttonSizes[size] ?? buttonSizes.md, className)}
             {...props}
         >
             {loading && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-current border-e-transparent" />}
@@ -53,7 +54,7 @@ export const IconButton = forwardRef(function IconButton({ children, label, titl
                 ref={ref}
                 type="button"
                 aria-label={tooltipLabel}
-                className={cn('inline-flex items-center justify-center rounded-md border border-border-strong bg-paper p-0 text-ink transition-colors enabled:hover:border-terracotta enabled:hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus shrink-0', dimensions[size] ?? dimensions.md, className)}
+                className={cn('inline-flex items-center justify-center rounded-[var(--rd-radius-sm)] border border-border-strong bg-paper p-0 text-ink transition-colors enabled:hover:border-terracotta enabled:hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus shrink-0', dimensions[size] ?? dimensions.md, className)}
                 {...props}
             >
                 {children}
@@ -80,17 +81,8 @@ export function Badge({ children, variant = 'neutral', className = '' }) {
 }
 
 
-const pageWidths = {
-    // Width and gutters are owned by each section's content wrapper, never by
-    // the route-level <main>. Use "full" for edge-to-edge section content.
-    wide: 'mx-auto w-full max-w-content px-page-gutter',
-    reading: 'mx-auto w-full max-w-[var(--content-reading-width)] px-page-gutter',
-    full: 'w-full max-w-none',
-};
-
-export function PageContainer({ as: Element = 'div', width = 'wide', className = '', children, ...props }) {
-    return <Element className={cn('min-w-0', pageWidths[width] ?? pageWidths.wide, className)} {...props}>{children}</Element>;
-}
+// Backward-compatible name; Container in layout.jsx is the single implementation.
+export const PageContainer = Container;
 
 export function PageHeader({ eyebrow, title, description, actions, level = 1, className = '', titleClassName = '', descriptionClassName = '' }) {
     const Heading = level === 2 ? 'h2' : 'h1';
