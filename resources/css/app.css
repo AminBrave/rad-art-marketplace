@@ -354,7 +354,7 @@
         margin-inline-end: calc(50% - 50vw + var(--rd-workspace-bleed-offset));
     }
 
-    .rd-workspace-main .rd-bleed .rd-container--wide {
+    .rd-workspace-main .rd-bleed .rd-container:not(.rd-container--reading):not(.rd-container--full) {
         width: calc(min(100vw, var(--rd-content-width)) - var(--rd-workspace-sidebar-width) - var(--rd-workspace-column-gap));
         max-width: none;
         margin-inline: auto;
@@ -463,11 +463,16 @@ a {
     max-width: 100%;
 }
 
-.rd-hero-surface img,
-.rd-hero-surface picture,
-.rd-hero-surface video {
+.rd-hero-surface :where(img, picture, video, canvas, svg) {
     display: block;
     max-width: 100%;
+}
+
+img,
+picture,
+video {
+    max-width: 100%;
+    height: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {
