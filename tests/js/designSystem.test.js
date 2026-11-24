@@ -122,7 +122,9 @@ test('locale switching persists globally and owns document language and directio
     assert.ok(bootShell.includes('document.documentElement.lang = locale'));
     assert.ok(bootShell.includes('document.documentElement.dir = locale === "fa" ? "rtl" : "ltr"'));
     assert.equal((bootShell.match(/dir="rtl"/g) ?? []).length, 1, 'Only the document root declares the default RTL direction.');
-    assert.doesNotMatch(layouts + homePage + messagingInbox + messageTimeline, /dir=["']rtl["']/);
+    const directionalSources = [layouts, homePage, messagingInbox, messageTimeline, messaging, conversationHeader, messageComposer, relatedArtworkStrip, artistWorkspace, buyerWorkspace, adminWorkspace, routeLoading, artworkDetail, artworkStudio, artistProfile, artworkGallery, ...publicPages, primitives, cards, feedback, navigation, dialog, alertDialog, tooltip, skeletons, showcase, editorialPages, publicInfoPages];
+    for (const source of directionalSources) assert.doesNotMatch(source, /dir=["']rtl["']/);
+    assert.doesNotMatch(layoutPrimitives, /rd-container--wide/);
     assert.ok(layoutPrimitives.includes("resolvedWidth !== 'wide' &&"));
     assert.ok(css.includes(":root[lang='en']"));
     assert.ok(css.includes('.rd-hero-surface :where(img, picture, video, canvas, svg)'));
@@ -130,6 +132,10 @@ test('locale switching persists globally and owns document language and directio
 });
 test('public and workspace mobile navigation are separate and artist profile preview is the primary destination', () => {
     assert.ok(layouts.includes('function PublicBottomNavigation'));
+    assert.ok(layouts.includes('to: dashboardHref'));
+    assert.ok(layouts.includes('const profileTarget ='));
+    assert.ok(workspaceNavigation.includes("shortLabel: 'داشبورد'"));
+    assert.ok(workspaceNavigation.includes("'/dashboard/artist/settings', label: 'تنظیمات', shortLabel: 'تنظیمات', mobilePrimary: true"));
     assert.ok(layouts.includes('data-testid="public-bottom-navigation"'));
     assert.ok(layouts.includes('function AuthenticatedBottomNavigation'));
     assert.ok(layouts.includes('data-testid="authenticated-bottom-navigation"'));
