@@ -14,7 +14,7 @@ function CommentItem({ comment, user, onReply, onDelete, onReport }) {
             <header className="flex min-w-0 items-start justify-between gap-3">
                 <div className="min-w-0">
                     <p className="break-words text-sm font-bold text-ink">{comment.user?.name || 'کاربر'}</p>
-                    <time className="mt-1 block text-xs text-muted">{comment.created_at ? new Date(comment.created_at).toLocaleDateString('fa-IR') : ''}</time>
+                    <time className="mt-1 block text-xs text-muted">{comment.created_at ? new Date(comment.created_at).toLocaleDateString(locale === 'fa' ? 'fa-IR' : 'en-US') : ''}</time>
                 </div>
                 {canDelete && <Button variant="ghost" type="button" onClick={() => onDelete(comment.id)} className="shrink-0 text-xs text-muted underline hover:text-danger">{t("حذف")}</Button>}
             </header>
@@ -32,7 +32,7 @@ function CommentItem({ comment, user, onReply, onDelete, onReport }) {
                             <header className="flex min-w-0 items-start justify-between gap-3">
                                 <div className="min-w-0">
                                     <p className="break-words text-xs font-bold text-ink">{reply.user?.name || 'کاربر'}</p>
-                                    <time className="mt-1 block text-[11px] text-muted">{reply.created_at ? new Date(reply.created_at).toLocaleDateString('fa-IR') : ''}</time>
+                                    <time className="mt-1 block text-[11px] text-muted">{reply.created_at ? new Date(reply.created_at).toLocaleDateString(locale === 'fa' ? 'fa-IR' : 'en-US') : ''}</time>
                                 </div>
                                 {user && reply.is_mine && !reply.is_deleted && <Button variant="ghost" type="button" onClick={() => onDelete(reply.id)} className="shrink-0 text-xs text-muted underline hover:text-danger">{t("حذف")}</Button>}
                             </header>
@@ -47,7 +47,7 @@ function CommentItem({ comment, user, onReply, onDelete, onReport }) {
 }
 
 export default function ArtworkEngagement({ artwork, slug }) {
-    const { t } = useLanguage();
+    const { t, locale } = useLanguage();
     const { user } = useAuth();
     const queryClient = useQueryClient();
     const [page, setPage] = useState(1);
@@ -176,8 +176,8 @@ export default function ArtworkEngagement({ artwork, slug }) {
                 ) : (
                     <Link to="/login" state={{ from: { pathname: '/artworks/' + slug } }} className="border border-border px-4 py-2 text-sm font-bold">{t("برای پسندیدن وارد شوید")}</Link>
                 )}
-                <span className="text-sm text-muted">{Number(artwork.likes_count || 0).toLocaleString('fa-IR')} پسند</span>
-                <span className="text-sm text-muted">{Number(artwork.comments_count || 0).toLocaleString('fa-IR')} دیدگاه</span>
+                <span className="text-sm text-muted">{Number(artwork.likes_count || 0).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} پسند</span>
+                <span className="text-sm text-muted">{Number(artwork.comments_count || 0).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} دیدگاه</span>
                 {likeMutation.isError && <span role="alert" className="text-xs text-danger">{t("ثبت پسند انجام نشد.")}</span>}
             </div>
 
@@ -187,7 +187,7 @@ export default function ArtworkEngagement({ artwork, slug }) {
                     <label htmlFor="artwork-comment-body" className="mb-2 block text-sm font-semibold">{replyTo ? 'پاسخ شما' : 'دیدگاه شما'}</label>
                     <TextareaField id="artwork-comment-body" value={draft} onChange={(event) => setDraft(event.target.value)} rows={3} maxLength={2000} required placeholder={t("دیدگاه خود را بنویسید...")} className="w-full resize-y border border-border bg-surface px-3 py-3 text-sm leading-7 outline-none focus:border-terracotta-strong" />
                     <div className="mt-2 flex items-center justify-between gap-3">
-                        <span className="text-xs text-muted">{draft.length.toLocaleString('fa-IR')} / ۲۰۰۰</span>
+                        <span className="text-xs text-muted">{draft.length.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} / ۲۰۰۰</span>
                         <Button variant="ghost" type="submit" disabled={!draft.trim() || commentMutation.isPending} className="bg-ink px-4 py-2 text-sm font-bold text-inverse disabled:opacity-50">{commentMutation.isPending ? 'در حال ثبت...' : 'ثبت دیدگاه'}</Button>
                     </div>
                     {commentMutation.isError && <p role="alert" className="mt-2 text-xs text-danger">{t("ثبت دیدگاه انجام نشد. متن را بررسی و دوباره تلاش کنید.")}</p>}
@@ -234,7 +234,7 @@ export default function ArtworkEngagement({ artwork, slug }) {
             {pagination.last_page > 1 && (
                 <nav aria-label="صفحه‌بندی دیدگاه‌ها" className="mt-5 flex items-center justify-between gap-3">
                     <Button variant="ghost" type="button" disabled={currentPage <= 1 || commentsQuery.isFetching} onClick={() => { setCommentTargetId(''); setPage(currentPage - 1); }} className="border border-border px-3 py-2 text-xs disabled:opacity-40">{t("دیدگاه‌های قبلی")}</Button>
-                    <span className="text-xs text-muted">{Number(currentPage).toLocaleString('fa-IR')} از {Number(pagination.last_page).toLocaleString('fa-IR')}</span>
+                    <span className="text-xs text-muted">{Number(currentPage).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} از {Number(pagination.last_page).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</span>
                     <Button variant="ghost" type="button" disabled={currentPage >= pagination.last_page || commentsQuery.isFetching} onClick={() => { setCommentTargetId(''); setPage(currentPage + 1); }} className="border border-border px-3 py-2 text-xs disabled:opacity-40">{t("دیدگاه‌های بعدی")}</Button>
                 </nav>
             )}
