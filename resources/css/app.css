@@ -32,6 +32,11 @@
     --rd-text-tertiary: #706A61;
     --rd-border-subtle: #DED8CF;
     --rd-border-strong: #8F877D;
+    /* One-pixel rules; hierarchy is expressed only through tint, never weight. */
+    --rd-line-width: 1px;
+    --rd-divider-section: var(--rd-border-subtle);
+    --rd-divider-group: color-mix(in srgb, var(--rd-border-subtle) 72%, var(--rd-surface));
+    --rd-divider-nested: color-mix(in srgb, var(--rd-border-subtle) 44%, var(--rd-surface));
     --rd-action: var(--rd-brand-terracotta);
     --rd-action-hover: #9A452B;
     --rd-action-text: #9A452B;
@@ -212,6 +217,9 @@
     --rd-text-tertiary: #A49C90;
     --rd-border-subtle: #41423B;
     --rd-border-strong: #77786F;
+    --rd-divider-section: var(--rd-border-subtle);
+    --rd-divider-group: color-mix(in srgb, var(--rd-border-subtle) 76%, var(--rd-surface));
+    --rd-divider-nested: color-mix(in srgb, var(--rd-border-subtle) 52%, var(--rd-surface));
     --rd-action: #D27A58;
     --rd-action-hover: #E09272;
     --rd-action-text: #E7A184;
@@ -268,6 +276,9 @@
         --rd-text-tertiary: #A49C90;
         --rd-border-subtle: #41423B;
         --rd-border-strong: #77786F;
+        --rd-divider-section: var(--rd-border-subtle);
+        --rd-divider-group: color-mix(in srgb, var(--rd-border-subtle) 76%, var(--rd-surface));
+        --rd-divider-nested: color-mix(in srgb, var(--rd-border-subtle) 52%, var(--rd-surface));
         --rd-action: #D27A58;
         --rd-action-hover: #E09272;
         --rd-action-text: #E7A184;
