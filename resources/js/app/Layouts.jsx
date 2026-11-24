@@ -6,7 +6,7 @@ import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-do
 import { useAuth } from './AuthContext';
 import { getWorkspaceMobileLinks } from './workspaceNavigation';
 import { useTheme } from './useTheme';
-import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, Checkbox, NotificationListSkeleton } from '../components/ui';
+import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, NotificationListSkeleton } from '../components/ui';
 
 const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
 
@@ -546,7 +546,6 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     </div>
 
                     <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-                        <ThemeControl />
                         {user?.role !== 'admin' && <NotificationBell user={user} />}
 
                         <div className="hidden min-w-0 items-center gap-3 lg:flex">
