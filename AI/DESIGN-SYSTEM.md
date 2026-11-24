@@ -93,6 +93,13 @@ The application uses a layered component model. Page files compose user journeys
 - Preserve native semantic elements when no shared component adds value (for example, headings, paragraphs, tables, lists, and form/landmark elements).
 - Shared controls must forward refs when consumers need focus management, support controlled and uncontrolled usage where appropriate, and preserve native input attributes.
 
+### Card and surface contract
+
+- Use the shared `Card` for coherent information groups, dashboard metrics, editorial steps, featured people and grouped controls. A card uses a complete one-pixel boundary and a semantic surface; avoid `border-y` plus transparent backgrounds for objects that should read as cards.
+- Use proximity and spacing inside a card before adding nested borders. Use `border-divider-nested` only for true internal separation.
+- Interactive cards need one clear hit target, visible keyboard focus and a hover state that does not depend on color alone. Keep action links/buttons semantically distinct when a card contains multiple actions.
+- Square geometry is owned by `--rd-radius-0` and Tailwind's border-radius theme mapping. Do not add global `*` selectors, `!important`, or component-level radius overrides. Shared components should omit radius utilities; legacy utilities resolve to the zero token during migration.
+
 ### Review and migration rules
 
 Before adding or changing a control, search the shared UI barrel and reuse the closest component. When a repeated pattern has materially different semantics, add an explicit variant to the shared component rather than creating a one-off page implementation. Review all route-level screens for raw interactive controls, duplicated Tailwind strings, inconsistent labels, focus treatment, and error handling. Exceptions must be intentional and documented (for example, a custom canvas editor or a specialized native browser interaction).
