@@ -18,16 +18,18 @@ test('buyer and artist messaging navigation keeps the پیام‌ها label', ()
     }
 });
 
-test('admin retains every destination while mobile navigation prioritizes four frequent destinations', () => {
+test('admin retains every destination while mobile navigation exposes dashboard, review, editorial, users and settings', () => {
     const allLinks = getWorkspacePrimaryLinks('admin');
     const mobileLinks = getWorkspaceMobileLinks('admin');
 
-    assert.equal(allLinks.length, 6);
-    assert.equal(mobileLinks.length, 4);
+    assert.equal(allLinks.length, 7);
+    assert.equal(mobileLinks.length, 5);
     assert.ok(allLinks.some((item) => item.to === '/admin/message-reports'));
     assert.ok(allLinks.some((item) => item.to === '/admin/artwork-comment-reports'));
     assert.ok(mobileLinks.every((item) => item.mobilePrimary !== false));
     assert.ok(!mobileLinks.some((item) => item.to.endsWith('-reports')));
+    assert.ok(mobileLinks.some((item) => item.to === '/admin'));
+    assert.ok(mobileLinks.some((item) => item.to === '/admin/settings'));
 });
 
 test('buyer and artist mobile navigation preserves their complete primary journeys', () => {
