@@ -161,7 +161,26 @@ const english = {
     "ثبت‌نام عمومی فقط برای خریدار و هنرمند فعال است. حساب مدیر باید از سمت سرور ایجاد شود.": "Public registration is available for buyers and artists only. Administrator accounts must be created by the server.",
     "لطفاً اطلاعات ورود را بررسی کنید.": "Please check your sign-in details.",
     "تعداد تلاش‌ها زیاد است. کمی بعد دوباره امتحان کنید.": "Too many attempts. Please try again later.",
-    "ورود یا ثبت‌نام انجام نشد. اتصال را بررسی و دوباره تلاش کنید.": "Sign-in or registration failed. Check your connection and try again."
+    "ورود یا ثبت‌نام انجام نشد. اتصال را بررسی و دوباره تلاش کنید.": "Sign-in or registration failed. Check your connection and try again.",
+    "مسیر صفحه": "Breadcrumb",
+    "جامعه خلاق راد آرت": "The Rad Art creative community",
+    "هنرمند را کشف کنید.": "Discover an artist.",
+    "با هنرمندان مستقل آشنا شوید؛ از نگاه و مسیر هنری آن‌ها بخوانید و مجموعه آثار تأییدشده‌شان را ببینید.": "Meet independent artists, explore their perspectives and creative journeys, and view their approved portfolios.",
+    "جست‌وجوی هنرمند": "Search artists",
+    "نام هنرمند یا شهر…": "Artist name or city…",
+    "جامعه هنرمندان": "Artist community",
+    "نتایج جست‌وجو": "Search results",
+    "چهره‌های خلاق": "Creative voices",
+    "در حال دریافت هنرمندان…": "Loading artists…",
+    "به‌روزرسانی…": "Updating…",
+    "دریافت فهرست هنرمندان ممکن نشد": "Could not load artists",
+    "لطفاً دوباره تلاش کنید.": "Please try again.",
+    "هنرمندی پیدا نشد": "No artists found",
+    "نام یا شهر دیگری را جست‌وجو کنید.": "Try another name or city.",
+    "صفحه‌بندی هنرمندان": "Artist pagination",
+    "قبلی": "Previous",
+    "بعدی": "Next",
+    "صفحه": "Page"
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 
