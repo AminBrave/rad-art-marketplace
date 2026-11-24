@@ -93,7 +93,7 @@ export function PageContainer({ as: Element = 'div', width = 'wide', className =
 export function PageHeader({ eyebrow, title, description, actions, level = 1, className = '', titleClassName = '', descriptionClassName = '' }) {
     const Heading = level === 2 ? 'h2' : 'h1';
     return (
-        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-6 border-b border-divider-section pb-8 pt-4 pr-6 before:absolute before:bottom-8 before:right-0 before:top-4 before:w-1.5 before:bg-terracotta max-sm:items-stretch max-sm:flex-col max-sm:gap-4 max-sm:pb-6 max-sm:before:bottom-6', className)}>
+        <header dir="rtl" className={cn('relative flex min-w-0 items-end justify-between gap-6 border-b border-border [border-color:var(--rd-divider-section)] pb-8 pt-4 pr-6 before:absolute before:bottom-8 before:right-0 before:top-4 before:w-1.5 before:bg-terracotta max-sm:items-stretch max-sm:flex-col max-sm:gap-4 max-sm:pb-6 max-sm:before:bottom-6', className)}>
             <div className="min-w-0 max-w-[56rem]">
                 {eyebrow && <p className="inline-flex items-center gap-2 border-s-2 border-terracotta bg-transparent px-3 py-1 text-[11px] font-extrabold leading-none tracking-[.06em] text-terracotta-strong">{eyebrow}</p>}
                 <Heading className={cn('mt-3 text-[clamp(1.75rem,3.2vw,2.6rem)] font-extrabold leading-heading tracking-[-.035em] text-ink', titleClassName)}>{title}</Heading>
