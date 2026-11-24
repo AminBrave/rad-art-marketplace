@@ -203,7 +203,7 @@ export function PublicLayout() {
                             <p className="mt-5 text-sm leading-8 text-muted">
                                 فضایی برای کشف آثار هنری مستقل، شناخت هنرمندان و ارتباط درباره هنر.
                             </p>
-                            <Link to="/artworks" className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-md border border-border-strong px-4 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong">
+                            <Link to="/artworks" className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-control border border-border-strong px-4 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong">
                                 گشت‌وگذار در گالری
                                 <span aria-hidden="true">←</span>
                             </Link>
@@ -622,7 +622,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
 
                         <div className="hidden min-w-0 items-center gap-3 lg:flex">
                             <span className="max-w-44 truncate border-e border-border pe-3 text-sm font-bold text-ink">{user?.name}</span>
-                            <Link to="/" className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border-strong bg-paper px-4 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+                            <Link to="/" className="inline-flex min-h-10 items-center gap-2 rounded-control border border-border-strong bg-paper px-4 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
                                 مشاهده سایت
                             </Link>
                             <Button variant="outline" size="sm" onClick={handleLogout} className="min-h-10 gap-2">
