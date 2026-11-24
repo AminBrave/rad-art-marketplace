@@ -104,7 +104,7 @@ export function Pagination({ currentPage = 1, lastPage = 1, onPageChange, disabl
     return (
         <nav aria-label="صفحه‌بندی" className={cn('flex flex-wrap items-center justify-between gap-3', className)}>
             <Button variant="outline" size="sm" disabled={disabled || page <= 1} onClick={() => onPageChange(page - 1)}>قبلی</Button>
-            <div className="flex flex-wrap items-center gap-1" dir="ltr">
+            <div className="flex flex-wrap items-center gap-1">
                 {visiblePages.map((number, index) => (
                     <span key={number} className="inline-flex items-center gap-1">
                         {index > 0 && number - visiblePages[index - 1] > 1 && <span aria-hidden="true" className="px-1 text-muted">…</span>}
