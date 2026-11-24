@@ -71,6 +71,19 @@ test('artwork media uses a consistent 3:4 portrait frame throughout the applicat
     assert.ok(artworkStudio.includes('imageClassName="object-cover'));
 });
 
+test('artwork catalogue uses accessible infinite pagination and workspace containers avoid duplicate gutters', () => {
+    assert.ok(artworkCatalogue.includes('useInfiniteQuery'));
+    assert.ok(artworkCatalogue.includes('getNextPageParam'));
+    assert.ok(artworkCatalogue.includes('new IntersectionObserver'));
+    assert.ok(artworkCatalogue.includes('fetchNextPage'));
+    assert.ok(artworkCatalogue.includes('بارگذاری آثار بیشتر'));
+    assert.doesNotMatch(artworkCatalogue, /صفحه‌بندی آثار/);
+    assert.doesNotMatch(layoutPrimitives, /max-w-content(?:-reading)? px-page-gutter/);
+    assert.ok(css.includes('.rd-container--wide,'));
+    assert.ok(css.includes('.rd-page-frame--workspace .rd-container {'));
+    assert.ok(css.includes('padding: 0;'));
+});
+
 test('comment discussions use nested cards and a clear reply hierarchy', () => {
     assert.ok(artworkEngagement.includes('aria-label="پاسخ‌های این دیدگاه"'));
     assert.ok(artworkEngagement.includes('border-r-2 border-terracotta/40'));
