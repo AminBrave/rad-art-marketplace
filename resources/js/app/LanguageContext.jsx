@@ -287,7 +287,28 @@ const english = {
     "در این نسخه نشانی ایمیل، شماره تلفن یا فرم تماس عمومی مستقلی برای پشتیبانی تعریف نشده است؛ برای همین اطلاعات تماس تأییدنشده‌ای منتشر نمی‌کنیم.": "This version does not provide a public support email, phone number, or contact form, so we do not publish unverified contact details.",
     "ارتباط درباره آثار": "Artwork enquiries",
     "اگر حساب خریدار دارید، از صفحه اثر یا پروفایل عمومی هنرمند درخواست خصوصی خود را ثبت کنید. وضعیت درخواست را می‌توانید در فضای خریدار پیگیری کنید.": "If you have a buyer account, submit a private request from an artwork page or an artist’s public profile. Track its status in your buyer workspace.",
-    "مشاهده گالری": "View gallery"
+    "مشاهده گالری": "View gallery",
+    "فضای اختصاصی خریدار": "Your buyer workspace",
+    "هنر مورد علاقه‌تان را کشف کنید و گفت‌وگو را ادامه دهید.": "Discover art you love and continue the conversation.",
+    "از میان آثار و هنرمندان مستقل جست‌وجو کنید و گفت‌وگوهای مستقیم خود را با هنرمندان در یک فضای منظم دنبال کنید.": "Explore independent artworks and artists, and keep your conversations organized in one place.",
+    "کشف آثار هنری": "Explore artworks",
+    "ارتباط‌های شما": "Your connections",
+    "پیام‌های مستقیم": "Direct messages",
+    "گفت‌وگوها، پاسخ‌ها و پیوست‌های خود را از یک صندوق پیام پیگیری کنید. برای شروع گفت‌وگو، از صفحه یک اثر یا پروفایل هنرمند اقدام کنید.": "Keep track of conversations, replies, and attachments in one inbox. Start a conversation from an artwork or an artist profile.",
+    "ورود به صندوق پیام": "Open inbox",
+    "شروع یک تجربه تازه": "A fresh start",
+    "از کجا شروع کنید؟": "Where to begin?",
+    "رفتن به گالری": "Go to gallery",
+    "۰۱ / کشف": "01 / Discover",
+    "آثار و سبک‌ها را ببینید": "Explore artworks and styles",
+    "در گالری جست‌وجو کنید و جزئیات هر اثر را بخوانید.": "Browse the gallery and read the details of each artwork.",
+    "۰۲ / ارتباط": "02 / Connect",
+    "به هنرمند پیام بدهید": "Message an artist",
+    "از صفحه اثر یا پروفایل عمومی هنرمند، گفت‌وگوی مستقیم را آغاز کنید.": "Start a direct conversation from an artwork page or an artist’s public profile.",
+    "۰۳ / ادامه": "03 / Continue",
+    "گفت‌وگو را پیگیری کنید": "Continue the conversation",
+    "پاسخ‌ها و پیوست‌های جدید را در صندوق پیام‌ها دنبال کنید.": "Follow new replies and attachments in your inbox.",
+
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 
