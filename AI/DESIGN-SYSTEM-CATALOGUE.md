@@ -79,6 +79,57 @@ Current shape tokens: `--rd-radius-sm|md|lg|xl|pill`; elevation tokens: `--rd-sh
 
 Artwork itself should remain undistorted. Use `object-contain` when the complete work is the subject; use `object-cover` only for a deliberate editorial crop, avatar or ambient image. Keep the media frame and its internal padding intentional; the image should occupy the available frame without erasing the frame's breathing room.
 
+## 3. Shared page container and alignment grid — mandatory
+
+**There is one canonical main-content container for every page and route.** Public discovery, artwork/artist detail, buyer workspace, artist workspace, admin, account, messaging, settings, forms and dashboards all inherit the same outer content width, horizontal gutters and alignment grid. Route type, user role, page length or component choice must not create a second page-width system.
+
+### Canonical contract
+
+- The shared page container is the only owner of the page's maximum width and horizontal page gutters.
+- Use the same `--rd-content-width` and `--rd-page-gutter` values at every route breakpoint. Do not introduce route-specific `max-w-*`, `px-*`, `mx-auto` or bespoke width wrappers that shift the content edges.
+- Every page header, section header, section body, card grid, form, table, toolbar and footer content aligns to the same start/end guides.
+- Sections may use different internal layouts (grid, flex, split view, editorial columns), but their outer edges and shared column lines must derive from the canonical container.
+- Nested components do not restart page gutters or center themselves in a narrower max-width wrapper. They inherit the page grid and use internal spacing only.
+- A full-bleed background, hero image, divider or decorative band may extend outside the content grid; its text, controls and meaningful content must snap back to the same canonical alignment guides.
+- A reading measure may constrain a text block inside the grid, but it must not replace or redefine the outer page container. The reading block aligns to the grid's start edge.
+- Workspace navigation rails and mobile bottom navigation are shell chrome, not alternative content containers. The workspace content region must use the same canonical width and alignment as public pages.
+- Messaging may use a full-height or split-pane interaction layout where required, but its page-level frame and aligned content edges remain anchored to the same shell grid.
+
+### Gestalt application to the shared grid
+
+- **Common region:** the canonical container establishes one coherent page field; do not fragment the page into unrelated width islands.
+- **Alignment:** shared left/right (logical start/end) edges create visual relationships across sections, even when their internal columns differ.
+- **Proximity:** use vertical and horizontal spacing to express related content before adding separators.
+- **Similarity:** repeat the same section gutters, header alignment and grid rhythm across routes.
+- **Continuity:** align headings, controls, cards and data regions to consistent columns so the eye can scan down the page.
+- **Hierarchy:** vary internal column spans, whitespace and typography to establish importance; do not vary the outer container width to manufacture hierarchy.
+- **Closure/common region:** reserve cards and surfaces for actual grouped content. Do not put a second card/container around a section merely to simulate alignment.
+
+### Required page composition
+
+1. Application shell provides the canonical main-content frame.
+2. Route page provides semantic page structure (header, sections, content and footer) without a competing outer width/gutter.
+3. Sections align to the shared page guides; internal grids use a shared column system or proportional subdivisions.
+4. Cards, forms and tables occupy their assigned columns and do not add page-level horizontal offsets.
+5. Full-bleed visual treatments may escape the grid, while their content remains aligned.
+
+### Exceptions
+
+Only intentional edge-to-edge experiences (for example, a full-viewport media viewer, immersive editor, or full-height messaging workspace) may opt out of the normal content measure. The exception must be explicit, limited to the experience that needs it, and must not create a new width convention for ordinary pages. Even then, shared headers, controls and exit/navigation affordances should align to the shell grid where practical.
+
+### Review gate
+
+A route is not layout-complete if its main content edges differ from other routes at the same viewport. Compare at identical viewport widths and inspect:
+- page title start/end edges;
+- section heading and section body edges;
+- first and last grid/card columns;
+- form and table edges;
+- toolbar/action alignment;
+- footer content alignment;
+- transitions between public and workspace routes.
+
+Do not approve a route-specific width or gutter adjustment as a local fix. Correct the shared container or grid contract instead.
+
 ## 3. Layout and composition patterns
 
 ### Page frame
