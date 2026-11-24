@@ -382,7 +382,7 @@ test('messaging is viewport-locked between the authenticated app header and bott
     assert.ok(layouts.includes("lg:max-h-[calc(100dvh_-_8rem)] lg:w-60 lg:overflow-y-auto"));
     assert.ok(layouts.includes('{isMessagingRoute && <div className="hidden lg:block" aria-hidden="true" />}'));
     assert.ok(layouts.includes("overflow-hidden lg:col-start-2"));
-    assert.ok(layouts.includes("isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden lg:col-start-2' : 'min-w-0'"));
+    assert.ok(layouts.includes("isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden lg:col-start-2' : 'rd-workspace-main min-w-0'"));
 });
 
 test('messaging chat geometry follows RTL logical flow and uses Radix collision-aware overlays', () => {
