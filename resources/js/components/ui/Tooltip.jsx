@@ -21,7 +21,7 @@ export function Tooltip({
                     <TooltipPrimitive.Content
                         side={side}
                         sideOffset={sideOffset}
-                        dir="rtl"
+                       
                         className={cn('z-[100] max-w-64  bg-ink px-3 py-2 text-xs font-medium leading-6 text-inverse shadow-raised', className)}
                     >
                         {content}
