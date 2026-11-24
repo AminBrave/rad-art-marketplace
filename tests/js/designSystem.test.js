@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { cn } from '../../resources/js/lib/utils.js';
 
+const languageContext = readFileSync(new URL('../../resources/js/app/LanguageContext.jsx', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../../resources/css/app.css', import.meta.url), 'utf8');
 const tailwind = readFileSync(new URL('../../tailwind.config.js', import.meta.url), 'utf8');
 const primitives = readFileSync(new URL('../../resources/js/components/ui/primitives.jsx', import.meta.url), 'utf8');
@@ -79,7 +80,7 @@ test('artwork catalogue uses accessible infinite pagination and workspace contai
     assert.ok(artworkCatalogue.includes('بارگذاری آثار بیشتر'));
     assert.doesNotMatch(artworkCatalogue, /صفحه‌بندی آثار/);
     assert.doesNotMatch(layoutPrimitives, /max-w-content(?:-reading)? px-page-gutter/);
-    assert.ok(css.includes('.rd-container--wide,'));
+    assert.ok(css.includes('.rd-container:not(.rd-container--full)'));
     assert.ok(css.includes('.rd-page-frame--workspace .rd-container {'));
     assert.ok(css.includes('padding: 0;'));
 });
@@ -110,6 +111,23 @@ test('homepage hero artwork remains visible in a responsive 3:4 frame on all vie
     assert.doesNotMatch(homePage, /sm:aspect-\[3\/4\]|lg:aspect-\[3\/4\]/);
 });
 
+test('locale switching persists globally and owns document language and direction', () => {
+    assert.ok(languageContext.includes("const STORAGE_KEY = 'rademan-locale'"));
+    assert.ok(languageContext.includes('root.lang = locale'));
+    assert.ok(languageContext.includes("root.dir = locale === 'fa' ? 'rtl' : 'ltr'"));
+    assert.ok(languageContext.includes('window.localStorage.setItem(STORAGE_KEY, locale)'));
+    assert.ok(languageContext.includes("window.addEventListener('storage', syncLocale)"));
+    assert.ok(layouts.includes('function LanguageControl'));
+    assert.ok(layouts.includes('onClick={() => setLocale(nextLocale)}'));
+    assert.ok(bootShell.includes('document.documentElement.lang = locale'));
+    assert.ok(bootShell.includes('document.documentElement.dir = locale === "fa" ? "rtl" : "ltr"'));
+    assert.equal((bootShell.match(/dir="rtl"/g) ?? []).length, 1, 'Only the document root declares the default RTL direction.');
+    assert.doesNotMatch(layouts + homePage + messagingInbox + messageTimeline, /dir=["']rtl["']/);
+    assert.ok(layoutPrimitives.includes("resolvedWidth !== 'wide' &&"));
+    assert.ok(css.includes(":root[lang='en']"));
+    assert.ok(css.includes('.rd-hero-surface :where(img, picture, video, canvas, svg)'));
+    assert.ok(css.includes('overflow-x: clip;'));
+});
 test('public and workspace mobile navigation are separate and artist profile preview is the primary destination', () => {
     assert.ok(layouts.includes('function PublicBottomNavigation'));
     assert.ok(layouts.includes('data-testid="public-bottom-navigation"'));
@@ -287,9 +305,9 @@ test('artist profile content cannot expand the viewport horizontally', () => {
 test('route canvases stay full-width and route content uses shared section containers', () => {
     assert.match(css, /\.rd-page-frame\s*\{[^}]*width:\s*100%;[^}]*margin:\s*0;/s);
     assert.ok(layoutPrimitives.includes("bleed && 'rd-bleed'"));
-    assert.match(css, /\.rd-bleed\s*\{[^}]*width:\s*auto;[^}]*max-width:\s*none;/s);
+    assert.match(css, /\.rd-bleed\s*\{[^}]*width:\s*auto;[^}]*max-width:\s*100vw;/s);
     assert.doesNotMatch(css.match(/\.rd-bleed\s*\{[^}]*\}/s)?.[0] ?? '', /width:\s*100vw/);
-    assert.ok(css.includes('.rd-workspace-main .rd-bleed .rd-container--wide'));
+    assert.ok(css.includes('.rd-workspace-main .rd-bleed .rd-container:not(.rd-container--reading):not(.rd-container--full)'));
     assert.ok(css.includes('overflow-x: clip;'), 'Viewport bleed must not create document-level horizontal scrolling.');
     assert.ok(css.includes('--rd-workspace-sidebar-width: 15rem'));
     assert.ok(css.includes('--rd-workspace-column-gap: 2rem'));
@@ -297,7 +315,7 @@ test('route canvases stay full-width and route content uses shared section conta
     assert.ok(layouts.includes('rd-workspace-main min-w-0'));
     assert.ok(layouts.includes('lg:grid-cols-[var(--rd-workspace-sidebar-width)_minmax(0,1fr)]'));
     assert.ok(layouts.includes('lg:gap-[var(--rd-workspace-column-gap)]'));
-    assert.ok(layoutPrimitives.includes('`rd-container--${resolvedWidth}`'));
+    assert.ok(layoutPrimitives.includes("resolvedWidth !== 'wide' &&"));
     assert.ok(layoutPrimitives.includes("wide: 'mx-auto w-full max-w-content px-page-gutter'"));
     assert.ok(skeletons.includes('<Section as=\"header\" bleed'));
     assert.ok(skeletons.includes('<Container as=\"div\" width=\"wide\"'));
@@ -447,7 +465,7 @@ test('messaging status banners preserve accessible presentation and remain a ded
 });
 
 test('messaging conversation filters use the shared RAD-styled Radix Tabs primitive', () => {
-    assert.ok(messagingInbox.includes('<Tabs value={threadFilter} onValueChange={setThreadFilter} dir="rtl"'));
+    assert.ok(messagingInbox.includes('<Tabs value={threadFilter} onValueChange={setThreadFilter}'));
     const filterTriggerClasses = [...messagingInbox.matchAll(/<TabsTrigger[^>]*className="([^"]+)"/g)].map((match) => match[1]);
     assert.equal(filterTriggerClasses.length, 3, 'All three inbox filters use the shared Tabs primitive.');
     for (const className of filterTriggerClasses) {
@@ -456,8 +474,8 @@ test('messaging conversation filters use the shared RAD-styled Radix Tabs primit
         assert.match(className, /items-center/);
         assert.match(className, /justify-center/);
     }
-    assert.ok(messagingInbox.includes('<TabsContent value={threadFilter} dir="rtl"'));
-    assert.ok(messagingInbox.includes('<ul dir="rtl" className="min-h-0 flex-1 divide-y'));
+    assert.ok(messagingInbox.includes('<TabsContent value={threadFilter}'));
+    assert.ok(messagingInbox.includes('<ul className="min-h-0 flex-1 divide-y'));
     assert.ok(messagingInbox.includes('<TabsList aria-label="فیلتر گفتگوها"'));
     assert.ok(messagingInbox.includes('<TabsTrigger value="all"'));
     assert.ok(messagingInbox.includes('<TabsTrigger value="unread"'));
@@ -499,7 +517,7 @@ test('messaging is viewport-locked between the authenticated app header and bott
     assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden'));
     assert.ok(messaging.includes('grid h-full min-h-0 w-full min-w-0 flex-1'));
     assert.ok(messagingInbox.includes('divide-y divide-border overflow-y-auto'), 'The inbox list scrolls inside its fixed panel.');
-    const inboxList = messagingInbox.match(/<ul dir="rtl" className="([^"]+)"/);
+    const inboxList = messagingInbox.match(/<ul className="([^"]+)"/);
     assert.ok(inboxList, 'The conversation inbox list is present.');
     assert.doesNotMatch(inboxList[1], /scrollbar-gutter/ , 'The inbox list must not reserve a gutter that leaves a blank strip beside its content.');
     assert.ok(messageTimeline.includes('overflow-y-auto overscroll-contain'), 'Message history scrolls inside its fixed panel.');
@@ -516,7 +534,7 @@ test('messaging is viewport-locked between the authenticated app header and bott
 });
 
 test('messaging chat geometry follows RTL logical flow and uses Radix collision-aware overlays', () => {
-    assert.ok(messageTimeline.includes('<div dir="rtl" ref={containerRef}'));
+    assert.ok(messageTimeline.includes('<div ref={containerRef}'));
     assert.match(messageTimeline, /import\s*\{[^}]*\bDropdownMenu\b[^}]*\}\s*from\s*['"]\.\.\/components\/ui['"]/);
     assert.doesNotMatch(messaging + messageTimeline, /@radix-ui/);
     assert.ok(messageTimeline.split('<DropdownMenu.Root').length - 1 >= 2, 'Message reaction and action overlays use Radix.');
@@ -571,7 +589,8 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(bottomNavigation.includes('lg:hidden'));
     assert.ok(bottomNavigation.includes('mobileLinks.map((item)'));
     assert.ok(layouts.includes('<PublicBottomNavigation user={user} profileHref={profileHref} />'));
-    assert.ok(layouts.includes("user?.role === 'buyer' ? '/dashboard/buyer' : '/login'"));
+    assert.ok(layouts.includes("user?.role === 'buyer' ? '/dashboard/buyer'"));
+    assert.ok(layouts.includes('const dashboardHref ='));
     assert.ok(layouts.includes('function PublicBottomNavigation'));
     assert.ok(workspaceLayout.includes('<AuthenticatedBottomNavigation mobileLinks={mobileWorkspaceLinks} />'));
     assert.ok(workspaceLayout.includes('outletContext?.profile?.slug'));
@@ -581,7 +600,7 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(workspaceLayout.includes('aria-label="باز کردن منوی حساب کاربری"'));
     assert.ok(workspaceLayout.includes('<DialogContent'));
     assert.ok(workspaceLayout.includes('placement="drawer"'));
-    assert.ok(workspaceLayout.includes('aria-label="ناوبری فضای کاربری"'));
+    assert.ok(workspaceLayout.includes('aria-label={t("ناوبری فضای کاربری")}'));
     assert.ok(workspaceLayout.includes('workspaceLinks.map((item)'));
     assert.ok(workspaceLayout.includes('lg:sticky'));
     assert.ok(workspaceLayout.includes('lg:block'));
