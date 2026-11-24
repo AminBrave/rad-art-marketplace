@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+import { cn } from '../../resources/js/lib/utils.js';
 
 const css = readFileSync(new URL('../../resources/css/app.css', import.meta.url), 'utf8');
 const tailwind = readFileSync(new URL('../../tailwind.config.js', import.meta.url), 'utf8');
@@ -50,6 +51,13 @@ const artworkCatalogue = readFileSync(new URL('../../resources/js/app/ArtworkCat
 const editorialPages = readFileSync(new URL('../../resources/js/app/EditorialPages.jsx', import.meta.url), 'utf8');
 const publicInfoPages = readFileSync(new URL('../../resources/js/app/PublicInfoPages.jsx', import.meta.url), 'utf8');
 const designSystem = readFileSync(new URL('../../AI/DESIGN-SYSTEM.md', import.meta.url), 'utf8');
+
+test('class composition understands semantic radius and content-width utilities', () => {
+    assert.equal(cn('rounded-md', 'rounded-control'), 'rounded-control');
+    assert.equal(cn('rounded-full', 'rounded-control'), 'rounded-control');
+    assert.equal(cn('max-w-content', 'max-w-full'), 'max-w-full');
+    assert.equal(cn('max-w-content-reading', 'max-w-content'), 'max-w-content');
+});
 
 test('semantic palette, typography, spacing and layout tokens have one CSS source', () => {
     for (const token of [
