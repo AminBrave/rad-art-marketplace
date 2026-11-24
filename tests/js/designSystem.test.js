@@ -85,7 +85,7 @@ test('artwork catalogue uses accessible infinite pagination and workspace contai
 });
 
 
-test('messaging avatars and artwork chips use square geometry, message tails, and sequenced glass shine', () => {
+test('messaging avatars and artwork chips use square geometry, message tails, and hover-only button shine', () => {
     assert.ok(primitives.includes("'rd-shine relative isolate overflow-hidden inline-flex min-h-11"), 'Shared action buttons carry the shine effect.');
     assert.ok(primitives.includes("'rd-shine relative isolate overflow-hidden inline-flex items-center justify-center"), 'Icon buttons carry the shine effect.');
     assert.ok(messagingInbox.includes('rd-shine relative overflow-hidden border border-border'));
@@ -98,11 +98,13 @@ test('messaging avatars and artwork chips use square geometry, message tails, an
     assert.ok(messageTimeline.includes('rd-message-bubble--peer'));
     assert.ok(css.includes('rd-message-bubble--own::before'));
     assert.ok(css.includes('rd-message-bubble--peer::before'));
-    assert.ok(css.includes('rd-shine-sequence 8s'));
+    assert.ok(css.includes('.rd-shine--ambient::after {\n    animation: rd-shine-sequence 8s'));
+    assert.ok(!css.includes('    animation: rd-shine-sequence 8s ease-in-out infinite;\n    animation-delay: calc(var(--rd-shine-index, 0) * 500ms);\n}\n\n.rd-shine:hover'), 'Default buttons must not animate until hovered or focused.');
     assert.ok(css.includes('calc(var(--rd-shine-index, 0) * 500ms)'));
     assert.ok(css.includes('rd-shine-hover 850ms'));
     assert.ok(css.includes('.rd-shine::after {\n    content: "";\n    position: absolute;\n    z-index: 2;\n    inset: 0;'), 'The glass highlight must span the complete square surface, not a narrow detached strip.');
     assert.ok(css.includes('background-size: 240% 100%'));
+    assert.ok(relatedArtworkStrip.includes('rd-shine rd-shine--ambient'), 'Artwork squares retain their ambient shine.');
     assert.ok(relatedArtworkStrip.includes("'--rd-shine-index': index"), 'Related artwork squares use a staggered shine sequence.');
     assert.ok(css.includes('prefers-reduced-motion: reduce'));
 });
