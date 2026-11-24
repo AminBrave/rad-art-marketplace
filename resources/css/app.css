@@ -134,17 +134,17 @@
     --color-danger: var(--rd-danger);
     --color-warning: var(--rd-warning);
     --color-info: var(--rd-info);
-    --color-success-surface: color-mix(in srgb, var(--color-success) 14%, var(--color-surface));
-    --color-danger-surface: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface));
-    --color-warning-surface: color-mix(in srgb, var(--color-warning) 12%, var(--color-surface));
-    --color-info-surface: color-mix(in srgb, var(--color-info) 12%, var(--color-surface));
-    --color-accent-surface: color-mix(in srgb, var(--color-action) 10%, var(--color-surface));
+    --color-success-surface: var(--rd-success-surface);
+    --color-danger-surface: var(--rd-danger-surface);
+    --color-warning-surface: var(--rd-warning-surface);
+    --color-info-surface: var(--rd-info-surface);
+    --color-accent-surface: var(--rd-accent-surface);
     --color-inverse-text: var(--rd-inverse-text);
     --color-skeleton-base: var(--rd-skeleton-base);
     --color-skeleton-highlight: var(--rd-skeleton-highlight);
     --color-overlay: var(--rd-overlay);
     --overlay-backdrop-blur: 8px;
-    --color-focus-soft: color-mix(in srgb, var(--rd-focus) 16%, transparent);
+    --color-focus-soft: var(--rd-focus-soft);
     --color-message-own: var(--rd-message-own);
     --color-message-peer: var(--rd-message-peer);
 
@@ -191,7 +191,7 @@
     --shadow-soft: var(--rd-shadow-soft);
     --shadow-raised: var(--rd-shadow-raised);
     --content-width: var(--rd-content-width);
-    --radius-card: var(--rd-radius-md);
+    --radius-card: var(--rd-radius-lg);
     --page-gutter: var(--rd-page-gutter);
     --header-height: var(--rd-header-height);
     --workspace-bottom-nav-primary-height: var(--rd-workspace-nav-height);
@@ -233,6 +233,12 @@
     --rd-skeleton-highlight: #3A3B34;
     --rd-message-own: color-mix(in srgb, var(--rd-brand-terracotta) 28%, var(--rd-surface));
     --rd-message-peer: var(--rd-surface-raised);
+    --rd-success-surface: color-mix(in srgb, var(--rd-success) 14%, var(--rd-surface));
+    --rd-danger-surface: color-mix(in srgb, var(--rd-danger) 12%, var(--rd-surface));
+    --rd-warning-surface: color-mix(in srgb, var(--rd-warning) 12%, var(--rd-surface));
+    --rd-info-surface: color-mix(in srgb, var(--rd-info) 12%, var(--rd-surface));
+    --rd-accent-surface: color-mix(in srgb, var(--rd-action) 10%, var(--rd-surface));
+    --rd-focus-soft: color-mix(in srgb, var(--rd-focus) 16%, transparent);
     --rd-shadow-soft: 0 8px 28px rgb(0 0 0 / 18%);
     --rd-shadow-raised: 0 16px 40px rgb(0 0 0 / 28%);
 }
