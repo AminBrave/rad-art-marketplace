@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { ArrowLeft, ArrowUpLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ArtworkCard, ArtistCard, ArtworkCardSkeleton, ArtistCardSkeleton, EmptyState, ErrorState, MediaImage, Skeleton } from '../components/ui';
+import { ArtworkCard, ArtistCard, ArtworkCardSkeleton, ArtistCardSkeleton, EmptyState, ErrorState, MediaImage, Skeleton, Container } from '../components/ui';
 
 const editorialSteps = [
     { number: '01', title: 'کشف', description: 'در میان آثار تأییدشده جست‌وجو کنید و مسیرهای تازه‌ای برای دیدن پیدا کنید.' },
@@ -88,7 +88,7 @@ export default function HomePage() {
     return (
         <div className="w-full min-w-0 overflow-hidden" dir="rtl">
             <section aria-labelledby="home-hero-title" className="relative border-b border-border bg-canvas">
-                <div className="mx-auto max-w-content px-page-gutter pb-12 pt-8 sm:pb-16 sm:pt-12 lg:pb-20 lg:pt-14">
+                <Container className="pb-12 pt-8 sm:pb-16 sm:pt-12 lg:pb-20 lg:pt-14">
                     <div className="mb-8 flex items-center justify-between border-y-2 border-ink py-3.5 text-[10px] font-extrabold tracking-[.18em] text-muted sm:text-xs">
                         <span>گالری هنر مستقل معاصر</span>
                         <span dir="ltr" className="font-latin">RAD ART / DISCOVER &amp; CONNECT</span>
@@ -157,11 +157,11 @@ export default function HomePage() {
                             )}
                         </div>
                     </div>
-                </div>
+                </Container>
             </section>
 
             <section aria-label="چطور در راد آرت کشف کنیم" className="border-b border-border bg-surface-muted">
-                <div className="mx-auto grid max-w-content gap-0 px-page-gutter sm:grid-cols-3">
+                <Container className="grid gap-0 sm:grid-cols-3">
                     {editorialSteps.map((step) => (
                         <article key={step.number} className="grid grid-cols-[3rem_1fr] gap-4 border-b border-border py-6 last:border-b-0 sm:border-b-0 sm:border-s sm:py-8 sm:ps-6 sm:first:border-s-0 sm:first:ps-0">
                             <span dir="ltr" className="pt-1 font-latin text-xs font-bold tracking-widest text-terracotta-strong">{step.number}</span>
@@ -171,10 +171,10 @@ export default function HomePage() {
                             </div>
                         </article>
                     ))}
-                </div>
+                </Container>
             </section>
 
-            <section aria-labelledby="recent-works-title" className="mx-auto max-w-content px-page-gutter py-14 sm:py-20">
+            <Container as="section" width="wide" aria-labelledby="recent-works-title" className="py-14 sm:py-20">
                 <SectionHeading
                     id="recent-works-title"
                     eyebrow="THE GALLERY / 01"
@@ -192,10 +192,10 @@ export default function HomePage() {
                 ) : (
                     <EmptyState className="mt-8" title="هنوز اثر دیگری برای نمایش نیست" description="آثار تازه پس از تأیید در این بخش قرار می‌گیرند." />
                 )}
-            </section>
+            </Container>
 
             <section aria-labelledby="categories-title" className="border-y border-border bg-paper">
-                <div className="mx-auto max-w-content px-page-gutter py-14 sm:py-16">
+                <Container className="py-14 sm:py-16">
                     <SectionHeading
                         id="categories-title"
                         eyebrow="FIND YOUR PERSPECTIVE / 02"
@@ -213,10 +213,10 @@ export default function HomePage() {
                             </Link>
                         )) : <p className="text-sm text-muted">دسته‌بندی فعالی برای نمایش وجود ندارد.</p>}
                     </div>
-                </div>
+                </Container>
             </section>
 
-            <section aria-labelledby="artists-title" className="mx-auto max-w-content px-page-gutter py-14 sm:py-20">
+            <Container as="section" width="wide" aria-labelledby="artists-title" className="py-14 sm:py-20">
                 <SectionHeading
                     id="artists-title"
                     eyebrow="THE PEOPLE / 03"
@@ -245,11 +245,11 @@ export default function HomePage() {
                         </Link>
                     </div>
                 )}
-            </section>
+            </Container>
 
             {(collections.length > 0 || featuredArtists.length > 0) && (
                 <section aria-label="مجموعه‌ها و هنرمندان منتخب" className="border-y border-border bg-surface-muted">
-                    <div className="mx-auto max-w-content px-page-gutter py-14 sm:py-16">
+                    <Container className="py-14 sm:py-16">
                         {collections.length > 0 && (
                             <div>
                                 <SectionHeading
@@ -289,12 +289,12 @@ export default function HomePage() {
                                 </div>
                             </div>
                         )}
-                    </div>
+                    </Container>
                 </section>
             )}
 
             <section className="bg-ink text-inverse">
-                <div className="mx-auto grid max-w-content gap-8 px-page-gutter py-12 sm:py-16 md:grid-cols-[1fr_auto] md:items-center">
+                <Container className="grid gap-8 py-12 sm:py-16 md:grid-cols-[1fr_auto] md:items-center">
                     <div>
                         <p className="text-[10px] font-extrabold tracking-[.16em] text-sand">BECOME PART OF THE STORY</p>
                         <h2 className="mt-3 max-w-3xl text-2xl font-black leading-relaxed sm:text-3xl">جهان هنری خود را با دیگران به اشتراک بگذارید.</h2>
@@ -304,7 +304,7 @@ export default function HomePage() {
                         شروع به‌عنوان هنرمند
                         <ArrowUpLeft size={17} aria-hidden="true" />
                     </Link>
-                </div>
+                </Container>
             </section>
         </div>
     );
