@@ -218,7 +218,7 @@ export default function ArtworkEngagement({ artwork, slug }) {
             {deleteMutation.isError && <p role="alert" className="mt-3 text-xs text-danger">{t("حذف دیدگاه انجام نشد. دوباره تلاش کنید.")}</p>}
             <div className="mt-7 space-y-3">
                 {commentsQuery.isPending ? <p className="py-6 text-sm text-muted">{t("در حال دریافت دیدگاه‌ها...")}</p> : null}
-                {commentsQuery.isError ? <div className="py-6 text-sm text-danger" role="alert">دریافت دیدگاه‌ها انجام نشد. <Button variant="ghost" type="button" onClick={() => commentsQuery.refetch()} className="underline">{t("تلاش دوباره")}</Button></div> : null}
+                {commentsQuery.isError ? <div className="py-6 text-sm text-danger" role="alert">{t('دریافت دیدگاه‌ها انجام نشد.')} <Button variant="ghost" type="button" onClick={() => commentsQuery.refetch()} className="underline">{t("تلاش دوباره")}</Button></div> : null}
                 {!commentsQuery.isPending && !commentsQuery.isError && comments.length === 0 ? <p className="py-6 text-sm text-muted">{t("هنوز دیدگاهی ثبت نشده است.")}</p> : null}
                 {comments.map((comment) => (
                     <CommentItem
