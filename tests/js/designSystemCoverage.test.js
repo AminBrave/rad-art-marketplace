@@ -70,7 +70,7 @@ test('presentation sources do not depend on removed component-specific CSS class
 });
 
 test('project stylesheets define tokens, base rules and only approved layout primitives', () => {
-    assert.equal((css.match(/:root\\s*\\{/g) ?? []).length, 1);
+    assert.equal((css.match(/:root\s*\{/g) ?? []).length, 1);
     assert.ok(stylesheetFiles.length >= 1, 'Expected the complete stylesheet tree to be included.');
     const approvedLayoutClasses = new Set([
         '.rd-bleed',
@@ -82,9 +82,9 @@ test('project stylesheets define tokens, base rules and only approved layout pri
     ]);
     for (const path of stylesheetFiles) {
         const source = readFileSync(path, 'utf8');
-        const selectors = matchesWithLines(source, /(?:^|,)\\s*\\.[a-zA-Z_][\\w-]*(?:[^{}]*)\\{/gm);
+        const selectors = matchesWithLines(source, /(?:^|,)\s*\.[a-zA-Z_][\w-]*(?:[^{}]*)\{/gm);
         const violations = selectors.filter(({ value }) =>
-            (value.match(/\\.[a-zA-Z_][\\w-]*/g) ?? []).some((className) => !approvedLayoutClasses.has(className)),
+            (value.match(/\.[a-zA-Z_][\w-]*/g) ?? []).some((className) => !approvedLayoutClasses.has(className)),
         );
         assert.deepEqual(
             violations,
@@ -92,7 +92,7 @@ test('project stylesheets define tokens, base rules and only approved layout pri
             relative(root, path) + ' may define only documented page/container/bleed layout primitives.',
         );
     }
-    assert.doesNotMatch(css, /\\.ra-[\\w-]+|\\.rad-messaging|\\.app-boot|\\.app-skeleton/);
+    assert.doesNotMatch(css, /\.ra-[\w-]+|\.rad-messaging|\.app-boot|\.app-skeleton/);
 });
 test('Tailwind scans every presentation source family and defines accessible skeleton motion', () => {
     assert.ok(tailwind.includes("'./resources/**/*.blade.php'"));
