@@ -79,7 +79,7 @@ export function AdminEditorialPage() {
     const [actionError, setActionError] = useState(''), [message, setMessage] = useState('');
     const loading = editorialQuery.isPending;
     const error = actionError || (editorialQuery.isError
-        ? (editorialQuery.error.response?.data?.message || 'دریافت اطلاعات مدیریت محتوای منتخب انجام نشد.')
+        ? (t(editorialQuery.error.response?.data?.message || 'دریافت اطلاعات مدیریت محتوای منتخب انجام نشد.'))
         : '');
     const load = () => { setActionError(''); return editorialQuery.refetch(); };
     const saveCollectionMutation = useMutation({
@@ -127,20 +127,20 @@ export function AdminEditorialPage() {
     const reset = () => { setEditing(null); setTitle(''); setTitleEn(''); setIntro(''); setIntroEn(''); setArtworkIds([]); };
     const edit = (collection) => { setEditing(collection.id); setTitle(collection.title); setTitleEn(collection.title_en || ''); setIntro(collection.intro || ''); setIntroEn(collection.intro_en || ''); setArtworkIds(collection.artwork_ids || []); };
     const saveCollection = async (publish = false) => {
-        if (!title.trim()) { setActionError('عنوان مجموعه الزامی است.'); return; }
+        if (!title.trim()) { setActionError(t('عنوان مجموعه الزامی است.')); return; }
         setActionError(''); setMessage('');
         try {
             const payload = { title, title_en: titleEn, intro, intro_en: introEn, artwork_ids: artworkIds };
             const response = await saveCollectionMutation.mutateAsync({ editing, payload, publish });
-            setMessage(response.data.message || 'مجموعه ذخیره شد.'); reset(); await refreshEditorialQueries();
-        } catch (e) { setActionError(e.response?.data?.message || e.response?.data?.errors?.title?.[0] || 'ذخیره مجموعه انجام نشد.'); }
+            setMessage(t(response.data.message || 'مجموعه ذخیره شد.')); reset(); await refreshEditorialQueries();
+        } catch (e) { setActionError(t(e.response?.data?.message || e.response?.data?.errors?.title?.[0] || 'ذخیره مجموعه انجام نشد.')); }
     };
     const publish = async (collection, next) => {
         setActionError(''); setMessage('');
         try {
             const { data } = await publishCollectionMutation.mutateAsync({ collection, next });
-            setMessage(data.message); setConfirmUnpublishId(null); await refreshEditorialQueries();
-        } catch (e) { setActionError(e.response?.data?.message || 'تغییر وضعیت انتشار انجام نشد.'); }
+            setMessage(t(data.message)); setConfirmUnpublishId(null); await refreshEditorialQueries();
+        } catch (e) { setActionError(t(e.response?.data?.message || 'تغییر وضعیت انتشار انجام نشد.')); }
     };
     const moveCollection = (index, delta) => {
         const next = [...collections]; const target = index + delta;
@@ -149,8 +149,8 @@ export function AdminEditorialPage() {
     };
     const saveCollectionOrder = async () => {
         setActionError(''); setMessage('');
-        try { const { data } = await saveCollectionOrderMutation.mutateAsync(collections.map((item) => item.id)); setMessage(data.message); await refreshEditorialQueries(); }
-        catch (e) { setActionError(e.response?.data?.message || 'ثبت ترتیب مجموعه‌ها انجام نشد.'); }
+        try { const { data } = await saveCollectionOrderMutation.mutateAsync(collections.map((item) => item.id)); setMessage(t(data.message)); await refreshEditorialQueries(); }
+        catch (e) { setActionError(t(e.response?.data?.message || 'ثبت ترتیب مجموعه‌ها انجام نشد.')); }
     };
     const saveFeatured = async () => {
         setActionError(''); setMessage('');
@@ -158,30 +158,30 @@ export function AdminEditorialPage() {
             const selections = featuredIds.map((id) => ({ artist_profile_id: id, editorial_intro: featuredIntros[id] || '', editorial_intro_en: featuredIntrosEn[id] || '' }));
             const { data } = await saveFeaturedMutation.mutateAsync(selections);
             setMessage(data.message); await refreshEditorialQueries();
-        } catch (e) { setActionError(e.response?.data?.message || 'ذخیره انتخاب هنرمندان انجام نشد.'); }
+        } catch (e) { setActionError(t(e.response?.data?.message || 'ذخیره انتخاب هنرمندان انجام نشد.')); }
     };
     return <section className="min-w-0 mx-auto w-full max-w-content space-y-8">
         <PageHeader bleed={false} eyebrow={t("سردبیری راد آرت")} title={t("مجموعه‌ها و هنرمندان منتخب")} description={t("فقط آثار تأییدشده و پروفایل‌های عمومی در خروجی عمومی نمایش داده می‌شوند. تغییرات انتشار ثبت رویداد می‌شوند.")} />
-        {message && <SuccessState title={message} />}{error && <ErrorState title={t("عملیات انجام نشد")} description={error} onRetry={load} />}
+        {message && <SuccessState title={message} />}{error && <ErrorState title={t("عملیات انجام نشد")} description={t(error)} onRetry={load} />}
         {loading ? <AdminEditorialSkeleton /> : <>
             <section className="space-y-5 border-y border-border bg-transparent py-6 sm:py-8">
-                <SectionHeader title={editing ? 'ویرایش مجموعه' : 'ایجاد مجموعه تازه'} className="border-0 pb-0" />
+                <SectionHeader title={t(editing ? 'ویرایش مجموعه' : 'ایجاد مجموعه تازه')} className="border-0 pb-0" />
                 <FormField label={t("عنوان مجموعه")}><TextInput value={title} maxLength={160} onChange={(e) => setTitle(e.target.value)} /></FormField>
                 <FormField label={t("عنوان مجموعه به انگلیسی")}><TextInput value={titleEn} maxLength={160} dir="ltr" className="text-start" onChange={(e) => setTitleEn(e.target.value)} /></FormField>
                 <FormField label={t("مقدمه سردبیر")} hint={t("اختیاری؛ حداکثر ۲۰۰۰ نویسه.")}><TextareaField value={intro} onChange={(e) => setIntro(e.target.value)} rows={4} maxLength={2000} /></FormField>
                 <FormField label={t("مقدمه سردبیر به انگلیسی")}><TextareaField value={introEn} onChange={(e) => setIntroEn(e.target.value)} rows={4} maxLength={2000} dir="ltr" className="text-start" /></FormField>
-                <div><p className="mb-2 text-sm font-bold">{t("آثار مجموعه (حداکثر ۳۰ اثر)")}</p><div className="max-h-72 space-y-2 overflow-y-auto border border-border p-3">{options.artworks.map((work) => <Checkbox key={work.id} checked={artworkIds.includes(work.id)} disabled={!artworkIds.includes(work.id) && artworkIds.length >= 30} onChange={(e) => setArtworkIds((current) => e.target.checked ? [...current, work.id] : current.filter((id) => id !== work.id))} className="flex w-full items-start gap-3 py-1 text-sm"><span>{locale === 'en' ? (work.title_en || work.title) : work.title}<span className="block text-xs text-muted">{locale === 'en' ? (work.artist_en || work.artist) : work.artist}</span></span></Checkbox>)}</div><p className="mt-2 text-xs text-muted">ترتیب انتخاب، ترتیب نمایش آثار در مجموعه خواهد بود.</p></div>
-                <div className="flex flex-wrap gap-2"><Button onClick={() => saveCollection(false)} loading={busy}>{editing ? 'ذخیره تغییرات' : 'ذخیره پیش‌نویس'}</Button>{!editing && <Button variant="outline" disabled={busy} onClick={() => saveCollection(true)}>ذخیره و انتشار</Button>}{editing && <Button variant="outline" disabled={busy} onClick={reset}>لغو ویرایش</Button>}</div>
+                <div><p className="mb-2 text-sm font-bold">{t("آثار مجموعه (حداکثر ۳۰ اثر)")}</p><div className="max-h-72 space-y-2 overflow-y-auto border border-border p-3">{options.artworks.map((work) => <Checkbox key={work.id} checked={artworkIds.includes(work.id)} disabled={!artworkIds.includes(work.id) && artworkIds.length >= 30} onChange={(e) => setArtworkIds((current) => e.target.checked ? [...current, work.id] : current.filter((id) => id !== work.id))} className="flex w-full items-start gap-3 py-1 text-sm"><span>{locale === 'en' ? (work.title_en || work.title) : work.title}<span className="block text-xs text-muted">{locale === 'en' ? (work.artist_en || work.artist) : work.artist}</span></span></Checkbox>)}</div><p className="mt-2 text-xs text-muted">{t('ترتیب انتخاب، ترتیب نمایش آثار در مجموعه خواهد بود.')}</p></div>
+                <div className="flex flex-wrap gap-2"><Button onClick={() => saveCollection(false)} loading={busy}>{t(editing ? 'ذخیره تغییرات' : 'ذخیره پیش‌نویس')}</Button>{!editing && <Button variant="outline" disabled={busy} onClick={() => saveCollection(true)}{t('ذخیره و انتشار')}</Button>}{editing && <Button variant="outline" disabled={busy} onClick={reset}{t('لغو ویرایش')}</Button>}</div>
             </section>
-            <section className="space-y-4"><SectionHeader title={t("مجموعه‌های ثبت‌شده")} actions={<><Button variant="outline" size="sm" onClick={saveCollectionOrder} disabled={busy || collections.length < 2}>ذخیره ترتیب</Button><Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button></>} />
+            <section className="space-y-4"><SectionHeader title={t("مجموعه‌های ثبت‌شده")} actions={<><Button variant="outline" size="sm" onClick={saveCollectionOrder} disabled={busy || collections.length < 2}{t('ذخیره ترتیب')}</Button><Button variant="outline" size="sm" onClick={load} loading={loading}{t('به‌روزرسانی')}</Button></>} />
                 {collections.length ? <div className="grid gap-3">{collections.map((collection, index) => <article key={collection.id} className="border-t border-border bg-transparent py-5 first:border-t-0 sm:px-1">
                     <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><h3 className="font-black">{localizedValue(collection, 'title', locale)}</h3><span className={collection.status === 'published' ? 'bg-[color:color-mix(in_srgb,var(--color-olive)_10%,transparent)] px-2 py-1 text-[10px] font-bold text-olive' : 'bg-surface-muted px-2 py-1 text-[10px] font-bold text-muted'}>{collection.status === 'published' ? 'منتشرشده' : 'پیش‌نویس'}</span></div><p className="mt-2 text-xs text-muted">{(collection.artworks_count ?? 0).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} اثر در مجموعه</p><p dir="ltr" className="mt-1 break-all text-start text-[11px] text-muted">{collection.slug}</p></div>
-                        <span className="text-xs font-bold text-muted">جایگاه {index + 1}</span>
+                        <div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><h3 className="font-black">{localizedValue(collection, 'title', locale)}</h3><span className={collection.status === 'published' ? 'bg-[color:color-mix(in_srgb,var(--color-olive)_10%,transparent)] px-2 py-1 text-[10px] font-bold text-olive' : 'bg-surface-muted px-2 py-1 text-[10px] font-bold text-muted'}>{t(collection.status === 'published' ? 'منتشرشده' : 'پیش‌نویس')}</span></div><p className="mt-2 text-xs text-muted">{(collection.artworks_count ?? 0).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} {t('اثر در مجموعه')}</p><p dir="ltr" className="mt-1 break-all text-start text-[11px] text-muted">{collection.slug}</p></div>
+                        <span className="text-xs font-bold text-muted">{t('جایگاه')} {index + 1}</span>
                     </div>
                     <div className="mt-4 flex flex-wrap gap-2 border-t border-border/70 pt-4">
-                        <Button size="sm" variant="outline" disabled={busy || index === 0} onClick={() => moveCollection(index, -1)}>انتقال به بالا</Button>
-                        <Button size="sm" variant="outline" disabled={busy || index === collections.length - 1} onClick={() => moveCollection(index, 1)}>انتقال به پایین</Button>
+                        <Button size="sm" variant="outline" disabled={busy || index === 0} onClick={() => moveCollection(index, -1)}{t('انتقال به بالا')}</Button>
+                        <Button size="sm" variant="outline" disabled={busy || index === collections.length - 1} onClick={() => moveCollection(index, 1)}{t('انتقال به پایین')}</Button>
                         <Button size="sm" variant="outline" disabled={busy} onClick={() => edit(collection)}>{t("ویرایش مجموعه")}</Button>
                         {collection.status === 'published' ? (
                             <AlertDialog
@@ -189,18 +189,18 @@ export function AdminEditorialPage() {
                                 onOpenChange={(open) => { if (!open && busy) return; setConfirmUnpublishId(open ? collection.id : null); if (open) setActionError(''); }}
                             >
                                 <AlertDialogTrigger asChild>
-                                    <Button size="sm" variant="danger" disabled={busy}>توقف انتشار</Button>
+                                    <Button size="sm" variant="danger" disabled={busy}{t('توقف انتشار')}</Button>
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
-                                    <AlertDialogTitle>توقف انتشار این مجموعه را تأیید می‌کنید؟</AlertDialogTitle>
-                                    <AlertDialogDescription>این مجموعه از صفحه عمومی مجموعه‌های منتخب خارج می‌شود؛ محتوای آن حذف نخواهد شد.</AlertDialogDescription>
-                                    {actionError && <p role="alert" className="mt-3 text-sm leading-6 text-danger">{actionError}</p>}
+                                    <AlertDialogTitle>{t('توقف انتشار این مجموعه را تأیید می‌کنید؟')}</AlertDialogTitle>
+                                    <AlertDialogDescription>{t('این مجموعه از صفحه عمومی مجموعه‌های منتخب خارج می‌شود؛ محتوای آن حذف نخواهد شد.')}</AlertDialogDescription>
+                                    {actionError && <p role="alert" className="mt-3 text-sm leading-6 text-danger">{t(actionError)}</p>}
                                     <div className="mt-5 flex flex-wrap justify-end gap-2">
                                         <AlertDialogCancel asChild>
-                                            <Button size="sm" variant="ghost" disabled={busy}>انصراف</Button>
+                                            <Button size="sm" variant="ghost" disabled={busy}{t('انصراف')}</Button>
                                         </AlertDialogCancel>
                                         <AlertDialogAction asChild>
-                                            <Button size="sm" variant="danger" disabled={busy} onClick={(event) => { event.preventDefault(); publish(collection, false); }}>تأیید توقف انتشار</Button>
+                                            <Button size="sm" variant="danger" disabled={busy} onClick={(event) => { event.preventDefault(); publish(collection, false); }}{t('تأیید توقف انتشار')}</Button>
                                         </AlertDialogAction>
                                     </div>
                                 </AlertDialogContent>
@@ -210,8 +210,8 @@ export function AdminEditorialPage() {
                         )}
                     </div>
                 </article>)}</div> : <EmptyState title="مجموعه‌ای ثبت نشده است" />}</section>
-            <section className="space-y-5 border-y border-border bg-transparent py-6 sm:py-8"><SectionHeader title={t("هنرمندان منتخب")} description="انتخاب‌ها به ترتیب انتخاب شما در صفحه اصلی نمایش داده می‌شوند. بازه انتشار از طریق API قابل تنظیم است." className="border-0 pb-0" /><div className="grid gap-3 sm:grid-cols-2">{options.artists.map((artist) => <div key={artist.id} className="border-t border-border py-3 first:border-t-0"><Checkbox checked={featuredIds.includes(artist.id)} onChange={(e) => setFeaturedIds((current) => e.target.checked ? [...current, artist.id] : current.filter((id) => id !== artist.id))} className="flex min-h-11 items-center gap-3 text-sm">{locale === 'en' ? (artist.display_name_en || artist.display_name) : artist.display_name}</Checkbox>{featuredIds.includes(artist.id) && <FormField label={'معرفی کوتاه ' + artist.display_name} className="mt-3"><TextInput placeholder="معرفی کوتاه سردبیر" value={featuredIntros[artist.id] || ''} maxLength={500} onChange={(e) => setFeaturedIntros((current) => ({ ...current, [artist.id]: e.target.value }))} /></FormField>
-                        <FormField label={t("معرفی کوتاه هنرمند به انگلیسی")} className="mt-3"><TextInput dir="ltr" className="text-start" value={featuredIntrosEn[artist.id] || ''} maxLength={500} onChange={(e) => setFeaturedIntrosEn((current) => ({ ...current, [artist.id]: e.target.value }))} /></FormField>}</div>)}</div><Button onClick={saveFeatured} loading={busy}>ذخیره هنرمندان منتخب</Button></section>
+            <section className="space-y-5 border-y border-border bg-transparent py-6 sm:py-8"><SectionHeader title={t("هنرمندان منتخب")} description={t('انتخاب‌ها به ترتیب انتخاب شما در صفحه اصلی نمایش داده می‌شوند. بازه انتشار از طریق API قابل تنظیم است.')} className="border-0 pb-0" /><div className="grid gap-3 sm:grid-cols-2">{options.artists.map((artist) => <div key={artist.id} className="border-t border-border py-3 first:border-t-0"><Checkbox checked={featuredIds.includes(artist.id)} onChange={(e) => setFeaturedIds((current) => e.target.checked ? [...current, artist.id] : current.filter((id) => id !== artist.id))} className="flex min-h-11 items-center gap-3 text-sm">{locale === 'en' ? (artist.display_name_en || artist.display_name) : artist.display_name}</Checkbox>{featuredIds.includes(artist.id) && <FormField label={t('معرفی کوتاه ') + (locale === 'en' ? (artist.display_name_en || artist.display_name) : artist.display_name)} className="mt-3"><TextInput placeholder={t('معرفی کوتاه سردبیر')} value={featuredIntros[artist.id] || ''} maxLength={500} onChange={(e) => setFeaturedIntros((current) => ({ ...current, [artist.id]: e.target.value }))} /></FormField>
+                        <FormField label={t("معرفی کوتاه هنرمند به انگلیسی")} className="mt-3"><TextInput dir="ltr" className="text-start" value={featuredIntrosEn[artist.id] || ''} maxLength={500} onChange={(e) => setFeaturedIntrosEn((current) => ({ ...current, [artist.id]: e.target.value }))} /></FormField>}</div>)}</div><Button onClick={saveFeatured} loading={busy}{t('ذخیره هنرمندان منتخب')}</Button></section>
         </>}
     </section>;
 }
