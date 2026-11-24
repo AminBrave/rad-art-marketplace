@@ -14,7 +14,7 @@ export function AlertDialogContent({ className = '', overlayClassName = '', ...p
             />
             <AlertDialogPrimitive.Content
                
-                className={cn('fixed left-1/2 top-1/2 z-[81] max-h-[min(88dvh,48rem)] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto  border border-border bg-paper p-5 text-ink shadow-raised outline-none focus-visible:ring-2 focus-visible:ring-focus sm:p-7', className)}
+                className={cn('fixed start-1/2 top-1/2 z-[81] max-h-[min(88dvh,48rem)] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto  border border-border bg-paper p-5 text-ink shadow-raised outline-none focus-visible:ring-2 focus-visible:ring-focus sm:p-7', className)}
                 {...props}
             />
         </AlertDialogPrimitive.Portal>
