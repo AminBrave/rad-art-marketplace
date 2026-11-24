@@ -86,11 +86,18 @@ class PublicArtworkController extends Controller
                 $term = $validated['q'];
                 $query->where(function ($nested) use ($term): void {
                     PersianSearch::whereLike($nested, 'title', $term);
+                    PersianSearch::whereLike($nested, 'title_en', $term, 'or');
                     PersianSearch::whereLike($nested, 'description', $term, 'or');
+                    PersianSearch::whereLike($nested, 'description_en', $term, 'or');
+                    PersianSearch::whereLike($nested, 'city', $term, 'or');
+                    PersianSearch::whereLike($nested, 'city_en', $term, 'or');
                     PersianSearch::whereLike($nested, 'medium', $term, 'or');
                     $nested->orWhereHas(
                         'artistProfile',
-                        fn ($artist) => PersianSearch::whereLike($artist, 'display_name', $term),
+                        fn ($artist) => PersianSearch::where(function ($nestedArtist) use ($term): void {
+                            PersianSearch::whereLike($nestedArtist, 'display_name', $term);
+                            PersianSearch::whereLike($nestedArtist, 'display_name_en', $term, 'or');
+                        }),
                     );
                 });
             })
