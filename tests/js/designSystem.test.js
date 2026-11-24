@@ -265,14 +265,13 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     const heroEnd = primitives.indexOf('\n}', heroStart);
     assert.ok(heroStart >= 0 && heroEnd > heroStart);
     const hero = primitives.slice(heroStart, heroEnd);
-    assert.ok(hero.includes('border-y border-divider-section bg-ink'), 'The workspace hero uses the editorial ink band rather than a rounded card.');
-    assert.ok(hero.includes('overflow-hidden'), 'The hero clips its decorative editorial elements.');
+    assert.ok(hero.includes('border-y border-divider-section bg-surface-muted'), 'The workspace hero uses a calm semantic surface rather than a heavy dark banner.');
+    assert.doesNotMatch(hero, /overflow-hidden|bg-ink|text-inverse/, 'The hero must not clip descendants or force inverse text colors.');
     assert.ok(hero.includes('Container width={bleed ? "wide" : "full"}'), 'The hero delegates width and horizontal spacing to the shared Container.');
     assert.ok(layoutPrimitives.includes("wide: 'mx-auto w-full max-w-content px-page-gutter'"), 'The shared wide Container owns the responsive horizontal gutter.');
     assert.ok(hero.includes('max-md:items-stretch max-md:flex-col'), 'Hero actions and copy stack cleanly on smaller screens.');
-    assert.ok(hero.includes('inset-y-0 right-0 w-1.5 bg-terracotta'));
-    assert.ok(hero.includes('text-inverse'));
-    assert.ok(hero.includes('text-sand'));
+    assert.ok(hero.includes('min-w-0 max-w-full flex-wrap'), 'Hero actions can shrink and wrap without widening the page.');
+    assert.ok(hero.includes('text-terracotta-strong'));
     assert.ok(!artworkStudio.includes('className="border-0 pb-0 pt-0"'));
 });;
 
