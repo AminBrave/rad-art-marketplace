@@ -16,7 +16,7 @@ export default function RelatedArtworkStrip({ contexts, role, onSelectArtwork })
                 {artworks.map((artwork, index) => {
                     const chipContent = (
                         <>
-                            <span className="rd-shine rd-shine--ambient relative inline-flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden bg-border text-muted" style={{ '--rd-shine-index': index }}>
+                            <span className="relative inline-flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden bg-border text-muted">
                                 {artwork.image_url ? (
                                     <MediaImage src={artwork.image_url} alt="" className="h-full w-full" imageClassName="object-cover" loading="lazy" decoding="async" />
                                 ) : (
