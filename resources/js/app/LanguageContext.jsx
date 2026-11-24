@@ -657,6 +657,11 @@ const english = {
     "گزارش شماره": "Report number",
     "کاربر": "User",
     "تأیید": "Confirm",
+    "تأیید و منتشرشده": "Approved and published",
+    "اثر ثبت شده و منتظر بررسی مدیر است. تا زمان تأیید، در گالری عمومی نمایش داده نمی‌شود.": "The artwork has been submitted and is awaiting administrator review. It will not appear in the public gallery until approved.",
+    "اثر تأیید شده است. اگر پروفایل شما عمومی باشد، این اثر در پورتفولیوی عمومی نمایش داده می‌شود.": "The artwork is approved. If your profile is public, it will appear in your public portfolio.",
+    "این اثر رد شده است. بازخورد مدیر را بخوانید و در صورت امکان با ویرایش اثر دوباره ارسال کنید.": "This artwork was rejected. Review the administrator’s feedback and resubmit an edited version if possible.",
+    "مدیر برای این اثر اصلاحاتی درخواست کرده است. بازخورد را بررسی کنید، اثر را ویرایش و دوباره برای بررسی ارسال کنید.": "The administrator requested revisions. Review the feedback, edit the artwork, and resubmit it for review.",
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 
