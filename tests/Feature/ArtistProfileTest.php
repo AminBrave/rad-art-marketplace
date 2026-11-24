@@ -19,9 +19,12 @@ class ArtistProfileTest extends TestCase
         $artist = $this->makeUser('artist');
 
         $response = $this->actingAs($artist)
-            ->putJson('/api/v1/artist-profile/me', $this->validProfile())
+            ->putJson('/api/v1/artist-profile/me', [...$this->validProfile(), 'display_name_en' => 'Sample Artist', 'bio_en' => 'An English artist biography.', 'city_en' => 'Tehran'])
             ->assertOk()
             ->assertJsonPath('data.display_name', 'هنرمند نمونه')
+            ->assertJsonPath('data.display_name_en', 'Sample Artist')
+            ->assertJsonPath('data.bio_en', 'An English artist biography.')
+            ->assertJsonPath('data.city_en', 'Tehran')
             ->assertJsonPath('data.is_public', true);
 
         $this->assertDatabaseHas('artist_profiles', [
@@ -33,7 +36,8 @@ class ArtistProfileTest extends TestCase
         $this->actingAs($artist)
             ->getJson('/api/v1/artist-profile/me')
             ->assertOk()
-            ->assertJsonPath('data.city', 'تهران');
+            ->assertJsonPath('data.city', 'تهران')
+            ->assertJsonPath('data.display_name_en', 'Sample Artist');
     }
 
     public function test_profile_validation_rejects_invalid_website_and_social_handle(): void
