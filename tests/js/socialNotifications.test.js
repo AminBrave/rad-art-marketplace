@@ -18,8 +18,8 @@ test('Notification center exposes pagination and independent read controls', () 
     assert.match(layout, /صفحه‌بندی اعلان‌ها/);
     assert.match(layout, /setPage\(\(value\) => value - 1\)/);
     assert.match(layout, /setPage\(\(value\) => value \+ 1\)/);
-    assert.match(layout, /markReadMutation/);
-    assert.match(layout, /markAllReadMutation/);
+    assert.match(layout, /markOneRead/);
+    assert.match(layout, /markAllRead/);
     assert.match(layout, /notificationsQuery\.isFetching/);
 });
 
