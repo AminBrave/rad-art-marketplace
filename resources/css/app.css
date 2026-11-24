@@ -216,6 +216,16 @@
     --portrait-ratio: var(--rd-portrait-ratio);
 }
 
+/* Shared editorial hero surface adapts through the semantic theme tokens above. */
+@layer components {
+    .rd-hero-surface {
+        color: var(--rd-hero-foreground);
+        background:
+            radial-gradient(ellipse at 88% 8%, var(--rd-hero-glow), transparent 38%),
+            linear-gradient(125deg, var(--rd-hero-background), var(--rd-hero-background-alt));
+    }
+}
+
 /* Explicit dark choice. Brand anchors remain unchanged; semantic roles adapt. */
 :root[data-theme='dark'] {
     color-scheme: dark;
