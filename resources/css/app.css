@@ -322,6 +322,12 @@
     }
 }
 
+.rd-bleed {
+    width: 100vw;
+    max-width: 100vw;
+    margin-inline: calc(50% - 50vw);
+}
+
 /*
  * Route-level main frame is deliberately full width. Sections own their own
  * content width through the shared Container component. Keep this frame free
