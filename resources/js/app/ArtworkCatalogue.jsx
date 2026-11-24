@@ -70,7 +70,7 @@ export default function ArtworkCatalogue() {
         total: latestPage?.total ?? 0,
     };
     const loading = artworksQuery.isPending;
-    const error = artworksQuery.isError;
+    const error = artworksQuery.isError && !artworksQuery.data;
     const loadingMore = artworksQuery.isFetchingNextPage;
     const filtersLoading = filtersQuery.isPending;
     const filtersError = filtersQuery.isError;
