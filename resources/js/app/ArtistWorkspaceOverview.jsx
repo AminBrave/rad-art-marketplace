@@ -33,7 +33,7 @@ export default function ArtistWorkspaceOverview() {
     const artworks = artworksQuery.data?.data ?? [];
     const counts = { artworks: artworksQuery.data?.total ?? (artworksQuery.data ? artworks.length : null) };
     const loading = artworksQuery.isPending;
-    const errors = artworksQuery.isError ? ['آمار آثار دریافت نشد.'] : [];
+    const errors = artworksQuery.isError ? [t("آمار آثار دریافت نشد.")] : [];
     const profileSteps = [
         Boolean(profile?.display_name?.trim()),
         Boolean(profile?.bio?.trim()),
@@ -52,10 +52,10 @@ export default function ArtistWorkspaceOverview() {
             <div className="rd-container min-w-0 mx-auto w-full max-w-content space-y-7">
                 <PageHeader
                     bleed={false}
-                    eyebrow="استودیوی هنرمند"
+                    eyebrow={t("استودیوی هنرمند")}
                     title={<>خوش آمدید، {user?.name}</>}
                     description={t("وضعیت آثار و ارتباط‌های خود را در یک نگاه دنبال کنید.")}
-                    actions={<><Link to={profile?.slug ? '/artists/' + profile.slug : '/dashboard/artist/profile'} className="inline-flex min-h-11 items-center justify-center border border-terracotta bg-terracotta px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong">{profile?.slug ? t('پیش‌نمایش پروفایل') : t('تکمیل پروفایل')}</Link><Link to="/dashboard/artist/artworks" className="inline-flex min-h-11 items-center justify-center border border-border px-4 py-2 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta">مدیریت آثار</Link></>}
+                    actions={<><Link to={profile?.slug ? '/artists/' + profile.slug : '/dashboard/artist/profile'} className="inline-flex min-h-11 items-center justify-center border border-terracotta bg-terracotta px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong">{profile?.slug ? t(t("پیش‌نمایش پروفایل")) : t(t("تکمیل پروفایل"))}</Link><Link to="/dashboard/artist/artworks" className="inline-flex min-h-11 items-center justify-center border border-border px-4 py-2 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta">{t("مدیریت آثار")}</Link></>}
                 />
 
                 {profileError && <ErrorState title={t("پروفایل دریافت نشد")} description={profileError} />}
