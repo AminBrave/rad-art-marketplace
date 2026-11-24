@@ -7,7 +7,7 @@ import { useAuth } from './AuthContext';
 import { ArtworkCard, EmptyState, ErrorState, Button, FormField, TextInput, TextareaField, SuccessState, Checkbox, AlertDialog, AlertDialogTrigger, AlertDialogCancel, AlertDialogAction, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, CollectionCardSkeleton, CollectionDetailSkeleton, AdminEditorialSkeleton, PageHeader, SectionHeader, Container } from '../components/ui';
 
 export function CollectionIndexPage() {
-    const { t } = useLanguage();
+    const { t, locale } = useLanguage();
     const collectionsQuery = useQuery({
         queryKey: ['collections'],
         queryFn: async ({ signal }) => {
@@ -172,7 +172,7 @@ export function AdminEditorialPage() {
             <section className="space-y-4"><SectionHeader title={t("مجموعه‌های ثبت‌شده")} actions={<><Button variant="outline" size="sm" onClick={saveCollectionOrder} disabled={busy || collections.length < 2}>ذخیره ترتیب</Button><Button variant="outline" size="sm" onClick={load} loading={loading}>به‌روزرسانی</Button></>} />
                 {collections.length ? <div className="grid gap-3">{collections.map((collection, index) => <article key={collection.id} className="border-t border-border bg-transparent py-5 first:border-t-0 sm:px-1">
                     <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><h3 className="font-black">{collection.title}</h3><span className={collection.status === 'published' ? 'bg-[color:color-mix(in_srgb,var(--color-olive)_10%,transparent)] px-2 py-1 text-[10px] font-bold text-olive' : 'bg-surface-muted px-2 py-1 text-[10px] font-bold text-muted'}>{collection.status === 'published' ? 'منتشرشده' : 'پیش‌نویس'}</span></div><p className="mt-2 text-xs text-muted">{(collection.artworks_count ?? 0).toLocaleString('fa-IR')} اثر در مجموعه</p><p dir="ltr" className="mt-1 break-all text-start text-[11px] text-muted">{collection.slug}</p></div>
+                        <div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><h3 className="font-black">{collection.title}</h3><span className={collection.status === 'published' ? 'bg-[color:color-mix(in_srgb,var(--color-olive)_10%,transparent)] px-2 py-1 text-[10px] font-bold text-olive' : 'bg-surface-muted px-2 py-1 text-[10px] font-bold text-muted'}>{collection.status === 'published' ? 'منتشرشده' : 'پیش‌نویس'}</span></div><p className="mt-2 text-xs text-muted">{(collection.artworks_count ?? 0).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} اثر در مجموعه</p><p dir="ltr" className="mt-1 break-all text-start text-[11px] text-muted">{collection.slug}</p></div>
                         <span className="text-xs font-bold text-muted">جایگاه {index + 1}</span>
                     </div>
                     <div className="mt-4 flex flex-wrap gap-2 border-t border-border/70 pt-4">
