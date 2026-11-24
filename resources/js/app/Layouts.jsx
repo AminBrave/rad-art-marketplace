@@ -487,7 +487,7 @@ function PublicBottomNavigation({ user, profileHref }) {
         { to: '/artworks', label: 'گالری', Icon: Images },
         { to: '/artists', label: 'هنرمندان', Icon: Users },
         { to: '/collections', label: 'مجموعه‌ها', Icon: BookOpen },
-        { to: user.role === 'artist' ? profileHref : user.role === 'admin' ? '/admin' : '/dashboard/buyer', label: user.role === 'artist' ? 'پروفایل' : user.role === 'admin' ? 'مدیریت' : 'حساب من', Icon: UserRound, primary: true },
+        { to: user.role === 'artist' ? profileHref : user.role === 'admin' ? '/admin' : '/dashboard/buyer', label: user.role === 'artist' ? 'پیش‌نمایش' : user.role === 'admin' ? 'مدیریت' : 'حساب من', Icon: UserRound, primary: true },
     ];
     return (
         <div data-testid="public-bottom-navigation" className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] pb-[env(safe-area-inset-bottom)] shadow-raised backdrop-blur lg:hidden">
@@ -509,7 +509,7 @@ function AuthenticatedBottomNavigation({ mobileLinks }) {
         >
             <nav aria-label="بخش‌های اصلی حساب کاربری" data-nav-priority="primary" className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2">
                 {mobileLinks.map((item) => {
-                    const Icon = workspaceNavigationIcons[item.to] ?? LayoutDashboard;
+                    const Icon = item.to.startsWith('/artists/') ? UserRound : workspaceNavigationIcons[item.to] ?? LayoutDashboard;
                     const accessibleLabel = item.label;
                     const visibleLabel = item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label;
                     return (
@@ -543,7 +543,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
     const workspaceLinks = user?.role === 'artist'
         ? links.map((item) => item.to === '/dashboard/artist/profile'
             ? (outletContext?.profile?.slug
-                ? { ...item, to: '/artists/' + outletContext.profile.slug, label: 'پیش‌نمایش پروفایل', shortLabel: 'پروفایل' }
+                ? { ...item, to: '/artists/' + outletContext.profile.slug, label: 'پیش‌نمایش پروفایل', shortLabel: 'پیش‌نمایش' }
                 : { ...item, label: 'تکمیل پروفایل', shortLabel: 'تکمیل' })
             : item)
         : links;
@@ -704,7 +704,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     </div>
                     <nav aria-label="ناوبری فضای کاربری" className="flex w-full min-w-0 flex-col gap-1">
                         {workspaceLinks.map((item) => {
-                            const Icon = workspaceNavigationIcons[item.to] ?? LayoutDashboard;
+                            const Icon = item.to.startsWith('/artists/') ? UserRound : workspaceNavigationIcons[item.to] ?? LayoutDashboard;
                             return (
                                 <NavLink
                                     key={item.to}
