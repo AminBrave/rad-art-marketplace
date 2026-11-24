@@ -79,7 +79,7 @@ export function PublicLayout() {
 
     return (
         <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-        <div data-experience="discover" className={user ? "min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:pb-0" : "min-h-screen bg-canvas text-ink"} dir="rtl">
+        <div data-experience="discover" className="min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:pb-0" dir="rtl">
             <a href="#main-content" className="sr-only z-[60] bg-paper px-4 py-3 text-ink focus:not-sr-only focus:fixed focus:inset-x-4 focus:top-4">
                 رفتن به محتوای اصلی
             </a>
@@ -236,7 +236,7 @@ export function PublicLayout() {
                     </div>
                 </div>
             </footer>
-            {user && <PublicBottomNavigation user={user} profileHref={profileHref} />}
+            <PublicBottomNavigation user={user} profileHref={profileHref} />
         </div>
         </Dialog>
     );
@@ -487,7 +487,7 @@ function PublicBottomNavigation({ user, profileHref }) {
         { to: '/artworks', label: 'گالری', Icon: Images },
         { to: '/artists', label: 'هنرمندان', Icon: Users },
         { to: '/collections', label: 'مجموعه‌ها', Icon: BookOpen },
-        { to: user.role === 'artist' ? profileHref : user.role === 'admin' ? '/admin' : '/dashboard/buyer', label: user.role === 'artist' ? 'پیش‌نمایش' : user.role === 'admin' ? 'مدیریت' : 'حساب من', Icon: UserRound, primary: true },
+        { to: user?.role === 'artist' ? profileHref : user?.role === 'admin' ? '/admin' : user?.role === 'buyer' ? '/dashboard/buyer' : '/login', label: user?.role === 'artist' ? 'پیش‌نمایش' : user?.role === 'admin' ? 'مدیریت' : user?.role === 'buyer' ? 'حساب من' : 'ورود', Icon: UserRound, primary: true },
     ];
     return (
         <div data-testid="public-bottom-navigation" className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] pb-[env(safe-area-inset-bottom)] shadow-raised backdrop-blur lg:hidden">
