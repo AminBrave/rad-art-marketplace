@@ -53,7 +53,7 @@ export default function ArtistWorkspaceOverview() {
                 <PageHeader
                     bleed={false}
                     eyebrow={t("استودیوی هنرمند")}
-                    title={<>خوش آمدید، {user?.name}</>}
+                    title={<>{t('خوش آمدید، ')}{user?.name}</>}
                     description={t("وضعیت آثار و ارتباط‌های خود را در یک نگاه دنبال کنید.")}
                     actions={<><Link to={profile?.slug ? '/artists/' + profile.slug : '/dashboard/artist/profile'} className="inline-flex min-h-11 items-center justify-center border border-terracotta bg-terracotta px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong">{profile?.slug ? t(t("پیش‌نمایش پروفایل")) : t(t("تکمیل پروفایل"))}</Link><Link to="/dashboard/artist/artworks" className="inline-flex min-h-11 items-center justify-center border border-border px-4 py-2 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta">{t("مدیریت آثار")}</Link></>}
                 />
@@ -64,13 +64,13 @@ export default function ArtistWorkspaceOverview() {
                     <div className="min-w-0">
                         <p className="text-xs font-bold text-terracotta-strong">{t("پروفایل هنری")}</p>
                         <div className="mt-1 flex flex-wrap items-center gap-3">
-                            <h2 className="text-lg font-bold text-ink">{profileReady ? profile.display_name : 'پروفایل هنری شما کامل نیست'}</h2>
-                            {!profileLoading && <Badge variant={profile?.is_public ? 'success' : 'neutral'}>{profile?.is_public ? 'عمومی' : 'خصوصی'}</Badge>}
+                            <h2 className="text-lg font-bold text-ink">{profileReady ? profile.display_name  : t('پروفایل هنری شما کامل نیست')}</h2>
+                            {!profileLoading && <Badge variant={profile?.is_public ? 'success' : 'neutral'}>{profile?.is_public ? t('عمومی') : t('خصوصی')}</Badge>}
                         </div>
                         <p className="mt-1 max-w-2xl text-xs leading-6 text-muted">
                             {profileReady
-                                ? (profile.is_public ? 'پروفایل شما برای بازدیدکنندگان قابل مشاهده است.' : 'برای نمایش عمومی، وضعیت و اطلاعات پروفایل را بررسی کنید.')
-                                : 'اطلاعات حرفه‌ای خود را تکمیل کنید تا مخاطبان با مسیر هنری شما آشنا شوند.'}
+                                ? (profile.is_public ? t('پروفایل شما برای بازدیدکنندگان قابل مشاهده است.') : t('برای نمایش عمومی، وضعیت و اطلاعات پروفایل را بررسی کنید.'))
+                                : t('اطلاعات حرفه‌ای خود را تکمیل کنید تا مخاطبان با مسیر هنری شما آشنا شوند.')}
                         </p>
                     </div>
                     <div className="flex min-w-0 flex-wrap items-center gap-3 sm:shrink-0">
@@ -93,9 +93,9 @@ export default function ArtistWorkspaceOverview() {
 
                 <section aria-label={t("آمار آثار")} className="grid gap-3 sm:grid-cols-3">
                     {loading ? <DashboardMetricSkeleton count={3} /> : <>
-                        <DashboardMetricCard as={Link} label={t("مجموع آثار")} value={formatCount(counts.artworks, locale)} detail="تمام آثار ثبت‌شده" to="/dashboard/artist/artworks" />
-                        <DashboardMetricCard as={Link} label={t("منتشرشده")} value={published.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail="قابل مشاهده در گالری" to="/dashboard/artist/artworks" />
-                        <DashboardMetricCard as={Link} label={t("در انتظار بررسی")} value={pending.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail="نیازمند تصمیم انتشار" to="/dashboard/artist/artworks" />
+                        <DashboardMetricCard as={Link} label={t("مجموع آثار")} value={formatCount(counts.artworks, locale)} detail={t("تمام آثار ثبت‌شده")} to="/dashboard/artist/artworks" />
+                        <DashboardMetricCard as={Link} label={t("منتشرشده")} value={published.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail={t("قابل مشاهده در گالری")} to="/dashboard/artist/artworks" />
+                        <DashboardMetricCard as={Link} label={t("در انتظار بررسی")} value={pending.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail={t("نیازمند تصمیم انتشار")} to="/dashboard/artist/artworks" />
                     </>}
                 </section>
 
