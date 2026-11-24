@@ -214,7 +214,7 @@ export const TextareaField = forwardRef(function TextareaField({ className = '',
 });
 
 export const FileInput = forwardRef(function FileInput({ className = '', ...props }, ref) {
-    return <input ref={ref} type="file" className={cn(controlClass, 'cursor-pointer file:ms-3 file:rounded-control file:border-0 file:bg-surface-muted file:px-3 file:py-2 file:font-semibold', className, 'rounded-control') {...props} />;
+    return <input ref={ref} type="file" className={cn(controlClass, 'cursor-pointer file:ms-3 file:rounded-control file:border-0 file:bg-surface-muted file:px-3 file:py-2 file:font-semibold', className, 'rounded-control')} {...props} />;
 });
 
 const emptySelectValue = '__radix_empty_option__';
