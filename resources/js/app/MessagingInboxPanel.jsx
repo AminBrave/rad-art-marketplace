@@ -3,10 +3,10 @@ import { useLanguage } from './LanguageContext';
 import { Archive, ArchiveRestore, Bell, BellOff, Inbox, LoaderCircle, MailOpen, MoreVertical, Search } from 'lucide-react';
 import { avatarInitial, avatarTone } from './messagingAvatarUtils';
 
-function dateLabel(value) {
+function dateLabel(value, locale) {
     if (!value) return '';
     const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? '' : date.toLocaleString('fa-IR', { dateStyle: 'short', timeStyle: 'short' });
+    return Number.isNaN(date.getTime()) ? '' : date.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US', { dateStyle: 'short', timeStyle: 'short' });
 }
 
 export default function MessagingInboxPanel({
@@ -27,7 +27,7 @@ export default function MessagingInboxPanel({
     threads,
     updateThreadSetting,
 }) {
-    const { t } = useLanguage();
+    const { t, locale } = useLanguage();
     return (
                 <aside aria-label={t("فهرست گفتگوها")} className={active ? 'hidden h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e lg:flex' : 'flex h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e'}>
                     <div className="shrink-0 border-b border-border bg-paper px-4 py-4 sm:px-5">
@@ -56,7 +56,7 @@ export default function MessagingInboxPanel({
                                     <span className="flex items-center justify-between gap-2"><strong dir="auto" className="truncate text-sm font-extrabold">{thread.participant?.name ?? 'گفتگو'}</strong>{thread.unread_count > 0 && <span aria-label={`${Number(thread.unread_count).toLocaleString('fa-IR')} پیام خوانده‌نشده`} className={thread.unread_count < 10 ? 'flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-terracotta text-[11px] font-bold tabular-nums text-inverse' : 'flex h-6 min-w-8 max-w-12 shrink-0 items-center justify-center rounded-full bg-terracotta px-2 text-[11px] font-bold tabular-nums text-inverse'}>{thread.unread_count > 99 ? '۹۹+' : Number(thread.unread_count).toLocaleString('fa-IR')}</span>}</span>
                                     <span dir="auto" className="mt-1 block truncate text-xs leading-[1.45] text-muted">{thread.last_message?.body ?? (thread.last_message?.deleted_at ? 'پیام حذف شده است' : 'برای شروع گفتگو پیام بفرستید')}</span>
                                     {Number(sendingConversationId) === Number(thread.id) && <span role="status" aria-live="polite" className="mt-1 inline-flex items-center gap-1.5 text-[11px] font-semibold text-terracotta-strong"><LoaderCircle size={12} className="animate-spin motion-reduce:animate-none" aria-hidden="true" />در حال ارسال پیام و پیوست…</span>}
-                                    <span className="mt-1 block text-[11px] tabular-nums text-subtle">{dateLabel(thread.last_message_at)}</span>
+                                    <span className="mt-1 block text-[11px] tabular-nums text-subtle">{dateLabel(thread.last_message_at, locale)}</span>
                                     </span>
                                 </Button>
                                 <div className="absolute end-1 top-1/2 -translate-y-1/2">
