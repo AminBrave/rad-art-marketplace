@@ -93,6 +93,11 @@ The application uses a layered component model. Page files compose user journeys
 - Preserve native semantic elements when no shared component adds value (for example, headings, paragraphs, tables, lists, and form/landmark elements).
 - Shared controls must forward refs when consumers need focus management, support controlled and uncontrolled usage where appropriate, and preserve native input attributes.
 
+### Section rhythm
+
+- Separate major page sections with generous, consistent vertical breathing room. The shared `Section` and section-level `Container` primitives use `py-16 sm:py-24` as the baseline; full-bleed backgrounds remain independent from the inner content width.
+- Keep spacing inside cards and between related controls tighter than spacing between major sections. Do not compensate for section rhythm with extra borders or decorative separators.
+
 ### Card and surface contract
 
 - Use the shared `Card` for coherent information groups, dashboard metrics, editorial steps, featured people and grouped controls. A card uses a complete one-pixel boundary and a semantic surface; avoid `border-y` plus transparent backgrounds for objects that should read as cards.
