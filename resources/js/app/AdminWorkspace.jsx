@@ -70,7 +70,7 @@ export function AdminDashboardHome() {
             />
 
             <Container width="wide" className="space-y-8">
-            {errors.length > 0 && <ErrorState title={t("بخشی از اطلاعات دریافت نشد")} description={errors.join(' ')} onRetry={load} />}
+            {errors.length > 0 && <ErrorState title={t("بخشی از اطلاعات دریافت نشد")} description={errors.map(t).join(' ')} onRetry={load} />}
 
             <section aria-label={t("شاخص‌های عملیاتی")} className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                 {loading ? <DashboardMetricSkeleton count={3} /> : <>
@@ -161,14 +161,14 @@ export function AdminArtworkModeration() {
         setActionError(''); setMessage('');
         try {
             const { data } = await moderationMutation.mutateAsync({ artwork, action, note });
-            setMessage(data.message ?? t("تصمیم ثبت شد.")); setNotes((current) => ({ ...current, [artwork.id]: '' })); await Promise.all([
+            setMessage(t(data.message ?? "تصمیم ثبت شد.")); setNotes((current) => ({ ...current, [artwork.id]: '' })); await Promise.all([
                 queryClient.invalidateQueries({ queryKey: ['admin', 'artworks', user?.id] }),
                 queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard', user?.id] }),
                 queryClient.invalidateQueries({ queryKey: ['artist-workspace', 'artworks'] }),
                 queryClient.invalidateQueries({ queryKey: ['home', 'artworks'] }),
                 queryClient.invalidateQueries({ queryKey: ['artworks'] }),
             ]);
-        } catch (e) { setActionError(e.response?.status === 403 ? t("سرور اجازه انجام این عملیات را نداد.") : e.response?.data?.errors?.note?.[0] ?? e.response?.data?.message ?? t("ثبت تصمیم انجام نشد.")); }
+        } catch (e) { setActionError(e.response?.status === 403 ? t("سرور اجازه انجام این عملیات را نداد.") : t(e.response?.data?.errors?.note?.[0] ?? e.response?.data?.message ?? "ثبت تصمیم انجام نشد.")); }
     };
     return <section className="min-w-0 mx-auto w-full max-w-content space-y-6">
         <PageHeader bleed={false} eyebrow={t("مدیریت آثار")} title={t("صف بررسی و انتشار")} description={t("فقط آثار در انتظار بررسی قابل تصمیم‌گیری‌اند. رد اثر یا درخواست اصلاح به توضیح نیاز دارد.")} actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>{t("به‌روزرسانی")}</Button>} />
@@ -236,9 +236,9 @@ export function AdminUsersPage() {
             queryClient.setQueryData(queryKey, (current) => current ? { ...current, data: current.data.map((row) => row.id === item.id ? data.data : row) } : current);
             setDrafts((current) => { const next = { ...current }; delete next[item.id]; return next; });
             setConfirmAdminId(null);
-            setMessage(data.message ?? t("نقش کاربر به‌روزرسانی شد."));
+            setMessage(t(data.message ?? "نقش کاربر به‌روزرسانی شد."));
         } catch (e) {
-            setActionError(e.response?.status === 403 ? t("سرور اجازه تغییر نقش این حساب را نداد.") : e.response?.data?.errors?.role?.[0] ?? e.response?.data?.message ?? t("تغییر نقش کاربر انجام نشد."));
+            setActionError(e.response?.status === 403 ? t("سرور اجازه تغییر نقش این حساب را نداد.") : t(e.response?.data?.errors?.role?.[0] ?? e.response?.data?.message ?? "تغییر نقش کاربر انجام نشد."));
         }
     };
     return <section className="min-w-0 mx-auto w-full max-w-content space-y-6">
@@ -319,7 +319,7 @@ export function AdminMessageReportsPage() {
             setNotes((current) => { const next = { ...current }; delete next[report.id]; return next; });
             await queryClient.invalidateQueries({ queryKey: ['admin', 'message-reports', user?.id] });
         } catch (e) {
-            setActionError(e.response?.data?.message ?? t("ثبت تصمیم انجام نشد."));
+            setActionError(t(e.response?.data?.message ?? "ثبت تصمیم انجام نشد."));
         }
     };
     return <section className="min-w-0 mx-auto w-full max-w-content space-y-6">
