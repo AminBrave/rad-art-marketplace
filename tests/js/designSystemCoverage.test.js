@@ -81,6 +81,9 @@ test('project stylesheets define tokens, base rules and only approved layout pri
         '.rd-container--reading',
         '.rd-container--full',
         '.rd-hero-surface',
+        '.rd-message-bubble',
+        '.rd-message-bubble--own',
+        '.rd-message-bubble--peer',
     ]);
     for (const path of stylesheetFiles) {
         const source = readFileSync(path, 'utf8');
