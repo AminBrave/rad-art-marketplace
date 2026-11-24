@@ -185,7 +185,7 @@ test('EmptyState renders a semantic heading and helpful description', () => {
         }),
     );
 
-    assert.match(html, /<section[^>]*dir="rtl"/);
+    assert.doesNotMatch(html, /dir="rtl"/);
     assert.match(html, /<h2[^>]*>اثری پیدا نشد<\/h2>/);
     assert.match(html, /فیلترها را تغییر دهید/);
 });
@@ -251,19 +251,21 @@ test('Page and section headers retain the requested heading hierarchy', () => {
         }),
     );
 
-    assert.match(hero, /<header[^>]*dir="rtl"/);
-    assert.match(hero, /class="[^"]*rd-bleed[^"]*border-y border-divider-section bg-ink/);
-    assert.match(hero, /class="[^"]*rd-container--wide/);
-    assert.match(hero, /border-y border-divider-section bg-ink/);
+    assert.doesNotMatch(hero, /dir="rtl"/);
+    assert.match(hero, /class="[^"]*rd-hero-surface[^"]*border border-\[color:var\(--rd-hero-line\)\]/);
+    assert.match(hero, /class="[^"]*rd-container[^"]*max-w-content/);
+    assert.doesNotMatch(hero, /rd-container--wide/);
+    assert.match(hero, /rd-hero-surface/);
     assert.match(hero, /bg-terracotta/);
-    assert.match(hero, /text-inverse/);
-    assert.match(hero, /text-sand/);
+    assert.match(hero, /text-\[color:var\(--rd-hero-foreground\)\]/);
+    assert.match(hero, /text-\[color:var\(--rd-hero-muted\)\]/);
     assert.doesNotMatch(hero, /border-b border-border/);
     const embeddedHero = renderToStaticMarkup(
         React.createElement(primitives.WorkspaceHero, { bleed: false, title: 'نمونه تعبیه‌شده' }),
     );
     assert.doesNotMatch(embeddedHero, /rd-bleed/);
-    assert.match(embeddedHero, /rd-container--full/);
+    assert.match(embeddedHero, /rd-container[^\"]*max-w-content/);
+    assert.doesNotMatch(embeddedHero, /rd-container--wide/);
     assert.match(hero, /خوش آمدید/);
 });
 
@@ -437,7 +439,7 @@ test('StatusBadge maps known review states to semantic status surfaces', () => {
     assert.match(unknown, /bg-surface-muted/);
 });
 
-test('WorkspaceHero declares RTL direction and a primary page heading', () => {
+test('WorkspaceHero inherits global direction and renders a primary page heading', () => {
     const html = renderToStaticMarkup(
         React.createElement(primitives.WorkspaceHero, {
             eyebrow: 'فضای هنرمند',
@@ -446,7 +448,7 @@ test('WorkspaceHero declares RTL direction and a primary page heading', () => {
         }),
     );
 
-    assert.match(html, /<header[^>]*dir="rtl"/);
+    assert.doesNotMatch(html, /dir="rtl"/);
     assert.match(html, /<h1[^>]*>مدیریت آثار<\/h1>/);
     assert.match(html, /آثار و پروفایل خود را مدیریت کنید/);
 });
@@ -489,7 +491,7 @@ test('Checkbox uses the Radix checkbox interaction and exposes its accessible st
 
 test('Tabs expose tablist, selected state and linked panel semantics', () => {
     const html = renderToStaticMarkup(
-        React.createElement(navigation.Tabs, { defaultValue: 'artists', dir: 'rtl' },
+        React.createElement(navigation.Tabs, { defaultValue: 'artists' },
             React.createElement(navigation.TabsList, { 'aria-label': 'نوع محتوا' },
                 React.createElement(navigation.TabsTrigger, { value: 'artists' }, 'هنرمندان'),
                 React.createElement(navigation.TabsTrigger, { value: 'artworks' }, 'آثار'),
@@ -503,7 +505,7 @@ test('Tabs expose tablist, selected state and linked panel semantics', () => {
     assert.match(html, /role="tab"/);
     assert.match(html, /aria-selected="true"/);
     assert.match(html, /role="tabpanel"/);
-    assert.match(html, /dir="rtl"/);
+    assert.doesNotMatch(html, /dir="rtl"/);
 });
 
 
