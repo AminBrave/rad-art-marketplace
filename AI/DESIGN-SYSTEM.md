@@ -44,6 +44,7 @@ CSS `--rd-*` variables are the canonical design-token source; Tailwind maps dire
 - Hero foreground, muted copy, accent, border and glow use dedicated `--rd-hero-*` semantic tokens. Define both explicit dark-theme and system-dark values; do not infer hero contrast from the generic `ink` or `inverse` roles.
 - Keep headings and supporting copy on the hero foreground/muted roles, and make actions contrast against the active hero palette. Decorative geometry must remain non-interactive, avoid clipping content and respect the zero-radius visual language.
 - Apply the same surface to the homepage, shared `PageHeader`, artist directory, artist spotlight, registration CTA and workspace welcome heroes. Their skeleton/loading states should use the same theme-aware background.
+- Hero descendants and media must be shrinkable (`min-width: 0`, `max-width: 100%`). A `.rd-bleed` section must not introduce document-level horizontal scrolling; keep the viewport clipped at the root and never size hero media from intrinsic image width.
 
 ## Accessibility and localization
 
@@ -55,7 +56,10 @@ Use the shared Radix-backed primitives for controls and overlays where they fit.
 - Provide meaningful names, labels, focus states and keyboard interactions.
 - Maintain sufficient contrast and do not communicate meaning through color alone.
 - Respect reduced-motion preferences.
-- Test RTL direction, mixed Persian/Latin text, numbers, punctuation and alignment where relevant.
+- The document root is the single owner of language and direction. `LanguageProvider` persists the `fa` / `en` preference and updates `<html lang dir>` without changing the current route; do not add `dir="rtl"` to individual components.
+- Keep inline `dir="ltr"` or `dir="auto"` only for technical identifiers, URLs and mixed-direction user content when needed. Prefer logical alignment, spacing, inset and border utilities so layouts adapt to both directions.
+- English UI labels must use the shared translation dictionary. Artist names, artwork titles, biographies and other API/user-authored content remain in their source language unless the API provides localized values.
+- Test both locales for navigation, date/number formatting, mixed Persian/Latin content and responsive layout.
 - Treat WCAG guidance as a design and evaluation reference; describe the actual scope of any conformance assessment accurately.
 
 ## Responsive and installable experiences
@@ -118,7 +122,7 @@ Before adding or changing a control, search the shared UI barrel and reuse the c
 
 ## Section-owned content width and full-bleed composition
 
-The public route-level `<main>` and workspace `.rd-page-frame` are content canvases, not content-width containers. The workspace shell may place a navigation rail beside the main column; `Section bleed` expands a section background to the viewport and keeps its inner container aligned with that column. Each section owns its own background and content width.
+The public route-level `<main>` and workspace `.rd-page-frame` are content canvases, not content-width containers. The workspace shell may place a navigation rail beside the main column; `Section bleed` expands a section background to the viewport and keeps its inner container aligned with that column. Each section owns its own background and content width. The wide `Container` variant does not need a `rd-container--wide` modifier; width is expressed by the container's width utilities and gutters are supplied by the shared `.rd-container` contract.
 
 - Use the canonical `Container` from `resources/js/components/ui/layout.jsx`; `PageContainer` is a compatibility alias for existing imports only.
 - Use `Section bleed` for full-viewport backgrounds when a section is nested in a workspace column; its inner wide/reading `Container` is offset to align with the workspace content grid.
