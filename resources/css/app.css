@@ -462,9 +462,6 @@ a {
     min-width: 0;
 }
 
-.rd-hero-surface > * {
-    max-width: 100%;
-}
 
 .rd-hero-surface :where(img, picture, video, canvas, svg) {
     display: block;
