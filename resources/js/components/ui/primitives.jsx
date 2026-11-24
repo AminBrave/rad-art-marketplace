@@ -81,13 +81,15 @@ export function Badge({ children, variant = 'neutral', className = '' }) {
 
 
 const pageWidths = {
-    wide: 'max-w-[var(--content-wide-width)]',
-    reading: 'max-w-[var(--content-reading-width)]',
+    // The application shell owns the only outer width and page-gutter system.
+    // "wide" fills that frame; "reading" is an intentional inner text measure.
+    wide: 'w-full max-w-none',
+    reading: 'mx-auto w-full max-w-[var(--content-reading-width)]',
     full: 'w-full max-w-none',
 };
 
 export function PageContainer({ as: Element = 'div', width = 'wide', className = '', children, ...props }) {
-    return <Element className={cn('mx-auto w-[min(calc(100%_-_2_*_var(--page-gutter)),var(--content-width))]', pageWidths[width] ?? pageWidths.wide, className)} {...props}>{children}</Element>;
+    return <Element className={cn('min-w-0', pageWidths[width] ?? pageWidths.wide, className)} {...props}>{children}</Element>;
 }
 
 export function PageHeader({ eyebrow, title, description, actions, level = 1, className = '', titleClassName = '', descriptionClassName = '' }) {
