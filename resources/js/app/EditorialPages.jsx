@@ -159,7 +159,7 @@ export function AdminEditorialPage() {
         } catch (e) { setActionError(e.response?.data?.message || 'ذخیره انتخاب هنرمندان انجام نشد.'); }
     };
     return <Container as="section" width="wide" className="space-y-8">
-        <PageHeader eyebrow={t("سردبیری راد آرت")} title={t("مجموعه‌ها و هنرمندان منتخب")} description={t("فقط آثار تأییدشده و پروفایل‌های عمومی در خروجی عمومی نمایش داده می‌شوند. تغییرات انتشار ثبت رویداد می‌شوند.")} />
+        <PageHeader bleed={false} eyebrow={t("سردبیری راد آرت")} title={t("مجموعه‌ها و هنرمندان منتخب")} description={t("فقط آثار تأییدشده و پروفایل‌های عمومی در خروجی عمومی نمایش داده می‌شوند. تغییرات انتشار ثبت رویداد می‌شوند.")} />
         {message && <SuccessState title={message} />}{error && <ErrorState title={t("عملیات انجام نشد")} description={error} onRetry={load} />}
         {loading ? <AdminEditorialSkeleton /> : <>
             <section className="space-y-5 border-y border-border bg-transparent py-6 sm:py-8">
