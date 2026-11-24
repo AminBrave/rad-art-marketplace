@@ -472,7 +472,14 @@ a {
     overflow: hidden;
 }
 
-.rd-shine::after {
+.rd-shine--decorative {
+    position: absolute;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+.rd-shine::after,
+.rd-shine--decorative::after {
     content: "";
     position: absolute;
     z-index: 2;
