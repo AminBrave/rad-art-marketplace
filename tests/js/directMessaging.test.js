@@ -48,7 +48,7 @@ test('status banners are presentational while messaging parent retains retry own
 });
 
 test('message composer supports accessible text entry, IME-safe Enter send and multiline input', () => {
-    assert.ok(messageComposer.includes('aria-label="متن پیام"'));
+    assert.ok(messageComposer.includes('aria-label={t("متن پیام")}'));
     assert.ok(messageComposer.includes("event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing"));
     assert.ok(messageComposer.includes('event.currentTarget.form?.requestSubmit()'));
     assert.ok(messageComposer.includes('maxLength={5000}'));
@@ -160,7 +160,7 @@ test('direct messaging routes remain available in the authenticated workspace', 
 
 
 test('message composer exposes attachment guidance and restores keyboard focus after dismissing context or files', () => {
-    assert.ok(messageComposer.includes('aria-label="ارسال پیام"'));
+    assert.ok(messageComposer.includes('aria-label={t("ارسال پیام")}'));
     assert.ok(messageComposer.includes('htmlFor="message-attachment-input"'));
     assert.ok(messageComposer.includes('aria-describedby="message-attachment-help"'));
     assert.ok(messageComposer.includes('حداکثر حجم ۱۰ مگابایت'));
