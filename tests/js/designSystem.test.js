@@ -35,6 +35,7 @@ const messagingStatusBanners = readFileSync(new URL('../../resources/js/app/Mess
 const messagingSurface = messaging + '\n' + messagingInbox + '\n' + conversationHeader + '\n' + messageTimeline + '\n' + messageComposer + '\n' + relatedArtworkStrip + '\n' + messagingStatusBanners;
 const messagingQueries = readFileSync(new URL('../../resources/js/app/useMessagingQueries.js', import.meta.url), 'utf8');
 const artworkDetail = readFileSync(new URL('../../resources/js/app/ArtworkDetailPage.jsx', import.meta.url), 'utf8');
+const artworkEngagement = readFileSync(new URL('../../resources/js/app/ArtworkEngagement.jsx', import.meta.url), 'utf8');
 const artworkStudio = readFileSync(new URL('../../resources/js/app/ArtworkStudio.jsx', import.meta.url), 'utf8');
 const conversationApi = readFileSync(new URL('../../app/Http/Controllers/Api/V1/ConversationController.php', import.meta.url), 'utf8');
 const messageModel = readFileSync(new URL('../../app/Models/Message.php', import.meta.url), 'utf8');
@@ -52,6 +53,24 @@ const artworkCatalogue = readFileSync(new URL('../../resources/js/app/ArtworkCat
 const editorialPages = readFileSync(new URL('../../resources/js/app/EditorialPages.jsx', import.meta.url), 'utf8');
 const publicInfoPages = readFileSync(new URL('../../resources/js/app/PublicInfoPages.jsx', import.meta.url), 'utf8');
 const designSystem = readFileSync(new URL('../../AI/DESIGN-SYSTEM.md', import.meta.url), 'utf8');
+
+test('artwork and artist cards preserve matte spacing with cover imagery and card surfaces', () => {
+    assert.ok(cards.includes('p-3 sm:p-4'), 'Artwork images retain passepartout spacing.');
+    assert.ok(cards.includes('imageClassName="object-cover'), 'Artwork imagery covers its padded media frame.');
+    assert.ok(cards.includes('bg-paper'), 'Artist cards use the shared card surface.');
+    assert.ok(cards.includes('border border-border bg-paper'), 'Artist cards use a consistent card boundary.');
+});
+
+test('comment discussions use nested cards and a clear reply hierarchy', () => {
+    assert.ok(artworkEngagement.includes('aria-label="پاسخ‌های این دیدگاه"'));
+    assert.ok(artworkEngagement.includes('border-r-2 border-terracotta/40'));
+    assert.ok(artworkEngagement.includes('bg-surface-muted p-3 sm:p-4'));
+    assert.ok(artworkEngagement.includes('space-y-3'));
+});
+
+test('all interface elements use the square-corner shape rule', () => {
+    assert.ok(css.includes(':where(*, *::before, *::after) {\n    border-radius: 0 !important;'));
+});
 
 test('class composition understands semantic radius and content-width utilities', () => {
     assert.equal(cn('rounded-md', 'rounded-control'), 'rounded-control');
