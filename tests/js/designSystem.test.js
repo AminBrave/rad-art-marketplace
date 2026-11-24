@@ -75,7 +75,7 @@ test('square corners are defined by design tokens without global CSS overrides',
     assert.ok(tailwind.includes("full: 'var(--rd-radius-0)'"));
     assert.ok(tailwind.includes("card: 'var(--rd-radius-0)'"));
     assert.ok(tailwind.includes("pill: 'var(--rd-radius-0)'"));
-    for (const source of [primitives, layoutPrimitives, feedback, dialog, alertDialog, tooltip, skeletons]) {
+    for (const source of [primitives, layoutPrimitives, feedback, navigation, dialog, alertDialog, tooltip, skeletons, messageTimeline, messageComposer, homePage]) {
         assert.doesNotMatch(source, /\brounded(?:-[a-z0-9-]+)?/);
     }
 });
