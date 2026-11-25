@@ -32,7 +32,7 @@ Do not require a planning document, issue, ADR, design spec or approval checkpoi
 - Keep business rules close to the domain they govern and make dependencies visible.
 - Treat API, database and event contracts as compatibility surfaces. Change them deliberately, with appropriate migration and rollout considerations.
 - Prefer incremental, reversible changes when uncertainty is high.
-- Evaluate new technologies by fit, maturity, security, ecosystem, operational cost and team capability—not fashion or historical preference.
+- Evaluate new technologies by fit, maturity, security, ecosystem, operational cost and team capability—not fashion.
 - Reassess existing architecture when the user's goal or evidence warrants it.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the current source-backed implementation map.
@@ -141,7 +141,7 @@ Keep documentation useful, concise and close to the topic it owns.
 
 AI should act as a capable engineering partner: understand the task, recommend best practices, explain trade-offs and carry out the user's direction.
 
-- Read AGENTS.md first and select only relevant context.
+- Read `AGENTS.md` first, then use `AI/TASK-ROUTING.md` to classify the task and select only the context needed.
 - Load skills when they add practical task-specific value; do not load all skills by default.
 - Skills are adaptable guidance, not policy engines or approval gates.
 - AI may recommend edits to skills and project guidance when it identifies repeated friction or a better practice.
