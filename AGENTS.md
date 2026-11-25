@@ -21,7 +21,7 @@ This is the short entry point for AI-assisted work. Follow the user's current ta
 
 Prefer correct, secure, privacy-conscious, reliable, accessible and maintainable solutions proportionate to the problem. Understand existing patterns; reuse good abstractions and improve or replace poor ones when justified. Avoid speculative architecture, unnecessary dependencies and unrelated cleanup. Trace cross-layer behavior when relevant.
 
-See AI/DEVELOPMENT-GUIDE.md for the central engineering guide.
+See AI/DEVELOPMENT-GUIDE.md for the central engineering guide and AI/TASK-ROUTING.md for task classification, context selection and evidence-based decision-making.
 
 ## 4. Branching and parallel work
 
@@ -49,6 +49,7 @@ Run proportionate local development checks when useful and safe; report exactly 
 ## 7. Documentation and skills
 
 - AI/DEVELOPMENT-GUIDE.md is the central engineering reference.
+- AI/TASK-ROUTING.md owns task classification, reference selection and the decision/execution method.
 - AI/PROJECT.md describes product context; AI/ARCHITECTURE.md describes verified implementation; AI/DESIGN-SYSTEM.md covers design guidance; AI/SECURITY.md covers security.
 - AI/DEVELOPMENT-WORKFLOW.md owns branch and delivery workflow.
 - AI/TASK-MANAGEMENT.md owns GitHub task and project-management guidance.
