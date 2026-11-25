@@ -175,6 +175,13 @@ test('public and workspace navigation expose role-aware destinations and an arti
     assert.ok(layouts.includes('data-testid="authenticated-bottom-navigation"'));
     assert.ok(layouts.includes('unreadConversationCount={unreadConversationCount}'), 'Discovery navigation receives the unread conversation count.');
     assert.ok(layouts.includes('function PublicBottomNavigation({ user, unreadConversationCount = 0 })'));
+    assert.ok(layouts.includes('<NotificationBell user={user} />'), 'Discover exposes the same notification panel control as Workspace.');
+    assert.ok(layouts.includes("label: t('کشف')") && layouts.includes("label: t('هنرمندان')") && layouts.includes("label: t('مجموعه‌ها')"), 'Discover sidebar labels match the public bottom navigation.');
+    assert.ok(layouts.includes("t(user.role === 'artist' ? 'فضای هنرمند' : user.role === 'admin' ? 'مدیریت' : 'فضای خریدار')"), 'Discover separates the Workspace group from its Discover destinations.');
+    assert.ok(layouts.includes("t('حساب کاربری')"), 'The Workspace destination uses the same label as the public bottom navigation.');
+    assert.ok(layouts.includes("t(item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label)"), 'Workspace sidebar labels use the same compact names as its bottom navigation.');
+    assert.ok(layouts.includes("isActive ? 'bg-paper text-terracotta-strong shadow-soft' : 'text-muted hover:bg-surface-muted hover:text-ink'"), 'Active sidebar destinations use the white selected surface.');
+    assert.ok(layouts.includes('bg-paper text-terracotta-strong after:absolute'), 'Active bottom navigation destinations use the white selected surface.');
     assert.ok(layouts.includes('inline-flex h-5 min-w-5 items-center justify-center'), 'Unread bubbles center their number in both navigation bars.');
     assert.ok(layouts.includes('t(user?.role === "artist" ? "فضای هنرمند" : "فضای کاربری")'));
     assert.ok(layouts.includes("item.to + '#submitted-artworks'"), 'The artist content navigation targets the submitted-artworks section.');
@@ -636,7 +643,7 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(bottomNavigation.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-[7rem]'));
     assert.ok(bottomNavigation.includes('lg:h-16 lg:w-fit lg:grid-flow-col lg:auto-cols-[7rem]'));
     assert.ok(bottomNavigation.includes('mobileLinks.map((item)'));
-    assert.ok(layouts.includes('<PublicBottomNavigation user={user} />'));
+    assert.ok(layouts.includes('<PublicBottomNavigation user={user} unreadConversationCount={unreadConversationCount} />'));
     assert.ok(layouts.includes("user?.role === 'buyer' ? '/dashboard/buyer'"));
     assert.ok(layouts.includes('const dashboardHref ='));
     assert.ok(layouts.includes('function PublicBottomNavigation'));
