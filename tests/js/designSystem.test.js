@@ -644,12 +644,13 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(workspaceLayout.includes("aria-label={t('باز کردن منوی حساب کاربری')}"));
     assert.ok(workspaceLayout.includes('<DialogContent'));
     assert.ok(workspaceLayout.includes('placement="drawer"'));
-    assert.ok(workspaceLayout.includes('aria-label={t("ناوبری فضای کاربری")}'));
+    assert.ok(workspaceLayout.includes('aria-label={t("بخش‌های اصلی فضای کاربری")}'));
     assert.ok(workspaceLayout.includes('workspaceLinks.map((item)'));
     assert.ok(workspaceLayout.includes('lg:left-1/2'));
     assert.ok(workspaceLayout.includes('lg:w-[min(54rem,calc(100vw_-_3rem))]'));
     assert.ok(workspaceLayout.includes('mx-auto w-full max-w-content px-page-gutter'), 'Workspace content uses the same centered page gutters across breakpoints.');
-    assert.doesNotMatch(workspaceLayout, /<ThemeControl \/>/, 'Workspace preferences are centralized on the settings route.');
+    assert.ok(workspaceLayout.includes('<ThemeControl />'), 'Workspace appearance controls are available from the hamburger drawer.');
+    assert.ok(workspaceLayout.includes('<LanguageControl />'), 'Workspace language control is available from the hamburger drawer.');
     assert.ok(layouts.includes("'/dashboard/artist/settings': SettingsIcon"));
     assert.ok(layouts.includes("'/dashboard/buyer/settings': SettingsIcon"));
     assert.ok(layouts.includes("'/admin/settings': SettingsIcon"));
@@ -662,7 +663,7 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(routeLoading.includes('تنظیمات اعلان‌های درون‌برنامه‌ای') || routeLoading.includes('اعلان‌های درون‌برنامه‌ای'));
     assert.doesNotMatch(layouts, /تنظیمات اعلان درون‌برنامه‌ای/, 'Notification preferences no longer live inside the notification drawer.');
 
-    assert.ok(layouts.includes('aria-label={t("ناوبری اصلی")}'), 'Public discovery navigation remains available with localized labeling.');
+    assert.ok(layouts.includes("aria-label={t('ناوبری اصلی')}"), 'Public discovery navigation remains available with localized labeling.');
     assert.ok(layouts.includes('<ThemeControl />'), 'The public shell exposes the global theme control.');
     assert.ok(routeLoading.includes('cycleTheme'), 'Workspace theme preferences live on the settings route.');
     assert.ok(css.includes('.rd-page-frame--workspace .rd-container {\n    padding: 0;'), 'Workspace grid owns the shared horizontal gutter without nested double padding.');
@@ -714,6 +715,7 @@ test('workspace first-paint skeleton uses the same constrained shell as the load
     assert.ok(bootShell.includes('workspace-bottom-nav-primary-height'));
     assert.ok(bootShell.includes("$workspaceNavigationCount = request()->is('dashboard/buyer*') ? 3 : 5"));
     assert.ok(routeLoading.includes("pathname.startsWith('/dashboard/buyer') ? 3 : 5"));
+    assert.ok(bootShell.includes("$isArtworkStudio = request()->is('dashboard/artist/artworks', 'dashboard/artist/artworks/new')"));
     assert.ok(bootShell.includes('lg:left-1/2 lg:bottom-6'));
     assert.ok(bootShell.includes('lg:w-[min(54rem,calc(100vw_-_3rem))]'));
     assert.ok(bootShell.includes('lg:h-16 lg:px-3'));
@@ -774,6 +776,7 @@ test('route fallbacks mirror loaded page geometry for catalogues, workspaces, ad
     assert.ok(routeLoading.includes('ArtworkCardSkeleton'));
     assert.ok(routeLoading.includes('ArtistCardSkeleton'));
     assert.ok(routeLoading.includes("pathname === '/dashboard/artist/artworks'"));
+    assert.ok(routeLoading.includes("pathname === '/dashboard/artist/artworks/new'") || routeLoading.includes("pathname.startsWith('/dashboard/artist/artworks')"));
     assert.ok(routeLoading.includes('ArtworkStudioListSkeleton count={3} announce={false}'));
     assert.ok(routeLoading.includes("pathname === '/admin/editorial'"));
     assert.ok(routeLoading.includes('AdminEditorialSkeleton announce={false}'));
