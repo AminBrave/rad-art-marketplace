@@ -104,7 +104,7 @@ export default function ArtistProfilePage() {
                     <section aria-label={t("پروفایل هنرمند")} className="mt-7 grid min-w-0 gap-6 border-y border-border bg-paper p-5 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-8 sm:p-8 lg:grid-cols-[13rem_minmax(0,1fr)] lg:p-10">
                         <div className="flex items-start justify-center sm:justify-start">
                             <div className="aspect-square w-28 overflow-hidden border border-[color:var(--rd-hero-line)] bg-[color:var(--rd-hero-background)] text-5xl font-black text-[color:var(--rd-hero-accent)] sm:w-36 lg:w-44">
-                                {profile.avatar_url ? <img src={profile.avatar_url} alt={t("تصویر نمایه " + localizedValue(profile, "display_name", locale))} className="h-full w-full object-cover" /> : <div aria-hidden="true" className="grid h-full w-full place-items-center">{(localizedValue(profile, "display_name", locale) || (locale === "en" ? "A" : "ه")).trim().slice(0, 1)}</div>}
+                                {profile.avatar_url ? <img src={profile.avatar_url} alt={t("تصویر نمایه هنرمند")} className="h-full w-full object-cover" /> : <div aria-hidden="true" className="grid h-full w-full place-items-center">{(localizedValue(profile, "display_name", locale) || (locale === "en" ? "A" : "ه")).trim().slice(0, 1)}</div>}
                             </div>
                         </div>
                         <div className="min-w-0">
