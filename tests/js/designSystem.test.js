@@ -185,7 +185,7 @@ test('public and workspace navigation expose role-aware destinations and an arti
     assert.doesNotMatch(layouts, /isActive\s*\?\s*'bg-paper[^']*shadow-soft'/, 'No sidebar active state adds a background or shadow.');
     assert.ok(layouts.includes('bg-paper text-terracotta-strong after:absolute'), 'Active bottom navigation destinations use the white selected surface.');
     assert.ok(layouts.includes('inline-flex h-5 min-w-5 items-center justify-center'), 'Unread bubbles center their number in both navigation bars.');
-    assert.ok(layouts.includes('t(user?.role === "artist" ? "فضای هنرمند" : "فضای کاربری")'));
+    assert.ok(layouts.includes("label: t(user?.role === 'artist' ? 'فضای هنرمند' : user?.role === 'admin' ? 'مدیریت' : 'فضای خریدار')"), 'Workspace section labels reflect the signed-in role.');
     assert.ok(layouts.includes("item.to + '#submitted-artworks'"), 'The artist content navigation targets the submitted-artworks section.');
     assert.ok(readFileSync(new URL('../../resources/js/app/ArtworkStudio.jsx', import.meta.url), 'utf8').includes('id="submitted-artworks"'));
     assert.ok(layouts.includes('const profileHref = artistProfileQuery.data?.slug'));
@@ -688,7 +688,8 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(layouts.includes("label: t('کشف')"), 'The shared panel includes the same discovery section.');
     assert.ok(layouts.includes("label: t(user?.role === 'artist'"), 'The workspace section is included in the shared panel.');
     assert.ok(layouts.includes('publicDiscoveryLinks'), 'All discovery destinations are available in both sidebar contexts.');
-    assert.ok(layouts.includes('onNavigate={handleLogout}'), 'Logout actions in the shared panel invoke the same logout flow in both contexts.');
+    assert.ok(layouts.includes('onClick={onLogout}'), 'The shared sidebar invokes its dedicated logout callback only for the logout action.');
+    assert.ok(layouts.includes('onLogout={handleLogout}'), 'Both layouts pass their logout flow to the shared sidebar.');
     assert.ok(layouts.includes("'/collections', label: 'مجموعه‌ها'"), 'Collections remain a first-class discovery destination.');
     assert.ok(layouts.includes("'/dashboard/artist/artworks/new'"), 'Artist creation destinations are included in the public-context workspace section.');
     assert.doesNotMatch(layouts, /publicSecondaryLinks|const publicLinks = \[/, 'Legacy split navigation lists are removed.');
