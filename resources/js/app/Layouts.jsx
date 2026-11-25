@@ -150,34 +150,53 @@ export function PublicLayout() {
                         {user && user.role !== 'admin' && <NotificationBell user={user} />}
                         {user && <span className="ms-auto min-w-0 truncate text-sm font-semibold text-ink">{user.name}</span>}
                     </div>
-                    <nav aria-label={t('ناوبری اصلی')} className="min-h-0 flex-1 overflow-y-auto">
-                        <p className="mb-2 px-3 text-xs font-extrabold text-ink">{t('کشف')}</p>
-                        <div className="grid gap-1">
-                            {publicLinks.map(({ to, label, Icon, end }) => (
-                                <NavLink key={to} to={to} end={end} onClick={() => setMobileMenuOpen(false)}
-                                    className={({ isActive }) => ['flex min-h-11 items-center gap-3 rounded-md px-3 text-sm font-semibold no-underline transition-colors', isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink'].join(' ')}>
-                                    <Icon size={19} strokeWidth={1.9} aria-hidden="true" /><span>{label}</span>
-                                </NavLink>
-                            ))}
-                        </div>
-                    </nav>
-                    <div className="mt-4 border-t border-border pt-4">
-                        {user ? (
-                            <>
-                                <p className="mb-2 px-3 pt-3 text-xs font-extrabold text-ink">{t(user.role === 'artist' ? 'فضای هنرمند' : user.role === 'admin' ? 'مدیریت' : 'فضای خریدار')}</p>
-                                <Link to={user.role === 'artist' ? '/dashboard/artist' : user.role === 'admin' ? '/admin' : '/dashboard/buyer'} onClick={() => setMobileMenuOpen(false)}
-                                    className="flex min-h-11 items-center gap-3 rounded-md px-3 text-sm font-semibold text-muted no-underline transition-colors hover:bg-surface-muted hover:text-ink">
-                                    <LayoutDashboard size={19} aria-hidden="true" />{t('حساب کاربری')}
-                                </Link>
-                                {user.role === 'artist' && <Link to={profileHref} onClick={() => setMobileMenuOpen(false)} className="flex min-h-11 items-center gap-3 px-3 text-sm font-medium text-muted no-underline hover:bg-surface-muted"><UserRound size={18} aria-hidden="true" />{t('پیش‌نمایش پروفایل')}</Link>}
-                                <Button variant="ghost" type="button" onClick={handleLogout} className="flex min-h-12 w-full items-center justify-start gap-3 px-3 text-sm font-semibold text-muted hover:bg-surface-muted"><LogOut size={19} aria-hidden="true" />{t('خروج از حساب')}</Button>
-                            </>
-                        ) : (
-                            <>
-                                <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-3 px-3 text-sm font-semibold text-muted no-underline hover:bg-surface-muted"><LogIn size={19} aria-hidden="true" />{t('ورود')}</Link>
-                                <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-3 px-3 text-sm font-bold text-terracotta-strong no-underline hover:bg-accent-surface"><UserPlus size={19} aria-hidden="true" />{t('ساخت حساب کاربری')}</Link>
-                            </>
-                        )}
+                    <div className="min-h-0 flex-1 overflow-y-auto px-4 py-5">
+                        <nav aria-label={t('ناوبری اصلی')}>
+                            <h3 className="mb-2 px-3 text-xs font-extrabold text-ink">{t('کشف')}</h3>
+                            <div className="grid gap-1">
+                                {publicLinks.map(({ to, label, Icon, end }) => (
+                                    <NavLink key={to} to={to} end={end} onClick={() => setMobileMenuOpen(false)}
+                                        className={({ isActive }) => [
+                                            'flex min-h-11 items-center gap-3 border-s-2 border-transparent px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
+                                            isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink',
+                                        ].join(' ')}>
+                                        <Icon size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" /><span>{label}</span>
+                                    </NavLink>
+                                ))}
+                            </div>
+                        </nav>
+
+                        <div className="my-5 border-t border-border" />
+
+                        <nav aria-label={t('بخش‌های اصلی فضای کاربری')}>
+                            <h3 className="mb-2 px-3 text-xs font-extrabold text-ink">{t(user ? (user.role === 'artist' ? 'فضای هنرمند' : user.role === 'admin' ? 'مدیریت' : 'فضای خریدار') : 'حساب کاربری')}</h3>
+                            <div className="grid gap-1">
+                                {user ? (
+                                    <>
+                                        <NavLink to={dashboardHref} end onClick={() => setMobileMenuOpen(false)}
+                                            className={({ isActive }) => ['flex min-h-11 items-center gap-3 border-s-2 border-transparent px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus', isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink'].join(' ')}>
+                                            <LayoutDashboard size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" /><span>{t('حساب کاربری')}</span>
+                                        </NavLink>
+                                        {user.role === 'artist' && <NavLink to={profileHref} onClick={() => setMobileMenuOpen(false)}
+                                            className={({ isActive }) => ['flex min-h-11 items-center gap-3 border-s-2 border-transparent px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus', isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink'].join(' ')}>
+                                            <UserRound size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" /><span>{t('پیش‌نمایش پروفایل')}</span>
+                                        </NavLink>}
+                                        <button type="button" onClick={handleLogout} className="flex min-h-11 w-full items-center gap-3 border-s-2 border-transparent px-3 text-start text-sm font-semibold text-muted transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
+                                            <LogOut size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" /><span>{t('خروج از حساب')}</span>
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <NavLink to="/login" onClick={() => setMobileMenuOpen(false)} className={({ isActive }) => ['flex min-h-11 items-center gap-3 border-s-2 border-transparent px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus', isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink'].join(' ')}>
+                                            <LogIn size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" /><span>{t('ورود')}</span>
+                                        </NavLink>
+                                        <NavLink to="/register" onClick={() => setMobileMenuOpen(false)} className={({ isActive }) => ['flex min-h-11 items-center gap-3 border-s-2 border-transparent px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus', isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink'].join(' ')}>
+                                            <UserPlus size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" /><span>{t('ساخت حساب کاربری')}</span>
+                                        </NavLink>
+                                    </>
+                                )}
+                            </div>
+                        </nav>
                     </div>
                 </DialogContent>
                 {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{t(logoutError)}</p>}
