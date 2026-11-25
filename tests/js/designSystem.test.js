@@ -181,7 +181,8 @@ test('public and workspace navigation expose role-aware destinations and an arti
     assert.ok(layouts.includes("t(user.role === 'artist' ? 'فضای هنرمند' : user.role === 'admin' ? 'مدیریت' : 'فضای خریدار')"), 'Discover separates the Workspace group from its Discover destinations.');
     assert.ok(layouts.includes("t('حساب کاربری')"), 'The Workspace destination uses the same label as the public bottom navigation.');
     assert.ok(layouts.includes("t(item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label)"), 'Workspace sidebar labels use the same compact names as its bottom navigation.');
-    assert.ok(layouts.includes("isActive ? 'bg-paper text-terracotta-strong shadow-soft' : 'text-muted hover:bg-surface-muted hover:text-ink'"), 'Active sidebar destinations use the white selected surface.');
+    assert.ok(layouts.includes("isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink'"), 'Sidebar destinations use text-only active styling without a background.');
+    assert.doesNotMatch(layouts, /isActive \\? 'bg-paper text-terracotta-strong shadow-soft'/, 'No sidebar active state adds a background or shadow.');
     assert.ok(layouts.includes('bg-paper text-terracotta-strong after:absolute'), 'Active bottom navigation destinations use the white selected surface.');
     assert.ok(layouts.includes('inline-flex h-5 min-w-5 items-center justify-center'), 'Unread bubbles center their number in both navigation bars.');
     assert.ok(layouts.includes('t(user?.role === "artist" ? "فضای هنرمند" : "فضای کاربری")'));
