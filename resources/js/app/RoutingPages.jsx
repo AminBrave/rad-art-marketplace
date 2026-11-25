@@ -531,10 +531,10 @@ export function ArtistProfileSettings() {
     );
 }
 
-export function ArtistArtworkPage() {
+export function ArtistArtworkPage({ initialCreate = false }) {
     const { user, profile, profileLoading } = useOutletContext();
     if (profileLoading) return <RouteLoading label="در حال آماده‌سازی فضای آثار…" />;
-    return <Suspense fallback={<RouteLoading label="در حال آماده‌سازی فضای آثار…" />}><ArtworkStudio user={user} hasProfile={Boolean(profile?.slug)} /></Suspense>;
+    return <Suspense fallback={<RouteLoading label="در حال آماده‌سازی فضای آثار…" />}><ArtworkStudio user={user} hasProfile={Boolean(profile?.slug)} initialCreate={initialCreate} /></Suspense>;
 }
 
 
