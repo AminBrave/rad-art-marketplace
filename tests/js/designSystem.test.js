@@ -434,8 +434,8 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     assert.ok(dialog.includes('bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]'));
     assert.doesNotMatch(layouts, /document\.body\.style\.overflow|addEventListener\('keydown', closeOnEscape/);
     assert.ok(layouts.includes('fixed inset-x-0 bottom-0 z-50'));
-    assert.ok(layouts.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-max'));
-    assert.ok(layouts.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-max'));
+    assert.ok(layouts.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-[7rem]'));
+    assert.ok(layouts.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-[7rem]'));
     assert.ok(adminWorkspace.includes('<PageHeader'));
     assert.ok(artistWorkspace.includes('<PageHeader'));
     assert.ok(buyerWorkspace.includes('<WorkspaceHero'));
@@ -566,8 +566,8 @@ test('messaging is viewport-locked between the authenticated app header and bott
     assert.ok(layouts.includes('AuthenticatedBottomNavigation mobileLinks={mobileWorkspaceLinks} unreadConversationCount={unreadConversationCount}'));
     assert.ok(layouts.includes("fixed inset-x-0 bottom-0 z-50"));
     assert.ok(routeLoading.includes('fixed inset-x-0 bottom-0 z-50'));
-    assert.ok(layouts.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-max'));
-    assert.ok(layouts.includes('lg:h-16 lg:w-fit lg:grid-flow-col lg:auto-cols-max'));
+    assert.ok(layouts.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-[7rem]'));
+    assert.ok(layouts.includes('lg:h-16 lg:w-fit lg:grid-flow-col lg:auto-cols-[7rem]'));
     assert.doesNotMatch(layouts, /<aside[^>]*lg:block/);
     assert.ok(layouts.includes('AuthenticatedBottomNavigation mobileLinks={mobileWorkspaceLinks} unreadConversationCount={unreadConversationCount}'));
     assert.ok(layouts.includes("className={isMessagingRoute ?") && layouts.includes("flex h-dvh flex-col overflow-hidden bg-canvas text-ink") && layouts.includes("min-h-screen bg-canvas text-ink"));
@@ -627,8 +627,8 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(bottomNavigation.includes('fixed inset-x-0 bottom-0 z-50'));
     assert.ok(bottomNavigation.includes('pb-[env(safe-area-inset-bottom)]'));
     assert.ok(bottomNavigation.includes('fixed inset-x-0 bottom-0 z-50'));
-    assert.ok(bottomNavigation.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-max'));
-    assert.ok(bottomNavigation.includes('lg:h-16 lg:w-fit lg:grid-flow-col lg:auto-cols-max'));
+    assert.ok(bottomNavigation.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-[7rem]'));
+    assert.ok(bottomNavigation.includes('lg:h-16 lg:w-fit lg:grid-flow-col lg:auto-cols-[7rem]'));
     assert.ok(bottomNavigation.includes('mobileLinks.map((item)'));
     assert.ok(layouts.includes('<PublicBottomNavigation user={user} />'));
     assert.ok(layouts.includes("user?.role === 'buyer' ? '/dashboard/buyer'"));
@@ -648,7 +648,7 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(workspaceLayout.includes('aria-label={t("بخش‌های اصلی فضای کاربری")}'));
     assert.ok(workspaceLayout.includes('workspaceLinks.map((item)'));
     assert.ok(bottomNavigation.includes('fixed inset-x-0 bottom-0 z-50'));
-    assert.ok(bottomNavigation.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-max'));
+    assert.ok(bottomNavigation.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-[7rem]'));
     assert.ok(workspaceLayout.includes('mx-auto w-full max-w-content px-page-gutter py-5'), 'Workspace content uses a centered page shell.');
     assert.ok(css.includes('.rd-container:not(.rd-container--full) {\n    padding-inline: var(--rd-page-gutter);'), 'Shared sections own their default horizontal gutters.');
     assert.ok(layouts.includes('mx-auto w-full max-w-content px-page-gutter'), 'Workspace shell applies the shared page gutter outside its section containers.');
@@ -721,8 +721,8 @@ test('workspace first-paint skeleton uses the same constrained shell as the load
     assert.ok(routeLoading.includes("pathname.startsWith('/dashboard/buyer') ? 3 : 5"));
     assert.ok(bootShell.includes("$isArtworkStudio = request()->is('dashboard/artist/artworks', 'dashboard/artist/artworks/new')"));
     assert.ok(bootShell.includes('fixed inset-x-0 bottom-0 z-50'));
-    assert.ok(bootShell.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-max'));
-    assert.ok(bootShell.includes('lg:h-16 lg:w-fit lg:grid-flow-col lg:auto-cols-max'));
+    assert.ok(bootShell.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-[7rem]'));
+    assert.ok(bootShell.includes('lg:h-16 lg:w-fit lg:grid-flow-col lg:auto-cols-[7rem]'));
     assert.doesNotMatch(bootShell, /<aside[^>]*lg:block/);
 });
 
