@@ -106,12 +106,6 @@ export function PublicLayout() {
                         </span>
                     </Link>
 
-                    <nav aria-label={t("ناوبری اصلی")} className={`hidden items-center gap-3 ${user ? 'xl:flex' : 'lg:flex'} xl:gap-5`}>
-                        {publicLinks.map((item) => (
-                            <NavLink key={item.to} to={item.to} className={navClass}>{item.label}</NavLink>
-                        ))}
-                    </nav>
-
                     <div className="flex shrink-0 items-center">
                         <DialogTrigger asChild>
                             <Button variant="ghost" type="button" aria-label={t('باز کردن منوی اصلی')}
@@ -419,15 +413,15 @@ function NotificationBell({ user }) {
 }
 
 const workspaceNavigationIcons = {
-    '/dashboard/artist': LayoutDashboard,
+    '/dashboard/artist': House,
     '/dashboard/artist/profile': UserRound,
     '/dashboard/artist/artworks': Images,
     '/dashboard/artist/messages': MessageCircle,
     '/dashboard/artist/settings': SettingsIcon,
-    '/dashboard/buyer': LayoutDashboard,
+    '/dashboard/buyer': House,
     '/dashboard/buyer/messages': MessageCircle,
     '/dashboard/buyer/settings': SettingsIcon,
-    '/admin': LayoutDashboard,
+    '/admin': House,
     '/admin/users': Users,
     '/admin/artworks': ClipboardCheck,
     '/admin/message-reports': Flag,
