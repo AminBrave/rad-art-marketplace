@@ -514,9 +514,7 @@ function AuthenticatedBottomNavigation({ mobileLinks, unreadConversationCount = 
                                 'relative flex min-w-0 flex-col items-center justify-center gap-1 rounded-md px-1 text-[10px] font-bold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus motion-reduce:transition-none lg:text-xs',
                                 isActive
                                     ? 'text-terracotta-strong after:absolute after:inset-x-1/4 after:top-0 after:h-0.5 after:rounded-full after:bg-terracotta'
-                                    : isCreateArtworkLink
-                                        ? 'bg-accent-surface text-terracotta-strong hover:bg-accent-surface'
-                                        : 'text-muted hover:bg-surface-muted hover:text-ink',
+                                    : 'text-muted hover:text-ink',
                             ].join(' ')}
                         >
                             <span className="relative inline-flex">
@@ -644,7 +642,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                         : t(item.label)}
                                     className={({ isActive }) => [
                                         'flex min-h-11 items-center border-s-2 border-transparent px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
-                                        isActive ? 'bg-accent-surface text-terracotta-strong' : item.to === '/dashboard/artist/artworks/new' ? 'bg-accent-surface/70 text-terracotta-strong hover:bg-accent-surface' : 'text-muted hover:bg-surface-muted hover:text-ink',
+                                        isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:text-ink',
                                     ].join(' ')}
                                 >
                                     {(() => { const Icon = item.to.startsWith('/artists/') ? UserRound : workspaceNavigationIcons[item.to] ?? LayoutDashboard; return <Icon size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />; })()}
