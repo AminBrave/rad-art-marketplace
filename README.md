@@ -4,7 +4,7 @@ Rademan is an art discovery and artist–audience platform built with Laravel an
 
 ## Start here
 
-- **AI contributors:** read [AGENTS.md](AGENTS.md), then open only the relevant references.
+- **AI contributors:** read [AGENTS.md](AGENTS.md), then [AI/TASK-ROUTING.md](AI/TASK-ROUTING.md) to select task-specific context.
 - **Development approach:** [AI/DEVELOPMENT-GUIDE.md](AI/DEVELOPMENT-GUIDE.md)
 - **Product context:** [AI/PROJECT.md](AI/PROJECT.md)
 - **Technical architecture:** [AI/ARCHITECTURE.md](AI/ARCHITECTURE.md)
