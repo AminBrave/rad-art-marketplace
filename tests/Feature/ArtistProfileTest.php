@@ -8,6 +8,8 @@ use App\Models\Artwork;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ArtistProfileTest extends TestCase
@@ -38,6 +40,25 @@ class ArtistProfileTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.city', 'تهران')
             ->assertJsonPath('data.display_name_en', 'Sample Artist');
+    }
+
+    public function test_artist_can_upload_a_valid_avatar_and_it_is_returned_in_profile_payloads(): void
+    {
+        Storage::fake('public');
+        $artist = $this->makeUser('avatar@example.com');
+        $response = $this->actingAs($artist)->post('/api/v1/artist-profile/me', [...$this->validProfile(), '_method' => 'PUT', 'avatar' => UploadedFile::fake()->image('portrait.jpg', 640, 640)], ['Accept' => 'application/json']);
+        $response->assertOk()->assertJsonPath('data.avatar_url', fn ($url) => str_contains($url, 'artist-avatars/'));
+        $path = $artist->fresh()->artistProfile->avatar_path;
+        $this->assertNotEmpty($path);
+        Storage::disk('public')->assertExists($path);
+        $this->getJson('/api/v1/artists/'.$artist->artistProfile->slug)->assertOk()->assertJsonPath('data.avatar_url', Storage::disk('public')->url($path));
+    }
+
+    public function test_artist_avatar_upload_rejects_unsupported_files(): void
+    {
+        Storage::fake('public');
+        $artist = $this->makeUser('invalid-avatar@example.com');
+        $this->actingAs($artist)->post('/api/v1/artist-profile/me', [...$this->validProfile(), '_method' => 'PUT', 'avatar' => UploadedFile::fake()->create('avatar.gif', 100, 'image/gif')], ['Accept' => 'application/json'])->assertUnprocessable()->assertJsonValidationErrors('avatar');
     }
 
     public function test_profile_validation_rejects_invalid_website_and_social_handle(): void
