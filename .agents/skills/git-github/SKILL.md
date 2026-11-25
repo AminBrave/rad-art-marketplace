@@ -3,59 +3,42 @@ name: git-github
 description: Coordinate Git branches, parallel agent lanes, commits, pull requests and GitHub project work for Rademan.
 ---
 
-# Git, GitHub and multi-agent collaboration
-
-## Purpose
-Protect independent work, coordinate multiple agents and make changes easy to review and integrate.
+# Git, GitHub and collaboration
 
 ## Start with the task
-1. Confirm repository, agent identity, assigned task, target lane and scope.
-2. Inspect live remote branch/issue/PR state. If using a local checkout, inspect local status and uncommitted changes independently.
-3. Read AI/DEVELOPMENT-WORKFLOW.md for the complete lane and integration workflow.
-4. Choose a task-specific branch. Never assume remote state includes another workspace's uncommitted work.
+1. Confirm repository, requested outcome, scope and acceptance checks.
+2. Inspect live remote branches and relevant open issues/PRs. If using a local checkout, inspect local status and uncommitted changes separately.
+3. Read AI/DEVELOPMENT-WORKFLOW.md and AI/TASK-MANAGEMENT.md.
+4. Use a normal task branch from `main` by default. Use persistent agent lanes only for genuinely parallel work that needs isolation.
 
-## Branch model
-- Persistent lane: agent/<agent-name>/lane; examples: agent/chatgpt/lane and agent/claude/lane.
-- Task branch: agent/<agent-name>/<task-type>/<task-name>, e.g. agent/chatgpt/feature/123-search or agent/claude/docs/234-guide.
-- Integration branch: integration or a scoped integration/<workstream>, used only for owner-directed cross-agent integration.
-- main is the stable shared baseline and release destination, not an ordinary task target.
+## Branches and PR targets
+- Normal task: `feat/<issue>-<slug>`, `fix/<issue>-<slug>`, `docs/<issue>-<slug>` or `chore/<issue>-<slug>`; PR targets `main`.
+- Optional persistent lane: `agent/<agent-name>/lane`.
+- Optional agent task: `agent/<agent-name>/<type>/<issue>-<slug>`; PR targets that same agent's lane.
+- Cross-agent integration is owner-directed and uses a scoped integration branch/PR to `main`.
+- Check remote refs before creating nested branches. Git cannot have both `agent/<name>` and `agent/<name>/lane`. Never delete, force-update or rewrite a legacy branch to satisfy naming convention. Prefer the normal task workflow unless lanes are needed; if lanes are explicitly required, use the documented collision-safe namespace.
 
-Each agent works only in its own task branches and lane. Task PRs target agent/<agent-name>/lane for that same agent. Do not merge, cherry-pick, copy or rebase commits into another agent's lane without an explicit integration task. Keep shared lane history stable; update/rebase only short-lived task branches when needed.
+Never assume a task PR's target: state and verify the base branch. Do not send ordinary task work to another agent's lane.
 
-## Parallel work
-- Give each independent task its own branch and primary owner.
-- Check shared-file and interface overlap before starting concurrent work.
-- Coordinate ownership for central routes, schemas, navigation, design tokens and shared components.
-- Avoid simultaneous edits to the same files; serialize or divide work by clear interfaces.
-- After another task merges into the same lane, update dependent task branches carefully and rerun relevant checks.
-- Keep a clear handoff of branch, base commit, files owned, contracts and verification status.
-
-## Commits and PRs
-- Keep commits coherent and use specific imperative messages.
-- Define a bounded task scope before editing: outcome, in-scope and excluded work, related files, dependencies and acceptance checks.
-- Group all related files needed for one task into one task-level commit by default. Commit by coherent outcome, not by file: never create a commit solely because another file changed, and avoid repeated tiny commits for successive edits to one file.
-- Use separate commits only for genuinely distinct, independently reviewable tasks or meaningful standalone checkpoints. Keep unrelated tasks separate without fragmenting one task into excessive commits.
-- For a multi-task batch, use a small number of clear task-level commits and review the complete diff/history before pushing.
-- Use PRs for substantial, collaborative or review-sensitive work; small direct task-branch commits may be appropriate.
-- Link the issue when one exists. Describe outcome, scope, risks, compatibility and actual verification.
-- Include related backend, frontend and Playwright test additions/updates in the same task branch and PR. Explain justified obsolete-test removals and state why no test changes were needed when applicable.
-- Do not remove or weaken failing tests merely to obtain a green result; verify that removed tests cover behavior that no longer exists.
-- PRs from task branches target their owning agent lane. Cross-agent PRs target the agreed integration branch only after owner authorization.
+## Collaboration and commits
+- Give each independent task one primary owner and one task branch.
+- Coordinate shared files, schemas, APIs, routes and design tokens before parallel edits.
+- Keep related files for one coherent outcome together. Commit by task/outcome, not by file.
+- Link an issue when one exists. Describe outcome, scope, risks and actual verification in the PR.
 - A task merged into an agent lane is lane-complete, not automatically integrated or released.
-- Never merge to main as part of ordinary task work.
 
 ## Safe Git practices
 - Do not overwrite uncommitted work or assume local and remote states are identical.
-- Never force-push, rewrite shared history, delete persistent agent lanes, move published tags or change repository protections as routine cleanup.
+- Never force-push, rewrite shared history or delete persistent lanes as routine cleanup.
 - Fetch the latest file/blob SHA before GitHub Contents API updates and use the exact branch and path.
-- Inspect scripts and environment before stateful tests or data operations.
-- Inspect and synchronize affected backend, frontend and Playwright tests whenever implementation or behavior changes: add coverage for new behavior, update expectations/contracts, and remove tests only when their covered code or supported behavior is truly gone or the test is demonstrably redundant/invalid.
-- Run relevant local checks when useful and safe. Report commands and actual results, including suites not run and blockers.
-- Read-only inspection of CI is fine; do not manually dispatch, rerun, cancel or approve workflows unless the user requests it.
-- Merge, release, deployment and destructive operations require clear authorization for the target and scope.
+- Inspect scripts/environment before stateful tests or data operations.
+- Add/update relevant tests when behavior or contracts change. Never delete or weaken a failing test merely to obtain a green result.
+- Report exact commands and results, including suites not run and blockers.
+- Read-only CI inspection is fine; do not manually dispatch, rerun, cancel or approve workflows unless requested.
+- Merge, release, deployment, branch-protection changes and destructive operations require clear authorization for the target and scope.
 
-## Project management
-Use issues and a board when they improve parallel coordination. Assign one primary owner per task, define observable acceptance criteria, track real dependencies and avoid duplicate or speculative backlog items. Use the existing board configuration rather than inventing fields. See AI/TASK-MANAGEMENT.md.
+## Issues and PRs
+Use issues for substantial, multi-session, dependent or collaborative work. Skip them for small self-contained tasks directly assigned by the user unless tracking is requested. Search for active duplicates first. Keep issue acceptance criteria observable and concise; branch/PR links can be added when known. Use `Closes #N` only when the PR fully completes the issue; otherwise use `Refs #N`.
 
-## Deliverable
-Report agent name, task branch, base lane, changed files/contracts, issue/PR links, verification, lane-merge status and whether cross-agent integration remains pending.
+## Handoff
+Report task branch, PR target, issue/PR links where applicable, changed areas, verification, merge status and remaining risks. For lane-based work, include owning lane and integration status.
