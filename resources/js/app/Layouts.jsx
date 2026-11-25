@@ -608,7 +608,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                         isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
                                     ].join(' ')}
                                 >
-                                    {(() => { const Icon = workspaceNavigationIcons[item.to] ?? LayoutDashboard; return <Icon size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />; })()}
+                                    {(() => { const Icon = item.to.startsWith('/artists/') ? UserRound : workspaceNavigationIcons[item.to] ?? LayoutDashboard; return <Icon size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />; })()}
                                     <span>{t(item.label)}</span>
                                 </NavLink>
                             ))}
