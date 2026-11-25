@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Bell, BookOpen, Bookmark, CheckCheck, CircleHelp, ClipboardCheck, Compass, Flag, Heart, House, Images, Info, Languages, LayoutDashboard, LogIn, LogOut, Menu, MessageCircle, Monitor, Moon, Settings as SettingsIcon, Sun, UserPlus, UserRound, Users, X } from 'lucide-react';
+import { Bell, BookOpen, Bookmark, CheckCheck, CircleHelp, ClipboardCheck, Compass, Flag, Heart, House, Images, Info, Languages, LayoutDashboard, LogIn, LogOut, Menu, MessageCircle, Monitor, Moon, PlusCircle, Settings as SettingsIcon, Sun, UserPlus, UserRound, Users, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useTheme } from './useTheme';
@@ -80,6 +80,12 @@ export function PublicLayout() {
     };
 
     useEffect(() => setMobileMenuOpen(false), [pathname]);
+
+    useEffect(() => {
+        if (!isMessagingRoute && unreadInboxEndpoint) {
+            queryClient.invalidateQueries({ queryKey: ['messaging', 'unread-conversations', user?.id] });
+        }
+    }, [isMessagingRoute, pathname, unreadInboxEndpoint, queryClient, user?.id]);
 
     const publicLinks = [
         { to: '/artworks', label: t('کشف آثار'), Icon: Compass },
@@ -417,6 +423,7 @@ const workspaceNavigationIcons = {
     '/dashboard/artist': House,
     '/dashboard/artist/profile': UserRound,
     '/dashboard/artist/artworks': Images,
+    '/dashboard/artist/artworks/new': PlusCircle,
     '/dashboard/artist/messages': MessageCircle,
     '/dashboard/artist/settings': SettingsIcon,
     '/dashboard/buyer': House,
@@ -435,6 +442,7 @@ const workspaceNavigationLabels = {
     '/dashboard/artist': 'داشبورد',
     '/dashboard/artist/profile': 'پروفایل',
     '/dashboard/artist/artworks': 'محتوا',
+    '/dashboard/artist/artworks/new': 'ثبت اثر',
     '/dashboard/artist/messages': 'پیام‌ها',
     '/dashboard/artist/settings': 'تنظیمات',
     '/dashboard/buyer': 'داشبورد',
@@ -483,8 +491,8 @@ function PublicBottomNavigation({ user }) {
     );
 }
 
-function AuthenticatedBottomNavigation({ mobileLinks }) {
-    const { t } = useLanguage();
+function AuthenticatedBottomNavigation({ mobileLinks, unreadConversationCount = 0 }) {
+    const { t, locale } = useLanguage();
     return (
         <div
             data-testid="authenticated-bottom-navigation"
@@ -494,14 +502,19 @@ function AuthenticatedBottomNavigation({ mobileLinks }) {
                 {mobileLinks.map((item) => {
                     const Icon = item.to.startsWith('/artists/') ? UserRound : workspaceNavigationIcons[item.to] ?? LayoutDashboard;
                     const accessibleLabel = t(item.label);
+                    const isMessagesLink = item.to.endsWith('/messages');
+                    const localizedUnreadCount = unreadConversationCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US');
+                    const navigationLabel = isMessagesLink && unreadConversationCount > 0
+                        ? `${accessibleLabel}، ${localizedUnreadCount} ${t('گفتگوی خوانده‌نشده')}`
+                        : accessibleLabel;
                     const visibleLabel = t(item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label);
                     return (
                         <NavLink
                             key={item.to}
                             to={item.to}
                             end={item.end}
-                            aria-label={accessibleLabel}
-                            title={accessibleLabel}
+                            aria-label={navigationLabel}
+                            title={navigationLabel}
                             className={({ isActive }) => [
                                 'relative flex min-w-0 flex-col items-center justify-center gap-1 rounded-md px-1 text-[10px] font-bold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus motion-reduce:transition-none lg:text-xs',
                                 isActive
@@ -509,7 +522,10 @@ function AuthenticatedBottomNavigation({ mobileLinks }) {
                                     : 'text-muted hover:bg-surface-muted hover:text-ink',
                             ].join(' ')}
                         >
-                            <Icon size={19} strokeWidth={1.9} aria-hidden="true" />
+                            <span className="relative inline-flex">
+                                <Icon size={19} strokeWidth={1.9} aria-hidden="true" />
+                                {isMessagesLink && unreadConversationCount > 0 && <span aria-hidden="true" className="absolute -end-2 -top-2 min-w-4 rounded-full bg-terracotta px-1 text-[9px] font-extrabold leading-4 text-inverse">{unreadConversationCount > 99 ? (locale === 'fa' ? '۹۹+' : '99+') : localizedUnreadCount}</span>}
+                            </span>
                             <span className="max-w-full truncate">{visibleLabel}</span>
                         </NavLink>
                     );
@@ -523,7 +539,22 @@ export function WorkspaceLayout({ title, links, outletContext }) {
     const { user, logout } = useAuth();
     const { t } = useLanguage();
     const { pathname } = useLocation();
+    const queryClient = useQueryClient();
     const isMessagingRoute = pathname.endsWith('/messages');
+    const unreadInboxEndpoint = user?.role === 'artist' ? '/api/v1/artist/conversations'
+        : user?.role === 'buyer' ? '/api/v1/buyer/conversations' : null;
+    const unreadInboxQuery = useQuery({
+        queryKey: ['messaging', 'unread-conversations', user?.id],
+        queryFn: async ({ signal }) => {
+            const { data } = await axios.get(unreadInboxEndpoint, { params: { filter: 'unread' }, signal });
+            return Number(data.total ?? 0);
+        },
+        enabled: Boolean(user?.id && unreadInboxEndpoint),
+        staleTime: 15_000,
+        refetchInterval: 30_000,
+        refetchOnWindowFocus: true,
+    });
+    const unreadConversationCount = unreadInboxQuery.data ?? 0;
     const baseWorkspaceLinks = user?.role === 'artist'
         ? links.map((item) => item.to === '/dashboard/artist/profile'
             ? (outletContext?.profile?.slug
@@ -610,6 +641,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                 >
                                     {(() => { const Icon = item.to.startsWith('/artists/') ? UserRound : workspaceNavigationIcons[item.to] ?? LayoutDashboard; return <Icon size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />; })()}
                                     <span>{t(item.label)}</span>
+                                    {item.to.endsWith('/messages') && unreadConversationCount > 0 && <span aria-hidden="true" className="ms-auto min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-center text-[10px] font-extrabold tabular-nums text-inverse">{unreadConversationCount > 99 ? '99+' : unreadConversationCount.toLocaleString('fa-IR')}</span>}
                                 </NavLink>
                             ))}
                         </div>
@@ -665,7 +697,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                         : <div className="rd-page-frame rd-page-frame--workspace"><Outlet context={outletContext} /></div>}
                 </main>
             </div>
-            <AuthenticatedBottomNavigation mobileLinks={mobileWorkspaceLinks} />
+            <AuthenticatedBottomNavigation mobileLinks={mobileWorkspaceLinks} unreadConversationCount={unreadConversationCount} />
         </div>
         </Dialog>
     );
