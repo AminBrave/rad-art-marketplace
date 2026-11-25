@@ -34,6 +34,8 @@ class DemoDatabaseSeederTest extends TestCase
         $this->assertSame(23, User::query()->count());
         $this->assertSame(16, ArtistProfile::query()->count());
         $this->assertGreaterThan(0, ArtistProfile::query()->whereNotNull('avatar_path')->count());
+        $this->assertGreaterThan(0, ArtistProfile::query()->whereNotNull('display_name_en')->count());
+        $this->assertGreaterThan(0, ArtistProfile::query()->whereNull('display_name_en')->count());
         $this->assertGreaterThan(0, DB::table('artist_follows')->count());
         $sampleAvatar = ArtistProfile::query()->whereNotNull('avatar_path')->firstOrFail();
         Storage::disk('public')->assertExists($sampleAvatar->avatar_path);
