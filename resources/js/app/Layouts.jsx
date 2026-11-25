@@ -537,7 +537,7 @@ function AuthenticatedBottomNavigation({ mobileLinks, unreadConversationCount = 
 
 export function WorkspaceLayout({ title, links, outletContext }) {
     const { user, logout } = useAuth();
-    const { t } = useLanguage();
+    const { t, locale } = useLanguage();
     const { pathname } = useLocation();
     const queryClient = useQueryClient();
     const isMessagingRoute = pathname.endsWith('/messages');
@@ -641,7 +641,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                 >
                                     {(() => { const Icon = item.to.startsWith('/artists/') ? UserRound : workspaceNavigationIcons[item.to] ?? LayoutDashboard; return <Icon size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />; })()}
                                     <span>{t(item.label)}</span>
-                                    {item.to.endsWith('/messages') && unreadConversationCount > 0 && <span aria-hidden="true" className="ms-auto min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-center text-[10px] font-extrabold tabular-nums text-inverse">{unreadConversationCount > 99 ? '99+' : unreadConversationCount.toLocaleString('fa-IR')}</span>}
+                                    {item.to.endsWith('/messages') && unreadConversationCount > 0 && <span aria-hidden="true" className="ms-auto min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-center text-[10px] font-extrabold tabular-nums text-inverse">{unreadConversationCount > 99 ? (locale === 'fa' ? '۹۹+' : '99+') : unreadConversationCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</span>}
                                 </NavLink>
                             ))}
                         </div>
