@@ -40,7 +40,7 @@ class ArtistProfileController extends Controller
                 'bio_en' => $profile->bio_en ? Str::limit($profile->bio_en, 220) : null,
                 'city' => $profile->city,
                 'city_en' => $profile->city_en,
-                'avatar_url' => $profile->avatar_path ? Storage::disk('public')->url($profile->avatar_path) : null,
+                'avatar_url' => $profile->avatar_path ? $this->avatarUrl($profile->avatar_path) : null,
             ]);
 
         return response()->json($profiles);
@@ -185,6 +185,15 @@ class ArtistProfileController extends Controller
             'is_public' => $profile->is_public,
             'avatar_url' => $profile->avatar_path ? Storage::disk('public')->url($profile->avatar_path) : null,
         ];
+    }
+
+    /**
+     * Return a same-origin path so deployments accessed through LAN hosts, reverse
+     * proxies, or custom domains do not leak the configured APP_URL into image URLs.
+     */
+    private function avatarUrl(string $path): string
+    {
+        return '/storage/'.ltrim($path, '/');
     }
 
     private function publicArtworkPayload(Artwork $artwork, bool $includeEngagement): array
