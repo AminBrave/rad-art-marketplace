@@ -566,7 +566,7 @@ test('messaging is viewport-locked between the authenticated app header and bott
     assert.ok(layouts.includes('AuthenticatedBottomNavigation mobileLinks={mobileWorkspaceLinks} unreadConversationCount={unreadConversationCount}'));
     assert.ok(layouts.includes("fixed inset-x-0 bottom-0 z-50"));
     assert.ok(routeLoading.includes('fixed inset-x-0 bottom-0 z-50'));
-    assert.ok(layouts.includes('lg:w-[min(54rem,calc(100vw_-_3rem))]'));
+    assert.ok(layouts.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-max'));
     assert.ok(layouts.includes('lg:h-16 lg:w-fit lg:grid-flow-col lg:auto-cols-max'));
     assert.doesNotMatch(layouts, /<aside[^>]*lg:block/);
     assert.ok(layouts.includes('AuthenticatedBottomNavigation mobileLinks={mobileWorkspaceLinks} unreadConversationCount={unreadConversationCount}'));
@@ -647,8 +647,8 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(workspaceLayout.includes('placement="drawer"'));
     assert.ok(workspaceLayout.includes('aria-label={t("بخش‌های اصلی فضای کاربری")}'));
     assert.ok(workspaceLayout.includes('workspaceLinks.map((item)'));
-    assert.ok(bottomNavigation.includes('lg:left-1/2'));
-    assert.ok(bottomNavigation.includes('lg:w-[min(54rem,calc(100vw_-_3rem))]'));
+    assert.ok(bottomNavigation.includes('fixed inset-x-0 bottom-0 z-50'));
+    assert.ok(bottomNavigation.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-max'));
     assert.ok(workspaceLayout.includes('mx-auto w-full max-w-content py-5'), 'Workspace content uses a centered page shell.');
     assert.ok(css.includes('.rd-page-frame--workspace {\n    width: 100%;\n    padding-inline: var(--rd-page-gutter);'), 'Workspace route content retains horizontal gutters.');
     assert.ok(workspaceLayout.includes('<ThemeControl />'), 'Workspace appearance controls are available from the hamburger drawer.');
