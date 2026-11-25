@@ -177,7 +177,7 @@ test('public and workspace navigation expose role-aware destinations and an arti
     assert.ok(layouts.includes('function PublicBottomNavigation({ user, unreadConversationCount = 0 })'));
     assert.ok(layouts.includes('<NotificationBell user={user} />'), 'Discover exposes the same notification panel control as Workspace.');
     assert.ok(layouts.includes("label: t('کشف')") && layouts.includes("label: t('هنرمندان')") && layouts.includes("label: t('مجموعه‌ها')"), 'Discover sidebar labels match the public bottom navigation.');
-    assert.ok(layouts.includes("{ to: '/artworks', label: 'کشف' }") && layouts.includes("{ to: '/collections', label: 'مجموعه‌ها' }"), 'The Discover section inside the Workspace drawer uses the same destination names.');
+    assert.ok(layouts.includes("const publicDiscoveryLinks = [") && layouts.includes("{ to: '/artworks', label: 'کشف', Icon: Compass") && layouts.includes("{ to: '/collections', label: 'مجموعه‌ها', Icon: Bookmark"), 'Both drawers reuse the same Discover destination definitions.');
     assert.ok(layouts.includes("t(user.role === 'artist' ? 'فضای هنرمند' : user.role === 'admin' ? 'مدیریت' : 'فضای خریدار')"), 'Discover separates the Workspace group from its Discover destinations.');
     assert.ok(layouts.includes("t('حساب کاربری')"), 'The Workspace destination uses the same label as the public bottom navigation.');
     assert.ok(layouts.includes("t(item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label)"), 'Workspace sidebar labels use the same compact names as its bottom navigation.');
@@ -443,7 +443,7 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     assert.ok(layouts.includes('workspace-notification-panel'));
     assert.ok(layouts.includes('placement="drawer"'));
     assert.ok(layouts.includes('حساب کاربری'));
-    assert.ok(layouts.includes('ناوبری اصلی'));
+    assert.ok(layouts.includes('<nav aria-label={section.label}>'), 'The shared sidebar labels each navigation group from its section heading.');
     assert.doesNotMatch(layouts, /panelPosition|closeOnOutsidePointer|mobileMenuPanelRef|closeMobileMenu/);
     assert.ok(layouts.includes('aria-haspopup="dialog"'));
     assert.ok(dialog.includes('bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]'));
@@ -660,7 +660,7 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(workspaceLayout.includes("aria-label={t('باز کردن منوی حساب کاربری')}"));
     assert.ok(workspaceLayout.includes('<DialogContent'));
     assert.ok(workspaceLayout.includes('placement="drawer"'));
-    assert.ok(workspaceLayout.includes('aria-label={t("بخش‌های اصلی فضای کاربری")}'));
+    assert.ok(workspaceLayout.includes('aria-label={t("بخش‌های اصلی حساب کاربری")}'));
     assert.ok(workspaceLayout.includes('workspaceLinks.map((item)'));
     assert.ok(bottomNavigation.includes('fixed inset-x-0 bottom-0 z-50'));
     assert.ok(bottomNavigation.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-[7rem]'));
