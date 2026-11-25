@@ -466,7 +466,7 @@ export function ArtistProfileSettings() {
     const savingRef = useRef(false);
     const profileMutation = useMutation({
         mutationKey: ['artist-profile', 'update'],
-        mutationFn: (nextProfile) => axios.post('/api/v1/artist-profile/me', nextProfile, { headers: { 'Content-Type': 'multipart/form-data' } }),
+        mutationFn: (nextProfile) => axios.post('/api/v1/artist-profile/me', nextProfile),
     });
     const busy = profileMutation.isPending;
 
