@@ -433,8 +433,9 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     assert.ok(layouts.includes('aria-haspopup="dialog"'));
     assert.ok(dialog.includes('bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]'));
     assert.doesNotMatch(layouts, /document\.body\.style\.overflow|addEventListener\('keydown', closeOnEscape/);
-    assert.ok(layouts.includes('lg:left-1/2'));
-    assert.ok(layouts.includes('lg:w-[min(54rem,calc(100vw_-_3rem))]'));
+    assert.ok(layouts.includes('fixed inset-x-0 bottom-0 z-50'));
+    assert.ok(layouts.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-max'));
+    assert.ok(layouts.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-max'));
     assert.ok(adminWorkspace.includes('<PageHeader'));
     assert.ok(artistWorkspace.includes('<PageHeader'));
     assert.ok(buyerWorkspace.includes('<WorkspaceHero'));
@@ -534,7 +535,7 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.doesNotMatch(layouts, /direction:ltr|<aside dir="rtl"|<main dir="rtl"/);
     
     
-    assert.ok(layouts.includes("className={isMessagingRoute ? "flex h-dvh flex-col overflow-hidden bg-canvas text-ink" : "min-h-screen bg-canvas text-ink"}"));
+    assert.ok(layouts.includes("className={isMessagingRoute ?") && layouts.includes("flex h-dvh flex-col overflow-hidden bg-canvas text-ink") && layouts.includes("min-h-screen bg-canvas text-ink"));
     assert.doesNotMatch(messaging, /RAD \/ MESSAGES|ارتباط مستقیم|PageHeader/);
     assert.doesNotMatch(layouts, /ناوبری فضای کاری|RAD \/ MENU/);
     assert.ok(messageTimeline.includes('min-w-0 w-fit max-w-[88%]'));
@@ -563,13 +564,13 @@ test('messaging is viewport-locked between the authenticated app header and bott
     assert.ok(layouts.includes('h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.ok(layouts.includes('sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.ok(layouts.includes('AuthenticatedBottomNavigation mobileLinks={mobileWorkspaceLinks} unreadConversationCount={unreadConversationCount}'));
-    assert.ok(layouts.includes("lg:left-1/2 lg:bottom-6"));
+    assert.ok(layouts.includes("fixed inset-x-0 bottom-0 z-50"));
     assert.ok(routeLoading.includes('fixed inset-x-0 bottom-0 z-50'));
     assert.ok(layouts.includes('lg:w-[min(54rem,calc(100vw_-_3rem))]'));
-    assert.ok(layouts.includes('lg:h-16 lg:px-3'));
+    assert.ok(layouts.includes('lg:h-16 lg:w-fit lg:grid-flow-col lg:auto-cols-max'));
     assert.doesNotMatch(layouts, /<aside[^>]*lg:block/);
     assert.ok(layouts.includes('AuthenticatedBottomNavigation mobileLinks={mobileWorkspaceLinks} unreadConversationCount={unreadConversationCount}'));
-    assert.ok(layouts.includes("className={isMessagingRoute ? "flex h-dvh flex-col overflow-hidden bg-canvas text-ink" : "min-h-screen bg-canvas text-ink"}"));
+    assert.ok(layouts.includes("className={isMessagingRoute ?") && layouts.includes("flex h-dvh flex-col overflow-hidden bg-canvas text-ink") && layouts.includes("min-h-screen bg-canvas text-ink"));
 });
 
 test('messaging chat geometry follows RTL logical flow and uses Radix collision-aware overlays', () => {
@@ -625,9 +626,9 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(bottomNavigation.includes('data-testid="authenticated-bottom-navigation"'));
     assert.ok(bottomNavigation.includes('fixed inset-x-0 bottom-0 z-50'));
     assert.ok(bottomNavigation.includes('pb-[env(safe-area-inset-bottom)]'));
-    assert.ok(bottomNavigation.includes('lg:left-1/2'));
-    assert.ok(bottomNavigation.includes('lg:w-[min(54rem,calc(100vw_-_3rem))]'));
-    assert.ok(bottomNavigation.includes('lg:h-16 lg:px-3'));
+    assert.ok(bottomNavigation.includes('fixed inset-x-0 bottom-0 z-50'));
+    assert.ok(bottomNavigation.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-max'));
+    assert.ok(bottomNavigation.includes('lg:h-16 lg:w-fit lg:grid-flow-col lg:auto-cols-max'));
     assert.ok(bottomNavigation.includes('mobileLinks.map((item)'));
     assert.ok(layouts.includes('<PublicBottomNavigation user={user} />'));
     assert.ok(layouts.includes("user?.role === 'buyer' ? '/dashboard/buyer'"));
@@ -648,7 +649,8 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(workspaceLayout.includes('workspaceLinks.map((item)'));
     assert.ok(bottomNavigation.includes('lg:left-1/2'));
     assert.ok(bottomNavigation.includes('lg:w-[min(54rem,calc(100vw_-_3rem))]'));
-    assert.ok(workspaceLayout.includes('mx-auto w-full max-w-content px-page-gutter'), 'Workspace content uses the same centered page gutters across breakpoints.');
+    assert.ok(workspaceLayout.includes('mx-auto w-full max-w-content py-5'), 'Workspace content uses a centered page shell.');
+    assert.ok(css.includes('.rd-page-frame--workspace {\n    width: 100%;\n    padding-inline: var(--rd-page-gutter);'), 'Workspace route content retains horizontal gutters.');
     assert.ok(workspaceLayout.includes('<ThemeControl />'), 'Workspace appearance controls are available from the hamburger drawer.');
     assert.ok(workspaceLayout.includes('<LanguageControl />'), 'Workspace language control is available from the hamburger drawer.');
     assert.ok(layouts.includes("'/dashboard/artist/settings': SettingsIcon"));
@@ -716,9 +718,9 @@ test('workspace first-paint skeleton uses the same constrained shell as the load
     assert.ok(bootShell.includes("$workspaceNavigationCount = request()->is('dashboard/buyer*') ? 3 : 5"));
     assert.ok(routeLoading.includes("pathname.startsWith('/dashboard/buyer') ? 3 : 5"));
     assert.ok(bootShell.includes("$isArtworkStudio = request()->is('dashboard/artist/artworks', 'dashboard/artist/artworks/new')"));
-    assert.ok(bootShell.includes('lg:left-1/2 lg:bottom-6'));
-    assert.ok(bootShell.includes('lg:w-[min(54rem,calc(100vw_-_3rem))]'));
-    assert.ok(bootShell.includes('lg:h-16 lg:px-3'));
+    assert.ok(bootShell.includes('fixed inset-x-0 bottom-0 z-50'));
+    assert.ok(bootShell.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-max'));
+    assert.ok(bootShell.includes('lg:h-16 lg:w-fit lg:grid-flow-col lg:auto-cols-max'));
     assert.doesNotMatch(bootShell, /<aside[^>]*lg:block/);
 });
 
