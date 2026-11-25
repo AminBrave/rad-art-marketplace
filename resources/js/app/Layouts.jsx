@@ -155,7 +155,7 @@ export function PublicLayout() {
                         <div className="grid gap-1">
                             {publicLinks.map(({ to, label, Icon, end }) => (
                                 <NavLink key={to} to={to} end={end} onClick={() => setMobileMenuOpen(false)}
-                                    className={({ isActive }) => ['flex min-h-11 items-center gap-3 rounded-md px-3 text-sm font-semibold no-underline transition-colors', isActive ? 'bg-paper text-terracotta-strong shadow-soft' : 'text-muted hover:bg-surface-muted hover:text-ink'].join(' ')}>
+                                    className={({ isActive }) => ['flex min-h-11 items-center gap-3 rounded-md px-3 text-sm font-semibold no-underline transition-colors', isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink'].join(' ')}>
                                     <Icon size={19} strokeWidth={1.9} aria-hidden="true" /><span>{label}</span>
                                 </NavLink>
                             ))}
@@ -674,7 +674,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                         : t(item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label)}
                                     className={({ isActive }) => [
                                         'flex min-h-11 items-center gap-3 border-s-2 border-transparent px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
-                                        isActive ? 'bg-paper text-terracotta-strong shadow-soft' : 'text-muted hover:bg-surface-muted hover:text-ink',
+                                        isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink',
                                     ].join(' ')}
                                 >
                                     {(() => { const Icon = item.to.startsWith('/artists/') ? UserRound : workspaceNavigationIcons[item.to] ?? LayoutDashboard; return <Icon size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />; })()}
@@ -697,7 +697,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                     onClick={() => setMobileMenuOpen(false)}
                                     className={({ isActive }) => [
                                         'flex min-h-10 items-center gap-3 px-3 text-sm font-medium no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
-                                        isActive ? 'bg-paper text-terracotta-strong shadow-soft' : 'text-muted hover:bg-surface-muted hover:text-ink',
+                                        isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink',
                                     ].join(' ')}
                                 >
                                     {(() => { const Icon = item.to === '/artworks' ? Compass : item.to === '/artists' ? Users : item.to === '/collections' ? Bookmark : item.to === '/about' ? Info : item.to === '/help' ? CircleHelp : MessageCircle; return <Icon size={18} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />; })()}
