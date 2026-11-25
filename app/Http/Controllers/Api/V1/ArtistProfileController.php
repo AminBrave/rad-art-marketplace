@@ -9,17 +9,17 @@ use App\Models\ArtistProfile;
 use App\Models\Artwork;
 use App\Support\PersianSearch;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class ArtistProfileController extends Controller
 {
-    public function publicAvatar(string $path): Response
+    public function publicAvatar(string $path): StreamedResponse
     {
         abort_unless(Str::startsWith($path, 'artist-avatars/'), 404);
-        abort_if(str_contains($path, '..') || str_contains($path, '\\\\'), 404);
+        abort_if(str_contains($path, '..') || str_contains($path, chr(92)), 404);
 
         $disk = Storage::disk('public');
         abort_unless($disk->exists($path), 404);
