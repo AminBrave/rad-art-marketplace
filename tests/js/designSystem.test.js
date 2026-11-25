@@ -682,6 +682,12 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(routeLoading.includes('تنظیمات اعلان‌های درون‌برنامه‌ای') || routeLoading.includes('اعلان‌های درون‌برنامه‌ای'));
     assert.doesNotMatch(layouts, /تنظیمات اعلان درون‌برنامه‌ای/, 'Notification preferences no longer live inside the notification drawer.');
 
+    assert.ok(layouts.includes('function SidebarNavigation('), 'Discover and workspace drawers share one sidebar navigation renderer.');
+    assert.ok(layouts.includes('<SidebarNavigation'), 'Both application shells render the same sidebar navigation panel.');
+    assert.ok(layouts.includes("label: t('راد آرت')"), 'The shared panel includes the same informational section.');
+    assert.ok(layouts.includes("label: t('کشف')"), 'The shared panel includes the same discovery section.');
+    assert.ok(layouts.includes("label: t(user?.role === 'artist'"), 'The workspace section is included in the shared panel.');
+    assert.ok(layouts.includes('publicDiscoveryLinks'), 'All discovery destinations are available in both sidebar contexts.');
     assert.ok(layouts.includes("aria-label={t('ناوبری اصلی')}"), 'Public discovery navigation remains available with localized labeling.');
     assert.ok(layouts.includes("aria-label={t('بخش‌های اصلی فضای کاربری')}"), 'Discover drawer mirrors the workspace drawer section structure.');
     assert.ok(layouts.includes('my-5 border-t border-border'), 'Discover and workspace navigation sections use the same divider spacing.');
