@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from './LanguageContext';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Badge, Button, EmptyState, ErrorState, FormField, TextInput, TextareaField, FileInput, ArtworkStudioListSkeleton, UploadFeedback, MediaImage, PageHeader, SectionHeader, SelectField } from '../components/ui';
 
 const emptyArtwork = { title: '', title_en: '', description: '', description_en: '', city: '', city_en: '', category_id: '', medium: '', dimensions: '', year: '', price: '', availability: 'available' };
@@ -16,6 +16,11 @@ const statusGuidance = {
 
 export default function ArtworkStudio({ user, hasProfile, initialCreate = false }) {
     const { t, locale } = useLanguage();
+    const { hash } = useLocation();
+    useEffect(() => {
+        if (hash !== '#submitted-artworks') return;
+        document.getElementById('submitted-artworks')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, [hash]);
     const [artworkPage, setArtworkPage] = useState(1);
     const queryClient = useQueryClient();
     const categoriesQuery = useQuery({
@@ -189,7 +194,7 @@ export default function ArtworkStudio({ user, hasProfile, initialCreate = false 
                 <div className="flex flex-wrap items-center gap-3 sm:col-span-2"><Button type="submit" disabled={busy || Boolean(imageError)} loading={busy}>{editingId ? t("ذخیره و ارسال دوباره برای بررسی") : t("ثبت اثر برای بررسی")}</Button>{message && <p role="status" className="text-sm text-muted">{message}</p>}</div>
             </form>
         </section>
-        <section className="space-y-4">
+        <section id="submitted-artworks" className="scroll-mt-24 space-y-4">
             <SectionHeader title={t("آثار ثبت‌شده شما")} actions={<Button variant="outline" size="sm" onClick={() => artworksQuery.refetch()} disabled={loading}>{t("بروزرسانی")}</Button>} />
             {loadError && <ErrorState title={t("دریافت آثار ناموفق بود")} description={t(loadError)} onRetry={() => { artworksQuery.refetch(); categoriesQuery.refetch(); }} />}
             {loading ? <ArtworkStudioListSkeleton count={3} /> : artworks.length === 0 ? <EmptyState title={t("هنوز اثری ثبت نکرده‌اید")} description={t("با فرم بالا اولین اثر خود را برای بررسی ارسال کنید.")} /> :
