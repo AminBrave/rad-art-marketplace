@@ -148,18 +148,19 @@ AI should act as a capable engineering partner: understand the task, recommend b
 - Do not treat previous AI output, old prompts, issue text or PR descriptions as current requirements.
 - If a user asks for a new approach, evaluate it on its merits rather than defending the agent's default framework.
 
-## 13. Git, multi-agent collaboration and delivery
+## 13. Git, collaboration and delivery
 
-Rademan uses persistent agent lanes and isolated task branches to support parallel work. The preferred namespace is agent/<agent-name>/lane with task branches named agent/<agent-name>/<task-type>/<task-name>. Git cannot create nested refs below a legacy flat branch named agent/<agent-name>; if that ref cannot be renamed safely, use the documented collision-safe agent-<agent-name>/ namespace (lane at `/lane`, task branch at `/<task-name>`) until an owner-approved migration. Never delete or rewrite a legacy ref merely to satisfy naming convention. Task integration targets only the matching lane; cross-agent integration is owner-directed, and ordinary task work does not target main.
+Use a short-lived task branch from `main` and a PR to `main` by default. Persistent agent lanes (`agent/<name>/lane`) and nested task branches are optional tools for genuinely parallel work, not a prerequisite for ordinary changes. Task PRs in that model target only their owning lane; cross-agent integration is owner-directed and reaches `main` through a reviewed PR.
 
-Use GitHub issues, PRs and a project board when they improve parallel coordination, ownership, review and handoff. Assign one primary owner per independent task, define observable acceptance criteria, coordinate shared files/contracts, and keep task and integration status distinct.
+Check remote refs before creating nested agent branches: Git cannot have both a flat `agent/<name>` branch and nested refs below it. Never delete or rewrite a legacy ref to satisfy naming convention. See [DEVELOPMENT-WORKFLOW.md](DEVELOPMENT-WORKFLOW.md) for branch naming, collision handling and integration.
 
-Treat each user assignment as a bounded unit of work. Before editing, identify the task's outcome, included and excluded scope, affected behavior/files, dependencies and acceptance checks. Keep implementation and necessary tests/docs for that outcome together; do not expand into unrelated cleanup. If a request contains genuinely independent outcomes, split them into separately scoped tasks.
+Use GitHub issues, PRs and a project board when they improve coordination, ownership, review and handoff. Assign one primary owner per independent task, define observable acceptance criteria and coordinate shared files/contracts.
 
-**Commit batching:** Commit by task or independently reviewable outcome, not by file. A single task that changes several related files should normally produce one coherent commit containing all of them. Do not create a commit for every changed file, every small edit or each code change within a file. Create another commit only when it represents a meaningful, self-contained checkpoint (for example, a distinct task, an independently useful fix, or a necessary follow-up). Keep commits focused, reviewable and reasonably sized; avoid both fragmented commit noise and unrelated changes bundled together. Use clear imperative messages that describe the task-level outcome.
+Treat each user assignment as a bounded unit of work. Identify the outcome, included and excluded scope, affected behavior/files, dependencies and acceptance checks. Keep implementation and necessary tests/docs for that outcome together; do not expand into unrelated cleanup. If a request contains genuinely independent outcomes, split them into separately scoped tasks.
 
+**Commit batching:** Commit by task or independently reviewable outcome, not by file. A single task that changes several related files should normally produce one coherent commit containing all of them. Do not create a commit for every changed file, every small edit or each code change within a file. Create another commit only when it represents a meaningful, self-contained checkpoint. Keep commits focused and avoid both fragmented noise and unrelated changes bundled together.
 
-Follow AI/DEVELOPMENT-WORKFLOW.md for the complete branch, integration and delivery model, and AI/TASK-MANAGEMENT.md for issue and board practices. These are stable collaboration defaults that the user may explicitly change.
+Follow [TASK-MANAGEMENT.md](TASK-MANAGEMENT.md) for issue and PR practices.
 
 ## 14. Continuous improvement
 
