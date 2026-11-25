@@ -460,11 +460,16 @@ function PublicBottomNavigation({ user }) {
     const dashboardHref = user?.role === 'artist' ? '/dashboard/artist'
         : user?.role === 'buyer' ? '/dashboard/buyer'
             : user?.role === 'admin' ? '/admin' : '/login';
+    const inboxHref = user?.role === 'artist' ? '/dashboard/artist/messages'
+        : user?.role === 'buyer' ? '/dashboard/buyer/messages'
+            : user?.role === 'admin' ? '/admin/message-reports' : null;
     const items = [
         { to: '/', label: t('خانه'), Icon: House, end: true },
         { to: '/artworks', label: t('کشف'), Icon: Compass, end: true },
         { to: '/artists', label: t('هنرمندان'), Icon: Users, end: true },
-        { to: '/collections', label: t('مجموعه‌ها'), Icon: Bookmark, end: true },
+        inboxHref
+            ? { to: inboxHref, label: t(user?.role === 'admin' ? 'گزارش‌ها' : 'پیام‌ها'), Icon: user?.role === 'admin' ? Flag : MessageCircle, end: true }
+            : { to: '/collections', label: t('مجموعه‌ها'), Icon: Bookmark, end: true },
         { to: dashboardHref, label: t(user ? 'حساب کاربری' : 'ورود'), Icon: UserRound, end: true },
     ];
     return (
