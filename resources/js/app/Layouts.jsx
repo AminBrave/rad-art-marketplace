@@ -500,7 +500,7 @@ function AuthenticatedBottomNavigation({ mobileLinks, unreadConversationCount = 
                     const isCreateArtworkLink = item.to === '/dashboard/artist/artworks/new';
                     const localizedUnreadCount = unreadConversationCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US');
                     const navigationLabel = isMessagesLink && unreadConversationCount > 0
-                        ? `${accessibleLabel}، ${localizedUnreadCount} ${t('گفتگوی خوانده‌نشده')}`
+                        ? `${accessibleLabel}، ${localizedUnreadCount} ${t('گفتگوهای خوانده‌نشده')}`
                         : accessibleLabel;
                     const visibleLabel = t(item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label);
                     return (
@@ -638,7 +638,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                     end={item.end}
                                     onClick={() => setMobileMenuOpen(false)}
                                     aria-label={item.to.endsWith('/messages') && unreadConversationCount > 0
-                                        ? `${t(item.label)}، ${unreadConversationCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} ${t('گفتگوی خوانده‌نشده')}`
+                                        ? `${t(item.label)}، ${unreadConversationCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} ${t('گفتگوهای خوانده‌نشده')}`
                                         : t(item.label)}
                                     className={({ isActive }) => [
                                         'flex min-h-11 items-center border-s-2 border-transparent px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
