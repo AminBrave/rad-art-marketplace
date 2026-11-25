@@ -23,25 +23,24 @@ Prefer correct, secure, privacy-conscious, reliable, accessible and maintainable
 
 See AI/DEVELOPMENT-GUIDE.md for the central engineering guide.
 
-## 4. Multi-agent branch lanes
+## 4. Branching and parallel work
 
-Rademan supports parallel work by multiple agents. Follow AI/DEVELOPMENT-WORKFLOW.md for lane isolation, task branches, integration and handoff.
+Follow AI/DEVELOPMENT-WORKFLOW.md for branch naming, PR targets, integration and handoff.
 
-- Each active agent normally has a dedicated persistent lane named agent/<agent-name>/lane. If a legacy flat branch blocks that namespace, use agent-<agent-name>/lane until an owner-approved migration.
-- Each task normally uses agent/<agent-name>/<task-type>/<task-name>. If a legacy branch named agent/<agent-name> already exists and cannot be safely renamed, use the documented collision-safe fallback agent-<agent-name>/<task-name> until migration is possible.
-- Task branches merge into their matching persistent lane (preferred or collision-safe fallback), never directly into another agent's lane or main.
-- Cross-agent integration is an explicit owner-directed activity using the integration branch/workflow.
-- Keep parallel tasks independent; coordinate shared files and contracts before overlapping edits.
-- Do not invent a new agent identity if it is unclear. Confirm the identity and intended base. If the required nested namespace is blocked by a legacy ref, follow the collision fallback in AI/DEVELOPMENT-WORKFLOW.md; do not force, delete or rewrite the legacy ref.
+- Default to a short-lived task branch from `main` and a PR to `main`. Persistent agent lanes are optional and intended for genuinely parallel work.
+- When lanes are used, each agent owns its lane and task branches; task PRs target only that agent's lane.
+- Cross-agent integration is explicit and owner-directed. Do not merge task work into another agent's lane or `main` outside the selected workflow.
+- Inspect live remote branch state before creating nested refs. Never force, delete or rewrite a legacy ref to satisfy a naming convention.
+- Coordinate shared files and contracts before overlapping edits. Do not assume remote state reveals local uncommitted work.
 
 ## 5. GitHub task management
 
 Use GitHub issues and pull requests to coordinate substantial or parallel work, not as mandatory ceremony for every small change. AI/TASK-MANAGEMENT.md defines practical task ownership, issue structure, labels and optional board use.
 
-- One clearly owned task per agent/task branch; link its issue and PR when tracking is useful.
+- One clearly owned task per task branch; link its issue and PR when tracking is useful.
 - The user's task assignment authorizes the requested work. Board status, labels and old backlog items do not independently authorize it.
 - Check live issue/PR and branch state before relying on them. Avoid duplicate tasks and conflicting edits.
-- Keep PRs focused, reviewable and explicit about verification and integration dependencies.
+- Keep PRs focused, reviewable and explicit about target branch, verification and integration dependencies.
 
 ## 6. Execution and risk
 
@@ -51,7 +50,7 @@ Run proportionate local development checks when useful and safe; report exactly 
 
 - AI/DEVELOPMENT-GUIDE.md is the central engineering reference.
 - AI/PROJECT.md describes product context; AI/ARCHITECTURE.md describes verified implementation; AI/DESIGN-SYSTEM.md covers design guidance; AI/SECURITY.md covers security.
-- AI/DEVELOPMENT-WORKFLOW.md owns branch lanes, integration and delivery workflow.
+- AI/DEVELOPMENT-WORKFLOW.md owns branch and delivery workflow.
 - AI/TASK-MANAGEMENT.md owns GitHub task and project-management guidance.
 - .agents/skills/ contains optional task-focused methods. Load only what helps; skills do not override the user or duplicate global policy.
 - AI may recommend improvements to agent guidance and skills. Keep instructions concise and non-duplicative.
