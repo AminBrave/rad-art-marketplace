@@ -280,8 +280,8 @@ class SocialNotificationBrowserTests(unittest.TestCase):
         page.unroute("**/api/v1/notifications/preferences")
         page.route("**/api/v1/notifications/preferences", preferences_route)
         try:
-            page.goto(BASE_URL + "/dashboard/buyer/messages", wait_until="domcontentloaded")
-            page.get_by_role("button", name=re.compile("^اعلان‌ها")).click()
+            page.goto(BASE_URL + "/dashboard/buyer/settings", wait_until="domcontentloaded")
+            page.get_by_role("heading", name="تنظیمات").wait_for()
             preference = page.get_by_role(
                 "checkbox",
                 name=re.compile("^پاسخ به دیدگاه‌ها"),
@@ -299,7 +299,7 @@ class SocialNotificationBrowserTests(unittest.TestCase):
             self.assertEqual(preference_updates, [{"in_app_comment_replies": False}])
             message_preference = page.get_by_role(
                 "checkbox",
-                name=re.compile("^اعلان پیام‌های جدید"),
+                name=re.compile("^پیام‌های جدید"),
             )
             expect(message_preference).to_be_checked()
         finally:

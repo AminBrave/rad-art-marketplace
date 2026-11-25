@@ -9,11 +9,27 @@ use App\Models\ArtistProfile;
 use App\Models\Artwork;
 use App\Support\PersianSearch;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ArtistProfileController extends Controller
 {
+    public function publicAvatar(string $path): StreamedResponse
+    {
+        abort_unless(Str::startsWith($path, 'artist-avatars/'), 404);
+        abort_if(str_contains($path, '..') || str_contains($path, chr(92)), 404);
+
+        $disk = Storage::disk('public');
+        abort_unless($disk->exists($path), 404);
+
+        return $disk->response($path, null, [
+            'Cache-Control' => 'public, max-age=3600',
+            'X-Content-Type-Options' => 'nosniff',
+        ], 'inline');
+    }
+
     public function index(Request $request): JsonResponse
     {
         $profiles = ArtistProfile::query()
@@ -39,6 +55,7 @@ class ArtistProfileController extends Controller
                 'bio_en' => $profile->bio_en ? Str::limit($profile->bio_en, 220) : null,
                 'city' => $profile->city,
                 'city_en' => $profile->city_en,
+                'avatar_url' => $profile->avatar_path ? $this->avatarUrl($profile->avatar_path) : null,
             ]);
 
         return response()->json($profiles);
@@ -56,10 +73,19 @@ class ArtistProfileController extends Controller
         $user = $request->user();
         $profile = $user->artistProfile()->first();
         $validated = $this->validatedProfile($request);
+        $avatar = $validated['avatar'] ?? null;
+        unset($validated['avatar']);
+        if ($avatar) {
+            $validated['avatar_path'] = $avatar->store('artist-avatars', 'public');
+        }
 
         if ($profile) {
             $this->authorize('update', $profile);
+            $oldAvatarPath = $profile->avatar_path;
             $profile->update($validated);
+            if ($avatar && $oldAvatarPath) {
+                Storage::disk('public')->delete($oldAvatarPath);
+            }
         } else {
             $this->authorize('create', ArtistProfile::class);
             $baseSlug = Str::slug($validated['display_name']) ?: 'artist';
@@ -125,7 +151,19 @@ class ArtistProfileController extends Controller
     public function update(Request $request, ArtistProfile $artistProfile): JsonResponse
     {
         $this->authorize('update', $artistProfile);
-        $artistProfile->update($this->validatedProfile($request));
+        $validated = $this->validatedProfile($request);
+        $avatar = $validated['avatar'] ?? null;
+        unset($validated['avatar']);
+        $oldAvatarPath = $artistProfile->avatar_path;
+        if ($avatar) {
+            $validated['avatar_path'] = $avatar->store('artist-avatars', 'public');
+        }
+
+        $artistProfile->update($validated);
+
+        if ($avatar && $oldAvatarPath) {
+            Storage::disk('public')->delete($oldAvatarPath);
+        }
 
         return response()->json(['message' => 'پروفایل هنرمند به‌روزرسانی شد.', 'data' => $this->payload($artistProfile->refresh())]);
     }
@@ -142,6 +180,7 @@ class ArtistProfileController extends Controller
             'website_url' => ['nullable', 'url', 'max:255'],
             'instagram_handle' => ['nullable', 'string', 'regex:/^[A-Za-z0-9._]{1,30}$/'],
             'is_public' => ['required', 'boolean'],
+            'avatar' => ['sometimes', 'nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048', 'dimensions:max_width=3000,max_height=3000'],
         ]);
     }
 
@@ -159,7 +198,17 @@ class ArtistProfileController extends Controller
             'website_url' => $profile->website_url,
             'instagram_handle' => $profile->instagram_handle,
             'is_public' => $profile->is_public,
+            'avatar_url' => $profile->avatar_path ? $this->avatarUrl($profile->avatar_path) : null,
         ];
+    }
+
+    /**
+     * Return a same-origin path so deployments accessed through LAN hosts, reverse
+     * proxies, or custom domains do not leak the configured APP_URL into image URLs.
+     */
+    private function avatarUrl(string $path): string
+    {
+        return '/media/'.ltrim($path, '/');
     }
 
     private function publicArtworkPayload(Artwork $artwork, bool $includeEngagement): array

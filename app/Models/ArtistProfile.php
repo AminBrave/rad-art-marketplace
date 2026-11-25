@@ -13,6 +13,7 @@ class ArtistProfile extends Model
     protected $fillable = [
         'slug',
         'display_name',
+        'avatar_path',
         'display_name_en',
         'bio',
         'bio_en',

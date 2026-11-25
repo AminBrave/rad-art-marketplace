@@ -111,7 +111,7 @@ class ArtistFollowBrowserTests(unittest.TestCase):
         page.route("**/api/v1/artists/qa-follow-artist/follow", follow_route)
         try:
             page.goto(BASE_URL + "/artists/qa-follow-artist", wait_until="domcontentloaded")
-            follow = page.get_by_role("button", name="دنبال کردن هنرمند")
+            follow = page.get_by_role("button", name="دنبال کردن")
             expect(follow).to_have_attribute("aria-pressed", "false")
             expect(page.get_by_text("۱۲ دنبال‌کننده", exact=True)).to_be_visible()
 
@@ -133,7 +133,7 @@ class ArtistFollowBrowserTests(unittest.TestCase):
             ):
                 followed.click()
 
-            unfollowed = page.get_by_role("button", name="دنبال کردن هنرمند")
+            unfollowed = page.get_by_role("button", name="دنبال کردن")
             expect(unfollowed).to_have_attribute("aria-pressed", "false")
             expect(page.get_by_text("۱۲ دنبال‌کننده", exact=True)).to_be_visible()
             self.assertEqual(mutations, ["POST", "DELETE"])
@@ -155,8 +155,8 @@ class ArtistFollowBrowserTests(unittest.TestCase):
         )
         try:
             page.goto(BASE_URL + "/artists/qa-follow-artist", wait_until="domcontentloaded")
-            expect(page.get_by_role("link", name="برای دنبال کردن وارد شوید")).to_be_visible()
-            expect(page.get_by_role("button", name="دنبال کردن هنرمند")).to_have_count(0)
+            expect(page.get_by_role("link", name="دنبال کردن")).to_be_visible()
+            expect(page.get_by_role("button", name="دنبال کردن")).to_have_count(0)
         finally:
             context.close()
 
@@ -183,7 +183,7 @@ class ArtistFollowBrowserTests(unittest.TestCase):
         try:
             page.goto(BASE_URL + "/artists/qa-follow-artist", wait_until="domcontentloaded")
             page.get_by_role("heading", name="هنرمند قابل دنبال‌کردن").wait_for()
-            expect(page.get_by_role("button", name="دنبال کردن هنرمند")).to_have_count(0)
+            expect(page.get_by_role("button", name="دنبال کردن")).to_have_count(0)
             expect(page.get_by_text("دنبال‌کننده", exact=False)).to_have_count(0)
         finally:
             context.close()

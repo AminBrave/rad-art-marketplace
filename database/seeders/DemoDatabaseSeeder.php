@@ -85,12 +85,17 @@ class DemoDatabaseSeeder extends Seeder
             $artists[] = $user->artistProfile()->updateOrCreate([], [
                 'slug' => $key === 'artist' ? 'arman-rezaei' : $key,
                 'display_name' => $name,
+                'display_name_en' => $i % 5 === 0 ? null : ['Arman Rezaei', 'Sara Nikpey', 'Nima Farahmand', 'Raha Karimi', 'Mani Parsa', 'Yalda Ahmadi', 'Kian Mousavi', 'Taraneh Sadeghi', 'Parsa Sharifi', 'Mahtab Heydari', 'Saman Rafiei', 'Hasti Mohammadi', 'Ava Moradi', 'Bardia Zamani'][$i],
+                'bio_en' => $i % 4 === 0 ? null : 'An independent artist exploring '.$specialty.' through a distinctive contemporary practice. This profile is part of the Rademan demo collection.',
+                'city_en' => $i % 6 === 0 ? null : ['Tehran', 'Isfahan', 'Shiraz', 'Tabriz', 'Rasht', 'Tehran', 'Mashhad', 'Karaj', 'Yazd', 'Qazvin', 'Ahvaz', 'Kashan', 'Sanandaj', 'Bandar Abbas'][$i],
+                'avatar_path' => $i % 4 === 3 ? null : 'artist-avatars/demo/'.$key.'.svg',
                 'bio' => $name.' هنرمندی فعال در حوزه '.$specialty.' است. این پروفایل برای آزمایش امکانات بازار هنر رادمان ساخته شده است.',
                 'city' => $city,
                 'website_url' => $i % 3 === 0 ? 'https://example.com/'.$key : null,
                 'instagram_handle' => $i % 4 === 0 ? null : 'demo.'.$key,
                 'is_public' => $i !== 13,
             ]);
+            if ($i % 4 !== 3) Storage::disk('public')->put('artist-avatars/demo/'.$key.'.svg', $this->avatarSvg($name, $i));
         }
 
         $buyers = [];
@@ -99,6 +104,19 @@ class DemoDatabaseSeeder extends Seeder
                 'name' => $name, 'password' => $passwordHash,
                 'role' => User::ROLE_BUYER, 'email_verified_at' => now(),
             ]);
+        }
+
+        $followScenarios = [
+            [$artists[0], $buyers[0]], [$artists[0], $buyers[1]], [$artists[1], $buyers[0]],
+            [$artists[1], $artists[0]->user], [$artists[2], $buyers[2]], [$artists[3], $buyers[3]],
+            [$artists[4], $buyers[0]], [$artists[5], $buyers[1]], [$artists[6], $buyers[2]],
+            [$artists[8], $artists[1]->user], [$artists[9], $buyers[3]], [$artists[11], $buyers[0]],
+        ];
+        foreach ($followScenarios as [$profile, $follower]) {
+            DB::table('artist_follows')->updateOrInsert(
+                ['artist_profile_id' => $profile->id, 'follower_user_id' => $follower->id],
+                ['created_at' => now()->subDays(($profile->id + $follower->id) % 20), 'updated_at' => now()],
+            );
         }
 
         // This buyer intentionally has no conversations so the empty inbox can be tested.
@@ -583,6 +601,18 @@ class DemoDatabaseSeeder extends Seeder
                 $tombstone->delete();
             }
         }
+    }
+
+    private function avatarSvg(string $name, int $seed): string
+    {
+        $palette = [['#243447', '#d9a441', '#f2e8d5'], ['#344e41', '#a3b18a', '#dad7cd'], ['#5f0f40', '#fb8b24', '#e9d8a6'], ['#264653', '#2a9d8f', '#e9c46a'], ['#3d405b', '#81b29a', '#f4f1de'], ['#7f5539', '#ddb892', '#ede0d4']];
+        [$background, $accent, $foreground] = $palette[$seed % count($palette)];
+        $initial = htmlspecialchars(mb_substr($name, 0, 1), ENT_QUOTES | ENT_XML1, 'UTF-8');
+        return <<<SVG
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640" viewBox="0 0 640 640" role="img" aria-label="{$initial}">
+<rect width="640" height="640" fill="{$background}"/><circle cx="320" cy="245" r="142" fill="{$accent}" opacity=".9"/><path d="M70 640c18-154 112-232 250-232s232 78 250 232" fill="{$foreground}"/><text x="320" y="310" text-anchor="middle" font-family="sans-serif" font-size="170" font-weight="700" fill="{$background}">{$initial}</text>
+</svg>
+SVG;
     }
 
     private function title(string $category, int $n): string
