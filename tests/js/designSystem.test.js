@@ -173,6 +173,12 @@ test('public and workspace navigation expose role-aware destinations and an arti
     assert.ok(layouts.includes('data-testid="public-bottom-navigation"'));
     assert.ok(layouts.includes('function AuthenticatedBottomNavigation'));
     assert.ok(layouts.includes('data-testid="authenticated-bottom-navigation"'));
+    assert.ok(layouts.includes('unreadConversationCount={unreadConversationCount}'), 'Discovery navigation receives the unread conversation count.');
+    assert.ok(layouts.includes('function PublicBottomNavigation({ user, unreadConversationCount = 0 })'));
+    assert.ok(layouts.includes('inline-flex h-5 min-w-5 items-center justify-center'), 'Unread bubbles center their number in both navigation bars.');
+    assert.ok(layouts.includes('t(user?.role === "artist" ? "فضای هنرمند" : "فضای کاربری")'));
+    assert.ok(layouts.includes("item.to + '#submitted-artworks'"), 'The artist content navigation targets the submitted-artworks section.');
+    assert.ok(readFileSync(new URL('../../resources/js/app/ArtworkStudio.jsx', import.meta.url), 'utf8').includes('id="submitted-artworks"'));
     assert.ok(layouts.includes('const profileHref = artistProfileQuery.data?.slug'));
     assert.ok(layouts.includes("label: 'پیش‌نمایش پروفایل'"));
     assert.ok(layouts.includes("outletContext?.profile?.slug"));
