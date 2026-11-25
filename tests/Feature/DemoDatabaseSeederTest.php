@@ -23,6 +23,7 @@ class DemoDatabaseSeederTest extends TestCase
     public function test_demo_seeder_covers_roles_states_pagination_and_private_images(): void
     {
         Storage::fake('local');
+        Storage::fake('public');
         $this->seed(DemoDatabaseSeeder::class);
 
         $this->assertDatabaseHas('users', ['email' => 'admin@rademan.test', 'role' => User::ROLE_ADMIN]);
@@ -32,6 +33,10 @@ class DemoDatabaseSeederTest extends TestCase
 
         $this->assertSame(23, User::query()->count());
         $this->assertSame(16, ArtistProfile::query()->count());
+        $this->assertGreaterThan(0, ArtistProfile::query()->whereNotNull('avatar_path')->count());
+        $this->assertGreaterThan(0, DB::table('artist_follows')->count());
+        $sampleAvatar = ArtistProfile::query()->whereNotNull('avatar_path')->firstOrFail();
+        Storage::disk('public')->assertExists($sampleAvatar->avatar_path);
         $this->assertSame(14, ArtistProfile::query()->where('is_public', true)->count());
         $this->assertSame(6, Category::query()->where('is_active', true)->count());
         $this->assertSame(1, Category::query()->where('is_active', false)->count());
@@ -69,6 +74,7 @@ class DemoDatabaseSeederTest extends TestCase
     public function test_seeded_accounts_support_admin_pagination(): void
     {
         Storage::fake('local');
+        Storage::fake('public');
         $this->seed(DemoDatabaseSeeder::class);
 
         $admin = User::query()->where('email', 'admin@rademan.test')->firstOrFail();
@@ -86,6 +92,7 @@ class DemoDatabaseSeederTest extends TestCase
     public function test_seeded_editorial_variations_are_filtered_from_public_endpoints(): void
     {
         Storage::fake('local');
+        Storage::fake('public');
         $this->seed(DemoDatabaseSeeder::class);
 
         $this->getJson('/api/v1/collections')
@@ -112,6 +119,7 @@ class DemoDatabaseSeederTest extends TestCase
     public function test_seeded_empty_buyer_has_no_conversations(): void
     {
         Storage::fake('local');
+        Storage::fake('public');
         $this->seed(DemoDatabaseSeeder::class);
 
         $emptyBuyer = User::query()->where('email', 'buyer-empty@rademan.test')->firstOrFail();
@@ -133,6 +141,7 @@ class DemoDatabaseSeederTest extends TestCase
     public function test_demo_seeder_removes_empty_buyer_demo_threads_without_touching_unrelated_threads(): void
     {
         Storage::fake('local');
+        Storage::fake('public');
         $emptyBuyer = User::query()->create([
             'name' => 'خریدار بدون گفتگو',
             'email' => 'buyer-empty@rademan.test',
@@ -171,8 +180,9 @@ class DemoDatabaseSeederTest extends TestCase
     public function test_demo_seeder_is_repeatable_without_duplicate_records(): void
     {
         Storage::fake('local');
+        Storage::fake('public');
         $this->seed(DemoDatabaseSeeder::class);
-        $tables = ['users', 'artist_profiles', 'categories', 'artworks', 'conversations', 'messages', 'conversation_contexts', 'message_reactions', 'message_attachments', 'notifications', 'message_reports', 'message_moderation_audits', 'user_blocks', 'curated_collections', 'featured_artist_selections', 'editorial_audits'];
+        $tables = ['users', 'artist_profiles', 'categories', 'artworks', 'conversations', 'messages', 'conversation_contexts', 'message_reactions', 'message_attachments', 'notifications', 'message_reports', 'message_moderation_audits', 'user_blocks', 'curated_collections', 'featured_artist_selections', 'editorial_audits', 'artist_follows'];
         $counts = array_map(fn (string $table): int => DB::table($table)->count(), $tables);
 
         $this->seed(DemoDatabaseSeeder::class);
