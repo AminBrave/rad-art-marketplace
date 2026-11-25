@@ -45,8 +45,8 @@ export function ArtistCard({ artist, className = '' }) {
         <article className={cn('group relative min-w-0 overflow-hidden border border-border bg-paper transition-colors duration-300 hover:border-terracotta', className)}>
             <Link to={artist.slug ? `/artists/${artist.slug}` : '/artists'} className="flex h-full flex-col bg-paper p-5 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus sm:p-6">
                 <div className="flex items-start justify-between gap-4">
-                    <div className="grid h-16 w-16 shrink-0 place-items-center border border-sand bg-surface-muted text-2xl font-black text-terracotta-strong transition-colors duration-300 group-hover:border-ink group-hover:bg-ink group-hover:text-inverse" aria-hidden="true">
-                        {initial}
+                    <div className="h-16 w-16 shrink-0 overflow-hidden border border-sand bg-surface-muted text-2xl font-black text-terracotta-strong transition-colors duration-300 group-hover:border-ink" aria-hidden="true">
+                        {artist.avatar_url ? <MediaImage src={artist.avatar_url} alt="" className="h-full w-full" imageClassName="object-cover" /> : <div className="grid h-full w-full place-items-center">{initial}</div>}
                     </div>
                     <span className="pt-1 text-[11px] font-semibold tracking-wide text-subtle">{locale === 'en' ? 'RAD ART ARTIST' : 'هنرمند راد آرت'}</span>
                 </div>
