@@ -8,14 +8,91 @@ import { useTheme } from './useTheme';
 import { useLanguage } from './LanguageContext';
 import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, NotificationListSkeleton } from '../components/ui';
 
-const publicSecondaryLinks = [
-    { to: '/artworks', label: 'کشف' },
-    { to: '/artists', label: 'هنرمندان' },
-    { to: '/collections', label: 'مجموعه‌ها' },
-    { to: '/about', label: 'درباره ما' },
-    { to: '/help', label: 'راهنما' },
-    { to: '/contact', label: 'تماس' },
+const publicDiscoveryLinks = [
+    { to: '/', label: 'خانه', Icon: House, end: true },
+    { to: '/artworks', label: 'کشف آثار', Icon: Compass, end: true },
+    { to: '/artists', label: 'هنرمندان', Icon: Users, end: true },
+    { to: '/collections', label: 'مجموعه‌ها', Icon: Bookmark, end: true },
 ];
+
+const publicInfoLinks = [
+    { to: '/about', label: 'درباره ما', Icon: Info, end: true },
+    { to: '/help', label: 'راهنما', Icon: CircleHelp, end: true },
+    { to: '/contact', label: 'تماس', Icon: MessageCircle, end: true },
+];
+
+function getPublicWorkspaceLinks(user, profileHref, t) {
+    if (!user) return [
+        { to: '/login', label: t('ورود'), Icon: LogIn, end: true },
+        { to: '/register', label: t('ساخت حساب کاربری'), Icon: UserPlus, end: true },
+    ];
+
+    const roleLinks = user.role === 'artist' ? [
+        { to: '/dashboard/artist', label: t('داشبورد'), Icon: House, end: true },
+        { to: profileHref, label: t('پیش‌نمایش پروفایل'), Icon: UserRound, end: true },
+        { to: '/dashboard/artist/artworks', label: t('محتوا'), Icon: Images, end: true },
+        { to: '/dashboard/artist/artworks/new', label: t('ثبت اثر'), Icon: PlusCircle, end: true },
+        { to: '/dashboard/artist/messages', label: t('پیام‌ها'), Icon: MessageCircle, end: true },
+        { to: '/dashboard/artist/settings', label: t('تنظیمات'), Icon: SettingsIcon, end: true },
+    ] : user.role === 'buyer' ? [
+        { to: '/dashboard/buyer', label: t('داشبورد'), Icon: House, end: true },
+        { to: '/dashboard/buyer/messages', label: t('پیام‌ها'), Icon: MessageCircle, end: true },
+        { to: '/dashboard/buyer/settings', label: t('تنظیمات'), Icon: SettingsIcon, end: true },
+    ] : user.role === 'admin' ? [
+        { to: '/admin', label: t('داشبورد'), Icon: House, end: true },
+        { to: '/admin/users', label: t('کاربران'), Icon: Users, end: true },
+        { to: '/admin/artworks', label: t('آثار'), Icon: ClipboardCheck, end: true },
+        { to: '/admin/message-reports', label: t('ایمنی'), Icon: Flag, end: true },
+        { to: '/admin/artwork-comment-reports', label: t('دیدگاه‌ها'), Icon: Flag, end: true },
+        { to: '/admin/editorial', label: t('سردبیری'), Icon: BookOpen, end: true },
+        { to: '/admin/settings', label: t('تنظیمات'), Icon: SettingsIcon, end: true },
+    ] : [];
+
+    return [...roleLinks, { action: 'logout', label: t('خروج از حساب'), Icon: LogOut }];
+}
+
+function SidebarNavigation({ sections, onNavigate, unreadConversationCount = 0, locale = 'fa' }) {
+    return (
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-5">
+            {sections.filter((section) => section.items?.length).map((section, sectionIndex) => (
+                <div key={section.label}>
+                    {sectionIndex > 0 && <div className="my-5 border-t border-border" />}
+                    <nav aria-label={section.label}>
+                        <h3 className="mb-2 px-3 text-xs font-extrabold text-ink">{section.label}</h3>
+                        <div className="grid gap-1">
+                            {section.items.map((item) => {
+                                const Icon = item.Icon ?? workspaceNavigationIcons[item.to] ?? LayoutDashboard;
+                                const unread = item.to?.endsWith('/messages') ? unreadConversationCount : 0;
+                                const label = item.shortLabel ?? item.label;
+                                const content = (
+                                    <>
+                                        <Icon size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />
+                                        <span className="min-w-0 flex-1 truncate">{label}</span>
+                                        {unread > 0 && <span aria-hidden="true" className="ms-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-terracotta px-1 text-[10px] font-extrabold leading-none tabular-nums text-inverse">{unread > 99 ? (locale === 'fa' ? '۹۹+' : '99+') : unread.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</span>}
+                                    </>
+                                );
+                                const className = 'flex min-h-11 w-full items-center gap-3 border-s-2 border-transparent px-3 text-start text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus';
+                                if (item.action === 'logout') return (
+                                    <button key="logout" type="button" onClick={onNavigate} className={className + ' text-muted hover:text-ink'}>
+                                        {content}
+                                    </button>
+                                );
+                                return (
+                                    <NavLink key={item.to} to={item.to} end={item.end}
+                                        onClick={onNavigate}
+                                        aria-label={unread > 0 ? label + '، ' + unread.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + (locale === 'fa' ? 'گفتگوهای خوانده‌نشده' : 'unread conversations') : label}
+                                        className={({ isActive }) => [className, isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink'].join(' ')}>
+                                        {content}
+                                    </NavLink>
+                                );
+                            })}
+                        </div>
+                    </nav>
+                </div>
+            ))}
+        </div>
+    );
+}
 
 function ThemeControl() {
     const { theme, cycleTheme } = useTheme();
@@ -150,54 +227,16 @@ export function PublicLayout() {
                         {user && user.role !== 'admin' && <NotificationBell user={user} />}
                         {user && <span className="ms-auto min-w-0 truncate text-sm font-semibold text-ink">{user.name}</span>}
                     </div>
-                    <div className="min-h-0 flex-1 overflow-y-auto px-4 py-5">
-                        <nav aria-label={t('ناوبری اصلی')}>
-                            <h3 className="mb-2 px-3 text-xs font-extrabold text-ink">{t('کشف')}</h3>
-                            <div className="grid gap-1">
-                                {publicLinks.map(({ to, label, Icon, end }) => (
-                                    <NavLink key={to} to={to} end={end} onClick={() => setMobileMenuOpen(false)}
-                                        className={({ isActive }) => [
-                                            'flex min-h-11 items-center gap-3 border-s-2 border-transparent px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
-                                            isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink',
-                                        ].join(' ')}>
-                                        <Icon size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" /><span>{label}</span>
-                                    </NavLink>
-                                ))}
-                            </div>
-                        </nav>
-
-                        <div className="my-5 border-t border-border" />
-
-                        <nav aria-label={t('بخش‌های اصلی فضای کاربری')}>
-                            <h3 className="mb-2 px-3 text-xs font-extrabold text-ink">{t(user ? (user.role === 'artist' ? 'فضای هنرمند' : user.role === 'admin' ? 'مدیریت' : 'فضای خریدار') : 'حساب کاربری')}</h3>
-                            <div className="grid gap-1">
-                                {user ? (
-                                    <>
-                                        <NavLink to={dashboardHref} end onClick={() => setMobileMenuOpen(false)}
-                                            className={({ isActive }) => ['flex min-h-11 items-center gap-3 border-s-2 border-transparent px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus', isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink'].join(' ')}>
-                                            <LayoutDashboard size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" /><span>{t('حساب کاربری')}</span>
-                                        </NavLink>
-                                        {user.role === 'artist' && <NavLink to={profileHref} onClick={() => setMobileMenuOpen(false)}
-                                            className={({ isActive }) => ['flex min-h-11 items-center gap-3 border-s-2 border-transparent px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus', isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink'].join(' ')}>
-                                            <UserRound size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" /><span>{t('پیش‌نمایش پروفایل')}</span>
-                                        </NavLink>}
-                                        <button type="button" onClick={handleLogout} className="flex min-h-11 w-full items-center gap-3 border-s-2 border-transparent px-3 text-start text-sm font-semibold text-muted transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
-                                            <LogOut size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" /><span>{t('خروج از حساب')}</span>
-                                        </button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <NavLink to="/login" onClick={() => setMobileMenuOpen(false)} className={({ isActive }) => ['flex min-h-11 items-center gap-3 border-s-2 border-transparent px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus', isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink'].join(' ')}>
-                                            <LogIn size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" /><span>{t('ورود')}</span>
-                                        </NavLink>
-                                        <NavLink to="/register" onClick={() => setMobileMenuOpen(false)} className={({ isActive }) => ['flex min-h-11 items-center gap-3 border-s-2 border-transparent px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus', isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink'].join(' ')}>
-                                            <UserPlus size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" /><span>{t('ساخت حساب کاربری')}</span>
-                                        </NavLink>
-                                    </>
-                                )}
-                            </div>
-                        </nav>
-                    </div>
+                    <SidebarNavigation
+                        sections={[
+                            { label: t('کشف'), items: publicDiscoveryLinks.map((item) => ({ ...item, label: t(item.label) })) },
+                            { label: t(user ? (user.role === 'artist' ? 'فضای هنرمند' : user.role === 'admin' ? 'مدیریت' : 'فضای خریدار') : 'حساب کاربری'), items: getPublicWorkspaceLinks(user, profileHref, t) },
+                            { label: t('راد آرت'), items: publicInfoLinks.map((item) => ({ ...item, label: t(item.label) })) },
+                        ]}
+                        onNavigate={() => { setMobileMenuOpen(false); }}
+                        unreadConversationCount={unreadConversationCount}
+                        locale={t('فارسی') === 'فارسی' ? 'fa' : 'en'}
+                    />
                 </DialogContent>
                 {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{t(logoutError)}</p>}
             </header>
@@ -678,55 +717,16 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                 </div>
 
                 <div className="flex shrink-0 items-center gap-2 border-b border-border px-4 py-3"><LanguageControl /><ThemeControl />{user?.role !== "admin" && <NotificationBell user={user} />}</div>
-                <div className="min-h-0 flex-1 overflow-y-auto px-4 py-5">
-                    <nav aria-label={t("بخش‌های اصلی فضای کاربری")}>
-                        <h3 className="mb-2 px-3 text-xs font-extrabold text-ink">{t(user?.role === "artist" ? "فضای هنرمند" : "فضای کاربری")}</h3>
-                        <div className="grid gap-1">
-                            {workspaceLinks.map((item) => (
-                                <NavLink
-                                    key={item.to}
-                                    to={item.to}
-                                    end={item.end}
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    aria-label={item.to.endsWith('/messages') && unreadConversationCount > 0
-                                        ? `${t(item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label)}، ${unreadConversationCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} ${t('گفتگوهای خوانده‌نشده')}`
-                                        : t(item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label)}
-                                    className={({ isActive }) => [
-                                        'flex min-h-11 items-center gap-3 border-s-2 border-transparent px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
-                                        isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink',
-                                    ].join(' ')}
-                                >
-                                    {(() => { const Icon = item.to.startsWith('/artists/') ? UserRound : workspaceNavigationIcons[item.to] ?? LayoutDashboard; return <Icon size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />; })()}
-                                    <span>{t(item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label)}</span>
-                                    {item.to.endsWith('/messages') && unreadConversationCount > 0 && <span aria-hidden="true" className="ms-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-terracotta px-1 text-[10px] font-extrabold leading-none tabular-nums text-inverse">{unreadConversationCount > 99 ? (locale === 'fa' ? '۹۹+' : '99+') : unreadConversationCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</span>}
-                                </NavLink>
-                            ))}
-                        </div>
-                    </nav>
-
-                    <div className="my-5 border-t border-border" />
-
-                    <nav aria-label={t('پیوندهای تکمیلی سایت')}>
-                        <h3 className="mb-2 px-3 text-xs font-extrabold text-muted">{t("کشف")}</h3>
-                        <div className="grid gap-1">
-                            {publicSecondaryLinks.map((item) => (
-                                <NavLink
-                                    key={item.to}
-                                    to={item.to}
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className={({ isActive }) => [
-                                        'flex min-h-10 items-center gap-3 px-3 text-sm font-medium no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
-                                        isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink',
-                                    ].join(' ')}
-                                >
-                                    {(() => { const Icon = item.to === '/artworks' ? Compass : item.to === '/artists' ? Users : item.to === '/collections' ? Bookmark : item.to === '/about' ? Info : item.to === '/help' ? CircleHelp : MessageCircle; return <Icon size={18} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />; })()}
-                                    <span>{t(item.label)}</span>
-                                </NavLink>
-                            ))}
-                        </div>
-                    </nav>
-                </div>
-
+                <SidebarNavigation
+                    sections={[
+                        { label: t('کشف'), items: publicDiscoveryLinks.map((item) => ({ ...item, label: t(item.label) })) },
+                        { label: t(user?.role === 'artist' ? 'فضای هنرمند' : user?.role === 'admin' ? 'مدیریت' : 'فضای خریدار'), items: workspaceLinks.map((item) => ({ ...item, label: item.shortLabel ?? workspaceNavigationLabels[item.to] ? t(item.shortLabel ?? workspaceNavigationLabels[item.to]) : t(item.label) })) .concat([{ action: 'logout', label: t('خروج از حساب'), Icon: LogOut }]) },
+                        { label: t('راد آرت'), items: publicInfoLinks.map((item) => ({ ...item, label: t(item.label) })) },
+                    ]}
+                    onNavigate={handleLogout}
+                    unreadConversationCount={unreadConversationCount}
+                    locale={locale}
+                />
                 <div className="shrink-0 border-t border-border bg-surface-muted p-4">
                     <Link
                         to="/"
