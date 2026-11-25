@@ -497,7 +497,6 @@ function AuthenticatedBottomNavigation({ mobileLinks, unreadConversationCount = 
                     const Icon = item.to.startsWith('/artists/') ? UserRound : workspaceNavigationIcons[item.to] ?? LayoutDashboard;
                     const accessibleLabel = t(item.label);
                     const isMessagesLink = item.to.endsWith('/messages');
-                    const isCreateArtworkLink = item.to === '/dashboard/artist/artworks/new';
                     const localizedUnreadCount = unreadConversationCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US');
                     const navigationLabel = isMessagesLink && unreadConversationCount > 0
                         ? `${accessibleLabel}، ${localizedUnreadCount} ${t('گفتگوهای خوانده‌نشده')}`
