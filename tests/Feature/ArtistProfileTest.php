@@ -46,8 +46,13 @@ class ArtistProfileTest extends TestCase
     {
         Storage::fake('public');
         $artist = $this->makeUser('avatar@example.com');
-        $response = $this->actingAs($artist)->post('/api/v1/artist-profile/me', [...$this->validProfile(), '_method' => 'PUT', 'avatar' => UploadedFile::fake()->image('portrait.jpg', 640, 640)], ['Accept' => 'application/json']);
-        $response->assertOk()->assertJsonPath('data.avatar_url', fn ($url) => str_contains($url, 'artist-avatars/'));
+        $response = $this->actingAs($artist)->post('/api/v1/artist-profile/me', [
+            ...$this->validProfile(),
+            '_method' => 'PUT',
+            'avatar' => UploadedFile::fake()->image('portrait.jpg', 640, 640),
+        ], ['Accept' => 'application/json']);
+        $response->assertOk();
+        $this->assertStringContainsString('artist-avatars/', $response->json('data.avatar_url'));
         $path = $artist->fresh()->artistProfile->avatar_path;
         $this->assertNotEmpty($path);
         Storage::disk('public')->assertExists($path);
@@ -58,7 +63,13 @@ class ArtistProfileTest extends TestCase
     {
         Storage::fake('public');
         $artist = $this->makeUser('invalid-avatar@example.com');
-        $this->actingAs($artist)->post('/api/v1/artist-profile/me', [...$this->validProfile(), '_method' => 'PUT', 'avatar' => UploadedFile::fake()->create('avatar.gif', 100, 'image/gif')], ['Accept' => 'application/json'])->assertUnprocessable()->assertJsonValidationErrors('avatar');
+        $this->actingAs($artist)->post('/api/v1/artist-profile/me', [
+            ...$this->validProfile(),
+            '_method' => 'PUT',
+            'avatar' => UploadedFile::fake()->create('avatar.gif', 100, 'image/gif'),
+        ], ['Accept' => 'application/json'])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('avatar');
     }
 
     public function test_profile_validation_rejects_invalid_website_and_social_handle(): void
