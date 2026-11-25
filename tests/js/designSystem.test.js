@@ -723,7 +723,7 @@ test('workspace first-paint skeleton uses the same constrained shell as the load
 });
 
 test('Blade first-paint skeletons use route-specific geometry for studio forms, directories and collections', () => {
-    assert.ok(bootShell.includes("$isArtworkStudio = request()->is('dashboard/artist/artworks')"));
+    assert.ok(bootShell.includes("$isArtworkStudio = request()->is('dashboard/artist/artworks', 'dashboard/artist/artworks/new')"));
     assert.ok(bootShell.includes("$isCollectionDetail = request()->is('collections/*')"));
     assert.ok(bootShell.includes("$isCollectionIndex = request()->is('collections')"));
     assert.ok(bootShell.includes("request()->is('admin/editorial')"));
