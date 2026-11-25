@@ -73,9 +73,9 @@ function SidebarNavigation({ sections, onNavigate, onLogout, unreadConversationC
                                 );
                                 const className = 'flex min-h-11 w-full items-center gap-3 border-s-2 border-transparent px-3 text-start text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus';
                                 if (item.action === 'logout') return (
-                                    <button key="logout" type="button" onClick={onLogout} className={className + ' text-muted hover:text-ink'}>
+                                    <Button key="logout" variant="ghost" type="button" onClick={onLogout} className={className + ' text-muted hover:text-ink'}>
                                         {content}
-                                    </button>
+                                    </Button>
                                 );
                                 return (
                                     <NavLink key={item.to} to={item.to} end={item.end}
