@@ -131,7 +131,7 @@ function LanguageControl() {
 
 export function PublicLayout() {
     const { user, logout } = useAuth();
-    const { t } = useLanguage();
+    const { t, locale } = useLanguage();
     const artistProfileQuery = useQuery({
         queryKey: ['artist-profile', 'me', user?.id],
         queryFn: async ({ signal }) => {
@@ -171,22 +171,6 @@ export function PublicLayout() {
     };
 
     useEffect(() => setMobileMenuOpen(false), [pathname]);
-
-    const dashboardHref = user?.role === 'artist' ? '/dashboard/artist'
-        : user?.role === 'buyer' ? '/dashboard/buyer'
-            : user?.role === 'admin' ? '/admin' : '/login';
-    const inboxHref = user?.role === 'artist' ? '/dashboard/artist/messages'
-        : user?.role === 'buyer' ? '/dashboard/buyer/messages'
-            : user?.role === 'admin' ? '/admin/message-reports' : null;
-    const publicLinks = [
-        { to: '/', label: t('خانه'), Icon: House, end: true },
-        { to: '/artworks', label: t('کشف'), Icon: Compass, end: true },
-        { to: '/artists', label: t('هنرمندان'), Icon: Users, end: true },
-        inboxHref
-            ? { to: inboxHref, label: t(user?.role === 'admin' ? 'گزارش‌ها' : 'پیام‌ها'), Icon: user?.role === 'admin' ? Flag : MessageCircle, end: true }
-            : { to: '/collections', label: t('مجموعه‌ها'), Icon: Bookmark, end: true },
-        ...(!user ? [{ to: dashboardHref, label: t('ورود'), Icon: UserRound, end: true }] : []),
-    ];
 
     return (
         <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
@@ -233,9 +217,9 @@ export function PublicLayout() {
                             { label: t(user ? (user.role === 'artist' ? 'فضای هنرمند' : user.role === 'admin' ? 'مدیریت' : 'فضای خریدار') : 'حساب کاربری'), items: getPublicWorkspaceLinks(user, profileHref, t) },
                             { label: t('راد آرت'), items: publicInfoLinks.map((item) => ({ ...item, label: t(item.label) })) },
                         ]}
-                        onNavigate={() => { setMobileMenuOpen(false); }}
+                        onNavigate={handleLogout}
                         unreadConversationCount={unreadConversationCount}
-                        locale={t('فارسی') === 'فارسی' ? 'fa' : 'en'}
+                        locale={locale}
                     />
                 </DialogContent>
                 {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{t(logoutError)}</p>}
@@ -727,22 +711,6 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     unreadConversationCount={unreadConversationCount}
                     locale={locale}
                 />
-                <div className="shrink-0 border-t border-border bg-surface-muted p-4">
-                    <Link
-                        to="/"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex min-h-11 items-center justify-center rounded-lg border border-border-strong bg-paper px-4 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta hover:text-terracotta-strong"
-                    >
-                        مشاهده سایت
-                    </Link>
-                    <Button variant="ghost"
-                        type="button"
-                        onClick={handleLogout}
-                        className="mt-2 flex min-h-11 w-full items-center justify-center rounded-lg px-4 text-sm font-bold text-danger transition-colors hover:bg-danger-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
-                    >
-                        {t('خروج از حساب')}
-                    </Button>
-                </div>
             </DialogContent>
 
             <div className={isMessagingRoute
