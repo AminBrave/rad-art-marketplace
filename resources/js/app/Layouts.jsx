@@ -549,6 +549,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
         enabled: Boolean(user?.id && unreadInboxEndpoint),
         staleTime: 15_000,
         refetchInterval: 30_000,
+        refetchOnMount: 'always',
         refetchOnWindowFocus: true,
     });
     const unreadConversationCount = unreadInboxQuery.data ?? 0;
