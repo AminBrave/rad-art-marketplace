@@ -53,11 +53,21 @@ class ArtistProfileTest extends TestCase
         ], ['Accept' => 'application/json']);
         $response->assertOk();
         $path = $artist->fresh()->artistProfile->avatar_path;
-        $this->assertSame('/storage/'.$path, $response->json('data.avatar_url'));
+        $this->assertSame('/media/'.$path, $response->json('data.avatar_url'));
         $this->assertNotEmpty($path);
         Storage::disk('public')->assertExists($path);
-        $this->getJson('/api/v1/artists/'.$artist->artistProfile->slug)->assertOk()->assertJsonPath('data.avatar_url', '/storage/'.$path);
-        $this->getJson('/api/v1/artists?per_page=48')->assertOk()->assertJsonFragment(['avatar_url' => '/storage/'.$path]);
+        $this->getJson('/api/v1/artists/'.$artist->artistProfile->slug)->assertOk()->assertJsonPath('data.avatar_url', '/media/'.$path);
+        $this->get('/media/'.$path)->assertOk()->assertHeader('Content-Type', 'image/jpeg');
+        $this->getJson('/api/v1/artists?per_page=48')->assertOk()->assertJsonFragment(['avatar_url' => '/media/'.$path]);
+    }
+
+    public function test_public_avatar_endpoint_rejects_paths_outside_artist_avatar_storage(): void
+    {
+        Storage::fake('public');
+        Storage::disk('public')->put('private/secret.txt', 'not public');
+
+        $this->get('/media/private/secret.txt')->assertNotFound();
+        $this->get('/media/artist-avatars/missing.jpg')->assertNotFound();
     }
 
     public function test_artist_avatar_upload_rejects_unsupported_files(): void
