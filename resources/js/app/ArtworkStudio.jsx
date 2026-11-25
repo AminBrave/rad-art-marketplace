@@ -14,7 +14,7 @@ const statusGuidance = {
     changes_requested: 'مدیر برای این اثر اصلاحاتی درخواست کرده است. بازخورد را بررسی کنید، اثر را ویرایش و دوباره برای بررسی ارسال کنید.',
 };
 
-export default function ArtworkStudio({ user, hasProfile }) {
+export default function ArtworkStudio({ user, hasProfile, initialCreate = false }) {
     const { t, locale } = useLanguage();
     const [artworkPage, setArtworkPage] = useState(1);
     const queryClient = useQueryClient();
@@ -64,6 +64,12 @@ export default function ArtworkStudio({ user, hasProfile }) {
         setImagePreview(url);
         return () => window.URL.revokeObjectURL(url);
     }, [image]);
+
+    useEffect(() => {
+        if (initialCreate && hasProfile) {
+            document.getElementById('artwork-editor')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, [initialCreate, hasProfile]);
 
 
     if (user?.role !== 'artist') return null;
