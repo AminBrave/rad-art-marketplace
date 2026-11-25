@@ -361,6 +361,7 @@
 
 .rd-page-frame--workspace {
     width: 100%;
+    padding-inline: var(--rd-page-gutter);
 }
 
 @media (max-width: 639px) {
