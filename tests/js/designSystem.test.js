@@ -178,7 +178,7 @@ test('public and workspace navigation expose role-aware destinations and an arti
     assert.ok(layouts.includes('<NotificationBell user={user} />'), 'Discover exposes the same notification panel control as Workspace.');
     assert.ok(layouts.includes("label: t('کشف')") && layouts.includes("label: t('هنرمندان')") && layouts.includes("label: t('مجموعه‌ها')"), 'Discover sidebar labels match the public bottom navigation.');
     assert.ok(layouts.includes("const publicDiscoveryLinks = [") && layouts.includes("{ to: '/artworks', label: 'کشف', Icon: Compass") && layouts.includes("{ to: '/collections', label: 'مجموعه‌ها', Icon: Bookmark"), 'Both drawers reuse the same Discover destination definitions.');
-    assert.ok(layouts.includes("t(user.role === 'artist' ? 'فضای هنرمند' : user.role === 'admin' ? 'مدیریت' : 'فضای خریدار')"), 'Discover separates the Workspace group from its Discover destinations.');
+    assert.ok(layouts.includes("label: t(user ? (user.role === 'artist' ? 'فضای هنرمند' : user.role === 'admin' ? 'مدیریت' : 'فضای خریدار') : 'حساب کاربری')"), 'Discover separates the Workspace group from its Discover destinations.');
     assert.ok(layouts.includes("t('حساب کاربری')"), 'The Workspace destination uses the same label as the public bottom navigation.');
     assert.ok(layouts.includes("t(item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label)"), 'Workspace sidebar labels use the same compact names as its bottom navigation.');
     assert.ok(layouts.includes("isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink'"), 'Sidebar destinations use text-only active styling without a background.');
@@ -660,7 +660,7 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(workspaceLayout.includes("aria-label={t('باز کردن منوی حساب کاربری')}"));
     assert.ok(workspaceLayout.includes('<DialogContent'));
     assert.ok(workspaceLayout.includes('placement="drawer"'));
-    assert.ok(workspaceLayout.includes('aria-label={t("بخش‌های اصلی حساب کاربری")}'));
+    assert.ok(workspaceLayout.includes('<nav aria-label={section.label}>'), 'The shared sidebar labels each navigation group from its section heading.');
     assert.ok(workspaceLayout.includes('workspaceLinks.map((item)'));
     assert.ok(bottomNavigation.includes('fixed inset-x-0 bottom-0 z-50'));
     assert.ok(bottomNavigation.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-[7rem]'));
