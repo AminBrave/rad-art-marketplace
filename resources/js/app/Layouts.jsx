@@ -10,7 +10,7 @@ import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, D
 
 const publicDiscoveryLinks = [
     { to: '/', label: 'خانه', Icon: House, end: true },
-    { to: '/artworks', label: 'کشف آثار', Icon: Compass, end: true },
+    { to: '/artworks', label: 'کشف', Icon: Compass, end: true },
     { to: '/artists', label: 'هنرمندان', Icon: Users, end: true },
     { to: '/collections', label: 'مجموعه‌ها', Icon: Bookmark, end: true },
 ];
@@ -29,7 +29,7 @@ function getPublicWorkspaceLinks(user, profileHref, t) {
 
     const roleLinks = user.role === 'artist' ? [
         { to: '/dashboard/artist', label: t('داشبورد'), Icon: House, end: true },
-        { to: profileHref, label: t('پیش‌نمایش پروفایل'), Icon: UserRound, end: true },
+        { to: profileHref, label: t(profileHref.startsWith('/artists/') ? 'پیش‌نمایش پروفایل' : 'تکمیل پروفایل'), Icon: UserRound, end: true },
         { to: '/dashboard/artist/artworks', label: t('محتوا'), Icon: Images, end: true },
         { to: '/dashboard/artist/artworks/new', label: t('ثبت اثر'), Icon: PlusCircle, end: true },
         { to: '/dashboard/artist/messages', label: t('پیام‌ها'), Icon: MessageCircle, end: true },
@@ -704,7 +704,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                 <SidebarNavigation
                     sections={[
                         { label: t('کشف'), items: publicDiscoveryLinks.map((item) => ({ ...item, label: t(item.label) })) },
-                        { label: t(user?.role === 'artist' ? 'فضای هنرمند' : user?.role === 'admin' ? 'مدیریت' : 'فضای خریدار'), items: workspaceLinks.map((item) => ({ ...item, label: item.shortLabel ?? workspaceNavigationLabels[item.to] ? t(item.shortLabel ?? workspaceNavigationLabels[item.to]) : t(item.label) })) .concat([{ action: 'logout', label: t('خروج از حساب'), Icon: LogOut }]) },
+                        { label: t(user?.role === 'artist' ? 'فضای هنرمند' : user?.role === 'admin' ? 'مدیریت' : 'فضای خریدار'), items: workspaceLinks.map((item) => ({ ...item, label: item.shortLabel ?? (workspaceNavigationLabels[item.to] ? t(workspaceNavigationLabels[item.to]) : item.label) })) .concat([{ action: 'logout', label: t('خروج از حساب'), Icon: LogOut }]) },
                         { label: t('راد آرت'), items: publicInfoLinks.map((item) => ({ ...item, label: t(item.label) })) },
                     ]}
                     onNavigate={handleLogout}
