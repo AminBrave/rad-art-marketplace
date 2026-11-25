@@ -95,13 +95,20 @@ export function PublicLayout() {
 
     useEffect(() => setMobileMenuOpen(false), [pathname]);
 
+    const dashboardHref = user?.role === 'artist' ? '/dashboard/artist'
+        : user?.role === 'buyer' ? '/dashboard/buyer'
+            : user?.role === 'admin' ? '/admin' : '/login';
+    const inboxHref = user?.role === 'artist' ? '/dashboard/artist/messages'
+        : user?.role === 'buyer' ? '/dashboard/buyer/messages'
+            : user?.role === 'admin' ? '/admin/message-reports' : null;
     const publicLinks = [
-        { to: '/artworks', label: t('کشف آثار'), Icon: Compass },
-        { to: '/artists', label: t('هنرمندان'), Icon: Users },
-        { to: '/collections', label: t('مجموعه‌های منتخب'), Icon: Bookmark },
-        { to: '/about', label: t('درباره ما'), Icon: Info },
-        { to: '/help', label: t('راهنما'), Icon: CircleHelp },
-        { to: '/contact', label: t('تماس با ما'), Icon: MessageCircle },
+        { to: '/', label: t('خانه'), Icon: House, end: true },
+        { to: '/artworks', label: t('کشف'), Icon: Compass, end: true },
+        { to: '/artists', label: t('هنرمندان'), Icon: Users, end: true },
+        inboxHref
+            ? { to: inboxHref, label: t(user?.role === 'admin' ? 'گزارش‌ها' : 'پیام‌ها'), Icon: user?.role === 'admin' ? Flag : MessageCircle, end: true }
+            : { to: '/collections', label: t('مجموعه‌ها'), Icon: Bookmark, end: true },
+        { to: dashboardHref, label: t(user ? 'حساب کاربری' : 'ورود'), Icon: UserRound, end: true },
     ];
 
     return (
@@ -140,15 +147,16 @@ export function PublicLayout() {
                     </div>
                     <div className="mb-4 flex items-center gap-2 border-b border-border pb-4">
                         <LanguageControl /><ThemeControl />
+                        {user && user.role !== 'admin' && <NotificationBell user={user} />}
                         {user && <span className="ms-auto min-w-0 truncate text-sm font-semibold text-ink">{user.name}</span>}
                     </div>
                     <nav aria-label={t('ناوبری اصلی')} className="min-h-0 flex-1 overflow-y-auto">
-                        <p className="mb-2 px-3 text-xs font-extrabold text-muted">{t('کشف')}</p>
+                        <p className="mb-2 px-3 text-xs font-extrabold text-ink">{t('کشف')}</p>
                         <div className="grid gap-1">
-                            {publicLinks.map(({ to, label, Icon }) => (
-                                <NavLink key={to} to={to} onClick={() => setMobileMenuOpen(false)}
-                                    className={({ isActive }) => ['flex min-h-12 items-center gap-3 px-3 text-sm font-semibold no-underline transition-colors', isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink'].join(' ')}>
-                                    <Icon size={20} strokeWidth={1.9} aria-hidden="true" /><span>{label}</span>
+                            {publicLinks.map(({ to, label, Icon, end }) => (
+                                <NavLink key={to} to={to} end={end} onClick={() => setMobileMenuOpen(false)}
+                                    className={({ isActive }) => ['flex min-h-11 items-center gap-3 rounded-md px-3 text-sm font-semibold no-underline transition-colors', isActive ? 'bg-paper text-terracotta-strong shadow-soft' : 'text-muted hover:bg-surface-muted hover:text-ink'].join(' ')}>
+                                    <Icon size={19} strokeWidth={1.9} aria-hidden="true" /><span>{label}</span>
                                 </NavLink>
                             ))}
                         </div>
@@ -494,7 +502,7 @@ function PublicBottomNavigation({ user, unreadConversationCount = 0 }) {
                     return (
                         <NavLink key={to} to={to} end={end} aria-label={accessibleLabel} title={accessibleLabel} className={({ isActive }) => [
                             'relative flex min-w-0 flex-col items-center justify-center gap-0.5 px-1 text-[10px] font-semibold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus lg:text-xs',
-                            isActive ? 'text-terracotta-strong after:absolute after:inset-x-1/3 after:top-0 after:h-0.5 after:bg-terracotta' : 'text-muted hover:text-ink',
+                            isActive ? 'bg-paper text-terracotta-strong after:absolute after:inset-x-1/3 after:top-0 after:h-0.5 after:bg-terracotta' : 'text-muted hover:bg-surface-muted hover:text-ink',
                         ].join(' ')}>
                             <span className="relative inline-flex">
                                 <Icon size={20} strokeWidth={1.9} aria-hidden="true" />
@@ -536,8 +544,8 @@ function AuthenticatedBottomNavigation({ mobileLinks, unreadConversationCount = 
                             className={({ isActive }) => [
                                 'relative flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-md px-1 text-[10px] font-bold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus motion-reduce:transition-none lg:text-xs',
                                 isActive
-                                    ? 'text-terracotta-strong after:absolute after:inset-x-1/4 after:top-0 after:h-0.5 after:rounded-full after:bg-terracotta'
-                                    : 'text-muted hover:text-ink',
+                                    ? 'bg-paper text-terracotta-strong after:absolute after:inset-x-1/4 after:top-0 after:h-0.5 after:rounded-full after:bg-terracotta'
+                                    : 'text-muted hover:bg-surface-muted hover:text-ink',
                             ].join(' ')}
                         >
                             <span className="relative inline-flex">
@@ -661,15 +669,15 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                     end={item.end}
                                     onClick={() => setMobileMenuOpen(false)}
                                     aria-label={item.to.endsWith('/messages') && unreadConversationCount > 0
-                                        ? `${t(item.label)}، ${unreadConversationCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} ${t('گفتگوهای خوانده‌نشده')}`
-                                        : t(item.label)}
+                                        ? `${t(item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label)}، ${unreadConversationCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} ${t('گفتگوهای خوانده‌نشده')}`
+                                        : t(item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label)}
                                     className={({ isActive }) => [
                                         'flex min-h-11 items-center gap-3 border-s-2 border-transparent px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
-                                        isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:text-ink',
+                                        isActive ? 'bg-paper text-terracotta-strong shadow-soft' : 'text-muted hover:bg-surface-muted hover:text-ink',
                                     ].join(' ')}
                                 >
                                     {(() => { const Icon = item.to.startsWith('/artists/') ? UserRound : workspaceNavigationIcons[item.to] ?? LayoutDashboard; return <Icon size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />; })()}
-                                    <span>{t(item.label)}</span>
+                                    <span>{t(item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label)}</span>
                                     {item.to.endsWith('/messages') && unreadConversationCount > 0 && <span aria-hidden="true" className="ms-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-terracotta px-1 text-[10px] font-extrabold leading-none tabular-nums text-inverse">{unreadConversationCount > 99 ? (locale === 'fa' ? '۹۹+' : '99+') : unreadConversationCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</span>}
                                 </NavLink>
                             ))}
