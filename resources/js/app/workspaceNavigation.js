@@ -2,9 +2,10 @@ const workspaceLinks = {
     artist: [
         { to: '/dashboard/artist', label: 'نمای کلی', end: true, shortLabel: 'داشبورد', mobilePrimary: true },
         { to: '/dashboard/artist/artworks', label: 'کتابخانه محتوا', shortLabel: 'محتوا', mobilePrimary: true },
+        { to: '/dashboard/artist/artworks/new', label: 'ثبت اثر جدید', shortLabel: 'ثبت اثر', mobilePrimary: true, end: true },
         { to: '/dashboard/artist/messages', label: 'پیام‌ها', shortLabel: 'پیام‌ها', mobilePrimary: true },
         { to: '/dashboard/artist/profile', label: 'پروفایل هنرمند', shortLabel: 'پروفایل', mobilePrimary: true },
-        { to: '/dashboard/artist/settings', label: 'تنظیمات', shortLabel: 'تنظیمات', mobilePrimary: true },
+        { to: '/dashboard/artist/settings', label: 'تنظیمات', shortLabel: 'تنظیمات', mobilePrimary: false },
     ],
     buyer: [
         { to: '/dashboard/buyer', label: 'نمای کلی', end: true, shortLabel: 'داشبورد', mobilePrimary: true },
