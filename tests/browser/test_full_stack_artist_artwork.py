@@ -125,7 +125,7 @@ class FullStackArtistArtworkTests(unittest.TestCase):
             profile_requests = []
 
             def save_profile(route):
-                if route.request.method != "PUT":
+                if route.request.method != "POST":
                     route.continue_()
                     return
                 profile_requests.append(route.request)
@@ -146,7 +146,7 @@ class FullStackArtistArtworkTests(unittest.TestCase):
             page.route("**/api/v1/artist-profile/me", save_profile)
             with page.expect_response(
                 lambda response: response.url.endswith("/api/v1/artist-profile/me")
-                and response.request.method == "PUT"
+                and response.request.method == "POST"
             ):
                 profile_form.evaluate("(form) => { form.requestSubmit(); form.requestSubmit(); }")
 
