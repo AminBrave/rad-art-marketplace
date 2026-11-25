@@ -45,7 +45,7 @@ The default workflow for a single contributor/task is a short-lived branch from 
 - `docs/<issue>-<slug>`
 - `chore/<issue>-<slug>`
 
-An issue number is optional when no issue exists. For genuinely parallel agent work, use the optional `agent/<name>/lane` and `agent/<name>/<type>/<issue>-<slug>` model. An agent task PR targets its own lane; cross-agent integration is owner-directed and ultimately reaches `main through a reviewed PR. Check for Git ref collisions before creating nested agent branches. See [DEVELOPMENT-WORKFLOW.md](DEVELOPMENT-WORKFLOW.md) for the full procedure.
+An issue number is optional when no issue exists. For genuinely parallel agent work, use the optional `agent/<name>/lane` and `agent/<name>/<type>/<issue>-<slug>` model. An agent task PR targets its own lane; cross-agent integration is owner-directed and ultimately reaches `main` through a reviewed PR. Check for Git ref collisions before creating nested agent branches. See [DEVELOPMENT-WORKFLOW.md](DEVELOPMENT-WORKFLOW.md) for the full procedure.
 
 A PR must state its base/target clearly. Never assume that every task PR targets an agent lane or that every PR targets `main`; follow the workflow selected for that task.
 
