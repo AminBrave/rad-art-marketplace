@@ -52,11 +52,11 @@ class ArtistProfileTest extends TestCase
             'avatar' => UploadedFile::fake()->image('portrait.jpg', 640, 640),
         ], ['Accept' => 'application/json']);
         $response->assertOk();
-        $this->assertStringContainsString('artist-avatars/', $response->json('data.avatar_url'));
         $path = $artist->fresh()->artistProfile->avatar_path;
+        $this->assertSame('/storage/'.$path, $response->json('data.avatar_url'));
         $this->assertNotEmpty($path);
         Storage::disk('public')->assertExists($path);
-        $this->getJson('/api/v1/artists/'.$artist->artistProfile->slug)->assertOk()->assertJsonPath('data.avatar_url', Storage::disk('public')->url($path));
+        $this->getJson('/api/v1/artists/'.$artist->artistProfile->slug)->assertOk()->assertJsonPath('data.avatar_url', '/storage/'.$path);
     }
 
     public function test_artist_avatar_upload_rejects_unsupported_files(): void
