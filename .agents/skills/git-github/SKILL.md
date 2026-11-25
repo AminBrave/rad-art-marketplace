@@ -8,7 +8,7 @@ description: Coordinate Git branches, parallel agent lanes, commits, pull reques
 ## Start with the task
 1. Confirm repository, requested outcome, scope and acceptance checks.
 2. Inspect live remote branches and relevant open issues/PRs. If using a local checkout, inspect local status and uncommitted changes separately.
-3. Read AI/DEVELOPMENT-WORKFLOW.md and AI/TASK-MANAGEMENT.md.
+3. Read AGENTS.md and AI/TASK-ROUTING.md, then read AI/DEVELOPMENT-WORKFLOW.md and AI/TASK-MANAGEMENT.md for the GitHub-specific workflow.
 4. Use a normal task branch from `main` by default. Use persistent agent lanes only for genuinely parallel work that needs isolation.
 
 ## Branches and PR targets
