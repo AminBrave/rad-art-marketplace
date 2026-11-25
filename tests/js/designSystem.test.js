@@ -534,7 +534,7 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.doesNotMatch(layouts, /direction:ltr|<aside dir="rtl"|<main dir="rtl"/);
     
     
-    assert.ok(layouts.includes("isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden' : 'rd-workspace-main min-w-0 w-full'"));
+    assert.ok(layouts.includes("className={isMessagingRoute ? "flex h-dvh flex-col overflow-hidden bg-canvas text-ink" : "min-h-screen bg-canvas text-ink"}"));
     assert.doesNotMatch(messaging, /RAD \/ MESSAGES|ارتباط مستقیم|PageHeader/);
     assert.doesNotMatch(layouts, /ناوبری فضای کاری|RAD \/ MENU/);
     assert.ok(messageTimeline.includes('min-w-0 w-fit max-w-[88%]'));
@@ -569,7 +569,7 @@ test('messaging is viewport-locked between the authenticated app header and bott
     assert.ok(layouts.includes('lg:h-16 lg:px-3'));
     assert.doesNotMatch(layouts, /<aside[^>]*lg:block/);
     assert.ok(layouts.includes('AuthenticatedBottomNavigation mobileLinks={mobileWorkspaceLinks} unreadConversationCount={unreadConversationCount}'));
-    assert.ok(layouts.includes("isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden' : 'rd-workspace-main min-w-0 w-full'"));
+    assert.ok(layouts.includes("className={isMessagingRoute ? "flex h-dvh flex-col overflow-hidden bg-canvas text-ink" : "min-h-screen bg-canvas text-ink"}"));
 });
 
 test('messaging chat geometry follows RTL logical flow and uses Radix collision-aware overlays', () => {
@@ -646,8 +646,8 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(workspaceLayout.includes('placement="drawer"'));
     assert.ok(workspaceLayout.includes('aria-label={t("بخش‌های اصلی فضای کاربری")}'));
     assert.ok(workspaceLayout.includes('workspaceLinks.map((item)'));
-    assert.ok(workspaceLayout.includes('lg:left-1/2'));
-    assert.ok(workspaceLayout.includes('lg:w-[min(54rem,calc(100vw_-_3rem))]'));
+    assert.ok(bottomNavigation.includes('lg:left-1/2'));
+    assert.ok(bottomNavigation.includes('lg:w-[min(54rem,calc(100vw_-_3rem))]'));
     assert.ok(workspaceLayout.includes('mx-auto w-full max-w-content px-page-gutter'), 'Workspace content uses the same centered page gutters across breakpoints.');
     assert.ok(workspaceLayout.includes('<ThemeControl />'), 'Workspace appearance controls are available from the hamburger drawer.');
     assert.ok(workspaceLayout.includes('<LanguageControl />'), 'Workspace language control is available from the hamburger drawer.');
