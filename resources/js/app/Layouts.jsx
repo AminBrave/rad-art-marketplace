@@ -470,7 +470,7 @@ function PublicBottomNavigation({ user }) {
     ];
     return (
         <div data-testid="public-bottom-navigation" className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] pb-[env(safe-area-inset-bottom)] backdrop-blur shadow-raised lg:inset-x-auto lg:left-1/2 lg:bottom-6 lg:w-[min(54rem,calc(100vw_-_3rem))] lg:-translate-x-1/2 lg:border lg:pb-0 lg:shadow-raised">
-            <nav aria-label={t('ناوبری بخش‌های عمومی')} data-nav-priority="primary" className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-0 px-1 lg:h-16 lg:px-3">
+            <nav aria-label={t('ناوبری بخش‌های عمومی')} data-nav-priority="primary" className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-0 px-1 lg:h-16 lg:w-fit lg:grid-flow-col lg:auto-cols-max lg:gap-6 lg:px-6">
                 {items.map(({ to, label, Icon, end }) => (
                     <NavLink key={to} to={to} end={end} aria-label={label} title={label} className={({ isActive }) => [
                         'relative flex min-w-0 flex-col items-center justify-center gap-1 px-1 text-[10px] font-semibold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus lg:text-xs',
@@ -490,9 +490,9 @@ function AuthenticatedBottomNavigation({ mobileLinks, unreadConversationCount = 
     return (
         <div
             data-testid="authenticated-bottom-navigation"
-            className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-[color:color-mix(in_srgb,var(--color-paper)_92%,transparent)] pb-[env(safe-area-inset-bottom)] shadow-raised backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-paper)_86%,transparent)] lg:inset-x-auto lg:left-1/2 lg:bottom-6 lg:w-[min(54rem,calc(100vw_-_3rem))] lg:-translate-x-1/2 lg:border lg:pb-0"
+            className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-[color:color-mix(in_srgb,var(--color-paper)_92%,transparent)] pb-[env(safe-area-inset-bottom)] shadow-raised backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-paper)_86%,transparent)]"
         >
-            <nav aria-label={t("بخش‌های اصلی حساب کاربری")} data-nav-priority="primary" className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2 lg:h-16 lg:px-3">
+            <nav aria-label={t("بخش‌های اصلی حساب کاربری")} data-nav-priority="primary" className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2 lg:h-16 lg:w-fit lg:grid-flow-col lg:auto-cols-max lg:gap-6 lg:px-6">
                 {mobileLinks.map((item) => {
                     const Icon = item.to.startsWith('/artists/') ? UserRound : workspaceNavigationIcons[item.to] ?? LayoutDashboard;
                     const accessibleLabel = t(item.label);
