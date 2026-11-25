@@ -194,7 +194,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                 </>
             ) : pathname === '/admin/editorial' ? (
                 <AdminEditorialSkeleton announce={false} />
-            ) : pathname === '/dashboard/artist/artworks' ? (
+            ) : pathname === '/dashboard/artist/artworks' || pathname === '/dashboard/artist/artworks/new' ? (
                 <>
                     <section className="border border-border bg-paper p-5 sm:p-7">
                         <div className="mb-6 flex flex-wrap items-start justify-between gap-3 border-b border-border pb-5"><Skeleton className="h-6 w-36 rounded-sm" /><Skeleton className="h-4 w-64 max-w-full rounded-sm" /></div>
