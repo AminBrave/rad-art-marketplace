@@ -68,6 +68,20 @@ export function PublicLayout() {
     const [logoutError, setLogoutError] = useState('');
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const { pathname } = useLocation();
+    const unreadInboxEndpoint = user?.role === 'artist' ? '/api/v1/artist/conversations'
+        : user?.role === 'buyer' ? '/api/v1/buyer/conversations' : null;
+    const unreadInboxQuery = useQuery({
+        queryKey: ['messaging', 'unread-conversations', user?.id],
+        queryFn: async ({ signal }) => {
+            const { data } = await axios.get(unreadInboxEndpoint, { params: { filter: 'unread' }, signal });
+            return Number(data.total ?? 0);
+        },
+        enabled: Boolean(user?.id && unreadInboxEndpoint),
+        staleTime: 15_000,
+        refetchInterval: 30_000,
+        refetchOnWindowFocus: true,
+    });
+    const unreadConversationCount = unreadInboxQuery.data ?? 0;
 
     const handleLogout = async () => {
         setMobileMenuOpen(false);
@@ -202,7 +216,7 @@ export function PublicLayout() {
                     </div>
                 </div>
             </footer>
-            <PublicBottomNavigation user={user} />
+            <PublicBottomNavigation user={user} unreadConversationCount={unreadConversationCount} />
         </div>
         </Dialog>
     );
@@ -451,8 +465,8 @@ const workspaceNavigationLabels = {
     '/admin/settings': 'تنظیمات',
 };
 
-function PublicBottomNavigation({ user }) {
-    const { t } = useLanguage();
+function PublicBottomNavigation({ user, unreadConversationCount = 0 }) {
+    const { t, locale } = useLanguage();
     const dashboardHref = user?.role === 'artist' ? '/dashboard/artist'
         : user?.role === 'buyer' ? '/dashboard/buyer'
             : user?.role === 'admin' ? '/admin' : '/login';
@@ -471,15 +485,25 @@ function PublicBottomNavigation({ user }) {
     return (
         <div data-testid="public-bottom-navigation" className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] pb-[env(safe-area-inset-bottom)] backdrop-blur shadow-raised">
             <nav aria-label={t('ناوبری بخش‌های عمومی')} data-nav-priority="primary" className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-0 px-1 lg:h-16 lg:w-fit lg:grid-flow-col lg:auto-cols-[7rem]">
-                {items.map(({ to, label, Icon, end }) => (
-                    <NavLink key={to} to={to} end={end} aria-label={label} title={label} className={({ isActive }) => [
-                        'relative flex min-w-0 flex-col items-center justify-center gap-0.5 px-1 text-[10px] font-semibold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus lg:text-xs',
-                        isActive ? 'text-terracotta-strong after:absolute after:inset-x-1/3 after:top-0 after:h-0.5 after:bg-terracotta' : 'text-muted hover:text-ink',
-                    ].join(' ')}>
-                        <Icon size={20} strokeWidth={1.9} aria-hidden="true" />
-                        <span className="max-w-full truncate">{label}</span>
-                    </NavLink>
-                ))}
+                {items.map(({ to, label, Icon, end }) => {
+                    const isMessagesLink = to.endsWith('/messages');
+                    const localizedUnreadCount = unreadConversationCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US');
+                    const accessibleLabel = isMessagesLink && unreadConversationCount > 0
+                        ? `${label}، ${localizedUnreadCount} ${t('گفتگوهای خوانده‌نشده')}`
+                        : label;
+                    return (
+                        <NavLink key={to} to={to} end={end} aria-label={accessibleLabel} title={accessibleLabel} className={({ isActive }) => [
+                            'relative flex min-w-0 flex-col items-center justify-center gap-0.5 px-1 text-[10px] font-semibold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus lg:text-xs',
+                            isActive ? 'text-terracotta-strong after:absolute after:inset-x-1/3 after:top-0 after:h-0.5 after:bg-terracotta' : 'text-muted hover:text-ink',
+                        ].join(' ')}>
+                            <span className="relative inline-flex">
+                                <Icon size={20} strokeWidth={1.9} aria-hidden="true" />
+                                {isMessagesLink && unreadConversationCount > 0 && <span aria-hidden="true" className="absolute -end-2 -top-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-terracotta px-1 text-[9px] font-extrabold leading-none tabular-nums text-inverse">{unreadConversationCount > 99 ? (locale === 'fa' ? '۹۹+' : '99+') : localizedUnreadCount}</span>}
+                            </span>
+                            <span className="max-w-full truncate">{label}</span>
+                        </NavLink>
+                    );
+                })}
             </nav>
         </div>
     );
@@ -505,7 +529,7 @@ function AuthenticatedBottomNavigation({ mobileLinks, unreadConversationCount = 
                     return (
                         <NavLink
                             key={item.to}
-                            to={item.to}
+                            to={item.to === '/dashboard/artist/artworks' ? item.to + '#submitted-artworks' : item.to}
                             end={item.end}
                             aria-label={navigationLabel}
                             title={navigationLabel}
@@ -518,7 +542,7 @@ function AuthenticatedBottomNavigation({ mobileLinks, unreadConversationCount = 
                         >
                             <span className="relative inline-flex">
                                 <Icon size={20} strokeWidth={1.9} aria-hidden="true" />
-                                {isMessagesLink && unreadConversationCount > 0 && <span aria-hidden="true" className="absolute -end-2 -top-2 min-w-4 rounded-full bg-terracotta px-1 text-[9px] font-extrabold leading-4 text-inverse">{unreadConversationCount > 99 ? (locale === 'fa' ? '۹۹+' : '99+') : localizedUnreadCount}</span>}
+                                {isMessagesLink && unreadConversationCount > 0 && <span aria-hidden="true" className="absolute -end-2 -top-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-terracotta px-1 text-[9px] font-extrabold leading-none tabular-nums text-inverse">{unreadConversationCount > 99 ? (locale === 'fa' ? '۹۹+' : '99+') : localizedUnreadCount}</span>}
                             </span>
                             <span className="max-w-full truncate">{visibleLabel}</span>
                         </NavLink>
@@ -628,7 +652,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                 <div className="flex shrink-0 items-center gap-2 border-b border-border px-4 py-3"><LanguageControl /><ThemeControl />{user?.role !== "admin" && <NotificationBell user={user} />}</div>
                 <div className="min-h-0 flex-1 overflow-y-auto px-4 py-5">
                     <nav aria-label={t("بخش‌های اصلی فضای کاربری")}>
-                        <h3 className="mb-2 px-3 text-xs font-extrabold text-ink">{t("فضای کاربری")}</h3>
+                        <h3 className="mb-2 px-3 text-xs font-extrabold text-ink">{t(user?.role === "artist" ? "فضای هنرمند" : "فضای کاربری")}</h3>
                         <div className="grid gap-1">
                             {workspaceLinks.map((item) => (
                                 <NavLink
@@ -646,7 +670,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                 >
                                     {(() => { const Icon = item.to.startsWith('/artists/') ? UserRound : workspaceNavigationIcons[item.to] ?? LayoutDashboard; return <Icon size={19} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />; })()}
                                     <span>{t(item.label)}</span>
-                                    {item.to.endsWith('/messages') && unreadConversationCount > 0 && <span aria-hidden="true" className="ms-auto min-w-5 rounded-full bg-terracotta px-1.5 py-0.5 text-center text-[10px] font-extrabold tabular-nums text-inverse">{unreadConversationCount > 99 ? (locale === 'fa' ? '۹۹+' : '99+') : unreadConversationCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</span>}
+                                    {item.to.endsWith('/messages') && unreadConversationCount > 0 && <span aria-hidden="true" className="ms-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-terracotta px-1 text-[10px] font-extrabold leading-none tabular-nums text-inverse">{unreadConversationCount > 99 ? (locale === 'fa' ? '۹۹+' : '99+') : unreadConversationCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</span>}
                                 </NavLink>
                             ))}
                         </div>
