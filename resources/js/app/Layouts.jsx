@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Bell, BookOpen, Bookmark, CheckCheck, CircleHelp, ClipboardCheck, Compass, Flag, Heart, House, Images, Info, Languages, LayoutDashboard, LogIn, LogOut, Menu, MessageCircle, Monitor, Moon, PlusCircle, Settings as SettingsIcon, Sun, UserPlus, UserRound, Users, X } from 'lucide-react';
@@ -549,10 +549,10 @@ export function WorkspaceLayout({ title, links, outletContext }) {
         enabled: Boolean(user?.id && unreadInboxEndpoint),
         staleTime: 15_000,
         refetchInterval: 30_000,
-        refetchOnMount: 'always',
         refetchOnWindowFocus: true,
     });
     const unreadConversationCount = unreadInboxQuery.data ?? 0;
+    const wasMessagingRoute = useRef(isMessagingRoute);
     const baseWorkspaceLinks = user?.role === 'artist'
         ? links.map((item) => item.to === '/dashboard/artist/profile'
             ? (outletContext?.profile?.slug
@@ -577,10 +577,11 @@ export function WorkspaceLayout({ title, links, outletContext }) {
     useEffect(() => setMobileMenuOpen(false), [pathname]);
 
     useEffect(() => {
-        if (!isMessagingRoute && unreadInboxEndpoint) {
+        if (wasMessagingRoute.current && !isMessagingRoute && unreadInboxEndpoint) {
             void queryClient.invalidateQueries({ queryKey: ['messaging', 'unread-conversations', user?.id] });
         }
-    }, [isMessagingRoute, pathname, unreadInboxEndpoint, queryClient, user?.id]);
+        wasMessagingRoute.current = isMessagingRoute;
+    }, [isMessagingRoute, unreadInboxEndpoint, queryClient, user?.id]);
 
     return (
         <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
