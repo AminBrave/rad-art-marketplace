@@ -8,8 +8,6 @@ import { useTheme } from './useTheme';
 import { useLanguage } from './LanguageContext';
 import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, NotificationListSkeleton } from '../components/ui';
 
-const roleLabels = { artist: 'هنرمند', buyer: 'خریدار', admin: 'مدیر' };
-
 const publicSecondaryLinks = [
     { to: '/artworks', label: 'گالری آثار' },
     { to: '/artists', label: 'هنرمندان' },
@@ -150,10 +148,11 @@ export function PublicLayout() {
                     <div className="mt-4 border-t border-border pt-4">
                         {user ? (
                             <>
-                                <Link to={user.role === 'artist' ? profileHref : user.role === 'admin' ? '/admin' : '/dashboard/buyer'} onClick={() => setMobileMenuOpen(false)}
+                                <Link to={user.role === 'artist' ? '/dashboard/artist' : user.role === 'admin' ? '/admin' : '/dashboard/buyer'} onClick={() => setMobileMenuOpen(false)}
                                     className="flex min-h-12 items-center gap-3 px-3 text-sm font-bold text-terracotta-strong no-underline hover:bg-accent-surface">
                                     <LayoutDashboard size={19} aria-hidden="true" />{t(user.role === 'artist' ? 'فضای هنرمند' : user.role === 'admin' ? 'مدیریت' : 'فضای خریدار')}
                                 </Link>
+                                {user.role === 'artist' && <Link to={profileHref} onClick={() => setMobileMenuOpen(false)} className="flex min-h-11 items-center gap-3 px-3 text-sm font-medium text-muted no-underline hover:bg-surface-muted"><UserRound size={18} aria-hidden="true" />{t('پیش‌نمایش پروفایل')}</Link>}
                                 <Button variant="ghost" type="button" onClick={handleLogout} className="flex min-h-12 w-full items-center justify-start gap-3 px-3 text-sm font-semibold text-muted hover:bg-surface-muted"><LogOut size={19} aria-hidden="true" />{t('خروج از حساب')}</Button>
                             </>
                         ) : (
@@ -664,7 +663,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
 
             <div className={isMessagingRoute
                 ? 'mx-auto flex h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-w-0 max-w-content px-page-gutter py-3 sm:py-4 lg:py-6'
-                : 'mx-auto w-full max-w-content px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8'}>
+                : 'mx-auto w-full max-w-content px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+2rem)]'}>
                 <main className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'rd-workspace-main min-w-0 w-full'}>
                     {isMessagingRoute
                         ? <Outlet context={outletContext} />
