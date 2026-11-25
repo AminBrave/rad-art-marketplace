@@ -9,7 +9,7 @@ import { useLanguage } from './LanguageContext';
 import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, NotificationListSkeleton } from '../components/ui';
 
 const publicSecondaryLinks = [
-    { to: '/artworks', label: 'گالری آثار' },
+    { to: '/artworks', label: 'کشف' },
     { to: '/artists', label: 'هنرمندان' },
     { to: '/collections', label: 'مجموعه‌ها' },
     { to: '/about', label: 'درباره ما' },
@@ -697,7 +697,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                     onClick={() => setMobileMenuOpen(false)}
                                     className={({ isActive }) => [
                                         'flex min-h-10 items-center gap-3 px-3 text-sm font-medium no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
-                                        isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
+                                        isActive ? 'bg-paper text-terracotta-strong shadow-soft' : 'text-muted hover:bg-surface-muted hover:text-ink',
                                     ].join(' ')}
                                 >
                                     {(() => { const Icon = item.to === '/artworks' ? Compass : item.to === '/artists' ? Users : item.to === '/collections' ? Bookmark : item.to === '/about' ? Info : item.to === '/help' ? CircleHelp : MessageCircle; return <Icon size={18} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />; })()}
