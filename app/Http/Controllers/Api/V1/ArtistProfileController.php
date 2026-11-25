@@ -140,9 +140,15 @@ class ArtistProfileController extends Controller
         $avatar = $validated['avatar'] ?? null;
         unset($validated['avatar']);
         $oldAvatarPath = $artistProfile->avatar_path;
-        if ($avatar) $validated['avatar_path'] = $avatar->store('artist-avatars', 'public');
+        if ($avatar) {
+            $validated['avatar_path'] = $avatar->store('artist-avatars', 'public');
+        }
+
         $artistProfile->update($validated);
-        if ($avatar && $oldAvatarPath) Storage::disk('public')->delete($oldAvatarPath);
+
+        if ($avatar && $oldAvatarPath) {
+            Storage::disk('public')->delete($oldAvatarPath);
+        }
 
         return response()->json(['message' => 'پروفایل هنرمند به‌روزرسانی شد.', 'data' => $this->payload($artistProfile->refresh())]);
     }
