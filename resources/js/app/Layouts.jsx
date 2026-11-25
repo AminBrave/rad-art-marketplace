@@ -469,7 +469,7 @@ function PublicBottomNavigation({ user }) {
         { to: dashboardHref, label: t(user ? 'حساب کاربری' : 'ورود'), Icon: UserRound, end: true },
     ];
     return (
-        <div data-testid="public-bottom-navigation" className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] pb-[env(safe-area-inset-bottom)] backdrop-blur lg:inset-x-auto lg:left-1/2 lg:bottom-6 lg:w-[min(54rem,calc(100vw_-_3rem))] lg:-translate-x-1/2 lg:border lg:pb-0 lg:shadow-raised">
+        <div data-testid="public-bottom-navigation" className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] pb-[env(safe-area-inset-bottom)] backdrop-blur shadow-raised lg:inset-x-auto lg:left-1/2 lg:bottom-6 lg:w-[min(54rem,calc(100vw_-_3rem))] lg:-translate-x-1/2 lg:border lg:pb-0 lg:shadow-raised">
             <nav aria-label={t('ناوبری بخش‌های عمومی')} data-nav-priority="primary" className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-0 px-1 lg:h-16 lg:px-3">
                 {items.map(({ to, label, Icon, end }) => (
                     <NavLink key={to} to={to} end={end} aria-label={label} title={label} className={({ isActive }) => [
@@ -698,7 +698,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
 
             <div className={isMessagingRoute
                 ? 'mx-auto flex h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-w-0 max-w-content px-page-gutter py-3 sm:py-4 lg:py-6'
-                : 'mx-auto w-full max-w-content px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+2rem)]'}>
+                : 'mx-auto w-full max-w-content py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+2rem)]'}>
                 <main className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'rd-workspace-main min-w-0 w-full'}>
                     {isMessagingRoute
                         ? <Outlet context={outletContext} />
