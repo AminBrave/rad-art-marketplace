@@ -650,7 +650,9 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(bottomNavigation.includes('fixed inset-x-0 bottom-0 z-50'));
     assert.ok(bottomNavigation.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-max'));
     assert.ok(workspaceLayout.includes('mx-auto w-full max-w-content py-5'), 'Workspace content uses a centered page shell.');
-    assert.ok(css.includes('.rd-page-frame--workspace {\n    width: 100%;\n    padding-inline: var(--rd-page-gutter);'), 'Workspace route content retains horizontal gutters.');
+    assert.ok(css.includes('.rd-container:not(.rd-container--full) {\n    padding-inline: var(--rd-page-gutter);'), 'Shared sections own their default horizontal gutters.');
+    assert.ok(layouts.includes('mx-auto w-full max-w-content px-page-gutter'), 'Workspace shell applies the shared page gutter outside its section containers.');
+    assert.ok(css.includes('.rd-page-frame--workspace {\n    width: 100%;'), 'Workspace page frame stays full-width without owning section gutters.');
     assert.ok(workspaceLayout.includes('<ThemeControl />'), 'Workspace appearance controls are available from the hamburger drawer.');
     assert.ok(workspaceLayout.includes('<LanguageControl />'), 'Workspace language control is available from the hamburger drawer.');
     assert.ok(layouts.includes("'/dashboard/artist/settings': SettingsIcon"));
