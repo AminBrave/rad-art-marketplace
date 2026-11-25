@@ -32,11 +32,25 @@ test('admin retains every destination while mobile navigation exposes dashboard,
     assert.ok(mobileLinks.some((item) => item.to === '/admin/settings'));
 });
 
-test('buyer and artist mobile navigation preserves their complete primary journeys', () => {
-    for (const role of ['buyer', 'artist']) {
-        assert.deepEqual(
-            getWorkspaceMobileLinks(role).map((item) => item.to),
-            getWorkspacePrimaryLinks(role).map((item) => item.to),
-        );
-    }
+test('artist mobile navigation promotes creation and keeps settings in the drawer', () => {
+    const primary = getWorkspacePrimaryLinks('artist');
+    const mobile = getWorkspaceMobileLinks('artist');
+
+    assert.ok(primary.some((item) => item.to === '/dashboard/artist/artworks/new' && item.label === 'ثبت اثر جدید'));
+    assert.deepEqual(mobile.map((item) => item.to), [
+        '/dashboard/artist',
+        '/dashboard/artist/artworks',
+        '/dashboard/artist/artworks/new',
+        '/dashboard/artist/messages',
+        '/dashboard/artist/profile',
+    ]);
+    assert.equal(primary.find((item) => item.to === '/dashboard/artist/settings')?.mobilePrimary, false);
+});
+
+test('buyer mobile navigation retains its primary destinations', () => {
+    assert.deepEqual(getWorkspaceMobileLinks('buyer').map((item) => item.to), [
+        '/dashboard/buyer',
+        '/dashboard/buyer/messages',
+        '/dashboard/buyer/settings',
+    ]);
 });
