@@ -683,6 +683,10 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.doesNotMatch(layouts, /تنظیمات اعلان درون‌برنامه‌ای/, 'Notification preferences no longer live inside the notification drawer.');
 
     assert.ok(layouts.includes("aria-label={t('ناوبری اصلی')}"), 'Public discovery navigation remains available with localized labeling.');
+    assert.ok(layouts.includes("aria-label={t('بخش‌های اصلی فضای کاربری')}"), 'Discover drawer mirrors the workspace drawer section structure.');
+    assert.ok(layouts.includes('my-5 border-t border-border'), 'Discover and workspace navigation sections use the same divider spacing.');
+    assert.ok(layouts.includes('flex min-h-11 items-center gap-3 border-s-2 border-transparent px-3 text-sm font-semibold'), 'Discover drawer links use the same row geometry as workspace links.');
+    assert.ok(layouts.includes('min-h-0 flex-1 overflow-y-auto px-4 py-5'), 'Discover navigation uses the same padded scrollable panel as workspace navigation.');
     assert.ok(layouts.includes('<ThemeControl />'), 'The public shell exposes the global theme control.');
     assert.ok(routeLoading.includes('cycleTheme'), 'Workspace theme preferences live on the settings route.');
     assert.ok(css.includes('.rd-page-frame--workspace .rd-container {\n    padding: 0;'), 'Workspace grid owns the shared horizontal gutter without nested double padding.');
