@@ -408,8 +408,8 @@
         @if ($isWorkspace)
                     </main>
                 </div>
-                <div class="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-paper pb-[env(safe-area-inset-bottom)] shadow-raised lg:inset-x-auto lg:left-1/2 lg:bottom-6 lg:w-[min(54rem,calc(100vw_-_3rem))] lg:-translate-x-1/2 lg:border lg:pb-0" aria-hidden="true">
-                    <div class="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2 lg:h-16 lg:px-3">
+                <div class="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-paper pb-[env(safe-area-inset-bottom)] shadow-raised" aria-hidden="true">
+                    <div class="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2 lg:h-16 lg:w-fit lg:grid-flow-col lg:auto-cols-max lg:gap-6 lg:px-6">
                         @foreach (range(1, $workspaceNavigationCount) as $item)
                             <div class="flex flex-col items-center justify-center gap-1"><span class="{{ $skeletonClass }} h-[19px] w-[19px]"></span><span class="{{ $skeletonClass }} h-2 w-10"></span></div>
                         @endforeach
