@@ -447,7 +447,7 @@ export function ArtistProfileSettings() {
         if (profile) setForm({ ...emptyProfile, ...profile });
     }, [profile]);
 
-    useEffect(() => () => { if (avatarPreview.startsWith('blob:')) URL.revokeObjectURL(avatarPreview); }, [avatarPreview]);
+    useEffect(() => () => { if (avatarPreview.startsWith('blob:')) window.URL.revokeObjectURL(avatarPreview); }, [avatarPreview]);
 
     const chooseAvatar = (event) => {
         const file = event.target.files?.[0] ?? null;
@@ -457,7 +457,7 @@ export function ArtistProfileSettings() {
             setAvatarError(t('تصویر باید JPG، PNG یا WebP و حداکثر ۲ مگابایت باشد.'));
             event.target.value = ''; setAvatar(null); setAvatarPreview(''); return;
         }
-        setAvatar(file); setAvatarPreview(URL.createObjectURL(file));
+        setAvatar(file); setAvatarPreview(window.URL.createObjectURL(file));
     };
 
     const update = (event) => {
