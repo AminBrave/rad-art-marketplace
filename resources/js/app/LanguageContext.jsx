@@ -33,7 +33,7 @@ const english = {
     "محتوا": "Content",
     "ثبت اثر جدید": "Create artwork",
     "ثبت اثر": "Create",
-    "گفتگوی خوانده‌نشده": "unread conversation",
+    "گفتگوهای خوانده‌نشده": "unread conversations",
     "کتابخانه محتوا": "Content library",
     "آثار": "Artworks",
     "پیام‌ها": "Messages",
