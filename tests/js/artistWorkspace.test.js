@@ -41,3 +41,10 @@ test('direct messaging remains available in the artist workspace without a legac
     assert.equal(router.includes('InquiryCenter'), false);
     assert.equal(router.includes('path="inquiries"'), false);
 });
+
+test('artist workspace exposes a dedicated create-artwork route that opens the editor', () => {
+    assert.ok(router.includes('path="artworks/new"'));
+    assert.ok(router.includes('<ArtistArtworkPage initialCreate />'));
+    assert.ok(artwork.includes('initialCreate && hasProfile'));
+    assert.ok(artwork.includes('id="artwork-editor"'));
+});
