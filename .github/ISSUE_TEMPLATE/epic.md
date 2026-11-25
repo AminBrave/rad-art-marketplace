@@ -1,19 +1,14 @@
 ---
 name: Epic
-about: Track a decision-level outcome that requires multiple delivery issues
+about: Coordinate multiple independently deliverable issues
 title: "[EPIC] "
 labels: "type:epic, priority:p1"
 ---
 
-## Source decision(s)
-- Decision ID and canonical comment link:
+## Shared outcome
+What larger result do the child tasks collectively deliver?
 
-## Product-owner authorization
-- Authorization and link/date:
-
-## Outcome
-
-## Why now
+## Context and rationale
 
 ## Scope
 ### In scope
@@ -22,9 +17,8 @@ labels: "type:epic, priority:p1"
 ## Child issues
 - [ ] # 
 
-## MVP boundary and completion criteria
-- [ ]
+## Completion criteria
+- [ ] Child issues meet their acceptance criteria
+- [ ] Cross-task dependencies and integration are verified
 
-## Risks / dependencies
-
-## Product-owner decisions still needed
+## Risks, dependencies and owner decisions
