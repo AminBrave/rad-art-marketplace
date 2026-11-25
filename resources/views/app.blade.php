@@ -409,7 +409,7 @@
                     </main>
                 </div>
                 <div class="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-paper pb-[env(safe-area-inset-bottom)] shadow-raised" aria-hidden="true">
-                    <div class="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2 lg:h-16 lg:w-fit lg:grid-flow-col lg:auto-cols-max lg:gap-6 lg:px-6">
+                    <div class="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2 lg:h-16 lg:w-fit lg:grid-flow-col lg:auto-cols-[7rem]">
                         @foreach (range(1, $workspaceNavigationCount) as $item)
                             <div class="flex flex-col items-center justify-center gap-1"><span class="{{ $skeletonClass }} h-[19px] w-[19px]"></span><span class="{{ $skeletonClass }} h-2 w-10"></span></div>
                         @endforeach
