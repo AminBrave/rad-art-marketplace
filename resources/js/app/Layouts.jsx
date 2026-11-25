@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Bell, BookOpen, CheckCheck, ClipboardCheck, Flag, Heart, House, Images, Languages, LayoutDashboard, Menu, MessageCircle, Monitor, Moon, Search, Settings as SettingsIcon, Sun, UserRound, Users, X } from 'lucide-react';
+import { Bell, BookOpen, Bookmark, CheckCheck, CircleHelp, ClipboardCheck, Compass, Flag, Heart, House, Images, Info, Languages, LayoutDashboard, LogIn, LogOut, Menu, MessageCircle, Monitor, Moon, Search, Settings as SettingsIcon, Sun, UserPlus, UserRound, Users, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useTheme } from './useTheme';
@@ -84,23 +84,17 @@ export function PublicLayout() {
     useEffect(() => setMobileMenuOpen(false), [pathname]);
 
     const publicLinks = [
-        { to: '/artworks', label: t('کشف آثار') },
-        { to: '/artists', label: t('هنرمندان') },
-        { to: '/collections', label: t('مجموعه‌های منتخب') },
-        { to: '/about', label: t('درباره ما') },
-        { to: '/help', label: t('راهنما') },
+        { to: '/artworks', label: t('کشف آثار'), Icon: Compass },
+        { to: '/artists', label: t('هنرمندان'), Icon: Users },
+        { to: '/collections', label: t('مجموعه‌های منتخب'), Icon: Bookmark },
+        { to: '/about', label: t('درباره ما'), Icon: Info },
+        { to: '/help', label: t('راهنما'), Icon: CircleHelp },
+        { to: '/contact', label: t('تماس با ما'), Icon: MessageCircle },
     ];
-    const navClass = ({ isActive }) => [
-        'relative inline-flex min-h-11 items-center whitespace-nowrap px-1 text-sm font-semibold transition-colors',
-        'after:absolute after:inset-x-1 after:bottom-0 after:h-0.5 after:origin-center after:scale-x-0 after:bg-terracotta after:transition-transform',
-        isActive
-            ? 'text-terracotta-strong after:scale-x-100'
-            : 'text-muted hover:text-ink',
-    ].join(' ');
 
     return (
         <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-        <div data-experience="discover" className="min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:pb-0">
+        <div data-experience="discover" className="min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)]">
             <a href="#main-content" className="sr-only z-[60] bg-paper px-4 py-3 text-ink focus:not-sr-only focus:fixed focus:inset-x-4 focus:top-4">
                 {t("رفتن به محتوای اصلی")}
             </a>
@@ -120,100 +114,56 @@ export function PublicLayout() {
                         ))}
                     </nav>
 
-                    <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-                        <LanguageControl />
-                        <ThemeControl />
-                        {user ? (
-                            <>
-                                <span className="hidden max-w-36 truncate text-sm font-semibold text-ink 2xl:inline">{user.name}</span>
-                                <Badge variant="accent" className="hidden md:inline-flex">{t(roleLabels[user.role] ?? user.role)}</Badge>
-                                <Link
-                                    to={user.role === 'artist' ? profileHref : user.role === 'admin' ? '/admin' : '/dashboard/buyer'}
-                                    className="hidden min-h-11 items-center justify-center border border-terracotta bg-terracotta px-4 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong sm:inline-flex"
-                                >
-                                    {t(user.role === 'artist' ? 'پیش‌نمایش پروفایل' : user.role === 'admin' ? 'مدیریت' : 'حساب کاربری')}
-                                </Link>
-                                <Button variant="outline" size="sm" className="hidden sm:inline-flex" onClick={handleLogout}>{t('خروج')}</Button>
-                            </>
-                        ) : (
-                            <>
-                                <Link to="/login" className="hidden min-h-10 items-center px-2 text-sm font-bold text-ink transition-colors hover:text-terracotta-strong sm:inline-flex">{t('ورود')}</Link>
-                                <Link to="/register" className="inline-flex min-h-10 items-center justify-center border border-border bg-ink px-5 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:border-terracotta hover:bg-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
-                                    {t('ثبت‌نام')}
-                                </Link>
-                            </>
-                        )}
-                        <span className="mx-1 hidden h-7 w-px bg-border xl:block" aria-hidden="true" />
+                    <div className="flex shrink-0 items-center">
                         <DialogTrigger asChild>
-                            <Button variant="ghost"
-                                type="button"
-                                aria-label={t('باز کردن منوی اصلی')}
-                                className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${user ? 'xl:hidden' : 'lg:hidden'}`}
-                            >
-                                <Menu size={19} aria-hidden="true" />
+                            <Button variant="ghost" type="button" aria-label={t('باز کردن منوی اصلی')}
+                                className="inline-flex h-11 w-11 shrink-0 items-center justify-center border border-border-strong bg-paper text-ink transition-colors hover:border-terracotta hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+                                <Menu size={21} aria-hidden="true" />
                             </Button>
                         </DialogTrigger>
                     </div>
                 </div>
 
-                <DialogContent
-                    placement="drawer"
-                    className="flex flex-col px-4 py-5"
-                >
+                <DialogContent placement="drawer" className="flex flex-col px-4 py-5">
                     <div className="mb-5 flex items-center justify-between border-b border-border pb-4">
-                        <div>
-                            <DialogTitle className="text-base font-extrabold text-ink">{t("ناوبری اصلی")}</DialogTitle>
-                            <DialogDescription className="mt-1 text-xs text-muted">{t("بخش‌های مختلف راد آرت")}</DialogDescription>
+                        <div className="min-w-0">
+                            <DialogTitle className="text-base font-extrabold text-ink">{t('منوی راد آرت')}</DialogTitle>
+                            <DialogDescription className="mt-1 text-xs text-muted">{t('کشف هنر، هنرمندان و فضای کاربری')}</DialogDescription>
                         </div>
-                        <DialogClose asChild>
-                            <Button variant="ghost"
-                                type="button"
-                                aria-label={t('بستن منو')}
-                                className="min-h-0 p-0 grid h-10 w-10 place-items-center rounded-lg text-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
-                            >
-                                <X size={19} aria-hidden="true" />
-                            </Button>
-                        </DialogClose>
+                        <DialogClose asChild><Button variant="ghost" type="button" aria-label={t('بستن منو')} className="grid h-10 w-10 place-items-center p-0 text-muted hover:bg-surface-muted"><X size={19} aria-hidden="true" /></Button></DialogClose>
                     </div>
-                    <nav aria-label={t("ناوبری موبایل")} className="min-h-0 flex-1 overflow-y-auto">
-                        <div className="mx-auto grid max-w-content gap-1">
-                            {publicLinks.map((item) => (
-                                <NavLink
-                                    key={item.to}
-                                    to={item.to}
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className={({ isActive }) => [
-                                        'flex min-h-12 items-center rounded-md px-4 text-sm font-semibold transition-colors',
-                                        isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
-                                    ].join(' ')}
-                                >
-                                    {item.label}
+                    <div className="mb-4 flex items-center gap-2 border-b border-border pb-4">
+                        <LanguageControl /><ThemeControl />
+                        {user && <span className="ms-auto min-w-0 truncate text-sm font-semibold text-ink">{user.name}</span>}
+                    </div>
+                    <nav aria-label={t('ناوبری اصلی')} className="min-h-0 flex-1 overflow-y-auto">
+                        <p className="mb-2 px-3 text-xs font-extrabold text-muted">{t('کشف')}</p>
+                        <div className="grid gap-1">
+                            {publicLinks.map(({ to, label, Icon }) => (
+                                <NavLink key={to} to={to} onClick={() => setMobileMenuOpen(false)}
+                                    className={({ isActive }) => ['flex min-h-12 items-center gap-3 px-3 text-sm font-semibold no-underline transition-colors', isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink'].join(' ')}>
+                                    <Icon size={19} strokeWidth={1.9} aria-hidden="true" /><span>{label}</span>
                                 </NavLink>
                             ))}
-                            <div className="my-2 border-t border-border" />
-                            {user ? (
-                                <>
-                                    <Link
-                                        to={user.role === 'artist' ? profileHref : user.role === 'admin' ? '/admin' : '/dashboard/buyer'}
-                                        onClick={() => setMobileMenuOpen(false)}
-                                        className="flex min-h-12 items-center rounded-md px-4 text-sm font-bold text-terracotta-strong hover:bg-accent-surface"
-                                    >
-                                        {t(user.role === 'artist' ? 'پیش‌نمایش پروفایل' : user.role === 'admin' ? 'مدیریت' : 'حساب کاربری')}
-                                    </Link>
-                                    <Button variant="ghost" type="button" onClick={handleLogout} className="flex min-h-12 items-center rounded-md px-4 text-start text-sm font-semibold text-muted hover:bg-surface-muted hover:text-ink">
-                                        {t('خروج از حساب')}
-                                    </Button>
-                                </>
-                            ) : (
-                                <>
-                                    <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center rounded-md px-4 text-sm font-semibold text-muted hover:bg-surface-muted">{t('ورود')}</Link>
-                                    <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center rounded-md px-4 text-sm font-bold text-terracotta-strong hover:bg-accent-surface">{t('ساخت حساب کاربری')}</Link>
-                                </>
-                            )}
                         </div>
                     </nav>
-                </DialogContent>
-                {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{t(logoutError)}</p>}
+                    <div className="mt-4 border-t border-border pt-4">
+                        {user ? (
+                            <>
+                                <Link to={user.role === 'artist' ? profileHref : user.role === 'admin' ? '/admin' : '/dashboard/buyer'} onClick={() => setMobileMenuOpen(false)}
+                                    className="flex min-h-12 items-center gap-3 px-3 text-sm font-bold text-terracotta-strong no-underline hover:bg-accent-surface">
+                                    <LayoutDashboard size={19} aria-hidden="true" />{t(user.role === 'artist' ? 'فضای هنرمند' : user.role === 'admin' ? 'مدیریت' : 'فضای خریدار')}
+                                </Link>
+                                <Button variant="ghost" type="button" onClick={handleLogout} className="flex min-h-12 w-full items-center justify-start gap-3 px-3 text-sm font-semibold text-muted hover:bg-surface-muted"><LogOut size={19} aria-hidden="true" />{t('خروج از حساب')}</Button>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-3 px-3 text-sm font-semibold text-muted no-underline hover:bg-surface-muted"><LogIn size={19} aria-hidden="true" />{t('ورود')}</Link>
+                                <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-3 px-3 text-sm font-bold text-terracotta-strong no-underline hover:bg-accent-surface"><UserPlus size={19} aria-hidden="true" />{t('ساخت حساب کاربری')}</Link>
+                            </>
+                        )}
+                    </div>
+                </DialogContent>               {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{t(logoutError)}</p>}
             </header>
 
             <main id="main-content" className="rd-page-frame">
@@ -515,17 +465,17 @@ function PublicBottomNavigation({ user, profileHref }) {
             : user?.role === 'admin' ? '/admin/settings' : '/register';
     const items = [
         { to: '/', label: t('خانه'), Icon: House, end: true },
-        { to: '/artworks', label: t('گالری'), Icon: Search, end: true },
+        { to: '/artworks', label: t('کشف'), Icon: Compass, end: true },
         { to: '/artists', label: t('هنرمندان'), Icon: Users, end: true },
-        { to: dashboardHref, label: t(user ? 'داشبورد' : 'ورود'), Icon: LayoutDashboard, end: true },
-        { to: profileTarget, label: t(user?.role === 'artist' ? 'پیش‌نمایش' : user ? 'پروفایل' : 'عضویت'), Icon: UserRound, end: true },
+        { to: '/collections', label: t('مجموعه‌ها'), Icon: Bookmark, end: true },
+        { to: dashboardHref, label: t(user ? 'حساب کاربری' : 'ورود'), Icon: UserRound, end: true },
     ];
     return (
-        <div data-testid="public-bottom-navigation" className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
-            <nav aria-label={t('ناوبری بخش‌های عمومی')} data-nav-priority="primary" className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-0 px-1">
+        <div data-testid="public-bottom-navigation" className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-[color:color-mix(in_srgb,var(--color-paper)_94%,transparent)] pb-[env(safe-area-inset-bottom)] backdrop-blur lg:inset-x-auto lg:left-1/2 lg:bottom-6 lg:w-[min(54rem,calc(100vw-3rem))] lg:-translate-x-1/2 lg:border lg:pb-0 lg:shadow-raised">
+            <nav aria-label={t('ناوبری بخش‌های عمومی')} data-nav-priority="primary" className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-0 px-1 lg:h-16 lg:px-3">
                 {items.map(({ to, label, Icon, end }) => (
                     <NavLink key={to} to={to} end={end} aria-label={label} title={label} className={({ isActive }) => [
-                        'relative flex min-w-0 flex-col items-center justify-center gap-1 px-1 text-[10px] font-semibold leading-tight no-underline transition-colors',
+                        'relative flex min-w-0 flex-col items-center justify-center gap-1 px-1 text-[10px] font-semibold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus lg:text-xs',
                         isActive ? 'text-terracotta-strong after:absolute after:inset-x-1/3 after:top-0 after:h-0.5 after:bg-terracotta' : 'text-muted hover:text-ink',
                     ].join(' ')}>
                         <Icon size={21} strokeWidth={1.9} aria-hidden="true" />
