@@ -16,6 +16,8 @@ const emptyProfile = { display_name: '', display_name_en: '', bio: '', bio_en: '
 function WorkspaceAuthLoading({ children }) {
     const { pathname } = useLocation();
     const isMessagingRoute = pathname.endsWith('/messages');
+    const navigationCount = pathname.startsWith('/dashboard/buyer') ? 3 : 5;
+    const navigationItems = Array.from({ length: navigationCount }, (_, index) => index);
 
     return (
         <div
@@ -42,7 +44,7 @@ function WorkspaceAuthLoading({ children }) {
 
             <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-paper pb-[env(safe-area-inset-bottom)] shadow-raised lg:inset-x-auto lg:left-1/2 lg:bottom-6 lg:w-[min(54rem,calc(100vw_-_3rem))] lg:-translate-x-1/2 lg:border lg:pb-0" aria-hidden="true">
                 <div className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2 lg:h-16 lg:px-3">
-                    {[0, 1, 2, 3, 4].map((item) => (
+                    {navigationItems.map((item) => (
                         <div key={item} className="flex flex-col items-center justify-center gap-1">
                             <Skeleton className="h-5 w-5" />
                             <Skeleton className="h-2 w-10" />
