@@ -517,7 +517,7 @@ function AuthenticatedBottomNavigation({ mobileLinks, unreadConversationCount = 
                             ].join(' ')}
                         >
                             <span className="relative inline-flex">
-                                <Icon size={19} strokeWidth={1.9} aria-hidden="true" />
+                                <Icon size={20} strokeWidth={1.9} aria-hidden="true" />
                                 {isMessagesLink && unreadConversationCount > 0 && <span aria-hidden="true" className="absolute -end-2 -top-2 min-w-4 rounded-full bg-terracotta px-1 text-[9px] font-extrabold leading-4 text-inverse">{unreadConversationCount > 99 ? (locale === 'fa' ? '۹۹+' : '99+') : localizedUnreadCount}</span>}
                             </span>
                             <span className="max-w-full truncate">{visibleLabel}</span>
