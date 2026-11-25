@@ -4,6 +4,8 @@ const STORAGE_KEY = 'rademan-locale';
 const LOCALES = ['fa', 'en'];
 
 const english = {
+    "منوی راد آرت": "Rad Art menu",
+    "کشف هنر، هنرمندان و فضای کاربری": "Discover art, artists, and your workspace",
     "خانه": "Home",
     "داشبورد": "Dashboard",
     "نمای کلی": "Overview",
