@@ -1,36 +1,28 @@
 ---
 name: Feature
-about: Track an explicitly authorized user-visible delivery task
+about: Propose or track a user-visible feature
 title: "[FEAT] "
 labels: "type:feature, priority:p2"
 ---
 
-## Source decision(s)
-- Decision ID and canonical comment link, or “Standalone task”:
+## Outcome
+What should users be able to do, and why?
 
-## Product-owner authorization
-- Explicit authorization and link/date:
+## Context / current behavior
+What happens today? Include relevant evidence.
 
-## Context / problem and current baseline
-
-## Desired outcome
-
-## MVP scope
-### Included in this task
-### Explicitly out of scope / later
+## Scope
+### Included
+### Explicitly out of scope
 
 ## Acceptance criteria
-- [ ]
+- [ ] Observable result
 
-## Risks and evidenced dependencies
+## Dependencies and risks
+Related issues, API/data contracts, security, accessibility or RTL considerations.
 
-## Verification plan
-> A plan is not permission to run checks.
+## Verification
+Relevant tests/checks and expected evidence.
 
-## Workboard classification
-- Type: Feature
-- Priority: P2 (change if evidence warrants)
-- Area: Backend / Frontend / Product / Design-RTL / Security / Tooling / Docs / Quality
-- Decision ID: D01–D41 when applicable
-
-## Dependencies and related issues
+## Owner / branch / PR
+Add an owner and links when known; these are optional for initial triage.

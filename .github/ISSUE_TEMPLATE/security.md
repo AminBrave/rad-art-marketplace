@@ -11,12 +11,11 @@ labels: "type:security, priority:p1"
 
 ## Impact and affected users
 
-## Evidence (remove secrets and personal data)
+## Evidence
+Remove secrets and personal data. Do not include exploit details or sensitive data in a public issue; use responsible disclosure for vulnerabilities.
 
-## Mitigation outcome
+## Desired mitigation and acceptance criteria
+- [ ] Risk is addressed or a safe mitigation is documented
 
-## Acceptance criteria
-- [ ]
-
-## Verification plan
-> Do not include exploit details or sensitive user data in public issues. Coordinate responsible disclosure when needed.
+## Verification and coordination
+Include safe validation approach, dependencies and private reporting/contact path where applicable.

@@ -4,25 +4,18 @@ about: Improve project, contributor or operator documentation
 title: "[DOCS] "
 ---
 
-## Documentation problem and audience
+## Audience and documentation problem
 
-## Desired outcome and current baseline
+## Desired outcome
+What should readers understand or be able to do?
 
 ## Scope
 - In scope:
 - Explicitly out of scope:
 
 ## Acceptance criteria
-- [ ]
+- [ ] Instructions are accurate and actionable
+- [ ] Links and examples are consistent with the repository
 
-## Dependencies and related issues
-
-## Verification plan
-> A plan is not permission to run checks.
-
-## Workboard classification
-- Type: Docs
-- Priority: P2 (change if evidence warrants)
-- Area: Docs / Product / Backend / Frontend / Tooling / Quality
-- Decision ID: N/A unless documenting an explicitly authorized product decision
-- Authorization: record explicit owner approval for any product-scope change
+## Dependencies and verification
+Related docs/code and how accuracy will be checked.

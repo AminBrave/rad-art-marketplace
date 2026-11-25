@@ -1,6 +1,6 @@
 ---
 name: Quality / QA
-about: Plan or improve tests, accessibility, performance or release quality
+about: Track test coverage, accessibility, performance or release-quality work
 title: "[QA] "
 ---
 
@@ -13,20 +13,12 @@ title: "[QA] "
 - Explicitly out of scope:
 
 ## Acceptance criteria
-- [ ]
+- [ ] Observable quality outcome
 
-## Test or review strategy
+## Verification strategy
 - Focused checks:
-- Environment / data safety:
+- Environment / data considerations:
 - Expected evidence:
 
-## Dependencies and risks
-
-## Workboard classification
-- Type: QA
-- Priority: P2 (change if evidence warrants)
-- Area: Quality / Backend / Frontend / Security / Design-RTL
-- Decision ID: N/A unless explicitly derived from an authorized product decision
-
-## Permission boundary
-> A test plan does not authorize execution. Obtain explicit permission before running tests, scanners, builds or CI.
+## Dependencies and owner
+Add links and ownership when known. A proposed test plan is not a test result.

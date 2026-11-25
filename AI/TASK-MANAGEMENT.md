@@ -1,120 +1,84 @@
-# Rademan GitHub task management
+# Rademan GitHub issues and pull requests
 
-Use GitHub tracking to coordinate substantial work, parallel agent assignments and review. Keep it lightweight: the user's direct task instruction is sufficient for small, clear changes.
+Use GitHub tracking to improve ownership, collaboration and review—not as mandatory ceremony. The user's current instruction defines the task and its authorization.
 
-## 1. Task ownership and source of truth
+## 1. Sources of truth
 
-- The user's current instruction defines the intended outcome and scope.
-- A GitHub issue records a bounded task, owner, acceptance criteria and collaboration context.
-- A pull request records the proposed code change, review and verification evidence.
-- A project board, when configured, is a status view over issues and PRs—not a separate roadmap or source of product direction.
-- Source code, tests and runtime evidence show what is implemented.
-- Old issues, PRs, labels, milestones and decisions do not create new work automatically. Reassess their relevance before using them.
+- User direction defines the intended outcome and scope.
+- An issue records a bounded task, acceptance criteria, owner and dependencies.
+- A PR records the proposed change, review discussion and verification evidence.
+- Source code, tests and runtime evidence describe what is implemented.
+- A project board, if configured, is a status view—not a separate roadmap or source of product direction.
+- Old issues, PRs, labels, milestones and decisions are historical context. Reassess them before relying on them.
 
-Do not require product decision IDs, MVP taxonomies or historical roadmap references for ordinary engineering tasks.
+Do not require product-decision IDs, MVP taxonomies or separate approval records for ordinary engineering work.
 
 ## 2. When to create an issue
 
-Create or update an issue when work:
-- Is substantial or spans multiple sessions.
-- Is assigned to a particular agent or contributor.
-- Runs in parallel with other tasks.
-- Has dependencies, shared-file conflicts or integration requirements.
-- Needs independent review, acceptance criteria or a durable handoff.
+Create or update an issue when work is substantial, spans sessions, is assigned across contributors, has dependencies/shared-file conflicts, or needs durable acceptance criteria and handoff.
 
-Skip the issue for a small, self-contained change directly requested and completed in the current workflow, unless the user wants tracking.
+Skip an issue for a small, self-contained change directly requested and completed in the current workflow unless the user wants tracking. Search active issues before creating one; avoid duplicates and do not revive stale issues solely because a title looks similar.
 
-Before creating an issue, search for a relevant active issue to avoid duplicates. Do not revive an old issue merely because its title looks similar.
+Use one issue per independently deliverable outcome. Use an epic/parent only when multiple child issues have meaningful dependencies or shared completion criteria.
 
-## 3. Recommended issue structure
+## 3. Issue content
 
-Use a concise description. Include only relevant fields:
+Keep issues concise and complete only the sections that matter:
 
-    ## Outcome
-    What user-visible or engineering result is required?
+- **Outcome:** what result is required and who benefits.
+- **Context:** current behavior/evidence and why the change is needed.
+- **Scope:** included work and explicit non-goals.
+- **Acceptance criteria:** observable, testable outcomes.
+- **Owner:** primary contributor/agent, when known.
+- **Dependencies:** related issues, PRs, shared files/contracts and blockers.
+- **Verification:** relevant tests/checks and expected evidence.
+- **Branch/PR:** add links when they exist; do not guess branch names or create empty placeholders.
 
-    ## Scope
-    What is included? What is explicitly not included?
+A plan to run a test is not a test result. An issue template must not imply that creating an issue grants or withholds permission to perform ordinary development checks. Follow the user's request and repository safety rules.
 
-    ## Acceptance criteria
-    - [ ] Observable result one
-    - [ ] Observable result two
+## 4. Branching and PR targets
 
-    ## Owner
-    Agent/contributor: <agent-name>
+The default workflow for a single contributor/task is a short-lived branch from `main` and a PR back to `main`:
 
-    ## Branch lane
-    Persistent lane: agent/<agent-name>/lane
-    Task branch: agent/<agent-name>/<task-type>/<task-name>
+- `feat/<issue>-<slug>`
+- `fix/<issue>-<slug>`
+- `docs/<issue>-<slug>`
+- `chore/<issue>-<slug>`
 
-    ## Dependencies and coordination
-    Related issues/PRs, shared files, API contracts or blockers.
+An issue number is optional when no issue exists. For genuinely parallel agent work, use the optional `agent/<name>/lane` and `agent/<name>/<type>/<issue>-<slug>` model. An agent task PR targets its own lane; cross-agent integration is owner-directed and ultimately reaches `main` through a reviewed PR. Check for Git ref collisions before creating nested agent branches. See [DEVELOPMENT-WORKFLOW.md](DEVELOPMENT-WORKFLOW.md) for the full procedure.
 
-    ## Tests and verification
-    - Backend/frontend/Playwright tests to add or update.
-    - Tests made obsolete by removed behavior, with rationale for removal.
-    - Relevant commands and expected evidence.
+A PR must state its base/target clearly. Never assume that every task PR targets an agent lane or that every PR targets `main`; follow the workflow selected for that task.
 
-For very small tasks, a short title and acceptance checklist may be enough. Do not force empty template sections.
+## 5. Pull request practices
 
-## 4. Parallel work and ownership
+A useful PR explains:
 
-- Assign one primary owner to each independently deliverable task.
-- Give each task its own task branch named agent/<agent-name>/<task-type>/<task-name>, under the same agent-name namespace as the owner's persistent lane. The task PR targets agent/<agent-name>/lane.
-- Split a larger outcome into child issues only when the parts can be delivered and reviewed independently.
-- Use a parent issue/epic to coordinate dependencies and shared acceptance criteria.
-- Record file/module ownership when tasks may overlap.
-- Agree shared interfaces before parallel implementation.
-- Avoid assigning multiple agents to the same files at the same time unless the user explicitly wants collaborative editing.
-- Track blocked work with the specific dependency, responsible party if known and next action.
+- **Outcome and why:** the problem and result.
+- **Related issue:** link it; use `Closes #123` only if fully completed, otherwise `Refs #123`.
+- **Scope:** what changed and meaningful exclusions.
+- **Implementation:** important contracts, migrations, compatibility or rollout details.
+- **Risk:** security, privacy, accessibility, RTL, performance and data considerations where relevant.
+- **Verification:** exact commands/checks run, observed CI links, checks not run and blockers.
+- **Review notes:** screenshots for visible UI changes; known risks and rollback notes where relevant.
 
-See DEVELOPMENT-WORKFLOW.md for the branch-lane and integration model.
+Keep PRs focused. Combine files when they deliver one coherent outcome and should be reviewed/reverted together. Do not claim tests or CI passed unless the result was observed. Do not mark work released merely because a PR merged.
 
-## 5. Project board and labels
+### Commit grouping
 
-A GitHub Project is useful for a multi-agent team when it reduces coordination overhead. Use the existing board if available; do not assume it exists or create/reconfigure one without user direction.
+Commit by coherent task/outcome, not by file. A task may update implementation, tests, configuration and documentation in one commit. Use separate commits for distinct, independently reviewable outcomes or meaningful checkpoints; avoid both fragmented commit noise and unrelated changes bundled together.
 
-Keep the board minimal and consistent with the repository's actual configuration:
-- Status: Backlog, Ready, In progress, In review, Blocked, Done.
-- Assignee: GitHub's native assignee field.
-- Priority: P0–P3 only if the team actively uses priority.
-- Type: Feature, Bug, Chore, Security, QA, Docs, Spike, or Epic.
-- Area: Backend, Frontend, Design, Product, Security, Tooling, Docs, Quality, as useful.
+## 6. Boards, labels and completion
 
-Use labels for filtering and classification, not as a second conflicting status system. Prefer GitHub's native assignees and linked PRs over duplicate custom fields. Do not create milestones or elaborate taxonomies unless they solve a real coordination problem.
+Use an existing project board when it reduces coordination overhead. Do not assume a board exists or create/reconfigure one without direction. Keep fields minimal and aligned with the board's actual configuration.
 
-Suggested status meanings:
-- Backlog: captured, not selected.
-- Ready: outcome, scope and acceptance criteria are clear; dependencies are understood.
-- In progress: work has started on a task branch.
-- In review: a PR or deliverable is awaiting review.
-- Blocked: a concrete blocker and next action are recorded.
-- Done: acceptance criteria are met in the task's declared target lane.
+Suggested statuses, only if supported by the existing board:
+- Backlog — captured, not selected.
+- Ready — scope and acceptance criteria are clear.
+- In progress — work has started.
+- In review — PR is awaiting review.
+- Blocked — blocker and next action are recorded.
+- Done — acceptance criteria are met in the task's declared target.
 
-## 6. Pull request practices
+Use labels for classification/filtering, not as a competing status system. Native assignees and linked PRs are preferable to duplicated custom fields.
 
-A useful PR should state:
-- Why the change is needed and what outcome it delivers.
-- The linked issue, if one exists.
-- Agent lane and task branch.
-- Scope and meaningful exclusions.
-- Important contracts, migrations, configuration or compatibility changes.
-- Security, privacy, accessibility, RTL or performance considerations where relevant.
-- Tests added, updated or removed, with a brief rationale for removals or for making no test changes.
-- Verification performed, not performed and any known risks.
-- Integration status and any dependencies on other agent lanes.
-
-Keep PRs focused. Combine changes only when they are tightly coupled and should be reviewed and reverted together. Do not mark work as released merely because its PR merged into an agent lane.
-
-### Commit grouping by task
-
-- Scope work around an outcome, not around individual files. One bounded task can legitimately update multiple related implementation, test and documentation files.
-- Group those related files into one coherent task-level commit by default; do not create one commit per changed file or per small edit.
-- Use additional commits only for distinct independently reviewable tasks or meaningful checkpoints. Keep unrelated outcomes separate, but avoid fragmented histories and excessive commits for incremental edits to the same file.
-- For a batch of tasks, make the task boundaries explicit and use a small number of outcome-based commits, each with a clear imperative message.
-
-## 7. Completion and stale work
-
-A task is complete when its acceptance criteria are met in the declared target lane, affected tests are synchronized with the resulting code, and verification is honestly represented. Its integration or release status may still be pending.
-
-Close or update stale issues when their scope is superseded, duplicated or no longer desired. Preserve useful history without treating it as a future commitment. Do not automatically convert every observation, idea or review suggestion into a new issue.
+A task is complete when its acceptance criteria are met in its declared target and verification is honestly represented. Integration, release and deployment may remain separate. Update or close stale/duplicated issues when appropriate; do not convert every idea or review comment into backlog work.
