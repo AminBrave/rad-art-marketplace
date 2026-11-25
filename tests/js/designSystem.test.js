@@ -347,7 +347,7 @@ test('route canvases stay full-width and route content uses shared section conta
     assert.doesNotMatch(css.match(/\.rd-bleed\s*\{[^}]*\}/s)?.[0] ?? '', /(?:^|[;\s])width:\s*100vw/);
     assert.ok(css.includes('.rd-workspace-main .rd-bleed .rd-container:not(.rd-container--reading):not(.rd-container--full)'));
     assert.ok(css.includes('overflow-x: clip;'), 'Viewport bleed must not create document-level horizontal scrolling.');
-    assert.doesNotMatch(css, /var\(--rd-workspace-sidebar-width\)\s*-\s*var\(--rd-workspace-column-gap\)/);
+    assert.doesNotMatch(css, /--rd-workspace-sidebar-width|--rd-workspace-column-gap/, 'The fixed-sidebar layout tokens are no longer part of the workspace shell.');
     assert.ok(layouts.includes('rd-workspace-main min-w-0 w-full'));
     assert.doesNotMatch(layouts, /lg:grid-cols-\[var\(--rd-workspace-sidebar-width/);
     assert.ok(layouts.includes('rd-workspace-main min-w-0'));
