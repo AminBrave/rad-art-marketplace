@@ -492,9 +492,9 @@ function AuthenticatedBottomNavigation({ mobileLinks }) {
     return (
         <div
             data-testid="authenticated-bottom-navigation"
-            className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-[color:color-mix(in_srgb,var(--color-paper)_92%,transparent)] pb-[env(safe-area-inset-bottom)] shadow-raised backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-paper)_86%,transparent)] lg:hidden"
+            className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-[color:color-mix(in_srgb,var(--color-paper)_92%,transparent)] pb-[env(safe-area-inset-bottom)] shadow-raised backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-paper)_86%,transparent)] lg:inset-x-auto lg:left-1/2 lg:bottom-6 lg:w-[min(54rem,calc(100vw-3rem))] lg:-translate-x-1/2 lg:border lg:pb-0"
         >
-            <nav aria-label={t("بخش‌های اصلی حساب کاربری")} data-nav-priority="primary" className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2">
+            <nav aria-label={t("بخش‌های اصلی حساب کاربری")} data-nav-priority="primary" className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2 lg:h-16 lg:px-3">
                 {mobileLinks.map((item) => {
                     const Icon = item.to.startsWith('/artists/') ? UserRound : workspaceNavigationIcons[item.to] ?? LayoutDashboard;
                     const accessibleLabel = t(item.label);
@@ -507,7 +507,7 @@ function AuthenticatedBottomNavigation({ mobileLinks }) {
                             aria-label={accessibleLabel}
                             title={accessibleLabel}
                             className={({ isActive }) => [
-                                'relative flex min-w-0 flex-col items-center justify-center gap-1 rounded-md px-1 text-[10px] font-bold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus motion-reduce:transition-none',
+                                'relative flex min-w-0 flex-col items-center justify-center gap-1 rounded-md px-1 text-[10px] font-bold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus motion-reduce:transition-none lg:text-xs',
                                 isActive
                                     ? 'text-terracotta-strong after:absolute after:inset-x-1/4 after:top-0 after:h-0.5 after:rounded-full after:bg-terracotta'
                                     : 'text-muted hover:bg-surface-muted hover:text-ink',
@@ -568,7 +568,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                 <Menu size={21} aria-hidden="true" />
                             </Button>
                         </DialogTrigger>
-                    </div>                    </div>
+                    </div>
                 </div>
                 {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{logoutError}</p>}
             </header>
@@ -634,7 +634,8 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                         isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
                                     ].join(' ')}
                                 >
-                                    {t(item.label)}
+                                    {(() => { const Icon = item.to === '/artworks' ? Compass : item.to === '/artists' ? Users : item.to === '/collections' ? Bookmark : item.to === '/about' ? Info : item.to === '/help' ? CircleHelp : MessageCircle; return <Icon size={18} strokeWidth={1.9} aria-hidden="true" className="shrink-0" />; })()}
+                                    <span>{t(item.label)}</span>
                                 </NavLink>
                             ))}
                         </div>
@@ -660,7 +661,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
             </DialogContent>
 
             <div className={isMessagingRoute
-                ? 'mx-auto flex h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-w-0 max-w-content px-page-gutter py-3 sm:py-4 lg:py-6'
+                ? 'mx-auto flex h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-w-0 max-w-content px-page-gutter py-3 sm:py-4 lg:py-6'
                 : 'mx-auto w-full max-w-content px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8'}>
                 <main className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'rd-workspace-main min-w-0 w-full'}>
                     {isMessagingRoute
