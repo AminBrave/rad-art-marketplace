@@ -108,7 +108,7 @@ export function PublicLayout() {
         inboxHref
             ? { to: inboxHref, label: t(user?.role === 'admin' ? 'گزارش‌ها' : 'پیام‌ها'), Icon: user?.role === 'admin' ? Flag : MessageCircle, end: true }
             : { to: '/collections', label: t('مجموعه‌ها'), Icon: Bookmark, end: true },
-        { to: dashboardHref, label: t(user ? 'حساب کاربری' : 'ورود'), Icon: UserRound, end: true },
+        ...(!user ? [{ to: dashboardHref, label: t('ورود'), Icon: UserRound, end: true }] : []),
     ];
 
     return (
@@ -164,9 +164,10 @@ export function PublicLayout() {
                     <div className="mt-4 border-t border-border pt-4">
                         {user ? (
                             <>
+                                <p className="mb-2 px-3 pt-3 text-xs font-extrabold text-ink">{t(user.role === 'artist' ? 'فضای هنرمند' : user.role === 'admin' ? 'مدیریت' : 'فضای خریدار')}</p>
                                 <Link to={user.role === 'artist' ? '/dashboard/artist' : user.role === 'admin' ? '/admin' : '/dashboard/buyer'} onClick={() => setMobileMenuOpen(false)}
-                                    className="flex min-h-12 items-center gap-3 px-3 text-sm font-bold text-terracotta-strong no-underline hover:bg-accent-surface">
-                                    <LayoutDashboard size={19} aria-hidden="true" />{t(user.role === 'artist' ? 'فضای هنرمند' : user.role === 'admin' ? 'مدیریت' : 'فضای خریدار')}
+                                    className="flex min-h-11 items-center gap-3 rounded-md px-3 text-sm font-semibold text-muted no-underline transition-colors hover:bg-surface-muted hover:text-ink">
+                                    <LayoutDashboard size={19} aria-hidden="true" />{t('حساب کاربری')}
                                 </Link>
                                 {user.role === 'artist' && <Link to={profileHref} onClick={() => setMobileMenuOpen(false)} className="flex min-h-11 items-center gap-3 px-3 text-sm font-medium text-muted no-underline hover:bg-surface-muted"><UserRound size={18} aria-hidden="true" />{t('پیش‌نمایش پروفایل')}</Link>}
                                 <Button variant="ghost" type="button" onClick={handleLogout} className="flex min-h-12 w-full items-center justify-start gap-3 px-3 text-sm font-semibold text-muted hover:bg-surface-muted"><LogOut size={19} aria-hidden="true" />{t('خروج از حساب')}</Button>
