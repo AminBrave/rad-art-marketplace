@@ -51,7 +51,7 @@ function getPublicWorkspaceLinks(user, profileHref, t) {
     return [...roleLinks, { action: 'logout', label: t('خروج از حساب'), Icon: LogOut }];
 }
 
-function SidebarNavigation({ sections, onNavigate, unreadConversationCount = 0, locale = 'fa' }) {
+function SidebarNavigation({ sections, onNavigate, onLogout, unreadConversationCount = 0, locale = 'fa' }) {
     return (
         <div className="min-h-0 flex-1 overflow-y-auto px-4 py-5">
             {sections.filter((section) => section.items?.length).map((section, sectionIndex) => (
@@ -73,7 +73,7 @@ function SidebarNavigation({ sections, onNavigate, unreadConversationCount = 0, 
                                 );
                                 const className = 'flex min-h-11 w-full items-center gap-3 border-s-2 border-transparent px-3 text-start text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus';
                                 if (item.action === 'logout') return (
-                                    <button key="logout" type="button" onClick={onNavigate} className={className + ' text-muted hover:text-ink'}>
+                                    <button key="logout" type="button" onClick={onLogout} className={className + ' text-muted hover:text-ink'}>
                                         {content}
                                     </button>
                                 );
@@ -217,7 +217,8 @@ export function PublicLayout() {
                             { label: t(user ? (user.role === 'artist' ? 'فضای هنرمند' : user.role === 'admin' ? 'مدیریت' : 'فضای خریدار') : 'حساب کاربری'), items: getPublicWorkspaceLinks(user, profileHref, t) },
                             { label: t('راد آرت'), items: publicInfoLinks.map((item) => ({ ...item, label: t(item.label) })) },
                         ]}
-                        onNavigate={handleLogout}
+                        onNavigate={() => setMobileMenuOpen(false)}
+                        onLogout={handleLogout}
                         unreadConversationCount={unreadConversationCount}
                         locale={locale}
                     />
@@ -707,7 +708,8 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                         { label: t(user?.role === 'artist' ? 'فضای هنرمند' : user?.role === 'admin' ? 'مدیریت' : 'فضای خریدار'), items: workspaceLinks.map((item) => ({ ...item, label: item.shortLabel ?? (workspaceNavigationLabels[item.to] ? t(workspaceNavigationLabels[item.to]) : item.label) })) .concat([{ action: 'logout', label: t('خروج از حساب'), Icon: LogOut }]) },
                         { label: t('راد آرت'), items: publicInfoLinks.map((item) => ({ ...item, label: t(item.label) })) },
                     ]}
-                    onNavigate={handleLogout}
+                    onNavigate={() => setMobileMenuOpen(false)}
+                        onLogout={handleLogout}
                     unreadConversationCount={unreadConversationCount}
                     locale={locale}
                 />
