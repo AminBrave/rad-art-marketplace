@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Bell, BookOpen, Bookmark, CheckCheck, CircleHelp, ClipboardCheck, Compass, Flag, Heart, House, Images, Info, Languages, LayoutDashboard, LogIn, LogOut, Menu, MessageCircle, Monitor, Moon, Search, Settings as SettingsIcon, Sun, UserPlus, UserRound, Users, X } from 'lucide-react';
+import { Bell, BookOpen, Bookmark, CheckCheck, CircleHelp, ClipboardCheck, Compass, Flag, Heart, House, Images, Info, Languages, LayoutDashboard, LogIn, LogOut, Menu, MessageCircle, Monitor, Moon, Settings as SettingsIcon, Sun, UserPlus, UserRound, Users, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useTheme } from './useTheme';
@@ -208,7 +208,7 @@ export function PublicLayout() {
                     </div>
                 </div>
             </footer>
-            <PublicBottomNavigation user={user} profileHref={profileHref} />
+            <PublicBottomNavigation user={user} />
         </div>
         </Dialog>
     );
@@ -455,14 +455,11 @@ const workspaceNavigationLabels = {
     '/admin/settings': 'تنظیمات',
 };
 
-function PublicBottomNavigation({ user, profileHref }) {
+function PublicBottomNavigation({ user }) {
     const { t } = useLanguage();
     const dashboardHref = user?.role === 'artist' ? '/dashboard/artist'
         : user?.role === 'buyer' ? '/dashboard/buyer'
             : user?.role === 'admin' ? '/admin' : '/login';
-    const profileTarget = user?.role === 'artist' ? profileHref
-        : user?.role === 'buyer' ? '/dashboard/buyer/settings'
-            : user?.role === 'admin' ? '/admin/settings' : '/register';
     const items = [
         { to: '/', label: t('خانه'), Icon: House, end: true },
         { to: '/artworks', label: t('کشف'), Icon: Compass, end: true },
