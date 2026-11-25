@@ -156,7 +156,8 @@ export function PublicLayout() {
                             </>
                         )}
                     </div>
-                </DialogContent>               {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{t(logoutError)}</p>}
+                </DialogContent>
+                {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{t(logoutError)}</p>}
             </header>
 
             <main id="main-content" className="rd-page-frame">
@@ -576,7 +577,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     <div className="flex min-w-0 items-center gap-3">
                         <span className="min-h-0 p-0 grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-lg font-black text-inverse">ر</span>
                         <div className="min-w-0">
-                            <DialogTitle className="text-sm font-extrabold text-ink">{t("فضای کاری")}</DialogTitle>
+                            <DialogTitle className="text-sm font-extrabold text-ink">{t(title)}</DialogTitle>
                             <DialogDescription className="mt-1 max-w-48 truncate text-xs text-muted">{user?.name}</DialogDescription>
                         </div>
                     </div>
@@ -625,7 +626,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                     to={item.to}
                                     onClick={() => setMobileMenuOpen(false)}
                                     className={({ isActive }) => [
-                                        'flex min-h-10 items-center rounded-lg px-3 text-sm font-medium no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
+                                        'flex min-h-10 items-center gap-3 px-3 text-sm font-medium no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
                                         isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink',
                                     ].join(' ')}
                                 >
