@@ -81,12 +81,6 @@ export function PublicLayout() {
 
     useEffect(() => setMobileMenuOpen(false), [pathname]);
 
-    useEffect(() => {
-        if (!isMessagingRoute && unreadInboxEndpoint) {
-            queryClient.invalidateQueries({ queryKey: ['messaging', 'unread-conversations', user?.id] });
-        }
-    }, [isMessagingRoute, pathname, unreadInboxEndpoint, queryClient, user?.id]);
-
     const publicLinks = [
         { to: '/artworks', label: t('کشف آثار'), Icon: Compass },
         { to: '/artists', label: t('هنرمندان'), Icon: Users },
@@ -577,6 +571,12 @@ export function WorkspaceLayout({ title, links, outletContext }) {
     };
 
     useEffect(() => setMobileMenuOpen(false), [pathname]);
+
+    useEffect(() => {
+        if (!isMessagingRoute && unreadInboxEndpoint) {
+            void queryClient.invalidateQueries({ queryKey: ['messaging', 'unread-conversations', user?.id] });
+        }
+    }, [isMessagingRoute, pathname, unreadInboxEndpoint, queryClient, user?.id]);
 
     return (
         <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
