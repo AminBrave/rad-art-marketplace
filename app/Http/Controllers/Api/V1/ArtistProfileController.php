@@ -9,12 +9,27 @@ use App\Models\ArtistProfile;
 use App\Models\Artwork;
 use App\Support\PersianSearch;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class ArtistProfileController extends Controller
 {
+    public function publicAvatar(string $path): Response
+    {
+        abort_unless(Str::startsWith($path, 'artist-avatars/'), 404);
+        abort_if(str_contains($path, '..') || str_contains($path, '\\\\'), 404);
+
+        $disk = Storage::disk('public');
+        abort_unless($disk->exists($path), 404);
+
+        return $disk->response($path, null, [
+            'Cache-Control' => 'public, max-age=3600',
+            'X-Content-Type-Options' => 'nosniff',
+        ], 'inline');
+    }
+
     public function index(Request $request): JsonResponse
     {
         $profiles = ArtistProfile::query()
@@ -193,7 +208,7 @@ class ArtistProfileController extends Controller
      */
     private function avatarUrl(string $path): string
     {
-        return '/storage/'.ltrim($path, '/');
+        return '/media/'.ltrim($path, '/');
     }
 
     private function publicArtworkPayload(Artwork $artwork, bool $includeEngagement): array
