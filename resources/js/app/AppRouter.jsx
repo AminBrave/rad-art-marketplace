@@ -74,6 +74,7 @@ function AppRoutes() {
                     <Route index element={withRouteFallback(<ArtistWorkspaceOverview />)} />
                     <Route path="profile" element={<ArtistProfileSettings />} />
                     <Route path="settings" element={<WorkspaceSettingsPage />} />
+                    <Route path="artworks/new" element={<ArtistArtworkPage initialCreate />} />
                     <Route path="artworks" element={<ArtistArtworkPage />} />
                     <Route path="messages" element={withRouteFallback(<MessagingCenter role="artist" />)} />
                     <Route path="*" element={<NotFoundPage />} />
