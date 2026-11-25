@@ -81,12 +81,12 @@
     @php
         $isWorkspace = request()->is('dashboard', 'dashboard/*', 'admin*');
         $isMessagingRoute = request()->is('dashboard/artist/messages', 'dashboard/buyer/messages');
-        $workspaceNavigationCount = request()->is('admin*') ? 7 : (request()->is('dashboard/buyer*') ? 3 : 5);
+        $workspaceNavigationCount = request()->is('dashboard/buyer*') ? 3 : 5;
         $isArtworkDetail = request()->is('artworks/*');
         $isArtistProfile = request()->is('artists/*');
         $isCollectionDetail = request()->is('collections/*');
         $isCollectionIndex = request()->is('collections');
-        $isArtworkStudio = request()->is('dashboard/artist/artworks');
+        $isArtworkStudio = request()->is('dashboard/artist/artworks', 'dashboard/artist/artworks/new');
         $isArtistProfileSettings = request()->is('dashboard/artist/profile');
         $isAuthForm = request()->is('login', 'register');
         $isInformationPage = request()->is('about', 'help', 'contact');
@@ -108,25 +108,14 @@
                 <header class="sticky top-0 z-40 shrink-0 border-b border-border bg-paper shadow-soft">
                     <div class="mx-auto flex min-h-[4.5rem] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-20 sm:gap-4" aria-hidden="true">
                         <div class="flex min-w-0 items-center gap-2.5 sm:gap-3">
-                            <span class="{{ $skeletonClass }} h-10 w-10 shrink-0 rounded-lg sm:h-12 sm:w-12"></span>
-                            <div class="grid min-w-0 gap-2"><span class="{{ $skeletonClass }} h-4 w-20"></span><span class="{{ $skeletonClass }} h-3 w-28"></span></div>
+                            <span class="{{ $skeletonClass }} h-10 w-10 shrink-0 sm:h-11 sm:w-11"></span>
+                            <span class="{{ $skeletonClass }} h-5 w-24"></span>
                         </div>
-                        <div class="flex shrink-0 items-center gap-2 sm:gap-3"><span class="{{ $skeletonClass }} hidden h-9 w-28 rounded-md lg:block"></span><span class="{{ $skeletonClass }} h-11 w-11 rounded-lg"></span></div>
+                        <span class="{{ $skeletonClass }} h-11 w-11 shrink-0"></span>
                     </div>
                 </header>
-                <div class="{{ $isMessagingRoute ? 'mx-auto grid h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-h-0 min-w-0 max-w-content flex-none grid-cols-1 grid-rows-[minmax(0,1fr)] gap-0 px-page-gutter py-page-gutter sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:gap-4 sm:py-4 lg:h-[calc(100dvh-5rem)] lg:grid-cols-[15rem_minmax(0,1fr)] lg:grid-rows-1 lg:gap-8 lg:py-8' : 'mx-auto grid min-w-0 max-w-content gap-5 px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-8 lg:pb-8' }}">
-                    @if ($isMessagingRoute)
-                        <div class="hidden lg:block" aria-hidden="true"></div>
-                    @else
-                        <aside class="hidden min-w-0 rounded-xl border border-border bg-paper p-3 shadow-soft lg:block" aria-hidden="true">
-                            <div class="grid gap-1">
-                                @foreach (range(1, $workspaceNavigationCount) as $item)
-                                    <div class="flex min-h-11 items-center gap-3 rounded-lg px-4 py-2.5"><span class="{{ $skeletonClass }} h-[18px] w-[18px] shrink-0"></span><span class="{{ $skeletonClass }} h-3 w-28"></span></div>
-                                @endforeach
-                            </div>
-                        </aside>
-                    @endif
-                    <main class="{{ $isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden lg:col-start-2' : 'min-w-0' }}" role="status" aria-busy="true" aria-label="در حال بارگذاری فضای کاربری">
+                <div class="{{ $isMessagingRoute ? 'mx-auto flex h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-h-0 min-w-0 max-w-content flex-none px-page-gutter py-3 sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:py-4' : 'mx-auto w-full max-w-content px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)]' }}">
+                    <main class="{{ $isMessagingRoute ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'min-w-0' }}" role="status" aria-busy="true" aria-label="در حال بارگذاری فضای کاربری">
         @else
             <main class="mx-auto min-h-screen w-[min(calc(100%_-_2.5rem),80rem)] pt-6 pb-16" role="status" aria-busy="true" aria-label="در حال بارگذاری راد آرت">
                 <div class="flex min-h-14 items-center justify-between gap-8 border-b border-border">
@@ -419,13 +408,8 @@
         @if ($isWorkspace)
                     </main>
                 </div>
-                @if ($isMessagingRoute)
-                    <aside class="fixed end-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))] top-28 z-30 hidden h-fit max-h-[calc(100dvh_-_8rem)] w-60 overflow-hidden rounded-xl border border-border bg-paper p-3 shadow-soft lg:block" aria-hidden="true">
-                        <div class="grid gap-1">@foreach (range(1, $workspaceNavigationCount) as $item)<span class="{{ $skeletonClass }} h-10 w-full rounded-md"></span>@endforeach</div>
-                    </aside>
-                @endif
-                <div class="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-paper pb-[env(safe-area-inset-bottom)] shadow-raised lg:hidden" aria-hidden="true">
-                    <div class="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2">
+                <div class="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-paper pb-[env(safe-area-inset-bottom)] shadow-raised lg:inset-x-auto lg:left-1/2 lg:bottom-6 lg:w-[min(54rem,calc(100vw_-_3rem))] lg:-translate-x-1/2 lg:border lg:pb-0" aria-hidden="true">
+                    <div class="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2 lg:h-16 lg:px-3">
                         @foreach (range(1, $workspaceNavigationCount) as $item)
                             <div class="flex flex-col items-center justify-center gap-1"><span class="{{ $skeletonClass }} h-[19px] w-[19px]"></span><span class="{{ $skeletonClass }} h-2 w-10"></span></div>
                         @endforeach
