@@ -57,6 +57,7 @@ class ArtistProfileTest extends TestCase
         $this->assertNotEmpty($path);
         Storage::disk('public')->assertExists($path);
         $this->getJson('/api/v1/artists/'.$artist->artistProfile->slug)->assertOk()->assertJsonPath('data.avatar_url', '/storage/'.$path);
+        $this->getJson('/api/v1/artists?per_page=48')->assertOk()->assertJsonFragment(['avatar_url' => '/storage/'.$path]);
     }
 
     public function test_artist_avatar_upload_rejects_unsupported_files(): void
