@@ -134,7 +134,7 @@ export function PublicLayout() {
                             {publicLinks.map(({ to, label, Icon }) => (
                                 <NavLink key={to} to={to} onClick={() => setMobileMenuOpen(false)}
                                     className={({ isActive }) => ['flex min-h-12 items-center gap-3 px-3 text-sm font-semibold no-underline transition-colors', isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:bg-surface-muted hover:text-ink'].join(' ')}>
-                                    <Icon size={19} strokeWidth={1.9} aria-hidden="true" /><span>{label}</span>
+                                    <Icon size={20} strokeWidth={1.9} aria-hidden="true" /><span>{label}</span>
                                 </NavLink>
                             ))}
                         </div>
@@ -473,10 +473,10 @@ function PublicBottomNavigation({ user }) {
             <nav aria-label={t('ناوبری بخش‌های عمومی')} data-nav-priority="primary" className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-0 px-1 lg:h-16 lg:w-fit lg:grid-flow-col lg:auto-cols-max lg:gap-6 lg:px-6">
                 {items.map(({ to, label, Icon, end }) => (
                     <NavLink key={to} to={to} end={end} aria-label={label} title={label} className={({ isActive }) => [
-                        'relative flex min-w-0 flex-col items-center justify-center gap-1 px-1 text-[10px] font-semibold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus lg:text-xs',
+                        'relative flex min-w-0 flex-col items-center justify-center gap-0.5 px-1 text-[10px] font-semibold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus lg:text-xs',
                         isActive ? 'text-terracotta-strong after:absolute after:inset-x-1/3 after:top-0 after:h-0.5 after:bg-terracotta' : 'text-muted hover:text-ink',
                     ].join(' ')}>
-                        <Icon size={21} strokeWidth={1.9} aria-hidden="true" />
+                        <Icon size={20} strokeWidth={1.9} aria-hidden="true" />
                         <span className="max-w-full truncate">{label}</span>
                     </NavLink>
                 ))}
@@ -510,7 +510,7 @@ function AuthenticatedBottomNavigation({ mobileLinks, unreadConversationCount = 
                             aria-label={navigationLabel}
                             title={navigationLabel}
                             className={({ isActive }) => [
-                                'relative flex min-w-0 flex-col items-center justify-center gap-1 rounded-md px-1 text-[10px] font-bold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus motion-reduce:transition-none lg:text-xs',
+                                'relative flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-md px-1 text-[10px] font-bold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus motion-reduce:transition-none lg:text-xs',
                                 isActive
                                     ? 'text-terracotta-strong after:absolute after:inset-x-1/4 after:top-0 after:h-0.5 after:rounded-full after:bg-terracotta'
                                     : 'text-muted hover:text-ink',
@@ -640,7 +640,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                                         ? `${t(item.label)}، ${unreadConversationCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} ${t('گفتگوهای خوانده‌نشده')}`
                                         : t(item.label)}
                                     className={({ isActive }) => [
-                                        'flex min-h-11 items-center border-s-2 border-transparent px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
+                                        'flex min-h-11 items-center gap-3 border-s-2 border-transparent px-3 text-sm font-semibold no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus',
                                         isActive ? 'bg-accent-surface text-terracotta-strong' : 'text-muted hover:text-ink',
                                     ].join(' ')}
                                 >
