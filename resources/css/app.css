@@ -329,7 +329,12 @@
     --rd-workspace-bleed-offset: 0px;
 }
 
-/* Workspace content now spans the full centered page measure; there is no fixed sidebar column. */
+/* Each shared section owns its horizontal gutter; full-bleed sections opt out. */
+.rd-container:not(.rd-container--full) {
+    padding-inline: var(--rd-page-gutter);
+}
+
+/* Workspace shell supplies the page gutter, so nested section containers do not add it again. */
 .rd-page-frame--workspace .rd-container {
     padding: 0;
 }
@@ -361,7 +366,6 @@
 
 .rd-page-frame--workspace {
     width: 100%;
-    padding-inline: var(--rd-page-gutter);
 }
 
 @media (max-width: 639px) {
