@@ -177,6 +177,7 @@ test('public and workspace navigation expose role-aware destinations and an arti
     assert.ok(layouts.includes('function PublicBottomNavigation({ user, unreadConversationCount = 0 })'));
     assert.ok(layouts.includes('<NotificationBell user={user} />'), 'Discover exposes the same notification panel control as Workspace.');
     assert.ok(layouts.includes("label: t('کشف')") && layouts.includes("label: t('هنرمندان')") && layouts.includes("label: t('مجموعه‌ها')"), 'Discover sidebar labels match the public bottom navigation.');
+    assert.ok(layouts.includes("{ to: '/artworks', label: 'کشف' }") && layouts.includes("{ to: '/collections', label: 'مجموعه‌ها' }"), 'The Discover section inside the Workspace drawer uses the same destination names.');
     assert.ok(layouts.includes("t(user.role === 'artist' ? 'فضای هنرمند' : user.role === 'admin' ? 'مدیریت' : 'فضای خریدار')"), 'Discover separates the Workspace group from its Discover destinations.');
     assert.ok(layouts.includes("t('حساب کاربری')"), 'The Workspace destination uses the same label as the public bottom navigation.');
     assert.ok(layouts.includes("t(item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label)"), 'Workspace sidebar labels use the same compact names as its bottom navigation.');
