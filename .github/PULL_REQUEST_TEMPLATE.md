@@ -1,36 +1,39 @@
 ## Related issue
-Refs #
-<!-- Use "Closes #123" only when this PR fully completes that issue. Use "Refs" or "Part of" for partial work. -->
+<!-- Use "Closes #123" only when this PR fully completes the issue. Use "Refs #123" for partial work. Delete this section if not applicable. -->
+
+## Target branch
+<!-- Confirm the intended target: main for normal work, or the owning agent lane for parallel lane-based work. -->
 
 ## Summary
-
-## Why
+<!-- What changed and what outcome does it deliver? -->
 
 ## Scope
 - In scope:
-- Explicitly out of scope:
+- Out of scope:
 
 ## Implementation notes
+<!-- Important contracts, migrations, compatibility or rollout considerations. -->
 
 ## Screenshots / UX evidence
-<!-- Required for visible UI changes; include Persian/RTL and responsive states when relevant. -->
+<!-- Include for visible UI changes; cover Persian/RTL and responsive states when relevant. -->
 
-## Risk, data and rollback
-- API/schema/migration impact:
-- Authorization/privacy:
-- Rollback:
+## Risk and rollback
+- Data/API/schema impact:
+- Security/privacy/accessibility:
+- Rollback or recovery:
 
 ## Verification
-- [ ] Not run (permission not granted)
-- [ ] Locally run (commands/results below)
-- [ ] CI-confirmed (link to observed run)
+- [ ] Not run (explain why)
+- [ ] Run locally (commands and results below)
+- [ ] CI observed (link to the run)
 
 Commands and evidence:
 
 ## Reviewer checklist
-- [ ] Linked issue and its acceptance criteria addressed
+- [ ] PR targets the intended base branch
+- [ ] Related issue and acceptance criteria addressed, when applicable
 - [ ] Focused diff and affected callers reviewed
+- [ ] Tests added/updated, or reason no test change was needed
 - [ ] No secrets or unrelated files included
 - [ ] Accessibility, responsive and Persian RTL considered where relevant
-- [ ] Documentation and AI/SESSION.md updated when durable project-wide state changed
-- [ ] PR is draft while required maintainer verification is pending
+- [ ] Documentation updated when durable guidance or behavior changed
