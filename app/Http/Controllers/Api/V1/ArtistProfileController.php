@@ -183,7 +183,7 @@ class ArtistProfileController extends Controller
             'website_url' => $profile->website_url,
             'instagram_handle' => $profile->instagram_handle,
             'is_public' => $profile->is_public,
-            'avatar_url' => $profile->avatar_path ? Storage::disk('public')->url($profile->avatar_path) : null,
+            'avatar_url' => $profile->avatar_path ? $this->avatarUrl($profile->avatar_path) : null,
         ];
     }
 
