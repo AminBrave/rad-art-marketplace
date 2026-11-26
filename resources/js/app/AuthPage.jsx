@@ -26,7 +26,7 @@ export default function AuthPage({ initialMode = 'login' }) {
     useEffect(() => { setMode(initialMode); }, [initialMode]);
 
     if (status === 'loading') return <RouteLoading label={t('در حال بررسی حساب کاربری…')} />;
-    if (status === 'error') return <p className="mx-auto max-w-xl px-6 py-16 text-center text-sm text-danger">{t("وضعیت حساب دریافت نشد. صفحه را دوباره بارگذاری کنید.")}</p>;
+    if (status === 'error') return <p className="mx-auto max-w-xl px-page-gutter py-section text-center text-sm text-danger">{t("وضعیت حساب دریافت نشد. صفحه را دوباره بارگذاری کنید.")}</p>;
     if (user) return <Navigate to={location.state?.from?.pathname ?? (user.role === 'admin' ? '/admin' : user.role === 'buyer' ? '/dashboard/buyer' : '/dashboard/artist')} replace />;
 
     const update = (event) => setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
@@ -60,7 +60,7 @@ export default function AuthPage({ initialMode = 'login' }) {
     };
 
     return (
-        <Container as="div" width="reading" className="py-12">
+        <Container as="div" width="reading" className="py-page">
             <section className="border-y border-ink bg-paper p-6 sm:p-9">
                 <Link to="/" className="text-sm font-bold text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2">{t("بازگشت به راد آرت")}</Link>
                 <h1 className="mt-5 text-3xl font-black tracking-tight">{mode === 'register' ? t('ساخت حساب کاربری') : t('ورود به حساب')}</h1>
