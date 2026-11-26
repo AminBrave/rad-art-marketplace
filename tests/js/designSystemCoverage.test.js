@@ -405,7 +405,7 @@ test('SectionHeader is reused for catalogue and related-artwork section headings
 test('FormField preserves caller-provided aria-describedby references', () => {
     const primitives = readFileSync(resolve(root, 'resources/js/components/ui/primitives.jsx'), 'utf8');
     assert.match(primitives, /children\?\.\props\?\.\['aria-describedby'\]/);
-    assert.match(primitives, /\.split\(\/\\s\+\/\)/);
+    assert.match(primitives, /\.split\(\/\s\+\/\)/);
     assert.ok(primitives.includes("'aria-describedby': describedBy"));
 });
 
@@ -455,7 +455,7 @@ test('all semantic sections use the shared primitive and have no caller-owned to
     const localSpacingOverrides = frontendFiles.flatMap((path) => {
         const source = readFileSync(path, 'utf8');
         return matchesWithLines(source, /<Section\\b(?:(?!>).)*>/gs)
-            .filter(({ value }) => /(?:^|\\s)-?(?:m(?:t|b|y|x|s|e)?|p(?:y|t|b)?)-[^\\s"'\x60}]+/.test(value))
+            .filter(({ value }) => /(?:^|\s)-?(?:m(?:t|b|y|x|s|e)?|p(?:y|t|b)?)-[^\s"'\x60}]+/.test(value))
             .map((match) => ({ file: relative(root, path), ...match }));
     });
     assert.deepEqual(
