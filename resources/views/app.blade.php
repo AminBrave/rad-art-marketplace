@@ -133,7 +133,7 @@
         @if ($isWorkspace)
             <div class="{{ $isMessagingRoute ? 'flex h-dvh flex-col overflow-hidden bg-canvas text-ink' : 'min-h-screen bg-canvas text-ink' }}" aria-busy="true">
                 <header class="sticky top-0 z-40 shrink-0 border-b border-border bg-paper shadow-soft">
-                    <div class="rd-container mx-auto flex min-h-[var(--rd-header-height)] w-full max-w-content items-center justify-between gap-3 sm:min-h-[var(--rd-header-height-wide)] sm:gap-4" aria-hidden="true">
+                    <div class="rd-container min-w-0 mx-auto flex min-h-[var(--rd-header-height)] w-full max-w-content items-center justify-between gap-3 sm:min-h-[var(--rd-header-height-wide)] sm:gap-4" aria-hidden="true">
                         <div class="flex min-w-0 items-center gap-2.5 sm:gap-3">
                             <span class="{{ $skeletonClass }} h-10 w-10 shrink-0 sm:h-11 sm:w-11"></span>
                             <span class="{{ $skeletonClass }} h-5 w-24"></span>
@@ -141,10 +141,10 @@
                         <span class="{{ $skeletonClass }} h-11 w-11 shrink-0"></span>
                     </div>
                 </header>
-                <div class="{{ $isMessagingRoute ? 'rd-container mx-auto flex h-[calc(100dvh-var(--rd-header-height)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-h-0 min-w-0 max-w-content flex-none py-3 sm:h-[calc(100dvh-var(--rd-header-height-wide)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:py-4' : 'rd-container mx-auto w-full max-w-content py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+var(--rd-space-4))] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+var(--rd-space-8))]' }}">
+                <div class="{{ $isMessagingRoute ? 'rd-container min-w-0 mx-auto flex h-[calc(100dvh-var(--rd-header-height)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-h-0 min-w-0 max-w-content flex-none py-3 sm:h-[calc(100dvh-var(--rd-header-height-wide)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:py-4' : 'rd-container min-w-0 mx-auto w-full max-w-content py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+var(--rd-space-4))] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+var(--rd-space-8))]' }}">
                     <main class="{{ $isMessagingRoute ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'min-w-0' }}" role="status" aria-busy="true" aria-label="در حال بارگذاری فضای کاربری">
         @else
-            <main class="rd-container mx-auto min-h-screen w-full max-w-content pt-6 pb-16" role="status" aria-busy="true" aria-label="در حال بارگذاری ردّمن">
+            <main class="rd-container min-w-0 mx-auto min-h-screen w-full max-w-content pt-6 pb-16" role="status" aria-busy="true" aria-label="در حال بارگذاری ردّمن">
                 <div class="flex min-h-14 items-center justify-between gap-8 border-b border-border">
                     <div class="flex items-center gap-2"><img src="/rademan-logo-light.svg" data-logo-base="/rademan-logo-light" data-logo-format="0" alt="" aria-hidden="true" class="brand-logo-light h-9 w-9" width="36" height="36"><img src="/rademan-logo-dark.svg" data-logo-base="/rademan-logo-dark" data-logo-format="0" alt="" aria-hidden="true" class="brand-logo-dark h-9 w-9" width="36" height="36"><span class="text-lg font-black text-ink">ردّمن</span></div>
                     <span class="{{ $skeletonClass }} h-4 w-[min(42%,22rem)]"></span>
