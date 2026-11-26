@@ -71,9 +71,10 @@ DropdownMenu.Item = DropdownMenuItem;
 DropdownMenu.Label = DropdownMenuLabel;
 DropdownMenu.Separator = DropdownMenuSeparator;
 
-export function Breadcrumbs({ items = [], className = '' }) {
+export function Breadcrumbs({ items = [], label = 'Breadcrumb', className = '' }) {
+    if (!items.length) return null;
     return (
-        <nav aria-label="مسیر صفحه" className={cn('text-sm text-muted', className)}>
+        <nav aria-label={label} className={cn('text-xs text-[color:var(--rd-hero-muted)]', className)}>
             <ol className="flex flex-wrap items-center gap-2 text-sm text-muted">
                 {items.map((item, index) => {
                     const current = index === items.length - 1;
@@ -81,7 +82,7 @@ export function Breadcrumbs({ items = [], className = '' }) {
                         <li key={item.to ?? item.label} className="inline-flex items-center gap-2">
                             {index > 0 && <span aria-hidden="true" className="text-subtle">/</span>}
                             {current ? (
-                                <span aria-current="page" className="font-semibold text-ink">{item.label}</span>
+                                <span aria-current="page" className="font-semibold text-[color:var(--rd-hero-foreground)]">{item.label}</span>
                             ) : (
                                 <Link to={item.to} className="underline-offset-4 hover:text-terracotta-strong hover:underline">{item.label}</Link>
                             )}
