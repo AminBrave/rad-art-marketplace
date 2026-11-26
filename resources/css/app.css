@@ -12,6 +12,10 @@
         padding-block: var(--rd-layout-section);
     }
 
+    section.rd-hero-surface {
+        padding-block: 0;
+    }
+
     @media (min-width: 640px) {
         section {
             padding-block: var(--rd-layout-section-wide);
