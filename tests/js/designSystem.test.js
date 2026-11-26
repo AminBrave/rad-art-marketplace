@@ -937,6 +937,7 @@ test('messaging spacing uses the shared scale while preserving safe-area handlin
     assert.ok(messageTimeline.includes('mt-2.5'));
     assert.ok(messageTimeline.includes('px-3 py-2.5'));
     assert.doesNotMatch(messageTimeline, /(?:p|px|py|mt|gap)-\\[\\.\\d/);
+    assert.doesNotMatch(relatedArtworkStrip, /(?:p|px|py|ps|pe|gap)-\\[\\.\\d/);
 });
 
 test('messaging composer height is driven by its send control and compact padding', () => {
