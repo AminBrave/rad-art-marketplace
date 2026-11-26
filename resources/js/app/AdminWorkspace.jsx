@@ -62,7 +62,7 @@ export function AdminDashboardHome() {
     ];
 
     return (
-        <div className="w-full space-y-8">
+        <div className="w-full space-y-content">
             <WorkspaceHero
                 eyebrow={t('مرکز کنترل راد آرت')}
                 title={<>{t('خوش آمدید، ')}{user?.name ?? t('مدیر')}</>}
@@ -70,7 +70,7 @@ export function AdminDashboardHome() {
                 actions={<Button variant="secondary" onClick={load} loading={loading}>{t("به‌روزرسانی آمار")}</Button>}
             />
 
-            <Container width="wide" className="space-y-8">
+            <Container width="wide" className="space-y-content">
             {errors.length > 0 && <ErrorState title={t("بخشی از اطلاعات دریافت نشد")} description={errors.map(t).join(' ')} onRetry={load} />}
 
             <section aria-label={t("شاخص‌های عملیاتی")} className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
