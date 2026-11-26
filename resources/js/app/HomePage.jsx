@@ -164,7 +164,7 @@ export default function HomePage() {
                 </Container>
             </section>
 
-            <section aria-label="چطور در راد آرت کشف کنیم" className="bg-surface-muted py-16 sm:py-24">
+            <section aria-label="چطور در راد آرت کشف کنیم" className="bg-surface-muted py-section">
                 <Container width="wide" className="grid gap-4 sm:grid-cols-3">
                     {editorialSteps.map((step) => (
                         <Card
@@ -182,7 +182,7 @@ export default function HomePage() {
                 </Container>
             </section>
 
-            <Container as="section" width="wide" aria-labelledby="recent-works-title" className="py-16 sm:py-24">
+            <Container as="section" width="wide" aria-labelledby="recent-works-title" className="py-section">
                 <SectionHeading
                     id="recent-works-title"
                     eyebrow="THE GALLERY / 01"
@@ -203,7 +203,7 @@ export default function HomePage() {
             </Container>
 
             <section aria-labelledby="categories-title" className="border-y border-border bg-paper">
-                <Container className="py-16 sm:py-24">
+                <Container className="py-section">
                     <SectionHeading
                         id="categories-title"
                         eyebrow="FIND YOUR PERSPECTIVE / 02"
@@ -224,7 +224,7 @@ export default function HomePage() {
                 </Container>
             </section>
 
-            <Container as="section" width="wide" aria-labelledby="artists-title" className="py-16 sm:py-24">
+            <Container as="section" width="wide" aria-labelledby="artists-title" className="py-section">
                 <SectionHeading
                     id="artists-title"
                     eyebrow="THE PEOPLE / 03"
@@ -268,7 +268,7 @@ export default function HomePage() {
 
             {(collections.length > 0 || featuredArtists.length > 0) && (
                 <section aria-label="مجموعه‌ها و هنرمندان منتخب" className="border-y border-border bg-surface-muted">
-                    <Container className="py-16 sm:py-24">
+                    <Container className="py-section">
                         {collections.length > 0 && (
                             <div>
                                 <SectionHeading
@@ -313,7 +313,7 @@ export default function HomePage() {
             )}
 
             <section className="rd-hero-surface border-y border-[color:var(--rd-hero-line)]">
-                <Container className="grid gap-8 py-16 sm:py-24 md:grid-cols-[1fr_auto] md:items-center">
+                <Container className="grid gap-8 py-section md:grid-cols-[1fr_auto] md:items-center">
                     <div>
                         <p className="text-[10px] font-extrabold tracking-[.16em] text-[color:var(--rd-hero-accent)]">BECOME PART OF THE STORY</p>
                         <h2 className="mt-3 max-w-3xl text-2xl font-black leading-relaxed text-[color:var(--rd-hero-foreground)] sm:text-3xl">{t('جهان هنری خود را با دیگران به اشتراک بگذارید.')}</h2>
