@@ -359,7 +359,9 @@
     position: relative;
     isolation: isolate;
     overflow: clip;
-    width: 100%;
+    width: auto;
+    max-width: 100vw;
+    margin-inline: calc(50% - 50vw);
     border-block: 1px solid var(--rd-hero-line);
     background-image:
         linear-gradient(var(--rd-hero-line) 1px, transparent 1px),
@@ -388,9 +390,11 @@
 .rd-home-hero .rd-unified-hero__inner > div {
     align-items: center;
 }
-.rd-home-hero .rd-unified-hero__inner img {
+.rd-home-hero .rd-unified-hero__inner img { height: 100%; width: 100%; object-fit: cover; }
+.rd-home-hero .rd-unified-hero__inner > div > div:last-child > a > div:first-child {
+    height: min(42svh, 22rem);
     max-height: min(42svh, 22rem);
-    object-fit: cover;
+    aspect-ratio: auto;
 }
 @media (min-width: 768px) {
     .rd-home-hero { min-height: calc(100svh - var(--rd-header-height)); }
@@ -398,7 +402,7 @@
 }
 @media (max-width: 767px) {
     .rd-home-hero .rd-unified-hero__inner > div { gap: 1.25rem; }
-    .rd-home-hero .rd-unified-hero__inner > div > div:last-child img { max-height: 24svh; }
+    .rd-home-hero .rd-unified-hero__inner > div > div:last-child > a > div:first-child { height: min(20svh, 9rem); max-height: min(20svh, 9rem); }
 }
 .rd-chat-shell,
 .rd-chat-shell section,
