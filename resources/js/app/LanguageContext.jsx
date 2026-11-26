@@ -58,7 +58,6 @@ const english = {
     "بخش‌های اصلی فضای کاربری": "Workspace navigation",
     "پیوندهای تکمیلی سایت": "More from Rad Art",
     "کشف": "Discover",
-    "کشف آثار": "Discover art",
     "فضای کاربری شما": "Your Workspace",
     "بیشتر": "More",
     "فضای کاری": "Workspace",
