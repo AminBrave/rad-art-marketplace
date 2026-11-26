@@ -271,6 +271,7 @@ export function SelectField({
             required={required}
             disabled={disabled}
             dir={direction}
+            modal={false}
         >
             <SelectPrimitive.Trigger
                 {...selectProps}
@@ -288,7 +289,7 @@ export function SelectField({
                     sideOffset={4}
                     collisionPadding={8}
                     dir={direction}
-                    className="z-50 box-border max-h-[var(--radix-select-content-available-height)] w-[var(--radix-select-trigger-width)] max-w-[calc(100vw-1rem)] overflow-hidden border border-border bg-paper font-sans text-sm text-ink shadow-raised"
+                    className="z-[var(--rd-layer-popover)] box-border max-h-[var(--radix-select-content-available-height)] w-[var(--radix-select-trigger-width)] max-w-[calc(100vw-1rem)] overflow-hidden border border-border bg-paper font-sans text-sm text-ink shadow-raised"
                 >
                     <SelectPrimitive.Viewport className="max-h-[var(--radix-select-content-available-height)] overflow-y-auto p-1">
                         {options.map((option, index) => (
