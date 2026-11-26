@@ -102,6 +102,42 @@ export function PageHeader({ eyebrow, title, description, actions, level = 1, bl
     );
 }
 
+/**
+ * Public discovery hero: one shared editorial composition with route-specific
+ * abstract geometry. Breadcrumbs are supplied by discovery routes only.
+ */
+export function DiscoveryHero({
+    eyebrow,
+    title,
+    description,
+    breadcrumbs,
+    actions,
+    media,
+    children,
+    shape = 'frame',
+    className = '',
+    titleClassName = '',
+    descriptionClassName = '',
+}) {
+    return (
+        <section className={cn('rd-discovery-hero rd-hero-surface', className)} data-shape={shape}>
+            <Container width="wide" className="relative z-10 py-8 sm:py-12 lg:py-16">
+                {breadcrumbs && <div className="mb-7 sm:mb-9"><div className="text-[11px] font-semibold text-[color:var(--rd-hero-muted)]">{breadcrumbs}</div></div>}
+                <div className={cn('grid min-w-0 items-center gap-8 lg:gap-12', media && 'lg:grid-cols-[minmax(0,1.15fr)_minmax(17rem,.85fr)]')}>
+                    <div className="relative z-10 min-w-0">
+                        {eyebrow && <p className="inline-flex items-center gap-2 border-s-2 border-[color:var(--rd-hero-accent)] px-3 py-1 text-[11px] font-extrabold leading-none tracking-[.08em] text-[color:var(--rd-hero-accent)]">{eyebrow}</p>}
+                        <h1 className={cn('mt-4 max-w-4xl break-words text-[clamp(2rem,4.5vw,3.75rem)] font-extrabold leading-[1.2] tracking-[-.04em] text-[color:var(--rd-hero-foreground)]', titleClassName)}>{title}</h1>
+                        {description && <p className={cn('mt-4 max-w-2xl text-sm leading-8 text-[color:var(--rd-hero-muted)] sm:text-base sm:leading-9', descriptionClassName)}>{description}</p>}
+                        {children && <div className="mt-6 max-w-3xl">{children}</div>}
+                        {actions && <div className="mt-7 flex min-w-0 flex-wrap items-center gap-3">{actions}</div>}
+                    </div>
+                    {media && <div className="relative z-10 mx-auto w-full min-w-0 max-w-xl lg:max-w-none">{media}</div>}
+                </div>
+            </Container>
+        </section>
+    );
+}
+
 export function SectionHeader({ id, eyebrow, title, description, actions, className = '', level = 2 }) {
     const Heading = level === 3 ? 'h3' : 'h2';
     return (
