@@ -170,7 +170,7 @@ export default function HomePage() {
             </Container>
 
             <section aria-labelledby="categories-title" className="border-y border-border bg-paper">
-                <Container className="py-section sm:py-section-wide">
+                <Container>
                     <SectionHeading
                         id="categories-title"
                         eyebrow="FIND YOUR PERSPECTIVE / 02"
@@ -235,7 +235,7 @@ export default function HomePage() {
 
             {(collections.length > 0 || featuredArtists.length > 0) && (
                 <section aria-label="مجموعه‌ها و هنرمندان منتخب" className="border-y border-border bg-surface-muted">
-                    <Container className="py-section sm:py-section-wide">
+                    <Container>
                         {collections.length > 0 && (
                             <div>
                                 <SectionHeading
