@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AlertTriangle, ImageOff } from 'lucide-react';
 import { Button } from './primitives';
 import { useLanguage } from '../../app/LanguageContext';
@@ -172,6 +172,10 @@ export function MediaImage({
         : src;
     const [loadedSrc, setLoadedSrc] = useState(null);
     const [failedSrc, setFailedSrc] = useState(null);
+    useEffect(() => {
+        setLoadedSrc(null);
+        setFailedSrc(null);
+    }, [imageSrc]);
     const loaded = Boolean(imageSrc) && loadedSrc === imageSrc;
     const failed = Boolean(imageSrc) && failedSrc === imageSrc;
     const unavailable = !imageSrc || failed;
@@ -219,7 +223,7 @@ export function MediaImage({
                         alt={alt}
                         loading={loading}
                         decoding={decoding}
-                        fetchpriority={fetchPriority}
+                        fetchPriority={fetchPriority}
                         width={width}
                         height={height}
                         onLoad={() => setLoadedSrc(imageSrc)}
