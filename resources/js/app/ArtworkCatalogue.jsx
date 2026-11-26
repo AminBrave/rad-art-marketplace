@@ -161,7 +161,7 @@ export default function ArtworkCatalogue() {
             </Container>
             </Section>
 
-            <Section spacing="regular" as="section" bleed aria-label={t("آرشیو آثار و نتایج")} className="mt-8 border-y border-divider-section bg-paper">
+            <Section spacing="regular" as="section" bleed aria-label={t("آرشیو آثار و نتایج")} className="border-y border-divider-section bg-paper">
                 <Container width="wide">
             {activeFilterCount > 0 && (
                 <div className="mt-6 flex flex-wrap items-center gap-2" aria-label={t("معیارهای فعال")}>
