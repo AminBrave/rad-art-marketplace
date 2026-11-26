@@ -464,6 +464,8 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'Select popovers must inherit the application font and stay within the viewport.');
     assert.match(timeline, /border border-border bg-surface p-0 text-ink transition-colors hover:border-border-strong/,
         'The message overflow trigger must have a visible contrast surface in both themes.');
+    assert.ok(timeline.includes("(own ? 'justify-end' : 'justify-start')"),
+        'Outgoing messages must sit at logical inline-end and incoming messages at inline-start in both RTL and LTR.');
     assert.match(composer, /<TextareaField dir="auto"/,
         'The composer must resolve the writing direction from the message content.');
     assert.match(timeline, /<p dir="auto"/,
