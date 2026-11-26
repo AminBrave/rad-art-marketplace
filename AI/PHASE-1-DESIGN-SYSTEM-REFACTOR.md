@@ -340,6 +340,8 @@ Each slice should have a short feature-specific contract and tests. Do not make 
 - Converted structural wrappers in `skeletons.jsx` from native `section` elements to neutral `div` wrappers. Loading placeholders are not independent page landmarks and should not inherit semantic page layout.
 - Kept semantic sections in the remaining real page/feature compositions where they provide meaningful grouping; those compositions already own their spacing through explicit utilities or the shared `Section` primitive.
 - Updated regression assertions to prevent reintroducing global native-section spacing or chat/workspace tag-specific resets.
+- Follow-up cleanup: removed the remaining `.rd-chat-shell` `padding-block: 0 !important` override. The chat route already declares responsive `py-3 sm:py-4 lg:py-6` on its shell; the override had silently neutralized those intended utilities. The shell now owns its spacing through its layout classes.
+
 
 **Verification status:**
 
