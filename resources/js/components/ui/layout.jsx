@@ -38,17 +38,16 @@ export const Container = forwardRef(function Container({ as: Element = 'div', wi
 
 /**
  * Page-group spacing is an explicit component variant, never inferred from the
- * rendered HTML tag. The default preserves the existing section rhythm while
- * call sites migrate to an explicit spacing value.
+ * rendered HTML tag. Call sites must choose their own spacing owner.
  */
-export const Section = forwardRef(function Section({ as: Element = 'section', spacing = 'regular', bleed = false, className = '', ...props }, ref) {
+export const Section = forwardRef(function Section({ as: Element = 'section', spacing, bleed = false, className = '', ...props }, ref) {
     const sectionSpacing = {
         none: 'py-0',
         compact: 'py-section-compact',
         regular: 'py-section sm:py-section-wide',
         relaxed: 'py-section-relaxed sm:py-section-wide',
     };
-    return <Element ref={ref} className={cn('min-w-0', sectionSpacing[spacing] ?? sectionSpacing.regular, bleed && 'rd-bleed', className)} {...props} />;
+    return <Element ref={ref} className={cn('min-w-0', sectionSpacing[spacing] ?? sectionSpacing.none, bleed && 'rd-bleed', className)} {...props} />;
 });
 
 export const Inset = forwardRef(function Inset({ as: Element = 'div', side = 'all', className = '', ...props }, ref) {
