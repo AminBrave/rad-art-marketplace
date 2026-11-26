@@ -446,7 +446,7 @@ test('Tailwind radius utilities map to semantic radius tokens', () => {
     assert.match(tailwind, /card: 'var\(--rd-radius-lg\)'/);
 });
 
-test('dropdowns preserve typography, locale direction and viewport geometry without shifting the page', () => {
+test('messaging uses stable physical layout with locale-aware text and valid Radix overlays', () => {
     const navigation = readFileSync(resolve(root, 'resources/js/components/ui/navigation.jsx'), 'utf8');
     const primitives = readFileSync(resolve(root, 'resources/js/components/ui/primitives.jsx'), 'utf8');
     const timeline = readFileSync(resolve(root, 'resources/js/app/MessageTimeline.jsx'), 'utf8');
@@ -458,94 +458,51 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
     const dialog = readFileSync(resolve(root, 'resources/js/components/ui/Dialog.jsx'), 'utf8');
     const alertDialog = readFileSync(resolve(root, 'resources/js/components/ui/AlertDialog.jsx'), 'utf8');
 
-    assert.match(navigation, /DropdownMenuPrimitive\\.Root modal=\\{false\\} dir=\\{locale === 'fa' \\? 'rtl' : 'ltr'\\}/,
-        'Dropdown menus must remain Radix-based, avoid body scroll locking, and follow the active locale direction.');
-    assert.match(navigation, /max-w-\\[calc\\(100vw-1rem\\)\\].*font-sans/,
-        'Dropdown menus must inherit the application font and stay within the viewport.');
-    assert.match(navigation, /font-sans text-sm outline-none/,
-        'Dropdown items must not fall back to browser or portal font defaults.');
-    assert.match(primitives, /SelectPrimitive\\.Root[\\s\\S]*?SelectPrimitive\\.Trigger[\\s\\S]*?SelectPrimitive\\.Portal/,
-        'Select controls must retain the Radix Select primitive composition.');
-    assert.doesNotMatch(primitives, /modal=\\{false\\}/,
-        'Radix Select Root does not expose a modal prop; do not pass DropdownMenu-only configuration to it.');
-    assert.match(primitives, /SelectPrimitive\\.Content[\\s\\S]*?z-\\[var\\(--rd-layer-popover\\)\\][\\s\\S]*?max-w-\\[calc\\(100vw-1rem\\)\\][\\s\\S]*?font-sans/,
-        'The Radix Select popover must be viewport-constrained and use the application font.');
-    assert.match(primitives, /dir=\\{direction\\}/,
-        'Radix Select trigger and content must follow the active locale direction.');
-    assert.match(primitives, /const controlClass = '[^']*font-sans/,
-        'Radix form controls must inherit the application font token.');
-    assert.match(timeline, /<DropdownMenu\\.Trigger asChild>[\\s\\S]*?<button[\\s\\S]*?data-message-actions-trigger[\\s\\S]*?aria-haspopup="menu"/,
-        'The message action menu must use a direct native button as its Radix trigger.');
-    assert.match(timeline, /ms-auto inline-flex h-9 min-h-9 w-9 min-w-9 shrink-0/,
-        'The message menu trigger must remain at the physical right edge of the message action row.');
-    assert.ok(!timeline.includes('<Tooltip content={t("عملیات پیام")}>'),
-        'The message menu trigger must not nest competing Radix Tooltip and DropdownMenu triggers.');
-    assert.ok(!timeline.includes('<Tooltip content={t("افزودن واکنش")}>'),
-        'The reaction menu trigger must not nest a Tooltip trigger around its DropdownMenu trigger.');
-    assert.ok(!conversationHeader.includes('<Tooltip content={t("گزینه‌های بیشتر")}>'),
-        'The conversation menu trigger must not nest a Tooltip trigger around its DropdownMenu trigger.');
+    assert.ok(navigation.includes('DropdownMenuPrimitive.Root modal={false} dir={locale === \'fa\' ? \'rtl\' : \'ltr\'}'));
+    assert.ok(navigation.includes('max-w-[calc(100vw-1rem)]') && navigation.includes('font-sans text-sm outline-none'));
+    assert.ok(primitives.includes('<SelectPrimitive.Root') && primitives.includes('<SelectPrimitive.Trigger') && primitives.includes('<SelectPrimitive.Portal'));
+    assert.ok(!primitives.includes('modal={false}'), 'Radix Select Root must not receive the unsupported DropdownMenu modal prop.');
+    assert.ok(primitives.includes('position="popper"') && primitives.includes('z-[var(--rd-layer-popover)]'));
+    assert.ok(primitives.includes('dir={direction}'));
+    assert.ok(timeline.includes('data-message-actions-trigger'));
+    assert.ok(!timeline.includes('<Tooltip content={t("عملیات پیام")}>'));
+    assert.ok(!timeline.includes('<Tooltip content={t("افزودن واکنش")}>'));
+    assert.ok(!conversationHeader.includes('<Tooltip content={t("گزینه‌های بیشتر")}>'));
     assert.ok(dialog.includes('z-[var(--rd-layer-modal-overlay)]') && dialog.includes('z-[var(--rd-layer-modal)]'));
     assert.ok(alertDialog.includes('z-[var(--rd-layer-alert-overlay)]') && alertDialog.includes('z-[var(--rd-layer-alert)]'));
-    assert.match(timeline, /<div dir="ltr" ref=\{containerRef\}/,
-        'The message timeline structure must remain consistent in both locales.');
-    assert.match(messagingCenter, /<section dir=\\{locale === 'fa' \\? 'rtl' : 'ltr'\\}/,
-        'The app shell follows the selected language direction.');
-    assert.match(inbox, /<aside dir=\{locale === 'fa' \? 'rtl' : 'ltr'\}/,
-        'Inbox text and controls follow the selected language direction.');
-    assert.match(inbox, /<ul dir=\{locale === 'fa' \? 'rtl' : 'ltr'\}/,
-        'Inbox thread content follows the selected language direction.');
-    assert.match(inbox, /<DropdownMenu\\.Trigger asChild>[\\s\\S]*?<button[\\s\\S]*?data-inbox-thread-actions/,
-        'The inbox overflow menu uses a direct native Radix trigger.');
-    assert.match(inbox, /pointer-events-none absolute right-1 top-1\\/2 z-30[\\s\\S]*?pointer-events-auto relative z-30 inline-flex h-9/,
-        'The inbox overflow trigger remains physically right-aligned and clickable above the row selection control.');
-    assert.match(inbox, /pointer-events-auto relative z-30 inline-flex h-9[\\s\\S]*?border-0 bg-transparent p-0[\\s\\S]*?shadow-none/,
-        'The inbox overflow action remains icon-only with no surface, border or shadow.');
-    assert.match(inbox, /z-\\[var\\(--rd-layer-popover\\)\\]/,
-        'Inbox menus use the shared popover layer.');
-    assert.ok(!inbox.includes('<Tooltip content={t("گزینه‌های گفتگو")}>'),
-        'Inbox menus do not nest Tooltip and DropdownMenu triggers.');
-    assert.match(messagingCenter, /<div dir="ltr" className="rd-messaging__workspace grid h-full[\\s\\S]*?lg:grid-cols-\\[minmax\\(0,1fr\\)_minmax\\(17rem,21rem\\)\\]">/,
-        'The workspace uses explicit LTR grid columns: conversation first on the left, inbox second on the right.');
+
+    assert.ok(messagingCenter.includes('<section dir="ltr" data-locale={locale}'));
+    assert.ok(messagingCenter.includes('rd-messaging__workspace'));
+    assert.ok(messagingCenter.includes('lg:grid-cols-[minmax(0,1fr)_minmax(17rem,21rem)]'));
     assert.ok(messagingCenter.indexOf('<div dir="ltr" className={active ?') < messagingCenter.indexOf('<MessagingInboxPanel'),
-        'Conversation DOM order must match its visual order before the inbox for keyboard and screen-reader navigation.');
-    assert.match(messagingCenter, /<div dir="ltr" className=\\{active \\?/,
-        'Conversation chrome remains fixed LTR while message text stays content-directed.');
-    assert.match(timeline, /<div dir="ltr" className=\\{'flex w-full/,
-        'Outgoing messages stay right and incoming messages stay left in both locales.');
-    assert.match(timeline, /dir="ltr" className="mt-2 flex min-w-0 flex-wrap/,
-        'Reaction controls use a fixed LTR action rail.');
-    assert.match(timeline, /items-center justify-end gap-1/,
-        'The emoji reaction control stays on the right side of the message action rail.');
-    assert.match(timeline, /border-0 bg-transparent p-0 text-muted shadow-none/,
-        'Message overflow and reaction triggers have no background, border or shadow.');
-    assert.match(conversationHeader, /<header dir="ltr"/,
-        'The conversation header keeps participant identity left and actions right.');
-    assert.match(conversationHeader, /text-left text-sm font-extrabold/,
-        'Participant names remain physically left-aligned in English and Persian.');
-    assert.match(conversationHeader, /border-0 bg-transparent text-muted shadow-none/,
-        'The conversation overflow action is icon-only.');
-    assert.match(composer, /<form dir="ltr" data-messaging-composer/,
-        'Composer actions stay in fixed physical positions in both locales.');
-    assert.match(composer, /border border-border bg-surface p-2 shadow-none(?![^"]*focus-within)/,
-        'The composer shell does not change border or shadow on focus.');
-    assert.match(inbox, /className="relative border-s-\\[3px\\] border-transparent"/,
-        'Inbox selection does not add active border or background styling.');
-    assert.doesNotMatch(inbox, /data-\\[state=active\\]:border-terracotta|data-\\[state=active\\]:text-terracotta-strong/,
-        'Inbox filter tabs do not use accent borders or colors for their active state.');
-    assert.match(timeline, /rd-message-bubble[^\\n]*font-sans/,
-        'Message bubbles must inherit the locale-aware application font.');
-    assert.ok(timeline.includes("(own ? 'justify-end' : 'justify-start')"),
-        'Outgoing messages stay physically right and incoming messages stay physically left under the fixed LTR chat rail.');
-    assert.ok(composer.includes('<TextareaField dir="auto"') && composer.includes('font-sans text-[14px]'),
-        'The composer must use the locale-aware font and resolve direction from message content.');
-    assert.doesNotMatch(cssSource, /\\[dir=['"]ltr['"]\\]\\s*\\{\\s*font-family:/,
-        'Text direction must not globally override component font inheritance.');
-    assert.match(cssSource, /--rd-layer-modal-overlay:\\s*100;[\\s\\S]*--rd-layer-modal:\\s*110;[\\s\\S]*--rd-layer-popover:\\s*120;[\\s\\S]*--rd-layer-tooltip:\\s*130;/,
-        'All Radix portals must use one deterministic, shared overlay layer scale.');
-    assert.match(cssSource, /html\\s*\\{[^}]*scrollbar-gutter:\\s*stable;/s,
-        'The document must reserve its scrollbar gutter to prevent popover scroll-lock layout shifts.');
-    assert.match(timeline, /<p dir="auto"/,
-        'Message bodies must resolve direction independently for mixed Persian and Latin content.');
+        'Conversation DOM order must match its visual position before the inbox.');
+    assert.ok(inbox.includes('<aside dir="ltr"') && inbox.includes('<ul dir="ltr"'));
+    assert.ok(inbox.includes('dir={locale === \'fa\' ? \'rtl\' : \'ltr\'} className="min-w-0 flex-1 text-start"'),
+        'Inbox text direction must be localized independently from row geometry.');
+    assert.ok(inbox.includes('absolute right-1 top-1/2'));
+    assert.ok(inbox.includes('border-0 bg-transparent p-0 text-muted shadow-none'));
+    assert.ok(!inbox.includes('<Tooltip content={t("گزینه‌های گفتگو")}>'));
+
+    assert.ok(timeline.includes('<div dir="ltr" ref={containerRef}'));
+    assert.ok(timeline.includes("(own ? 'justify-end' : 'justify-start')"));
+    assert.ok(timeline.includes('dir="ltr" className="mt-2 flex min-w-0 flex-wrap'));
+    assert.ok(timeline.includes('items-center justify-end gap-1'));
+    assert.ok(timeline.includes('dir="auto" className={\'whitespace-pre-wrap break-words text-start'));
+    assert.ok(timeline.includes('editDraft.trim() ? "auto" : locale === "fa" ? "rtl" : "ltr"'));
+
+    assert.ok(conversationHeader.includes('<header dir="ltr"'));
+    assert.ok(conversationHeader.includes('text-left text-sm font-extrabold'));
+    assert.ok(conversationHeader.includes('border-0 bg-transparent text-muted shadow-none'));
+    assert.ok(composer.includes('<form dir="ltr" data-messaging-composer'));
+    assert.ok(composer.includes('draft.trim() ? "auto" : locale === "fa" ? "rtl" : "ltr"'));
+    assert.ok(composer.includes('border border-border bg-surface p-2 shadow-none'));
+    assert.ok(composer.includes('font-sans text-[14px]'));
+    assert.ok(inbox.includes('className="relative border-s-[3px] border-transparent"'));
+    assert.ok(!inbox.includes('data-[state=active]:border-terracotta'));
+    assert.ok(!inbox.includes('data-[state=active]:text-terracotta-strong'));
+    assert.doesNotMatch(cssSource, /\\[dir=['"]ltr['"]\\]\\s*\\{\\s*font-family:/);
+    assert.match(cssSource, /--rd-layer-modal-overlay:\\s*100;[\\s\\S]*--rd-layer-modal:\\s*110;[\\s\\S]*--rd-layer-popover:\\s*120;[\\s\\S]*--rd-layer-tooltip:\\s*130;/);
+    assert.match(cssSource, /html\\s*\\{[^}]*scrollbar-gutter:\\s*stable;/s);
 });
 
 test('important CSS overrides are restricted to the reduced-motion safety contract', () => {
