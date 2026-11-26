@@ -480,6 +480,22 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'The complete message timeline must explicitly inherit the locale direction.');
     assert.match(messagingCenter, /<section dir=\\{locale === 'fa' \\? 'rtl' : 'ltr'\\}/,
         'The entire inbox and conversation workspace must mirror between RTL and LTR.');
+    assert.match(inbox, /<aside dir=\{locale === 'fa' \? 'rtl' : 'ltr'\}/,
+        'The inbox panel must explicitly mirror its internal layout direction with the active locale.');
+    assert.match(inbox, /<ul dir=\{locale === 'fa' \? 'rtl' : 'ltr'\}/,
+        'Inbox thread rows must explicitly mirror avatar, copy, metadata and actions.');
+    assert.match(inbox, /<DropdownMenu\.Trigger asChild>[\s\S]*?<button[\s\S]*?data-inbox-thread-actions/,
+        'The inbox overflow menu must use a direct native button as its Radix trigger.');
+    assert.match(inbox, /pointer-events-none absolute end-1 top-1\/2 z-30[\s\S]*?pointer-events-auto relative z-30 inline-flex h-9/,
+        'The inbox overflow trigger must sit above the full-row selection button and remain clickable.');
+    assert.ok(!inbox.includes('<Tooltip content={t("گزینه‌های گفتگو")}>'),
+        'The inbox menu must not nest a Tooltip trigger around its Radix trigger.');
+    assert.match(messagingCenter, /<div dir=\{locale === 'fa' \? 'rtl' : 'ltr'\} className="grid h-full/,
+        'The inbox/conversation grid must explicitly reverse its column order in RTL.');
+    assert.match(messagingCenter, /<div dir=\{locale === 'fa' \? 'rtl' : 'ltr'\} className=\{active \?/,
+        'The conversation pane must explicitly mirror its internal header, timeline and composer layout.');
+    assert.match(timeline, /<div dir=\{locale === 'fa' \? 'rtl' : 'ltr'\} className=\{'flex w-full/,
+        'Each message row must mirror sender alignment between LTR and RTL.');
     assert.match(inbox, /border-s-\\[3px\\] border-transparent[\\s\\S]*?border-terracotta bg-surface-muted/,
         'The active inbox marker must use a logical border so it flips sides in RTL.');
     assert.match(conversationHeader, /ChevronLeft[\\s\\S]*?rtl:rotate-180/,
