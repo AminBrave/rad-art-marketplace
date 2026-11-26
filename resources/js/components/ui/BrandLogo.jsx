@@ -26,7 +26,7 @@ function useResolvedDarkTheme(theme) {
     return theme === 'dark' || (theme === 'system' && systemPrefersDark);
 }
 
-/** Shared application identity with automatic format and theme fallbacks. */
+/** Shared image-only application logo with automatic format and theme fallbacks. */
 export function BrandLogo({ className = '', compact = false }) {
     const { locale } = useLanguage();
     const { theme } = useTheme();
@@ -41,21 +41,16 @@ export function BrandLogo({ className = '', compact = false }) {
     }, [themeName]);
 
     return (
-        <span className={`inline-flex min-w-0 items-center gap-2.5 text-ink no-underline ${className}`.trim()}>
+        <span className={`inline-flex min-w-0 items-center no-underline ${className}`.trim()}>
             {formatIndex < LOGO_FORMATS.length && (
                 <img
                     src={logoSrc}
-                    alt=""
-                    aria-hidden="true"
+                    alt={name}
+                    lang={locale}
                     onError={() => setFormatIndex((current) => Math.min(current + 1, LOGO_FORMATS.length))}
-                    className={compact ? 'h-9 w-9 shrink-0 object-contain' : 'h-10 w-10 shrink-0 object-contain sm:h-11 sm:w-11'}
-                    width="44"
-                    height="44"
+                    className={compact ? 'h-9 w-auto max-w-36 shrink-0 object-contain' : 'h-10 w-auto max-w-40 shrink-0 object-contain sm:h-11'}
                 />
             )}
-            <span className="min-w-0 truncate text-lg font-black tracking-tight sm:text-xl" lang={locale} dir={locale === 'fa' ? 'rtl' : 'ltr'}>
-                {name}
-            </span>
         </span>
     );
 }
