@@ -31,7 +31,7 @@ export default function RelatedArtworkStrip({ contexts, role, onSelectArtwork })
                         </>
                     );
 
-                    const className = "inline-flex min-w-0 max-w-48 min-h-10 shrink-0 items-center gap-[.4rem] whitespace-nowrap border border-border bg-surface-muted pe-2.5 ps-1 py-1 text-[11px] font-semibold leading-tight text-ink no-underline transition-colors hover:border-terracotta hover:bg-surface hover:text-terracotta-strong motion-reduce:transition-none";
+                    const className = "inline-flex min-w-0 max-w-48 min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap border border-border bg-surface-muted pe-2.5 ps-1 py-1 text-[11px] font-semibold leading-tight text-ink no-underline transition-colors hover:border-terracotta hover:bg-surface hover:text-terracotta-strong motion-reduce:transition-none";
 
                     return role === 'buyer' ? (
                         <Button variant="ghost"
