@@ -412,12 +412,7 @@
     .rd-home-hero .rd-unified-hero__inner > div > div:last-child > a > div:first-child { aspect-ratio: 3 / 4; }
     .rd-home-hero .rd-unified-hero__inner > div > div:last-child > a > div:last-child { padding: .5rem .25rem .25rem; gap: .4rem; }
     .rd-home-hero .rd-unified-hero__inner > div > div:last-child > a > div:last-child > span { display: none; }
-}
-.rd-chat-shell,
-.rd-chat-shell [data-chat-shell] {
-    padding-block: 0 !important;
-}
-@media (prefers-reduced-motion: reduce) {
+}@media (prefers-reduced-motion: reduce) {
     .rd-unified-hero { scroll-behavior: auto; }
 }
 
