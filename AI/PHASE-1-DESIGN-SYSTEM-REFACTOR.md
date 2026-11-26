@@ -365,3 +365,13 @@ Each slice should have a short feature-specific contract and tests. Do not make 
 
 - Source audit of the touched call sites reports no missing `spacing` props.
 - Automated tests, lint, production build, and browser verification have not been run in this environment.
+
+
+### Slice 5 — shared route frame
+
+- Added the exported `PageShell` layout primitive. It owns only the full-width, min-width-safe route frame and deliberately does not impose max-width, gutters, or vertical spacing.
+- Replaced the public layout's hand-authored `rd-page-frame` main wrapper with `PageShell as="main"`, preserving the primary landmark and skip-link target.
+- Replaced the authenticated workspace's hand-authored route-frame div with `PageShell variant="workspace"`; the specialized messaging viewport remains separate because it has distinct height/overflow behavior.
+- Documented the ownership boundary: `PageShell` = route frame, `Container` = content width and gutters, `Section` = vertical rhythm.
+- Added source-level regression coverage for the shared export and both layout consumers.
+- Validation remains pending: automated tests, lint, production build, and browser QA have not been run in this environment.
