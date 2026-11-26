@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from './LanguageContext';
-import { ArtistCard, ArtistCardSkeleton, EmptyState, ErrorState, SearchField, SectionHeader, Button, Section, Container } from '../components/ui';
+import { ArtistCard, ArtistCardSkeleton, EmptyState, ErrorState, SearchField, SectionHeader, Button, Container, DiscoveryHero, Breadcrumbs } from '../components/ui';
 
 export default function ArtistDirectoryPage() {
     const { t, locale } = useLanguage();
@@ -48,30 +48,15 @@ export default function ArtistDirectoryPage() {
 
     return (
         <div className="w-full min-w-0 min-h-[65vh] pb-16 pt-8 sm:pt-12">
-            <Container width="wide">
-            <nav aria-label={t("مسیر صفحه")} className="text-xs text-muted">
-                <span>{t("خانه")}</span><span className="mx-2" aria-hidden="true">/</span><span aria-current="page" className="text-ink">{t("هنرمندان")}</span>
-            </nav>
-            </Container>
-
-            <Section bleed className="mt-6 border-y border-[color:var(--rd-hero-line)] rd-hero-surface">
-                <Container width="wide">
-                    <header className="relative isolate px-6 py-10 sm:px-10 sm:py-14 lg:px-14">
-                <div aria-hidden="true" className="pointer-events-none absolute -start-10 -top-16 h-56 w-56 border border-[color:var(--rd-hero-line)]" />
-                <div aria-hidden="true" className="pointer-events-none absolute -start-2 -top-8 h-40 w-40 border border-[color:var(--rd-hero-accent)]" />
-                <div className="relative z-10 max-w-3xl">
-                    <p className="text-xs font-bold tracking-[.12em] text-[color:var(--rd-hero-accent)]">{t("جامعه خلاق راد آرت")}</p>
-                    <h1 className="mt-4 text-4xl font-black leading-[1.2] tracking-[-.05em] text-[color:var(--rd-hero-foreground)] sm:text-6xl">{t("هنرمند را کشف کنید.")}</h1>
-                    <p className="mt-5 max-w-2xl text-sm leading-8 text-[color:var(--rd-hero-muted)] sm:text-base">
-                        {t("با هنرمندان مستقل آشنا شوید؛ از نگاه و مسیر هنری آن‌ها بخوانید و مجموعه آثار تأییدشده‌شان را ببینید.")}
-                    </p>
-                    <div className="mt-8 max-w-2xl">
-                        <SearchField value={input} onChange={(event) => setInput(event.target.value)} onSearch={submitSearch} label={t("جست‌وجوی هنرمند")} placeholder={t("نام هنرمند یا شهر…")} />
-                    </div>
-                </div>
-                    </header>
-                </Container>
-            </Section>
+            <DiscoveryHero
+                shape="orbit"
+                eyebrow={t("جامعه خلاق راد آرت")}
+                title={t("هنرمند را کشف کنید.")}
+                description={t("با هنرمندان مستقل آشنا شوید؛ از نگاه و مسیر هنری آن‌ها بخوانید و مجموعه آثار تأییدشده‌شان را ببینید.")}
+                breadcrumbs={<Breadcrumbs label={t("مسیر صفحه")} items={[{ label: t("خانه"), to: "/" }, { label: t("هنرمندان") }]} />}
+            >
+                <SearchField value={input} onChange={(event) => setInput(event.target.value)} onSearch={submitSearch} label={t("جست‌وجوی هنرمند")} placeholder={t("نام هنرمند یا شهر…")} />
+            </DiscoveryHero>
 
             <Container as="section" width="wide" className="mt-10" aria-labelledby="artist-directory-heading">
                 <SectionHeader
