@@ -184,7 +184,8 @@ All shared components are exported through `resources/js/components/ui/index.js`
 | Component | Responsibility |
 |---|---|
 | `Container` | Canonical section-owned content width; `wide`, `reading`, `full` modes. |
-| `PageHeader` | Page title, eyebrow, description and actions. |
+| `DiscoveryHero` | Shared public-discovery hero with optional breadcrumb, actions, media and one restrained route-specific geometric shape. |
+| `PageHeader` | Task/workspace page title, eyebrow, description and actions; no discovery breadcrumb. |
 | `SectionHeader` | Section-level title, description and actions. |
 | `WorkspaceHero` | High-emphasis workspace introduction. |
 | `Surface` | default, muted, raised and interactive surface variants. |
