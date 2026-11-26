@@ -245,6 +245,13 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     assert.ok(!artist.includes('اثر بارگذاری‌شده'));
 });
 
+test('homepage content sections separate semantic section rhythm from Container width', () => {
+    const home = readFileSync(resolve(root, 'resources/js/app/HomePage.jsx'), 'utf8');
+    assert.match(home, /<Section spacing="regular" aria-labelledby="recent-works-title">\\s*<Container width="wide">/);
+    assert.match(home, /<Section spacing="regular" aria-labelledby="artists-title">\\s*<Container width="wide">/);
+    assert.doesNotMatch(home, /<Container as="section"/, 'Container must not be used as a substitute for the semantic Section primitive.');
+});
+
 test('page-level compositions use the shared Container instead of duplicated max-width wrappers', () => {
     const pagePaths = [
         'resources/js/app/AdminWorkspace.jsx',
