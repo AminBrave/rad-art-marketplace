@@ -301,3 +301,26 @@ test('Section exposes explicit spacing variants independent of its rendered HTML
     assert.match(layout, /relaxed:\s*'py-section-relaxed sm:py-section-wide'/);
     assert.doesNotMatch(layout, /Element === ['"]section['"]/);
 });
+
+test('page compositions use explicit shared Section spacing ownership', () => {
+    const migrated = [
+        ['resources/js/app/HomePage.jsx', 'regular'],
+        ['resources/js/app/ArtistProfilePage.jsx', 'regular'],
+        ['resources/js/app/ArtworkDetailPage.jsx', 'regular'],
+        ['resources/js/app/EditorialPages.jsx', 'regular'],
+        ['resources/js/app/ArtistWorkspaceOverview.jsx', 'none'],
+        ['resources/js/app/BuyerWorkspace.jsx', 'none'],
+        ['resources/js/app/AdminWorkspace.jsx', 'none'],
+        ['resources/js/app/ArtworkStudio.jsx', 'none'],
+        ['resources/js/app/RoutingPages.jsx', 'none'],
+    ];
+    for (const [path, spacing] of migrated) {
+        const source = readFileSync(resolve(root, path), 'utf8');
+        assert.match(source, /import \{[^}]*\bSection\b[^}]*\} from ['"]\.\.\/components\/ui['"]/,
+            path + ' must import the shared Section primitive.');
+        assert.doesNotMatch(source, /<section\b|<\/section>/,
+            path + ' must not rely on native section tag styling.');
+        assert.ok(source.includes('spacing="' + spacing + '"'),
+            path + ' must declare its intended section spacing.');
+    }
+});
