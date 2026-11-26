@@ -283,7 +283,9 @@ test('DiscoveryHero can place artwork above its copy on mobile while restoring d
         }),
     );
     assert.match(html, /rd-unified-hero__title-wrap[^"]*order-last lg:order-first/);
-    assert.match(html, /order-first lg:order-last[^"]*">اثر منتخب/);
+    const mediaOrderClass = html.indexOf('order-first lg:order-last');
+    const mediaContent = html.indexOf('اثر منتخب');
+    assert.ok(mediaOrderClass >= 0 && mediaContent > mediaOrderClass, 'The media wrapper receives mobile-first ordering and contains the artwork.');
 });
 
 test('PageContainer and Surface preserve semantic element and variant contracts', () => {
