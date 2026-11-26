@@ -285,7 +285,13 @@
 
     /* Workspace page shells own vertical rhythm; nested sections only provide grouping. */
     .rd-workspace-content {
-        padding-block: 0;
+        padding-block: var(--rd-layout-section);
+    }
+
+    @media (min-width: 640px) {
+        .rd-workspace-content {
+            padding-block: var(--rd-layout-section-wide);
+        }
     }
 
     .rd-workspace-content > section {
@@ -464,11 +470,7 @@
     padding-inline: var(--rd-page-gutter);
 }
 
-/* Workspace shell supplies the page gutter, so nested section containers do not add it again. */
-.rd-page-frame--workspace .rd-container {
-    padding: 0;
-}
-
+/* Workspace Containers own the same responsive page gutters as discovery Containers. */
 @media (min-width: 1024px) {
     .rd-workspace-main .rd-bleed {
         margin-inline: calc(50% - 50vw);
