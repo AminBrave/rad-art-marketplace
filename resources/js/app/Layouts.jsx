@@ -660,7 +660,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
         <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <div data-experience={user?.role ?? 'workspace'} className={isMessagingRoute ? "flex h-dvh flex-col overflow-hidden bg-canvas text-ink" : "min-h-screen bg-canvas text-ink"}>
             <header className="sticky top-0 z-40 shrink-0 border-b border-divider-section bg-[color:color-mix(in_srgb,var(--color-paper)_96%,transparent)] backdrop-blur">
-                <div className="mx-auto flex min-h-[4.5rem] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-20 sm:gap-4">
+                <div className="mx-auto flex min-h-[var(--rd-workspace-header-height)] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-[var(--rd-workspace-header-height-wide)] sm:gap-4">
                     <Link to="/" className="group flex shrink-0 items-center text-ink no-underline" aria-label={t('ردّمن، صفحه اصلی')}><BrandLogo /></Link>
 
                     <div className="flex shrink-0 items-center">
@@ -711,7 +711,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
             </DialogContent>
 
             <div className={isMessagingRoute
-                ? 'mx-auto flex h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-w-0 max-w-content px-page-gutter py-3 sm:py-4 lg:py-6'
+                ? 'mx-auto flex h-[calc(100dvh-var(--rd-workspace-header-height)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:h-[calc(100dvh-var(--rd-workspace-header-height-wide)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-w-0 max-w-content px-page-gutter py-3 sm:py-4 lg:py-6'
                 : 'mx-auto w-full max-w-content px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+2rem)]'}>
                 <main className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'rd-workspace-main min-w-0 w-full'}>
                     {isMessagingRoute
