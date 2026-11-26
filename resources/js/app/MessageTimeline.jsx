@@ -77,7 +77,7 @@ export default function MessageTimeline({
         </div>
         {!deleted && (
         <>
-        <div dir="ltr" className="mt-2 flex min-w-0 flex-wrap items-center gap-1.5"><div className="flex min-w-0 flex-1 flex-wrap items-center gap-1">
+        <div dir="ltr" className="mt-2 flex min-w-0 flex-wrap items-center gap-1.5"><div className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-1">
         {message.reactions?.filter((reaction) => reaction.count > 0).map((reaction) => <Button variant="ghost" key={reaction.emoji} type="button" disabled={actionId === message.id} onClick={() => onToggleReaction(message, reaction.emoji)} aria-label={t("واکنش ") + reaction.emoji} aria-pressed={Boolean(reaction.reacted_by_me)} className="inline-flex min-h-8 items-center gap-1 border border-border bg-surface px-2.5 text-[11px] leading-none text-muted transition-colors hover:bg-surface-muted hover:text-ink motion-reduce:transition-none">{reaction.emoji}<span className="tabular-nums">{Number(reaction.count).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</span></Button>)}
         <DropdownMenu.Root open={openPopover === 'reactions:' + message.id} onOpenChange={(open) => onPopoverOpenChange('reactions:' + message.id, open)}>
         <DropdownMenu.Trigger asChild>
