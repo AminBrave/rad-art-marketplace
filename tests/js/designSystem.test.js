@@ -183,7 +183,8 @@ test('public and workspace navigation expose role-aware destinations and an arti
     assert.ok(layouts.includes("t(item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label)"), 'Workspace sidebar labels use the same compact names as its bottom navigation.');
     assert.ok(layouts.includes("isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink'"), 'Sidebar destinations use text-only active styling without a background.');
     assert.doesNotMatch(layouts, /isActive\s*\?\s*'bg-paper[^']*shadow-soft'/, 'No sidebar active state adds a background or shadow.');
-    assert.ok(layouts.includes('bg-paper text-terracotta-strong after:absolute'), 'Active bottom navigation destinations use the white selected surface.');
+    assert.ok(layouts.includes("isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink'"), 'Active bottom navigation destinations use text color only.');
+    assert.doesNotMatch(layouts, /isActive[\s\S]{0,100}bg-paper|isActive[\s\S]{0,100}after:absolute/, 'Active bottom navigation destinations have no background or indicator.');
     assert.ok(layouts.includes('inline-flex h-5 min-w-5 items-center justify-center'), 'Unread bubbles center their number in both navigation bars.');
     assert.ok(layouts.includes("label: t(user?.role === 'artist' ? 'فضای هنرمند' : user?.role === 'admin' ? 'مدیریت' : 'فضای خریدار')"), 'Workspace section labels reflect the signed-in role.');
     assert.ok(layouts.includes("item.to + '#submitted-artworks'"), 'The artist content navigation targets the submitted-artworks section.');
@@ -693,7 +694,7 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(layouts.includes("'/collections', label: 'مجموعه‌ها'"), 'Collections remain a first-class discovery destination.');
     assert.ok(layouts.includes("'/dashboard/artist/artworks/new'"), 'Artist creation destinations are included in the public-context workspace section.');
     assert.doesNotMatch(layouts, /publicSecondaryLinks|const publicLinks = \[/, 'Legacy split navigation lists are removed.');
-    assert.ok(layouts.includes("aria-label={t('ناوبری اصلی')}"), 'Public discovery navigation remains available with localized labeling.');
+    assert.ok(layouts.includes("aria-label={t('ناوبری بخش‌های عمومی')}"), 'Public discovery navigation remains available with localized labeling.');
     assert.ok(layouts.includes("aria-label={t('بخش‌های اصلی فضای کاربری')}"), 'Discover drawer mirrors the workspace drawer section structure.');
     assert.ok(layouts.includes('my-5 border-t border-border'), 'Discover and workspace navigation sections use the same divider spacing.');
     assert.ok(layouts.includes('flex min-h-11 items-center gap-3 border-s-2 border-transparent px-3 text-sm font-semibold'), 'Discover drawer links use the same row geometry as workspace links.');
