@@ -301,15 +301,15 @@ export function ArtistDashboardHome() {
                 title={<>{t('خوش آمدید، ')}{user.name}</>}
                 description={t('پروفایل و آثار ارسالی خود را مدیریت کنید و از بخش پیام‌های مستقیم با خریداران در ارتباط باشید.')}
             />
-            <Container width="wide" className="space-y-6">
+            <Container width="wide" className="rd-workspace-content space-y-workspace-relaxed">
             {profileError && <p role="alert" className="mt-5 text-sm text-warning">{t(profileError)}</p>}
-            {profileLoading ? <p className="mt-5 text-sm text-muted">{t('در حال دریافت پروفایل…')}</p> : (
-                <div className="mt-6 rounded-xl bg-canvas p-4">
+            {profileLoading ? <p className="text-sm text-muted">{t('در حال دریافت پروفایل…')}</p> : (
+                <div className="bg-canvas p-4">
                     <p className="font-semibold">{t(profile?.slug ? 'پروفایل هنرمند شما آماده است.' : 'برای شروع، پروفایل هنرمند خود را تکمیل کنید.')}</p>
                     <Link to="/dashboard/artist/profile" className="mt-3 inline-block text-sm font-bold text-terracotta-strong underline">{t('مدیریت پروفایل')}</Link>
                 </div>
             )}
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-3 sm:grid-cols-2">
                 <Link to="/dashboard/artist/artworks" className="rounded-xl border border-border p-5 font-bold hover:border-terracotta">{t('مدیریت آثار')}</Link>
                 <Link to="/dashboard/artist/messages" className="rounded-xl border border-border p-5 font-bold hover:border-terracotta">{t('پیام‌های مستقیم')}</Link>
             </div>
@@ -376,7 +376,7 @@ export function WorkspaceSettingsPage() {
     };
 
     return (
-        <Container as="section" width="wide" className="space-y-content">
+        <Container as="section" width="wide" className="rd-workspace-content space-y-workspace-relaxed">
             <PageHeader bleed={false} eyebrow={t('حساب کاربری')} title={t('تنظیمات')} description={t('ترجیحات نمایش و اعلان‌های فضای کاربری را از یک بخش مدیریت کنید.')} />
 
             <section className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_16rem]" aria-labelledby="appearance-settings-title">
@@ -498,7 +498,7 @@ export function ArtistProfileSettings() {
     if (profileLoading) return <RouteLoading label={t("در حال دریافت پروفایل هنرمند…")} />;
 
     return (
-        <Container as="section" width="wide" className="space-y-workspace">
+        <Container as="section" width="wide" className="rd-workspace-content space-y-workspace-relaxed">
             <PageHeader bleed={false}
                 eyebrow={t("استودیوی هنرمند")}
                 title={t("پروفایل هنرمند")}
