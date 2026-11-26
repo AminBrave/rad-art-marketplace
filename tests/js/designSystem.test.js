@@ -268,6 +268,8 @@ test('public page frames share page and section rhythm tokens', () => {
     assert.ok(homePage.includes('py-section'));
     assert.ok(authPage.includes('py-page'));
     assert.ok(publicInfoPages.includes('py-section'));
+    const publicCollectionPages = editorialPages.slice(0, editorialPages.indexOf('export function AdminEditorialPage'));
+    assert.doesNotMatch(publicCollectionPages, /<Container[^>]*>\\s*<PageHeader/);
     assert.ok(bootShell.includes('rd-container min-w-0 mx-auto'));
     assert.ok(bootShell.includes('py-page'));
 });
