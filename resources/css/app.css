@@ -275,11 +275,6 @@
         padding-block: 0;
     }
 
-    .rd-unified-hero--workspace {
-        width: 100%;
-        max-width: 100%;
-        margin-inline: 0;
-    }
 }
 
 /* Explicit dark choice. Brand anchors remain unchanged; semantic roles adapt. */
@@ -381,6 +376,11 @@
     max-width: 100vw;
     margin-inline: calc(50% - 50vw);
     border-block: 1px solid var(--rd-hero-line);
+}
+.rd-unified-hero--workspace {
+    width: 100%;
+    max-width: 100%;
+    margin-inline: 0;
 }
 .rd-unified-hero__inner {
     padding-block: clamp(2rem, 5vw, 4rem);
