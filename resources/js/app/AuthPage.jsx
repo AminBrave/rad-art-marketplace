@@ -5,7 +5,7 @@ import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useLanguage } from './LanguageContext';
 import { RouteLoading } from './RoutingPages';
-import { SelectField, FormField, TextInput, Button, Container } from '../components/ui';
+import { SelectField, FormField, TextInput, Button, Container, Section } from '../components/ui';
 
 export default function AuthPage({ initialMode = 'login' }) {
     const [mode, setMode] = useState(initialMode);
@@ -61,7 +61,7 @@ export default function AuthPage({ initialMode = 'login' }) {
 
     return (
         <Container as="div" width="reading" className="py-page">
-            <section className="border-y border-ink bg-paper p-6 sm:p-9">
+            <Section spacing="regular" className="border-y border-ink bg-paper px-6 sm:px-9">
                 <Link to="/" className="text-sm font-bold text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2">{t("بازگشت به راد آرت")}</Link>
                 <h1 className="mt-5 text-3xl font-black tracking-tight">{mode === 'register' ? t('ساخت حساب کاربری') : t('ورود به حساب')}</h1>
                 <div className="mt-7 flex gap-5 border-b-2 border-ink pb-4">
@@ -81,7 +81,7 @@ export default function AuthPage({ initialMode = 'login' }) {
                     <Button variant="ghost" type="submit" disabled={busy} className="w-full rounded-sm bg-ink px-6 py-3.5 font-bold text-inverse transition hover:bg-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2 disabled:cursor-wait disabled:opacity-60">{busy ? t('لطفاً صبر کنید…') : mode === 'register' ? t('ایجاد حساب') : t('ورود به حساب')}</Button>
                 </form>
                 <p className="mt-5 text-xs leading-6 text-subtle">{t("ثبت‌نام عمومی فقط برای خریدار و هنرمند فعال است. حساب مدیر باید از سمت سرور ایجاد شود.")}</p>
-            </section>
+            </Section>
         </Container>
     );
 }
