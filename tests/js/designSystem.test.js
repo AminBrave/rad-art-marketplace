@@ -76,11 +76,11 @@ test('workspace page headers share the full-width hero contract', () => {
         assert.match(source, /<PageHeader(?:\\s|\\n)/);
         assert.doesNotMatch(source, /<PageHeader[^>]*\\bbleed=\\{false\\}/);
     }
-    assert.match(primitives, /export function PageHeader\\(props\\)\\s*\\{\\s*return <UnifiedHero/);
+    assert.match(primitives, /export function PageHeader\(props\)\s*\{\s*return <UnifiedHero/);
 });
 
 test('workspace heroes use the shared full-width grid hero implementation', () => {
-    assert.match(primitives, /export function WorkspaceHero\\(props\\)\\s*\\{\\s*return <UnifiedHero/);
+    assert.match(primitives, /export function WorkspaceHero\(props\)\s*\{\s*return <UnifiedHero/);
     assert.ok(primitives.includes("surface = 'grid'"));
     assert.ok(primitives.includes("bleed && 'rd-bleed'"));
     assert.ok(artistWorkspace.includes('<div className="min-w-0 w-full space-y-7">'));
@@ -377,7 +377,8 @@ test('route canvases stay full-width and route content uses shared section conta
     assert.ok(!skeletons.includes('<main '), 'Route skeletons must not introduce nested main landmarks.');
     assert.ok(routeLoading.includes('<Section bleed'), 'Loading states must preserve full-bleed section composition.');
     assert.ok(homePage.includes('<Container width=\"wide\" className=\"grid gap-4 sm:grid-cols-3\">'));
-    assert.ok(homePage.includes('<Container as=\"section\" width=\"wide\"'));
+    assert.ok(homePage.includes('<Section spacing="regular"'));
+    assert.doesNotMatch(homePage, /<Container as="section"/);
     for (const source of [homePage, editorialPages, authPage, publicInfoPages, artistProfile]) {
         assert.ok(!source.includes('<main '), 'Route content must not create a nested main landmark.');
     }
