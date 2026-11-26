@@ -142,11 +142,9 @@ test('semantic layout tiers are token-backed and shared primitives use them', ()
     assert.equal(layout.split("calc(var(--rd-space-unit) * ${gap})").length - 1, 2, "Flex and Grid must share token-backed numeric gaps.");
 });
 
-test('all semantic sections receive consistent vertical padding by default', () => {
-    assert.match(css, /section\s*\{\s*padding-block:\s*var\(--rd-layout-section\);/);
-    assert.match(css, /section\s*\{\s*padding-block:\s*var\(--rd-layout-section-wide\);/);
-    assert.doesNotMatch(css, /section\.rd-hero-surface\s*\{\s*padding-block:\s*0/);
-    assert.ok(css.includes('.rd-chat-shell section'));
+test('semantic section spacing is explicit and component-owned', () => {
+    assert.doesNotMatch(css, /(^|\n)\s*section\s*\{/m, 'Native section elements must not receive global layout spacing.');
+    assert.ok(!css.includes('.rd-chat-shell section'), 'Chat layout must not need a semantic-section spacing reset.');
 });
 test('public discovery pages share the same hero system and breadcrumbs stay out of workspaces', () => {
     const discoveryPages = [
@@ -240,7 +238,7 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
 
     const layout = readFileSync(resolve(root, 'resources/js/app/Layouts.jsx'), 'utf8');
     assert.ok(layout.includes('rd-chat-shell'));
-    assert.ok(css.includes('.rd-chat-shell section'));
+    assert.ok(!css.includes('.rd-chat-shell section'), 'Chat layout must not depend on native section selectors.');
     const artist = readFileSync(resolve(root, 'resources/js/app/ArtistProfilePage.jsx'), 'utf8');
     assert.ok(!artist.includes('برای ارسال پیام مستقیم، از حساب خریدار استفاده کنید'));
     assert.ok(!artist.includes('پورتفولیوی عمومی'));
