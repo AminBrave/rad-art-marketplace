@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from './LanguageContext';
-import { ArtistCard, ArtistCardSkeleton, EmptyState, ErrorState, SearchField, SectionHeader, Button, Container, DiscoveryHero, Breadcrumbs } from '../components/ui';
+import { ArtistCard, ArtistCardSkeleton, EmptyState, ErrorState, SearchField, SectionHeader, Button, Container, Section, DiscoveryHero, Breadcrumbs } from '../components/ui';
 
 export default function ArtistDirectoryPage() {
     const { t, locale } = useLanguage();
@@ -57,7 +57,8 @@ export default function ArtistDirectoryPage() {
                 <SearchField value={input} onChange={(event) => setInput(event.target.value)} onSearch={submitSearch} label={t("جست‌وجوی هنرمند")} placeholder={t("نام هنرمند یا شهر…")} />
             </DiscoveryHero>
 
-            <Container as="section" width="wide" className="mt-10" aria-labelledby="artist-directory-heading">
+            <Section spacing="none" className="mt-10">
+            <Container width="wide" aria-labelledby="artist-directory-heading">
                 <SectionHeader
                     id="artist-directory-heading"
                     eyebrow={t("جامعه هنرمندان")}
@@ -82,6 +83,7 @@ export default function ArtistDirectoryPage() {
                     </nav>
                 )}
             </Container>
+        </Section>
         </div>
     );
 }
