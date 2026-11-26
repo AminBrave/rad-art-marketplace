@@ -64,25 +64,25 @@ test('workspace full-bleed content mirrors its horizontal offset in RTL', () => 
 });
 
 
-test('dashboard main sections do not use the rd-container component class', () => {
+test('workspace page sections use explicit shared Section spacing', () => {
     for (const source of [adminWorkspace, artworkStudio, routeLoading, editorialPages]) {
-        assert.doesNotMatch(source, /<Container\\s+as="section"\\s+width="wide"/);
-        assert.match(source, /<section className="min-w-0 mx-auto w-full max-w-content/);
+        assert.doesNotMatch(source, /<Container\\s+as="section"/);
+        assert.match(source, /<Section spacing="(?:none|compact|regular|relaxed)"/);
     }
 });
 
-test('workspace page headers opt out of viewport bleed', () => {
-    for (const source of [adminWorkspace, artworkStudio, routeLoading]) {
-        assert.doesNotMatch(source, /<PageHeader(?![^>]*\bbleed=\{false\})/);
+test('workspace page headers share the full-width hero contract', () => {
+    for (const source of [adminWorkspace, artworkStudio, routeLoading, editorialPages]) {
+        assert.match(source, /<PageHeader(?:\\s|\\n)/);
+        assert.doesNotMatch(source, /<PageHeader[^>]*\\bbleed=\\{false\\}/);
     }
-    const adminEditorialStart = editorialPages.indexOf('export function AdminEditorialPage');
-    assert.ok(adminEditorialStart >= 0);
-    assert.match(editorialPages.slice(adminEditorialStart), /<PageHeader bleed=\{false\}/);
+    assert.match(primitives, /export function PageHeader\\(props\\)\\s*\\{\\s*return <UnifiedHero/);
 });
 
-test('workspace heroes stay inside the dashboard content column', () => {
-    assert.match(primitives, /<section className="rd-hero-surface my-3 border-y/);
-    assert.doesNotMatch(primitives, /<section className="rd-bleed rd-hero-surface/);
+test('workspace heroes use the shared full-width grid hero implementation', () => {
+    assert.match(primitives, /export function WorkspaceHero\\(props\\)\\s*\\{\\s*return <UnifiedHero/);
+    assert.ok(primitives.includes("surface = 'grid'"));
+    assert.ok(primitives.includes("bleed && 'rd-bleed'"));
     assert.ok(artistWorkspace.includes('<div className="min-w-0 w-full space-y-7">'));
     assert.doesNotMatch(artistWorkspace, /<div className="rd-container min-w-0 mx-auto w-full max-w-content space-y-7">/);
 });
@@ -113,8 +113,6 @@ test('artwork catalogue uses accessible infinite pagination and workspace contai
     assert.doesNotMatch(artworkCatalogue, /صفحه‌بندی آثار/);
     assert.doesNotMatch(layoutPrimitives, /max-w-content(?:-reading)? px-page-gutter/);
     assert.ok(css.includes('.rd-workspace-main .rd-bleed .rd-container:not(.rd-container--reading):not(.rd-container--full)'));
-    assert.ok(css.includes('.rd-page-frame--workspace .rd-container {'));
-    assert.ok(css.includes('padding: 0;'));
 });
 
 
@@ -251,7 +249,9 @@ test('buttons enforce square geometry and shared alignment', () => {
 });
 
 test('section primitives provide consistent vertical rhythm', () => {
-    assert.ok(layoutPrimitives.includes("Element === 'section' ? 'py-16 sm:py-24'"));
+    assert.ok(layoutPrimitives.includes("regular: 'py-section sm:py-section-wide'"));
+    assert.ok(layoutPrimitives.includes("none: 'py-0'"));
+    assert.doesNotMatch(layoutPrimitives, /Element === ['\"]section['\"]/);
     assert.doesNotMatch(layoutPrimitives.slice(layoutPrimitives.indexOf('export const Container'), layoutPrimitives.indexOf('export const Section')), /py-16|py-24/);
 });
 
