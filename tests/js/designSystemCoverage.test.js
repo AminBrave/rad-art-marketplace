@@ -201,6 +201,8 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     assert.ok(css.includes('radial-gradient(ellipse at 88% 8%, var(--rd-hero-glow), transparent 38%)'));
     assert.ok(css.includes('linear-gradient(125deg, var(--rd-hero-background), var(--rd-hero-background-alt))'));
     assert.ok(css.includes('section.rd-unified-hero {'));
+    assert.ok(css.includes('.rd-unified-hero--workspace'));
+    assert.ok(primitives.includes("cn('rd-unified-hero--workspace', className)"));
     assert.ok(css.includes('.rd-workspace-content > section'));
     for (const path of ['resources/js/app/AdminWorkspace.jsx', 'resources/js/app/ArtistWorkspaceOverview.jsx', 'resources/js/app/BuyerWorkspace.jsx', 'resources/js/app/ArtworkStudio.jsx']) {
         const source = readFileSync(resolve(root, path), 'utf8');
