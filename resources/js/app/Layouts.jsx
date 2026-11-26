@@ -6,7 +6,7 @@ import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-do
 import { useAuth } from './AuthContext';
 import { useTheme } from './useTheme';
 import { useLanguage } from './LanguageContext';
-import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, NotificationListSkeleton, BrandLogo } from '../components/ui';
+import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, NotificationListSkeleton, BrandLogo, Container } from '../components/ui';
 
 const publicDiscoveryLinks = [
     { to: '/', label: 'خانه', Icon: House, end: true },
@@ -183,7 +183,7 @@ export function PublicLayout() {
                 {t("رفتن به محتوای اصلی")}
             </a>
             <header className="sticky top-0 z-40 border-b border-divider-section bg-[color:color-mix(in_srgb,var(--color-canvas)_96%,transparent)] backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-canvas)_90%,transparent)]">
-                <div className="mx-auto flex min-h-[var(--header-height)] max-w-content items-center justify-between gap-2 px-page-gutter sm:gap-5">
+                <Container className="flex min-h-[var(--rd-header-height)] items-center justify-between gap-2 sm:gap-5">
                     <Link to="/" className="group flex shrink-0 items-center text-ink no-underline" aria-label={t('ردّمن، صفحه اصلی')}><BrandLogo /></Link>
 
                     <div className="flex shrink-0 items-center">
@@ -194,7 +194,7 @@ export function PublicLayout() {
                             </Button>
                         </DialogTrigger>
                     </div>
-                </div>
+                </Container>
 
                 <DialogContent placement="drawer" className="flex flex-col px-4 py-5">
                     <div className="mb-5 flex items-center justify-between border-b border-border pb-4">
@@ -229,7 +229,7 @@ export function PublicLayout() {
             </main>
 
             <footer className="border-t border-border bg-surface-muted">
-                <div className="mx-auto max-w-content px-page-gutter pb-10 pt-14 sm:pb-14 sm:pt-20">
+                <Container className="pb-10 pt-14 sm:pb-14 sm:pt-20">
                     <div className="grid gap-10 border-b border-divider-section pb-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr] lg:gap-16 lg:pb-14">
                         <div className="max-w-md">
                             <Link to="/" className="inline-flex text-ink no-underline" aria-label={t('ردّمن، صفحه اصلی')}><BrandLogo size="footer" /></Link>
@@ -261,7 +261,7 @@ export function PublicLayout() {
                         <p>{t('راد آرت — گالری هنر مستقل معاصر')}</p>
                         <p className="font-latin tracking-wide">RAD ART · DISCOVER INDEPENDENT ART</p>
                     </div>
-                </div>
+                </Container>
             </footer>
             <PublicBottomNavigation user={user} unreadConversationCount={unreadConversationCount} />
         </div>
@@ -660,7 +660,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
         <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <div data-experience={user?.role ?? 'workspace'} className={isMessagingRoute ? "flex h-dvh flex-col overflow-hidden bg-canvas text-ink" : "min-h-screen bg-canvas text-ink"}>
             <header className="sticky top-0 z-40 shrink-0 border-b border-divider-section bg-[color:color-mix(in_srgb,var(--color-paper)_96%,transparent)] backdrop-blur">
-                <div className="mx-auto flex min-h-[var(--rd-header-height)] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-[var(--rd-header-height-wide)] sm:gap-4">
+                <Container className="flex min-h-[var(--rd-header-height)] items-center justify-between gap-3 sm:min-h-[var(--rd-header-height-wide)] sm:gap-4">
                     <Link to="/" className="group flex shrink-0 items-center text-ink no-underline" aria-label={t('ردّمن، صفحه اصلی')}><BrandLogo /></Link>
 
                     <div className="flex shrink-0 items-center">
@@ -671,7 +671,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                             </Button>
                         </DialogTrigger>
                     </div>
-                </div>
+                </Container>
                 {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{logoutError}</p>}
             </header>
 
