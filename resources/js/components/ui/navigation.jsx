@@ -33,13 +33,15 @@ export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
 
 export function DropdownMenuContent({ className = '', sideOffset = 6, ...props }) {
     return (
-        <DropdownMenuPrimitive.Content
-            sideOffset={sideOffset}
-            align="end"
-           
-            className={cn('z-[var(--rd-layer-popover)] box-border min-w-44 max-w-[calc(100vw-1rem)] overflow-x-hidden border border-border bg-paper p-1.5 font-sans text-sm text-ink shadow-raised outline-none', className)}
-            {...props}
-        />
+        <DropdownMenuPrimitive.Portal>
+            <DropdownMenuPrimitive.Content
+                sideOffset={sideOffset}
+                collisionPadding={8}
+                align="end"
+                className={cn('z-[var(--rd-layer-popover)] box-border min-w-44 max-w-[calc(100vw-1rem)] overflow-x-hidden border border-border bg-paper p-1.5 font-sans text-sm text-ink shadow-raised outline-none', className)}
+                {...props}
+            />
+        </DropdownMenuPrimitive.Portal>
     );
 }
 
