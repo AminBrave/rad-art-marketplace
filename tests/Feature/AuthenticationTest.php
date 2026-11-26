@@ -12,6 +12,13 @@ class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->withoutVite();
+    }
+
     public function test_guest_app_shell_bootstraps_a_resolved_guest_state_without_a_second_auth_request(): void
     {
         $response = $this->get('/dashboard/artist');
