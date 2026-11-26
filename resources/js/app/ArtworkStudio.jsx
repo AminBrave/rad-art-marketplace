@@ -3,7 +3,7 @@ import { useLanguage } from './LanguageContext';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useLocation } from 'react-router-dom';
-import { Badge, Button, EmptyState, ErrorState, FormField, TextInput, TextareaField, FileInput, ArtworkStudioListSkeleton, UploadFeedback, MediaImage, PageHeader, SectionHeader, SelectField } from '../components/ui';
+import { Badge, Button, EmptyState, ErrorState, FormField, TextInput, TextareaField, FileInput, ArtworkStudioListSkeleton, UploadFeedback, MediaImage, PageHeader, SectionHeader, SelectField, Container } from '../components/ui';
 
 const emptyArtwork = { title: '', title_en: '', description: '', description_en: '', city: '', city_en: '', category_id: '', medium: '', dimensions: '', year: '', price: '', availability: 'available' };
 const statusLabels = { pending_review: 'در انتظار بررسی', approved: 'تأیید و منتشرشده', rejected: 'ردشده', changes_requested: 'نیازمند اصلاح' };
@@ -162,7 +162,7 @@ export default function ArtworkStudio({ user, hasProfile, initialCreate = false 
     };
     const fieldError = (name) => errors[name]?.map((item) => <span key={item} className="mt-1 block text-xs font-normal text-danger">{t(item)}</span>);
 
-    return <section className="min-w-0 mx-auto w-full max-w-content space-y-7">
+    return <Container as="section" width="wide" className="space-y-group">
         <PageHeader bleed={false}
             eyebrow={t("گالری شخصی")}
             title={t("مدیریت آثار")}
@@ -215,5 +215,5 @@ export default function ArtworkStudio({ user, hasProfile, initialCreate = false 
                 </nav>
             )}
         </section>
-    </section>;
+    </Container>;
 }
