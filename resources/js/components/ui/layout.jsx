@@ -40,8 +40,8 @@ export const Container = forwardRef(function Container({ as: Element = 'div', wi
     return <Element ref={ref} className={cn('rd-container min-w-0', resolvedWidth !== 'wide' && `rd-container--${resolvedWidth}`, widths[resolvedWidth], className)} {...props} />;
 });
 
-export const Section = forwardRef(function Section({ as: Element = 'section', bleed = false, className = '', ...props }, ref) {
-    const sectionSpacing = Element === 'section' ? 'py-section' : '';
+export const Section = forwardRef(function Section({ as: Element = 'section', bleed = false, spacing = 'section', className = '', ...props }, ref) {
+    const sectionSpacing = Element === 'section' ? `py-${spacing}` : '';
     return <Element ref={ref} className={cn('min-w-0', sectionSpacing, bleed && 'rd-bleed', className)} {...props} />;
 });
 
