@@ -280,7 +280,7 @@ export default function HomePage() {
             )}
 
             <section className="rd-hero-surface border-y border-[color:var(--rd-hero-line)]">
-                <Container className="grid gap-8 py-section sm:py-section-wide md:grid-cols-[1fr_auto] md:items-center">
+                <Container className="grid gap-8 md:grid-cols-[1fr_auto] md:items-center">
                     <div>
                         <p className="text-[10px] font-extrabold tracking-[.16em] text-[color:var(--rd-hero-accent)]">BECOME PART OF THE STORY</p>
                         <h2 className="mt-3 max-w-3xl text-2xl font-black leading-relaxed text-[color:var(--rd-hero-foreground)] sm:text-3xl">{t('جهان هنری خود را با دیگران به اشتراک بگذارید.')}</h2>
