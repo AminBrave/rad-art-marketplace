@@ -48,7 +48,16 @@ export function CollectionDetailPage() {
     const item = collectionQuery.data ?? null;
 
     if (collectionQuery.isPending) return <CollectionDetailSkeleton />;
-    if (collectionQuery.isError || !item) return <Container as="div" width="wide" className="py-page"><ErrorState title={t("این مجموعه در دسترس نیست")} description={t("ممکن است انتشار آن متوقف شده باشد یا نشانی تغییر کرده باشد.")} onRetry={() => collectionQuery.refetch()} /><Link className="mt-5 inline-block text-sm font-bold underline" to="/collections">{t("بازگشت به مجموعه‌ها")}</Link></Container>;
+    if (collectionQuery.isError || !item) return <>
+        <DiscoveryHero
+            shape="frame"
+            eyebrow={t("انتخاب سردبیر")}
+            title={t("مجموعه در دسترس نیست")}
+            description={t("ممکن است انتشار آن متوقف شده باشد یا نشانی تغییر کرده باشد.")}
+            breadcrumbs={<Breadcrumbs label={t("مسیر صفحه")} items={[{ label: t("خانه"), to: "/" }, { label: t("مجموعه‌ها"), to: "/collections" }, { label: t("مجموعه در دسترس نیست") }]} />}
+        />
+        <Container as="div" width="wide" className="py-page"><ErrorState title={t("این مجموعه در دسترس نیست")} description={t("ممکن است انتشار آن متوقف شده باشد یا نشانی تغییر کرده باشد.")} onRetry={() => collectionQuery.refetch()} /><Link className="mt-5 inline-block text-sm font-bold underline" to="/collections">{t("بازگشت به مجموعه‌ها")}</Link></Container>
+    </>;
 
     return <div className="min-h-[65vh] pb-section">
         <DiscoveryHero
