@@ -3,7 +3,6 @@ import {
     ArtistCard,
     ArtworkCard,
     Badge,
-    Breadcrumbs,
     Button,
     Dialog,
     DialogClose,
@@ -180,8 +179,6 @@ export default function ComponentShowcase() {
                                 </DialogContent>
                             </Dialog>
                         </div>
-                        <h3 className="mt-3 font-bold">مسیر راهبری</h3>
-                        <Breadcrumbs items={[{ label: 'خانه', to: '/' }, { label: 'مدیریت آثار', to: '/dashboard/artist/artworks' }, { label: 'ویرایش اثر' }]} />
                     </div>
                     <div className="grid content-start gap-4">
                         <h3 className="font-bold">تب‌ها</h3>
