@@ -296,7 +296,6 @@
         background: color-mix(in srgb, var(--rd-hero-accent) 7%, transparent);
         pointer-events: none;
     }
-    }
 
     /* Workspace page shells own vertical rhythm; nested sections only provide grouping. */
     .rd-workspace-content {
