@@ -502,3 +502,14 @@ The fixes are pushed for local rerun. Tests, lint, and production build are not 
 - The Playwright `test:browser` task requires an already-running local MySQL development app. Responsive browser review, Persian RTL / English LTR, light/dark, keyboard, screen-reader, and loading/empty/error-state visual checks have not been performed in this CI run.
 
 **Phase 1 acceptance status:** automated CI checks are green; browser and visual acceptance remains outstanding. Do not mark Phase 1 fully verified until that review is completed.
+
+## Follow-up — fixed section rhythm and Radix overlay stacking
+
+- Standardized the shared `Section` primitive on `py-4 mt-0`. The legacy `spacing` prop remains as migration metadata only and no longer changes the vertical rhythm.
+- Removed section-owned top margins from the artist directory and catalogue filter sections. Removed workspace Container padding that previously competed with Section ownership.
+- Migrated remaining semantic content sections in artwork engagement, authentication, public information, the component showcase, design foundation and shared feedback states to the shared Section primitive.
+- Kept the messaging viewport as a labelled `region`, not a content section, so its fixed-height immersive layout does not gain padding or change its scroll geometry.
+- Made Radix Select non-modal to prevent it from hiding/isolation-locking surrounding application chrome. DropdownMenu content now always renders through a Radix Portal with viewport collision padding, escaping header and ancestor stacking contexts.
+- Added regression coverage for fixed Section geometry, zero top margins, raw section-tag migration, and non-modal/portaled Radix overlays.
+
+Automated validation is running on the PR head. Responsive browser interaction, header visibility under open menus, and keyboard/focus behavior still require visual browser QA.
