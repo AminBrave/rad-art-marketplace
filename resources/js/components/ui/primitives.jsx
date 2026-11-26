@@ -91,15 +91,15 @@ export const PageContainer = Container;
 export function UnifiedHero({
     eyebrow, title, description, breadcrumbs, actions, media, children,
     className = '', titleClassName = '', descriptionClassName = '',
-    level = 1, bleed = false, compact = false,
+    level = 1, bleed = false, compact = false, surface = 'grid-square',
 }) {
     const Heading = level === 2 ? 'h2' : 'h1';
     return (
-        <section className={cn('rd-unified-hero rd-hero-surface', bleed && 'rd-bleed', compact && 'rd-unified-hero--compact', className)}>
+        <section className={cn('rd-unified-hero rd-hero-surface', surface === 'grid-square' && 'rd-hero-surface--grid', surface === 'plain' && 'rd-hero-surface--plain', bleed && 'rd-bleed', compact && 'rd-unified-hero--compact', className)}>
             <Container width="wide" className="rd-unified-hero__inner relative z-10">
                 {breadcrumbs && <div className="mb-6 text-[11px] font-semibold text-[color:var(--rd-hero-muted)] sm:mb-8">{breadcrumbs}</div>}
                 <div className={cn('grid min-w-0 items-center gap-7 lg:gap-12', media && 'lg:grid-cols-[minmax(0,1.15fr)_minmax(17rem,.85fr)]')}>
-                    <div className="relative z-10 min-w-0">
+                    <div className="rd-unified-hero__title-wrap relative z-10 min-w-0">
                         {eyebrow && <p className="inline-flex items-center gap-2 border-s-2 border-[color:var(--rd-hero-accent)] px-3 py-1 text-[11px] font-extrabold leading-none tracking-[.06em] text-[color:var(--rd-hero-accent)]">{eyebrow}</p>}
                         <Heading className={cn('mt-3 max-w-4xl break-words text-[clamp(1.75rem,4.2vw,3.5rem)] font-extrabold leading-[1.2] tracking-[-.04em] text-[color:var(--rd-hero-foreground)]', titleClassName)}>{title}</Heading>
                         {description && <p className={cn('mt-3 max-w-2xl text-sm leading-8 text-[color:var(--rd-hero-muted)] sm:text-base sm:leading-9', descriptionClassName)}>{description}</p>}
@@ -114,7 +114,7 @@ export function UnifiedHero({
 }
 
 export function PageHeader({ eyebrow, title, description, actions, level = 1, bleed = true, className = '', titleClassName = '', descriptionClassName = '' }) {
-    return <UnifiedHero eyebrow={eyebrow} title={title} description={description} actions={actions} level={level} bleed={bleed} compact className={cn('rd-unified-hero--workspace', className)} titleClassName={titleClassName} descriptionClassName={descriptionClassName} />;
+    return <UnifiedHero eyebrow={eyebrow} title={title} description={description} actions={actions} level={level} bleed={bleed} compact className={className} titleClassName={titleClassName} descriptionClassName={descriptionClassName} />;
 }
 
 /** Discovery routes may add breadcrumbs; they share the exact same hero frame. */
