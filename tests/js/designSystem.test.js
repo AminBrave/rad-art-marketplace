@@ -197,7 +197,7 @@ test('public and workspace navigation expose role-aware destinations and an arti
     assert.ok(artistWorkspace.includes('ویرایش پروفایل'));
     assert.ok(artistProfile.includes('<DiscoveryHero') && artistProfile.includes('alt={t("تصویر نمایه هنرمند")}'), 'Artist identity is presented in the shared discovery hero with meaningful image text.');
     assert.ok(artistProfile.includes('دنبال‌کننده'));
-    assert.ok(artistProfile.includes('grid-cols-[10rem_minmax(0,1fr)]'));
+    assert.ok(artistProfile.includes('grid min-w-0 max-w-full grid-cols-1'), 'Artist artwork results use a min-width-safe responsive grid.');
 });
 
 test('featured collections header follows the full-width artwork gallery header pattern', () => {
@@ -469,7 +469,7 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     assert.ok(routeLoading.includes('<PageHeader'));
     assert.doesNotMatch(messaging, /<PageHeader/);
     assert.ok(conversationHeader.includes('after:bg-terracotta'), 'The extracted conversation header retains its terracotta top accent.');
-    const heroStart = primitives.indexOf('export function WorkspaceHero');
+    const heroStart = primitives.indexOf('export function UnifiedHero');
     const heroEnd = primitives.indexOf('\n}', heroStart);
     assert.ok(heroStart >= 0 && heroEnd > heroStart);
     const hero = primitives.slice(heroStart, heroEnd);
@@ -478,8 +478,8 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     assert.ok(hero.includes('text-[color:var(--rd-hero-foreground)]') && hero.includes('text-[color:var(--rd-hero-muted)]'));
     assert.ok(hero.includes('<Container width="wide"'), 'The hero delegates width and horizontal spacing to the shared Container.');
     assert.ok(layoutPrimitives.includes("wide: 'mx-auto w-full max-w-content'") && layoutPrimitives.includes("resolvedWidth !== 'wide' &&"), 'The wide Container delegates its gutter to the shared CSS container rule.');
-    assert.ok(hero.includes('max-md:items-stretch max-md:flex-col'), 'Hero actions and copy stack cleanly on smaller screens.');
-    assert.ok(hero.includes('min-w-0 max-w-full flex-wrap'), 'Hero actions can shrink and wrap without widening the page.');
+    assert.ok(hero.includes('grid min-w-0 items-center gap-7 lg:gap-12'), 'Hero copy and media use the shared responsive grid.');
+    assert.ok(hero.includes('flex min-w-0 flex-wrap items-center gap-3'), 'Hero actions can shrink and wrap without widening the page.');
     assert.ok(hero.includes('text-[color:var(--rd-hero-accent)]'));
     assert.ok(!artworkStudio.includes('className="border-0 pb-0 pt-0"'));
 });;
