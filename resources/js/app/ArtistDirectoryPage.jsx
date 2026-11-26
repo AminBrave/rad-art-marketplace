@@ -49,7 +49,6 @@ export default function ArtistDirectoryPage() {
     return (
         <div className="w-full min-w-0 min-h-[65vh] pb-section">
             <DiscoveryHero
-                shape="orbit"
                 eyebrow={t("جامعه خلاق راد آرت")}
                 title={t("هنرمند را کشف کنید.")}
                 description={t("با هنرمندان مستقل آشنا شوید؛ از نگاه و مسیر هنری آن‌ها بخوانید و مجموعه آثار تأییدشده‌شان را ببینید.")}
