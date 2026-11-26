@@ -147,6 +147,51 @@ test('all semantic sections receive consistent vertical padding by default', () 
     assert.ok(css.includes('Tailwind spacing utilities remain able to opt a section'));
 });
 
+test('public discovery pages share the same hero system and breadcrumbs stay out of workspaces', () => {
+    const discoveryPages = [
+        'resources/js/app/HomePage.jsx',
+        'resources/js/app/ArtistDirectoryPage.jsx',
+        'resources/js/app/ArtworkCatalogue.jsx',
+        'resources/js/app/ArtistProfilePage.jsx',
+        'resources/js/app/ArtworkDetailPage.jsx',
+        'resources/js/app/EditorialPages.jsx',
+    ];
+    for (const path of discoveryPages) {
+        const source = readFileSync(resolve(root, path), 'utf8');
+        assert.ok(source.includes('DiscoveryHero'), path + ' must use the shared discovery hero.');
+    }
+    const breadcrumbPages = [
+        'resources/js/app/ArtistDirectoryPage.jsx',
+        'resources/js/app/ArtworkCatalogue.jsx',
+        'resources/js/app/ArtistProfilePage.jsx',
+        'resources/js/app/ArtworkDetailPage.jsx',
+        'resources/js/app/EditorialPages.jsx',
+    ];
+    for (const path of breadcrumbPages) {
+        const source = readFileSync(resolve(root, path), 'utf8');
+        assert.ok(source.includes('<Breadcrumbs'), path + ' must place breadcrumbs inside its discovery hero.');
+    }
+    for (const path of [
+        'resources/js/app/AdminWorkspace.jsx',
+        'resources/js/app/ArtistWorkspaceOverview.jsx',
+        'resources/js/app/ArtworkStudio.jsx',
+        'resources/js/app/BuyerWorkspace.jsx',
+        'resources/js/app/RoutingPages.jsx',
+        'resources/js/app/Layouts.jsx',
+    ]) {
+        const source = readFileSync(resolve(root, path), 'utf8');
+        assert.doesNotMatch(source, /<Breadcrumbs|مسیر صفحه/, path + ' must not show dashboard/workspace breadcrumbs.');
+    }
+    const primitives = readFileSync(resolve(root, 'resources/js/components/ui/primitives.jsx'), 'utf8');
+    assert.ok(primitives.includes('export function DiscoveryHero'));
+    assert.ok(primitives.includes('rd-discovery-hero'));
+    assert.ok(css.includes('.rd-discovery-hero[data-shape="orbit"]'));
+    assert.ok(css.includes('.rd-discovery-hero[data-shape="grid"]'));
+    assert.ok(css.includes('.rd-discovery-hero[data-shape="arch"]'));
+    assert.ok(css.includes('.rd-discovery-hero[data-shape="frame"]'));
+    assert.ok(css.includes('.rd-discovery-hero[data-shape="ribbon"]'));
+});
+
 test('page-level compositions use the shared Container instead of duplicated max-width wrappers', () => {
     const pagePaths = [
         'resources/js/app/AdminWorkspace.jsx',
