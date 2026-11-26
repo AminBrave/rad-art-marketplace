@@ -19,14 +19,14 @@ export function CollectionIndexPage() {
     });
     const items = collectionsQuery.data ?? [];
 
-    return <div className="min-h-[65vh] pb-section">
+    return <div className="min-h-[65vh]">
         <DiscoveryHero
             eyebrow={t("انتخاب سردبیر")}
             title={t("مجموعه‌های منتخب")}
             description={t("روایت‌های موضوعی و انتخاب‌های هنری راد آرت؛ هر مجموعه مسیری تازه برای کشف آثار است.")}
             breadcrumbs={<Breadcrumbs label={t("مسیر صفحه")} items={[{ label: t("خانه"), to: "/" }, { label: t("مجموعه‌ها") }]} />}
         />
-        <Container as="div" width="wide" className="pt-section">
+        <Container as="section" width="wide" className="py-section sm:py-section-wide">
         {collectionsQuery.isError ? <ErrorState className="mt-8" title={t("دریافت مجموعه‌ها ممکن نشد")} description={t("لطفاً دوباره تلاش کنید.")} onRetry={() => collectionsQuery.refetch()} /> : collectionsQuery.isPending ? <div className="mt-9"><CollectionCardSkeleton count={6} /></div> : items.length ? <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{items.map((item) => <Link key={item.id} to={'/collections/' + item.slug} className="group border-y border-border bg-transparent px-1 py-7 transition-colors hover:border-terracotta sm:px-2"><p className="text-xs text-terracotta-strong">{item.artwork_count} {locale === 'en' ? 'selected artworks' : 'اثر منتخب'}</p><h2 className="mt-3 text-2xl font-black tracking-tight group-hover:text-terracotta-strong">{localizedValue(item, 'title', locale)}</h2><p className="mt-3 line-clamp-4 text-sm leading-7 text-muted">{localizedValue(item, 'intro', locale) || (locale === 'en' ? 'A selection of approved Rad Art artworks.' : 'انتخابی از آثار تأییدشده هنرمندان راد آرت.')}</p><span className="mt-6 inline-flex min-h-10 items-center text-sm font-bold underline underline-offset-4">{t("مشاهده مجموعه")}</span></Link>)}</div> : <EmptyState className="mt-8" title={t("هنوز مجموعه‌ای منتشر نشده است")} description={t("مجموعه‌های منتخب پس از آماده‌سازی در این بخش نمایش داده می‌شوند.")} />}
         </Container>
     </div>;
