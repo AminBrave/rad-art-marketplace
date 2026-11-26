@@ -696,7 +696,7 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(layouts.includes("'/dashboard/artist/artworks/new'"), 'Artist creation destinations are included in the public-context workspace section.');
     assert.doesNotMatch(layouts, /publicSecondaryLinks|const publicLinks = \[/, 'Legacy split navigation lists are removed.');
     assert.ok(layouts.includes("aria-label={t('ناوبری بخش‌های عمومی')}"), 'Public discovery navigation remains available with localized labeling.');
-    assert.ok(layouts.includes("aria-label={t('بخش‌های اصلی فضای کاربری')}"), 'Discover drawer mirrors the workspace drawer section structure.');
+    assert.ok(layouts.includes('<nav aria-label={section.label}>'), 'Both drawers render localized section labels through the shared sidebar navigation.');
     assert.ok(layouts.includes('my-5 border-t border-border'), 'Discover and workspace navigation sections use the same divider spacing.');
     assert.ok(layouts.includes('flex min-h-11 items-center gap-3 border-s-2 border-transparent px-3 text-sm font-semibold'), 'Discover drawer links use the same row geometry as workspace links.');
     assert.ok(layouts.includes('min-h-0 flex-1 overflow-y-auto px-4 py-5'), 'Discover navigation uses the same padded scrollable panel as workspace navigation.');
