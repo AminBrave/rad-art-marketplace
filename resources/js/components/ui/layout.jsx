@@ -37,12 +37,12 @@ export const Container = forwardRef(function Container({ as: Element = 'div', wi
 });
 
 export const Section = forwardRef(function Section({ as: Element = 'section', bleed = false, className = '', ...props }, ref) {
-    const sectionSpacing = Element === 'section' ? 'py-16 sm:py-24' : '';
+    const sectionSpacing = Element === 'section' ? 'py-section' : '';
     return <Element ref={ref} className={cn('min-w-0', sectionSpacing, bleed && 'rd-bleed', className)} {...props} />;
 });
 
 export const Inset = forwardRef(function Inset({ as: Element = 'div', side = 'all', className = '', ...props }, ref) {
-    const spacing = { all: 'p-4', inline: 'px-4', block: 'py-4', start: 'ps-4', end: 'pe-4', top: 'pt-4', bottom: 'pb-4' };
+    const spacing = { all: 'p-component', inline: 'px-component', block: 'py-component', start: 'ps-component', end: 'pe-component', top: 'pt-component', bottom: 'pb-component' };
     return <Element ref={ref} className={cn(spacing[side] ?? spacing.all, className)} {...props} />;
 });
 
