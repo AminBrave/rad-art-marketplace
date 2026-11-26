@@ -74,6 +74,7 @@ const sampleArtist = {
 };
 
 export default function ComponentShowcase() {
+    const { t, locale } = useLanguage();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [search, setSearch] = useState('');
     const [page, setPage] = useState(2);
