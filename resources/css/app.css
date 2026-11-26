@@ -263,7 +263,7 @@
         background-repeat: no-repeat;
     }
 
-    /* Shared editorial grid and title-square motif. */
+    /* Shared editorial grid texture; hero title remains free of decorative framing. */
     .rd-hero-surface--grid::before {
         content: "";
         position: absolute;
@@ -281,20 +281,6 @@
     .rd-unified-hero__title-wrap {
         position: relative;
         isolation: isolate;
-    }
-
-    .rd-unified-hero__title-wrap::before {
-        content: "";
-        position: absolute;
-        z-index: -1;
-        inset-block-start: 50%;
-        inset-inline-start: clamp(-1.25rem, -2vw, -.5rem);
-        width: clamp(7rem, 17vw, 13rem);
-        aspect-ratio: 1;
-        transform: translateY(-50%);
-        border: 1px solid var(--rd-hero-line);
-        background: color-mix(in srgb, var(--rd-hero-accent) 7%, transparent);
-        pointer-events: none;
     }
 
     /* Workspace page shells own vertical rhythm; nested sections only provide grouping. */
