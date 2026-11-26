@@ -464,8 +464,10 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'Dropdown menus must inherit the application font and stay within the viewport.');
     assert.match(navigation, /font-sans text-sm outline-none/,
         'Dropdown items must not fall back to browser or portal font defaults.');
-    assert.match(primitives, /SelectPrimitive\\.Root[\\s\\S]*?modal=\\{false\\}[\\s\\S]*?SelectPrimitive\\.Trigger[\\s\\S]*?SelectPrimitive\\.Portal/,
-        'Select controls must retain the Radix Select primitive and its supported root API.');
+    assert.match(primitives, /SelectPrimitive\\.Root[\\s\\S]*?SelectPrimitive\\.Trigger[\\s\\S]*?SelectPrimitive\\.Portal/,
+        'Select controls must retain the Radix Select primitive composition.');
+    assert.doesNotMatch(primitives, /modal=\\{false\\}/,
+        'Radix Select Root does not expose a modal prop; do not pass DropdownMenu-only configuration to it.');
     assert.match(primitives, /SelectPrimitive\\.Content[\\s\\S]*?z-\\[var\\(--rd-layer-popover\\)\\][\\s\\S]*?max-w-\\[calc\\(100vw-1rem\\)\\][\\s\\S]*?font-sans/,
         'The Radix Select popover must be viewport-constrained and use the application font.');
     assert.match(primitives, /dir=\\{direction\\}/,
@@ -494,16 +496,18 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'Inbox thread content follows the selected language direction.');
     assert.match(inbox, /<DropdownMenu\\.Trigger asChild>[\\s\\S]*?<button[\\s\\S]*?data-inbox-thread-actions/,
         'The inbox overflow menu uses a direct native Radix trigger.');
-    assert.match(inbox, /pointer-events-none absolute end-1 top-1\\/2 z-30[\\s\\S]*?pointer-events-auto relative z-30 inline-flex h-9/,
-        'The inbox overflow trigger remains clickable above the row selection control.');
+    assert.match(inbox, /pointer-events-none absolute right-1 top-1\\/2 z-30[\\s\\S]*?pointer-events-auto relative z-30 inline-flex h-9/,
+        'The inbox overflow trigger remains physically right-aligned and clickable above the row selection control.');
     assert.match(inbox, /pointer-events-auto relative z-30 inline-flex h-9[\\s\\S]*?border-0 bg-transparent p-0[\\s\\S]*?shadow-none/,
         'The inbox overflow action remains icon-only with no surface, border or shadow.');
     assert.match(inbox, /z-\\[var\\(--rd-layer-popover\\)\\]/,
         'Inbox menus use the shared popover layer.');
     assert.ok(!inbox.includes('<Tooltip content={t("گزینه‌های گفتگو")}>'),
         'Inbox menus do not nest Tooltip and DropdownMenu triggers.');
-    assert.match(messagingCenter, /<div dir="rtl" className="grid h-full/,
-        'The conversation stays on the left and the inbox on the right in both locales.');
+    assert.match(messagingCenter, /<div dir="ltr" className="rd-messaging__workspace grid h-full[\\s\\S]*?lg:grid-cols-\\[minmax\\(0,1fr\\)_minmax\\(17rem,21rem\\)\\]">/,
+        'The workspace uses explicit LTR grid columns: conversation first on the left, inbox second on the right.');
+    assert.ok(messagingCenter.indexOf('<div dir="ltr" className={active ?') < messagingCenter.indexOf('<MessagingInboxPanel'),
+        'Conversation DOM order must match its visual order before the inbox for keyboard and screen-reader navigation.');
     assert.match(messagingCenter, /<div dir="ltr" className=\\{active \\?/,
         'Conversation chrome remains fixed LTR while message text stays content-directed.');
     assert.match(timeline, /<div dir="ltr" className=\\{'flex w-full/,
@@ -516,9 +520,11 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'Message overflow and reaction triggers have no background, border or shadow.');
     assert.match(conversationHeader, /<header dir="ltr"/,
         'The conversation header keeps participant identity left and actions right.');
+    assert.match(conversationHeader, /text-left text-sm font-extrabold/,
+        'Participant names remain physically left-aligned in English and Persian.');
     assert.match(conversationHeader, /border-0 bg-transparent text-muted shadow-none/,
         'The conversation overflow action is icon-only.');
-    assert.match(composer, /<form dir="ltr"/,
+    assert.match(composer, /<form dir="ltr" data-messaging-composer/,
         'Composer actions stay in fixed physical positions in both locales.');
     assert.match(composer, /border border-border bg-surface p-2 shadow-none(?![^"]*focus-within)/,
         'The composer shell does not change border or shadow on focus.');
