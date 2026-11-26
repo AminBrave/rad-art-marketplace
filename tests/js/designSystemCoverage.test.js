@@ -143,8 +143,8 @@ test('semantic layout tiers are token-backed and shared primitives use them', ()
 });
 
 test('all semantic sections receive consistent vertical padding by default', () => {
-    assert.match(css, /section\\s*\\{\\s*padding-block:\\s*var\\(--rd-layout-section\\);/);
-    assert.match(css, /section\\s*\\{\\s*padding-block:\\s*var\\(--rd-layout-section-wide\\);/);
+    assert.match(css, /section\s*\{\s*padding-block:\s*var\(--rd-layout-section\);/);
+    assert.match(css, /section\s*\{\s*padding-block:\s*var\(--rd-layout-section-wide\);/);
     assert.ok(css.includes('.rd-chat-shell section'));
 });
 test('public discovery pages share the same hero system and breadcrumbs stay out of workspaces', () => {
@@ -193,14 +193,19 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     const primitives = readFileSync(resolve(root, 'resources/js/components/ui/primitives.jsx'), 'utf8');
     assert.ok(primitives.includes('export function DiscoveryHero'));
     assert.ok(primitives.includes('export function UnifiedHero'));
-    assert.ok(primitives.includes('rd-discovery-hero'));
-    assert.ok(css.includes('.rd-discovery-hero[data-shape="orbit"]'));
-    assert.ok(css.includes('.rd-discovery-hero[data-shape="grid"]'));
-    assert.ok(css.includes('.rd-discovery-hero[data-shape="arch"]'));
-    assert.ok(css.includes('.rd-discovery-hero[data-shape="frame"]'));
-    assert.ok(css.includes('.rd-discovery-hero[data-shape="ribbon"]'));
-    assert.ok(css.includes('.rd-discovery-hero[data-shape="diamond"]'));
-    assert.ok(css.includes('.rd-discovery-hero[data-shape="layers"]'));
+    assert.ok(primitives.includes('return <UnifiedHero'));
+    assert.ok(css.includes('.rd-unified-hero'));
+    assert.ok(css.includes('linear-gradient(var(--rd-hero-line) 1px, transparent 1px)'));
+    assert.ok(!css.includes('data-shape='));
+    const home = readFileSync(resolve(root, 'resources/js/app/HomePage.jsx'), 'utf8');
+    assert.ok(home.includes('rd-home-hero'));
+    const layout = readFileSync(resolve(root, 'resources/js/app/Layouts.jsx'), 'utf8');
+    assert.ok(layout.includes('rd-chat-shell'));
+    assert.ok(css.includes('.rd-chat-shell section'));
+    const artist = readFileSync(resolve(root, 'resources/js/app/ArtistProfilePage.jsx'), 'utf8');
+    assert.ok(!artist.includes('برای ارسال پیام مستقیم، از حساب خریدار استفاده کنید'));
+    assert.ok(!artist.includes('پورتفولیوی عمومی'));
+    assert.ok(!artist.includes('اثر بارگذاری‌شده'));
 });
 
 test('page-level compositions use the shared Container instead of duplicated max-width wrappers', () => {
