@@ -83,7 +83,8 @@ test('workspace heroes use the shared full-width grid hero implementation', () =
     assert.match(primitives, /export function WorkspaceHero\(props\)\s*\{\s*return <UnifiedHero/);
     assert.ok(primitives.includes("surface = 'grid'"));
     assert.ok(primitives.includes("bleed && 'rd-bleed'"));
-    assert.ok(artistWorkspace.includes('<Container width="wide" className="rd-workspace-content space-y-workspace-relaxed">'));
+    assert.ok(artistWorkspace.includes('<Container width="wide">'));
+    assert.doesNotMatch(artistWorkspace, /space-y-workspace-relaxed/);
     assert.doesNotMatch(artistWorkspace, /<div className="rd-container min-w-0 mx-auto w-full max-w-content space-y-7">/);
 });
 
