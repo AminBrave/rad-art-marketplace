@@ -3,8 +3,8 @@
 <head>
     @php
         $seo = $seo ?? [];
-        $seoTitle = $seo['title'] ?? 'راد آرت | کشف آثار هنری و ارتباط با هنرمندان';
-        $seoDescription = $seo['description'] ?? 'راد آرت؛ جایی برای کشف آثار هنری تأییدشده، آشنایی با هنرمندان و ارتباط مستقیم با آن‌ها.';
+        $seoTitle = $seo['title'] ?? 'ردّمن | کشف هنر و ارتباط با هنرمندان';
+        $seoDescription = $seo['description'] ?? 'ردّمن؛ جایی برای کشف آثار هنری، آشنایی با هنرمندان و ارتباط مستقیم با آن‌ها.';
         $seoPath = request()->getPathInfo();
         $indexableStaticPaths = ['/', '/artworks', '/artists', '/collections', '/about', '/help', '/contact'];
         $seoRobots = $seo['robots'] ?? (in_array($seoPath, $indexableStaticPaths, true) ? 'index,follow' : 'noindex,nofollow');
@@ -44,7 +44,7 @@
     @if ($seoCanonical)
         <link rel="canonical" href="{{ $seoCanonical }}">
     @endif
-    <meta property="og:site_name" content="راد آرت">
+    <meta property="og:site_name" content="ردّمن">
     <meta property="og:locale" content="fa_IR">
     <meta property="og:type" content="{{ $seo['og_type'] ?? 'website' }}">
     <meta property="og:title" content="{{ $seoTitle }}">
@@ -117,9 +117,9 @@
                 <div class="{{ $isMessagingRoute ? 'mx-auto flex h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-h-0 min-w-0 max-w-content flex-none px-page-gutter py-3 sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:py-4' : 'mx-auto w-full max-w-content px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)]' }}">
                     <main class="{{ $isMessagingRoute ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'min-w-0' }}" role="status" aria-busy="true" aria-label="در حال بارگذاری فضای کاربری">
         @else
-            <main class="mx-auto min-h-screen w-[min(calc(100%_-_2.5rem),80rem)] pt-6 pb-16" role="status" aria-busy="true" aria-label="در حال بارگذاری راد آرت">
+            <main class="mx-auto min-h-screen w-[min(calc(100%_-_2.5rem),80rem)] pt-6 pb-16" role="status" aria-busy="true" aria-label="در حال بارگذاری ردّمن">
                 <div class="flex min-h-14 items-center justify-between gap-8 border-b border-border">
-                    <span class="{{ $skeletonClass }} h-7 w-24"></span>
+                    <div class="flex items-center gap-2"><img src="/favicon.svg" alt="" aria-hidden="true" class="h-9 w-9" width="36" height="36"><span class="text-lg font-black text-ink">ردّمن</span></div>
                     <span class="{{ $skeletonClass }} h-4 w-[min(42%,22rem)]"></span>
                 </div>
         @endif
