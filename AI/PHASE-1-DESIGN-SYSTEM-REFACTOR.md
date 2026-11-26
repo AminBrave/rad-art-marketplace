@@ -312,3 +312,19 @@ Each slice should have a short feature-specific contract and tests. Do not make 
 - Automated tests, lint, production build, and browser verification have not been run in this environment.
 
 **Next implementation step:** migrate public discovery and workspace page sections to explicit spacing ownership, then remove the global native-section rule only after the remaining consumers are accounted for.
+
+### Slice 2 — Page section migration
+
+**Implemented on the target branch:**
+
+- Migrated native section wrappers to the shared `Section` primitive in `HomePage`, `ArtistProfilePage`, `ArtworkDetailPage`, `EditorialPages`, `ArtistWorkspaceOverview`, `BuyerWorkspace`, `AdminWorkspace`, `ArtworkStudio`, and `RoutingPages`.
+- Public discovery/editorial compositions explicitly use `spacing="regular"`; workspace compositions and route loading/settings compositions explicitly use `spacing="none"` where their parent shell or local layout already owns spacing.
+- `Section`'s `none` variant emits `py-0`, so it can explicitly opt out of the still-present global native-section padding during the staged migration.
+- Added regression coverage asserting that these page files import the shared primitive, no longer render native section tags directly, and declare their spacing intent.
+
+**Still outstanding:**
+
+- The global native `section` rule remains until remaining consumers (including the dedicated messaging shell and any component-level sections) are audited.
+- Workspace and chat CSS compatibility exceptions remain until the global rule is removed.
+- No test, lint, production build, or browser run has been performed in this environment.
+
