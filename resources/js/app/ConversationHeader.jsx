@@ -18,7 +18,7 @@ export default function ConversationHeader({
 }) {
     const { t, locale } = useLanguage();
     return (
-        <header dir={locale === 'fa' ? 'rtl' : 'ltr'} className="relative z-20 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_96%,transparent)] shadow-soft backdrop-blur after:absolute after:inset-x-0 after:top-0 after:h-1 after:bg-terracotta">
+        <header dir="ltr" className="relative z-20 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_96%,transparent)] shadow-soft backdrop-blur after:absolute after:inset-x-0 after:top-0 after:h-1 after:bg-terracotta">
             <div className="flex min-h-[3.5rem] min-w-0 items-center gap-2 px-3 py-2 pt-3 md:min-h-[3.75rem] md:gap-3 md:px-4">
                 <Tooltip content={t("بازگشت به گفتگوها")}>
                     <Button variant="ghost"
@@ -80,7 +80,7 @@ export default function ConversationHeader({
                             <Button variant="ghost"
                                 type="button"
                                 aria-label={t("گزینه‌های بیشتر گفتگو")}
-                                className="min-h-0 p-0 flex h-10 w-10 items-center justify-center rounded-full border border-transparent bg-surface-muted text-muted transition-colors hover:border-border-strong hover:bg-surface hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"
+                                className="min-h-0 p-0 flex h-10 w-10 items-center justify-center border-0 bg-transparent text-muted shadow-none transition-colors hover:bg-transparent hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"
                             >
                                 <MoreVertical size={19} aria-hidden="true" />
                             </Button>
