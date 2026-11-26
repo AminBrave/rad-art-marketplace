@@ -254,16 +254,25 @@
 /* Shared editorial hero surface adapts through the semantic theme tokens above. */
 @layer components {
     .rd-hero-surface {
-        --rd-hero-grid-line: color-mix(in srgb, var(--rd-hero-foreground) 9%, transparent);
         color: var(--rd-hero-foreground);
         background-color: var(--rd-hero-background);
         background-image:
-            linear-gradient(var(--rd-hero-grid-line) 1px, transparent 1px),
-            linear-gradient(90deg, var(--rd-hero-grid-line) 1px, transparent 1px),
             radial-gradient(ellipse at 88% 8%, var(--rd-hero-glow), transparent 38%),
             linear-gradient(125deg, var(--rd-hero-background), var(--rd-hero-background-alt));
-        background-size: 3rem 3rem, 3rem 3rem, auto, auto;
         background-position: center center;
+    }
+
+    /* Workspace page shells own vertical rhythm; nested sections only provide grouping. */
+    .rd-workspace-content {
+        padding-block: 0;
+    }
+
+    .rd-workspace-content > section {
+        padding-block: 0;
+    }
+
+    section.rd-unified-hero {
+        padding-block: 0;
     }
 }
 
