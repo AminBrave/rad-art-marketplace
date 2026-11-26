@@ -168,7 +168,8 @@ export default function ArtworkStudio({ user, hasProfile, initialCreate = false 
             title={t("مدیریت آثار")}
             description={t("آثار جدید و ویرایش‌شده پس از ثبت دوباره برای بررسی مدیر ارسال می‌شوند. فقط آثار تأییدشده در گالری عمومی نمایش داده می‌شوند.")}
         />
-<Container as="section" width="wide" className="rd-workspace-content space-y-workspace-relaxed">
+<Section spacing="none" className="rd-workspace-content space-y-workspace-relaxed">
+            <Container width="wide">
 
         <Section spacing="none" id="artwork-editor" className="min-w-0">
             <div className="mb-6 flex flex-wrap items-start justify-between gap-3"><SectionHeader title={editingId ? t('ویرایش اثر') : t("ثبت اثر جدید")} description={t("فیلدهای الزامی با علامت * مشخص شده‌اند.")} className="min-w-0 flex-1 border-0 pb-0" />{editingId && <Button variant="outline" size="sm" onClick={resetForm}>{t('انصراف از ویرایش')}</Button>}</div>
@@ -218,5 +219,6 @@ export default function ArtworkStudio({ user, hasProfile, initialCreate = false 
             )}
         </Section>
     </Container>
+        </Section>
     </>;
 }
