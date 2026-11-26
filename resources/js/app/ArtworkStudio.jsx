@@ -3,7 +3,7 @@ import { useLanguage } from './LanguageContext';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useLocation } from 'react-router-dom';
-import { Badge, Button, EmptyState, ErrorState, FormField, TextInput, TextareaField, FileInput, ArtworkStudioListSkeleton, UploadFeedback, MediaImage, PageHeader, SectionHeader, SelectField, Container } from '../components/ui';
+import { Badge, Button, EmptyState, ErrorState, FormField, TextInput, TextareaField, FileInput, ArtworkStudioListSkeleton, UploadFeedback, MediaImage, PageHeader, SectionHeader, SelectField, Container, Section } from '../components/ui';
 
 const emptyArtwork = { title: '', title_en: '', description: '', description_en: '', city: '', city_en: '', category_id: '', medium: '', dimensions: '', year: '', price: '', availability: 'available' };
 const statusLabels = { pending_review: 'در انتظار بررسی', approved: 'تأیید و منتشرشده', rejected: 'ردشده', changes_requested: 'نیازمند اصلاح' };
@@ -170,7 +170,7 @@ export default function ArtworkStudio({ user, hasProfile, initialCreate = false 
         />
 <Container as="section" width="wide" className="rd-workspace-content space-y-workspace-relaxed">
 
-        <section id="artwork-editor" className="min-w-0">
+        <Section spacing="none" id="artwork-editor" className="min-w-0">
             <div className="mb-6 flex flex-wrap items-start justify-between gap-3"><SectionHeader title={editingId ? t('ویرایش اثر') : t("ثبت اثر جدید")} description={t("فیلدهای الزامی با علامت * مشخص شده‌اند.")} className="min-w-0 flex-1 border-0 pb-0" />{editingId && <Button variant="outline" size="sm" onClick={resetForm}>{t('انصراف از ویرایش')}</Button>}</div>
             <form onSubmit={saveArtwork} className="grid gap-x-5 gap-y-6 sm:grid-cols-2">
                 <FormField label={t("عنوان اثر")} required error={t(errors.title?.[0])}><TextInput name="title" value={form.title} onChange={updateForm} required maxLength={160} /></FormField>
@@ -195,8 +195,8 @@ export default function ArtworkStudio({ user, hasProfile, initialCreate = false 
                 </div>
                 <div className="flex flex-wrap items-center gap-3 sm:col-span-2"><Button type="submit" disabled={busy || Boolean(imageError)} loading={busy}>{editingId ? t("ذخیره و ارسال دوباره برای بررسی") : t("ثبت اثر برای بررسی")}</Button>{message && <p role="status" className="text-sm text-muted">{message}</p>}</div>
             </form>
-        </section>
-        <section id="submitted-artworks" className="scroll-mt-24 space-y-4">
+        </Section>
+        <Section spacing="none" id="submitted-artworks" className="scroll-mt-24 space-y-4">
             <SectionHeader title={t("آثار ثبت‌شده شما")} actions={<Button variant="outline" size="sm" onClick={() => artworksQuery.refetch()} disabled={loading}>{t("بروزرسانی")}</Button>} />
             {loadError && <ErrorState title={t("دریافت آثار ناموفق بود")} description={t(loadError)} onRetry={() => { artworksQuery.refetch(); categoriesQuery.refetch(); }} />}
             {loading ? <ArtworkStudioListSkeleton count={3} /> : artworks.length === 0 ? <EmptyState title={t("هنوز اثری ثبت نکرده‌اید")} description={t("با فرم بالا اولین اثر خود را برای بررسی ارسال کنید.")} /> :
@@ -216,7 +216,7 @@ export default function ArtworkStudio({ user, hasProfile, initialCreate = false 
                     <Button variant="outline" size="sm" disabled={loading || !hasMoreArtworks} onClick={() => setArtworkPage((current) => current + 1)}>{t("بعدی")}</Button>
                 </nav>
             )}
-        </section>
+        </Section>
     </Container>
     </>;
 }
