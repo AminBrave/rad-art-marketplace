@@ -6,7 +6,7 @@ import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-do
 import { useAuth } from './AuthContext';
 import { useTheme } from './useTheme';
 import { useLanguage } from './LanguageContext';
-import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, NotificationListSkeleton } from '../components/ui';
+import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, NotificationListSkeleton, BrandLogo } from '../components/ui';
 
 const publicDiscoveryLinks = [
     { to: '/', label: 'خانه', Icon: House, end: true },
@@ -180,13 +180,7 @@ export function PublicLayout() {
             </a>
             <header className="sticky top-0 z-40 border-b border-divider-section bg-[color:color-mix(in_srgb,var(--color-canvas)_96%,transparent)] backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-canvas)_90%,transparent)]">
                 <div className="mx-auto flex min-h-[var(--header-height)] max-w-content items-center justify-between gap-2 px-page-gutter sm:gap-5">
-                    <Link to="/" className="group flex shrink-0 items-center gap-2 text-ink no-underline sm:gap-3" aria-label={t('راد آرت، صفحه اصلی')}>
-                        <span className="min-h-0 p-0 grid h-10 w-10 place-items-center bg-ink text-lg font-black text-inverse transition-colors group-hover:bg-terracotta sm:h-11 sm:w-11 sm:text-xl">ر</span>
-                        <span className="flex flex-col leading-tight">
-                            <span className="text-xl font-black tracking-[-.06em] sm:text-2xl">راد<span className="text-terracotta-strong">آرت</span></span>
-                            <span className="mt-1 hidden text-[9px] font-semibold tracking-[.2em] text-muted sm:block">INDEPENDENT ART</span>
-                        </span>
-                    </Link>
+                    <Link to="/" className="group flex shrink-0 items-center text-ink no-underline" aria-label={t('ردّمن، صفحه اصلی')}><BrandLogo /></Link>
 
                     <div className="flex shrink-0 items-center">
                         <DialogTrigger asChild>
@@ -201,7 +195,7 @@ export function PublicLayout() {
                 <DialogContent placement="drawer" className="flex flex-col px-4 py-5">
                     <div className="mb-5 flex items-center justify-between border-b border-border pb-4">
                         <div className="min-w-0">
-                            <DialogTitle className="text-base font-extrabold text-ink">{t('منوی راد آرت')}</DialogTitle>
+                            <DialogTitle className="text-base font-extrabold text-ink">{t('منوی ردّمن')}</DialogTitle>
                             <DialogDescription className="mt-1 text-xs text-muted">{t('کشف هنر، هنرمندان و فضای کاربری')}</DialogDescription>
                         </div>
                         <DialogClose asChild><Button variant="ghost" type="button" aria-label={t('بستن منو')} className="grid h-10 w-10 place-items-center p-0 text-muted hover:bg-surface-muted"><X size={19} aria-hidden="true" /></Button></DialogClose>
@@ -215,7 +209,7 @@ export function PublicLayout() {
                         sections={[
                             { label: t('کشف'), items: publicDiscoveryLinks.map((item) => ({ ...item, label: t(item.label) })) },
                             { label: t(user ? (user.role === 'artist' ? 'فضای هنرمند' : user.role === 'admin' ? 'مدیریت' : 'فضای خریدار') : 'حساب کاربری'), items: getPublicWorkspaceLinks(user, profileHref, t) },
-                            { label: t('راد آرت'), items: publicInfoLinks.map((item) => ({ ...item, label: t(item.label) })) },
+                            { label: t('ردّمن'), items: publicInfoLinks.map((item) => ({ ...item, label: t(item.label) })) },
                         ]}
                         onNavigate={() => setMobileMenuOpen(false)}
                         onLogout={handleLogout}
@@ -234,10 +228,7 @@ export function PublicLayout() {
                 <div className="mx-auto max-w-content px-page-gutter pb-10 pt-14 sm:pb-14 sm:pt-20">
                     <div className="grid gap-10 border-b border-divider-section pb-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr] lg:gap-16 lg:pb-14">
                         <div className="max-w-md">
-                            <Link to="/" className="inline-flex items-center gap-3 text-ink no-underline" aria-label={t('راد آرت، صفحه اصلی')}>
-                                <span className="min-h-0 p-0 grid h-10 w-10 place-items-center rounded-md bg-ink text-lg font-black text-inverse">ر</span>
-                                <span className="text-xl font-black">راد<span className="text-terracotta-strong">آرت</span></span>
-                            </Link>
+                            <Link to="/" className="inline-flex text-ink no-underline" aria-label={t('ردّمن، صفحه اصلی')}><BrandLogo compact /></Link>
                             <p className="mt-5 text-sm leading-8 text-muted">
                                 {t('فضایی برای کشف آثار هنری مستقل، شناخت هنرمندان و ارتباط درباره هنر.')}
                             </p>
@@ -254,8 +245,8 @@ export function PublicLayout() {
                             <Link to="/collections" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">{t('مجموعه‌های منتخب')}</Link>
                         </nav>
 
-                        <nav aria-label="پیوندهای راد آرت" className="flex flex-col items-start gap-3">
-                            <h2 className="mb-1 text-sm font-extrabold text-ink">{t('راد آرت')}</h2>
+                        <nav aria-label="پیوندهای ردّمن" className="flex flex-col items-start gap-3">
+                            <h2 className="mb-1 text-sm font-extrabold text-ink">{t('ردّمن')}</h2>
                             <Link to="/about" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">{t('درباره ما')}</Link>
                             <Link to="/help" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">{t('راهنما')}</Link>
                             <Link to="/contact" className="text-sm text-muted no-underline transition-colors hover:text-terracotta-strong">{t('تماس با ما')}</Link>
@@ -666,10 +657,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
         <div data-experience={user?.role ?? 'workspace'} className={isMessagingRoute ? "flex h-dvh flex-col overflow-hidden bg-canvas text-ink" : "min-h-screen bg-canvas text-ink"}>
             <header className="sticky top-0 z-40 shrink-0 border-b border-divider-section bg-[color:color-mix(in_srgb,var(--color-paper)_96%,transparent)] backdrop-blur">
                 <div className="mx-auto flex min-h-[4.5rem] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-20 sm:gap-4">
-                    <Link to="/" className="group flex shrink-0 items-center gap-2 text-ink no-underline" aria-label={t('راد آرت، صفحه اصلی')}>
-                        <span className="grid h-10 w-10 place-items-center bg-ink text-lg font-black text-inverse transition-colors group-hover:bg-terracotta sm:h-11 sm:w-11">ر</span>
-                        <span className="text-xl font-black tracking-tight sm:text-2xl">راد<span className="text-terracotta-strong">آرت</span></span>
-                    </Link>
+                    <Link to="/" className="group flex shrink-0 items-center text-ink no-underline" aria-label={t('ردّمن، صفحه اصلی')}><BrandLogo /></Link>
 
                     <div className="flex shrink-0 items-center">
                         <DialogTrigger asChild>
@@ -689,7 +677,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
             >
                 <div className="flex items-center justify-between border-b border-border px-5 py-5">
                     <div className="flex min-w-0 items-center gap-3">
-                        <span className="min-h-0 p-0 grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-lg font-black text-inverse">ر</span>
+                        <BrandLogo compact />
                         <div className="min-w-0">
                             <DialogTitle className="text-sm font-extrabold text-ink">{t(title)}</DialogTitle>
                             <DialogDescription className="mt-1 max-w-48 truncate text-xs text-muted">{user?.name}</DialogDescription>
@@ -711,7 +699,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     sections={[
                         { label: t('کشف'), items: publicDiscoveryLinks.map((item) => ({ ...item, label: t(item.label) })) },
                         { label: t(user?.role === 'artist' ? 'فضای هنرمند' : user?.role === 'admin' ? 'مدیریت' : 'فضای خریدار'), items: workspaceLinks.map((item) => ({ ...item, label: item.shortLabel ?? (workspaceNavigationLabels[item.to] ? t(workspaceNavigationLabels[item.to]) : item.label) })) .concat([{ action: 'logout', label: t('خروج از حساب'), Icon: LogOut }]) },
-                        { label: t('راد آرت'), items: publicInfoLinks.map((item) => ({ ...item, label: t(item.label) })) },
+                        { label: t('ردّمن'), items: publicInfoLinks.map((item) => ({ ...item, label: t(item.label) })) },
                     ]}
                     onNavigate={() => setMobileMenuOpen(false)}
                         onLogout={handleLogout}
