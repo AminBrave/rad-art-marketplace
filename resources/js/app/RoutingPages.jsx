@@ -79,7 +79,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
     if (pathname === '/login' || pathname === '/register') {
         const registering = pathname === '/register';
         return (
-            <Container as="div" width="reading" className="py-12" role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فرم حساب کاربری">
+            <Container as="div" width="reading" className="py-page" role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فرم حساب کاربری">
                 <section className="border-y border-ink bg-paper p-6 sm:p-9">
                     <Skeleton className="h-4 w-32 rounded-sm" />
                     <Skeleton className="mt-5 h-8 w-2/3 rounded-sm" />
@@ -229,7 +229,7 @@ function AuthUnavailable() {
     const { t } = useLanguage();
     const { authError, refreshUser } = useAuth();
     return (
-        <div className="mx-auto max-w-xl px-6 py-20 text-center">
+        <div className="mx-auto max-w-xl px-page-gutter py-section-relaxed text-center">
             <h1 className="text-2xl font-black">{t('ارتباط با حساب کاربری برقرار نشد')}</h1>
             <p className="mt-3 text-sm leading-7 text-muted">{t(authError)}</p>
             <Button variant="ghost" type="button" onClick={refreshUser} className="mt-6 rounded-full bg-ink px-5 py-3 text-sm font-bold text-inverse">{t('تلاش دوباره')}</Button>
@@ -552,7 +552,7 @@ export function AdminWorkspaceLayout() {
 export function PublicInfoPage({ title, description }) {
     const { t } = useLanguage();
     return (
-        <Container as="div" width="reading" className="py-16">
+        <Container as="div" width="reading" className="py-section">
             <p className="text-sm font-bold text-terracotta-strong">راد آرت</p>
             <h1 className="mt-3 text-3xl font-black">{t(title)}</h1>
             <p className="mt-5 leading-8 text-muted">{t(description)}</p>
@@ -565,7 +565,7 @@ export function UnauthorizedPage() {
     const { t } = useLanguage();
     const { user } = useAuth();
     return (
-        <Container as="div" width="reading" className="py-24 text-center">
+        <Container as="div" width="reading" className="py-section-wide text-center">
             <p className="text-sm font-bold text-terracotta-strong">۴۰۳</p>
             <h1 className="mt-3 text-4xl font-black tracking-tight" >{t('دسترسی به این بخش مجاز نیست')}</h1>
             <p className="mt-4 leading-8 text-muted">{t('نقش این حساب اجازه ورود به این فضای کاربری را ندارد. مجوزهای واقعی همچنان در سمت سرور بررسی می‌شوند.')}</p>
@@ -577,7 +577,7 @@ export function UnauthorizedPage() {
 export function NotFoundPage() {
     const { t } = useLanguage();
     return (
-        <Container as="div" width="reading" className="py-20 text-center">
+        <Container as="div" width="reading" className="py-section-relaxed text-center">
             <p className="text-sm font-bold text-terracotta-strong">۴۰۴</p>
             <h1 className="mt-3 text-4xl font-black tracking-tight" >{t('این صفحه پیدا نشد')}</h1>
             <p className="mt-4 leading-8 text-muted">{t('نشانی واردشده معتبر نیست یا صفحه جابه‌جا شده است.')}</p>
