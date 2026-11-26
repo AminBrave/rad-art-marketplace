@@ -36,7 +36,7 @@ Use the smallest process that fits the work. A small UI fix does not require a f
 
 The existing brand colors—Ivory #F7F5F0, Charcoal #242320, Terracotta #A64F31, Sand #D8C9B7 and Olive #536052—can inform the visual identity. They are not immutable.
 
-CSS `--rd-*` variables are the canonical design-token source; Tailwind maps directly to them. Legacy `--color-*`, `--text-*`, `--space-*` and related aliases are one-way compatibility bridges and should not be used by new code. Choose semantic tokens, typography, spacing, grids, radii, elevation, icons and motion to support the design. Reuse current components when they fit; refactor or replace them when that produces a better result. Do not follow the legacy RAD catalogue as a specification.
+CSS `--rd-*` variables are the canonical design-token source; Tailwind maps directly to them. The 4px `--rd-space-unit` is the base spacing unit, and standard numeric spacing utilities (`p-4`, `gap-6`, `mt-8`, etc.) resolve through that scale rather than Tailwind's independent defaults. Use the named `--rd-space-*` tokens for semantic layout decisions and `page-gutter` for responsive page insets. Legacy `--color-*`, `--text-*`, `--space-*` and related aliases are one-way compatibility bridges and should not be used by new code. Choose semantic tokens, typography, spacing, grids, radii, elevation, icons and motion to support the design. Reuse current components when they fit; refactor or replace them when that produces a better result. Do not follow the legacy RAD catalogue as a specification.
 
 ### Editorial hero surfaces
 
