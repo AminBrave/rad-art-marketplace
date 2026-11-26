@@ -341,3 +341,11 @@ Before considering a component or page complete:
 - Public/workspace shells: `resources/js/app/Layouts.jsx`
 - Route and overhaul coverage ledger: `AI/COMPLETE-APPLICATION-OVERHAUL.md`
 - Design principles and implementation contract: `AI/DESIGN-SYSTEM.md`
+
+
+## Shared hero and section rhythm (current)
+
+- `UnifiedHero` is the single composition used by `PageHeader`, `DiscoveryHero`, and `WorkspaceHero`.
+- All heroes are full-width and use the same grid background, typography, content width, and responsive spacing. Only discovery pages may show breadcrumbs.
+- Section spacing is owned once per section; avoid double application through both semantic defaults and section padding utilities.
+- Chat shells opt out of section padding to preserve dense conversation layouts.
