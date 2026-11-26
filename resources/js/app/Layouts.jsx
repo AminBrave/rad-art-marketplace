@@ -9,8 +9,7 @@ import { useLanguage } from './LanguageContext';
 import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, NotificationListSkeleton, BrandLogo } from '../components/ui';
 
 const publicDiscoveryLinks = [
-    { to: '/', label: 'خانه', Icon: House, end: true },
-    { to: '/artworks', label: 'کشف', Icon: Compass, end: true },
+    { to: '/artworks', label: 'کشف آثار', Icon: Compass, end: true },
     { to: '/artists', label: 'هنرمندان', Icon: Users, end: true },
     { to: '/collections', label: 'مجموعه‌ها', Icon: Bookmark, end: true },
 ];
@@ -53,7 +52,7 @@ function getPublicWorkspaceLinks(user, profileHref, t) {
 
 function SidebarNavigation({ sections, onNavigate, onLogout, unreadConversationCount = 0, locale = 'fa' }) {
     return (
-        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-5">
+        <div className="min-h-0 flex-1 overflow-y-auto py-5">
             <Link to="/" onClick={onNavigate} className="mb-6 flex min-h-32 items-center justify-center border-b border-border pb-5 no-underline" aria-label="Rademan home">
                 <BrandLogo size="sidebar" />
             </Link>
@@ -198,7 +197,7 @@ export function PublicLayout() {
                 <DialogContent placement="drawer" className="flex flex-col px-4 py-5">
                     <div className="mb-5 flex items-center justify-between border-b border-border pb-4">
                         <div className="min-w-0">
-                            <DialogTitle className="text-base font-extrabold text-ink">{t('منوی ردّمن')}</DialogTitle>
+                            <DialogTitle className="text-base font-extrabold text-ink">{t('منو')}</DialogTitle>
                             <DialogDescription className="mt-1 text-xs text-muted">{t('کشف هنر، هنرمندان و فضای کاربری')}</DialogDescription>
                         </div>
                         <DialogClose asChild><Button variant="ghost" type="button" aria-label={t('بستن منو')} className="grid h-10 w-10 place-items-center p-0 text-muted hover:bg-surface-muted"><X size={19} aria-hidden="true" /></Button></DialogClose>
@@ -210,9 +209,9 @@ export function PublicLayout() {
                     </div>
                     <SidebarNavigation
                         sections={[
-                            { label: t('کشف'), items: publicDiscoveryLinks.map((item) => ({ ...item, label: t(item.label) })) },
-                            { label: t(user ? (user.role === 'artist' ? 'فضای هنرمند' : user.role === 'admin' ? 'مدیریت' : 'فضای خریدار') : 'حساب کاربری'), items: getPublicWorkspaceLinks(user, profileHref, t) },
-                            { label: t('ردّمن'), items: publicInfoLinks.map((item) => ({ ...item, label: t(item.label) })) },
+                            { label: t('ردّمن'), items: publicDiscoveryLinks.map((item) => ({ ...item, label: t(item.label) })) },
+                            { label: t('فضای کاربری شما'), items: getPublicWorkspaceLinks(user, profileHref, t) },
+                            { label: t('بیشتر'), items: publicInfoLinks.map((item) => ({ ...item, label: t(item.label) })) },
                         ]}
                         onNavigate={() => setMobileMenuOpen(false)}
                         onLogout={handleLogout}
@@ -697,9 +696,9 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                 <div className="flex shrink-0 items-center gap-2 border-b border-border px-4 py-3"><LanguageControl /><ThemeControl />{user?.role !== "admin" && <NotificationBell user={user} onNavigate={() => setMobileMenuOpen(false)} />}</div>
                 <SidebarNavigation
                     sections={[
-                        { label: t('کشف'), items: publicDiscoveryLinks.map((item) => ({ ...item, label: t(item.label) })) },
-                        { label: t(user?.role === 'artist' ? 'فضای هنرمند' : user?.role === 'admin' ? 'مدیریت' : 'فضای خریدار'), items: workspaceLinks.map((item) => ({ ...item, label: item.shortLabel ?? (workspaceNavigationLabels[item.to] ? t(workspaceNavigationLabels[item.to]) : item.label) })) .concat([{ action: 'logout', label: t('خروج از حساب'), Icon: LogOut }]) },
-                        { label: t('ردّمن'), items: publicInfoLinks.map((item) => ({ ...item, label: t(item.label) })) },
+                        { label: t('ردّمن'), items: publicDiscoveryLinks.map((item) => ({ ...item, label: t(item.label) })) },
+                        { label: t('فضای کاربری شما'), items: workspaceLinks.map((item) => ({ ...item, label: item.shortLabel ?? (workspaceNavigationLabels[item.to] ? t(workspaceNavigationLabels[item.to]) : item.label) })) .concat([{ action: 'logout', label: t('خروج از حساب'), Icon: LogOut }]) },
+                        { label: t('بیشتر'), items: publicInfoLinks.map((item) => ({ ...item, label: t(item.label) })) },
                     ]}
                     onNavigate={() => setMobileMenuOpen(false)}
                         onLogout={handleLogout}
