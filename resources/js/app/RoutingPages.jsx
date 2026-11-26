@@ -205,7 +205,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                             <Skeleton className="h-11 w-40 rounded-md sm:col-span-2" />
                         </div>
                     </Section>
-                    <Section spacing="none" className="space-y-4">
+                    <Section spacing="none" className="flex flex-col gap-4">
                         <div className="flex items-center justify-between gap-3"><Skeleton className="h-6 w-40 rounded-sm" /><Skeleton className="h-9 w-28 rounded-md" /></div>
                         <ArtworkStudioListSkeleton count={3} announce={false} />
                     </Section>
@@ -301,7 +301,7 @@ export function ArtistDashboardHome() {
                 title={<>{t('خوش آمدید، ')}{user.name}</>}
                 description={t('پروفایل و آثار ارسالی خود را مدیریت کنید و از بخش پیام‌های مستقیم با خریداران در ارتباط باشید.')}
             />
-            <Container width="wide" className="rd-workspace-content space-y-workspace-relaxed">
+            <Container width="wide" className="">
             {profileError && <p role="alert" className="mt-5 text-sm text-warning">{t(profileError)}</p>}
             {profileLoading ? <p className="text-sm text-muted">{t('در حال دریافت پروفایل…')}</p> : (
                 <div className="bg-canvas p-4">
@@ -378,7 +378,7 @@ export function WorkspaceSettingsPage() {
     return (
         <>
             <PageHeader eyebrow={t('حساب کاربری')} title={t('تنظیمات')} description={t('ترجیحات نمایش و اعلان‌های فضای کاربری را از یک بخش مدیریت کنید.')} />
-            <Section spacing="none" className="rd-workspace-content space-y-workspace-relaxed">
+            <Section spacing="none" className="">
             <Container width="wide">
 
             <Section spacing="none" className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_16rem]" aria-labelledby="appearance-settings-title">
@@ -508,7 +508,7 @@ export function ArtistProfileSettings() {
                 title={t("پروفایل هنرمند")}
                 description={t("اطلاعات معرفی و وضعیت نمایش عمومی پروفایل خود را مدیریت کنید.")}
             />
-            <Section spacing="none" className="rd-workspace-content space-y-workspace-relaxed">
+            <Section spacing="none" className="">
             <Container width="wide">
             {profileError && <p role="alert" className="mt-4 text-sm text-warning">{t(profileError)}</p>}
             <form onSubmit={save} encType="multipart/form-data" className="mt-6 grid gap-5 border-y border-border py-6 sm:grid-cols-2">
