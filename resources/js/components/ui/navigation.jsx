@@ -37,7 +37,7 @@ export function DropdownMenuContent({ className = '', sideOffset = 6, ...props }
             sideOffset={sideOffset}
             align="end"
            
-            className={cn('z-50 box-border min-w-44 max-w-[calc(100vw-1rem)] overflow-x-hidden border border-border bg-paper p-1.5 font-sans text-sm text-ink shadow-raised outline-none', className)}
+            className={cn('z-[var(--rd-layer-popover)] box-border min-w-44 max-w-[calc(100vw-1rem)] overflow-x-hidden border border-border bg-paper p-1.5 font-sans text-sm text-ink shadow-raised outline-none', className)}
             {...props}
         />
     );
