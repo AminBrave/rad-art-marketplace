@@ -149,25 +149,25 @@ export default function HomePage() {
                 </Container>
             </Section>
 
-                        <Section spacing="regular" aria-labelledby="recent-works-title">
+            <Section spacing="regular" aria-labelledby="recent-works-title">
                 <Container width="wide">
-                <SectionHeading
-                    id="recent-works-title"
-                    eyebrow="THE GALLERY / 01"
-                    title={t('تازه در گالری')}
-                    description="آثاری که به‌تازگی برای نمایش عمومی تأیید شده‌اند."
-                    to="/artworks"
-                    linkLabel={t('دیدن همه آثار')}
-                />
-                {error ? (
-                    <ErrorState className="mt-8" title={t('دریافت محتوای گالری ممکن نشد')} description={t('برای دریافت دوباره تلاش کنید.')} onRetry={() => artworksQuery.refetch()} />
-                ) : loading ? (
-                    <div className="mt-8 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}</div>
-                ) : recentWorks.length ? (
-                    <div className="mt-8 grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">{recentWorks.map((item) => <ArtworkCard key={item.id} artwork={item} />)}</div>
-                ) : (
-                    <EmptyState className="mt-8" title={t('هنوز اثر دیگری برای نمایش نیست')} description={t('آثار تازه پس از تأیید در این بخش قرار می‌گیرند.')} />
-                )}
+                    <SectionHeading
+                        id="recent-works-title"
+                        eyebrow="THE GALLERY / 01"
+                        title={t('تازه در گالری')}
+                        description="آثاری که به‌تازگی برای نمایش عمومی تأیید شده‌اند."
+                        to="/artworks"
+                        linkLabel={t('دیدن همه آثار')}
+                    />
+                    {error ? (
+                        <ErrorState className="mt-8" title={t('دریافت محتوای گالری ممکن نشد')} description={t('برای دریافت دوباره تلاش کنید.')} onRetry={() => artworksQuery.refetch()} />
+                    ) : loading ? (
+                        <div className="mt-8 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}</div>
+                    ) : recentWorks.length ? (
+                        <div className="mt-8 grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">{recentWorks.map((item) => <ArtworkCard key={item.id} artwork={item} />)}</div>
+                    ) : (
+                        <EmptyState className="mt-8" title={t('هنوز اثر دیگری برای نمایش نیست')} description={t('آثار تازه پس از تأیید در این بخش قرار می‌گیرند.')} />
+                    )}
                 </Container>
             </Section>
 
@@ -193,47 +193,47 @@ export default function HomePage() {
                 </Container>
             </Section>
 
-                        <Section spacing="regular" aria-labelledby="artists-title">
+            <Section spacing="regular" aria-labelledby="artists-title">
                 <Container width="wide">
-                <SectionHeading
-                    id="artists-title"
-                    eyebrow="THE PEOPLE / 03"
-                    title={t('هنرمندان، فراتر از آثار')}
-                    description={t('با هنرمندانی آشنا شوید که پروفایل عمومی خود را در راد آرت منتشر کرده‌اند.')}
-                    to="/artists"
-                    linkLabel={t('دیدن همه هنرمندان')}
-                />
-                {loading ? (
-                    <div className="mt-8 grid gap-4 sm:grid-cols-3">{[0, 1, 2].map((item) => <ArtistCardSkeleton key={item} />)}</div>
-                ) : artists.length ? (
-                    <div className="mt-8 grid gap-4 sm:grid-cols-3">{artists.map((artist) => <ArtistCard key={artist.id} artist={artist} />)}</div>
-                ) : (
-                    <p className="mt-6 text-sm text-muted">{t('هنرمندان دارای پروفایل عمومی در این بخش معرفی می‌شوند.')}</p>
-                )}
-                {spotlight && (
-                    <Card
-                        as="article"
-                        className="rd-hero-surface mt-8 grid min-w-0 overflow-hidden border border-[color:var(--rd-hero-line)] sm:grid-cols-[minmax(0,1fr)_15rem]"
-                    >
-                        <div className="flex min-w-0 flex-col justify-center p-6 sm:p-8 lg:p-10">
-                            <p className="text-[10px] font-extrabold tracking-[.14em] text-[color:var(--rd-hero-accent)]">ARTIST SPOTLIGHT / {t('هنرمند منتخب')}</p>
-                            <h3 className="mt-3 break-words text-2xl font-black leading-heading text-[color:var(--rd-hero-foreground)] sm:text-3xl">{localizedValue(spotlight, 'display_name', locale)}</h3>
-                            {localizedValue(spotlight, 'city', locale) && <p className="mt-2 text-xs font-semibold text-[color:var(--rd-hero-muted)]">{localizedValue(spotlight, 'city', locale)}</p>}
-                            <p className="mt-4 max-w-3xl text-sm leading-8 text-[color:var(--rd-hero-muted)]">{localizedValue(spotlight, 'bio', locale) || t('پورتفولیوی عمومی این هنرمند را ببینید و با آثار تأییدشده او آشنا شوید.')}</p>
-                            <Link to={'/artists/' + spotlight.slug} className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 border border-[color:var(--rd-hero-line)] px-4 py-2 text-sm font-bold text-[color:var(--rd-hero-foreground)] no-underline transition-colors hover:border-[color:var(--rd-hero-accent)] hover:bg-[color:var(--rd-hero-foreground)] hover:text-[color:var(--rd-hero-background)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
-                                {t('ورود به پورتفولیو')}
-                                <ArrowLeft size={16} aria-hidden="true" />
-                            </Link>
-                        </div>
-                        <div className="relative grid min-h-48 place-items-center border-t border-[color:var(--rd-hero-line)] bg-[color:var(--rd-hero-background-alt)] p-8 text-[color:var(--rd-hero-foreground)] sm:border-t-0 sm:border-s">
-                            <span aria-hidden="true" className="absolute start-5 top-4 font-latin text-[10px] font-bold tracking-[.2em] text-[color:var(--rd-hero-muted)]">RAD / PEOPLE</span>
-                            <span aria-hidden="true" className="grid h-28 w-28 place-items-center border border-[color:var(--rd-hero-line)] bg-[color:var(--rd-hero-background)] text-5xl font-black text-[color:var(--rd-hero-accent)] sm:h-36 sm:w-36">
-                                {(localizedValue(spotlight, 'display_name', locale) || (locale === 'en' ? 'A' : 'ه')).trim().slice(0, 1)}
-                            </span>
-                            <span aria-hidden="true" className="absolute bottom-4 end-5 font-latin text-[10px] font-bold tracking-widest text-[color:var(--rd-hero-muted)]">FEATURED ARTIST</span>
-                        </div>
-                    </Card>
-                )}
+                    <SectionHeading
+                        id="artists-title"
+                        eyebrow="THE PEOPLE / 03"
+                        title={t('هنرمندان، فراتر از آثار')}
+                        description={t('با هنرمندانی آشنا شوید که پروفایل عمومی خود را در راد آرت منتشر کرده‌اند.')}
+                        to="/artists"
+                        linkLabel={t('دیدن همه هنرمندان')}
+                    />
+                    {loading ? (
+                        <div className="mt-8 grid gap-4 sm:grid-cols-3">{[0, 1, 2].map((item) => <ArtistCardSkeleton key={item} />)}</div>
+                    ) : artists.length ? (
+                        <div className="mt-8 grid gap-4 sm:grid-cols-3">{artists.map((artist) => <ArtistCard key={artist.id} artist={artist} />)}</div>
+                    ) : (
+                        <p className="mt-6 text-sm text-muted">{t('هنرمندان دارای پروفایل عمومی در این بخش معرفی می‌شوند.')}</p>
+                    )}
+                    {spotlight && (
+                        <Card
+                            as="article"
+                            className="rd-hero-surface mt-8 grid min-w-0 overflow-hidden border border-[color:var(--rd-hero-line)] sm:grid-cols-[minmax(0,1fr)_15rem]"
+                        >
+                            <div className="flex min-w-0 flex-col justify-center p-6 sm:p-8 lg:p-10">
+                                <p className="text-[10px] font-extrabold tracking-[.14em] text-[color:var(--rd-hero-accent)]">ARTIST SPOTLIGHT / {t('هنرمند منتخب')}</p>
+                                <h3 className="mt-3 break-words text-2xl font-black leading-heading text-[color:var(--rd-hero-foreground)] sm:text-3xl">{localizedValue(spotlight, 'display_name', locale)}</h3>
+                                {localizedValue(spotlight, 'city', locale) && <p className="mt-2 text-xs font-semibold text-[color:var(--rd-hero-muted)]">{localizedValue(spotlight, 'city', locale)}</p>}
+                                <p className="mt-4 max-w-3xl text-sm leading-8 text-[color:var(--rd-hero-muted)]">{localizedValue(spotlight, 'bio', locale) || t('پورتفولیوی عمومی این هنرمند را ببینید و با آثار تأییدشده او آشنا شوید.')}</p>
+                                <Link to={'/artists/' + spotlight.slug} className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 border border-[color:var(--rd-hero-line)] px-4 py-2 text-sm font-bold text-[color:var(--rd-hero-foreground)] no-underline transition-colors hover:border-[color:var(--rd-hero-accent)] hover:bg-[color:var(--rd-hero-foreground)] hover:text-[color:var(--rd-hero-background)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+                                    {t('ورود به پورتفولیو')}
+                                    <ArrowLeft size={16} aria-hidden="true" />
+                                </Link>
+                            </div>
+                            <div className="relative grid min-h-48 place-items-center border-t border-[color:var(--rd-hero-line)] bg-[color:var(--rd-hero-background-alt)] p-8 text-[color:var(--rd-hero-foreground)] sm:border-t-0 sm:border-s">
+                                <span aria-hidden="true" className="absolute start-5 top-4 font-latin text-[10px] font-bold tracking-[.2em] text-[color:var(--rd-hero-muted)]">RAD / PEOPLE</span>
+                                <span aria-hidden="true" className="grid h-28 w-28 place-items-center border border-[color:var(--rd-hero-line)] bg-[color:var(--rd-hero-background)] text-5xl font-black text-[color:var(--rd-hero-accent)] sm:h-36 sm:w-36">
+                                    {(localizedValue(spotlight, 'display_name', locale) || (locale === 'en' ? 'A' : 'ه')).trim().slice(0, 1)}
+                                </span>
+                                <span aria-hidden="true" className="absolute bottom-4 end-5 font-latin text-[10px] font-bold tracking-widest text-[color:var(--rd-hero-muted)]">FEATURED ARTIST</span>
+                            </div>
+                        </Card>
+                    )}
                 </Container>
             </Section>
 
