@@ -211,6 +211,8 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     assert.ok(archiveSection.includes('آرشیو آثار'));
     assert.ok(archiveSection.includes('artworks.map'));
     assert.ok(archiveSection.includes('بارگذاری آثار بیشتر'));
+    assert.ok(archiveSection.includes('Showing '));
+    assert.ok(!css.includes('aspect-ratio: auto'), 'Hero media must not override its intrinsic aspect ratio.');
     const directory = readFileSync(resolve(root, 'resources/js/app/ArtistDirectoryPage.jsx'), 'utf8');
     const directorySectionStart = directory.indexOf('aria-labelledby="artist-directory-heading"');
     const directorySectionEnd = directory.indexOf('</Container>', directorySectionStart);
