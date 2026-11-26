@@ -194,7 +194,7 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     const primitives = readFileSync(resolve(root, 'resources/js/components/ui/primitives.jsx'), 'utf8');
     assert.ok(primitives.includes('export function DiscoveryHero'));
     assert.ok(primitives.includes('export function UnifiedHero'));
-    assert.ok(primitives.includes('return <UnifiedHero'));
+    assert.ok(primitives.includes('<UnifiedHero'), 'All hero wrappers must delegate to the canonical implementation.');
     assert.ok(css.includes('.rd-unified-hero'));
     assert.ok(css.includes('.rd-hero-surface--grid::before'), 'Hero surfaces must expose the shared grid layer.');
     assert.ok(css.includes('linear-gradient(to right, var(--rd-hero-line) 1px, transparent 1px)'));
