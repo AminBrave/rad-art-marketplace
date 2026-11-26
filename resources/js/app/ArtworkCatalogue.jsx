@@ -123,7 +123,7 @@ export default function ArtworkCatalogue() {
                 <PageHeader eyebrow={t("آرشیو عمومی راد آرت")} title={t("گالری آثار")} description={t("در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید.")} />
             </Container>
 
-            <Section as="section" bleed aria-label={t("فیلتر و مرتب‌سازی آثار")} className="relative mt-group border-y border-divider-section bg-surface-muted/70 py-group">
+            <Section as="section" bleed spacing="group" aria-label={t("فیلتر و مرتب‌سازی آثار")} className="relative mt-group border-y border-divider-section bg-surface-muted/70">
                 <Container width="wide">
                 <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
                     <div>
