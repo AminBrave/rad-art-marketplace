@@ -99,7 +99,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
 
     if (pathname === '/dashboard/artist/profile') {
         return (
-            <Container as="div" width="wide" className="min-h-[65vh] py-10 lg:py-14" role="status" aria-live="polite" aria-busy="true" aria-label={t(label)}>
+            <Container as="div" width="wide" className="min-h-[65vh] py-section-compact lg:py-section-regular" role="status" aria-live="polite" aria-busy="true" aria-label={t(label)}>
                 <span className="sr-only">{t(label)}</span>
                 <div className="mb-8 grid gap-3 border-b border-ink pb-6"><Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="h-9 w-2/3 max-w-sm rounded-sm" /><Skeleton className="h-4 w-full max-w-xl rounded-sm" /></div>
                 <section className="grid gap-4 sm:grid-cols-2">
@@ -142,7 +142,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
     }
 
     return (
-        <Container as="div" width="wide" className="min-h-[65vh] py-10 lg:py-14" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
+        <Container as="div" width="wide" className="min-h-[65vh] py-section-compact lg:py-section-regular" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
             <span className="sr-only">{label}</span>
             <div className="mb-8 flex items-center justify-between gap-5 border-b border-border pb-6">
                 <div className="grid min-w-0 flex-1 gap-3">
@@ -376,7 +376,7 @@ export function WorkspaceSettingsPage() {
     };
 
     return (
-        <section className="min-w-0 mx-auto w-full max-w-content space-y-8">
+        <Container as="section" width="wide" className="space-y-content">
             <PageHeader bleed={false} eyebrow={t('حساب کاربری')} title={t('تنظیمات')} description={t('ترجیحات نمایش و اعلان‌های فضای کاربری را از یک بخش مدیریت کنید.')} />
 
             <section className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_16rem]" aria-labelledby="appearance-settings-title">
@@ -423,7 +423,7 @@ export function WorkspaceSettingsPage() {
                 </section>
             )}
             {error && <p role="alert" className="text-sm text-danger">{t(error)}</p>}
-        </section>
+        </Container>
     );
 }
 
@@ -498,7 +498,7 @@ export function ArtistProfileSettings() {
     if (profileLoading) return <RouteLoading label={t("در حال دریافت پروفایل هنرمند…")} />;
 
     return (
-        <section className="min-w-0 mx-auto w-full max-w-content space-y-6">
+        <Container as="section" width="wide" className="space-y-workspace">
             <PageHeader bleed={false}
                 eyebrow={t("استودیوی هنرمند")}
                 title={t("پروفایل هنرمند")}
@@ -527,7 +527,7 @@ export function ArtistProfileSettings() {
                 </div>
             </form>
             {message && <p role="status" className="mt-4 text-sm text-muted">{t(message)}</p>}
-        </section>
+        </Container>
     );
 }
 
