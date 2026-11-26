@@ -546,7 +546,7 @@ function PublicBottomNavigation({ user, unreadConversationCount = 0 }) {
                     return (
                         <NavLink key={to} to={to} end={end} aria-label={accessibleLabel} title={accessibleLabel} className={({ isActive }) => [
                             'relative flex min-w-0 flex-col items-center justify-center gap-0.5 px-1 text-[10px] font-semibold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus lg:text-xs',
-                            isActive ? 'bg-paper text-terracotta-strong after:absolute after:inset-x-1/3 after:top-0 after:h-0.5 after:bg-terracotta' : 'text-muted hover:bg-surface-muted hover:text-ink',
+                            isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink',
                         ].join(' ')}>
                             <span className="relative inline-flex">
                                 <Icon size={20} strokeWidth={1.9} aria-hidden="true" />
@@ -588,8 +588,8 @@ function AuthenticatedBottomNavigation({ mobileLinks, unreadConversationCount = 
                             className={({ isActive }) => [
                                 'relative flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-md px-1 text-[10px] font-bold leading-tight no-underline transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus motion-reduce:transition-none lg:text-xs',
                                 isActive
-                                    ? 'bg-paper text-terracotta-strong after:absolute after:inset-x-1/4 after:top-0 after:h-0.5 after:rounded-full after:bg-terracotta'
-                                    : 'text-muted hover:bg-surface-muted hover:text-ink',
+                                    ? 'text-terracotta-strong'
+                                    : 'text-muted hover:text-ink',
                             ].join(' ')}
                         >
                             <span className="relative inline-flex">
