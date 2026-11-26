@@ -125,6 +125,32 @@ test('numeric Tailwind spacing utilities resolve through the canonical Rademan s
     assert.ok(tailwind.includes("'page-gutter': 'var(--rd-page-gutter)'"));
 });
 
+test('semantic layout tiers are token-backed and shared primitives use them', () => {
+    const layout = readFileSync(resolve(root, 'resources/js/components/ui/layout.jsx'), 'utf8');
+    for (const token of [
+        '--rd-layout-section-compact', '--rd-layout-section-regular', '--rd-layout-section',
+        '--rd-layout-section-wide', '--rd-layout-content-gap', '--rd-layout-group-gap',
+        '--rd-layout-workspace-gap', '--rd-layout-workspace-gap-relaxed', '--rd-layout-component-gap',
+    ]) {
+        assert.ok(css.includes(token + ':'), `Missing semantic layout token: ${token}`);
+        assert.ok(tailwind.includes(token), `Tailwind does not expose semantic layout token: ${token}`);
+    }
+    assert.ok(layout.includes("py-section sm:py-section-wide"));
+    assert.ok(layout.includes("calc(var(--rd-space-unit) * ${gap})"));
+});
+
+test('page-level compositions use the shared Container instead of duplicated max-width wrappers', () => {
+    const pagePaths = [
+        'resources/js/app/AdminWorkspace.jsx',
+        'resources/js/app/ArtworkStudio.jsx',
+        'resources/js/app/EditorialPages.jsx',
+    ];
+    for (const path of pagePaths) {
+        const source = readFileSync(resolve(root, path), 'utf8');
+        assert.doesNotMatch(source, /mx-auto w-full max-w-content space-y-(?:6|7|8)/);
+    }
+});
+
 test('workspace header and messaging viewport share responsive shell geometry tokens', () => {
     assert.ok(css.includes('--rd-workspace-header-height: 4.5rem;'));
     assert.ok(css.includes('--rd-workspace-header-height-wide: 5rem;'));
