@@ -382,3 +382,52 @@ test('related artwork section composes the shared SectionHeader pattern', () => 
     assert.ok(detail.includes('actions={<Link to="/artworks"'), 'The browse-all action must remain available.');
     assert.doesNotMatch(detail, /<div className="flex flex-wrap items-end justify-between gap-3">/);
 });
+
+
+test('SectionHeader is reused for catalogue and related-artwork section headings', () => {
+    const catalogue = readFileSync(resolve(root, 'resources/js/app/ArtworkCatalogue.jsx'), 'utf8');
+    const detail = readFileSync(resolve(root, 'resources/js/app/ArtworkDetailPage.jsx'), 'utf8');
+    assert.match(catalogue, /import \{[^}]*\bSectionHeader\b[^}]*\} from ['"]\.\.\/components\/ui['"]/);
+    assert.ok(catalogue.includes('<SectionHeader'), 'Catalogue filter heading must use the shared heading pattern.');
+    assert.ok(detail.includes('<SectionHeader'), 'Related artworks must use the shared heading pattern.');
+});
+
+test('FormField preserves caller-provided aria-describedby references', () => {
+    const primitives = readFileSync(resolve(root, 'resources/js/components/ui/primitives.jsx'), 'utf8');
+    assert.match(primitives, /children\?\.\props\?\.\['aria-describedby'\]/);
+    assert.match(primitives, /\.split\(\/\\s\+\/\)/);
+    assert.ok(primitives.includes("'aria-describedby': describedBy"));
+});
+
+test('image and avatar fallbacks reset when their source changes', () => {
+    const layout = readFileSync(resolve(root, 'resources/js/components/ui/layout.jsx'), 'utf8');
+    const feedback = readFileSync(resolve(root, 'resources/js/components/ui/feedback.jsx'), 'utf8');
+    assert.match(layout, /useEffect\(\(\) => setFailed\(false\), \[src\]\)/);
+    assert.match(feedback, /useEffect\(\(\) => \{\s*setLoadedSrc\(null\);\s*setFailedSrc\(null\);\s*\}, \[imageSrc\]\)/);
+    assert.ok(feedback.includes('fetchPriority={fetchPriority}'));
+});
+
+test('Pagination exposes localized navigation and page labels', () => {
+    const navigation = readFileSync(resolve(root, 'resources/js/components/ui/navigation.jsx'), 'utf8');
+    const showcase = readFileSync(resolve(root, 'resources/js/app/ComponentShowcase.jsx'), 'utf8');
+    assert.ok(navigation.includes('ariaLabel ='));
+    assert.ok(navigation.includes('previousLabel ='));
+    assert.ok(navigation.includes('nextLabel ='));
+    assert.ok(navigation.includes('pageLabel ='));
+    assert.ok(showcase.includes('pageLabel={(number) => locale === "en"'));
+});
+
+test('Tailwind radius utilities map to semantic radius tokens', () => {
+    assert.match(tailwind, /sm: 'var\(--rd-radius-sm\)'/);
+    assert.match(tailwind, /md: 'var\(--rd-radius-md\)'/);
+    assert.match(tailwind, /full: 'var\(--rd-radius-pill\)'/);
+    assert.match(tailwind, /control: 'var\(--rd-radius-md\)'/);
+    assert.match(tailwind, /card: 'var\(--rd-radius-lg\)'/);
+});
+
+test('important CSS overrides are restricted to the reduced-motion safety contract', () => {
+    const importantRules = [...css.matchAll(/!important/g)];
+    assert.equal(importantRules.length, 4, 'Only the four reduced-motion overrides should require !important.');
+    assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?scroll-behavior: auto !important;[\s\S]*?animation-duration: 0\.01ms !important;[\s\S]*?animation-iteration-count: 1 !important;[\s\S]*?transition-duration: 0\.01ms !important;/);
+});
+
