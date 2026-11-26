@@ -171,7 +171,7 @@ export function AdminArtworkModeration() {
             ]);
         } catch (e) { setActionError(e.response?.status === 403 ? t("سرور اجازه انجام این عملیات را نداد.") : t(e.response?.data?.errors?.note?.[0] ?? e.response?.data?.message ?? "ثبت تصمیم انجام نشد.")); }
     };
-    return <section className="min-w-0 mx-auto w-full max-w-content space-y-6">
+    return <Container as="section" width="wide" className="space-y-group">
         <PageHeader bleed={false} eyebrow={t("مدیریت آثار")} title={t("صف بررسی و انتشار")} description={t("فقط آثار در انتظار بررسی قابل تصمیم‌گیری‌اند. رد اثر یا درخواست اصلاح به توضیح نیاز دارد.")} actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>{t("به‌روزرسانی")}</Button>} />
         <nav className="flex flex-wrap gap-x-5 gap-y-2 border-b border-border" aria-label={t("فیلتر وضعیت آثار")}>{statuses.map((item) => <Button variant="ghost" key={item.value} type="button" aria-pressed={status === item.value} onClick={() => chooseStatus(item.value)} className={"min-h-11 border-b-2 px-1 text-sm font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none " + (status === item.value ? 'border-terracotta text-terracotta-strong' : 'border-transparent text-muted hover:border-border-strong hover:text-ink')}>{t(item.label)}</Button>)}</nav>
         {message && <SuccessState title={message} />}{error && <ErrorState title={t("عملیات انجام نشد")} description={error} onRetry={load} />}
@@ -191,7 +191,7 @@ export function AdminArtworkModeration() {
             })}</div>
             <Pagination currentPage={result.current_page ?? page} lastPage={result.last_page ?? 1} onPageChange={changePage} disabled={loading || busyId !== null} /><p className="text-center text-xs text-muted">{result.total ?? result.data.length} {t('اثر در این فهرست')}</p>
         </>}
-    </section>;
+    </Container>;
 }
 
 export function AdminUsersPage() {
@@ -242,7 +242,7 @@ export function AdminUsersPage() {
             setActionError(e.response?.status === 403 ? t("سرور اجازه تغییر نقش این حساب را نداد.") : t(e.response?.data?.errors?.role?.[0] ?? e.response?.data?.message ?? "تغییر نقش کاربر انجام نشد."));
         }
     };
-    return <section className="min-w-0 mx-auto w-full max-w-content space-y-6">
+    return <Container as="section" width="wide" className="space-y-group">
         <PageHeader bleed={false} eyebrow={t("مدیریت حساب‌ها")} title={t("کاربران")} description={t("فهرست حساب‌ها و مدیریت نقش‌های مجاز. ارتقای هر حساب به مدیر، مرحله تأیید جداگانه دارد.")} actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>{t("به‌روزرسانی")}</Button>} />
         <dl className="grid grid-cols-2 gap-4 border-y border-border py-4 sm:max-w-xl sm:gap-8"><div><dt className="text-xs text-muted">{t("حساب‌های این صفحه")}</dt><dd className="mt-1 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') ?? '—'}</dd></div><div><dt className="text-xs text-muted">{t('کل حساب‌ها')}</dt><dd className="mt-1 text-2xl font-black tabular-nums">{result?.total?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') ?? '—'}</dd></div></dl>
         <p className="border-s-2 border-sand py-2 pe-4 text-xs leading-7 text-muted">{t("نقش‌های قابل انتخاب «هنرمند» و «مدیر» هستند. ایجاد خریدار از مسیر ثبت‌نام انجام می‌شود و حذف یا تعلیق حساب پشتیبانی نمی‌شود. مدیر نمی‌تواند نقش مدیریتی حساب خودش را حذف کند.")}</p>
@@ -274,7 +274,7 @@ export function AdminUsersPage() {
             })}</div>
             <Pagination currentPage={result.current_page ?? page} lastPage={result.last_page ?? 1} onPageChange={changePage} disabled={loading || busyId !== null} />
         </>}
-    </section>;
+    </Container>;
 }
 
 export function AdminMessageReportsPage() {
@@ -323,7 +323,7 @@ export function AdminMessageReportsPage() {
             setActionError(t(e.response?.data?.message ?? "ثبت تصمیم انجام نشد."));
         }
     };
-    return <section className="min-w-0 mx-auto w-full max-w-content space-y-6">
+    return <Container as="section" width="wide" className="space-y-group">
         <PageHeader bleed={false} eyebrow={t("ایمنی گفتگوها")} title={t("گزارش‌های پیام")} description={t("گزارش‌ها را با توجه به زمینه گفتگو بررسی کنید. حذف پیام یک اقدام برگشت‌ناپذیر در این پنل است و پیش از اجرا تأیید جداگانه می‌خواهد.")} actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>{t("به‌روزرسانی")}</Button>} />
         <div className="grid gap-3 sm:grid-cols-2">
             <div className="border-y border-border bg-transparent py-4"><p className="text-xs text-muted">{t("گزارش‌های این صفحه")}</p><p className="mt-2 text-2xl font-black tabular-nums">{result?.data?.length?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') ?? '—'}</p></div>
@@ -360,7 +360,7 @@ export function AdminMessageReportsPage() {
             })}</div>
             <Pagination currentPage={result.current_page ?? page} lastPage={result.last_page ?? 1} onPageChange={(next) => { setConfirmRemovalId(null); setParams(next > 1 ? { page: String(next) } : {}); }} disabled={loading || busyId !== null} />
         </>}
-    </section>;
+    </Container>;
 }
 
 export function AdminArtworkCommentReportsPage() {
@@ -423,7 +423,7 @@ export function AdminArtworkCommentReportsPage() {
         }
     };
 
-    return <section className="min-w-0 mx-auto w-full max-w-content space-y-6">
+    return <Container as="section" width="wide" className="space-y-group">
         <PageHeader bleed={false}
             eyebrow={t("اعتماد و ایمنی محتوا")}
             title={t("گزارش دیدگاه‌های آثار")}
@@ -498,6 +498,6 @@ export function AdminArtworkCommentReportsPage() {
                 disabled={loading || busyId !== null}
             />
         </>}
-    </section>;
+    </Container>;
 }
 
