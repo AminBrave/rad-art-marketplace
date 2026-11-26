@@ -126,7 +126,7 @@ export default function ArtworkCatalogue() {
                 breadcrumbs={<Breadcrumbs label={t("مسیر صفحه")} items={[{ label: t("خانه"), to: "/" }, { label: t("گالری آثار") }]} />}
             />
 
-            <Section as="section" bleed aria-label={t("فیلتر و مرتب‌سازی آثار")} className="relative mt-8 border-y border-divider-section bg-surface-muted/70 py-6 sm:py-7">
+            <Section as="section" bleed aria-label={t("فیلتر و مرتب‌سازی آثار")} className="relative mt-8 bg-surface-muted/70">
                 <Container width="wide">
                 <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
                     <div>
