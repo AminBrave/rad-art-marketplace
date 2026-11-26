@@ -371,3 +371,11 @@ test('semantic section landmarks are separated from Container width and gutters'
     assert.match(directory, /<Section spacing="none" className="mt-10" aria-labelledby="artist-directory-heading">\s*<Container width="wide">/);
     assert.match(gallery, /<Section spacing="relaxed" id="artworks">\s*<Container width="wide">/);
 });
+
+
+test('related artwork section composes the shared SectionHeader pattern', () => {
+    const detail = readFileSync(resolve(root, 'resources/js/app/ArtworkDetailPage.jsx'), 'utf8');
+    assert.match(detail, /import \{[^}]*\\bSectionHeader\\b[^}]*\} from ['"]\.\.\/components\/ui['"]/);
+    assert.match(detail, /<SectionHeader\\s+eyebrow=\{t\("ادامه مسیر کشف"\)\}\\s+title=\{t\("آثار مرتبط"\)\}\\s+description=\{t\("آثاری از همین دسته یا همین هنرمند"\)\)\}\\s+actions=\{/);
+    assert.doesNotMatch(detail, /<div className="flex flex-wrap items-end justify-between gap-3">\\s*<div><p className="text-xs font-bold text-terracotta-strong">/);
+});
