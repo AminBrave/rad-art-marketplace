@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useLanguage } from './LanguageContext';
-import { ArtworkCard, EmptyState, ErrorState, ArtistProfileSkeleton, SectionHeader, Button, Container } from '../components/ui';
+import { ArtworkCard, EmptyState, ErrorState, ArtistProfileSkeleton, SectionHeader, Button, Container, DiscoveryHero, Breadcrumbs } from '../components/ui';
 import { localizedValue } from '../utils/localizedContent';
 
 export default function ArtistProfilePage() {
@@ -93,41 +93,33 @@ export default function ArtistProfilePage() {
 
     return (
         <Container as="div" width="wide" className="min-h-[65vh] overflow-x-clip pb-section pt-page-top sm:pt-page-top-wide">
-            <nav aria-label={t("مسیر صفحه")} className="flex min-w-0 max-w-full flex-wrap items-center break-words text-xs text-muted">
-                <Link to="/" className="hover:text-terracotta-strong">{t("خانه")}</Link><span className="mx-2" aria-hidden="true">/</span>
-                <Link to="/artists" className="hover:text-terracotta-strong">{t("هنرمندان")}</Link><span className="mx-2" aria-hidden="true">/</span>
-                <span aria-current="page" className="text-ink">{t("پروفایل هنرمند")}</span>
-            </nav>
-
             {profile ? (
                 <>
-                    <section aria-label={t("پروفایل هنرمند")} className="mt-7 grid min-w-0 gap-6 border-y border-border bg-paper p-5 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-8 sm:p-8 lg:grid-cols-[13rem_minmax(0,1fr)] lg:p-10">
-                        <div className="flex items-start justify-center sm:justify-start">
-                            <div className="aspect-square w-28 overflow-hidden border border-[color:var(--rd-hero-line)] bg-[color:var(--rd-hero-background)] text-5xl font-black text-[color:var(--rd-hero-accent)] sm:w-36 lg:w-44">
-                                {profile.avatar_url ? <img src={profile.avatar_url} alt={t("تصویر نمایه هنرمند")} className="h-full w-full object-cover" /> : <div aria-hidden="true" className="grid h-full w-full place-items-center">{(localizedValue(profile, "display_name", locale) || (locale === "en" ? "A" : "ه")).trim().slice(0, 1)}</div>}
-                            </div>
+                    <DiscoveryHero
+                        className="rd-bleed"
+                        shape="orbit"
+                        eyebrow={t("جامعه هنرمندان")}
+                        title={<>{localizedValue(profile, 'display_name', locale)} {profile.is_own_profile && <span className="ms-2 align-middle text-xs font-semibold text-[color:var(--rd-hero-accent)]">{t("پروفایل شما")}</span>}</>}
+                        description={localizedValue(profile, 'bio', locale)}
+                        breadcrumbs={<Breadcrumbs label={t("مسیر صفحه")} items={[{ label: t("خانه"), to: "/" }, { label: t("هنرمندان"), to: "/artists" }, { label: localizedValue(profile, 'display_name', locale) }]} />}
+                        media={<div className="mx-auto aspect-square w-40 overflow-hidden border border-[color:var(--rd-hero-line)] bg-[color:var(--rd-hero-background)] text-6xl font-black text-[color:var(--rd-hero-accent)] sm:w-52">
+                            {profile.avatar_url ? <img src={profile.avatar_url} alt={t("تصویر نمایه هنرمند")} className="h-full w-full object-cover" /> : <div aria-hidden="true" className="grid h-full w-full place-items-center">{(localizedValue(profile, "display_name", locale) || (locale === "en" ? "A" : "ه")).trim().slice(0, 1)}</div>}
+                        </div>}
+                        actions={<>
+                            {canFollow && <Button variant="outline" type="button" disabled={followMutation.isPending} onClick={() => followMutation.mutate()} aria-pressed={Boolean(followState.is_following)} className={primaryActionClass}>{followMutation.isPending ? t('در حال به‌روزرسانی…') : followState.is_following ? t('دنبال می‌کنید') : t('دنبال کردن')}</Button>}
+                            {!user && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className={primaryActionClass}>{t("دنبال کردن")}</Link>}
+                            {profile.website_url && <a href={profile.website_url} target="_blank" rel="noreferrer" className={actionClass}>{t("وب‌سایت")} ↗</a>}
+                            {profile.instagram_handle && <a href={'https://instagram.com/' + profile.instagram_handle} target="_blank" rel="noreferrer" className={actionClass}>{t("اینستاگرام")} ↗</a>}
+                            {user?.role === 'buyer' && <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(profile.slug)} className={primaryActionClass}>{t("ارسال پیام")}</Link>}
+                            {!user && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className={actionClass}>{t("ورود برای ارتباط")}</Link>}
+                        </>}
+                    >
+                        <div className="flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-[color:var(--rd-hero-line)] pt-4 text-xs text-[color:var(--rd-hero-muted)]">
+                            <span><strong className="font-black tabular-nums text-[color:var(--rd-hero-foreground)]">{allArtworks.length.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</strong><span className="ms-1.5">{t("اثر")}</span></span>
+                            {followState.followers_count !== undefined && followState.followers_count !== null && <span><strong className="font-black tabular-nums text-[color:var(--rd-hero-foreground)]">{Number(followState.followers_count).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</strong><span className="ms-1.5">{t("دنبال‌کننده")}</span></span>}
+                            {localizedValue(profile, 'city', locale) && <span>{localizedValue(profile, 'city', locale)}</span>}
                         </div>
-                        <div className="min-w-0">
-                            <div className="flex min-w-0 flex-wrap items-center gap-3">
-                                <h1 className="min-w-0 break-words text-2xl font-black tracking-tight text-ink sm:text-3xl [overflow-wrap:anywhere]">{localizedValue(profile, 'display_name', locale)}</h1>
-                                {profile.is_own_profile && <span className="border border-border bg-surface-muted px-2 py-1 text-[10px] font-bold text-muted">{t("پروفایل شما")}</span>}
-                            </div>
-                            <div className="mt-5 flex flex-wrap items-center gap-x-8 gap-y-3 border-y border-divider-group py-3 text-sm">
-                                <span><strong className="font-black tabular-nums">{allArtworks.length.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</strong><span className="ms-1.5 text-muted">{t("اثر")}</span></span>
-                                {followState.followers_count !== undefined && followState.followers_count !== null && <span><strong className="font-black tabular-nums">{Number(followState.followers_count).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</strong><span className="ms-1.5 text-muted">{t("دنبال‌کننده")}</span></span>}
-                                {localizedValue(profile, 'city', locale) && <span className="text-muted">{localizedValue(profile, 'city', locale)}</span>}
-                            </div>
-                            {localizedValue(profile, 'bio', locale) && <p className="mt-4 whitespace-pre-line break-words text-sm leading-8 text-muted [overflow-wrap:anywhere]">{localizedValue(profile, 'bio', locale)}</p>}
-                            <div className="mt-5 flex min-w-0 flex-wrap items-center gap-2">
-                                {canFollow && <Button variant="outline" type="button" disabled={followMutation.isPending} onClick={() => followMutation.mutate()} aria-pressed={Boolean(followState.is_following)} className={primaryActionClass}>{followMutation.isPending ? t('در حال به‌روزرسانی…') : followState.is_following ? t('دنبال می‌کنید') : t('دنبال کردن')}</Button>}
-                                {!user && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className={primaryActionClass}>{t("دنبال کردن")}</Link>}
-                                {profile.website_url && <a href={profile.website_url} target="_blank" rel="noreferrer" className={actionClass}>{t("وب‌سایت")} ↗</a>}
-                                {profile.instagram_handle && <a href={'https://instagram.com/' + profile.instagram_handle} target="_blank" rel="noreferrer" className={actionClass}>{t("اینستاگرام")} ↗</a>}
-                                {user?.role === 'buyer' && <Link to={'/dashboard/buyer/messages?artist=' + encodeURIComponent(profile.slug)} className={primaryActionClass}>{t("ارسال پیام")}</Link>}
-                                {!user && <Link to="/login" state={{ from: { pathname: '/artists/' + slug } }} className={actionClass}>{t("ورود برای ارتباط")}</Link>}
-                            </div>
-                        </div>
-                    </section>
+                    </DiscoveryHero>
                     {user && user.role !== 'buyer' && (
                         <p className="mt-4 text-xs leading-6 text-muted">{t("برای ارسال پیام مستقیم، از حساب خریدار استفاده کنید.")}</p>
                     )}
