@@ -80,7 +80,7 @@ export default function ComponentShowcase() {
     const [toastOpen, setToastOpen] = useState(true);
 
     return (
-        <section id="shared-components" aria-labelledby="shared-components-title" className="border-t border-border py-12">
+        <section id="shared-components" aria-labelledby="shared-components-title" className="border-t border-border py-page">
             <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
                 <div>
                     <p className="text-xs font-bold text-terracotta-strong">05 / COMPONENT LIBRARY</p>
