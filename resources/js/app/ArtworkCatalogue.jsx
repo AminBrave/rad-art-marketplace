@@ -5,7 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { useLanguage } from './LanguageContext';
 import { localizedValue } from '../utils/localizedContent';
-import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, SelectField, Button, Container, Section, DiscoveryHero, Breadcrumbs } from '../components/ui';
+import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, SelectField, Button, Container, Section, SectionHeader, DiscoveryHero, Breadcrumbs } from '../components/ui';
 
 const emptyFilters = { mediums: [], availability: [], sorts: [] };
 
@@ -128,13 +128,12 @@ export default function ArtworkCatalogue() {
 
             <Section spacing="regular" as="section" bleed aria-label={t("فیلتر و مرتب‌سازی آثار")} className="relative mt-8 bg-surface-muted/70">
                 <Container width="wide">
-                <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-                    <div>
-                        <p className="text-[11px] font-extrabold tracking-[.12em] text-terracotta-strong">{t("جست‌وجوی هدفمند")}</p>
-                        <h2 className="mt-1 text-base font-black">{t("آثاری را پیدا کنید که با نگاه شما هم‌مسیرند")}</h2>
-                    </div>
-                    <span className="text-xs text-muted">{activeFilterCount ? activeFilterCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('معیار انتخاب‌شده') : t('همه آثار عمومی')}</span>
-                </div>
+                <SectionHeader
+                    eyebrow={t("جست‌وجوی هدفمند")}
+                    title={t("آثاری را پیدا کنید که با نگاه شما هم‌مسیرند")}
+                    actions={<span className="text-xs text-muted">{activeFilterCount ? activeFilterCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('معیار انتخاب‌شده') : t('همه آثار عمومی')}</span>}
+                    className="mb-6 border-0 pb-0"
+                />
                 <div className="grid gap-3.5 md:grid-cols-2 xl:grid-cols-[minmax(20rem,1.7fr)_repeat(2,minmax(11rem,1fr))]">
                     <SearchField value={searchInput} onChange={(event) => setSearchInput(event.target.value)} onSearch={submitSearch} label={t("جست‌وجو در آثار و هنرمندان")} placeholder={t("عنوان، توضیحات، تکنیک یا نام هنرمند…")} />
                     <SelectField value={category} onChange={(event) => updateFilters({ category: event.target.value })} aria-label={t("فیلتر دسته‌بندی")}>
