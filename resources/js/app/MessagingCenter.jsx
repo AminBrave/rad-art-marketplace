@@ -590,7 +590,7 @@ export default function MessagingCenter({ role }) {
     }, [role, artworkSlug, selected]);
 
     return (
-        <section dir={locale === 'fa' ? 'rtl' : 'ltr'} aria-label={t('مرکز پیام‌ها')} className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden font-sans">
+        <section dir="ltr" data-locale={locale} aria-label={t('مرکز پیام‌ها')} className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden font-sans">
             <MessagingStatusBanners
                 notice={notice}
                 error={error}
@@ -600,37 +600,7 @@ export default function MessagingCenter({ role }) {
                 onRetryInbox={loadThreads}
                 onRetryDirectStart={() => setDirectStartAttempt((attempt) => attempt + 1)}
             />
-            <div dir="rtl" className="grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden border-y border-border bg-surface lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]">
-                <MessagingInboxPanel
-                    active={active}
-                    sendingConversationId={sendingConversationId}
-                    hasMoreThreads={hasMoreThreads}
-                    inboxQuery={inboxQuery}
-                    loadThreads={loadThreads}
-                    loading={loading}
-                    loadingMoreThreads={loadingMoreThreads}
-                    onSelectThread={(thread) => {
-                        setActive(thread.id);
-                        setReplyTo(null);
-                        setPendingArtwork(null);
-                        setEditingId(null);
-                        setParams((current) => {
-                            const next = new URLSearchParams(current);
-                            next.delete('artist');
-                            next.delete('artwork');
-                            next.set('conversation', String(thread.id));
-                            return next;
-                        }, { replace: true });
-                    }}
-                    openPopover={openPopover}
-                    search={search}
-                    setPopoverOpen={setPopoverOpen}
-                    setSearch={setSearch}
-                    setThreadFilter={setThreadFilter}
-                    threadFilter={threadFilter}
-                    threads={threads}
-                    updateThreadSetting={updateThreadSetting}
-                />
+            <div dir="ltr" className="rd-messaging__workspace grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden border-y border-border bg-surface lg:grid-cols-[minmax(0,1fr)_minmax(17rem,21rem)]">
                 <div dir="ltr" className={active ? 'flex h-full min-h-0 min-w-0 flex-col bg-canvas' : 'hidden h-full min-h-0 min-w-0 flex-col bg-canvas lg:flex'}>
                     {!active ? <div className="m-auto p-8 text-center text-sm text-muted">{t("برای مشاهده پیام‌ها یک گفتگو را انتخاب کنید.")}</div> : (
                         <>
@@ -756,6 +726,36 @@ export default function MessagingCenter({ role }) {
                         </>
                     )}
                 </div>
+                <MessagingInboxPanel
+                    active={active}
+                    sendingConversationId={sendingConversationId}
+                    hasMoreThreads={hasMoreThreads}
+                    inboxQuery={inboxQuery}
+                    loadThreads={loadThreads}
+                    loading={loading}
+                    loadingMoreThreads={loadingMoreThreads}
+                    onSelectThread={(thread) => {
+                        setActive(thread.id);
+                        setReplyTo(null);
+                        setPendingArtwork(null);
+                        setEditingId(null);
+                        setParams((current) => {
+                            const next = new URLSearchParams(current);
+                            next.delete('artist');
+                            next.delete('artwork');
+                            next.set('conversation', String(thread.id));
+                            return next;
+                        }, { replace: true });
+                    }}
+                    openPopover={openPopover}
+                    search={search}
+                    setPopoverOpen={setPopoverOpen}
+                    setSearch={setSearch}
+                    setThreadFilter={setThreadFilter}
+                    threadFilter={threadFilter}
+                    threads={threads}
+                    updateThreadSetting={updateThreadSetting}
+                />
             </div>
         </section>
     );
