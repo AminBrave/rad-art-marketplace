@@ -71,7 +71,7 @@ export default function ArtworkDetailPage() {
     if (loading) return <ArtworkDetailSkeleton />;
 
     return (
-        <Container as="div" width="wide" className="min-h-[65vh] py-10 lg:py-14">
+        <Container as="div" width="wide" className="min-h-[65vh] py-page">
             <nav aria-label={t("مسیر صفحه")} className="text-sm text-muted">
                 <Link to="/" className="hover:text-terracotta-strong">{t("خانه")}</Link><span className="mx-2" aria-hidden="true">/</span>
                 <Link to="/artworks" className="hover:text-terracotta-strong">{t("گالری آثار")}</Link><span className="mx-2" aria-hidden="true">/</span>
@@ -115,7 +115,7 @@ export default function ArtworkDetailPage() {
                         <ArtworkEngagement artwork={artwork} slug={slug} />
                     )}
                     {artwork.related_artworks?.length > 0 && (
-                        <section className="mt-16 border-t border-border pt-10 lg:mt-20 lg:pt-14">
+                        <section className="mt-section border-t border-border pt-page">
                             <div className="flex flex-wrap items-end justify-between gap-3">
                                 <div><p className="text-xs font-bold text-terracotta-strong">{t("ادامه مسیر کشف")}</p><h2 className="mt-2 text-2xl font-black">{t("آثار مرتبط")}</h2><p className="mt-2 text-sm text-muted">{t("آثاری از همین دسته یا همین هنرمند")}</p></div>
                                 <Link to="/artworks" className="text-sm font-bold text-terracotta-strong underline">{t("مشاهده همه آثار")}</Link>
