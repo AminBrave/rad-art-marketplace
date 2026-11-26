@@ -80,7 +80,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
         const registering = pathname === '/register';
         return (
             <Container as="div" width="reading" className="py-page" role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فرم حساب کاربری">
-                <Section spacing="none" className="border-y border-ink bg-paper p-6 sm:p-9">
+                <Section spacing="none" className="border-y border-ink bg-paper px-6 sm:px-9">
                     <Skeleton className="h-4 w-32 rounded-sm" />
                     <Skeleton className="mt-5 h-8 w-2/3 rounded-sm" />
                     <div className="mt-6 flex gap-5 border-b border-border pb-4"><Skeleton className="h-4 w-12 rounded-sm" /><Skeleton className="h-4 w-16 rounded-sm" /></div>
@@ -154,7 +154,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
             </div>
             {pathname === '/artworks' ? (
                 <>
-                    <Section spacing="none" bleed className="mb-7 border-y border-divider-section bg-surface-muted py-4 sm:py-5"><Container width="wide" className="grid gap-3 sm:grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))]">
+                    <Section spacing="none" bleed className="border-y border-divider-section bg-surface-muted"><Container width="wide" className="grid gap-3 sm:grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))]">
                         <Skeleton className="h-11 w-full rounded-md" /><Skeleton className="h-11 w-full rounded-md" /><Skeleton className="h-11 w-full rounded-md" />
                     </Container></Section>
                     <Section spacing="none" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -163,7 +163,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                 </>
             ) : pathname === '/artists' ? (
                 <>
-                    <Section spacing="none" bleed className="rd-hero-surface mb-8 border-y border-[color:var(--rd-hero-line)] py-10"><Container width="wide" className="grid gap-4 px-6 sm:px-10">
+                    <Section spacing="none" bleed className="rd-hero-surface border-y border-[color:var(--rd-hero-line)]"><Container width="wide" className="grid gap-4 px-6 sm:px-10">
                         <Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="h-10 w-2/3 max-w-lg rounded-sm" /><Skeleton className="h-4 w-full max-w-2xl rounded-sm" /><Skeleton className="h-11 w-full max-w-2xl rounded-md" />
                     </Container></Section>
                     <Section spacing="none" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -196,7 +196,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                 <AdminEditorialSkeleton announce={false} />
             ) : pathname === '/dashboard/artist/artworks' || pathname === '/dashboard/artist/artworks/new' ? (
                 <>
-                    <Section spacing="none" className="border border-border bg-paper p-5 sm:p-7">
+                    <Section spacing="none" className="border border-border bg-paper px-5 sm:px-7">
                         <div className="mb-6 flex flex-wrap items-start justify-between gap-3 border-b border-border pb-5"><Skeleton className="h-6 w-36 rounded-sm" /><Skeleton className="h-4 w-64 max-w-full rounded-sm" /></div>
                         <div className="grid gap-5 sm:grid-cols-2">
                             {[0, 1, 2, 3, 4, 5, 6].map((item) => <FormFieldSkeleton key={item} />)}
@@ -205,7 +205,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                             <Skeleton className="h-11 w-40 rounded-md sm:col-span-2" />
                         </div>
                     </Section>
-                    <Section spacing="none" className="mt-7 space-y-4">
+                    <Section spacing="none" className="space-y-4">
                         <div className="flex items-center justify-between gap-3"><Skeleton className="h-6 w-40 rounded-sm" /><Skeleton className="h-9 w-28 rounded-md" /></div>
                         <ArtworkStudioListSkeleton count={3} announce={false} />
                     </Section>
