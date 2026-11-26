@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useLanguage } from '../../app/LanguageContext';
 import { useTheme } from '../../app/useTheme';
 
+const LOGO_FORMATS = ['svg', 'png', 'jpg'];
+
 function useResolvedDarkTheme(theme) {
     const [systemPrefersDark, setSystemPrefersDark] = useState(false);
 
@@ -24,23 +26,33 @@ function useResolvedDarkTheme(theme) {
     return theme === 'dark' || (theme === 'system' && systemPrefersDark);
 }
 
-/** Shared application identity with an asset matched to the active color scheme. */
+/** Shared application identity with automatic format and theme fallbacks. */
 export function BrandLogo({ className = '', compact = false }) {
     const { locale } = useLanguage();
     const { theme } = useTheme();
     const isDark = useResolvedDarkTheme(theme);
+    const [formatIndex, setFormatIndex] = useState(0);
     const name = locale === 'fa' ? 'ردّمن' : 'Rademan';
+    const themeName = isDark ? 'dark' : 'light';
+    const logoSrc = `/rademan-logo-${themeName}.${LOGO_FORMATS[formatIndex]}`;
+
+    useEffect(() => {
+        setFormatIndex(0);
+    }, [themeName]);
 
     return (
         <span className={`inline-flex min-w-0 items-center gap-2.5 text-ink no-underline ${className}`.trim()}>
-            <img
-                src={isDark ? '/rademan-logo-dark.svg' : '/rademan-logo-light.svg'}
-                alt=""
-                aria-hidden="true"
-                className={compact ? 'h-9 w-9 shrink-0 object-contain' : 'h-10 w-10 shrink-0 object-contain sm:h-11 sm:w-11'}
-                width="44"
-                height="44"
-            />
+            {formatIndex < LOGO_FORMATS.length && (
+                <img
+                    src={logoSrc}
+                    alt=""
+                    aria-hidden="true"
+                    onError={() => setFormatIndex((current) => Math.min(current + 1, LOGO_FORMATS.length))}
+                    className={compact ? 'h-9 w-9 shrink-0 object-contain' : 'h-10 w-10 shrink-0 object-contain sm:h-11 sm:w-11'}
+                    width="44"
+                    height="44"
+                />
+            )}
             <span className="min-w-0 truncate text-lg font-black tracking-tight sm:text-xl" lang={locale} dir={locale === 'fa' ? 'rtl' : 'ltr'}>
                 {name}
             </span>
