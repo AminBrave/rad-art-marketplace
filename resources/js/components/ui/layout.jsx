@@ -24,6 +24,19 @@ export const Grid = forwardRef(function Grid({ as: Element = 'div', columns, gap
     return <Element ref={ref} className={cn('grid min-w-0', columnClasses[columns], className)} style={{ ...(gap !== undefined ? { gap: typeof gap === 'number' ? `calc(var(--rd-space-unit) * ${gap})` : gap } : {}), ...style }} {...props} />;
 });
 
+/**
+ * Route content frame shared by public and authenticated experiences.
+ * It deliberately owns no width, gutters, or vertical spacing; sections and
+ * Containers inside the page compose those concerns explicitly.
+ */
+export const PageShell = forwardRef(function PageShell({ as: Element = 'div', variant = 'default', className = '', ...props }, ref) {
+    return <Element
+        ref={ref}
+        className={cn('rd-page-frame', variant === 'workspace' && 'rd-page-frame--workspace', 'min-w-0 w-full', className)}
+        {...props}
+    />;
+});
+
 export const Container = forwardRef(function Container({ as: Element = 'div', width = 'wide', className = '', ...props }, ref) {
     // Each section owns its own content width and gutters. "full" is
     // intentionally edge-to-edge for sections with viewport-wide backgrounds.
