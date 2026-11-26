@@ -77,13 +77,13 @@ export default function ConversationHeader({
                 </div>
                 <DropdownMenu.Root open={openPopover === 'conversation'} onOpenChange={onPopoverOpenChange}>
                     <DropdownMenu.Trigger asChild>
-                            <Button variant="ghost"
+                            <button
                                 type="button"
                                 aria-label={t("گزینه‌های بیشتر گفتگو")}
-                                className="min-h-0 p-0 flex h-10 w-10 items-center justify-center border-0 bg-transparent text-muted shadow-none transition-colors hover:bg-transparent hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"
+                                className="inline-flex h-10 w-10 items-center justify-center border-0 bg-transparent p-0 text-muted shadow-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                             >
                                 <MoreVertical size={19} aria-hidden="true" />
-                            </Button>
+                            </button>
                     </DropdownMenu.Trigger>
                     <DropdownMenu.Portal>
                         <DropdownMenu.Content
