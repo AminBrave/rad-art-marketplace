@@ -37,8 +37,8 @@ function WorkspaceAuthLoading({ children }) {
             <Container className={isMessagingRoute
                 ? 'flex h-[calc(100dvh-var(--rd-header-height)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:h-[calc(100dvh-var(--rd-header-height-wide)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] py-3 sm:py-4 lg:py-6'
                 : 'py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+var(--rd-space-4))] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+var(--rd-space-8))]'}>
-                <main className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'min-w-0'}>
-                    {children}
+                <main className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'rd-workspace-main min-w-0 w-full'}>
+                    {isMessagingRoute ? children : <div className="rd-page-frame rd-page-frame--workspace">{children}</div>}
                 </main>
             </Container>
 
