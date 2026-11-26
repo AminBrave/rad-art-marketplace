@@ -161,11 +161,11 @@ The public route-level `<main>` and workspace `.rd-page-frame` are content canva
 - Keep messaging, editors and media viewers as explicit immersive exceptions.
 
 ```jsx
-<section className="w-full bg-surface-muted py-12">
+<Section spacing="regular" className="w-full bg-surface-muted">
     <Container width="wide">
         {/* Section content */}
     </Container>
-</section>
+</Section>
 ```
 
 
