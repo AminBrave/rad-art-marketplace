@@ -328,3 +328,22 @@ Each slice should have a short feature-specific contract and tests. Do not make 
 - Workspace and chat CSS compatibility exceptions remain until the global rule is removed.
 - No test, lint, production build, or browser run has been performed in this environment.
 
+
+
+### Slice 3 — Remove implicit native-section spacing
+
+**Implemented on the target branch:**
+
+- Removed the global `section { padding-block: ... }` rule. Native HTML section elements no longer acquire page spacing merely because of their tag name.
+- Removed the workspace child-section reset and the hero section reset; both became redundant once section spacing was explicit.
+- Removed the chat-specific section reset. The chat shell retains its own structural zero-padding rule without selecting every descendant section.
+- Converted structural wrappers in `skeletons.jsx` from native `section` elements to neutral `div` wrappers. Loading placeholders are not independent page landmarks and should not inherit semantic page layout.
+- Kept semantic sections in the remaining real page/feature compositions where they provide meaningful grouping; those compositions already own their spacing through explicit utilities or the shared `Section` primitive.
+- Updated regression assertions to prevent reintroducing global native-section spacing or chat/workspace tag-specific resets.
+
+**Verification status:**
+
+- Source-level audit confirms no global native-section spacing selector remains, and the skeleton component file no longer uses native section wrappers.
+- Automated tests, lint, production build, and browser verification have not been run in this environment. The existing verification matrix remains required before merge.
+
+**Next implementation step:** audit the remaining `Section` consumers and remove the temporary default spacing value only after all call sites declare their intended spacing.
