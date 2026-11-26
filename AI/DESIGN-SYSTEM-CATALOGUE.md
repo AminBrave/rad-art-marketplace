@@ -38,7 +38,7 @@ Evaluate these rules across mobile/tablet/desktop and RTL/LTR. Do not mistake vi
 ### Discovery hero and breadcrumb standard
 
 - Public discovery pages use the shared `DiscoveryHero` anatomy and tokens: homepage, artwork catalogue, artist directory/profile, artwork detail and collection index/detail.
-- The layout, typography, content width, vertical rhythm, surface, actions and responsive behavior remain consistent. Route identity comes from a restrained decorative shape variant (`ribbon`, `orbit`, `grid`, `arch`, `frame` or `diamond`), not a new hero layout.
+- The layout, typography, content width, vertical rhythm, surface, actions and responsive behavior remain consistent. Route identity comes from a restrained decorative shape variant (`ribbon`, `orbit`, `grid`, `arch`, `frame`, `diamond` or `layers`), not a new hero layout.
 - Breadcrumbs appear only in public discovery and only at the top of the first hero. The homepage is the root and omits a redundant trail.
 - Never show breadcrumbs in dashboards, admin pages, settings, messaging, or artist/buyer workspaces. Never place a separate breadcrumb strip above/below the hero.
 - Breadcrumbs use localized ancestor labels, a current-page item, semantic navigation/list markup and `aria-current="page"`.
