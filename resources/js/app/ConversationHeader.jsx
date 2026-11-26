@@ -1,7 +1,7 @@
-import { Tooltip, DropdownMenu } from '../components/ui';
+import { Tooltip, DropdownMenu, Button } from '../components/ui';
 import { useLanguage } from './LanguageContext';
 import { Link } from 'react-router-dom';
-import { Ban, ChevronLeft, Flag, MoreVertical, ShieldCheck } from 'lucide-react';
+import { Ban, ChevronRight, Flag, MoreVertical, ShieldCheck } from 'lucide-react';
 
 export default function ConversationHeader({
     avatarInitial,
@@ -18,17 +18,17 @@ export default function ConversationHeader({
 }) {
     const { t } = useLanguage();
     return (
-        <header dir="ltr" className="relative z-20 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_96%,transparent)] shadow-soft backdrop-blur after:absolute after:inset-x-0 after:top-0 after:h-1 after:bg-terracotta">
+        <header className="relative z-20 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_96%,transparent)] shadow-soft backdrop-blur after:absolute after:inset-x-0 after:top-0 after:h-1 after:bg-terracotta">
             <div className="flex min-h-[3.5rem] min-w-0 items-center gap-2 px-3 py-2 pt-3 md:min-h-[3.75rem] md:gap-3 md:px-4">
                 <Tooltip content={t("بازگشت به گفتگوها")}>
-                    <button
+                    <Button variant="ghost"
                         type="button"
                         aria-label={t("بازگشت به گفتگوها")}
-                        className="inline-flex h-9 w-9 shrink-0 items-center justify-center border-0 bg-transparent p-0 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:hidden"
+                        className="min-h-0 p-0 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-canvas text-ink transition hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:hidden"
                         onClick={onBack}
                     >
-                        <ChevronLeft size={19} aria-hidden="true" />
-                    </button>
+                        <ChevronRight size={19} aria-hidden="true" />
+                    </Button>
                 </Tooltip>
                 {selected?.artist?.slug ? (
                     <Tooltip content={t("مشاهده پروفایل هنرمند")}>
@@ -59,7 +59,7 @@ export default function ConversationHeader({
                             <Link
                                 to={'/artists/' + selected.artist.slug}
                                 dir="auto"
-                                className="block w-fit max-w-full truncate text-left text-sm font-extrabold leading-6 text-ink transition hover:text-terracotta-strong focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus sm:text-base"
+                                className="block w-fit max-w-full truncate text-sm font-extrabold leading-6 text-ink transition hover:text-terracotta-strong focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus sm:text-base"
                             >
                                 {selected.participant.name ?? t("مشاهده هنرمند")}
                             </Link>
@@ -68,23 +68,25 @@ export default function ConversationHeader({
                         <h2
                             dir="auto"
                             title={selected?.participant?.name ?? t('گفتگوی خصوصی')}
-                            className="w-full truncate text-left text-sm font-extrabold leading-6 text-ink sm:text-base"
+                            className="truncate text-sm font-extrabold leading-6 text-ink sm:text-base"
                         >
-                            {selected?.participant?.name ?? t('گفتگوی خصوصی')}
+                            {selected?.participant?.name ?? 'گفتگوی خصوصی'}
                         </h2>
                     )}
-                    <p className="truncate text-left text-[11px] leading-5 text-muted">{t("گفتگوی خصوصی مستقیم")}</p>
+                    <p className="truncate text-[11px] leading-5 text-muted">{t("گفتگوی خصوصی مستقیم")}</p>
                 </div>
                 <DropdownMenu.Root open={openPopover === 'conversation'} onOpenChange={onPopoverOpenChange}>
-                    <DropdownMenu.Trigger asChild>
-                            <button
+                    <Tooltip content={t("گزینه‌های بیشتر")}>
+                        <DropdownMenu.Trigger asChild>
+                            <Button variant="ghost"
                                 type="button"
                                 aria-label={t("گزینه‌های بیشتر گفتگو")}
-                                className="inline-flex h-10 w-10 items-center justify-center border-0 bg-transparent p-0 text-muted shadow-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
+                                className="min-h-0 p-0 flex h-10 w-10 items-center justify-center rounded-full border border-transparent bg-surface-muted text-muted transition-colors hover:border-border-strong hover:bg-surface hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"
                             >
                                 <MoreVertical size={19} aria-hidden="true" />
-                            </button>
-                    </DropdownMenu.Trigger>
+                            </Button>
+                        </DropdownMenu.Trigger>
+                    </Tooltip>
                     <DropdownMenu.Portal>
                         <DropdownMenu.Content
                            
@@ -92,7 +94,7 @@ export default function ConversationHeader({
                             align="end"
                             sideOffset={8}
                             collisionPadding={8}
-                            className="z-[var(--rd-layer-popover)] max-h-[min(20rem,var(--radix-dropdown-menu-content-available-height))] min-w-52 max-w-[calc(100vw-1rem)] overflow-y-auto rounded-lg border border-border bg-paper p-1 shadow-soft"
+                            className="z-[60] max-h-[min(20rem,var(--radix-dropdown-menu-content-available-height))] min-w-52 max-w-[calc(100vw-1rem)] overflow-y-auto rounded-lg border border-border bg-paper p-1 shadow-soft"
                         >
                             <DropdownMenu.Item
                                 onSelect={onReportConversation}
