@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useLanguage } from './LanguageContext';
 import axios from 'axios';
 import { Link, useOutletContext } from 'react-router-dom';
-import { EmptyState, ErrorState, StatusBadge, Badge, PageHeader, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton, ArtistRecentWorkSkeleton, Container } from '../components/ui';
+import { EmptyState, ErrorState, StatusBadge, Badge, PageHeader, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton, ArtistRecentWorkSkeleton, Container, Section } from '../components/ui';
 import { localizedValue } from '../utils/localizedContent';
 
 const statusLabels = {
@@ -60,7 +60,7 @@ export default function ArtistWorkspaceOverview() {
             <Container width="wide" className="rd-workspace-content space-y-workspace-relaxed">
                 {profileError && <ErrorState title={t("پروفایل دریافت نشد")} description={profileError} />}
 
-                <section aria-label={t("وضعیت پروفایل هنرمند")} className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <Section spacing="none" aria-label={t("وضعیت پروفایل هنرمند")} className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="min-w-0">
                         <p className="text-xs font-bold text-terracotta-strong">{t("پروفایل هنری")}</p>
                         <div className="mt-1 flex flex-wrap items-center gap-3">
@@ -89,19 +89,19 @@ export default function ArtistWorkspaceOverview() {
                         </div>
                         <Link to="/dashboard/artist/profile" className="shrink-0 text-xs font-bold text-terracotta-strong underline underline-offset-4">{profileReady ? t('ویرایش') : t('تکمیل')}</Link>
                     </div>
-                </section>
+                </Section>
 
-                <section aria-label={t("آمار آثار")} className="grid gap-3 sm:grid-cols-3">
+                <Section spacing="none" aria-label={t("آمار آثار")} className="grid gap-3 sm:grid-cols-3">
                     {loading ? <DashboardMetricSkeleton count={3} /> : <>
                         <DashboardMetricCard as={Link} label={t("مجموع آثار")} value={formatCount(counts.artworks, locale)} detail={t("تمام آثار ثبت‌شده")} to="/dashboard/artist/artworks" />
                         <DashboardMetricCard as={Link} label={t("منتشرشده")} value={published.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail={t("قابل مشاهده در گالری")} to="/dashboard/artist/artworks" />
                         <DashboardMetricCard as={Link} label={t("در انتظار بررسی")} value={pending.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail={t("نیازمند تصمیم انتشار")} to="/dashboard/artist/artworks" />
                     </>}
-                </section>
+                </Section>
 
                 {errors.length > 0 && <ErrorState title={t("بخشی از اطلاعات بارگذاری نشد")} description={errors.join(' ')} onRetry={() => artworksQuery.refetch()} />}
 
-                <section className="grid gap-7 xl:grid-cols-[minmax(0,1.35fr)_minmax(15rem,.65fr)]">
+                <Section spacing="none" className="grid gap-7 xl:grid-cols-[minmax(0,1.35fr)_minmax(15rem,.65fr)]">
                     <div className="min-w-0">
                         <SectionHeader eyebrow={t("پورتفولیو")} title={t("آخرین آثار")} actions={<Link to="/dashboard/artist/artworks" className="text-xs font-bold text-terracotta-strong underline underline-offset-4">{t("همه آثار")}</Link>} />
                         {loading ? <div className="mt-4"><ArtistRecentWorkSkeleton /></div> : artworks.length === 0 ? (
@@ -130,7 +130,7 @@ export default function ArtistWorkspaceOverview() {
                             </Link>
                         </div>
                     </div>
-                </section>
+                </Section>
             </Container>
         </div>
     );
