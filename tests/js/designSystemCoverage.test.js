@@ -332,3 +332,17 @@ test('page compositions use explicit shared Section spacing ownership', () => {
             path + ' must declare its intended section spacing.');
     }
 });
+
+
+test('public and workspace routes share the full-width PageShell primitive', () => {
+    const layout = readFileSync(resolve(root, 'resources/js/components/ui/layout.jsx'), 'utf8');
+    const barrel = readFileSync(resolve(root, 'resources/js/components/ui/index.js'), 'utf8');
+    const layouts = readFileSync(resolve(root, 'resources/js/app/Layouts.jsx'), 'utf8');
+    assert.match(layout, /export const PageShell = forwardRef/);
+    assert.match(layout, /className=\{cn\('rd-page-frame'.*'min-w-0 w-full'/);
+    assert.ok(barrel.includes('PageShell'), 'PageShell must be exported through the shared UI entry point.');
+    assert.ok(layouts.includes('<PageShell as="main" id="main-content">'), 'Public routes must retain a semantic main landmark.');
+    assert.ok(layouts.includes('<PageShell variant="workspace">'), 'Workspace routes must use the same route-frame primitive.');
+    assert.doesNotMatch(layouts, /className="rd-page-frame(?: rd-page-frame--workspace)?"/,
+        'Route layouts must not duplicate PageShell implementation classes.');
+});
