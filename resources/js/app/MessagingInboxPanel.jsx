@@ -1,4 +1,4 @@
-import { ConversationInboxSkeleton, Tabs, TabsList, TabsTrigger, TabsContent, Tooltip, DropdownMenu, TextInput, Button } from '../components/ui';
+import { ConversationInboxSkeleton, Tabs, TabsList, TabsTrigger, TabsContent, DropdownMenu, TextInput, Button } from '../components/ui';
 import { useLanguage } from './LanguageContext';
 import { Archive, ArchiveRestore, Bell, BellOff, Inbox, LoaderCircle, MailOpen, MoreVertical, Search } from 'lucide-react';
 import { avatarInitial, avatarTone } from './messagingAvatarUtils';
@@ -29,7 +29,7 @@ export default function MessagingInboxPanel({
 }) {
     const { t, locale } = useLanguage();
     return (
-                <aside aria-label={t("فهرست گفتگوها")} className={active ? 'hidden h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e lg:flex' : 'flex h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e'}>
+                <aside dir={locale === 'fa' ? 'rtl' : 'ltr'} aria-label={t("فهرست گفتگوها")} className={active ? 'hidden h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e lg:flex' : 'flex h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e'}>
                     <div className="shrink-0 border-b border-border bg-paper px-4 py-4 sm:px-5">
                         <div className="flex items-start justify-between gap-3"><div className="min-w-0"><h2 className="text-sm font-extrabold leading-6 text-ink">{t("پیام‌ها")}</h2><p className="mt-0.5 text-[10px] leading-4 text-muted">{t("یک بستر امن برای ارتباط خریدار با هنرمند.")}</p></div><span className="mt-1 shrink-0 border-s border-border ps-3 text-[10px] font-bold leading-none text-muted">{threads.length} گفتگو</span></div>
                     </div>
@@ -50,22 +50,30 @@ export default function MessagingInboxPanel({
                         </div>
                         <TabsContent value={threadFilter} className="flex min-h-0 flex-1 flex-col p-0 pt-0 focus-visible:ring-0">
                     {loading ? <ConversationInboxSkeleton count={6} /> : threads.length === 0 ? (inboxQuery.isError ? null : <p className="p-5 text-sm leading-7 text-muted">{t("هنوز گفتگویی ندارید. از صفحه هنرمند یا یک اثر، گزینه «پیام مستقیم» را انتخاب کنید.")}</p>) : (
-                        <ul className="min-h-0 flex-1 divide-y divide-border/70 overflow-y-auto overscroll-contain [scrollbar-width:thin] [scrollbar-color:var(--color-border-strong)_transparent]">
+                        <ul dir={locale === 'fa' ? 'rtl' : 'ltr'} className="min-h-0 flex-1 divide-y divide-border/70 overflow-y-auto overscroll-contain [scrollbar-width:thin] [scrollbar-color:var(--color-border-strong)_transparent]">
                             {threads.map((thread) => <li key={thread.id} className={'relative border-s-[3px] border-transparent transition-colors hover:bg-surface-muted/70 focus-within:bg-surface-muted/70 ' + (Number(active) === Number(thread.id) ? 'border-terracotta bg-surface-muted' : '')}>
-                                <Button variant="ghost" type="button" onClick={() => onSelectThread(thread)} aria-current={Number(active) === Number(thread.id) ? 'true' : undefined} className="flex min-h-[4.75rem] w-full items-center gap-3 bg-transparent px-3 py-3 pe-12 text-start transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"><span aria-hidden="true" className={'flex h-10 w-10 aspect-square shrink-0 items-center justify-center relative overflow-hidden border border-border text-sm font-black [box-shadow:none] ' + avatarTone(thread.participant?.name)} >{avatarInitial(thread.participant?.name)}</span><span className="min-w-0 flex-1">
+                                <Button dir={locale === 'fa' ? 'rtl' : 'ltr'} variant="ghost" type="button" onClick={() => onSelectThread(thread)} aria-current={Number(active) === Number(thread.id) ? 'true' : undefined} className="flex min-h-[4.75rem] w-full items-center gap-3 bg-transparent px-3 py-3 pe-12 text-start transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"><span aria-hidden="true" className={'flex h-10 w-10 aspect-square shrink-0 items-center justify-center relative overflow-hidden border border-border text-sm font-black [box-shadow:none] ' + avatarTone(thread.participant?.name)} >{avatarInitial(thread.participant?.name)}</span><span className="min-w-0 flex-1">
                                     <span className="flex items-center justify-between gap-2"><strong dir="auto" className="truncate text-sm font-extrabold">{thread.participant?.name ?? t('گفتگو')}</strong>{thread.unread_count > 0 && <span aria-label={`${Number(thread.unread_count).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} پیام خوانده‌نشده`} className={thread.unread_count < 10 ? 'flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-terracotta text-[11px] font-bold tabular-nums text-inverse' : 'flex h-6 min-w-8 max-w-12 shrink-0 items-center justify-center rounded-full bg-terracotta px-2 text-[11px] font-bold tabular-nums text-inverse'}>{thread.unread_count > 99 ? '۹۹+' : Number(thread.unread_count).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</span>}</span>
                                     <span dir="auto" className="mt-1 block truncate text-xs leading-[1.45] text-muted">{thread.last_message?.body ?? (thread.last_message?.deleted_at ? t('پیام حذف شده است') : t('برای شروع گفتگو پیام بفرستید'))}</span>
                                     {Number(sendingConversationId) === Number(thread.id) && <span role="status" aria-live="polite" className="mt-1 inline-flex items-center gap-1.5 text-[11px] font-semibold text-terracotta-strong"><LoaderCircle size={12} className="animate-spin motion-reduce:animate-none" aria-hidden="true" />{t('در حال ارسال پیام و پیوست…')}</span>}
                                     <span className="mt-1 block text-[11px] tabular-nums text-subtle">{dateLabel(thread.last_message_at, locale)}</span>
                                     </span>
                                 </Button>
-                                <div className="absolute end-1 top-1/2 -translate-y-1/2">
+                                <div className="pointer-events-none absolute end-1 top-1/2 z-30 -translate-y-1/2">
                                     <DropdownMenu.Root open={openPopover === 'thread:' + thread.id} onOpenChange={(open) => setPopoverOpen('thread:' + thread.id, open)}>
-                                        <Tooltip content={t("گزینه‌های گفتگو")}><DropdownMenu.Trigger asChild>
-                                            <Button variant="ghost" type="button" aria-label={t("گزینه‌های گفتگو")} className="flex h-8 w-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"><MoreVertical size={17} aria-hidden="true" /></Button>
-                                        </DropdownMenu.Trigger></Tooltip>
+                                        <DropdownMenu.Trigger asChild>
+                                            <button
+                                                type="button"
+                                                data-inbox-thread-actions
+                                                aria-label={t("گزینه‌های گفتگو")}
+                                                title={t("گزینه‌های گفتگو")}
+                                                className="pointer-events-auto relative z-30 inline-flex h-9 min-h-9 w-9 min-w-9 items-center justify-center rounded-full border border-border-strong bg-paper text-ink shadow-soft transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus motion-reduce:transition-none"
+                                            >
+                                                <MoreVertical size={18} strokeWidth={2.25} aria-hidden="true" />
+                                            </button>
+                                        </DropdownMenu.Trigger>
                                         <DropdownMenu.Portal>
-                                            <DropdownMenu.Content side="bottom" align="end" sideOffset={8} collisionPadding={8} className="z-[60] max-h-[min(20rem,var(--radix-dropdown-menu-content-available-height))] min-w-48 max-w-[calc(100vw-1rem)] overflow-y-auto rounded-lg border border-border bg-paper p-1 shadow-soft">
+                                            <DropdownMenu.Content side="bottom" align="end" sideOffset={8} collisionPadding={8} className="z-[60] max-h-[min(20rem,var(--radix-dropdown-menu-content-available-height))] min-w-48 max-w-[calc(100vw-1rem)] overflow-y-auto rounded-lg border border-border bg-paper p-1 font-sans text-sm text-ink shadow-soft">
                                                 <DropdownMenu.Item onSelect={() => updateThreadSetting(thread, 'archived', !thread.archived)} className="flex min-h-10 cursor-pointer items-center gap-2.5 rounded-md px-3 text-start text-xs font-semibold text-ink outline-none transition-colors data-[highlighted]:bg-surface-muted motion-reduce:transition-none">{thread.archived ? <ArchiveRestore size={15} aria-hidden="true" /> : <Archive size={15} aria-hidden="true" />}<span>{thread.archived ? 'بازگردانی از بایگانی' : t("بایگانی گفتگو")}</span></DropdownMenu.Item>
                                                 <DropdownMenu.Item onSelect={() => updateThreadSetting(thread, 'muted', !thread.muted)} className="flex min-h-10 cursor-pointer items-center gap-2.5 rounded-md px-3 text-start text-xs font-semibold text-ink outline-none transition-colors data-[highlighted]:bg-surface-muted motion-reduce:transition-none">{thread.muted ? <Bell size={15} aria-hidden="true" /> : <BellOff size={15} aria-hidden="true" />}<span>{thread.muted ? t('فعال کردن اعلان‌ها') : t('بی‌صدا کردن گفتگو')}</span></DropdownMenu.Item>
                                             </DropdownMenu.Content>
