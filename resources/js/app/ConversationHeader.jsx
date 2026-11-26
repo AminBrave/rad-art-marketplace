@@ -1,7 +1,7 @@
 import { Tooltip, DropdownMenu, Button } from '../components/ui';
 import { useLanguage } from './LanguageContext';
 import { Link } from 'react-router-dom';
-import { Ban, ChevronRight, Flag, MoreVertical, ShieldCheck } from 'lucide-react';
+import { Ban, ChevronLeft, Flag, MoreVertical, ShieldCheck } from 'lucide-react';
 
 export default function ConversationHeader({
     avatarInitial,
@@ -27,7 +27,7 @@ export default function ConversationHeader({
                         className="min-h-0 p-0 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-canvas text-ink transition hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:hidden"
                         onClick={onBack}
                     >
-                        <ChevronRight size={19} aria-hidden="true" />
+                        <ChevronLeft size={19} className="rtl:rotate-180" aria-hidden="true" />
                     </Button>
                 </Tooltip>
                 {selected?.artist?.slug ? (
