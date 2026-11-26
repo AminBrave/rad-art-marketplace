@@ -308,7 +308,8 @@ test('shared primitives express accessible component contracts with semantic Tai
     assert.ok(primitives.includes('bg-accent-surface text-terracotta-strong'));
     assert.ok(primitives.includes('before:bg-terracotta'), 'SectionHeader keeps its restrained eyebrow rule; hero headers remain free of decorative accents.');
     assert.ok(primitives.includes('text-[clamp(1.75rem,4.2vw,3.5rem)]'));
-    assert.ok(primitives.includes('max-sm:w-full max-sm:pb-0'));
+    assert.ok(primitives.includes('max-sm:items-stretch max-sm:flex-col'), 'SectionHeader stacks its title and actions on narrow screens.');
+    assert.ok(primitives.includes('max-sm:w-full'), 'SectionHeader actions can use the full available width on mobile.');
     assert.doesNotMatch(primitives, /ra-[a-z]/);
 });
 
@@ -375,7 +376,7 @@ test('route canvases stay full-width and route content uses shared section conta
     assert.ok(layouts.includes('pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)]'));
     assert.ok(layoutPrimitives.includes("resolvedWidth !== 'wide' &&"));
     assert.ok(layoutPrimitives.includes("wide: 'mx-auto w-full max-w-content'"));
-    assert.ok(skeletons.includes('<Section as=\"header\" bleed'));
+    assert.ok(skeletons.includes('<Section as=\"header\" spacing=\"none\" bleed'), 'Full-bleed loading skeleton headers explicitly opt out of section rhythm.');
     assert.ok(skeletons.includes('<Container as=\"div\" width=\"wide\"'));
     assert.ok(!skeletons.includes('<main '), 'Route skeletons must not introduce nested main landmarks.');
     assert.match(routeLoading, /<Section spacing="none" bleed/ , 'Loading states must preserve full-bleed section composition.');
@@ -390,7 +391,8 @@ test('route canvases stay full-width and route content uses shared section conta
 test('public catalogue, artist directory and artwork detail use shared page layout primitives', () => {
     assert.ok(publicPages[0].includes('Container') && publicPages[0].includes('DiscoveryHero'));
     assert.ok(publicPages[1].includes('Container') && publicPages[1].includes('SectionHeader'));
-    assert.ok(publicPages[1].includes('<Section bleed') && publicPages[1].includes('rd-hero-surface'), 'Artist directory hero uses the shared adaptive full-bleed surface.');
+    assert.ok(publicPages[1].includes('<DiscoveryHero'), 'Artist directory uses the shared discovery hero rather than a route-specific Section hero.');
+    assert.ok(primitives.includes('rd-hero-surface'), 'Discovery and workspace heroes share the same adaptive surface primitive.');
     assert.ok(publicPages[2].includes('Container') && publicPages[2].includes('width=\"wide\"'));
     assert.ok(buyerWorkspace.includes('WorkspaceHero') && buyerWorkspace.includes('<SectionHeader'));
     assert.ok(buyerWorkspace.includes('<Section spacing="none"'), 'Buyer Studio composes its content with the shared Section primitive.');
@@ -473,7 +475,7 @@ test('public and workspace navigation plus notifications use the shared RAD Radi
     assert.doesNotMatch(messaging, /<PageHeader/);
     assert.ok(conversationHeader.includes('after:bg-terracotta'), 'The extracted conversation header retains its terracotta top accent.');
     const heroStart = primitives.indexOf('export function UnifiedHero');
-    const heroEnd = primitives.indexOf('\n}', heroStart);
+    const heroEnd = primitives.indexOf('\n}\n\nconst sharedHeroDefaults', heroStart);
     assert.ok(heroStart >= 0 && heroEnd > heroStart);
     const hero = primitives.slice(heroStart, heroEnd);
     assert.ok(hero.includes('rd-hero-surface'), 'The workspace hero uses the shared editorial surface.');
@@ -565,7 +567,7 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.ok(messageTimeline.includes('min-w-0 w-fit max-w-[88%]'));
     assert.ok(messagingInbox.includes('min-h-[4.75rem] w-full items-center gap-3'));
     assert.ok(messagingInbox.includes('absolute end-1 top-1/2 -translate-y-1/2'));
-    assert.ok(messageTimeline.includes('mt-[.55rem] flex flex-wrap items-center justify-between gap-2 text-[10px] text-subtle'));
+    assert.ok(messageTimeline.includes('mt-2 flex flex-wrap items-center justify-between gap-2 text-[10px] text-subtle'), 'Message metadata uses the current compact timeline spacing.');
     assert.ok(messageComposer.includes('max-h-28 min-h-[2.35rem] max-sm:min-h-9 w-full resize-none'));
     assert.ok(messageComposer.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
     assert.ok(messageComposer.includes('ps-10 pe-3 py-[.4rem]'));
@@ -693,7 +695,7 @@ test('responsive workspace navigation supports mobile task access and desktop ro
 
     assert.ok(layouts.includes('function SidebarNavigation('), 'Discover and workspace drawers share one sidebar navigation renderer.');
     assert.ok(layouts.includes('<SidebarNavigation'), 'Both application shells render the same sidebar navigation panel.');
-    assert.ok(layouts.includes("label: t('راد آرت')"), 'The shared panel includes the same informational section.');
+    assert.ok(layouts.includes("label: t('ردّمن')"), 'The shared panel includes the Rademan information section using the current brand label.');
     assert.ok(layouts.includes("label: t('کشف')"), 'The shared panel includes the same discovery section.');
     assert.ok(layouts.includes("label: t(user?.role === 'artist'"), 'The workspace section is included in the shared panel.');
     assert.ok(layouts.includes('publicDiscoveryLinks'), 'All discovery destinations are available in both sidebar contexts.');
