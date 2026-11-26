@@ -21,7 +21,7 @@ export { ArtworkCard, ArtistCard } from './cards';
 
 export { ArtworkCardSkeleton, ArtistCardSkeleton, ArtworkDetailSkeleton, ArtistProfileSkeleton, FormFieldSkeleton, ArtworkStudioListSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, AdminRecordListSkeleton, DashboardMetricSkeleton, ArtistRecentWorkSkeleton, AdminDashboardSkeleton, ArtistWorkspaceOverviewSkeleton, BuyerDashboardSkeleton, ArtworkModerationSkeleton, WorkspaceIdentitySkeleton, MessageReportsSkeleton, AdminUserCardsSkeleton, CollectionCardSkeleton, AdminEditorialSkeleton, CollectionDetailSkeleton, NotificationListSkeleton, HomePageSkeleton } from './skeletons';
 export {
-    Box, Flex, Grid, Container, Section, Inset, Heading, Text, Strong, Em,
+    Box, Flex, Grid, PageShell, Container, Section, Inset, Heading, Text, Strong, Em,
     Code, Quote, Blockquote, Separator, AspectRatio, Avatar, Card, Callout,
     Progress, Spinner, Kbd, AccessibleIcon, VisuallyHidden, Table, DataList,
     DataListItem,
