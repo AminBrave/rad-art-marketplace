@@ -446,6 +446,30 @@ test('Tailwind radius utilities map to semantic radius tokens', () => {
     assert.match(tailwind, /card: 'var\(--rd-radius-lg\)'/);
 });
 
+test('dropdowns preserve typography, locale direction and viewport geometry without shifting the page', () => {
+    const navigation = readFileSync(resolve(root, 'resources/js/components/ui/navigation.jsx'), 'utf8');
+    const primitives = readFileSync(resolve(root, 'resources/js/components/ui/primitives.jsx'), 'utf8');
+    const timeline = readFileSync(resolve(root, 'resources/js/app/MessageTimeline.jsx'), 'utf8');
+    const composer = readFileSync(resolve(root, 'resources/js/app/MessageComposer.jsx'), 'utf8');
+
+    assert.match(navigation, /DropdownMenuPrimitive\.Root modal=\{false\} dir=\{locale === 'fa' \? 'rtl' : 'ltr'\}/,
+        'Dropdown menus must not lock body scrolling and must follow the active locale direction.');
+    assert.match(navigation, /max-w-\[calc\(100vw-1rem\)\].*font-sans/,
+        'Dropdown menus must inherit the application font and stay within the viewport.');
+    assert.match(navigation, /font-sans text-sm outline-none/,
+        'Dropdown items must not fall back to browser or portal font defaults.');
+    assert.match(primitives, /dir=\{locale === 'fa' \? 'rtl' : 'ltr'\}/,
+        'Select popovers must receive the current locale direction.');
+    assert.match(primitives, /max-w-\[calc\(100vw-1rem\)\].*font-sans/,
+        'Select popovers must inherit the application font and stay within the viewport.');
+    assert.match(timeline, /border border-border bg-surface p-0 text-ink transition-colors hover:border-border-strong/,
+        'The message overflow trigger must have a visible contrast surface in both themes.');
+    assert.match(composer, /<TextareaField dir="auto"/,
+        'The composer must resolve the writing direction from the message content.');
+    assert.match(timeline, /<p dir="auto"/,
+        'Message bodies must resolve direction independently for mixed Persian and Latin content.');
+});
+
 test('important CSS overrides are restricted to the reduced-motion safety contract', () => {
     const importantRules = [...css.matchAll(/!important/g)];
     assert.equal(importantRules.length, 4, 'Only the four reduced-motion overrides should require !important.');
