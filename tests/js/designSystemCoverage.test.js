@@ -405,7 +405,7 @@ test('SectionHeader is reused for catalogue and related-artwork section headings
 test('FormField preserves caller-provided aria-describedby references', () => {
     const primitives = readFileSync(resolve(root, 'resources/js/components/ui/primitives.jsx'), 'utf8');
     assert.match(primitives, /children\?\.\props\?\.\['aria-describedby'\]/);
-    assert.match(primitives, /\.split\(\/\s\+\/\)/);
+    assert.match(primitives, /\.split\(\/\\s\+\/\)/);
     assert.ok(primitives.includes("'aria-describedby': describedBy"));
 });
 
