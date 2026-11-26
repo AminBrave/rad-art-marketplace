@@ -137,7 +137,7 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
 }
 
 export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
-    return <UnifiedHero eyebrow={eyebrow} title={title} description={description} actions={actions} className={className} />;
+    return <UnifiedHero eyebrow={eyebrow} title={title} description={description} actions={actions} bleed className={className} />;
 }
 export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, className = '' }) {
     const Element = as ?? (to ? 'a' : 'article');
