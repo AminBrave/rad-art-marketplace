@@ -63,7 +63,7 @@ test('Tailwind spacing utilities resolve to one semantic Rademan spacing scale',
         assert.ok(tailwind.includes(`${configKey}: 'var(--rd-space-${token})'`), `Missing Tailwind spacing mapping for ${key}.`);
         assert.ok(css.includes(`--rd-space-${token}:`), `Missing canonical CSS spacing token for ${key}.`);
     }
-    for (const role of ['page', 'section', 'group', 'component', 'compact']) {
+    for (const role of ['page', 'section', 'group', 'component', 'compact', 'message-gutter']) {
         assert.ok(css.includes(`--rd-space-${role}:`), `Missing semantic spacing role ${role}.`);
         assert.ok(tailwind.includes(`${role}: 'var(--rd-space-${role})'`), `Missing Tailwind semantic spacing role ${role}.`);
     }
@@ -949,6 +949,7 @@ test('messaging spacing uses the shared scale while preserving safe-area handlin
     assert.ok(messageComposer.includes('ps-10 pe-3 py-1.5'));
     assert.doesNotMatch(messageComposer, /(?:p|px|py|mt|gap)-\\[\\.\\d/);
     assert.ok(messageTimeline.includes('px-0.5'));
+    assert.ok(messageTimeline.includes('px-message-gutter'));
     assert.ok(messageTimeline.includes('mt-2.5'));
     assert.ok(messageTimeline.includes('px-3 py-2.5'));
     assert.doesNotMatch(messageTimeline, /(?:p|px|py|mt|gap)-\\[\\.\\d/);
