@@ -568,7 +568,7 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.ok(messageTimeline.includes('min-w-0 w-fit max-w-[88%]'));
     assert.ok(messagingInbox.includes('min-h-[4.75rem] w-full items-center gap-3'));
     assert.ok(messagingInbox.includes('absolute end-1 top-1/2 -translate-y-1/2'));
-    assert.ok(messageTimeline.includes('mt-2 flex flex-wrap items-center justify-between gap-2 text-[10px] text-subtle'), 'Message metadata uses the current compact timeline spacing.');
+    assert.ok(messageTimeline.includes('mt-[.55rem] flex flex-wrap items-center justify-between gap-2 text-[10px] text-subtle'));
     assert.ok(messageComposer.includes('max-h-28 min-h-[2.35rem] max-sm:min-h-9 w-full resize-none'));
     assert.ok(messageComposer.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
     assert.ok(messageComposer.includes('ps-10 pe-3 py-[.4rem]'));
