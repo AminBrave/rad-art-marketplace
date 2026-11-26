@@ -121,6 +121,12 @@
     --rd-space-80: 20rem;
     --rd-space-96: 24rem;
 
+    /* Semantic rhythm roles built on the canonical scale. */
+    --rd-space-section: clamp(var(--rd-space-16), 6.6667vw, var(--rd-space-24));
+    --rd-space-group: var(--rd-space-8);
+    --rd-space-component: var(--rd-space-4);
+    --rd-space-compact: var(--rd-space-3);
+
     /* Semantic responsive layout dimensions. */
     --rd-content-width: 84rem;
     --rd-content-reading-width: 48rem;
