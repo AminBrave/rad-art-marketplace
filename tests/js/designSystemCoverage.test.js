@@ -205,6 +205,8 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     assert.ok(!css.includes('.rd-unified-hero--workspace'), 'Workspace heroes must not use a contained-width modifier.');
     assert.ok(primitives.includes("surface = 'grid'"));
     assert.ok(primitives.includes('actions={actions} bleed className={className}'), 'WorkspaceHero must use the full-bleed shared hero frame.');
+    assert.ok(primitives.includes('level={level} bleed={bleed} className={className}'), 'PageHeader must use the same vertical rhythm as DiscoveryHero.');
+    assert.ok(!primitives.includes('bleed={bleed} compact className={className}'), 'PageHeader must not use the compact hero spacing variant.');
     assert.ok(css.includes('.rd-workspace-content > section'));
     assert.ok(css.includes('padding-block: var(--rd-layout-section);'), 'Workspace content must use the discovery section rhythm.');
     assert.ok(css.includes('padding-block: var(--rd-layout-section-wide);'), 'Workspace content must use the responsive discovery section rhythm.');
