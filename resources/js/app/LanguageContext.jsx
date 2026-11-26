@@ -903,6 +903,8 @@ const english = {
     "دریافت کاتالوگ با خطا روبه‌رو شد.": "Could not load the catalogue.",
     "هنوز اثری برای نمایش در این دسته‌بندی ثبت نشده است.": "No artworks have been submitted in this category yet.",
     "بازگردانی از بایگانی": "Restore conversation",
+    "پیام خوانده‌نشده": "unread message",
+    "پیام جدید": "new message",
     "پیوست انتخاب شد:": "Attachment selected:",
     "این کاربر را مسدود کرده‌اید؛ برای ادامه گفتگو ابتدا مسدودسازی را بردارید.": "You have blocked this user. Unblock them to continue the conversation.",
     "این گفتگو به‌دلیل تنظیمات ایمنی امکان ارسال پیام ندارد.": "Messaging is unavailable in this conversation due to safety settings.",
