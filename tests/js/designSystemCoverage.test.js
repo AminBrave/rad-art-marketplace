@@ -224,7 +224,8 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     assert.ok(!layouts.includes("'mx-auto w-full max-w-content px-page-gutter py-5"), 'Workspace pages must not inherit the old constrained outer shell.');
     for (const path of ['resources/js/app/AdminWorkspace.jsx', 'resources/js/app/ArtistWorkspaceOverview.jsx', 'resources/js/app/BuyerWorkspace.jsx', 'resources/js/app/ArtworkStudio.jsx', 'resources/js/app/RoutingPages.jsx', 'resources/js/app/EditorialPages.jsx']) {
         const source = readFileSync(resolve(root, path), 'utf8');
-        assert.ok(source.includes('rd-workspace-content'), path + ' must use the shared workspace spacing shell.');
+        assert.match(source, /<Section spacing=/, path + ' must compose content through the shared Section spacing primitive.');
+        assert.doesNotMatch(source, /space-y-workspace-relaxed/, path + ' must not add margin-based spacing between page sections.');
         assert.doesNotMatch(source, /<PageHeader bleed=\{false\}/, path + ' must not constrain a page hero inside its content container.');
     }
     assert.ok(!css.includes('data-shape='));
