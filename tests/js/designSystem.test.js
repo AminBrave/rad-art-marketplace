@@ -582,7 +582,7 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.ok(messageTimeline.includes('mt-[.55rem] flex flex-wrap items-center justify-between gap-2 text-[10px] text-subtle'));
     assert.ok(messageComposer.includes('max-h-28 min-h-[2.35rem] max-sm:min-h-9 w-full resize-none'));
     assert.ok(messageComposer.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
-    assert.ok(messageComposer.includes('ps-10 pe-3 py-[.4rem]'));
+    assert.ok(messageComposer.includes('ps-10 pe-3 py-1.5'));
     assert.doesNotMatch(messaging, /md:min-h-\[min\(580px/);
     assert.doesNotMatch(messaging, /min-h-\[5\.35rem\]/);
 });
@@ -624,7 +624,7 @@ test('messaging chat geometry follows RTL logical flow and uses Radix collision-
     assert.ok(messageTimeline.includes('overflow-x-hidden overflow-y-auto'));
     assert.ok(messagingInbox.includes('absolute end-1 top-1/2 -translate-y-1/2'));
     assert.ok(messageComposer.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
-    assert.ok(messageComposer.includes('ps-10 pe-3 py-[.4rem]'));
+    assert.ok(messageComposer.includes('ps-10 pe-3 py-1.5'));
     assert.doesNotMatch(messaging, /getChatPopoverPosition|toggleChatPopover|createPortal|data-chat-popover-boundary/);
 });
 
