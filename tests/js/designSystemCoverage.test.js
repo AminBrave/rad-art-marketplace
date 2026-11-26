@@ -452,13 +452,17 @@ test('all semantic sections use the shared primitive and have no caller-owned to
     });
     assert.deepEqual(nativeSections, [], 'Use the shared Section primitive instead of raw section tags.');
 
-    const topMargins = frontendFiles.flatMap((path) => {
+    const localSpacingOverrides = frontendFiles.flatMap((path) => {
         const source = readFileSync(path, 'utf8');
-        return matchesWithLines(source, /<Section\b(?:(?!>).)*>/gs)
-            .filter(({ value }) => /(?:^|\s)-?mt-/.test(value))
+        return matchesWithLines(source, /<Section\\b(?:(?!>).)*>/gs)
+            .filter(({ value }) => /(?:^|\\s)-?(?:m(?:t|b|y|x|s|e)?|p(?:y|t|b)?)-[^\\s"'\x60}]+/.test(value))
             .map((match) => ({ file: relative(root, path), ...match }));
     });
-    assert.deepEqual(topMargins, [], 'Section call sites must not add top margins; Section owns its complete vertical rhythm.');
+    assert.deepEqual(
+        localSpacingOverrides,
+        [],
+        'Section call sites must not add margins or vertical padding; the shared Section primitive owns the complete vertical rhythm.',
+    );
 });
 
 test('Radix dropdown and select overlays do not isolate or get trapped under the header', () => {
