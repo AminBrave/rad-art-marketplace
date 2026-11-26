@@ -716,9 +716,9 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                 <main className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'rd-workspace-main min-w-0 w-full'}>
                     {isMessagingRoute
                         ? <Outlet context={outletContext} />
-                        : <div className="rd-page-frame rd-page-frame--workspace"><Outlet context={outletContext} /></Container>}
+                        : <div className="rd-page-frame rd-page-frame--workspace"><Outlet context={outletContext} /></div>}
                 </main>
-            </div>
+            </Container>
             <AuthenticatedBottomNavigation mobileLinks={mobileWorkspaceLinks} unreadConversationCount={unreadConversationCount} />
         </div>
         </Dialog>
