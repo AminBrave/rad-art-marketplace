@@ -8,6 +8,14 @@
  * consumes semantic roles below; it should not depend directly on brand hues.
  */
 :root {
+    /* Shared portal stack: modal < popover < tooltip; never rely on DOM order. */
+    --rd-layer-modal-overlay: 100;
+    --rd-layer-modal: 110;
+    --rd-layer-popover: 120;
+    --rd-layer-tooltip: 130;
+    --rd-layer-alert-overlay: 200;
+    --rd-layer-alert: 210;
+
     color-scheme: light;
     font-family: 'Vazirmatn', 'Inter', sans-serif;
     font-synthesis: none;
