@@ -5,7 +5,7 @@ import { WorkspaceHero, SectionHeader, Container } from '../components/ui';
 export function BuyerDashboardHome() {
     const { t } = useLanguage();
     return (
-        <div className="w-full space-y-7">
+        <div className="w-full space-y-group">
             <WorkspaceHero
                 eyebrow={t("فضای اختصاصی خریدار")}
                 title={t("هنر مورد علاقه‌تان را کشف کنید و گفت‌وگو را ادامه دهید.")}
@@ -16,7 +16,7 @@ export function BuyerDashboardHome() {
                 </>}
             />
 
-            <Container width="wide" className="space-y-7">
+            <Container width="wide" className="space-y-group">
             <section aria-labelledby="buyer-messages-heading" className="grid gap-5 border-y border-border py-6 sm:py-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
                 <div className="min-w-0">
                     <p className="text-[11px] font-extrabold tracking-[.14em] text-terracotta-strong">{t("ارتباط‌های شما")}</p>
