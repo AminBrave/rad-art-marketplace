@@ -1,6 +1,5 @@
 import { Children, cloneElement, forwardRef, isValidElement, useId } from 'react';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
-import * as SelectPrimitive from '@radix-ui/react-select';
 import { Check, ChevronDown } from 'lucide-react';
 import { Tooltip } from './Tooltip';
 import { cn } from '../../lib/utils';
@@ -242,8 +241,6 @@ export const FileInput = forwardRef(function FileInput({ className = '', ...prop
     return <input ref={ref} type="file" className={cn(controlClass, 'cursor-pointer file:ms-3 file: file:border-0 file:bg-surface-muted file:px-3 file:py-2 file:font-semibold', className, '')} {...props} />;
 });
 
-const emptySelectValue = '__radix_empty_option__';
-
 export function SelectField({
     className = '',
     children,
@@ -254,71 +251,33 @@ export function SelectField({
     required = false,
     disabled = false,
     placeholder,
-    ...triggerProps
+    ...selectProps
 }) {
     const { locale } = useLanguage();
-    const options = Children.toArray(children).filter((child) => isValidElement(child) && child.type === 'option');
-    const emptyOption = options.find((option) => String(option.props.value ?? '') === '');
-    const selectableOptions = options.filter((option) => String(option.props.value ?? '') !== '');
-
-    const handleValueChange = (nextValue) => {
-        const next = nextValue === emptySelectValue ? '' : nextValue;
-        onChange?.({ target: { name, value: next } });
-    };
+    const hasEmptyOption = Children.toArray(children).some(
+        (child) => isValidElement(child) && child.type === 'option' && String(child.props.value ?? '') === '',
+    );
 
     return (
-        <SelectPrimitive.Root
-            value={value === '' ? '' : value}
-            defaultValue={defaultValue === '' ? '' : defaultValue}
-            onValueChange={handleValueChange}
-            name={name}
-            required={required}
-            disabled={disabled}
-            modal={false}
-            dir={locale === 'fa' ? 'rtl' : 'ltr'}
-        >
-            <SelectPrimitive.Trigger
-                className={cn(controlClass, 'flex items-center justify-between gap-3 text-start', className, '')}
-                {...triggerProps}
+        <div className="relative min-w-0">
+            <select
+                value={value}
+                defaultValue={defaultValue}
+                onChange={onChange}
+                name={name}
+                required={required}
+                disabled={disabled}
+                dir={locale === 'fa' ? 'rtl' : 'ltr'}
+                className={cn(controlClass, 'appearance-none pe-10 text-start', className)}
+                {...selectProps}
             >
-                <SelectPrimitive.Value placeholder={placeholder ?? emptyOption?.props.children} />
-                <SelectPrimitive.Icon asChild>
-                    <ChevronDown size={16} aria-hidden="true" className="shrink-0 text-muted" />
-                </SelectPrimitive.Icon>
-            </SelectPrimitive.Trigger>
-            <SelectPrimitive.Portal>
-                <SelectPrimitive.Content
-                    position="popper"
-                    sideOffset={4}
-                    className="z-[90] box-border max-h-[var(--radix-select-content-available-height)] min-w-[var(--radix-select-trigger-width)] max-w-[calc(100vw-1rem)] overflow-hidden border border-border bg-paper font-sans text-sm text-ink shadow-raised"
-                >
-                    <SelectPrimitive.Viewport className="p-1.5">
-                        {selectableOptions.map((option) => (
-                            <SelectPrimitive.Item
-                                key={option.key ?? String(option.props.value)}
-                                value={String(option.props.value)}
-                                disabled={option.props.disabled}
-                                textValue={typeof option.props.children === 'string' ? option.props.children : undefined}
-                                className="relative flex min-h-10 cursor-pointer select-none items-center py-2 ps-3 pe-9 font-sans text-sm outline-none data-[highlighted]:bg-surface-muted data-[highlighted]:text-ink data-[disabled]:pointer-events-none data-[disabled]:opacity-40"
-                            >
-                                <SelectPrimitive.ItemText>{option.props.children}</SelectPrimitive.ItemText>
-                                <SelectPrimitive.ItemIndicator className="absolute end-2 inline-flex items-center text-terracotta-strong">
-                                    <Check size={15} aria-hidden="true" />
-                                </SelectPrimitive.ItemIndicator>
-                            </SelectPrimitive.Item>
-                        ))}
-                        {emptyOption && (
-                            <SelectPrimitive.Item
-                                value={emptySelectValue}
-                                className="relative flex min-h-10 cursor-pointer select-none items-center py-2 ps-3 pe-9 font-sans text-sm outline-none data-[highlighted]:bg-surface-muted data-[highlighted]:text-ink"
-                            >
-                                <SelectPrimitive.ItemText>{emptyOption.props.children}</SelectPrimitive.ItemText>
-                            </SelectPrimitive.Item>
-                        )}
-                    </SelectPrimitive.Viewport>
-                </SelectPrimitive.Content>
-            </SelectPrimitive.Portal>
-        </SelectPrimitive.Root>
+                {placeholder && !hasEmptyOption && <option value="" disabled>{placeholder}</option>}
+                {children}
+            </select>
+            <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 end-3 inline-flex items-center text-muted">
+                <ChevronDown size={16} />
+            </span>
+        </div>
     );
 }
 
