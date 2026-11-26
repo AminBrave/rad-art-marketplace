@@ -92,7 +92,7 @@ export default function HomePage() {
     return (
         <div className="w-full min-w-0">
             <DiscoveryHero
-                shape="ribbon"
+                className="rd-home-hero"
                 eyebrow={t('هنر معاصر، از نگاه مستقل')}
                 title={<>{t('هر اثر،')} <span className="block text-[color:var(--rd-hero-accent)]">{t('آغاز یک نگاه تازه.')}</span></>}
                 description={t('راد آرت جایی برای مکث، کشف آثار هنری مستقل، شناخت هنرمندان و شکل‌گرفتن گفت‌وگوهایی تازه درباره هنر است.')}
