@@ -113,13 +113,38 @@ export function UnifiedHero({
     );
 }
 
-export function PageHeader({ eyebrow, title, description, actions, level = 1, bleed = true, className = '', titleClassName = '', descriptionClassName = '' }) {
-    return <UnifiedHero eyebrow={eyebrow} title={title} description={description} actions={actions} level={level} bleed={bleed} className={className} titleClassName={titleClassName} descriptionClassName={descriptionClassName} />;
+export function PageHeader({
+    eyebrow, title, description, breadcrumbs, actions, media, children,
+    level = 1, bleed = true, surface = 'grid', className = '',
+    titleClassName = '', descriptionClassName = '',
+}) {
+    return (
+        <UnifiedHero
+            eyebrow={eyebrow} title={title} description={description}
+            breadcrumbs={breadcrumbs} actions={actions} media={media} level={level}
+            bleed={bleed} surface={surface} className={className}
+            titleClassName={titleClassName} descriptionClassName={descriptionClassName}
+        >
+            {children}
+        </UnifiedHero>
+    );
 }
 
-/** Discovery routes may add breadcrumbs; they share the exact same hero frame. */
-export function DiscoveryHero({ eyebrow, title, description, breadcrumbs, actions, media, children, className = '', titleClassName = '', descriptionClassName = '' }) {
-    return <UnifiedHero eyebrow={eyebrow} title={title} description={description} breadcrumbs={breadcrumbs} actions={actions} media={media} className={className} titleClassName={titleClassName} descriptionClassName={descriptionClassName}>{children}</UnifiedHero>;
+/** Discovery routes may add breadcrumbs; the hero frame remains shared. */
+export function DiscoveryHero({
+    eyebrow, title, description, breadcrumbs, actions, media, children,
+    level = 1, surface = 'grid', className = '', titleClassName = '', descriptionClassName = '',
+}) {
+    return (
+        <UnifiedHero
+            eyebrow={eyebrow} title={title} description={description}
+            breadcrumbs={breadcrumbs} actions={actions} media={media} level={level}
+            surface={surface} className={className}
+            titleClassName={titleClassName} descriptionClassName={descriptionClassName}
+        >
+            {children}
+        </UnifiedHero>
+    );
 }
 
 export function SectionHeader({ id, eyebrow, title, description, actions, className = '', level = 2 }) {
@@ -136,8 +161,21 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
     );
 }
 
-export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
-    return <UnifiedHero eyebrow={eyebrow} title={title} description={description} actions={actions} bleed className={className} />;
+export function WorkspaceHero({
+    eyebrow, title, description, actions, media, children,
+    level = 1, bleed = true, surface = 'grid', className = '',
+    titleClassName = '', descriptionClassName = '',
+}) {
+    return (
+        <UnifiedHero
+            eyebrow={eyebrow} title={title} description={description}
+            actions={actions} media={media} level={level} bleed={bleed}
+            surface={surface} className={className}
+            titleClassName={titleClassName} descriptionClassName={descriptionClassName}
+        >
+            {children}
+        </UnifiedHero>
+    );
 }
 export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, className = '' }) {
     const Element = as ?? (to ? 'a' : 'article');
