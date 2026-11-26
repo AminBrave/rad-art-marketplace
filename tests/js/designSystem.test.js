@@ -163,7 +163,8 @@ test('locale switching persists globally and owns document language and directio
     assert.ok(css.includes('overflow-x: clip;'));
 });
 test('public and workspace navigation expose role-aware destinations and an artist profile preview', () => {
-    assert.ok(layouts.includes('setOpen(false);\n        onNavigate?.();'), 'Opening a notification closes its dialog and the parent navigation drawer before routing.');\n    assert.ok(layouts.includes('navigate(item.target_url || (item.conversation_id'), 'Opening a notification navigates to its target even if marking it read fails.');\n    assert.ok(layouts.includes('function PublicBottomNavigation'));
+    assert.ok(layouts.includes('setOpen(false);\n        onNavigate?.();'), 'Opening a notification closes its dialog and the parent navigation drawer before routing.');
+    assert.ok(layouts.includes('navigate(item.target_url || (item.conversation_id'), 'Opening a notification navigates to its target even if marking it read fails.');\n    assert.ok(layouts.includes('function PublicBottomNavigation'));
     assert.ok(layouts.includes('to: dashboardHref'));
     assert.ok(layouts.includes("outletContext?.profile?.slug"));
     assert.ok(workspaceNavigation.includes("shortLabel: 'داشبورد'"));
