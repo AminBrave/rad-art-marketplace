@@ -70,14 +70,13 @@ export default function ConversationHeader({
                             title={selected?.participant?.name ?? t('گفتگوی خصوصی')}
                             className="truncate text-sm font-extrabold leading-6 text-ink sm:text-base"
                         >
-                            {selected?.participant?.name ?? 'گفتگوی خصوصی'}
+                            {selected?.participant?.name ?? t('گفتگوی خصوصی')}
                         </h2>
                     )}
                     <p className="truncate text-[11px] leading-5 text-muted">{t("گفتگوی خصوصی مستقیم")}</p>
                 </div>
                 <DropdownMenu.Root open={openPopover === 'conversation'} onOpenChange={onPopoverOpenChange}>
-                    <Tooltip content={t("گزینه‌های بیشتر")}>
-                        <DropdownMenu.Trigger asChild>
+                    <DropdownMenu.Trigger asChild>
                             <Button variant="ghost"
                                 type="button"
                                 aria-label={t("گزینه‌های بیشتر گفتگو")}
@@ -85,8 +84,7 @@ export default function ConversationHeader({
                             >
                                 <MoreVertical size={19} aria-hidden="true" />
                             </Button>
-                        </DropdownMenu.Trigger>
-                    </Tooltip>
+                    </DropdownMenu.Trigger>
                     <DropdownMenu.Portal>
                         <DropdownMenu.Content
                            
@@ -94,7 +92,7 @@ export default function ConversationHeader({
                             align="end"
                             sideOffset={8}
                             collisionPadding={8}
-                            className="z-[60] max-h-[min(20rem,var(--radix-dropdown-menu-content-available-height))] min-w-52 max-w-[calc(100vw-1rem)] overflow-y-auto rounded-lg border border-border bg-paper p-1 shadow-soft"
+                            className="z-[var(--rd-layer-popover)] max-h-[min(20rem,var(--radix-dropdown-menu-content-available-height))] min-w-52 max-w-[calc(100vw-1rem)] overflow-y-auto rounded-lg border border-border bg-paper p-1 shadow-soft"
                         >
                             <DropdownMenu.Item
                                 onSelect={onReportConversation}
