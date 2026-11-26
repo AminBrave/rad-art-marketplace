@@ -95,7 +95,7 @@ export default function MessageTimeline({
         </div>
         <DropdownMenu.Root open={openPopover === 'message:' + message.id} onOpenChange={(open) => onPopoverOpenChange('message:' + message.id, open)}>
         <DropdownMenu.Trigger asChild>
-        <Button variant="outline" type="button" title={t("عملیات پیام")} aria-label={t("عملیات پیام")} aria-haspopup="menu" className="!min-h-9 h-9 w-9 min-w-9 shrink-0 border-border-strong bg-paper p-0 text-ink shadow-soft hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"><MoreVertical size={18} strokeWidth={2.25} aria-hidden="true" /></Button>
+        <Button variant="outline" type="button" title={t("عملیات پیام")} aria-label={t("عملیات پیام")} aria-haspopup="menu" className="min-h-9 h-9 w-9 min-w-9 shrink-0 border-border-strong bg-paper p-0 text-ink shadow-soft hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"><MoreVertical size={18} strokeWidth={2.25} aria-hidden="true" /></Button>
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
         <DropdownMenu.Content side="top" align="end" sideOffset={8} collisionPadding={8} onCloseAutoFocus={(event) => {
