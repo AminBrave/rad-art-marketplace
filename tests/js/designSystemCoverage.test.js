@@ -198,13 +198,19 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     assert.ok(css.includes('.rd-unified-hero'));
     assert.ok(css.includes('.rd-hero-surface--grid::before'), 'Hero surfaces must expose the shared grid layer.');
     assert.ok(css.includes('linear-gradient(to right, var(--rd-hero-line) 1px, transparent 1px)'));
-    assert.ok(css.includes('.rd-unified-hero__title-wrap::before'), 'Hero title must have the square backdrop motif.');
+    assert.ok(!css.includes('.rd-unified-hero__title-wrap::before'), 'Hero titles must remain free of the removed square motif.');
     assert.ok(css.includes('radial-gradient(ellipse at 88% 8%, var(--rd-hero-glow), transparent 38%)'));
     assert.ok(css.includes('linear-gradient(125deg, var(--rd-hero-background), var(--rd-hero-background-alt))'));
     assert.ok(css.includes('section.rd-unified-hero {'));
     assert.ok(!css.includes('.rd-unified-hero--workspace'), 'Workspace heroes must not use a contained-width modifier.');
-    assert.ok(primitives.includes("surface = 'grid-square'"));
+    assert.ok(primitives.includes("surface = 'grid'"));
+    assert.ok(primitives.includes('actions={actions} bleed className={className}'), 'WorkspaceHero must use the full-bleed shared hero frame.');
     assert.ok(css.includes('.rd-workspace-content > section'));
+    assert.ok(css.includes('padding-block: var(--rd-layout-section);'), 'Workspace content must use the discovery section rhythm.');
+    assert.ok(css.includes('padding-block: var(--rd-layout-section-wide);'), 'Workspace content must use the responsive discovery section rhythm.');
+    assert.ok(!css.includes('.rd-page-frame--workspace .rd-container {'), 'Workspace Containers must own their own page gutters.');
+    assert.ok(layouts.includes("'rd-workspace-page w-full min-w-0"), 'Workspace page shell must not constrain the route to the header width or add outer gutters.');
+    assert.ok(!layouts.includes("'mx-auto w-full max-w-content px-page-gutter py-5"), 'Workspace pages must not inherit the old constrained outer shell.');
     for (const path of ['resources/js/app/AdminWorkspace.jsx', 'resources/js/app/ArtistWorkspaceOverview.jsx', 'resources/js/app/BuyerWorkspace.jsx', 'resources/js/app/ArtworkStudio.jsx', 'resources/js/app/RoutingPages.jsx', 'resources/js/app/EditorialPages.jsx']) {
         const source = readFileSync(resolve(root, path), 'utf8');
         assert.ok(source.includes('rd-workspace-content'), path + ' must use the shared workspace spacing shell.');
