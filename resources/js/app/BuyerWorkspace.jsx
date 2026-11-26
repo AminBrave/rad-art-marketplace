@@ -5,7 +5,7 @@ import { WorkspaceHero, SectionHeader, Container } from '../components/ui';
 export function BuyerDashboardHome() {
     const { t } = useLanguage();
     return (
-        <div className="w-full space-y-workspace-relaxed">
+        <div className="w-full">
             <WorkspaceHero
                 eyebrow={t("فضای اختصاصی خریدار")}
                 title={t("هنر مورد علاقه‌تان را کشف کنید و گفت‌وگو را ادامه دهید.")}
