@@ -6,7 +6,7 @@ import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-do
 import { useAuth } from './AuthContext';
 import { useTheme } from './useTheme';
 import { useLanguage } from './LanguageContext';
-import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, NotificationListSkeleton, BrandLogo } from '../components/ui';
+import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, NotificationListSkeleton, BrandLogo, PageShell } from '../components/ui';
 
 const publicDiscoveryLinks = [
     { to: '/', label: 'خانه', Icon: House, end: true },
@@ -224,7 +224,7 @@ export function PublicLayout() {
                 {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{t(logoutError)}</p>}
             </header>
 
-            <main id="main-content" className="rd-page-frame">
+            <PageShell as="main" id="main-content">
                 <Outlet />
             </main>
 
@@ -716,7 +716,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                 <main className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'rd-workspace-main min-w-0 w-full'}>
                     {isMessagingRoute
                         ? <Outlet context={outletContext} />
-                        : <div className="rd-page-frame rd-page-frame--workspace"><Outlet context={outletContext} /></div>}
+                        : <PageShell variant="workspace"><Outlet context={outletContext} /></PageShell>}
                 </main>
             </div>
             <AuthenticatedBottomNavigation mobileLinks={mobileWorkspaceLinks} unreadConversationCount={unreadConversationCount} />
