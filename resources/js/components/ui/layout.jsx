@@ -12,7 +12,6 @@ export const Box = forwardRef(function Box({ as: Element = 'div', className = ''
     return <Element ref={ref} className={cn('min-w-0', className)} {...props} />;
 });
 
-export const Flex = forwardRef(function Flex({ as: Element = 'div', direction = 'row', align, justify, wrap = false, gap, className = '', style, ...props }, ref) {
 const spacingValue = (value) => typeof value === 'number'
     ? `var(--rd-space-${String(value).replace('.', '-')}, ${value * 0.25}rem)`
     : value;
