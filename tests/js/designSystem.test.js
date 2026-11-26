@@ -424,7 +424,7 @@ test('navigation and dialog primitives use Tailwind state and focus utilities', 
 test('form controls and helper hints use accessible shared Radix primitives', () => {
     assert.ok(primitives.includes('forwardRef(function Button'));
     assert.ok(primitives.includes('SelectPrimitive.Root'));
-    assert.ok(primitives.includes('modal={false}'));
+    assert.ok(primitives.includes('SelectPrimitive.Portal'));
     assert.ok(primitives.includes('CheckboxPrimitive.Root'));
     assert.ok(primitives.includes("type: 'checkbox'"));
     assert.ok(primitives.includes('data-[state=checked]:bg-terracotta'));
