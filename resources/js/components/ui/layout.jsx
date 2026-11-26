@@ -41,7 +41,8 @@ export const Container = forwardRef(function Container({ as: Element = 'div', wi
 });
 
 export const Section = forwardRef(function Section({ as: Element = 'section', bleed = false, spacing = 'section', className = '', ...props }, ref) {
-    const sectionSpacing = Element === 'section' ? `py-${spacing}` : '';
+    const sectionSpacings = { page: 'py-page', section: 'py-section', group: 'py-group', component: 'py-component', compact: 'py-compact' };
+    const sectionSpacing = Element === 'section' ? sectionSpacings[spacing] ?? sectionSpacings.section : '';
     return <Element ref={ref} className={cn('min-w-0', sectionSpacing, bleed && 'rd-bleed', className)} {...props} />;
 });
 
