@@ -195,13 +195,13 @@ test('public and workspace navigation expose role-aware destinations and an arti
     assert.ok(layouts.includes("outletContext?.profile?.slug"));
     assert.ok(artistWorkspace.includes('پیش‌نمایش پروفایل'));
     assert.ok(artistWorkspace.includes('ویرایش پروفایل'));
-    assert.ok(artistProfile.includes('aria-label={t("پروفایل هنرمند")}'));
+    assert.ok(artistProfile.includes('<DiscoveryHero') && artistProfile.includes('alt={t("تصویر نمایه هنرمند")}'), 'Artist identity is presented in the shared discovery hero with meaningful image text.');
     assert.ok(artistProfile.includes('دنبال‌کننده'));
     assert.ok(artistProfile.includes('grid-cols-[10rem_minmax(0,1fr)]'));
 });
 
 test('featured collections header follows the full-width artwork gallery header pattern', () => {
-    assert.ok(editorialPages.includes('PageHeader eyebrow={t("انتخاب سردبیر")}'));
+    assert.ok(editorialPages.includes('eyebrow={t("انتخاب سردبیر")}'));
     assert.doesNotMatch(editorialPages.split('PageHeader eyebrow={t("انتخاب سردبیر")}')[1]?.split('/>')[0] ?? '', /max-w-3xl/);
 });
 
@@ -212,15 +212,15 @@ test('comment discussions use nested cards and a clear reply hierarchy', () => {
     assert.ok(artworkEngagement.includes('space-y-3'));
 });
 
-test('square corners are defined by design tokens without global CSS overrides', () => {
+test('semantic radius utilities reference design tokens without global CSS overrides', () => {
     assert.ok(css.includes('--rd-radius-0: 0;'));
     assert.ok(css.includes('--rd-radius-sm: var(--rd-radius-0);'));
     assert.doesNotMatch(css, /border-radius:\s*0\s*!important/);
-    assert.ok(tailwind.includes("full: 'var(--rd-radius-0)'"));
-    assert.ok(tailwind.includes("card: 'var(--rd-radius-0)'"));
-    assert.ok(tailwind.includes("pill: 'var(--rd-radius-0)'"));
+    assert.ok(tailwind.includes("full: 'var(--rd-radius-pill)'"));
+    assert.ok(tailwind.includes("card: 'var(--rd-radius-lg)'"));
+    assert.ok(tailwind.includes("pill: 'var(--rd-radius-pill)'"));
     for (const source of [primitives, layoutPrimitives, feedback, navigation, dialog, alertDialog, tooltip, skeletons, messageTimeline, messageComposer, homePage]) {
-        assert.doesNotMatch(source, /\brounded(?!-none\b)(?:-[a-z0-9-]+)?\b/);
+        assert.doesNotMatch(source, /\brounded-(?:sm|md|lg|xl|2xl|3xl)\b/, 'Components must use semantic radius aliases rather than arbitrary radius scales.');
     }
 });
 
@@ -241,7 +241,7 @@ test('editorial hero surfaces define readable light and dark semantic palettes',
     assert.ok(css.includes('.rd-hero-surface'));
     assert.ok(primitives.includes('rd-hero-surface') && primitives.includes('text-[color:var(--rd-hero-foreground)]'), 'Shared PageHeader and WorkspaceHero use theme-aware foregrounds.');
     assert.ok(homePage.includes('text-[color:var(--rd-hero-foreground)]'));
-    assert.ok(publicPages[1].includes('text-[color:var(--rd-hero-foreground)]'));
+    assert.ok(artistProfile.includes('text-[color:var(--rd-hero-foreground)]'), 'Public artist profiles use the shared theme-aware hero foreground.');
     assert.ok(routeLoading.includes('rd-hero-surface'), 'Artist directory loading state mirrors the theme-aware hero.');
 });
 
@@ -286,7 +286,7 @@ test('Tailwind semantic aliases reference CSS variables rather than duplicate li
     assert.ok(tailwind.includes('var(--rd-canvas)'));
     assert.ok(tailwind.includes('var(--rd-text-primary)'));
     assert.ok(tailwind.includes('var(--rd-action)'));
-    assert.ok(tailwind.includes("control: 'var(--rd-radius-0)'"));
+    assert.ok(tailwind.includes("control: 'var(--rd-radius-md)'"));
     assert.ok(tailwind.includes('var(--rd-success)'));
     assert.ok(css.includes('--text-base: var(--rd-text-base)'));
     assert.ok(css.includes('--space-4: var(--rd-space-4)'));
@@ -304,7 +304,7 @@ test('shared primitives express accessible component contracts with semantic Tai
     assert.ok(primitives.includes("'aria-invalid': error ? true"));
     assert.ok(primitives.includes('bg-accent-surface text-terracotta-strong'));
     assert.ok(primitives.includes('before:bg-terracotta'), 'SectionHeader keeps its restrained eyebrow rule; hero headers remain free of decorative accents.');
-    assert.ok(primitives.includes('text-[clamp(1.75rem,3.2vw,2.6rem)]'));
+    assert.ok(primitives.includes('text-[clamp(1.75rem,4.2vw,3.5rem)]'));
     assert.ok(primitives.includes('max-sm:w-full max-sm:pb-0'));
     assert.doesNotMatch(primitives, /ra-[a-z]/);
 });
@@ -350,15 +350,13 @@ test('shared layout and form primitives expose semantic utility compositions', (
 });
 
 test('artist profile content cannot expand the viewport horizontally', () => {
-    assert.ok(artistProfile.includes('Container as=\"div\" width=\"wide\"'));
-    assert.ok(artistProfile.includes('overflow-x-clip pb-16 pt-8'));
-    assert.ok(artistProfile.includes('break-words text-2xl font-black tracking-tight text-ink sm:text-3xl [overflow-wrap:anywhere]'));
-    assert.ok(artistProfile.includes('whitespace-pre-line break-words text-sm leading-8 text-muted [overflow-wrap:anywhere]'));
-    assert.ok(artistProfile.includes('flex min-w-0 max-w-full flex-wrap items-center gap-x-3 gap-y-2 break-words text-xs text-muted'));
+    assert.ok(artistProfile.includes('<div className="min-h-[65vh] overflow-x-clip">'));
+    assert.ok(artistProfile.includes('<Container width="wide">'));
+    assert.ok(artistProfile.includes('<Section spacing="regular" className="mt-10 min-w-0 max-w-full"'));
     assert.ok(artistProfile.includes('grid min-w-0 max-w-full grid-cols-1'));
     assert.ok(artistProfile.includes('className="min-w-0 [overflow-wrap:anywhere]"'));
+    assert.ok(primitives.includes('break-words text-[clamp(1.75rem,4.2vw,3.5rem)]'), 'Shared hero headings wrap long artist names safely.');
 });
-
 test('route canvases stay full-width and route content uses shared section containers', () => {
     assert.match(css, /\.rd-page-frame\s*\{[^}]*width:\s*100%;[^}]*margin:\s*0;/s);
     assert.ok(layoutPrimitives.includes("bleed && 'rd-bleed'"));
@@ -370,7 +368,7 @@ test('route canvases stay full-width and route content uses shared section conta
     assert.ok(layouts.includes('rd-workspace-main min-w-0 w-full'));
     assert.doesNotMatch(layouts, /lg:grid-cols-\[var\(--rd-workspace-sidebar-width/);
     assert.ok(layouts.includes('rd-workspace-main min-w-0'));
-    assert.ok(layouts.includes('mx-auto w-full max-w-content px-page-gutter'));
+    assert.ok(layoutPrimitives.includes("wide: 'mx-auto w-full max-w-content'") && layouts.includes('<PageShell variant="workspace">'));
     assert.ok(layouts.includes('pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)]'));
     assert.ok(layoutPrimitives.includes("resolvedWidth !== 'wide' &&"));
     assert.ok(layoutPrimitives.includes("wide: 'mx-auto w-full max-w-content'"));
@@ -387,7 +385,7 @@ test('route canvases stay full-width and route content uses shared section conta
 });
 
 test('public catalogue, artist directory and artwork detail use shared page layout primitives', () => {
-    assert.ok(publicPages[0].includes('Container') && publicPages[0].includes('PageHeader'));
+    assert.ok(publicPages[0].includes('Container') && publicPages[0].includes('DiscoveryHero'));
     assert.ok(publicPages[1].includes('Container') && publicPages[1].includes('SectionHeader'));
     assert.ok(publicPages[1].includes('<Section bleed') && publicPages[1].includes('rd-hero-surface'), 'Artist directory hero uses the shared adaptive full-bleed surface.');
     assert.ok(publicPages[2].includes('Container') && publicPages[2].includes('width=\"wide\"'));
@@ -398,9 +396,11 @@ test('public catalogue, artist directory and artwork detail use shared page layo
 });
 
 test('public and role-based workspaces use shared semantic shell utilities', () => {
-    for (const utility of ['min-h-screen bg-canvas text-ink', 'sticky top-0 z-40 border-b border-divider-section', 'mx-auto w-full max-w-content px-page-gutter']) {
-        assert.ok(layouts.includes(utility), 'Missing shell utility: ' + utility);
-    }
+    assert.ok(layouts.includes('sticky top-0 z-40 border-b border-divider-section'));
+    assert.ok(layouts.includes('<PageShell as="main" id="main-content">'));
+    assert.ok(layouts.includes('<PageShell variant="workspace">'));
+    assert.ok(layoutPrimitives.includes('rd-page-frame') && layoutPrimitives.includes('min-w-0 w-full'));
+    assert.ok(layoutPrimitives.includes("wide: 'mx-auto w-full max-w-content'"));
     assert.doesNotMatch(layouts, /ra-[a-z]/);
 });
 
@@ -549,8 +549,8 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden'));
     assert.ok(messaging.includes('grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1'));
     assert.ok(layouts.includes('const isMessagingRoute = pathname.endsWith(\'/messages\')'));
-    assert.ok(layouts.includes('h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
-    assert.ok(layouts.includes('sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
+    assert.ok(layouts.includes('h-[calc(100dvh-var(--rd-workspace-header-height)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
+    assert.ok(layouts.includes('sm:h-[calc(100dvh-var(--rd-workspace-header-height-wide)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.ok(layouts.includes('h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.doesNotMatch(layouts, /lg:grid-cols-\[15rem_minmax\(0,1fr\)\]/);
     assert.doesNotMatch(layouts, /direction:ltr|<aside dir="rtl"|<main dir="rtl"/);
@@ -670,9 +670,9 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(workspaceLayout.includes('workspaceLinks.map((item)'));
     assert.ok(bottomNavigation.includes('fixed inset-x-0 bottom-0 z-50'));
     assert.ok(bottomNavigation.includes('lg:w-fit lg:grid-flow-col lg:auto-cols-[7rem]'));
-    assert.ok(workspaceLayout.includes('mx-auto w-full max-w-content px-page-gutter py-5'), 'Workspace content uses a centered page shell.');
+    assert.ok(workspaceLayout.includes('<PageShell variant="workspace">'), 'Workspace content uses the shared full-width page frame.');
     assert.ok(css.includes('.rd-container:not(.rd-container--full) {\n    padding-inline: var(--rd-page-gutter);'), 'Shared sections own their default horizontal gutters.');
-    assert.ok(layouts.includes('mx-auto w-full max-w-content px-page-gutter'), 'Workspace shell applies the shared page gutter outside its section containers.');
+    assert.ok(layoutPrimitives.includes("wide: 'mx-auto w-full max-w-content'") && css.includes('.rd-container:not(.rd-container--full)'), 'Wide Containers own content width while the shared CSS rule applies gutters.');
     assert.ok(css.includes('.rd-page-frame--workspace {\n    width: 100%;'), 'Workspace page frame stays full-width without owning section gutters.');
     assert.ok(workspaceLayout.includes('<ThemeControl />'), 'Workspace appearance controls are available from the hamburger drawer.');
     assert.ok(workspaceLayout.includes('<LanguageControl />'), 'Workspace language control is available from the hamburger drawer.');
