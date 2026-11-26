@@ -459,8 +459,10 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'Dropdown menus must inherit the application font and stay within the viewport.');
     assert.match(navigation, /font-sans text-sm outline-none/,
         'Dropdown items must not fall back to browser or portal font defaults.');
-    assert.match(primitives, /<select[\s\S]*?dir=\{locale === 'fa' \? 'rtl' : 'ltr'\}[\s\S]*?font-sans/,
-        'Select controls must use a native non-modal popup with the locale direction and application font.');
+    assert.match(primitives, /<select[\s\S]*?dir=\{locale === 'fa' \? 'rtl' : 'ltr'\}[\s\S]*?className=\{cn\(controlClass/,
+        'Select controls must use a native non-modal popup with the locale direction and shared control typography.');
+    assert.match(primitives, /const controlClass = '[^']*font-sans/,
+        'Native select controls must inherit the application font token.');
     assert.doesNotMatch(primitives, /SelectPrimitive/,
         'Select controls must not mount a modal portal that locks document scrolling.');
     assert.match(timeline, /<DropdownMenu\.Trigger asChild>[\s\S]*?<Button variant="outline"[^>]*title=\{t\("عملیات پیام"\)\}[^>]*aria-haspopup="menu"/,
@@ -473,7 +475,7 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'Message bubbles must inherit the locale-aware application font.');
     assert.ok(timeline.includes("(own ? 'justify-end' : 'justify-start')"),
         'Outgoing messages must sit at logical inline-end and incoming messages at inline-start in both RTL and LTR.');
-    assert.match(composer, /<TextareaField dir="auto"[^>]*className="[^"]*font-sans/,
+    assert.ok(composer.includes('<TextareaField dir="auto"') && composer.includes('font-sans text-[14px]'),
         'The composer must use the locale-aware font and resolve direction from message content.');
     assert.doesNotMatch(cssSource, /\[dir=['"]ltr['"]\]\s*\{\s*font-family:/,
         'Text direction must not globally override component font inheritance.');
