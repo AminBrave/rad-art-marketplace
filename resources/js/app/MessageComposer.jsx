@@ -1,4 +1,4 @@
-import { MediaImage, TextareaField, FileInput, Button } from '../components/ui';
+import { MediaImage, TextareaField, FileInput } from '../components/ui';
 import { useLanguage } from './LanguageContext';
 import { Link } from 'react-router-dom';
 import { FileText, LoaderCircle, Paperclip, Send, X } from 'lucide-react';
