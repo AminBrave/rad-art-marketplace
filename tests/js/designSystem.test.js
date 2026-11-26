@@ -230,7 +230,8 @@ test('semantic radius utilities reference design tokens without global CSS overr
 
 test('homepage discovery groups and artist spotlight use reusable card structure with RTL layout', () => {
     assert.ok(homePage.includes('grid-cols-[3rem_minmax(0,1fr)]'));
-    assert.ok(homePage.includes('bg-surface-muted py-section sm:py-section-wide'));
+    assert.ok(homePage.includes('bg-surface-muted'));
+    assert.doesNotMatch(homePage, /py-section|py-section-wide/, 'Homepage sections must rely on the shared py-4 Section primitive.');
     assert.ok(homePage.includes("ARTIST SPOTLIGHT / {t('هنرمند منتخب')}"));
     assert.ok(homePage.includes('rd-hero-surface') && homePage.includes('border-y border-[color:var(--rd-hero-line)]'));
     assert.ok(homePage.includes('<Card'));
