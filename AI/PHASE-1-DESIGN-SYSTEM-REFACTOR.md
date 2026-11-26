@@ -406,7 +406,8 @@ Each slice should have a short feature-specific contract and tests. Do not make 
 - Public collection and artwork sections now use explicit regular/relaxed Section rhythm; workspace groupings use `spacing="none"` because their inner content and parent workspace composition own the rhythm.
 - Kept width and responsive inline gutters on nested `Container width="wide"` elements.
 - Moved the artist-directory accessible section label and artwork-gallery anchor ID onto their semantic Section wrappers.
-- Added a source-wide regression test prohibiting `Container as="section"` across frontend JS/JSX.
+- Migrated the homepage first-paint skeleton's hero, artwork, and artist groups to semantic `Section` wrappers with nested width-owning Containers; retained their existing skeleton geometry and utility-driven padding.
+- Added a source-wide regression test prohibiting `Container as="section"` across frontend JS/JSX, including shared UI components.
 
 **Verification status:**
 
