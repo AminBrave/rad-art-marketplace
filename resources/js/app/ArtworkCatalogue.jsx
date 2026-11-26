@@ -118,12 +118,12 @@ export default function ArtworkCatalogue() {
     }, [hasNextPage, fetchNextPage, loadingMore, error]);
 
     return (
-        <div className="w-full min-w-0 min-h-[65vh] py-10 lg:py-14">
+        <div className="w-full min-w-0 min-h-[65vh] py-page">
             <Container width="wide">
                 <PageHeader eyebrow={t("آرشیو عمومی راد آرت")} title={t("گالری آثار")} description={t("در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید.")} />
             </Container>
 
-            <Section as="section" bleed aria-label={t("فیلتر و مرتب‌سازی آثار")} className="relative mt-8 border-y border-divider-section bg-surface-muted/70 py-6 sm:py-7">
+            <Section as="section" bleed aria-label={t("فیلتر و مرتب‌سازی آثار")} className="relative mt-group border-y border-divider-section bg-surface-muted/70 py-group">
                 <Container width="wide">
                 <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
                     <div>
