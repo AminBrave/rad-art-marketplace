@@ -132,15 +132,15 @@ test('messaging avatars and artwork chips use square geometry without decorative
     assert.ok(css.includes('rd-message-bubble--peer::before'));
 });
 
-test('homepage hero artwork remains centered in a responsive 3:4 frame without overflowing its content container', () => {
-    assert.doesNotMatch(homePage, /w-full min-w-0 overflow-hidden["']/);
+test('homepage hero stacks artwork above copy on mobile and keeps a two-column desktop layout', () => {
+    assert.ok(homePage.includes('mediaPosition="before"'), 'Homepage hero artwork must precede its copy on mobile.');
+    assert.ok(primitives.includes("mediaPosition = 'after'"), 'The shared hero keeps media order configurable without changing other pages.');
+    assert.ok(primitives.includes("mediaPosition === 'before' && 'order-last lg:order-first'"));
+    assert.ok(primitives.includes("mediaPosition === 'before' && 'order-first lg:order-last'"));
     assert.ok(homePage.includes('relative aspect-[3/4] w-full overflow-hidden'));
-    assert.ok(homePage.includes('lg:flex-row lg:items-center lg:justify-between lg:gap-16'));
-    assert.ok(homePage.includes('lg:flex-1 lg:py-10'), 'Hero copy flexes into the remaining desktop column width.');
-    assert.ok(homePage.includes('lg:mx-0 lg:w-2/5 lg:max-w-[28rem] lg:shrink-0'), 'Hero artwork has a bounded desktop width without auto margins.');
-    assert.doesNotMatch(homePage, /className="grid items-center gap-10 lg:grid-cols-/, 'The homepage hero must not use CSS Grid.');
-    assert.doesNotMatch(homePage, /lg:w-\[55%\]|lg:w-\[45%\]|lg:gap-20/);
-    assert.doesNotMatch(homePage, /sm:aspect-\[3\/4\]|lg:aspect-\[3\/4\]/);
+    assert.ok(css.includes('grid-template-columns: minmax(0, 1fr);'), 'Mobile homepage hero must use one full-width column.');
+    assert.ok(primitives.includes('lg:grid-cols-[minmax(0,1.15fr)_minmax(17rem,.85fr)]'), 'The shared hero restores its balanced two-column layout on desktop.');
+    assert.doesNotMatch(css, /grid-template-columns: minmax\(0, 1fr\) minmax\(6\.5rem, \.52fr\)/, 'Mobile hero must not squeeze the image beside its copy.');
 });
 
 test('locale switching persists globally and owns document language and direction', () => {
