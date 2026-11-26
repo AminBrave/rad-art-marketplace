@@ -455,6 +455,8 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
     const conversationHeader = readFileSync(resolve(root, 'resources/js/app/ConversationHeader.jsx'), 'utf8');
     const composer = readFileSync(resolve(root, 'resources/js/app/MessageComposer.jsx'), 'utf8');
     const cssSource = readFileSync(resolve(root, 'resources/css/app.css'), 'utf8');
+    const dialog = readFileSync(resolve(root, 'resources/js/components/ui/Dialog.jsx'), 'utf8');
+    const alertDialog = readFileSync(resolve(root, 'resources/js/components/ui/AlertDialog.jsx'), 'utf8');
 
     assert.match(navigation, /DropdownMenuPrimitive\\.Root modal=\\{false\\} dir=\\{locale === 'fa' \\? 'rtl' : 'ltr'\\}/,
         'Dropdown menus must remain Radix-based, avoid body scroll locking, and follow the active locale direction.');
@@ -476,6 +478,12 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'The message menu trigger must keep a stable hit target at the logical inline-end.');
     assert.ok(!timeline.includes('<Tooltip content={t("عملیات پیام")}>'),
         'The message menu trigger must not nest competing Radix Tooltip and DropdownMenu triggers.');
+    assert.ok(!timeline.includes('<Tooltip content={t("افزودن واکنش")}>'),
+        'The reaction menu trigger must not nest a Tooltip trigger around its DropdownMenu trigger.');
+    assert.ok(!conversationHeader.includes('<Tooltip content={t("گزینه‌های بیشتر")}>'),
+        'The conversation menu trigger must not nest a Tooltip trigger around its DropdownMenu trigger.');
+    assert.ok(dialog.includes('z-[var(--rd-layer-modal-overlay)]') && dialog.includes('z-[var(--rd-layer-modal)]'));
+    assert.ok(alertDialog.includes('z-[var(--rd-layer-alert-overlay)]') && alertDialog.includes('z-[var(--rd-layer-alert)]'));
     assert.match(timeline, /dir=\\{locale === 'fa' \\? 'rtl' : 'ltr'\\}/,
         'The complete message timeline must explicitly inherit the locale direction.');
     assert.match(messagingCenter, /<section dir=\\{locale === 'fa' \\? 'rtl' : 'ltr'\\}/,
@@ -490,6 +498,9 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'The inbox overflow trigger must sit above the full-row selection button and remain clickable.');
     assert.match(inbox, /pointer-events-auto relative z-30 inline-flex h-9[\\s\\S]*?border-0 bg-transparent p-0[\\s\\S]*?shadow-none/,
         'The inbox overflow action must be an icon-only control with no surface, border or shadow.');
+        'The inbox overflow action must be an icon-only control with no surface, border or shadow.');
+    assert.match(inbox, /z-\\[var\\(--rd-layer-popover\\)\\]/,
+        'Inbox menu content must use the shared popover layer.');
     assert.ok(!inbox.includes('<Tooltip content={t("گزینه‌های گفتگو")}>'),
         'The inbox menu must not nest a Tooltip trigger around its Radix trigger.');
     assert.match(messagingCenter, /<div dir=\{locale === 'fa' \? 'rtl' : 'ltr'\} className="grid h-full/,
