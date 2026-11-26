@@ -274,6 +274,18 @@ test('Page and section headers retain the requested heading hierarchy', () => {
     assert.match(hero, /خوش آمدید/);
 });
 
+test('DiscoveryHero can place artwork above its copy on mobile while restoring desktop order', () => {
+    const html = renderToStaticMarkup(
+        React.createElement(primitives.DiscoveryHero, {
+            mediaPosition: 'before',
+            title: 'کشف هنر',
+            media: React.createElement('div', null, 'اثر منتخب'),
+        }),
+    );
+    assert.match(html, /rd-unified-hero__title-wrap[^"]*order-last lg:order-first/);
+    assert.match(html, /order-first lg:order-last[^"]*">اثر منتخب/);
+});
+
 test('PageContainer and Surface preserve semantic element and variant contracts', () => {
     const container = renderToStaticMarkup(
         React.createElement(primitives.PageContainer, { as: 'main', width: 'reading' }, 'محتوا'),
