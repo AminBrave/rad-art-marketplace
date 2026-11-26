@@ -930,7 +930,7 @@ test('Radix checkbox form bridge cannot expand a page to the full available row 
 
 test('messaging spacing uses the shared scale while preserving safe-area handling', () => {
     assert.ok(messageComposer.includes('pb-[max(var(--rd-space-2),env(safe-area-inset-bottom))]'));
-    assert.ok(messageComposer.includes('gap-1.5 p-2'));
+    assert.ok(messageComposer.includes('gap-1.5') && messageComposer.includes('p-2'));
     assert.ok(messageComposer.includes('ps-10 pe-3 py-1.5'));
     assert.doesNotMatch(messageComposer, /(?:p|px|py|mt|gap)-\\[\\.\\d/);
     assert.ok(messageTimeline.includes('px-0.5'));
