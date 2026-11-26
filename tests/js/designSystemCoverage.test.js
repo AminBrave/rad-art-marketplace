@@ -214,6 +214,7 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     for (const path of ['resources/js/app/AdminWorkspace.jsx', 'resources/js/app/ArtistWorkspaceOverview.jsx', 'resources/js/app/BuyerWorkspace.jsx', 'resources/js/app/ArtworkStudio.jsx', 'resources/js/app/RoutingPages.jsx', 'resources/js/app/EditorialPages.jsx']) {
         const source = readFileSync(resolve(root, path), 'utf8');
         assert.ok(source.includes('rd-workspace-content'), path + ' must use the shared workspace spacing shell.');
+        assert.doesNotMatch(source, /<PageHeader bleed=\{false\}/, path + ' must not constrain a page hero inside its content container.');
     }
     assert.ok(!css.includes('data-shape='));
     const home = readFileSync(resolve(root, 'resources/js/app/HomePage.jsx'), 'utf8');
