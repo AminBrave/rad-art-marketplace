@@ -83,8 +83,8 @@ test('workspace page headers opt out of viewport bleed', () => {
 test('workspace heroes stay inside the dashboard content column', () => {
     assert.match(primitives, /<section className="rd-hero-surface my-3 border-y/);
     assert.doesNotMatch(primitives, /<section className="rd-bleed rd-hero-surface/);
-    assert.ok(artistWorkspace.includes('<div className="min-w-0 w-full space-y-7">'));
-    assert.doesNotMatch(artistWorkspace, /<div className="rd-container min-w-0 mx-auto w-full max-w-content space-y-7">/);
+    assert.ok(artistWorkspace.includes('<div className="min-w-0 w-full space-y-group">'));
+    assert.doesNotMatch(artistWorkspace, /<div className="rd-container min-w-0 w-full space-y-group">/);
 });
 
 test('artwork and artist cards preserve matte spacing with cover imagery and card surfaces', () => {
@@ -227,7 +227,7 @@ test('square corners are defined by design tokens without global CSS overrides',
 
 test('homepage discovery groups and artist spotlight use reusable card structure with RTL layout', () => {
     assert.ok(homePage.includes('grid-cols-[3rem_minmax(0,1fr)]'));
-    assert.ok(homePage.includes('bg-surface-muted py-16 sm:py-24'));
+    assert.ok(homePage.includes('bg-surface-muted py-section'));
     assert.ok(homePage.includes("ARTIST SPOTLIGHT / {t('هنرمند منتخب')}"));
     assert.ok(homePage.includes('rd-hero-surface') && homePage.includes('border border-[color:var(--rd-hero-line)]'));
     assert.ok(homePage.includes('<Card'));
@@ -251,7 +251,7 @@ test('buttons enforce square geometry and shared alignment', () => {
 });
 
 test('section primitives provide consistent vertical rhythm', () => {
-    assert.ok(layoutPrimitives.includes("Element === 'section' ? 'py-16 sm:py-24'"));
+    assert.ok(layoutPrimitives.includes("Element === 'section' ? 'py-section'"));
     assert.doesNotMatch(layoutPrimitives.slice(layoutPrimitives.indexOf('export const Container'), layoutPrimitives.indexOf('export const Section')), /py-16|py-24/);
 });
 
