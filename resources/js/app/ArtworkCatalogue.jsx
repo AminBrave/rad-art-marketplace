@@ -193,6 +193,11 @@ export default function ArtworkCatalogue() {
             {!loading && !error && artworks.length > 0 && (
                 <div className="mt-10 flex min-h-16 flex-col items-center justify-center gap-3 border-t border-border pt-6" aria-live="polite">
                     {artworksQuery.isFetchNextPageError && <p role="alert" className="text-sm text-danger">{t("دریافت آثار بیشتر انجام نشد.")}</p>}
+                    <p className="text-xs tabular-nums text-muted">
+                        {locale === 'fa'
+                            ? `نمایش ${artworks.length.toLocaleString('fa-IR')} از ${meta.total.toLocaleString('fa-IR')} اثر`
+                            : `Showing ${artworks.length.toLocaleString('en-US')} of ${meta.total.toLocaleString('en-US')} artworks`}
+                    </p>
                     {artworksQuery.hasNextPage ? (
                         <>
                             <span ref={loadMoreRef} className="h-px w-full" aria-hidden="true" />
