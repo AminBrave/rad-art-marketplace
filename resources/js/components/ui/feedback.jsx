@@ -48,7 +48,7 @@ export function ErrorState({ title = 'مشکلی پیش آمد', description, on
             <h2 className="font-bold text-danger">{t(title)}</h2>
             {description && <p className="text-sm leading-7 text-muted">{t(description)}</p>}
             {onRetry && <Button variant="outline" size="sm" onClick={onRetry}>{t(retryLabel)}</Button>}
-        </section>
+        </Section>
     );
 }
 
@@ -68,7 +68,7 @@ export function PermissionState({ title = 'دسترسی مجاز نیست', desc
         <Section spacing="regular" as="section" role="status" className={`border border-border bg-surface-muted px-5 ${className}`}>
             <h2 className="font-bold text-ink">{t(title)}</h2>
             {description && <p className="mt-2 text-sm leading-7 text-muted">{t(description)}</p>}
-        </section>
+        </Section>
     );
 }
 
