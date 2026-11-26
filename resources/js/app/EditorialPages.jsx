@@ -239,7 +239,7 @@ export function AdminEditorialPage() {
                         )}
                     </div>
                 </article>)}</div> : <EmptyState title="مجموعه‌ای ثبت نشده است" />}</Section>
-            <Section spacing="regular" className="space-y-5 border-y border-border bg-transparent py-6 sm:py-8">
+            <Section spacing="regular" className="space-y-5 border-y border-border bg-transparent">
                 <SectionHeader title={t("هنرمندان منتخب")} description={t('انتخاب‌ها به ترتیب انتخاب شما در صفحه اصلی نمایش داده می‌شوند. بازه انتشار از طریق API قابل تنظیم است.')} className="border-0 pb-0" />
                 <div className="grid gap-3 sm:grid-cols-2">
                     {options.artists.map((artist) => {
