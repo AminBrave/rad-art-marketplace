@@ -130,6 +130,7 @@ export default {
                 group: 'var(--rd-space-group)',
                 component: 'var(--rd-space-component)',
                 compact: 'var(--rd-space-compact)',
+                'message-gutter': 'var(--rd-space-message-gutter)',
                 'page-gutter': 'var(--rd-page-gutter)',
                 'editorial-1': 'var(--rd-space-1)',
                 'editorial-2': 'var(--rd-space-2)',
