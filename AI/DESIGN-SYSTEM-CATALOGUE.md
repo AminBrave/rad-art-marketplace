@@ -38,7 +38,7 @@ Evaluate these rules across mobile/tablet/desktop and RTL/LTR. Do not mistake vi
 ### Discovery hero and breadcrumb standard
 
 - Public discovery pages use the shared `DiscoveryHero` anatomy and tokens: homepage, artwork catalogue, artist directory/profile, artwork detail and collection index/detail.
-- The layout, typography, content width, vertical rhythm, surface, actions and responsive behavior remain consistent. All routes use the original clean radial-accent and layered-gradient surface; do not add grid and title-square motifs or route-specific decorative variants.
+- The layout, typography, content width, vertical rhythm, surface, actions and responsive behavior remain consistent. All routes use the shared radial-accent and layered-gradient surface with its low-contrast grid texture; do not add the removed title-square motif or route-specific decorative variants.
 - Breadcrumbs appear only in public discovery and only at the top of the first hero. The homepage is the root and omits a redundant trail.
 - Never show breadcrumbs in dashboards, admin pages, settings, messaging, or artist/buyer workspaces. Never place a separate breadcrumb strip above/below the hero.
 - Breadcrumbs use localized ancestor labels, a current-page item, semantic navigation/list markup and `aria-current="page"`.
@@ -353,9 +353,9 @@ Before considering a component or page complete:
 
 ### UnifiedHero
 
-`UnifiedHero` is the single full-width hero composition used by `PageHeader`, `DiscoveryHero`, and `WorkspaceHero`. It owns the shared gradient-and-glow surface, typography, content width, and responsive vertical rhythm. Workspace wrappers use a contained frame aligned to the workspace content column. Only public discovery routes may pass breadcrumbs. The homepage hero fills the available viewport after accounting for the global header and mobile bottom navigation.
+`UnifiedHero` is the single full-width hero composition used by `PageHeader`, `DiscoveryHero`, and `WorkspaceHero`. It owns the shared gradient-and-glow surface, grid texture, typography, content width, and responsive vertical rhythm. Workspace heroes use the same full-bleed frame as discovery heroes. Workspace route shells do not constrain width or add gutters; each content `Container` owns its responsive gutters. Only public discovery routes may pass breadcrumbs. The homepage hero fills the available viewport after accounting for the global header and mobile bottom navigation.
 
 
 ### Hero surface and result sections
 
-The shared `.rd-hero-surface` restores the original theme-aware radial accent and layered gradient without a grid and title-square motif. Keep result heading, result count, artwork grid and pagination/load-more control within one semantic discovery section. Inner Containers should not duplicate vertical padding already owned by the section. Homepage featured artwork remains 3:4 portrait on mobile and desktop.
+The shared `.rd-hero-surface` uses the theme-aware radial accent and layered gradient with a low-contrast grid texture, without the title-square motif. Keep result heading, result count, artwork grid and pagination/load-more control within one semantic discovery section. Inner Containers should not duplicate vertical padding already owned by the section. Homepage featured artwork remains 3:4 portrait on mobile and desktop.
