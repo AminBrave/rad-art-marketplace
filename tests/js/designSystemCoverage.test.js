@@ -64,6 +64,16 @@ test('presentation sources do not embed hex colors in Tailwind utility classes',
     assert.deepEqual(violations, [], 'Replace arbitrary hex utilities with RAD semantic tokens or intentional documented content colors.');
 });
 
+test('presentation sources avoid raw arbitrary spacing values', () => {
+    const arbitrarySpacing = /\\b(?:p|px|py|pt|pb|ps|pe|m|mx|my|mt|mb|ms|me|gap|gap-x|gap-y|space-x|space-y)-\\[[^\\]]*(?:\\d+(?:\\.\\d+)?(?:px|rem)|\\.\\d+(?:px|rem))[^\\]]*\\]/g;
+    const violations = describeViolations(arbitrarySpacing);
+    assert.deepEqual(
+        violations,
+        [],
+        'Use canonical spacing tokens/utilities instead of raw pixel/rem spacing values. Keep safe-area calculations token-backed.',
+    );
+});
+
 test('presentation sources do not depend on removed component-specific CSS classes', () => {
     const violations = describeViolations(legacyClass);
     assert.deepEqual(violations, [], 'Legacy presentation classes must be migrated to shared utilities.');
