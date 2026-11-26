@@ -5,7 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { useLanguage } from './LanguageContext';
 import { localizedValue } from '../utils/localizedContent';
-import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, SelectField, PageHeader, Button, Container, Section } from '../components/ui';
+import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, SelectField, Button, Container, Section, DiscoveryHero, Breadcrumbs } from '../components/ui';
 
 const emptyFilters = { mediums: [], availability: [], sorts: [] };
 
@@ -119,9 +119,13 @@ export default function ArtworkCatalogue() {
 
     return (
         <div className="w-full min-w-0 min-h-[65vh] py-section-compact lg:py-section-regular">
-            <Container width="wide">
-                <PageHeader eyebrow={t("آرشیو عمومی راد آرت")} title={t("گالری آثار")} description={t("در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید.")} />
-            </Container>
+            <DiscoveryHero
+                shape="grid"
+                eyebrow={t("آرشیو عمومی راد آرت")}
+                title={t("گالری آثار")}
+                description={t("در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید.")}
+                breadcrumbs={<Breadcrumbs label={t("مسیر صفحه")} items={[{ label: t("خانه"), to: "/" }, { label: t("گالری آثار") }]} />}
+            />
 
             <Section as="section" bleed aria-label={t("فیلتر و مرتب‌سازی آثار")} className="relative mt-8 border-y border-divider-section bg-surface-muted/70 py-6 sm:py-7">
                 <Container width="wide">
