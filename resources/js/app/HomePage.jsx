@@ -149,7 +149,8 @@ export default function HomePage() {
                 </Container>
             </Section>
 
-            <Container as="section" width="wide" aria-labelledby="recent-works-title" className="py-section sm:py-section-wide">
+                        <Section spacing="regular" aria-labelledby="recent-works-title">
+                <Container width="wide">
                 <SectionHeading
                     id="recent-works-title"
                     eyebrow="THE GALLERY / 01"
@@ -167,7 +168,8 @@ export default function HomePage() {
                 ) : (
                     <EmptyState className="mt-8" title={t('هنوز اثر دیگری برای نمایش نیست')} description={t('آثار تازه پس از تأیید در این بخش قرار می‌گیرند.')} />
                 )}
-            </Container>
+                </Container>
+            </Section>
 
             <Section spacing="regular" aria-labelledby="categories-title" className="border-y border-border bg-paper">
                 <Container>
@@ -191,7 +193,8 @@ export default function HomePage() {
                 </Container>
             </Section>
 
-            <Container as="section" width="wide" aria-labelledby="artists-title" className="py-section sm:py-section-wide">
+                        <Section spacing="regular" aria-labelledby="artists-title">
+                <Container width="wide">
                 <SectionHeading
                     id="artists-title"
                     eyebrow="THE PEOPLE / 03"
@@ -231,7 +234,8 @@ export default function HomePage() {
                         </div>
                     </Card>
                 )}
-            </Container>
+                </Container>
+            </Section>
 
             {(collections.length > 0 || featuredArtists.length > 0) && (
                 <Section spacing="regular" aria-label="مجموعه‌ها و هنرمندان منتخب" className="border-y border-border bg-surface-muted">
