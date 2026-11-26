@@ -124,7 +124,7 @@
     /* Semantic rhythm roles built on the canonical scale. */
     --rd-space-page: clamp(2.5rem, 4vw, 3.5rem);
     --rd-space-section: clamp(var(--rd-space-16), 6.6667vw, var(--rd-space-24));
-    --rd-space-group: var(--rd-space-8);
+    --rd-space-group: var(--rd-space-6);
     --rd-space-component: var(--rd-space-4);
     --rd-space-compact: var(--rd-space-3);
 
