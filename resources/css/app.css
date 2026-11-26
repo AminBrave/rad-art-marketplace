@@ -272,17 +272,6 @@
         isolation: isolate;
     }
 
-    /* Workspace page shells own vertical rhythm; nested sections only provide grouping. */
-    .rd-workspace-content {
-        padding-block: var(--rd-layout-section);
-    }
-
-    @media (min-width: 640px) {
-        .rd-workspace-content {
-            padding-block: var(--rd-layout-section-wide);
-        }
-    }
-
 }
 
 /* Explicit dark choice. Brand anchors remain unchanged; semantic roles adapt. */
