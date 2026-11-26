@@ -225,9 +225,9 @@ test('square corners are defined by design tokens without global CSS overrides',
 
 test('homepage discovery groups and artist spotlight use reusable card structure with RTL layout', () => {
     assert.ok(homePage.includes('grid-cols-[3rem_minmax(0,1fr)]'));
-    assert.ok(homePage.includes('bg-surface-muted py-16 sm:py-24'));
+    assert.ok(homePage.includes('bg-surface-muted py-section sm:py-section-wide'));
     assert.ok(homePage.includes("ARTIST SPOTLIGHT / {t('هنرمند منتخب')}"));
-    assert.ok(homePage.includes('rd-hero-surface') && homePage.includes('border border-[color:var(--rd-hero-line)]'));
+    assert.ok(homePage.includes('rd-hero-surface') && homePage.includes('border-y border-[color:var(--rd-hero-line)]'));
     assert.ok(homePage.includes('<Card'));
 });
 
