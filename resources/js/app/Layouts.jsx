@@ -221,7 +221,7 @@ export function PublicLayout() {
                         locale={locale}
                     />
                 </DialogContent>
-                {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{t(logoutError)}</p>}
+                {logoutError && <Container as="p" role="alert" className="pb-3 text-xs text-danger">{t(logoutError)}</Container>}
             </header>
 
             <main id="main-content" className="rd-page-frame">
@@ -672,7 +672,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                         </DialogTrigger>
                     </div>
                 </Container>
-                {logoutError && <p role="alert" className="mx-auto max-w-content px-page-gutter pb-3 text-xs text-danger">{logoutError}</p>}
+                {logoutError && <Container as="p" role="alert" className="pb-3 text-xs text-danger">{logoutError}</Container>}
             </header>
 
             <DialogContent
