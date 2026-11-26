@@ -203,7 +203,7 @@ The complete route-by-route, state-by-state and quality-gate ledger is maintaine
 ## Hero surface and discovery section rhythm
 
 - The shared `.rd-hero-surface` uses the previous theme-aware radial accent and layered gradient. Do not reintroduce the grid overlay; retain the established colors and square-corner geometry.
-- A hero or section owns vertical spacing exactly once. `.rd-unified-hero` uses its inner Container for vertical padding; the outer hero section has no additional block padding. Workspace pages use `.rd-workspace-content` as the spacing shell: its `space-y-workspace-relaxed` controls section separation, while direct child sections remain padding-free. Keep custom vertical padding off those nested sections.
+- A hero or section owns vertical spacing exactly once. `.rd-unified-hero` uses its inner Container for vertical padding; the outer hero section has no additional block padding. `PageHeader` and `WorkspaceHero` use the contained `.rd-unified-hero--workspace` variant so their surfaces align with the dashboard content column instead of bleeding across the viewport. Workspace pages use `.rd-workspace-content` as the spacing shell: its `space-y-workspace-relaxed` controls section separation, while direct child sections remain padding-free. Keep custom vertical padding off those nested sections.
 - Discovery result headings, result grids, pagination or load-more controls belong to one semantic results section. Do not separate pagination from the result set it controls.
 - Homepage featured artwork uses a fixed 3:4 portrait frame at every breakpoint. Responsive layout may change its width, never its aspect ratio.
 
