@@ -99,6 +99,17 @@
     --rd-space-20: calc(var(--rd-space-unit) * 20);
     --rd-space-24: calc(var(--rd-space-unit) * 24);
 
+    /* Semantic layout tiers: section rhythm, content groups and workspace density. */
+    --rd-layout-section-compact: calc(var(--rd-space-unit) * 10);
+    --rd-layout-section-regular: calc(var(--rd-space-unit) * 14);
+    --rd-layout-section: var(--rd-space-16);
+    --rd-layout-section-wide: var(--rd-space-24);
+    --rd-layout-content-gap: var(--rd-space-8);
+    --rd-layout-group-gap: var(--rd-space-4);
+    --rd-layout-workspace-gap: var(--rd-space-6);
+    --rd-layout-workspace-gap-relaxed: calc(var(--rd-space-unit) * 7);
+    --rd-layout-component-gap: var(--rd-space-3);
+
     /* Shape, elevation and responsive layout */
     --rd-radius-0: 0;
     --rd-radius-sm: var(--rd-radius-0);
