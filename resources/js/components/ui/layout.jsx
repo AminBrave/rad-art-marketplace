@@ -1,4 +1,4 @@
-import { forwardRef, useState } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 import { cn } from '../../lib/utils';
 import { useLanguage } from '../../app/LanguageContext';
 
@@ -127,6 +127,7 @@ export const AspectRatio = forwardRef(function AspectRatio({ ratio = 1, classNam
 
 export function Avatar({ src, alt = '', fallback, size = 'md', className = '', ...props }) {
     const [failed, setFailed] = useState(false);
+    useEffect(() => setFailed(false), [src]);
     const dimensions = { sm: 'h-8 w-8 text-xs', md: 'h-10 w-10 text-sm', lg: 'h-14 w-14 text-base', xl: 'h-20 w-20 text-xl' };
     return (
         <span role={alt ? "img" : undefined} aria-label={alt || undefined} aria-hidden={alt ? undefined : true} className={cn('inline-grid shrink-0 place-items-center overflow-hidden  border border-border bg-surface-muted font-bold text-muted', dimensions[size] ?? dimensions.md, className)} {...props}>
