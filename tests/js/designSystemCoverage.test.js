@@ -451,6 +451,7 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
     const primitives = readFileSync(resolve(root, 'resources/js/components/ui/primitives.jsx'), 'utf8');
     const timeline = readFileSync(resolve(root, 'resources/js/app/MessageTimeline.jsx'), 'utf8');
     const composer = readFileSync(resolve(root, 'resources/js/app/MessageComposer.jsx'), 'utf8');
+    const cssSource = readFileSync(resolve(root, 'resources/css/app.css'), 'utf8');
 
     assert.match(navigation, /DropdownMenuPrimitive\.Root modal=\{false\} dir=\{locale === 'fa' \? 'rtl' : 'ltr'\}/,
         'Dropdown menus must not lock body scrolling and must follow the active locale direction.');
@@ -462,12 +463,22 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'Select popovers must avoid page scroll locking and receive the current locale direction.');
     assert.match(primitives, /max-w-\[calc\(100vw-1rem\)\].*font-sans/,
         'Select popovers must inherit the application font and stay within the viewport.');
-    assert.match(timeline, /border border-border bg-surface p-0 text-ink transition-colors hover:border-border-strong/,
-        'The message overflow trigger must have a visible contrast surface in both themes.');
+    assert.match(timeline, /<DropdownMenu\.Trigger asChild>[\s\S]*?<Button variant="outline"[^>]*title=\{t\("عملیات پیام"\)\}[^>]*aria-haspopup="menu"/,
+        'The message menu must use a direct, independently visible trigger without nesting a Tooltip trigger.');
+    assert.match(timeline, /min-h-9 h-9 w-9 min-w-9 shrink-0 border-border-strong bg-paper/,
+        'The message menu trigger must retain a visible hit target and contrast surface.');
+    assert.doesNotMatch(timeline, /<Tooltip content=\{t\("عملیات پیام"\)\}>/,
+        'The message menu trigger must not nest competing Radix Tooltip and DropdownMenu triggers.');
+    assert.match(timeline, /rd-message-bubble[^\n]*font-sans/,
+        'Message bubbles must inherit the locale-aware application font.');
     assert.ok(timeline.includes("(own ? 'justify-end' : 'justify-start')"),
         'Outgoing messages must sit at logical inline-end and incoming messages at inline-start in both RTL and LTR.');
-    assert.match(composer, /<TextareaField dir="auto"/,
-        'The composer must resolve the writing direction from the message content.');
+    assert.match(composer, /<TextareaField dir="auto"[^>]*className="[^"]*font-sans/,
+        'The composer must use the locale-aware font and resolve direction from message content.');
+    assert.doesNotMatch(cssSource, /\[dir=['"]ltr['"]\]\s*\{\s*font-family:/,
+        'Text direction must not globally override component font inheritance.');
+    assert.match(cssSource, /html\s*\{[^}]*overflow-y:\s*scroll;[^}]*scrollbar-gutter:\s*stable;/s,
+        'The document must reserve its scrollbar gutter to prevent popover scroll-lock layout shifts.');
     assert.match(timeline, /<p dir="auto"/,
         'Message bodies must resolve direction independently for mixed Persian and Latin content.');
 });
