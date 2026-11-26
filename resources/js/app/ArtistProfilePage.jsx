@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useLanguage } from './LanguageContext';
-import { ArtworkCard, EmptyState, ErrorState, ArtistProfileSkeleton, SectionHeader, Button, Container, DiscoveryHero, Breadcrumbs } from '../components/ui';
+import { ArtworkCard, EmptyState, ErrorState, ArtistProfileSkeleton, SectionHeader, Button, Container, DiscoveryHero, Breadcrumbs, Section } from '../components/ui';
 import { localizedValue } from '../utils/localizedContent';
 
 export default function ArtistProfilePage() {
@@ -121,7 +121,7 @@ export default function ArtistProfilePage() {
                     <Container width="wide">
                     {followMutation.isError && <p role="alert" className="mt-3 text-xs text-danger">{t("به‌روزرسانی دنبال‌کردن هنرمند انجام نشد. دوباره تلاش کنید.")}</p>}
 
-                    <section className="mt-10 min-w-0 max-w-full" aria-labelledby="artist-portfolio-heading">
+                    <Section spacing="regular" className="mt-10 min-w-0 max-w-full" aria-labelledby="artist-portfolio-heading">
                         <SectionHeader
                             id="artist-portfolio-heading"
                             eyebrow={t("منتخب آثار")}
@@ -148,7 +148,7 @@ export default function ArtistProfilePage() {
                         )}
                         {profileQuery.isFetchNextPageError && <ErrorState className="mt-7" title={t("دریافت آثار بیشتر ناموفق بود")} description={t("دریافت آثار بیشتر انجام نشد. دوباره تلاش کنید.")} onRetry={() => profileQuery.fetchNextPage()} />}
                         {pagination?.has_more && <div className="mt-9 flex justify-center"><Button variant="outline" type="button" onClick={() => profileQuery.fetchNextPage()} disabled={profileQuery.isFetchingNextPage} className="min-h-11 rounded-md border border-border bg-paper px-7 py-3 text-sm font-bold text-ink transition-colors hover:border-terracotta disabled:cursor-wait disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">{profileQuery.isFetchingNextPage ? t('در حال دریافت…') : t('نمایش آثار بیشتر')}</Button></div>}
-                    </section>
+                    </Section>
                     </Container>
                 </>
             ) : (
@@ -160,11 +160,11 @@ export default function ArtistProfilePage() {
                     breadcrumbs={<Breadcrumbs label={t("مسیر صفحه")} items={[{ label: t("خانه"), to: "/" }, { label: t("هنرمندان"), to: "/artists" }, { label: t("پروفایل هنرمند") }]} />}
                 />
                 <Container width="wide">
-                <section className="mt-8 border border-border bg-paper p-8">
+                <Section spacing="regular" className="mt-8 border border-border bg-paper p-8">
                     <h2 className="text-2xl font-black">{t(status === 403 ? 'دسترسی به پروفایل مجاز نیست' : 'پروفایل در دسترس نیست')}</h2>
                     <p className="mt-3 text-sm leading-7 text-muted">{t("این پروفایل وجود ندارد یا نمایش عمومی آن غیرفعال شده است.")}</p>
                     {profileQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-danger">{t("ارتباط با سرور برقرار نشد.")} <Button variant="outline" type="button" onClick={() => profileQuery.refetch()} className="font-bold underline">{t("تلاش دوباره")}</Button></p>}
-                </section>
+                </Section>
                 </Container>
                 </>
             )}
