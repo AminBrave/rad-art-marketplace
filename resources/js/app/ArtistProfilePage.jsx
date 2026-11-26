@@ -92,7 +92,7 @@ export default function ArtistProfilePage() {
     const primaryActionClass = 'inline-flex min-h-11 items-center justify-center rounded-control border border-transparent bg-terracotta px-5 py-2.5 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
 
     return (
-        <Container as="div" width="wide" className="min-h-[65vh] overflow-x-clip pb-16 pt-8 sm:pt-12">
+        <Container as="div" width="wide" className="min-h-[65vh] overflow-x-clip pb-section pt-page">
             <nav aria-label={t("مسیر صفحه")} className="flex min-w-0 max-w-full flex-wrap items-center break-words text-xs text-muted">
                 <Link to="/" className="hover:text-terracotta-strong">{t("خانه")}</Link><span className="mx-2" aria-hidden="true">/</span>
                 <Link to="/artists" className="hover:text-terracotta-strong">{t("هنرمندان")}</Link><span className="mx-2" aria-hidden="true">/</span>
@@ -141,7 +141,7 @@ export default function ArtistProfilePage() {
                             {followState.followers_count !== undefined && followState.followers_count !== null && <span className="font-semibold tabular-nums">{Number(followState.followers_count).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} {t('دنبال‌کننده')}</span>}
                     </div>
 
-                    <section className="mt-12 min-w-0 max-w-full" aria-labelledby="artist-portfolio-heading">
+                    <section className="mt-page min-w-0 max-w-full" aria-labelledby="artist-portfolio-heading">
                         <SectionHeader
                             id="artist-portfolio-heading"
                             eyebrow={t("منتخب آثار")}
