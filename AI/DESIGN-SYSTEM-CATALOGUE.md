@@ -38,7 +38,7 @@ Evaluate these rules across mobile/tablet/desktop and RTL/LTR. Do not mistake vi
 ### Discovery hero and breadcrumb standard
 
 - Public discovery pages use the shared `DiscoveryHero` anatomy and tokens: homepage, artwork catalogue, artist directory/profile, artwork detail and collection index/detail.
-- The layout, typography, content width, vertical rhythm, surface, actions and responsive behavior remain consistent. Route identity comes from a restrained decorative shape variant (`ribbon`, `orbit`, `grid`, `arch`, `frame`, `diamond` or `layers`), not a new hero layout.
+- The layout, typography, content width, vertical rhythm, surface, actions and responsive behavior remain consistent. All routes use the same grid texture; do not introduce decorative shape variants.
 - Breadcrumbs appear only in public discovery and only at the top of the first hero. The homepage is the root and omits a redundant trail.
 - Never show breadcrumbs in dashboards, admin pages, settings, messaging, or artist/buyer workspaces. Never place a separate breadcrumb strip above/below the hero.
 - Breadcrumbs use localized ancestor labels, a current-page item, semantic navigation/list markup and `aria-current="page"`.
@@ -349,3 +349,8 @@ Before considering a component or page complete:
 - All heroes are full-width and use the same grid background, typography, content width, and responsive spacing. Only discovery pages may show breadcrumbs.
 - Section spacing is owned once per section; avoid double application through both semantic defaults and section padding utilities.
 - Chat shells opt out of section padding to preserve dense conversation layouts.
+
+
+### UnifiedHero
+
+`UnifiedHero` is the single full-width hero composition used by `PageHeader`, `DiscoveryHero`, and `WorkspaceHero`. It owns the shared grid surface, typography, content width, and responsive vertical rhythm. Only public discovery routes may pass breadcrumbs. The homepage hero fills the available viewport after accounting for the global header and mobile bottom navigation.
