@@ -4,7 +4,7 @@ const STORAGE_KEY = 'rademan-locale';
 const LOCALES = ['fa', 'en'];
 
 const english = {
-    "منوی راد آرت": "Rad Art menu",
+    "منوی راد آرت": "Rademan menu",\n    "منوی ردّمن": "Rademan menu",
     "کشف هنر، هنرمندان و فضای کاربری": "Discover art, artists, and your workspace",
     "خانه": "Home",
     "داشبورد": "Dashboard",
@@ -892,7 +892,7 @@ const english = {
     "دریافت کاتالوگ با خطا روبه‌رو شد.": "Could not load the catalogue.",
     "هنوز اثری برای نمایش در این دسته‌بندی ثبت نشده است.": "No artworks have been submitted in this category yet.",
 };
-const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
+const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));\nfa["راد آرت"] = "ردّمن";\nfa["ردّمن، صفحه اصلی"] = "ردّمن، صفحه اصلی";\nenglish["راد آرت"] = "Rademan";\nenglish["ردّمن، صفحه اصلی"] = "Rademan home";
 
 function readLocale() {
     if (typeof window === 'undefined') return 'fa';
