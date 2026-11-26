@@ -165,7 +165,7 @@ test('locale switching persists globally and owns document language and directio
     assert.ok(css.includes('overflow-x: clip;'));
 });
 test('public and workspace navigation expose role-aware destinations and an artist profile preview', () => {
-    assert.ok(layouts.includes('function PublicBottomNavigation'));
+    assert.ok(layouts.includes('setOpen(false);\n        onNavigate?.();'), 'Opening a notification closes its dialog and the parent navigation drawer before routing.');\n    assert.ok(layouts.includes('navigate(item.target_url || (item.conversation_id'), 'Opening a notification navigates to its target even if marking it read fails.');\n    assert.ok(layouts.includes('function PublicBottomNavigation'));
     assert.ok(layouts.includes('to: dashboardHref'));
     assert.ok(layouts.includes("outletContext?.profile?.slug"));
     assert.ok(workspaceNavigation.includes("shortLabel: 'داشبورد'"));
@@ -175,7 +175,7 @@ test('public and workspace navigation expose role-aware destinations and an arti
     assert.ok(layouts.includes('data-testid="authenticated-bottom-navigation"'));
     assert.ok(layouts.includes('unreadConversationCount={unreadConversationCount}'), 'Discovery navigation receives the unread conversation count.');
     assert.ok(layouts.includes('function PublicBottomNavigation({ user, unreadConversationCount = 0 })'));
-    assert.ok(layouts.includes('<NotificationBell user={user} />'), 'Discover exposes the same notification panel control as Workspace.');
+    assert.ok(layouts.includes('<NotificationBell user={user} onNavigate={() => setMobileMenuOpen(false)} />'), 'Both drawers expose notifications with a callback that closes the parent drawer.');
     assert.ok(layouts.includes("label: t('کشف')") && layouts.includes("label: t('هنرمندان')") && layouts.includes("label: t('مجموعه‌ها')"), 'Discover sidebar labels match the public bottom navigation.');
     assert.ok(layouts.includes("const publicDiscoveryLinks = [") && layouts.includes("{ to: '/artworks', label: 'کشف', Icon: Compass") && layouts.includes("{ to: '/collections', label: 'مجموعه‌ها', Icon: Bookmark"), 'Both drawers reuse the same Discover destination definitions.');
     assert.ok(layouts.includes("label: t(user ? (user.role === 'artist' ? 'فضای هنرمند' : user.role === 'admin' ? 'مدیریت' : 'فضای خریدار') : 'حساب کاربری')"), 'Discover separates the Workspace group from its Discover destinations.');
