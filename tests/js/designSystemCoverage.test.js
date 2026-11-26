@@ -255,7 +255,8 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     assert.ok(!css.includes('.rd-chat-shell'), 'Chat shell spacing must not depend on global CSS overrides.');
     const artist = readFileSync(resolve(root, 'resources/js/app/ArtistProfilePage.jsx'), 'utf8');
     assert.ok(!artist.includes('برای ارسال پیام مستقیم، از حساب خریدار استفاده کنید'));
-    assert.ok(!artist.includes('پورتفولیوی عمومی'));
+    assert.ok(artist.includes("descriptionTag.setAttribute('content'") && artist.includes('پورتفولیوی عمومی'), 'The portfolio phrase remains in the SEO description metadata.');
+    assert.doesNotMatch(artist, /t\([\"']پورتفولیوی عمومی[\"']\)/, 'The SEO-only portfolio phrase is not rendered as visible page copy.');
     assert.ok(!artist.includes('اثر بارگذاری‌شده'));
 });
 
