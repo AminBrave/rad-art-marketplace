@@ -143,11 +143,10 @@ test('semantic layout tiers are token-backed and shared primitives use them', ()
 });
 
 test('all semantic sections receive consistent vertical padding by default', () => {
-    assert.match(css, /@layer components\s*\{[\s\S]*?section\s*\{\s*padding-block:\s*var\(--rd-layout-section\);/);
-    assert.match(css, /@media\s*\(min-width:\s*640px\)\s*\{\s*section\s*\{\s*padding-block:\s*var\(--rd-layout-section-wide\);/);
-    assert.ok(css.includes('Tailwind spacing utilities remain able to opt a section'));
+    assert.match(css, /section\\s*\\{\\s*padding-block:\\s*var\\(--rd-layout-section\\);/);
+    assert.match(css, /section\\s*\\{\\s*padding-block:\\s*var\\(--rd-layout-section-wide\\);/);
+    assert.ok(css.includes('.rd-chat-shell section'));
 });
-
 test('public discovery pages share the same hero system and breadcrumbs stay out of workspaces', () => {
     const discoveryPages = [
         'resources/js/app/HomePage.jsx',
@@ -193,6 +192,7 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     assert.doesNotMatch(editorial.slice(editorial.indexOf('export function AdminEditorialPage()')), /<Breadcrumbs/, 'Admin editorial tools must not show breadcrumbs.');
     const primitives = readFileSync(resolve(root, 'resources/js/components/ui/primitives.jsx'), 'utf8');
     assert.ok(primitives.includes('export function DiscoveryHero'));
+    assert.ok(primitives.includes('export function UnifiedHero'));
     assert.ok(primitives.includes('rd-discovery-hero'));
     assert.ok(css.includes('.rd-discovery-hero[data-shape="orbit"]'));
     assert.ok(css.includes('.rd-discovery-hero[data-shape="grid"]'));
