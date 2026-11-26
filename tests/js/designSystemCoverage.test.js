@@ -462,8 +462,8 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'Dropdown menus must inherit the application font and stay within the viewport.');
     assert.match(navigation, /font-sans text-sm outline-none/,
         'Dropdown items must not fall back to browser or portal font defaults.');
-    assert.match(primitives, /SelectPrimitive\\.Root[\\s\\S]*?modal=\\{false\\}[\\s\\S]*?SelectPrimitive\\.Trigger/,
-        'Select controls must retain the Radix Select primitive with non-modal behavior.');
+    assert.match(primitives, /SelectPrimitive\\.Root[\\s\\S]*?SelectPrimitive\\.Trigger[\\s\\S]*?SelectPrimitive\\.Portal/,
+        'Select controls must retain the Radix Select primitive and its supported root API.');
     assert.match(primitives, /SelectPrimitive\\.Content[\\s\\S]*?max-w-\\[calc\\(100vw-1rem\\)\\][\\s\\S]*?font-sans/,
         'The Radix Select popover must be viewport-constrained and use the application font.');
     assert.match(primitives, /dir=\\{direction\\}/,
