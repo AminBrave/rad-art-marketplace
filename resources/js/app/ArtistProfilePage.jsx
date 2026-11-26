@@ -96,7 +96,7 @@ export default function ArtistProfilePage() {
             {profile ? (
                 <>
                     <DiscoveryHero
-                        shape="arch"
+                        shape="layers"
                         eyebrow={t("جامعه هنرمندان")}
                         title={<>{localizedValue(profile, 'display_name', locale)} {profile.is_own_profile && <span className="ms-2 align-middle text-xs font-semibold text-[color:var(--rd-hero-accent)]">{t("پروفایل شما")}</span>}</>}
                         description={localizedValue(profile, 'bio', locale)}
