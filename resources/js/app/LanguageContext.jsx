@@ -57,7 +57,7 @@ const english = {
     "بخش‌های اصلی حساب کاربری": "Your workspace",
     "بخش‌های اصلی فضای کاربری": "Workspace navigation",
     "پیوندهای تکمیلی سایت": "More from Rad Art",
-    "کشف": "Rademan",
+    "کشف": "Discover",
     "کشف آثار": "Discover art",
     "فضای کاربری شما": "Your Workspace",
     "بیشتر": "More",
