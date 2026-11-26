@@ -396,3 +396,19 @@ Each slice should have a short feature-specific contract and tests. Do not make 
 
 - Source-level review confirms both converted sections have explicit Section spacing and wide Containers.
 - Automated tests, lint, production build, and browser verification have not been run in this environment.
+
+
+### Slice 7 — Separate remaining semantic sections from Containers
+
+**Implemented on the target branch:**
+
+- Migrated the remaining page-level `Container as="section"` compositions in the admin moderation/users/reports screens, artist studio, artist directory, artwork gallery, collection index/detail, editorial workspace, and workspace settings/profile routes.
+- Public collection and artwork sections now use explicit regular/relaxed Section rhythm; workspace groupings use `spacing="none"` because their inner content and parent workspace composition own the rhythm.
+- Kept width and responsive inline gutters on nested `Container width="wide"` elements.
+- Moved the artist-directory accessible section label and artwork-gallery anchor ID onto their semantic Section wrappers.
+- Added a source-wide regression test prohibiting `Container as="section"` across frontend JS/JSX.
+
+**Verification status:**
+
+- Source scan across all frontend JS/JSX files found no remaining `Container as="section"` usage.
+- Automated tests, lint, production build, and browser verification remain unrun in this environment.
