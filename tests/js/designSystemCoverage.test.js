@@ -222,6 +222,9 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     const home = readFileSync(resolve(root, 'resources/js/app/HomePage.jsx'), 'utf8');
     assert.ok(home.includes('rd-home-hero'));
     assert.ok(home.includes('aspect-[3/4]'), 'Homepage artwork must retain its 3:4 portrait ratio.');
+    assert.ok(home.includes('mediaPosition="before"'), 'Homepage media must stack before the hero copy on mobile.');
+    assert.ok(primitives.includes("mediaPosition === 'before' && 'order-first lg:order-last'"), 'The shared hero must support mobile-first media ordering.');
+    assert.ok(css.includes('grid-template-columns: minmax(0, 1fr);'), 'The mobile homepage hero must use a single column.');
     assert.ok(css.includes('aspect-ratio: 3 / 4'), 'Mobile hero artwork must retain the portrait ratio.');
     const catalogue = readFileSync(resolve(root, 'resources/js/app/ArtworkCatalogue.jsx'), 'utf8');
     const archiveStart = catalogue.indexOf('aria-label={t("آرشیو آثار و نتایج")}');
