@@ -458,8 +458,8 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'Dropdown menus must inherit the application font and stay within the viewport.');
     assert.match(navigation, /font-sans text-sm outline-none/,
         'Dropdown items must not fall back to browser or portal font defaults.');
-    assert.match(primitives, /dir=\{locale === 'fa' \? 'rtl' : 'ltr'\}/,
-        'Select popovers must receive the current locale direction.');
+    assert.match(primitives, /modal=\{false\}[\s\S]*?dir=\{locale === 'fa' \? 'rtl' : 'ltr'\}/,
+        'Select popovers must avoid page scroll locking and receive the current locale direction.');
     assert.match(primitives, /max-w-\[calc\(100vw-1rem\)\].*font-sans/,
         'Select popovers must inherit the application font and stay within the viewport.');
     assert.match(timeline, /border border-border bg-surface p-0 text-ink transition-colors hover:border-border-strong/,
