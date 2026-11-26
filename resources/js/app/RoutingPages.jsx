@@ -25,18 +25,18 @@ function WorkspaceAuthLoading({ children }) {
             aria-busy="true"
         >
             <header className="sticky top-0 z-40 shrink-0 border-b border-border bg-paper shadow-soft">
-                <div className="mx-auto flex min-h-[var(--rd-header-height)] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-[var(--rd-header-height-wide)] sm:gap-4" aria-hidden="true">
+                <Container className="flex min-h-[var(--rd-header-height)] items-center justify-between gap-3 sm:min-h-[var(--rd-header-height-wide)] sm:gap-4" aria-hidden="true">
                     <div className="flex min-w-0 items-center gap-2">
                         <Skeleton className="h-10 w-10 shrink-0 sm:h-11 sm:w-11" />
                         <Skeleton className="h-5 w-24" />
                     </div>
                     <Skeleton className="h-11 w-11 shrink-0" />
-                </div>
+                </Container>
             </header>
 
-            <div className={isMessagingRoute
-                ? 'mx-auto flex h-[calc(100dvh-var(--rd-header-height)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:h-[calc(100dvh-var(--rd-header-height-wide)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-w-0 max-w-content px-page-gutter py-3 sm:py-4 lg:py-6'
-                : 'mx-auto w-full max-w-content px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+2rem)]'}>
+            <Container className={isMessagingRoute
+                ? 'flex h-[calc(100dvh-var(--rd-header-height)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:h-[calc(100dvh-var(--rd-header-height-wide)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] py-3 sm:py-4 lg:py-6'
+                : 'py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+var(--rd-space-4))] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+var(--rd-space-8))]'}
                 <main className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'min-w-0'}>
                     {children}
                 </main>
