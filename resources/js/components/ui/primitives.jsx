@@ -5,6 +5,7 @@ import { Check, ChevronDown } from 'lucide-react';
 import { Tooltip } from './Tooltip';
 import { cn } from '../../lib/utils';
 import { Container } from './layout';
+import { useLanguage } from '../../app/LanguageContext';
 
 const buttonVariants = {
     primary: 'bg-terracotta text-inverse enabled:hover:bg-terracotta-strong',
@@ -255,6 +256,7 @@ export function SelectField({
     placeholder,
     ...triggerProps
 }) {
+    const { locale } = useLanguage();
     const options = Children.toArray(children).filter((child) => isValidElement(child) && child.type === 'option');
     const emptyOption = options.find((option) => String(option.props.value ?? '') === '');
     const selectableOptions = options.filter((option) => String(option.props.value ?? '') !== '');
@@ -272,6 +274,7 @@ export function SelectField({
             name={name}
             required={required}
             disabled={disabled}
+            dir={locale === 'fa' ? 'rtl' : 'ltr'}
         >
             <SelectPrimitive.Trigger
                 className={cn(controlClass, 'flex items-center justify-between gap-3 text-start', className, '')}
@@ -286,7 +289,7 @@ export function SelectField({
                 <SelectPrimitive.Content
                     position="popper"
                     sideOffset={4}
-                    className="z-[90] max-h-[var(--radix-select-content-available-height)] min-w-[var(--radix-select-trigger-width)] overflow-hidden  border border-border bg-paper text-ink shadow-raised"
+                    className="z-[90] box-border max-h-[var(--radix-select-content-available-height)] min-w-[var(--radix-select-trigger-width)] max-w-[calc(100vw-1rem)] overflow-hidden border border-border bg-paper font-sans text-sm text-ink shadow-raised"
                 >
                     <SelectPrimitive.Viewport className="p-1.5">
                         {selectableOptions.map((option) => (
@@ -295,7 +298,7 @@ export function SelectField({
                                 value={String(option.props.value)}
                                 disabled={option.props.disabled}
                                 textValue={typeof option.props.children === 'string' ? option.props.children : undefined}
-                                className="relative flex min-h-10 cursor-pointer select-none items-center  py-2 ps-3 pe-9 text-sm outline-none data-[highlighted]:bg-surface-muted data-[highlighted]:text-ink data-[disabled]:pointer-events-none data-[disabled]:opacity-40"
+                                className="relative flex min-h-10 cursor-pointer select-none items-center py-2 ps-3 pe-9 font-sans text-sm outline-none data-[highlighted]:bg-surface-muted data-[highlighted]:text-ink data-[disabled]:pointer-events-none data-[disabled]:opacity-40"
                             >
                                 <SelectPrimitive.ItemText>{option.props.children}</SelectPrimitive.ItemText>
                                 <SelectPrimitive.ItemIndicator className="absolute end-2 inline-flex items-center text-terracotta-strong">
@@ -306,7 +309,7 @@ export function SelectField({
                         {emptyOption && (
                             <SelectPrimitive.Item
                                 value={emptySelectValue}
-                                className="relative flex min-h-10 cursor-pointer select-none items-center  py-2 ps-3 pe-9 text-sm outline-none data-[highlighted]:bg-surface-muted data-[highlighted]:text-ink"
+                                className="relative flex min-h-10 cursor-pointer select-none items-center py-2 ps-3 pe-9 font-sans text-sm outline-none data-[highlighted]:bg-surface-muted data-[highlighted]:text-ink"
                             >
                                 <SelectPrimitive.ItemText>{emptyOption.props.children}</SelectPrimitive.ItemText>
                             </SelectPrimitive.Item>
