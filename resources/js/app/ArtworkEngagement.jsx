@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { Button, TextareaField, SelectField } from '../components/ui';
+import { Button, TextareaField, SelectField, Section } from '../components/ui';
 
 function CommentItem({ comment, user, onReply, onDelete, onReport }) {
     const { t, locale } = useLanguage();
@@ -158,7 +158,7 @@ export default function ArtworkEngagement({ artwork, slug }) {
     const currentPage = pagination.current_page ?? page;
 
     return (
-        <section className="mt-12 border-t border-border pt-8" aria-labelledby="artwork-engagement-title">
+        <Section spacing="regular" className="border-t border-border" aria-labelledby="artwork-engagement-title">
             <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                     <h2 id="artwork-engagement-title" className="text-xl font-black">{t("گفت‌وگو درباره اثر")}</h2>
@@ -239,6 +239,6 @@ export default function ArtworkEngagement({ artwork, slug }) {
                     <Button variant="ghost" type="button" disabled={currentPage >= pagination.last_page || commentsQuery.isFetching} onClick={() => { setCommentTargetId(''); setPage(currentPage + 1); }} className="border border-border px-3 py-2 text-xs disabled:opacity-40">{t("دیدگاه‌های بعدی")}</Button>
                 </nav>
             )}
-        </section>
+        </Section>
     );
 }
