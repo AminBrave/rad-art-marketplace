@@ -191,7 +191,7 @@ export function ArtistRecentWorkSkeleton({ announce = true }) {
 export function AdminDashboardSkeleton() {
     return (
         <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال دریافت پنل مدیریت" className="w-full grid gap-8">
-            <Section as="header" bleed className="overflow-hidden border-y border-divider-section bg-ink"><Container width="wide" className="grid gap-4 p-6 sm:p-8">
+            <Section as="header" spacing="none" bleed className="overflow-hidden border-y border-divider-section bg-ink"><Container width="wide" className="grid gap-4 p-6 sm:p-8">
                 <Skeleton className="h-3 w-28 " />
                 <Skeleton className="h-9 w-2/3 max-w-xl  sm:h-11" />
                 <div className="grid max-w-3xl gap-2"><Skeleton className="h-3 w-full " /><Skeleton className="h-3 w-4/5 " /></div>
@@ -361,7 +361,7 @@ export function NotificationListSkeleton({ count = 3 }) {
 export function ArtistWorkspaceOverviewSkeleton() {
     return (
         <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فضای هنرمند" className="w-full grid gap-8">
-            <Section as="header" bleed className="overflow-hidden border-y border-divider-section bg-ink"><Container width="wide" className="grid gap-4 p-6 sm:p-8">
+            <Section as="header" spacing="none" bleed className="overflow-hidden border-y border-divider-section bg-ink"><Container width="wide" className="grid gap-4 p-6 sm:p-8">
                 <Skeleton className="h-3 w-36 " />
                 <Skeleton className="h-9 w-2/3 max-w-xl  sm:h-11" />
                 <div className="grid max-w-3xl gap-2"><Skeleton className="h-3 w-full " /><Skeleton className="h-3 w-4/5 " /></div>
@@ -376,7 +376,7 @@ export function ArtistWorkspaceOverviewSkeleton() {
 export function BuyerDashboardSkeleton() {
     return (
         <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فضای خریدار" className="w-full grid gap-7">
-            <Section as="header" bleed className="overflow-hidden border-y border-divider-section bg-ink"><Container width="wide" className="grid gap-4 p-6 sm:p-8">
+            <Section as="header" spacing="none" bleed className="overflow-hidden border-y border-divider-section bg-ink"><Container width="wide" className="grid gap-4 p-6 sm:p-8">
                 <Skeleton className="h-3 w-36 " />
                 <Skeleton className="h-9 w-full max-w-2xl  sm:h-11" />
                 <div className="grid max-w-3xl gap-2"><Skeleton className="h-3 w-full " /><Skeleton className="h-3 w-4/5 " /></div>
