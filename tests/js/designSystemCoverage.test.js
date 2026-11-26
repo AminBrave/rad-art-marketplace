@@ -82,6 +82,7 @@ test('project stylesheets define tokens, base rules and only approved layout pri
         '.rd-container--reading',
         '.rd-container--full',
         '.rd-hero-surface',
+        '.rd-discovery-hero',
         '.rd-message-bubble',
         '.rd-message-bubble--own',
         '.rd-message-bubble--peer',
@@ -182,6 +183,14 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
         const source = readFileSync(resolve(root, path), 'utf8');
         assert.doesNotMatch(source, /<Breadcrumbs|مسیر صفحه/, path + ' must not show dashboard/workspace breadcrumbs.');
     }
+    const appSources = frontendFiles.filter((path) => path.includes('/app/'));
+    const breadcrumbConsumers = appSources
+        .filter((path) => /<Breadcrumbs|aria-label=\{t\(["']مسیر صفحه/.test(readFileSync(path, 'utf8')))
+        .map((path) => relative(root, path).replaceAll('\\\\', '/'))
+        .sort();
+    assert.deepEqual(breadcrumbConsumers, breadcrumbPages, 'Breadcrumbs may only be consumed by public discovery routes.');
+    const editorial = readFileSync(resolve(root, 'resources/js/app/EditorialPages.jsx'), 'utf8');
+    assert.doesNotMatch(editorial.slice(editorial.indexOf('export function AdminEditorialPage()')), /<Breadcrumbs/, 'Admin editorial tools must not show breadcrumbs.');
     const primitives = readFileSync(resolve(root, 'resources/js/components/ui/primitives.jsx'), 'utf8');
     assert.ok(primitives.includes('export function DiscoveryHero'));
     assert.ok(primitives.includes('rd-discovery-hero'));
