@@ -3,8 +3,8 @@
 <head>
     @php
         $seo = $seo ?? [];
-        $seoTitle = $seo['title'] ?? 'راد آرت | کشف آثار هنری و ارتباط با هنرمندان';
-        $seoDescription = $seo['description'] ?? 'راد آرت؛ جایی برای کشف آثار هنری تأییدشده، آشنایی با هنرمندان و ارتباط مستقیم با آن‌ها.';
+        $seoTitle = $seo['title'] ?? 'ردّمن | کشف هنر و ارتباط با هنرمندان';
+        $seoDescription = $seo['description'] ?? 'ردّمن؛ جایی برای کشف آثار هنری، آشنایی با هنرمندان و ارتباط مستقیم با آن‌ها.';
         $seoPath = request()->getPathInfo();
         $indexableStaticPaths = ['/', '/artworks', '/artists', '/collections', '/about', '/help', '/contact'];
         $seoRobots = $seo['robots'] ?? (in_array($seoPath, $indexableStaticPaths, true) ? 'index,follow' : 'noindex,nofollow');
@@ -20,6 +20,31 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#F7F5F0" id="rad-theme-color">
+    <style>
+        [data-theme="dark"] .brand-logo-light,
+        [data-theme="light"] .brand-logo-dark { display: none; }
+        [data-theme="dark"] .brand-logo-dark,
+        [data-theme="light"] .brand-logo-light { display: inline-block; }
+        @media (prefers-color-scheme: dark) {
+            [data-theme="system"] .brand-logo-light { display: none; }
+            [data-theme="system"] .brand-logo-dark { display: inline-block; }
+        }
+    </style>
+    <script>
+        document.addEventListener('error', (event) => {
+            const image = event.target;
+            if (!image.matches?.('[data-logo-base]')) return;
+
+            const formats = ['svg', 'png', 'jpg'];
+            const nextFormat = Number(image.dataset.logoFormat || 0) + 1;
+            if (nextFormat < formats.length) {
+                image.dataset.logoFormat = String(nextFormat);
+                image.src = image.dataset.logoBase + '.' + formats[nextFormat];
+            } else {
+                image.style.display = 'none';
+            }
+        }, true);
+    </script>
     <script>
         (() => {
             try {
@@ -37,14 +62,16 @@
             }
         })();
     </script>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" href="/rademan-logo-light.png" media="(prefers-color-scheme: light)">
+    <link rel="icon" type="image/png" href="/rademan-logo-dark.png" media="(prefers-color-scheme: dark)">
+    <link rel="apple-touch-icon" href="/rademan-logo-light.png">
     <meta name="description" content="{{ $seoDescription }}">
     <meta name="robots" content="{{ $seoRobots }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @if ($seoCanonical)
         <link rel="canonical" href="{{ $seoCanonical }}">
     @endif
-    <meta property="og:site_name" content="راد آرت">
+    <meta property="og:site_name" content="ردّمن">
     <meta property="og:locale" content="fa_IR">
     <meta property="og:type" content="{{ $seo['og_type'] ?? 'website' }}">
     <meta property="og:title" content="{{ $seoTitle }}">
@@ -117,9 +144,9 @@
                 <div class="{{ $isMessagingRoute ? 'mx-auto flex h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-h-0 min-w-0 max-w-content flex-none px-page-gutter py-3 sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:py-4' : 'mx-auto w-full max-w-content px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)]' }}">
                     <main class="{{ $isMessagingRoute ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'min-w-0' }}" role="status" aria-busy="true" aria-label="در حال بارگذاری فضای کاربری">
         @else
-            <main class="mx-auto min-h-screen w-[min(calc(100%_-_2.5rem),80rem)] pt-6 pb-16" role="status" aria-busy="true" aria-label="در حال بارگذاری راد آرت">
+            <main class="mx-auto min-h-screen w-[min(calc(100%_-_2.5rem),80rem)] pt-6 pb-16" role="status" aria-busy="true" aria-label="در حال بارگذاری ردّمن">
                 <div class="flex min-h-14 items-center justify-between gap-8 border-b border-border">
-                    <span class="{{ $skeletonClass }} h-7 w-24"></span>
+                    <div class="flex items-center gap-2"><img src="/rademan-logo-light.svg" data-logo-base="/rademan-logo-light" data-logo-format="0" alt="" aria-hidden="true" class="brand-logo-light h-9 w-9" width="36" height="36"><img src="/rademan-logo-dark.svg" data-logo-base="/rademan-logo-dark" data-logo-format="0" alt="" aria-hidden="true" class="brand-logo-dark h-9 w-9" width="36" height="36"><span class="text-lg font-black text-ink">ردّمن</span></div>
                     <span class="{{ $skeletonClass }} h-4 w-[min(42%,22rem)]"></span>
                 </div>
         @endif

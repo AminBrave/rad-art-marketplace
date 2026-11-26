@@ -4,7 +4,9 @@ const STORAGE_KEY = 'rademan-locale';
 const LOCALES = ['fa', 'en'];
 
 const english = {
-    "منوی راد آرت": "Rad Art menu",
+    "منوی راد آرت": "Rademan menu",
+    "منوی ردّمن": "Rademan menu",
+    "منو": "Menu",
     "کشف هنر، هنرمندان و فضای کاربری": "Discover art, artists, and your workspace",
     "خانه": "Home",
     "داشبورد": "Dashboard",
@@ -56,6 +58,9 @@ const english = {
     "بخش‌های اصلی فضای کاربری": "Workspace navigation",
     "پیوندهای تکمیلی سایت": "More from Rad Art",
     "کشف": "Discover",
+    "کشف آثار": "Discover art",
+    "فضای کاربری شما": "Your Workspace",
+    "بیشتر": "More",
     "فضای کاری": "Workspace",
     "فضای کاربری": "Workspace",
     "مشاهده سایت": "View website",
@@ -893,6 +898,14 @@ const english = {
     "هنوز اثری برای نمایش در این دسته‌بندی ثبت نشده است.": "No artworks have been submitted in this category yet.",
 };
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
+fa["راد آرت"] = "ردّمن";
+fa["ردّمن، صفحه اصلی"] = "ردّمن، صفحه اصلی";
+fa["راد آرت — گالری هنر مستقل معاصر"] = "ردّمن — گالری هنر مستقل معاصر";
+english["ردّمن"] = "Rademan";
+for (const key of Object.keys(fa)) fa[key] = fa[key].replaceAll("راد آرت", "ردّمن");
+for (const key of Object.keys(english)) english[key] = english[key].replaceAll("Rad Art", "Rademan");
+english["راد آرت"] = "Rademan";
+english["ردّمن، صفحه اصلی"] = "Rademan home";
 
 function readLocale() {
     if (typeof window === 'undefined') return 'fa';
