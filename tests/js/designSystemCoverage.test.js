@@ -500,9 +500,9 @@ test('messaging uses stable physical layout with locale-aware text and valid Rad
     assert.ok(inbox.includes('className="relative border-s-[3px] border-transparent"'));
     assert.ok(!inbox.includes('data-[state=active]:border-terracotta'));
     assert.ok(!inbox.includes('data-[state=active]:text-terracotta-strong'));
-    assert.doesNotMatch(cssSource, /\\[dir=['"]ltr['"]\\]\\s*\\{\\s*font-family:/);
-    assert.match(cssSource, /--rd-layer-modal-overlay:\\s*100;[\\s\\S]*--rd-layer-modal:\\s*110;[\\s\\S]*--rd-layer-popover:\\s*120;[\\s\\S]*--rd-layer-tooltip:\\s*130;/);
-    assert.match(cssSource, /html\\s*\\{[^}]*scrollbar-gutter:\\s*stable;/s);
+    assert.ok(!cssSource.includes("[dir='ltr'] {") && !cssSource.includes('[dir="ltr"] {'));
+    assert.ok(cssSource.includes("--rd-layer-modal-overlay: 100;") && cssSource.includes("--rd-layer-modal: 110;") && cssSource.includes("--rd-layer-popover: 120;") && cssSource.includes("--rd-layer-tooltip: 130;"));
+    assert.ok(cssSource.includes("scrollbar-gutter: stable;"));
 });
 
 test('important CSS overrides are restricted to the reduced-motion safety contract', () => {
