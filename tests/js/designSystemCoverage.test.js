@@ -195,10 +195,27 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     assert.ok(primitives.includes('export function UnifiedHero'));
     assert.ok(primitives.includes('return <UnifiedHero'));
     assert.ok(css.includes('.rd-unified-hero'));
-    assert.ok(css.includes('linear-gradient(var(--rd-hero-line) 1px, transparent 1px)'));
+    assert.ok(css.includes('linear-gradient(var(--rd-hero-grid-line) 1px, transparent 1px)'));
+    assert.ok(css.includes('radial-gradient(ellipse at 88% 8%, var(--rd-hero-glow), transparent 38%)'));
+    assert.ok(css.includes('linear-gradient(125deg, var(--rd-hero-background), var(--rd-hero-background-alt))'));
     assert.ok(!css.includes('data-shape='));
     const home = readFileSync(resolve(root, 'resources/js/app/HomePage.jsx'), 'utf8');
     assert.ok(home.includes('rd-home-hero'));
+    assert.ok(home.includes('aspect-[3/4]'), 'Homepage artwork must retain its 3:4 portrait ratio.');
+    assert.ok(css.includes('aspect-ratio: 3 / 4'), 'Mobile hero artwork must retain the portrait ratio.');
+    const catalogue = readFileSync(resolve(root, 'resources/js/app/ArtworkCatalogue.jsx'), 'utf8');
+    const archiveStart = catalogue.indexOf('aria-label={t("آرشیو آثار و نتایج")}');
+    const archiveEnd = catalogue.indexOf('</Section>', archiveStart);
+    const archiveSection = catalogue.slice(archiveStart, archiveEnd);
+    assert.ok(archiveStart >= 0 && archiveEnd > archiveStart);
+    assert.ok(archiveSection.includes('آرشیو آثار'));
+    assert.ok(archiveSection.includes('artworks.map'));
+    assert.ok(archiveSection.includes('بارگذاری آثار بیشتر'));
+    const directory = readFileSync(resolve(root, 'resources/js/app/ArtistDirectoryPage.jsx'), 'utf8');
+    const directorySectionStart = directory.indexOf('aria-labelledby="artist-directory-heading"');
+    const directorySectionEnd = directory.indexOf('</Container>', directorySectionStart);
+    assert.ok(directory.slice(directorySectionStart, directorySectionEnd).includes('صفحه‌بندی هنرمندان'));
+
     const layout = readFileSync(resolve(root, 'resources/js/app/Layouts.jsx'), 'utf8');
     assert.ok(layout.includes('rd-chat-shell'));
     assert.ok(css.includes('.rd-chat-shell section'));
