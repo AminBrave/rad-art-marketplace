@@ -472,3 +472,12 @@ Each slice should have a short feature-specific contract and tests. Do not make 
 - Source inspection confirms the batch changes are present on the target branch.
 - **Not verified:** automated JS tests, ESLint, production build, responsive browser QA, keyboard/screen-reader testing, and visual review across RTL/LTR and light/dark modes. No CI workflow run or commit status check is currently available for the branch.
 - Phase 1 should be treated as implementation-complete but not merge-validated until those checks are run in a real project environment.
+
+
+### Validation follow-up — reported local test failures
+
+- Removed the duplicate English dictionary entry for `کشف آثار`; the Persian key remains present once.
+- Set the default Breadcrumbs landmark label to the Persian product-language label `مسیر صفحه`. Callers can continue to override it for other locales.
+- Updated stale design-system assertions that still expected contained workspace heroes, the removed hero border frame, implicit HTML-section spacing, old Container-as-section usage, or the removed workspace Container gutter override.
+- Updated the rendered hero regression to assert the shared grid texture and full-bleed behavior.
+- **Awaiting rerun:** the repository environment available here cannot execute the user's local Node test and ESLint commands. The two design-system test files still need a fresh local run to confirm there are no additional hidden assertion failures.
