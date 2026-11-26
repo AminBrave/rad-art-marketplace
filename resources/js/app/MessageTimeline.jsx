@@ -38,7 +38,7 @@ export default function MessageTimeline({
 }) {
     const { t, locale } = useLanguage();
     return (
-        <div ref={containerRef} onScroll={onScroll} className="relative isolate flex min-h-0 flex-1 flex-col gap-2 overflow-x-hidden overflow-y-auto overscroll-contain [scrollbar-gutter:stable] [scrollbar-width:thin] [scrollbar-color:var(--color-border-strong)_transparent] bg-canvas px-3 py-5 md:gap-3 md:px-[clamp(1rem,2.5vw,2rem)] md:py-5 max-md:gap-2 max-md:px-2.5 max-md:py-3" role="log" aria-label={t("پیام‌های گفتگو")} aria-live="polite" aria-relevant="additions">
+        <div dir={locale === 'fa' ? 'rtl' : 'ltr'} ref={containerRef} onScroll={onScroll} className="relative isolate flex min-h-0 flex-1 flex-col gap-2 overflow-x-hidden overflow-y-auto overscroll-contain [scrollbar-gutter:stable] [scrollbar-width:thin] [scrollbar-color:var(--color-border-strong)_transparent] bg-canvas px-3 py-5 md:gap-3 md:px-[clamp(1rem,2.5vw,2rem)] md:py-5 max-md:gap-2 max-md:px-2.5 max-md:py-3" role="log" aria-label={t("پیام‌های گفتگو")} aria-live="polite" aria-relevant="additions">
         {messagesLoading && messages.length === 0 && <MessageHistorySkeleton count={5} className="w-full" />}
         {messagesError && <div role="alert" className="m-auto flex max-w-md flex-col items-center gap-3  border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-danger-surface p-5 text-center text-sm text-danger"><p>{t(messagesError)}</p><Button variant="ghost" type="button" onClick={onRetryMessages} className=" px-4 py-2 font-bold underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">{t("تلاش دوباره")}</Button></div>}
         {!messagesLoading && !messagesError && messages.length === 0 && <p className="m-auto py-6 text-center text-sm text-muted">{t("هنوز پیامی در این گفتگو وجود ندارد. می‌توانید گفتگو را با یک پیام شروع کنید.")}</p>}
@@ -77,7 +77,7 @@ export default function MessageTimeline({
         </div>
         {!deleted && (
         <>
-        <div className="mt-2 flex min-w-0 flex-wrap items-center justify-end gap-1.5"><div className="flex min-w-0 flex-wrap items-center gap-1">
+        <div className="mt-2 flex min-w-0 flex-wrap items-center gap-1.5"><div className="flex min-w-0 flex-1 flex-wrap items-center gap-1">
         {message.reactions?.filter((reaction) => reaction.count > 0).map((reaction) => <Button variant="ghost" key={reaction.emoji} type="button" disabled={actionId === message.id} onClick={() => onToggleReaction(message, reaction.emoji)} aria-label={t("واکنش ") + reaction.emoji} aria-pressed={Boolean(reaction.reacted_by_me)} className={'inline-flex min-h-8 items-center gap-1  border border-border bg-surface px-2.5 text-[11px] leading-none text-muted transition-colors hover:border-border-strong hover:bg-surface-muted hover:text-ink aria-pressed:border-terracotta aria-pressed:bg-accent-surface aria-pressed:text-terracotta-strong motion-reduce:transition-none ' + (reaction.reacted_by_me ? 'border-terracotta bg-accent-surface text-terracotta-strong' : '')}>{reaction.emoji}<span className="tabular-nums">{Number(reaction.count).toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}</span></Button>)}
         <DropdownMenu.Root open={openPopover === 'reactions:' + message.id} onOpenChange={(open) => onPopoverOpenChange('reactions:' + message.id, open)}>
         <Tooltip content={t("افزودن واکنش")}><DropdownMenu.Trigger asChild>
@@ -95,7 +95,16 @@ export default function MessageTimeline({
         </div>
         <DropdownMenu.Root open={openPopover === 'message:' + message.id} onOpenChange={(open) => onPopoverOpenChange('message:' + message.id, open)}>
         <DropdownMenu.Trigger asChild>
-        <Button variant="outline" type="button" title={t("عملیات پیام")} aria-label={t("عملیات پیام")} aria-haspopup="menu" className="min-h-9 h-9 w-9 min-w-9 shrink-0 border-border-strong bg-paper p-0 text-ink shadow-soft hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"><MoreVertical size={18} strokeWidth={2.25} aria-hidden="true" /></Button>
+        <button
+            type="button"
+            data-message-actions-trigger
+            title={t("عملیات پیام")}
+            aria-label={t("عملیات پیام")}
+            aria-haspopup="menu"
+            className="ms-auto inline-flex h-9 min-h-9 w-9 min-w-9 shrink-0 items-center justify-center border border-border-strong bg-paper p-0 text-ink shadow-soft transition-colors hover:border-terracotta hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus motion-reduce:transition-none"
+        >
+            <MoreVertical size={18} strokeWidth={2.25} aria-hidden="true" />
+        </button>
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
         <DropdownMenu.Content side="top" align="end" sideOffset={8} collisionPadding={8} onCloseAutoFocus={(event) => {
@@ -103,7 +112,7 @@ export default function MessageTimeline({
         event.preventDefault();
         focusComposerAfterMenuCloseRef.current = false;
         draftRef.current?.focus();
-        }} className="z-[60] max-h-[min(20rem,var(--radix-dropdown-menu-content-available-height))] min-w-40 max-w-[calc(100vw-1rem)] overflow-y-auto  border border-border bg-paper p-1 shadow-soft">
+        }} className="z-[60] max-h-[min(20rem,var(--radix-dropdown-menu-content-available-height))] min-w-40 max-w-[calc(100vw-1rem)] overflow-y-auto border border-border bg-paper p-1 font-sans text-sm text-ink shadow-soft">
         <DropdownMenu.Item onSelect={() => {
         focusComposerAfterMenuCloseRef.current = true;
         onReplyTo(message);
