@@ -133,7 +133,7 @@
         @if ($isWorkspace)
             <div class="{{ $isMessagingRoute ? 'flex h-dvh flex-col overflow-hidden bg-canvas text-ink' : 'min-h-screen bg-canvas text-ink' }}" aria-busy="true">
                 <header class="sticky top-0 z-40 shrink-0 border-b border-border bg-paper shadow-soft">
-                    <div class="mx-auto flex min-h-[4.5rem] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-20 sm:gap-4" aria-hidden="true">
+                    <div class="mx-auto flex min-h-[var(--rd-header-height)] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-[var(--rd-header-height-wide)] sm:gap-4" aria-hidden="true">
                         <div class="flex min-w-0 items-center gap-2.5 sm:gap-3">
                             <span class="{{ $skeletonClass }} h-10 w-10 shrink-0 sm:h-11 sm:w-11"></span>
                             <span class="{{ $skeletonClass }} h-5 w-24"></span>
@@ -141,7 +141,7 @@
                         <span class="{{ $skeletonClass }} h-11 w-11 shrink-0"></span>
                     </div>
                 </header>
-                <div class="{{ $isMessagingRoute ? 'mx-auto flex h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-h-0 min-w-0 max-w-content flex-none px-page-gutter py-3 sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:py-4' : 'mx-auto w-full max-w-content px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)]' }}">
+                <div class="{{ $isMessagingRoute ? 'mx-auto flex h-[calc(100dvh-var(--rd-header-height)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-h-0 min-w-0 max-w-content flex-none px-page-gutter py-3 sm:h-[calc(100dvh-var(--rd-header-height-wide)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:py-4' : 'mx-auto w-full max-w-content px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)]' }}">
                     <main class="{{ $isMessagingRoute ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'min-w-0' }}" role="status" aria-busy="true" aria-label="در حال بارگذاری فضای کاربری">
         @else
             <main class="mx-auto min-h-screen w-[min(calc(100%_-_2.5rem),80rem)] pt-6 pb-16" role="status" aria-busy="true" aria-label="در حال بارگذاری ردّمن">
