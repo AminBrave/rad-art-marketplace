@@ -459,10 +459,10 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'Dropdown menus must inherit the application font and stay within the viewport.');
     assert.match(navigation, /font-sans text-sm outline-none/,
         'Dropdown items must not fall back to browser or portal font defaults.');
-    assert.match(primitives, /modal=\{false\}[\s\S]*?dir=\{locale === 'fa' \? 'rtl' : 'ltr'\}/,
-        'Select popovers must avoid page scroll locking and receive the current locale direction.');
-    assert.match(primitives, /max-w-\[calc\(100vw-1rem\)\].*font-sans/,
-        'Select popovers must inherit the application font and stay within the viewport.');
+    assert.match(primitives, /<select[\s\S]*?dir=\{locale === 'fa' \? 'rtl' : 'ltr'\}[\s\S]*?font-sans/,
+        'Select controls must use a native non-modal popup with the locale direction and application font.');
+    assert.doesNotMatch(primitives, /SelectPrimitive/,
+        'Select controls must not mount a modal portal that locks document scrolling.');
     assert.match(timeline, /<DropdownMenu\.Trigger asChild>[\s\S]*?<Button variant="outline"[^>]*title=\{t\("عملیات پیام"\)\}[^>]*aria-haspopup="menu"/,
         'The message menu must use a direct, independently visible trigger without nesting a Tooltip trigger.');
     assert.match(timeline, /min-h-9 h-9 w-9 min-w-9 shrink-0 border-border-strong bg-paper/,
