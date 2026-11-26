@@ -133,7 +133,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                             <div className="flex items-center gap-3 border-b border-border p-5"><Skeleton className="h-10 w-10 shrink-0 rounded-full" /><div className="grid min-w-0 flex-1 gap-2"><Skeleton className="h-4 w-40 rounded-sm" /><Skeleton className="h-3 w-28 rounded-sm" /></div><Skeleton className="h-8 w-8 rounded-full" /></div>
                             <div className="border-b border-border bg-paper px-4 py-3 sm:px-5"><Skeleton className="h-3 w-28 rounded-sm" /></div>
                             <MessageHistorySkeleton count={5} announce={false} className="min-h-0 flex-1 overflow-y-auto overscroll-contain" />
-                            <div className="border-t border-border bg-paper px-2.5 pb-[max(.5rem,env(safe-area-inset-bottom))] pt-2 sm:px-3 sm:py-2"><Skeleton className="h-12 w-full rounded-sm" /></div>
+                            <div className="border-t border-border bg-paper px-2.5 pb-[max(var(--rd-space-2),env(safe-area-inset-bottom))] pt-2 sm:px-3 sm:py-2"><Skeleton className="h-12 w-full rounded-sm" /></div>
                         </> : <div className="m-auto p-8 text-center"><Skeleton className="h-4 w-56 rounded-sm" /></div>}
                     </div>
                 </div>
