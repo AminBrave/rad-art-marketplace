@@ -292,12 +292,22 @@ test('inline color styling is token-backed rather than hardcoded', () => {
 
 test('Section exposes explicit spacing variants independent of its rendered HTML element', () => {
     const layout = readFileSync(resolve(root, 'resources/js/components/ui/layout.jsx'), 'utf8');
-    assert.match(layout, /spacing = 'regular'/);
+    assert.doesNotMatch(layout, /spacing = 'regular'/, 'Section must not silently apply a default page rhythm.');
     assert.match(layout, /none:\s*'py-0'/);
     assert.match(layout, /compact:\s*'py-section-compact'/);
     assert.match(layout, /regular:\s*'py-section sm:py-section-wide'/);
     assert.match(layout, /relaxed:\s*'py-section-relaxed sm:py-section-wide'/);
     assert.doesNotMatch(layout, /Element === ['"]section['"]/);
+});
+
+test('every frontend Section usage declares explicit spacing ownership', () => {
+    const implicitSpacing = frontendFiles.flatMap((path) => {
+        const source = readFileSync(path, 'utf8');
+        return matchesWithLines(source, /<Section\\b(?:(?!>).)*>/gs)
+            .filter(({ value }) => !/\\bspacing\\s*=/.test(value))
+            .map((match) => ({ file: relative(root, path), ...match }));
+    });
+    assert.deepEqual(implicitSpacing, [], 'Every Section call site must declare spacing explicitly.');
 });
 
 test('page compositions use explicit shared Section spacing ownership', () => {
