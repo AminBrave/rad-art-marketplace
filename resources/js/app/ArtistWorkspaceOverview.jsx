@@ -50,7 +50,7 @@ export default function ArtistWorkspaceOverview() {
 
     return (
         <div className="w-full">
-            <Container width="wide" className="space-y-workspace-relaxed">
+            <Container width="wide" className="rd-workspace-content space-y-workspace-relaxed">
                 <PageHeader
                     bleed={false}
                     eyebrow={t("استودیوی هنرمند")}
@@ -61,7 +61,7 @@ export default function ArtistWorkspaceOverview() {
 
                 {profileError && <ErrorState title={t("پروفایل دریافت نشد")} description={profileError} />}
 
-                <section aria-label={t("وضعیت پروفایل هنرمند")} className="flex min-w-0 flex-col gap-4 border-b border-divider-group pb-5 sm:flex-row sm:items-center sm:justify-between">
+                <section aria-label={t("وضعیت پروفایل هنرمند")} className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="min-w-0">
                         <p className="text-xs font-bold text-terracotta-strong">{t("پروفایل هنری")}</p>
                         <div className="mt-1 flex flex-wrap items-center gap-3">
