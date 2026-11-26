@@ -183,8 +183,9 @@ test('public and workspace navigation expose role-aware destinations and an arti
     assert.ok(layouts.includes("t(item.shortLabel ?? workspaceNavigationLabels[item.to] ?? item.label)"), 'Workspace sidebar labels use the same compact names as its bottom navigation.');
     assert.ok(layouts.includes("isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink'"), 'Sidebar destinations use text-only active styling without a background.');
     assert.doesNotMatch(layouts, /isActive\s*\?\s*'bg-paper[^']*shadow-soft'/, 'No sidebar active state adds a background or shadow.');
-    assert.ok(layouts.includes("isActive ? 'text-terracotta-strong' : 'text-muted hover:text-ink'"), 'Active bottom navigation destinations use text color only.');
-    assert.doesNotMatch(layouts, /isActive[\s\S]{0,100}bg-paper|isActive[\s\S]{0,100}after:absolute/, 'Active bottom navigation destinations have no background or indicator.');
+    assert.ok(layouts.includes("after:absolute after:inset-x-1/3 after:top-0 after:h-0.5 after:bg-terracotta"), 'Public active navigation keeps its top indicator line.');
+    assert.ok(layouts.includes("after:absolute after:inset-x-1/4 after:top-0 after:h-0.5 after:rounded-full after:bg-terracotta"), 'Workspace active navigation keeps its top indicator line.');
+    assert.doesNotMatch(layouts, /isActive[\s\S]{0,180}bg-paper/, 'Active bottom navigation destinations have no background.');
     assert.ok(layouts.includes('inline-flex h-5 min-w-5 items-center justify-center'), 'Unread bubbles center their number in both navigation bars.');
     assert.ok(layouts.includes("label: t(user?.role === 'artist' ? 'فضای هنرمند' : user?.role === 'admin' ? 'مدیریت' : 'فضای خریدار')"), 'Workspace section labels reflect the signed-in role.');
     assert.ok(layouts.includes("item.to + '#submitted-artworks'"), 'The artist content navigation targets the submitted-artworks section.');
