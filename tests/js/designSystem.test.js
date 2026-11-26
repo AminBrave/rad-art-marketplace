@@ -66,15 +66,15 @@ test('workspace full-bleed content mirrors its horizontal offset in RTL', () => 
 
 test('workspace page sections use explicit shared Section spacing', () => {
     for (const source of [adminWorkspace, artworkStudio, routeLoading, editorialPages]) {
-        assert.doesNotMatch(source, /<Container\\s+as="section"/);
+        assert.doesNotMatch(source, /<Container\s+as="section"/);
         assert.match(source, /<Section spacing="(?:none|compact|regular|relaxed)"/);
     }
 });
 
 test('workspace page headers share the full-width hero contract', () => {
     for (const source of [adminWorkspace, artworkStudio, routeLoading, editorialPages]) {
-        assert.match(source, /<PageHeader(?:\\s|\\n)/);
-        assert.doesNotMatch(source, /<PageHeader[^>]*\\bbleed=\\{false\\}/);
+        assert.match(source, /<PageHeader(?:\s|\n)/);
+        assert.doesNotMatch(source, /<PageHeader[^>]*\bbleed=\{false\}/);
     }
     assert.match(primitives, /export function PageHeader\(props\)\s*\{\s*return <UnifiedHero/);
 });
