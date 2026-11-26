@@ -56,7 +56,7 @@ export default function ArtistDirectoryPage() {
 
             <Section bleed className="mt-6 border-y border-[color:var(--rd-hero-line)] rd-hero-surface">
                 <Container width="wide">
-                    <header className="relative isolate py-group sm:py-section">
+                    <header className="relative isolate">
                 <div aria-hidden="true" className="pointer-events-none absolute -start-10 -top-16 h-56 w-56 border border-[color:var(--rd-hero-line)]" />
                 <div aria-hidden="true" className="pointer-events-none absolute -start-2 -top-8 h-40 w-40 border border-[color:var(--rd-hero-accent)]" />
                 <div className="relative z-10 max-w-3xl">
