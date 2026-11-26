@@ -708,7 +708,8 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(layouts.includes('<nav aria-label={section.label}>'), 'Both drawers render localized section labels through the shared sidebar navigation.');
     assert.ok(layouts.includes('my-5 border-t border-border'), 'Discover and workspace navigation sections use the same divider spacing.');
     assert.ok(layouts.includes('flex min-h-11 w-full items-center gap-3 border-s-2 border-transparent px-3 text-start text-sm font-semibold no-underline'), 'Discover drawer links use the shared full-width row geometry.');
-    assert.ok(layouts.includes('min-h-0 flex-1 overflow-y-auto px-4 py-5'), 'Discover navigation uses the same padded scrollable panel as workspace navigation.');
+    assert.ok(layouts.includes('DialogContent placement="drawer" className="flex flex-col px-4 py-5"'), 'The shared discovery drawer owns its horizontal and outer vertical padding.');
+    assert.ok(layouts.includes('min-h-0 flex-1 overflow-y-auto py-5'), 'The shared navigation panel owns vertical scroll padding without duplicating drawer gutters.');
     assert.ok(layouts.includes('<ThemeControl />'), 'The public shell exposes the global theme control.');
     assert.ok(routeLoading.includes('cycleTheme'), 'Workspace theme preferences live on the settings route.');
     assert.ok(!css.includes('.rd-page-frame--workspace .rd-container {'), 'Workspace Container gutters must not be reset by a page-shell CSS override.');
