@@ -274,6 +274,12 @@
     section.rd-unified-hero {
         padding-block: 0;
     }
+
+    .rd-unified-hero--workspace {
+        width: 100%;
+        max-width: 100%;
+        margin-inline: 0;
+    }
 }
 
 /* Explicit dark choice. Brand anchors remain unchanged; semantic roles adapt. */
