@@ -354,3 +354,8 @@ Before considering a component or page complete:
 ### UnifiedHero
 
 `UnifiedHero` is the single full-width hero composition used by `PageHeader`, `DiscoveryHero`, and `WorkspaceHero`. It owns the shared grid surface, typography, content width, and responsive vertical rhythm. Only public discovery routes may pass breadcrumbs. The homepage hero fills the available viewport after accounting for the global header and mobile bottom navigation.
+
+
+### Hero surface and result sections
+
+The shared `.rd-hero-surface` combines the original theme-aware gradient/glow with a low-contrast grid overlay. Keep result heading, result count, artwork grid and pagination/load-more control within one semantic discovery section. Inner Containers should not duplicate vertical padding already owned by the section. Homepage featured artwork remains 3:4 portrait on mobile and desktop.
