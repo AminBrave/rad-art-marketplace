@@ -100,7 +100,11 @@
     --rd-space-24: calc(var(--rd-space-unit) * 24);
 
     /* Semantic layout tiers: section rhythm, content groups and workspace density. */
+    --rd-layout-page-padding: var(--rd-space-12);
+    --rd-layout-page-top: var(--rd-space-8);
+    --rd-layout-page-top-wide: var(--rd-space-12);
     --rd-layout-section-compact: calc(var(--rd-space-unit) * 10);
+    --rd-layout-section-relaxed: var(--rd-space-20);
     --rd-layout-section-regular: calc(var(--rd-space-unit) * 14);
     --rd-layout-section: var(--rd-space-16);
     --rd-layout-section-wide: var(--rd-space-24);
