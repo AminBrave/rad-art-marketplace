@@ -5,7 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useLanguage } from './LanguageContext';
 import ArtworkEngagement from './ArtworkEngagement';
-import { ArtworkCard, ArtworkDetailSkeleton, MediaImage, Container, Button } from '../components/ui';
+import { ArtworkCard, ArtworkDetailSkeleton, MediaImage, Container, Button, DiscoveryHero, Breadcrumbs } from '../components/ui';
 import { formatArtworkPrice } from '../utils/formatArtworkPrice';
 import { localizedValue } from '../utils/localizedContent';
 
@@ -72,11 +72,15 @@ export default function ArtworkDetailPage() {
 
     return (
         <Container as="div" width="wide" className="min-h-[65vh] py-section-compact lg:py-section-regular">
-            <nav aria-label={t("مسیر صفحه")} className="text-sm text-muted">
-                <Link to="/" className="hover:text-terracotta-strong">{t("خانه")}</Link><span className="mx-2" aria-hidden="true">/</span>
-                <Link to="/artworks" className="hover:text-terracotta-strong">{t("گالری آثار")}</Link><span className="mx-2" aria-hidden="true">/</span>
-                <span aria-current="page" className="text-ink">{t("جزئیات اثر")}</span>
-            </nav>
+            <DiscoveryHero
+                className="rd-bleed"
+                shape="frame"
+                eyebrow={artwork ? localizedValue(artwork.category, 'name', locale) : t("گالری آثار")}
+                title={artwork ? localizedValue(artwork, 'title', locale) : t(status === 403 ? 'دسترسی به این اثر مجاز نیست' : 'اثر در دسترس نیست')}
+                description={artwork ? localizedValue(artwork, 'description', locale) : t("این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.")}
+                breadcrumbs={<Breadcrumbs label={t("مسیر صفحه")} items={[{ label: t("خانه"), to: "/" }, { label: t("گالری آثار"), to: "/artworks" }, { label: artwork ? localizedValue(artwork, 'title', locale) : t("جزئیات اثر") }]} />}
+                actions={artwork && <Link to={'/artists/' + artwork.artist.slug} className="inline-flex min-h-10 items-center border border-[color:var(--rd-hero-line)] px-4 py-2 text-sm font-bold text-[color:var(--rd-hero-foreground)] no-underline hover:border-[color:var(--rd-hero-accent)] hover:text-[color:var(--rd-hero-accent)]">{localizedValue(artwork.artist, 'display_name', locale)}</Link>}
+            />
             {!artwork ? (
                 <section className="mt-8 border-y border-ink bg-transparent px-5 py-8 sm:px-8">
                     <h1 className="text-2xl font-black">{t(status === 403 ? 'دسترسی به این اثر مجاز نیست' : 'اثر در دسترس نیست')}</h1>
@@ -93,8 +97,8 @@ export default function ArtworkDetailPage() {
                         </div>
                         <div className="border-y border-ink bg-transparent py-6 sm:py-9 lg:sticky lg:top-28 lg:border-y-0 lg:py-2">
                             <p className="text-[11px] font-extrabold tracking-[.14em] text-terracotta-strong">{t("پرونده اثر")} <span className="mx-1 text-subtle">/</span> {localizedValue(artwork.category, 'name', locale)}</p>
-                            <h1 className="mt-3 text-3xl font-black leading-relaxed tracking-tight sm:text-4xl">{localizedValue(artwork, 'title', locale)}</h1>
-                            <Link to={'/artists/' + artwork.artist.slug} className="mt-3 inline-block text-sm font-semibold text-terracotta-strong underline">{localizedValue(artwork.artist, 'display_name', locale)}</Link>
+                            <h2 className="mt-3 text-2xl font-black leading-relaxed tracking-tight sm:text-3xl">{localizedValue(artwork, 'title', locale)}</h2>
+                            
                             {localizedValue(artwork, 'description', locale) && <p className="mt-7 whitespace-pre-line text-sm leading-9 text-muted">{localizedValue(artwork, 'description', locale)}</p>}
                             <dl className="mt-8 grid grid-cols-2 gap-x-5 gap-y-6 border-y border-border py-7 text-sm">
                                 {localizedValue(artwork, 'city', locale) && <div><dt className="text-xs text-muted">{t("شهر محل اثر")}</dt><dd className="mt-1 font-semibold">{localizedValue(artwork, 'city', locale)}</dd></div>}
