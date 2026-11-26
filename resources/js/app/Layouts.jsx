@@ -54,6 +54,9 @@ function getPublicWorkspaceLinks(user, profileHref, t) {
 function SidebarNavigation({ sections, onNavigate, onLogout, unreadConversationCount = 0, locale = 'fa' }) {
     return (
         <div className="min-h-0 flex-1 overflow-y-auto px-4 py-5">
+            <Link to="/" onClick={onNavigate} className="mb-6 flex min-h-32 items-center justify-center border-b border-border pb-5 no-underline" aria-label="Rademan home">
+                <BrandLogo size="sidebar" />
+            </Link>
             {sections.filter((section) => section.items?.length).map((section, sectionIndex) => (
                 <div key={section.label}>
                     {sectionIndex > 0 && <div className="my-5 border-t border-border" />}
@@ -228,7 +231,7 @@ export function PublicLayout() {
                 <div className="mx-auto max-w-content px-page-gutter pb-10 pt-14 sm:pb-14 sm:pt-20">
                     <div className="grid gap-10 border-b border-divider-section pb-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr] lg:gap-16 lg:pb-14">
                         <div className="max-w-md">
-                            <Link to="/" className="inline-flex text-ink no-underline" aria-label={t('ردّمن، صفحه اصلی')}><BrandLogo compact /></Link>
+                            <Link to="/" className="inline-flex text-ink no-underline" aria-label={t('ردّمن، صفحه اصلی')}><BrandLogo size="footer" /></Link>
                             <p className="mt-5 text-sm leading-8 text-muted">
                                 {t('فضایی برای کشف آثار هنری مستقل، شناخت هنرمندان و ارتباط درباره هنر.')}
                             </p>
@@ -676,12 +679,9 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                 className="flex flex-col"
             >
                 <div className="flex items-center justify-between border-b border-border px-5 py-5">
-                    <div className="flex min-w-0 items-center gap-3">
-                        <BrandLogo compact />
-                        <div className="min-w-0">
-                            <DialogTitle className="text-sm font-extrabold text-ink">{t(title)}</DialogTitle>
-                            <DialogDescription className="mt-1 max-w-48 truncate text-xs text-muted">{user?.name}</DialogDescription>
-                        </div>
+                    <div className="min-w-0">
+                        <DialogTitle className="text-sm font-extrabold text-ink">{t(title)}</DialogTitle>
+                        <DialogDescription className="mt-1 max-w-48 truncate text-xs text-muted">{user?.name}</DialogDescription>
                     </div>
                     <DialogClose asChild>
                         <Button variant="ghost"
