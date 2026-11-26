@@ -114,7 +114,7 @@ export function UnifiedHero({
 }
 
 export function PageHeader({ eyebrow, title, description, actions, level = 1, bleed = true, className = '', titleClassName = '', descriptionClassName = '' }) {
-    return <UnifiedHero eyebrow={eyebrow} title={title} description={description} actions={actions} level={level} bleed={bleed} compact className={className} titleClassName={titleClassName} descriptionClassName={descriptionClassName} />;
+    return <UnifiedHero eyebrow={eyebrow} title={title} description={description} actions={actions} level={level} bleed={bleed} className={className} titleClassName={titleClassName} descriptionClassName={descriptionClassName} />;
 }
 
 /** Discovery routes may add breadcrumbs; they share the exact same hero frame. */
