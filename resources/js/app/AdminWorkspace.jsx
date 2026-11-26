@@ -70,7 +70,7 @@ export function AdminDashboardHome() {
                 actions={<Button variant="secondary" onClick={load} loading={loading}>{t("به‌روزرسانی آمار")}</Button>}
             />
 
-            <Container width="wide" className="space-y-content">
+            <Container width="wide" className="rd-workspace-content space-y-workspace-relaxed">
             {errors.length > 0 && <ErrorState title={t("بخشی از اطلاعات دریافت نشد")} description={errors.map(t).join(' ')} onRetry={load} />}
 
             <section aria-label={t("شاخص‌های عملیاتی")} className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -82,7 +82,7 @@ export function AdminDashboardHome() {
             </section>
 
             <section className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,.8fr)]">
-                <div className="border-y border-border bg-transparent py-6 sm:py-7">
+                <div className="min-w-0">
                     <SectionHeader eyebrow={t("اولویت امروز")} title={t("صف بررسی آثار")} actions={<Link to="/admin/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">{t("مشاهده صف")}</Link>} />
                     {loading ? <div aria-hidden="true" className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]"><Skeleton className="aspect-[3/4] w-full rounded-none sm:max-w-32" /><div className="grid gap-3"><SkeletonLines lines={3} /><SkeletonLines lines={1} /></div></div> : summary.latest ? (
                         <div className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]">
@@ -101,7 +101,7 @@ export function AdminDashboardHome() {
                     )}
                 </div>
 
-                <aside className="border-y border-border bg-surface-muted/60 py-6 sm:px-6 sm:py-7">
+                <aside className="border border-border bg-surface-muted/60 p-5 sm:p-6">
                     <SectionHeader eyebrow={t("راهنمای عملیات")} title={t("رسیدگی منظم و قابل پیگیری")} className="border-0 pb-0" />
                     <p className="mt-3 text-sm leading-7 text-muted">{t("تصمیم‌های انتشار را همراه با توضیح ثبت کنید، نقش‌ها را با دقت مدیریت کنید و گزارش‌های ایمنی را از مسیر اختصاصی بررسی کنید.")}</p>
                     <Link to="/admin/artworks" className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 py-3 text-sm font-bold text-inverse transition-colors hover:bg-terracotta">{t('شروع بررسی آثار')} <span aria-hidden="true" className="ms-3 rtl:rotate-180">→</span></Link>
@@ -171,7 +171,7 @@ export function AdminArtworkModeration() {
             ]);
         } catch (e) { setActionError(e.response?.status === 403 ? t("سرور اجازه انجام این عملیات را نداد.") : t(e.response?.data?.errors?.note?.[0] ?? e.response?.data?.message ?? "ثبت تصمیم انجام نشد.")); }
     };
-    return <Container as="section" width="wide" className="space-y-workspace">
+    return <Container as="section" width="wide" className="rd-workspace-content space-y-workspace-relaxed">
         <PageHeader bleed={false} eyebrow={t("مدیریت آثار")} title={t("صف بررسی و انتشار")} description={t("فقط آثار در انتظار بررسی قابل تصمیم‌گیری‌اند. رد اثر یا درخواست اصلاح به توضیح نیاز دارد.")} actions={<Button variant="outline" size="sm" onClick={load} loading={loading}>{t("به‌روزرسانی")}</Button>} />
         <nav className="flex flex-wrap gap-x-5 gap-y-2 border-b border-border" aria-label={t("فیلتر وضعیت آثار")}>{statuses.map((item) => <Button variant="ghost" key={item.value} type="button" aria-pressed={status === item.value} onClick={() => chooseStatus(item.value)} className={"min-h-11 border-b-2 px-1 text-sm font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none " + (status === item.value ? 'border-terracotta text-terracotta-strong' : 'border-transparent text-muted hover:border-border-strong hover:text-ink')}>{t(item.label)}</Button>)}</nav>
         {message && <SuccessState title={message} />}{error && <ErrorState title={t("عملیات انجام نشد")} description={error} onRetry={load} />}
