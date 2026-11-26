@@ -91,7 +91,7 @@ export const PageContainer = Container;
 export function UnifiedHero({
     eyebrow, title, description, breadcrumbs, actions, media, children,
     className = '', titleClassName = '', descriptionClassName = '',
-    level = 1, bleed = false, compact = false, surface = 'grid',
+    level = 1, bleed = false, compact = false, surface = 'grid', mediaPosition = 'after',
 }) {
     const Heading = level === 2 ? 'h2' : 'h1';
     return (
@@ -99,14 +99,14 @@ export function UnifiedHero({
             <Container width="wide" className="rd-unified-hero__inner relative z-10">
                 {breadcrumbs && <div className="mb-6 text-[11px] font-semibold text-[color:var(--rd-hero-muted)] sm:mb-8">{breadcrumbs}</div>}
                 <div className={cn('grid min-w-0 items-center gap-7 lg:gap-12', media && 'lg:grid-cols-[minmax(0,1.15fr)_minmax(17rem,.85fr)]')}>
-                    <div className="rd-unified-hero__title-wrap relative z-10 min-w-0">
+                    <div className={cn('rd-unified-hero__title-wrap relative z-10 min-w-0', media && mediaPosition === 'before' && 'order-last lg:order-first')}>
                         {eyebrow && <p className="inline-flex items-center gap-2 border-s-2 border-[color:var(--rd-hero-accent)] px-3 py-1 text-[11px] font-extrabold leading-none tracking-[.06em] text-[color:var(--rd-hero-accent)]">{eyebrow}</p>}
                         <Heading className={cn('mt-3 max-w-4xl break-words text-[clamp(1.75rem,4.2vw,3.5rem)] font-extrabold leading-[1.2] tracking-[-.04em] text-[color:var(--rd-hero-foreground)]', titleClassName)}>{title}</Heading>
                         {description && <p className={cn('mt-3 max-w-2xl text-sm leading-8 text-[color:var(--rd-hero-muted)] sm:text-base sm:leading-9', descriptionClassName)}>{description}</p>}
                         {children && <div className="mt-5 max-w-3xl">{children}</div>}
                         {actions && <div className="mt-6 flex min-w-0 flex-wrap items-center gap-3">{actions}</div>}
                     </div>
-                    {media && <div className="relative z-10 mx-auto w-full min-w-0 max-w-xl lg:max-w-none">{media}</div>}
+                    {media && <div className={cn('relative z-10 mx-auto w-full min-w-0 max-w-xl lg:max-w-none', mediaPosition === 'before' && 'order-first lg:order-last')}>{media}</div>}
                 </div>
             </Container>
         </section>
