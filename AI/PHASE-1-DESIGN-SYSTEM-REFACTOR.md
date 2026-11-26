@@ -1,6 +1,6 @@
 # Phase 1 — Rademan design-system foundation refactor
 
-**Status:** Phase 1 implementation batch completed; automated and browser validation pending  
+**Status:** Phase 1 implementation complete; automated CI checks passed; browser and visual validation pending  
 **Target branch:** `refactor/290-unified-layout-spacing`  
 **Related work:** PR #291, issue #290  
 **Scope:** Shared layout contracts, spacing ownership, hero API, Tailwind/token conventions, and regression coverage  
@@ -491,3 +491,14 @@ Each slice should have a short feature-specific contract and tests. Do not make 
 - Updated the regression assertion to protect the emitted DOM attribute.
 
 The fixes are pushed for local rerun. Tests, lint, and production build are not claimed as passing until run against this commit.
+
+
+### Validation follow-up — automated CI passed
+
+- GitHub Actions PR run [#45878325608](https://github.com/AminBrave/rad-art-marketplace/actions/runs/45878325608) completed successfully on the current branch head.
+- Frontend validation passed: 207/207 frontend tests, color-accessibility tests, compiled CSS accessibility audit, ESLint, and the production frontend build.
+- Backend validation passed: `php artisan test` exited successfully with 1,393 assertions; its output included 156 warnings and 7 passed tests, so the warning output remains visible technical debt rather than being treated as a clean warning-free run.
+- PHP formatting passed for the two PHP files changed by this PR. A repository-wide Pint check had reported 17 existing style issues across 136 files; those unrelated files were not reformatted as part of this UI refactor. The workflow now checks changed PHP files only.
+- The Playwright `test:browser` task requires an already-running local MySQL development app. Responsive browser review, Persian RTL / English LTR, light/dark, keyboard, screen-reader, and loading/empty/error-state visual checks have not been performed in this CI run.
+
+**Phase 1 acceptance status:** automated CI checks are green; browser and visual acceptance remains outstanding. Do not mark Phase 1 fully verified until that review is completed.
