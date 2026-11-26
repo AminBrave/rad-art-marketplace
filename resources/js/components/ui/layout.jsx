@@ -50,8 +50,9 @@ export const Container = forwardRef(function Container({ as: Element = 'div', wi
 });
 
 /**
- * Page-group spacing is an explicit component variant, never inferred from the
- * rendered HTML tag. Call sites must choose their own spacing owner.
+ * Shared semantic section boundary. Every section uses the same 16px block
+ * padding and zero top margin; Container owns content width and gutters.
+ * The legacy spacing prop remains available as metadata during migration.
  */
 export const Section = forwardRef(function Section({ as: Element = 'section', spacing, bleed = false, className = '', ...props }, ref) {
     // Keep the spacing prop as a compatibility/data hook; every semantic
