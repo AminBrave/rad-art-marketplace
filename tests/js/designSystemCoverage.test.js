@@ -146,13 +146,14 @@ test('semantic layout tiers are token-backed and shared primitives use them', ()
         assert.ok(css.includes(token + ':'), `Missing semantic layout token: ${token}`);
         assert.ok(tailwind.includes(token), `Tailwind does not expose semantic layout token: ${token}`);
     }
-    assert.ok(layout.includes("py-section sm:py-section-wide"));
+    assert.ok(layout.includes("'mt-0 py-4'"), 'Every shared Section must enforce zero top margin and 16px block padding.');
     assert.ok(layout.includes("calc(var(--rd-space-unit) * ${gap})"));
     assert.equal(layout.split("calc(var(--rd-space-unit) * ${gap})").length - 1, 2, "Flex and Grid must share token-backed numeric gaps.");
 });
 
 test('semantic section spacing is explicit and component-owned', () => {
     assert.doesNotMatch(css, /(^|\n)\s*section\s*\{/m, 'Native section elements must not receive global layout spacing.');
+    assert.ok(!css.includes('.rd-workspace-content {'), 'Workspace containers cannot add section padding outside the shared primitive.');
     assert.ok(!css.includes('.rd-chat-shell'), 'Chat shell spacing must be owned by its Tailwind layout classes, not a CSS override.');
 });
 test('public discovery pages share the same hero system and breadcrumbs stay out of workspaces', () => {
@@ -217,8 +218,7 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     assert.ok(primitives.includes('compact: false'), 'All hero wrappers must inherit the compact variant from the shared defaults.');
     assert.ok(primitives.includes('breadcrumbs, actions, media, children'), 'The canonical hero must support the shared content contract.');
     assert.ok(!css.includes('.rd-workspace-content > section'), 'Workspace section spacing must be owned by explicit layout primitives.');
-    assert.ok(css.includes('padding-block: var(--rd-layout-section);'), 'Workspace content must use the discovery section rhythm.');
-    assert.ok(css.includes('padding-block: var(--rd-layout-section-wide);'), 'Workspace content must use the responsive discovery section rhythm.');
+    assert.ok(!css.includes('.rd-workspace-content {'), 'Workspace Containers must not override the shared Section vertical rhythm.');
     assert.ok(!css.includes('.rd-page-frame--workspace .rd-container {'), 'Workspace Containers must own their own page gutters.');
     assert.ok(layouts.includes("'rd-workspace-page w-full min-w-0"), 'Workspace page shell must not constrain the route to the header width or add outer gutters.');
     assert.ok(!layouts.includes("'mx-auto w-full max-w-content px-page-gutter py-5"), 'Workspace pages must not inherit the old constrained outer shell.');
@@ -311,14 +311,11 @@ test('inline color styling is token-backed rather than hardcoded', () => {
     assert.deepEqual(violations, [], 'Inline color values must resolve through RAD CSS variables.');
 });
 
-test('Section exposes explicit spacing variants independent of its rendered HTML element', () => {
+test('every semantic Section enforces py-4 and zero top margin', () => {
     const layout = readFileSync(resolve(root, 'resources/js/components/ui/layout.jsx'), 'utf8');
-    assert.doesNotMatch(layout, /spacing = 'regular'/, 'Section must not silently apply a default page rhythm.');
-    assert.match(layout, /none:\s*'py-0'/);
-    assert.match(layout, /compact:\s*'py-section-compact'/);
-    assert.match(layout, /regular:\s*'py-section sm:py-section-wide'/);
-    assert.match(layout, /relaxed:\s*'py-section-relaxed sm:py-section-wide'/);
-    assert.doesNotMatch(layout, /Element === ['"]section['"]/);
+    assert.match(layout, /className=\{cn\('min-w-0', bleed && 'rd-bleed', className, 'mt-0 py-4'\)\}/);
+    assert.ok(layout.includes('data-section-spacing={spacing ?? \'regular\'}'), 'Legacy spacing values remain observable but no longer alter section geometry.');
+    assert.doesNotMatch(layout, /py-section|py-0|py-section-compact|py-section-relaxed/);
 });
 
 test('every frontend Section usage declares explicit spacing ownership', () => {
@@ -380,7 +377,7 @@ test('semantic section landmarks are separated from Container width and gutters'
 
     const directory = readFileSync(resolve(root, 'resources/js/app/ArtistDirectoryPage.jsx'), 'utf8');
     const gallery = readFileSync(resolve(root, 'resources/js/app/ArtworkGallery.jsx'), 'utf8');
-    assert.match(directory, /<Section spacing="none" className="mt-10" aria-labelledby="artist-directory-heading">\s*<Container width="wide">/);
+    assert.match(directory, /<Section spacing="none" aria-labelledby="artist-directory-heading">\s*<Container width="wide">/);
     assert.match(gallery, /<Section spacing="relaxed" id="artworks">\s*<Container width="wide">/);
 });
 
