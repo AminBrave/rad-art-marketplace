@@ -91,11 +91,11 @@ export const PageContainer = Container;
 export function UnifiedHero({
     eyebrow, title, description, breadcrumbs, actions, media, children,
     className = '', titleClassName = '', descriptionClassName = '',
-    level = 1, bleed = false, compact = false, surface = 'grid-square',
+    level = 1, bleed = false, compact = false, surface = 'grid',
 }) {
     const Heading = level === 2 ? 'h2' : 'h1';
     return (
-        <section className={cn('rd-unified-hero rd-hero-surface', surface === 'grid-square' && 'rd-hero-surface--grid', surface === 'plain' && 'rd-hero-surface--plain', bleed && 'rd-bleed', compact && 'rd-unified-hero--compact', className)}>
+        <section className={cn('rd-unified-hero rd-hero-surface', (surface === 'grid' || surface === 'grid-square') && 'rd-hero-surface--grid', surface === 'plain' && 'rd-hero-surface--plain', bleed && 'rd-bleed', compact && 'rd-unified-hero--compact', className)}>
             <Container width="wide" className="rd-unified-hero__inner relative z-10">
                 {breadcrumbs && <div className="mb-6 text-[11px] font-semibold text-[color:var(--rd-hero-muted)] sm:mb-8">{breadcrumbs}</div>}
                 <div className={cn('grid min-w-0 items-center gap-7 lg:gap-12', media && 'lg:grid-cols-[minmax(0,1.15fr)_minmax(17rem,.85fr)]')}>
@@ -137,7 +137,7 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
 }
 
 export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
-    return <UnifiedHero eyebrow={eyebrow} title={title} description={description} actions={actions} className={className} compact />;
+    return <UnifiedHero eyebrow={eyebrow} title={title} description={description} actions={actions} className={className} />;
 }
 export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, className = '' }) {
     const Element = as ?? (to ? 'a' : 'article');
