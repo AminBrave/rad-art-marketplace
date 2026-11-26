@@ -158,7 +158,7 @@ export default function ArtworkEngagement({ artwork, slug }) {
     const currentPage = pagination.current_page ?? page;
 
     return (
-        <section className="mt-12 border-t border-border pt-8" aria-labelledby="artwork-engagement-title">
+        <section className="mt-page border-t border-border pt-group" aria-labelledby="artwork-engagement-title">
             <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                     <h2 id="artwork-engagement-title" className="text-xl font-black">{t("گفت‌وگو درباره اثر")}</h2>
