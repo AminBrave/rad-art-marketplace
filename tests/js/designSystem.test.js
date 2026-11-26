@@ -545,9 +545,9 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.ok(messaging.includes('flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden'));
     assert.ok(messaging.includes('grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1'));
     assert.ok(layouts.includes('const isMessagingRoute = pathname.endsWith(\'/messages\')'));
-    assert.ok(layouts.includes('h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
-    assert.ok(layouts.includes('sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
-    assert.ok(layouts.includes('h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
+    assert.ok(layouts.includes('h-[calc(100dvh-var(--rd-header-height)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
+    assert.ok(layouts.includes('sm:h-[calc(100dvh-var(--rd-header-height-wide)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
+    assert.ok(layouts.includes('h-[calc(100dvh-var(--rd-header-height)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.doesNotMatch(layouts, /lg:grid-cols-\[15rem_minmax\(0,1fr\)\]/);
     assert.doesNotMatch(layouts, /direction:ltr|<aside dir="rtl"|<main dir="rtl"/);
     
@@ -578,8 +578,8 @@ test('messaging is viewport-locked between the authenticated app header and bott
     assert.doesNotMatch(inboxList[1], /scrollbar-gutter/ , 'The inbox list must not reserve a gutter that leaves a blank strip beside its content.');
     assert.ok(messageTimeline.includes('overflow-y-auto overscroll-contain'), 'Message history scrolls inside its fixed panel.');
     assert.ok(layouts.includes('flex h-dvh flex-col overflow-hidden'), 'Messaging locks the authenticated shell to the dynamic viewport.');
-    assert.ok(layouts.includes('h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
-    assert.ok(layouts.includes('sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
+    assert.ok(layouts.includes('h-[calc(100dvh-var(--rd-header-height)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
+    assert.ok(layouts.includes('sm:h-[calc(100dvh-var(--rd-header-height-wide)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))]'));
     assert.ok(layouts.includes('AuthenticatedBottomNavigation mobileLinks={mobileWorkspaceLinks} unreadConversationCount={unreadConversationCount}'));
     assert.ok(layouts.includes("fixed inset-x-0 bottom-0 z-50"));
     assert.ok(routeLoading.includes('fixed inset-x-0 bottom-0 z-50'));
