@@ -126,7 +126,7 @@ export default function ArtworkCatalogue() {
                 breadcrumbs={<Breadcrumbs label={t("مسیر صفحه")} items={[{ label: t("خانه"), to: "/" }, { label: t("گالری آثار") }]} />}
             />
 
-            <Section as="section" bleed aria-label={t("فیلتر و مرتب‌سازی آثار")} className="relative mt-8 bg-surface-muted/70">
+            <Section spacing="regular" as="section" bleed aria-label={t("فیلتر و مرتب‌سازی آثار")} className="relative mt-8 bg-surface-muted/70">
                 <Container width="wide">
                 <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
                     <div>
@@ -162,7 +162,7 @@ export default function ArtworkCatalogue() {
             </Container>
             </Section>
 
-            <Section as="section" bleed aria-label={t("آرشیو آثار و نتایج")} className="mt-8 border-y border-divider-section bg-paper">
+            <Section spacing="regular" as="section" bleed aria-label={t("آرشیو آثار و نتایج")} className="mt-8 border-y border-divider-section bg-paper">
                 <Container width="wide">
             {activeFilterCount > 0 && (
                 <div className="mt-6 flex flex-wrap items-center gap-2" aria-label={t("معیارهای فعال")}>
