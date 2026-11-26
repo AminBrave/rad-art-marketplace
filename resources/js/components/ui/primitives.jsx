@@ -84,58 +84,42 @@ export function Badge({ children, variant = 'neutral', className = '' }) {
 // Backward-compatible name; Container in layout.jsx is the single implementation.
 export const PageContainer = Container;
 
-export function PageHeader({ eyebrow, title, description, actions, level = 1, bleed = true, className = '', titleClassName = '', descriptionClassName = '' }) {
+/**
+ * One shared hero primitive for discovery, editorial and workspace routes.
+ * Route-specific content changes; the full-width frame, type scale and rhythm do not.
+ */
+export function UnifiedHero({
+    eyebrow, title, description, breadcrumbs, actions, media, children,
+    className = '', titleClassName = '', descriptionClassName = '',
+    level = 1, bleed = false, compact = false,
+}) {
     const Heading = level === 2 ? 'h2' : 'h1';
     return (
-        <section className={cn("rd-hero-surface border-y border-[color:var(--rd-hero-line)]", bleed && "rd-bleed")}>
-            <Container className="py-6 sm:py-8">
-                <header className={cn('relative isolate flex min-w-0 items-end justify-between gap-6 max-sm:items-stretch max-sm:flex-col max-sm:gap-4', className)}>
-                    <div className="relative z-10 min-w-0 max-w-[56rem]">
-                        {eyebrow && <p className="inline-flex items-center gap-2 border-s-2 border-[color:var(--rd-hero-accent)] bg-transparent px-3 py-1 text-[11px] font-extrabold leading-none tracking-[.06em] text-[color:var(--rd-hero-accent)]">{eyebrow}</p>}
-                        <Heading className={cn('mt-3 text-[clamp(1.75rem,3.2vw,2.6rem)] font-extrabold leading-heading tracking-[-.035em] text-[color:var(--rd-hero-foreground)]', titleClassName)}>{title}</Heading>
-                        {description && <p className={cn('mt-3 max-w-2xl text-sm leading-8 text-[color:var(--rd-hero-muted)] sm:text-[.95rem]', descriptionClassName)}>{description}</p>}
-                    </div>
-                    {actions && <div className="relative z-10 flex min-w-0 max-w-full flex-wrap items-center gap-2 pb-1 max-sm:w-full max-sm:pb-0">{actions}</div>}
-                </header>
-            </Container>
-        </section>
-    );
-}
-
-/**
- * Public discovery hero: one shared editorial composition with route-specific
- * abstract geometry. Breadcrumbs are supplied by discovery routes only.
- */
-export function DiscoveryHero({
-    eyebrow,
-    title,
-    description,
-    breadcrumbs,
-    actions,
-    media,
-    children,
-    shape = 'frame',
-    className = '',
-    titleClassName = '',
-    descriptionClassName = '',
-}) {
-    return (
-        <section className={cn('rd-discovery-hero rd-hero-surface', className)} data-shape={shape}>
-            <Container width="wide" className="relative z-10 py-8 sm:py-12 lg:py-16">
-                {breadcrumbs && <div className="mb-7 sm:mb-9"><div className="text-[11px] font-semibold text-[color:var(--rd-hero-muted)]">{breadcrumbs}</div></div>}
-                <div className={cn('grid min-w-0 items-center gap-8 lg:gap-12', media && 'lg:grid-cols-[minmax(0,1.15fr)_minmax(17rem,.85fr)]')}>
+        <section className={cn('rd-unified-hero rd-hero-surface', bleed && 'rd-bleed', compact && 'rd-unified-hero--compact', className)}>
+            <Container width="wide" className="rd-unified-hero__inner relative z-10">
+                {breadcrumbs && <div className="mb-6 text-[11px] font-semibold text-[color:var(--rd-hero-muted)] sm:mb-8">{breadcrumbs}</div>}
+                <div className={cn('grid min-w-0 items-center gap-7 lg:gap-12', media && 'lg:grid-cols-[minmax(0,1.15fr)_minmax(17rem,.85fr)]')}>
                     <div className="relative z-10 min-w-0">
-                        {eyebrow && <p className="inline-flex items-center gap-2 border-s-2 border-[color:var(--rd-hero-accent)] px-3 py-1 text-[11px] font-extrabold leading-none tracking-[.08em] text-[color:var(--rd-hero-accent)]">{eyebrow}</p>}
-                        <h1 className={cn('mt-4 max-w-4xl break-words text-[clamp(2rem,4.5vw,3.75rem)] font-extrabold leading-[1.2] tracking-[-.04em] text-[color:var(--rd-hero-foreground)]', titleClassName)}>{title}</h1>
-                        {description && <p className={cn('mt-4 max-w-2xl text-sm leading-8 text-[color:var(--rd-hero-muted)] sm:text-base sm:leading-9', descriptionClassName)}>{description}</p>}
-                        {children && <div className="mt-6 max-w-3xl">{children}</div>}
-                        {actions && <div className="mt-7 flex min-w-0 flex-wrap items-center gap-3">{actions}</div>}
+                        {eyebrow && <p className="inline-flex items-center gap-2 border-s-2 border-[color:var(--rd-hero-accent)] px-3 py-1 text-[11px] font-extrabold leading-none tracking-[.06em] text-[color:var(--rd-hero-accent)]">{eyebrow}</p>}
+                        <Heading className={cn('mt-3 max-w-4xl break-words text-[clamp(1.75rem,4.2vw,3.5rem)] font-extrabold leading-[1.2] tracking-[-.04em] text-[color:var(--rd-hero-foreground)]', titleClassName)}>{title}</Heading>
+                        {description && <p className={cn('mt-3 max-w-2xl text-sm leading-8 text-[color:var(--rd-hero-muted)] sm:text-base sm:leading-9', descriptionClassName)}>{description}</p>}
+                        {children && <div className="mt-5 max-w-3xl">{children}</div>}
+                        {actions && <div className="mt-6 flex min-w-0 flex-wrap items-center gap-3">{actions}</div>}
                     </div>
                     {media && <div className="relative z-10 mx-auto w-full min-w-0 max-w-xl lg:max-w-none">{media}</div>}
                 </div>
             </Container>
         </section>
     );
+}
+
+export function PageHeader({ eyebrow, title, description, actions, level = 1, bleed = true, className = '', titleClassName = '', descriptionClassName = '' }) {
+    return <UnifiedHero eyebrow={eyebrow} title={title} description={description} actions={actions} level={level} bleed={bleed} className={className} titleClassName={titleClassName} descriptionClassName={descriptionClassName} />;
+}
+
+/** Discovery routes may add breadcrumbs; they share the exact same hero frame. */
+export function DiscoveryHero({ eyebrow, title, description, breadcrumbs, actions, media, children, className = '', titleClassName = '', descriptionClassName = '' }) {
+    return <UnifiedHero eyebrow={eyebrow} title={title} description={description} breadcrumbs={breadcrumbs} actions={actions} media={media} className={className} titleClassName={titleClassName} descriptionClassName={descriptionClassName}>{children}</UnifiedHero>;
 }
 
 export function SectionHeader({ id, eyebrow, title, description, actions, className = '', level = 2 }) {
@@ -153,20 +137,7 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
 }
 
 export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
-    return (
-        <section className="rd-hero-surface my-3 border-y border-[color:var(--rd-hero-line)] sm:my-4">
-            <Container width="wide" className="py-8 sm:py-10 lg:py-12">
-                <header className={cn('relative isolate flex min-w-0 items-center justify-between gap-8 text-[color:var(--rd-hero-foreground)] max-md:items-stretch max-md:flex-col max-md:gap-5', className)}>
-                    <div className="relative z-10 min-w-0 max-w-[46rem]">
-                        {eyebrow && <p className="text-xs font-bold tracking-wide text-[color:var(--rd-hero-accent)]">{eyebrow}</p>}
-                        <h1 className="mt-2 break-words text-[clamp(1.5rem,3vw,2.25rem)] font-extrabold leading-heading tracking-[-.025em] text-[color:var(--rd-hero-foreground)]">{title}</h1>
-                        {description && <p className="mt-3 max-w-3xl text-sm leading-copy text-[color:var(--rd-hero-muted)]">{description}</p>}
-                    </div>
-                    {actions && <div className="relative z-10 flex min-w-0 max-w-full flex-wrap items-center gap-2 max-md:w-full">{actions}</div>}
-                </header>
-            </Container>
-        </section>
-    );
+    return <UnifiedHero eyebrow={eyebrow} title={title} description={description} actions={actions} className={className} compact />;
 }
 export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, className = '' }) {
     const Element = as ?? (to ? 'a' : 'article');
