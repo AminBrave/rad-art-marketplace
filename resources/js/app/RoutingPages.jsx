@@ -25,7 +25,7 @@ function WorkspaceAuthLoading({ children }) {
             aria-busy="true"
         >
             <header className="sticky top-0 z-40 shrink-0 border-b border-border bg-paper shadow-soft">
-                <div className="mx-auto flex min-h-[4.5rem] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-20 sm:gap-4" aria-hidden="true">
+                <div className="mx-auto flex min-h-[var(--rd-header-height)] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-[var(--rd-header-height-wide)] sm:gap-4" aria-hidden="true">
                     <div className="flex min-w-0 items-center gap-2">
                         <Skeleton className="h-10 w-10 shrink-0 sm:h-11 sm:w-11" />
                         <Skeleton className="h-5 w-24" />
@@ -35,7 +35,7 @@ function WorkspaceAuthLoading({ children }) {
             </header>
 
             <div className={isMessagingRoute
-                ? 'mx-auto flex h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-w-0 max-w-content px-page-gutter py-3 sm:py-4 lg:py-6'
+                ? 'mx-auto flex h-[calc(100dvh-var(--rd-header-height)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:h-[calc(100dvh-var(--rd-header-height-wide)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-w-0 max-w-content px-page-gutter py-3 sm:py-4 lg:py-6'
                 : 'mx-auto w-full max-w-content px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+2rem)]'}>
                 <main className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'min-w-0'}>
                     {children}
