@@ -270,7 +270,7 @@ test('homepage content sections separate semantic section rhythm from Container 
 
 test('artwork studio workspace uses shared Section padding and Container width', () => {
     const studio = readFileSync(resolve(root, 'resources/js/app/ArtworkStudio.jsx'), 'utf8');
-    assert.match(studio, /<Section spacing="none">\\s*<Container width="wide">/);
+    assert.match(studio, /<Section spacing="none">\s*<Container width="wide">/);
     assert.doesNotMatch(studio, /space-y-workspace-relaxed|rd-workspace-content/,
         'Section padding owns vertical rhythm; Container owns width and gutters only.');
 });
