@@ -400,14 +400,14 @@ export function BuyerDashboardSkeleton() {
 export function HomePageSkeleton() {
     return (
         <div role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی صفحه اصلی" className="w-full overflow-hidden">
-            <Section spacing="none" className="grid items-center gap-10 py-12 sm:py-16 lg:grid-cols-[1fr_.9fr] lg:gap-16 lg:py-24">
+            <Section spacing="none" className="grid items-center gap-10 lg:grid-cols-[1fr_.9fr] lg:gap-16">
                 <Container width="wide">
                 <div className="grid max-w-2xl content-center gap-5"><Skeleton className="h-4 w-56 " /><Skeleton className="h-12 w-11/12  sm:h-14" /><Skeleton className="h-12 w-3/4  sm:h-14" /><div className="mt-2 grid gap-2"><Skeleton className="h-4 w-full max-w-xl " /><Skeleton className="h-4 w-4/5 " /></div><div className="mt-4 flex flex-wrap gap-3"><Skeleton className="h-12 w-40 " /><Skeleton className="h-12 w-36 " /></div><Skeleton className="mt-2 h-3 w-64 " /></div>
                 <div className="relative mx-auto w-full max-w-xl lg:me-0"><Skeleton className="aspect-[3/4] w-full " /><div className="flex items-center justify-between gap-4 px-2 py-4"><div className="grid flex-1 gap-2"><Skeleton className="h-3 w-20 " /><Skeleton className="h-5 w-2/3 " /><Skeleton className="h-3 w-1/3 " /></div><Skeleton className="h-4 w-24 " /></div></div>
             </Container>
             </Section>
             <div className="border-y border-border bg-surface-muted"><Container className="grid gap-8 py-12 sm:grid-cols-3">{[0, 1, 2].map((item) => <div key={item} className="grid content-start gap-3"><Skeleton className="h-3 w-24 " /><Skeleton className="h-6 w-3/4 " /><Skeleton className="h-3 w-full " /><Skeleton className="h-3 w-11/12 " /><Skeleton className="h-3 w-4/5 " /></div>)}</Container></div>
-            <Section spacing="none" className="py-16">
+            <Section spacing="none" className="">
                 <Container width="wide"><div className="grid gap-3 border-b border-border pb-5"><Skeleton className="h-3 w-24 " /><Skeleton className="h-8 w-48 " /><Skeleton className="h-3 w-64 max-w-full " /></div><div className="mt-8 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}</div></Container>
             </Section>
             <div className="border-y border-border bg-paper"><Container className="py-14"><Skeleton className="h-3 w-28 " /><Skeleton className="mt-2 h-7 w-52 " /><div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{[0, 1, 2, 3, 4, 5, 6, 7].map((item) => <Skeleton key={item} className="h-24 w-full " />)}</div></Container></div>
