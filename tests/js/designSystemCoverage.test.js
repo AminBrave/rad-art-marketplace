@@ -199,6 +199,7 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     assert.ok(css.includes('.rd-discovery-hero[data-shape="arch"]'));
     assert.ok(css.includes('.rd-discovery-hero[data-shape="frame"]'));
     assert.ok(css.includes('.rd-discovery-hero[data-shape="ribbon"]'));
+    assert.ok(css.includes('.rd-discovery-hero[data-shape="diamond"]'));
 });
 
 test('page-level compositions use the shared Container instead of duplicated max-width wrappers', () => {
