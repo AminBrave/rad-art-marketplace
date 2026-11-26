@@ -413,3 +413,19 @@ Each slice should have a short feature-specific contract and tests. Do not make 
 
 - Source scan across all frontend JS/JSX files found no remaining `Container as="section"` usage.
 - Automated tests, lint, production build, and browser verification remain unrun in this environment.
+
+
+### Slice 8 — Unified hero wrapper contract
+
+**Implemented on the target branch:**
+
+- Reduced `PageHeader`, `DiscoveryHero`, and `WorkspaceHero` to thin wrappers over `UnifiedHero`, with the same complete prop surface inherited through prop forwarding.
+- All three wrappers now accept the same content, typography, surface, bleed, compact, heading-level, breadcrumb, media, and children options.
+- Kept context-sensitive defaults to avoid changing established page composition: discovery defaults to no bleed because it is already in the full-width public frame; PageHeader and WorkspaceHero default to bleed for contexts that may need to escape a constrained parent. Every wrapper permits explicit override.
+- Breadcrumb support is part of the shared API, but workspace routes do not opt into breadcrumbs; existing route-level navigation boundaries remain unchanged.
+- Added regression assertions for the shared wrapper contract and retained the grid texture / no-square hero rules.
+
+**Verification status:**
+
+- Source review confirms all wrappers delegate to the same implementation and WorkspaceHero exists only once.
+- Automated tests, lint, production build, and browser visual QA remain unrun in this environment.
