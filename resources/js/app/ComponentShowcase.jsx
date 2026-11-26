@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLanguage } from './LanguageContext';
 import {
     ArtistCard,
     ArtworkCard,
@@ -193,7 +194,7 @@ export default function ComponentShowcase() {
                             <TabsContent value="history"><p className="text-sm leading-7 text-muted">تاریخچه نمونه.</p></TabsContent>
                         </Tabs>
                         <h3 className="mt-3 font-bold">صفحه‌بندی</h3>
-                        <Pagination currentPage={page} lastPage={6} onPageChange={setPage} />
+                        <Pagination currentPage={page} lastPage={6} onPageChange={setPage} ariaLabel={t("صفحه‌بندی")} previousLabel={t("قبلی")} nextLabel={t("بعدی")} pageLabel={(number) => locale === "en" ? `Page ${number}` : `صفحه ${number.toLocaleString("fa-IR")}`} />
                     </div>
                 </div>
 
