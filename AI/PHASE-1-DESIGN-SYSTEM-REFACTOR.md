@@ -38,7 +38,7 @@ These are source-level observations from the target branch; they are not claims 
 
 ### 2.2 Hero API
 
-- `UnifiedHero` is the underlying implementation; `PageHeader`, `DiscoveryHero`, and `WorkspaceHero` are wrappers with different prop surfaces.
+- `UnifiedHero` is the canonical implementation; `PageHeader`, `DiscoveryHero`, and `WorkspaceHero` are thin wrappers with a shared prop surface and context-sensitive defaults.
 - `PageHeader`, `DiscoveryHero`, and `WorkspaceHero` are now thin wrappers over `UnifiedHero` and forward the same supported prop surface.
 - Their defaults remain context-sensitive (`DiscoveryHero` defaults to no bleed; the other wrappers default to bleed), but every option is overridable.
 - The shared grid texture remains; the title-square decoration is removed. Workspace hero content now uses the same full-width frame and content alignment as discovery.
