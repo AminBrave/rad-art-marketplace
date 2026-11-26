@@ -484,37 +484,48 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'The conversation menu trigger must not nest a Tooltip trigger around its DropdownMenu trigger.');
     assert.ok(dialog.includes('z-[var(--rd-layer-modal-overlay)]') && dialog.includes('z-[var(--rd-layer-modal)]'));
     assert.ok(alertDialog.includes('z-[var(--rd-layer-alert-overlay)]') && alertDialog.includes('z-[var(--rd-layer-alert)]'));
-assert.match(timeline, /<div dir="ltr" ref=\{containerRef\}/,
-        'The complete message timeline timeline structure remains consistent in both locales..'
+    assert.match(timeline, /<div dir="ltr" ref=\{containerRef\}/,
+        'The message timeline structure must remain consistent in both locales.');
     assert.match(messagingCenter, /<section dir=\\{locale === 'fa' \\? 'rtl' : 'ltr'\\}/,
-        'The entire inbox and conversation workspace must mirror between RTL and LTR.');
+        'The app shell follows the selected language direction.');
     assert.match(inbox, /<aside dir=\{locale === 'fa' \? 'rtl' : 'ltr'\}/,
-        'The inbox panel must explicitly mirror its internal layout direction with the active locale.');
+        'Inbox text and controls follow the selected language direction.');
     assert.match(inbox, /<ul dir=\{locale === 'fa' \? 'rtl' : 'ltr'\}/,
-        'Inbox thread rows must explicitly mirror avatar, copy, metadata and actions.');
-    assert.match(inbox, /<DropdownMenu\.Trigger asChild>[\s\S]*?<button[\s\S]*?data-inbox-thread-actions/,
-        'The inbox overflow menu must use a direct native button as its Radix trigger.');
-    assert.match(inbox, /pointer-events-none absolute end-1 top-1\/2 z-30[\s\S]*?pointer-events-auto relative z-30 inline-flex h-9/,
-        'The inbox overflow trigger must sit above the full-row selection button and remain clickable.');
+        'Inbox thread content follows the selected language direction.');
+    assert.match(inbox, /<DropdownMenu\\.Trigger asChild>[\\s\\S]*?<button[\\s\\S]*?data-inbox-thread-actions/,
+        'The inbox overflow menu uses a direct native Radix trigger.');
+    assert.match(inbox, /pointer-events-none absolute end-1 top-1\\/2 z-30[\\s\\S]*?pointer-events-auto relative z-30 inline-flex h-9/,
+        'The inbox overflow trigger remains clickable above the row selection control.');
     assert.match(inbox, /pointer-events-auto relative z-30 inline-flex h-9[\\s\\S]*?border-0 bg-transparent p-0[\\s\\S]*?shadow-none/,
-        'The inbox overflow action must be an icon-only control with no surface, border or shadow.');
-        'The inbox overflow action must be an icon-only control with no surface, border or shadow.');
+        'The inbox overflow action remains icon-only with no surface, border or shadow.');
     assert.match(inbox, /z-\\[var\\(--rd-layer-popover\\)\\]/,
-        'Inbox menu content must use the shared popover layer.');
+        'Inbox menus use the shared popover layer.');
     assert.ok(!inbox.includes('<Tooltip content={t("گزینه‌های گفتگو")}>'),
-        'The inbox menu must not nest a Tooltip trigger around its Radix trigger.');
-assert.match(messagingCenter, /<div dir="rtl" className="grid h-full/,
-        'The inbox/conversation grid conversation stays left and inbox right in both locales..'
-assert.match(messagingCenter, /<div dir="ltr" className=\{active \?/,
-        'The conversation pane chat chrome remains fixed LTR while message text stays content-directed..'
-assert.match(timeline, /<div dir="ltr" className=\{'flex w-full/,
-        'Each message row outgoing messages stay right and incoming messages left in both locales..'
-assert.match(inbox, /className="relative border-s-\\[3px\\] border-transparent"/,
-        'The active inbox marker inbox selection has no active border or background..'
-assert.match(conversationHeader, /<header dir="ltr"/,
-        'The conversation back icon header identity and actions remain stable across locales..'
-assert.match(composer, /<form dir="ltr"/,
-        'The composer controls composer actions stay in fixed physical positions..'
+        'Inbox menus do not nest Tooltip and DropdownMenu triggers.');
+    assert.match(messagingCenter, /<div dir="rtl" className="grid h-full/,
+        'The conversation stays on the left and the inbox on the right in both locales.');
+    assert.match(messagingCenter, /<div dir="ltr" className=\\{active \\?/,
+        'Conversation chrome remains fixed LTR while message text stays content-directed.');
+    assert.match(timeline, /<div dir="ltr" className=\\{'flex w-full/,
+        'Outgoing messages stay right and incoming messages stay left in both locales.');
+    assert.match(timeline, /dir="ltr" className="mt-2 flex min-w-0 flex-wrap/,
+        'Reaction controls use a fixed LTR action rail.');
+    assert.match(timeline, /items-center justify-end gap-1/,
+        'The emoji reaction control stays on the right side of the message action rail.');
+    assert.match(timeline, /border-0 bg-transparent p-0 text-muted shadow-none/,
+        'Message overflow and reaction triggers have no background, border or shadow.');
+    assert.match(conversationHeader, /<header dir="ltr"/,
+        'The conversation header keeps participant identity left and actions right.');
+    assert.match(conversationHeader, /border-0 bg-transparent text-muted shadow-none/,
+        'The conversation overflow action is icon-only.');
+    assert.match(composer, /<form dir="ltr"/,
+        'Composer actions stay in fixed physical positions in both locales.');
+    assert.match(composer, /border border-border bg-surface p-2 shadow-none(?![^"]*focus-within)/,
+        'The composer shell does not change border or shadow on focus.');
+    assert.match(inbox, /className="relative border-s-\\[3px\\] border-transparent"/,
+        'Inbox selection does not add active border or background styling.');
+    assert.doesNotMatch(inbox, /data-\\[state=active\\]:border-terracotta|data-\\[state=active\\]:text-terracotta-strong/,
+        'Inbox filter tabs do not use accent borders or colors for their active state.');
     assert.match(timeline, /rd-message-bubble[^\\n]*font-sans/,
         'Message bubbles must inherit the locale-aware application font.');
     assert.ok(timeline.includes("(own ? 'justify-end' : 'justify-start')"),
