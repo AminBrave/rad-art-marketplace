@@ -125,6 +125,7 @@ export default {
                 72: 'var(--rd-space-72)',
                 80: 'var(--rd-space-80)',
                 96: 'var(--rd-space-96)',
+                page: 'var(--rd-space-page)',
                 section: 'var(--rd-space-section)',
                 group: 'var(--rd-space-group)',
                 component: 'var(--rd-space-component)',
