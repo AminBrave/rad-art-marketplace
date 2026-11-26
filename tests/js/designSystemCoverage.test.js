@@ -186,9 +186,9 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     const appSources = frontendFiles.filter((path) => path.includes('/app/'));
     const breadcrumbConsumers = appSources
         .filter((path) => /<Breadcrumbs|aria-label=\{t\(["']مسیر صفحه/.test(readFileSync(path, 'utf8')))
-        .map((path) => relative(root, path).replaceAll('\\\\', '/'))
+        .map((path) => relative(root, path))
         .sort();
-    assert.deepEqual(breadcrumbConsumers, breadcrumbPages, 'Breadcrumbs may only be consumed by public discovery routes.');
+    assert.deepEqual(breadcrumbConsumers, [...breadcrumbPages].sort(), 'Breadcrumbs may only be consumed by public discovery routes.');
     const editorial = readFileSync(resolve(root, 'resources/js/app/EditorialPages.jsx'), 'utf8');
     assert.doesNotMatch(editorial.slice(editorial.indexOf('export function AdminEditorialPage()')), /<Breadcrumbs/, 'Admin editorial tools must not show breadcrumbs.');
     const primitives = readFileSync(resolve(root, 'resources/js/components/ui/primitives.jsx'), 'utf8');
