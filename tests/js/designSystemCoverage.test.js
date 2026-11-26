@@ -196,13 +196,14 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     assert.ok(primitives.includes('export function UnifiedHero'));
     assert.ok(primitives.includes('return <UnifiedHero'));
     assert.ok(css.includes('.rd-unified-hero'));
-    assert.ok(!css.includes('--rd-hero-grid-line'), 'Hero surfaces must not use a grid overlay.');
-    assert.ok(!css.includes('linear-gradient(var(--rd-hero-grid-line) 1px, transparent 1px)'));
+    assert.ok(css.includes('.rd-hero-surface--grid::before'), 'Hero surfaces must expose the shared grid layer.');
+    assert.ok(css.includes('linear-gradient(to right, var(--rd-hero-line) 1px, transparent 1px)'));
+    assert.ok(css.includes('.rd-unified-hero__title-wrap::before'), 'Hero title must have the square backdrop motif.');
     assert.ok(css.includes('radial-gradient(ellipse at 88% 8%, var(--rd-hero-glow), transparent 38%)'));
     assert.ok(css.includes('linear-gradient(125deg, var(--rd-hero-background), var(--rd-hero-background-alt))'));
     assert.ok(css.includes('section.rd-unified-hero {'));
-    assert.ok(css.includes('.rd-unified-hero--workspace'));
-    assert.ok(primitives.includes("cn('rd-unified-hero--workspace', className)"));
+    assert.ok(!css.includes('.rd-unified-hero--workspace'), 'Workspace heroes must not use a contained-width modifier.');
+    assert.ok(primitives.includes("surface = 'grid-square'"));
     assert.ok(css.includes('.rd-workspace-content > section'));
     for (const path of ['resources/js/app/AdminWorkspace.jsx', 'resources/js/app/ArtistWorkspaceOverview.jsx', 'resources/js/app/BuyerWorkspace.jsx', 'resources/js/app/ArtworkStudio.jsx', 'resources/js/app/RoutingPages.jsx', 'resources/js/app/EditorialPages.jsx']) {
         const source = readFileSync(resolve(root, path), 'utf8');
