@@ -223,7 +223,7 @@ export function MediaImage({
                         alt={alt}
                         loading={loading}
                         decoding={decoding}
-                        fetchPriority={fetchPriority}
+                        fetchpriority={fetchPriority}
                         width={width}
                         height={height}
                         onLoad={() => setLoadedSrc(imageSrc)}
