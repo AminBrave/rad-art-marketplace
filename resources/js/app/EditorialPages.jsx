@@ -61,7 +61,7 @@ export function CollectionDetailPage() {
 
     return <div className="min-h-[65vh] pb-section">
         <DiscoveryHero
-            shape="ribbon"
+            shape="diamond"
             eyebrow={t("روایت منتخب راد آرت")}
             title={localizedValue(item, 'title', locale)}
             description={localizedValue(item, 'intro', locale)}
