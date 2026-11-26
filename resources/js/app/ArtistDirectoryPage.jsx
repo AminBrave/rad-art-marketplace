@@ -47,7 +47,7 @@ export default function ArtistDirectoryPage() {
     const submitSearch = (value) => setParams(value.trim() ? { q: value.trim() } : {});
 
     return (
-        <div className="w-full min-w-0 min-h-[65vh] pb-16 pt-8 sm:pt-12">
+        <div className="w-full min-w-0 min-h-[65vh] pb-section pt-page">
             <Container width="wide">
             <nav aria-label={t("مسیر صفحه")} className="text-xs text-muted">
                 <span>{t("خانه")}</span><span className="mx-2" aria-hidden="true">/</span><span aria-current="page" className="text-ink">{t("هنرمندان")}</span>
@@ -56,7 +56,7 @@ export default function ArtistDirectoryPage() {
 
             <Section bleed className="mt-6 border-y border-[color:var(--rd-hero-line)] rd-hero-surface">
                 <Container width="wide">
-                    <header className="relative isolate px-6 py-10 sm:px-10 sm:py-14 lg:px-14">
+                    <header className="relative isolate py-group sm:py-section">
                 <div aria-hidden="true" className="pointer-events-none absolute -start-10 -top-16 h-56 w-56 border border-[color:var(--rd-hero-line)]" />
                 <div aria-hidden="true" className="pointer-events-none absolute -start-2 -top-8 h-40 w-40 border border-[color:var(--rd-hero-accent)]" />
                 <div className="relative z-10 max-w-3xl">
