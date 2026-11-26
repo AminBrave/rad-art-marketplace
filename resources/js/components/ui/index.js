@@ -26,3 +26,4 @@ export {
     Progress, Spinner, Kbd, AccessibleIcon, VisuallyHidden, Table, DataList,
     DataListItem,
 } from './layout';
+\nexport { BrandLogo } from './BrandLogo';\n
