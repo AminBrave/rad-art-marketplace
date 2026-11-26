@@ -81,7 +81,7 @@ export default function ArtworkDetailPage() {
             />
             <Container width="wide">
             {!artwork ? (
-                <Section spacing="regular" className="mt-8 border-y border-ink bg-transparent px-5 py-8 sm:px-8">
+                <Section spacing="regular" className="border-y border-ink bg-transparent px-5 sm:px-8">
                     <h2 className="text-2xl font-black">{t(status === 403 ? 'دسترسی به این اثر مجاز نیست' : 'اثر در دسترس نیست')}</h2>
                     <p className="mt-3 text-sm leading-7 text-muted">{t(status === 403 ? 'سرور اجازه مشاهده این اثر را صادر نکرد.' : 'این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.')}</p>
                     {artworkQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-danger">{t("ارتباط با سرور برقرار نشد.")} <Button variant="ghost" type="button" onClick={() => artworkQuery.refetch()} className="inline p-0 font-bold underline">{t("تلاش دوباره")}</Button></p>}
@@ -89,7 +89,7 @@ export default function ArtworkDetailPage() {
                 </Section>
             ) : (
                 <>
-                    <article className="mt-8 grid items-start gap-8 lg:grid-cols-[1.15fr_.85fr] lg:gap-12">
+                    <Section as="article" spacing="regular" className="grid items-start gap-8 lg:grid-cols-[1.15fr_.85fr] lg:gap-12">
                         <div className="min-w-0">
                             <ArtworkImage artwork={artwork} />
                             <p className="mt-3 text-xs leading-6 text-muted">{t("تصویر اثر با حفظ نسبت و جزئیات اصلی نمایش داده شده است.")}</p>
@@ -113,12 +113,12 @@ export default function ArtworkDetailPage() {
                             {!user && <Link to="/login" state={{ from: { pathname: '/artworks/' + slug } }} className="mt-7 inline-block text-sm font-bold text-terracotta-strong underline">{t("برای ارسال پیام مستقیم وارد شوید")}</Link>}
                             {user && user.role !== 'buyer' && <p className="mt-7 text-xs leading-6 text-muted">{t("ارسال پیام مستقیم از حساب خریدار امکان‌پذیر است.")}</p>}
                         </div>
-                    </article>
+                    </Section>
                     {typeof artwork.likes_count === 'number' && typeof artwork.comments_count === 'number' && (
                         <ArtworkEngagement artwork={artwork} slug={slug} />
                     )}
                     {artwork.related_artworks?.length > 0 && (
-                        <Section spacing="regular" className="mt-16 border-t border-border pt-10 lg:mt-20 lg:pt-14">
+                        <Section spacing="regular" className="border-t border-border">
                             <SectionHeader
                                 eyebrow={t("ادامه مسیر کشف")}
                                 title={t("آثار مرتبط")}
