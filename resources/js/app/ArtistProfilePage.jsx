@@ -174,7 +174,7 @@ export default function ArtistProfilePage() {
                 />
                 <Container width="wide">
                 <section className="mt-8 border border-border bg-paper p-8">
-                    <h1 className="text-2xl font-black">{t(status === 403 ? 'دسترسی به پروفایل مجاز نیست' : 'پروفایل در دسترس نیست')}</h1>
+                    <h2 className="text-2xl font-black">{t(status === 403 ? 'دسترسی به پروفایل مجاز نیست' : 'پروفایل در دسترس نیست')}</h2>
                     <p className="mt-3 text-sm leading-7 text-muted">{t("این پروفایل وجود ندارد یا نمایش عمومی آن غیرفعال شده است.")}</p>
                     {profileQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-danger">{t("ارتباط با سرور برقرار نشد.")} <Button variant="outline" type="button" onClick={() => profileQuery.refetch()} className="font-bold underline">{t("تلاش دوباره")}</Button></p>}
                 </section>
