@@ -260,6 +260,42 @@
             radial-gradient(ellipse at 88% 8%, var(--rd-hero-glow), transparent 38%),
             linear-gradient(125deg, var(--rd-hero-background), var(--rd-hero-background-alt));
         background-position: center center;
+        background-repeat: no-repeat;
+    }
+
+    /* Shared editorial grid and title-square motif. */
+    .rd-hero-surface--grid::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        opacity: .34;
+        background-image:
+            linear-gradient(to right, var(--rd-hero-line) 1px, transparent 1px),
+            linear-gradient(to bottom, var(--rd-hero-line) 1px, transparent 1px);
+        background-size: 3.5rem 3.5rem;
+        mask-image: linear-gradient(115deg, #000 0%, rgb(0 0 0 / 72%) 48%, transparent 100%);
+    }
+
+    .rd-unified-hero__title-wrap {
+        position: relative;
+        isolation: isolate;
+    }
+
+    .rd-unified-hero__title-wrap::before {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        inset-block-start: 50%;
+        inset-inline-start: clamp(-1.25rem, -2vw, -.5rem);
+        width: clamp(7rem, 17vw, 13rem);
+        aspect-ratio: 1;
+        transform: translateY(-50%);
+        border: 1px solid var(--rd-hero-line);
+        background: color-mix(in srgb, var(--rd-hero-accent) 7%, transparent);
+        pointer-events: none;
+    }
     }
 
     /* Workspace page shells own vertical rhythm; nested sections only provide grouping. */
@@ -376,11 +412,6 @@
     max-width: 100vw;
     margin-inline: calc(50% - 50vw);
     border-block: 1px solid var(--rd-hero-line);
-}
-.rd-unified-hero--workspace {
-    width: 100%;
-    max-width: 100%;
-    margin-inline: 0;
 }
 .rd-unified-hero__inner {
     padding-block: clamp(2rem, 5vw, 4rem);
