@@ -65,7 +65,7 @@ test('presentation sources do not embed hex colors in Tailwind utility classes',
 });
 
 test('presentation sources avoid raw arbitrary spacing values', () => {
-    const arbitrarySpacing = /\\b(?:p|px|py|pt|pb|ps|pe|m|mx|my|mt|mb|ms|me|gap|gap-x|gap-y|space-x|space-y)-\\[[^\\]]*(?:\\d+(?:\\.\\d+)?(?:px|rem)|\\.\\d+(?:px|rem))[^\\]]*\\]/g;
+    const arbitrarySpacing = /\b(?:p|px|py|pt|pb|ps|pe|m|mx|my|mt|mb|ms|me|gap|gap-x|gap-y|space-x|space-y)-\[[^\]]*(?:\d+(?:\.\d+)?(?:px|rem)|\.\d+(?:px|rem))[^\]]*\]/g;
     const violations = describeViolations(arbitrarySpacing);
     assert.deepEqual(
         violations,
