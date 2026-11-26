@@ -157,8 +157,8 @@ test('page-level compositions use the shared Container instead of duplicated max
 test('compact messaging spacing uses the canonical scale except for the safe-area calculation', () => {
     const composer = readFileSync(resolve(root, 'resources/js/app/MessageComposer.jsx'), 'utf8');
     const timeline = readFileSync(resolve(root, 'resources/js/app/MessageTimeline.jsx'), 'utf8');
-    assert.doesNotMatch(composer, /p-\\[\\.45rem\\]|gap-\\[\\.35rem\\]|p-\\[\\.35rem\\]/);
-    assert.doesNotMatch(timeline, /px-\\[\\.15rem\\]|mt-\\[\\.55rem\\]/);
+    for (const value of ['p-[.45rem]', 'gap-[.35rem]', 'p-[.35rem]']) assert.ok(!composer.includes(value), `Unexpected arbitrary composer spacing: ${value}`);
+    for (const value of ['px-[.15rem]', 'mt-[.55rem]']) assert.ok(!timeline.includes(value), `Unexpected arbitrary timeline spacing: ${value}`);
     assert.ok(composer.includes('pb-[max(.5rem,env(safe-area-inset-bottom))]'));
 });
 
