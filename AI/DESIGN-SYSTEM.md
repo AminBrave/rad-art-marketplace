@@ -47,6 +47,31 @@ CSS `--rd-*` variables are the canonical design-token source; Tailwind maps dire
 - Hero descendants and media must be shrinkable (`min-width: 0`, `max-width: 100%`). A `.rd-bleed` section must not introduce document-level horizontal scrolling; keep the viewport clipped at the root and never size hero media from intrinsic image width.
 - Hero surface backgrounds span the viewport; all hero content is nested in the shared width-constrained `Container`. For split desktop heroes, use a flexible copy column and a bounded media column with a single gap. Do not combine percentage widths that total 100% with a nonzero gap, and remove auto margins from flex children at desktop breakpoints.
 
+### Gestalt rules — system-wide design contract
+
+Apply Gestalt principles to every route, component and responsive state, not only editorial pages:
+
+- **Proximity:** keep labels, values, controls and helper text close to the element they explain. Use spacing to show relatedness; separate unrelated tasks with larger gaps.
+- **Similarity:** repeated actions, cards, section headings, form controls and navigation affordances share visual treatment and behavior. Differences must communicate a meaningful state or role.
+- **Common region:** group content only when it belongs together. A card, panel or hero surface must enclose one coherent task or story; avoid decorative containers around unrelated content.
+- **Alignment and continuity:** use shared container edges, baselines and grid tracks to create predictable reading paths. Align page heroes, section headings and content across routes.
+- **Figure–ground:** preserve strong contrast between primary content and its surface. Artwork remains the focal figure; decoration, metadata and controls must not compete with it.
+- **Closure:** use borders, backgrounds and whitespace only where they clarify a complete group. Do not stack multiple borders around the same content.
+- **Prägnanz (good form):** prefer the simplest coherent composition that communicates the task. Remove redundant labels, repeated headings, ornamental clutter and competing visual patterns.
+- **Hierarchy:** establish one dominant page title, then section titles, supporting copy and actions. Use scale, weight, contrast and whitespace consistently rather than adding more boxes.
+
+Review every screen at mobile, tablet and desktop widths and in both LTR and RTL. Gestalt is an evaluation method, not a reason to force symmetry or identical layouts where tasks differ.
+
+### Discovery hero and breadcrumb contract
+
+- All public discovery routes use the shared `DiscoveryHero` composition: homepage, artwork discovery, artist directory/profile, artwork detail and collection index/detail.
+- Keep the same hero anatomy, content measure, typography scale, spacing, surface, action treatment and responsive stacking. Differentiate routes only with the supported abstract shape variants (`ribbon`, `orbit`, `grid`, `arch`, `frame`); shapes are quiet background signals, never content containers.
+- Breadcrumbs belong only to public discovery routes and must sit at the top of that route's first hero, before the eyebrow/title. Do not render a separate breadcrumb row above or below the hero.
+- The homepage is the root destination and does not need a redundant breadcrumb. Dashboards, admin tools, artist/buyer workspaces, settings, messaging and other task-oriented workspace screens must not show breadcrumbs.
+- A breadcrumb trail contains navigable ancestors and one current-page item. Use localized labels, semantic `nav`/ordered-list markup and `aria-current="page"`.
+- Keep discovery hero text, breadcrumbs, actions and media inside the shared `Container`. Decorative geometry is non-interactive and must not reduce contrast, obscure artwork or create overflow.
+- Use `PageHeader` / `WorkspaceHero` for workspace and task pages when appropriate; do not pass discovery breadcrumbs into them.
+
 ## Accessibility and localization
 
 ### Accessible controls, form states, dialogs, menus, notifications
