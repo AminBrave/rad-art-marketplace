@@ -3,6 +3,24 @@
 @tailwind utilities;
 
 /*
+ * Every semantic section receives the same vertical breathing room by default.
+ * Tailwind spacing utilities remain able to opt a section into a tighter or
+ * wider rhythm when the composition explicitly calls for it.
+ */
+@layer components {
+    section {
+        padding-block: var(--rd-layout-section);
+    }
+
+    @media (min-width: 640px) {
+        section {
+            padding-block: var(--rd-layout-section-wide);
+        }
+    }
+}
+
+
+/*
  * Rademan semantic design foundation
  * Brand anchors are intentionally limited to five colors. Component styling
  * consumes semantic roles below; it should not depend directly on brand hues.
