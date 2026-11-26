@@ -71,7 +71,7 @@ DropdownMenu.Item = DropdownMenuItem;
 DropdownMenu.Label = DropdownMenuLabel;
 DropdownMenu.Separator = DropdownMenuSeparator;
 
-export function Breadcrumbs({ items = [], label = 'Breadcrumb', className = '' }) {
+export function Breadcrumbs({ items = [], label = 'مسیر صفحه', className = '' }) {
     if (!items.length) return null;
     return (
         <nav aria-label={label} className={cn('text-xs text-[color:var(--rd-hero-muted)]', className)}>
