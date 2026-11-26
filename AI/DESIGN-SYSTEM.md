@@ -65,7 +65,7 @@ Review every screen at mobile, tablet and desktop widths and in both LTR and RTL
 ### Discovery hero and breadcrumb contract
 
 - All public discovery routes use the shared `DiscoveryHero` composition: homepage, artwork discovery, artist directory/profile, artwork detail and collection index/detail.
-- Keep the same hero anatomy, content measure, typography scale, spacing, surface, action treatment and responsive stacking. Differentiate routes only with the supported abstract shape variants (`ribbon`, `orbit`, `grid`, `arch`, `frame`); shapes are quiet background signals, never content containers.
+- Keep the same hero anatomy, content measure, typography scale, spacing, surface, action treatment and responsive stacking. Differentiate routes only with the supported abstract shape variants (`ribbon`, `orbit`, `grid`, `arch`, `frame`, `diamond`); shapes are quiet background signals, never content containers.
 - Breadcrumbs belong only to public discovery routes and must sit at the top of that route's first hero, before the eyebrow/title. Do not render a separate breadcrumb row above or below the hero.
 - The homepage is the root destination and does not need a redundant breadcrumb. Dashboards, admin tools, artist/buyer workspaces, settings, messaging and other task-oriented workspace screens must not show breadcrumbs.
 - A breadcrumb trail contains navigable ancestors and one current-page item. Use localized labels, semantic `nav`/ordered-list markup and `aria-current="page"`.
