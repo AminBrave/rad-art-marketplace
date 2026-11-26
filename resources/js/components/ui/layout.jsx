@@ -43,7 +43,7 @@ export const Container = forwardRef(function Container({ as: Element = 'div', wi
  */
 export const Section = forwardRef(function Section({ as: Element = 'section', spacing = 'regular', bleed = false, className = '', ...props }, ref) {
     const sectionSpacing = {
-        none: '',
+        none: 'py-0',
         compact: 'py-section-compact',
         regular: 'py-section sm:py-section-wide',
         relaxed: 'py-section-relaxed sm:py-section-wide',
