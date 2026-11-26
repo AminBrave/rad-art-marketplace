@@ -404,7 +404,7 @@ test('image and avatar fallbacks reset when their source changes', () => {
     const feedback = readFileSync(resolve(root, 'resources/js/components/ui/feedback.jsx'), 'utf8');
     assert.match(layout, /useEffect\(\(\) => setFailed\(false\), \[src\]\)/);
     assert.match(feedback, /useEffect\(\(\) => \{\s*setLoadedSrc\(null\);\s*setFailedSrc\(null\);\s*\}, \[imageSrc\]\)/);
-    assert.ok(feedback.includes('fetchPriority={fetchPriority}'));
+    assert.ok(feedback.includes('fetchpriority={fetchPriority}'));
 });
 
 test('Pagination exposes localized navigation and page labels', () => {
