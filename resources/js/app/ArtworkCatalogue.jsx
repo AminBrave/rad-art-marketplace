@@ -120,7 +120,6 @@ export default function ArtworkCatalogue() {
     return (
         <div className="w-full min-w-0 min-h-[65vh] pb-section">
             <DiscoveryHero
-                shape="grid"
                 eyebrow={t("آرشیو عمومی راد آرت")}
                 title={t("گالری آثار")}
                 description={t("در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید.")}
