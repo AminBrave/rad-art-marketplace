@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { Badge, Button, EmptyState, ErrorState, FormField, Skeleton, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField, WorkspaceHero, PageHeader, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, MediaImage, Container } from '../components/ui';
+import { Badge, Button, EmptyState, ErrorState, FormField, Skeleton, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField, WorkspaceHero, PageHeader, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, MediaImage, Container, Section } from '../components/ui';
 import { localizedValue } from '../utils/localizedContent';
 
 const api = '/api/v1/admin';
@@ -73,15 +73,15 @@ export function AdminDashboardHome() {
             <Container width="wide" className="rd-workspace-content space-y-workspace-relaxed">
             {errors.length > 0 && <ErrorState title={t("بخشی از اطلاعات دریافت نشد")} description={errors.map(t).join(' ')} onRetry={load} />}
 
-            <section aria-label={t("شاخص‌های عملیاتی")} className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            <Section spacing="none" aria-label={t("شاخص‌های عملیاتی")} className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                 {loading ? <DashboardMetricSkeleton count={3} /> : <>
                     <DashboardMetricCard as={Link} label={t("آثار در انتظار بررسی")} value={summary.pending?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail={t('تعداد کل آثار منتظر تصمیم انتشار')} to="/admin/artworks" eyebrow={t('انتشار')} />
                     <DashboardMetricCard as={Link} label={t("حساب‌های کاربری")} value={summary.users?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail={t('تعداد کل حساب‌های ثبت‌شده')} to="/admin/users" eyebrow={t('جامعه')} />
                     <DashboardMetricCard as={Link} label={t("گزارش‌های پیام")} value={summary.reports?.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')} detail={t('مجموع گزارش‌های ثبت‌شده برای رسیدگی')} to="/admin/message-reports" eyebrow={t('ایمنی')} />
                 </>}
-            </section>
+            </Section>
 
-            <section className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,.8fr)]">
+            <Section spacing="none" className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,.8fr)]">
                 <div className="min-w-0">
                     <SectionHeader eyebrow={t("اولویت امروز")} title={t("صف بررسی آثار")} actions={<Link to="/admin/artworks" className="text-sm font-bold text-terracotta-strong underline underline-offset-4">{t("مشاهده صف")}</Link>} />
                     {loading ? <div aria-hidden="true" className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]"><Skeleton className="aspect-[3/4] w-full rounded-none sm:max-w-32" /><div className="grid gap-3"><SkeletonLines lines={3} /><SkeletonLines lines={1} /></div></div> : summary.latest ? (
@@ -106,9 +106,9 @@ export function AdminDashboardHome() {
                     <p className="mt-3 text-sm leading-7 text-muted">{t("تصمیم‌های انتشار را همراه با توضیح ثبت کنید، نقش‌ها را با دقت مدیریت کنید و گزارش‌های ایمنی را از مسیر اختصاصی بررسی کنید.")}</p>
                     <Link to="/admin/artworks" className="mt-5 inline-flex min-h-11 items-center bg-ink px-4 py-3 text-sm font-bold text-inverse transition-colors hover:bg-terracotta">{t('شروع بررسی آثار')} <span aria-hidden="true" className="ms-3 rtl:rotate-180">→</span></Link>
                 </aside>
-            </section>
+            </Section>
 
-            <section aria-labelledby="admin-shortcuts-heading">
+            <Section spacing="none" aria-labelledby="admin-shortcuts-heading">
                 <SectionHeader id="admin-shortcuts-heading" eyebrow={t("دسترسی سریع")} title={t("بخش‌های مدیریتی")} />
                 <div className="mt-6 grid gap-x-6 gap-y-4 sm:grid-cols-2 xl:grid-cols-3">
                     {shortcuts.map((item, index) => <Link key={item.to} to={item.to} className="group flex min-h-40 flex-col border-t border-border py-5 transition-colors hover:border-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
@@ -119,7 +119,7 @@ export function AdminDashboardHome() {
                         <span className="mt-auto pt-4 text-xs font-bold text-terracotta-strong">{t('ورود به بخش')} <span aria-hidden="true" className="rtl:rotate-180">→</span></span>
                     </Link>)}
                 </div>
-            </section>
+            </Section>
             </Container>
         </div>
     );
