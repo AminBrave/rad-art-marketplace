@@ -127,6 +127,7 @@
     --rd-space-group: var(--rd-space-6);
     --rd-space-component: var(--rd-space-4);
     --rd-space-compact: var(--rd-space-3);
+    --rd-space-message-gutter: clamp(var(--rd-space-4), 2.5vw, var(--rd-space-8));
 
     /* Semantic responsive layout dimensions. */
     --rd-content-width: 84rem;
