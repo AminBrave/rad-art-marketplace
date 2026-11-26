@@ -5,7 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useLanguage } from './LanguageContext';
 import ArtworkEngagement from './ArtworkEngagement';
-import { ArtworkCard, ArtworkDetailSkeleton, MediaImage, Container, Button, DiscoveryHero, Breadcrumbs, Section } from '../components/ui';
+import { ArtworkCard, ArtworkDetailSkeleton, MediaImage, Container, Button, DiscoveryHero, Breadcrumbs, Section, SectionHeader } from '../components/ui';
 import { formatArtworkPrice } from '../utils/formatArtworkPrice';
 import { localizedValue } from '../utils/localizedContent';
 
@@ -119,10 +119,12 @@ export default function ArtworkDetailPage() {
                     )}
                     {artwork.related_artworks?.length > 0 && (
                         <Section spacing="regular" className="mt-16 border-t border-border pt-10 lg:mt-20 lg:pt-14">
-                            <div className="flex flex-wrap items-end justify-between gap-3">
-                                <div><p className="text-xs font-bold text-terracotta-strong">{t("ادامه مسیر کشف")}</p><h2 className="mt-2 text-2xl font-black">{t("آثار مرتبط")}</h2><p className="mt-2 text-sm text-muted">{t("آثاری از همین دسته یا همین هنرمند")}</p></div>
-                                <Link to="/artworks" className="text-sm font-bold text-terracotta-strong underline">{t("مشاهده همه آثار")}</Link>
-                            </div>
+                            <SectionHeader
+                                eyebrow={t("ادامه مسیر کشف")}
+                                title={t("آثار مرتبط")}
+                                description={t("آثاری از همین دسته یا همین هنرمند")}
+                                actions={<Link to="/artworks" className="text-sm font-bold text-terracotta-strong underline">{t("مشاهده همه آثار")}</Link>}
+                            />
                             <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{artwork.related_artworks.map((item) => <ArtworkCard key={item.id} artwork={item} />)}</div>
                         </Section>
                     )}
