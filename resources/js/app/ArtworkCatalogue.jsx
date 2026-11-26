@@ -118,7 +118,7 @@ export default function ArtworkCatalogue() {
     }, [hasNextPage, fetchNextPage, loadingMore, error]);
 
     return (
-        <div className="w-full min-w-0 min-h-[65vh] py-section-compact lg:py-section-regular">
+        <div className="w-full min-w-0 min-h-[65vh] pb-section">
             <DiscoveryHero
                 shape="grid"
                 eyebrow={t("آرشیو عمومی راد آرت")}
