@@ -71,8 +71,8 @@ export default function ArtworkGallery({ user }) {
     }
 
     return (
-        <Section spacing="relaxed">
-            <Container width="wide" id="artworks">
+        <Section spacing="relaxed" id="artworks">
+            <Container width="wide">
             <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
                 <div>
                     <p className="text-sm font-bold text-terracotta-strong">{t('کاتالوگ راد آرت')}</p>
