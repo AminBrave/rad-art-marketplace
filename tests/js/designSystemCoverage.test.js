@@ -474,7 +474,7 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'The message action menu must use a direct native button as its Radix trigger.');
     assert.match(timeline, /ms-auto inline-flex h-9 min-h-9 w-9 min-w-9 shrink-0/,
         'The message menu trigger must keep a stable hit target at the logical inline-end.');
-    assert.doesNotMatch(timeline, /<Tooltip content=\\{t\\("\\u0639\\u0645\\u0644\\u06cc\\u0627\\u062a \\u067e\\u06cc\\u0627\\u0645"\\)\\}>/,
+    assert.ok(!timeline.includes('<Tooltip content={t("عملیات پیام")}>'),
         'The message menu trigger must not nest competing Radix Tooltip and DropdownMenu triggers.');
     assert.match(timeline, /dir=\\{locale === 'fa' \\? 'rtl' : 'ltr'\\}/,
         'The complete message timeline must explicitly inherit the locale direction.');
