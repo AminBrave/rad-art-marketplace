@@ -202,9 +202,11 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     assert.ok(!/\bsection\s*\{/.test(css), 'Native section elements must not receive global layout spacing.');
     assert.ok(!css.includes('.rd-unified-hero--workspace'), 'Workspace heroes must not use a contained-width modifier.');
     assert.ok(primitives.includes("surface = 'grid'"));
-    assert.ok(primitives.includes('actions={actions} media={media} level={level} bleed={bleed}'), 'WorkspaceHero must forward the shared hero layout contract.');
-    assert.ok(primitives.includes('breadcrumbs={breadcrumbs} actions={actions} media={media} level={level}'), 'PageHeader must forward the shared hero content contract.');
-    assert.ok(!primitives.includes('bleed={bleed} compact className={className}'), 'PageHeader must not use the compact hero spacing variant.');
+    assert.match(primitives, /export function PageHeader\(props\)\s*\{\s*return <UnifiedHero \{\.\.\.sharedHeroDefaults\} \{\.\.\.props\} \/>;\s*\}/);
+    assert.match(primitives, /export function DiscoveryHero\(props\)\s*\{\s*return <UnifiedHero \{\.\.\.sharedHeroDefaults\} bleed=\{false\} \{\.\.\.props\} \/>;\s*\}/);
+    assert.match(primitives, /export function WorkspaceHero\(props\)\s*\{\s*return <UnifiedHero \{\.\.\.sharedHeroDefaults\} \{\.\.\.props\} \/>;\s*\}/);
+    assert.ok(primitives.includes('compact: false'), 'All hero wrappers must inherit the compact variant from the shared defaults.');
+    assert.ok(primitives.includes('breadcrumbs, actions, media, children'), 'The canonical hero must support the shared content contract.');
     assert.ok(!css.includes('.rd-workspace-content > section'), 'Workspace section spacing must be owned by explicit layout primitives.');
     assert.ok(css.includes('padding-block: var(--rd-layout-section);'), 'Workspace content must use the discovery section rhythm.');
     assert.ok(css.includes('padding-block: var(--rd-layout-section-wide);'), 'Workspace content must use the responsive discovery section rhythm.');
