@@ -73,7 +73,7 @@ export default function DesignFoundation() {
                         <p className="text-xs font-semibold uppercase tracking-widest text-muted" dir="ltr">EDITORIAL PRINCIPLE</p>
                         <p className="mt-3 text-xl font-semibold leading-relaxed">کمتر تزئین، بیشتر توجه به اثر.</p>
                     </div>
-                </section>
+                </Section>
                 <Section spacing="regular" aria-labelledby="palette-title" className="border-t border-border">
                     <div className="mb-6 flex items-end justify-between gap-4">
                         <div><p className="text-xs font-bold text-terracotta-strong">01 / COLOR</p><h2 id="palette-title" className="mt-2 text-2xl font-bold">پالت رنگ</h2></div>
@@ -87,7 +87,7 @@ export default function DesignFoundation() {
                             </article>
                         ))}
                     </div>
-                </section>
+                </Section>
                 <Section spacing="regular" aria-labelledby="type-title" className="grid gap-8 border-t border-border lg:grid-cols-2">
                     <div>
                         <p className="text-xs font-bold text-terracotta-strong">02 / TYPOGRAPHY</p><h2 id="type-title" className="mt-2 text-2xl font-bold">تایپوگرافی فارسی</h2>
@@ -99,7 +99,7 @@ export default function DesignFoundation() {
                         <p className="mt-4 font-latin text-sm leading-7 text-muted">A considered typographic system for Latin names, metadata, numbers, and mixed-language content.</p>
                         <p className="mt-5 font-latin text-xs tracking-widest text-subtle">ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789</p>
                     </div>
-                </section>
+                </Section>
                 <Section spacing="regular" aria-labelledby="controls-title" className="border-t border-border">
                     <p className="text-xs font-bold text-terracotta-strong">03 / INTERACTION</p><h2 id="controls-title" className="mt-2 text-2xl font-bold">کنترل‌ها و سطوح</h2>
                     <div className="mt-6 grid gap-8 lg:grid-cols-2">
@@ -114,7 +114,7 @@ export default function DesignFoundation() {
                             <p className="mt-2 text-xs text-muted">نمونه فیلد ورودی با حالت تمرکز قابل مشاهده.</p>
                         </form>
                     </div>
-                </section>
+                </Section>
                 <Section spacing="regular" aria-labelledby="surface-title" className="border-t border-border">
                     <p className="text-xs font-bold text-terracotta-strong">04 / SURFACES</p><h2 id="surface-title" className="mt-2 text-2xl font-bold">مرزها و سطوح</h2>
                     <div className="mt-6 grid gap-4 sm:grid-cols-3">
@@ -122,7 +122,7 @@ export default function DesignFoundation() {
                         <div className="border border-sand bg-surface-muted p-5"><p className="font-bold">سطح خنثی</p><p className="mt-2 text-sm text-muted">برای گروه‌بندی آرام محتوا</p></div>
                         <div className="border-s border-2 border-olive bg-paper p-5"><p className="font-bold">نشانگر معنایی</p><p className="mt-2 text-sm text-muted">استفاده محدود از زیتونی</p></div>
                     </div>
-                </section>
+                </Section>
                 <ColorAccessibilityPanel />
                 <ComponentShowcase />
                 <footer className="border-t border-border pt-6 text-xs text-muted">Rad Art · Contemporary Art Editorial · MVP 2</footer>
