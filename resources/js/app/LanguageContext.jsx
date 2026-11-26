@@ -896,6 +896,10 @@ const english = {
 const fa = Object.fromEntries(Object.keys(english).map((key) => [key, key]));
 fa["راد آرت"] = "ردّمن";
 fa["ردّمن، صفحه اصلی"] = "ردّمن، صفحه اصلی";
+fa["راد آرت — گالری هنر مستقل معاصر"] = "ردّمن — گالری هنر مستقل معاصر";
+english["ردّمن"] = "Rademan";
+for (const key of Object.keys(fa)) fa[key] = fa[key].replaceAll("راد آرت", "ردّمن");
+for (const key of Object.keys(english)) english[key] = english[key].replaceAll("Rad Art", "Rademan");
 english["راد آرت"] = "Rademan";
 english["ردّمن، صفحه اصلی"] = "Rademan home";
 
