@@ -268,11 +268,11 @@ test('homepage content sections separate semantic section rhythm from Container 
     assert.doesNotMatch(home, /<Container as="section"/, 'Container must not be used as a substitute for the semantic Section primitive.');
 });
 
-test('artwork studio workspace spacing belongs to its content Container', () => {
+test('artwork studio workspace uses shared Section padding and Container width', () => {
     const studio = readFileSync(resolve(root, 'resources/js/app/ArtworkStudio.jsx'), 'utf8');
-    assert.match(studio, /<Section spacing="none">\s*<Container width="wide" className="rd-workspace-content space-y-workspace-relaxed">/);
-    assert.doesNotMatch(studio, /<Section spacing="none" className="rd-workspace-content space-y-workspace-relaxed">/,
-        'The workspace rhythm must live on the constrained content Container, not the full-width Section.');
+    assert.match(studio, /<Section spacing="none">\\s*<Container width="wide">/);
+    assert.doesNotMatch(studio, /space-y-workspace-relaxed|rd-workspace-content/,
+        'Section padding owns vertical rhythm; Container owns width and gutters only.');
 });
 
 test('page-level compositions use the shared Container instead of duplicated max-width wrappers', () => {
