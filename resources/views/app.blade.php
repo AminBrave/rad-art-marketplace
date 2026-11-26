@@ -20,6 +20,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#F7F5F0" id="rad-theme-color">
+    <style>
+        [data-theme="dark"] .brand-logo-light,
+        [data-theme="light"] .brand-logo-dark { display: none; }
+        [data-theme="dark"] .brand-logo-dark,
+        [data-theme="light"] .brand-logo-light { display: inline-block; }
+        @media (prefers-color-scheme: dark) {
+            [data-theme="system"] .brand-logo-light { display: none; }
+            [data-theme="system"] .brand-logo-dark { display: inline-block; }
+        }
+    </style>
     <script>
         (() => {
             try {
@@ -119,7 +129,7 @@
         @else
             <main class="mx-auto min-h-screen w-[min(calc(100%_-_2.5rem),80rem)] pt-6 pb-16" role="status" aria-busy="true" aria-label="در حال بارگذاری ردّمن">
                 <div class="flex min-h-14 items-center justify-between gap-8 border-b border-border">
-                    <div class="flex items-center gap-2"><img src="/favicon.svg" alt="" aria-hidden="true" class="h-9 w-9" width="36" height="36"><span class="text-lg font-black text-ink">ردّمن</span></div>
+                    <div class="flex items-center gap-2"><img src="/rademan-logo-light.svg" alt="" aria-hidden="true" class="brand-logo-light h-9 w-9" width="36" height="36"><img src="/rademan-logo-dark.svg" alt="" aria-hidden="true" class="brand-logo-dark h-9 w-9" width="36" height="36"><span class="text-lg font-black text-ink">ردّمن</span></div>
                     <span class="{{ $skeletonClass }} h-4 w-[min(42%,22rem)]"></span>
                 </div>
         @endif
