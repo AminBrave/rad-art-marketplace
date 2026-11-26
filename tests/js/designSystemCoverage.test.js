@@ -82,6 +82,13 @@ test('project stylesheets define tokens, base rules and only approved layout pri
         '.rd-container--reading',
         '.rd-container--full',
         '.rd-hero-surface',
+        '.rd-hero-surface--grid',
+        '.rd-unified-hero',
+        '.rd-unified-hero__title-wrap',
+        '.rd-unified-hero__inner',
+        '.rd-unified-hero--compact',
+        '.rd-workspace-content',
+        '.rd-home-hero',
         '.rd-discovery-hero',
         '.rd-message-bubble',
         '.rd-message-bubble--own',
@@ -181,7 +188,7 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
         const source = readFileSync(resolve(root, path), 'utf8');
         assert.doesNotMatch(source, /<Breadcrumbs|مسیر صفحه/, path + ' must not show dashboard/workspace breadcrumbs.');
     }
-    const appSources = frontendFiles.filter((path) => path.includes('/app/'));
+    const appSources = frontendFiles.filter((path) => path.replaceAll('\\', '/').includes('/app/'));
     const breadcrumbConsumers = appSources
         .filter((path) => /<Breadcrumbs|aria-label=\{t\(["']مسیر صفحه/.test(readFileSync(path, 'utf8')))
         .map((path) => relative(root, path).replaceAll('\\', '/'))
