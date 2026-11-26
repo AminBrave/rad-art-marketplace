@@ -51,12 +51,12 @@ function getPublicWorkspaceLinks(user, profileHref, t) {
     return [...roleLinks, { action: 'logout', label: t('خروج از حساب'), Icon: LogOut }];
 }
 
-function SidebarNavigation({ sections, onNavigate, onLogout, unreadConversationCount = 0, locale = 'fa' }) {
+function SidebarNavigation({ sections, description, onNavigate, onLogout, unreadConversationCount = 0, locale = 'fa' }) {
     return (
         <div className="min-h-0 flex-1 overflow-y-auto py-5">
             <Link to="/" onClick={onNavigate} className="mb-6 flex min-h-32 flex-col items-center justify-center gap-2 border-b border-border pb-5 no-underline" aria-label="Rademan home">
                 <BrandLogo size="sidebar" />
-                <span className="text-center text-xs leading-6 text-muted">{t('کشف هنر، هنرمندان و فضای کاربری')}</span>
+                <span className="text-center text-xs leading-6 text-muted">{description}</span>
             </Link>
             {sections.filter((section) => section.items?.length).map((section, sectionIndex) => (
                 <div key={section.label}>
@@ -209,6 +209,7 @@ export function PublicLayout() {
                         {user && <span className="ms-auto min-w-0 truncate text-sm font-semibold text-ink">{user.name}</span>}
                     </div>
                     <SidebarNavigation
+                        description={t('کشف هنر، هنرمندان و فضای کاربری')}
                         sections={[
                             { label: t('کشف'), items: publicDiscoveryLinks.map((item) => ({ ...item, label: t(item.label) })) },
                             { label: t(user ? (user.role === 'artist' ? 'فضای هنرمند' : user.role === 'admin' ? 'مدیریت' : 'فضای خریدار') : 'حساب کاربری'), items: getPublicWorkspaceLinks(user, profileHref, t) },
@@ -696,6 +697,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
 
                 <div className="flex shrink-0 items-center gap-2 border-b border-border px-4 py-3"><LanguageControl /><ThemeControl />{user?.role !== "admin" && <NotificationBell user={user} onNavigate={() => setMobileMenuOpen(false)} />}</div>
                 <SidebarNavigation
+                    description={t('کشف هنر، هنرمندان و فضای کاربری')}
                     sections={[
                         { label: t('کشف'), items: publicDiscoveryLinks.map((item) => ({ ...item, label: t(item.label) })) },
                         { label: t(user?.role === 'artist' ? 'فضای هنرمند' : user?.role === 'admin' ? 'مدیریت' : 'فضای خریدار'), items: workspaceLinks.map((item) => ({ ...item, label: item.shortLabel ?? (workspaceNavigationLabels[item.to] ? t(workspaceNavigationLabels[item.to]) : item.label) })) .concat([{ action: 'logout', label: t('خروج از حساب'), Icon: LogOut }]) },
