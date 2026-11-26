@@ -600,7 +600,7 @@ export default function MessagingCenter({ role }) {
                 onRetryInbox={loadThreads}
                 onRetryDirectStart={() => setDirectStartAttempt((attempt) => attempt + 1)}
             />
-            <div className="grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden border-y border-border bg-surface lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]">
+            <div dir={locale === 'fa' ? 'rtl' : 'ltr'} className="grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden border-y border-border bg-surface lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]">
                 <MessagingInboxPanel
                     active={active}
                     sendingConversationId={sendingConversationId}
@@ -631,7 +631,7 @@ export default function MessagingCenter({ role }) {
                     threads={threads}
                     updateThreadSetting={updateThreadSetting}
                 />
-                <div className={active ? 'flex h-full min-h-0 min-w-0 flex-col bg-canvas' : 'hidden h-full min-h-0 min-w-0 flex-col bg-canvas lg:flex'}>
+                <div dir={locale === 'fa' ? 'rtl' : 'ltr'} className={active ? 'flex h-full min-h-0 min-w-0 flex-col bg-canvas' : 'hidden h-full min-h-0 min-w-0 flex-col bg-canvas lg:flex'}>
                     {!active ? <div className="m-auto p-8 text-center text-sm text-muted">{t("برای مشاهده پیام‌ها یک گفتگو را انتخاب کنید.")}</div> : (
                         <>
                             <ConversationHeader
