@@ -13,10 +13,12 @@ export const Box = forwardRef(function Box({ as: Element = 'div', className = ''
 });
 
 export const Flex = forwardRef(function Flex({ as: Element = 'div', direction = 'row', align, justify, wrap = false, gap, className = '', style, ...props }, ref) {
-    const directions = { row: 'flex-row', column: 'flex-col', 'row-reverse': 'flex-row-reverse', 'column-reverse': 'flex-col-reverse' };
 const spacingValue = (value) => typeof value === 'number'
     ? `var(--rd-space-${String(value).replace('.', '-')}, ${value * 0.25}rem)`
     : value;
+
+export const Flex = forwardRef(function Flex({ as: Element = 'div', direction = 'row', align, justify, wrap = false, gap, className = '', style, ...props }, ref) {
+    const directions = { row: 'flex-row', column: 'flex-col', 'row-reverse': 'flex-row-reverse', 'column-reverse': 'flex-col-reverse' };
     const alignments = { start: 'items-start', center: 'items-center', end: 'items-end', stretch: 'items-stretch', baseline: 'items-baseline' };
     const justifications = { start: 'justify-start', center: 'justify-center', end: 'justify-end', between: 'justify-between', around: 'justify-around', evenly: 'justify-evenly' };
     return <Element ref={ref} className={cn('flex min-w-0', directions[direction] ?? directions.row, alignments[align], justifications[justify], wrap && 'flex-wrap', className)} style={{ ...(gap !== undefined ? { gap: spacingValue(gap) } : {}), ...style }} {...props} />;
