@@ -50,15 +50,14 @@ export default function ArtistWorkspaceOverview() {
 
     return (
         <div className="w-full">
-            <Container width="wide" className="rd-workspace-content space-y-workspace-relaxed">
-                <PageHeader
-                    bleed={false}
+            <PageHeader
                     eyebrow={t("استودیوی هنرمند")}
                     title={<>{t('خوش آمدید، ')}{user?.name}</>}
                     description={t("وضعیت آثار و ارتباط‌های خود را در یک نگاه دنبال کنید.")}
                     actions={<><Link to={profile?.slug ? '/artists/' + profile.slug : '/dashboard/artist/profile'} className="inline-flex min-h-11 items-center justify-center border border-terracotta bg-terracotta px-4 py-2 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong">{profile?.slug ? t("پیش‌نمایش پروفایل") : t("تکمیل پروفایل")}</Link><Link to="/dashboard/artist/artworks" className="inline-flex min-h-11 items-center justify-center border border-border px-4 py-2 text-sm font-bold text-ink no-underline transition-colors hover:border-terracotta">{t("مدیریت آثار")}</Link></>}
-                />
+            />
 
+            <Container width="wide" className="rd-workspace-content space-y-workspace-relaxed">
                 {profileError && <ErrorState title={t("پروفایل دریافت نشد")} description={profileError} />}
 
                 <section aria-label={t("وضعیت پروفایل هنرمند")} className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
