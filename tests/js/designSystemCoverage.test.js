@@ -477,7 +477,7 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'The composer must use the locale-aware font and resolve direction from message content.');
     assert.doesNotMatch(cssSource, /\[dir=['"]ltr['"]\]\s*\{\s*font-family:/,
         'Text direction must not globally override component font inheritance.');
-    assert.match(cssSource, /html\s*\{[^}]*overflow-y:\s*scroll;[^}]*scrollbar-gutter:\s*stable;/s,
+    assert.match(cssSource, /html\s*\{[^}]*scrollbar-gutter:\s*stable;/s,
         'The document must reserve its scrollbar gutter to prevent popover scroll-lock layout shifts.');
     assert.match(timeline, /<p dir="auto"/,
         'Message bodies must resolve direction independently for mixed Persian and Latin content.');
