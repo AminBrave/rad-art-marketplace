@@ -257,7 +257,9 @@ export function SelectField({
     const { locale } = useLanguage();
     const direction = locale === 'fa' ? 'rtl' : 'ltr';
     const options = Children.toArray(children).filter(
-        (child) => isValidElement(child) && child.type === 'option',
+        (child) => isValidElement(child)
+            && child.type === 'option'
+            && String(child.props.value ?? '') !== '',
     );
 
     return (
@@ -290,11 +292,6 @@ export function SelectField({
                     className="z-50 box-border max-h-[var(--radix-select-content-available-height)] w-[var(--radix-select-trigger-width)] max-w-[calc(100vw-1rem)] overflow-hidden border border-border bg-paper font-sans text-sm text-ink shadow-raised"
                 >
                     <SelectPrimitive.Viewport className="max-h-[var(--radix-select-content-available-height)] overflow-y-auto p-1">
-                        {placeholder && !options.some((option) => String(option.props.value ?? '') === '') && (
-                            <SelectPrimitive.Item value="" disabled className="flex min-h-10 cursor-default items-center px-3 py-2 text-muted outline-none">
-                                <SelectPrimitive.ItemText>{placeholder}</SelectPrimitive.ItemText>
-                            </SelectPrimitive.Item>
-                        )}
                         {options.map((option, index) => (
                             <SelectPrimitive.Item
                                 key={option.key ?? String(option.props.value ?? index)}
