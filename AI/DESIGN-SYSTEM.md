@@ -107,7 +107,7 @@ The application uses a layered component model. Page files compose user journeys
 
 ### Section rhythm and headings
 
-- Separate major page sections with generous, consistent vertical breathing room. Use the shared `SectionHeader` for a compact editorial heading: a short accent marker, concise title, optional supporting line and a quiet bottom rule. Avoid large banners or repeated decorative framing for ordinary sections. The `Section` primitive owns major-section spacing (`py-16 sm:py-24`). `Container` owns width and gutters only; it never adds implicit vertical padding. Workspace shells provide the page gutter, so nested workspace containers remain padding-free.
+- Separate major page sections with generous, consistent vertical breathing room. Use the shared `SectionHeader` for a compact editorial heading: a short accent marker, concise title, optional supporting line and a quiet bottom rule. Avoid large banners or repeated decorative framing for ordinary sections. The `Section` primitive owns major-section spacing through the semantic `py-section sm:py-section-wide` utilities. Semantic spacing tiers distinguish compact/regular sections, content groups, related items, component internals and workspace density while resolving through the same canonical 4px scale. `Container` owns width and gutters only; it never adds implicit vertical padding. Workspace shells provide the page gutter, so nested workspace containers remain padding-free.
 - Keep spacing inside cards and between related controls tighter than spacing between major sections. Do not compensate for section rhythm with extra borders or decorative separators.
 
 ### Card and surface contract
