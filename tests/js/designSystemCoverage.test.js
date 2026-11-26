@@ -196,7 +196,8 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     assert.ok(primitives.includes('export function UnifiedHero'));
     assert.ok(primitives.includes('return <UnifiedHero'));
     assert.ok(css.includes('.rd-unified-hero'));
-    assert.ok(css.includes('linear-gradient(var(--rd-hero-grid-line) 1px, transparent 1px)'));
+    assert.ok(!css.includes('--rd-hero-grid-line'), 'Hero surfaces must not use a grid overlay.');
+    assert.ok(!css.includes('linear-gradient(var(--rd-hero-grid-line) 1px, transparent 1px)'));
     assert.ok(css.includes('radial-gradient(ellipse at 88% 8%, var(--rd-hero-glow), transparent 38%)'));
     assert.ok(css.includes('linear-gradient(125deg, var(--rd-hero-background), var(--rd-hero-background-alt))'));
     assert.ok(!css.includes('data-shape='));
