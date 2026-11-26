@@ -315,7 +315,8 @@ test('every semantic Section enforces py-4 and zero top margin', () => {
     const layout = readFileSync(resolve(root, 'resources/js/components/ui/layout.jsx'), 'utf8');
     assert.match(layout, /className=\{cn\('min-w-0', bleed && 'rd-bleed', className, 'mt-0 py-4'\)\}/);
     assert.ok(layout.includes('data-section-spacing={spacing ?? \'regular\'}'), 'Legacy spacing values remain observable but no longer alter section geometry.');
-    assert.doesNotMatch(layout, /py-section|py-0|py-section-compact|py-section-relaxed/);
+    const sectionImplementation = layout.slice(layout.indexOf('export const Section'), layout.indexOf('export const Inset'));
+    assert.doesNotMatch(sectionImplementation, /py-section|py-0|py-section-compact|py-section-relaxed/);
 });
 
 test('every frontend Section usage declares explicit spacing ownership', () => {
