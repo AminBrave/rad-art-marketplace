@@ -271,7 +271,7 @@
                     </section>
                 </section>
             @elseif ($isAuthForm)
-                <section class="mx-auto max-w-xl px-5 py-12 sm:px-8" aria-hidden="true">
+                <section class="mx-auto w-full max-w-content-reading py-page" aria-hidden="true">
                     <section class="rounded-3xl border border-border-strong bg-paper p-6 shadow-sm sm:p-9">
                         <span class="{{ $skeletonClass }} h-4 w-32"></span>
                         <span class="{{ $skeletonClass }} mt-5 h-8 w-2/3"></span>
@@ -289,7 +289,7 @@
                     </section>
                 </section>
             @elseif ($isInformationPage)
-                <section class="mt-10 grid gap-7">
+                <section class="mx-auto grid w-full max-w-content-reading gap-group py-section">
                     @foreach (range(1, 3) as $item)
                         <div class="grid gap-3 border-b border-border pb-7"><span class="{{ $skeletonClass }} h-6 w-48"></span><span class="{{ $skeletonClass }} h-4 w-full"></span><span class="{{ $skeletonClass }} h-4 w-5/6"></span></div>
                     @endforeach
@@ -405,7 +405,7 @@
                         </div>
                     @endforeach
                 </section>
-                <section class="py-16">
+                <section class="py-section">
                     <div class="mb-8 flex items-end justify-between gap-4"><div class="grid gap-3"><span class="{{ $skeletonClass }} h-3 w-24"></span><span class="{{ $skeletonClass }} h-8 w-40"></span></div><span class="{{ $skeletonClass }} h-4 w-20"></span></div>
                     <div class="grid grid-cols-1 gap-5 md:grid-cols-3" aria-hidden="true">
                         @foreach (range(1, 3) as $item)
@@ -413,13 +413,13 @@
                         @endforeach
                     </div>
                 </section>
-                <section class="border-y border-border bg-paper py-14">
+                <section class="border-y border-border bg-paper py-section">
                     <div class="grid gap-3"><span class="{{ $skeletonClass }} h-3 w-24"></span><span class="{{ $skeletonClass }} h-8 w-48"></span></div>
                     <div class="mt-6 flex min-h-24 flex-wrap content-start gap-3">
                         @foreach (range(1, 6) as $item)<span class="{{ $skeletonClass }} h-11 w-28"></span>@endforeach
                     </div>
                 </section>
-                <section class="py-16">
+                <section class="py-section">
                     <div class="mb-8 flex items-end justify-between gap-4"><div class="grid gap-3"><span class="{{ $skeletonClass }} h-3 w-24"></span><span class="{{ $skeletonClass }} h-8 w-44"></span></div><span class="{{ $skeletonClass }} h-4 w-24"></span></div>
                     <div class="grid grid-cols-1 gap-5 md:grid-cols-3">
                         @foreach (range(1, 3) as $item)
