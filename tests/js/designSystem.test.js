@@ -703,7 +703,7 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(layouts.includes('min-h-0 flex-1 overflow-y-auto px-4 py-5'), 'Discover navigation uses the same padded scrollable panel as workspace navigation.');
     assert.ok(layouts.includes('<ThemeControl />'), 'The public shell exposes the global theme control.');
     assert.ok(routeLoading.includes('cycleTheme'), 'Workspace theme preferences live on the settings route.');
-    assert.ok(css.includes('.rd-page-frame--workspace .rd-container {\n    padding: 0;'), 'Workspace grid owns the shared horizontal gutter without nested double padding.');
+    assert.ok(!css.includes('.rd-page-frame--workspace .rd-container {'), 'Workspace Container gutters must not be reset by a page-shell CSS override.');
     assert.ok(css.includes('--workspace-bottom-nav-primary-height: var(--rd-workspace-nav-height);'));
     assert.ok(css.includes('--workspace-bottom-nav-height: var(--rd-workspace-nav-height);'));
     assert.doesNotMatch(css, /--workspace-bottom-nav-secondary-height/);
