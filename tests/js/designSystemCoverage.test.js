@@ -7,6 +7,7 @@ import test from 'node:test';
 const root = resolve(fileURLToPath(new URL('../../', import.meta.url)));
 const css = readFileSync(resolve(root, 'resources/css/app.css'), 'utf8');
 const tailwind = readFileSync(resolve(root, 'tailwind.config.js'), 'utf8');
+const layouts = readFileSync(resolve(root, 'resources/js/app/Layouts.jsx'), 'utf8');
 
 function walk(directory) {
     return readdirSync(directory).flatMap((name) => {
@@ -107,6 +108,31 @@ test('Tailwind scans every presentation source family and defines accessible ske
     assert.ok(tailwind.includes("'skeleton-shimmer': 'skeleton-shimmer 1.35s ease-in-out infinite'"));
     assert.ok(css.includes('--color-skeleton-base:'));
     assert.ok(css.includes('--color-skeleton-highlight:'));
+});
+
+
+test('numeric Tailwind spacing utilities resolve through the canonical Rademan spacing unit', () => {
+    assert.ok(css.includes('--rd-space-unit: 0.25rem;'));
+    assert.ok(css.includes('--rd-space-4: calc(var(--rd-space-unit) * 4);'));
+    for (const key of [
+        '0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '5', '6', '7', '8', '9',
+        '10', '11', '12', '14', '16', '20', '24', '28', '32', '36', '40', '44',
+        '48', '52', '56', '60', '64', '72', '80', '96',
+    ]) {
+        assert.match(tailwind, new RegExp(`['"]${key}['"]\\s*:`), `Missing canonical Tailwind spacing key: ${key}`);
+    }
+    assert.ok(tailwind.includes("'4': 'var(--rd-space-4)'"));
+    assert.ok(tailwind.includes("'page-gutter': 'var(--rd-page-gutter)'"));
+});
+
+test('workspace header and messaging viewport share responsive shell geometry tokens', () => {
+    assert.ok(css.includes('--rd-workspace-header-height: 4.5rem;'));
+    assert.ok(css.includes('--rd-workspace-header-height-wide: 5rem;'));
+    assert.ok(layouts.includes('min-h-[var(--rd-workspace-header-height)]'));
+    assert.ok(layouts.includes('sm:min-h-[var(--rd-workspace-header-height-wide)]'));
+    assert.ok(layouts.includes('100dvh-var(--rd-workspace-header-height)'));
+    assert.ok(layouts.includes('100dvh-var(--rd-workspace-header-height-wide)'));
+    assert.doesNotMatch(layouts, /100dvh-4\.5rem|100dvh-5rem/);
 });
 
 test('Blade first-paint skeletons use the shared shimmer and reduced-motion contract', () => {
