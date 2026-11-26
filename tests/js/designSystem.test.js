@@ -275,7 +275,7 @@ test('buttons enforce square geometry and shared alignment', () => {
 });
 
 test('section primitives provide consistent vertical rhythm', () => {
-    assert.ok(layoutPrimitives.includes("Element === 'section' ? 'py-section'"));
+    assert.ok(layoutPrimitives.includes("sectionSpacings = { page: 'py-page', section: 'py-section', group: 'py-group'"));
     assert.doesNotMatch(layoutPrimitives.slice(layoutPrimitives.indexOf('export const Container'), layoutPrimitives.indexOf('export const Section')), /py-16|py-24/);
 });
 
