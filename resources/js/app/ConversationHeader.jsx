@@ -59,7 +59,7 @@ export default function ConversationHeader({
                             <Link
                                 to={'/artists/' + selected.artist.slug}
                                 dir="auto"
-                                className="block w-fit max-w-full truncate text-sm font-extrabold leading-6 text-ink transition hover:text-terracotta-strong focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus sm:text-base"
+                                className="block w-fit max-w-full truncate text-left text-sm font-extrabold leading-6 text-ink transition hover:text-terracotta-strong focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus sm:text-base"
                             >
                                 {selected.participant.name ?? t("مشاهده هنرمند")}
                             </Link>
@@ -68,12 +68,12 @@ export default function ConversationHeader({
                         <h2
                             dir="auto"
                             title={selected?.participant?.name ?? t('گفتگوی خصوصی')}
-                            className="truncate text-sm font-extrabold leading-6 text-ink sm:text-base"
+                            className="w-full truncate text-left text-sm font-extrabold leading-6 text-ink sm:text-base"
                         >
                             {selected?.participant?.name ?? t('گفتگوی خصوصی')}
                         </h2>
                     )}
-                    <p className="truncate text-[11px] leading-5 text-muted">{t("گفتگوی خصوصی مستقیم")}</p>
+                    <p className="truncate text-left text-[11px] leading-5 text-muted">{t("گفتگوی خصوصی مستقیم")}</p>
                 </div>
                 <DropdownMenu.Root open={openPopover === 'conversation'} onOpenChange={onPopoverOpenChange}>
                     <DropdownMenu.Trigger asChild>
