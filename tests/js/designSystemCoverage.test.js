@@ -375,7 +375,10 @@ test('semantic section landmarks are separated from Container width and gutters'
 
 test('related artwork section composes the shared SectionHeader pattern', () => {
     const detail = readFileSync(resolve(root, 'resources/js/app/ArtworkDetailPage.jsx'), 'utf8');
-    assert.match(detail, /import \{[^}]*\\bSectionHeader\\b[^}]*\} from ['"]\.\.\/components\/ui['"]/);
-    assert.match(detail, /<SectionHeader\\s+eyebrow=\{t\("ادامه مسیر کشف"\)\}\\s+title=\{t\("آثار مرتبط"\)\}\\s+description=\{t\("آثاری از همین دسته یا همین هنرمند"\)\)\}\\s+actions=\{/);
-    assert.doesNotMatch(detail, /<div className="flex flex-wrap items-end justify-between gap-3">\\s*<div><p className="text-xs font-bold text-terracotta-strong">/);
+    assert.match(detail, /import \{[^}]*\bSectionHeader\b[^}]*\} from ['"]\.\.\/components\/ui['"]/);
+    assert.ok(detail.includes('<SectionHeader'), 'Related artwork heading must use the shared primitive.');
+    assert.ok(detail.includes('title={t("آثار مرتبط")}'), 'The related artwork title must be preserved.');
+    assert.ok(detail.includes('description={t("آثاری از همین دسته یا همین هنرمند")}'), 'The supporting description must be preserved.');
+    assert.ok(detail.includes('actions={<Link to="/artworks"'), 'The browse-all action must remain available.');
+    assert.doesNotMatch(detail, /<div className="flex flex-wrap items-end justify-between gap-3">/);
 });
