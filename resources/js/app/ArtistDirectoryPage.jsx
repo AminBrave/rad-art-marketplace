@@ -47,7 +47,7 @@ export default function ArtistDirectoryPage() {
     const submitSearch = (value) => setParams(value.trim() ? { q: value.trim() } : {});
 
     return (
-        <div className="w-full min-w-0 min-h-[65vh] pb-16 pt-8 sm:pt-12">
+        <div className="w-full min-w-0 min-h-[65vh] pb-section">
             <DiscoveryHero
                 shape="orbit"
                 eyebrow={t("جامعه خلاق راد آرت")}
