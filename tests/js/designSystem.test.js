@@ -72,6 +72,9 @@ test('Tailwind spacing utilities resolve to one semantic Rademan spacing scale',
     assert.ok(layoutPrimitives.includes('spacingValue(gap)'));
     assert.ok(layouts.includes('var(--rd-header-height)'));
     assert.ok(layouts.includes('var(--rd-header-height-wide)'));
+    assert.ok(layouts.includes('<Container className={isMessagingRoute'));
+    assert.ok(layouts.includes('<Container className="flex min-h-[var(--rd-header-height)] items-center justify-between gap-2 sm:gap-5">'));
+    assert.ok(layouts.includes('<Container className="pb-10 pt-14 sm:pb-14 sm:pt-20">'));
     assert.ok(bootShell.includes('var(--rd-header-height)'));
     assert.ok(bootShell.includes('var(--rd-header-height-wide)'));
 });
