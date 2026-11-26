@@ -366,7 +366,7 @@
 }
 
 
-/* Shared hero frame: a quiet grid texture, consistent width and spacing on every route. */
+/* Shared hero frame: clean theme-aware gradient surface, consistent width and spacing on every route. */
 .rd-unified-hero {
     position: relative;
     isolation: isolate;
