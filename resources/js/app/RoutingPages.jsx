@@ -376,8 +376,9 @@ export function WorkspaceSettingsPage() {
     };
 
     return (
-        <Container as="section" width="wide" className="rd-workspace-content space-y-workspace-relaxed">
-            <PageHeader bleed={false} eyebrow={t('حساب کاربری')} title={t('تنظیمات')} description={t('ترجیحات نمایش و اعلان‌های فضای کاربری را از یک بخش مدیریت کنید.')} />
+        <>
+            <PageHeader eyebrow={t('حساب کاربری')} title={t('تنظیمات')} description={t('ترجیحات نمایش و اعلان‌های فضای کاربری را از یک بخش مدیریت کنید.')} />
+            <Container as="section" width="wide" className="rd-workspace-content space-y-workspace-relaxed">
 
             <section className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_16rem]" aria-labelledby="appearance-settings-title">
                 <div className="min-w-0 border border-divider-group bg-paper p-5 sm:p-6">
@@ -424,6 +425,7 @@ export function WorkspaceSettingsPage() {
             )}
             {error && <p role="alert" className="text-sm text-danger">{t(error)}</p>}
         </Container>
+        </>
     );
 }
 
@@ -498,12 +500,13 @@ export function ArtistProfileSettings() {
     if (profileLoading) return <RouteLoading label={t("در حال دریافت پروفایل هنرمند…")} />;
 
     return (
-        <Container as="section" width="wide" className="rd-workspace-content space-y-workspace-relaxed">
-            <PageHeader bleed={false}
+        <>
+            <PageHeader
                 eyebrow={t("استودیوی هنرمند")}
                 title={t("پروفایل هنرمند")}
                 description={t("اطلاعات معرفی و وضعیت نمایش عمومی پروفایل خود را مدیریت کنید.")}
             />
+            <Container as="section" width="wide" className="rd-workspace-content space-y-workspace-relaxed">
             {profileError && <p role="alert" className="mt-4 text-sm text-warning">{t(profileError)}</p>}
             <form onSubmit={save} encType="multipart/form-data" className="mt-6 grid gap-5 border-y border-border py-6 sm:grid-cols-2">
                 <div className="sm:col-span-2 flex flex-wrap items-center gap-5 border-b border-divider-group pb-5">
@@ -528,6 +531,7 @@ export function ArtistProfileSettings() {
             </form>
             {message && <p role="status" className="mt-4 text-sm text-muted">{t(message)}</p>}
         </Container>
+        </>
     );
 }
 
