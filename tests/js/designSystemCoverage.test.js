@@ -291,3 +291,13 @@ test('inline color styling is token-backed rather than hardcoded', () => {
     const violations = describeViolations(literalInlineColors);
     assert.deepEqual(violations, [], 'Inline color values must resolve through RAD CSS variables.');
 });
+
+test('Section exposes explicit spacing variants independent of its rendered HTML element', () => {
+    const layout = readFileSync(resolve(root, 'resources/js/components/ui/layout.jsx'), 'utf8');
+    assert.match(layout, /spacing = 'regular'/);
+    assert.match(layout, /none:\s*''/);
+    assert.match(layout, /compact:\s*'py-section-compact'/);
+    assert.match(layout, /regular:\s*'py-section sm:py-section-wide'/);
+    assert.match(layout, /relaxed:\s*'py-section-relaxed sm:py-section-wide'/);
+    assert.doesNotMatch(layout, /Element === ['"]section['"]/);
+});
