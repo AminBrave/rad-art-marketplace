@@ -451,6 +451,8 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
     const primitives = readFileSync(resolve(root, 'resources/js/components/ui/primitives.jsx'), 'utf8');
     const timeline = readFileSync(resolve(root, 'resources/js/app/MessageTimeline.jsx'), 'utf8');
     const messagingCenter = readFileSync(resolve(root, 'resources/js/app/MessagingCenter.jsx'), 'utf8');
+    const inbox = readFileSync(resolve(root, 'resources/js/app/MessagingInboxPanel.jsx'), 'utf8');
+    const conversationHeader = readFileSync(resolve(root, 'resources/js/app/ConversationHeader.jsx'), 'utf8');
     const composer = readFileSync(resolve(root, 'resources/js/app/MessageComposer.jsx'), 'utf8');
     const cssSource = readFileSync(resolve(root, 'resources/css/app.css'), 'utf8');
 
@@ -478,6 +480,12 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'The complete message timeline must explicitly inherit the locale direction.');
     assert.match(messagingCenter, /<section dir=\\{locale === 'fa' \\? 'rtl' : 'ltr'\\}/,
         'The entire inbox and conversation workspace must mirror between RTL and LTR.');
+    assert.match(inbox, /border-s-\\[3px\\] border-transparent[\\s\\S]*?border-terracotta bg-surface-muted/,
+        'The active inbox marker must use a logical border so it flips sides in RTL.');
+    assert.match(conversationHeader, /ChevronLeft[\\s\\S]*?rtl:rotate-180/,
+        'The conversation back icon must point toward the logical back direction in both locales.');
+    assert.match(composer, /<form dir=\\{locale === 'fa' \\? 'rtl' : 'ltr'\\}/,
+        'The composer controls must inherit the same explicit locale direction as the timeline.');
     assert.match(timeline, /rd-message-bubble[^\\n]*font-sans/,
         'Message bubbles must inherit the locale-aware application font.');
     assert.ok(timeline.includes("(own ? 'justify-end' : 'justify-start')"),
