@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ArrowLeft, ArrowUpLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from './LanguageContext';
-import { ArtworkCard, ArtistCard, ArtworkCardSkeleton, ArtistCardSkeleton, EmptyState, ErrorState, MediaImage, Skeleton, Container, Card } from '../components/ui';
+import { ArtworkCard, ArtistCard, ArtworkCardSkeleton, ArtistCardSkeleton, EmptyState, ErrorState, MediaImage, Skeleton, Container, Card, DiscoveryHero } from '../components/ui';
 import { localizedValue } from '../utils/localizedContent';
 
 const editorialSteps = [
@@ -91,78 +91,45 @@ export default function HomePage() {
 
     return (
         <div className="w-full min-w-0">
-            <section aria-labelledby="home-hero-title" className="relative isolate border-b border-[color:var(--rd-hero-line)] rd-hero-surface">
-                <Container className="pb-16 pt-10 sm:pb-20 sm:pt-16 lg:pb-24 lg:pt-20">
-                    <div className="mb-8 flex items-center justify-between border-y border-[color:var(--rd-hero-line)] py-3.5 text-[10px] font-extrabold tracking-[.18em] text-[color:var(--rd-hero-muted)] sm:text-xs">
-                        <span>{t('گالری هنر مستقل معاصر')}</span>
-                        <span className="font-latin" lang="en">RAD ART / DISCOVER &amp; CONNECT</span>
-                    </div>
-                    <div className="relative isolate flex w-full min-w-0 flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
-                        <span aria-hidden="true" className="pointer-events-none absolute end-6 top-0 z-0 hidden h-20 w-20 border border-[color:var(--rd-hero-line)] sm:block lg:end-10 lg:h-28 lg:w-28" />
-                        <span aria-hidden="true" className="pointer-events-none absolute end-12 top-6 z-0 hidden h-20 w-20 border-e border-t border-[color:var(--rd-hero-accent)] sm:block lg:end-16 lg:top-8 lg:h-28 lg:w-28" />
-                        <div className="relative z-10 order-2 w-full min-w-0 max-w-2xl py-2 lg:order-none lg:flex-1 lg:py-10">
-                            <p className="mb-5 flex items-center gap-3 text-xs font-extrabold text-[color:var(--rd-hero-accent)]">
-                                <span className="h-px w-9 bg-[color:var(--rd-hero-accent)]" />
-                                {t('هنر معاصر، از نگاه مستقل')}
-                            </p>
-                            <h1 id="home-hero-title" className="max-w-2xl text-[2.55rem] font-black leading-[1.38] tracking-[-.055em] text-[color:var(--rd-hero-foreground)] sm:text-6xl sm:leading-[1.24] lg:text-[5rem]">
-                                {t('هر اثر،')}
-                                <span className="block text-[color:var(--rd-hero-accent)]">{t('آغاز یک نگاه تازه.')}</span>
-                            </h1>
-                            <p className="mt-7 max-w-xl text-base leading-9 text-[color:var(--rd-hero-muted)] sm:text-lg">
-                                {t('راد آرت جایی برای مکث، کشف آثار هنری مستقل، شناخت هنرمندان و شکل‌گرفتن گفت‌وگوهایی تازه درباره هنر است.')}
-                            </p>
-                            <div className="mt-8 flex flex-wrap items-center gap-3">
-                                <Link to="/artworks" className="inline-flex min-h-12 items-center justify-center gap-3 bg-[color:var(--rd-hero-foreground)] px-6 text-sm font-bold text-[color:var(--rd-hero-background)] no-underline transition-colors hover:bg-[color:var(--rd-hero-accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
-                                    {t('ورود به گالری آثار')}
-                                    <ArrowLeft size={17} aria-hidden="true" />
-                                </Link>
-                                <Link to="/artists" className="inline-flex min-h-12 items-center justify-center border border-[color:var(--rd-hero-line)] bg-transparent px-6 text-sm font-bold text-[color:var(--rd-hero-foreground)] no-underline transition-colors hover:border-[color:var(--rd-hero-accent)] hover:text-[color:var(--rd-hero-accent)]">
-                                    {t('آشنایی با هنرمندان')}
-                                </Link>
+            <DiscoveryHero
+                shape="ribbon"
+                eyebrow={t('هنر معاصر، از نگاه مستقل')}
+                title={<>{t('هر اثر،')} <span className="block text-[color:var(--rd-hero-accent)]">{t('آغاز یک نگاه تازه.')}</span></>}
+                description={t('راد آرت جایی برای مکث، کشف آثار هنری مستقل، شناخت هنرمندان و شکل‌گرفتن گفت‌وگوهایی تازه درباره هنر است.')}
+                actions={<>
+                    <Link to="/artworks" className="inline-flex min-h-12 items-center justify-center gap-3 bg-[color:var(--rd-hero-foreground)] px-6 text-sm font-bold text-[color:var(--rd-hero-background)] no-underline transition-colors hover:bg-[color:var(--rd-hero-accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+                        {t('ورود به گالری آثار')} <ArrowLeft size={17} aria-hidden="true" />
+                    </Link>
+                    <Link to="/artists" className="inline-flex min-h-12 items-center justify-center border border-[color:var(--rd-hero-line)] bg-transparent px-6 text-sm font-bold text-[color:var(--rd-hero-foreground)] no-underline transition-colors hover:border-[color:var(--rd-hero-accent)] hover:text-[color:var(--rd-hero-accent)]">
+                        {t('آشنایی با هنرمندان')}
+                    </Link>
+                </>}
+                media={hero ? (
+                    <Link to={'/artworks/' + hero.slug} className="group relative block border border-[color:var(--rd-hero-line)] bg-paper p-2 shadow-soft sm:p-3">
+                        <div className="relative aspect-[3/4] w-full overflow-hidden bg-[linear-gradient(145deg,var(--rd-surface-muted),var(--rd-surface))]">
+                            <MediaImage src={hero.image_url} alt={localizedValue(hero, 'title', locale)} className="h-full w-full" imageClassName="object-cover transition-transform duration-700 group-hover:scale-[1.025]" loading="eager" fetchPriority="high" decoding="async" />
+                            <span className="absolute end-4 top-4 bg-[color:var(--rd-hero-background)] px-3 py-2 text-[10px] font-bold text-[color:var(--rd-hero-foreground)] backdrop-blur sm:end-5 sm:top-5 sm:text-xs">{t('در گالری راد آرت')}</span>
+                        </div>
+                        <div className="flex flex-wrap items-center justify-between gap-3 px-2 pb-1 pt-4 sm:px-3">
+                            <div className="min-w-0">
+                                <p className="text-[10px] font-bold text-terracotta-strong">{t('تازه در گالری')}</p>
+                                <p className="mt-1 truncate text-sm font-extrabold text-ink sm:text-base">{localizedValue(hero, 'title', locale)}</p>
+                                <p className="mt-1 truncate text-xs text-muted">{localizedValue(hero.artist, 'display_name', locale) || t('هنرمند راد آرت')}</p>
                             </div>
-                            <p className="mt-7 text-xs leading-6 text-[color:var(--rd-hero-muted)]">{t('نمایش عمومی به آثار تأییدشده و پروفایل‌های عمومی محدود است.')}</p>
+                            <span className="inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-bold text-terracotta-strong">{t('مشاهده اثر')} <ArrowUpLeft size={16} aria-hidden="true" /></span>
                         </div>
-
-                        <div className="relative z-10 order-1 mx-auto w-full min-w-0 max-w-2xl lg:order-none lg:mx-0 lg:w-2/5 lg:max-w-[28rem] lg:shrink-0">
-                            {hero ? (
-                                <Link to={'/artworks/' + hero.slug} className="group relative block border border-[color:var(--rd-hero-line)] bg-paper p-2 shadow-soft sm:p-3">
-                                    <div className="relative aspect-[3/4] w-full overflow-hidden bg-[linear-gradient(145deg,var(--color-surface-muted),var(--color-paper))]">
-                                        <MediaImage
-                                            src={hero.image_url}
-                                            alt={localizedValue(hero, 'title', locale)}
-                                            className="h-full w-full"
-                                            imageClassName="object-cover transition-transform duration-700 group-hover:scale-[1.025]"
-                                            loading="eager"
-                                            fetchPriority="high"
-                                            decoding="async"
-                                        />
-                                        <span className="absolute end-4 top-4 bg-[color:var(--rd-hero-background)] px-3 py-2 text-[10px] font-bold text-[color:var(--rd-hero-foreground)] backdrop-blur sm:end-5 sm:top-5 sm:text-xs">{t('در گالری راد آرت')}</span>
-                                    </div>
-                                    <div className="flex flex-wrap items-center justify-between gap-3 px-2 pb-1 pt-4 sm:px-3">
-                                        <div className="min-w-0">
-                                            <p className="text-[10px] font-bold text-terracotta-strong">{t('تازه در گالری')}</p>
-                                            <p className="mt-1 truncate text-sm font-extrabold text-ink sm:text-base">{localizedValue(hero, 'title', locale)}</p>
-                                            <p className="mt-1 truncate text-xs text-muted">{localizedValue(hero.artist, 'display_name', locale) || t('هنرمند راد آرت')}</p>
-                                        </div>
-                                        <span className="inline-flex min-h-10 shrink-0 items-center gap-2 text-xs font-bold text-terracotta-strong">
-                                            {t('مشاهده اثر')}
-                                            <ArrowUpLeft size={16} aria-hidden="true" />
-                                        </span>
-                                    </div>
-                                </Link>
-                            ) : (
-                                <div className="relative aspect-[3/4] w-full overflow-hidden bg-[linear-gradient(135deg,var(--rd-hero-background-alt),var(--rd-surface-muted))]">
-                                    <div aria-hidden="true" className="absolute inset-5 border border-[color:var(--rd-hero-line)] sm:inset-8" />
-                                    <div aria-hidden="true" className="absolute start-[12%] top-[12%] h-[48%] w-[48%] bg-[color:var(--rd-hero-accent)]" />
-                                    <div aria-hidden="true" className="absolute bottom-[12%] end-[10%] h-[58%] w-[48%] bg-[color:var(--rd-hero-background)]" />
-                                    <span className="absolute bottom-8 start-8 font-latin text-[10px] font-bold tracking-[.25em] text-[color:var(--rd-hero-foreground)]">ART / PEOPLE / STORIES</span>
-                                </div>
-                            )}
-                        </div>
+                    </Link>
+                ) : (
+                    <div className="relative aspect-[3/4] w-full overflow-hidden border border-[color:var(--rd-hero-line)] bg-[linear-gradient(135deg,var(--rd-hero-background-alt),var(--rd-surface-muted))]">
+                        <div aria-hidden="true" className="absolute inset-5 border border-[color:var(--rd-hero-line)] sm:inset-8" />
+                        <div aria-hidden="true" className="absolute start-[12%] top-[12%] h-[48%] w-[48%] bg-[color:var(--rd-hero-accent)]" />
+                        <div aria-hidden="true" className="absolute bottom-[12%] end-[10%] h-[58%] w-[48%] bg-[color:var(--rd-hero-background)]" />
+                        <span className="absolute bottom-8 start-8 font-latin text-[10px] font-bold tracking-[.25em] text-[color:var(--rd-hero-foreground)]">ART / PEOPLE / STORIES</span>
                     </div>
-                </Container>
-            </section>
+                )}
+            >
+                <p className="text-xs leading-6 text-[color:var(--rd-hero-muted)]">{t('نمایش عمومی به آثار تأییدشده و پروفایل‌های عمومی محدود است.')}</p>
+            </DiscoveryHero>
 
             <section aria-label="چطور در راد آرت کشف کنیم" className="bg-surface-muted py-section sm:py-section-wide">
                 <Container width="wide" className="grid gap-4 sm:grid-cols-3">
