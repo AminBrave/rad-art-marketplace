@@ -154,7 +154,6 @@ export default function ArtistProfilePage() {
             ) : (
                 <>
                 <DiscoveryHero
-                    shape="arch"
                     eyebrow={t("جامعه هنرمندان")}
                     title={t("پروفایل هنرمند")}
                     description={t("این پروفایل وجود ندارد یا نمایش عمومی آن غیرفعال شده است.")}
