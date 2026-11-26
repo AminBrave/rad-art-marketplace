@@ -4,7 +4,7 @@ This document describes useful design principles and the current product context
 
 ## Current UI catalogue
 
-The implementation-level component and pattern inventory is maintained in [`AI/DESIGN-SYSTEM-CATALOGUE.md`](./DESIGN-SYSTEM-CATALOGUE.md). Use that catalogue alongside this principles document and the [complete application overhaul ledger](./COMPLETE-APPLICATION-OVERHAUL.md). The catalogue records current code behavior and known gaps; it does not imply visual QA completion.
+The implementation-level component and pattern inventory is maintained in [`AI/DESIGN-SYSTEM-CATALOGUE.md`](./DESIGN-SYSTEM-CATALOGUE.md). Use that catalogue alongside this principles document and the [complete application overhaul ledger](./COMPLETE-APPLICATION-OVERHAUL.md). The catalogue records current code behavior and known gaps; it does not imply visual QA completion. The staged foundation migration is specified in [`AI/PHASE-1-DESIGN-SYSTEM-REFACTOR.md`](./PHASE-1-DESIGN-SYSTEM-REFACTOR.md); treat it as the implementation backlog for layout ownership, hero contracts, Tailwind/token cleanup and verification.
 
 ## Design objective
 
