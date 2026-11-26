@@ -513,3 +513,11 @@ The fixes are pushed for local rerun. Tests, lint, and production build are not 
 - Added regression coverage for fixed Section geometry, zero top margins, raw section-tag migration, and non-modal/portaled Radix overlays.
 
 Automated CI run [#45880594347](https://github.com/AminBrave/rad-art-marketplace/actions/runs/45880594347) passed frontend regression/accessibility checks, ESLint, production build, backend tests, and changed-file PHP formatting. Responsive browser interaction, header visibility under open menus, and keyboard/focus behavior still require visual browser QA.
+
+## Follow-up — consistent padding-only spacing across sections
+
+- Every shared `Section` uses `py-4` and `mt-0`. Page-level sections no longer add their own top/bottom margins or vertical padding.
+- Removed conflicting section-level margin and padding utilities across the homepage, catalogue, artwork detail, editorial pages, route/settings pages and skeleton states. Where sections need horizontal inset, use `px-*` rather than all-axis `p-*` utilities.
+- The artwork detail content article now uses the shared Section wrapper. This keeps the same vertical rhythm as the hero, related-artwork section and other page sections.
+- Regression coverage now rejects margin and vertical-padding overrides on Section call sites, keeping spacing ownership in the shared primitive.
+
