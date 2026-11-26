@@ -1,6 +1,6 @@
 # Phase 1 — Rademan design-system foundation refactor
 
-**Status:** Implementation in progress; first shared-primitive slice committed  
+**Status:** Phase 1 implementation batch completed; automated and browser validation pending  
 **Target branch:** `refactor/290-unified-layout-spacing`  
 **Related work:** PR #291, issue #290  
 **Scope:** Shared layout contracts, spacing ownership, hero API, Tailwind/token conventions, and regression coverage  
@@ -18,8 +18,8 @@ The foundation has five rules:
 
 1. **Page shell owns the viewport frame**, not content width or section spacing.
 2. **Container owns horizontal gutters and maximum reading width.**
-3. **PageSection owns vertical page rhythm and optional section surface.**
-4. **PageHero owns the full-width hero frame, inner content alignment, and hero spacing.**
+3. **Section owns explicit vertical page rhythm and optional section surface.**
+4. **UnifiedHero owns the full-width hero frame, inner content alignment, and hero spacing.**
 5. **Feature components own domain-specific composition; pages coordinate data and compose features.**
 
 A layout decision must have one owner. No global HTML-element selector should silently create page layout. No child should need a CSS exception to undo spacing introduced by an ancestor or tag selector.
@@ -32,30 +32,28 @@ These are source-level observations from the target branch; they are not claims 
 
 ### 2.1 Layout and spacing ownership
 
-- `resources/css/app.css` applies vertical padding to every native `section` through a global selector. This makes the tag itself a layout primitive, including nested sections that may represent a semantic landmark rather than a page section.
-- The same stylesheet contains workspace-specific child-section resets, hero padding exceptions, and a chat-shell `!important` reset. These are signs that multiple layers currently compete to own spacing.
-- `Section` in `resources/js/components/ui/layout.jsx` separately adds `py-section sm:py-section-wide` when its rendered element is a `section`. This duplicates the implicit global rule and makes spacing depend on both element type and component usage.
-- `Container` already owns responsive inline gutters through `.rd-container:not(.rd-container--full)`, with reading, wide and full width variants. Preserve this clear responsibility.
-- `PageShell`, `PageSection`, and `PageHero` are not yet established as one explicit page-composition contract.
+- The global native-`section` padding rule and workspace/chat tag-specific spacing resets have been removed. Real page sections now declare spacing through the shared `Section` primitive; structural skeleton wrappers use neutral containers.
+- `Section` requires explicit `none | compact | regular | relaxed` spacing and no longer infers rhythm from its rendered HTML tag.
+- `PageShell` owns the full-width route frame; `Container` owns responsive inline gutters and content width; `Section` owns vertical rhythm. The three responsibilities are now explicit in the shared composition contract.
 
 ### 2.2 Hero API
 
 - `UnifiedHero` is the underlying implementation; `PageHeader`, `DiscoveryHero`, and `WorkspaceHero` are wrappers with different prop surfaces.
-- The wrappers do not expose a consistent set of supported capabilities.
-- `WorkspaceHero` hard-codes bleed behavior, while `PageHeader` exposes a bleed prop and `DiscoveryHero` does not.
-- Hero bleed and width behavior also depend on global CSS classes and route/workspace context. This needs a documented contract and a regression matrix before simplifying CSS.
+- `PageHeader`, `DiscoveryHero`, and `WorkspaceHero` are now thin wrappers over `UnifiedHero` and forward the same supported prop surface.
+- Their defaults remain context-sensitive (`DiscoveryHero` defaults to no bleed; the other wrappers default to bleed), but every option is overridable.
+- The shared grid texture remains; the title-square decoration is removed. Workspace hero content now uses the same full-width frame and content alignment as discovery.
 
 ### 2.3 Tailwind and tokens
 
 - `tailwind.config.js` maps semantic colors, typography, spacing and widths to CSS variables. This is worth preserving.
 - The spacing configuration contains both numeric utilities and named semantic tiers, plus `editorial-*` aliases that duplicate the numeric scale.
 - `app.css` defines canonical `--rd-*` tokens and a substantial compatibility layer of legacy aliases. Existing consumers mean aliases must be migrated deliberately, not deleted in one pass.
-- All Tailwind border-radius keys currently resolve to zero, including `rounded-full`. This makes familiar utility names misleading and should be addressed as an explicit shape-system decision rather than changed accidentally.
+- Tailwind radius utilities now map to semantic radius roles (`sm`, `md`, `lg`, `xl`, `pill`, `control`, `card`, etc.). The current design tokens intentionally resolve these roles to square corners, so the mapping is semantically correct without changing current visuals.
 - `Flex` and `Grid` accept numeric gaps by writing inline styles. Standard spacing should normally use statically discoverable Tailwind classes or semantic variants; inline styles should remain for genuinely data-driven values.
 
 ### 2.4 Regression coverage
 
-- `tests/js/designSystemCoverage.test.js` currently asserts that every native `section` receives default global padding. That assertion protects the current coupling and must be replaced as part of the migration.
+- `tests/js/designSystemCoverage.test.js` now protects explicit Section spacing, semantic Section/Container separation, shared hero and SectionHeader contracts, route-shell ownership, token-backed styling, and key accessibility behaviors.
 - Static source tests are useful for enforcing token and architecture rules, but cannot verify actual geometry, keyboard behavior, clipping, visual hierarchy, or RTL layout.
 
 ## 3. Target architecture and ownership contract
@@ -66,7 +64,7 @@ The intended composition is:
 
 ```jsx
 <PageShell>
-    <PageHero
+    <UnifiedHero
         variant="workspace"
         eyebrow={eyebrow}
         title={title}
@@ -74,12 +72,12 @@ The intended composition is:
         actions={actions}
     />
 
-    <PageSection spacing="relaxed">
+    <Section spacing="relaxed">
         <Container width="wide">
             <SectionHeader title={sectionTitle} description={sectionDescription} />
             {/* Feature components */}
         </Container>
-    </PageSection>
+    </Section>
 </PageShell>
 ```
 
@@ -91,8 +89,8 @@ This is a contract example, not a demand to wrap every existing DOM node. Use se
 |---|---|---|
 | `PageShell` | Full-width page frame, min-width safety, page-level composition | Content max-width, implicit section padding |
 | `Container` | Reading/wide/full max-width and responsive inline gutters | Vertical spacing, card styling |
-| `PageSection` | Explicit vertical spacing, optional section surface/bleed | Inner content max-width |
-| `PageHero` | Hero surface, grid texture, title hierarchy, inner Container, hero vertical rhythm | Route data fetching or feature-specific business logic |
+| `Section` | Explicit vertical spacing, optional section surface/bleed | Inner content max-width |
+| `UnifiedHero` | Hero surface, grid texture, title hierarchy, inner Container, hero vertical rhythm | Route data fetching or feature-specific business logic |
 | `SectionHeader` | Eyebrow/title/description/actions hierarchy for a content group | Outer section padding |
 | Feature component | Domain-specific UI and its local interaction states | Global page gutters and route-level page spacing |
 | Page/route | Data orchestration, route state, composition | Reimplementing shared visual patterns |
@@ -116,7 +114,7 @@ Retain the current `reading | wide | full` widths.
 - Do not add vertical padding.
 - Do not add route-specific exceptions to compensate for parent gutters.
 
-#### PageSection
+#### Section
 
 Use explicit spacing variants, for example:
 
@@ -129,7 +127,7 @@ A top-level content section must declare its spacing intent. Nested semantic sec
 
 The component may support a surface and bleed variant only where those variants have real, repeatable use cases. Avoid a generic prop for every CSS property.
 
-#### PageHero
+#### UnifiedHero
 
 Keep one canonical implementation. Public/workspace wrappers may remain for discoverability or route-specific type safety, but must forward the same supported layout contract.
 
@@ -168,7 +166,7 @@ Work in small, reviewable commits. The order below is intentional: first establi
 | `resources/js/components/ui/layout.jsx` | Give `Section` an explicit spacing API (`none/compact/regular/relaxed`) and remove spacing inference based on `Element === 'section'`. Keep `Container` width/gutter responsibility unchanged. | Section spacing comes only from its explicit variant; a non-section element can intentionally use the same spacing. |
 | `resources/js/app/Layouts.jsx` | Confirm public/workspace/admin route shells are full-width and do not duplicate gutters or section spacing. Keep navigation/sidebar layout separate from page content composition. | Public and workspace page content can align to the same Container without parent padding compensation. |
 | `resources/js/app/RoutingPages.jsx` | Update the route loading shell to use the same PageShell/Container/Section ownership as the loaded page; remove duplicated shell spacing. | Loading-to-loaded transition does not jump horizontally or vertically. |
-| `resources/js/app/ArtistWorkspaceOverview.jsx`, `BuyerWorkspace.jsx`, `AdminWorkspace.jsx`, `ArtworkStudio.jsx`, `EditorialPages.jsx`, `RoutingPages.jsx` | Inventory native top-level `section` elements. Convert page-level groups to explicit `PageSection`/shared Section usage; leave nested semantic sections unpadded. Remove local padding utilities only when the shared owner replaces them. | Every top-level section has one spacing owner; no double padding. |
+| `resources/js/app/ArtistWorkspaceOverview.jsx`, `BuyerWorkspace.jsx`, `AdminWorkspace.jsx`, `ArtworkStudio.jsx`, `EditorialPages.jsx`, `RoutingPages.jsx` | Inventory native top-level `section` elements. Convert page-level groups to explicit `Section`/shared Section usage; leave nested semantic sections unpadded. Remove local padding utilities only when the shared owner replaces them. | Every top-level section has one spacing owner; no double padding. |
 | `resources/js/app/HomePage.jsx`, `ArtistDirectoryPage.jsx`, `ArtworkCatalogue.jsx`, `ArtistProfilePage.jsx`, `ArtworkDetailPage.jsx`, `EditorialPages.jsx` | Verify public discovery sections also use the same explicit Section spacing contract. Preserve their current visual rhythm unless a mismatch is demonstrated. | Workspace and discovery use the same layout ownership rules, not necessarily identical section content. |
 
 ### P0 — Hero contract
@@ -176,7 +174,7 @@ Work in small, reviewable commits. The order below is intentional: first establi
 | File | Change | Acceptance |
 |---|---|---|
 | `resources/js/components/ui/primitives.jsx` | Define one canonical hero API and align `PageHeader`, `DiscoveryHero`, and `WorkspaceHero` wrappers. Remove redundant bleed flags if full-bleed is the invariant. Ensure wrappers forward media/children/actions/heading level only where supported. | All wrappers produce the same outer frame, inner content alignment and vertical rhythm. |
-| `resources/css/app.css` | Keep the hero grid texture and semantic theme tokens. Reduce hero selectors to documented visual effects and true bleed behavior. Remove exceptions made obsolete by explicit PageSection spacing. | Hero background is full-width; content aligns to page gutters; no title-square motif; no duplicate vertical padding. |
+| `resources/css/app.css` | Keep the hero grid texture and semantic theme tokens. Reduce hero selectors to documented visual effects and true bleed behavior. Remove exceptions made obsolete by explicit Section spacing. | Hero background is full-width; content aligns to page gutters; no title-square motif; no duplicate vertical padding. |
 | `resources/js/app/ComponentShowcase.jsx` | Make the showcase reflect the actual supported hero API; remove examples that pass ignored props. | Showcase examples compile against the real component contract and cover all supported variants. |
 | `tests/js/designSystemCoverage.test.js` | Replace assertions that require implicit section padding with assertions for explicit Section spacing and shared hero behavior. | Tests fail if global section padding or wrapper-specific spacing drift returns. |
 
@@ -213,7 +211,7 @@ Work in small, reviewable commits. The order below is intentional: first establi
 Do not combine every change into one large patch.
 
 1. **Commit A — Lock the target contract:** add/adjust regression tests to describe explicit layout ownership; update docs with the new rules.
-2. **Commit B — Add explicit primitives:** implement Section spacing variants and the PageShell/PageHero contract without removing old behavior yet. Keep compatibility wrappers temporarily.
+2. **Commit B — Add explicit primitives:** implement Section spacing variants and the PageShell/UnifiedHero contract without removing old behavior yet. Keep compatibility wrappers temporarily.
 3. **Commit C — Migrate page call sites:** migrate top-level sections by route family: public discovery, artist/buyer workspace, admin/editorial, settings/profile. Migrate loading shells in the same route family.
 4. **Commit D — Remove implicit CSS:** delete global section padding and obsolete workspace/chat/hero resets only after all consumers are migrated. Replace chat's reset with explicit chat layout classes rather than another broad selector.
 5. **Commit E — Normalize Tailwind:** remove duplicate spacing aliases, migrate token consumers, resolve radius semantics, and replace standard inline gaps.
@@ -445,3 +443,32 @@ Each slice should have a short feature-specific contract and tests. Do not make 
 
 - Source review confirms the related-artworks header delegates to `SectionHeader`.
 - Automated tests, lint, production build, and browser visual QA remain unrun in this environment.
+
+
+### Slice 10 — Filter and page-action pattern audit
+
+- Compared the catalogue's multi-control filter panel, artist-directory search embedded in its hero, and admin status-navigation controls.
+- These are not one stable interaction pattern: they differ in control density, location, semantics, and state behavior. A generic `FilterToolbar` would either become a shallow wrapper or accumulate feature-specific flags, so no such abstraction was added.
+- Reused `SectionHeader` for the catalogue filter panel's eyebrow/title/status row, matching the related-artworks and workspace/admin section-heading pattern.
+- Kept page-level actions on the existing `PageHeader.actions` contract and section-level actions on `SectionHeader.actions`; a separate `PageActions` component would duplicate these slots without adding behavior.
+- This is an intentional component-boundary decision: share stable hierarchy and action alignment, not unrelated filter mechanics.
+
+### Slice 11 — Tailwind and CSS override audit
+
+- Mapped Tailwind radius utilities to the matching semantic CSS variables instead of mapping every alias to `--rd-radius-0`. All radius variables currently resolve to zero by design, so this changes the semantic contract without changing the current visual shape system.
+- Audited remaining `!important` declarations: all four are scoped to the `prefers-reduced-motion` safety rule for scroll, animation, and transition behavior. They are retained because they must override arbitrary component utilities when reduced motion is requested.
+- Kept numeric `Flex`/`Grid` gap props as data-driven inline styles; fixed, source-known gaps should continue to use Tailwind classes. Legacy spacing/color aliases are not removed without a complete consumer migration audit.
+
+### Slice 12 — Shared-component accessibility and behavior fixes
+
+- `FormField` now merges caller-provided `aria-describedby` IDs with generated hint/error IDs, de-duplicating references rather than overwriting consumer descriptions.
+- `Avatar` resets its failed-image state when its source changes, so a replacement avatar can render after an earlier source fails.
+- `MediaImage` resets loading/failure state when its resolved source changes and uses React's `fetchPriority` prop spelling.
+- `Pagination` now accepts localized navigation, landmark, and page-label props; the component showcase supplies locale-aware labels and numerals.
+
+### Slice 13 — Regression coverage and completion status
+
+- Added source-level regression checks for catalogue/related-artwork SectionHeader reuse, FormField description merging, image/avatar source changes, localized Pagination labels, semantic radius mappings, and the reduced-motion-only `!important` contract.
+- Source inspection confirms the batch changes are present on the target branch.
+- **Not verified:** automated JS tests, ESLint, production build, responsive browser QA, keyboard/screen-reader testing, and visual review across RTL/LTR and light/dark modes. No CI workflow run or commit status check is currently available for the branch.
+- Phase 1 should be treated as implementation-complete but not merge-validated until those checks are run in a real project environment.
