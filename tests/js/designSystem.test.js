@@ -201,8 +201,11 @@ test('public and workspace navigation expose role-aware destinations and an arti
 });
 
 test('featured collections header follows the full-width artwork gallery header pattern', () => {
-    assert.ok(editorialPages.includes('eyebrow={t("انتخاب سردبیر")}'));
-    assert.ok(editorialPages.includes('<DiscoveryHero') && editorialPages.includes('eyebrow={t("انتخاب سردبیر")}'), 'The public curated collection uses the shared full-width discovery hero.');
+    const heroStart = editorialPages.indexOf('eyebrow={t("انتخاب سردبیر")}');
+    const heroEnd = editorialPages.indexOf('/>', heroStart);
+    assert.ok(heroStart >= 0 && heroEnd > heroStart);
+    assert.ok(editorialPages.slice(heroStart, heroEnd).includes('title={t("مجموعه‌های منتخب")}'));
+    assert.doesNotMatch(editorialPages.slice(heroStart, heroEnd), /max-w-3xl/, 'The collection hero copy is not constrained by a route-specific width.');
 });
 
 test('comment discussions use nested cards and a clear reply hierarchy', () => {
