@@ -569,7 +569,7 @@ test('workspace overview skeletons match their loaded hero and content sections 
     const artist = renderToStaticMarkup(React.createElement(skeletons.ArtistWorkspaceOverviewSkeleton));
     const buyer = renderToStaticMarkup(React.createElement(skeletons.BuyerDashboardSkeleton));
 
-    assert.match(admin, /bg-ink"><div class="[^"]*p-6 sm:p-8/);
+    assert.match(admin, /bg-ink mt-0 py-4"><div class="[^"]*p-6 sm:p-8/);
     assert.match(admin, /xl:grid-cols-\[minmax\(0,1\.2fr\)_minmax\(18rem,\.8fr\)\]/);
     assert.match(admin, /xl:grid-cols-4/);
     assert.equal((admin.match(/role="status"/g) ?? []).length, 1);
