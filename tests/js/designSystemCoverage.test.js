@@ -145,6 +145,7 @@ test('semantic layout tiers are token-backed and shared primitives use them', ()
 test('all semantic sections receive consistent vertical padding by default', () => {
     assert.match(css, /section\s*\{\s*padding-block:\s*var\(--rd-layout-section\);/);
     assert.match(css, /section\s*\{\s*padding-block:\s*var\(--rd-layout-section-wide\);/);
+    assert.doesNotMatch(css, /section\.rd-hero-surface\s*\{\s*padding-block:\s*0/);
     assert.ok(css.includes('.rd-chat-shell section'));
 });
 test('public discovery pages share the same hero system and breadcrumbs stay out of workspaces', () => {
