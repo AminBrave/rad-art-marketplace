@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { formatArtworkPrice } from '../utils/formatArtworkPrice';
-import { MediaImage, SelectField, TextInput, Button, Container } from '../components/ui';
+import { MediaImage, SelectField, TextInput, Button, Container, Section } from '../components/ui';
 import { useLanguage } from './LanguageContext';
 import { localizedValue } from '../utils/localizedContent';
 
@@ -71,7 +71,8 @@ export default function ArtworkGallery({ user }) {
     }
 
     return (
-        <Container as="section" width="wide" id="artworks" className="py-section-relaxed">
+        <Section spacing="relaxed">
+            <Container width="wide" id="artworks">
             <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
                 <div>
                     <p className="text-sm font-bold text-terracotta-strong">{t('کاتالوگ راد آرت')}</p>
@@ -107,5 +108,6 @@ export default function ArtworkGallery({ user }) {
                 </div>
             )}
         </Container>
+        </Section>
     );
 }
