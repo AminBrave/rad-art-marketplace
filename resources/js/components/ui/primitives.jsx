@@ -113,38 +113,26 @@ export function UnifiedHero({
     );
 }
 
-export function PageHeader({
-    eyebrow, title, description, breadcrumbs, actions, media, children,
-    level = 1, bleed = true, surface = 'grid', className = '',
-    titleClassName = '', descriptionClassName = '',
-}) {
-    return (
-        <UnifiedHero
-            eyebrow={eyebrow} title={title} description={description}
-            breadcrumbs={breadcrumbs} actions={actions} media={media} level={level}
-            bleed={bleed} surface={surface} className={className}
-            titleClassName={titleClassName} descriptionClassName={descriptionClassName}
-        >
-            {children}
-        </UnifiedHero>
-    );
+const sharedHeroDefaults = {
+    level: 1,
+    bleed: true,
+    compact: false,
+    surface: 'grid',
+};
+
+/**
+ * Public wrappers intentionally share the complete UnifiedHero prop contract.
+ * Only their default bleed behavior differs: discovery is already in a
+ * full-width page frame, while PageHeader/workspace routes may need to break
+ * out of a constrained parent. Every value remains explicitly overridable.
+ */
+export function PageHeader(props) {
+    return <UnifiedHero {...sharedHeroDefaults} {...props} />;
 }
 
-/** Discovery routes may add breadcrumbs; the hero frame remains shared. */
-export function DiscoveryHero({
-    eyebrow, title, description, breadcrumbs, actions, media, children,
-    level = 1, surface = 'grid', className = '', titleClassName = '', descriptionClassName = '',
-}) {
-    return (
-        <UnifiedHero
-            eyebrow={eyebrow} title={title} description={description}
-            breadcrumbs={breadcrumbs} actions={actions} media={media} level={level}
-            surface={surface} className={className}
-            titleClassName={titleClassName} descriptionClassName={descriptionClassName}
-        >
-            {children}
-        </UnifiedHero>
-    );
+/** Discovery routes may add breadcrumbs; callers decide when they are relevant. */
+export function DiscoveryHero(props) {
+    return <UnifiedHero {...sharedHeroDefaults} bleed={false} {...props} />;
 }
 
 export function SectionHeader({ id, eyebrow, title, description, actions, className = '', level = 2 }) {
@@ -161,21 +149,9 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
     );
 }
 
-export function WorkspaceHero({
-    eyebrow, title, description, actions, media, children,
-    level = 1, bleed = true, surface = 'grid', className = '',
-    titleClassName = '', descriptionClassName = '',
-}) {
-    return (
-        <UnifiedHero
-            eyebrow={eyebrow} title={title} description={description}
-            actions={actions} media={media} level={level} bleed={bleed}
-            surface={surface} className={className}
-            titleClassName={titleClassName} descriptionClassName={descriptionClassName}
-        >
-            {children}
-        </UnifiedHero>
-    );
+/** Workspace routes share the same hero API; breadcrumbs remain opt-in. */
+export function WorkspaceHero(props) {
+    return <UnifiedHero {...sharedHeroDefaults} {...props} />;
 }
 export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, className = '' }) {
     const Element = as ?? (to ? 'a' : 'article');
