@@ -57,7 +57,7 @@ export function CollectionDetailPage() {
         <Container as="div" width="wide" className="py-page"><ErrorState title={t("این مجموعه در دسترس نیست")} description={t("ممکن است انتشار آن متوقف شده باشد یا نشانی تغییر کرده باشد.")} onRetry={() => collectionQuery.refetch()} /><Link className="mt-5 inline-block text-sm font-bold underline" to="/collections">{t("بازگشت به مجموعه‌ها")}</Link></Container>
     </>;
 
-    return <div className="min-h-[65vh] pb-section">
+    return <div className="min-h-[65vh]">
         <DiscoveryHero
             eyebrow={t("روایت منتخب راد آرت")}
             title={localizedValue(item, 'title', locale)}
@@ -65,7 +65,7 @@ export function CollectionDetailPage() {
             descriptionClassName="whitespace-pre-line"
             breadcrumbs={<Breadcrumbs label={t("مسیر صفحه")} items={[{ label: t("خانه"), to: "/" }, { label: t("مجموعه‌ها"), to: "/collections" }, { label: localizedValue(item, 'title', locale) }]} />}
         />
-        <Container as="div" width="wide" className="pt-section">
+        <Container as="section" width="wide" className="py-section sm:py-section-wide">
         {item.artworks?.length ? <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{item.artworks.map((artwork) => <ArtworkCard key={artwork.id} artwork={artwork} />)}</div> : <EmptyState className="mt-8" title={t("اثری در این مجموعه موجود نیست")} />}
         </Container>
     </div>;
