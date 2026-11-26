@@ -141,6 +141,12 @@ test('semantic layout tiers are token-backed and shared primitives use them', ()
     assert.equal(layout.split("calc(var(--rd-space-unit) * ${gap})").length - 1, 2, "Flex and Grid must share token-backed numeric gaps.");
 });
 
+test('all semantic sections receive consistent vertical padding by default', () => {
+    assert.match(css, /@layer components\s*\{[\s\S]*?section\s*\{\s*padding-block:\s*var\(--rd-layout-section\);/);
+    assert.match(css, /@media\s*\(min-width:\s*640px\)\s*\{\s*section\s*\{\s*padding-block:\s*var\(--rd-layout-section-wide\);/);
+    assert.ok(css.includes('Tailwind spacing utilities remain able to opt a section'));
+});
+
 test('page-level compositions use the shared Container instead of duplicated max-width wrappers', () => {
     const pagePaths = [
         'resources/js/app/AdminWorkspace.jsx',
