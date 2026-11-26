@@ -359,13 +359,13 @@ test('public and workspace routes share the full-width PageShell primitive', () 
 test('semantic section landmarks are separated from Container width and gutters', () => {
     const containerAsSection = frontendFiles.flatMap((path) => {
         const source = readFileSync(path, 'utf8');
-        return matchesWithLines(source, /<Container\\b(?:(?!>).)*\\bas\\s*=\\s*['"]section['"](?:(?!>).)*>/gs)
+        return matchesWithLines(source, /<Container\b(?:(?!>).)*\bas\s*=\s*['"]section['"](?:(?!>).)*>/gs)
             .map((match) => ({ file: relative(root, path), ...match }));
     });
     assert.deepEqual(containerAsSection, [], 'Use Section for semantic landmarks and Container for content width/gutters.');
 
     const directory = readFileSync(resolve(root, 'resources/js/app/ArtistDirectoryPage.jsx'), 'utf8');
     const gallery = readFileSync(resolve(root, 'resources/js/app/ArtworkGallery.jsx'), 'utf8');
-    assert.match(directory, /<Section spacing="none" className="mt-10" aria-labelledby="artist-directory-heading">\\s*<Container width="wide">/);
-    assert.match(gallery, /<Section spacing="relaxed" id="artworks">\\s*<Container width="wide">/);
+    assert.match(directory, /<Section spacing="none" className="mt-10" aria-labelledby="artist-directory-heading">\s*<Container width="wide">/);
+    assert.match(gallery, /<Section spacing="relaxed" id="artworks">\s*<Container width="wide">/);
 });
