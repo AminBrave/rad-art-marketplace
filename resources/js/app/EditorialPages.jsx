@@ -182,11 +182,11 @@ export function AdminEditorialPage() {
             setMessage(t(data.message)); await refreshEditorialQueries();
         } catch (e) { setActionError(t(e.response?.data?.message || 'ذخیره انتخاب هنرمندان انجام نشد.')); }
     };
-    return <Container as="section" width="wide" className="space-y-content">
+    return <Container as="section" width="wide" className="rd-workspace-content space-y-workspace-relaxed">
         <PageHeader bleed={false} eyebrow={t("سردبیری راد آرت")} title={t("مجموعه‌ها و هنرمندان منتخب")} description={t("فقط آثار تأییدشده و پروفایل‌های عمومی در خروجی عمومی نمایش داده می‌شوند. تغییرات انتشار ثبت رویداد می‌شوند.")} />
         {message && <SuccessState title={message} />}{error && <ErrorState title={t("عملیات انجام نشد")} description={t(error)} onRetry={load} />}
         {loading ? <AdminEditorialSkeleton /> : <>
-            <section className="space-y-5 border-y border-border bg-transparent py-6 sm:py-8">
+            <section className="space-y-5">
                 <SectionHeader title={t(editing ? 'ویرایش مجموعه' : 'ایجاد مجموعه تازه')} className="border-0 pb-0" />
                 <FormField label={t("عنوان مجموعه")}><TextInput value={title} maxLength={160} onChange={(e) => setTitle(e.target.value)} /></FormField>
                 <FormField label={t("عنوان مجموعه به انگلیسی")}><TextInput value={titleEn} maxLength={160} dir="ltr" className="text-start" onChange={(e) => setTitleEn(e.target.value)} /></FormField>
