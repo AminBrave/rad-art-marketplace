@@ -455,7 +455,7 @@ test('all semantic sections use the shared primitive and have no caller-owned to
     const localSpacingOverrides = frontendFiles.flatMap((path) => {
         const source = readFileSync(path, 'utf8');
         return matchesWithLines(source, /<Section\\b(?:(?!>).)*>/gs)
-            .filter(({ value }) => /(?:^|\s)-?(?:m(?:t|b|y|x|s|e)?|p(?:y|t|b)?)-[^\s"'\x60}]+/.test(value))
+                        .filter(({ value }) => /(?:^|\\s)(?:-?(?:m(?:t|b|y|x|s|e)?|p(?:y|t|b)?)-|space-y-)[^\\s"'\x60}]+/.test(value))
             .map((match) => ({ file: relative(root, path), ...match }));
     });
     assert.deepEqual(
