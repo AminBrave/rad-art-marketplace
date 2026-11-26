@@ -281,6 +281,6 @@ export default function ComponentShowcase() {
                     </div>
                 </div>
             </div>
-        </section>
+        </Section>
     );
 }
