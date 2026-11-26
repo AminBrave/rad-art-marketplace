@@ -92,7 +92,7 @@ export default function ArtistProfilePage() {
     const primaryActionClass = 'inline-flex min-h-11 items-center justify-center rounded-control border border-transparent bg-terracotta px-5 py-2.5 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
 
     return (
-        <div className="min-h-[65vh] overflow-x-clip pb-section">
+        <div className="min-h-[65vh] overflow-x-clip">
             {profile ? (
                 <>
                     <DiscoveryHero
