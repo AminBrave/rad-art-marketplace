@@ -37,7 +37,7 @@ export function BrandLogo({ className = '', size = 'default' }) {
     const logoSrc = `/rademan-logo-${themeName}.${LOGO_FORMATS[formatIndex]}`;
     const imageSize = {
         default: 'h-14 w-auto max-w-52 sm:h-16',
-        footer: 'h-20 w-auto max-w-64 sm:h-24',
+        footer: 'h-28 w-auto max-w-80 sm:h-32',
         sidebar: 'h-24 w-auto max-w-72 sm:h-28',
     }[size] ?? 'h-14 w-auto max-w-52 sm:h-16';
 
