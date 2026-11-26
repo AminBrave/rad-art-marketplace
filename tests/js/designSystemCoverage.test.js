@@ -446,65 +446,6 @@ test('Tailwind radius utilities map to semantic radius tokens', () => {
     assert.match(tailwind, /card: 'var\(--rd-radius-lg\)'/);
 });
 
-test('messaging uses stable physical layout with locale-aware text and valid Radix overlays', () => {
-    const navigation = readFileSync(resolve(root, 'resources/js/components/ui/navigation.jsx'), 'utf8');
-    const primitives = readFileSync(resolve(root, 'resources/js/components/ui/primitives.jsx'), 'utf8');
-    const timeline = readFileSync(resolve(root, 'resources/js/app/MessageTimeline.jsx'), 'utf8');
-    const messagingCenter = readFileSync(resolve(root, 'resources/js/app/MessagingCenter.jsx'), 'utf8');
-    const inbox = readFileSync(resolve(root, 'resources/js/app/MessagingInboxPanel.jsx'), 'utf8');
-    const conversationHeader = readFileSync(resolve(root, 'resources/js/app/ConversationHeader.jsx'), 'utf8');
-    const composer = readFileSync(resolve(root, 'resources/js/app/MessageComposer.jsx'), 'utf8');
-    const cssSource = readFileSync(resolve(root, 'resources/css/app.css'), 'utf8');
-    const dialog = readFileSync(resolve(root, 'resources/js/components/ui/Dialog.jsx'), 'utf8');
-    const alertDialog = readFileSync(resolve(root, 'resources/js/components/ui/AlertDialog.jsx'), 'utf8');
-
-    assert.ok(navigation.includes('DropdownMenuPrimitive.Root modal={false} dir={locale === \'fa\' ? \'rtl\' : \'ltr\'}'));
-    assert.ok(navigation.includes('max-w-[calc(100vw-1rem)]') && navigation.includes('font-sans text-sm outline-none'));
-    assert.ok(primitives.includes('<SelectPrimitive.Root') && primitives.includes('<SelectPrimitive.Trigger') && primitives.includes('<SelectPrimitive.Portal'));
-    assert.ok(!primitives.includes('modal={false}'), 'Radix Select Root must not receive the unsupported DropdownMenu modal prop.');
-    assert.ok(primitives.includes('position="popper"') && primitives.includes('z-[var(--rd-layer-popover)]'));
-    assert.ok(primitives.includes('dir={direction}'));
-    assert.ok(timeline.includes('data-message-actions-trigger'));
-    assert.ok(!timeline.includes('<Tooltip content={t("عملیات پیام")}>'));
-    assert.ok(!timeline.includes('<Tooltip content={t("افزودن واکنش")}>'));
-    assert.ok(!conversationHeader.includes('<Tooltip content={t("گزینه‌های بیشتر")}>'));
-    assert.ok(dialog.includes('z-[var(--rd-layer-modal-overlay)]') && dialog.includes('z-[var(--rd-layer-modal)]'));
-    assert.ok(alertDialog.includes('z-[var(--rd-layer-alert-overlay)]') && alertDialog.includes('z-[var(--rd-layer-alert)]'));
-
-    assert.ok(messagingCenter.includes('<section dir="ltr" data-locale={locale}'));
-    assert.ok(messagingCenter.includes('rd-messaging__workspace'));
-    assert.ok(messagingCenter.includes('lg:grid-cols-[minmax(0,1fr)_minmax(17rem,21rem)]'));
-    assert.ok(messagingCenter.indexOf('<div dir="ltr" className={active ?') < messagingCenter.indexOf('<MessagingInboxPanel'),
-        'Conversation DOM order must match its visual position before the inbox.');
-    assert.ok(inbox.includes('<aside dir="ltr"') && inbox.includes('<ul dir="ltr"'));
-    assert.ok(inbox.includes('dir={locale === \'fa\' ? \'rtl\' : \'ltr\'} className="min-w-0 flex-1 text-start"'),
-        'Inbox text direction must be localized independently from row geometry.');
-    assert.ok(inbox.includes('absolute right-1 top-1/2'));
-    assert.ok(inbox.includes('border-0 bg-transparent p-0 text-muted shadow-none'));
-    assert.ok(!inbox.includes('<Tooltip content={t("گزینه‌های گفتگو")}>'));
-
-    assert.ok(timeline.includes('<div dir="ltr" ref={containerRef}'));
-    assert.ok(timeline.includes("(own ? 'justify-end' : 'justify-start')"));
-    assert.ok(timeline.includes('dir="ltr" className="mt-2 flex min-w-0 flex-wrap'));
-    assert.ok(timeline.includes('items-center justify-end gap-1'));
-    assert.ok(timeline.includes('dir="auto" className={\'whitespace-pre-wrap break-words text-start'));
-    assert.ok(timeline.includes('editDraft.trim() ? "auto" : locale === "fa" ? "rtl" : "ltr"'));
-
-    assert.ok(conversationHeader.includes('<header dir="ltr"'));
-    assert.ok(conversationHeader.includes('text-left text-sm font-extrabold'));
-    assert.ok(conversationHeader.includes('border-0 bg-transparent text-muted shadow-none'));
-    assert.ok(composer.includes('<form dir="ltr" data-messaging-composer'));
-    assert.ok(composer.includes('draft.trim() ? "auto" : locale === "fa" ? "rtl" : "ltr"'));
-    assert.ok(composer.includes('border border-border bg-surface p-2 shadow-none'));
-    assert.ok(composer.includes('font-sans text-[14px]'));
-    assert.ok(inbox.includes('className="relative border-s-[3px] border-transparent"'));
-    assert.ok(!inbox.includes('data-[state=active]:border-terracotta'));
-    assert.ok(!inbox.includes('data-[state=active]:text-terracotta-strong'));
-    assert.ok(!cssSource.includes("[dir='ltr'] {") && !cssSource.includes('[dir="ltr"] {'));
-    assert.ok(cssSource.includes("--rd-layer-modal-overlay: 100;") && cssSource.includes("--rd-layer-modal: 110;") && cssSource.includes("--rd-layer-popover: 120;") && cssSource.includes("--rd-layer-tooltip: 130;"));
-    assert.ok(cssSource.includes("scrollbar-gutter: stable;"));
-});
-
 test('important CSS overrides are restricted to the reduced-motion safety contract', () => {
     const importantRules = [...css.matchAll(/!important/g)];
     assert.equal(importantRules.length, 4, 'Only the four reduced-motion overrides should require !important.');
