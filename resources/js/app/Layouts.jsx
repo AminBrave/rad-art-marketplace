@@ -208,7 +208,7 @@ export function PublicLayout() {
                     </div>
                     <div className="mb-4 flex items-center gap-2 border-b border-border pb-4">
                         <LanguageControl /><ThemeControl />
-                        {user && user.role !== 'admin' && <NotificationBell user={user} />}
+                        {user && user.role !== 'admin' && <NotificationBell user={user} onNavigate={() => setMobileMenuOpen(false)} />}
                         {user && <span className="ms-auto min-w-0 truncate text-sm font-semibold text-ink">{user.name}</span>}
                     </div>
                     <SidebarNavigation
@@ -281,7 +281,7 @@ function notificationDate(value, locale = 'fa') {
     return Number.isNaN(date.getTime()) ? '' : date.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US', { dateStyle: 'short', timeStyle: 'short' });
 }
 
-function NotificationBell({ user }) {
+function NotificationBell({ user, onNavigate }) {
     const { t, locale } = useLanguage();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
@@ -341,16 +341,21 @@ function NotificationBell({ user }) {
     const openNotification = async (item) => {
         if (busy) return;
         setActionError('');
-        try {
-            if (!item.read_at) await markOneRead.mutateAsync(item);
-            setOpen(false);
-            const inbox = user.role === 'artist' ? '/dashboard/artist/messages' : '/dashboard/buyer/messages';
-            navigate(item.target_url || (item.conversation_id
-                ? inbox + '?conversation=' + encodeURIComponent(item.conversation_id)
-                : '/'));
-        } catch {
-            setActionError(t('بازکردن اعلان انجام نشد. دوباره تلاش کنید.'));
+        setOpen(false);
+        onNavigate?.();
+
+        if (!item.read_at) {
+            try {
+                await markOneRead.mutateAsync(item);
+            } catch {
+                setActionError(t('به‌روزرسانی وضعیت اعلان انجام نشد.'));
+            }
         }
+
+        const inbox = user.role === 'artist' ? '/dashboard/artist/messages' : '/dashboard/buyer/messages';
+        navigate(item.target_url || (item.conversation_id
+            ? inbox + '?conversation=' + encodeURIComponent(item.conversation_id)
+            : '/'));
     };
 
     const markAll = async () => {
@@ -701,7 +706,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                     </DialogClose>
                 </div>
 
-                <div className="flex shrink-0 items-center gap-2 border-b border-border px-4 py-3"><LanguageControl /><ThemeControl />{user?.role !== "admin" && <NotificationBell user={user} />}</div>
+                <div className="flex shrink-0 items-center gap-2 border-b border-border px-4 py-3"><LanguageControl /><ThemeControl />{user?.role !== "admin" && <NotificationBell user={user} onNavigate={() => setMobileMenuOpen(false)} />}</div>
                 <SidebarNavigation
                     sections={[
                         { label: t('کشف'), items: publicDiscoveryLinks.map((item) => ({ ...item, label: t(item.label) })) },
