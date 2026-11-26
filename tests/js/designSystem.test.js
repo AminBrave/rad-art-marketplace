@@ -55,6 +55,27 @@ const editorialPages = readFileSync(new URL('../../resources/js/app/EditorialPag
 const publicInfoPages = readFileSync(new URL('../../resources/js/app/PublicInfoPages.jsx', import.meta.url), 'utf8');
 const designSystem = readFileSync(new URL('../../AI/DESIGN-SYSTEM.md', import.meta.url), 'utf8');
 
+test('Tailwind spacing utilities resolve to one semantic Rademan spacing scale', () => {
+    const keys = ['0', 'px', '0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '5', '6', '7', '8', '9', '10', '11', '12', '14', '16', '20', '24', '28', '32', '36', '40', '44', '48', '52', '56', '60', '64', '72', '80', '96'];
+    for (const key of keys) {
+        const token = key.replace('.', '-');
+        const configKey = key === 'px' || key.includes('.') ? `'${key}'` : key;
+        assert.ok(tailwind.includes(`${configKey}: 'var(--rd-space-${token})'`), `Missing Tailwind spacing mapping for ${key}.`);
+        assert.ok(css.includes(`--rd-space-${token}:`), `Missing canonical CSS spacing token for ${key}.`);
+    }
+    for (const role of ['page', 'section', 'group', 'component', 'compact']) {
+        assert.ok(css.includes(`--rd-space-${role}:`), `Missing semantic spacing role ${role}.`);
+        assert.ok(tailwind.includes(`${role}: 'var(--rd-space-${role})'`), `Missing Tailwind semantic spacing role ${role}.`);
+    }
+    assert.ok(layoutPrimitives.includes("Element === 'section' ? 'py-section'"));
+    assert.ok(layoutPrimitives.includes("all: 'p-component'"));
+    assert.ok(layoutPrimitives.includes('spacingValue(gap)'));
+    assert.ok(layouts.includes('var(--rd-header-height)'));
+    assert.ok(layouts.includes('var(--rd-header-height-wide)'));
+    assert.ok(bootShell.includes('var(--rd-header-height)'));
+    assert.ok(bootShell.includes('var(--rd-header-height-wide)'));
+});
+
 test('hero headers omit decorative squares and accent pseudo-elements', () => {
     assert.doesNotMatch(primitives, /rd-hero-decoration|before:bg-\[color:var\(--rd-hero-accent\)\]/);
 });
