@@ -403,9 +403,9 @@
 }
 @media (max-width: 767px) {
     .rd-home-hero .rd-unified-hero__inner > div {
-        grid-template-columns: minmax(0, 1fr) minmax(6.5rem, .52fr);
-        gap: 1rem;
-        align-items: center;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.5rem;
+        align-items: stretch;
     }
     .rd-home-hero .rd-unified-hero__inner > div > div:last-child { min-width: 0; }
     .rd-home-hero .rd-unified-hero__inner > div > div:last-child > a { padding: .35rem; }
