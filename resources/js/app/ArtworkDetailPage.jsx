@@ -73,7 +73,6 @@ export default function ArtworkDetailPage() {
     return (
         <div className="min-h-[65vh] pb-section">
             <DiscoveryHero
-                shape="frame"
                 eyebrow={artwork ? localizedValue(artwork.category, 'name', locale) : t("گالری آثار")}
                 title={artwork ? localizedValue(artwork, 'title', locale) : t(status === 403 ? 'دسترسی به این اثر مجاز نیست' : 'اثر در دسترس نیست')}
                 description={artwork ? t("جزئیات اثر، ویژگی‌ها و اطلاعات هنرمند را در ادامه ببینید.") : t("این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.")}
