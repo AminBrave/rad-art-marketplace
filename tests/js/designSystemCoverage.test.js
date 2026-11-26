@@ -204,7 +204,7 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     assert.ok(css.includes('.rd-unified-hero--workspace'));
     assert.ok(primitives.includes("cn('rd-unified-hero--workspace', className)"));
     assert.ok(css.includes('.rd-workspace-content > section'));
-    for (const path of ['resources/js/app/AdminWorkspace.jsx', 'resources/js/app/ArtistWorkspaceOverview.jsx', 'resources/js/app/BuyerWorkspace.jsx', 'resources/js/app/ArtworkStudio.jsx']) {
+    for (const path of ['resources/js/app/AdminWorkspace.jsx', 'resources/js/app/ArtistWorkspaceOverview.jsx', 'resources/js/app/BuyerWorkspace.jsx', 'resources/js/app/ArtworkStudio.jsx', 'resources/js/app/RoutingPages.jsx', 'resources/js/app/EditorialPages.jsx']) {
         const source = readFileSync(resolve(root, path), 'utf8');
         assert.ok(source.includes('rd-workspace-content'), path + ' must use the shared workspace spacing shell.');
     }
