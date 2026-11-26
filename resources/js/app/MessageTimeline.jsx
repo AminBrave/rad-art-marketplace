@@ -87,7 +87,7 @@ export default function MessageTimeline({
         <DropdownMenu.Content side="top" align="end" sideOffset={8} collisionPadding={8} className="z-[var(--rd-layer-popover)] flex max-w-[calc(100vw-1rem)] flex-nowrap items-center gap-1 overflow-x-auto  border border-border bg-paper p-1.5 shadow-soft [scrollbar-width:none]">
         {reactionOptions.map((emoji) => {
         const reaction = message.reactions?.find((item) => item.emoji === emoji);
-        return <DropdownMenu.Item key={emoji} disabled={actionId === message.id} onSelect={() => onToggleReaction(message, emoji)} aria-label={t("واکنش ") + emoji} className={'flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center  text-base outline-none transition-colors data-[highlighted]:bg-surface-muted motion-reduce:transition-none ' + (reaction?.reacted_by_me ? 'bg-accent-surface text-terracotta-strong' : 'text-ink')}>{emoji}</DropdownMenu.Item>;
+        return <DropdownMenu.Item key={emoji} disabled={actionId === message.id} onSelect={() => onToggleReaction(message, emoji)} aria-label={t("واکنش ") + emoji} className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center text-base text-ink outline-none">{emoji}</DropdownMenu.Item>;
         })}
         </DropdownMenu.Content>
         </DropdownMenu.Portal>
