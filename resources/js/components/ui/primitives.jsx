@@ -4,7 +4,7 @@ import * as SelectPrimitive from '@radix-ui/react-select';
 import { Check, ChevronDown } from 'lucide-react';
 import { Tooltip } from './Tooltip';
 import { cn } from '../../lib/utils';
-import { Container } from './layout';
+import { Container, Section } from './layout';
 import { useLanguage } from '../../app/LanguageContext';
 
 const buttonVariants = {
@@ -96,7 +96,7 @@ export function UnifiedHero({
 }) {
     const Heading = level === 2 ? 'h2' : 'h1';
     return (
-        <section className={cn('rd-unified-hero rd-hero-surface', (surface === 'grid' || surface === 'grid-square') && 'rd-hero-surface--grid', surface === 'plain' && 'rd-hero-surface--plain', bleed && 'rd-bleed', compact && 'rd-unified-hero--compact', className)}>
+        <Section spacing="regular" className={cn('rd-unified-hero rd-hero-surface', (surface === 'grid' || surface === 'grid-square') && 'rd-hero-surface--grid', surface === 'plain' && 'rd-hero-surface--plain', bleed && 'rd-bleed', compact && 'rd-unified-hero--compact', className)}>
             <Container width="wide" className="rd-unified-hero__inner relative z-10">
                 {breadcrumbs && <div className="mb-6 text-[11px] font-semibold text-[color:var(--rd-hero-muted)] sm:mb-8">{breadcrumbs}</div>}
                 <div className={cn('grid min-w-0 items-center gap-7 lg:gap-12', media && 'lg:grid-cols-[minmax(0,1.15fr)_minmax(17rem,.85fr)]')}>
@@ -110,7 +110,7 @@ export function UnifiedHero({
                     {media && <div className={cn('relative z-10 mx-auto w-full min-w-0 max-w-xl lg:max-w-none', mediaPosition === 'before' && 'order-first lg:order-last')}>{media}</div>}
                 </div>
             </Container>
-        </section>
+        </Section>
     );
 }
 
@@ -177,7 +177,7 @@ const surfaceVariants = {
 };
 
 export function Surface({ as: Element = 'section', variant = 'default', className = '', children, ...props }) {
-    return <Element className={cn(surfaceVariants[variant] ?? surfaceVariants.default, className)} {...props}>{children}</Element>;
+    return <Section as={Element} spacing="regular" className={cn(surfaceVariants[variant] ?? surfaceVariants.default, className)} {...props}>{children}</Section>;
 }
 
 
@@ -264,6 +264,7 @@ export function SelectField({
 
     return (
         <SelectPrimitive.Root
+            modal={false}
             value={value}
             defaultValue={defaultValue}
             onValueChange={(nextValue) => onChange?.({ target: { name, value: nextValue } })}
