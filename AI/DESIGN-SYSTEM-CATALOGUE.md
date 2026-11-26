@@ -64,6 +64,7 @@ Use heading typography for hierarchy, readable line lengths for long-form copy, 
 
 ### 2.4 Spacing, page width and responsive geometry
 
+Use semantic layout tiers for major sections, content groups, compact workspace stacks and component internals; all semantic utilities resolve through the canonical 4px spacing unit.
 Spacing uses a 4px base scale: `--rd-space-1` to `--rd-space-24` (0.25rem to 6rem). Layout tokens include:
 - `--rd-content-width`: overall content maximum.
 - `--rd-content-reading-width`: long-form reading measure.
