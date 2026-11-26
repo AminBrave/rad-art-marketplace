@@ -3,6 +3,7 @@ import * as TabsPrimitive from '@radix-ui/react-tabs';
 import { Link } from 'react-router-dom';
 import { Button } from './primitives';
 import { cn } from '../../lib/utils';
+import { useLanguage } from '../../app/LanguageContext';
 
 export const Tabs = TabsPrimitive.Root;
 
@@ -36,7 +37,7 @@ export function DropdownMenuContent({ className = '', sideOffset = 6, ...props }
             sideOffset={sideOffset}
             align="end"
            
-            className={cn('z-50 min-w-44  border border-border bg-paper p-1.5 text-ink shadow-raised outline-none', className)}
+            className={cn('z-50 box-border min-w-44 max-w-[calc(100vw-1rem)] overflow-x-hidden border border-border bg-paper p-1.5 font-sans text-sm text-ink shadow-raised outline-none', className)}
             {...props}
         />
     );
@@ -45,14 +46,14 @@ export function DropdownMenuContent({ className = '', sideOffset = 6, ...props }
 export function DropdownMenuItem({ className = '', ...props }) {
     return (
         <DropdownMenuPrimitive.Item
-            className={cn('flex min-h-10 cursor-pointer items-center  px-3 py-2 text-sm outline-none focus:bg-surface-muted focus:text-ink data-[disabled]:pointer-events-none data-[disabled]:opacity-40', className)}
+            className={cn('flex min-h-10 cursor-pointer items-center px-3 py-2 font-sans text-sm outline-none focus:bg-surface-muted focus:text-ink data-[disabled]:pointer-events-none data-[disabled]:opacity-40', className)}
             {...props}
         />
     );
 }
 
 export function DropdownMenuLabel({ className = '', ...props }) {
-    return <DropdownMenuPrimitive.Label className={cn('px-3 py-2 text-xs font-bold text-muted', className)} {...props} />;
+    return <DropdownMenuPrimitive.Label className={cn('px-3 py-2 font-sans text-xs font-bold text-muted', className)} {...props} />;
 }
 
 export function DropdownMenuSeparator({ className = '', ...props }) {
@@ -60,7 +61,8 @@ export function DropdownMenuSeparator({ className = '', ...props }) {
 }
 
 export function DropdownMenu(props) {
-    return <DropdownMenuPrimitive.Root {...props} />;
+    const { locale } = useLanguage();
+    return <DropdownMenuPrimitive.Root modal={false} dir={locale === 'fa' ? 'rtl' : 'ltr'} {...props} />;
 }
 
 DropdownMenu.Root = DropdownMenu;
