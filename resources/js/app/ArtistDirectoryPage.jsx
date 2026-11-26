@@ -47,7 +47,7 @@ export default function ArtistDirectoryPage() {
     const submitSearch = (value) => setParams(value.trim() ? { q: value.trim() } : {});
 
     return (
-        <div className="w-full min-w-0 min-h-[65vh] pb-section">
+        <div className="w-full min-w-0 min-h-[65vh]">
             <DiscoveryHero
                 eyebrow={t("جامعه خلاق راد آرت")}
                 title={t("هنرمند را کشف کنید.")}
@@ -74,15 +74,14 @@ export default function ArtistDirectoryPage() {
                 ) : (
                     <EmptyState className="mt-8" title={t("هنرمندی پیدا نشد")} description={t("نام یا شهر دیگری را جست‌وجو کنید.")} />
                 )}
+                {!loading && !error && meta.last_page > 1 && (
+                    <nav className="mt-10 flex items-center justify-center gap-4 border-t border-divider-group pt-6" aria-label={t("صفحه‌بندی هنرمندان")}>
+                        <Button variant="outline" type="button" disabled={page <= 1} onClick={() => updatePage(page - 1)} className="min-h-11 border border-border px-5 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40">{t("قبلی")}</Button>
+                        <span className="text-sm text-muted">{locale === 'fa' ? `صفحه ${meta.current_page.toLocaleString('fa-IR')} از ${meta.last_page.toLocaleString('fa-IR')}` : `Page ${meta.current_page.toLocaleString('en-US')} of ${meta.last_page.toLocaleString('en-US')}`}</span>
+                        <Button variant="outline" type="button" disabled={page >= meta.last_page} onClick={() => updatePage(page + 1)} className="min-h-11 border border-border px-5 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40">{t("بعدی")}</Button>
+                    </nav>
+                )}
             </Container>
-
-            {!loading && !error && meta.last_page > 1 && (
-                <Container as="nav" width="wide" className="mt-10 flex items-center justify-center gap-4" aria-label={t("صفحه‌بندی هنرمندان")}>
-                    <Button variant="outline" type="button" disabled={page <= 1} onClick={() => updatePage(page - 1)} className="min-h-11 border border-border px-5 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40">{t("قبلی")}</Button>
-                    <span className="text-sm text-muted">{locale === 'fa' ? `صفحه ${meta.current_page.toLocaleString('fa-IR')} از ${meta.last_page.toLocaleString('fa-IR')}` : `Page ${meta.current_page.toLocaleString('en-US')} of ${meta.last_page.toLocaleString('en-US')}`}</span>
-                    <Button variant="outline" type="button" disabled={page >= meta.last_page} onClick={() => updatePage(page + 1)} className="min-h-11 border border-border px-5 py-2 text-sm font-semibold transition-colors hover:border-terracotta disabled:cursor-not-allowed disabled:opacity-40">{t("بعدی")}</Button>
-                </Container>
-            )}
         </div>
     );
 }
