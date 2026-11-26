@@ -18,6 +18,32 @@ This catalogue records what is implemented in the codebase at the time of writin
 7. **Responsive by intent.** Mobile may change navigation, order and density, but not remove essential information or actions.
 8. **Preserve product behavior.** UI changes must not alter API contracts, route permissions, moderation semantics, privacy, messaging delivery or mutation behavior.
 
+## 1.1 Gestalt principles as practical UI rules
+
+Apply these principles across the entire product:
+
+| Principle | Practical rule |
+|---|---|
+| Proximity | Related labels, values, controls and descriptions stay close; unrelated groups receive a larger gap. |
+| Similarity | Repeated components share styling and interaction. Variations communicate meaningful differences only. |
+| Common region | A card or panel encloses one coherent group or task, never decoration for its own sake. |
+| Alignment / continuity | Reuse shared container edges, baselines and grid tracks to create a clear reading path. |
+| Figure–ground | Primary content and artwork remain visually dominant against quiet surfaces and restrained decoration. |
+| Closure | Whitespace and a single clear boundary define groups; avoid stacked borders. |
+| Prägnanz | Prefer the simplest composition that communicates the purpose; remove redundant labels and ornamental clutter. |
+| Hierarchy | One dominant page title, followed by section headings, supporting copy and actions. |
+
+Evaluate these rules across mobile/tablet/desktop and RTL/LTR. Do not mistake visual sameness for consistency: route-specific information architecture may differ while shared components, spacing and alignment remain predictable.
+
+### Discovery hero and breadcrumb standard
+
+- Public discovery pages use the shared `DiscoveryHero` anatomy and tokens: homepage, artwork catalogue, artist directory/profile, artwork detail and collection index/detail.
+- The layout, typography, content width, vertical rhythm, surface, actions and responsive behavior remain consistent. Route identity comes from a restrained decorative shape variant (`ribbon`, `orbit`, `grid`, `arch` or `frame`), not a new hero layout.
+- Breadcrumbs appear only in public discovery and only at the top of the first hero. The homepage is the root and omits a redundant trail.
+- Never show breadcrumbs in dashboards, admin pages, settings, messaging, or artist/buyer workspaces. Never place a separate breadcrumb strip above/below the hero.
+- Breadcrumbs use localized ancestor labels, a current-page item, semantic navigation/list markup and `aria-current="page"`.
+- Use `PageHeader` and `WorkspaceHero` for task/workspace pages; do not attach discovery breadcrumbs to them.
+
 ## 2. Visual foundations
 
 ### 2.1 Brand palette and semantic color roles
