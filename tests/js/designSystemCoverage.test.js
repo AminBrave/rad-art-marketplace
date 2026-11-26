@@ -201,13 +201,13 @@ test('public discovery pages share the same hero system and breadcrumbs stay out
     assert.ok(!css.includes('.rd-unified-hero__title-wrap::before'), 'Hero titles must remain free of the removed square motif.');
     assert.ok(css.includes('radial-gradient(ellipse at 88% 8%, var(--rd-hero-glow), transparent 38%)'));
     assert.ok(css.includes('linear-gradient(125deg, var(--rd-hero-background), var(--rd-hero-background-alt))'));
-    assert.ok(css.includes('section.rd-unified-hero {'));
+    assert.ok(!/\bsection\s*\{/.test(css), 'Native section elements must not receive global layout spacing.');
     assert.ok(!css.includes('.rd-unified-hero--workspace'), 'Workspace heroes must not use a contained-width modifier.');
     assert.ok(primitives.includes("surface = 'grid'"));
     assert.ok(primitives.includes('actions={actions} media={media} level={level} bleed={bleed}'), 'WorkspaceHero must forward the shared hero layout contract.');
     assert.ok(primitives.includes('breadcrumbs={breadcrumbs} actions={actions} media={media} level={level}'), 'PageHeader must forward the shared hero content contract.');
     assert.ok(!primitives.includes('bleed={bleed} compact className={className}'), 'PageHeader must not use the compact hero spacing variant.');
-    assert.ok(css.includes('.rd-workspace-content > section'));
+    assert.ok(!css.includes('.rd-workspace-content > section'), 'Workspace section spacing must be owned by explicit layout primitives.');
     assert.ok(css.includes('padding-block: var(--rd-layout-section);'), 'Workspace content must use the discovery section rhythm.');
     assert.ok(css.includes('padding-block: var(--rd-layout-section-wide);'), 'Workspace content must use the responsive discovery section rhythm.');
     assert.ok(!css.includes('.rd-page-frame--workspace .rd-container {'), 'Workspace Containers must own their own page gutters.');
