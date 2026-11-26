@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useLanguage } from './LanguageContext';
 import axios from 'axios';
 import { Link, useOutletContext } from 'react-router-dom';
-import { EmptyState, ErrorState, StatusBadge, Badge, PageHeader, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton, ArtistRecentWorkSkeleton } from '../components/ui';
+import { EmptyState, ErrorState, StatusBadge, Badge, PageHeader, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton, ArtistRecentWorkSkeleton, Container } from '../components/ui';
 import { localizedValue } from '../utils/localizedContent';
 
 const statusLabels = {
@@ -50,7 +50,7 @@ export default function ArtistWorkspaceOverview() {
 
     return (
         <div className="w-full">
-            <div className="min-w-0 w-full space-y-7">
+            <Container width="wide" className="space-y-workspace-relaxed">
                 <PageHeader
                     bleed={false}
                     eyebrow={t("استودیوی هنرمند")}
@@ -132,7 +132,7 @@ export default function ArtistWorkspaceOverview() {
                         </div>
                     </div>
                 </section>
-            </div>
+            </Container>
         </div>
     );
 }
