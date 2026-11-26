@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ArrowLeft, ArrowUpLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from './LanguageContext';
-import { ArtworkCard, ArtistCard, ArtworkCardSkeleton, ArtistCardSkeleton, EmptyState, ErrorState, MediaImage, Skeleton, Container, Card, DiscoveryHero } from '../components/ui';
+import { ArtworkCard, ArtistCard, ArtworkCardSkeleton, ArtistCardSkeleton, EmptyState, ErrorState, MediaImage, Skeleton, Container, Card, DiscoveryHero, Section } from '../components/ui';
 import { localizedValue } from '../utils/localizedContent';
 
 const editorialSteps = [
@@ -131,7 +131,7 @@ export default function HomePage() {
                 <p className="text-xs leading-6 text-[color:var(--rd-hero-muted)]">{t('نمایش عمومی به آثار تأییدشده و پروفایل‌های عمومی محدود است.')}</p>
             </DiscoveryHero>
 
-            <section aria-label="چطور در راد آرت کشف کنیم" className="bg-surface-muted py-section sm:py-section-wide">
+            <Section spacing="regular" aria-label="چطور در راد آرت کشف کنیم" className="bg-surface-muted py-section sm:py-section-wide">
                 <Container width="wide" className="grid gap-4 sm:grid-cols-3">
                     {editorialSteps.map((step) => (
                         <Card
@@ -147,7 +147,7 @@ export default function HomePage() {
                         </Card>
                     ))}
                 </Container>
-            </section>
+            </Section>
 
             <Container as="section" width="wide" aria-labelledby="recent-works-title" className="py-section sm:py-section-wide">
                 <SectionHeading
@@ -169,7 +169,7 @@ export default function HomePage() {
                 )}
             </Container>
 
-            <section aria-labelledby="categories-title" className="border-y border-border bg-paper">
+            <Section spacing="regular" aria-labelledby="categories-title" className="border-y border-border bg-paper">
                 <Container>
                     <SectionHeading
                         id="categories-title"
@@ -189,7 +189,7 @@ export default function HomePage() {
                         )) : <p className="text-sm text-muted">{t('دسته‌بندی فعالی برای نمایش وجود ندارد.')}</p>}
                     </div>
                 </Container>
-            </section>
+            </Section>
 
             <Container as="section" width="wide" aria-labelledby="artists-title" className="py-section sm:py-section-wide">
                 <SectionHeading
@@ -234,7 +234,7 @@ export default function HomePage() {
             </Container>
 
             {(collections.length > 0 || featuredArtists.length > 0) && (
-                <section aria-label="مجموعه‌ها و هنرمندان منتخب" className="border-y border-border bg-surface-muted">
+                <Section spacing="regular" aria-label="مجموعه‌ها و هنرمندان منتخب" className="border-y border-border bg-surface-muted">
                     <Container>
                         {collections.length > 0 && (
                             <div>
@@ -276,10 +276,10 @@ export default function HomePage() {
                             </div>
                         )}
                     </Container>
-                </section>
+                </Section>
             )}
 
-            <section className="rd-hero-surface border-y border-[color:var(--rd-hero-line)]">
+            <Section spacing="regular" className="rd-hero-surface border-y border-[color:var(--rd-hero-line)]">
                 <Container className="grid gap-8 md:grid-cols-[1fr_auto] md:items-center">
                     <div>
                         <p className="text-[10px] font-extrabold tracking-[.16em] text-[color:var(--rd-hero-accent)]">BECOME PART OF THE STORY</p>
@@ -291,7 +291,7 @@ export default function HomePage() {
                         <ArrowUpLeft size={17} aria-hidden="true" />
                     </Link>
                 </Container>
-            </section>
+            </Section>
         </div>
     );
 }
