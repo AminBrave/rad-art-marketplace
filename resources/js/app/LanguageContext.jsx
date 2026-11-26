@@ -6,6 +6,13 @@ const LOCALES = ['fa', 'en'];
 const english = {
     "منوی راد آرت": "Rademan menu",
     "منوی ردّمن": "Rademan menu",
+    "آرشیو آثار و نتایج": "Artwork archive and results",
+    "جزئیات اثر، ویژگی‌ها و اطلاعات هنرمند را در ادامه ببینید.": "Explore the artwork details, features, and artist information below.",
+    "صفحه‌بندی": "Pagination",
+    "مجموعه در دسترس نیست": "Collection unavailable",
+    "ردّمن، صفحه اصلی": "Rademan home",
+    "ردّمن": "Rademan",
+    "به‌روزرسانی وضعیت اعلان انجام نشد.": "Could not update the notification status.",
     "منو": "Menu",
     "کشف هنر، هنرمندان و فضای کاربری": "Discover art, artists, and your workspace",
     "خانه": "Home",
