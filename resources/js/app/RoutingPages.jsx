@@ -80,7 +80,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
         const registering = pathname === '/register';
         return (
             <Container as="div" width="reading" className="py-page" role="status" aria-live="polite" aria-busy="true" aria-label="در حال آماده‌سازی فرم حساب کاربری">
-                <section className="border-y border-ink bg-paper p-6 sm:p-9">
+                <Section spacing="none" className="border-y border-ink bg-paper p-6 sm:p-9">
                     <Skeleton className="h-4 w-32 rounded-sm" />
                     <Skeleton className="mt-5 h-8 w-2/3 rounded-sm" />
                     <div className="mt-6 flex gap-5 border-b border-border pb-4"><Skeleton className="h-4 w-12 rounded-sm" /><Skeleton className="h-4 w-16 rounded-sm" /></div>
@@ -92,7 +92,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                         <Skeleton className="h-12 w-full rounded-md" />
                     </div>
                     <Skeleton className="mt-5 h-3 w-4/5 rounded-sm" />
-                </section>
+                </Section>
             </Container>
         );
     }
@@ -102,21 +102,21 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
             <Container as="div" width="wide" className="min-h-[65vh] py-section-compact lg:py-section-regular" role="status" aria-live="polite" aria-busy="true" aria-label={t(label)}>
                 <span className="sr-only">{t(label)}</span>
                 <div className="mb-8 grid gap-3 border-b border-ink pb-6"><Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="h-9 w-2/3 max-w-sm rounded-sm" /><Skeleton className="h-4 w-full max-w-xl rounded-sm" /></div>
-                <section className="grid gap-4 sm:grid-cols-2">
+                <Section spacing="none" className="grid gap-4 sm:grid-cols-2">
                     <FormFieldSkeleton className="sm:col-span-2" />
                     <FormFieldSkeleton className="sm:col-span-2" controlClassName="h-28" />
                     <FormFieldSkeleton />
                     <FormFieldSkeleton />
                     <FormFieldSkeleton className="sm:col-span-2" />
                     <div className="sm:col-span-2"><Skeleton className="h-5 w-48 rounded-sm" /><Skeleton className="mt-4 h-11 w-36 rounded-sm" /></div>
-                </section>
+                </Section>
             </Container>
         );
     }
 
     if (isMessaging) {
         return (
-            <section className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden font-sans" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
+            <Section spacing="none" className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden font-sans" role="status" aria-live="polite" aria-busy="true" aria-label={label}>
                 <div className="grid h-full min-h-0 w-full min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden border-y border-border bg-surface lg:grid-cols-[minmax(17rem,21rem)_minmax(0,1fr)]">
                     <aside className={hasRequestedConversation ? 'hidden h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e lg:flex' : 'flex h-full min-h-0 flex-col border-e-0 border-border bg-paper md:border-e'}>
                         <div className="shrink-0 border-b border-border bg-paper px-4 py-4 sm:px-5">
@@ -137,7 +137,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                         </> : <div className="m-auto p-8 text-center"><Skeleton className="h-4 w-56 rounded-sm" /></div>}
                     </div>
                 </div>
-            </section>
+            </Section>
         );
     }
 
@@ -157,18 +157,18 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                     <Section bleed className="mb-7 border-y border-divider-section bg-surface-muted py-4 sm:py-5"><Container width="wide" className="grid gap-3 sm:grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))]">
                         <Skeleton className="h-11 w-full rounded-md" /><Skeleton className="h-11 w-full rounded-md" /><Skeleton className="h-11 w-full rounded-md" />
                     </Container></Section>
-                    <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    <Section spacing="none" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}
-                    </section>
+                    </Section>
                 </>
             ) : pathname === '/artists' ? (
                 <>
                     <Section bleed className="rd-hero-surface mb-8 border-y border-[color:var(--rd-hero-line)] py-10"><Container width="wide" className="grid gap-4 px-6 sm:px-10">
                         <Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="h-10 w-2/3 max-w-lg rounded-sm" /><Skeleton className="h-4 w-full max-w-2xl rounded-sm" /><Skeleton className="h-11 w-full max-w-2xl rounded-md" />
                     </Container></Section>
-                    <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    <Section spacing="none" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                         {[0, 1, 2, 3, 4, 5].map((item) => <ArtistCardSkeleton key={item} />)}
-                    </section>
+                    </Section>
                 </>
             ) : pathname === '/collections' ? (
                 <CollectionCardSkeleton count={6} announce={false} />
@@ -196,7 +196,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                 <AdminEditorialSkeleton announce={false} />
             ) : pathname === '/dashboard/artist/artworks' || pathname === '/dashboard/artist/artworks/new' ? (
                 <>
-                    <section className="border border-border bg-paper p-5 sm:p-7">
+                    <Section spacing="none" className="border border-border bg-paper p-5 sm:p-7">
                         <div className="mb-6 flex flex-wrap items-start justify-between gap-3 border-b border-border pb-5"><Skeleton className="h-6 w-36 rounded-sm" /><Skeleton className="h-4 w-64 max-w-full rounded-sm" /></div>
                         <div className="grid gap-5 sm:grid-cols-2">
                             {[0, 1, 2, 3, 4, 5, 6].map((item) => <FormFieldSkeleton key={item} />)}
@@ -204,16 +204,16 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                             <div className="grid gap-2 sm:col-span-2"><Skeleton className="h-4 w-36 rounded-sm" /><Skeleton className="h-11 w-full rounded-sm" /><Skeleton className="h-3 w-2/3 max-w-md rounded-sm" /><Skeleton className="h-3 w-1/2 max-w-sm rounded-sm" /></div>
                             <Skeleton className="h-11 w-40 rounded-md sm:col-span-2" />
                         </div>
-                    </section>
-                    <section className="mt-7 space-y-4">
+                    </Section>
+                    <Section spacing="none" className="mt-7 space-y-4">
                         <div className="flex items-center justify-between gap-3"><Skeleton className="h-6 w-40 rounded-sm" /><Skeleton className="h-9 w-28 rounded-md" /></div>
                         <ArtworkStudioListSkeleton count={3} announce={false} />
-                    </section>
+                    </Section>
                 </>
             ) : /^\/(about|help|contact)$/.test(pathname) ? (
-                <section className="grid gap-6">
+                <Section spacing="none" className="grid gap-6">
                     {[0, 1, 2].map((item) => <div key={item} className="grid gap-3 border-b border-border pb-6"><Skeleton className="h-6 w-48 rounded-sm" /><Skeleton className="h-4 w-full rounded-sm" /><Skeleton className="h-4 w-5/6 rounded-sm" /></div>)}
-                </section>
+                </Section>
             ) : (
                 <>
                     {isWorkspace && <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2].map((item) => <Skeleton key={item} className="h-28 w-full rounded-md" />)}</div>}
@@ -380,7 +380,7 @@ export function WorkspaceSettingsPage() {
             <PageHeader eyebrow={t('حساب کاربری')} title={t('تنظیمات')} description={t('ترجیحات نمایش و اعلان‌های فضای کاربری را از یک بخش مدیریت کنید.')} />
             <Container as="section" width="wide" className="rd-workspace-content space-y-workspace-relaxed">
 
-            <section className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_16rem]" aria-labelledby="appearance-settings-title">
+            <Section spacing="none" className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_16rem]" aria-labelledby="appearance-settings-title">
                 <div className="min-w-0 border border-divider-group bg-paper p-5 sm:p-6">
                     <SectionHeader id="appearance-settings-title" eyebrow={t('نمایش')} title={t('پوسته محیط کاربری')} description={t('ظاهر راد آرت را با نور محیط یا ترجیح خود هماهنگ کنید.')} />
                 </div>
@@ -391,10 +391,10 @@ export function WorkspaceSettingsPage() {
                     </div>
                     <Button type="button" variant="outline" onClick={cycleTheme}>{t('تغییر پوسته')}</Button>
                 </div>
-            </section>
+            </Section>
 
             {user?.role !== 'admin' && (
-                <section className="space-y-4" aria-labelledby="notification-settings-title">
+                <Section spacing="none" className="space-y-4" aria-labelledby="notification-settings-title">
                     <SectionHeader
                         id="notification-settings-title"
                         eyebrow={t('اعلان‌ها')}
@@ -421,7 +421,7 @@ export function WorkspaceSettingsPage() {
                         </div>
                     )}
                     <p className="text-xs leading-6 text-muted">{t('اعلان ایمیلی و پیامکی در این نسخه غیرفعال است.')}</p>
-                </section>
+                </Section>
             )}
             {error && <p role="alert" className="text-sm text-danger">{t(error)}</p>}
         </Container>
