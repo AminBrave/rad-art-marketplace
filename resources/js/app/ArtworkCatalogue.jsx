@@ -118,7 +118,7 @@ export default function ArtworkCatalogue() {
     }, [hasNextPage, fetchNextPage, loadingMore, error]);
 
     return (
-        <div className="w-full min-w-0 min-h-[65vh] pb-section">
+        <div className="w-full min-w-0 min-h-[65vh]">
             <DiscoveryHero
                 eyebrow={t("آرشیو عمومی راد آرت")}
                 title={t("گالری آثار")}
@@ -162,7 +162,8 @@ export default function ArtworkCatalogue() {
             </Container>
             </Section>
 
-            <Container width="wide">
+            <Section as="section" bleed aria-label={t("آرشیو آثار و نتایج")} className="mt-8 border-y border-divider-section bg-paper">
+                <Container width="wide">
             {activeFilterCount > 0 && (
                 <div className="mt-6 flex flex-wrap items-center gap-2" aria-label={t("معیارهای فعال")}>
                     <span className="me-1 text-xs font-bold text-muted">{t("انتخاب شما:")}</span>
@@ -173,7 +174,7 @@ export default function ArtworkCatalogue() {
                     {sort !== 'newest' && <Button variant="outline" type="button" onClick={() => updateFilters({ sort: 'newest' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{filters.sorts?.find((item) => item.value === sort)?.[locale === 'en' ? 'label_en' : 'label'] ?? sort}<X size={12} aria-hidden="true" /></Button>}
                 </div>
             )}
-            <div className="mt-9 flex flex-wrap items-end justify-between gap-3 border-b border-ink pb-4">
+            <div className="flex flex-wrap items-end justify-between gap-3 border-b border-ink pb-4">
                 <div>
                     <p className="text-[11px] font-bold tracking-[.12em] text-terracotta-strong">{t("آرشیو آثار")}</p>
                     <p aria-live="polite" className="mt-1 text-sm font-semibold text-ink">{loading ? t('در حال دریافت آثار…') : meta.total.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('اثر')}</p>
@@ -204,7 +205,8 @@ export default function ArtworkCatalogue() {
                     )}
                 </div>
             )}
-            </Container>
+                </Container>
+            </Section>
         </div>
     );
 }
