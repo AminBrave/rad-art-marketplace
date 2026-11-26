@@ -95,7 +95,7 @@ export default function MessageTimeline({
         </div>
         <DropdownMenu.Root open={openPopover === 'message:' + message.id} onOpenChange={(open) => onPopoverOpenChange('message:' + message.id, open)}>
         <Tooltip content={t("عملیات پیام")}><DropdownMenu.Trigger asChild>
-        <Button variant="ghost" type="button" aria-label={t("عملیات پیام")} className="min-h-0 p-0 flex h-8 w-8 items-center justify-center  text-muted transition-colors hover:bg-surface hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"><MoreVertical size={16} aria-hidden="true" /></Button>
+        <Button variant="ghost" type="button" aria-label={t("عملیات پیام")} className="min-h-0 flex h-8 w-8 shrink-0 items-center justify-center border border-border bg-surface p-0 text-ink transition-colors hover:border-border-strong hover:bg-surface-muted hover:text-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus motion-reduce:transition-none"><MoreVertical size={16} aria-hidden="true" /></Button>
         </DropdownMenu.Trigger></Tooltip>
         <DropdownMenu.Portal>
         <DropdownMenu.Content side="top" align="end" sideOffset={8} collisionPadding={8} onCloseAutoFocus={(event) => {
