@@ -71,16 +71,16 @@ export default function ArtworkDetailPage() {
     if (loading) return <ArtworkDetailSkeleton />;
 
     return (
-        <Container as="div" width="wide" className="min-h-[65vh] py-section-compact lg:py-section-regular">
+        <div className="min-h-[65vh] pb-section">
             <DiscoveryHero
-                className="rd-bleed"
-                shape="frame"
+                shape="arch"
                 eyebrow={artwork ? localizedValue(artwork.category, 'name', locale) : t("گالری آثار")}
                 title={artwork ? localizedValue(artwork, 'title', locale) : t(status === 403 ? 'دسترسی به این اثر مجاز نیست' : 'اثر در دسترس نیست')}
-                description={artwork ? localizedValue(artwork, 'description', locale) : t("این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.")}
+                description={artwork ? t("جزئیات اثر، ویژگی‌ها و اطلاعات هنرمند را در ادامه ببینید.") : t("این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.")}
                 breadcrumbs={<Breadcrumbs label={t("مسیر صفحه")} items={[{ label: t("خانه"), to: "/" }, { label: t("گالری آثار"), to: "/artworks" }, { label: artwork ? localizedValue(artwork, 'title', locale) : t("جزئیات اثر") }]} />}
                 actions={artwork && <Link to={'/artists/' + artwork.artist.slug} className="inline-flex min-h-10 items-center border border-[color:var(--rd-hero-line)] px-4 py-2 text-sm font-bold text-[color:var(--rd-hero-foreground)] no-underline hover:border-[color:var(--rd-hero-accent)] hover:text-[color:var(--rd-hero-accent)]">{localizedValue(artwork.artist, 'display_name', locale)}</Link>}
             />
+            <Container width="wide">
             {!artwork ? (
                 <section className="mt-8 border-y border-ink bg-transparent px-5 py-8 sm:px-8">
                     <h1 className="text-2xl font-black">{t(status === 403 ? 'دسترسی به این اثر مجاز نیست' : 'اثر در دسترس نیست')}</h1>
@@ -129,6 +129,7 @@ export default function ArtworkDetailPage() {
                     )}
                 </>
             )}
-        </Container>
+            </Container>
+        </div>
     );
 }
