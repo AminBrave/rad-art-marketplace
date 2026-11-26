@@ -62,6 +62,7 @@
             }
         })();
     </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="icon" type="image/png" href="/rademan-logo-light.png" media="(prefers-color-scheme: light)">
     <link rel="icon" type="image/png" href="/rademan-logo-dark.png" media="(prefers-color-scheme: dark)">
     <link rel="apple-touch-icon" href="/rademan-logo-light.png">
