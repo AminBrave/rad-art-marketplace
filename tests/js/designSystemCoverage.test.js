@@ -462,9 +462,9 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'Dropdown menus must inherit the application font and stay within the viewport.');
     assert.match(navigation, /font-sans text-sm outline-none/,
         'Dropdown items must not fall back to browser or portal font defaults.');
-    assert.match(primitives, /SelectPrimitive\\.Root[\\s\\S]*?SelectPrimitive\\.Trigger[\\s\\S]*?SelectPrimitive\\.Portal/,
+    assert.match(primitives, /SelectPrimitive\\.Root[\\s\\S]*?modal=\\{false\\}[\\s\\S]*?SelectPrimitive\\.Trigger[\\s\\S]*?SelectPrimitive\\.Portal/,
         'Select controls must retain the Radix Select primitive and its supported root API.');
-    assert.match(primitives, /SelectPrimitive\\.Content[\\s\\S]*?max-w-\\[calc\\(100vw-1rem\\)\\][\\s\\S]*?font-sans/,
+    assert.match(primitives, /SelectPrimitive\\.Content[\\s\\S]*?z-\\[var\\(--rd-layer-popover\\)\\][\\s\\S]*?max-w-\\[calc\\(100vw-1rem\\)\\][\\s\\S]*?font-sans/,
         'The Radix Select popover must be viewport-constrained and use the application font.');
     assert.match(primitives, /dir=\\{direction\\}/,
         'Radix Select trigger and content must follow the active locale direction.');
@@ -488,6 +488,8 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'The inbox overflow menu must use a direct native button as its Radix trigger.');
     assert.match(inbox, /pointer-events-none absolute end-1 top-1\/2 z-30[\s\S]*?pointer-events-auto relative z-30 inline-flex h-9/,
         'The inbox overflow trigger must sit above the full-row selection button and remain clickable.');
+    assert.match(inbox, /pointer-events-auto relative z-30 inline-flex h-9[\\s\\S]*?border-0 bg-transparent p-0[\\s\\S]*?shadow-none/,
+        'The inbox overflow action must be an icon-only control with no surface, border or shadow.');
     assert.ok(!inbox.includes('<Tooltip content={t("گزینه‌های گفتگو")}>'),
         'The inbox menu must not nest a Tooltip trigger around its Radix trigger.');
     assert.match(messagingCenter, /<div dir=\{locale === 'fa' \? 'rtl' : 'ltr'\} className="grid h-full/,
@@ -510,6 +512,8 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'The composer must use the locale-aware font and resolve direction from message content.');
     assert.doesNotMatch(cssSource, /\\[dir=['"]ltr['"]\\]\\s*\\{\\s*font-family:/,
         'Text direction must not globally override component font inheritance.');
+    assert.match(cssSource, /--rd-layer-modal-overlay:\\s*100;[\\s\\S]*--rd-layer-modal:\\s*110;[\\s\\S]*--rd-layer-popover:\\s*120;[\\s\\S]*--rd-layer-tooltip:\\s*130;/,
+        'All Radix portals must use one deterministic, shared overlay layer scale.');
     assert.match(cssSource, /html\\s*\\{[^}]*scrollbar-gutter:\\s*stable;/s,
         'The document must reserve its scrollbar gutter to prevent popover scroll-lock layout shifts.');
     assert.match(timeline, /<p dir="auto"/,
