@@ -21,7 +21,6 @@ export function CollectionIndexPage() {
 
     return <div className="min-h-[65vh] pb-section">
         <DiscoveryHero
-            shape="arch"
             eyebrow={t("انتخاب سردبیر")}
             title={t("مجموعه‌های منتخب")}
             description={t("روایت‌های موضوعی و انتخاب‌های هنری راد آرت؛ هر مجموعه مسیری تازه برای کشف آثار است.")}
@@ -50,7 +49,6 @@ export function CollectionDetailPage() {
     if (collectionQuery.isPending) return <CollectionDetailSkeleton />;
     if (collectionQuery.isError || !item) return <>
         <DiscoveryHero
-            shape="frame"
             eyebrow={t("انتخاب سردبیر")}
             title={t("مجموعه در دسترس نیست")}
             description={t("ممکن است انتشار آن متوقف شده باشد یا نشانی تغییر کرده باشد.")}
@@ -61,7 +59,6 @@ export function CollectionDetailPage() {
 
     return <div className="min-h-[65vh] pb-section">
         <DiscoveryHero
-            shape="diamond"
             eyebrow={t("روایت منتخب راد آرت")}
             title={localizedValue(item, 'title', locale)}
             description={localizedValue(item, 'intro', locale)}
