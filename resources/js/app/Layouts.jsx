@@ -226,7 +226,7 @@ export function PublicLayout() {
 
             <PageShell as="main" id="main-content">
                 <Outlet />
-            </main>
+            </PageShell>
 
             <footer className="border-t border-border bg-surface-muted">
                 <div className="mx-auto max-w-content px-page-gutter pb-10 pt-14 sm:pb-14 sm:pt-20">
