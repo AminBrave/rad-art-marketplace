@@ -132,7 +132,7 @@ The application uses a layered component model. Page files compose user journeys
 
 ### Section rhythm and headings
 
-- Separate major page sections with generous, consistent vertical breathing room. Use the shared `SectionHeader` for a compact editorial heading: a short accent marker, concise title, optional supporting line and a quiet bottom rule. Avoid large banners or repeated decorative framing for ordinary sections. The `Section` primitive owns major-section spacing through the semantic `py-section sm:py-section-wide` utilities. Semantic spacing tiers distinguish page padding/top offsets, compact/regular/relaxed sections, content groups, related items, component internals and workspace density while resolving through the same canonical 4px scale. `Container` owns width and gutters only; it never adds implicit vertical padding. Workspace route shells are full-width and add no content gutters or top padding. Each nested `Container` owns the same responsive page gutters as discovery pages.
+- Separate page groups with a consistent 16px vertical section rhythm. Every semantic section uses the shared `Section` primitive, which enforces `py-4` and `mt-0`; legacy `spacing` values are compatibility metadata only and cannot change section geometry. Remove top margins from section wrappers. Use the shared `SectionHeader` for a compact editorial heading: a short accent marker, concise title, optional supporting line and a quiet bottom rule. Keep spacing between items and inside components independently owned by their layout primitives. `Container` owns width and gutters only; it never adds implicit vertical padding. Workspace route shells are full-width and add no content gutters or top padding. Each nested `Container` owns the same responsive page gutters as discovery pages.
 - Keep spacing inside cards and between related controls tighter than spacing between major sections. Do not compensate for section rhythm with extra borders or decorative separators.
 
 ### Card and surface contract
@@ -194,7 +194,7 @@ The complete route-by-route, state-by-state and quality-gate ledger is maintaine
 
 - All full-width hero variants render through `UnifiedHero`; page and workspace headers are thin wrappers around that primitive.
 - Hero surfaces use the theme-aware gradient and low-contrast grid texture. Do not add the removed title-backed square motif. Keep colors theme-token driven and expose surface variants through the shared hero primitive.
-- Semantic sections share the `--rd-layout-section` / `--rd-layout-section-wide` vertical rhythm. A section should own its spacing once: do not combine global section padding with an additional equivalent `py-section` utility.
+- Every semantic section uses `py-4` (16px) for top and bottom padding and `mt-0`; section call sites must not add top margins or override the shared rhythm. A section owns its spacing once.
 - Nested sections should use group spacing or explicit compact spacing rather than stacking full section padding.
 - Chat shells are dense application workspaces and must not inherit public-content section padding.
 - The homepage hero occupies the available viewport between the global header and mobile bottom navigation; desktop height accounts for the header only.
@@ -203,7 +203,7 @@ The complete route-by-route, state-by-state and quality-gate ledger is maintaine
 ## Hero surface and discovery section rhythm
 
 - The shared `.rd-hero-surface` combines the theme-aware radial/linear color surface with a low-contrast grid. The title has no decorative square backdrop. The grid is a structural layer owned by `UnifiedHero`, not route-level markup.
-- A hero or section owns vertical spacing exactly once. `.rd-unified-hero` uses its inner Container for vertical padding; the outer hero section has no additional block padding. `PageHeader`, `WorkspaceHero` and `DiscoveryHero` use the same full-bleed frame; hero content and following sections align to the same content width and responsive gutters. Workspace shells remain full-width with no outer max-width, gutter or top padding. Page heroes sit outside the content Container; `rd-workspace-content` owns the section's vertical padding and inter-group rhythm while its direct child sections remain padding-free. Keep custom vertical padding off those nested sections.
+- Every semantic hero/section wrapper receives the shared `py-4 mt-0` contract. Hero content may retain its own internal composition padding, but route-level sections must not add a second outer spacing system. `PageHeader`, `WorkspaceHero` and `DiscoveryHero` use the same full-bleed frame; hero content and following sections align to the same content width and responsive gutters. Workspace shells remain full-width with no outer max-width, gutter or top padding. Page heroes sit outside the content Container; the shared Section primitive owns outer vertical spacing and the Container owns width/gutters only.
 - Discovery result headings, result grids, pagination or load-more controls belong to one semantic results section. Do not separate pagination from the result set it controls.
 - Homepage featured artwork uses a fixed 3:4 portrait frame at every breakpoint. Responsive layout may change its width, never its aspect ratio.
 
