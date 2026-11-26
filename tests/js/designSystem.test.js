@@ -390,7 +390,7 @@ test('route canvases stay full-width and route content uses shared section conta
     assert.doesNotMatch(layouts, /lg:grid-cols-\[var\(--rd-workspace-sidebar-width/);
     assert.ok(layouts.includes('rd-workspace-main min-w-0'));
     assert.ok(layouts.includes('mx-auto w-full max-w-content px-page-gutter'));
-    assert.ok(layouts.includes('pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)]'));
+    assert.ok(layouts.includes('pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+var(--rd-space-4))]'));
     assert.ok(layoutPrimitives.includes("resolvedWidth !== 'wide' &&"));
     assert.ok(layoutPrimitives.includes("wide: 'mx-auto w-full max-w-content'"));
     assert.ok(skeletons.includes('<Section as=\"header\" bleed'));
@@ -579,7 +579,7 @@ test('messaging fills the workspace viewport and keeps compact Telegram-inspired
     assert.ok(messageTimeline.includes('min-w-0 w-fit max-w-[88%]'));
     assert.ok(messagingInbox.includes('min-h-[4.75rem] w-full items-center gap-3'));
     assert.ok(messagingInbox.includes('absolute end-1 top-1/2 -translate-y-1/2'));
-    assert.ok(messageTimeline.includes('mt-[.55rem] flex flex-wrap items-center justify-between gap-2 text-[10px] text-subtle'));
+    assert.ok(messageTimeline.includes('mt-2.5 flex flex-wrap items-center justify-between gap-2 text-[10px] text-subtle'));
     assert.ok(messageComposer.includes('max-h-28 min-h-[2.35rem] max-sm:min-h-9 w-full resize-none'));
     assert.ok(messageComposer.includes('absolute start-2 top-1/2 -translate-y-1/2 z-10 flex h-9 w-9'));
     assert.ok(messageComposer.includes('ps-10 pe-3 py-1.5'));
