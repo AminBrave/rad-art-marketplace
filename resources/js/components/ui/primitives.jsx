@@ -274,6 +274,7 @@ export function SelectField({
             name={name}
             required={required}
             disabled={disabled}
+            modal={false}
             dir={locale === 'fa' ? 'rtl' : 'ltr'}
         >
             <SelectPrimitive.Trigger
