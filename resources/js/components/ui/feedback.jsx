@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AlertTriangle, ImageOff } from 'lucide-react';
 import { Button } from './primitives';
+import { Section } from './layout';
 import { useLanguage } from '../../app/LanguageContext';
 import * as ToastPrimitive from '@radix-ui/react-toast';
 
@@ -31,19 +32,19 @@ export function SkeletonLines({ lines = 3, className = '' }) {
 export function EmptyState({ title, description, action, className = '' }) {
     const { t } = useLanguage();
     return (
-        <section className={`grid justify-items-center gap-3  border border-dashed border-border bg-surface px-5 py-10 text-center ${className}`}>
+        <Section spacing="regular" className={`grid justify-items-center gap-3 border border-dashed border-border bg-surface px-5 text-center ${className}`}>
             <span aria-hidden="true" className="h-2 w-10  bg-sand" />
             <h2 className="text-base font-bold text-ink">{t(title)}</h2>
             {description && <p className="max-w-lg text-sm leading-7 text-muted">{t(description)}</p>}
             {action}
-        </section>
+        </Section>
     );
 }
 
 export function ErrorState({ title = 'مشکلی پیش آمد', description, onRetry, retryLabel = 'تلاش دوباره', className = '' }) {
     const { t } = useLanguage();
     return (
-        <section role="alert" className={`grid justify-items-start gap-3  border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-surface p-5 ${className}`}>
+        <Section spacing="regular" as="section" role="alert" className={`grid justify-items-start gap-3 border border-[color:color-mix(in_srgb,var(--color-danger)_30%,transparent)] bg-surface px-5 ${className}`}>
             <h2 className="font-bold text-danger">{t(title)}</h2>
             {description && <p className="text-sm leading-7 text-muted">{t(description)}</p>}
             {onRetry && <Button variant="outline" size="sm" onClick={onRetry}>{t(retryLabel)}</Button>}
@@ -64,7 +65,7 @@ export function SuccessState({ title, description, className = '' }) {
 export function PermissionState({ title = 'دسترسی مجاز نیست', description, className = '' }) {
     const { t } = useLanguage();
     return (
-        <section role="status" className={` border border-border bg-surface-muted p-5 ${className}`}>
+        <Section spacing="regular" as="section" role="status" className={`border border-border bg-surface-muted px-5 ${className}`}>
             <h2 className="font-bold text-ink">{t(title)}</h2>
             {description && <p className="mt-2 text-sm leading-7 text-muted">{t(description)}</p>}
         </section>
