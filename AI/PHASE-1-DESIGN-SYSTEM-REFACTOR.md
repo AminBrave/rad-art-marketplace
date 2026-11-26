@@ -1,6 +1,6 @@
 # Phase 1 — Rademan design-system foundation refactor
 
-**Status:** Approved planning baseline; implementation not started by this document  
+**Status:** Implementation in progress; first shared-primitive slice committed  
 **Target branch:** `refactor/290-unified-layout-spacing`  
 **Related work:** PR #291, issue #290  
 **Scope:** Shared layout contracts, spacing ownership, hero API, Tailwind/token conventions, and regression coverage  
@@ -291,3 +291,24 @@ Once the foundation is stable, continue in feature-oriented slices:
 6. **UX improvements:** buyer return-visit dashboard, artist moderation guidance, admin task prioritization, and discovery refinement.
 
 Each slice should have a short feature-specific contract and tests. Do not make the shared UI layer depend on application feature modules.
+
+## 8. Implementation log
+
+### Slice 1 — Shared primitive contracts
+
+**Implemented on the target branch:**
+
+- `Section` now accepts `spacing="none|compact|regular|relaxed"`; spacing no longer depends on whether the rendered element is a native `section`.
+- The default remains `regular` temporarily to preserve existing layouts while page call sites are migrated. New and migrated call sites should pass an explicit spacing value. This compatibility default is not the final architecture.
+- `PageHeader`, `DiscoveryHero`, and `WorkspaceHero` now forward the same core hero capabilities (content, actions, media, children, heading level, surface, and title/description classes). Discovery-only breadcrumbs remain available on the public-facing wrappers.
+- The shared hero continues to use the grid surface by default. The removed title-square decoration remains excluded.
+- Design-system coverage now checks the explicit Section spacing variants and canonical hero delegation.
+
+**Not yet completed in this slice:**
+
+- The global native `section` padding rule remains in place until page-level call sites have been migrated. Removing it now would create spacing regressions in pages that still rely on the global rule.
+- Workspace/chat CSS exceptions have not been removed.
+- The Section compatibility default has not yet been removed.
+- Automated tests, lint, production build, and browser verification have not been run in this environment.
+
+**Next implementation step:** migrate public discovery and workspace page sections to explicit spacing ownership, then remove the global native-section rule only after the remaining consumers are accounted for.
