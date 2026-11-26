@@ -128,7 +128,8 @@ test('numeric Tailwind spacing utilities resolve through the canonical Rademan s
 test('semantic layout tiers are token-backed and shared primitives use them', () => {
     const layout = readFileSync(resolve(root, 'resources/js/components/ui/layout.jsx'), 'utf8');
     for (const token of [
-        '--rd-layout-section-compact', '--rd-layout-section-regular', '--rd-layout-section',
+        '--rd-layout-page-padding', '--rd-layout-page-top', '--rd-layout-page-top-wide',
+        '--rd-layout-section-compact', '--rd-layout-section-relaxed', '--rd-layout-section-regular',
         '--rd-layout-section-wide', '--rd-layout-content-gap', '--rd-layout-group-gap',
         '--rd-layout-workspace-gap', '--rd-layout-workspace-gap-relaxed', '--rd-layout-component-gap',
     ]) {
