@@ -132,7 +132,7 @@ export default function HomePage() {
                 <p className="text-xs leading-6 text-[color:var(--rd-hero-muted)]">{t('نمایش عمومی به آثار تأییدشده و پروفایل‌های عمومی محدود است.')}</p>
             </DiscoveryHero>
 
-            <Section spacing="regular" aria-label="چطور در راد آرت کشف کنیم" className="bg-surface-muted py-section sm:py-section-wide">
+            <Section spacing="regular" aria-label="چطور در راد آرت کشف کنیم" className="bg-surface-muted">
                 <Container width="wide" className="grid gap-4 sm:grid-cols-3">
                     {editorialSteps.map((step) => (
                         <Card
