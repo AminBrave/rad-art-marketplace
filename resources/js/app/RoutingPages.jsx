@@ -154,7 +154,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
             </div>
             {pathname === '/artworks' ? (
                 <>
-                    <Section bleed className="mb-7 border-y border-divider-section bg-surface-muted py-4 sm:py-5"><Container width="wide" className="grid gap-3 sm:grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))]">
+                    <Section spacing="none" bleed className="mb-7 border-y border-divider-section bg-surface-muted py-4 sm:py-5"><Container width="wide" className="grid gap-3 sm:grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))]">
                         <Skeleton className="h-11 w-full rounded-md" /><Skeleton className="h-11 w-full rounded-md" /><Skeleton className="h-11 w-full rounded-md" />
                     </Container></Section>
                     <Section spacing="none" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -163,7 +163,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                 </>
             ) : pathname === '/artists' ? (
                 <>
-                    <Section bleed className="rd-hero-surface mb-8 border-y border-[color:var(--rd-hero-line)] py-10"><Container width="wide" className="grid gap-4 px-6 sm:px-10">
+                    <Section spacing="none" bleed className="rd-hero-surface mb-8 border-y border-[color:var(--rd-hero-line)] py-10"><Container width="wide" className="grid gap-4 px-6 sm:px-10">
                         <Skeleton className="h-3 w-28 rounded-sm" /><Skeleton className="h-10 w-2/3 max-w-lg rounded-sm" /><Skeleton className="h-4 w-full max-w-2xl rounded-sm" /><Skeleton className="h-11 w-full max-w-2xl rounded-md" />
                     </Container></Section>
                     <Section spacing="none" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
