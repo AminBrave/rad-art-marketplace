@@ -395,7 +395,7 @@ export function WorkspaceSettingsPage() {
             </Section>
 
             {user?.role !== 'admin' && (
-                <Section spacing="none" className="space-y-4" aria-labelledby="notification-settings-title">
+                <Section spacing="none" className="flex flex-col gap-4" aria-labelledby="notification-settings-title">
                     <SectionHeader
                         id="notification-settings-title"
                         eyebrow={t('اعلان‌ها')}
