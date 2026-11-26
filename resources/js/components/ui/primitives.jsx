@@ -114,7 +114,7 @@ export function UnifiedHero({
 }
 
 export function PageHeader({ eyebrow, title, description, actions, level = 1, bleed = true, className = '', titleClassName = '', descriptionClassName = '' }) {
-    return <UnifiedHero eyebrow={eyebrow} title={title} description={description} actions={actions} level={level} bleed={bleed} className={className} titleClassName={titleClassName} descriptionClassName={descriptionClassName} />;
+    return <UnifiedHero eyebrow={eyebrow} title={title} description={description} actions={actions} level={level} bleed={bleed} compact className={cn('rd-unified-hero--workspace', className)} titleClassName={titleClassName} descriptionClassName={descriptionClassName} />;
 }
 
 /** Discovery routes may add breadcrumbs; they share the exact same hero frame. */
@@ -137,7 +137,7 @@ export function SectionHeader({ id, eyebrow, title, description, actions, classN
 }
 
 export function WorkspaceHero({ eyebrow, title, description, actions, className = '' }) {
-    return <UnifiedHero eyebrow={eyebrow} title={title} description={description} actions={actions} className={className} compact />;
+    return <UnifiedHero eyebrow={eyebrow} title={title} description={description} actions={actions} className={cn('rd-unified-hero--workspace', className)} compact />;
 }
 export function DashboardMetricCard({ as, label, value, detail, to, eyebrow, className = '' }) {
     const Element = as ?? (to ? 'a' : 'article');
