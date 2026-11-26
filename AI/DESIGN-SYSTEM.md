@@ -206,3 +206,5 @@ The complete route-by-route, state-by-state and quality-gate ledger is maintaine
 - A hero or section owns vertical spacing exactly once. If a semantic section owns `py-section`, its inner Container should only control width and horizontal gutters. For full-bleed hero surfaces whose section padding is reset, the inner Container owns the vertical padding.
 - Discovery result headings, result grids, pagination or load-more controls belong to one semantic results section. Do not separate pagination from the result set it controls.
 - Homepage featured artwork uses a fixed 3:4 portrait frame at every breakpoint. Responsive layout may change its width, never its aspect ratio.
+
+- The artwork archive reports both the total available artworks and the currently loaded result count alongside its load-more pagination control.
