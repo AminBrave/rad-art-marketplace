@@ -16,7 +16,7 @@ export function BuyerDashboardHome() {
                 </>}
             />
 
-            <Container width="wide" className="rd-workspace-content space-y-workspace-relaxed">
+            <Container width="wide" >
             <Section spacing="none" aria-labelledby="buyer-messages-heading" className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
                 <div className="min-w-0">
                     <p className="text-[11px] font-extrabold tracking-[.14em] text-terracotta-strong">{t("ارتباط‌های شما")}</p>
