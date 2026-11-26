@@ -62,7 +62,7 @@ export function AdminDashboardHome() {
     ];
 
     return (
-        <div className="w-full space-y-content">
+        <div className="w-full">
             <WorkspaceHero
                 eyebrow={t('مرکز کنترل راد آرت')}
                 title={<>{t('خوش آمدید، ')}{user?.name ?? t('مدیر')}</>}
