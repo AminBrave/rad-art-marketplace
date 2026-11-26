@@ -349,3 +349,19 @@ Each slice should have a short feature-specific contract and tests. Do not make 
 - Automated tests, lint, production build, and browser verification have not been run in this environment. The existing verification matrix remains required before merge.
 
 **Next implementation step:** audit the remaining `Section` consumers and remove the temporary default spacing value only after all call sites declare their intended spacing.
+
+
+### Slice 4 — Require explicit Section spacing
+
+**Implemented on the target branch:**
+
+- Audited frontend JSX call sites and found four remaining uses without an explicit spacing variant: two catalogue groups and two route-loading panels.
+- Added `spacing="regular"` to the catalogue filter and results groups, preserving their intended page-section rhythm.
+- Added `spacing="none"` to loading skeleton groups whose own `py-*` utilities already define their vertical padding.
+- Removed the `Section` component's implicit `regular` default. Missing or invalid spacing now resolves to `none`, preventing accidental page rhythm from being applied silently.
+- Added a source-wide regression check over all frontend JS/JSX files: every `<Section>` call must declare `spacing` explicitly.
+
+**Verification status:**
+
+- Source audit of the touched call sites reports no missing `spacing` props.
+- Automated tests, lint, production build, and browser verification have not been run in this environment.
