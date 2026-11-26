@@ -54,13 +54,14 @@ export const Container = forwardRef(function Container({ as: Element = 'div', wi
  * rendered HTML tag. Call sites must choose their own spacing owner.
  */
 export const Section = forwardRef(function Section({ as: Element = 'section', spacing, bleed = false, className = '', ...props }, ref) {
-    const sectionSpacing = {
-        none: 'py-0',
-        compact: 'py-section-compact',
-        regular: 'py-section sm:py-section-wide',
-        relaxed: 'py-section-relaxed sm:py-section-wide',
-    };
-    return <Element ref={ref} className={cn('min-w-0', sectionSpacing[spacing] ?? sectionSpacing.none, bleed && 'rd-bleed', className)} {...props} />;
+    // Keep the spacing prop as a compatibility/data hook; every semantic
+    // section now follows the same compact 16px vertical rhythm.
+    return <Element
+        ref={ref}
+        data-section-spacing={spacing ?? 'regular'}
+        className={cn('min-w-0', bleed && 'rd-bleed', className, 'mt-0 py-4')}
+        {...props}
+    />;
 });
 
 export const Inset = forwardRef(function Inset({ as: Element = 'div', side = 'all', className = '', ...props }, ref) {
