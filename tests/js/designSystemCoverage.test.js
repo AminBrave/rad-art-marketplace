@@ -120,7 +120,7 @@ test('numeric Tailwind spacing utilities resolve through the canonical Rademan s
         '10', '11', '12', '14', '16', '20', '24', '28', '32', '36', '40', '44',
         '48', '52', '56', '60', '64', '72', '80', '96',
     ]) {
-        assert.match(tailwind, new RegExp(`['"]${key}['"]\\s*:`), `Missing canonical Tailwind spacing key: ${key}`);
+        assert.match(tailwind, new RegExp(`['"]${key}['"]\s*:`), `Missing canonical Tailwind spacing key: ${key}`);
     }
     assert.ok(tailwind.includes("'4': 'var(--rd-space-4)'"));
     assert.ok(tailwind.includes("'page-gutter': 'var(--rd-page-gutter)'"));
@@ -303,8 +303,8 @@ test('Section exposes explicit spacing variants independent of its rendered HTML
 test('every frontend Section usage declares explicit spacing ownership', () => {
     const implicitSpacing = frontendFiles.flatMap((path) => {
         const source = readFileSync(path, 'utf8');
-        return matchesWithLines(source, /<Section\\b(?:(?!>).)*>/gs)
-            .filter(({ value }) => !/\\bspacing\\s*=/.test(value))
+        return matchesWithLines(source, /<Section\b(?:(?!>).)*>/gs)
+            .filter(({ value }) => !/\bspacing\s*=/.test(value))
             .map((match) => ({ file: relative(root, path), ...match }));
     });
     assert.deepEqual(implicitSpacing, [], 'Every Section call site must declare spacing explicitly.');
