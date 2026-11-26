@@ -11,10 +11,10 @@ import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, D
 const publicDiscoveryLinks = [
     { to: '/artworks', label: 'کشف آثار', Icon: Compass, end: true },
     { to: '/artists', label: 'هنرمندان', Icon: Users, end: true },
-    { to: '/collections', label: 'مجموعه‌ها', Icon: Bookmark, end: true },
 ];
 
 const publicInfoLinks = [
+    { to: '/collections', label: 'مجموعه‌ها', Icon: Bookmark, end: true },
     { to: '/about', label: 'درباره ما', Icon: Info, end: true },
     { to: '/help', label: 'راهنما', Icon: CircleHelp, end: true },
     { to: '/contact', label: 'تماس', Icon: MessageCircle, end: true },
