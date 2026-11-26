@@ -92,12 +92,11 @@ export default function ArtistProfilePage() {
     const primaryActionClass = 'inline-flex min-h-11 items-center justify-center rounded-control border border-transparent bg-terracotta px-5 py-2.5 text-sm font-bold text-inverse no-underline transition-colors hover:bg-terracotta-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
 
     return (
-        <Container as="div" width="wide" className="min-h-[65vh] overflow-x-clip pb-section pt-page-top sm:pt-page-top-wide">
+        <div className="min-h-[65vh] overflow-x-clip pb-section">
             {profile ? (
                 <>
                     <DiscoveryHero
-                        className="rd-bleed"
-                        shape="orbit"
+                        shape="arch"
                         eyebrow={t("جامعه هنرمندان")}
                         title={<>{localizedValue(profile, 'display_name', locale)} {profile.is_own_profile && <span className="ms-2 align-middle text-xs font-semibold text-[color:var(--rd-hero-accent)]">{t("پروفایل شما")}</span>}</>}
                         description={localizedValue(profile, 'bio', locale)}
@@ -120,6 +119,7 @@ export default function ArtistProfilePage() {
                             {localizedValue(profile, 'city', locale) && <span>{localizedValue(profile, 'city', locale)}</span>}
                         </div>
                     </DiscoveryHero>
+                    <Container width="wide">
                     {user && user.role !== 'buyer' && (
                         <p className="mt-4 text-xs leading-6 text-muted">{t("برای ارسال پیام مستقیم، از حساب خریدار استفاده کنید.")}</p>
                     )}
@@ -161,14 +161,17 @@ export default function ArtistProfilePage() {
                         {profileQuery.isFetchNextPageError && <ErrorState className="mt-7" title={t("دریافت آثار بیشتر ناموفق بود")} description={t("دریافت آثار بیشتر انجام نشد. دوباره تلاش کنید.")} onRetry={() => profileQuery.fetchNextPage()} />}
                         {pagination?.has_more && <div className="mt-9 flex justify-center"><Button variant="outline" type="button" onClick={() => profileQuery.fetchNextPage()} disabled={profileQuery.isFetchingNextPage} className="min-h-11 rounded-md border border-border bg-paper px-7 py-3 text-sm font-bold text-ink transition-colors hover:border-terracotta disabled:cursor-wait disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">{profileQuery.isFetchingNextPage ? t('در حال دریافت…') : t('نمایش آثار بیشتر')}</Button></div>}
                     </section>
+                    </Container>
                 </>
             ) : (
+                <Container width="wide">
                 <section className="mt-8 border border-border bg-paper p-8">
                     <h1 className="text-2xl font-black">{t(status === 403 ? 'دسترسی به پروفایل مجاز نیست' : 'پروفایل در دسترس نیست')}</h1>
                     <p className="mt-3 text-sm leading-7 text-muted">{t("این پروفایل وجود ندارد یا نمایش عمومی آن غیرفعال شده است.")}</p>
                     {profileQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-danger">{t("ارتباط با سرور برقرار نشد.")} <Button variant="outline" type="button" onClick={() => profileQuery.refetch()} className="font-bold underline">{t("تلاش دوباره")}</Button></p>}
                 </section>
+                </Container>
             )}
-        </Container>
+        </div>
     );
 }
