@@ -118,7 +118,7 @@ export default function ArtworkCatalogue() {
     }, [hasNextPage, fetchNextPage, loadingMore, error]);
 
     return (
-        <div className="w-full min-w-0 min-h-[65vh] py-10 lg:py-14">
+        <div className="w-full min-w-0 min-h-[65vh] py-section-compact lg:py-section-regular">
             <Container width="wide">
                 <PageHeader eyebrow={t("آرشیو عمومی راد آرت")} title={t("گالری آثار")} description={t("در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید.")} />
             </Container>
