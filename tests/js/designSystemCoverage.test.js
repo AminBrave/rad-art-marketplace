@@ -70,10 +70,12 @@ test('presentation sources do not depend on removed component-specific CSS class
     assert.deepEqual(violations, [], 'Legacy presentation classes must be migrated to shared utilities.');
 });
 
-test('project stylesheets define tokens, base rules and only approved layout primitives', () => {
+test('project stylesheets define tokens, base rules and only approved layout/component selectors', () => {
     assert.equal((css.match(/:root\s*\{/g) ?? []).length, 1);
     assert.ok(stylesheetFiles.length >= 1, 'Expected the complete stylesheet tree to be included.');
-    const approvedLayoutClasses = new Set([
+    // Keep component-specific CSS scoped to the shared hero/workspace primitives;
+    // all other presentation should remain in semantic Tailwind utilities.
+    const approvedProjectSelectors = new Set([
         '.rd-bleed',
         '.rd-workspace-main',
         '.rd-page-frame',
@@ -98,12 +100,12 @@ test('project stylesheets define tokens, base rules and only approved layout pri
         const source = readFileSync(path, 'utf8');
         const selectors = matchesWithLines(source, /(?:^|,)\s*\.[a-zA-Z_][\w-]*(?:[^{}]*)\{/gm);
         const violations = selectors.filter(({ value }) =>
-            (value.match(/\.[a-zA-Z_][\w-]*/g) ?? []).some((className) => !approvedLayoutClasses.has(className)),
+            (value.match(/\.[a-zA-Z_][\w-]*/g) ?? []).some((className) => !approvedProjectSelectors.has(className)),
         );
         assert.deepEqual(
             violations,
             [],
-            relative(root, path) + ' may define only documented page/container/bleed layout primitives.',
+            relative(root, path) + ' may define only explicitly approved project layout/component selectors.',
         );
     }
     assert.doesNotMatch(css, /\.ra-[\w-]+|\.rad-messaging|\.app-boot|\.app-skeleton/);
