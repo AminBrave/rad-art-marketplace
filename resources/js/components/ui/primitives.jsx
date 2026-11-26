@@ -261,6 +261,7 @@ export function SelectField({
     return (
         <div className="relative min-w-0">
             <select
+                {...selectProps}
                 value={value}
                 defaultValue={defaultValue}
                 onChange={onChange}
@@ -269,7 +270,6 @@ export function SelectField({
                 disabled={disabled}
                 dir={locale === 'fa' ? 'rtl' : 'ltr'}
                 className={cn(controlClass, 'appearance-none pe-10 text-start', className)}
-                {...selectProps}
             >
                 {placeholder && !hasEmptyOption && <option value="" disabled>{placeholder}</option>}
                 {children}
