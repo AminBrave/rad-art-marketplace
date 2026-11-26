@@ -36,11 +36,11 @@ function WorkspaceAuthLoading({ children }) {
 
             <Container className={isMessagingRoute
                 ? 'flex h-[calc(100dvh-var(--rd-header-height)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:h-[calc(100dvh-var(--rd-header-height-wide)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] py-3 sm:py-4 lg:py-6'
-                : 'py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+var(--rd-space-4))] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+var(--rd-space-8))]'}
+                : 'py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+var(--rd-space-4))] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+var(--rd-space-8))]'}>
                 <main className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'min-w-0'}>
                     {children}
                 </main>
-            </div>
+            </Container>
 
             <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-paper pb-[env(safe-area-inset-bottom)] shadow-raised lg:inset-x-auto lg:left-1/2 lg:bottom-6 lg:w-[min(54rem,calc(100vw_-_3rem))] lg:-translate-x-1/2 lg:border lg:pb-0" aria-hidden="true">
                 <div className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2 lg:h-16 lg:px-3">
