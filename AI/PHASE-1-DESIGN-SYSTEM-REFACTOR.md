@@ -512,4 +512,4 @@ The fixes are pushed for local rerun. Tests, lint, and production build are not 
 - Made Radix Select non-modal to prevent it from hiding/isolation-locking surrounding application chrome. DropdownMenu content now always renders through a Radix Portal with viewport collision padding, escaping header and ancestor stacking contexts.
 - Added regression coverage for fixed Section geometry, zero top margins, raw section-tag migration, and non-modal/portaled Radix overlays.
 
-Automated validation is running on the PR head. Responsive browser interaction, header visibility under open menus, and keyboard/focus behavior still require visual browser QA.
+Automated CI run [#45880594347](https://github.com/AminBrave/rad-art-marketplace/actions/runs/45880594347) passed frontend regression/accessibility checks, ESLint, production build, backend tests, and changed-file PHP formatting. Responsive browser interaction, header visibility under open menus, and keyboard/focus behavior still require visual browser QA.
