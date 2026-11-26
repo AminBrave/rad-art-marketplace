@@ -83,7 +83,7 @@ export default function ArtworkDetailPage() {
             <Container width="wide">
             {!artwork ? (
                 <section className="mt-8 border-y border-ink bg-transparent px-5 py-8 sm:px-8">
-                    <h1 className="text-2xl font-black">{t(status === 403 ? 'دسترسی به این اثر مجاز نیست' : 'اثر در دسترس نیست')}</h1>
+                    <h2 className="text-2xl font-black">{t(status === 403 ? 'دسترسی به این اثر مجاز نیست' : 'اثر در دسترس نیست')}</h2>
                     <p className="mt-3 text-sm leading-7 text-muted">{t(status === 403 ? 'سرور اجازه مشاهده این اثر را صادر نکرد.' : 'این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.')}</p>
                     {artworkQuery.isError && status !== 403 && status !== 404 && <p role="alert" className="mt-3 text-sm text-danger">{t("ارتباط با سرور برقرار نشد.")} <Button variant="ghost" type="button" onClick={() => artworkQuery.refetch()} className="inline p-0 font-bold underline">{t("تلاش دوباره")}</Button></p>}
                     <Link to="/artworks" className="mt-5 inline-block font-bold text-terracotta-strong underline">{t("بازگشت به گالری")}</Link>
@@ -97,7 +97,7 @@ export default function ArtworkDetailPage() {
                         </div>
                         <div className="border-y border-ink bg-transparent py-6 sm:py-9 lg:sticky lg:top-28 lg:border-y-0 lg:py-2">
                             <p className="text-[11px] font-extrabold tracking-[.14em] text-terracotta-strong">{t("پرونده اثر")} <span className="mx-1 text-subtle">/</span> {localizedValue(artwork.category, 'name', locale)}</p>
-                            <h2 className="mt-3 text-2xl font-black leading-relaxed tracking-tight sm:text-3xl">{localizedValue(artwork, 'title', locale)}</h2>
+                            
                             
                             {localizedValue(artwork, 'description', locale) && <p className="mt-7 whitespace-pre-line text-sm leading-9 text-muted">{localizedValue(artwork, 'description', locale)}</p>}
                             <dl className="mt-8 grid grid-cols-2 gap-x-5 gap-y-6 border-y border-border py-7 text-sm">
