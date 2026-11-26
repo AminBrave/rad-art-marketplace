@@ -475,7 +475,7 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
     assert.match(timeline, /<DropdownMenu\\.Trigger asChild>[\\s\\S]*?<button[\\s\\S]*?data-message-actions-trigger[\\s\\S]*?aria-haspopup="menu"/,
         'The message action menu must use a direct native button as its Radix trigger.');
     assert.match(timeline, /ms-auto inline-flex h-9 min-h-9 w-9 min-w-9 shrink-0/,
-        'The message menu trigger must keep a stable hit target at the logical inline-end.');
+        'The message menu trigger must remain at the physical right edge of the message action row.');
     assert.ok(!timeline.includes('<Tooltip content={t("عملیات پیام")}>'),
         'The message menu trigger must not nest competing Radix Tooltip and DropdownMenu triggers.');
     assert.ok(!timeline.includes('<Tooltip content={t("افزودن واکنش")}>'),
@@ -484,8 +484,8 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'The conversation menu trigger must not nest a Tooltip trigger around its DropdownMenu trigger.');
     assert.ok(dialog.includes('z-[var(--rd-layer-modal-overlay)]') && dialog.includes('z-[var(--rd-layer-modal)]'));
     assert.ok(alertDialog.includes('z-[var(--rd-layer-alert-overlay)]') && alertDialog.includes('z-[var(--rd-layer-alert)]'));
-    assert.match(timeline, /dir=\\{locale === 'fa' \\? 'rtl' : 'ltr'\\}/,
-        'The complete message timeline must explicitly inherit the locale direction.');
+assert.match(timeline, /<div dir="ltr" ref=\{containerRef\}/,
+        'The complete message timeline timeline structure remains consistent in both locales..'
     assert.match(messagingCenter, /<section dir=\\{locale === 'fa' \\? 'rtl' : 'ltr'\\}/,
         'The entire inbox and conversation workspace must mirror between RTL and LTR.');
     assert.match(inbox, /<aside dir=\{locale === 'fa' \? 'rtl' : 'ltr'\}/,
@@ -503,22 +503,22 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
         'Inbox menu content must use the shared popover layer.');
     assert.ok(!inbox.includes('<Tooltip content={t("گزینه‌های گفتگو")}>'),
         'The inbox menu must not nest a Tooltip trigger around its Radix trigger.');
-    assert.match(messagingCenter, /<div dir=\{locale === 'fa' \? 'rtl' : 'ltr'\} className="grid h-full/,
-        'The inbox/conversation grid must explicitly reverse its column order in RTL.');
-    assert.match(messagingCenter, /<div dir=\{locale === 'fa' \? 'rtl' : 'ltr'\} className=\{active \?/,
-        'The conversation pane must explicitly mirror its internal header, timeline and composer layout.');
-    assert.match(timeline, /<div dir=\{locale === 'fa' \? 'rtl' : 'ltr'\} className=\{'flex w-full/,
-        'Each message row must mirror sender alignment between LTR and RTL.');
-    assert.match(inbox, /border-s-\\[3px\\] border-transparent[\\s\\S]*?border-terracotta bg-surface-muted/,
-        'The active inbox marker must use a logical border so it flips sides in RTL.');
-    assert.match(conversationHeader, /ChevronLeft[\\s\\S]*?rtl:rotate-180/,
-        'The conversation back icon must point toward the logical back direction in both locales.');
-    assert.match(composer, /<form dir=\\{locale === 'fa' \\? 'rtl' : 'ltr'\\}/,
-        'The composer controls must inherit the same explicit locale direction as the timeline.');
+assert.match(messagingCenter, /<div dir="rtl" className="grid h-full/,
+        'The inbox/conversation grid conversation stays left and inbox right in both locales..'
+assert.match(messagingCenter, /<div dir="ltr" className=\{active \?/,
+        'The conversation pane chat chrome remains fixed LTR while message text stays content-directed..'
+assert.match(timeline, /<div dir="ltr" className=\{'flex w-full/,
+        'Each message row outgoing messages stay right and incoming messages left in both locales..'
+assert.match(inbox, /className="relative border-s-\\[3px\\] border-transparent"/,
+        'The active inbox marker inbox selection has no active border or background..'
+assert.match(conversationHeader, /<header dir="ltr"/,
+        'The conversation back icon header identity and actions remain stable across locales..'
+assert.match(composer, /<form dir="ltr"/,
+        'The composer controls composer actions stay in fixed physical positions..'
     assert.match(timeline, /rd-message-bubble[^\\n]*font-sans/,
         'Message bubbles must inherit the locale-aware application font.');
     assert.ok(timeline.includes("(own ? 'justify-end' : 'justify-start')"),
-        'Outgoing messages must sit at logical inline-end and incoming messages at inline-start in both RTL and LTR.');
+        'Outgoing messages stay physically right and incoming messages stay physically left under the fixed LTR chat rail.');
     assert.ok(composer.includes('<TextareaField dir="auto"') && composer.includes('font-sans text-[14px]'),
         'The composer must use the locale-aware font and resolve direction from message content.');
     assert.doesNotMatch(cssSource, /\\[dir=['"]ltr['"]\\]\\s*\\{\\s*font-family:/,
