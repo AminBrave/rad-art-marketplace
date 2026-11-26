@@ -463,7 +463,7 @@ Each slice should have a short feature-specific contract and tests. Do not make 
 
 - `FormField` now merges caller-provided `aria-describedby` IDs with generated hint/error IDs, de-duplicating references rather than overwriting consumer descriptions.
 - `Avatar` resets its failed-image state when its source changes, so a replacement avatar can render after an earlier source fails.
-- `MediaImage` resets loading/failure state when its resolved source changes and uses React's `fetchPriority` prop spelling.
+- `MediaImage` resets loading/failure state when its resolved source changes and keeps the component API as `fetchPriority` and emits the lowercase HTML `fetchpriority` attribute supported by the current React DOM runtime.
 - `Pagination` now accepts localized navigation, landmark, and page-label props; the component showcase supplies locale-aware labels and numerals.
 
 ### Slice 13 — Regression coverage and completion status
@@ -481,3 +481,13 @@ Each slice should have a short feature-specific contract and tests. Do not make 
 - Updated stale design-system assertions that still expected contained workspace heroes, the removed hero border frame, implicit HTML-section spacing, old Container-as-section usage, or the removed workspace Container gutter override.
 - Updated the rendered hero regression to assert the shared grid texture and full-bleed behavior.
 - **Awaiting rerun:** the repository environment available here cannot execute the user's local Node test and ESLint commands. The two design-system test files still need a fresh local run to confirm there are no additional hidden assertion failures.
+
+
+### Follow-up: latest frontend test output
+
+- Repaired two malformed source-level test assertions that prevented `designSystem.test.js` and `designSystemCoverage.test.js` from parsing.
+- Added English dictionary entries for all literal translation keys reported by the frontend suite, including the Rademan brand labels and notification status error.
+- Kept `MediaImage`'s component prop as `fetchPriority` while emitting lowercase `fetchpriority` to avoid the React DOM unknown-prop warning in the current runtime.
+- Updated the regression assertion to protect the emitted DOM attribute.
+
+The fixes are pushed for local rerun. Tests, lint, and production build are not claimed as passing until run against this commit.
