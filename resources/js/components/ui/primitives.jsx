@@ -206,7 +206,7 @@ export function FormField({ id, label, hint, error, required = false, children, 
         children?.props?.['aria-describedby'],
         hint ? `${fieldId}-hint` : null,
         error ? `${fieldId}-error` : null,
-    ].filter(Boolean).join(' ').split(/\\s+/).filter((value, index, values) => values.indexOf(value) === index).join(' ') || undefined;
+    ].filter(Boolean).join(' ').split(/\s+/).filter((value, index, values) => values.indexOf(value) === index).join(' ') || undefined;
     const control = isValidElement(children)
         ? cloneElement(children, {
             id: fieldId,
