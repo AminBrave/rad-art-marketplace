@@ -295,7 +295,7 @@ export function ArtistDashboardHome() {
     const { t } = useLanguage();
     const { user, profile, profileLoading, profileError } = useOutletContext();
     return (
-        <div className="w-full space-y-6">
+        <div className="w-full">
             <WorkspaceHero
                 eyebrow={t('فضای هنرمند')}
                 title={<>{t('خوش آمدید، ')}{user.name}</>}
