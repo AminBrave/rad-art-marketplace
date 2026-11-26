@@ -70,6 +70,7 @@ test('Tailwind spacing utilities resolve to one semantic Rademan spacing scale',
     assert.ok(layoutPrimitives.includes("sectionSpacings = { page: 'py-page', section: 'py-section', group: 'py-group'"));
     assert.ok(layoutPrimitives.includes("all: 'p-component'"));
     assert.ok(layoutPrimitives.includes('spacingValue(gap)'));
+    assert.ok(artworkCatalogue.includes('spacing="group"'));
     assert.ok(layouts.includes('var(--rd-header-height)'));
     assert.ok(layouts.includes('var(--rd-header-height-wide)'));
     assert.ok(layouts.includes('<Container className={isMessagingRoute'));
@@ -255,6 +256,17 @@ test('homepage discovery groups and artist spotlight use reusable card structure
     assert.ok(homePage.includes("ARTIST SPOTLIGHT / {t('هنرمند منتخب')}"));
     assert.ok(homePage.includes('rd-hero-surface') && homePage.includes('border border-[color:var(--rd-hero-line)]'));
     assert.ok(homePage.includes('<Card'));
+});
+
+test('public page frames share page and section rhythm tokens', () => {
+    assert.ok(publicPages[0].includes('py-page') && publicPages[0].includes('spacing="group"'));
+    assert.ok(publicPages[1].includes('pb-section pt-page'));
+    assert.ok(publicPages[2].includes('py-page'));
+    assert.ok(homePage.includes('py-section'));
+    assert.ok(authPage.includes('py-page'));
+    assert.ok(publicInfoPages.includes('py-section'));
+    assert.ok(bootShell.includes('rd-container min-w-0 mx-auto'));
+    assert.ok(bootShell.includes('py-page'));
 });
 
 test('editorial hero surfaces define readable light and dark semantic palettes', () => {
