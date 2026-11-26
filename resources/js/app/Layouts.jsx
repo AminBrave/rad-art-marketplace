@@ -178,7 +178,7 @@ export function PublicLayout() {
 
     return (
         <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-        <div data-experience="discover" className="min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)]">
+        <div data-experience="discover" className="min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+var(--rd-space-4))]">
             <a href="#main-content" className="sr-only z-[60] bg-paper px-4 py-3 text-ink focus:not-sr-only focus:fixed focus:inset-x-4 focus:top-4">
                 {t("رفتن به محتوای اصلی")}
             </a>
@@ -712,7 +712,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
 
             <div className={isMessagingRoute
                 ? 'mx-auto flex h-[calc(100dvh-var(--rd-header-height)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:h-[calc(100dvh-var(--rd-header-height-wide)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-w-0 max-w-content px-page-gutter py-3 sm:py-4 lg:py-6'
-                : 'mx-auto w-full max-w-content px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+2rem)]'}>
+                : 'mx-auto w-full max-w-content px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+var(--rd-space-4))] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+var(--rd-space-8))]'}>
                 <main className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'rd-workspace-main min-w-0 w-full'}>
                     {isMessagingRoute
                         ? <Outlet context={outletContext} />
