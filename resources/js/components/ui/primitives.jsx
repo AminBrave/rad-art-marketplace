@@ -271,7 +271,7 @@ export function SelectField({
             required={required}
             disabled={disabled}
             dir={direction}
-                    >
+        >
             <SelectPrimitive.Trigger
                 {...selectProps}
                 dir={direction}
