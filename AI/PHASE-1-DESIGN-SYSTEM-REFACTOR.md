@@ -375,3 +375,24 @@ Each slice should have a short feature-specific contract and tests. Do not make 
 - Documented the ownership boundary: `PageShell` = route frame, `Container` = content width and gutters, `Section` = vertical rhythm.
 - Added source-level regression coverage for the shared export and both layout consumers.
 - Validation remains pending: automated tests, lint, production build, and browser QA have not been run in this environment.
+
+
+### Slice 6 — Separate homepage section semantics from content width
+
+**Implemented on the target branch:**
+
+- Converted the homepage's recent-works and artist-spotlight groups from `<Container as="section">` into semantic `<Section spacing="regular">` wrappers containing `<Container width="wide">`.
+- Removed vertical spacing utilities from those Containers. Section now owns the page rhythm; Container owns the content width and responsive inline gutters.
+- Added a regression test to prevent these homepage sections from reverting to a Container-as-section composition.
+
+**Design rationale:**
+
+- Keeps semantic grouping and visual spacing in the Section primitive.
+- Keeps max-width and page gutters in the Container primitive.
+- Prevents the content-width primitive from silently taking on page-section responsibilities.
+- Preserves the existing section content, responsive grid behavior, and visual order.
+
+**Verification status:**
+
+- Source-level review confirms both converted sections have explicit Section spacing and wide Containers.
+- Automated tests, lint, production build, and browser verification have not been run in this environment.
