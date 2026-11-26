@@ -35,7 +35,7 @@ export default function MessageComposer({
                         ? <span role="status" aria-live="polite" className="text-xs text-muted">{t("در حال ارسال در گفتگوی دیگر؛ تا پایان ارسال نمی‌توانید پیام دیگری بفرستید.")}</span>
                         : selectedFile && <span role="status" aria-live="polite" className="text-xs text-muted">{uploading ? `${t('بارگذاری')} ${uploadProgress}%` : t('در حال آماده‌سازی پیام…')}</span>)}</div>
                 </div>
-                <Button variant="ghost" title={t("ارسال پیام")} type="submit" aria-label={sending ? t('در حال ارسال پیام') : t('ارسال پیام')} aria-busy={sending} disabled={(!draft.trim() && !selectedFile) || sending || safetyLoading || safety.blocked_by_me || safety.blocked_by_other} className="min-h-0 p-0 flex h-[2.35rem] w-[2.35rem] shrink-0 items-center justify-center border border-border bg-surface text-ink shadow-none disabled:cursor-not-allowed disabled:opacity-50 max-sm:h-9 max-sm:w-9">{sending ? <LoaderCircle size={19} className="animate-spin" aria-hidden="true" /> : <Send size={18} className="rtl:rotate-180" aria-hidden="true" />}</Button>
+                <button type="submit" title={t("ارسال پیام")} aria-label={sending ? t('در حال ارسال پیام') : t('ارسال پیام')} aria-busy={sending} disabled={(!draft.trim() && !selectedFile) || sending || safetyLoading || safety.blocked_by_me || safety.blocked_by_other} className="inline-flex h-[2.35rem] w-[2.35rem] shrink-0 items-center justify-center border border-border bg-surface p-0 text-ink disabled:cursor-not-allowed disabled:opacity-50 max-sm:h-9 max-sm:w-9">{sending ? <LoaderCircle size={19} className="animate-spin" aria-hidden="true" /> : <Send size={18} aria-hidden="true" />}</button>
             </div>
         </form>
     );
