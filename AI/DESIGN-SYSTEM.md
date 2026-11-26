@@ -43,7 +43,7 @@ CSS `--rd-*` variables are the canonical design-token source; Tailwind maps dire
 - Use the shared `.rd-hero-surface` for prominent page heroes and editorial feature panels. It composes a restrained radial accent with a layered surface instead of using `bg-ink` or inverse-text shortcuts.
 - Hero foreground, muted copy, accent, border and glow use dedicated `--rd-hero-*` semantic tokens. Define both explicit dark-theme and system-dark values; do not infer hero contrast from the generic `ink` or `inverse` roles.
 - Keep headings and supporting copy on the hero foreground/muted roles, and make actions contrast against the active hero palette. Decorative geometry must remain non-interactive, avoid clipping content and respect the zero-radius visual language.
-- Use `UnifiedHero is the shared full-width hero primitive for discovery, editorial, and workspace pages. Discovery routes may add breadcrumbs; all routes use the same restrained grid texture.nd `PageHeader` / `WorkspaceHero` for task-oriented workspace pages. Keep the same theme-aware hero surface and contrast tokens; do not attach discovery breadcrumbs to workspace heroes.
+- Use `UnifiedHero` as the shared full-width hero primitive for discovery, editorial, and workspace pages. Use `PageHeader` / `WorkspaceHero` for task-oriented workspace pages. Keep the same theme-aware hero surface and contrast tokens; do not attach discovery breadcrumbs to workspace heroes.
 - Hero descendants and media must be shrinkable (`min-width: 0`, `max-width: 100%`). A `.rd-bleed` section must not introduce document-level horizontal scrolling; keep the viewport clipped at the root and never size hero media from intrinsic image width.
 - Hero surface backgrounds span the viewport; all hero content is nested in the shared width-constrained `Container`. For split desktop heroes, use a flexible copy column and a bounded media column with a single gap. Do not combine percentage widths that total 100% with a nonzero gap, and remove auto margins from flex children at desktop breakpoints.
 
@@ -64,8 +64,8 @@ Review every screen at mobile, tablet and desktop widths and in both LTR and RTL
 
 ### Discovery hero and breadcrumb contract
 
-- All public discovery routes use the shared `UnifiedHero is the shared full-width hero primitive for discovery, editorial, and workspace pages. Discovery routes may add breadcrumbs; all routes use the same restrained grid texture.n: homepage, artwork discovery, artist directory/profile, artwork detail and collection index/detail.
-- Keep the same hero anatomy, content measure, typography scale, spacing, surface, action treatment and responsive stacking. Every route uses the same restrained grid texture; do not add route-specific decorative geometry.
+- All public discovery routes use the shared `UnifiedHero`: homepage, artwork discovery, artist directory/profile, artwork detail and collection index/detail.
+- Keep the same hero anatomy, content measure, typography scale, spacing, surface, action treatment and responsive stacking. Use the original clean radial-accent and layered-gradient background; do not add grid overlays or route-specific decorative geometry.
 - Breadcrumbs belong only to public discovery routes and must sit at the top of that route's first hero, before the eyebrow/title. Do not render a separate breadcrumb row above or below the hero.
 - The homepage is the root destination and does not need a redundant breadcrumb. Dashboards, admin tools, artist/buyer workspaces, settings, messaging and other task-oriented workspace screens must not show breadcrumbs.
 - A breadcrumb trail contains navigable ancestors and one current-page item. Use localized labels, semantic `nav`/ordered-list markup and `aria-current="page"`.
@@ -193,7 +193,7 @@ The complete route-by-route, state-by-state and quality-gate ledger is maintaine
 ## Unified section and hero spacing
 
 - All full-width hero variants render through `UnifiedHero`; page and workspace headers are thin wrappers around that primitive.
-- Hero surfaces use one subtle grid texture. Route-specific geometric masks or decorative shape variants are not part of the system.
+- Hero surfaces use the original theme-aware radial accent and layered gradient, without grid overlays. Preserve the square-corner visual language and avoid route-specific decorative variants.
 - Semantic sections share the `--rd-layout-section` / `--rd-layout-section-wide` vertical rhythm. A section should own its spacing once: do not combine global section padding with an additional equivalent `py-section` utility.
 - Nested sections should use group spacing or explicit compact spacing rather than stacking full section padding.
 - Chat shells are dense application workspaces and must not inherit public-content section padding.
@@ -202,7 +202,7 @@ The complete route-by-route, state-by-state and quality-gate ledger is maintaine
 
 ## Hero surface and discovery section rhythm
 
-- The shared `.rd-hero-surface` uses the theme-aware hero background gradient and glow with a subtle 3rem grid overlay. Keep the grid understated so it supports, rather than competes with, content.
+- The shared `.rd-hero-surface` uses the previous theme-aware radial accent and layered gradient. Do not reintroduce the grid overlay; retain the established colors and square-corner geometry.
 - A hero or section owns vertical spacing exactly once. `.rd-unified-hero` uses its inner Container for vertical padding; the outer hero section has no additional block padding. Workspace pages use `.rd-workspace-content` as the spacing shell: its `space-y-workspace-relaxed` controls section separation, while direct child sections remain padding-free. Keep custom vertical padding off those nested sections.
 - Discovery result headings, result grids, pagination or load-more controls belong to one semantic results section. Do not separate pagination from the result set it controls.
 - Homepage featured artwork uses a fixed 3:4 portrait frame at every breakpoint. Responsive layout may change its width, never its aspect ratio.
