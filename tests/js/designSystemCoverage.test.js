@@ -450,36 +450,43 @@ test('dropdowns preserve typography, locale direction and viewport geometry with
     const navigation = readFileSync(resolve(root, 'resources/js/components/ui/navigation.jsx'), 'utf8');
     const primitives = readFileSync(resolve(root, 'resources/js/components/ui/primitives.jsx'), 'utf8');
     const timeline = readFileSync(resolve(root, 'resources/js/app/MessageTimeline.jsx'), 'utf8');
+    const messagingCenter = readFileSync(resolve(root, 'resources/js/app/MessagingCenter.jsx'), 'utf8');
     const composer = readFileSync(resolve(root, 'resources/js/app/MessageComposer.jsx'), 'utf8');
     const cssSource = readFileSync(resolve(root, 'resources/css/app.css'), 'utf8');
 
-    assert.match(navigation, /DropdownMenuPrimitive\.Root modal=\{false\} dir=\{locale === 'fa' \? 'rtl' : 'ltr'\}/,
-        'Dropdown menus must not lock body scrolling and must follow the active locale direction.');
-    assert.match(navigation, /max-w-\[calc\(100vw-1rem\)\].*font-sans/,
+    assert.match(navigation, /DropdownMenuPrimitive\\.Root modal=\\{false\\} dir=\\{locale === 'fa' \\? 'rtl' : 'ltr'\\}/,
+        'Dropdown menus must remain Radix-based, avoid body scroll locking, and follow the active locale direction.');
+    assert.match(navigation, /max-w-\\[calc\\(100vw-1rem\\)\\].*font-sans/,
         'Dropdown menus must inherit the application font and stay within the viewport.');
     assert.match(navigation, /font-sans text-sm outline-none/,
         'Dropdown items must not fall back to browser or portal font defaults.');
-    assert.match(primitives, /<select[\s\S]*?dir=\{locale === 'fa' \? 'rtl' : 'ltr'\}[\s\S]*?className=\{cn\(controlClass/,
-        'Select controls must use a native non-modal popup with the locale direction and shared control typography.');
+    assert.match(primitives, /SelectPrimitive\\.Root[\\s\\S]*?modal=\\{false\\}[\\s\\S]*?SelectPrimitive\\.Trigger/,
+        'Select controls must retain the Radix Select primitive with non-modal behavior.');
+    assert.match(primitives, /SelectPrimitive\\.Content[\\s\\S]*?max-w-\\[calc\\(100vw-1rem\\)\\][\\s\\S]*?font-sans/,
+        'The Radix Select popover must be viewport-constrained and use the application font.');
+    assert.match(primitives, /dir=\\{direction\\}/,
+        'Radix Select trigger and content must follow the active locale direction.');
     assert.match(primitives, /const controlClass = '[^']*font-sans/,
-        'Native select controls must inherit the application font token.');
-    assert.doesNotMatch(primitives, /SelectPrimitive/,
-        'Select controls must not mount a modal portal that locks document scrolling.');
-    assert.match(timeline, /<DropdownMenu\.Trigger asChild>[\s\S]*?<Button variant="outline"[^>]*title=\{t\("عملیات پیام"\)\}[^>]*aria-haspopup="menu"/,
-        'The message menu must use a direct, independently visible trigger without nesting a Tooltip trigger.');
-    assert.match(timeline, /min-h-9 h-9 w-9 min-w-9 shrink-0 border-border-strong bg-paper/,
-        'The message menu trigger must retain a visible hit target and contrast surface.');
-    assert.doesNotMatch(timeline, /<Tooltip content=\{t\("عملیات پیام"\)\}>/,
+        'Radix form controls must inherit the application font token.');
+    assert.match(timeline, /<DropdownMenu\\.Trigger asChild>[\\s\\S]*?<button[\\s\\S]*?data-message-actions-trigger[\\s\\S]*?aria-haspopup="menu"/,
+        'The message action menu must use a direct native button as its Radix trigger.');
+    assert.match(timeline, /ms-auto inline-flex h-9 min-h-9 w-9 min-w-9 shrink-0/,
+        'The message menu trigger must keep a stable hit target at the logical inline-end.');
+    assert.doesNotMatch(timeline, /<Tooltip content=\\{t\\("\\u0639\\u0645\\u0644\\u06cc\\u0627\\u062a \\u067e\\u06cc\\u0627\\u0645"\\)\\}>/,
         'The message menu trigger must not nest competing Radix Tooltip and DropdownMenu triggers.');
-    assert.match(timeline, /rd-message-bubble[^\n]*font-sans/,
+    assert.match(timeline, /dir=\\{locale === 'fa' \\? 'rtl' : 'ltr'\\}/,
+        'The complete message timeline must explicitly inherit the locale direction.');
+    assert.match(messagingCenter, /<section dir=\\{locale === 'fa' \\? 'rtl' : 'ltr'\\}/,
+        'The entire inbox and conversation workspace must mirror between RTL and LTR.');
+    assert.match(timeline, /rd-message-bubble[^\\n]*font-sans/,
         'Message bubbles must inherit the locale-aware application font.');
     assert.ok(timeline.includes("(own ? 'justify-end' : 'justify-start')"),
         'Outgoing messages must sit at logical inline-end and incoming messages at inline-start in both RTL and LTR.');
     assert.ok(composer.includes('<TextareaField dir="auto"') && composer.includes('font-sans text-[14px]'),
         'The composer must use the locale-aware font and resolve direction from message content.');
-    assert.doesNotMatch(cssSource, /\[dir=['"]ltr['"]\]\s*\{\s*font-family:/,
+    assert.doesNotMatch(cssSource, /\\[dir=['"]ltr['"]\\]\\s*\\{\\s*font-family:/,
         'Text direction must not globally override component font inheritance.');
-    assert.match(cssSource, /html\s*\{[^}]*scrollbar-gutter:\s*stable;/s,
+    assert.match(cssSource, /html\\s*\\{[^}]*scrollbar-gutter:\\s*stable;/s,
         'The document must reserve its scrollbar gutter to prevent popover scroll-lock layout shifts.');
     assert.match(timeline, /<p dir="auto"/,
         'Message bodies must resolve direction independently for mixed Persian and Latin content.');
