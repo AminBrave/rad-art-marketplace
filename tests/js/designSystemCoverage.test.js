@@ -415,6 +415,7 @@ test('Pagination exposes localized navigation and page labels', () => {
     assert.ok(navigation.includes('nextLabel ='));
     assert.ok(navigation.includes('pageLabel ='));
     assert.ok(showcase.includes('pageLabel={(number) => locale === "en"'));
+    assert.ok(showcase.includes('const { t, locale } = useLanguage();'));
 });
 
 test('Tailwind radius utilities map to semantic radius tokens', () => {
