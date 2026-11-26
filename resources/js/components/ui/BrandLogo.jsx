@@ -27,7 +27,7 @@ function useResolvedDarkTheme(theme) {
 }
 
 /** Shared image-only application logo with automatic format and theme fallbacks. */
-export function BrandLogo({ className = '', compact = false }) {
+export function BrandLogo({ className = '', size = 'default' }) {
     const { locale } = useLanguage();
     const { theme } = useTheme();
     const isDark = useResolvedDarkTheme(theme);
@@ -35,6 +35,11 @@ export function BrandLogo({ className = '', compact = false }) {
     const name = locale === 'fa' ? 'ردّمن' : 'Rademan';
     const themeName = isDark ? 'dark' : 'light';
     const logoSrc = `/rademan-logo-${themeName}.${LOGO_FORMATS[formatIndex]}`;
+    const imageSize = {
+        default: 'h-14 w-auto max-w-52 sm:h-16',
+        footer: 'h-20 w-auto max-w-64 sm:h-24',
+        sidebar: 'h-24 w-auto max-w-72 sm:h-28',
+    }[size] ?? 'h-14 w-auto max-w-52 sm:h-16';
 
     useEffect(() => {
         setFormatIndex(0);
@@ -48,7 +53,7 @@ export function BrandLogo({ className = '', compact = false }) {
                     alt={name}
                     lang={locale}
                     onError={() => setFormatIndex((current) => Math.min(current + 1, LOGO_FORMATS.length))}
-                    className={compact ? 'h-9 w-auto max-w-36 shrink-0 object-contain' : 'h-10 w-auto max-w-40 shrink-0 object-contain sm:h-11'}
+                    className={`${imageSize} shrink-0 object-contain`}
                 />
             )}
         </span>
