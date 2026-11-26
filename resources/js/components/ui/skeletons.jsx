@@ -43,7 +43,7 @@ export function FormFieldSkeleton({ className = '', controlClassName = 'h-11' })
 
 export function ArtworkStudioListSkeleton({ count = 3, className = '', announce = true }) {
     return (
-        <section
+        <div
             role={announce ? 'status' : undefined}
             aria-live={announce ? 'polite' : undefined}
             aria-busy={announce ? 'true' : undefined}
@@ -70,7 +70,7 @@ export function ArtworkStudioListSkeleton({ count = 3, className = '', announce 
                     </div>
                 </article>
             ))}
-        </section>
+        </div>
     );
 }
 
@@ -199,7 +199,7 @@ export function AdminDashboardSkeleton() {
             </Container></Section>
             <Container width="wide" className="grid gap-8">
             <DashboardMetricSkeleton count={3} announce={false} />
-            <section className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,.8fr)]">
+            <div className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,.8fr)]">
                 <div className="border-y border-border bg-transparent py-5 sm:p-7">
                     <div className="grid gap-2 border-b border-border pb-4"><Skeleton className="h-3 w-24 " /><Skeleton className="h-6 w-40 " /></div>
                     <div className="mt-5 grid gap-5 sm:grid-cols-[8rem_minmax(0,1fr)]">
@@ -212,8 +212,8 @@ export function AdminDashboardSkeleton() {
                     <div className="mt-3 grid gap-2"><Skeleton className="h-3 w-full " /><Skeleton className="h-3 w-5/6 " /><Skeleton className="h-3 w-4/5 " /></div>
                     <Skeleton className="mt-5 h-11 w-40 " />
                 </aside>
-            </section>
-            <section>
+            </div>
+            <div>
                 <div className="grid gap-2"><Skeleton className="h-3 w-24 " /><Skeleton className="h-6 w-40 " /></div>
                 <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                     {[0, 1, 2, 3].map((item) => (
@@ -223,7 +223,7 @@ export function AdminDashboardSkeleton() {
                         </article>
                     ))}
                 </div>
-            </section>
+            </div>
         </Container></div>
     );
 }
@@ -244,7 +244,7 @@ export function ArtworkModerationSkeleton({ count = 4, announce = true }) {
 
 export function WorkspaceIdentitySkeleton({ announce = true }) {
     return (
-        <section
+        <div
             role={announce ? 'status' : undefined}
             aria-live={announce ? 'polite' : undefined}
             aria-busy={announce ? 'true' : undefined}
@@ -262,7 +262,7 @@ export function WorkspaceIdentitySkeleton({ announce = true }) {
             <div className="grid justify-items-center gap-3 border-t border-border pt-5 lg:border-r lg:border-t-0 lg:pt-0">
                 <Skeleton className="h-3 w-20 " /><Skeleton className="h-10 w-20 " /><Skeleton className="h-1.5 w-full " />
             </div>
-        </section>
+        </div>
     );
 }
 
@@ -326,15 +326,15 @@ export function CollectionCardSkeleton({ count = 3, announce = true }) {
 export function AdminEditorialSkeleton({ announce = true }) {
     return (
         <div role={announce ? 'status' : undefined} aria-live={announce ? 'polite' : undefined} aria-busy={announce ? 'true' : undefined} aria-label={announce ? 'در حال دریافت محتوای سردبیری' : undefined} aria-hidden={announce ? undefined : 'true'} className="grid gap-8">
-            <section className="grid gap-4 border-y border-divider-section bg-transparent py-5 sm:py-7">
+            <div className="grid gap-4 border-y border-divider-section bg-transparent py-5 sm:py-7">
                 <Skeleton className="h-7 w-44 " />
                 <div className="grid gap-2"><Skeleton className="h-4 w-28 " /><Skeleton className="h-11 w-full " /></div>
                 <div className="grid gap-2"><Skeleton className="h-4 w-32 " /><Skeleton className="h-28 w-full " /><Skeleton className="h-3 w-2/3 " /></div>
                 <div className="grid gap-2"><Skeleton className="h-4 w-48 " /><div className="grid max-h-72 gap-3 overflow-hidden border border-border p-3">{[0, 1, 2, 3, 4, 5].map((item) => <div key={item} className="flex items-center gap-3"><Skeleton className="h-4 w-4 " /><div className="grid flex-1 gap-2"><Skeleton className="h-4 w-2/3 " /><Skeleton className="h-3 w-1/3 " /></div></div>)}</div></div>
                 <div className="flex gap-2"><Skeleton className="h-10 w-32 " /><Skeleton className="h-10 w-32 " /></div>
-            </section>
-            <section className="grid gap-4"><div className="flex items-center justify-between gap-3"><Skeleton className="h-6 w-40 " /><Skeleton className="h-9 w-28 " /></div>{[0, 1, 2].map((item) => <article key={item} className="grid gap-4 border border-border bg-paper p-5"><div className="flex items-start justify-between gap-3"><div className="grid flex-1 gap-2"><Skeleton className="h-5 w-2/3 " /><Skeleton className="h-3 w-1/3 " /><Skeleton className="h-3 w-1/2 " /></div><Skeleton className="h-4 w-16 " /></div><div className="flex flex-wrap gap-2 border-t border-border pt-4"><Skeleton className="h-9 w-24 " /><Skeleton className="h-9 w-24 " /><Skeleton className="h-9 w-24 " /><Skeleton className="h-9 w-24 " /></div></article>)}</section>
-            <section className="grid gap-4 border-y border-divider-section bg-transparent py-5 sm:py-7"><Skeleton className="h-6 w-40 " /><Skeleton className="h-4 w-full max-w-xl " /><div className="grid gap-3 sm:grid-cols-2">{[0, 1, 2, 3].map((item) => <div key={item} className="grid gap-3 border border-border p-3"><div className="flex items-center gap-3"><Skeleton className="h-4 w-4 " /><Skeleton className="h-4 w-2/3 " /></div><Skeleton className="h-10 w-full " /></div>)}</div><Skeleton className="h-10 w-40 " /></section>
+            </div>
+            <div className="grid gap-4"><div className="flex items-center justify-between gap-3"><Skeleton className="h-6 w-40 " /><Skeleton className="h-9 w-28 " /></div>{[0, 1, 2].map((item) => <article key={item} className="grid gap-4 border border-border bg-paper p-5"><div className="flex items-start justify-between gap-3"><div className="grid flex-1 gap-2"><Skeleton className="h-5 w-2/3 " /><Skeleton className="h-3 w-1/3 " /><Skeleton className="h-3 w-1/2 " /></div><Skeleton className="h-4 w-16 " /></div><div className="flex flex-wrap gap-2 border-t border-border pt-4"><Skeleton className="h-9 w-24 " /><Skeleton className="h-9 w-24 " /><Skeleton className="h-9 w-24 " /><Skeleton className="h-9 w-24 " /></div></article>)}</div>
+            <div className="grid gap-4 border-y border-divider-section bg-transparent py-5 sm:py-7"><Skeleton className="h-6 w-40 " /><Skeleton className="h-4 w-full max-w-xl " /><div className="grid gap-3 sm:grid-cols-2">{[0, 1, 2, 3].map((item) => <div key={item} className="grid gap-3 border border-border p-3"><div className="flex items-center gap-3"><Skeleton className="h-4 w-4 " /><Skeleton className="h-4 w-2/3 " /></div><Skeleton className="h-10 w-full " /></div>)}</div><Skeleton className="h-10 w-40 " /></div>
         </div>
     );
 }
@@ -383,16 +383,16 @@ export function BuyerDashboardSkeleton() {
                 <div className="flex flex-wrap gap-3"><Skeleton className="h-11 w-36 " /><Skeleton className="h-11 w-40 " /></div>
             </Container></Section>
             <Container width="wide" className="grid gap-7">
-            <section className="border-y border-divider-section bg-transparent py-5 sm:py-7">
+            <div className="border-y border-divider-section bg-transparent py-5 sm:py-7">
                 <div className="flex items-start justify-between gap-4"><div className="grid min-w-0 flex-1 gap-2"><Skeleton className="h-3 w-28 " /><Skeleton className="h-6 w-40 " /><Skeleton className="h-3 w-full max-w-2xl " /><Skeleton className="h-3 w-4/5 max-w-xl " /></div><Skeleton className="h-12 w-12 shrink-0 " /></div>
                 <Skeleton className="mt-6 h-11 w-40 " />
-            </section>
-            <section className="border-t border-border pt-6">
+            </div>
+            <div className="border-t border-border pt-6">
                 <div className="grid gap-2"><Skeleton className="h-3 w-36 " /><Skeleton className="h-6 w-48 " /><Skeleton className="h-3 w-full max-w-2xl " /></div>
                 <div className="mt-5 grid gap-4 md:grid-cols-3">
                     {[0, 1, 2].map((item) => <article key={item} className="grid gap-3 border-t border-divider-group bg-transparent pt-4"><Skeleton className="h-3 w-24 " /><Skeleton className="h-5 w-3/4 " /><Skeleton className="h-3 w-full " /><Skeleton className="h-3 w-5/6 " /></article>)}
                 </div>
-            </section>
+            </div>
         </Container></div>
     );
 }
@@ -404,12 +404,12 @@ export function HomePageSkeleton() {
                 <div className="grid max-w-2xl content-center gap-5"><Skeleton className="h-4 w-56 " /><Skeleton className="h-12 w-11/12  sm:h-14" /><Skeleton className="h-12 w-3/4  sm:h-14" /><div className="mt-2 grid gap-2"><Skeleton className="h-4 w-full max-w-xl " /><Skeleton className="h-4 w-4/5 " /></div><div className="mt-4 flex flex-wrap gap-3"><Skeleton className="h-12 w-40 " /><Skeleton className="h-12 w-36 " /></div><Skeleton className="mt-2 h-3 w-64 " /></div>
                 <div className="relative mx-auto w-full max-w-xl lg:me-0"><Skeleton className="aspect-[3/4] w-full " /><div className="flex items-center justify-between gap-4 px-2 py-4"><div className="grid flex-1 gap-2"><Skeleton className="h-3 w-20 " /><Skeleton className="h-5 w-2/3 " /><Skeleton className="h-3 w-1/3 " /></div><Skeleton className="h-4 w-24 " /></div></div>
             </Container>
-            <section className="border-y border-border bg-surface-muted"><Container className="grid gap-8 py-12 sm:grid-cols-3">{[0, 1, 2].map((item) => <div key={item} className="grid content-start gap-3"><Skeleton className="h-3 w-24 " /><Skeleton className="h-6 w-3/4 " /><Skeleton className="h-3 w-full " /><Skeleton className="h-3 w-11/12 " /><Skeleton className="h-3 w-4/5 " /></div>)}</Container></section>
+            <div className="border-y border-border bg-surface-muted"><Container className="grid gap-8 py-12 sm:grid-cols-3">{[0, 1, 2].map((item) => <div key={item} className="grid content-start gap-3"><Skeleton className="h-3 w-24 " /><Skeleton className="h-6 w-3/4 " /><Skeleton className="h-3 w-full " /><Skeleton className="h-3 w-11/12 " /><Skeleton className="h-3 w-4/5 " /></div>)}</Container></div>
             <Container as="section" width="wide" className="py-16"><div className="grid gap-3 border-b border-border pb-5"><Skeleton className="h-3 w-24 " /><Skeleton className="h-8 w-48 " /><Skeleton className="h-3 w-64 max-w-full " /></div><div className="mt-8 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}</div></Container>
-            <section className="border-y border-border bg-paper"><Container className="py-14"><Skeleton className="h-3 w-28 " /><Skeleton className="mt-2 h-7 w-52 " /><div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{[0, 1, 2, 3, 4, 5, 6, 7].map((item) => <Skeleton key={item} className="h-24 w-full " />)}</div></Container></section>
+            <div className="border-y border-border bg-paper"><Container className="py-14"><Skeleton className="h-3 w-28 " /><Skeleton className="mt-2 h-7 w-52 " /><div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{[0, 1, 2, 3, 4, 5, 6, 7].map((item) => <Skeleton key={item} className="h-24 w-full " />)}</div></Container></div>
             <Container as="section" width="wide" className="py-16"><div className="flex items-end justify-between gap-4 border-b border-border pb-5"><div className="grid gap-2"><Skeleton className="h-3 w-24 " /><Skeleton className="h-8 w-52 " /><Skeleton className="h-3 w-64 max-w-full " /></div><Skeleton className="h-4 w-20 " /></div><div className="mt-8 grid gap-4 sm:grid-cols-3">{[0, 1, 2].map((item) => <ArtistCardSkeleton key={item} />)}</div></Container>
-            <section className="border-y border-border bg-surface-muted"><Container className="py-14"><Skeleton className="h-7 w-48 " /><div className="mt-6 grid gap-4 sm:grid-cols-3">{[0, 1, 2].map((item) => <div key={item} className="grid gap-3 border border-border bg-paper p-5"><Skeleton className="h-3 w-20 " /><Skeleton className="h-5 w-4/5 " /><Skeleton className="h-3 w-full " /><Skeleton className="h-3 w-4/5 " /></div>)}</div></Container></section>
-            <section className="bg-ink"><Container className="flex flex-col items-start justify-between gap-6 py-14 md:flex-row md:items-center"><div className="grid flex-1 gap-3"><Skeleton className="h-3 w-24 " /><Skeleton className="h-8 w-2/3 max-w-lg " /><Skeleton className="h-3 w-full max-w-2xl " /><Skeleton className="h-3 w-4/5 " /></div><Skeleton className="h-12 w-40 " /></Container></section>
+            <div className="border-y border-border bg-surface-muted"><Container className="py-14"><Skeleton className="h-7 w-48 " /><div className="mt-6 grid gap-4 sm:grid-cols-3">{[0, 1, 2].map((item) => <div key={item} className="grid gap-3 border border-border bg-paper p-5"><Skeleton className="h-3 w-20 " /><Skeleton className="h-5 w-4/5 " /><Skeleton className="h-3 w-full " /><Skeleton className="h-3 w-4/5 " /></div>)}</div></Container></div>
+            <div className="bg-ink"><Container className="flex flex-col items-start justify-between gap-6 py-14 md:flex-row md:items-center"><div className="grid flex-1 gap-3"><Skeleton className="h-3 w-24 " /><Skeleton className="h-8 w-2/3 max-w-lg " /><Skeleton className="h-3 w-full max-w-2xl " /><Skeleton className="h-3 w-4/5 " /></div><Skeleton className="h-12 w-40 " /></Container></div>
         </div>
     );
 }
@@ -440,7 +440,7 @@ export function ArtistProfileSkeleton() {
         <Container as="div" width="wide" className="min-h-[65vh] pb-16 pt-8 sm:pt-12" role="status" aria-busy="true" aria-label="در حال دریافت پروفایل هنرمند">
             <span className="sr-only">در حال دریافت پروفایل هنرمند…</span>
             <nav aria-hidden="true" className="flex items-center gap-2"><Skeleton className="h-3 w-10 " /><Skeleton className="h-3 w-2 " /><Skeleton className="h-3 w-16 " /><Skeleton className="h-3 w-2 " /><Skeleton className="h-3 w-24 " /></nav>
-            <section className="relative mt-6 overflow-hidden border-y border-divider-section bg-paper">
+            <div className="relative mt-6 overflow-hidden border-y border-divider-section bg-paper">
                 <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1.5 bg-terracotta" />
                 <div className="grid lg:grid-cols-[minmax(0,1fr)_18rem]">
                     <div className="relative px-6 pb-8 pt-9 sm:px-10 sm:pb-10 sm:pt-12 lg:px-12">
@@ -455,12 +455,12 @@ export function ArtistProfileSkeleton() {
                         <Skeleton className="h-12 w-full " />
                     </aside>
                 </div>
-            </section>
-            <section className="mt-12">
+            </div>
+            <div className="mt-12">
                 <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-5"><div className="grid gap-2"><Skeleton className="h-3 w-24 " /><Skeleton className="h-8 w-44 " /><Skeleton className="h-3 w-64 max-w-full " /></div><Skeleton className="h-3 w-24 " /></div>
                 <div className="mt-6 flex gap-2"><Skeleton className="h-10 w-24 " /><Skeleton className="h-10 w-20 " /><Skeleton className="h-10 w-28 " /></div>
                 <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{[0, 1, 2, 3, 4, 5, 6, 7].map((item) => <ArtworkCardSkeleton key={item} />)}</div>
-            </section>
+            </div>
         </Container>
     );
 }
