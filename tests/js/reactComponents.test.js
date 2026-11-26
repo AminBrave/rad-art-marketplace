@@ -472,7 +472,7 @@ test('WorkspaceHero inherits global direction and renders a primary page heading
     assert.match(html, /آثار و پروفایل خود را مدیریت کنید/);
 });
 
-test('TextInput, TextareaField and SelectField preserve native form semantics', () => {
+test('TextInput, TextareaField and Radix SelectField preserve accessible form semantics', () => {
     const input = renderToStaticMarkup(
         React.createElement(primitives.TextInput, { type: 'email', name: 'email', dir: 'ltr', required: true }),
     );
@@ -490,8 +490,9 @@ test('TextInput, TextareaField and SelectField preserve native form semantics', 
     assert.match(input, /required=""/);
     assert.match(textarea, /rows="5"/);
     assert.match(textarea, /maxLength="500"|maxlength="500"/i);
-    assert.match(select, /<select[^>]*aria-label="وضعیت اثر"/);
+    assert.match(select, /role="combobox"/);
     assert.match(select, /aria-label="وضعیت اثر"/);
+    assert.match(select, /dir="rtl"/);
     assert.match(select, /name="status"/);
     assert.match(select, /required=""/);
 });
