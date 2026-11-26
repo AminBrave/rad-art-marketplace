@@ -137,6 +137,7 @@ test('semantic layout tiers are token-backed and shared primitives use them', ()
     }
     assert.ok(layout.includes("py-section sm:py-section-wide"));
     assert.ok(layout.includes("calc(var(--rd-space-unit) * ${gap})"));
+    assert.equal((layout.match(/calc\\(var\\(--rd-space-unit\\) \\* \\$\\{gap\\}\\)/g) ?? []).length, 2, 'Flex and Grid must share token-backed numeric gaps.');
 });
 
 test('page-level compositions use the shared Container instead of duplicated max-width wrappers', () => {
@@ -144,6 +145,8 @@ test('page-level compositions use the shared Container instead of duplicated max
         'resources/js/app/AdminWorkspace.jsx',
         'resources/js/app/ArtworkStudio.jsx',
         'resources/js/app/EditorialPages.jsx',
+        'resources/js/app/ArtistWorkspaceOverview.jsx',
+        'resources/js/app/RoutingPages.jsx',
     ];
     for (const path of pagePaths) {
         const source = readFileSync(resolve(root, path), 'utf8');
