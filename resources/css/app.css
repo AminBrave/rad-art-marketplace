@@ -257,10 +257,16 @@
 /* Shared editorial hero surface adapts through the semantic theme tokens above. */
 @layer components {
     .rd-hero-surface {
+        --rd-hero-grid-line: color-mix(in srgb, var(--rd-hero-foreground) 9%, transparent);
         color: var(--rd-hero-foreground);
-        background:
+        background-color: var(--rd-hero-background);
+        background-image:
+            linear-gradient(var(--rd-hero-grid-line) 1px, transparent 1px),
+            linear-gradient(90deg, var(--rd-hero-grid-line) 1px, transparent 1px),
             radial-gradient(ellipse at 88% 8%, var(--rd-hero-glow), transparent 38%),
             linear-gradient(125deg, var(--rd-hero-background), var(--rd-hero-background-alt));
+        background-size: 3rem 3rem, 3rem 3rem, auto, auto;
+        background-position: center center;
     }
 }
 
@@ -363,12 +369,6 @@
     max-width: 100vw;
     margin-inline: calc(50% - 50vw);
     border-block: 1px solid var(--rd-hero-line);
-    background-image:
-        linear-gradient(var(--rd-hero-line) 1px, transparent 1px),
-        linear-gradient(90deg, var(--rd-hero-line) 1px, transparent 1px),
-        linear-gradient(125deg, var(--rd-hero-background), var(--rd-hero-background-alt));
-    background-size: 3rem 3rem, 3rem 3rem, auto;
-    background-position: center center;
 }
 .rd-unified-hero__inner {
     padding-block: clamp(2rem, 5vw, 4rem);
@@ -390,19 +390,21 @@
 .rd-home-hero .rd-unified-hero__inner > div {
     align-items: center;
 }
-.rd-home-hero .rd-unified-hero__inner img { height: 100%; width: 100%; object-fit: cover; }
-.rd-home-hero .rd-unified-hero__inner > div > div:last-child > a > div:first-child {
-    height: min(42svh, 22rem);
-    max-height: min(42svh, 22rem);
-    aspect-ratio: auto;
-}
 @media (min-width: 768px) {
     .rd-home-hero { min-height: calc(100svh - var(--rd-header-height)); }
     .rd-home-hero .rd-unified-hero__inner { padding-block: clamp(2rem, 4svh, 3.5rem); }
 }
 @media (max-width: 767px) {
-    .rd-home-hero .rd-unified-hero__inner > div { gap: 1.25rem; }
-    .rd-home-hero .rd-unified-hero__inner > div > div:last-child > a > div:first-child { height: min(20svh, 9rem); max-height: min(20svh, 9rem); }
+    .rd-home-hero .rd-unified-hero__inner > div {
+        grid-template-columns: minmax(0, 1fr) minmax(6.5rem, .52fr);
+        gap: 1rem;
+        align-items: center;
+    }
+    .rd-home-hero .rd-unified-hero__inner > div > div:last-child { min-width: 0; }
+    .rd-home-hero .rd-unified-hero__inner > div > div:last-child > a { padding: .35rem; }
+    .rd-home-hero .rd-unified-hero__inner > div > div:last-child > a > div:first-child { aspect-ratio: 3 / 4; }
+    .rd-home-hero .rd-unified-hero__inner > div > div:last-child > a > div:last-child { padding: .5rem .25rem .25rem; gap: .4rem; }
+    .rd-home-hero .rd-unified-hero__inner > div > div:last-child > a > div:last-child > span { display: none; }
 }
 .rd-chat-shell,
 .rd-chat-shell section,
