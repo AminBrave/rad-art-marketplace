@@ -83,7 +83,7 @@ test('workspace heroes use the shared full-width grid hero implementation', () =
     assert.match(primitives, /export function WorkspaceHero\(props\)\s*\{\s*return <UnifiedHero/);
     assert.ok(primitives.includes("surface = 'grid'"));
     assert.ok(primitives.includes("bleed && 'rd-bleed'"));
-    assert.ok(artistWorkspace.includes('<div className="min-w-0 w-full space-y-7">'));
+    assert.ok(artistWorkspace.includes('<Container width="wide" className="rd-workspace-content space-y-workspace-relaxed">'));
     assert.doesNotMatch(artistWorkspace, /<div className="rd-container min-w-0 mx-auto w-full max-w-content space-y-7">/);
 });
 
@@ -375,7 +375,7 @@ test('route canvases stay full-width and route content uses shared section conta
     assert.ok(skeletons.includes('<Section as=\"header\" bleed'));
     assert.ok(skeletons.includes('<Container as=\"div\" width=\"wide\"'));
     assert.ok(!skeletons.includes('<main '), 'Route skeletons must not introduce nested main landmarks.');
-    assert.ok(routeLoading.includes('<Section bleed'), 'Loading states must preserve full-bleed section composition.');
+    assert.match(routeLoading, /<Section spacing="none" bleed/ , 'Loading states must preserve full-bleed section composition.');
     assert.ok(homePage.includes('<Container width=\"wide\" className=\"grid gap-4 sm:grid-cols-3\">'));
     assert.ok(homePage.includes('<Section spacing="regular"'));
     assert.doesNotMatch(homePage, /<Container as="section"/);
@@ -390,7 +390,8 @@ test('public catalogue, artist directory and artwork detail use shared page layo
     assert.ok(publicPages[1].includes('<Section bleed') && publicPages[1].includes('rd-hero-surface'), 'Artist directory hero uses the shared adaptive full-bleed surface.');
     assert.ok(publicPages[2].includes('Container') && publicPages[2].includes('width=\"wide\"'));
     assert.ok(buyerWorkspace.includes('WorkspaceHero') && buyerWorkspace.includes('<SectionHeader'));
-    assert.ok(buyerWorkspace.includes('border-y border-border'), 'Buyer Studio uses editorial section boundaries instead of an unnecessary nested Surface.');
+    assert.ok(buyerWorkspace.includes('<Section spacing="none"'), 'Buyer Studio composes its content with the shared Section primitive.');
+    assert.ok(buyerWorkspace.includes('<SectionHeader'), 'Buyer Studio uses the shared section heading pattern.');
     assert.ok(designSystem.includes('Product information architecture'));
 });
 
