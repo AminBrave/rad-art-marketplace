@@ -477,7 +477,6 @@
 html {
     min-width: 320px;
     overflow-x: clip;
-    overflow-y: scroll;
     scrollbar-gutter: stable;
     scroll-behavior: smooth;
     scroll-padding-top: var(--header-height);
