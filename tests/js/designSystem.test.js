@@ -254,8 +254,8 @@ test('buttons enforce square geometry and shared alignment', () => {
 });
 
 test('section primitives provide consistent vertical rhythm', () => {
-    assert.ok(layoutPrimitives.includes("regular: 'py-section sm:py-section-wide'"));
-    assert.ok(layoutPrimitives.includes("none: 'py-0'"));
+    assert.ok(layoutPrimitives.includes("'mt-0 py-4'"));
+    assert.doesNotMatch(layoutPrimitives, /py-section|py-0/);
     assert.doesNotMatch(layoutPrimitives, /Element === ['\"]section['\"]/);
     assert.doesNotMatch(layoutPrimitives.slice(layoutPrimitives.indexOf('export const Container'), layoutPrimitives.indexOf('export const Section')), /py-16|py-24/);
 });
@@ -356,7 +356,7 @@ test('shared layout and form primitives expose semantic utility compositions', (
 test('artist profile content cannot expand the viewport horizontally', () => {
     assert.ok(artistProfile.includes('<div className="min-h-[65vh] overflow-x-clip">'));
     assert.ok(artistProfile.includes('<Container width="wide">'));
-    assert.ok(artistProfile.includes('<Section spacing="regular" className="mt-10 min-w-0 max-w-full"'));
+    assert.ok(artistProfile.includes('<Section spacing="regular" className="min-w-0 max-w-full"'));
     assert.ok(artistProfile.includes('grid min-w-0 max-w-full grid-cols-1'));
     assert.ok(artistProfile.includes('className="min-w-0 [overflow-wrap:anywhere]"'));
     assert.ok(primitives.includes('break-words text-[clamp(1.75rem,4.2vw,3.5rem)]'), 'Shared hero headings wrap long artist names safely.');
