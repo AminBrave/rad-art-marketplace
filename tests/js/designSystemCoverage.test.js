@@ -137,7 +137,7 @@ test('semantic layout tiers are token-backed and shared primitives use them', ()
     }
     assert.ok(layout.includes("py-section sm:py-section-wide"));
     assert.ok(layout.includes("calc(var(--rd-space-unit) * ${gap})"));
-    assert.equal((layout.match(/calc\\(var\\(--rd-space-unit\\) \\* \\$\\{gap\\}\\)/g) ?? []).length, 2, 'Flex and Grid must share token-backed numeric gaps.');
+    assert.equal(layout.split("calc(var(--rd-space-unit) * ${gap})").length - 1, 2, "Flex and Grid must share token-backed numeric gaps.");
 });
 
 test('page-level compositions use the shared Container instead of duplicated max-width wrappers', () => {
@@ -152,6 +152,14 @@ test('page-level compositions use the shared Container instead of duplicated max
         const source = readFileSync(resolve(root, path), 'utf8');
         assert.doesNotMatch(source, /mx-auto w-full max-w-content space-y-(?:6|7|8)/);
     }
+});
+
+test('compact messaging spacing uses the canonical scale except for the safe-area calculation', () => {
+    const composer = readFileSync(resolve(root, 'resources/js/app/MessageComposer.jsx'), 'utf8');
+    const timeline = readFileSync(resolve(root, 'resources/js/app/MessageTimeline.jsx'), 'utf8');
+    assert.doesNotMatch(composer, /p-\\[\\.45rem\\]|gap-\\[\\.35rem\\]|p-\\[\\.35rem\\]/);
+    assert.doesNotMatch(timeline, /px-\\[\\.15rem\\]|mt-\\[\\.55rem\\]/);
+    assert.ok(composer.includes('pb-[max(.5rem,env(safe-area-inset-bottom))]'));
 });
 
 test('workspace header and messaging viewport share responsive shell geometry tokens', () => {
