@@ -144,7 +144,7 @@
                 <div class="{{ $isMessagingRoute ? 'rd-container min-w-0 mx-auto flex h-[calc(100dvh-var(--rd-header-height)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-h-0 min-w-0 max-w-content flex-none py-3 sm:h-[calc(100dvh-var(--rd-header-height-wide)-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:py-4' : 'rd-container min-w-0 mx-auto w-full max-w-content py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+var(--rd-space-4))] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+var(--rd-space-8))]' }}">
                     <main class="{{ $isMessagingRoute ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'min-w-0' }}" role="status" aria-busy="true" aria-label="در حال بارگذاری فضای کاربری">
         @else
-            <main class="rd-container min-w-0 mx-auto min-h-screen w-full max-w-content pt-6 pb-16" role="status" aria-busy="true" aria-label="در حال بارگذاری ردّمن">
+            <main class="rd-container min-w-0 mx-auto min-h-screen w-full max-w-content" role="status" aria-busy="true" aria-label="در حال بارگذاری ردّمن">
                 <div class="flex min-h-14 items-center justify-between gap-8 border-b border-border">
                     <div class="flex items-center gap-2"><img src="/rademan-logo-light.svg" data-logo-base="/rademan-logo-light" data-logo-format="0" alt="" aria-hidden="true" class="brand-logo-light h-9 w-9" width="36" height="36"><img src="/rademan-logo-dark.svg" data-logo-base="/rademan-logo-dark" data-logo-format="0" alt="" aria-hidden="true" class="brand-logo-dark h-9 w-9" width="36" height="36"><span class="text-lg font-black text-ink">ردّمن</span></div>
                     <span class="{{ $skeletonClass }} h-4 w-[min(42%,22rem)]"></span>
@@ -296,7 +296,7 @@
                 </section>
             @elseif ($isDirectory)
                 @if (request()->is('artworks'))
-                    <section class="mx-auto mt-group w-full max-w-content">
+                    <section class="mx-auto w-full max-w-content py-page">
                         <header class="grid gap-3 border-b border-border pb-6"><span class="{{ $skeletonClass }} h-3 w-24"></span><span class="{{ $skeletonClass }} h-9 w-2/3 max-w-sm"></span><span class="{{ $skeletonClass }} h-4 w-full max-w-xl"></span></header>
                         <div class="mt-7 grid gap-3 border border-border bg-surface-muted p-4 sm:grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))] sm:p-5">
                             @foreach (range(1, 3) as $item)<span class="{{ $skeletonClass }} h-11 w-full"></span>@endforeach
@@ -308,8 +308,8 @@
                         </div>
                     </section>
                 @else
-                    <section class="mx-auto mt-group w-full max-w-content">
-                        <header class="mb-8 grid gap-4 border-y border-border bg-surface-muted px-6 py-10 sm:px-10"><span class="{{ $skeletonClass }} h-3 w-28"></span><span class="{{ $skeletonClass }} h-10 w-2/3 max-w-lg"></span><span class="{{ $skeletonClass }} h-4 w-full max-w-2xl"></span><span class="{{ $skeletonClass }} h-11 w-full max-w-2xl"></span></header>
+                    <section class="mx-auto w-full max-w-content pt-page pb-section">
+                        <header class="mt-6 mb-8 grid gap-4 border-y border-border bg-surface-muted py-section"><span class="{{ $skeletonClass }} h-3 w-28"></span><span class="{{ $skeletonClass }} h-10 w-2/3 max-w-lg"></span><span class="{{ $skeletonClass }} h-4 w-full max-w-2xl"></span><span class="{{ $skeletonClass }} h-11 w-full max-w-2xl"></span></header>
                         <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                             @foreach (range(1, 6) as $item)
                                 <article class="grid min-w-0 content-start gap-3 border border-border bg-paper p-5 sm:p-6"><div class="flex items-start justify-between gap-4"><span class="{{ $skeletonClass }} h-14 w-14 shrink-0 rounded-full"></span><span class="{{ $skeletonClass }} mt-1 h-3 w-24"></span></div><div class="mt-2 grid gap-2"><span class="{{ $skeletonClass }} h-7 w-2/3"></span><span class="{{ $skeletonClass }} h-3 w-1/3"></span></div><div class="mt-1 grid gap-2"><span class="{{ $skeletonClass }} h-3 w-full"></span><span class="{{ $skeletonClass }} h-3 w-11/12"></span><span class="{{ $skeletonClass }} h-3 w-3/4"></span></div><div class="mt-3 flex items-center justify-between border-t border-border pt-4"><span class="{{ $skeletonClass }} h-4 w-28"></span><span class="{{ $skeletonClass }} h-3 w-3 rounded-full"></span></div></article>
