@@ -94,7 +94,7 @@ export function Breadcrumbs({ items = [], label = 'Breadcrumb', className = '' }
     );
 }
 
-export function Pagination({ currentPage = 1, lastPage = 1, onPageChange, disabled = false, className = '' }) {
+export function Pagination({ currentPage = 1, lastPage = 1, onPageChange, disabled = false, className = '', ariaLabel = 'صفحه‌بندی', previousLabel = 'قبلی', nextLabel = 'بعدی', pageLabel = (number) => `صفحه ${number}` }) {
     if (!lastPage || lastPage < 2) return null;
     const page = Math.min(Math.max(1, currentPage), lastPage);
     const pages = Array.from({ length: lastPage }, (_, index) => index + 1);
@@ -103,8 +103,8 @@ export function Pagination({ currentPage = 1, lastPage = 1, onPageChange, disabl
         : [...new Set([1, page - 1, page, page + 1, lastPage].filter((number) => number >= 1 && number <= lastPage))];
 
     return (
-        <nav aria-label="صفحه‌بندی" className={cn('flex flex-wrap items-center justify-between gap-3', className)}>
-            <Button variant="outline" size="sm" disabled={disabled || page <= 1} onClick={() => onPageChange(page - 1)}>قبلی</Button>
+        <nav aria-label={ariaLabel} className={cn('flex flex-wrap items-center justify-between gap-3', className)}>
+            <Button variant="outline" size="sm" disabled={disabled || page <= 1} onClick={() => onPageChange(page - 1)}>{previousLabel}</Button>
             <div className="flex flex-wrap items-center gap-1">
                 {visiblePages.map((number, index) => (
                     <span key={number} className="inline-flex items-center gap-1">
@@ -113,7 +113,7 @@ export function Pagination({ currentPage = 1, lastPage = 1, onPageChange, disabl
                             variant="ghost"
                             size="sm"
                             type="button"
-                            aria-label={`صفحه ${number}`}
+                            aria-label={pageLabel(number)}
                             aria-current={number === page ? 'page' : undefined}
                             disabled={disabled}
                             onClick={() => onPageChange(number)}
@@ -124,7 +124,7 @@ export function Pagination({ currentPage = 1, lastPage = 1, onPageChange, disabl
                     </span>
                 ))}
             </div>
-            <Button variant="outline" size="sm" disabled={disabled || page >= lastPage} onClick={() => onPageChange(page + 1)}>بعدی</Button>
+            <Button variant="outline" size="sm" disabled={disabled || page >= lastPage} onClick={() => onPageChange(page + 1)}>{nextLabel}</Button>
         </nav>
     );
 }
