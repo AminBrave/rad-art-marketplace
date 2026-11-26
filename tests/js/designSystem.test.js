@@ -67,7 +67,7 @@ test('Tailwind spacing utilities resolve to one semantic Rademan spacing scale',
         assert.ok(css.includes(`--rd-space-${role}:`), `Missing semantic spacing role ${role}.`);
         assert.ok(tailwind.includes(`${role}: 'var(--rd-space-${role})'`), `Missing Tailwind semantic spacing role ${role}.`);
     }
-    assert.ok(layoutPrimitives.includes("Element === 'section' ? `py-${spacing}`"));
+    assert.ok(layoutPrimitives.includes("sectionSpacings = { page: 'py-page', section: 'py-section', group: 'py-group'"));
     assert.ok(layoutPrimitives.includes("all: 'p-component'"));
     assert.ok(layoutPrimitives.includes('spacingValue(gap)'));
     assert.ok(layouts.includes('var(--rd-header-height)'));
