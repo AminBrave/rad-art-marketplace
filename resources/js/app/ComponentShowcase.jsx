@@ -52,6 +52,7 @@ import {
     Kbd,
     Progress,
     Separator,
+    Section,
     Spinner,
     Text,
     VisuallyHidden,
@@ -81,7 +82,7 @@ export default function ComponentShowcase() {
     const [toastOpen, setToastOpen] = useState(true);
 
     return (
-        <section id="shared-components" aria-labelledby="shared-components-title" className="border-t border-border py-12">
+        <Section spacing="regular" id="shared-components" aria-labelledby="shared-components-title" className="border-t border-border">
             <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
                 <div>
                     <p className="text-xs font-bold text-terracotta-strong">05 / COMPONENT LIBRARY</p>
@@ -199,7 +200,7 @@ export default function ComponentShowcase() {
                     </div>
                 </div>
 
-                <section aria-labelledby="rad-semantic-catalogue" className="grid min-w-0 gap-5 border-b border-border pb-8">
+                <Section spacing="regular" aria-labelledby="rad-semantic-catalogue" className="grid min-w-0 gap-5 border-b border-border">
                     <div>
                         <h3 id="rad-semantic-catalogue" className="font-bold">بنیان‌های ساختاری و معنایی RAD</h3>
                         <p className="mt-1 text-sm leading-7 text-muted">اجزای معنایی و چیدمان، با توکن‌های RAD و بدون بارگذاری پوسته یا سبک پیش‌فرض Radix Themes.</p>
@@ -246,7 +247,7 @@ export default function ComponentShowcase() {
                         </Flex>
                         <AspectRatio ratio={16 / 9} className="rounded-md border border-dashed border-border bg-surface-muted" />
                     </div>
-                </section>
+                </Section>
 
                 <div className="grid gap-5 border-b border-border pb-8 md:grid-cols-2 lg:grid-cols-3">
                     <div className="grid content-start gap-3">
