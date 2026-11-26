@@ -698,7 +698,7 @@ test('responsive workspace navigation supports mobile task access and desktop ro
     assert.ok(layouts.includes("aria-label={t('ناوبری بخش‌های عمومی')}"), 'Public discovery navigation remains available with localized labeling.');
     assert.ok(layouts.includes('<nav aria-label={section.label}>'), 'Both drawers render localized section labels through the shared sidebar navigation.');
     assert.ok(layouts.includes('my-5 border-t border-border'), 'Discover and workspace navigation sections use the same divider spacing.');
-    assert.ok(layouts.includes('flex min-h-11 items-center gap-3 border-s-2 border-transparent px-3 text-sm font-semibold'), 'Discover drawer links use the same row geometry as workspace links.');
+    assert.ok(layouts.includes('flex min-h-11 w-full items-center gap-3 border-s-2 border-transparent px-3 text-start text-sm font-semibold no-underline'), 'Discover drawer links use the shared full-width row geometry.');
     assert.ok(layouts.includes('min-h-0 flex-1 overflow-y-auto px-4 py-5'), 'Discover navigation uses the same padded scrollable panel as workspace navigation.');
     assert.ok(layouts.includes('<ThemeControl />'), 'The public shell exposes the global theme control.');
     assert.ok(routeLoading.includes('cycleTheme'), 'Workspace theme preferences live on the settings route.');
