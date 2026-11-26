@@ -1,5 +1,6 @@
 import { Children, cloneElement, forwardRef, isValidElement, useId } from 'react';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
+import * as SelectPrimitive from '@radix-ui/react-select';
 import { Check, ChevronDown } from 'lucide-react';
 import { Tooltip } from './Tooltip';
 import { cn } from '../../lib/utils';
@@ -254,30 +255,64 @@ export function SelectField({
     ...selectProps
 }) {
     const { locale } = useLanguage();
-    const hasEmptyOption = Children.toArray(children).some(
-        (child) => isValidElement(child) && child.type === 'option' && String(child.props.value ?? '') === '',
+    const direction = locale === 'fa' ? 'rtl' : 'ltr';
+    const options = Children.toArray(children).filter(
+        (child) => isValidElement(child) && child.type === 'option',
     );
 
     return (
-        <div className="relative min-w-0">
-            <select
+        <SelectPrimitive.Root
+            value={value}
+            defaultValue={defaultValue}
+            onValueChange={(nextValue) => onChange?.({ target: { name, value: nextValue } })}
+            name={name}
+            required={required}
+            disabled={disabled}
+            dir={direction}
+            modal={false}
+        >
+            <SelectPrimitive.Trigger
                 {...selectProps}
-                value={value}
-                defaultValue={defaultValue}
-                onChange={onChange}
-                name={name}
-                required={required}
-                disabled={disabled}
-                dir={locale === 'fa' ? 'rtl' : 'ltr'}
-                className={cn(controlClass, 'appearance-none pe-10 text-start', className)}
+                dir={direction}
+                className={cn(controlClass, 'inline-flex appearance-none items-center justify-between gap-3 text-start', className)}
             >
-                {placeholder && !hasEmptyOption && <option value="" disabled>{placeholder}</option>}
-                {children}
-            </select>
-            <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 end-3 inline-flex items-center text-muted">
-                <ChevronDown size={16} />
-            </span>
-        </div>
+                <SelectPrimitive.Value placeholder={placeholder} />
+                <SelectPrimitive.Icon asChild>
+                    <ChevronDown size={16} aria-hidden="true" className="shrink-0 text-muted" />
+                </SelectPrimitive.Icon>
+            </SelectPrimitive.Trigger>
+            <SelectPrimitive.Portal>
+                <SelectPrimitive.Content
+                    position="popper"
+                    sideOffset={4}
+                    collisionPadding={8}
+                    dir={direction}
+                    className="z-50 box-border max-h-[var(--radix-select-content-available-height)] w-[var(--radix-select-trigger-width)] max-w-[calc(100vw-1rem)] overflow-hidden border border-border bg-paper font-sans text-sm text-ink shadow-raised"
+                >
+                    <SelectPrimitive.Viewport className="max-h-[var(--radix-select-content-available-height)] overflow-y-auto p-1">
+                        {placeholder && !options.some((option) => String(option.props.value ?? '') === '') && (
+                            <SelectPrimitive.Item value="" disabled className="flex min-h-10 cursor-default items-center px-3 py-2 text-muted outline-none">
+                                <SelectPrimitive.ItemText>{placeholder}</SelectPrimitive.ItemText>
+                            </SelectPrimitive.Item>
+                        )}
+                        {options.map((option, index) => (
+                            <SelectPrimitive.Item
+                                key={option.key ?? String(option.props.value ?? index)}
+                                value={String(option.props.value ?? '')}
+                                disabled={option.props.disabled}
+                                textValue={option.props.textValue ?? String(option.props.children ?? '')}
+                                className="relative flex min-h-10 cursor-pointer select-none items-center px-3 py-2 pe-9 outline-none data-[highlighted]:bg-surface-muted data-[disabled]:pointer-events-none data-[disabled]:opacity-40"
+                            >
+                                <SelectPrimitive.ItemText>{option.props.children}</SelectPrimitive.ItemText>
+                                <SelectPrimitive.ItemIndicator className="absolute end-3 inline-flex items-center justify-center">
+                                    <Check size={14} aria-hidden="true" />
+                                </SelectPrimitive.ItemIndicator>
+                            </SelectPrimitive.Item>
+                        ))}
+                    </SelectPrimitive.Viewport>
+                </SelectPrimitive.Content>
+            </SelectPrimitive.Portal>
+        </SelectPrimitive.Root>
     );
 }
 
