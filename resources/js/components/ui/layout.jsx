@@ -16,7 +16,7 @@ export const Flex = forwardRef(function Flex({ as: Element = 'div', direction = 
     const directions = { row: 'flex-row', column: 'flex-col', 'row-reverse': 'flex-row-reverse', 'column-reverse': 'flex-col-reverse' };
     const alignments = { start: 'items-start', center: 'items-center', end: 'items-end', stretch: 'items-stretch', baseline: 'items-baseline' };
     const justifications = { start: 'justify-start', center: 'justify-center', end: 'justify-end', between: 'justify-between', around: 'justify-around', evenly: 'justify-evenly' };
-    return <Element ref={ref} className={cn('flex min-w-0', directions[direction] ?? directions.row, alignments[align], justifications[justify], wrap && 'flex-wrap', className)} style={{ ...(gap !== undefined ? { gap: typeof gap === 'number' ? `${gap * 0.25}rem` : gap } : {}), ...style }} {...props} />;
+    return <Element ref={ref} className={cn('flex min-w-0', directions[direction] ?? directions.row, alignments[align], justifications[justify], wrap && 'flex-wrap', className)} style={{ ...(gap !== undefined ? { gap: typeof gap === 'number' ? `${calc(var(--rd-space-unit) * ${gap})` : gap } : {}), ...style }} {...props} />;
 });
 
 export const Grid = forwardRef(function Grid({ as: Element = 'div', columns, gap, className = '', style, ...props }, ref) {
@@ -37,7 +37,7 @@ export const Container = forwardRef(function Container({ as: Element = 'div', wi
 });
 
 export const Section = forwardRef(function Section({ as: Element = 'section', bleed = false, className = '', ...props }, ref) {
-    const sectionSpacing = Element === 'section' ? 'py-16 sm:py-24' : '';
+    const sectionSpacing = Element === 'section' ? 'py-section sm:py-section-wide' : '';
     return <Element ref={ref} className={cn('min-w-0', sectionSpacing, bleed && 'rd-bleed', className)} {...props} />;
 });
 
