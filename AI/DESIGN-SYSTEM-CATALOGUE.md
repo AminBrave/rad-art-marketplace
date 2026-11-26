@@ -184,7 +184,7 @@ All shared components are exported through `resources/js/components/ui/index.js`
 | Component | Responsibility |
 |---|---|
 | `Container` | Canonical section-owned content width; `wide`, `reading`, `full` modes. |
-| `UnifiedHero` | Shared full-width hero composition for discovery, editorial and workspace routes; grid surface, responsive typography, actions and optional media. `PageHeader`, `DiscoveryHero` and `WorkspaceHero` are semantic wrappers. Breadcrumbs are restricted to discovery routes. |
+| `UnifiedHero` | Shared full-width hero composition for discovery, editorial and workspace routes; gradient surface, responsive typography, actions and optional media. `PageHeader`, `DiscoveryHero` and `WorkspaceHero` are semantic wrappers. Breadcrumbs are restricted to discovery routes. |
 | `PageHeader` | Task/workspace page title, eyebrow, description and actions; no discovery breadcrumb. |
 | `SectionHeader` | Section-level title, description and actions. |
 | `WorkspaceHero` | High-emphasis workspace introduction. |
