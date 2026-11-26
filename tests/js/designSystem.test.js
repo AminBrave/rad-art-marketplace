@@ -59,7 +59,7 @@ test('Tailwind spacing utilities resolve to one semantic Rademan spacing scale',
     const keys = ['0', 'px', '0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '5', '6', '7', '8', '9', '10', '11', '12', '14', '16', '20', '24', '28', '32', '36', '40', '44', '48', '52', '56', '60', '64', '72', '80', '96'];
     for (const key of keys) {
         const token = key.replace('.', '-');
-        const configKey = key === 'px' || key.includes('.') ? `'${key}'` : key;
+        const configKey = key.includes('.') ? `'${key}'` : key;
         assert.ok(tailwind.includes(`${configKey}: 'var(--rd-space-${token})'`), `Missing Tailwind spacing mapping for ${key}.`);
         assert.ok(css.includes(`--rd-space-${token}:`), `Missing canonical CSS spacing token for ${key}.`);
     }
