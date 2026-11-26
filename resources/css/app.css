@@ -111,8 +111,6 @@
     --rd-page-gutter: clamp(1rem, 3vw, 2.5rem);
     --rd-header-height: 4.5rem;
     --rd-workspace-nav-height: 4.5rem;
-    --rd-workspace-sidebar-width: 15rem;
-    --rd-workspace-column-gap: 2rem;
     --rd-control-height-sm: 2.25rem;
     --rd-control-height-md: 2.75rem;
     --rd-control-height-lg: 3rem;
@@ -331,38 +329,25 @@
     --rd-workspace-bleed-offset: 0px;
 }
 
-/* Content containers own the public-page gutter; workspace shells already provide it. */
+/* Each shared section owns its horizontal gutter; full-bleed sections opt out. */
 .rd-container:not(.rd-container--full) {
     padding-inline: var(--rd-page-gutter);
 }
-\n
-/*
- * The workspace grid owns page gutters and page rhythm. Nested containers
- * contribute only their width semantics; they never add inner padding.
- */
+
+/* Workspace shell supplies the page gutter, so nested section containers do not add it again. */
 .rd-page-frame--workspace .rd-container {
     padding: 0;
 }
 
 @media (min-width: 1024px) {
-    .rd-workspace-main {
-        --rd-workspace-bleed-offset: calc((var(--rd-workspace-sidebar-width) + var(--rd-workspace-column-gap)) / 2);
-    }
-
     .rd-workspace-main .rd-bleed {
-        margin-inline-start: calc(50% - 50vw - var(--rd-workspace-bleed-offset));
-        margin-inline-end: calc(50% - 50vw + var(--rd-workspace-bleed-offset));
+        margin-inline: calc(50% - 50vw);
     }
 
     .rd-workspace-main .rd-bleed .rd-container:not(.rd-container--reading):not(.rd-container--full) {
-        width: calc(min(100vw, var(--rd-content-width)) - var(--rd-workspace-sidebar-width) - var(--rd-workspace-column-gap));
+        width: min(100vw, var(--rd-content-width));
         max-width: none;
         margin-inline: auto;
-        transform: translateX(calc(0rem - var(--rd-workspace-bleed-offset)));
-    }
-
-    .rd-workspace-main .rd-bleed .rd-container--reading {
-        transform: translateX(calc(-1 * var(--rd-workspace-bleed-offset)));
     }
 }
 

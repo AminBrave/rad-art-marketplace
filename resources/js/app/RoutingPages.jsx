@@ -16,65 +16,38 @@ const emptyProfile = { display_name: '', display_name_en: '', bio: '', bio_en: '
 function WorkspaceAuthLoading({ children }) {
     const { pathname } = useLocation();
     const isMessagingRoute = pathname.endsWith('/messages');
-    const navigationCount = pathname.startsWith('/admin') ? 7 : pathname.startsWith('/dashboard/buyer') ? 3 : 5;
-    const navigationRows = Array.from({ length: navigationCount }, (_, index) => index);
+    const navigationCount = pathname.startsWith('/dashboard/buyer') ? 3 : 5;
+    const navigationItems = Array.from({ length: navigationCount }, (_, index) => index);
 
     return (
         <div
             className={isMessagingRoute ? 'flex h-dvh flex-col overflow-hidden bg-canvas text-ink' : 'min-h-screen bg-canvas text-ink'}
-           
             aria-busy="true"
         >
             <header className="sticky top-0 z-40 shrink-0 border-b border-border bg-paper shadow-soft">
                 <div className="mx-auto flex min-h-[4.5rem] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-20 sm:gap-4" aria-hidden="true">
-                    <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
-                        <Skeleton className="h-10 w-10 shrink-0 rounded-lg sm:h-12 sm:w-12" />
-                        <div className="grid min-w-0 gap-2">
-                            <Skeleton className="h-4 w-20 rounded-sm" />
-                            <Skeleton className="h-3 w-28 rounded-sm" />
-                        </div>
+                    <div className="flex min-w-0 items-center gap-2">
+                        <Skeleton className="h-10 w-10 shrink-0 sm:h-11 sm:w-11" />
+                        <Skeleton className="h-5 w-24" />
                     </div>
-                    <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-                        <Skeleton className="hidden h-9 w-28 rounded-md lg:block" />
-                        <Skeleton className="h-11 w-11 rounded-lg" />
-                    </div>
+                    <Skeleton className="h-11 w-11 shrink-0" />
                 </div>
             </header>
 
             <div className={isMessagingRoute
-                ? 'mx-auto grid h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-h-0 min-w-0 max-w-content flex-none grid-cols-1 grid-rows-[minmax(0,1fr)] gap-0 px-page-gutter py-page-gutter sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:gap-4 sm:py-4 lg:h-[calc(100dvh-5rem)] lg:grid-cols-[15rem_minmax(0,1fr)] lg:grid-rows-1 lg:gap-8 lg:py-8'
-                : 'mx-auto grid min-w-0 max-w-content gap-5 px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-8 lg:pb-8'}>
-                {isMessagingRoute ? (
-                    <div className="hidden lg:block" aria-hidden="true" />
-                ) : (
-                    <aside className="hidden min-w-0 border-y border-border bg-paper px-3 py-4 lg:block" aria-hidden="true">
-                        <div className="grid gap-1">
-                            {navigationRows.map((item) => (
-                                <div key={item} className="flex min-h-11 items-center gap-3 rounded-lg px-4 py-2.5">
-                                    <Skeleton className="h-[18px] w-[18px] shrink-0 rounded-sm" />
-                                    <Skeleton className="h-3 w-28 rounded-sm" />
-                                </div>
-                            ))}
-                        </div>
-                    </aside>
-                )}
-                <main className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-col overflow-hidden lg:col-start-2' : 'min-w-0'}>
+                ? 'mx-auto flex h-[calc(100dvh-4.5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] sm:h-[calc(100dvh-5rem-var(--workspace-bottom-nav-height)-env(safe-area-inset-bottom))] w-full min-w-0 max-w-content px-page-gutter py-3 sm:py-4 lg:py-6'
+                : 'mx-auto w-full max-w-content px-page-gutter py-5 pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] sm:py-8 sm:pb-[calc(var(--workspace-bottom-nav-height)+2rem)]'}>
+                <main className={isMessagingRoute ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'min-w-0'}>
                     {children}
                 </main>
             </div>
 
-            {isMessagingRoute && (
-                <aside className="fixed start-[max(calc((100vw_-_var(--content-width))_/_2_+_var(--page-gutter)),var(--page-gutter))] top-28 z-30 hidden h-fit max-h-[calc(100dvh_-_8rem)] w-60 overflow-hidden border-y border-border bg-paper p-3 lg:block" aria-hidden="true">
-                    <div className="grid gap-1">{navigationRows.map((item) => <Skeleton key={item} className="h-10 w-full rounded-md" />)}</div>
-                </aside>
-            )}
-
-            <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-paper pb-[env(safe-area-inset-bottom)] shadow-raised lg:hidden" aria-hidden="true">
-                <div className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2">
-                    {[0, 1, 2, 3].map((item) => (
+            <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-paper pb-[env(safe-area-inset-bottom)] shadow-raised lg:inset-x-auto lg:left-1/2 lg:bottom-6 lg:w-[min(54rem,calc(100vw_-_3rem))] lg:-translate-x-1/2 lg:border lg:pb-0" aria-hidden="true">
+                <div className="mx-auto grid h-[var(--workspace-bottom-nav-primary-height)] w-full grid-flow-col auto-cols-fr gap-1 px-2 lg:h-16 lg:px-3">
+                    {navigationItems.map((item) => (
                         <div key={item} className="flex flex-col items-center justify-center gap-1">
-                            <Skeleton className="h-[19px] w-[19px] rounded-sm" />
-                            <Skeleton className="h-2 w-10 rounded-sm" />
+                            <Skeleton className="h-5 w-5" />
+                            <Skeleton className="h-2 w-10" />
                         </div>
                     ))}
                 </div>
@@ -221,7 +194,7 @@ export function RouteLoading({ label = 'در حال آماده‌سازی صفح
                 </>
             ) : pathname === '/admin/editorial' ? (
                 <AdminEditorialSkeleton announce={false} />
-            ) : pathname === '/dashboard/artist/artworks' ? (
+            ) : pathname === '/dashboard/artist/artworks' || pathname === '/dashboard/artist/artworks/new' ? (
                 <>
                     <section className="border border-border bg-paper p-5 sm:p-7">
                         <div className="mb-6 flex flex-wrap items-start justify-between gap-3 border-b border-border pb-5"><Skeleton className="h-6 w-36 rounded-sm" /><Skeleton className="h-4 w-64 max-w-full rounded-sm" /></div>
@@ -474,7 +447,7 @@ export function ArtistProfileSettings() {
         if (profile) setForm({ ...emptyProfile, ...profile });
     }, [profile]);
 
-    useEffect(() => () => { if (avatarPreview.startsWith('blob:')) URL.revokeObjectURL(avatarPreview); }, [avatarPreview]);
+    useEffect(() => () => { if (avatarPreview.startsWith('blob:')) window.URL.revokeObjectURL(avatarPreview); }, [avatarPreview]);
 
     const chooseAvatar = (event) => {
         const file = event.target.files?.[0] ?? null;
@@ -484,7 +457,7 @@ export function ArtistProfileSettings() {
             setAvatarError(t('تصویر باید JPG، PNG یا WebP و حداکثر ۲ مگابایت باشد.'));
             event.target.value = ''; setAvatar(null); setAvatarPreview(''); return;
         }
-        setAvatar(file); setAvatarPreview(URL.createObjectURL(file));
+        setAvatar(file); setAvatarPreview(window.URL.createObjectURL(file));
     };
 
     const update = (event) => {
@@ -558,10 +531,10 @@ export function ArtistProfileSettings() {
     );
 }
 
-export function ArtistArtworkPage() {
+export function ArtistArtworkPage({ initialCreate = false }) {
     const { user, profile, profileLoading } = useOutletContext();
     if (profileLoading) return <RouteLoading label="در حال آماده‌سازی فضای آثار…" />;
-    return <Suspense fallback={<RouteLoading label="در حال آماده‌سازی فضای آثار…" />}><ArtworkStudio user={user} hasProfile={Boolean(profile?.slug)} /></Suspense>;
+    return <Suspense fallback={<RouteLoading label="در حال آماده‌سازی فضای آثار…" />}><ArtworkStudio user={user} hasProfile={Boolean(profile?.slug)} initialCreate={initialCreate} /></Suspense>;
 }
 
 

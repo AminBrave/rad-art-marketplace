@@ -4,6 +4,8 @@ const STORAGE_KEY = 'rademan-locale';
 const LOCALES = ['fa', 'en'];
 
 const english = {
+    "منوی راد آرت": "Rad Art menu",
+    "کشف هنر، هنرمندان و فضای کاربری": "Discover art, artists, and your workspace",
     "خانه": "Home",
     "داشبورد": "Dashboard",
     "نمای کلی": "Overview",
@@ -31,6 +33,9 @@ const english = {
     "خروج": "Sign out",
     "خروج از حساب": "Sign out",
     "محتوا": "Content",
+    "ثبت اثر جدید": "Create artwork",
+    "ثبت اثر": "Create",
+    "گفتگوهای خوانده‌نشده": "unread conversations",
     "کتابخانه محتوا": "Content library",
     "آثار": "Artworks",
     "پیام‌ها": "Messages",
@@ -699,7 +704,6 @@ const english = {
     "ثبت اثر برای بررسی": "Submit artwork for review",
     "وضعیت این اثر از سوی سرور تعیین شده است.": "This artwork’s status is determined by the server.",
     "آمار آثار دریافت نشد.": "Could not load artwork statistics.",
-    "ثبت اثر جدید": "Add new artwork",
     "گزینه‌های گفتگو": "Conversation options",
     "تومان": "Toman",
     "خوش آمدید، ": "Welcome, ",
