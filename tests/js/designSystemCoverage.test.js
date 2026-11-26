@@ -446,15 +446,15 @@ test('important CSS overrides are restricted to the reduced-motion safety contra
 test('all semantic sections use the shared primitive and have no caller-owned top margin', () => {
     const nativeSections = frontendFiles.flatMap((path) => {
         const source = readFileSync(path, 'utf8');
-        return matchesWithLines(source, /<section\\b|<\\/section>/g)
+        return matchesWithLines(source, /<section\b|<\/section>/g)
             .map((match) => ({ file: relative(root, path), ...match }));
     });
     assert.deepEqual(nativeSections, [], 'Use the shared Section primitive instead of raw section tags.');
 
     const topMargins = frontendFiles.flatMap((path) => {
         const source = readFileSync(path, 'utf8');
-        return matchesWithLines(source, /<Section\\b(?:(?!>).)*>/gs)
-            .filter(({ value }) => /(?:^|\\s)-?mt-/.test(value))
+        return matchesWithLines(source, /<Section\b(?:(?!>).)*>/gs)
+            .filter(({ value }) => /(?:^|\s)-?mt-/.test(value))
             .map((match) => ({ file: relative(root, path), ...match }));
     });
     assert.deepEqual(topMargins, [], 'Section call sites must not add top margins; Section owns its complete vertical rhythm.');
@@ -463,9 +463,9 @@ test('all semantic sections use the shared primitive and have no caller-owned to
 test('Radix dropdown and select overlays do not isolate or get trapped under the header', () => {
     const navigation = readFileSync(resolve(root, 'resources/js/components/ui/navigation.jsx'), 'utf8');
     const primitives = readFileSync(resolve(root, 'resources/js/components/ui/primitives.jsx'), 'utf8');
-    assert.match(navigation, /<DropdownMenuPrimitive\\.Portal>[\\s\\S]*?<DropdownMenuPrimitive\\.Content/);
+    assert.match(navigation, /<DropdownMenuPrimitive\.Portal>[\s\S]*?<DropdownMenuPrimitive\.Content/);
     assert.ok(navigation.includes('modal={false}'), 'DropdownMenu must remain non-modal.');
-    assert.ok(primitives.includes('<SelectPrimitive.Root\\n            modal={false}'), 'Select must not aria-hide or inert the application header.');
-    assert.match(primitives, /<SelectPrimitive\\.Portal>[\\s\\S]*?<SelectPrimitive\\.Content/);
+    assert.match(primitives, /<SelectPrimitive\.Root\s+modal=\{false\}/, 'Select must not aria-hide or inert the application header.');
+    assert.match(primitives, /<SelectPrimitive\.Portal>[\s\S]*?<SelectPrimitive\.Content/);
     assert.ok(css.includes('--rd-layer-popover: 120;'), 'Portaled popovers must use the shared overlay layer.');
 });
