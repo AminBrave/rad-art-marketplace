@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { auditColorAccessibility } from '../lib/colorAccessibility';
 import ComponentShowcase from './ComponentShowcase';
-import { Button, TextInput, Container } from '../components/ui';
+import { Button, TextInput, Container, Section } from '../components/ui';
 
 const swatches = [
     { name: 'Ivory', value: 'var(--color-canvas)', token: 'canvas' },
@@ -16,7 +16,7 @@ function ColorAccessibilityPanel() {
     const [report, setReport] = useState(null);
 
     return (
-        <section aria-labelledby="color-audit-title" className="border-t border-border py-10">
+        <Section spacing="regular" aria-labelledby="color-audit-title" className="border-t border-border">
             <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                     <p className="text-xs font-bold text-terracotta-strong">05 / ACCESSIBILITY</p>
@@ -50,7 +50,7 @@ function ColorAccessibilityPanel() {
                     )}
                 </div>
             )}
-        </section>
+        </Section>
     );
 }
 
@@ -63,7 +63,7 @@ export default function DesignFoundation() {
                     <a href="/" className="text-xl font-extrabold text-ink no-underline">راد<span className="text-terracotta">آرت</span></a>
                     <span className="text-xs font-semibold tracking-[0.16em] text-muted" dir="ltr">DESIGN SYSTEM / 01</span>
                 </header>
-                <section className="grid gap-10 py-16 lg:grid-cols-[1.15fr_.85fr] lg:items-end">
+                <Section spacing="regular" className="grid gap-10 lg:grid-cols-[1.15fr_.85fr] lg:items-end">
                     <div>
                         <p className="mb-4 text-sm font-bold text-terracotta-strong">بنیان‌های بصری راد آرت</p>
                         <h1 className="max-w-3xl text-4xl font-extrabold leading-tight sm:text-5xl">هنر، با فضای کافی برای دیده‌شدن.</h1>
@@ -74,7 +74,7 @@ export default function DesignFoundation() {
                         <p className="mt-3 text-xl font-semibold leading-relaxed">کمتر تزئین، بیشتر توجه به اثر.</p>
                     </div>
                 </section>
-                <section aria-labelledby="palette-title" className="border-t border-border py-10">
+                <Section spacing="regular" aria-labelledby="palette-title" className="border-t border-border">
                     <div className="mb-6 flex items-end justify-between gap-4">
                         <div><p className="text-xs font-bold text-terracotta-strong">01 / COLOR</p><h2 id="palette-title" className="mt-2 text-2xl font-bold">پالت رنگ</h2></div>
                         <p className="text-xs text-muted" dir="ltr">CORE PALETTE</p>
@@ -88,7 +88,7 @@ export default function DesignFoundation() {
                         ))}
                     </div>
                 </section>
-                <section aria-labelledby="type-title" className="grid gap-8 border-t border-border py-10 lg:grid-cols-2">
+                <Section spacing="regular" aria-labelledby="type-title" className="grid gap-8 border-t border-border lg:grid-cols-2">
                     <div>
                         <p className="text-xs font-bold text-terracotta-strong">02 / TYPOGRAPHY</p><h2 id="type-title" className="mt-2 text-2xl font-bold">تایپوگرافی فارسی</h2>
                         <p className="mt-6 text-4xl font-extrabold leading-tight">روایت هر اثر، یگانه است.</p>
@@ -100,7 +100,7 @@ export default function DesignFoundation() {
                         <p className="mt-5 font-latin text-xs tracking-widest text-subtle">ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789</p>
                     </div>
                 </section>
-                <section aria-labelledby="controls-title" className="border-t border-border py-10">
+                <Section spacing="regular" aria-labelledby="controls-title" className="border-t border-border">
                     <p className="text-xs font-bold text-terracotta-strong">03 / INTERACTION</p><h2 id="controls-title" className="mt-2 text-2xl font-bold">کنترل‌ها و سطوح</h2>
                     <div className="mt-6 grid gap-8 lg:grid-cols-2">
                         <div className="flex flex-wrap items-center gap-3">
@@ -115,7 +115,7 @@ export default function DesignFoundation() {
                         </form>
                     </div>
                 </section>
-                <section aria-labelledby="surface-title" className="border-t border-border py-10">
+                <Section spacing="regular" aria-labelledby="surface-title" className="border-t border-border">
                     <p className="text-xs font-bold text-terracotta-strong">04 / SURFACES</p><h2 id="surface-title" className="mt-2 text-2xl font-bold">مرزها و سطوح</h2>
                     <div className="mt-6 grid gap-4 sm:grid-cols-3">
                         <div className="border border-border bg-paper p-5"><p className="font-bold">سطح اصلی</p><p className="mt-2 text-sm text-muted">سفید روی زمینه عاجی</p></div>
