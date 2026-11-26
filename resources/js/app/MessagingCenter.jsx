@@ -590,7 +590,7 @@ export default function MessagingCenter({ role }) {
     }, [role, artworkSlug, selected]);
 
     return (
-        <section aria-label="مرکز پیام‌ها" className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden font-sans">
+        <div role="region" aria-label="مرکز پیام‌ها" className="flex h-full min-h-0 min-w-0 w-full flex-col overflow-hidden font-sans">
             <MessagingStatusBanners
                 notice={notice}
                 error={error}
@@ -757,6 +757,6 @@ export default function MessagingCenter({ role }) {
                     )}
                 </div>
             </div>
-        </section>
+        </div>
     );
 }
