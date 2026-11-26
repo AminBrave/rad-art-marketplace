@@ -1,14 +1,40 @@
+import { useEffect, useState } from 'react';
 import { useLanguage } from '../../app/LanguageContext';
+import { useTheme } from '../../app/useTheme';
 
-/** Shared application identity. Replace /favicon.svg with the final uploaded brand asset. */
+function useResolvedDarkTheme(theme) {
+    const [systemPrefersDark, setSystemPrefersDark] = useState(false);
+
+    useEffect(() => {
+        const media = window.matchMedia?.('(prefers-color-scheme: dark)');
+        const sync = () => setSystemPrefersDark(Boolean(media?.matches));
+
+        sync();
+        if (theme !== 'system') return undefined;
+
+        if (media?.addEventListener) {
+            media.addEventListener('change', sync);
+            return () => media.removeEventListener('change', sync);
+        }
+
+        media?.addListener?.(sync);
+        return () => media?.removeListener?.(sync);
+    }, [theme]);
+
+    return theme === 'dark' || (theme === 'system' && systemPrefersDark);
+}
+
+/** Shared application identity with an asset matched to the active color scheme. */
 export function BrandLogo({ className = '', compact = false }) {
     const { locale } = useLanguage();
+    const { theme } = useTheme();
+    const isDark = useResolvedDarkTheme(theme);
     const name = locale === 'fa' ? 'ردّمن' : 'Rademan';
 
     return (
         <span className={`inline-flex min-w-0 items-center gap-2.5 text-ink no-underline ${className}`.trim()}>
             <img
-                src="/favicon.svg"
+                src={isDark ? '/rademan-logo-dark.svg' : '/rademan-logo-light.svg'}
                 alt=""
                 aria-hidden="true"
                 className={compact ? 'h-9 w-9 shrink-0 object-contain' : 'h-10 w-10 shrink-0 object-contain sm:h-11 sm:w-11'}
