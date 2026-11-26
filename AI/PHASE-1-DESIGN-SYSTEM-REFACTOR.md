@@ -429,3 +429,19 @@ Each slice should have a short feature-specific contract and tests. Do not make 
 
 - Source review confirms all wrappers delegate to the same implementation and WorkspaceHero exists only once.
 - Automated tests, lint, production build, and browser visual QA remain unrun in this environment.
+
+
+### Slice 9 — Reuse the shared SectionHeader in artwork detail
+
+**Implemented on the target branch:**
+
+- Replaced the related-artworks section's bespoke eyebrow/title/description/actions row with the existing shared `SectionHeader` primitive.
+- Kept the same copy, action destination, and surrounding section spacing; the shared primitive now owns the common heading hierarchy, divider, responsive stacking, and action alignment.
+- Added a source-level regression test to protect this composition.
+
+**Scope note:** the catalogue filter toolbar and admin record headers have distinct control density and interaction patterns; they are not being forced into a generic heading component. Further extraction should follow a repeated, stable pattern rather than visual resemblance alone.
+
+**Verification status:**
+
+- Source review confirms the related-artworks header delegates to `SectionHeader`.
+- Automated tests, lint, production build, and browser visual QA remain unrun in this environment.
