@@ -21,14 +21,14 @@ export default function ConversationHeader({
         <header dir="ltr" className="relative z-20 shrink-0 border-b border-border bg-[color:color-mix(in_srgb,var(--color-paper)_96%,transparent)] shadow-soft backdrop-blur after:absolute after:inset-x-0 after:top-0 after:h-1 after:bg-terracotta">
             <div className="flex min-h-[3.5rem] min-w-0 items-center gap-2 px-3 py-2 pt-3 md:min-h-[3.75rem] md:gap-3 md:px-4">
                 <Tooltip content={t("بازگشت به گفتگوها")}>
-                    <Button variant="ghost"
+                    <button
                         type="button"
                         aria-label={t("بازگشت به گفتگوها")}
-                        className="min-h-0 p-0 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-canvas text-ink transition hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:hidden"
+                        className="inline-flex h-9 w-9 shrink-0 items-center justify-center border-0 bg-transparent p-0 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:hidden"
                         onClick={onBack}
                     >
-                        <ChevronLeft size={19} className="rtl:rotate-180" aria-hidden="true" />
-                    </Button>
+                        <ChevronLeft size={19} aria-hidden="true" />
+                    </button>
                 </Tooltip>
                 {selected?.artist?.slug ? (
                     <Tooltip content={t("مشاهده پروفایل هنرمند")}>
