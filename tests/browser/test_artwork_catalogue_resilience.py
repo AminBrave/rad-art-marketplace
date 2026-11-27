@@ -136,9 +136,9 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
             page.get_by_text("برخی گزینه‌های فیلتر بارگذاری نشدند", exact=False).wait_for()
             page.get_by_role("heading", name="اثر با فیلترهای ناقص").wait_for()
 
-            self.assertTrue(page.get_by_role("combobox", name="فیلتر دسته‌بندی").is_visible())
-            self.assertTrue(page.get_by_role("combobox", name="فیلتر تکنیک و مواد").is_visible())
-            self.assertTrue(page.get_by_role("combobox", name="فیلتر وضعیت اثر").is_visible())
+            self.assertTrue(page.get_by_role("group", name="دسته‌بندی هنری").is_visible())
+            self.assertTrue(page.get_by_role("group", name="تکنیک و مواد").is_visible())
+            self.assertTrue(page.get_by_role("group", name="وضعیت اثر").is_visible())
         finally:
             context.close()
 
@@ -304,6 +304,68 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
             }""")
             self.assertEqual(requests, ["initial", "changed"])
             self.assertEqual(image.locator("xpath=..").get_attribute("aria-busy"), "false")
+        finally:
+            context.close()
+
+
+    def test_gallery_filter_sidebar_is_on_the_right_and_mobile_filters_apply_as_a_draft(self):
+        context, page = self.new_page()
+        page.route(
+            "**/api/v1/categories",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({"data": [{"id": 1, "slug": "painting", "name": "نقاشی"}]}),
+            ),
+        )
+        page.route(
+            "**/api/v1/artwork-filters",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({"data": {
+                    "mediums": ["Oil"],
+                    "availability": [{"value": "available", "label": "قابل خرید", "label_en": "Available"}],
+                    "sorts": [
+                        {"value": "newest", "label": "جدیدترین", "label_en": "Newest"},
+                        {"value": "oldest", "label": "قدیمی‌ترین", "label_en": "Oldest"},
+                    ],
+                }}),
+            ),
+        )
+        page.route(
+            "**/api/v1/artworks**",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps(artwork_payload()),
+            ),
+        )
+        try:
+            page.goto(BASE_URL + "/artworks", wait_until="domcontentloaded")
+            page.get_by_role("heading", name="گالری آثار").wait_for()
+
+            sidebar = page.locator("aside")
+            sidebar.wait_for(state="visible")
+            results_box = page.locator("main").bounding_box()
+            sidebar_box = sidebar.bounding_box()
+            self.assertGreater(sidebar_box["x"], results_box["x"])
+            self.assertTrue(sidebar.get_by_role("group", name="دسته‌بندی هنری").is_visible())
+
+            page.set_viewport_size({"width": 390, "height": 844})
+            self.assertFalse(sidebar.is_visible())
+            page.get_by_role("button", name="فیلتر آثار").click()
+            dialog = page.get_by_role("dialog", name="تنظیمات فیلتر گالری")
+            dialog.wait_for(state="visible")
+            dialog.get_by_role("group", name="دسته‌بندی هنری").get_by_role(
+                "button", name="نقاشی", exact=True
+            ).click()
+            self.assertNotIn("category=painting", page.url)
+
+            dialog.get_by_role("button", name="نمایش نتایج").click()
+            page.wait_for_url(lambda url: parse_qs(urlparse(str(url)).query).get("category") == ["painting"])
+            self.assertIn("category=painting", page.url)
+            self.assertFalse(dialog.is_visible())
         finally:
             context.close()
 
