@@ -1,4 +1,4 @@
-import { ConversationInboxSkeleton } from '..';
+import { ConversationInboxSkeleton } from './skeletons';
 import { Tabs, TabsList, TabsTrigger, TabsContent, Tooltip, DropdownMenu, TextInput, Button } from '../../../shared/ui';
 import { useLanguage } from '../../../shared/i18n';
 import { Archive, ArchiveRestore, Bell, BellOff, Inbox, LoaderCircle, MailOpen, MoreVertical, Search } from 'lucide-react';

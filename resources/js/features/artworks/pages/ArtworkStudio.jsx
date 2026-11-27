@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '../../../shared/i18n';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import axios from '../../../shared/api/httpClient';
 import { Link, useLocation } from 'react-router-dom';
 import { Badge, Button, EmptyState, ErrorState, FormField, TextInput, TextareaField, FileInput, UploadFeedback, MediaImage, PageHeader, SectionHeader, SelectField } from '../../../shared/ui';
 import { ArtworkStudioListSkeleton } from '../../artist';

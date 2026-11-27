@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { fetchArtworkFilters, fetchArtworks, artworkKeys } from '..';
+import { fetchArtworkFilters, fetchArtworks, artworkKeys } from '../api/artworks';
 import { useSearchParams } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { useLanguage } from '../../../shared/i18n';
 import { localizedValue } from '../../../utils/localizedContent';
-import { ArtworkCard } from '..';
+import { ArtworkCard } from '../components/ArtworkCard';
 import { EmptyState, ErrorState, SearchField, SelectField, PageHeader, Button, Container, Section } from '../../../shared/ui';
-import { ArtworkCardSkeleton } from '..';
+import { ArtworkCardSkeleton } from '../components/skeletons';
 
 const emptyFilters = { mediums: [], availability: [], sorts: [] };
 

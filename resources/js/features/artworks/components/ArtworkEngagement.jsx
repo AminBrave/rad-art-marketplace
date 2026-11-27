@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useLanguage } from '../../../shared/i18n';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import axios from '../../../shared/api/httpClient';
 import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from './AuthContext';
+import { useAuth } from '../../../shared/auth';
 import { Button, TextareaField, SelectField } from '../../../shared/ui';
 
 function CommentItem({ comment, user, onReply, onDelete, onReport }) {

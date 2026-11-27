@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchArtistProfile, followArtist, unfollowArtist, artistKeys } from '..';
+import { fetchArtistProfile, followArtist, unfollowArtist, artistKeys } from '../api/artists';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../../../shared/auth';
 import { useLanguage } from '../../../shared/i18n';
 import { ArtworkCard } from '../../artworks';
 import { EmptyState, ErrorState, SectionHeader, Button, Container } from '../../../shared/ui';
-import { ArtistProfileSkeleton } from '..';
+import { ArtistProfileSkeleton } from '../components/skeletons';
 import { localizedValue } from '../../../utils/localizedContent';
 
 export default function ArtistProfilePage() {

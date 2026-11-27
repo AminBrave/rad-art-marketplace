@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../../../shared/api/httpClient';
 import { formatArtworkPrice } from '../../../utils/formatArtworkPrice';
 import { MediaImage, SelectField, TextInput, Button, Container } from '../../../shared/ui';
 import { useLanguage } from '../../../shared/i18n';

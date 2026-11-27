@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLanguage } from '../../../shared/i18n';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import axios from '../../../shared/api/httpClient';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../../shared/auth';
 import { Badge, Button, EmptyState, ErrorState, FormField, Skeleton, Pagination, SelectField, SkeletonLines, SuccessState, TextareaField, WorkspaceHero, PageHeader, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton, MediaImage, Container } from '../../../shared/ui';

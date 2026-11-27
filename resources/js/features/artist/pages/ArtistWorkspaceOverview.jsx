@@ -3,7 +3,7 @@ import { useLanguage } from '../../../shared/i18n';
 import { fetchArtistWorkspaceArtworks, artistKeys } from '../../artists';
 import { Link, useOutletContext } from 'react-router-dom';
 import { EmptyState, ErrorState, StatusBadge, Badge, PageHeader, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton } from '../../../shared/ui';
-import { ArtistRecentWorkSkeleton } from '..';
+import { ArtistRecentWorkSkeleton } from '../components/skeletons';
 import { localizedValue } from '../../../utils/localizedContent';
 
 const statusLabels = {

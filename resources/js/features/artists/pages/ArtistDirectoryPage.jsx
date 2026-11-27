@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchArtists, artistKeys } from '..';
+import { fetchArtists, artistKeys } from '../api/artists';
 import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../../../shared/i18n';
-import { ArtistCard } from '..';
+import { ArtistCard } from '../components/ArtistCard';
 import { EmptyState, ErrorState, SearchField, SectionHeader, Button, Section, Container } from '../../../shared/ui';
-import { ArtistCardSkeleton } from '..';
+import { ArtistCardSkeleton } from '../components/skeletons';
 
 export default function ArtistDirectoryPage() {
     const { t, locale } = useLanguage();

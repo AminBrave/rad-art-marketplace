@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchArtworkBySlug, artworkKeys } from '..';
+import { fetchArtworkBySlug, artworkKeys } from '../api/artworks';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../../../shared/auth';
 import { useLanguage } from '../../../shared/i18n';
 import ArtworkEngagement from '../components/ArtworkEngagement';
-import { ArtworkCard } from '..';
+import { ArtworkCard } from '../components/ArtworkCard';
 import { MediaImage, Container, Button } from '../../../shared/ui';
-import { ArtworkDetailSkeleton } from '..';
+import { ArtworkDetailSkeleton } from '../components/skeletons';
 import { formatArtworkPrice } from '../../../utils/formatArtworkPrice';
 import { localizedValue } from '../../../utils/localizedContent';
 
