@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { Button, TextareaField, SelectField } from '../components/ui';
+import { Button, TextareaField, SelectField } from '../shared/ui';
 
 function CommentItem({ comment, user, onReply, onDelete, onReport }) {
     const { t, locale } = useLanguage();
