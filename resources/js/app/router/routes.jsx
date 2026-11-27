@@ -9,26 +9,26 @@ import {
 } from './guards';
 
 const HomePage = lazy(() => import('../HomePage'));
-const ArtworkCatalogue = lazy(() => import('../ArtworkCatalogue'));
-const ArtworkDetailPage = lazy(() => import('../ArtworkDetailPage'));
-const ArtistProfilePage = lazy(() => import('../ArtistProfilePage'));
-const ArtistDirectoryPage = lazy(() => import('../ArtistDirectoryPage'));
+const ArtworkCatalogue = lazy(() => import('../../features/artworks').then((module) => ({ default: module.ArtworkCatalogue })));
+const ArtworkDetailPage = lazy(() => import('../../features/artworks').then((module) => ({ default: module.ArtworkDetailPage })));
+const ArtistProfilePage = lazy(() => import('../../features/artists').then((module) => ({ default: module.ArtistProfilePage })));
+const ArtistDirectoryPage = lazy(() => import('../../features/artists').then((module) => ({ default: module.ArtistDirectoryPage })));
 const PublicInfoPage = lazy(() => import('../PublicInfoPages'));
 const AuthPage = lazy(() => import('../AuthPage'));
-const ArtistWorkspaceOverview = lazy(() => import('../ArtistWorkspaceOverview'));
-const BuyerDashboardHome = lazy(() => import('../BuyerWorkspace').then((module) => ({ default: module.BuyerDashboardHome })));
-const AdminDashboardHome = lazy(() => import('../AdminWorkspace').then((module) => ({ default: module.AdminDashboardHome })));
+const ArtistWorkspaceOverview = lazy(() => import('../../features/artist').then((module) => ({ default: module.ArtistWorkspaceOverview })));
+const BuyerDashboardHome = lazy(() => import('../../features/buyer').then((module) => ({ default: module.BuyerDashboardHome })));
+const AdminDashboardHome = lazy(() => import('../../features/admin').then((module) => ({ default: module.AdminDashboardHome })));
 const AdminArtworkModeration = lazy(() => import('../AdminWorkspace').then((module) => ({ default: module.AdminArtworkModeration })));
 const AdminUsersPage = lazy(() => import('../AdminWorkspace').then((module) => ({ default: module.AdminUsersPage })));
 const AdminMessageReportsPage = lazy(() => import('../AdminWorkspace').then((module) => ({ default: module.AdminMessageReportsPage })));
 const AdminArtworkCommentReportsPage = lazy(() => import('../AdminWorkspace').then((module) => ({ default: module.AdminArtworkCommentReportsPage })));
-const AdminEditorialPage = lazy(() => import('../EditorialPages').then((module) => ({ default: module.AdminEditorialPage })));
+const AdminEditorialPage = lazy(() => import('../../features/admin').then((module) => ({ default: module.AdminEditorialPage })));
 const CollectionIndexPage = lazy(() => import('../EditorialPages').then((module) => ({ default: module.CollectionIndexPage })));
 const CollectionDetailPage = lazy(() => import('../EditorialPages').then((module) => ({ default: module.CollectionDetailPage })));
-const MessagingCenter = lazy(() => import('../MessagingCenter'));
-const ArtistProfileSettings = lazy(() => import('../RoutingPages').then((module) => ({ default: module.ArtistProfileSettings })));
+const MessagingCenter = lazy(() => import('../../features/messaging').then((module) => ({ default: module.MessagingCenter })));
+const ArtistProfileSettings = lazy(() => import('../../features/artist').then((module) => ({ default: module.ArtistProfileSettings })));
 const WorkspaceSettingsPage = lazy(() => import('../RoutingPages').then((module) => ({ default: module.WorkspaceSettingsPage })));
-const ArtistArtworkPage = lazy(() => import('../RoutingPages').then((module) => ({ default: module.ArtistArtworkPage })));
+const ArtistArtworkPage = lazy(() => import('../../features/artist').then((module) => ({ default: module.ArtistArtworkPage })));
 
 function withRouteFallback(element) {
     return <Suspense fallback={<RouteLoading />}>{element}</Suspense>;
