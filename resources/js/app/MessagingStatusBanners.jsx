@@ -1,2 +1,2 @@
-// Compatibility facade. Messaging status UI is owned by the messaging feature.
-export { default } from '../features/messaging/components/MessagingStatusBanners';
+// Compatibility facade. This domain module is owned by its feature public entry point.
+export { MessagingStatusBanners as default } from '../features/messaging';
