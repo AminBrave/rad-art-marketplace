@@ -13,6 +13,8 @@ const roots = {
     shared: [
         path.join(jsRoot, 'shared'),
         path.join(jsRoot, 'components', 'ui'),
+        path.join(jsRoot, 'lib'),
+        path.join(jsRoot, 'utils'),
     ],
 };
 
