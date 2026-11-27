@@ -52,7 +52,7 @@ The activation element's document position is captured when the hook mounts. The
 
 ## Detect clipped scroll content
 
-Use the shared `useScrollOverflow` hook for both horizontal and vertical scroll containers:
+Use the shared `useScrollOverflow` hook for any horizontal or vertical scroll container, including responsive drawers, sticky sidebars, chip rows, tabs, carousels and nested panels:
 
 ```jsx
 import { useScrollOverflow } from '../../shared/hooks';
@@ -60,19 +60,20 @@ import { useScrollOverflow } from '../../shared/hooks';
 const horizontalFades = useScrollOverflow(chipsRef, {
     axis: 'horizontal',
     direction: isRtl ? 'rtl' : 'ltr',
-    contentKey: activeItems.join('|'),
 });
 
 const verticalFades = useScrollOverflow(sidebarRef, {
     axis: 'vertical',
-    contentKey: filterOptionsVersion,
+    enabled: drawerIsOpen,
 });
 
 // Horizontal: start/end are logical edges (RTL-aware).
 // Vertical: start/end mean top/bottom.
 ```
 
-The existing `useHorizontalOverflow` remains as a backwards-compatible wrapper. Pass a `contentKey` that changes when the scroller's children change so measurements refresh after React updates. The hook only reports clipped edges; the consuming component owns fade placement, gradients and theme tokens. Use pointer-events-none fade overlays so they never intercept scrolling or clicks.
+The hook responds to scroll events, viewport/container resizing, and dynamic content mutations/resizing. `contentKey` is an optional explicit refresh signal for content changes that are not reflected in observed DOM mutations or sizes. The existing `useHorizontalOverflow` remains as a backwards-compatible wrapper.
+
+The hook reports which edges are clipped; each consumer places the matching visual gradient around its own scrollport and chooses theme-aware colors. Keep overlays `pointer-events-none` so they never intercept scrolling, touch or clicks. Use the same hook on mobile and desktop rather than maintaining breakpoint-specific overflow logic.
 
 ## Ownership
 
