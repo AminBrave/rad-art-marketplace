@@ -193,7 +193,7 @@ function ArtworkActiveFilterChips({
         <div className="relative min-w-0" aria-label={t('معیارهای فعال')}>
             <div
                 ref={scrollRef}
-                className="flex min-w-0 items-center gap-2 overflow-x-auto overscroll-x-contain whitespace-nowrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                className="flex min-w-0 items-center gap-2 overflow-x-auto overscroll-x-contain px-8 whitespace-nowrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
                 {content}
             </div>
@@ -483,9 +483,9 @@ export default function ArtworkCatalogue() {
                             tabIndex={0}
                             style={{
                                 maxHeight: 'calc(100dvh - 6rem - 1rem)',
-                                paddingBottom: `calc(${bottomNavigationHeight}px + 1rem)`,
+                                paddingBottom: `calc(${bottomNavigationHeight}px + 2rem)`,
                             }}
-                            className="min-w-0 overscroll-y-contain overflow-y-auto pe-3"
+                            className="min-w-0 overscroll-y-contain overflow-y-auto pe-3 pt-8"
                             aria-label={t('فیلتر و مرتب‌سازی آثار')}
                         >
                             <div className="flex items-center justify-between gap-3 border-b border-ink pb-4">
@@ -672,7 +672,7 @@ export default function ArtworkCatalogue() {
                         <div
                             ref={mobileFilterScrollRef}
                                 data-testid="mobile-artwork-filter-scroll"
-                            className="absolute inset-0 touch-pan-y overflow-x-hidden overflow-y-auto overscroll-y-contain px-5 py-12"
+                            className="absolute inset-0 touch-pan-y overflow-x-hidden overflow-y-auto overscroll-y-contain px-5 py-8"
                             >
                             <ArtworkFilterControls
                                 {...filterControlProps}
@@ -685,10 +685,10 @@ export default function ArtworkCatalogue() {
                             />
                             </div>
                             {mobileFilterFades.start && (
-                                <span data-testid="mobile-artwork-filter-fade-top" aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-30 h-12 bg-gradient-to-b from-paper via-paper/95 via-60% to-transparent shadow-[0_6px_8px_-8px_rgba(0,0,0,0.35)]" />
+                                <span data-testid="mobile-artwork-filter-fade-top" aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-30 h-8 bg-gradient-to-b from-paper via-paper/95 to-transparent" />
                             )}
                             {mobileFilterFades.end && (
-                                <span data-testid="mobile-artwork-filter-fade-bottom" aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-12 bg-gradient-to-t from-paper via-paper/75 to-transparent" />
+                                <span data-testid="mobile-artwork-filter-fade-bottom" aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-8 bg-gradient-to-t from-paper via-paper/75 to-transparent" />
                             )}
                     </div>
                     <div className="sticky bottom-0 flex shrink-0 items-center gap-3 border-t border-divider-section bg-paper p-4">
