@@ -1,4 +1,4 @@
-import { httpClient } from '../../../shared/api/httpClient';
+import { httpClient } from '../../../shared/api';
 
 export async function fetchArtists({ query, page, signal }) {
     const { data } = await httpClient.get('/api/v1/artists', {
