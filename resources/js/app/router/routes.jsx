@@ -16,8 +16,8 @@ const ArtistDirectoryPage = lazy(() => import('../../features/artists/pages/Arti
 const PublicInfoPage = lazy(() => import('../PublicInfoPages'));
 const AuthPage = lazy(() => import('../AuthPage'));
 const ArtistWorkspaceOverview = lazy(() => import('../../features/artist/pages/ArtistWorkspaceOverview'));
-const BuyerDashboardHome = lazy(() => import('../BuyerWorkspace').then((module) => ({ default: module.BuyerDashboardHome })));
-const AdminDashboardHome = lazy(() => import('../AdminWorkspace').then((module) => ({ default: module.AdminDashboardHome })));
+const BuyerDashboardHome = lazy(() => import('../../features/buyer').then((module) => ({ default: module.BuyerDashboardHome })));
+const AdminDashboardHome = lazy(() => import('../../features/admin').then((module) => ({ default: module.AdminDashboardHome })));
 const AdminArtworkModeration = lazy(() => import('../AdminWorkspace').then((module) => ({ default: module.AdminArtworkModeration })));
 const AdminUsersPage = lazy(() => import('../AdminWorkspace').then((module) => ({ default: module.AdminUsersPage })));
 const AdminMessageReportsPage = lazy(() => import('../AdminWorkspace').then((module) => ({ default: module.AdminMessageReportsPage })));
