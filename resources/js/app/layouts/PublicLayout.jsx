@@ -76,7 +76,7 @@ export function PublicLayout() {
                     </div>
                 </div>
 
-                <DialogContent nonModalOverlay placement="drawer" className="flex flex-col px-4 py-5">
+                <DialogContent nonModalOverlay overlayOpen={mobileMenuOpen} placement="drawer" className="flex flex-col px-4 py-5">
                     <div className="mb-5 flex items-center justify-between border-b border-border pb-4">
                         <div className="min-w-0">
                             <DialogTitle className="text-base font-extrabold text-ink">{t('منو')}</DialogTitle>
