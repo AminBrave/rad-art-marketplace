@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useHorizontalOverflow, useStickyOnScroll } from '../../../shared/hooks';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { ChevronDown, SlidersHorizontal, X } from 'lucide-react';
@@ -6,6 +7,7 @@ import { fetchArtworkFilters, fetchArtworks } from '../api/artworks';
 import { artworkKeys } from '../model/queryKeys';
 import { useLanguage } from '../../../shared/i18n';
 import { localizedValue } from '../../../utils/localizedContent';
+import { scrollToElement } from '../../../utils/scroll';
 import { ArtworkCard } from '../components/ArtworkCard';
 import {
     Button,
@@ -23,10 +25,6 @@ import { ArtworkCardSkeleton } from '../components/skeletons';
 
 const emptyFilters = { mediums: [], availability: [], sorts: [] };
 const defaultFilterValues = { q: '', category: '', medium: '', availability: '', sort: 'newest' };
-
-function getSiteHeaderBottom(header = document.querySelector('[data-site-header], header')) {
-    return header ? Math.max(0, header.getBoundingClientRect().bottom) : 0;
-}
 
 function ArtworkFilterControls({
     values,
@@ -161,58 +159,12 @@ function ArtworkActiveFilterChips({
 }) {
     const { t, locale } = useLanguage();
     const scrollRef = useRef(null);
-    const [visibleFades, setVisibleFades] = useState({ start: false, end: false });
     const isRtl = locale !== 'en';
-
-    useEffect(() => {
-        if (!dark || activeFilterCount === 0) {
-            setVisibleFades({ start: false, end: false });
-            return undefined;
-        }
-
-        const element = scrollRef.current;
-        if (!element) return undefined;
-
-        const updateFades = () => {
-            const first = element.firstElementChild?.getBoundingClientRect();
-            const last = element.lastElementChild?.getBoundingClientRect();
-            const bounds = element.getBoundingClientRect();
-            if (!first || !last) {
-                setVisibleFades({ start: false, end: false });
-                return;
-            }
-
-            const next = isRtl
-                ? {
-                    start: first.right > bounds.right + 1,
-                    end: last.left < bounds.left - 1,
-                }
-                : {
-                    start: first.left < bounds.left - 1,
-                    end: last.right > bounds.right + 1,
-                };
-
-            setVisibleFades((current) => (
-                current.start === next.start && current.end === next.end ? current : next
-            ));
-        };
-
-        updateFades();
-        element.addEventListener('scroll', updateFades, { passive: true });
-        const resizeObserver = typeof window.ResizeObserver === 'function'
-            ? new window.ResizeObserver(updateFades)
-            : null;
-        resizeObserver?.observe(element);
-        if (element.firstElementChild) resizeObserver?.observe(element.firstElementChild);
-        if (element.lastElementChild) resizeObserver?.observe(element.lastElementChild);
-        window.addEventListener('resize', updateFades);
-
-        return () => {
-            element.removeEventListener('scroll', updateFades);
-            window.removeEventListener('resize', updateFades);
-            resizeObserver?.disconnect();
-        };
-    }, [activeFilterCount, dark, isRtl, search, category, medium, availability, sort]);
+    const visibleFades = useHorizontalOverflow(scrollRef, {
+        enabled: dark && activeFilterCount > 0,
+        direction: isRtl ? 'rtl' : 'ltr',
+        contentKey: [activeFilterCount, search, category, medium, availability, sort].join('|'),
+    });
 
     if (activeFilterCount === 0) return null;
 
@@ -270,78 +222,20 @@ export default function ArtworkCatalogue() {
     const loadMoreRef = useRef(null);
     const filterSummaryEndRef = useRef(null);
     const archiveSectionRef = useRef(null);
-    const lastScrollY = useRef(0);
-    const suppressScrollDirectionUntil = useRef(0);
-    const [stickyToolbarEnabled, setStickyToolbarEnabled] = useState(false);
-    const [stickyToolbarVisible, setStickyToolbarVisible] = useState(false);
-    const [stickyToolbarTop, setStickyToolbarTop] = useState(0);
+    const {
+        enabled: stickyToolbarEnabled,
+        visible: stickyToolbarVisible,
+        headerOffset: stickyToolbarTop,
+        suppressDirectionFor,
+    } = useStickyOnScroll({ activationRef: filterSummaryEndRef, direction: 'up' });
 
-    const scrollToArchiveStart = () => {
-        window.requestAnimationFrame(() => {
-            const target = archiveSectionRef.current;
-            if (!target) return;
-
-            const headerBottom = getSiteHeaderBottom();
-            const targetTop = window.scrollY + target.getBoundingClientRect().top - headerBottom - 12;
-            suppressScrollDirectionUntil.current = window.performance.now() + 1500;
-            lastScrollY.current = window.scrollY;
-            window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
-        });
-    };
+    const scrollToArchiveStart = () => scrollToElement(archiveSectionRef.current, {
+        behavior: 'smooth',
+        offset: 12,
+        onBeforeScroll: () => suppressDirectionFor(1500),
+    });
 
     useEffect(() => setSearchInput(search), [search]);
-
-    useEffect(() => {
-        // Ignore scroll anchoring caused by filter-result layout changes when detecting direction.
-        lastScrollY.current = window.scrollY;
-    }, [search, category, medium, availability, sort]);
-
-    useEffect(() => {
-        lastScrollY.current = window.scrollY;
-        const siteHeader = document.querySelector('[data-site-header], header');
-        const summaryMarker = filterSummaryEndRef.current;
-        const activationDocumentY = summaryMarker
-            ? summaryMarker.getBoundingClientRect().top + window.scrollY
-            : 0;
-
-        const measureHeader = () => {
-            const offset = getSiteHeaderBottom(siteHeader);
-            setStickyToolbarTop((current) => Math.abs(current - offset) < 1 ? current : offset);
-            return offset;
-        };
-
-        const handleScroll = () => {
-            const currentY = window.scrollY;
-            const suppressDirection = window.performance.now() < suppressScrollDirectionUntil.current;
-            const scrollingUp = !suppressDirection && currentY < lastScrollY.current;
-            const headerBottom = measureHeader();
-            // Keep activation stable while chips are added or removed, avoiding layout-shift flicker.
-            const passedSummary = currentY + headerBottom > activationDocumentY - 8;
-
-            setStickyToolbarEnabled((current) => current === passedSummary ? current : passedSummary);
-            if (!suppressDirection) {
-                setStickyToolbarVisible((current) => {
-                    const next = passedSummary && scrollingUp;
-                    return current === next ? current : next;
-                });
-            }
-            lastScrollY.current = currentY;
-        };
-
-        const resizeObserver = typeof window.ResizeObserver === 'function' && siteHeader
-            ? new window.ResizeObserver(measureHeader)
-            : null;
-        if (resizeObserver) resizeObserver.observe(siteHeader);
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        window.addEventListener('resize', handleScroll);
-        handleScroll();
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-            window.removeEventListener('resize', handleScroll);
-            resizeObserver?.disconnect();
-        };
-    }, []);
 
     const filtersQuery = useQuery({
         queryKey: artworkKeys.filters(),
@@ -391,8 +285,7 @@ export default function ArtworkCatalogue() {
     );
 
     const updateFilters = (changes) => {
-        suppressScrollDirectionUntil.current = window.performance.now() + 500;
-        lastScrollY.current = window.scrollY;
+        suppressDirectionFor(1500);
         const next = { ...currentFilters, ...changes };
         const query = {};
         if (next.q) query.q = next.q;
@@ -406,8 +299,7 @@ export default function ArtworkCatalogue() {
 
     const submitSearch = (value) => updateFilters({ q: value.trim() });
     const clearFilters = () => {
-        suppressScrollDirectionUntil.current = window.performance.now() + 500;
-        lastScrollY.current = window.scrollY;
+        suppressDirectionFor(1500);
         setSearchInput('');
         setDraftFilters(defaultFilterValues);
         setParams({});
