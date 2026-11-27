@@ -6,6 +6,7 @@ const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 const jsRoot = path.join(projectRoot, 'resources', 'js');
 const sourceExtensions = new Set(['.js', '.jsx']);
 
+const appEntryFile = path.join(jsRoot, 'app.jsx');
 const roots = {
     app: path.join(jsRoot, 'app'),
     features: path.join(jsRoot, 'features'),
@@ -96,6 +97,7 @@ const sourceFiles = [
     ...roots.shared.flatMap(walk),
     ...walk(roots.features),
     ...walk(roots.app),
+    ...(fs.existsSync(appEntryFile) ? [appEntryFile] : []),
 ].filter((file, index, all) => all.indexOf(file) === index);
 
 const violations = [];
@@ -105,7 +107,7 @@ for (const sourceFile of sourceFiles) {
     const relativeFile = path.relative(projectRoot, sourceFile).split(path.sep).join('/');
     const isShared = roots.shared.some((directory) => isWithin(sourceFile, directory));
     const isFeature = isWithin(sourceFile, roots.features);
-    const isApp = isWithin(sourceFile, roots.app);
+    const isApp = isWithin(sourceFile, roots.app) || sourceFile === appEntryFile;
     const currentFeature = isFeature
         ? path.relative(roots.features, sourceFile).split(path.sep)[0]
         : null;
