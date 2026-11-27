@@ -20,6 +20,7 @@ Prefer secure, accessible, reliable, maintainable solutions proportionate to the
 - `AI/DESIGN-SYSTEM.md` — current visual system, tokens and shared UI.
 - `AI/LOCALIZATION.md` — Persian/English and RTL/LTR implementation.
 - `AI/SECURITY.md` — security and privacy guidance.
+- `.agents/skills/README.md` — focused task workflows and skill standards.
 
 Use the owning document as the canonical reference. Keep documentation aligned with current code; remove stale instructions instead of preserving parallel histories.
 
