@@ -59,8 +59,8 @@ export function DropdownMenuSeparator({ className = '', ...props }) {
     return <DropdownMenuPrimitive.Separator className={cn('my-1 h-px bg-border', className)} {...props} />;
 }
 
-export function DropdownMenu(props) {
-    return <DropdownMenuPrimitive.Root {...props} />;
+export function DropdownMenu({ modal = false, ...props }) {
+    return <DropdownMenuPrimitive.Root modal={modal} {...props} />;
 }
 
 DropdownMenu.Root = DropdownMenu;
