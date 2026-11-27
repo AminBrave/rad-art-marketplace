@@ -19,7 +19,7 @@ Use for pull requests, commits, patches and implementations needing independent 
 2. Read surrounding code and trace affected callers, contracts, data paths and failure handling.
 3. Check correctness, edge cases, authorization, privacy and data integrity.
 4. Assess performance, accessibility, localization and maintainability where affected.
-5. Check regression coverage and run only checks permitted by the task and safe in the environment.
+5. Check regression coverage when tests are within scope, and run only checks permitted by the task and safe in the environment.
 6. Prioritize findings by severity with exact file/line evidence and realistic impact.
 7. Re-check fixes against the original failure mode and report uncertainty.
 
