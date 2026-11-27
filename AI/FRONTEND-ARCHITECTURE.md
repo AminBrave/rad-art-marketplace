@@ -131,23 +131,16 @@ Do not introduce Redux or another global store unless a concrete requirement dem
 
 ## 5. Current baseline and migration status
 
-The frontend is still in an incremental migration: legacy pages and orchestration remain primarily under `resources/js/app/`, while the shared infrastructure and selected feature-owned request modules now have dedicated roots.
+The feature-first migration is established on main. The source-backed implementation map lives in ARCHITECTURE.md; this section records ownership and transitional debt rather than duplicating every path.
 
-Stage 2 establishes these ownership boundaries:
-- `shared/i18n/` owns the Persian/English dictionaries, locale provider, translation hook, persisted locale, and document `lang`/`dir` synchronization.
-- `shared/theme/` owns the theme context, provider, hook, persistence, and system-preference synchronization.
-- `shared/api/httpClient.js` configures the existing Axios singleton for the optional `VITE_API_BASE_URL`, credentials, XSRF, and common request headers. It adds normalized Laravel/Axios error metadata as `error.apiError` while re-rejecting the original `AxiosError`, preserving existing response/error handling. `shared/api/errors.js` exports `normalizeApiError` and `getApiError`; the optional API origin is documented in `.env.example`. Keeping the singleton preserves compatibility for legacy modules that still import Axios directly or use `window.axios`.
-- `features/artworks/` and `features/artists/` own the first migrated endpoint functions and query-key factories. Their public `index.js` entry points are the supported imports for app composition during this transitional period.
+- app/ owns bootstrap composition, routing, guards and public/workspace shells. Active route definitions live in app/router/routes.jsx; focused shells live in app/layouts/.
+- features/ owns the migrated artwork, artist, artist-workspace, buyer, admin, messaging, collections and home domain modules. Some public/auth/editorial/admin route screens remain in app/ and are listed in ARCHITECTURE.md; do not classify them as dead solely because a feature directory exists.
+- shared/auth/, shared/i18n/, shared/theme/, shared/api/ and shared/ui/ own their corresponding app-wide contracts.
+- resources/js/lib/ and resources/js/utils/ contain small domain-independent query, styling, accessibility and formatting utilities. The boundary checker includes these roots.
+- resources/js/components/ui/ and selected app/ modules remain compatibility facades. Preserve them until static and runtime importer checks prove removal safe.
+- resources/css/tokens.css is the canonical token source; app.css imports it, and Tailwind maps to its values.
 
-The former `app/LanguageContext.jsx`, `app/ThemeContext.jsx`, `app/themeContext.js`, and `app/useTheme.js` files remain as compatibility facades. The shared UI modules (`BrandLogo.jsx`, `cards.jsx`, `feedback.jsx`, and `layout.jsx`) now consume shared locale/theme APIs directly; they no longer depend on the app layer.
-
-Stage 3 establishes `shared/ui/` as the domain-independent UI owner. `controls.jsx` contains low-level actions and inputs; `forms.jsx` owns label/control compositions; `compositions.jsx` owns reusable page and information compositions; layout, navigation, feedback and overlays remain focused shared modules. The former `components/ui/` files are compatibility facades only.
-
-Domain presentation now lives behind feature public entry points: artwork and artist cards; artwork/artist/artist-workspace skeletons; admin, messaging, collections, buyer and home skeletons. Cross-feature skeleton reuse (for example, an artist profile using an artwork-card skeleton) goes through the owning feature's public entry point.
-
-Remaining migration debt is primarily legacy page and request orchestration under `app/`; move those cohesive page/domain responsibilities in later feature stages rather than moving isolated files prematurely.
-
-This status is based on static source inspection of the Stage 2 branch. It is not a complete semantic dependency graph: runtime-generated imports, reflection and bundler transformations are outside the checker's scope.
+Stages 1–6 of Issue #294 are complete on main. Stage 7 is the current final conformance pass. The separate PR #293 remains open and unmerged on refactor/292-unified-spacing-layout; its spacing/layout work is not part of main unless separately integrated. Historical overhaul PR #283 is closed unmerged. See COMPLETE-APPLICATION-OVERHAUL.md and STYLING-IMPLEMENTATION-PLAN.md for their explicit historical status.
 
 ## 6. Compatibility and migration constraints
 
@@ -198,10 +191,14 @@ For each stage, record the exact checks run and their results. Do not mark a che
 
 Automated tests remain valuable and should normally be updated with behavior changes under the central development guide. If a task explicitly excludes tests, do not edit or inspect test files; report the limitation and use safe static/build/manual checks instead.
 
-## 9. Stage exit criteria
+## 9. Conformance exit criteria
 
-The architecture baseline is ready for migration when:
-- Ownership and dependency rules are documented.
-- The dependency checker is part of the normal npm scripts, its source-level rules and exact legacy allowlist are reviewed against the current baseline, and its first execution result is recorded before the first Stage 2 code move.
-- Existing compatibility entry points and migration candidates are recorded.
-- The next stage can proceed without moving unrelated features or changing user-facing behavior.
+The feature-first architecture is considered conformant for this staged refactor when:
+- The current source map distinguishes active route implementations from compatibility facades.
+- Shared, feature, app, lib/ and utils/ ownership and dependency direction are documented.
+- npm run architecture:frontend is repeatable locally and runs in the pull-request/push frontend quality workflow.
+- npm run lint and npm run production run in that same workflow.
+- Compatibility modules remain only where their importers or runtime entry points still require them; uncertain candidates are recorded as debt, not deleted speculatively.
+- Manual browser, RTL/LTR, theme, responsive and assistive-technology verification is reported separately from static and build checks.
+
+The checker is intentionally lightweight. It does not prove full module resolution, runtime behavior, accessibility conformance or absence of dynamic imports.
