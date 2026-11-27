@@ -22,7 +22,7 @@ const AdminArtworkModeration = lazy(() => import('../AdminWorkspace').then((modu
 const AdminUsersPage = lazy(() => import('../AdminWorkspace').then((module) => ({ default: module.AdminUsersPage })));
 const AdminMessageReportsPage = lazy(() => import('../AdminWorkspace').then((module) => ({ default: module.AdminMessageReportsPage })));
 const AdminArtworkCommentReportsPage = lazy(() => import('../AdminWorkspace').then((module) => ({ default: module.AdminArtworkCommentReportsPage })));
-const AdminEditorialPage = lazy(() => import('../EditorialPages').then((module) => ({ default: module.AdminEditorialPage })));
+const AdminEditorialPage = lazy(() => import('../../features/admin').then((module) => ({ default: module.AdminEditorialPage })));
 const CollectionIndexPage = lazy(() => import('../EditorialPages').then((module) => ({ default: module.CollectionIndexPage })));
 const CollectionDetailPage = lazy(() => import('../EditorialPages').then((module) => ({ default: module.CollectionDetailPage })));
 const MessagingCenter = lazy(() => import('../../features/messaging').then((module) => ({ default: module.MessagingCenter })));
