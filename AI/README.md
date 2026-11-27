@@ -13,6 +13,7 @@ This folder contains concise project context and engineering references for peop
 - [Development guide](DEVELOPMENT-GUIDE.md) — engineering principles, implementation, quality and collaboration.
 - [Project context](PROJECT.md) — current product understanding and experience areas.
 - [Architecture](ARCHITECTURE.md) — source-backed implementation map.
+- [Frontend maintenance](FRONTEND-MAINTENANCE.md) — practical ownership, change and verification guide.
 - [Design guidance](DESIGN-SYSTEM.md) — experience, visual and accessibility considerations.
 - [Security](SECURITY.md) — security and privacy practices.
 - [Development workflow](DEVELOPMENT-WORKFLOW.md) — proportionate task-to-delivery workflow.
