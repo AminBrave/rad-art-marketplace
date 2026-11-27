@@ -9,6 +9,8 @@
     --rd-z-overlay: 50;
     --rd-z-dialog: 60;
     --rd-z-popover: 70;
+    --rd-z-nested-overlay: 70;
+    --rd-z-nested-dialog: 71;
     --rd-z-alert-overlay: 80;
     --rd-z-alert-dialog: 81;
     --rd-z-tooltip: 90;
