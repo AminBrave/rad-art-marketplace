@@ -355,9 +355,10 @@ export default function ArtworkCatalogue() {
         () => [search, category, medium, availability, sort !== 'newest' ? sort : ''].filter(Boolean).length,
         [search, category, medium, availability, sort],
     );
+    const stickyToolbarHeightForLayout = stickyToolbarVisible ? stickyToolbarHeight : 0;
     const sidebarFades = useScrollOverflow(sidebarScrollRef, {
         axis: 'vertical',
-        contentKey: [activeFilterCount, viewportHeight, bottomNavigationInset, filtersLoading, filtersError].join('|'),
+        contentKey: [activeFilterCount, viewportHeight, stickyToolbarHeight, stickyToolbarVisible, bottomNavigationInset, filtersLoading, filtersError].join('|'),
     });
     const measureMobileFilterFades = () => {
         const element = mobileFilterScrollRef.current;
@@ -527,7 +528,8 @@ export default function ArtworkCatalogue() {
                             data-testid="artwork-filter-sidebar"
                             tabIndex={0}
                             style={{
-                                maxHeight: `max(0px, ${viewportHeight}px - ${stickyToolbarTop}px - ${bottomNavigationInset}px - 32px)`,
+                                maxHeight: `max(0px, ${viewportHeight}px - ${stickyToolbarTop}px - ${stickyToolbarHeightForLayout}px - ${bottomNavigationInset}px - 32px)`,
+                                transition: 'max-height 200ms cubic-bezier(0.4, 0, 0.2, 1)',
                             }}
                             className="min-w-0 overscroll-y-contain overflow-y-auto pe-3"
                             aria-label={t('فیلتر و مرتب‌سازی آثار')}
