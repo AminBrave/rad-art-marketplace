@@ -86,6 +86,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
 
             <DialogContent
                 nonModalOverlay
+                overlayOpen={mobileMenuOpen}
                 placement="drawer"
                 className="flex flex-col"
             >
