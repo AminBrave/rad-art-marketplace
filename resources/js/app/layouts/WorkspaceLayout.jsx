@@ -86,7 +86,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
 
             <DialogContent
                 placement="drawer"
-                className="flex flex-col"
+                className="flex min-h-0 flex-col"
             >
                 <div className="flex items-center justify-between border-b border-border px-5 py-5">
                     <div className="min-w-0">
