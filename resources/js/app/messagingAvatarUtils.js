@@ -1,2 +1,2 @@
-// Compatibility facade. Messaging avatar helpers are owned by the messaging feature.
-export * from '../features/messaging/utils/messagingAvatarUtils';
+// Compatibility facade. This domain module is owned by its feature public entry point.
+export { avatarInitial, avatarTone } from '../features/messaging';
