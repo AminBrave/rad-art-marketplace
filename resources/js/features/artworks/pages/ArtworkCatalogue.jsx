@@ -273,6 +273,11 @@ export default function ArtworkCatalogue() {
     useEffect(() => setSearchInput(search), [search]);
 
     useEffect(() => {
+        // Ignore scroll anchoring caused by filter-result layout changes when detecting direction.
+        lastScrollY.current = window.scrollY;
+    }, [search, category, medium, availability, sort]);
+
+    useEffect(() => {
         lastScrollY.current = window.scrollY;
         const siteHeader = document.querySelector('[data-site-header], header');
         const summaryMarker = filterSummaryEndRef.current;
