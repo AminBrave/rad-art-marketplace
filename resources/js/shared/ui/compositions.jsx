@@ -75,10 +75,30 @@ const surfaceVariants = {
     interactive: 'border border-divider-group bg-surface transition-colors hover:border-terracotta hover:bg-surface-muted focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus',
 };
 
+const surfaceVariants = {
+    default: 'border border-divider-group bg-surface',
+    muted: 'border border-divider-group bg-surface-muted',
+    raised: 'border border-divider-group bg-surface shadow-soft',
+    interactive: 'border border-divider-group bg-surface transition-colors hover:border-terracotta hover:bg-surface-muted focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus',
+};
+
 export function Surface({ as: Element = 'section', variant = 'default', className = '', children, ...props }) {
     return <Element className={cn(surfaceVariants[variant] ?? surfaceVariants.default, className)} {...props}>{children}</Element>;
 }
 
+
+const statusVariants = {
+    pending_review: 'warning',
+    changes_requested: 'info',
+    approved: 'success',
+    published: 'success',
+    available: 'success',
+    rejected: 'danger',
+    sold: 'neutral',
+    not_for_sale: 'neutral',
+    private: 'neutral',
+    public: 'success',
+};
 
 const statusVariants = {
     pending_review: 'warning',
