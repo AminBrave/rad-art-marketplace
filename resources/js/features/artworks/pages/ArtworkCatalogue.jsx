@@ -218,6 +218,7 @@ export default function ArtworkCatalogue() {
     const currentFilters = { q: search, category, medium, availability, sort };
     const [searchInput, setSearchInput] = useState(search);
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+    const [mobileFilterFades, setMobileFilterFades] = useState({ start: false, end: false });
     const [draftFilters, setDraftFilters] = useState(currentFilters);
     const loadMoreRef = useRef(null);
     const filterSummaryEndRef = useRef(null);
@@ -319,19 +320,56 @@ export default function ArtworkCatalogue() {
         axis: 'vertical',
         contentKey: [activeFilterCount, bottomNavigationHeight, filtersLoading, filtersError].join('|'),
     });
-    const mobileFilterFades = useScrollOverflow(mobileFilterScrollRef, {
-        enabled: mobileFiltersOpen,
-        axis: 'vertical',
-        contentKey: [
-            draftFilters.q,
-            draftFilters.category,
-            draftFilters.medium,
-            draftFilters.availability,
-            draftFilters.sort,
-            filtersLoading,
-            filtersError,
-        ].join('|'),
-    });
+    useEffect(() => {
+        const element = mobileFilterScrollRef.current;
+
+        if (!mobileFiltersOpen || !element) {
+            setMobileFilterFades({ start: false, end: false });
+            return undefined;
+        }
+
+        let frame = null;
+        const measure = () => {
+            frame = null;
+            const maxScrollTop = Math.max(0, element.scrollHeight - element.clientHeight);
+            const next = {
+                start: element.scrollTop > 1,
+                end: maxScrollTop > 1 && element.scrollTop < maxScrollTop - 1,
+            };
+
+            setMobileFilterFades((current) => (
+                current.start === next.start && current.end === next.end ? current : next
+            ));
+        };
+        const scheduleMeasure = () => {
+            if (frame === null) frame = window.requestAnimationFrame(measure);
+        };
+
+        // Dialog portals and their flex layout can settle after the open commit.
+        // Measure on the next frame and again whenever the scrollport/content resizes.
+        scheduleMeasure();
+        element.addEventListener('scroll', scheduleMeasure, { passive: true });
+        window.addEventListener('resize', scheduleMeasure);
+
+        const resizeObserver = typeof window.ResizeObserver === 'function'
+            ? new window.ResizeObserver(scheduleMeasure)
+            : null;
+        resizeObserver?.observe(element);
+        if (element.firstElementChild) resizeObserver?.observe(element.firstElementChild);
+
+        const mutationObserver = typeof window.MutationObserver === 'function'
+            ? new window.MutationObserver(scheduleMeasure)
+            : null;
+        mutationObserver?.observe(element, { childList: true, subtree: true, characterData: true });
+
+        return () => {
+            element.removeEventListener('scroll', scheduleMeasure);
+            window.removeEventListener('resize', scheduleMeasure);
+            resizeObserver?.disconnect();
+            mutationObserver?.disconnect();
+            if (frame !== null) window.cancelAnimationFrame(frame);
+        };
+    }, [mobileFiltersOpen, draftFilters, filtersLoading, filtersError]);
 
     const updateFilters = (changes) => {
         suppressDirectionFor(1500);
@@ -603,10 +641,10 @@ export default function ArtworkCatalogue() {
                             />
                         </div>
                         {mobileFilterFades.start && (
-                            <span data-testid="mobile-artwork-filter-fade-top" aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-10 h-8 bg-gradient-to-b from-paper to-transparent" />
+                            <span data-testid="mobile-artwork-filter-fade-top" aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-20 h-8 bg-gradient-to-b from-paper via-paper/75 to-transparent" />
                         )}
                         {mobileFilterFades.end && (
-                            <span data-testid="mobile-artwork-filter-fade-bottom" aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-8 bg-gradient-to-t from-paper to-transparent" />
+                            <span data-testid="mobile-artwork-filter-fade-bottom" aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-8 bg-gradient-to-t from-paper via-paper/75 to-transparent" />
                         )}
                     </div>
                     <div className="sticky bottom-0 flex shrink-0 items-center gap-3 border-t border-divider-section bg-paper p-4">
