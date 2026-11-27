@@ -185,6 +185,7 @@ export default function ArtworkCatalogue() {
         setMobileFiltersOpen(false);
     };
     const clearMobileDraft = () => setDraftFilters({ category: '', medium: '', availability: '', sort: 'newest' });
+    const clearDesktopFilters = () => updateFilters({ category: '', medium: '', availability: '', sort: 'newest' });
 
     const { hasNextPage, fetchNextPage } = artworksQuery;
 
@@ -327,7 +328,7 @@ export default function ArtworkCatalogue() {
                                 filters={filters}
                                 values={values}
                                 onChange={updateFilters}
-                                onClear={clearFilters}
+                                onClear={clearDesktopFilters}
                                 locale={locale}
                                 t={t}
                             />
