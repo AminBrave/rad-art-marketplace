@@ -222,6 +222,7 @@ export default function ArtworkCatalogue() {
     const loadMoreRef = useRef(null);
     const filterSummaryEndRef = useRef(null);
     const archiveSectionRef = useRef(null);
+    const [bottomNavigationHeight, setBottomNavigationHeight] = useState(0);
     const {
         enabled: stickyToolbarEnabled,
         visible: stickyToolbarVisible,
@@ -234,6 +235,35 @@ export default function ArtworkCatalogue() {
         offset: 12,
         onBeforeScroll: () => suppressDirectionFor(1500),
     });
+
+    useEffect(() => {
+        const navigation = document.querySelector(
+            '[data-testid="public-bottom-navigation"], [data-testid="authenticated-bottom-navigation"]',
+        );
+        if (!navigation) {
+            setBottomNavigationHeight(0);
+            return undefined;
+        }
+
+        const updateHeight = () => {
+            const height = navigation.getBoundingClientRect().height;
+            setBottomNavigationHeight((current) => (
+                Math.abs(current - height) > 1 ? height : current
+            ));
+        };
+
+        updateHeight();
+        const observer = typeof ResizeObserver === 'function'
+            ? new ResizeObserver(updateHeight)
+            : null;
+        observer?.observe(navigation);
+        window.addEventListener('resize', updateHeight);
+
+        return () => {
+            observer?.disconnect();
+            window.removeEventListener('resize', updateHeight);
+        };
+    }, []);
 
     useEffect(() => setSearchInput(search), [search]);
 
@@ -353,7 +383,13 @@ export default function ArtworkCatalogue() {
                 />
 
                 <div className="mt-8 grid min-w-0 gap-8 lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-9">
-                    <aside data-testid="artwork-filter-sidebar" tabIndex={0} className="hidden min-w-0 overscroll-y-contain lg:sticky lg:top-24 lg:block lg:max-h-[calc(100dvh-6rem)] lg:self-start lg:overflow-y-auto lg:pe-3" aria-label={t('فیلتر و مرتب‌سازی آثار')}>
+                    <aside
+                        data-testid="artwork-filter-sidebar"
+                        tabIndex={0}
+                        style={{ '--artwork-bottom-navigation-height': `${bottomNavigationHeight}px` }}
+                        className="hidden min-w-0 overscroll-y-contain lg:sticky lg:top-24 lg:block lg:max-h-[max(12rem,calc(100dvh-6rem-var(--artwork-bottom-navigation-height)-1rem))] lg:self-start lg:overflow-y-auto lg:pe-3 lg:pb-4"
+                        aria-label={t('فیلتر و مرتب‌سازی آثار')}
+                    >
                         <div className="flex items-center justify-between gap-3 border-b border-ink pb-4">
                             <h2 className="text-base font-extrabold text-ink">{t('فیلتر و مرتب‌سازی آثار')}</h2>
                             {activeFilterCount > 0 && (
