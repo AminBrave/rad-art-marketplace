@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchArtworkBySlug, artworkKeys } from '../api/artworks';
+import { fetchArtworkBySlug } from '../api/artworks';
+import { artworkKeys } from '../model/queryKeys';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../../../shared/auth';
 import { useLanguage } from '../../../shared/i18n';
