@@ -1,2 +1,2 @@
-// Compatibility facade. The artist artwork studio is owned by the artworks feature.
-export { default } from '../features/artworks/pages/ArtworkStudio';
+// Compatibility facade. This domain module is owned by its feature public entry point.
+export { ArtworkStudio as default } from '../features/artworks';
