@@ -519,7 +519,7 @@ export default function ArtworkCatalogue() {
                         className="relative hidden min-w-0 lg:sticky lg:block lg:self-start"
                         style={{
                             top: stickyToolbarTop + 16 + (stickyToolbarVisible ? stickyToolbarHeight : 0),
-                            transition: 'top 200ms ease-in-out',
+                            transition: 'top 200ms cubic-bezier(0.4, 0, 0.2, 1)',
                         }}
                     >
                         <aside
