@@ -383,7 +383,7 @@ export default function ArtworkCatalogue() {
             <Dialog open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
                 <DialogContent
                     placement="center"
-                    className="flex h-[min(42rem,calc(100dvh-6rem))] w-[min(26rem,calc(100vw-6rem))] flex-col gap-0 overflow-hidden"
+                    className="flex max-h-[min(88dvh,48rem)] flex-col gap-0 overflow-hidden"
                     aria-label={t('فیلتر و مرتب‌سازی آثار')}
                 >
                     <div className="flex items-start justify-between gap-4 border-b border-divider-section p-5">
