@@ -275,3 +275,10 @@ export function PublicInfoPage({ title, description }) {
     );
 }
 
+
+
+// Compatibility exports for legacy imports; route composition uses the focused modules directly.
+export { RouteLoading, RequireAuth, RequireRole, DashboardIndex, UnauthorizedPage, NotFoundPage } from './router/guards';
+export { ArtistWorkspaceLayout } from './layouts/ArtistLayout';
+export { BuyerWorkspaceLayout } from './layouts/BuyerLayout';
+export { AdminWorkspaceLayout } from './layouts/AdminLayout';
