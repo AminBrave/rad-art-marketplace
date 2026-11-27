@@ -657,7 +657,6 @@ export default function ArtworkCatalogue() {
                             {mobileFilterFades.end && (
                                 <span data-testid="mobile-artwork-filter-fade-bottom" aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-8 bg-gradient-to-t from-paper via-paper/75 to-transparent" />
                             )}
-                        </div>
                     </div>
                     <div className="sticky bottom-0 flex shrink-0 items-center gap-3 border-t border-divider-section bg-paper p-4">
                         <Button
