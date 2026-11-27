@@ -134,7 +134,7 @@ A route is not layout-complete until:
 
 Generic shared components are exported through `resources/js/shared/ui/index.js`. Domain cards and page/workflow skeletons are exported through their owning feature entry points in `resources/js/features/*/index.js`. The former `resources/js/components/ui/index.js` is a deprecated compatibility facade for generic UI only.
 
-### 4.1 Actions and form controls — `primitives.jsx`
+### 4.1 Low-level actions and form controls — `controls.jsx` and `forms.jsx`
 
 | Component | Responsibility | Current API / behavior |
 |---|---|---|
