@@ -15,7 +15,7 @@ Use for server-side behavior, persistence, API contracts, background work and ex
 
 ## Workflow
 
-1. Inspect composer manifests, routes, middleware, controllers, Form Requests, policies, models, migrations, resources and relevant tests.
+1. Inspect composer manifests, routes, middleware, controllers, Form Requests, policies, models, migrations, resources and relevant tests when they are in scope.
 2. Trace the request lifecycle and identify trust boundaries and data ownership.
 3. Validate input and enforce authorization on the server for every sensitive read and write.
 4. Use constraints, transactions, idempotency and locking only where business invariants require them.
