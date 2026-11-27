@@ -9,13 +9,13 @@ import {
 } from './guards';
 
 const HomePage = lazy(() => import('../HomePage'));
-const ArtworkCatalogue = lazy(() => import('../../features/artworks/pages/ArtworkCatalogue'));
-const ArtworkDetailPage = lazy(() => import('../../features/artworks/pages/ArtworkDetailPage'));
-const ArtistProfilePage = lazy(() => import('../../features/artists/pages/ArtistProfilePage'));
-const ArtistDirectoryPage = lazy(() => import('../../features/artists/pages/ArtistDirectoryPage'));
+const ArtworkCatalogue = lazy(() => import('../../features/artworks').then((module) => ({ default: module.ArtworkCatalogue })));
+const ArtworkDetailPage = lazy(() => import('../../features/artworks').then((module) => ({ default: module.ArtworkDetailPage })));
+const ArtistProfilePage = lazy(() => import('../../features/artists').then((module) => ({ default: module.ArtistProfilePage })));
+const ArtistDirectoryPage = lazy(() => import('../../features/artists').then((module) => ({ default: module.ArtistDirectoryPage })));
 const PublicInfoPage = lazy(() => import('../PublicInfoPages'));
 const AuthPage = lazy(() => import('../AuthPage'));
-const ArtistWorkspaceOverview = lazy(() => import('../../features/artist/pages/ArtistWorkspaceOverview'));
+const ArtistWorkspaceOverview = lazy(() => import('../../features/artist').then((module) => ({ default: module.ArtistWorkspaceOverview })));
 const BuyerDashboardHome = lazy(() => import('../../features/buyer').then((module) => ({ default: module.BuyerDashboardHome })));
 const AdminDashboardHome = lazy(() => import('../../features/admin').then((module) => ({ default: module.AdminDashboardHome })));
 const AdminArtworkModeration = lazy(() => import('../AdminWorkspace').then((module) => ({ default: module.AdminArtworkModeration })));
