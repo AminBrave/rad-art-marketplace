@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import { fetchArtworkFilters, fetchArtworks } from '../features/artworks/api/artworks';
+import { artworkKeys } from '../features/artworks/model/queryKeys';
 import { useSearchParams } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { useLanguage } from './LanguageContext';
@@ -23,39 +24,25 @@ export default function ArtworkCatalogue() {
     useEffect(() => setSearchInput(search), [search]);
 
     const filtersQuery = useQuery({
-        queryKey: ['artwork-catalogue', 'filters'],
-        queryFn: async ({ signal }) => {
-            const [categoryResponse, filterResponse] = await Promise.all([
-                axios.get('/api/v1/categories', { signal }),
-                axios.get('/api/v1/artwork-filters', { signal }),
-            ]);
-
-            return {
-                categories: categoryResponse.data.data ?? [],
-                filters: filterResponse.data.data ?? emptyFilters,
-            };
-        },
+        queryKey: artworkKeys.filters(),
+        queryFn: ({ signal }) => fetchArtworkFilters({ signal }),
         staleTime: 5 * 60_000,
     });
 
     const artworksQuery = useInfiniteQuery({
-        queryKey: ['artworks', { search, category, medium, availability, sort }],
+        queryKey: artworkKeys.list({ search, category, medium, availability, sort }),
         initialPageParam: 1,
-        queryFn: async ({ signal, pageParam }) => {
-            const { data } = await axios.get('/api/v1/artworks', {
-                params: {
-                    q: search || undefined,
-                    category: category || undefined,
-                    medium: medium || undefined,
-                    availability: availability || undefined,
-                    sort: sort === 'newest' ? undefined : sort,
-                    page: pageParam,
-                },
-                signal,
-            });
-
-            return data;
-        },
+        queryFn: ({ signal, pageParam }) => fetchArtworks({
+            params: {
+                q: search || undefined,
+                category: category || undefined,
+                medium: medium || undefined,
+                availability: availability || undefined,
+                sort: sort === 'newest' ? undefined : sort,
+                page: pageParam,
+            },
+            signal,
+        }),
         getNextPageParam: (lastPage) => (
             lastPage.current_page < lastPage.last_page ? lastPage.current_page + 1 : undefined
         ),
