@@ -163,7 +163,7 @@ function ArtworkActiveFilterChips({
         : "inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-full border border-border bg-paper px-3 text-xs font-semibold text-ink hover:border-terracotta";
     return (
         <div className={`flex min-w-0 items-center gap-2 ${dark ? 'overflow-x-auto overscroll-x-contain whitespace-nowrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden' : 'mt-5 flex-wrap'}`} aria-label={t('معیارهای فعال')}>
-            <span className={`shrink-0 text-xs font-bold ${text-muted}`}>{t('انتخاب شما:')}</span>
+            <span className="shrink-0 text-xs font-bold text-muted">{t('انتخاب شما:')}</span>
             {search && <Button variant="outline" type="button" onClick={() => onRemove({ q: '' })} className={chipClass}>{search}<X size={12} aria-hidden="true" /></Button>}
             {category && <Button variant="outline" type="button" onClick={() => onRemove({ category: '' })} className={chipClass}>{localizedValue(categories.find((item) => item.slug === category), 'name', locale) || category}<X size={12} aria-hidden="true" /></Button>}
             {medium && <Button variant="outline" type="button" onClick={() => onRemove({ medium: '' })} className={chipClass}>{medium}<X size={12} aria-hidden="true" /></Button>}
