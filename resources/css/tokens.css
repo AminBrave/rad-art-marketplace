@@ -53,8 +53,6 @@
     --rd-info-surface: color-mix(in srgb, var(--rd-info) 12%, var(--rd-surface));
     --rd-accent-surface: color-mix(in srgb, var(--rd-action) 9%, var(--rd-surface));
     --rd-focus-soft: color-mix(in srgb, var(--rd-focus) 14%, transparent);
-    --rd-focus-ring-width: 3px;
-    --rd-focus-ring-offset: 3px;
 
     /* Layer 3 — Component tokens: scoped visual recipes for named patterns. */
     /* Editorial hero roles — independent from inverse text. */
@@ -70,6 +68,10 @@
     --rd-skeleton-highlight: #F8F6F2;
     --rd-message-own: color-mix(in srgb, var(--rd-brand-terracotta) 12%, var(--rd-surface));
     --rd-message-peer: var(--rd-surface);
+    --rd-focus-ring-width: 3px;
+    --rd-focus-ring-offset: 3px;
+    --rd-artwork-ratio: 3 / 4;
+    --rd-portrait-ratio: 4 / 5;
 
     /* Primitive tokens: typography families, scale and weights. */
     /* Typography */
@@ -128,8 +130,6 @@
     --rd-control-height-md: 2.75rem;
     --rd-control-height-lg: 3rem;
     --rd-content-reading-width: 48rem;
-    --rd-artwork-ratio: 3 / 4;
-    --rd-portrait-ratio: 4 / 5;
 
     /*
      * One-way compatibility aliases. --rd-* tokens are authoritative; legacy
@@ -273,6 +273,8 @@
     --rd-focus-soft: color-mix(in srgb, var(--rd-focus) 16%, transparent);
     --rd-shadow-soft: 0 8px 28px rgb(0 0 0 / 18%);
     --rd-shadow-raised: 0 16px 40px rgb(0 0 0 / 28%);
+    --rd-focus-ring-width: 3px;
+    --rd-focus-ring-offset: 3px;
 }
 
 /* System preference applies only when the user has not selected light/dark. */
@@ -322,5 +324,7 @@
         --rd-message-peer: var(--rd-surface-raised);
         --rd-shadow-soft: 0 8px 28px rgb(0 0 0 / 18%);
         --rd-shadow-raised: 0 16px 40px rgb(0 0 0 / 28%);
+        --rd-focus-ring-width: 3px;
+        --rd-focus-ring-offset: 3px;
     }
 }

@@ -90,7 +90,8 @@ The application currently has buyer–artist messaging. Inspect the current conv
 - Application routes: resources/js/app/AppRouter.jsx
 - Workspace navigation: resources/js/app/workspaceNavigation.js
 - Shared UI public entry point: `resources/js/shared/ui/index.js` (legacy compatibility facade: `resources/js/components/ui/index.js`).
-- Global styles and tokens: resources/css/app.css
+- Canonical tokens: `resources/css/tokens.css`
+- Tailwind entry point and global styles: `resources/css/app.css`
 
 Verify these paths and their current contents before relying on them.
 

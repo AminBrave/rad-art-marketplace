@@ -18,10 +18,8 @@ Do not introduce microfrontends, a new global state manager, service/repository 
 ```text
 resources/
   css/
-    app.css
-    tokens.css          # only if/when token extraction is justified
-    themes.css          # only if/when theme extraction is justified
-    base.css            # only if/when base-style extraction is justified
+    app.css             # Tailwind entry point, global and component styles
+    tokens.css          # canonical primitive, semantic and component tokens
   js/
     app/
       App.jsx
@@ -59,7 +57,7 @@ resources/
       utils/
 ```
 
-`resources/css/tokens.css` is the canonical token source and is imported by `resources/css/app.css`; Tailwind utilities map to its semantic values. This is a destination, not a folder-creation checklist. Create a directory only when it has real code to own. Existing files may remain in their current locations behind compatibility exports while a feature is migrated.
+`resources/css/tokens.css` is the canonical token source and is imported by `resources/css/app.css`; Tailwind utilities map to its semantic values. `resources/css/tokens.css` is the canonical token source and is imported by `resources/css/app.css`; Tailwind maps to those values. This is a destination, not a folder-creation checklist. Create a directory only when it has real code to own. Existing files may remain in their current locations behind compatibility exports while a feature is migrated.
 
 ## 2. Ownership boundaries
 
