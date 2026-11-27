@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
-import { Check, ChevronDown, Filter, RotateCcw, SlidersHorizontal, X } from 'lucide-react';
+import { Check, RotateCcw, SlidersHorizontal, X } from 'lucide-react';
 import { fetchArtworkFilters, fetchArtworks } from '../api/artworks';
 import { artworkKeys } from '../model/queryKeys';
 import { useLanguage } from '../../../shared/i18n';
@@ -22,12 +22,11 @@ function FilterGroup({ title, hint, options, value, onChange, allLabel, scroll =
                 <span className="block text-sm font-extrabold text-ink">{title}</span>
                 {hint && <span className="mt-1 block text-xs leading-5 text-muted">{hint}</span>}
             </legend>
-            <div className={scroll ? 'grid max-h-56 grid-cols-2 gap-2 overflow-y-auto pe-1' : 'flex flex-wrap gap-2'} role="radiogroup" aria-label={title}>
+            <div className={scroll ? 'grid max-h-56 grid-cols-2 gap-2 overflow-y-auto pe-1' : 'flex flex-wrap gap-2'} role="group" aria-label={title}>
                 {allLabel && (
                     <button
                         type="button"
-                        role="radio"
-                        aria-checked={!value}
+                        aria-pressed={!value}
                         onClick={() => onChange('')}
                         className={`inline-flex min-h-10 items-center justify-between gap-2 border px-3 text-start text-xs font-semibold transition ${!value ? 'border-terracotta bg-terracotta/10 text-terracotta-strong' : 'border-border bg-paper text-muted hover:border-ink/40 hover:text-ink'}`}
                     >
@@ -41,9 +40,8 @@ function FilterGroup({ title, hint, options, value, onChange, allLabel, scroll =
                         <button
                             key={option.value}
                             type="button"
-                            role="radio"
-                            aria-checked={selected}
-                            onClick={() => onChange(selected ? '' : option.value)}
+                            aria-pressed={selected}
+                            onClick={() => onChange(option.value)}
                             className={`inline-flex min-h-10 items-center justify-between gap-2 border px-3 text-start text-xs font-semibold transition ${selected ? 'border-terracotta bg-terracotta/10 text-terracotta-strong' : 'border-border bg-paper text-muted hover:border-ink/40 hover:text-ink'}`}
                         >
                             <span className="min-w-0 truncate">{option.label}</span>
@@ -88,7 +86,6 @@ function FilterPanel({ categories, filters, values, onChange, onClear, locale, t
                     <FilterGroup title={t('تکنیک و مواد')} hint={t('رسانه و شیوه خلق اثر')} options={mediumOptions} value={values.medium} onChange={(value) => onChange({ medium: value })} allLabel={t('همه تکنیک‌ها')} />
                     <FilterGroup title={t('وضعیت اثر')} options={availabilityOptions} value={values.availability} onChange={(value) => onChange({ availability: value })} allLabel={t('همه وضعیت‌ها')} />
                     <FilterGroup title={t('چیدمان گالری')} hint={t('ترتیب نمایش آثار')} options={sortOptions} value={values.sort} onChange={(value) => onChange({ sort: value || 'newest' })} />
-                    </div>
                 </div>
             </div>
             <div className={compact ? 'mt-4 flex shrink-0 gap-2 border-t border-border pt-4' : 'mt-4 border-t border-border pt-4'}>
@@ -213,7 +210,7 @@ export default function ArtworkCatalogue() {
     const removeChip = (key) => {
         if (key === 'q') {
             setSearchInput('');
-            updateFilters({ q: '' });
+            setQueryFilters(values, '');
         } else {
             updateFilters({ [key]: key === 'sort' ? 'newest' : '' });
         }
