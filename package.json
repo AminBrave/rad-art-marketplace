@@ -25,6 +25,7 @@
     "test:report": "node scripts/project.mjs test:report",
     "test:reporting": "node scripts/project.mjs test:reporting",
     "lint": "eslint resources/js --max-warnings=0",
+    "architecture:frontend": "node scripts/check-frontend-architecture.mjs",
     "lint:fix": "eslint resources/js --fix",
     "a11y:colors": "node --test tests/js/colorAccessibility.test.js",
     "build:cpanel": "node scripts/package-cpanel.js",
