@@ -353,7 +353,7 @@ export default function ArtworkCatalogue() {
                 />
 
                 <div className="mt-8 grid min-w-0 gap-8 lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-9">
-                    <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start" aria-label={t('فیلتر و مرتب‌سازی آثار')}>
+                    <aside data-testid="artwork-filter-sidebar" tabIndex={0} className="hidden min-w-0 overscroll-y-contain lg:sticky lg:top-24 lg:block lg:max-h-[calc(100dvh-6rem)] lg:self-start lg:overflow-y-auto" aria-label={t('فیلتر و مرتب‌سازی آثار')}>
                         <div className="flex items-center justify-between gap-3 border-b border-ink pb-4">
                             <h2 className="text-base font-extrabold text-ink">{t('فیلتر و مرتب‌سازی آثار')}</h2>
                             {activeFilterCount > 0 && (
