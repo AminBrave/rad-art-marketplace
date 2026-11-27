@@ -1,61 +1,26 @@
-# Rademan — AI working guide
+# Rademan — contributor entry point
 
-This is the short entry point for AI-assisted work. Follow the user's current task, inspect relevant evidence and use the focused references below.
+Follow the user's latest explicit direction for the requested outcome, scope and trade-offs. Repository guidance and AI recommendations support the work; they do not override the user.
 
-## 1. User direction and engineering judgment
+## Before changing code
+- Inspect the current implementation, callers, configuration and relevant documentation. Treat source and runtime evidence as the authority for what exists.
+- Read only the references relevant to the task; do not load the whole documentation set by default.
+- Verify commands and dependency versions in the current manifests and scripts.
+- Separate confirmed facts, assumptions, proposals and unknowns. Do not claim checks, approvals or repository actions that were not observed.
 
-- The user's latest explicit instructions define the intended outcome, scope, priorities and trade-offs. They supersede repository defaults, agent preferences, skills, templates and historical decisions, within applicable platform and safety requirements.
-- No architecture, dependency, workflow, design system, branch convention or previous decision is permanently protected from change by repository guidance.
-- Apply current engineering best practices with judgment. Explain material risks and alternatives without turning recommendations into unnecessary approval gates.
-- Ask only when an unresolved answer materially changes the solution. Otherwise make a reasonable, reversible assumption and proceed.
-- Old issues, PRs, branches, commits and session notes are historical evidence, not automatic future requirements.
+## Engineering
+Prefer secure, accessible, reliable, maintainable solutions proportionate to the task. Understand existing patterns, preserve valuable behavior and contracts, and improve weak abstractions when the task justifies it. Avoid speculative layers, unnecessary dependencies and unrelated cleanup.
 
-## 2. Understand the project
+## Documentation map
+- `AI/README.md` — documentation index and reading map.
+- `AI/PROJECT.md` — current product context.
+- `AI/ARCHITECTURE.md` — source-backed implementation map and ownership.
+- `AI/DEVELOPMENT.md` — engineering approach, task routing, Git and delivery.
+- `AI/DESIGN-SYSTEM.md` — current visual system, tokens and shared UI.
+- `AI/LOCALIZATION.md` — Persian/English and RTL/LTR implementation.
+- `AI/SECURITY.md` — security and privacy guidance.
 
-- Inspect relevant source, configuration, tests and documentation before making implementation claims.
-- Source code and runtime evidence describe current implementation; the user's current direction defines what should become.
-- Verify versions and commands in current manifests and scripts.
-- Separate confirmed facts, assumptions, proposals and unknowns. Never invent test results, approval or repository state.
+Use the owning document as the canonical reference. Keep documentation aligned with current code; remove stale instructions instead of preserving parallel histories.
 
-## 3. Engineering approach
-
-Prefer correct, secure, privacy-conscious, reliable, accessible and maintainable solutions proportionate to the problem. Understand existing patterns; reuse good abstractions and improve or replace poor ones when justified. Avoid speculative architecture, unnecessary dependencies and unrelated cleanup. Trace cross-layer behavior when relevant.
-
-See AI/DEVELOPMENT-GUIDE.md for the central engineering guide and AI/TASK-ROUTING.md for task classification, context selection and evidence-based decision-making.
-
-## 4. Branching and parallel work
-
-Follow AI/DEVELOPMENT-WORKFLOW.md for branch naming, PR targets, integration and handoff.
-
-- Default to a short-lived task branch from `main` and a PR to `main`. Persistent agent lanes are optional and intended for genuinely parallel work.
-- When lanes are used, each agent owns its lane and task branches; task PRs target only that agent's lane.
-- Cross-agent integration is explicit and owner-directed. Do not merge task work into another agent's lane or `main` outside the selected workflow.
-- Inspect live remote branch state before creating nested refs. Never force, delete or rewrite a legacy ref to satisfy a naming convention.
-- Coordinate shared files and contracts before overlapping edits. Do not assume remote state reveals local uncommitted work.
-
-## 5. GitHub task management
-
-Use GitHub issues and pull requests to coordinate substantial or parallel work, not as mandatory ceremony for every small change. AI/TASK-MANAGEMENT.md defines practical task ownership, issue structure, labels and optional board use.
-
-- One clearly owned task per task branch; link its issue and PR when tracking is useful.
-- The user's task assignment authorizes the requested work. Board status, labels and old backlog items do not independently authorize it.
-- Check live issue/PR and branch state before relying on them. Avoid duplicate tasks and conflicting edits.
-- Keep PRs focused, reviewable and explicit about target branch, verification and integration dependencies.
-
-## 6. Execution and risk
-
-Run proportionate local development checks when useful and safe; report exactly what ran. Inspect scripts and environment before database-backed or stateful tests. Be deliberate with production, destructive, irreversible or shared-state actions. Confirm target and authorization when the user has not already clearly requested the action. Never force-push or rewrite shared history casually.
-
-## 7. Documentation and skills
-
-- AI/DEVELOPMENT-GUIDE.md is the central engineering reference.
-- AI/TASK-ROUTING.md owns task classification, reference selection and the decision/execution method.
-- AI/PROJECT.md describes product context; AI/ARCHITECTURE.md describes verified implementation; AI/DESIGN-SYSTEM.md covers design guidance; AI/SECURITY.md covers security.
-- AI/DEVELOPMENT-WORKFLOW.md owns branch and delivery workflow.
-- AI/TASK-MANAGEMENT.md owns GitHub task and project-management guidance.
-- .agents/skills/ contains optional task-focused methods. Load only what helps; skills do not override the user or duplicate global policy.
-- AI may recommend improvements to agent guidance and skills. Keep instructions concise and non-duplicative.
-
-## 8. Before finishing
-
-Summarize changes, important decisions, branches/PRs/commits, verification actually performed, integration status and remaining risks. Distinguish completed task work from work still awaiting integration.
+## Delivery
+Use a task branch and focused PR for substantial changes. Keep related implementation, verification and documentation together. Merge, deploy, release, force-push or perform destructive/shared-state actions only when clearly authorized for the target. Report exact checks run, results, unrun checks and remaining risks.

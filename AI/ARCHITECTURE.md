@@ -1,68 +1,90 @@
 # Rademan — current architecture
 
-This is the source-backed map of the implementation on main. It describes current ownership and entry points, not an aspirational target. Re-check source and manifests before relying on version-specific or runtime claims.
+This document maps the current implementation. Re-check the referenced source and manifests before relying on version-specific details; update this file whenever ownership, entry points, routes or quality commands change.
 
 ## Technology
 
-The current manifests declare PHP 8.3+, Laravel 13, React 18, JavaScript, React Router 7, TanStack Query 5, Vite 8 and Node 20.19+. package.json owns frontend scripts; composer.json owns PHP scripts and dependencies.
+The current manifests declare PHP 8.3+, Laravel 13, React 18, JavaScript, React Router 7, TanStack Query 5, Vite 8 and Node 20.19+. PHP dependencies and scripts are defined in `composer.json`; frontend dependencies and scripts are defined in `package.json`.
 
-## Application entry and providers
+## Application entry and composition
 
-- Laravel serves the application; resources/js/app.jsx is the Vite frontend entry.
-- app.jsx creates the React root, installs QueryClientProvider, LanguageProvider and ThemeProvider, and mounts the router. It also exposes a development-only color-accessibility audit helper.
-- resources/js/app/AppRouter.jsx is a compatibility entry point. The active router implementation is resources/js/app/router/AppRouter.jsx.
-- resources/js/app/router/routes.jsx owns route definitions and lazy-loaded route screens; guards.jsx owns authentication, role, dashboard-index, loading, unauthorized and not-found route boundaries.
-- resources/js/app/layouts/ owns the public shell and artist, buyer and admin workspace layouts, shared workspace layout, and navigation composition/configuration.
-- resources/js/app/App.jsx is a development-only design-system specimen entry loaded only when the development URL includes the design-system query parameter.
+- Laravel serves the application; `resources/js/app.jsx` is the Vite React entry point.
+- The entry point installs TanStack Query, localization and theme providers, then mounts the active router.
+- `resources/js/app/router/AppRouter.jsx` is the active router implementation; `resources/js/app/AppRouter.jsx` remains a compatibility entry point.
+- `resources/js/app/router/routes.jsx` owns URL-to-screen composition and lazy route imports.
+- `resources/js/app/router/guards.jsx` owns client-side authentication/role guards and route fallback screens.
+- `resources/js/app/layouts/` owns the public shell, artist/buyer/admin workspace shells, shared workspace composition and navigation configuration.
+- `resources/js/app/App.jsx` is a development-only design-system specimen, loaded from the entry point only for the design-system preview query.
 
-## Route and feature ownership
+## Active routes
 
-The route table is the source of truth for active URL-to-screen composition: resources/js/app/router/routes.jsx.
+The route table in `resources/js/app/router/routes.jsx` is authoritative.
 
-Feature-owned public entry points currently exist under:
-- resources/js/features/artworks/ — catalogue, detail, artwork studio, artwork page composition, artwork cards, APIs, query keys and loading compositions.
-- resources/js/features/artists/ — artist directory/profile, artist cards, APIs, query keys and loading compositions.
-- resources/js/features/artist/ — artist workspace overview, profile settings, artist artwork route composition and related loading compositions.
-- resources/js/features/buyer/ — buyer workspace experience and loading compositions.
-- resources/js/features/admin/ — admin dashboard, editorial experience and domain loading compositions.
-- resources/js/features/messaging/ — messaging page orchestration, composer, timeline, inbox, headers, status banners, query helpers and loading compositions.
-- resources/js/features/collections/ and resources/js/features/home/ — currently expose loading compositions; their public page implementations remain in the app layer.
+| Area | Current paths |
+|---|---|
+| Public | `/`, `/artworks`, `/artworks/:slug`, `/artists`, `/artists/:slug`, `/collections`, `/collections/:slug`, `/about`, `/help`, `/contact`, `/login`, `/register`, `/unauthorized` |
+| Buyer | `/dashboard/buyer`, `/dashboard/buyer/messages`, `/dashboard/buyer/settings` |
+| Artist | `/dashboard/artist`, `/dashboard/artist/profile`, `/dashboard/artist/settings`, `/dashboard/artist/artworks`, `/dashboard/artist/artworks/new`, `/dashboard/artist/messages` |
+| Admin | `/admin`, `/admin/users`, `/admin/artworks`, `/admin/message-reports`, `/admin/artwork-comment-reports`, `/admin/editorial`, `/admin/settings` |
 
-Some route screens intentionally remain in resources/js/app/: HomePage.jsx, AuthPage.jsx, PublicInfoPages.jsx, EditorialPages.jsx, and AdminWorkspace.jsx. RoutingPages.jsx still owns workspace settings and compatibility exports. These are active modules where referenced by router/routes.jsx, not proven-dead files. Continue migration only when ownership and callers can be moved coherently.
+Route screens still implemented in `resources/js/app/` include the homepage, authentication, public information, editorial collection pages and several admin screens. Their presence is intentional where the route table references them; do not infer that an app-layer file is unused because a feature folder exists.
+
+## Feature ownership
+
+- `resources/js/features/artworks/` — artwork catalogue/detail/studio/gallery, artwork components, API functions and query keys.
+- `resources/js/features/artists/` — public artist directory/profile, artist components, API functions and query keys.
+- `resources/js/features/artist/` — artist workspace overview, profile settings and artwork route composition.
+- `resources/js/features/buyer/` — buyer workspace experience.
+- `resources/js/features/admin/` — admin dashboard and editorial experience; some active moderation/user/report screens remain in `app/AdminWorkspace.jsx`.
+- `resources/js/features/messaging/` — messaging orchestration, inbox, conversation, composer, components and query helpers.
+- `resources/js/features/collections/` and `resources/js/features/home/` currently expose loading compositions; their public page implementations remain in `app/`.
+
+Feature consumers should use each feature's public `index.js` entry point. Cross-feature imports must not reach into another feature's internal pages, hooks or components.
 
 ## Shared infrastructure and UI
 
-- resources/js/shared/auth/ owns authentication context and hook.
-- resources/js/shared/i18n/ owns Persian/English dictionaries, locale provider/hook and document language/direction synchronization.
-- resources/js/shared/theme/ owns theme context/provider/hook and theme persistence/system preference.
-- resources/js/shared/api/ owns the configured Axios client and normalized transport-error helpers.
-- resources/js/shared/ui/ owns generic controls, forms, layout, navigation, feedback, overlays, media and reusable compositions. Its public entry point is index.js.
-- resources/js/lib/ contains the TanStack Query client, class-name merger and color-accessibility audit utilities.
-- resources/js/utils/ contains localized-content and artwork-price formatting helpers.
-- resources/js/components/ui/ is a deprecated generic-UI compatibility facade. New imports should use resources/js/shared/ui/.
-- resources/js/app/ retains compatibility facades for the router, layouts and shared auth/locale/theme APIs. A compatibility facade is not evidence that the old implementation still owns the capability.
+- `resources/js/shared/auth/` — authentication context and hook.
+- `resources/js/shared/i18n/` — locale dictionaries, provider/hook and document language/direction synchronization.
+- `resources/js/shared/theme/` — theme context/provider/hook and theme preference handling.
+- `resources/js/shared/api/` — configured Axios transport and normalized transport-error helpers.
+- `resources/js/shared/ui/` — domain-independent controls, forms, compositions, layout, navigation, dialogs, feedback and generic loading components. Public entry point: `index.js`.
+- `resources/js/lib/` — query client, class-name merger and color-accessibility audit utilities.
+- `resources/js/utils/` — localized-content and artwork-price helpers.
+- `resources/js/components/ui/` — deprecated generic UI compatibility facade; new imports belong in `shared/ui/`.
+- Selected `resources/js/app/` modules remain compatibility facades for router, layouts and shared application contracts.
 
-## Styling and design tokens
+## State and dependency boundaries
 
-- resources/css/tokens.css is the canonical primitive, semantic and component token source.
-- resources/css/app.css imports tokens.css before Tailwind layers and owns global/base/application styles.
-- tailwind.config.js maps semantic utilities to canonical CSS variables; it should not become a second source of token values.
-- Artwork frames use the canonical 3:4 aspect-artwork ratio and preserve the complete artwork with object-contain by default. Intentional crops (such as avatars) remain role-specific.
-- See AI/DESIGN-SYSTEM.md, AI/DESIGN-TOKENS.md and AI/DESIGN-SYSTEM-CATALOGUE.md for design contracts and component guidance.
+- TanStack Query owns remote/server state.
+- React component state/hooks own transient interaction state.
+- URL/search parameters own shareable navigation and filter state.
+- App providers own genuinely cross-route concerns such as authentication, locale and theme.
+- Feature modules own endpoint-specific request functions and query-key factories where migrated; shared API owns transport/session configuration.
+- `shared/` must not depend on `app/` or `features/`. Features must not depend on `app/`; cross-feature dependencies use public entry points. App composition may consume feature public entry points and shared modules.
+- Client-side guards are navigation behavior, not a replacement for server-side authorization, policies or validation.
 
-## State, data and security boundaries
+## Styling
 
-- TanStack Query owns remote/server state; component state owns transient interaction state; URL parameters own shareable navigation/filter state.
-- Feature modules own endpoint-specific API functions and query-key factories where migrated. Legacy route modules may still use direct Axios imports; the shared Axios singleton remains available for compatibility.
-- Client-side route guards improve navigation but do not replace Laravel authorization, policies or validation.
-- Messaging is a substantial domain; inspect its current server contracts, authorization, attachments, synchronization and moderation behavior before changing it.
+- `resources/css/tokens.css` is the canonical primitive, semantic and component token source.
+- `resources/css/app.css` imports tokens and owns global/base/application styles.
+- `tailwind.config.js` maps utilities to canonical tokens; it must not become a competing token source.
+- Artwork media uses the 3:4 artwork ratio and `object-contain` where the complete artwork should remain visible. Cropping is role-specific (for example, avatars).
 
-## Architecture enforcement
+See [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md) for token and component usage.
 
-Run npm run architecture:frontend to check dependency direction across app, features, shared, the deprecated shared-UI facade, and the root lib/utils modules. The checker is a lightweight static guard, not a full JavaScript module resolver or proof of runtime correctness. The same check runs in the frontend quality workflow.
+## Quality commands
 
-See FRONTEND-ARCHITECTURE.md for dependency rules and migration constraints, and FRONTEND-MAINTENANCE.md for the practical maintenance workflow.
+The current frontend scripts in `package.json` include:
 
-## Current staged migration
+```sh
+npm run architecture:frontend
+npm run lint
+npm run production
+npm run quality:frontend
+```
 
-Stages 1–6 of Issue #294 are complete and merged to main through PRs #295–#300. Stage 7 is the final documentation, cleanup and conformance pass. This does not imply every product route or accessibility scenario in the separate historical overhaul ledger has received full browser or assistive-technology verification.
+`quality:frontend` runs architecture boundaries, ESLint and the production build in sequence. The workflow `.github/workflows/frontend-quality.yml` runs it for the configured frontend changes. The architecture checker is static; it is not a full module resolver or proof of runtime, browser or accessibility correctness.
+
+## Keeping this map current
+
+When a route, feature owner, public export, shared contract, token source or quality command changes, update the relevant section in this document in the same PR. Remove paths once they are no longer current; do not preserve migration-stage status or old branch history here.

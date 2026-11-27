@@ -1,180 +1,77 @@
-# Rademan — design and experience guidance
+# Rademan — current design system
 
-This document describes useful design principles and the current product context. It is guidance, not a fixed specification. The user's latest direction can change the information architecture, visual language, interaction model, platform priorities or design system.
+This document describes the visual foundations and shared UI implementation currently in the repository. The source code is authoritative; update this reference when tokens, component ownership or shared patterns change.
 
-## Current UI catalogue
+## Design principles
 
-The implementation-level component and pattern inventory is maintained in [`AI/DESIGN-SYSTEM-CATALOGUE.md`](./DESIGN-SYSTEM-CATALOGUE.md). Use that catalogue alongside this principles document and the [complete application overhaul ledger](./COMPLETE-APPLICATION-OVERHAUL.md). The catalogue records current code behavior and known gaps; it does not imply visual QA completion.
+- Keep artwork and artist content central to discovery.
+- Use clear hierarchy, purposeful whitespace and restrained surfaces; avoid decorative containers that do not clarify relationships.
+- Keep public discovery and authenticated workspaces visually coherent while supporting their different tasks and navigation.
+- Make loading, empty, error, permission, disabled, busy and success states understandable.
+- Design for Persian RTL, English LTR and mixed-direction content.
+- Support responsive layouts, keyboard interaction, visible focus and reduced motion.
+- Preserve meaning and legibility in both light and dark themes.
 
-## Design objective
+## Token source and layers
 
-Create a distinctive, usable art platform that makes artwork discovery and artist–audience interaction feel clear and considered. Choose the right experience for the requested users, task and device rather than forcing every feature into a pre-existing layout.
+Canonical source: `resources/css/tokens.css`. It is imported by `resources/css/app.css`; `tailwind.config.js` maps utilities to the CSS variables.
 
-## Product information architecture
+The token file has three layers:
 
-Organize discovery, artist presentation, buyer journeys and administrative work around clear user goals. Keep navigation, page hierarchy and content relationships coherent across public pages and role-based workspaces; verify route behavior and permissions before changing the information architecture.
+1. **Primitives:** brand anchors, typography, spacing and geometry.
+2. **Semantic roles:** canvas/surfaces, text, borders/dividers, actions, focus and status colors.
+3. **Component tokens:** named recipes such as editorial heroes, skeletons, messaging surfaces, focus-ring geometry and media ratios.
 
-## Current experience context
+Use semantic `--rd-*` variables in components. Do not add raw palette values or create a second token source in Tailwind. Legacy variables in `tokens.css` are compatibility aliases; do not add new consumers.
 
-The current product is organized around public discovery, buyer experiences, artist experiences and administration. Current navigation and route behavior live in the application; inspect them before changing or documenting them.
+Current brand anchors are Ivory `#F7F5F0`, Charcoal `#242320`, Terracotta `#A64F31`, Sand `#D8C9B7` and Olive `#536052`. Semantic roles adapt for explicit dark mode and system dark preference.
 
-Do not assume that current labels, role boundaries, routes or page composition are permanent. Follow the user's requested product model and update the implementation and documentation coherently.
+## Media
 
-## Design workflow
+- Artwork frame ratio: 3:4 (`--rd-artwork-ratio`, Tailwind `aspect-artwork`).
+- Portrait frame ratio: 4:5 (`--rd-portrait-ratio`, Tailwind `aspect-portrait`).
+- Use `object-contain` when the full artwork composition must remain visible.
+- Use `object-cover` only when cropping is intentional, such as portrait avatars or ambient/editorial imagery.
+- Reserve the final frame geometry in loading and unavailable-image states.
 
-1. Understand the users, task, context, content and constraints.
-2. Inspect the current screen, shared components, tokens, routes and related states.
-3. Explore suitable interaction and layout approaches; explain meaningful alternatives when a decision matters.
-4. Design loading, empty, error, success, disabled, permission and recovery states as relevant.
-5. Consider mobile, tablet, desktop, keyboard, assistive technology, RTL and mixed-direction content.
-6. Implement with appropriate reusable patterns without creating abstractions for their own sake.
-7. Review the result against the intended user outcome and revise where needed.
+## Shared UI ownership
 
-Use the smallest process that fits the work. A small UI fix does not require a full discovery exercise or design specification.
+Generic UI is owned by `resources/js/shared/ui/`; import through `resources/js/shared/ui/index.js`.
 
-## Visual system
+The public entry point currently exports:
 
-The existing brand colors—Ivory #F7F5F0, Charcoal #242320, Terracotta #A64F31, Sand #D8C9B7 and Olive #536052—can inform the visual identity. They are not immutable.
+- **Controls:** Button, IconButton, Badge, TextInput, TextareaField, FileInput, SelectField and Checkbox.
+- **Forms:** FormField and SearchField.
+- **Compositions:** PageContainer, PageHeader, SectionHeader, Surface, StatusBadge, WorkspaceHero and DashboardMetricCard.
+- **Navigation:** tabs, dropdown menus, breadcrumbs and pagination.
+- **Overlays:** Dialog, AlertDialog and Tooltip.
+- **Feedback:** Skeleton, EmptyState, ErrorState, SuccessState, PermissionState, UploadFeedback and Toast.
+- **Layout/content:** Container, Section, Box, Flex, Grid, Card, Callout, Separator, Avatar, Table, DataList and related semantic primitives.
+- **Brand:** BrandLogo.
 
-CSS `--rd-*` variables in `resources/css/tokens.css` are the canonical design-token source; `resources/css/app.css` imports that file before Tailwind layers, and `tailwind.config.js` maps utilities directly to the tokens. Legacy `--color-*`, `--text-*`, `--space-*` and related aliases are one-way compatibility bridges and must not be used by new code. The three-layer token contract is documented in [DESIGN-TOKENS.md](DESIGN-TOKENS.md). Choose semantic tokens, typography, spacing, grids, radii, elevation, icons and motion to support the design. Reuse current components when they fit; refactor or replace them when that produces a better result. Do not follow the legacy RAD catalogue as a specification.
+Check the live public export before relying on a component name or adding another shared abstraction. Domain-specific cards and workflow components belong to their owning feature, not shared UI. `resources/js/components/ui/` is a deprecated compatibility facade; new code should not import from it.
 
-### Gestalt application examples
+## Composition and interaction
 
-Apply Gestalt principles to make relationships legible, not to decorate every region:
+- Prefer semantic HTML for headings, paragraphs, lists, tables and landmarks.
+- Use shared controls for common actions and form inputs; keep labels, help and validation feedback associated with the control.
+- Set button types explicitly in forms.
+- Use composition and a small number of meaningful variants rather than many unrelated boolean props.
+- Keep keyboard focus visible. Dialogs and menus must preserve expected keyboard and focus behavior.
+- Use logical CSS properties and direction-neutral layout so RTL and LTR both work.
+- Do not communicate status by color alone.
+- Respect reduced-motion preferences and avoid unnecessary animation.
 
-- **Proximity:** keep an artwork title, artist, price and category closer to one another than to the next artwork; keep each form label, control, hint and error in one compact field group.
-- **Similarity:** repeat the same hierarchy and interaction states for peer artwork cards, artist identities, navigation items and status badges. Similar appearance should signal similar meaning; do not reuse a status color for unrelated actions.
-- **Common region:** use one media frame for an artwork image and its passepartout, one dialog surface for a focused decision, and a dashboard metric surface only when its label/value/context form one unit. Do not wrap every paragraph or section in a card.
-- **Continuity:** align page headers, section headers and content to the same container guides; preserve a clear reading path through navigation and message timelines. Use logical alignment so the path works in RTL and LTR.
-- **Figure-ground:** give the artwork or primary task visual priority. Keep overlays and dialogs distinct from the page behind them, with readable contrast in both themes.
-- **Closure:** use a restrained divider or shared alignment when users can infer a group without a full border. A message thread or open editorial section usually needs rhythm and spacing more than nested boxes.
-- **Prägnanz (good form):** prefer the simplest composition that communicates the relationship. Remove duplicate borders, repeated labels and decorative elements that compete with artwork or the next action.
+## Gestalt in practice
 
-Use these principles in the concrete patterns below: artwork cards prioritize the complete image before metadata; artist cards group identity and profile context; form fields keep labels and validation adjacent; navigation uses consistent active/current cues; page and section headers establish a predictable reading hierarchy; dialogs create a focused common region; status badges pair semantic color with text; message bubbles group by sender and sequence; dashboard metrics pair a value with its label and context.
+- **Proximity:** group related metadata and form labels/errors.
+- **Similarity:** repeat visual treatments only when elements share meaning.
+- **Common region:** frame true groups such as dialogs; do not card-wrap every section.
+- **Continuity:** align page headers and content to shared layout guides.
+- **Figure-ground:** preserve focus on artwork and primary tasks.
+- **Closure:** use spacing and selective dividers before adding full borders.
+- **Prägnanz:** remove redundant borders, labels and decoration.
 
-### Editorial hero surfaces
+## Verification
 
-- Use the shared `.rd-hero-surface` for prominent page heroes and editorial feature panels. It composes a restrained radial accent with a layered surface instead of using `bg-ink` or inverse-text shortcuts.
-- Hero foreground, muted copy, accent, border and glow use dedicated `--rd-hero-*` semantic tokens. Define both explicit dark-theme and system-dark values; do not infer hero contrast from the generic `ink` or `inverse` roles.
-- Keep headings and supporting copy on the hero foreground/muted roles, and make actions contrast against the active hero palette. Decorative geometry must remain non-interactive, avoid clipping content and respect the zero-radius visual language.
-- Apply the same surface to the homepage, shared `PageHeader`, artist directory, artist spotlight, registration CTA and workspace welcome heroes. Their skeleton/loading states should use the same theme-aware background.
-- Hero descendants and media must be shrinkable (`min-width: 0`, `max-width: 100%`). A `.rd-bleed` section must not introduce document-level horizontal scrolling; keep the viewport clipped at the root and never size hero media from intrinsic image width.
-- Hero surface backgrounds span the viewport; all hero content is nested in the shared width-constrained `Container`. For split desktop heroes, use a flexible copy column and a bounded media column with a single gap. Do not combine percentage widths that total 100% with a nonzero gap, and remove auto margins from flex children at desktop breakpoints.
-
-## Accessibility and localization
-
-### Accessible controls, form states, dialogs, menus, notifications
-
-Use the shared Radix-backed primitives for controls and overlays where they fit. Every form control needs a programmatic label, associated help/error text where applicable, visible keyboard focus, and a clear disabled or busy state. Dialogs and menus must preserve keyboard navigation and their expected Escape/outside-dismiss behavior. Notifications and asynchronous updates should use concise, appropriately scoped live announcements rather than making entire interactive regions live.
-
-- Prefer semantic HTML and native platform behavior.
-- Provide meaningful names, labels, focus states and keyboard interactions.
-- Maintain sufficient contrast and do not communicate meaning through color alone.
-- Respect reduced-motion preferences.
-- The document root is the single owner of language and direction. `LanguageProvider` persists the `fa` / `en` preference and updates `<html lang dir>` without changing the current route; do not add `dir="rtl"` to individual components.
-- Keep inline `dir="ltr"` or `dir="auto"` only for technical identifiers, URLs and mixed-direction user content when needed. Prefer logical alignment, spacing, inset and border utilities so layouts adapt to both directions.
-- English UI labels must use the shared translation dictionary. Artist names, artwork titles, biographies and other API/user-authored content remain in their source language unless the API provides localized values.
-- Test both locales for navigation, date/number formatting, mixed Persian/Latin content and responsive layout.
-- Treat WCAG guidance as a design and evaluation reference; describe the actual scope of any conformance assessment accurately.
-
-## Responsive and installable experiences
-
-Design for the devices and usage context relevant to the feature. If installability or offline behavior is requested, inspect the manifest, icons, service worker, lifecycle, storage and network behavior before making implementation claims. Protect private workspace and messaging data when considering caching or offline support.
-
-## Messaging experience
-
-The application currently has buyer–artist messaging. Inspect the current conversation identity, list/history, composer, contextual artwork, permissions, synchronization, attachments and safety flows before changing it. Avoid accidental duplicate destinations or data-contract changes. These are considerations for informed design, not a prohibition on user-requested redesign.
-
-## Implementation references
-
-- Route definitions: resources/js/app/router/routes.jsx (router entry: resources/js/app/router/AppRouter.jsx; compatibility facade: resources/js/app/AppRouter.jsx)
-- Workspace navigation: resources/js/app/workspaceNavigation.js
-- Shared UI public entry point: `resources/js/shared/ui/index.js` (legacy compatibility facade: `resources/js/components/ui/index.js`).
-- Canonical tokens: `resources/css/tokens.css`
-- Tailwind entry point and global styles: `resources/css/app.css`
-
-Verify these paths and their current contents before relying on them.
-
-
-## Component architecture and consistency contract
-
-The application uses a layered component model. Page files compose user journeys; they should not redefine the visual implementation of common controls.
-
-### Ownership
-
-`resources/js/shared/ui/` is the domain-independent component owner. Its public entry point is `index.js`; app code should import from that entry point rather than implementation files.
-- `controls.jsx`: low-level accessible actions and inputs (`Button`, `IconButton`, `Badge`, `TextInput`, `TextareaField`, `FileInput`, `SelectField`, `Checkbox`).
-- `forms.jsx`: form compositions (`FormField`, `SearchField`) that coordinate labels, controls and submission behavior.
-- `compositions.jsx`: reusable page and information compositions (`PageHeader`, `SectionHeader`, `WorkspaceHero`, `DashboardMetricCard`, `Surface`, `StatusBadge`).
-- `layout.jsx`, `navigation.jsx`, `feedback.jsx`, `Dialog.jsx`, `AlertDialog.jsx`, `Tooltip.jsx`, and `BrandLogo.jsx`: domain-independent layout, navigation, feedback, overlay and brand building blocks.
-- `features/<domain>/components/`: owns domain-specific cards and page/workflow skeletons. Artwork and artist cards are no longer shared UI components; admin, messaging, collections, buyer, artist-workspace and home skeletons live with their owning feature.
-- `resources/js/components/ui/` remains a deprecated compatibility facade for old imports. New code must not add imports from this path.
-
-### Non-negotiable form contract
-
-- Use `FormField` for visible labels, required indicators, help text and validation feedback.
-- Use `TextInput`, `TextareaField`, `SelectField`, `Checkbox` and `FileInput` for their matching controls. Do not add page-local control-class constants for ordinary form controls.
-- Shared controls own baseline height, typography, border, background, focus, disabled and invalid states. Pages may pass a small layout or semantic variant through `className`; they must not restyle the full control from scratch.
-- Keep native file inputs encapsulated in `FileInput`, including visually-hidden attachment pickers.
-- Use `Button` for actions and `IconButton` for icon-only actions. Always set the intended button type explicitly in forms.
-- Preserve native semantic elements when no shared component adds value (for example, headings, paragraphs, tables, lists, and form/landmark elements).
-- Shared controls must forward refs when consumers need focus management, support controlled and uncontrolled usage where appropriate, and preserve native input attributes.
-
-### Section rhythm and headings
-
-- Separate major page sections with generous, consistent vertical breathing room. Use the shared `SectionHeader` for a compact editorial heading: a short accent marker, concise title, optional supporting line and a quiet bottom rule. Avoid large banners or repeated decorative framing for ordinary sections. The `Section` primitive owns major-section spacing (`py-16 sm:py-24`). `Container` owns width and gutters only; it never adds implicit vertical padding. Workspace shells provide the page gutter, so nested workspace containers remain padding-free.
-- Keep spacing inside cards and between related controls tighter than spacing between major sections. Do not compensate for section rhythm with extra borders or decorative separators.
-
-### Card and surface contract
-
-- Use the shared `Card` for coherent information groups, dashboard metrics, editorial steps, featured people and grouped controls. A card uses a complete one-pixel boundary and a semantic surface; keep all corners square and avoid `border-y` plus transparent backgrounds for objects that should read as cards.
-- Use proximity and spacing inside a card before adding nested borders. Use `border-divider-nested` only for true internal separation.
-- Interactive cards need one clear hit target, visible keyboard focus and a hover state that does not depend on color alone. Keep action links/buttons semantically distinct when a card contains multiple actions.
-- Square geometry is owned by `--rd-radius-0` and Tailwind's border-radius theme mapping. Do not add global `*` selectors, `!important`, or component-level radius overrides. Shared components should omit radius utilities; legacy utilities resolve to the zero token during migration.
-
-### Review and migration rules
-
-Before adding or changing a control, search the shared UI barrel and reuse the closest component. When a repeated pattern has materially different semantics, add an explicit variant to the shared component rather than creating a one-off page implementation. Review all route-level screens for raw interactive controls, duplicated Tailwind strings, inconsistent labels, focus treatment, and error handling. Exceptions must be intentional and documented (for example, a custom canvas editor or a specialized native browser interaction).
-
-## Section-owned content width and full-bleed composition
-
-The public route-level `<main>` and workspace `.rd-page-frame` are content canvases, not content-width containers. The workspace shell may place a navigation rail beside the main column; `Section bleed` expands a section background to the viewport and keeps its inner container aligned with that column. Each section owns its own background and content width. The wide `Container` variant does not need a `rd-container--wide` modifier; width is expressed by the container's width utilities and gutters are supplied by the shared `.rd-container` contract.
-
-- Use the canonical `Container` from `resources/js/shared/ui/layout.jsx`; `PageContainer` is a compatibility alias for existing imports only.
-- Use `Section bleed` for full-viewport backgrounds when a section is nested in a workspace column; its inner wide/reading `Container` is offset to align with the workspace content grid.
-- `width="wide"` provides the standard centered content measure and page gutters.
-- `width="reading"` provides the long-form reading measure and the same page gutters.
-- `width="full"` provides edge-to-edge content without a max-width or automatic gutters.
-- Put full-width backgrounds on the outer `<section>`; put aligned content inside `<Container width="wide">`.
-- Do not recreate content widths with route-specific `max-w-*`, `mx-auto` and `px-*` combinations when the shared Container expresses the intended role.
-- Public and workspace shells may differ in navigation chrome, but ordinary section content must use the same width tokens and alignment conventions.
-- Keep messaging, editors and media viewers as explicit immersive exceptions.
-
-```jsx
-<section className="w-full bg-surface-muted py-12">
-    <Container width="wide">
-        {/* Section content */}
-    </Container>
-</section>
-```
-
-
-## Complete-overhaul visual language
-
-The current overhaul uses an art-journal/editorial direction rather than a generic SaaS dashboard. Apply these rules consistently across public pages, artist/buyer workspaces, administration, messaging, loading states and overlays:
-
-- **Artwork is the primary visual content.** Give images generous space and use the canonical `--rd-artwork-ratio` (3:4) frame throughout discovery, detail, studio and administration views. Keep a passepartout around the media and use `object-contain` so the complete work remains visible; use `object-cover` only for intentional crops such as avatars or editorial/ambient imagery. Never distort or silently crop the artwork.
-- **Use typography and composition for hierarchy.** Prefer strong page titles, concise eyebrow labels, generous vertical rhythm, clear metadata groupings and deliberate asymmetry over piles of cards.
-- **Reduce unnecessary containers.** Use open layouts, dividers, tonal sections and border-led groupings. Reserve filled/raised surfaces for a real interaction or information grouping; do not wrap every item in a card.
-- **Keep geometry consistent.** All elements, controls, media frames, cards, overlays and decorative shapes use zero corner radius. Express hierarchy through spacing, border tint, surface and typography—not rounded silhouettes.
-
-- **Use a tonal, one-pixel rule hierarchy.** Every structural border and separator uses the same 1px thickness; communicate importance only through color tint. Page/major-section boundaries use `--rd-divider-section`; boundaries between peer groups and cards use the lighter `--rd-divider-group`; separators between items or subgroups inside a group use the lightest `--rd-divider-nested`. Keep the hierarchy consistent from top to bottom: a nested rule must never visually outweigh the boundary of its parent group. The tokens adapt with the active theme.
-- **Apply Gestalt grouping deliberately.** Use proximity before drawing a line: related labels, values, controls and metadata should read as one unit through spacing and alignment. Use similarity for repeated controls and cards; use common region only when content truly belongs together. Reserve section rules for changes of subject, group rules for peer clusters, and nested rules for subdivisions. Avoid stacking a card border, inner border and divider around the same content; whitespace and alignment should do most of the grouping.
-- **Keep line geometry invariant.** Borders and separators share the `--rd-line-width` token (1px). Do not make an important boundary thicker; change only its semantic tint. Avoid high-contrast default outlines around nested content.
-- **Use semantic color roles.** Terracotta is the primary accent, ink anchors high-contrast editorial regions, and olive/success/warning/danger are reserved for meaning. Verify both explicit themes and system theme.
-- **Keep interaction feedback precise.** Hover and focus should reveal affordance without shifting content unexpectedly. Motion is restrained and must respect reduced-motion preferences.
-- **Loading states mirror the final composition.** Skeletons must match the page's geometry, tonal regions, spacing and content density; a generic placeholder with different geometry is not an acceptable substitute for a bespoke page frame.
-- **Preserve responsive intent.** A mobile layout may change ordering, density, navigation and controls, but must retain the same information and actions without horizontal overflow.
-- **Maintain bidirectional correctness.** Use logical spacing and borders where possible. Apply `dir="auto"` or explicit LTR treatment to user-provided Latin names, URLs, identifiers and mixed-direction content where needed.
-
-The complete route-by-route, state-by-state and quality-gate ledger is maintained in `AI/COMPLETE-APPLICATION-OVERHAUL.md`. Treat it as the coverage source of truth; this section defines the visual grammar, not a claim that every route has already passed review.
+For affected UI, check the relevant Persian RTL and English LTR states, mixed-direction text, light/dark/system themes, responsive widths, keyboard/focus behavior, loading/error/empty states and reduced motion. Record manual/browser/accessibility checks separately from lint, static architecture checks and production builds.
