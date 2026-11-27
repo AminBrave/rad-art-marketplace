@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import { fetchArtists, artistKeys } from '../features/artists';
 import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from './LanguageContext';
 import { ArtistCard, ArtistCardSkeleton, EmptyState, ErrorState, SearchField, SectionHeader, Button, Section, Container } from '../components/ui';
@@ -15,15 +15,8 @@ export default function ArtistDirectoryPage() {
     useEffect(() => setInput(query), [query]);
 
     const artistsQuery = useQuery({
-        queryKey: ['artists', { query, page }],
-        queryFn: async ({ signal }) => {
-            const { data } = await axios.get('/api/v1/artists', {
-                params: { q: query || undefined, page },
-                signal,
-            });
-
-            return data;
-        },
+        queryKey: artistKeys.directory({ query, page }),
+        queryFn: ({ signal }) => fetchArtists({ query, page, signal }),
         placeholderData: (previousData) => previousData,
         staleTime: 30_000,
     });

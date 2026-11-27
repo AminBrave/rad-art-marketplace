@@ -1,7 +1,4 @@
-import axios from 'axios';
+import { httpClient } from './shared/api/httpClient';
 
-window.axios = axios;
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-window.axios.defaults.headers.common.Accept = 'application/json';
-window.axios.defaults.withCredentials = true;
-window.axios.defaults.withXSRFToken = true;
+// Legacy consumers of window.axios use the same configured shared client.
+window.axios = httpClient;

@@ -1,6 +1,6 @@
 import { forwardRef, useState } from 'react';
 import { cn } from '../../lib/utils';
-import { useLanguage } from '../../app/LanguageContext';
+import { useLanguage } from '../../shared/i18n';
 
 /**
  * RAD's semantic/layout catalogue.

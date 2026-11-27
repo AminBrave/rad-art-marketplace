@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import { fetchArtworkBySlug, artworkKeys } from '../features/artworks';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useLanguage } from './LanguageContext';
@@ -40,11 +40,8 @@ export default function ArtworkDetailPage() {
     const { user } = useAuth();
     const { t, locale } = useLanguage();
     const artworkQuery = useQuery({
-        queryKey: ['artwork', slug, user?.id ?? 'guest'],
-        queryFn: async ({ signal }) => {
-            const { data } = await axios.get('/api/v1/artworks/' + encodeURIComponent(slug), { signal });
-            return data.data;
-        },
+        queryKey: artworkKeys.detail(slug, user?.id),
+        queryFn: ({ signal }) => fetchArtworkBySlug({ slug, signal }),
         enabled: Boolean(slug),
         staleTime: 60_000,
     });

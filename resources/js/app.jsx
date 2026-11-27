@@ -4,8 +4,8 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 import { queryClient } from './lib/queryClient';
 import AppRouter from './app/AppRouter';
-import { ThemeProvider } from './app/ThemeContext.jsx';
-import { LanguageProvider } from './app/LanguageContext.jsx';
+import { ThemeProvider } from './shared/theme';
+import { LanguageProvider } from './shared/i18n';
 import './bootstrap';
 import { auditColorAccessibility } from './lib/colorAccessibility';
 

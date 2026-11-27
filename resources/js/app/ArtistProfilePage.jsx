@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import { fetchArtistProfile, followArtist, unfollowArtist, artistKeys } from '../features/artists';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useLanguage } from './LanguageContext';
@@ -15,15 +15,8 @@ export default function ArtistProfilePage() {
     const [categoryFilter, setCategoryFilter] = useState('');
 
     const profileQuery = useInfiniteQuery({
-        queryKey: ['artist-profile', slug, user?.id ?? 'guest'],
-        queryFn: async ({ pageParam, signal }) => {
-            const { data } = await axios.get('/api/v1/artists/' + encodeURIComponent(slug), {
-                params: { artworks_page: pageParam },
-                signal,
-            });
-
-            return data.data;
-        },
+        queryKey: artistKeys.profile(slug, user?.id),
+        queryFn: ({ pageParam, signal }) => fetchArtistProfile({ slug, pageParam, signal }),
         initialPageParam: 1,
         getNextPageParam: (lastPage) => (
             lastPage.artworks_pagination?.has_more
@@ -80,9 +73,9 @@ export default function ArtistProfilePage() {
     const canFollow = Boolean(profile) && ['buyer', 'artist'].includes(user?.role) && !followState.is_own_profile;
     const followMutation = useMutation({
         mutationFn: () => followState.is_following
-            ? axios.delete('/api/v1/artists/' + encodeURIComponent(slug) + '/follow')
-            : axios.post('/api/v1/artists/' + encodeURIComponent(slug) + '/follow'),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['artist-profile', slug] }),
+            ? unfollowArtist({ slug })
+            : followArtist({ slug }),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: artistKeys.profilePrefix(slug) }),
     });
 
     if (profileQuery.isPending) return <ArtistProfileSkeleton />;

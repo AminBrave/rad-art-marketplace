@@ -1,3 +1,2 @@
-import { createContext } from 'react';
-
-export const ThemeContext = createContext(null);
+// Compatibility facade for legacy app imports.
+export { ThemeContext } from '../shared/theme/themeContext';

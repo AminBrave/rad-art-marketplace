@@ -131,25 +131,25 @@ Do not introduce Redux or another global store unless a concrete requirement dem
 - Keep public entry points intentionally small. Avoid broad barrel exports that create cycles or hide ownership.
 - Components should expose meaningful semantic props and explicit variants/states rather than many unrelated boolean flags.
 
-## 5. Current baseline and known transitional exceptions
+## 5. Current baseline and migration status
 
-The current implementation is still primarily under `resources/js/app/`; a dedicated `resources/js/features/` and `resources/js/shared/` tree has not yet been established. The existing `resources/js/components/ui/` directory is therefore treated as the legacy shared-UI boundary while migration is in progress.
+The frontend is still in an incremental migration: legacy pages and orchestration remain primarily under `resources/js/app/`, while the shared infrastructure and selected feature-owned request modules now have dedicated roots.
 
-The current shared-UI candidate modules have these verified cross-layer imports:
-- `components/ui/cards.jsx` imports `useLanguage` from `app/LanguageContext`; it also contains domain-specific ArtworkCard and ArtistCard compositions.
-- `components/ui/feedback.jsx` imports `useLanguage` from `app/LanguageContext`.
-- `components/ui/layout.jsx` imports `useLanguage` from `app/LanguageContext`.
-- `components/ui/BrandLogo.jsx` imports language and theme hooks from `app/LanguageContext` and `app/useTheme`.
+Stage 2 establishes these ownership boundaries:
+- `shared/i18n/` owns the Persian/English dictionaries, locale provider, translation hook, persisted locale, and document `lang`/`dir` synchronization.
+- `shared/theme/` owns the theme context, provider, hook, persistence, and system-preference synchronization.
+- `shared/api/httpClient.js` configures the existing Axios singleton for the optional `VITE_API_BASE_URL`, credentials, XSRF, and common request headers. It adds normalized Laravel/Axios error metadata as `error.apiError` while re-rejecting the original `AxiosError`, preserving existing response/error handling. `shared/api/errors.js` exports `normalizeApiError` and `getApiError`; the optional API origin is documented in `.env.example`. Keeping the singleton preserves compatibility for legacy modules that still import Axios directly or use `window.axios`.
+- `features/artworks/` and `features/artists/` own the first migrated endpoint functions and query-key factories. Their public `index.js` entry points are the supported imports for app composition during this transitional period.
 
-These are **explicit transitional exceptions**, not desired dependencies. The boundary checker allowlists only these exact file/import pairs so new shared-to-app dependencies are rejected. Stage 2 should move the underlying locale/theme ownership; Stage 3 should separate domain compositions from generic UI. Do not broaden this allowlist. Remove each exception as its dependency is migrated.
+The former `app/LanguageContext.jsx`, `app/ThemeContext.jsx`, `app/themeContext.js`, and `app/useTheme.js` files remain as compatibility facades. The shared UI modules (`BrandLogo.jsx`, `cards.jsx`, `feedback.jsx`, and `layout.jsx`) now consume shared locale/theme APIs directly; they no longer depend on the app layer.
 
-Additional ownership debt to resolve during the component/feature stages:
+Additional ownership debt to resolve during later stages:
 - `components/ui/cards.jsx` contains artwork/artist domain cards; move those compositions to their features.
 - `components/ui/skeletons.jsx` contains page/domain skeleton compositions; keep only generic skeleton primitives shared and move feature-specific skeletons with their pages.
-- `components/ui/index.js` is the current shared-UI aggregation/export surface. Preserve it as a compatibility facade while consumers migrate; narrow or retire exports only after checking all callers.
-- `app/LanguageContext.jsx`, theme modules, `AppRouter.jsx`, `Layouts.jsx` and existing page modules remain in place until their respective stages. Stage 1 does not relocate application code.
+- `components/ui/index.js` remains the shared-UI compatibility export surface; narrow or retire exports only after checking all callers.
+- Many legacy pages and request hooks remain under `app/`; migrate them with their feature in later domain stages rather than moving isolated files prematurely.
 
-This baseline is based on static source inspection of the current `main` branch. It is not a complete semantic dependency graph: runtime-generated imports, reflection and bundler transformations are outside the checker's scope.
+This status is based on static source inspection of the Stage 2 branch. It is not a complete semantic dependency graph: runtime-generated imports, reflection and bundler transformations are outside the checker's scope.
 
 ## 6. Compatibility and migration constraints
 
@@ -175,9 +175,9 @@ The dependency-free Node checker:
 - Rejects shared-to-app and shared-to-feature dependencies.
 - Rejects feature-to-app dependencies and deep cross-feature imports.
 - Rejects app imports that reach into feature internals instead of using a feature entry point.
-- Reports the four exact legacy import exceptions above as transitional warnings.
+- Treats every shared-to-app or shared-to-feature dependency as a violation; no transitional allowlist remains.
 
-The checker is intentionally static and narrow. It does not replace code review, full module resolution, ESLint, build validation or runtime verification. Update its allowlist only when a known legacy dependency is explicitly accepted and documented; the default action is to remove the dependency, not add an exception.
+The checker is intentionally static and narrow. It does not replace code review, full module resolution, ESLint, build validation or runtime verification. Do not add exceptions for legacy dependencies. Keep compatibility facades in the app layer and point shared consumers at shared-owned contracts.
 
 ## 8. Verification checklist for every migration stage
 
