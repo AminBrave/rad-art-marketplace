@@ -4,7 +4,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { ArtworkCard, EmptyState, ErrorState, Button, FormField, TextInput, TextareaField, SuccessState, Checkbox, AlertDialog, AlertDialogTrigger, AlertDialogCancel, AlertDialogAction, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, CollectionCardSkeleton, CollectionDetailSkeleton, AdminEditorialSkeleton, PageHeader, SectionHeader, Container } from '../components/ui';
+import { ArtworkCard, EmptyState, ErrorState, Button, FormField, TextInput, TextareaField, SuccessState, Checkbox, AlertDialog, AlertDialogTrigger, AlertDialogCancel, AlertDialogAction, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, PageHeader, SectionHeader, Container } from '../shared/ui';
+import { CollectionCardSkeleton, CollectionDetailSkeleton } from '../features/collections';
+import { AdminEditorialSkeleton } from '../features/admin';
 import { localizedValue } from '../utils/localizedContent';
 
 export function CollectionIndexPage() {
