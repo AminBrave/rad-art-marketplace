@@ -1,24 +1,36 @@
 ---
 name: feature-planning
-description: Shape feature work into clear outcomes, scope, acceptance criteria and an implementation approach.
+description: Turn product requests and feature ideas into implementable outcomes, scope, acceptance criteria and delivery steps. Use when a feature is ambiguous, cross-layer, high-risk or needs prioritization.
 ---
 
 # Feature planning
 
 ## Purpose
-Create enough clarity to implement the requested change well. Planning should accelerate delivery, not become a mandatory phase gate.
 
-## Approach
-1. Restate the user outcome and affected actors.
-2. Inspect relevant source, data contracts, routes, UI and tests.
-3. Define observable behavior and important edge cases.
-4. Identify dependencies, compatibility concerns and security or privacy implications.
-5. Compare implementation options when the choice materially affects maintainability or risk.
-6. Recommend a small coherent scope and implementation sequence.
-7. Proceed directly when the user asked for implementation and the request is sufficiently clear.
+Create enough clarity to deliver the right user outcome without turning planning into ceremony.
+
+## Use when
+
+Use when there is meaningful uncertainty, multiple affected roles, cross-layer dependencies, migration risk or several plausible solutions. Proceed directly for clear implementation requests.
+
+## Workflow
+
+1. Identify the user, problem, context and observable outcome.
+2. Inspect the current journey, routes, data model, APIs, permissions and related behavior.
+3. Separate confirmed facts from assumptions and open questions.
+4. Define scope, exclusions, acceptance criteria and important failure states.
+5. Identify dependencies, privacy/security risks, accessibility and localization needs.
+6. Compare options only when the choice changes cost, risk or user value; recommend a small coherent scope.
+7. Sequence implementation and verification; proceed when the request is clear and authorized.
 
 ## Rademan context
-The current stack is Laravel, React and JavaScript. Verify installed versions and current conventions. Consider Persian RTL, responsive behavior, accessibility, role boundaries and existing messaging contracts where relevant.
+
+Use [product context](../../../AI/PROJECT.md), [architecture](../../../AI/ARCHITECTURE.md) and [design guidance](../../../AI/DESIGN-SYSTEM.md). Confirm capabilities in source.
+
+## Quality bar
+
+Write acceptance criteria as observable behavior. Include permissions, empty/error states, responsive and RTL/LTR behavior where relevant. Do not invent research, metrics or features.
 
 ## Deliverable
-As needed: outcome, scope, acceptance criteria, assumptions, risks, implementation steps and verification approach. Omit sections that add no value to the task.
+
+A concise problem statement, outcome, scope, acceptance criteria, assumptions, risks and proportionate delivery sequence.

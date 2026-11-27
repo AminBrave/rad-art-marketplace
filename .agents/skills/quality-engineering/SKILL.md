@@ -1,25 +1,36 @@
 ---
 name: quality-engineering
-description: Choose and improve tests, verification, accessibility and performance checks for Rademan changes.
+description: Plan and perform proportionate software verification, testing, accessibility, performance and regression checks. Use when changing behavior, reviewing test coverage, diagnosing CI failures or preparing a release.
 ---
 
 # Quality engineering
 
 ## Purpose
-Provide confidence in behavior and reduce regression risk without unnecessary test ceremony.
 
-## Approach
-1. Identify changed behavior, users, contracts and failure consequences.
-2. Choose the test layers that protect those boundaries: unit, feature/API, integration, frontend or browser.
-3. Prefer observable outcomes and stable contracts over incidental implementation details.
-4. Cover relevant success, failure, boundary and unauthorized paths.
-5. Review existing tests when product behavior or architecture changes; update tests that encode obsolete expectations while preserving meaningful security, privacy and data-integrity coverage.
-6. Use lint, static analysis, builds, accessibility review, performance checks or security tooling when they add evidence.
-7. Run focused checks first and broaden based on risk.
-8. Report exact commands, environment and results. Distinguish tests from lint, builds, scans and manual review.
+Build confidence in observable behavior and reduce regression risk without unnecessary ceremony.
+
+## Use when
+
+Use when a code/configuration change needs verification, test coverage, CI diagnosis or release confidence.
+
+## Workflow
+
+1. Identify changed behavior, affected users, contracts and consequences of failure.
+2. Choose suitable layers: unit, feature/API, integration, frontend interaction, browser journey or manual review.
+3. Cover representative success, boundary, failure, permission and recovery paths.
+4. Prefer observable outcomes and stable contracts over implementation-detail assertions.
+5. Inspect relevant coverage and preserve security, privacy and data-integrity checks.
+6. Run focused checks first, then broaden based on risk and environment.
+7. Report exact commands, environment, results, skipped checks and residual risk.
 
 ## Rademan context
-Current scripts are declared in package.json and composer.json; scripts/project.mjs orchestrates several project commands. Inspect scripts and environment before running database-backed or browser checks. Browser journeys may use the configured application database, so confirm it is a safe development target.
+
+Inspect package.json and composer.json scripts before running them. Follow [engineering practices](../../../AI/DEVELOPMENT.md), [security guidance](../../../AI/SECURITY.md) and [design guidance](../../../AI/DESIGN-SYSTEM.md). Respect scope exclusions, including instructions not to inspect tests.
+
+## Quality bar
+
+Keep tests deterministic and isolated; do not weaken meaningful tests to pass CI. Distinguish tests, lint, builds, scans and manual accessibility/browser checks. Never claim unrun checks passed.
 
 ## Deliverable
-A proportionate verification plan or executed report, including coverage added, checks run, failures, limitations and residual risk. Do not claim that a check ran when it did not.
+
+A proportionate verification plan/report with coverage, commands, results, limitations, failures and remaining risk.

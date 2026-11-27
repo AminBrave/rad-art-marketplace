@@ -1,26 +1,36 @@
 ---
 name: laravel-backend
-description: Build, improve and review Rademan Laravel backend features, APIs, persistence, authorization and integrations.
+description: Implement, debug and review Laravel backend features, APIs, database changes, authorization and integrations. Use when work touches PHP, routes, middleware, controllers, policies, Eloquent, migrations, queues or server-side validation.
 ---
 
 # Laravel backend engineering
 
 ## Purpose
-Deliver correct, secure and maintainable backend behavior using the versions and patterns actually installed in the repository.
 
-## Approach
-1. Inspect composer.json, relevant routes, middleware, controllers, policies, models, migrations, resources and tests.
-2. Trace the full request and data lifecycle.
-3. Keep validation and authorization at trusted server boundaries.
-4. Use transactions, constraints and idempotency where the business invariant requires them.
-5. Design queries and serialization to avoid N+1 access, unbounded results and private-data leakage.
-6. Choose controllers, actions, services, events or jobs according to real complexity; do not add layers by default.
-7. Consider compatibility, migration sequencing, database engine and rollback/recovery.
-8. Add focused tests for observable behavior and important forbidden paths.
-9. Run appropriate checks in a suitable development environment and report exact results.
+Build secure, correct backend behavior using the versions and conventions actually installed.
+
+## Use when
+
+Use for server-side behavior, persistence, API contracts, background work and external integrations.
+
+## Workflow
+
+1. Inspect composer manifests, routes, middleware, controllers, Form Requests, policies, models, migrations, resources and relevant tests.
+2. Trace the request lifecycle and identify trust boundaries and data ownership.
+3. Validate input and enforce authorization on the server for every sensitive read and write.
+4. Use constraints, transactions, idempotency and locking only where business invariants require them.
+5. Shape queries and responses to avoid N+1 access, unbounded results and private-data exposure.
+6. Choose framework primitives and additional layers according to complexity; plan safe migrations.
+7. Add focused coverage for success, validation, forbidden access and failure paths when tests are in scope.
 
 ## Rademan context
-The manifests currently declare PHP 8.3+ and Laravel 13. Verify current versions before using APIs. Browser-facing and api/v1 routes are currently present in routes/web.php; routes/api.php currently includes a health endpoint. This is an observation, not a rule about where routes must live.
+
+Current manifests declare PHP 8.3+ and Laravel 13; verify versions and APIs. Use [architecture](../../../AI/ARCHITECTURE.md) and [security guidance](../../../AI/SECURITY.md). Do not assume route files or infrastructure.
+
+## Quality bar
+
+Prefer framework-supported validation, authorization, serialization and database mechanisms. Avoid mass assignment, IDOR, unsafe dynamic SQL and business rules enforced only in the browser.
 
 ## Deliverable
-Working backend changes with relevant tests, migration or API notes, and a concise verification report.
+
+A cohesive backend implementation with migration/API notes, authorization behavior, relevant coverage and exact verification.
