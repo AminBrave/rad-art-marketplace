@@ -21,7 +21,7 @@ Use for cross-module or cross-layer changes, new integrations, contract changes 
 4. Compare the simplest viable option with alternatives that offer measurable benefits.
 5. Evaluate coupling, compatibility, security, operations, migration and rollback costs.
 6. Recommend one option with trade-offs; record an ADR only for costly or hard-to-reverse decisions.
-7. Implement incrementally and add boundary checks where they protect the decision.
+7. Implement incrementally and add boundary checks where they protect the decision and fit the task's verification scope.
 
 ## Rademan context
 
