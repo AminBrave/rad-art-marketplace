@@ -24,6 +24,10 @@ import { ArtworkCardSkeleton } from '../components/skeletons';
 const emptyFilters = { mediums: [], availability: [], sorts: [] };
 const defaultFilterValues = { q: '', category: '', medium: '', availability: '', sort: 'newest' };
 
+function getSiteHeaderBottom(header = document.querySelector('[data-site-header], header')) {
+    return header ? Math.max(0, header.getBoundingClientRect().bottom) : 0;
+}
+
 function ArtworkFilterControls({
     values,
     categories,
@@ -265,11 +269,25 @@ export default function ArtworkCatalogue() {
     const [draftFilters, setDraftFilters] = useState(currentFilters);
     const loadMoreRef = useRef(null);
     const filterSummaryEndRef = useRef(null);
+    const archiveSectionRef = useRef(null);
     const lastScrollY = useRef(0);
     const suppressScrollDirectionUntil = useRef(0);
     const [stickyToolbarEnabled, setStickyToolbarEnabled] = useState(false);
     const [stickyToolbarVisible, setStickyToolbarVisible] = useState(false);
     const [stickyToolbarTop, setStickyToolbarTop] = useState(0);
+
+    const scrollToArchiveStart = () => {
+        window.requestAnimationFrame(() => {
+            const target = archiveSectionRef.current;
+            if (!target) return;
+
+            const headerBottom = getSiteHeaderBottom();
+            const targetTop = window.scrollY + target.getBoundingClientRect().top - headerBottom - 12;
+            suppressScrollDirectionUntil.current = window.performance.now() + 1500;
+            lastScrollY.current = window.scrollY;
+            window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+        });
+    };
 
     useEffect(() => setSearchInput(search), [search]);
 
@@ -287,7 +305,7 @@ export default function ArtworkCatalogue() {
             : 0;
 
         const measureHeader = () => {
-            const offset = siteHeader ? Math.max(0, siteHeader.getBoundingClientRect().bottom) : 0;
+            const offset = getSiteHeaderBottom(siteHeader);
             setStickyToolbarTop((current) => Math.abs(current - offset) < 1 ? current : offset);
             return offset;
         };
@@ -383,6 +401,7 @@ export default function ArtworkCatalogue() {
         if (next.availability) query.availability = next.availability;
         if (next.sort && next.sort !== 'newest') query.sort = next.sort;
         setParams(query);
+        scrollToArchiveStart();
     };
 
     const submitSearch = (value) => updateFilters({ q: value.trim() });
@@ -392,6 +411,7 @@ export default function ArtworkCatalogue() {
         setSearchInput('');
         setDraftFilters(defaultFilterValues);
         setParams({});
+        scrollToArchiveStart();
     };
 
     const openMobileFilters = () => {
@@ -464,7 +484,7 @@ export default function ArtworkCatalogue() {
                     </aside>
 
                     <div className="min-w-0">
-                        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink pb-4">
+                        <div ref={archiveSectionRef} className="flex flex-wrap items-center justify-between gap-3 border-b border-ink pb-4">
                             <div>
                                 <p className="text-[11px] font-bold tracking-[.12em] text-terracotta-strong">{t('آرشیو آثار')}</p>
                                 <p aria-live="polite" className="mt-1 text-sm font-semibold text-ink">
