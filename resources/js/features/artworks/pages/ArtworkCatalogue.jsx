@@ -123,19 +123,19 @@ export default function ArtworkCatalogue() {
                 </div>
                 <div className="grid gap-3.5 md:grid-cols-2 xl:grid-cols-[minmax(20rem,1.7fr)_repeat(2,minmax(11rem,1fr))]">
                     <SearchField value={searchInput} onChange={(event) => setSearchInput(event.target.value)} onSearch={submitSearch} label={t("جست‌وجو در آثار و هنرمندان")} placeholder={t("عنوان، توضیحات، تکنیک یا نام هنرمند…")} />
-                    <SelectField value={category} onChange={(event) => updateFilters({ category: event.target.value })} aria-label={t("فیلتر دسته‌بندی")}>
+                    <SelectField modal={false} value={category} onChange={(event) => updateFilters({ category: event.target.value })} aria-label={t("فیلتر دسته‌بندی")}>
                         <option value="">{t("همه دسته‌ها")}</option>
                         {categories.map((item) => <option key={item.id} value={item.slug}>{localizedValue(item, 'name', locale)}</option>)}
                     </SelectField>
-                    <SelectField value={medium} onChange={(event) => updateFilters({ medium: event.target.value })} aria-label={t("فیلتر تکنیک و مواد")}>
+                    <SelectField modal={false} value={medium} onChange={(event) => updateFilters({ medium: event.target.value })} aria-label={t("فیلتر تکنیک و مواد")}>
                         <option value="">{t("همه تکنیک‌ها")}</option>
                         {(filters.mediums ?? []).map((item) => <option key={item} value={item}>{t(item)}</option>)}
                     </SelectField>
-                    <SelectField value={availability} onChange={(event) => updateFilters({ availability: event.target.value })} aria-label={t("فیلتر وضعیت اثر")}>
+                    <SelectField modal={false} value={availability} onChange={(event) => updateFilters({ availability: event.target.value })} aria-label={t("فیلتر وضعیت اثر")}>
                         <option value="">{t("همه وضعیت‌ها")}</option>
                         {(filters.availability ?? []).map((item) => <option key={item.value} value={item.value}>{locale === 'en' ? (item.label_en || item.label) : item.label}</option>)}
                     </SelectField>
-                    <SelectField value={sort} onChange={(event) => updateFilters({ sort: event.target.value })} aria-label={t("مرتب‌سازی آثار")}>
+                    <SelectField modal={false} value={sort} onChange={(event) => updateFilters({ sort: event.target.value })} aria-label={t("مرتب‌سازی آثار")}>
                         {(filters.sorts?.length ? filters.sorts : [{ value: 'newest', label: t('جدیدترین') }]).map((item) => <option key={item.value} value={item.value}>{locale === 'en' ? (item.label_en || item.label) : item.label}</option>)}
                     </SelectField>
                     <div className="flex items-center justify-between gap-3">
