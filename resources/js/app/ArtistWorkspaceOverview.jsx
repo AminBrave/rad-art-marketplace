@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useLanguage } from './LanguageContext';
-import axios from 'axios';
+import { fetchArtistWorkspaceArtworks } from '../features/artists/api/artists';
+import { artistKeys } from '../features/artists/model/queryKeys';
 import { Link, useOutletContext } from 'react-router-dom';
 import { EmptyState, ErrorState, StatusBadge, Badge, PageHeader, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton, ArtistRecentWorkSkeleton } from '../components/ui';
 import { localizedValue } from '../utils/localizedContent';
@@ -23,11 +24,8 @@ export default function ArtistWorkspaceOverview() {
     const { t, locale } = useLanguage();
     const { user, profile, profileLoading, profileError } = useOutletContext();
     const artworksQuery = useQuery({
-        queryKey: ['artist-workspace', 'artworks', user?.id],
-        queryFn: async ({ signal }) => {
-            const { data } = await axios.get('/api/v1/artist/artworks', { signal });
-            return data;
-        },
+        queryKey: artistKeys.workspaceArtworks(user?.id),
+        queryFn: ({ signal }) => fetchArtistWorkspaceArtworks({ signal }),
         enabled: !profileLoading && Boolean(profile?.slug),
         staleTime: 60_000,
     });
