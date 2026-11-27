@@ -308,6 +308,70 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
             context.close()
 
 
+    def test_artwork_filter_selects_choose_single_values_without_layout_shift(self):
+        context, page = self.new_page()
+        page.route(
+            "**/api/v1/categories",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({"data": [{"id": 1, "slug": "painting", "name": "نقاشی"}]}),
+            ),
+        )
+        page.route(
+            "**/api/v1/artwork-filters",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({"data": {
+                    "mediums": ["Oil"],
+                    "availability": [{"value": "available", "label": "Available"}],
+                    "sorts": [
+                        {"value": "newest", "label": "Newest"},
+                        {"value": "oldest", "label": "Oldest"},
+                    ],
+                }}),
+            ),
+        )
+        page.route(
+            "**/api/v1/artworks**",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps(artwork_payload()),
+            ),
+        )
+        try:
+            page.goto(BASE_URL + "/artworks", wait_until="domcontentloaded")
+            page.get_by_role("heading", name="گالری آثار").wait_for()
+
+            expected = [
+                ("فیلتر دسته‌بندی", "نقاشی", "category", "painting"),
+                ("فیلتر تکنیک و مواد", "Oil", "medium", "Oil"),
+                ("فیلتر وضعیت اثر", "Available", "availability", "available"),
+                ("مرتب‌سازی آثار", "Oldest", "sort", "oldest"),
+            ]
+            for label, option, query_key, query_value in expected:
+                before = page.evaluate(
+                    "() => ({ width: document.documentElement.clientWidth, scrollY: window.scrollY })"
+                )
+                page.get_by_role("combobox", name=label).click()
+                page.get_by_role("option", name=option, exact=True).click()
+                page.wait_for_url(lambda url: parse_qs(urlparse(str(url)).query).get(query_key) == [query_value])
+                after = page.evaluate(
+                    "() => ({ width: document.documentElement.clientWidth, scrollY: window.scrollY })"
+                )
+                self.assertEqual(after["width"], before["width"], f"{label} changed the desktop viewport width")
+                self.assertEqual(after["scrollY"], before["scrollY"], f"{label} unexpectedly moved the page")
+
+            self.assertEqual(
+                parse_qs(urlparse(page.url).query),
+                {"category": ["painting"], "medium": ["Oil"], "availability": ["available"], "sort": ["oldest"]},
+            )
+        finally:
+            context.close()
+
+
 class CurrentDevelopmentDatabaseReadOnlyTests(unittest.TestCase):
     """A public GET-only smoke journey against the running app's configured DB."""
 
