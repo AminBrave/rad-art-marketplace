@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ThemeContext } from './themeContext';
+import { ThemeContext } from './context';
 
 const STORAGE_KEY = 'rademan-theme';
 const THEMES = ['system', 'light', 'dark'];
