@@ -418,10 +418,10 @@ export default function ArtworkCatalogue() {
                             </div>
                         </aside>
                         {sidebarFades.start && (
-                            <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-10 h-8 bg-gradient-to-b from-canvas to-transparent" />
+                            <span data-testid="artwork-sidebar-fade-top" aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-10 h-8 bg-gradient-to-b from-canvas to-transparent" />
                         )}
                         {sidebarFades.end && (
-                            <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-8 bg-gradient-to-t from-canvas to-transparent" />
+                            <span data-testid="artwork-sidebar-fade-bottom" aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-8 bg-gradient-to-t from-canvas to-transparent" />
                         )}
                     </div>
 
