@@ -377,6 +377,7 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
                 dimensions["clientHeight"],
                 f"Test setup did not create sidebar overflow: {dimensions}",
             )
+            page.get_by_test_id("artwork-sidebar-fade-bottom").wait_for(state="visible")
 
             # Enter the sticky state before comparing the sidebar against the
             # fixed bottom navigation; its initial document position is not sticky.
@@ -450,6 +451,7 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
                 )
 
             self.assertGreater(sidebar.evaluate("(element) => element.scrollTop"), 0)
+            page.get_by_test_id("artwork-sidebar-fade-top").wait_for(state="visible")
         finally:
             context.close()
 
