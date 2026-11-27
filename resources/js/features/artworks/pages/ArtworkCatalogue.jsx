@@ -223,6 +223,7 @@ export default function ArtworkCatalogue() {
     const filterSummaryEndRef = useRef(null);
     const archiveSectionRef = useRef(null);
     const sidebarScrollRef = useRef(null);
+    const mobileFilterScrollRef = useRef(null);
     const [bottomNavigationHeight, setBottomNavigationHeight] = useState(0);
     const {
         enabled: stickyToolbarEnabled,
@@ -317,6 +318,19 @@ export default function ArtworkCatalogue() {
     const sidebarFades = useScrollOverflow(sidebarScrollRef, {
         axis: 'vertical',
         contentKey: [activeFilterCount, bottomNavigationHeight, filtersLoading, filtersError].join('|'),
+    });
+    const mobileFilterFades = useScrollOverflow(mobileFilterScrollRef, {
+        enabled: mobileFiltersOpen,
+        axis: 'vertical',
+        contentKey: [
+            draftFilters.q,
+            draftFilters.category,
+            draftFilters.medium,
+            draftFilters.availability,
+            draftFilters.sort,
+            filtersLoading,
+            filtersError,
+        ].join('|'),
     });
 
     const updateFilters = (changes) => {
@@ -572,16 +586,28 @@ export default function ArtworkCatalogue() {
                             </Button>
                         </DialogClose>
                     </div>
-                    <div className="min-h-0 flex-1 overflow-y-auto p-5">
-                        <ArtworkFilterControls
-                            {...filterControlProps}
-                            values={draftFilters}
-                            idPrefix="mobile"
-                            searchValue={draftFilters.q}
-                            onSearchChange={(event) => setDraftFilters((current) => ({ ...current, q: event.target.value }))}
-                            onSearch={(value) => setDraftFilters((current) => ({ ...current, q: value.trim() }))}
-                            onChange={(changes) => setDraftFilters((current) => ({ ...current, ...changes }))}
-                        />
+                    <div className="relative min-h-0 flex-1">
+                        <div
+                            ref={mobileFilterScrollRef}
+                            data-testid="mobile-artwork-filter-scroll"
+                            className="h-full min-h-0 overflow-y-auto overscroll-y-contain p-5"
+                        >
+                            <ArtworkFilterControls
+                                {...filterControlProps}
+                                values={draftFilters}
+                                idPrefix="mobile"
+                                searchValue={draftFilters.q}
+                                onSearchChange={(event) => setDraftFilters((current) => ({ ...current, q: event.target.value }))}
+                                onSearch={(value) => setDraftFilters((current) => ({ ...current, q: value.trim() }))}
+                                onChange={(changes) => setDraftFilters((current) => ({ ...current, ...changes }))}
+                            />
+                        </div>
+                        {mobileFilterFades.start && (
+                            <span data-testid="mobile-artwork-filter-fade-top" aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-10 h-8 bg-gradient-to-b from-paper to-transparent" />
+                        )}
+                        {mobileFilterFades.end && (
+                            <span data-testid="mobile-artwork-filter-fade-bottom" aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-8 bg-gradient-to-t from-paper to-transparent" />
+                        )}
                     </div>
                     <div className="sticky bottom-0 flex items-center gap-3 border-t border-divider-section bg-paper p-4">
                         <Button
