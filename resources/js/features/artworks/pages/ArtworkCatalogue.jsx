@@ -221,7 +221,8 @@ export default function ArtworkCatalogue() {
     const archiveSectionRef = useRef(null);
     const sidebarScrollRef = useRef(null);
     const mobileFilterScrollRef = useRef(null);
-    const [bottomNavigationHeight, setBottomNavigationHeight] = useState(0);
+    const [viewportHeight, setViewportHeight] = useState(() => (typeof window === 'undefined' ? 0 : window.innerHeight));
+    const [bottomNavigationInset, setBottomNavigationInset] = useState(0);
     const {
         enabled: stickyToolbarEnabled,
         visible: stickyToolbarVisible,
@@ -239,28 +240,37 @@ export default function ArtworkCatalogue() {
         const navigation = document.querySelector(
             '[data-testid="public-bottom-navigation"], [data-testid="authenticated-bottom-navigation"]',
         );
-        if (!navigation) {
-            setBottomNavigationHeight(0);
-            return undefined;
-        }
 
-        const updateHeight = () => {
-            const height = navigation.getBoundingClientRect().height;
-            setBottomNavigationHeight((current) => (
-                Math.abs(current - height) > 1 ? height : current
+        const updateAvailableViewport = () => {
+            const height = document.documentElement.clientHeight || window.innerHeight;
+            setViewportHeight((current) => (Math.abs(current - height) > 1 ? height : current));
+
+            if (!navigation) {
+                setBottomNavigationInset(0);
+                return;
+            }
+
+            const rect = navigation.getBoundingClientRect();
+            const inset = rect.top < height && rect.bottom > 0
+                ? Math.max(0, height - Math.max(0, rect.top))
+                : 0;
+            setBottomNavigationInset((current) => (
+                Math.abs(current - inset) > 1 ? inset : current
             ));
         };
 
-        updateHeight();
-        const observer = typeof ResizeObserver === 'function'
-            ? new ResizeObserver(updateHeight)
+        updateAvailableViewport();
+        const observer = typeof ResizeObserver === 'function' && navigation
+            ? new ResizeObserver(updateAvailableViewport)
             : null;
         observer?.observe(navigation);
-        window.addEventListener('resize', updateHeight);
+        window.addEventListener('resize', updateAvailableViewport);
+        window.visualViewport?.addEventListener('resize', updateAvailableViewport);
 
         return () => {
             observer?.disconnect();
-            window.removeEventListener('resize', updateHeight);
+            window.removeEventListener('resize', updateAvailableViewport);
+            window.visualViewport?.removeEventListener('resize', updateAvailableViewport);
         };
     }, []);
 
@@ -472,14 +482,16 @@ export default function ArtworkCatalogue() {
                 />
 
                 <div className="mt-8 grid min-w-0 gap-8 lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-9">
-                    <div className="relative hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start">
+                    <div
+                        className="relative hidden min-w-0 lg:sticky lg:block lg:self-start"
+                        style={{ top: stickyToolbarTop + 16 }}
+                    >
                         <aside
                             ref={sidebarScrollRef}
                             data-testid="artwork-filter-sidebar"
                             tabIndex={0}
                             style={{
-                                maxHeight: 'calc(100dvh - 6rem - 1rem)',
-                                paddingBottom: `calc(${bottomNavigationHeight}px + 1rem)`,
+                                maxHeight: `max(0px, ${viewportHeight}px - ${stickyToolbarTop}px - ${bottomNavigationInset}px - 32px)`,
                             }}
                             className="min-w-0 overscroll-y-contain overflow-y-auto pe-3"
                             aria-label={t('فیلتر و مرتب‌سازی آثار')}
