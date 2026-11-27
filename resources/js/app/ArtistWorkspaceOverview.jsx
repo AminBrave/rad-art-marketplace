@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useLanguage } from './LanguageContext';
-import { fetchArtistWorkspaceArtworks } from '../features/artists';
-import { artistKeys } from '../features/artists';
+import { fetchArtistWorkspaceArtworks, artistKeys } from '../features/artists';
 import { Link, useOutletContext } from 'react-router-dom';
 import { EmptyState, ErrorState, StatusBadge, Badge, PageHeader, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton, ArtistRecentWorkSkeleton } from '../components/ui';
 import { localizedValue } from '../utils/localizedContent';
