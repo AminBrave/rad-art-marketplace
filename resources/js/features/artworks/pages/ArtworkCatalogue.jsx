@@ -53,11 +53,12 @@ function ArtworkFilterControls({
                     onSearch={onSearch}
                     label={t('جست‌وجو در آثار و هنرمندان')}
                     placeholder={t('عنوان، توضیحات، تکنیک یا نام هنرمند…')}
+                    className={idPrefix === 'desktop' ? 'sm:flex-col' : ''}
                 />
             </div>
 
             <div className="grid gap-2 border-t border-divider-section pt-4">
-                <label className="text-sm font-bold text-ink" htmlFor="artwork-filter-category">{t('دسته‌بندی')}</label>
+                <label className="text-sm font-bold text-ink" htmlFor={idPrefix + "-artwork-filter-category"}>{t('دسته‌بندی')}</label>
                 <SelectField
                     id={idPrefix + "-artwork-filter-category"}
                     value={values.category}
@@ -72,7 +73,7 @@ function ArtworkFilterControls({
             </div>
 
             <div className="grid gap-2 border-t border-divider-section pt-4">
-                <label className="text-sm font-bold text-ink" htmlFor="artwork-filter-medium">{t('تکنیک و مواد')}</label>
+                <label className="text-sm font-bold text-ink" htmlFor={idPrefix + "-artwork-filter-medium"}>{t('تکنیک و مواد')}</label>
                 <SelectField
                     id={idPrefix + "-artwork-filter-medium"}
                     value={values.medium}
@@ -85,7 +86,7 @@ function ArtworkFilterControls({
             </div>
 
             <div className="grid gap-2 border-t border-divider-section pt-4">
-                <label className="text-sm font-bold text-ink" htmlFor="artwork-filter-availability">{t('وضعیت اثر')}</label>
+                <label className="text-sm font-bold text-ink" htmlFor={idPrefix + "-artwork-filter-availability"}>{t('وضعیت اثر')}</label>
                 <SelectField
                     id={idPrefix + "-artwork-filter-availability"}
                     value={values.availability}
@@ -102,7 +103,7 @@ function ArtworkFilterControls({
             </div>
 
             <div className="grid gap-2 border-t border-divider-section pt-4">
-                <label className="text-sm font-bold text-ink" htmlFor="artwork-filter-sort">{t('مرتب‌سازی آثار')}</label>
+                <label className="text-sm font-bold text-ink" htmlFor={idPrefix + "-artwork-filter-sort"}>{t('مرتب‌سازی آثار')}</label>
                 <SelectField
                     id={idPrefix + "-artwork-filter-sort"}
                     value={values.sort}
@@ -276,7 +277,7 @@ export default function ArtworkCatalogue() {
                         </div>
                     </aside>
 
-                    <main className="min-w-0">
+                    <div className="min-w-0">
                         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink pb-4">
                             <div>
                                 <p className="text-[11px] font-bold tracking-[.12em] text-terracotta-strong">{t('آرشیو آثار')}</p>
@@ -371,7 +372,7 @@ export default function ArtworkCatalogue() {
                                 )}
                             </div>
                         )}
-                    </main>
+                    </div>
                 </div>
             </Container>
 
