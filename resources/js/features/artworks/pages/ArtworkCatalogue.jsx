@@ -216,8 +216,9 @@ export default function ArtworkCatalogue() {
     };
 
     const applyMobileFilters = () => {
-        setSearchInput(draftFilters.q);
-        updateFilters(draftFilters);
+        const nextFilters = { ...draftFilters, q: draftFilters.q.trim() };
+        setSearchInput(nextFilters.q);
+        updateFilters(nextFilters);
         setMobileFiltersOpen(false);
     };
 
