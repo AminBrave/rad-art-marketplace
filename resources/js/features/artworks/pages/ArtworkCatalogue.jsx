@@ -573,10 +573,10 @@ export default function ArtworkCatalogue() {
             <Dialog open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
                 <DialogContent
                     placement="center"
-                    className="flex h-[min(88dvh,48rem)] flex-col gap-0 overflow-hidden"
+                    className="flex h-[min(88dvh,48rem)] min-h-0 flex-col gap-0 overflow-hidden p-0"
                     aria-label={t('فیلتر و مرتب‌سازی آثار')}
                 >
-                    <div className="flex items-start justify-between gap-4 border-b border-divider-section p-5">
+                    <div className="flex shrink-0 items-start justify-between gap-4 border-b border-divider-section p-5">
                         <div>
                             <DialogTitle className="text-lg">{t('فیلترها')}</DialogTitle>
                         </div>
@@ -586,11 +586,11 @@ export default function ArtworkCatalogue() {
                             </Button>
                         </DialogClose>
                     </div>
-                    <div className="relative min-h-0 flex-1">
+                    <div className="relative min-h-0 flex-1 overflow-hidden">
                         <div
                             ref={mobileFilterScrollRef}
                             data-testid="mobile-artwork-filter-scroll"
-                            className="h-full min-h-0 touch-pan-y overflow-y-auto overscroll-y-contain p-5"
+                            className="absolute inset-0 touch-pan-y overflow-x-hidden overflow-y-auto overscroll-y-contain p-5"
                         >
                             <ArtworkFilterControls
                                 {...filterControlProps}
@@ -609,7 +609,7 @@ export default function ArtworkCatalogue() {
                             <span data-testid="mobile-artwork-filter-fade-bottom" aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-8 bg-gradient-to-t from-paper to-transparent" />
                         )}
                     </div>
-                    <div className="sticky bottom-0 flex items-center gap-3 border-t border-divider-section bg-paper p-4">
+                    <div className="sticky bottom-0 flex shrink-0 items-center gap-3 border-t border-divider-section bg-paper p-4">
                         <Button
                             variant="ghost"
                             type="button"
