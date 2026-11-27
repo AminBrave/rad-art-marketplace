@@ -153,15 +153,17 @@ function ArtworkActiveFilterChips({
     categories,
     filters,
     onRemove,
-    compact = false,
+    dark = false,
 }) {
     const { t, locale } = useLanguage();
     if (activeFilterCount === 0) return null;
 
-    const chipClass = "inline-flex min-h-8 items-center gap-1.5 border border-border bg-paper px-2.5 text-xs font-semibold hover:border-terracotta";
+    const chipClass = dark
+        ? "inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3 text-xs font-semibold text-white transition-colors hover:border-white/60 hover:bg-white/20"
+        : "inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-full border border-border bg-paper px-3 text-xs font-semibold text-ink hover:border-terracotta";
     return (
-        <div className={`flex flex-wrap items-center gap-2 ${compact ? '' : 'mt-5'}`} aria-label={t('معیارهای فعال')}>
-            <span className="me-1 text-xs font-bold text-muted">{t('انتخاب شما:')}</span>
+        <div className={`flex min-w-0 items-center gap-2 ${dark ? 'overflow-x-auto overscroll-x-contain whitespace-nowrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden' : 'mt-5 flex-wrap'}`} aria-label={t('معیارهای فعال')}>
+            <span className={`shrink-0 text-xs font-bold ${dark ? 'text-white/70' : 'text-muted'}`}>{t('انتخاب شما:')}</span>
             {search && <Button variant="outline" type="button" onClick={() => onRemove({ q: '' })} className={chipClass}>{search}<X size={12} aria-hidden="true" /></Button>}
             {category && <Button variant="outline" type="button" onClick={() => onRemove({ category: '' })} className={chipClass}>{localizedValue(categories.find((item) => item.slug === category), 'name', locale) || category}<X size={12} aria-hidden="true" /></Button>}
             {medium && <Button variant="outline" type="button" onClick={() => onRemove({ medium: '' })} className={chipClass}>{medium}<X size={12} aria-hidden="true" /></Button>}
@@ -188,17 +190,35 @@ export default function ArtworkCatalogue() {
     const lastScrollY = useRef(0);
     const [stickyToolbarEnabled, setStickyToolbarEnabled] = useState(false);
     const [stickyToolbarVisible, setStickyToolbarVisible] = useState(false);
+    const [stickyToolbarTop, setStickyToolbarTop] = useState(0);
 
     useEffect(() => setSearchInput(search), [search]);
 
     useEffect(() => {
         lastScrollY.current = window.scrollY;
+        const siteHeader = document.querySelector('[data-site-header], header');
+
+        const measureHeader = () => {
+            if (!siteHeader) {
+                setStickyToolbarTop(0);
+                return 0;
+            }
+
+            const rect = siteHeader.getBoundingClientRect();
+            const position = window.getComputedStyle(siteHeader).position;
+            const offset = (position === 'fixed' || position === 'sticky')
+                ? Math.max(0, rect.bottom)
+                : Math.max(0, rect.bottom);
+            setStickyToolbarTop((current) => Math.abs(current - offset) < 1 ? current : offset);
+            return offset;
+        };
 
         const handleScroll = () => {
             const currentY = window.scrollY;
             const scrollingUp = currentY < lastScrollY.current;
+            const headerBottom = measureHeader();
             const summaryBottom = filterSummaryEndRef.current?.getBoundingClientRect().bottom ?? Infinity;
-            const passedSummary = summaryBottom < 88;
+            const passedSummary = summaryBottom < headerBottom + 8;
 
             setStickyToolbarEnabled((current) => current === passedSummary ? current : passedSummary);
             setStickyToolbarVisible((current) => {
@@ -208,9 +228,19 @@ export default function ArtworkCatalogue() {
             lastScrollY.current = currentY;
         };
 
+        const resizeObserver = typeof window.ResizeObserver === 'function' && siteHeader
+            ? new window.ResizeObserver(measureHeader)
+            : null;
+        if (resizeObserver) resizeObserver.observe(siteHeader);
         window.addEventListener('scroll', handleScroll, { passive: true });
+        window.addEventListener('resize', handleScroll);
         handleScroll();
-        return () => window.removeEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('resize', handleScroll);
+            resizeObserver?.disconnect();
+        };
     }, []);
 
     const filtersQuery = useQuery({
@@ -431,45 +461,46 @@ export default function ArtworkCatalogue() {
             {stickyToolbarEnabled && (
                 <div
                     aria-hidden={!stickyToolbarVisible}
-                    className={`fixed inset-x-0 top-20 z-40 border-b border-border bg-paper/95 shadow-md backdrop-blur-sm transition-all duration-200 motion-reduce:transition-none ${stickyToolbarVisible ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-full opacity-0 pointer-events-none'}`}
+                    style={{ top: stickyToolbarTop }}
+                    className={`fixed inset-x-0 z-40 border-b border-white/10 bg-ink text-white shadow-lg transition-[transform,opacity,visibility] duration-200 motion-reduce:transition-none ${stickyToolbarVisible ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-full opacity-0 pointer-events-none'}`}
                 >
                     <Container width="wide">
-                        <div className="flex flex-wrap items-center justify-between gap-2 py-2.5">
-                            <div className="flex min-w-0 items-center gap-2">
-                                <p aria-live="polite" className="whitespace-nowrap text-sm font-semibold text-ink">
-                                    {loading ? t('در حال دریافت آثار…') : meta.total.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('اثر')}
-                                </p>
-                                <Button
-                                    variant="outline"
-                                    type="button"
-                                    onClick={openMobileFilters}
-                                    aria-haspopup="dialog"
-                                    className="min-h-9 shrink-0 px-3 lg:hidden"
-                                >
-                                    <SlidersHorizontal size={15} aria-hidden="true" />
-                                    {t('فیلترها')}
-                                    {activeFilterCount > 0 && (
-                                        <span className="ms-1 inline-flex min-w-5 items-center justify-center bg-surface-muted px-1.5 py-0.5 text-xs tabular-nums">
-                                            {activeFilterCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}
-                                        </span>
-                                    )}
-                                </Button>
+                        <div className="flex min-w-0 items-center gap-3 py-2.5">
+                            <p aria-live="polite" className="shrink-0 whitespace-nowrap text-xs font-bold text-white sm:text-sm">
+                                {loading ? t('در حال دریافت آثار…') : meta.total.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('اثر')}
+                            </p>
+                            <Button
+                                variant="outline"
+                                type="button"
+                                onClick={openMobileFilters}
+                                aria-haspopup="dialog"
+                                className="min-h-9 shrink-0 border-white/30 bg-white/10 px-3 text-white hover:bg-white/20 hover:text-white lg:hidden"
+                            >
+                                <SlidersHorizontal size={15} aria-hidden="true" />
+                                {t('فیلترها')}
+                                {activeFilterCount > 0 && (
+                                    <span className="ms-1 inline-flex min-w-5 items-center justify-center rounded-full bg-white/15 px-1.5 py-0.5 text-xs tabular-nums text-white">
+                                        {activeFilterCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}
+                                    </span>
+                                )}
+                            </Button>
+                            <div className="min-w-0 flex-1">
+                                <ArtworkActiveFilterChips
+                                    activeFilterCount={activeFilterCount}
+                                    search={search}
+                                    category={category}
+                                    medium={medium}
+                                    availability={availability}
+                                    sort={sort}
+                                    categories={categories}
+                                    filters={filters}
+                                    onRemove={updateFilters}
+                                    dark
+                                />
+                                {activeFilterCount === 0 && (
+                                    <p className="truncate text-xs text-white/65">{t('نمایش آثار عمومی و تأییدشده')}</p>
+                                )}
                             </div>
-                            <div className="hidden text-xs text-muted lg:block">{t('نمایش آثار عمومی و تأییدشده')}</div>
-                        </div>
-                        <div className="pb-2">
-                            <ArtworkActiveFilterChips
-                                activeFilterCount={activeFilterCount}
-                                search={search}
-                                category={category}
-                                medium={medium}
-                                availability={availability}
-                                sort={sort}
-                                categories={categories}
-                                filters={filters}
-                                onRemove={updateFilters}
-                                compact
-                            />
                         </div>
                     </Container>
                 </div>
