@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useHorizontalOverflow, useStickyOnScroll } from '../../../shared/hooks';
+import { useHorizontalOverflow, useScrollOverflow, useStickyOnScroll } from '../../../shared/hooks';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { ChevronDown, SlidersHorizontal, X } from 'lucide-react';
@@ -222,6 +222,7 @@ export default function ArtworkCatalogue() {
     const loadMoreRef = useRef(null);
     const filterSummaryEndRef = useRef(null);
     const archiveSectionRef = useRef(null);
+    const sidebarScrollRef = useRef(null);
     const [bottomNavigationHeight, setBottomNavigationHeight] = useState(0);
     const {
         enabled: stickyToolbarEnabled,
@@ -313,6 +314,10 @@ export default function ArtworkCatalogue() {
         () => [search, category, medium, availability, sort !== 'newest' ? sort : ''].filter(Boolean).length,
         [search, category, medium, availability, sort],
     );
+    const sidebarFades = useScrollOverflow(sidebarScrollRef, {
+        axis: 'vertical',
+        contentKey: [activeFilterCount, bottomNavigationHeight, filtersLoading, filtersError].join('|'),
+    });
 
     const updateFilters = (changes) => {
         suppressDirectionFor(1500);
@@ -383,33 +388,42 @@ export default function ArtworkCatalogue() {
                 />
 
                 <div className="mt-8 grid min-w-0 gap-8 lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-9">
-                    <aside
-                        data-testid="artwork-filter-sidebar"
-                        tabIndex={0}
-                        style={{ '--artwork-bottom-navigation-height': `${bottomNavigationHeight}px` }}
-                        className="hidden min-w-0 overscroll-y-contain lg:sticky lg:top-24 lg:block lg:max-h-[calc(100dvh-6rem-var(--artwork-bottom-navigation-height)-1rem)] lg:self-start lg:overflow-y-auto lg:pe-3 lg:pb-4"
-                        aria-label={t('فیلتر و مرتب‌سازی آثار')}
-                    >
-                        <div className="flex items-center justify-between gap-3 border-b border-ink pb-4">
-                            <h2 className="text-base font-extrabold text-ink">{t('فیلتر و مرتب‌سازی آثار')}</h2>
-                            {activeFilterCount > 0 && (
-                                <Button variant="ghost" size="sm" type="button" onClick={clearFilters} className="px-1 text-xs text-terracotta-strong">
-                                    {t('پاک‌کردن فیلترها')}
-                                </Button>
-                            )}
-                        </div>
-                        <div className="pt-5">
-                            <ArtworkFilterControls
-                                {...filterControlProps}
-                                values={currentFilters}
-                                idPrefix="desktop"
-                                searchValue={searchInput}
-                                onSearchChange={(event) => setSearchInput(event.target.value)}
-                                onSearch={submitSearch}
-                                onChange={updateFilters}
-                            />
-                        </div>
-                    </aside>
+                    <div className="relative hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start">
+                        <aside
+                            ref={sidebarScrollRef}
+                            data-testid="artwork-filter-sidebar"
+                            tabIndex={0}
+                            style={{ maxHeight: `calc(100dvh - 6rem - ${bottomNavigationHeight}px - 1rem)` }}
+                            className="min-w-0 overscroll-y-contain overflow-y-auto pe-3 pb-4"
+                            aria-label={t('فیلتر و مرتب‌سازی آثار')}
+                        >
+                            <div className="flex items-center justify-between gap-3 border-b border-ink pb-4">
+                                <h2 className="text-base font-extrabold text-ink">{t('فیلتر و مرتب‌سازی آثار')}</h2>
+                                {activeFilterCount > 0 && (
+                                    <Button variant="ghost" size="sm" type="button" onClick={clearFilters} className="px-1 text-xs text-terracotta-strong">
+                                        {t('پاک‌کردن فیلترها')}
+                                    </Button>
+                                )}
+                            </div>
+                            <div className="pt-5">
+                                <ArtworkFilterControls
+                                    {...filterControlProps}
+                                    values={currentFilters}
+                                    idPrefix="desktop"
+                                    searchValue={searchInput}
+                                    onSearchChange={(event) => setSearchInput(event.target.value)}
+                                    onSearch={submitSearch}
+                                    onChange={updateFilters}
+                                />
+                            </div>
+                        </aside>
+                        {sidebarFades.start && (
+                            <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-10 h-8 bg-gradient-to-b from-canvas to-transparent" />
+                        )}
+                        {sidebarFades.end && (
+                            <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-8 bg-gradient-to-t from-canvas to-transparent" />
+                        )}
+                    </div>
 
                     <div className="min-w-0">
                         <div ref={archiveSectionRef} className="flex flex-wrap items-center justify-between gap-3 border-b border-ink pb-4">
