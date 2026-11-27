@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 
 const noOverflow = { start: false, end: false };
 
@@ -15,7 +15,7 @@ export function useScrollOverflow(
 ) {
     const [visibleFades, setVisibleFades] = useState(noOverflow);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const element = scrollRef.current;
 
         if (!enabled || !element) {
