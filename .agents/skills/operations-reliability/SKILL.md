@@ -1,23 +1,36 @@
 ---
 name: operations-reliability
-description: Improve Rademan deployment, runtime configuration, observability, recovery and operational reliability.
+description: Assess and improve runtime reliability, deployment safety, observability, backups, recovery and production operations. Use when investigating incidents, planning releases, changing infrastructure or reducing operational risk.
 ---
 
 # Operations and reliability
 
 ## Purpose
-Make operational behavior understandable, measurable and recoverable based on the infrastructure that actually exists.
 
-## Approach
-1. Inspect the current hosting, deployment, runtime, database, storage, queue and monitoring configuration.
-2. Map critical user journeys and their operational dependencies.
-3. Identify failure modes, security implications and recovery requirements.
-4. Recommend proportionate health checks, logs, metrics, alerts, backups and runbooks.
-5. Consider migration safety, rollback or forward recovery, capacity and cost.
-6. Validate changes in an appropriate environment and state what was actually verified.
+Make critical behavior observable, resilient and recoverable based on infrastructure that actually exists.
+
+## Use when
+
+Use when changes affect deployment, runtime configuration, data durability, background processing, external dependencies or incident response.
+
+## Workflow
+
+1. Inspect actual hosting, deployment workflows, runtime configuration, database, storage, queues, monitoring and backup setup.
+2. Map critical journeys and their operational dependencies.
+3. Identify failure modes, blast radius, detection gaps and recovery objectives.
+4. Choose proportionate health checks, structured logs, metrics, alerts and runbooks.
+5. Plan migration sequencing, compatibility, rollback/forward recovery, capacity and cost.
+6. Validate in a safe environment; test restore/recovery paths when required.
+7. Record ownership, residual risk and exact evidence gathered.
 
 ## Rademan context
-Do not assume a hosting provider, deployment topology, monitoring platform, backup schedule or queue driver. Verify repository configuration and current infrastructure. Protect private conversations, attachments, account data and credentials.
+
+Do not assume hosting, topology, monitoring, backup schedule or queue driver. Verify configuration and live infrastructure. Protect conversations, attachments and credentials; see [security guidance](../../../AI/SECURITY.md).
+
+## Quality bar
+
+Prioritize data durability, least privilege, safe deploys and recoverability. A configured backup is not proof of restore; a health endpoint is not proof that critical journeys work.
 
 ## Deliverable
-A practical operational recommendation or implementation with assumptions, risks, validation evidence and recovery considerations.
+
+An operational change or recommendation with dependencies, failure modes, observability, recovery plan, validation evidence and unknowns.

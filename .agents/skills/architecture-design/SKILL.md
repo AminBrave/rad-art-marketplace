@@ -1,24 +1,36 @@
 ---
 name: architecture-design
-description: Evaluate and design Rademan software architecture, module boundaries, data contracts and technical migrations.
+description: Analyze or improve system architecture, module boundaries, integrations, data contracts and technical migrations. Use when a task involves architecture decisions, dependency direction, system decomposition or risky cross-cutting refactors.
 ---
 
 # Architecture design
 
 ## Purpose
-Recommend an architecture that solves the actual problem with an appropriate balance of simplicity, adaptability, performance and operational cost.
 
-## Approach
-1. Clarify the desired behavior and the technical problem.
-2. Inspect the current implementation, dependencies, data model and integration boundaries.
-3. Identify quality attributes that matter for this change.
-4. Compare a simple baseline with alternatives that offer meaningful benefits.
-5. Evaluate coupling, cohesion, migration, compatibility, security, testability and operational impact.
-6. Recommend an option with explicit trade-offs.
-7. Implement the user's chosen direction and document consequential decisions when useful.
+Choose a maintainable architecture that solves the real problem without unnecessary complexity.
+
+## Use when
+
+Use for cross-module or cross-layer changes, new integrations, contract changes and consequential technical decisions. Skip formal architecture work for small local changes.
+
+## Workflow
+
+1. Define required behavior, constraints and quality attributes before choosing a pattern.
+2. Inspect source, callers, data flows, dependencies and existing boundaries.
+3. Map the current state and identify the specific pressure the design must relieve.
+4. Compare the simplest viable option with alternatives that offer measurable benefits.
+5. Evaluate coupling, compatibility, security, operations, migration and rollback costs.
+6. Recommend one option with trade-offs; record an ADR only for costly or hard-to-reverse decisions.
+7. Implement incrementally and add boundary checks where they protect the decision and fit the task's verification scope.
 
 ## Rademan context
-The current application uses Laravel and React, but the stack and architecture can evolve. Verify current code and manifests. Do not introduce a pattern merely because it is popular or preserve one merely because it is established.
+
+Use [the current architecture map](../../../AI/ARCHITECTURE.md) and [engineering guide](../../../AI/DEVELOPMENT.md). Verify manifests and implementation; versions and ownership change.
+
+## Quality bar
+
+Prefer evolutionary change, explicit contracts and clear ownership. Do not introduce layers, event buses or abstractions without demonstrated need. Preserve behavior unless the request changes it.
 
 ## Deliverable
-An architecture recommendation, decision record or implementation plan proportionate to the change.
+
+A concise decision or implementation with context, options, rationale, consequences, migration steps and proportionate verification.

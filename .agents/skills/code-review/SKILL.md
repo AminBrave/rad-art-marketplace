@@ -1,24 +1,36 @@
 ---
 name: code-review
-description: Review a Rademan change for correctness, security, maintainability, performance and user-visible quality.
+description: Review code changes for correctness, regressions, security, performance, accessibility and maintainability. Use when asked to review a PR, inspect a diff, audit a change, find bugs or assess implementation quality.
 ---
 
 # Code review
 
 ## Purpose
-Find material defects, regressions and risks in the requested change. Keep findings distinct from optional preferences.
 
-## Approach
-1. Understand the change, intended outcome and relevant surrounding implementation.
-2. Inspect the diff and trace important callers, contracts and data paths.
-3. Evaluate correctness, edge cases, authorization, privacy, data integrity and failure handling.
-4. Consider accessibility, localization, performance and maintainability where affected.
-5. Review whether tests cover important behavior and negative paths; run checks only when appropriate to the task and environment.
-6. Prioritize findings by severity and explain their evidence and impact.
-7. Identify uncertainties and scope limitations.
+Find actionable defects and material risks in the requested change, not stylistic preferences.
+
+## Use when
+
+Use for pull requests, commits, patches and implementations needing independent scrutiny. Stay within the requested review scope.
+
+## Workflow
+
+1. Establish the intended outcome, review base/head and inspect the complete diff.
+2. Read surrounding code and trace affected callers, contracts, data paths and failure handling.
+3. Check correctness, edge cases, authorization, privacy and data integrity.
+4. Assess performance, accessibility, localization and maintainability where affected.
+5. Check regression coverage when tests are within scope, and run only checks permitted by the task and safe in the environment.
+6. Prioritize findings by severity with exact file/line evidence and realistic impact.
+7. Re-check fixes against the original failure mode and report uncertainty.
 
 ## Rademan context
-For cross-layer changes, consider Laravel enforcement as well as frontend behavior. For UI changes, review responsive, RTL and accessible states where relevant.
+
+For cross-layer changes, inspect Laravel enforcement and React behavior. Use [architecture](../../../AI/ARCHITECTURE.md), [security](../../../AI/SECURITY.md) and [design guidance](../../../AI/DESIGN-SYSTEM.md) where relevant.
+
+## Quality bar
+
+Lead with defects. Distinguish blockers from suggestions; avoid speculative findings and nitpicks. Never claim unrun tests, browser checks or security assessments.
 
 ## Deliverable
-Prioritized findings with file/symbol references, impact and suggested fixes. If no material findings are found, state what was reviewed and what was not verified.
+
+Prioritized findings with severity, file/line, evidence, impact and remediation. If no material issue is found, state scope and what was not verified.
