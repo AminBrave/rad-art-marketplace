@@ -236,7 +236,7 @@ export default function ArtworkCatalogue() {
         onBeforeScroll: () => suppressDirectionFor(1500),
     });
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const navigation = document.querySelector(
             '[data-testid="public-bottom-navigation"], [data-testid="authenticated-bottom-navigation"]',
         );
@@ -265,11 +265,13 @@ export default function ArtworkCatalogue() {
             : null;
         observer?.observe(navigation);
         window.addEventListener('resize', updateAvailableViewport);
+        window.addEventListener('scroll', updateAvailableViewport, { passive: true });
         window.visualViewport?.addEventListener('resize', updateAvailableViewport);
 
         return () => {
             observer?.disconnect();
             window.removeEventListener('resize', updateAvailableViewport);
+            window.removeEventListener('scroll', updateAvailableViewport);
             window.visualViewport?.removeEventListener('resize', updateAvailableViewport);
         };
     }, []);
