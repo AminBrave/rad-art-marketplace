@@ -62,7 +62,7 @@ The current mapping includes:
 - Semantic colors: `bg-canvas`, `bg-surface`, `text-ink`, `text-muted`, `border-divider-section|group|nested`, `text-success|danger|warning|info`, their surface variants and `focus`.
 - Typography: `font-sans|persian|latin`, the semantic type scale, line-height roles and token-backed font weights.
 - Spacing: `page-gutter` and `editorial-1` through `editorial-24` for the canonical spacing scale.
-- Geometry: square radius compatibility mappings, `shadow-soft|raised`, `max-w-content|content-reading`.
+- Geometry: square radius compatibility mappings, token-backed default border width, `shadow-soft|raised`, `max-w-content|content-reading`.
 - Media ratios: `aspect-artwork` and `aspect-portrait`.
 
 Do not duplicate values in Tailwind config. If a token changes, its mapped utility should update automatically.

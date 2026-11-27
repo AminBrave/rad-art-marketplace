@@ -93,6 +93,9 @@ export default {
                 panel: 'var(--rd-radius-0)',
                 pill: 'var(--rd-radius-0)',
             },
+            borderWidth: {
+                DEFAULT: 'var(--rd-line-width)',
+            },
             boxShadow: {
                 soft: 'var(--rd-shadow-soft)',
                 raised: 'var(--rd-shadow-raised)',

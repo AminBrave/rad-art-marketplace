@@ -89,7 +89,7 @@ html {
     min-width: 320px;
     overflow-x: clip;
     scroll-behavior: smooth;
-    scroll-padding-top: var(--header-height);
+    scroll-padding-top: var(--rd-header-height);
     background: var(--rd-canvas);
 }
 
@@ -195,14 +195,14 @@ video {
 
 .rd-message-bubble--own::before {
     inset-inline-end: -6px;
-    border-inline-end: 1px solid color-mix(in srgb, var(--rd-action) 16%, var(--rd-border-subtle));
-    border-block-end: 1px solid color-mix(in srgb, var(--rd-action) 16%, var(--rd-border-subtle));
+    border-inline-end: var(--rd-line-width) solid color-mix(in srgb, var(--rd-action) 16%, var(--rd-border-subtle));
+    border-block-end: var(--rd-line-width) solid color-mix(in srgb, var(--rd-action) 16%, var(--rd-border-subtle));
 }
 
 .rd-message-bubble--peer::before {
     inset-inline-start: -6px;
-    border-inline-start: 1px solid var(--rd-border-subtle);
-    border-block-start: 1px solid var(--rd-border-subtle);
+    border-inline-start: var(--rd-line-width) solid var(--rd-border-subtle);
+    border-block-start: var(--rd-line-width) solid var(--rd-border-subtle);
 }
 
 
