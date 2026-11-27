@@ -156,19 +156,97 @@ function ArtworkActiveFilterChips({
     dark = false,
 }) {
     const { t, locale } = useLanguage();
+    const scrollRef = useRef(null);
+    const [visibleFades, setVisibleFades] = useState({ start: false, end: false });
+    const isRtl = locale !== 'en';
+
+    useEffect(() => {
+        if (!dark || activeFilterCount === 0) {
+            setVisibleFades({ start: false, end: false });
+            return undefined;
+        }
+
+        const element = scrollRef.current;
+        if (!element) return undefined;
+
+        const updateFades = () => {
+            const first = element.firstElementChild?.getBoundingClientRect();
+            const last = element.lastElementChild?.getBoundingClientRect();
+            const bounds = element.getBoundingClientRect();
+            if (!first || !last) {
+                setVisibleFades({ start: false, end: false });
+                return;
+            }
+
+            const next = isRtl
+                ? {
+                    start: first.right > bounds.right + 1,
+                    end: last.left < bounds.left - 1,
+                }
+                : {
+                    start: first.left < bounds.left - 1,
+                    end: last.right > bounds.right + 1,
+                };
+
+            setVisibleFades((current) => (
+                current.start === next.start && current.end === next.end ? current : next
+            ));
+        };
+
+        updateFades();
+        element.addEventListener('scroll', updateFades, { passive: true });
+        const resizeObserver = typeof window.ResizeObserver === 'function'
+            ? new window.ResizeObserver(updateFades)
+            : null;
+        resizeObserver?.observe(element);
+        if (element.firstElementChild) resizeObserver?.observe(element.firstElementChild);
+        if (element.lastElementChild) resizeObserver?.observe(element.lastElementChild);
+        window.addEventListener('resize', updateFades);
+
+        return () => {
+            element.removeEventListener('scroll', updateFades);
+            window.removeEventListener('resize', updateFades);
+            resizeObserver?.disconnect();
+        };
+    }, [activeFilterCount, dark, isRtl, search, category, medium, availability, sort]);
+
     if (activeFilterCount === 0) return null;
 
     const chipClass = dark
         ? "inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-full border border-border bg-surface-muted px-3 text-xs font-semibold text-ink transition-colors hover:border-action"
         : "inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-full border border-border bg-paper px-3 text-xs font-semibold text-ink hover:border-terracotta";
-    return (
-        <div className={`flex min-w-0 items-center gap-2 ${dark ? 'overflow-x-auto overscroll-x-contain whitespace-nowrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden' : 'mt-5 flex-wrap'}`} aria-label={t('معیارهای فعال')}>
+    const content = (
+        <>
             <span className="shrink-0 text-xs font-bold text-muted">{t('انتخاب شما:')}</span>
             {search && <Button variant="outline" type="button" onClick={() => onRemove({ q: '' })} className={chipClass}>{search}<X size={12} aria-hidden="true" /></Button>}
             {category && <Button variant="outline" type="button" onClick={() => onRemove({ category: '' })} className={chipClass}>{localizedValue(categories.find((item) => item.slug === category), 'name', locale) || category}<X size={12} aria-hidden="true" /></Button>}
             {medium && <Button variant="outline" type="button" onClick={() => onRemove({ medium: '' })} className={chipClass}>{medium}<X size={12} aria-hidden="true" /></Button>}
             {availability && <Button variant="outline" type="button" onClick={() => onRemove({ availability: '' })} className={chipClass}>{filters.availability?.find((item) => item.value === availability)?.[locale === 'en' ? 'label_en' : 'label'] ?? availability}<X size={12} aria-hidden="true" /></Button>}
             {sort !== 'newest' && <Button variant="outline" type="button" onClick={() => onRemove({ sort: 'newest' })} className={chipClass}>{filters.sorts?.find((item) => item.value === sort)?.[locale === 'en' ? 'label_en' : 'label'] ?? sort}<X size={12} aria-hidden="true" /></Button>}
+        </>
+    );
+
+    if (!dark) {
+        return <div className="mt-5 flex min-w-0 flex-wrap items-center gap-2" aria-label={t('معیارهای فعال')}>{content}</div>;
+    }
+
+    const startFadeClass = isRtl ? 'bg-gradient-to-l' : 'bg-gradient-to-r';
+    const endFadeClass = isRtl ? 'bg-gradient-to-r' : 'bg-gradient-to-l';
+
+    return (
+        <div className="relative min-w-0" aria-label={t('معیارهای فعال')}>
+            <div
+                ref={scrollRef}
+                className="flex min-w-0 items-center gap-2 overflow-x-auto overscroll-x-contain whitespace-nowrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            >
+                {content}
+            </div>
+            {visibleFades.start && (
+                <span aria-hidden="true" className={`pointer-events-none absolute inset-y-0 start-0 z-10 w-8 ${startFadeClass} from-surface to-transparent`} />
+            )}
+            {visibleFades.end && (
+                <span aria-hidden="true" className={`pointer-events-none absolute inset-y-0 end-0 z-10 w-8 ${endFadeClass} from-surface to-transparent`} />
+            )}
         </div>
     );
 }
