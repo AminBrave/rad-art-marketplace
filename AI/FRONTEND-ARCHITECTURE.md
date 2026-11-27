@@ -143,11 +143,11 @@ Stage 2 establishes these ownership boundaries:
 
 The former `app/LanguageContext.jsx`, `app/ThemeContext.jsx`, `app/themeContext.js`, and `app/useTheme.js` files remain as compatibility facades. The shared UI modules (`BrandLogo.jsx`, `cards.jsx`, `feedback.jsx`, and `layout.jsx`) now consume shared locale/theme APIs directly; they no longer depend on the app layer.
 
-Additional ownership debt to resolve during later stages:
-- `components/ui/cards.jsx` contains artwork/artist domain cards; move those compositions to their features.
-- `components/ui/skeletons.jsx` contains page/domain skeleton compositions; keep only generic skeleton primitives shared and move feature-specific skeletons with their pages.
-- `components/ui/index.js` remains the shared-UI compatibility export surface; narrow or retire exports only after checking all callers.
-- Many legacy pages and request hooks remain under `app/`; migrate them with their feature in later domain stages rather than moving isolated files prematurely.
+Stage 3 establishes `shared/ui/` as the domain-independent UI owner. `controls.jsx` contains low-level actions and inputs; `forms.jsx` owns label/control compositions; `compositions.jsx` owns reusable page and information compositions; layout, navigation, feedback and overlays remain focused shared modules. The former `components/ui/` files are compatibility facades only.
+
+Domain presentation now lives behind feature public entry points: artwork and artist cards; artwork/artist/artist-workspace skeletons; admin, messaging, collections, buyer and home skeletons. Cross-feature skeleton reuse (for example, an artist profile using an artwork-card skeleton) goes through the owning feature's public entry point.
+
+Remaining migration debt is primarily legacy page and request orchestration under `app/`; move those cohesive page/domain responsibilities in later feature stages rather than moving isolated files prematurely.
 
 This status is based on static source inspection of the Stage 2 branch. It is not a complete semantic dependency graph: runtime-generated imports, reflection and bundler transformations are outside the checker's scope.
 
