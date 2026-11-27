@@ -387,7 +387,7 @@ export default function ArtworkCatalogue() {
                         data-testid="artwork-filter-sidebar"
                         tabIndex={0}
                         style={{ '--artwork-bottom-navigation-height': `${bottomNavigationHeight}px` }}
-                        className="hidden min-w-0 overscroll-y-contain lg:sticky lg:top-24 lg:block lg:max-h-[max(12rem,calc(100dvh-6rem-var(--artwork-bottom-navigation-height)-1rem))] lg:self-start lg:overflow-y-auto lg:pe-3 lg:pb-4"
+                        className="hidden min-w-0 overscroll-y-contain lg:sticky lg:top-24 lg:block lg:max-h-[calc(100dvh-6rem-var(--artwork-bottom-navigation-height)-1rem)] lg:self-start lg:overflow-y-auto lg:pe-3 lg:pb-4"
                         aria-label={t('فیلتر و مرتب‌سازی آثار')}
                     >
                         <div className="flex items-center justify-between gap-3 border-b border-ink pb-4">
