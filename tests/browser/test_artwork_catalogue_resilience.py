@@ -350,11 +350,12 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
                 const sidebar = document.querySelector('[data-testid="artwork-filter-sidebar"]');
                 const navigation = document.querySelector('[data-testid="public-bottom-navigation"]');
                 if (!sidebar || !navigation) return false;
-                const expected = navigation.getBoundingClientRect().height;
-                const actual = Number.parseFloat(
-                    getComputedStyle(sidebar).getPropertyValue('--artwork-bottom-navigation-height'),
-                );
-                return Math.abs(actual - expected) < 1;
+                const expected = window.innerHeight
+                    - 96
+                    - navigation.getBoundingClientRect().height
+                    - 16;
+                const actual = Number.parseFloat(getComputedStyle(sidebar).maxHeight);
+                return Number.isFinite(actual) && Math.abs(actual - expected) < 1;
             }""")
 
             # Simulate unusually long filter content without changing production data.
@@ -376,6 +377,18 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
                 dimensions["clientHeight"],
                 f"Test setup did not create sidebar overflow: {dimensions}",
             )
+
+            # Enter the sticky state before comparing the sidebar against the
+            # fixed bottom navigation; its initial document position is not sticky.
+            page.evaluate("""() => {
+                const sidebar = document.querySelector('[data-testid="artwork-filter-sidebar"]');
+                const top = sidebar.getBoundingClientRect().top + window.scrollY;
+                window.scrollTo(0, Math.max(0, top - 96));
+            }""")
+            page.wait_for_function("""() => {
+                const sidebar = document.querySelector('[data-testid="artwork-filter-sidebar"]');
+                return sidebar && Math.abs(sidebar.getBoundingClientRect().top - 96) < 2;
+            }""")
 
             bounds = sidebar.bounding_box()
             self.assertIsNotNone(bounds)
