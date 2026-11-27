@@ -682,7 +682,7 @@ export default function ArtworkCatalogue() {
                             />
                             </div>
                             {mobileFilterFades.start && (
-                                <span data-testid="mobile-artwork-filter-fade-top" aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-20 h-8 bg-gradient-to-b from-paper via-paper/75 to-transparent" />
+                                <span data-testid="mobile-artwork-filter-fade-top" aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-30 h-12 bg-gradient-to-b from-paper via-paper/95 via-60% to-transparent shadow-[0_6px_8px_-8px_rgba(0,0,0,0.35)]" />
                             )}
                             {mobileFilterFades.end && (
                                 <span data-testid="mobile-artwork-filter-fade-bottom" aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-8 bg-gradient-to-t from-paper via-paper/75 to-transparent" />
