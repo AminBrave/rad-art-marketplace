@@ -504,7 +504,20 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
                 "(element) => { element.style.minHeight = '1100px'; }"
             )
             page.get_by_test_id("mobile-artwork-filter-fade-bottom").wait_for(state="visible")
-            mobile_filter_scroll.evaluate("(element) => { element.scrollTop = 160; }")
+
+            # Exercise a real wheel gesture inside the dialog scrollport instead
+            # of assigning scrollTop, so this catches flex/overflow regressions.
+            scroll_bounds = mobile_filter_scroll.bounding_box()
+            self.assertIsNotNone(scroll_bounds)
+            page.mouse.move(
+                scroll_bounds["x"] + scroll_bounds["width"] / 2,
+                scroll_bounds["y"] + scroll_bounds["height"] / 2,
+            )
+            page.mouse.wheel(0, 420)
+            page.wait_for_function("""() => {
+                const element = document.querySelector('[data-testid="mobile-artwork-filter-scroll"]');
+                return element && element.scrollTop > 0;
+            }""")
             page.get_by_test_id("mobile-artwork-filter-fade-top").wait_for(state="visible")
 
             page.get_by_role("combobox", name="فیلتر دسته‌بندی").click()
