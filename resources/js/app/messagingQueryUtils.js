@@ -1,2 +1,2 @@
-// Compatibility facade. Messaging query helpers are owned by the messaging feature.
-export * from '../features/messaging/model/messagingQueryUtils';
+// Compatibility facade. This domain module is owned by its feature public entry point.
+export { buildInboxParams, buildMessageSyncParams, getInboxNextPageParam, markConversationReadInInboxPages, markIncomingMessagesRead, mergeMessages, messagingKeys, updateInboxPages } from '../features/messaging';
