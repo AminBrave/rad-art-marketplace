@@ -1,2 +1,2 @@
-// Compatibility facade. Artwork gallery is owned by the artworks feature.
-export { default } from '../features/artworks/pages/ArtworkGallery';
+// Compatibility facade. This domain module is owned by its feature public entry point.
+export { ArtworkGallery as default } from '../features/artworks';
