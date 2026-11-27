@@ -1,7 +1,6 @@
 import {
     useState } from 'react';
 import {
-    ArtistCard,
     Badge,
     Breadcrumbs,
     Button,
@@ -59,6 +58,7 @@ import {
 import {
     ArtworkCard,
 } from '../features/artworks';
+import { ArtistCard } from '../features/artists';
 
 const sampleArtwork = {
     slug: 'sample-work',
