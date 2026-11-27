@@ -25,7 +25,7 @@ const AdminArtworkCommentReportsPage = lazy(() => import('../AdminWorkspace').th
 const AdminEditorialPage = lazy(() => import('../EditorialPages').then((module) => ({ default: module.AdminEditorialPage })));
 const CollectionIndexPage = lazy(() => import('../EditorialPages').then((module) => ({ default: module.CollectionIndexPage })));
 const CollectionDetailPage = lazy(() => import('../EditorialPages').then((module) => ({ default: module.CollectionDetailPage })));
-const MessagingCenter = lazy(() => import('../MessagingCenter'));
+const MessagingCenter = lazy(() => import('../../features/messaging').then((module) => ({ default: module.MessagingCenter })));
 const ArtistProfileSettings = lazy(() => import('../RoutingPages').then((module) => ({ default: module.ArtistProfileSettings })));
 const WorkspaceSettingsPage = lazy(() => import('../RoutingPages').then((module) => ({ default: module.WorkspaceSettingsPage })));
 const ArtistArtworkPage = lazy(() => import('../RoutingPages').then((module) => ({ default: module.ArtistArtworkPage })));
