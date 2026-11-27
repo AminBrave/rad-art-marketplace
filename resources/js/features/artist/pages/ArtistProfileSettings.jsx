@@ -4,6 +4,7 @@ import axios from '../../../shared/api/httpClient';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useOutletContext } from 'react-router-dom';
 import { WorkspaceIdentitySkeleton } from '../components/skeletons';
+import { Button, Checkbox, FileInput, FormField, MediaImage, PageHeader, TextInput, TextareaField } from '../../../shared/ui';
 
 const emptyProfile = { display_name: '', display_name_en: '', bio: '', bio_en: '', city: '', city_en: '', website_url: '', instagram_handle: '', is_public: true };
 
