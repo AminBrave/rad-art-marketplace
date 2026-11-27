@@ -1,3 +1,20 @@
+import { useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+import {
+    Bell, Bookmark, CheckCheck, Compass, Flag, Heart, House, Languages,
+    LayoutDashboard, MessageCircle, Monitor, Moon, Sun, UserRound, Users, X,
+} from 'lucide-react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useTheme } from '../useTheme';
+import { useLanguage } from '../LanguageContext';
+import {
+    Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription,
+    DialogTitle, DialogTrigger, BrandLogo,
+} from '../../shared/ui';
+import { NotificationListSkeleton } from '../../features/messaging';
+import { workspaceNavigationIcons } from './navigationConfig';
+
 export function SidebarNavigation({ sections, description, onNavigate, onLogout, unreadConversationCount = 0, locale = 'fa' }) {
     return (
         <div className="min-h-0 flex-1 overflow-y-auto py-5">
