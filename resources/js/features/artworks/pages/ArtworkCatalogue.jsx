@@ -176,10 +176,7 @@ export default function ArtworkCatalogue() {
         setSearchInput('');
         setQueryFilters({ category: '', medium: '', availability: '', sort: 'newest' }, '');
     };
-    const openMobileFilters = () => {
-        setDraftFilters(values);
-        setMobileFiltersOpen(true);
-    };
+    const prepareMobileFilters = () => setDraftFilters(values);
     const applyMobileFilters = () => {
         setQueryFilters(draftFilters);
         setMobileFiltersOpen(false);
@@ -234,7 +231,7 @@ export default function ArtworkCatalogue() {
                             <p className="text-xs text-muted">{activeFilterCount ? activeFilterCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('فیلتر فعال') : t('همه آثار عمومی')}</p>
                             <Dialog open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
                                 <DialogTrigger asChild>
-                                    <Button type="button" variant="outline" onClick={openMobileFilters} className="min-h-11 gap-2 border-ink/20 bg-paper px-4 lg:hidden">
+                                    <Button type="button" variant="outline" onClick={prepareMobileFilters} className="min-h-11 gap-2 border-ink/20 bg-paper px-4 lg:hidden">
                                         <SlidersHorizontal size={16} aria-hidden="true" />
                                         {t('فیلتر آثار')}
                                         {activeFilterCount > 0 && <span className="grid h-5 min-w-5 place-items-center rounded-full bg-terracotta px-1 text-[10px] text-white">{activeFilterCount}</span>}
