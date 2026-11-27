@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
-import { SlidersHorizontal, X } from 'lucide-react';
+import { ChevronDown, SlidersHorizontal, X } from 'lucide-react';
 import { fetchArtworkFilters, fetchArtworks } from '../api/artworks';
 import { artworkKeys } from '../model/queryKeys';
 import { useLanguage } from '../../../shared/i18n';
@@ -58,42 +58,49 @@ function ArtworkFilterControls({
 
             <div className="grid gap-2 border-t border-divider-section pt-4">
                 <label className="text-sm font-bold text-ink" htmlFor={idPrefix + "-artwork-filter-category"}>{t('دسته‌بندی')}</label>
-                <select
+                <div className="relative">
+                    <select
                     id={idPrefix + "-artwork-filter-category"}
                     value={values.category}
                     onChange={(event) => onChange({ category: event.target.value })}
                     aria-label={t('فیلتر دسته‌بندی')}
-                    className="min-h-11 w-full appearance-auto border border-border-strong bg-paper px-3.5 py-2 font-sans text-sm text-ink focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
+                    className="min-h-11 w-full appearance-none border border-border-strong bg-paper py-2 pe-10 ps-3.5 font-sans text-sm text-ink focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                 >
                     <option value="">{t('همه دسته‌ها')}</option>
                     {categories.map((item) => (
                         <option key={item.id} value={item.slug}>{localizedValue(item, 'name', locale)}</option>
                     ))}
-                </select>
+                    </select>
+                    <ChevronDown size={16} aria-hidden="true" className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-muted" />
+                </div>
             </div>
 
             <div className="grid gap-2 border-t border-divider-section pt-4">
                 <label className="text-sm font-bold text-ink" htmlFor={idPrefix + "-artwork-filter-medium"}>{t('تکنیک و مواد')}</label>
-                <select
+                <div className="relative">
+                    <select
                     id={idPrefix + "-artwork-filter-medium"}
                     value={values.medium}
                     onChange={(event) => onChange({ medium: event.target.value })}
                     aria-label={t('فیلتر تکنیک و مواد')}
-                    className="min-h-11 w-full appearance-auto border border-border-strong bg-paper px-3.5 py-2 font-sans text-sm text-ink focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
+                    className="min-h-11 w-full appearance-none border border-border-strong bg-paper py-2 pe-10 ps-3.5 font-sans text-sm text-ink focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                 >
                     <option value="">{t('همه تکنیک‌ها')}</option>
                     {(filters.mediums ?? []).map((item) => <option key={item} value={item}>{t(item)}</option>)}
-                </select>
+                    </select>
+                    <ChevronDown size={16} aria-hidden="true" className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-muted" />
+                </div>
             </div>
 
             <div className="grid gap-2 border-t border-divider-section pt-4">
                 <label className="text-sm font-bold text-ink" htmlFor={idPrefix + "-artwork-filter-availability"}>{t('وضعیت اثر')}</label>
-                <select
+                <div className="relative">
+                    <select
                     id={idPrefix + "-artwork-filter-availability"}
                     value={values.availability}
                     onChange={(event) => onChange({ availability: event.target.value })}
                     aria-label={t('فیلتر وضعیت اثر')}
-                    className="min-h-11 w-full appearance-auto border border-border-strong bg-paper px-3.5 py-2 font-sans text-sm text-ink focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
+                    className="min-h-11 w-full appearance-none border border-border-strong bg-paper py-2 pe-10 ps-3.5 font-sans text-sm text-ink focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                 >
                     <option value="">{t('همه وضعیت‌ها')}</option>
                     {(filters.availability ?? []).map((item) => (
@@ -101,24 +108,29 @@ function ArtworkFilterControls({
                             {locale === 'en' ? (item.label_en || item.label) : item.label}
                         </option>
                     ))}
-                </select>
+                    </select>
+                    <ChevronDown size={16} aria-hidden="true" className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-muted" />
+                </div>
             </div>
 
             <div className="grid gap-2 border-t border-divider-section pt-4">
                 <label className="text-sm font-bold text-ink" htmlFor={idPrefix + "-artwork-filter-sort"}>{t('مرتب‌سازی آثار')}</label>
-                <select
+                <div className="relative">
+                    <select
                     id={idPrefix + "-artwork-filter-sort"}
                     value={values.sort}
                     onChange={(event) => onChange({ sort: event.target.value })}
                     aria-label={t('مرتب‌سازی آثار')}
-                    className="min-h-11 w-full appearance-auto border border-border-strong bg-paper px-3.5 py-2 font-sans text-sm text-ink focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
+                    className="min-h-11 w-full appearance-none border border-border-strong bg-paper py-2 pe-10 ps-3.5 font-sans text-sm text-ink focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                 >
                     {sortOptions.map((item) => (
                         <option key={item.value} value={item.value}>
                             {locale === 'en' ? (item.label_en || item.label) : item.label}
                         </option>
                     ))}
-                </select>
+                    </select>
+                    <ChevronDown size={16} aria-hidden="true" className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-muted" />
+                </div>
             </div>
 
             {filtersError && (
@@ -339,13 +351,13 @@ export default function ArtworkCatalogue() {
                         )}
 
                         {loading ? (
-                            <div className="mt-6 grid gap-x-5 gap-y-9 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                            <div className="mt-6 grid grid-cols-2 gap-x-5 gap-y-9 md:grid-cols-3 xl:grid-cols-4">
                                 {[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}
                             </div>
                         ) : error ? (
                             <ErrorState className="mt-8" title={t('دریافت گالری با خطا روبه‌رو شد')} description={t('اتصال را بررسی کنید و دوباره تلاش کنید.')} onRetry={() => artworksQuery.refetch()} />
                         ) : artworks.length ? (
-                            <div className="mt-6 grid gap-x-5 gap-y-9 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                            <div className="mt-6 grid grid-cols-2 gap-x-5 gap-y-9 md:grid-cols-3 xl:grid-cols-4">
                                 {artworks.map((artwork) => <ArtworkCard key={artwork.id} artwork={artwork} />)}
                             </div>
                         ) : (
