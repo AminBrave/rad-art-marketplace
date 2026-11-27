@@ -161,7 +161,4 @@ export { ArtistWorkspaceLayout } from './layouts/ArtistLayout';
 export { BuyerWorkspaceLayout } from './layouts/BuyerLayout';
 export { AdminWorkspaceLayout } from './layouts/AdminLayout';
 
-export { RouteLoading, RequireAuth, RequireRole, DashboardIndex, UnauthorizedPage, NotFoundPage } from './router/guards';
-export { ArtistWorkspaceLayout } from './layouts/ArtistLayout';
-export { BuyerWorkspaceLayout } from './layouts/BuyerLayout';
-export { AdminWorkspaceLayout } from './layouts/AdminLayout';
+
