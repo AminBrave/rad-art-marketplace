@@ -481,7 +481,7 @@ export default function ArtworkCatalogue() {
                                     </span>
                                 )}
                             </Button>
-                            <span aria-hidden="true" className="hidden h-6 w-px shrink-0 bg-border lg:hidden" />
+                            <span aria-hidden="true" className="h-6 w-px shrink-0 bg-border lg:hidden" />
                             <div className="min-w-0 flex-1">
                                 <ArtworkActiveFilterChips
                                     activeFilterCount={activeFilterCount}
