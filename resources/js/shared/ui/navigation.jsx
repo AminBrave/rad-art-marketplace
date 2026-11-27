@@ -1,7 +1,7 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import { Link } from 'react-router-dom';
-import { Button } from './primitives';
+import { Button } from './controls';
 import { cn } from '../../lib/utils';
 
 export const Tabs = TabsPrimitive.Root;
