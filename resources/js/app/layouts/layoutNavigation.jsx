@@ -13,7 +13,7 @@ import {
     DialogTitle, DialogTrigger, BrandLogo,
 } from '../../shared/ui';
 import { NotificationListSkeleton } from '../../features/messaging';
-import { workspaceNavigationIcons } from './navigationConfig';
+import { workspaceNavigationIcons, workspaceNavigationLabels } from './navigationConfig';
 
 export function SidebarNavigation({ sections, description, onNavigate, onLogout, unreadConversationCount = 0, locale = 'fa' }) {
     return (
