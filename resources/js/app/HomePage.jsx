@@ -3,7 +3,9 @@ import axios from 'axios';
 import { ArrowLeft, ArrowUpLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from './LanguageContext';
-import { ArtworkCard, ArtistCard, ArtworkCardSkeleton, ArtistCardSkeleton, EmptyState, ErrorState, MediaImage, Skeleton, Container, Card } from '../components/ui';
+import { ArtworkCard, EmptyState, ErrorState, MediaImage, Skeleton, Container, Card } from '../shared/ui';
+import { ArtistCard, ArtistCardSkeleton } from '../features/artists';
+import { ArtworkCardSkeleton } from '../features/artworks';
 import { localizedValue } from '../utils/localizedContent';
 
 const editorialSteps = [
