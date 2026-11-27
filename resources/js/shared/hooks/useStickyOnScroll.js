@@ -38,7 +38,8 @@ export function useStickyOnScroll({
             const suppressDirection = window.performance.now() < suppressDirectionUntil.current;
             const scrollingUp = currentY < lastScrollY.current;
             const scrollingDown = currentY > lastScrollY.current;
-            const passedActivation = currentY + headerOffset > activationDocumentY - activationThreshold;
+            const passedActivation = Boolean(activationElement)
+                && currentY + headerOffset > activationDocumentY - activationThreshold;
 
             setEnabled((current) => (current === passedActivation ? current : passedActivation));
 
