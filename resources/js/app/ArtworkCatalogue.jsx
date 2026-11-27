@@ -5,7 +5,8 @@ import { useSearchParams } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { useLanguage } from './LanguageContext';
 import { localizedValue } from '../utils/localizedContent';
-import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, SelectField, PageHeader, Button, Container, Section } from '../components/ui';
+import { ArtworkCard, EmptyState, ErrorState, SearchField, SelectField, PageHeader, Button, Container, Section } from '../shared/ui';
+import { ArtworkCardSkeleton } from '../features/artworks';
 
 const emptyFilters = { mediums: [], availability: [], sorts: [] };
 
