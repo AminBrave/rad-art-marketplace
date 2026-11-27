@@ -5,7 +5,8 @@ Use this as the single reference for task approach, engineering practices, verif
 ## Working principles
 
 - The user's latest explicit direction defines the requested outcome, scope and trade-offs.
-- Inspect current source, callers, configuration and relevant tests before making implementation claims. Source establishes what exists; the user establishes what should change.
+- Inspect current source, callers, configuration and relevant documentation before making implementation claims. Source establishes what exists; the user establishes what should change.
+- Respect task-specific scope and exclusions. Do not inspect or modify areas the user has explicitly excluded.
 - Separate confirmed facts, assumptions, proposals and unknowns.
 - Prefer the smallest coherent solution that meets the goal without avoidable coupling, security risk or migration cost.
 - Preserve routes, API/data contracts, authorization, persisted data and user-visible behavior unless the task explicitly changes them.
@@ -19,7 +20,7 @@ Use this as the single reference for task approach, engineering practices, verif
 2. Inspect the relevant route, component, data flow, API, authorization and callers.
 3. Identify constraints, unknowns and failure states.
 4. Choose the simplest sound implementation; compare alternatives when the decision is consequential.
-5. Implement the behavior and appropriate regression coverage.
+5. Implement the behavior and appropriate regression coverage when tests are in scope.
 6. Review the diff for unintended scope, contract changes, secrets and stale documentation.
 7. Run proportionate checks and report exactly what ran and what did not.
 
@@ -44,7 +45,8 @@ Use an issue or written plan when work spans sessions, has dependencies, is cros
 
 ### Tests and quality
 - Tests should describe supported behavior and observable outcomes, not freeze implementation details.
-- Add or update focused coverage for changed behavior, contracts, authorization and important failure cases.
+- Follow the user's task scope for tests. If tests are excluded, do not read, inspect or modify test files; report that limitation and use only the verification methods permitted by the task.
+- When tests are in scope, add or update focused coverage for changed behavior, contracts, authorization and important failure cases.
 - Never delete, skip or weaken a failing test merely to make a check pass.
 - Choose the relevant test layer: unit, feature/API, integration, frontend interaction or browser journey.
 - Report exact commands and observed results. Do not imply unrun checks passed.
