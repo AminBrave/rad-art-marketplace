@@ -9,9 +9,9 @@ import {
     Button, Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger, BrandLogo,
 } from '../../shared/ui';
 import {
-    LanguageControl, NotificationBell, PublicBottomNavigation, SidebarNavigation,
-    ThemeControl, getPublicWorkspaceLinks, publicDiscoveryLinks, publicInfoLinks,
+    LanguageControl, NotificationBell, PublicBottomNavigation, SidebarNavigation, ThemeControl,
 } from './layoutNavigation';
+import { getPublicWorkspaceLinks, publicDiscoveryLinks, publicInfoLinks } from './navigationConfig';
 
 export function PublicLayout() {
     const { user, logout } = useAuth();

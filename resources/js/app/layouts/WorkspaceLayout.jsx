@@ -10,9 +10,9 @@ import {
     DialogTrigger, BrandLogo,
 } from '../../shared/ui';
 import {
-    AuthenticatedBottomNavigation, LanguageControl, NotificationBell, SidebarNavigation,
-    ThemeControl, publicDiscoveryLinks, publicInfoLinks, workspaceNavigationLabels,
+    AuthenticatedBottomNavigation, LanguageControl, NotificationBell, SidebarNavigation, ThemeControl,
 } from './layoutNavigation';
+import { publicDiscoveryLinks, publicInfoLinks, workspaceNavigationLabels } from './navigationConfig';
 
 export function WorkspaceLayout({ title, links, outletContext }) {
     const { user, logout } = useAuth();
