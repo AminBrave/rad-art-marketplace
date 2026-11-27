@@ -31,9 +31,13 @@ export function useScrollOverflow(
 
             let next;
             if (axis === 'vertical') {
+                // Scroll metrics are more reliable than child bounding boxes here:
+                // the scrollport can include padding, and nested filter sections may
+                // change their layout while the sidebar itself stays max-height constrained.
+                const maxScrollTop = element.scrollHeight - element.clientHeight;
                 next = {
-                    start: first.top < bounds.top - 1,
-                    end: last.bottom > bounds.bottom + 1,
+                    start: element.scrollTop > 1,
+                    end: maxScrollTop > 1 && element.scrollTop < maxScrollTop - 1,
                 };
             } else {
                 next = direction === 'rtl'
