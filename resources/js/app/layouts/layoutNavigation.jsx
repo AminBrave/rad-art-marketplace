@@ -388,7 +388,7 @@ export const workspaceNavigationLabels = {
     '/admin/settings': 'تنظیمات',
 };
 
-function PublicBottomNavigation({ user, unreadConversationCount = 0 }) {
+export function PublicBottomNavigation({ user, unreadConversationCount = 0 }) {
     const { t, locale } = useLanguage();
     const dashboardHref = user?.role === 'artist' ? '/dashboard/artist'
         : user?.role === 'buyer' ? '/dashboard/buyer'
