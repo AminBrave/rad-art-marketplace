@@ -104,6 +104,7 @@
 
 html {
     min-width: 320px;
+    scrollbar-gutter: stable;
     overflow-x: clip;
     scroll-behavior: smooth;
     scroll-padding-top: var(--rd-header-height);
