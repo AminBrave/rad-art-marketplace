@@ -57,7 +57,7 @@ export function PublicLayout() {
     useEffect(() => setMobileMenuOpen(false), [pathname]);
 
     return (
-        <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+        <Dialog modal={false} open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <div data-experience="discover" className="min-h-screen bg-canvas text-ink pb-[calc(var(--workspace-bottom-nav-height)+env(safe-area-inset-bottom)+1rem)]">
             <a href="#main-content" className="sr-only z-[60] bg-paper px-4 py-3 text-ink focus:not-sr-only focus:fixed focus:inset-x-4 focus:top-4">
                 {t("رفتن به محتوای اصلی")}
@@ -76,7 +76,7 @@ export function PublicLayout() {
                     </div>
                 </div>
 
-                <DialogContent placement="drawer" className="flex flex-col px-4 py-5">
+                <DialogContent nonModalOverlay placement="drawer" className="flex flex-col px-4 py-5">
                     <div className="mb-5 flex items-center justify-between border-b border-border pb-4">
                         <div className="min-w-0">
                             <DialogTitle className="text-base font-extrabold text-ink">{t('منو')}</DialogTitle>
