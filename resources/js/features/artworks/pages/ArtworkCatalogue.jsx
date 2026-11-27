@@ -266,6 +266,7 @@ export default function ArtworkCatalogue() {
     const loadMoreRef = useRef(null);
     const filterSummaryEndRef = useRef(null);
     const lastScrollY = useRef(0);
+    const suppressScrollDirectionUntil = useRef(0);
     const [stickyToolbarEnabled, setStickyToolbarEnabled] = useState(false);
     const [stickyToolbarVisible, setStickyToolbarVisible] = useState(false);
     const [stickyToolbarTop, setStickyToolbarTop] = useState(0);
@@ -293,16 +294,19 @@ export default function ArtworkCatalogue() {
 
         const handleScroll = () => {
             const currentY = window.scrollY;
-            const scrollingUp = currentY < lastScrollY.current;
+            const suppressDirection = window.performance.now() < suppressScrollDirectionUntil.current;
+            const scrollingUp = !suppressDirection && currentY < lastScrollY.current;
             const headerBottom = measureHeader();
             // Keep activation stable while chips are added or removed, avoiding layout-shift flicker.
             const passedSummary = currentY + headerBottom > activationDocumentY - 8;
 
             setStickyToolbarEnabled((current) => current === passedSummary ? current : passedSummary);
-            setStickyToolbarVisible((current) => {
-                const next = passedSummary && scrollingUp;
-                return current === next ? current : next;
-            });
+            if (!suppressDirection) {
+                setStickyToolbarVisible((current) => {
+                    const next = passedSummary && scrollingUp;
+                    return current === next ? current : next;
+                });
+            }
             lastScrollY.current = currentY;
         };
 
@@ -369,6 +373,8 @@ export default function ArtworkCatalogue() {
     );
 
     const updateFilters = (changes) => {
+        suppressScrollDirectionUntil.current = window.performance.now() + 500;
+        lastScrollY.current = window.scrollY;
         const next = { ...currentFilters, ...changes };
         const query = {};
         if (next.q) query.q = next.q;
@@ -381,6 +387,8 @@ export default function ArtworkCatalogue() {
 
     const submitSearch = (value) => updateFilters({ q: value.trim() });
     const clearFilters = () => {
+        suppressScrollDirectionUntil.current = window.performance.now() + 500;
+        lastScrollY.current = window.scrollY;
         setSearchInput('');
         setDraftFilters(defaultFilterValues);
         setParams({});
