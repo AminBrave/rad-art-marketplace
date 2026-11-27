@@ -138,7 +138,7 @@ The frontend is still in an incremental migration: legacy pages and orchestratio
 Stage 2 establishes these ownership boundaries:
 - `shared/i18n/` owns the Persian/English dictionaries, locale provider, translation hook, persisted locale, and document `lang`/`dir` synchronization.
 - `shared/theme/` owns the theme context, provider, hook, persistence, and system-preference synchronization.
-- `shared/api/httpClient.js` configures the existing Axios singleton for the optional API base URL, credentials, XSRF, and common request headers. Keeping the singleton preserves compatibility for legacy modules that still import Axios directly or use `window.axios`.
+- `shared/api/httpClient.js` configures the existing Axios singleton for the optional `VITE_API_BASE_URL`, credentials, XSRF, and common request headers. It adds normalized Laravel/Axios error metadata as `error.apiError` while re-rejecting the original `AxiosError`, preserving existing response/error handling. `shared/api/errors.js` exports `normalizeApiError` and `getApiError`; the optional API origin is documented in `.env.example`. Keeping the singleton preserves compatibility for legacy modules that still import Axios directly or use `window.axios`.
 - `features/artworks/` and `features/artists/` own the first migrated endpoint functions and query-key factories. Their public `index.js` entry points are the supported imports for app composition during this transitional period.
 
 The former `app/LanguageContext.jsx`, `app/ThemeContext.jsx`, `app/themeContext.js`, and `app/useTheme.js` files remain as compatibility facades. The shared UI modules (`BrandLogo.jsx`, `cards.jsx`, `feedback.jsx`, and `layout.jsx`) now consume shared locale/theme APIs directly; they no longer depend on the app layer.
