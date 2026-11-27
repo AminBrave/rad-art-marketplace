@@ -586,9 +586,9 @@ export default function ArtworkCatalogue() {
                                 type="button"
                                 onClick={openMobileFilters}
                                 aria-haspopup="dialog"
-                                className="shrink-0 lg:hidden"
+                                className="min-h-9 shrink-0 border-border bg-surface-muted px-3 text-ink hover:border-action hover:bg-surface hover:text-ink lg:hidden"
                             >
-                                <SlidersHorizontal size={16} aria-hidden="true" />
+                                <SlidersHorizontal size={15} aria-hidden="true" />
                                 {t('فیلترها')}
                                 {activeFilterCount > 0 && (
                                     <span className="ms-1 inline-flex min-w-5 items-center justify-center bg-surface-muted px-1.5 py-0.5 text-xs tabular-nums">
