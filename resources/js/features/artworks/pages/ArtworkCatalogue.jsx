@@ -242,10 +242,10 @@ function ArtworkActiveFilterChips({
                 {content}
             </div>
             {visibleFades.start && (
-                <span aria-hidden="true" className={`pointer-events-none absolute inset-y-0 start-0 z-10 w-8 ${startFadeClass} from-surface to-transparent`} />
+                <span aria-hidden="true" className={`pointer-events-none absolute inset-y-0 start-0 z-10 w-8 ${startFadeClass} from-canvas to-transparent`} />
             )}
             {visibleFades.end && (
-                <span aria-hidden="true" className={`pointer-events-none absolute inset-y-0 end-0 z-10 w-8 ${endFadeClass} from-surface to-transparent`} />
+                <span aria-hidden="true" className={`pointer-events-none absolute inset-y-0 end-0 z-10 w-8 ${endFadeClass} from-canvas to-transparent`} />
             )}
         </div>
     );
@@ -275,18 +275,13 @@ export default function ArtworkCatalogue() {
     useEffect(() => {
         lastScrollY.current = window.scrollY;
         const siteHeader = document.querySelector('[data-site-header], header');
+        const summaryMarker = filterSummaryEndRef.current;
+        const activationDocumentY = summaryMarker
+            ? summaryMarker.getBoundingClientRect().top + window.scrollY
+            : 0;
 
         const measureHeader = () => {
-            if (!siteHeader) {
-                setStickyToolbarTop(0);
-                return 0;
-            }
-
-            const rect = siteHeader.getBoundingClientRect();
-            const position = window.getComputedStyle(siteHeader).position;
-            const offset = (position === 'fixed' || position === 'sticky')
-                ? Math.max(0, rect.bottom)
-                : Math.max(0, rect.bottom);
+            const offset = siteHeader ? Math.max(0, siteHeader.getBoundingClientRect().bottom) : 0;
             setStickyToolbarTop((current) => Math.abs(current - offset) < 1 ? current : offset);
             return offset;
         };
@@ -295,8 +290,8 @@ export default function ArtworkCatalogue() {
             const currentY = window.scrollY;
             const scrollingUp = currentY < lastScrollY.current;
             const headerBottom = measureHeader();
-            const summaryBottom = filterSummaryEndRef.current?.getBoundingClientRect().bottom ?? Infinity;
-            const passedSummary = summaryBottom < headerBottom + 8;
+            // Keep activation stable while chips are added or removed, avoiding layout-shift flicker.
+            const passedSummary = currentY + headerBottom > activationDocumentY - 8;
 
             setStickyToolbarEnabled((current) => current === passedSummary ? current : passedSummary);
             setStickyToolbarVisible((current) => {
@@ -540,7 +535,7 @@ export default function ArtworkCatalogue() {
                 <div
                     aria-hidden={!stickyToolbarVisible}
                     style={{ top: stickyToolbarTop }}
-                    className={`fixed inset-x-0 z-40 border-b border-divider-section bg-surface text-ink shadow-soft transition-[transform,opacity,visibility] duration-200 motion-reduce:transition-none ${stickyToolbarVisible ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-full opacity-0 pointer-events-none'}`}
+                    className={`fixed inset-x-0 z-40 border-b border-divider-section bg-[color:color-mix(in_srgb,var(--color-canvas)_96%,transparent)] text-ink shadow-soft backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-canvas)_90%,transparent)] transition-[transform,opacity,visibility] duration-200 motion-reduce:transition-none ${stickyToolbarVisible ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-full opacity-0 pointer-events-none'}`}
                 >
                     <Container width="wide">
                         <div className="flex min-w-0 items-center gap-3 py-3">
