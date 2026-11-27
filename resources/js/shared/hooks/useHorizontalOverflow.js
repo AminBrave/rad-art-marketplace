@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 
 /**
- * Detects whether a horizontal scroller has content clipped at either logical edge.
- * Direction must be 'rtl' or 'ltr'.
+ * Detects whether a scroll container has clipped content at its edges.
+ * Horizontal direction is logical (start/end); vertical uses top/bottom.
  */
-export function useHorizontalOverflow(
+export function useScrollOverflow(
     scrollRef,
-    { enabled = true, direction = 'ltr', contentKey = '' } = {},
+    { enabled = true, axis = 'horizontal', direction = 'ltr', contentKey = '' } = {},
 ) {
     const [visibleFades, setVisibleFades] = useState({ start: false, end: false });
 
@@ -29,15 +29,23 @@ export function useHorizontalOverflow(
                 return;
             }
 
-            const next = direction === 'rtl'
-                ? {
-                    start: first.right > bounds.right + 1,
-                    end: last.left < bounds.left - 1,
-                }
-                : {
-                    start: first.left < bounds.left - 1,
-                    end: last.right > bounds.right + 1,
+            let next;
+            if (axis === 'vertical') {
+                next = {
+                    start: first.top < bounds.top - 1,
+                    end: last.bottom > bounds.bottom + 1,
                 };
+            } else {
+                next = direction === 'rtl'
+                    ? {
+                        start: first.right > bounds.right + 1,
+                        end: last.left < bounds.left - 1,
+                    }
+                    : {
+                        start: first.left < bounds.left - 1,
+                        end: last.right > bounds.right + 1,
+                    };
+            }
 
             setVisibleFades((current) => (
                 current.start === next.start && current.end === next.end ? current : next
@@ -61,7 +69,12 @@ export function useHorizontalOverflow(
             window.removeEventListener('resize', updateFades);
             resizeObserver?.disconnect();
         };
-    }, [contentKey, direction, enabled, scrollRef]);
+    }, [axis, contentKey, direction, enabled, scrollRef]);
 
     return visibleFades;
+}
+
+/** Backwards-compatible horizontal overflow helper. */
+export function useHorizontalOverflow(scrollRef, options = {}) {
+    return useScrollOverflow(scrollRef, { ...options, axis: 'horizontal' });
 }
