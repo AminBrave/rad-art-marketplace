@@ -4,7 +4,8 @@ import { fetchArtistProfile, followArtist, unfollowArtist, artistKeys } from '..
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useLanguage } from './LanguageContext';
-import { ArtworkCard, EmptyState, ErrorState, ArtistProfileSkeleton, SectionHeader, Button, Container } from '../components/ui';
+import { ArtworkCard, EmptyState, ErrorState, SectionHeader, Button, Container } from '../shared/ui';
+import { ArtistProfileSkeleton } from '../features/artists';
 import { localizedValue } from '../utils/localizedContent';
 
 export default function ArtistProfilePage() {
