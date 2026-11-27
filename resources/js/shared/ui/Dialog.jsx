@@ -5,7 +5,7 @@ export const Dialog = DialogPrimitive.Root;
 export const DialogTrigger = DialogPrimitive.Trigger;
 export const DialogClose = DialogPrimitive.Close;
 
-export function DialogContent({ children, className = '', overlayClassName = '', placement = 'center', nonModalOverlay = false, overlayOpen = false, ...props }) {
+export function DialogContent({ children, className = '', overlayClassName = '', placement = 'center', nonModalOverlay = false, overlayOpen = false, onFocusOutside, ...props }) {
     return (
         <DialogPrimitive.Portal>
             {nonModalOverlay && overlayOpen ? (
@@ -18,6 +18,11 @@ export function DialogContent({ children, className = '', overlayClassName = '',
             <DialogPrimitive.Content
                
                 className={cn(placement === 'drawer' ? 'fixed inset-y-0 end-0 start-auto top-0 z-[var(--rd-z-dialog)] h-dvh max-h-dvh w-[min(22rem,calc(100vw-2.75rem))] max-w-none translate-x-0 translate-y-0 overflow-y-auto border-y-0 border-e border-border bg-paper p-0 text-ink shadow-raised outline-none ring-0' : 'fixed left-1/2 top-1/2 z-[var(--rd-z-dialog)] max-h-[min(88dvh,48rem)] w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 -translate-y-1/2 overflow-y-auto  border border-border bg-paper p-5 text-ink shadow-raised outline-none ring-1 ring-[color:color-mix(in_srgb,var(--color-ink)_6%,transparent)] sm:p-7', 'focus-visible:ring-2 focus-visible:ring-focus', className)}
+                aria-modal={nonModalOverlay ? true : undefined}
+                onFocusOutside={(event) => {
+                    onFocusOutside?.(event);
+                    if (nonModalOverlay) event.preventDefault();
+                }}
                 {...props}
             >
                 {children}
