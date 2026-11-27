@@ -213,7 +213,8 @@ export function NotificationBell({ user, onNavigate }) {
                 overlayOpen={open}
                 id="workspace-notification-panel"
                 placement="drawer"
-                className="!w-[min(25rem,100vw)] !p-0 flex flex-col !overflow-hidden text-start"
+                overlayClassName="!z-[var(--rd-z-nested-overlay)]"
+                className="!z-[var(--rd-z-nested-dialog)] !w-[min(25rem,100vw)] !p-0 flex flex-col !overflow-hidden text-start"
             >
                 <div className="h-1 shrink-0 bg-terracotta" aria-hidden="true" />
                 <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
