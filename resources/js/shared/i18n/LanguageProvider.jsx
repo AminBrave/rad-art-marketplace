@@ -46,6 +46,7 @@ export function LanguageProvider({ children }) {
 }
 
 // Keep the provider and hook together as the public localization API.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useLanguage() {
     const context = useContext(LanguageContext);
     if (!context) throw new Error('useLanguage must be used inside LanguageProvider');
