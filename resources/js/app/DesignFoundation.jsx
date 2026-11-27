@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { auditColorAccessibility } from '../lib/colorAccessibility';
 import ComponentShowcase from './ComponentShowcase';
-import { Button, TextInput, Container } from '../components/ui';
+import { Button, TextInput, Container } from '../shared/ui';
 
 const swatches = [
     { name: 'Ivory', value: 'var(--color-canvas)', token: 'canvas' },
