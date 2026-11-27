@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useLanguage } from '../../app/LanguageContext';
-import { useTheme } from '../../app/useTheme';
+import { useLanguage } from '../../shared/i18n';
+import { useTheme } from '../../shared/theme';
 
 const LOGO_FORMATS = ['svg', 'png', 'jpg'];
 
