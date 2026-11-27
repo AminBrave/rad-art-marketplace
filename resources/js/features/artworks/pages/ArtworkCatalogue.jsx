@@ -13,7 +13,6 @@ import {
     Dialog,
     DialogClose,
     DialogContent,
-    DialogDescription,
     DialogTitle,
     EmptyState,
     ErrorState,
@@ -143,6 +142,35 @@ function ArtworkFilterControls({
     );
 }
 
+
+function ArtworkActiveFilterChips({
+    activeFilterCount,
+    search,
+    category,
+    medium,
+    availability,
+    sort,
+    categories,
+    filters,
+    onRemove,
+    compact = false,
+}) {
+    const { t, locale } = useLanguage();
+    if (activeFilterCount === 0) return null;
+
+    const chipClass = "inline-flex min-h-8 items-center gap-1.5 border border-border bg-paper px-2.5 text-xs font-semibold hover:border-terracotta";
+    return (
+        <div className={`flex flex-wrap items-center gap-2 ${compact ? '' : 'mt-5'}`} aria-label={t('معیارهای فعال')}>
+            <span className="me-1 text-xs font-bold text-muted">{t('انتخاب شما:')}</span>
+            {search && <Button variant="outline" type="button" onClick={() => onRemove({ q: '' })} className={chipClass}>{search}<X size={12} aria-hidden="true" /></Button>}
+            {category && <Button variant="outline" type="button" onClick={() => onRemove({ category: '' })} className={chipClass}>{localizedValue(categories.find((item) => item.slug === category), 'name', locale) || category}<X size={12} aria-hidden="true" /></Button>}
+            {medium && <Button variant="outline" type="button" onClick={() => onRemove({ medium: '' })} className={chipClass}>{medium}<X size={12} aria-hidden="true" /></Button>}
+            {availability && <Button variant="outline" type="button" onClick={() => onRemove({ availability: '' })} className={chipClass}>{filters.availability?.find((item) => item.value === availability)?.[locale === 'en' ? 'label_en' : 'label'] ?? availability}<X size={12} aria-hidden="true" /></Button>}
+            {sort !== 'newest' && <Button variant="outline" type="button" onClick={() => onRemove({ sort: 'newest' })} className={chipClass}>{filters.sorts?.find((item) => item.value === sort)?.[locale === 'en' ? 'label_en' : 'label'] ?? sort}<X size={12} aria-hidden="true" /></Button>}
+        </div>
+    );
+}
+
 export default function ArtworkCatalogue() {
     const { t, locale } = useLanguage();
     const [params, setParams] = useSearchParams();
@@ -156,8 +184,34 @@ export default function ArtworkCatalogue() {
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
     const [draftFilters, setDraftFilters] = useState(currentFilters);
     const loadMoreRef = useRef(null);
+    const filterSummaryEndRef = useRef(null);
+    const lastScrollY = useRef(0);
+    const [stickyToolbarEnabled, setStickyToolbarEnabled] = useState(false);
+    const [stickyToolbarVisible, setStickyToolbarVisible] = useState(false);
 
     useEffect(() => setSearchInput(search), [search]);
+
+    useEffect(() => {
+        lastScrollY.current = window.scrollY;
+
+        const handleScroll = () => {
+            const currentY = window.scrollY;
+            const scrollingUp = currentY < lastScrollY.current;
+            const summaryBottom = filterSummaryEndRef.current?.getBoundingClientRect().bottom ?? Infinity;
+            const passedSummary = summaryBottom < 88;
+
+            setStickyToolbarEnabled((current) => current === passedSummary ? current : passedSummary);
+            setStickyToolbarVisible((current) => {
+                const next = passedSummary && scrollingUp;
+                return current === next ? current : next;
+            });
+            lastScrollY.current = currentY;
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const filtersQuery = useQuery({
         queryKey: artworkKeys.filters(),
@@ -319,36 +373,18 @@ export default function ArtworkCatalogue() {
                             <p className="hidden text-xs text-muted lg:block">{t('نمایش آثار عمومی و تأییدشده')}</p>
                         </div>
 
-                        {activeFilterCount > 0 && (
-                            <div className="mt-5 flex flex-wrap items-center gap-2" aria-label={t('معیارهای فعال')}>
-                                <span className="me-1 text-xs font-bold text-muted">{t('انتخاب شما:')}</span>
-                                {search && (
-                                    <Button variant="outline" type="button" onClick={() => updateFilters({ q: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">
-                                        {search}<X size={12} aria-hidden="true" />
-                                    </Button>
-                                )}
-                                {category && (
-                                    <Button variant="outline" type="button" onClick={() => updateFilters({ category: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">
-                                        {localizedValue(categories.find((item) => item.slug === category), 'name', locale) || category}<X size={12} aria-hidden="true" />
-                                    </Button>
-                                )}
-                                {medium && (
-                                    <Button variant="outline" type="button" onClick={() => updateFilters({ medium: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">
-                                        {medium}<X size={12} aria-hidden="true" />
-                                    </Button>
-                                )}
-                                {availability && (
-                                    <Button variant="outline" type="button" onClick={() => updateFilters({ availability: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">
-                                        {filters.availability?.find((item) => item.value === availability)?.[locale === 'en' ? 'label_en' : 'label'] ?? availability}<X size={12} aria-hidden="true" />
-                                    </Button>
-                                )}
-                                {sort !== 'newest' && (
-                                    <Button variant="outline" type="button" onClick={() => updateFilters({ sort: 'newest' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">
-                                        {filters.sorts?.find((item) => item.value === sort)?.[locale === 'en' ? 'label_en' : 'label'] ?? sort}<X size={12} aria-hidden="true" />
-                                    </Button>
-                                )}
-                            </div>
-                        )}
+                        <ArtworkActiveFilterChips
+                            activeFilterCount={activeFilterCount}
+                            search={search}
+                            category={category}
+                            medium={medium}
+                            availability={availability}
+                            sort={sort}
+                            categories={categories}
+                            filters={filters}
+                            onRemove={updateFilters}
+                        />
+                        <div ref={filterSummaryEndRef} className="h-px w-full" aria-hidden="true" />
 
                         {loading ? (
                             <div className="mt-6 grid grid-cols-2 gap-x-5 gap-y-9 md:grid-cols-3 xl:grid-cols-4">
@@ -392,6 +428,53 @@ export default function ArtworkCatalogue() {
                 </div>
             </Container>
 
+            {stickyToolbarEnabled && (
+                <div
+                    aria-hidden={!stickyToolbarVisible}
+                    className={`fixed inset-x-0 top-20 z-40 border-b border-border bg-paper/95 shadow-md backdrop-blur-sm transition-all duration-200 motion-reduce:transition-none ${stickyToolbarVisible ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-full opacity-0 pointer-events-none'}`}
+                >
+                    <Container width="wide">
+                        <div className="flex flex-wrap items-center justify-between gap-2 py-2.5">
+                            <div className="flex min-w-0 items-center gap-2">
+                                <p aria-live="polite" className="whitespace-nowrap text-sm font-semibold text-ink">
+                                    {loading ? t('در حال دریافت آثار…') : meta.total.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('اثر')}
+                                </p>
+                                <Button
+                                    variant="outline"
+                                    type="button"
+                                    onClick={openMobileFilters}
+                                    aria-haspopup="dialog"
+                                    className="min-h-9 shrink-0 px-3 lg:hidden"
+                                >
+                                    <SlidersHorizontal size={15} aria-hidden="true" />
+                                    {t('فیلترها')}
+                                    {activeFilterCount > 0 && (
+                                        <span className="ms-1 inline-flex min-w-5 items-center justify-center bg-surface-muted px-1.5 py-0.5 text-xs tabular-nums">
+                                            {activeFilterCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}
+                                        </span>
+                                    )}
+                                </Button>
+                            </div>
+                            <div className="hidden text-xs text-muted lg:block">{t('نمایش آثار عمومی و تأییدشده')}</div>
+                        </div>
+                        <div className="pb-2">
+                            <ArtworkActiveFilterChips
+                                activeFilterCount={activeFilterCount}
+                                search={search}
+                                category={category}
+                                medium={medium}
+                                availability={availability}
+                                sort={sort}
+                                categories={categories}
+                                filters={filters}
+                                onRemove={updateFilters}
+                                compact
+                            />
+                        </div>
+                    </Container>
+                </div>
+            )}
+
             <Dialog open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
                 <DialogContent
                     placement="center"
@@ -401,7 +484,6 @@ export default function ArtworkCatalogue() {
                     <div className="flex items-start justify-between gap-4 border-b border-divider-section p-5">
                         <div>
                             <DialogTitle className="text-lg">{t('فیلترها')}</DialogTitle>
-                            <DialogDescription>{t('آثار را با معیارهای دلخواه محدود کنید و سپس نتایج را ببینید.')}</DialogDescription>
                         </div>
                         <DialogClose asChild>
                             <Button variant="ghost" size="sm" aria-label={t('بستن')} className="min-h-10 min-w-10 px-2">
