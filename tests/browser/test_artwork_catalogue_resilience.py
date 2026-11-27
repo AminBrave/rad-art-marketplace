@@ -504,6 +504,10 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
                 "(element) => { element.style.minHeight = '1100px'; }"
             )
             page.get_by_test_id("mobile-artwork-filter-fade-bottom").wait_for(state="visible")
+            page.wait_for_function("""() => {
+                const fade = document.querySelector('[data-testid="mobile-artwork-filter-fade-bottom"]');
+                return fade && getComputedStyle(fade).opacity === '1';
+            }""")
 
             # Exercise a real wheel gesture inside the dialog scrollport instead
             # of assigning scrollTop, so this catches flex/overflow regressions.
@@ -519,6 +523,10 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
                 return element && element.scrollTop > 0;
             }""")
             page.get_by_test_id("mobile-artwork-filter-fade-top").wait_for(state="visible")
+            page.wait_for_function("""() => {
+                const fade = document.querySelector('[data-testid="mobile-artwork-filter-fade-top"]');
+                return fade && getComputedStyle(fade).opacity === '1';
+            }""")
 
             page.get_by_role("combobox", name="فیلتر دسته‌بندی").click()
             page.get_by_role("option", name="نقاشی").click()
