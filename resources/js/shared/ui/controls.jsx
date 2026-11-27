@@ -144,7 +144,7 @@ export function SelectField({
                 <SelectPrimitive.Content
                     position="popper"
                     sideOffset={4}
-                    className="z-[90] max-h-[var(--radix-select-content-available-height)] min-w-[var(--radix-select-trigger-width)] overflow-hidden  border border-border bg-paper text-ink shadow-raised"
+                    className="z-[var(--rd-z-popover)] max-h-[var(--radix-select-content-available-height)] min-w-[var(--radix-select-trigger-width)] overflow-hidden  border border-border bg-paper text-ink shadow-raised"
                 >
                     <SelectPrimitive.Viewport className="p-1.5">
                         {selectableOptions.map((option) => (
