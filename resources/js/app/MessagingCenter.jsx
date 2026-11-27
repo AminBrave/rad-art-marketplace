@@ -1,2 +1,2 @@
-// Compatibility facade. Messaging orchestration is owned by the messaging feature.
-export { default } from '../features/messaging/pages/MessagingCenter';
+// Compatibility facade. This domain module is owned by its feature public entry point.
+export { MessagingCenter as default } from '../features/messaging';
