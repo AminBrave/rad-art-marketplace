@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { AlertTriangle, ImageOff } from 'lucide-react';
 import { Button } from './primitives';
-import { useLanguage } from '../../app/LanguageContext';
+import { useLanguage } from '../../shared/i18n';
 import * as ToastPrimitive from '@radix-ui/react-toast';
 
 const skeletonClasses = 'block bg-[linear-gradient(100deg,var(--color-skeleton-base)_25%,var(--color-skeleton-highlight)_42%,var(--color-skeleton-base)_62%)] [background-size:200%_100%] animate-skeleton-shimmer motion-reduce:animate-none';
