@@ -50,3 +50,7 @@ For a proposed architectural change:
 6. Follow the user's chosen direction.
 
 Do not preserve this architecture simply because it is documented. Do not replace it merely to follow a fashionable pattern. Let requirements and evidence drive the change.
+
+## Frontend target architecture
+
+The source-backed current-state map above is distinct from the approved target ownership and dependency rules. See [FRONTEND-ARCHITECTURE.md](FRONTEND-ARCHITECTURE.md) for the feature-first target structure, migration constraints, compatibility policy and boundary-check command. The target document does not imply that its folders or boundaries have already been fully implemented.
