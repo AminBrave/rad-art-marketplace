@@ -465,10 +465,7 @@ export default function ArtworkCatalogue() {
                     className={`fixed inset-x-0 z-40 border-b border-divider-section bg-surface text-ink shadow-soft transition-[transform,opacity,visibility] duration-200 motion-reduce:transition-none ${stickyToolbarVisible ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-full opacity-0 pointer-events-none'}`}
                 >
                     <Container width="wide">
-                        <div className="flex min-w-0 items-center gap-3 py-2.5">
-                            <p aria-live="polite" className="shrink-0 whitespace-nowrap text-xs font-bold text-ink sm:text-sm">
-                                {loading ? t('در حال دریافت آثار…') : meta.total.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('اثر')}
-                            </p>
+                        <div className="flex min-w-0 items-center gap-3 py-3">
                             <Button
                                 variant="outline"
                                 type="button"
@@ -484,6 +481,7 @@ export default function ArtworkCatalogue() {
                                     </span>
                                 )}
                             </Button>
+                            <span aria-hidden="true" className="hidden h-6 w-px shrink-0 bg-border lg:hidden" />
                             <div className="min-w-0 flex-1">
                                 <ArtworkActiveFilterChips
                                     activeFilterCount={activeFilterCount}
@@ -501,6 +499,10 @@ export default function ArtworkCatalogue() {
                                     <p className="truncate text-xs text-muted">{t('نمایش آثار عمومی و تأییدشده')}</p>
                                 )}
                             </div>
+                            <span aria-hidden="true" className="h-6 w-px shrink-0 bg-border" />
+                            <p aria-live="polite" className="shrink-0 whitespace-nowrap text-xs font-bold text-ink sm:text-sm">
+                                {loading ? t('در حال دریافت آثار…') : meta.total.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('اثر')}
+                            </p>
                         </div>
                     </Container>
                 </div>
