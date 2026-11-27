@@ -1,4 +1,4 @@
-import { MediaImage, Button } from '../components/ui';
+import { MediaImage, Button } from '../shared/ui';
 import { Link } from 'react-router-dom';
 import { Image as ImageIcon } from 'lucide-react';
 import { useLanguage } from './LanguageContext';
