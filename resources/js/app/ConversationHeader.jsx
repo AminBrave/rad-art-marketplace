@@ -1,2 +1,2 @@
-// Compatibility facade. Conversation header is owned by the messaging feature.
-export { default } from '../features/messaging/components/ConversationHeader';
+// Compatibility facade. This domain module is owned by its feature public entry point.
+export { ConversationHeader as default } from '../features/messaging';
