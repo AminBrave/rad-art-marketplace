@@ -636,9 +636,8 @@ export default function ArtworkCatalogue() {
                         </DialogClose>
                     </div>
                     <div className="relative min-h-0 flex-1 overflow-hidden">
-                        <div className="relative min-h-0 flex-1 overflow-hidden">
-                            <div
-                                ref={mobileFilterScrollRef}
+                        <div
+                            ref={mobileFilterScrollRef}
                                 data-testid="mobile-artwork-filter-scroll"
                                 className="absolute inset-0 touch-pan-y overflow-x-hidden overflow-y-auto overscroll-y-contain p-5"
                             >
