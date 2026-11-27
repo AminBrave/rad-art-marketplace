@@ -563,6 +563,7 @@ export default function ArtworkCatalogue() {
                             <p aria-live="polite" className="shrink-0 whitespace-nowrap text-xs font-bold text-ink sm:text-sm">
                                 {loading ? t('در حال دریافت آثار…') : meta.total.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('اثر')}
                             </p>
+                            <span aria-hidden="true" className="h-6 w-px shrink-0 bg-border" />
                             <div className="min-w-0 flex-1">
                                 {activeFilterCount > 0 ? (
                                     <ArtworkActiveFilterChips
@@ -581,6 +582,7 @@ export default function ArtworkCatalogue() {
                                     <p className="truncate text-xs text-muted">{t('نمایش آثار عمومی و تأییدشده')}</p>
                                 )}
                             </div>
+                            <span aria-hidden="true" className="h-6 w-px shrink-0 bg-border lg:hidden" />
                             <Button
                                 variant="outline"
                                 type="button"
@@ -653,6 +655,7 @@ export default function ArtworkCatalogue() {
                             <p aria-live="polite" className="shrink-0 whitespace-nowrap text-xs font-bold text-ink sm:text-sm">
                                 {loading ? t('در حال دریافت آثار…') : meta.total.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('اثر')}
                             </p>
+                            <span aria-hidden="true" className="h-6 w-px shrink-0 bg-border" />
                             <div className="min-w-0 flex-1">
                                 {activeFilterCount > 0 ? (
                                     <ArtworkActiveFilterChips
@@ -671,6 +674,7 @@ export default function ArtworkCatalogue() {
                                     <p className="truncate text-xs text-muted">{t('نمایش آثار عمومی و تأییدشده')}</p>
                                 )}
                             </div>
+                            <span aria-hidden="true" className="h-6 w-px shrink-0 bg-border lg:hidden" />
                             <Button
                                 variant="outline"
                                 type="button"
