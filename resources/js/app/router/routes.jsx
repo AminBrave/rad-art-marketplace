@@ -1,5 +1,5 @@
-import { lazy, Suspense, useEffect } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import { PublicLayout } from '../layouts/PublicLayout';
 import { ArtistWorkspaceLayout } from '../layouts/ArtistLayout';
 import { BuyerWorkspaceLayout } from '../layouts/BuyerLayout';
