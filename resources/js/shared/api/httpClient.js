@@ -19,7 +19,11 @@ axios.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error && typeof error === 'object') {
-            error.apiError = normalizeApiError(error);
+            try {
+                error.apiError = normalizeApiError(error);
+            } catch {
+                // Never replace the original transport error if it is immutable.
+            }
         }
         return Promise.reject(error);
     },
