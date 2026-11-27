@@ -573,7 +573,7 @@ export default function ArtworkCatalogue() {
             <Dialog open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
                 <DialogContent
                     placement="center"
-                    className="flex flex-col gap-0 overflow-hidden"
+                    className="flex h-[min(88dvh,48rem)] flex-col gap-0 overflow-hidden"
                     aria-label={t('فیلتر و مرتب‌سازی آثار')}
                 >
                     <div className="flex items-start justify-between gap-4 border-b border-divider-section p-5">
@@ -590,7 +590,7 @@ export default function ArtworkCatalogue() {
                         <div
                             ref={mobileFilterScrollRef}
                             data-testid="mobile-artwork-filter-scroll"
-                            className="h-full min-h-0 overflow-y-auto overscroll-y-contain p-5"
+                            className="h-full min-h-0 touch-pan-y overflow-y-auto overscroll-y-contain p-5"
                         >
                             <ArtworkFilterControls
                                 {...filterControlProps}
