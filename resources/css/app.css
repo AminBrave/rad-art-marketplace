@@ -88,6 +88,8 @@
 html {
     min-width: 320px;
     overflow-x: clip;
+    /* Reserve the scrollbar gutter while Radix temporarily locks body scroll. */
+    scrollbar-gutter: stable;
     scroll-behavior: smooth;
     scroll-padding-top: var(--rd-header-height);
     background: var(--rd-canvas);
@@ -103,6 +105,16 @@ body {
     font-family: var(--rd-font-sans);
     font-size: var(--rd-text-base);
     line-height: var(--rd-leading-copy);
+}
+
+/*
+ * react-remove-scroll (used by Radix modal primitives) injects a physical
+ * margin-right to compensate for the disappearing scrollbar. The stable
+ * gutter makes that compensation redundant and prevents horizontal jumps,
+ * including in RTL layouts.
+ */
+body[data-scroll-locked] {
+    margin-right: 0 !important;
 }
 
 button,
