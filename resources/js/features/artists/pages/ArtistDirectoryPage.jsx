@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchArtists, artistKeys } from '../api/artists';
+import { fetchArtists } from '../api/artists';
+import { artistKeys } from '../model/queryKeys';
 import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../../../shared/i18n';
 import { ArtistCard } from '../components/ArtistCard';
