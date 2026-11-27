@@ -3,7 +3,7 @@
 **Catalogue status:** implementation reference for the current redesign branch  
 **Branch:** `agent-chatgpt/rademan-redesign`  
 **Product direction:** editorial art marketplace, Persian-first RTL, adaptive navigation  
-**Source of truth:** the public generic UI surface in `resources/js/shared/ui/index.js`, feature public exports in `resources/js/features/*/index.js`, implementation files under `resources/js/shared/ui/` and owning feature folders, global tokens in `resources/css/app.css`, and the current application shells/routes.
+**Source of truth:** the public generic UI surface in `resources/js/shared/ui/index.js`, feature public exports in `resources/js/features/*/index.js`, implementation files under `resources/js/shared/ui/` and owning feature folders, global tokens in `resources/css/tokens.css` (imported by `resources/css/app.css`), and the current application shells/routes.
 
 This catalogue records what is implemented in the codebase at the time of writing. It is not a claim that every route, component state, viewport, or accessibility criterion has passed visual QA. Where implementation and the intended design language diverge, the catalogue calls out the gap rather than silently describing the intended state as current behavior.
 
@@ -29,7 +29,7 @@ Brand anchors (CSS variables):
 - Sand: `--rd-brand-sand` — `#D8C9B7`
 - Olive: `--rd-brand-olive` — `#536052`
 
-CSS `--rd-*` variables are the canonical token source. Tailwind maps directly to them. Legacy `--color-*`, `--text-*`, `--space-*` and related names are one-way compatibility aliases; do not add new consumers of those aliases. Components should consume semantic roles rather than hard-code brand values:
+CSS `--rd-*` variables in `resources/css/tokens.css` are the canonical token source. `resources/css/app.css` imports them; Tailwind maps utilities directly to them. See [DESIGN-TOKENS.md](DESIGN-TOKENS.md) for the primitive, semantic and component layers. Legacy `--color-*`, `--text-*`, `--space-*` and related names are one-way compatibility aliases; do not add new consumers of those aliases. Components should consume semantic roles rather than hard-code brand values:
 - Canvas and surfaces: `--rd-canvas`, `--rd-surface`, `--rd-surface-raised`, `--rd-surface-muted`
 - Text: `--rd-text-primary`, `--rd-text-secondary`, `--rd-text-tertiary`
 - Rules: `--rd-border-subtle`, `--rd-border-strong`, `--rd-divider-section`, `--rd-divider-group`, `--rd-divider-nested`
@@ -75,7 +75,7 @@ Use the canonical `Container` for consistent section widths. `PageContainer` is 
 
 ### 2.5 Shape, elevation and media
 
-The canonical shape token is `--rd-radius-0: 0`; legacy radius aliases and Tailwind radius utilities resolve to this token. Shared components express square geometry directly and do not depend on radius utilities or global CSS overrides. Elevation tokens: `--rd-shadow-soft` and `--rd-shadow-raised`. Artwork ratios include `--rd-artwork-ratio` (4:3) and `--rd-portrait-ratio` (4:5).
+The canonical shape token is `--rd-radius-0: 0`; legacy radius aliases and Tailwind radius utilities resolve to this token. Shared components express square geometry directly and do not depend on radius utilities or global CSS overrides. Elevation tokens: `--rd-shadow-soft` and `--rd-shadow-raised`. Artwork ratios include `--rd-artwork-ratio` (3:4) and `--rd-portrait-ratio` (4:5).
 
 Artwork itself should remain undistorted. Use `object-contain` when the complete work is the subject; use `object-cover` only for a deliberate editorial crop, avatar or ambient image. Keep the media frame and its internal padding intentional; the image should occupy the available frame without erasing the frame's breathing room.
 
@@ -214,7 +214,7 @@ Image states must be meaningful and must not collapse the reserved media frame. 
 
 ### 4.6 Domain cards and skeletons
 
-- `ArtworkCard`: artwork image in a portrait frame using `MediaImage` with `object-contain`; shows category, title, artist and formatted price; links to artwork detail.
+- `ArtworkCard`: artwork image in the canonical 3:4 frame using `MediaImage` with `object-contain`; shows category, title, artist and formatted price; links to artwork detail.
 - `ArtistCard`: artist identity, initial/avatar treatment, city, biography excerpt and profile link.
 - Skeleton exports include artwork/artist cards, artwork detail, artist profile, forms, studio lists, conversation inbox/history, admin lists/dashboard, collection cards/details, notifications and homepage.
 
@@ -301,7 +301,8 @@ Before considering a component or page complete:
 
 ## 10. Source map
 
-- Tokens and global styles: `resources/css/app.css`
+- Canonical tokens: `resources/css/tokens.css`
+- Tailwind entry point and global styles: `resources/css/app.css`
 - Tailwind semantic mappings: `tailwind.config.js`
 - Shared public export surface: `resources/js/shared/ui/index.js`
 - Low-level controls: `resources/js/shared/ui/controls.jsx`

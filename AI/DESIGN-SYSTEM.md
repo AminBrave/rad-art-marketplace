@@ -36,7 +36,21 @@ Use the smallest process that fits the work. A small UI fix does not require a f
 
 The existing brand colors—Ivory #F7F5F0, Charcoal #242320, Terracotta #A64F31, Sand #D8C9B7 and Olive #536052—can inform the visual identity. They are not immutable.
 
-CSS `--rd-*` variables are the canonical design-token source; Tailwind maps directly to them. Legacy `--color-*`, `--text-*`, `--space-*` and related aliases are one-way compatibility bridges and should not be used by new code. Choose semantic tokens, typography, spacing, grids, radii, elevation, icons and motion to support the design. Reuse current components when they fit; refactor or replace them when that produces a better result. Do not follow the legacy RAD catalogue as a specification.
+CSS `--rd-*` variables in `resources/css/tokens.css` are the canonical design-token source; `resources/css/app.css` imports that file before Tailwind layers, and `tailwind.config.js` maps utilities directly to the tokens. Legacy `--color-*`, `--text-*`, `--space-*` and related aliases are one-way compatibility bridges and must not be used by new code. The three-layer token contract is documented in [DESIGN-TOKENS.md](DESIGN-TOKENS.md). Choose semantic tokens, typography, spacing, grids, radii, elevation, icons and motion to support the design. Reuse current components when they fit; refactor or replace them when that produces a better result. Do not follow the legacy RAD catalogue as a specification.
+
+### Gestalt application examples
+
+Apply Gestalt principles to make relationships legible, not to decorate every region:
+
+- **Proximity:** keep an artwork title, artist, price and category closer to one another than to the next artwork; keep each form label, control, hint and error in one compact field group.
+- **Similarity:** repeat the same hierarchy and interaction states for peer artwork cards, artist identities, navigation items and status badges. Similar appearance should signal similar meaning; do not reuse a status color for unrelated actions.
+- **Common region:** use one media frame for an artwork image and its passepartout, one dialog surface for a focused decision, and a dashboard metric surface only when its label/value/context form one unit. Do not wrap every paragraph or section in a card.
+- **Continuity:** align page headers, section headers and content to the same container guides; preserve a clear reading path through navigation and message timelines. Use logical alignment so the path works in RTL and LTR.
+- **Figure-ground:** give the artwork or primary task visual priority. Keep overlays and dialogs distinct from the page behind them, with readable contrast in both themes.
+- **Closure:** use a restrained divider or shared alignment when users can infer a group without a full border. A message thread or open editorial section usually needs rhythm and spacing more than nested boxes.
+- **Prägnanz (good form):** prefer the simplest composition that communicates the relationship. Remove duplicate borders, repeated labels and decorative elements that compete with artwork or the next action.
+
+Use these principles in the concrete patterns below: artwork cards prioritize the complete image before metadata; artist cards group identity and profile context; form fields keep labels and validation adjacent; navigation uses consistent active/current cues; page and section headers establish a predictable reading hierarchy; dialogs create a focused common region; status badges pair semantic color with text; message bubbles group by sender and sequence; dashboard metrics pair a value with its label and context.
 
 ### Editorial hero surfaces
 
@@ -148,7 +162,7 @@ The public route-level `<main>` and workspace `.rd-page-frame` are content canva
 
 The current overhaul uses an art-journal/editorial direction rather than a generic SaaS dashboard. Apply these rules consistently across public pages, artist/buyer workspaces, administration, messaging, loading states and overlays:
 
-- **Artwork is the primary visual content.** Give images generous space, use a consistent 3:4 portrait frame throughout discovery, detail, studio and administration views. Keep a passepartout around the media and use `object-cover` inside that frame; never distort the source image.
+- **Artwork is the primary visual content.** Give images generous space and use the canonical `--rd-artwork-ratio` (3:4) frame throughout discovery, detail, studio and administration views. Keep a passepartout around the media and use `object-contain` so the complete work remains visible; use `object-cover` only for intentional crops such as avatars or editorial/ambient imagery. Never distort or silently crop the artwork.
 - **Use typography and composition for hierarchy.** Prefer strong page titles, concise eyebrow labels, generous vertical rhythm, clear metadata groupings and deliberate asymmetry over piles of cards.
 - **Reduce unnecessary containers.** Use open layouts, dividers, tonal sections and border-led groupings. Reserve filled/raised surfaces for a real interaction or information grouping; do not wrap every item in a card.
 - **Keep geometry consistent.** All elements, controls, media frames, cards, overlays and decorative shapes use zero corner radius. Express hierarchy through spacing, border tint, surface and typography—not rounded silhouettes.

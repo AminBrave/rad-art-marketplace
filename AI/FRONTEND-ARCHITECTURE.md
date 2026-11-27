@@ -59,7 +59,7 @@ resources/
       utils/
 ```
 
-This is a destination, not a folder-creation checklist. Create a directory only when it has real code to own. Existing files may remain in their current locations behind compatibility exports while a feature is migrated.
+`resources/css/tokens.css` is the canonical token source and is imported by `resources/css/app.css`; Tailwind utilities map to its semantic values. This is a destination, not a folder-creation checklist. Create a directory only when it has real code to own. Existing files may remain in their current locations behind compatibility exports while a feature is migrated.
 
 ## 2. Ownership boundaries
 
