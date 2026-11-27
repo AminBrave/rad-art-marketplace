@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { fetchArtworkFilters, fetchArtworks, artworkKeys } from '../api/artworks';
+import { fetchArtworkFilters, fetchArtworks } from '../api/artworks';
+import { artworkKeys } from '../model/queryKeys';
 import { useSearchParams } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { useLanguage } from '../../../shared/i18n';
