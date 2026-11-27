@@ -8,7 +8,7 @@ import { useLanguage } from '../../../shared/i18n';
 import { localizedValue } from '../../../utils/localizedContent';
 import { ArtworkCard } from '../components/ArtworkCard';
 import {
-    EmptyState, ErrorState, SearchField, SelectField, PageHeader, Button, Container, Section,
+    EmptyState, ErrorState, SearchField, PageHeader, Button, Container, Section,
     Dialog, DialogTrigger, DialogClose, DialogContent, DialogTitle, DialogDescription,
 } from '../../../shared/ui';
 import { ArtworkCardSkeleton } from '../components/skeletons';
@@ -87,17 +87,7 @@ function FilterPanel({ categories, filters, values, onChange, onClear, locale, t
                     <FilterGroup title={t('دسته‌بندی هنری')} hint={t('از میان شاخه‌های هنری انتخاب کنید')} options={categoryOptions} value={values.category} onChange={(value) => onChange({ category: value })} allLabel={t('همه دسته‌ها')} scroll />
                     <FilterGroup title={t('تکنیک و مواد')} hint={t('رسانه و شیوه خلق اثر')} options={mediumOptions} value={values.medium} onChange={(value) => onChange({ medium: value })} allLabel={t('همه تکنیک‌ها')} />
                     <FilterGroup title={t('وضعیت اثر')} options={availabilityOptions} value={values.availability} onChange={(value) => onChange({ availability: value })} allLabel={t('همه وضعیت‌ها')} />
-                    <div className="border-t border-border/80 pt-5">
-                        <label className="mb-2 block text-sm font-extrabold text-ink" htmlFor={compact ? 'mobile-artwork-sort' : 'desktop-artwork-sort'}>{t('چیدمان گالری')}</label>
-                        <SelectField
-                            id={compact ? 'mobile-artwork-sort' : 'desktop-artwork-sort'}
-                            value={values.sort}
-                            onChange={(event) => onChange({ sort: event.target.value })}
-                            aria-label={t('مرتب‌سازی آثار')}
-                            className="min-h-11 bg-paper"
-                        >
-                            {sortOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-                        </SelectField>
+                    <FilterGroup title={t('چیدمان گالری')} hint={t('ترتیب نمایش آثار')} options={sortOptions} value={values.sort} onChange={(value) => onChange({ sort: value || 'newest' })} />
                     </div>
                 </div>
             </div>
@@ -287,7 +277,7 @@ export default function ArtworkCatalogue() {
 
             <Container width="wide">
                 <div className="mt-7 grid min-w-0 gap-7 lg:grid-cols-[minmax(0,1fr)_17.5rem] lg:items-start lg:[direction:ltr]">
-                    <main className="min-w-0 lg:col-start-1 lg:[direction:inherit]">
+                    <main dir={locale === 'fa' ? 'rtl' : 'ltr'} className="min-w-0 lg:col-start-1">
                         {activeChips.length > 0 && (
                             <div className="mb-5 flex flex-wrap items-center gap-2" aria-label={t('فیلترهای فعال')}>
                                 <span className="me-1 text-xs font-bold text-muted">{t('انتخاب شما')}</span>
@@ -333,7 +323,7 @@ export default function ArtworkCatalogue() {
                             </div>
                         )}
                     </main>
-                    <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:col-start-2 lg:block lg:[direction:rtl]">
+                    <aside dir={locale === 'fa' ? 'rtl' : 'ltr'} className="hidden min-w-0 lg:sticky lg:top-24 lg:col-start-2 lg:block">
                         <div className="border border-border bg-paper p-5 shadow-sm">
                             <FilterPanel
                                 categories={categories}
