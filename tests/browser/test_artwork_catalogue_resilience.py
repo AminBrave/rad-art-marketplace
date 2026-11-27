@@ -346,6 +346,16 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
             sidebar = page.get_by_test_id("artwork-filter-sidebar")
             sidebar.wait_for(state="visible")
             page.get_by_role("combobox", name="فیلتر دسته‌بندی").wait_for()
+            page.wait_for_function("""() => {
+                const sidebar = document.querySelector('[data-testid="artwork-filter-sidebar"]');
+                const navigation = document.querySelector('[data-testid="public-bottom-navigation"]');
+                if (!sidebar || !navigation) return false;
+                const expected = navigation.getBoundingClientRect().height;
+                const actual = Number.parseFloat(
+                    getComputedStyle(sidebar).getPropertyValue('--artwork-bottom-navigation-height'),
+                );
+                return Math.abs(actual - expected) < 1;
+            }""")
 
             # Simulate unusually long filter content without changing production data.
             page.evaluate("""() => {
