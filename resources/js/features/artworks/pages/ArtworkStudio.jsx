@@ -15,7 +15,7 @@ const statusGuidance = {
     changes_requested: 'مدیر برای این اثر اصلاحاتی درخواست کرده است. بازخورد را بررسی کنید، اثر را ویرایش و دوباره برای بررسی ارسال کنید.',
 };
 
-export default function ArtworkStudio({ user, hasProfile, initialCreate = false }) {
+export default function ArtworkStudio({ user, hasProfile, profileLoading = false, initialCreate = false }) {
     const { t, locale } = useLanguage();
     const { hash } = useLocation();
     useEffect(() => {
@@ -79,6 +79,7 @@ export default function ArtworkStudio({ user, hasProfile, initialCreate = false 
 
 
     if (user?.role !== 'artist') return null;
+    if (profileLoading) return <ArtworkStudioListSkeleton count={3} />;
     if (!hasProfile) return <EmptyState title={t("ابتدا پروفایل هنرمند را تکمیل کنید")} description={t("برای ثبت و مدیریت اثر، نام نمایشی پروفایل خود را ذخیره کنید.")} action={<Link to="/dashboard/artist/profile" className="text-sm font-bold text-terracotta-strong underline">{t("تکمیل پروفایل")}</Link>} />;
 
     const updateForm = (event) => setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
