@@ -1,6 +1,6 @@
 import { LoaderCircle } from 'lucide-react';
 import { useLanguage } from './LanguageContext';
-import { Button } from '../components/ui';
+import { Button } from '../shared/ui';
 
 export default function MessagingStatusBanners({
     notice,
