@@ -80,7 +80,7 @@ export default function ArtworkGallery({ user }) {
                 </div>
                 <form onSubmit={(event) => { event.preventDefault(); setSearch(searchInput.trim()); }} className="flex flex-wrap gap-2">
                     <TextInput value={searchInput} onChange={(event) => setSearchInput(event.target.value)} aria-label={t("جست‌وجو در آثار")} placeholder={t("جست‌وجوی عنوان یا تکنیک…")} className="min-w-[220px] rounded-control px-4 py-2.5" />
-                    <SelectField value={category} onChange={(event) => setCategory(event.target.value)} aria-label={t("فیلتر دسته‌بندی")} className="min-h-11 w-auto rounded-control border-border-strong bg-paper px-4 py-2.5 text-sm">
+                    <SelectField modal={false} value={category} onChange={(event) => setCategory(event.target.value)} aria-label={t("فیلتر دسته‌بندی")} className="min-h-11 w-auto rounded-control border-border-strong bg-paper px-4 py-2.5 text-sm">
                         <option value="">{t('همه دسته‌ها')}</option>
                         {categories.map((item) => <option key={item.id} value={item.slug}>{localizedValue(item, 'name', locale)}</option>)}
                     </SelectField>
