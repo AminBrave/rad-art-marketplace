@@ -5,14 +5,14 @@ export const Dialog = DialogPrimitive.Root;
 export const DialogTrigger = DialogPrimitive.Trigger;
 export const DialogClose = DialogPrimitive.Close;
 
-export function DialogContent({ children, className = '', overlayClassName = '', placement = 'center', nonModalOverlay = false, ...props }) {
+export function DialogContent({ children, className = '', overlayClassName = '', placement = 'center', nonModalOverlay = false, overlayOpen = false, ...props }) {
     return (
         <DialogPrimitive.Portal>
-            {nonModalOverlay ? (
+            {nonModalOverlay && overlayOpen ? (
                 <DialogPrimitive.Close asChild>
                     <button type="button" aria-label="Close dialog" className={cn('fixed inset-0 z-[var(--rd-z-overlay)] cursor-default border-0 bg-[color:var(--color-overlay)] p-0 backdrop-blur-[var(--overlay-backdrop-blur)]', overlayClassName)} />
                 </DialogPrimitive.Close>
-            ) : (
+            ) : !nonModalOverlay ? (
                 <DialogPrimitive.Overlay className={cn('fixed inset-0 z-[var(--rd-z-overlay)] bg-[color:var(--color-overlay)] backdrop-blur-[var(--overlay-backdrop-blur)]', overlayClassName)} />
             )}
             <DialogPrimitive.Content
