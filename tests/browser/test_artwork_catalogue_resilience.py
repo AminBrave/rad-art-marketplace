@@ -374,9 +374,9 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
                 bounds["y"] + min(bounds["height"] / 2, 100),
             )
             page.mouse.wheel(0, 420)
-            page.wait_for_function(
-                "() => document.querySelector('[data-testid=" + '"artwork-filter-sidebar"' + "]')?.scrollTop > 0"
-            )
+            page.wait_for_function("""() => {
+                return document.querySelector('[data-testid="artwork-filter-sidebar"]')?.scrollTop > 0;
+            }""")
             self.assertGreater(sidebar.evaluate("(element) => element.scrollTop"), 0)
         finally:
             context.close()
