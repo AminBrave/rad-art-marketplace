@@ -26,9 +26,9 @@ const AdminEditorialPage = lazy(() => import('../EditorialPages').then((module) 
 const CollectionIndexPage = lazy(() => import('../EditorialPages').then((module) => ({ default: module.CollectionIndexPage })));
 const CollectionDetailPage = lazy(() => import('../EditorialPages').then((module) => ({ default: module.CollectionDetailPage })));
 const MessagingCenter = lazy(() => import('../../features/messaging').then((module) => ({ default: module.MessagingCenter })));
-const ArtistProfileSettings = lazy(() => import('../RoutingPages').then((module) => ({ default: module.ArtistProfileSettings })));
+const ArtistProfileSettings = lazy(() => import('../../features/artist').then((module) => ({ default: module.ArtistProfileSettings })));
 const WorkspaceSettingsPage = lazy(() => import('../RoutingPages').then((module) => ({ default: module.WorkspaceSettingsPage })));
-const ArtistArtworkPage = lazy(() => import('../RoutingPages').then((module) => ({ default: module.ArtistArtworkPage })));
+const ArtistArtworkPage = lazy(() => import('../../features/artist').then((module) => ({ default: module.ArtistArtworkPage })));
 
 function withRouteFallback(element) {
     return <Suspense fallback={<RouteLoading />}>{element}</Suspense>;
