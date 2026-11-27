@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AlertTriangle, ImageOff } from 'lucide-react';
-import { Button } from './primitives';
+import { Button } from './controls';
 import { useLanguage } from '../i18n';
 import * as ToastPrimitive from '@radix-ui/react-toast';
 
