@@ -50,7 +50,7 @@ export default function ArtworkGallery({ user }) {
                         <div className="mt-10"><h1 className="text-2xl font-black">{t('اثر در دسترس نیست')}</h1><p className="mt-3 text-muted">{t('این اثر وجود ندارد یا هنوز برای نمایش عمومی تأیید نشده است.')}</p></div>
                     ) : (
                         <div className="mt-8 grid gap-8 md:grid-cols-[1.1fr_.9fr]">
-                            <div className="aspect-[3/4] w-full bg-surface-muted p-3 sm:p-5"><MediaImage src={detail.image_url} alt={localizedValue(detail, 'title', locale)} className="h-full w-full" imageClassName="object-cover" loading="eager" fetchPriority="high" /></div>
+                            <div className="aspect-artwork w-full bg-surface-muted p-3 sm:p-5"><MediaImage src={detail.image_url} alt={localizedValue(detail, 'title', locale)} className="h-full w-full" imageClassName="object-contain" loading="eager" fetchPriority="high" /></div>
                             <div>
                                 <p className="text-sm font-bold text-terracotta-strong">{localizedValue(detail.category, 'name', locale)}</p>
                                 <h1 className="mt-3 text-3xl font-black leading-relaxed">{localizedValue(detail, 'title', locale)}</h1>
@@ -95,7 +95,7 @@ export default function ArtworkGallery({ user }) {
                 <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {artworks.map((artwork) => (
                         <a key={artwork.id} href={'/artworks/' + artwork.slug} className="group overflow-hidden rounded-card border border-border bg-paper transition hover:-translate-y-1 hover:shadow-lg">
-                            <div className="aspect-[3/4] w-full bg-surface-muted p-3"><MediaImage src={artwork.image_url} alt={localizedValue(artwork, 'title', locale)} className="h-full w-full" imageClassName="object-cover transition group-hover:scale-[1.02]" loading="lazy" decoding="async" /></div>
+                            <div className="aspect-artwork w-full bg-surface-muted p-3"><MediaImage src={artwork.image_url} alt={localizedValue(artwork, 'title', locale)} className="h-full w-full" imageClassName="object-contain transition-opacity duration-300" loading="lazy" decoding="async" /></div>
                             <div className="p-5">
                                 <p className="text-xs font-bold text-terracotta-strong">{localizedValue(artwork.category, 'name', locale)}</p>
                                 <h3 className="mt-2 text-lg font-extrabold">{localizedValue(artwork, 'title', locale)}</h3>

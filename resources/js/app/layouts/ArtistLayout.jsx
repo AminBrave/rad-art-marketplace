@@ -24,6 +24,7 @@ export function ArtistWorkspaceLayout() {
     });
     const profile = profileQuery.data ?? (profileQuery.isError ? emptyProfile : null);
     const profileLoading = profileQuery.isPending;
+    const hasProfile = Boolean(profile?.display_name?.trim());
     const profileError = profileQuery.isError
         ? (profileQuery.error?.response?.status === 403
             ? 'حساب فعلی اجازه مدیریت این پروفایل را ندارد.'
@@ -36,7 +37,7 @@ export function ArtistWorkspaceLayout() {
         <WorkspaceLayout
             title="فضای هنرمند"
             links={links}
-            outletContext={{ user, profile, setProfile, profileLoading, profileError }}
+            outletContext={{ user, profile, setProfile, profileLoading, profileError, hasProfile }}
         />
     );
 }

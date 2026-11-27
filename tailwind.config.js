@@ -61,6 +61,17 @@ export default {
                 lg: 'var(--rd-text-lg)', xl: 'var(--rd-text-xl)', '2xl': 'var(--rd-text-2xl)',
                 '3xl': 'var(--rd-text-3xl)', '4xl': 'var(--rd-text-4xl)', '5xl': 'var(--rd-text-5xl)',
             },
+            fontWeight: {
+                regular: 'var(--rd-weight-regular)',
+                medium: 'var(--rd-weight-medium)',
+                semibold: 'var(--rd-weight-semibold)',
+                bold: 'var(--rd-weight-bold)',
+                extrabold: 'var(--rd-weight-extrabold)',
+            },
+            aspectRatio: {
+                artwork: 'var(--rd-artwork-ratio)',
+                portrait: 'var(--rd-portrait-ratio)',
+            },
             lineHeight: {
                 copy: 'var(--rd-leading-copy)', heading: 'var(--rd-leading-heading)',
                 tight: 'var(--rd-leading-tight)', relaxed: 'var(--rd-leading-relaxed)',
@@ -81,6 +92,9 @@ export default {
                 card: 'var(--rd-radius-0)',
                 panel: 'var(--rd-radius-0)',
                 pill: 'var(--rd-radius-0)',
+            },
+            borderWidth: {
+                DEFAULT: 'var(--rd-line-width)',
             },
             boxShadow: {
                 soft: 'var(--rd-shadow-soft)',
