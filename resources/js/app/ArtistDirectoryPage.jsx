@@ -3,7 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchArtists, artistKeys } from '../features/artists';
 import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from './LanguageContext';
-import { ArtistCard, EmptyState, ErrorState, SearchField, SectionHeader, Button, Section, Container } from '../shared/ui';
+import { ArtistCard } from '../features/artists';
+import { EmptyState, ErrorState, SearchField, SectionHeader, Button, Section, Container } from '../shared/ui';
 import { ArtistCardSkeleton } from '../features/artists';
 
 export default function ArtistDirectoryPage() {
