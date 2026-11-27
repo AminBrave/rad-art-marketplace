@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useHorizontalOverflow, useScrollOverflow, useStickyOnScroll } from '../../../shared/hooks';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
@@ -333,6 +333,22 @@ export default function ArtworkCatalogue() {
             current.start === next.start && current.end === next.end ? current : next
         ));
     };
+
+    // Measure in the commit that mounts the portal, before the first painted frame.
+    useLayoutEffect(() => {
+        if (!mobileFiltersOpen) {
+            setMobileFilterFades({ start: false, end: false });
+            return;
+        }
+
+        measureMobileFilterFades();
+        const firstFrame = window.requestAnimationFrame(() => {
+            measureMobileFilterFades();
+            window.requestAnimationFrame(measureMobileFilterFades);
+        });
+
+        return () => window.cancelAnimationFrame(firstFrame);
+    }, [mobileFiltersOpen]);
 
     useEffect(() => {
         const element = mobileFilterScrollRef.current;
