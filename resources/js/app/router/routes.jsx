@@ -9,8 +9,8 @@ import {
 } from './guards';
 
 const HomePage = lazy(() => import('../HomePage'));
-const ArtworkCatalogue = lazy(() => import('../ArtworkCatalogue'));
-const ArtworkDetailPage = lazy(() => import('../ArtworkDetailPage'));
+const ArtworkCatalogue = lazy(() => import('../../features/artworks/pages/ArtworkCatalogue'));
+const ArtworkDetailPage = lazy(() => import('../../features/artworks/pages/ArtworkDetailPage'));
 const ArtistProfilePage = lazy(() => import('../ArtistProfilePage'));
 const ArtistDirectoryPage = lazy(() => import('../ArtistDirectoryPage'));
 const PublicInfoPage = lazy(() => import('../PublicInfoPages'));
