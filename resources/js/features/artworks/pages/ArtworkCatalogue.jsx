@@ -386,7 +386,9 @@ export default function ArtworkCatalogue() {
             : null;
 
         scheduleMeasure();
-        element.addEventListener('scroll', scheduleMeasure, { passive: true });
+        // Read scrollTop directly on scroll so the leading fade tracks user gestures
+        // without waiting for the resize/layout scheduling path.
+        element.addEventListener('scroll', measureMobileFilterFades, { passive: true });
         window.addEventListener('resize', scheduleMeasure);
         element.addEventListener('transitionend', scheduleMeasure, true);
         element.addEventListener('animationend', scheduleMeasure, true);
@@ -396,7 +398,7 @@ export default function ArtworkCatalogue() {
         });
 
         return () => {
-            element.removeEventListener('scroll', scheduleMeasure);
+            element.removeEventListener('scroll', measureMobileFilterFades);
             window.removeEventListener('resize', scheduleMeasure);
             element.removeEventListener('transitionend', scheduleMeasure, true);
             element.removeEventListener('animationend', scheduleMeasure, true);
