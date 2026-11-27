@@ -65,6 +65,7 @@ export default {
                 copy: 'var(--rd-leading-copy)', heading: 'var(--rd-leading-heading)',
                 tight: 'var(--rd-leading-tight)', relaxed: 'var(--rd-leading-relaxed)',
             },
+            // The product intentionally uses square geometry. Keep legacy Tailwind radius utilities mapped to the zero token during migration; do not use rounded-* as a new component contract.
             borderRadius: {
                 DEFAULT: 'var(--rd-radius-0)',
                 none: 'var(--rd-radius-0)',
