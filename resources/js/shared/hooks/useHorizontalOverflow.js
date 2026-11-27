@@ -1,54 +1,60 @@
 import { useEffect, useState } from 'react';
 
+const noOverflow = { start: false, end: false };
+
 /**
- * Detects whether a scroll container has clipped content at its edges.
- * Horizontal direction is logical (start/end); vertical uses top/bottom.
+ * Detects clipped content in a scroll container.
+ *
+ * Horizontal edges are logical (start/end and RTL-aware); vertical edges
+ * represent top/bottom. The hook observes scrolling, resizing and dynamic
+ * child changes, so consumers do not need to manually refresh measurements.
  */
 export function useScrollOverflow(
     scrollRef,
     { enabled = true, axis = 'horizontal', direction = 'ltr', contentKey = '' } = {},
 ) {
-    const [visibleFades, setVisibleFades] = useState({ start: false, end: false });
+    const [visibleFades, setVisibleFades] = useState(noOverflow);
 
     useEffect(() => {
-        if (!enabled) {
-            setVisibleFades({ start: false, end: false });
+        const element = scrollRef.current;
+
+        if (!enabled || !element) {
+            setVisibleFades(noOverflow);
             return undefined;
         }
 
-        const element = scrollRef.current;
-        if (!element) return undefined;
+        let frame = null;
+        let resizeObserver = null;
 
         const updateFades = () => {
+            frame = null;
+
             const first = element.firstElementChild?.getBoundingClientRect();
             const last = element.lastElementChild?.getBoundingClientRect();
             const bounds = element.getBoundingClientRect();
+            const next = { start: false, end: false };
 
-            if (!first || !last) {
-                setVisibleFades({ start: false, end: false });
-                return;
-            }
-
-            let next;
             if (axis === 'vertical') {
-                // Scroll metrics are more reliable than child bounding boxes here:
-                // the scrollport can include padding, and nested filter sections may
-                // change their layout while the sidebar itself stays max-height constrained.
                 const maxScrollTop = element.scrollHeight - element.clientHeight;
-                next = {
-                    start: element.scrollTop > 1,
-                    end: maxScrollTop > 1 && element.scrollTop < maxScrollTop - 1,
-                };
+                next.start = element.scrollTop > 1;
+                next.end = maxScrollTop > 1 && element.scrollTop < maxScrollTop - 1;
+            } else if (first && last) {
+                // Element bounds handle RTL consistently across browsers, unlike
+                // raw scrollLeft values whose origin differs between engines.
+                next.start = direction === 'rtl'
+                    ? first.right > bounds.right + element.clientLeft + 1
+                    : first.left < bounds.left + element.clientLeft - 1;
+                next.end = direction === 'rtl'
+                    ? last.left < bounds.left + element.clientLeft + element.clientWidth - 1
+                    : last.right > bounds.left + element.clientLeft + element.clientWidth + 1;
             } else {
-                next = direction === 'rtl'
-                    ? {
-                        start: first.right > bounds.right + 1,
-                        end: last.left < bounds.left - 1,
-                    }
-                    : {
-                        start: first.left < bounds.left - 1,
-                        end: last.right > bounds.right + 1,
-                    };
+                const maxScrollLeft = element.scrollWidth - element.clientWidth;
+                next.start = maxScrollLeft > 1 && (direction === 'rtl'
+                    ? element.scrollLeft < -1
+                    : element.scrollLeft > 1);
+                next.end = maxScrollLeft > 1 && (direction === 'rtl'
+                    ? element.scrollLeft > -maxScrollLeft + 1
+                    : element.scrollLeft < maxScrollLeft - 1);
             }
 
             setVisibleFades((current) => (
@@ -56,22 +62,41 @@ export function useScrollOverflow(
             ));
         };
 
+        const scheduleUpdate = () => {
+            if (frame === null) frame = window.requestAnimationFrame(updateFades);
+        };
+
+        const observeChildren = () => {
+            if (!resizeObserver) return;
+            resizeObserver.disconnect();
+            resizeObserver.observe(element);
+            Array.from(element.children).forEach((child) => resizeObserver.observe(child));
+        };
+
         updateFades();
-        element.addEventListener('scroll', updateFades, { passive: true });
+        element.addEventListener('scroll', scheduleUpdate, { passive: true });
 
-        const resizeObserver = typeof window.ResizeObserver === 'function'
-            ? new window.ResizeObserver(updateFades)
+        resizeObserver = typeof window.ResizeObserver === 'function'
+            ? new window.ResizeObserver(scheduleUpdate)
             : null;
+        observeChildren();
 
-        resizeObserver?.observe(element);
-        if (element.firstElementChild) resizeObserver?.observe(element.firstElementChild);
-        if (element.lastElementChild) resizeObserver?.observe(element.lastElementChild);
-        window.addEventListener('resize', updateFades);
+        const mutationObserver = typeof window.MutationObserver === 'function'
+            ? new window.MutationObserver(() => {
+                observeChildren();
+                scheduleUpdate();
+            })
+            : null;
+        mutationObserver?.observe(element, { childList: true, subtree: true, characterData: true });
+
+        window.addEventListener('resize', scheduleUpdate);
 
         return () => {
-            element.removeEventListener('scroll', updateFades);
-            window.removeEventListener('resize', updateFades);
+            element.removeEventListener('scroll', scheduleUpdate);
+            window.removeEventListener('resize', scheduleUpdate);
             resizeObserver?.disconnect();
+            mutationObserver?.disconnect();
+            if (frame !== null) window.cancelAnimationFrame(frame);
         };
     }, [axis, contentKey, direction, enabled, scrollRef]);
 
