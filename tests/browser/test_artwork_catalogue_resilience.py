@@ -372,12 +372,29 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
             viewport = page.evaluate(
                 "() => ({width: window.innerWidth, height: window.innerHeight})"
             )
-            # Aim inside the visible filter content, near the lower edge of the
-            # scrollport. A fixed y-offset can accidentally hit the sidebar
-            # heading (or fall outside the viewport on shorter layouts).
+            bottom_navigation = page.get_by_test_id("public-bottom-navigation")
+            navigation_bounds = bottom_navigation.bounding_box()
+            self.assertIsNotNone(navigation_bounds)
+            self.assertLessEqual(
+                bounds["y"] + bounds["height"],
+                navigation_bounds["y"] + 1,
+                "The artwork filter sidebar must end above the fixed bottom navigation.",
+            )
+
+            # Wheel inside the actual visible scrollport, safely above the
+            # fixed bottom navigation so the navigation cannot intercept input.
             wheel_x = bounds["x"] + min(bounds["width"] - 16, bounds["width"] / 2)
-            visible_bottom = min(bounds["y"] + bounds["height"], viewport["height"])
+            visible_bottom = min(
+                bounds["y"] + bounds["height"],
+                navigation_bounds["y"],
+                viewport["height"],
+            )
             wheel_y = max(bounds["y"] + 16, visible_bottom - 24)
+            self.assertLess(
+                wheel_y,
+                navigation_bounds["y"],
+                "The wheel target must be above the fixed bottom navigation.",
+            )
             page.mouse.move(wheel_x, wheel_y)
             page.mouse.wheel(0, 500)
             page.wait_for_timeout(100)
