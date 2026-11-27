@@ -21,7 +21,7 @@ export default function RelatedArtworkStrip({ contexts, role, onSelectArtwork })
                         <>
                             <span className="relative inline-flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden bg-border text-muted">
                                 {artwork.image_url ? (
-                                    <MediaImage src={artwork.image_url} alt="" className="h-full w-full" imageClassName="object-cover" loading="lazy" decoding="async" />
+                                    <MediaImage src={artwork.image_url} alt="" className="h-full w-full" imageClassName="object-contain" loading="lazy" decoding="async" />
                                 ) : (
                                     <ImageIcon size={15} aria-hidden="true" />
                                 )}
