@@ -62,7 +62,7 @@ export function PublicLayout() {
             <a href="#main-content" className="sr-only z-[60] bg-paper px-4 py-3 text-ink focus:not-sr-only focus:fixed focus:inset-x-4 focus:top-4">
                 {t("رفتن به محتوای اصلی")}
             </a>
-            <header className="sticky top-0 z-40 border-b border-divider-section bg-[color:color-mix(in_srgb,var(--color-canvas)_96%,transparent)] backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-canvas)_90%,transparent)]">
+            <header data-site-header className="sticky top-0 z-40 border-b border-divider-section bg-[color:color-mix(in_srgb,var(--color-canvas)_96%,transparent)] backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-canvas)_90%,transparent)]">
                 <div className="mx-auto flex min-h-[var(--header-height)] max-w-content items-center justify-between gap-2 px-page-gutter sm:gap-5">
                     <Link to="/" className="group flex shrink-0 items-center text-ink no-underline" aria-label={t('ردّمن، صفحه اصلی')}><BrandLogo /></Link>
 
