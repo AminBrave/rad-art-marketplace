@@ -498,6 +498,15 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
             page.get_by_role("heading", name="گالری آثار").wait_for()
             page.get_by_role("button", name="فیلترها").click()
             page.get_by_role("dialog").wait_for()
+
+            mobile_filter_scroll = page.get_by_test_id("mobile-artwork-filter-scroll")
+            mobile_filter_scroll.locator(":scope > div").evaluate(
+                "(element) => { element.style.minHeight = '1100px'; }"
+            )
+            page.get_by_test_id("mobile-artwork-filter-fade-bottom").wait_for(state="visible")
+            mobile_filter_scroll.evaluate("(element) => { element.scrollTop = 160; }")
+            page.get_by_test_id("mobile-artwork-filter-fade-top").wait_for(state="visible")
+
             page.get_by_role("combobox", name="فیلتر دسته‌بندی").click()
             page.get_by_role("option", name="نقاشی").click()
 
