@@ -5,7 +5,7 @@ import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useLanguage } from './LanguageContext';
 import { RouteLoading } from './RoutingPages';
-import { SelectField, FormField, TextInput, Button, Container } from '../components/ui';
+import { SelectField, FormField, TextInput, Button, Container } from '../shared/ui';
 
 export default function AuthPage({ initialMode = 'login' }) {
     const [mode, setMode] = useState(initialMode);

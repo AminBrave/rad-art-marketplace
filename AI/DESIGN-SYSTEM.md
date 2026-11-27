@@ -75,7 +75,7 @@ The application currently has buyer–artist messaging. Inspect the current conv
 
 - Application routes: resources/js/app/AppRouter.jsx
 - Workspace navigation: resources/js/app/workspaceNavigation.js
-- Shared UI: resources/js/components/ui/
+- Shared UI public entry point: `resources/js/shared/ui/index.js` (legacy compatibility facade: `resources/js/components/ui/index.js`).
 - Global styles and tokens: resources/css/app.css
 
 Verify these paths and their current contents before relying on them.
@@ -87,13 +87,13 @@ The application uses a layered component model. Page files compose user journeys
 
 ### Ownership
 
-- `resources/js/components/ui/primitives.jsx`: low-level, accessible controls such as `Button`, `IconButton`, `FormField`, `TextInput`, `TextareaField`, `FileInput`, `SelectField` and `Checkbox`.
-- `resources/js/components/ui/layout.jsx`: page containers, section structure and layout primitives.
-- `resources/js/components/ui/navigation.jsx`: tabs, menus and navigation primitives.
-- `resources/js/components/ui/feedback.jsx`: alerts, empty states, errors, success feedback and status presentation.
-- `resources/js/components/ui/cards.jsx`: reusable artwork, artist and collection presentation.
-- `resources/js/components/ui/index.js`: the public export surface. App pages should import shared UI from this barrel rather than reach into implementation files.
-- `resources/js/app/`: route-level page composition and feature orchestration. Extract a domain component only when it is reused or has a coherent independent responsibility; do not move API orchestration into generic UI primitives.
+`resources/js/shared/ui/` is the domain-independent component owner. Its public entry point is `index.js`; app code should import from that entry point rather than implementation files.
+- `controls.jsx`: low-level accessible actions and inputs (`Button`, `IconButton`, `Badge`, `TextInput`, `TextareaField`, `FileInput`, `SelectField`, `Checkbox`).
+- `forms.jsx`: form compositions (`FormField`, `SearchField`) that coordinate labels, controls and submission behavior.
+- `compositions.jsx`: reusable page and information compositions (`PageHeader`, `SectionHeader`, `WorkspaceHero`, `DashboardMetricCard`, `Surface`, `StatusBadge`).
+- `layout.jsx`, `navigation.jsx`, `feedback.jsx`, `Dialog.jsx`, `AlertDialog.jsx`, `Tooltip.jsx`, and `BrandLogo.jsx`: domain-independent layout, navigation, feedback, overlay and brand building blocks.
+- `features/<domain>/components/`: owns domain-specific cards and page/workflow skeletons. Artwork and artist cards are no longer shared UI components; admin, messaging, collections, buyer, artist-workspace and home skeletons live with their owning feature.
+- `resources/js/components/ui/` remains a deprecated compatibility facade for old imports. New code must not add imports from this path.
 
 ### Non-negotiable form contract
 
@@ -125,7 +125,7 @@ Before adding or changing a control, search the shared UI barrel and reuse the c
 
 The public route-level `<main>` and workspace `.rd-page-frame` are content canvases, not content-width containers. The workspace shell may place a navigation rail beside the main column; `Section bleed` expands a section background to the viewport and keeps its inner container aligned with that column. Each section owns its own background and content width. The wide `Container` variant does not need a `rd-container--wide` modifier; width is expressed by the container's width utilities and gutters are supplied by the shared `.rd-container` contract.
 
-- Use the canonical `Container` from `resources/js/components/ui/layout.jsx`; `PageContainer` is a compatibility alias for existing imports only.
+- Use the canonical `Container` from `resources/js/shared/ui/layout.jsx`; `PageContainer` is a compatibility alias for existing imports only.
 - Use `Section bleed` for full-viewport backgrounds when a section is nested in a workspace column; its inner wide/reading `Container` is offset to align with the workspace content grid.
 - `width="wide"` provides the standard centered content measure and page gutters.
 - `width="reading"` provides the long-form reading measure and the same page gutters.

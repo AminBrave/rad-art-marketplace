@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { formatArtworkPrice } from '../utils/formatArtworkPrice';
-import { MediaImage, SelectField, TextInput, Button, Container } from '../components/ui';
+import { MediaImage, SelectField, TextInput, Button, Container } from '../shared/ui';
 import { useLanguage } from './LanguageContext';
 import { localizedValue } from '../utils/localizedContent';
 

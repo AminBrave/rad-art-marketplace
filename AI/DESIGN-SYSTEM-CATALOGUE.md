@@ -3,7 +3,7 @@
 **Catalogue status:** implementation reference for the current redesign branch  
 **Branch:** `agent-chatgpt/rademan-redesign`  
 **Product direction:** editorial art marketplace, Persian-first RTL, adaptive navigation  
-**Source of truth:** the exported shared UI surface in `resources/js/components/ui/index.js`, implementation files under `resources/js/components/ui/`, global tokens in `resources/css/app.css`, and the current application shells/routes.
+**Source of truth:** the public generic UI surface in `resources/js/shared/ui/index.js`, feature public exports in `resources/js/features/*/index.js`, implementation files under `resources/js/shared/ui/` and owning feature folders, global tokens in `resources/css/app.css`, and the current application shells/routes.
 
 This catalogue records what is implemented in the codebase at the time of writing. It is not a claim that every route, component state, viewport, or accessibility criterion has passed visual QA. Where implementation and the intended design language diverge, the catalogue calls out the gap rather than silently describing the intended state as current behavior.
 
@@ -132,9 +132,9 @@ A route is not layout-complete until:
 
 ## 4. Shared component catalogue
 
-All shared components are exported through `resources/js/components/ui/index.js`. Prefer imports from this barrel in route-level code.
+Generic shared components are exported through `resources/js/shared/ui/index.js`. Domain cards and page/workflow skeletons are exported through their owning feature entry points in `resources/js/features/*/index.js`. The former `resources/js/components/ui/index.js` is a deprecated compatibility facade for generic UI only.
 
-### 4.1 Actions and form controls — `primitives.jsx`
+### 4.1 Low-level actions and form controls — `controls.jsx` and `forms.jsx`
 
 | Component | Responsibility | Current API / behavior |
 |---|---|---|
@@ -303,13 +303,15 @@ Before considering a component or page complete:
 
 - Tokens and global styles: `resources/css/app.css`
 - Tailwind semantic mappings: `tailwind.config.js`
-- Shared export surface: `resources/js/components/ui/index.js`
-- Controls/page primitives: `resources/js/components/ui/primitives.jsx`
-- Layout and semantic primitives: `resources/js/components/ui/layout.jsx`
-- Navigation: `resources/js/components/ui/navigation.jsx`
-- Feedback/media: `resources/js/components/ui/feedback.jsx`
-- Domain cards: `resources/js/components/ui/cards.jsx`
-- Loading compositions: `resources/js/components/ui/skeletons.jsx`
+- Shared public export surface: `resources/js/shared/ui/index.js`
+- Low-level controls: `resources/js/shared/ui/controls.jsx`
+- Form compositions: `resources/js/shared/ui/forms.jsx`
+- Page/information compositions: `resources/js/shared/ui/compositions.jsx`
+- Layout and semantic primitives: `resources/js/shared/ui/layout.jsx`
+- Navigation: `resources/js/shared/ui/navigation.jsx`
+- Feedback/media: `resources/js/shared/ui/feedback.jsx`
+- Domain cards: `resources/js/features/artworks/components/ArtworkCard.jsx` and `resources/js/features/artists/components/ArtistCard.jsx`
+- Feature loading compositions: `resources/js/features/*/components/skeletons.jsx`; generic skeleton primitives remain in `resources/js/shared/ui/skeletons.jsx`
 - Public/workspace shells: `resources/js/app/Layouts.jsx`
 - Route and overhaul coverage ledger: `AI/COMPLETE-APPLICATION-OVERHAUL.md`
 - Design principles and implementation contract: `AI/DESIGN-SYSTEM.md`

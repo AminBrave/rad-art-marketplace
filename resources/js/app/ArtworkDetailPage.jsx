@@ -5,7 +5,9 @@ import { Link, useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useLanguage } from './LanguageContext';
 import ArtworkEngagement from './ArtworkEngagement';
-import { ArtworkCard, ArtworkDetailSkeleton, MediaImage, Container, Button } from '../components/ui';
+import { ArtworkCard } from '../features/artworks';
+import { MediaImage, Container, Button } from '../shared/ui';
+import { ArtworkDetailSkeleton } from '../features/artworks';
 import { formatArtworkPrice } from '../utils/formatArtworkPrice';
 import { localizedValue } from '../utils/localizedContent';
 

@@ -1,4 +1,4 @@
-import { Tooltip, DropdownMenu, Button } from '../components/ui';
+import { Tooltip, DropdownMenu, Button } from '../shared/ui';
 import { useLanguage } from './LanguageContext';
 import { Link } from 'react-router-dom';
 import { Ban, ChevronRight, Flag, MoreVertical, ShieldCheck } from 'lucide-react';

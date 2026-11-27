@@ -2,7 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useLanguage } from './LanguageContext';
 import { fetchArtistWorkspaceArtworks, artistKeys } from '../features/artists';
 import { Link, useOutletContext } from 'react-router-dom';
-import { EmptyState, ErrorState, StatusBadge, Badge, PageHeader, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton, ArtistRecentWorkSkeleton } from '../components/ui';
+import { EmptyState, ErrorState, StatusBadge, Badge, PageHeader, SectionHeader, DashboardMetricCard, DashboardMetricSkeleton } from '../shared/ui';
+import { ArtistRecentWorkSkeleton } from '../features/artist';
 import { localizedValue } from '../utils/localizedContent';
 
 const statusLabels = {

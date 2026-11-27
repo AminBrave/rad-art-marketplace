@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from './LanguageContext';
-import { WorkspaceHero, SectionHeader, Container } from '../components/ui';
+import { WorkspaceHero, SectionHeader, Container } from '../shared/ui';
 
 export function BuyerDashboardHome() {
     const { t } = useLanguage();

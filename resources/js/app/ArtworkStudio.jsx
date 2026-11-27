@@ -3,7 +3,8 @@ import { useLanguage } from './LanguageContext';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useLocation } from 'react-router-dom';
-import { Badge, Button, EmptyState, ErrorState, FormField, TextInput, TextareaField, FileInput, ArtworkStudioListSkeleton, UploadFeedback, MediaImage, PageHeader, SectionHeader, SelectField } from '../components/ui';
+import { Badge, Button, EmptyState, ErrorState, FormField, TextInput, TextareaField, FileInput, UploadFeedback, MediaImage, PageHeader, SectionHeader, SelectField } from '../shared/ui';
+import { ArtworkStudioListSkeleton } from '../features/artist';
 
 const emptyArtwork = { title: '', title_en: '', description: '', description_en: '', city: '', city_en: '', category_id: '', medium: '', dimensions: '', year: '', price: '', availability: 'available' };
 const statusLabels = { pending_review: 'در انتظار بررسی', approved: 'تأیید و منتشرشده', rejected: 'ردشده', changes_requested: 'نیازمند اصلاح' };
