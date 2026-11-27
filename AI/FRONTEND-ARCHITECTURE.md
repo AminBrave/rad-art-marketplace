@@ -204,6 +204,6 @@ Automated tests remain valuable and should normally be updated with behavior cha
 
 The architecture baseline is ready for migration when:
 - Ownership and dependency rules are documented.
-- The dependency checker is part of the normal npm scripts and passes without new violations (known legacy exceptions are visible).
+- The dependency checker is part of the normal npm scripts, its source-level rules and exact legacy allowlist are reviewed against the current baseline, and its first execution result is recorded before the first Stage 2 code move.
 - Existing compatibility entry points and migration candidates are recorded.
 - The next stage can proceed without moving unrelated features or changing user-facing behavior.
