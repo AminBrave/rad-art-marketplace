@@ -369,14 +369,46 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
 
             bounds = sidebar.bounding_box()
             self.assertIsNotNone(bounds)
-            page.mouse.move(
-                bounds["x"] + bounds["width"] / 2,
-                bounds["y"] + min(bounds["height"] / 2, 100),
+            viewport = page.evaluate(
+                "() => ({width: window.innerWidth, height: window.innerHeight})"
             )
-            page.mouse.wheel(0, 420)
-            page.wait_for_function("""() => {
-                return document.querySelector('[data-testid="artwork-filter-sidebar"]')?.scrollTop > 0;
-            }""")
+            # Aim inside the visible filter content, near the lower edge of the
+            # scrollport. A fixed y-offset can accidentally hit the sidebar
+            # heading (or fall outside the viewport on shorter layouts).
+            wheel_x = bounds["x"] + min(bounds["width"] - 16, bounds["width"] / 2)
+            visible_bottom = min(bounds["y"] + bounds["height"], viewport["height"])
+            wheel_y = max(bounds["y"] + 16, visible_bottom - 24)
+            page.mouse.move(wheel_x, wheel_y)
+            page.mouse.wheel(0, 500)
+            page.wait_for_timeout(100)
+            page.mouse.wheel(0, 500)
+
+            try:
+                page.wait_for_function("""() => {
+                    const element = document.querySelector('[data-testid="artwork-filter-sidebar"]');
+                    return element && element.scrollTop > 0;
+                }""", timeout=5000)
+            except Exception as error:
+                diagnostics = sidebar.evaluate("""(element) => ({
+                    scrollTop: element.scrollTop,
+                    scrollHeight: element.scrollHeight,
+                    clientHeight: element.clientHeight,
+                    overflowY: getComputedStyle(element).overflowY,
+                    position: getComputedStyle(element).position,
+                    maxHeight: getComputedStyle(element).maxHeight,
+                    rect: (() => {
+                        const rect = element.getBoundingClientRect();
+                        return {top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right};
+                    })(),
+                    activeElement: document.activeElement?.tagName,
+                })""")
+                page_scroll = page.evaluate("() => window.scrollY")
+                self.fail(
+                    "Mouse-wheel input did not scroll the artwork filter sidebar. "
+                    f"Sidebar: {diagnostics}; document scrollY: {page_scroll}; "
+                    f"wheel point: ({wheel_x}, {wheel_y}); original error: {error}"
+                )
+
             self.assertGreater(sidebar.evaluate("(element) => element.scrollTop"), 0)
         finally:
             context.close()
