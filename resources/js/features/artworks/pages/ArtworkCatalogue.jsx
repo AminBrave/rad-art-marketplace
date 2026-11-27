@@ -252,8 +252,8 @@ export default function ArtworkCatalogue() {
         };
 
         measureToolbar();
-        const observer = typeof ResizeObserver === 'function'
-            ? new ResizeObserver(measureToolbar)
+        const observer = typeof window.ResizeObserver === 'function'
+            ? new window.ResizeObserver(measureToolbar)
             : null;
         observer?.observe(toolbar);
         window.addEventListener('resize', measureToolbar);
@@ -290,8 +290,8 @@ export default function ArtworkCatalogue() {
         };
 
         updateAvailableViewport();
-        const observer = typeof ResizeObserver === 'function' && navigation
-            ? new ResizeObserver(updateAvailableViewport)
+        const observer = typeof window.ResizeObserver === 'function' && navigation
+            ? new window.ResizeObserver(updateAvailableViewport)
             : null;
         observer?.observe(navigation);
         window.addEventListener('resize', updateAvailableViewport);
