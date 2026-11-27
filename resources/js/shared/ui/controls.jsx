@@ -1,4 +1,4 @@
-import { Children, cloneElement, forwardRef, isValidElement, useId } from 'react';
+import { Children, cloneElement, forwardRef, isValidElement } from 'react';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import * as SelectPrimitive from '@radix-ui/react-select';
 import { Check, ChevronDown } from 'lucide-react';
@@ -85,34 +85,7 @@ export function Badge({ children, variant = 'neutral', className = '' }) {
 
 const controlClass = 'w-full min-h-11  border border-border-strong bg-paper px-3.5 py-2 font-sans text-sm text-ink transition-colors placeholder:text-subtle focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:bg-surface-muted disabled:opacity-65 aria-[invalid=true]:border-danger';
 
-export function FormField({ id, label, hint, error, required = false, children, className = '' }) {
-    const generatedId = useId();
-    const fieldId = id ?? generatedId;
-    const describedBy = [
-        hint ? `${fieldId}-hint` : null,
-        error ? `${fieldId}-error` : null,
-    ].filter(Boolean).join(' ') || undefined;
-    const control = isValidElement(children)
-        ? cloneElement(children, {
-            id: fieldId,
-            'aria-invalid': error ? true : children.props['aria-invalid'],
-            'aria-describedby': describedBy ?? children.props['aria-describedby'],
-            'aria-labelledby': children.props['aria-labelledby'] ?? `${fieldId}-label`,
-        })
-        : children;
 
-    return (
-        <div className={cn('grid gap-2', className)}>
-            <label id={`${fieldId}-label`} htmlFor={fieldId} className="text-sm font-semibold text-ink">
-                {label}
-                {required && <span aria-hidden="true" className="ms-1 text-danger">*</span>}
-            </label>
-            {control}
-            {hint && <p id={`${fieldId}-hint`} className="text-xs leading-relaxed text-muted">{hint}</p>}
-            {error && <p id={`${fieldId}-error`} role="alert" className="text-xs leading-relaxed text-danger">{error}</p>}
-        </div>
-    );
-}
 
 export const TextInput = forwardRef(function TextInput({ className = '', ...props }, ref) {
     return <input ref={ref} className={cn(controlClass, className, '')} {...props} />;
@@ -249,34 +222,4 @@ export function Checkbox({
     );
 }
 
-export function SearchField({
-    value,
-    onChange,
-    onSearch,
-    placeholder = 'جست‌وجو…',
-    label = 'جست‌وجو',
-    buttonLabel = 'جست‌وجو',
-    disabled = false,
-    className = '',
-}) {
-    const searchId = useId();
-    const submit = (event) => {
-        event.preventDefault();
-        onSearch?.(value);
-    };
 
-    return (
-        <form onSubmit={submit} role="search" className={cn('flex min-w-0 flex-col gap-2 sm:flex-row [&>input]:min-w-0 [&>input]:flex-1', className)}>
-            <label className="sr-only" htmlFor={searchId}>{label}</label>
-            <TextInput
-                id={searchId}
-                type="search"
-                value={value}
-                onChange={onChange}
-                placeholder={placeholder}
-                disabled={disabled}
-            />
-            <Button type="submit" size="md" disabled={disabled}>{buttonLabel}</Button>
-        </form>
-    );
-}
