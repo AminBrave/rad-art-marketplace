@@ -4,11 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
- * Rademan semantic design foundation
- * Brand anchors are intentionally limited to five colors. Component styling
- * consumes semantic roles below; it should not depend directly on brand hues.
- */
 
 
 /* Shared editorial hero surface adapts through the semantic theme tokens above. */
