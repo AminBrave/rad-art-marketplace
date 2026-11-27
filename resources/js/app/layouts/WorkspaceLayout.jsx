@@ -88,7 +88,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
                 placement="drawer"
                 className="flex min-h-0 flex-col"
             >
-                <div className="flex items-center justify-between border-b border-border px-5 py-5">
+                <div className="flex shrink-0 items-center justify-between border-b border-border px-5 py-5">
                     <div className="min-w-0">
                         <DialogTitle className="text-sm font-extrabold text-ink">{t(title)}</DialogTitle>
                         <DialogDescription className="mt-1 max-w-48 truncate text-xs text-muted">{user?.name}</DialogDescription>
