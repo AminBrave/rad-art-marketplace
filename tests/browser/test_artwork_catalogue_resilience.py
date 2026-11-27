@@ -308,6 +308,80 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
             context.close()
 
 
+    def test_desktop_sticky_artwork_filter_sidebar_scrolls_when_content_overflows(self):
+        context, page = self.new_page()
+        page.set_viewport_size({"width": 1280, "height": 560})
+        page.route(
+            "**/api/v1/categories",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({"data": [{"id": 1, "slug": "painting", "name": "نقاشی"}]}),
+            ),
+        )
+        page.route(
+            "**/api/v1/artwork-filters",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({
+                    "data": {
+                        "mediums": ["رنگ روغن"],
+                        "availability": [{"value": "available", "label": "قابل استعلام", "label_en": "Available"}],
+                        "sorts": [{"value": "newest", "label": "جدیدترین", "label_en": "Newest"}],
+                    }
+                }),
+            ),
+        )
+        page.route(
+            "**/api/v1/artworks**",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps(artwork_payload()),
+            ),
+        )
+        try:
+            page.goto(BASE_URL + "/artworks", wait_until="domcontentloaded")
+            sidebar = page.get_by_test_id("artwork-filter-sidebar")
+            sidebar.wait_for(state="visible")
+            page.get_by_role("combobox", name="فیلتر دسته‌بندی").wait_for()
+
+            # Simulate unusually long filter content without changing production data.
+            page.evaluate("""() => {
+                const sidebar = document.querySelector('[data-testid="artwork-filter-sidebar"]');
+                const content = sidebar?.querySelector(':scope > div.pt-5');
+                if (!content) throw new Error('Filter content wrapper not found');
+                const sections = Array.from(content.children);
+                for (let copy = 0; copy < 3; copy += 1) {
+                    sections.forEach((section) => content.append(section.cloneNode(true)));
+                }
+            }""")
+
+            dimensions = sidebar.evaluate(
+                "(element) => ({scrollHeight: element.scrollHeight, clientHeight: element.clientHeight})"
+            )
+            self.assertGreater(
+                dimensions["scrollHeight"],
+                dimensions["clientHeight"],
+                f"Test setup did not create sidebar overflow: {dimensions}",
+            )
+
+            bounds = sidebar.bounding_box()
+            self.assertIsNotNone(bounds)
+            page.mouse.move(
+                bounds["x"] + bounds["width"] / 2,
+                bounds["y"] + min(bounds["height"] / 2, 100),
+            )
+            page.mouse.wheel(0, 420)
+            page.wait_for_function(
+                "() => document.querySelector('[data-testid=" + '"artwork-filter-sidebar"' + "]')?.scrollTop > 0"
+            )
+            self.assertGreater(sidebar.evaluate("(element) => element.scrollTop"), 0)
+        finally:
+            context.close()
+
+
     def test_mobile_filter_drawer_applies_selection_and_updates_shareable_url(self):
         context, page = self.new_page()
         page.set_viewport_size({"width": 390, "height": 844})
