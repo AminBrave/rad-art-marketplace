@@ -1,6 +1,6 @@
 # Shared layout and scroll hooks
 
-These hooks provide domain-independent browser behavior for pages and shared UI. Import hooks from the public `resources/js/shared/hooks` entry point; import imperative scroll helpers from `resources/js/utils/scroll.js`.
+These hooks provide domain-independent browser behavior for pages and shared UI. Import hooks from the public `resources/js/shared/hooks` entry point; import imperative scroll helpers from `resources/js/utils/scroll.js`. The generic overflow implementation lives in `useScrollOverflow.js`; `useHorizontalOverflow` remains a compatibility wrapper for horizontal-only callers.
 
 ## Measure the global header
 
