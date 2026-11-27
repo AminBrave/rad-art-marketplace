@@ -50,21 +50,29 @@ suppressDirectionFor(1000);
 
 The activation element's document position is captured when the hook mounts. The visible header offset is included in the activation calculation. Use `suppressDirectionFor` before applying filters, expanding content, or other layout-changing interactions that could cause browser scroll anchoring.
 
-## Detect clipped horizontal content
+## Detect clipped scroll content
+
+Use the shared `useScrollOverflow` hook for both horizontal and vertical scroll containers:
 
 ```jsx
-import { useHorizontalOverflow } from '../../shared/hooks';
+import { useScrollOverflow } from '../../shared/hooks';
 
-const fades = useHorizontalOverflow(scrollRef, {
-    enabled: true,
+const horizontalFades = useScrollOverflow(chipsRef, {
+    axis: 'horizontal',
     direction: isRtl ? 'rtl' : 'ltr',
     contentKey: activeItems.join('|'),
 });
 
-// fades.start and fades.end indicate clipped content at logical edges.
+const verticalFades = useScrollOverflow(sidebarRef, {
+    axis: 'vertical',
+    contentKey: filterOptionsVersion,
+});
+
+// Horizontal: start/end are logical edges (RTL-aware).
+// Vertical: start/end mean top/bottom.
 ```
 
-Pass a `contentKey` that changes when the scroller's children change so measurements are refreshed after React updates the content. The hook only reports overflow; the consuming component owns the fade styling and theme tokens.
+The existing `useHorizontalOverflow` remains as a backwards-compatible wrapper. Pass a `contentKey` that changes when the scroller's children change so measurements refresh after React updates. The hook only reports clipped edges; the consuming component owns fade placement, gradients and theme tokens. Use pointer-events-none fade overlays so they never intercept scrolling or clicks.
 
 ## Ownership
 
