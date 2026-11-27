@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import { useLanguage } from './LanguageContext';
-import { MessageHistorySkeleton, MediaImage, Tooltip, DropdownMenu, Button, TextareaField } from '../shared/ui';
+import { MessageHistorySkeleton } from '../features/messaging';
+import { MediaImage, Tooltip, DropdownMenu, Button, TextareaField } from '../shared/ui';
 import { Link } from 'react-router-dom';
 import { ArrowDown, Download, FileText, Flag, Image as ImageIcon, MoreVertical, Pencil, Reply, SmilePlus, Trash2 } from 'lucide-react';
 
