@@ -5,7 +5,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useOutletContext } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useTheme } from './useTheme';
-import { RouteLoading } from './router/guards';
 
 export function ArtistDashboardHome() {
     const { t } = useLanguage();
