@@ -1,2 +1,2 @@
-// Compatibility facade. Artist directory is owned by the artists feature.
-export { default } from '../features/artists/pages/ArtistDirectoryPage';
+// Compatibility facade. This domain module is owned by its feature public entry point.
+export { default } from '../features/artists';
