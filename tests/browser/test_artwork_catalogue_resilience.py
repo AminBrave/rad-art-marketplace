@@ -503,7 +503,14 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
             mobile_filter_scroll.locator(":scope > div").evaluate(
                 "(element) => { element.style.minHeight = '1100px'; }"
             )
-            page.get_by_test_id("mobile-artwork-filter-fade-bottom").wait_for(state="visible")
+            page.wait_for_function("""() => {
+                const element = document.querySelector('[data-testid="mobile-artwork-filter-scroll"]');
+                if (!element) return false;
+                const style = getComputedStyle(element);
+                return element.scrollHeight > element.clientHeight
+                    && style.backgroundAttachment === 'local, local, scroll, scroll'
+                    && style.backgroundImage.includes('radial-gradient');
+            }""")
 
             # Exercise a real wheel gesture inside the dialog scrollport instead
             # of assigning scrollTop, so this catches flex/overflow regressions.
@@ -518,7 +525,16 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
                 const element = document.querySelector('[data-testid="mobile-artwork-filter-scroll"]');
                 return element && element.scrollTop > 0;
             }""")
-            page.get_by_test_id("mobile-artwork-filter-fade-top").wait_for(state="visible")
+            self.assertGreater(
+                mobile_filter_scroll.evaluate("(element) => element.scrollTop"),
+                0,
+            )
+            self.assertIn(
+                "local, local, scroll, scroll",
+                mobile_filter_scroll.evaluate(
+                    "(element) => getComputedStyle(element).backgroundAttachment"
+                ),
+            )
 
             page.get_by_role("combobox", name="فیلتر دسته‌بندی").click()
             page.get_by_role("option", name="نقاشی").click()
