@@ -320,6 +320,20 @@ export default function ArtworkCatalogue() {
         axis: 'vertical',
         contentKey: [activeFilterCount, bottomNavigationHeight, filtersLoading, filtersError].join('|'),
     });
+    const measureMobileFilterFades = () => {
+        const element = mobileFilterScrollRef.current;
+        if (!element) return;
+
+        const maxScrollTop = Math.max(0, element.scrollHeight - element.clientHeight);
+        const next = {
+            start: element.scrollTop > 1,
+            end: maxScrollTop > 1 && element.scrollTop < maxScrollTop - 1,
+        };
+        setMobileFilterFades((current) => (
+            current.start === next.start && current.end === next.end ? current : next
+        ));
+    };
+
     useEffect(() => {
         const element = mobileFilterScrollRef.current;
         if (!mobileFiltersOpen || !element) {
@@ -330,14 +344,7 @@ export default function ArtworkCatalogue() {
         let frame = null;
         const measure = () => {
             frame = null;
-            const maxScrollTop = Math.max(0, element.scrollHeight - element.clientHeight);
-            const next = {
-                start: element.scrollTop > 1,
-                end: maxScrollTop > 1 && element.scrollTop < maxScrollTop - 1,
-            };
-            setMobileFilterFades((current) => (
-                current.start === next.start && current.end === next.end ? current : next
-            ));
+            measureMobileFilterFades();
         };
         const scheduleMeasure = () => {
             if (frame === null) {
@@ -381,7 +388,7 @@ export default function ArtworkCatalogue() {
             mutationObserver?.disconnect();
             if (frame !== null) window.cancelAnimationFrame(frame);
         };
-    }, [mobileFiltersOpen, draftFilters, filtersLoading, filtersError]);
+    }, [mobileFiltersOpen, filtersLoading, filtersError]);
     const updateFilters = (changes) => {
         suppressDirectionFor(1500);
         const next = { ...currentFilters, ...changes };
@@ -624,6 +631,11 @@ export default function ArtworkCatalogue() {
                     placement="center"
                     className="flex h-[min(88dvh,48rem)] min-h-0 flex-col gap-0 overflow-hidden p-0"
                     aria-label={t('فیلتر و مرتب‌سازی آثار')}
+                    onOpenAutoFocus={() => {
+                        window.requestAnimationFrame(() => {
+                            window.requestAnimationFrame(measureMobileFilterFades);
+                        });
+                    }}
                 >
                     <div className="flex shrink-0 items-start justify-between gap-4 border-b border-divider-section p-5">
                         <div>
