@@ -1,16 +1,130 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'react-router-dom';
+import { SlidersHorizontal, X } from 'lucide-react';
 import { fetchArtworkFilters, fetchArtworks } from '../api/artworks';
 import { artworkKeys } from '../model/queryKeys';
-import { useSearchParams } from 'react-router-dom';
-import { X } from 'lucide-react';
 import { useLanguage } from '../../../shared/i18n';
 import { localizedValue } from '../../../utils/localizedContent';
 import { ArtworkCard } from '../components/ArtworkCard';
-import { EmptyState, ErrorState, SearchField, SelectField, PageHeader, Button, Container, Section } from '../../../shared/ui';
+import {
+    Button,
+    Container,
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogTitle,
+    EmptyState,
+    ErrorState,
+    PageHeader,
+    SearchField,
+    SelectField,
+} from '../../../shared/ui';
 import { ArtworkCardSkeleton } from '../components/skeletons';
 
 const emptyFilters = { mediums: [], availability: [], sorts: [] };
+const defaultFilterValues = { q: '', category: '', medium: '', availability: '', sort: 'newest' };
+
+function ArtworkFilterControls({
+    values,
+    categories,
+    filters,
+    filtersLoading,
+    filtersError,
+    onChange,
+    searchValue,
+    onSearchChange,
+    onSearch,
+}) {
+    const { t, locale } = useLanguage();
+    const sortOptions = filters.sorts?.length
+        ? filters.sorts
+        : [{ value: 'newest', label: t('جدیدترین') }];
+
+    return (
+        <div className="grid gap-5">
+            <div className="grid gap-2">
+                <h3 className="text-xs font-extrabold tracking-[.1em] text-terracotta-strong">{t('جست‌وجوی هدفمند')}</h3>
+                <SearchField
+                    value={searchValue}
+                    onChange={onSearchChange}
+                    onSearch={onSearch}
+                    label={t('جست‌وجو در آثار و هنرمندان')}
+                    placeholder={t('عنوان، توضیحات، تکنیک یا نام هنرمند…')}
+                />
+            </div>
+
+            <div className="grid gap-2 border-t border-divider-section pt-4">
+                <label className="text-sm font-bold text-ink" htmlFor="artwork-filter-category">{t('دسته‌بندی')}</label>
+                <SelectField
+                    id="artwork-filter-category"
+                    value={values.category}
+                    onChange={(event) => onChange({ category: event.target.value })}
+                    aria-label={t('فیلتر دسته‌بندی')}
+                >
+                    <option value="">{t('همه دسته‌ها')}</option>
+                    {categories.map((item) => (
+                        <option key={item.id} value={item.slug}>{localizedValue(item, 'name', locale)}</option>
+                    ))}
+                </SelectField>
+            </div>
+
+            <div className="grid gap-2 border-t border-divider-section pt-4">
+                <label className="text-sm font-bold text-ink" htmlFor="artwork-filter-medium">{t('تکنیک و مواد')}</label>
+                <SelectField
+                    id="artwork-filter-medium"
+                    value={values.medium}
+                    onChange={(event) => onChange({ medium: event.target.value })}
+                    aria-label={t('فیلتر تکنیک و مواد')}
+                >
+                    <option value="">{t('همه تکنیک‌ها')}</option>
+                    {(filters.mediums ?? []).map((item) => <option key={item} value={item}>{t(item)}</option>)}
+                </SelectField>
+            </div>
+
+            <div className="grid gap-2 border-t border-divider-section pt-4">
+                <label className="text-sm font-bold text-ink" htmlFor="artwork-filter-availability">{t('وضعیت اثر')}</label>
+                <SelectField
+                    id="artwork-filter-availability"
+                    value={values.availability}
+                    onChange={(event) => onChange({ availability: event.target.value })}
+                    aria-label={t('فیلتر وضعیت اثر')}
+                >
+                    <option value="">{t('همه وضعیت‌ها')}</option>
+                    {(filters.availability ?? []).map((item) => (
+                        <option key={item.value} value={item.value}>
+                            {locale === 'en' ? (item.label_en || item.label) : item.label}
+                        </option>
+                    ))}
+                </SelectField>
+            </div>
+
+            <div className="grid gap-2 border-t border-divider-section pt-4">
+                <label className="text-sm font-bold text-ink" htmlFor="artwork-filter-sort">{t('مرتب‌سازی آثار')}</label>
+                <SelectField
+                    id="artwork-filter-sort"
+                    value={values.sort}
+                    onChange={(event) => onChange({ sort: event.target.value })}
+                    aria-label={t('مرتب‌سازی آثار')}
+                >
+                    {sortOptions.map((item) => (
+                        <option key={item.value} value={item.value}>
+                            {locale === 'en' ? (item.label_en || item.label) : item.label}
+                        </option>
+                    ))}
+                </SelectField>
+            </div>
+
+            {filtersError && (
+                <p role="status" className="text-xs leading-relaxed text-muted">
+                    {t('برخی گزینه‌های فیلتر بارگذاری نشدند؛ می‌توانید با جست‌وجو و دسته‌بندی ادامه دهید.')}
+                </p>
+            )}
+            {filtersLoading && <p role="status" className="text-xs text-muted">{t('در حال آماده‌سازی گزینه‌های فیلتر…')}</p>}
+        </div>
+    );
+}
 
 export default function ArtworkCatalogue() {
     const { t, locale } = useLanguage();
@@ -20,7 +134,10 @@ export default function ArtworkCatalogue() {
     const medium = params.get('medium') ?? '';
     const availability = params.get('availability') ?? '';
     const sort = params.get('sort') ?? 'newest';
+    const currentFilters = { q: search, category, medium, availability, sort };
     const [searchInput, setSearchInput] = useState(search);
+    const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+    const [draftFilters, setDraftFilters] = useState(currentFilters);
     const loadMoreRef = useRef(null);
 
     useEffect(() => setSearchInput(search), [search]);
@@ -73,7 +190,7 @@ export default function ArtworkCatalogue() {
     );
 
     const updateFilters = (changes) => {
-        const next = { q: search, category, medium, availability, sort, ...changes };
+        const next = { ...currentFilters, ...changes };
         const query = {};
         if (next.q) query.q = next.q;
         if (next.category) query.category = next.category;
@@ -86,7 +203,20 @@ export default function ArtworkCatalogue() {
     const submitSearch = (value) => updateFilters({ q: value.trim() });
     const clearFilters = () => {
         setSearchInput('');
+        setDraftFilters(defaultFilterValues);
         setParams({});
+    };
+
+    const openMobileFilters = () => {
+        setDraftFilters(currentFilters);
+        setSearchInput(search);
+        setMobileFiltersOpen(true);
+    };
+
+    const applyMobileFilters = () => {
+        setSearchInput(draftFilters.q);
+        updateFilters(draftFilters);
+        setMobileFiltersOpen(false);
     };
 
     const { hasNextPage, fetchNextPage } = artworksQuery;
@@ -106,91 +236,185 @@ export default function ArtworkCatalogue() {
         return () => observer.disconnect();
     }, [hasNextPage, fetchNextPage, loadingMore, error]);
 
+    const filterControlProps = {
+        categories,
+        filters,
+        filtersLoading,
+        filtersError,
+    };
+
     return (
         <div className="w-full min-w-0 min-h-[65vh] py-10 lg:py-14">
             <Container width="wide">
-                <PageHeader eyebrow={t("آرشیو عمومی راد آرت")} title={t("گالری آثار")} description={t("در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید.")} />
-            </Container>
+                <PageHeader
+                    eyebrow={t('آرشیو عمومی راد آرت')}
+                    title={t('گالری آثار')}
+                    description={t('در میان آثار تأییدشده هنرمندان جست‌وجو کنید؛ بر اساس دسته، تکنیک و وضعیت اثر مسیر کشف خود را دقیق‌تر کنید.')}
+                />
 
-            <Section as="section" bleed aria-label={t("فیلتر و مرتب‌سازی آثار")} className="relative mt-8 border-y border-divider-section bg-surface-muted/70 py-6 sm:py-7">
-                <Container width="wide">
-                <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-                    <div>
-                        <p className="text-[11px] font-extrabold tracking-[.12em] text-terracotta-strong">{t("جست‌وجوی هدفمند")}</p>
-                        <h2 className="mt-1 text-base font-black">{t("آثاری را پیدا کنید که با نگاه شما هم‌مسیرند")}</h2>
-                    </div>
-                    <span className="text-xs text-muted">{activeFilterCount ? activeFilterCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('معیار انتخاب‌شده') : t('همه آثار عمومی')}</span>
-                </div>
-                <div className="grid gap-3.5 md:grid-cols-2 xl:grid-cols-[minmax(20rem,1.7fr)_repeat(2,minmax(11rem,1fr))]">
-                    <SearchField value={searchInput} onChange={(event) => setSearchInput(event.target.value)} onSearch={submitSearch} label={t("جست‌وجو در آثار و هنرمندان")} placeholder={t("عنوان، توضیحات، تکنیک یا نام هنرمند…")} />
-                    <SelectField value={category} onChange={(event) => updateFilters({ category: event.target.value })} aria-label={t("فیلتر دسته‌بندی")}>
-                        <option value="">{t("همه دسته‌ها")}</option>
-                        {categories.map((item) => <option key={item.id} value={item.slug}>{localizedValue(item, 'name', locale)}</option>)}
-                    </SelectField>
-                    <SelectField value={medium} onChange={(event) => updateFilters({ medium: event.target.value })} aria-label={t("فیلتر تکنیک و مواد")}>
-                        <option value="">{t("همه تکنیک‌ها")}</option>
-                        {(filters.mediums ?? []).map((item) => <option key={item} value={item}>{t(item)}</option>)}
-                    </SelectField>
-                    <SelectField value={availability} onChange={(event) => updateFilters({ availability: event.target.value })} aria-label={t("فیلتر وضعیت اثر")}>
-                        <option value="">{t("همه وضعیت‌ها")}</option>
-                        {(filters.availability ?? []).map((item) => <option key={item.value} value={item.value}>{locale === 'en' ? (item.label_en || item.label) : item.label}</option>)}
-                    </SelectField>
-                    <SelectField value={sort} onChange={(event) => updateFilters({ sort: event.target.value })} aria-label={t("مرتب‌سازی آثار")}>
-                        {(filters.sorts?.length ? filters.sorts : [{ value: 'newest', label: t('جدیدترین') }]).map((item) => <option key={item.value} value={item.value}>{locale === 'en' ? (item.label_en || item.label) : item.label}</option>)}
-                    </SelectField>
-                    <div className="flex items-center justify-between gap-3">
-                        <p className="text-xs text-muted">{activeFilterCount ? activeFilterCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('فیلتر فعال') : t('بدون فیلتر')}</p>
-                        {activeFilterCount > 0 && <Button variant="ghost" type="button" onClick={clearFilters} className="text-sm font-bold text-terracotta-strong underline underline-offset-4">{t("پاک‌کردن فیلترها")}</Button>}
-                    </div>
-                </div>
-                {filtersError && <p role="status" className="mt-3 text-xs text-muted">{t("برخی گزینه‌های فیلتر بارگذاری نشدند؛ می‌توانید با جست‌وجو و دسته‌بندی ادامه دهید.")}</p>}
-                {filtersLoading && <p className="mt-3 text-xs text-muted">{t("در حال آماده‌سازی گزینه‌های فیلتر…")}</p>}
-            </Container>
-            </Section>
+                <div className="mt-8 grid min-w-0 gap-8 lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-9">
+                    <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:self-start" aria-label={t('فیلتر و مرتب‌سازی آثار')}>
+                        <div className="flex items-center justify-between gap-3 border-b border-ink pb-4">
+                            <h2 className="text-base font-extrabold text-ink">{t('فیلتر و مرتب‌سازی آثار')}</h2>
+                            {activeFilterCount > 0 && (
+                                <Button variant="ghost" size="sm" type="button" onClick={clearFilters} className="px-1 text-xs text-terracotta-strong">
+                                    {t('پاک‌کردن فیلترها')}
+                                </Button>
+                            )}
+                        </div>
+                        <div className="pt-5">
+                            <ArtworkFilterControls
+                                {...filterControlProps}
+                                values={currentFilters}
+                                searchValue={searchInput}
+                                onSearchChange={(event) => setSearchInput(event.target.value)}
+                                onSearch={submitSearch}
+                                onChange={updateFilters}
+                            />
+                        </div>
+                    </aside>
 
-            <Container width="wide">
-            {activeFilterCount > 0 && (
-                <div className="mt-6 flex flex-wrap items-center gap-2" aria-label={t("معیارهای فعال")}>
-                    <span className="me-1 text-xs font-bold text-muted">{t("انتخاب شما:")}</span>
-                    {search && <Button variant="outline" type="button" onClick={() => updateFilters({ q: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{search}<X size={12} aria-hidden="true" /></Button>}
-                    {category && <Button variant="outline" type="button" onClick={() => updateFilters({ category: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{localizedValue(categories.find((item) => item.slug === category), 'name', locale) || category}<X size={12} aria-hidden="true" /></Button>}
-                    {medium && <Button variant="outline" type="button" onClick={() => updateFilters({ medium: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{medium}<X size={12} aria-hidden="true" /></Button>}
-                    {availability && <Button variant="outline" type="button" onClick={() => updateFilters({ availability: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{filters.availability?.find((item) => item.value === availability)?.[locale === 'en' ? 'label_en' : 'label'] ?? availability}<X size={12} aria-hidden="true" /></Button>}
-                    {sort !== 'newest' && <Button variant="outline" type="button" onClick={() => updateFilters({ sort: 'newest' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">{filters.sorts?.find((item) => item.value === sort)?.[locale === 'en' ? 'label_en' : 'label'] ?? sort}<X size={12} aria-hidden="true" /></Button>}
-                </div>
-            )}
-            <div className="mt-9 flex flex-wrap items-end justify-between gap-3 border-b border-ink pb-4">
-                <div>
-                    <p className="text-[11px] font-bold tracking-[.12em] text-terracotta-strong">{t("آرشیو آثار")}</p>
-                    <p aria-live="polite" className="mt-1 text-sm font-semibold text-ink">{loading ? t('در حال دریافت آثار…') : meta.total.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('اثر')}</p>
-                </div>
-                <p className="text-xs text-muted">{t("نمایش آثار عمومی و تأییدشده")}</p>
-            </div>
-            {loading ? (
-                <div className="mt-6 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}</div>
-            ) : error ? (
-                <ErrorState className="mt-8" title={t("دریافت گالری با خطا روبه‌رو شد")} description={t("اتصال را بررسی کنید و دوباره تلاش کنید.")} onRetry={() => artworksQuery.refetch()} />
-            ) : artworks.length ? (
-                <div className="mt-6 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{artworks.map((artwork) => <ArtworkCard key={artwork.id} artwork={artwork} />)}</div>
-            ) : (
-                <EmptyState className="mt-8" title={t("اثری با این مشخصات پیدا نشد")} description={t("عبارت جست‌وجو یا گزینه‌های فیلتر را تغییر دهید.")} />
-            )}
-            {!loading && !error && artworks.length > 0 && (
-                <div className="mt-10 flex min-h-16 flex-col items-center justify-center gap-3 border-t border-border pt-6" aria-live="polite">
-                    {artworksQuery.isFetchNextPageError && <p role="alert" className="text-sm text-danger">{t("دریافت آثار بیشتر انجام نشد.")}</p>}
-                    {artworksQuery.hasNextPage ? (
-                        <>
-                            <span ref={loadMoreRef} className="h-px w-full" aria-hidden="true" />
-                            <Button type="button" variant="outline" disabled={loadingMore} onClick={() => artworksQuery.fetchNextPage()}>
-                                {loadingMore ? t('در حال دریافت آثار…') : t('بارگذاری آثار بیشتر')}
+                    <main className="min-w-0">
+                        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink pb-4">
+                            <div>
+                                <p className="text-[11px] font-bold tracking-[.12em] text-terracotta-strong">{t('آرشیو آثار')}</p>
+                                <p aria-live="polite" className="mt-1 text-sm font-semibold text-ink">
+                                    {loading ? t('در حال دریافت آثار…') : meta.total.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('اثر')}
+                                </p>
+                            </div>
+                            <Button
+                                variant="outline"
+                                type="button"
+                                onClick={openMobileFilters}
+                                aria-haspopup="dialog"
+                                className="lg:hidden"
+                            >
+                                <SlidersHorizontal size={16} aria-hidden="true" />
+                                {t('فیلترها')}
+                                {activeFilterCount > 0 && (
+                                    <span className="ms-1 inline-flex min-w-5 items-center justify-center bg-surface-muted px-1.5 py-0.5 text-xs tabular-nums">
+                                        {activeFilterCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}
+                                    </span>
+                                )}
                             </Button>
-                        </>
-                    ) : (
-                        <p className="text-xs text-muted">{locale === 'fa' ? `همه ${meta.total.toLocaleString('fa-IR')} اثر نمایش داده شدند.` : `All ${meta.total.toLocaleString('en-US')} artworks are displayed.`}</p>
-                    )}
+                            <p className="hidden text-xs text-muted lg:block">{t('نمایش آثار عمومی و تأییدشده')}</p>
+                        </div>
+
+                        {activeFilterCount > 0 && (
+                            <div className="mt-5 flex flex-wrap items-center gap-2" aria-label={t('معیارهای فعال')}>
+                                <span className="me-1 text-xs font-bold text-muted">{t('انتخاب شما:')}</span>
+                                {search && (
+                                    <Button variant="outline" type="button" onClick={() => updateFilters({ q: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">
+                                        {search}<X size={12} aria-hidden="true" />
+                                    </Button>
+                                )}
+                                {category && (
+                                    <Button variant="outline" type="button" onClick={() => updateFilters({ category: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">
+                                        {localizedValue(categories.find((item) => item.slug === category), 'name', locale) || category}<X size={12} aria-hidden="true" />
+                                    </Button>
+                                )}
+                                {medium && (
+                                    <Button variant="outline" type="button" onClick={() => updateFilters({ medium: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">
+                                        {medium}<X size={12} aria-hidden="true" />
+                                    </Button>
+                                )}
+                                {availability && (
+                                    <Button variant="outline" type="button" onClick={() => updateFilters({ availability: '' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">
+                                        {filters.availability?.find((item) => item.value === availability)?.[locale === 'en' ? 'label_en' : 'label'] ?? availability}<X size={12} aria-hidden="true" />
+                                    </Button>
+                                )}
+                                {sort !== 'newest' && (
+                                    <Button variant="outline" type="button" onClick={() => updateFilters({ sort: 'newest' })} className="inline-flex min-h-9 items-center gap-2 border border-border bg-paper px-3 text-xs font-semibold hover:border-terracotta">
+                                        {filters.sorts?.find((item) => item.value === sort)?.[locale === 'en' ? 'label_en' : 'label'] ?? sort}<X size={12} aria-hidden="true" />
+                                    </Button>
+                                )}
+                            </div>
+                        )}
+
+                        {loading ? (
+                            <div className="mt-6 grid gap-x-5 gap-y-9 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                                {[0, 1, 2, 3, 4, 5].map((item) => <ArtworkCardSkeleton key={item} />)}
+                            </div>
+                        ) : error ? (
+                            <ErrorState className="mt-8" title={t('دریافت گالری با خطا روبه‌رو شد')} description={t('اتصال را بررسی کنید و دوباره تلاش کنید.')} onRetry={() => artworksQuery.refetch()} />
+                        ) : artworks.length ? (
+                            <div className="mt-6 grid gap-x-5 gap-y-9 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                                {artworks.map((artwork) => <ArtworkCard key={artwork.id} artwork={artwork} />)}
+                            </div>
+                        ) : (
+                            <div className="mt-8">
+                                <EmptyState title={t('اثری با این مشخصات پیدا نشد')} description={t('عبارت جست‌وجو یا گزینه‌های فیلتر را تغییر دهید.')} />
+                                {activeFilterCount > 0 && (
+                                    <div className="mt-4 flex justify-center">
+                                        <Button variant="outline" type="button" onClick={clearFilters}>{t('پاک‌کردن فیلترها')}</Button>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {!loading && !error && artworks.length > 0 && (
+                            <div className="mt-10 flex min-h-16 flex-col items-center justify-center gap-3 border-t border-border pt-6" aria-live="polite">
+                                {artworksQuery.isFetchNextPageError && <p role="alert" className="text-sm text-danger">{t('دریافت آثار بیشتر انجام نشد.')}</p>}
+                                {artworksQuery.hasNextPage ? (
+                                    <>
+                                        <span ref={loadMoreRef} className="h-px w-full" aria-hidden="true" />
+                                        <Button type="button" variant="outline" disabled={loadingMore} onClick={() => artworksQuery.fetchNextPage()}>
+                                            {loadingMore ? t('در حال دریافت آثار…') : t('بارگذاری آثار بیشتر')}
+                                        </Button>
+                                    </>
+                                ) : (
+                                    <p className="text-xs text-muted">
+                                        {locale === 'fa' ? 'همه ' + meta.total.toLocaleString('fa-IR') + ' اثر نمایش داده شدند.' : 'All ' + meta.total.toLocaleString('en-US') + ' artworks are displayed.'}
+                                    </p>
+                                )}
+                            </div>
+                        )}
+                    </main>
                 </div>
-            )}
             </Container>
+
+            <Dialog open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
+                <DialogContent
+                    placement="drawer"
+                    className="flex w-[min(26rem,calc(100vw-1rem))] flex-col gap-0"
+                    aria-label={t('فیلتر و مرتب‌سازی آثار')}
+                >
+                    <div className="flex items-start justify-between gap-4 border-b border-divider-section p-5">
+                        <div>
+                            <DialogTitle className="text-lg">{t('فیلترها')}</DialogTitle>
+                            <DialogDescription>{t('آثار را با معیارهای دلخواه محدود کنید و سپس نتایج را ببینید.')}</DialogDescription>
+                        </div>
+                        <DialogClose asChild>
+                            <Button variant="ghost" size="sm" aria-label={t('بستن')} className="min-h-10 min-w-10 px-2">
+                                <X size={18} aria-hidden="true" />
+                            </Button>
+                        </DialogClose>
+                    </div>
+                    <div className="min-h-0 flex-1 overflow-y-auto p-5">
+                        <ArtworkFilterControls
+                            {...filterControlProps}
+                            values={draftFilters}
+                            searchValue={draftFilters.q}
+                            onSearchChange={(event) => setDraftFilters((current) => ({ ...current, q: event.target.value }))}
+                            onSearch={(value) => setDraftFilters((current) => ({ ...current, q: value.trim() }))}
+                            onChange={(changes) => setDraftFilters((current) => ({ ...current, ...changes }))}
+                        />
+                    </div>
+                    <div className="sticky bottom-0 flex items-center gap-3 border-t border-divider-section bg-paper p-4">
+                        <Button
+                            variant="ghost"
+                            type="button"
+                            onClick={() => setDraftFilters(defaultFilterValues)}
+                            className="flex-1"
+                        >
+                            {t('بازنشانی')}
+                        </Button>
+                        <Button type="button" onClick={applyMobileFilters} className="flex-[1.4]">
+                            {t('اعمال فیلترها')}
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
