@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchArtistProfile, followArtist, unfollowArtist, artistKeys } from '../api/artists';
+import { fetchArtistProfile, followArtist, unfollowArtist } from '../api/artists';
+import { artistKeys } from '../model/queryKeys';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../../../shared/auth';
 import { useLanguage } from '../../../shared/i18n';
