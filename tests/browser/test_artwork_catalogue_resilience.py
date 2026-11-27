@@ -308,6 +308,236 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
             context.close()
 
 
+    def test_desktop_sticky_artwork_filter_sidebar_scrolls_when_content_overflows(self):
+        context, page = self.new_page()
+        page.set_viewport_size({"width": 1280, "height": 560})
+        page.route(
+            "**/api/v1/categories",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({"data": [{"id": 1, "slug": "painting", "name": "نقاشی"}]}),
+            ),
+        )
+        page.route(
+            "**/api/v1/artwork-filters",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({
+                    "data": {
+                        "mediums": ["رنگ روغن"],
+                        "availability": [{"value": "available", "label": "قابل استعلام", "label_en": "Available"}],
+                        "sorts": [{"value": "newest", "label": "جدیدترین", "label_en": "Newest"}],
+                    }
+                }),
+            ),
+        )
+        page.route(
+            "**/api/v1/artworks**",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps(artwork_payload()),
+            ),
+        )
+        try:
+            page.goto(BASE_URL + "/artworks", wait_until="domcontentloaded")
+            sidebar = page.get_by_test_id("artwork-filter-sidebar")
+            sidebar.wait_for(state="visible")
+            page.get_by_role("combobox", name="فیلتر دسته‌بندی").wait_for()
+            page.wait_for_function("""() => {
+                const sidebar = document.querySelector('[data-testid="artwork-filter-sidebar"]');
+                const navigation = document.querySelector('[data-testid="public-bottom-navigation"]');
+                if (!sidebar || !navigation) return false;
+                const expected = window.innerHeight
+                    - 96
+                    - navigation.getBoundingClientRect().height
+                    - 16;
+                const actual = Number.parseFloat(getComputedStyle(sidebar).maxHeight);
+                return Number.isFinite(actual) && Math.abs(actual - expected) < 1;
+            }""")
+
+            # Simulate unusually long filter content without changing production data.
+            page.evaluate("""() => {
+                const sidebar = document.querySelector('[data-testid="artwork-filter-sidebar"]');
+                const content = sidebar?.querySelector(':scope > div.pt-5');
+                if (!content) throw new Error('Filter content wrapper not found');
+                const sections = Array.from(content.children);
+                for (let copy = 0; copy < 3; copy += 1) {
+                    sections.forEach((section) => content.append(section.cloneNode(true)));
+                }
+            }""")
+
+            dimensions = sidebar.evaluate(
+                "(element) => ({scrollHeight: element.scrollHeight, clientHeight: element.clientHeight})"
+            )
+            self.assertGreater(
+                dimensions["scrollHeight"],
+                dimensions["clientHeight"],
+                f"Test setup did not create sidebar overflow: {dimensions}",
+            )
+            page.get_by_test_id("artwork-sidebar-fade-bottom").wait_for(state="visible")
+
+            # Enter the sticky state before comparing the sidebar against the
+            # fixed bottom navigation; its initial document position is not sticky.
+            page.evaluate("""() => {
+                const sidebar = document.querySelector('[data-testid="artwork-filter-sidebar"]');
+                const top = sidebar.getBoundingClientRect().top + window.scrollY;
+                window.scrollTo(0, Math.max(0, top - 96));
+            }""")
+            page.wait_for_function("""() => {
+                const sidebar = document.querySelector('[data-testid="artwork-filter-sidebar"]');
+                return sidebar && Math.abs(sidebar.getBoundingClientRect().top - 96) < 2;
+            }""")
+
+            bounds = sidebar.bounding_box()
+            self.assertIsNotNone(bounds)
+            viewport = page.evaluate(
+                "() => ({width: window.innerWidth, height: window.innerHeight})"
+            )
+            bottom_navigation = page.get_by_test_id("public-bottom-navigation")
+            navigation_bounds = bottom_navigation.bounding_box()
+            self.assertIsNotNone(navigation_bounds)
+            self.assertLessEqual(
+                bounds["y"] + bounds["height"],
+                navigation_bounds["y"] + 1,
+                "The artwork filter sidebar must end above the fixed bottom navigation.",
+            )
+
+            # Wheel inside the actual visible scrollport, safely above the
+            # fixed bottom navigation so the navigation cannot intercept input.
+            wheel_x = bounds["x"] + min(bounds["width"] - 16, bounds["width"] / 2)
+            visible_bottom = min(
+                bounds["y"] + bounds["height"],
+                navigation_bounds["y"],
+                viewport["height"],
+            )
+            wheel_y = max(bounds["y"] + 16, visible_bottom - 24)
+            self.assertLess(
+                wheel_y,
+                navigation_bounds["y"],
+                "The wheel target must be above the fixed bottom navigation.",
+            )
+            page.mouse.move(wheel_x, wheel_y)
+            page.mouse.wheel(0, 500)
+            page.wait_for_timeout(100)
+            page.mouse.wheel(0, 500)
+
+            try:
+                page.wait_for_function("""() => {
+                    const element = document.querySelector('[data-testid="artwork-filter-sidebar"]');
+                    return element && element.scrollTop > 0;
+                }""", timeout=5000)
+            except Exception as error:
+                diagnostics = sidebar.evaluate("""(element) => ({
+                    scrollTop: element.scrollTop,
+                    scrollHeight: element.scrollHeight,
+                    clientHeight: element.clientHeight,
+                    overflowY: getComputedStyle(element).overflowY,
+                    position: getComputedStyle(element).position,
+                    maxHeight: getComputedStyle(element).maxHeight,
+                    rect: (() => {
+                        const rect = element.getBoundingClientRect();
+                        return {top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right};
+                    })(),
+                    activeElement: document.activeElement?.tagName,
+                })""")
+                page_scroll = page.evaluate("() => window.scrollY")
+                self.fail(
+                    "Mouse-wheel input did not scroll the artwork filter sidebar. "
+                    f"Sidebar: {diagnostics}; document scrollY: {page_scroll}; "
+                    f"wheel point: ({wheel_x}, {wheel_y}); original error: {error}"
+                )
+
+            self.assertGreater(sidebar.evaluate("(element) => element.scrollTop"), 0)
+            page.get_by_test_id("artwork-sidebar-fade-top").wait_for(state="visible")
+        finally:
+            context.close()
+
+
+    def test_mobile_filter_drawer_applies_selection_and_updates_shareable_url(self):
+        context, page = self.new_page()
+        page.set_viewport_size({"width": 390, "height": 844})
+        page.route(
+            "**/api/v1/categories",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({"data": [{"id": 1, "slug": "painting", "name": "نقاشی"}]}),
+            ),
+        )
+        page.route(
+            "**/api/v1/artwork-filters",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({
+                    "data": {
+                        "mediums": ["رنگ روغن"],
+                        "availability": [{"value": "available", "label": "قابل استعلام", "label_en": "Available"}],
+                        "sorts": [{"value": "newest", "label": "جدیدترین", "label_en": "Newest"}],
+                    }
+                }),
+            ),
+        )
+        requests = []
+
+        def artworks(route):
+            query = parse_qs(urlparse(route.request.url).query)
+            requests.append(query)
+            route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps(artwork_payload("اثر فیلترشده")),
+            )
+
+        page.route("**/api/v1/artworks**", artworks)
+        try:
+            page.goto(BASE_URL + "/artworks", wait_until="domcontentloaded")
+            page.get_by_role("heading", name="گالری آثار").wait_for()
+            page.get_by_role("button", name="فیلترها").click()
+            page.get_by_role("dialog").wait_for()
+
+            mobile_filter_scroll = page.get_by_test_id("mobile-artwork-filter-scroll")
+            mobile_filter_scroll.locator(":scope > div").evaluate(
+                "(element) => { element.style.minHeight = '1100px'; }"
+            )
+            page.get_by_test_id("mobile-artwork-filter-fade-bottom").wait_for(state="visible")
+
+            # Exercise a real wheel gesture inside the dialog scrollport instead
+            # of assigning scrollTop, so this catches flex/overflow regressions.
+            scroll_bounds = mobile_filter_scroll.bounding_box()
+            self.assertIsNotNone(scroll_bounds)
+            page.mouse.move(
+                scroll_bounds["x"] + scroll_bounds["width"] / 2,
+                scroll_bounds["y"] + scroll_bounds["height"] / 2,
+            )
+            page.mouse.wheel(0, 420)
+            page.wait_for_function("""() => {
+                const element = document.querySelector('[data-testid="mobile-artwork-filter-scroll"]');
+                return element && element.scrollTop > 0;
+            }""")
+            page.get_by_test_id("mobile-artwork-filter-fade-top").wait_for(state="visible")
+
+            page.get_by_role("combobox", name="فیلتر دسته‌بندی").click()
+            page.get_by_role("option", name="نقاشی").click()
+
+            with page.expect_response(
+                lambda response: "/api/v1/artworks" in response.url
+                and "category=painting" in response.url
+                and response.request.method == "GET"
+            ):
+                page.get_by_role("button", name="اعمال فیلترها").click()
+
+            page.get_by_role("dialog").wait_for(state="hidden")
+            self.assertIn("category=painting", page.url)
+            self.assertTrue(any(query.get("category") == ["painting"] for query in requests))
+            self.assertTrue(page.get_by_role("button", name="فیلترها").is_visible())
+        finally:
+            context.close()
+
+
 class CurrentDevelopmentDatabaseReadOnlyTests(unittest.TestCase):
     """A public GET-only smoke journey against the running app's configured DB."""
 

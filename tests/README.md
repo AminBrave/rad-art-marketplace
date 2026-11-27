@@ -186,6 +186,20 @@ npm run test:browser -- test_artwork_catalogue_resilience.CurrentDevelopmentData
 
 This reads the public artwork catalogue through the running Laravel app and therefore exercises its configured MySQL/MariaDB connection. It does not create or modify records.
 
+Run the desktop artwork filter sidebar overflow test directly from PowerShell with the convenience script:
+
+```powershell
+.\scripts\test-artwork-sidebar-scroll.ps1
+```
+
+To list the discovered browser tests instead:
+
+```powershell
+.\scripts\test-artwork-sidebar-scroll.ps1 -List
+```
+
+The focused test mocks the API, duplicates filter sections in the rendered sidebar to force overflow, then verifies that a mouse-wheel gesture over the sidebar changes the sidebar's own `scrollTop`. It does not write application records.
+
 Run one API-mocked resilience method by its ID (copy the exact ID from the list):
 
 ```powershell

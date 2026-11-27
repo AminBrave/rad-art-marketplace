@@ -900,3 +900,24 @@ for (const key of Object.keys(fa)) fa[key] = fa[key].replaceAll("راد آرت",
 for (const key of Object.keys(english)) english[key] = english[key].replaceAll("Rad Art", "Rademan");
 english["راد آرت"] = "Rademan";
 english["ردّمن، صفحه اصلی"] = "Rademan home";
+
+Object.assign(english, {
+    "فیلترها": "Filters",
+    "اعمال فیلترها": "Apply filters",
+    "بازنشانی": "Reset",
+    "بستن": "Close",
+    "دسته‌بندی": "Category",
+    "تکنیک و مواد": "Medium and materials",
+    "وضعیت اثر": "Artwork availability",
+    "آثار را با معیارهای دلخواه محدود کنید و سپس نتایج را ببینید.": "Narrow the gallery with your preferred criteria, then view the results.",
+});
+Object.assign(fa, {
+    "فیلترها": "فیلترها",
+    "اعمال فیلترها": "اعمال فیلترها",
+    "بازنشانی": "بازنشانی",
+    "بستن": "بستن",
+    "دسته‌بندی": "دسته‌بندی",
+    "تکنیک و مواد": "تکنیک و مواد",
+    "وضعیت اثر": "وضعیت اثر",
+    "آثار را با معیارهای دلخواه محدود کنید و سپس نتایج را ببینید.": "آثار را با معیارهای دلخواه محدود کنید و سپس نتایج را ببینید.",
+});

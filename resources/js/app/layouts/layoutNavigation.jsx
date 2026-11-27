@@ -17,7 +17,13 @@ import { workspaceNavigationIcons, workspaceNavigationLabels } from './navigatio
 
 export function SidebarNavigation({ sections, description, onNavigate, onLogout, unreadConversationCount = 0, locale = 'fa' }) {
     return (
-        <div className="min-h-0 flex-1 overflow-y-auto py-5">
+        <div
+            data-navigation-scroll-area
+            role="region"
+            aria-label={description}
+            tabIndex={0}
+            className="h-0 min-h-0 w-full flex-1 overflow-x-hidden overflow-y-auto overscroll-y-contain py-5 [touch-action:pan-y] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus"
+        >
             <Link to="/" onClick={onNavigate} className="mb-6 flex min-h-32 flex-col items-center justify-center gap-2 border-b border-border pb-5 no-underline" aria-label="Rademan home">
                 <BrandLogo size="sidebar" />
                 <span className="text-center text-xs leading-6 text-muted">{description}</span>

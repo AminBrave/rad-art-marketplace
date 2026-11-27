@@ -116,6 +116,60 @@ class ResponsiveRtlBrowserSmokeTests(unittest.TestCase):
         finally:
             context.close()
 
+    def test_navigation_drawer_scrolls_independently_when_content_exceeds_viewport(self):
+        context = self.browser.new_context(
+            viewport={"width": 320, "height": 420},
+            reduced_motion="reduce",
+            ignore_https_errors=IGNORE_HTTPS_ERRORS,
+        )
+        page = context.new_page()
+        page.set_default_timeout(15000)
+
+        def api_fixture(route):
+            if route.request.url.endswith("/api/v1/auth/me"):
+                payload = '{"data":null}'
+            else:
+                payload = '{"data":[],"current_page":1,"last_page":1,"per_page":12,"total":0}'
+            route.fulfill(status=200, content_type="application/json", body=payload)
+
+        page.route("**/api/v1/**", api_fixture)
+
+        try:
+            response = page.goto(BASE_URL + "/", wait_until="commit")
+            self.assertIsNotNone(response, "No document response for the public home page")
+            page.get_by_role("button", name="باز کردن منوی اصلی").click()
+
+            navigation_scroller = page.locator("[data-navigation-scroll-area]")
+            navigation_scroller.wait_for(state="visible")
+            dimensions = navigation_scroller.evaluate(
+                "(element) => ({ clientHeight: element.clientHeight, "
+                "scrollHeight: element.scrollHeight, overflowY: getComputedStyle(element).overflowY })"
+            )
+            self.assertGreater(
+                dimensions["scrollHeight"],
+                dimensions["clientHeight"],
+                f"Expected navigation content to exceed the short viewport: {dimensions}",
+            )
+            self.assertIn(dimensions["overflowY"], ("auto", "scroll"), dimensions)
+
+            navigation_scroller.scroll_into_view_if_needed()
+            bounds = navigation_scroller.bounding_box()
+            page.mouse.move(
+                bounds["x"] + bounds["width"] / 2,
+                bounds["y"] + bounds["height"] / 2,
+            )
+            page.mouse.wheel(0, 320)
+            page.wait_for_function(
+                "() => document.querySelector('[data-navigation-scroll-area]')?.scrollTop > 0"
+            )
+            self.assertGreater(
+                navigation_scroller.evaluate("(element) => element.scrollTop"),
+                0,
+                "Mouse-wheel input over the fixed navigation must scroll its own contents",
+            )
+        finally:
+            context.close()
+
     def test_messaging_mobile_conversation_transition_and_desktop_split_view(self):
         context = self.browser.new_context(
             viewport={"width": 375, "height": 812},

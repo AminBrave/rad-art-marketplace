@@ -48,8 +48,9 @@ Feature consumers should use each feature's public `index.js` entry point. Cross
 - `resources/js/shared/theme/` — theme context/provider/hook and theme preference handling.
 - `resources/js/shared/api/` — configured Axios transport and normalized transport-error helpers.
 - `resources/js/shared/ui/` — domain-independent controls, forms, compositions, layout, navigation, dialogs, feedback and generic loading components. Public entry point: `index.js`.
+- `resources/js/shared/hooks/` — public, domain-independent React hooks for shared browser behavior, including global-header offsets, scroll-direction sticky visibility and horizontal/vertical overflow detection. Import through `shared/hooks/index.js`.
 - `resources/js/lib/` — query client, class-name merger and color-accessibility audit utilities.
-- `resources/js/utils/` — localized-content and artwork-price helpers.
+- `resources/js/utils/` — shared non-React helpers, including localized-content, artwork-price and header-aware scroll utilities (`utils/scroll.js`).
 - `resources/js/components/ui/` — deprecated generic UI compatibility facade; new imports belong in `shared/ui/`.
 - Selected `resources/js/app/` modules remain compatibility facades for router, layouts and shared application contracts.
 

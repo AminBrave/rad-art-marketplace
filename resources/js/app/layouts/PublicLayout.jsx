@@ -62,7 +62,7 @@ export function PublicLayout() {
             <a href="#main-content" className="sr-only z-[60] bg-paper px-4 py-3 text-ink focus:not-sr-only focus:fixed focus:inset-x-4 focus:top-4">
                 {t("رفتن به محتوای اصلی")}
             </a>
-            <header className="sticky top-0 z-40 border-b border-divider-section bg-[color:color-mix(in_srgb,var(--color-canvas)_96%,transparent)] backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-canvas)_90%,transparent)]">
+            <header data-site-header className="sticky top-0 z-40 border-b border-divider-section bg-[color:color-mix(in_srgb,var(--color-canvas)_96%,transparent)] backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-canvas)_90%,transparent)]">
                 <div className="mx-auto flex min-h-[var(--header-height)] max-w-content items-center justify-between gap-2 px-page-gutter sm:gap-5">
                     <Link to="/" className="group flex shrink-0 items-center text-ink no-underline" aria-label={t('ردّمن، صفحه اصلی')}><BrandLogo /></Link>
 
@@ -76,14 +76,14 @@ export function PublicLayout() {
                     </div>
                 </div>
 
-                <DialogContent placement="drawer" className="flex flex-col px-4 py-5">
-                    <div className="mb-5 flex items-center justify-between border-b border-border pb-4">
+                <DialogContent placement="drawer" className="flex min-h-0 flex-col px-4 py-5">
+                    <div className="mb-5 flex shrink-0 items-center justify-between border-b border-border pb-4">
                         <div className="min-w-0">
                             <DialogTitle className="text-base font-extrabold text-ink">{t('منو')}</DialogTitle>
                         </div>
                         <DialogClose asChild><Button variant="ghost" type="button" aria-label={t('بستن منو')} className="grid h-10 w-10 place-items-center p-0 text-muted hover:bg-surface-muted"><X size={19} aria-hidden="true" /></Button></DialogClose>
                     </div>
-                    <div className="mb-4 flex items-center gap-2 border-b border-border pb-4">
+                    <div className="mb-4 flex shrink-0 items-center gap-2 border-b border-border pb-4">
                         <LanguageControl /><ThemeControl />
                         {user && user.role !== 'admin' && <NotificationBell user={user} onNavigate={() => setMobileMenuOpen(false)} />}
                         {user && <span className="ms-auto min-w-0 truncate text-sm font-semibold text-ink">{user.name}</span>}
