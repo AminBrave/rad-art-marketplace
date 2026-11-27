@@ -87,7 +87,7 @@ The application currently has buyer–artist messaging. Inspect the current conv
 
 ## Implementation references
 
-- Application routes: resources/js/app/AppRouter.jsx
+- Route definitions: resources/js/app/router/routes.jsx (router entry: resources/js/app/router/AppRouter.jsx; compatibility facade: resources/js/app/AppRouter.jsx)
 - Workspace navigation: resources/js/app/workspaceNavigation.js
 - Shared UI public entry point: `resources/js/shared/ui/index.js` (legacy compatibility facade: `resources/js/components/ui/index.js`).
 - Canonical tokens: `resources/css/tokens.css`
