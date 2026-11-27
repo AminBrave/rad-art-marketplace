@@ -22,93 +22,11 @@
 }
 
 /* Explicit dark choice. Brand anchors remain unchanged; semantic roles adapt. */
-:root[data-theme='dark'] {
-    color-scheme: dark;
-    --rd-canvas: #171815;
-    --rd-surface: #22231F;
-    --rd-surface-raised: #292A25;
-    --rd-surface-muted: #2B2C27;
-    --rd-text-primary: #F2EFE8;
-    --rd-text-secondary: #C0B9AD;
-    --rd-text-tertiary: #A49C90;
-    --rd-border-subtle: #41423B;
-    --rd-border-strong: #77786F;
-    --rd-divider-section: var(--rd-border-subtle);
-    --rd-divider-group: color-mix(in srgb, var(--rd-border-subtle) 76%, var(--rd-surface));
-    --rd-divider-nested: color-mix(in srgb, var(--rd-border-subtle) 52%, var(--rd-surface));
-    --rd-action: #D27A58;
-    --rd-action-hover: #E09272;
-    --rd-action-text: #E7A184;
-    --rd-focus: #E09272;
-    --rd-success: #A4B49A;
-    --rd-danger: #F08A80;
-    --rd-warning: #E6B86B;
-    --rd-info: #8DBBD1;
-    --rd-inverse-text: #171815;
-    --rd-hero-background: #20211D;
-    --rd-hero-background-alt: #292A25;
-    --rd-hero-foreground: #F2EFE8;
-    --rd-hero-muted: #C0B9AD;
-    --rd-hero-accent: #E7A184;
-    --rd-hero-line: color-mix(in srgb, var(--rd-hero-foreground) 22%, transparent);
-    --rd-hero-glow: color-mix(in srgb, var(--rd-action) 20%, transparent);
-    --rd-overlay: rgb(0 0 0 / 72%);
-    --rd-skeleton-base: #30312B;
-    --rd-skeleton-highlight: #3A3B34;
-    --rd-message-own: color-mix(in srgb, var(--rd-brand-terracotta) 28%, var(--rd-surface));
-    --rd-message-peer: var(--rd-surface-raised);
-    --rd-success-surface: color-mix(in srgb, var(--rd-success) 14%, var(--rd-surface));
-    --rd-danger-surface: color-mix(in srgb, var(--rd-danger) 12%, var(--rd-surface));
-    --rd-warning-surface: color-mix(in srgb, var(--rd-warning) 12%, var(--rd-surface));
-    --rd-info-surface: color-mix(in srgb, var(--rd-info) 12%, var(--rd-surface));
-    --rd-accent-surface: color-mix(in srgb, var(--rd-action) 10%, var(--rd-surface));
-    --rd-focus-soft: color-mix(in srgb, var(--rd-focus) 16%, transparent);
-    --rd-shadow-soft: 0 8px 28px rgb(0 0 0 / 18%);
-    --rd-shadow-raised: 0 16px 40px rgb(0 0 0 / 28%);
-}
+
 
 
 /* System preference applies only when the user has not selected light/dark. */
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme='light']):not([data-theme='dark']) {
-        color-scheme: dark;
-        --rd-canvas: #171815;
-        --rd-surface: #22231F;
-        --rd-surface-raised: #292A25;
-        --rd-surface-muted: #2B2C27;
-        --rd-text-primary: #F2EFE8;
-        --rd-text-secondary: #C0B9AD;
-        --rd-text-tertiary: #A49C90;
-        --rd-border-subtle: #41423B;
-        --rd-border-strong: #77786F;
-        --rd-divider-section: var(--rd-border-subtle);
-        --rd-divider-group: color-mix(in srgb, var(--rd-border-subtle) 76%, var(--rd-surface));
-        --rd-divider-nested: color-mix(in srgb, var(--rd-border-subtle) 52%, var(--rd-surface));
-        --rd-action: #D27A58;
-        --rd-action-hover: #E09272;
-        --rd-action-text: #E7A184;
-        --rd-focus: #E09272;
-        --rd-success: #A4B49A;
-        --rd-danger: #F08A80;
-        --rd-warning: #E6B86B;
-        --rd-info: #8DBBD1;
-        --rd-inverse-text: #171815;
-    --rd-hero-background: #20211D;
-    --rd-hero-background-alt: #292A25;
-    --rd-hero-foreground: #F2EFE8;
-    --rd-hero-muted: #C0B9AD;
-    --rd-hero-accent: #E7A184;
-    --rd-hero-line: color-mix(in srgb, var(--rd-hero-foreground) 22%, transparent);
-    --rd-hero-glow: color-mix(in srgb, var(--rd-action) 20%, transparent);
-        --rd-overlay: rgb(0 0 0 / 72%);
-        --rd-skeleton-base: #30312B;
-        --rd-skeleton-highlight: #3A3B34;
-        --rd-message-own: color-mix(in srgb, var(--rd-brand-terracotta) 28%, var(--rd-surface));
-        --rd-message-peer: var(--rd-surface-raised);
-        --rd-shadow-soft: 0 8px 28px rgb(0 0 0 / 18%);
-        --rd-shadow-raised: 0 16px 40px rgb(0 0 0 / 28%);
-    }
-}
+
 
 .rd-bleed {
     /*
@@ -297,4 +215,10 @@ video {
 
 
 /* In RTL the workspace content column is on the left, so full-bleed inner
-   content shifts right to remain centered on th
+   content shifts right to remain centered on the viewport. */
+@media (min-width: 1024px) {
+    [dir='rtl'] .rd-workspace-main .rd-bleed .rd-container:not(.rd-container--reading):not(.rd-container--full),
+    [dir='rtl'] .rd-workspace-main .rd-bleed .rd-container--reading {
+        transform: translateX(var(--rd-workspace-bleed-offset));
+    }
+}
