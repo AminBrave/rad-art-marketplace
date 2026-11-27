@@ -267,37 +267,6 @@ export default function ArtworkCatalogue() {
                             </Dialog>
                         </div>
                     </div>
-<<<<<<< HEAD
-                    <span className="text-xs text-muted">{activeFilterCount ? activeFilterCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('معیار انتخاب‌شده') : t('همه آثار عمومی')}</span>
-                </div>
-                <div className="grid gap-3.5 md:grid-cols-2 xl:grid-cols-[minmax(20rem,1.7fr)_repeat(2,minmax(11rem,1fr))]">
-                    <SearchField value={searchInput} onChange={(event) => setSearchInput(event.target.value)} onSearch={submitSearch} label={t("جست‌وجو در آثار و هنرمندان")} placeholder={t("عنوان، توضیحات، تکنیک یا نام هنرمند…")} />
-                    <SelectField modal={false} value={category} onChange={(event) => updateFilters({ category: event.target.value })} aria-label={t("فیلتر دسته‌بندی")}>
-                        <option value="">{t("همه دسته‌ها")}</option>
-                        {categories.map((item) => <option key={item.id} value={item.slug}>{localizedValue(item, 'name', locale)}</option>)}
-                    </SelectField>
-                    <SelectField modal={false} value={medium} onChange={(event) => updateFilters({ medium: event.target.value })} aria-label={t("فیلتر تکنیک و مواد")}>
-                        <option value="">{t("همه تکنیک‌ها")}</option>
-                        {(filters.mediums ?? []).map((item) => <option key={item} value={item}>{t(item)}</option>)}
-                    </SelectField>
-                    <SelectField modal={false} value={availability} onChange={(event) => updateFilters({ availability: event.target.value })} aria-label={t("فیلتر وضعیت اثر")}>
-                        <option value="">{t("همه وضعیت‌ها")}</option>
-                        {(filters.availability ?? []).map((item) => <option key={item.value} value={item.value}>{locale === 'en' ? (item.label_en || item.label) : item.label}</option>)}
-                    </SelectField>
-                    <SelectField modal={false} value={sort} onChange={(event) => updateFilters({ sort: event.target.value })} aria-label={t("مرتب‌سازی آثار")}>
-                        {(filters.sorts?.length ? filters.sorts : [{ value: 'newest', label: t('جدیدترین') }]).map((item) => <option key={item.value} value={item.value}>{locale === 'en' ? (item.label_en || item.label) : item.label}</option>)}
-                    </SelectField>
-                    <div className="flex items-center justify-between gap-3">
-                        <p className="text-xs text-muted">{activeFilterCount ? activeFilterCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('فیلتر فعال') : t('بدون فیلتر')}</p>
-                        {activeFilterCount > 0 && <Button variant="ghost" type="button" onClick={clearFilters} className="text-sm font-bold text-terracotta-strong underline underline-offset-4">{t("پاک‌کردن فیلترها")}</Button>}
-                    </div>
-                </div>
-                {filtersError && <p role="status" className="mt-3 text-xs text-muted">{t("برخی گزینه‌های فیلتر بارگذاری نشدند؛ می‌توانید با جست‌وجو و دسته‌بندی ادامه دهید.")}</p>}
-                {filtersLoading && <p className="mt-3 text-xs text-muted">{t("در حال آماده‌سازی گزینه‌های فیلتر…")}</p>}
-            </Container>
-=======
-                </Container>
->>>>>>> e23353f9829be433ee55f53bf7fb24a21ab8fa34
             </Section>
 
             <Container width="wide">
