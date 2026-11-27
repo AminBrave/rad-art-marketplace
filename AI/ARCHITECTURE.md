@@ -28,7 +28,7 @@ See composer.json and package.json for current constraints and scripts.
 
 ## Frontend state and UI
 
-- Shared UI components currently live under resources/js/components/ui/.
+- Generic shared UI components are owned by resources/js/shared/ui/; resources/js/components/ui/ remains a deprecated compatibility facade. Domain cards and page/workflow skeletons are owned by their feature modules under resources/js/features/.
 - Localization dictionaries, locale provider and translation hook are owned by resources/js/shared/i18n/; app/LanguageContext.jsx is a compatibility facade.
 - Theme context, provider and hook are owned by resources/js/shared/theme/; the former app theme modules remain compatibility facades.
 - resources/js/shared/api/httpClient.js configures the shared Axios singleton; bootstrap exposes the same instance as window.axios for legacy consumers.
