@@ -1,12 +1,59 @@
-import { useEffect, useRef, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+    useEffect,
+    useRef,
+    useState } from 'react';
+import { useMutation,
+    useQuery,
+    useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Bell, BookOpen, Bookmark, CheckCheck, CircleHelp, ClipboardCheck, Compass, Flag, Heart, House, Images, Info, Languages, LayoutDashboard, LogIn, LogOut, Menu, MessageCircle, Monitor, Moon, PlusCircle, Settings as SettingsIcon, Sun, UserPlus, UserRound, Users, X } from 'lucide-react';
-import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Bell,
+    BookOpen,
+    Bookmark,
+    CheckCheck,
+    CircleHelp,
+    ClipboardCheck,
+    Compass,
+    Flag,
+    Heart,
+    House,
+    Images,
+    Info,
+    Languages,
+    LayoutDashboard,
+    LogIn,
+    LogOut,
+    Menu,
+    MessageCircle,
+    Monitor,
+    Moon,
+    PlusCircle,
+    Settings as SettingsIcon,
+    Sun,
+    UserPlus,
+    UserRound,
+    Users,
+    X } from 'lucide-react';
+import { Link,
+    NavLink,
+    Outlet,
+    useLocation,
+    useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useTheme } from './useTheme';
 import { useLanguage } from './LanguageContext';
-import { Badge, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger, NotificationListSkeleton, BrandLogo } from '../components/ui';
+import { Badge,
+    Button,
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogTitle,
+    DialogTrigger,
+    BrandLogo,
+} from '../shared/ui';
+import {
+    NotificationListSkeleton,
+} from '../features/messaging';
 
 const publicDiscoveryLinks = [
     { to: '/', label: 'خانه', Icon: House, end: true },
