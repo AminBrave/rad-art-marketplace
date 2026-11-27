@@ -308,6 +308,66 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
             context.close()
 
 
+    def test_mobile_filter_drawer_applies_selection_and_updates_shareable_url(self):
+        context, page = self.new_page()
+        page.set_viewport_size({"width": 390, "height": 844})
+        page.route(
+            "**/api/v1/categories",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({"data": [{"id": 1, "slug": "painting", "name": "نقاشی"}]}),
+            ),
+        )
+        page.route(
+            "**/api/v1/artwork-filters",
+            lambda route: route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({
+                    "data": {
+                        "mediums": ["رنگ روغن"],
+                        "availability": [{"value": "available", "label": "قابل استعلام", "label_en": "Available"}],
+                        "sorts": [{"value": "newest", "label": "جدیدترین", "label_en": "Newest"}],
+                    }
+                }),
+            ),
+        )
+        requests = []
+
+        def artworks(route):
+            query = parse_qs(urlparse(route.request.url).query)
+            requests.append(query)
+            route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps(artwork_payload("اثر فیلترشده")),
+            )
+
+        page.route("**/api/v1/artworks**", artworks)
+        try:
+            page.goto(BASE_URL + "/artworks", wait_until="domcontentloaded")
+            page.get_by_role("heading", name="گالری آثار").wait_for()
+            page.get_by_role("button", name="فیلترها").click()
+            page.get_by_role("dialog").wait_for()
+            page.get_by_role("combobox", name="فیلتر دسته‌بندی").click()
+            page.get_by_role("option", name="نقاشی").click()
+
+            with page.expect_response(
+                lambda response: "/api/v1/artworks" in response.url
+                and "category=painting" in response.url
+                and response.request.method == "GET"
+            ):
+                page.get_by_role("button", name="اعمال فیلترها").click()
+
+            page.get_by_role("dialog").wait_for(state="hidden")
+            self.assertIn("category=painting", page.url)
+            self.assertTrue(any(query.get("category") == ["painting"] for query in requests))
+            self.assertTrue(page.get_by_role("button", name="فیلترها").is_visible())
+        finally:
+            context.close()
+
+
 class CurrentDevelopmentDatabaseReadOnlyTests(unittest.TestCase):
     """A public GET-only smoke journey against the running app's configured DB."""
 

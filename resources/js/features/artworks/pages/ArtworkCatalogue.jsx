@@ -36,6 +36,7 @@ function ArtworkFilterControls({
     searchValue,
     onSearchChange,
     onSearch,
+    idPrefix,
 }) {
     const { t, locale } = useLanguage();
     const sortOptions = filters.sorts?.length
@@ -58,7 +59,7 @@ function ArtworkFilterControls({
             <div className="grid gap-2 border-t border-divider-section pt-4">
                 <label className="text-sm font-bold text-ink" htmlFor="artwork-filter-category">{t('دسته‌بندی')}</label>
                 <SelectField
-                    id="artwork-filter-category"
+                    id={idPrefix + "-artwork-filter-category"}
                     value={values.category}
                     onChange={(event) => onChange({ category: event.target.value })}
                     aria-label={t('فیلتر دسته‌بندی')}
@@ -73,7 +74,7 @@ function ArtworkFilterControls({
             <div className="grid gap-2 border-t border-divider-section pt-4">
                 <label className="text-sm font-bold text-ink" htmlFor="artwork-filter-medium">{t('تکنیک و مواد')}</label>
                 <SelectField
-                    id="artwork-filter-medium"
+                    id={idPrefix + "-artwork-filter-medium"}
                     value={values.medium}
                     onChange={(event) => onChange({ medium: event.target.value })}
                     aria-label={t('فیلتر تکنیک و مواد')}
@@ -86,7 +87,7 @@ function ArtworkFilterControls({
             <div className="grid gap-2 border-t border-divider-section pt-4">
                 <label className="text-sm font-bold text-ink" htmlFor="artwork-filter-availability">{t('وضعیت اثر')}</label>
                 <SelectField
-                    id="artwork-filter-availability"
+                    id={idPrefix + "-artwork-filter-availability"}
                     value={values.availability}
                     onChange={(event) => onChange({ availability: event.target.value })}
                     aria-label={t('فیلتر وضعیت اثر')}
@@ -103,7 +104,7 @@ function ArtworkFilterControls({
             <div className="grid gap-2 border-t border-divider-section pt-4">
                 <label className="text-sm font-bold text-ink" htmlFor="artwork-filter-sort">{t('مرتب‌سازی آثار')}</label>
                 <SelectField
-                    id="artwork-filter-sort"
+                    id={idPrefix + "-artwork-filter-sort"}
                     value={values.sort}
                     onChange={(event) => onChange({ sort: event.target.value })}
                     aria-label={t('مرتب‌سازی آثار')}
@@ -266,6 +267,7 @@ export default function ArtworkCatalogue() {
                             <ArtworkFilterControls
                                 {...filterControlProps}
                                 values={currentFilters}
+                                idPrefix="desktop"
                                 searchValue={searchInput}
                                 onSearchChange={(event) => setSearchInput(event.target.value)}
                                 onSearch={submitSearch}
@@ -376,7 +378,7 @@ export default function ArtworkCatalogue() {
             <Dialog open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
                 <DialogContent
                     placement="drawer"
-                    className="flex w-[min(26rem,calc(100vw-1rem))] flex-col gap-0"
+                    className="flex w-[min(26rem,calc(100vw-1rem))] flex-col gap-0 overflow-hidden"
                     aria-label={t('فیلتر و مرتب‌سازی آثار')}
                 >
                     <div className="flex items-start justify-between gap-4 border-b border-divider-section p-5">
@@ -394,6 +396,7 @@ export default function ArtworkCatalogue() {
                         <ArtworkFilterControls
                             {...filterControlProps}
                             values={draftFilters}
+                            idPrefix="mobile"
                             searchValue={draftFilters.q}
                             onSearchChange={(event) => setDraftFilters((current) => ({ ...current, q: event.target.value }))}
                             onSearch={(value) => setDraftFilters((current) => ({ ...current, q: value.trim() }))}
