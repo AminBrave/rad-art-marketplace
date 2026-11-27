@@ -85,6 +85,12 @@
     }
 }
 
+@media (min-width: 640px) {
+    :root {
+        --header-height: 5rem;
+    }
+}
+
 html {
     min-width: 320px;
     overflow-x: clip;
