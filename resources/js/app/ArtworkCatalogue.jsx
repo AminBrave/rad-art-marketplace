@@ -7,6 +7,8 @@ import { useLanguage } from './LanguageContext';
 import { localizedValue } from '../utils/localizedContent';
 import { ArtworkCard, ArtworkCardSkeleton, EmptyState, ErrorState, SearchField, SelectField, PageHeader, Button, Container, Section } from '../components/ui';
 
+const emptyFilters = { mediums: [], availability: [], sorts: [] };
+
 export default function ArtworkCatalogue() {
     const { t, locale } = useLanguage();
     const [params, setParams] = useSearchParams();
