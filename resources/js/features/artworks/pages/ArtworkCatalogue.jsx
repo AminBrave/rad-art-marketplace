@@ -559,19 +559,34 @@ export default function ArtworkCatalogue() {
                     </div>
 
                     <div className="min-w-0">
-                        <div ref={archiveSectionRef} className="flex flex-wrap items-center justify-between gap-3 border-b border-ink pb-4">
-                            <div>
-                                <p className="text-[11px] font-bold tracking-[.12em] text-terracotta-strong">{t('آرشیو آثار')}</p>
-                                <p aria-live="polite" className="mt-1 text-sm font-semibold text-ink">
-                                    {loading ? t('در حال دریافت آثار…') : meta.total.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('اثر')}
-                                </p>
+                        <div ref={archiveSectionRef} className="flex min-w-0 items-center gap-3 border-b border-ink pb-4">
+                            <p aria-live="polite" className="shrink-0 whitespace-nowrap text-xs font-bold text-ink sm:text-sm">
+                                {loading ? t('در حال دریافت آثار…') : meta.total.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('اثر')}
+                            </p>
+                            <div className="min-w-0 flex-1">
+                                {activeFilterCount > 0 ? (
+                                    <ArtworkActiveFilterChips
+                                        activeFilterCount={activeFilterCount}
+                                        search={search}
+                                        category={category}
+                                        medium={medium}
+                                        availability={availability}
+                                        sort={sort}
+                                        categories={categories}
+                                        filters={filters}
+                                        onRemove={updateFilters}
+                                        dark
+                                    />
+                                ) : (
+                                    <p className="truncate text-xs text-muted">{t('نمایش آثار عمومی و تأییدشده')}</p>
+                                )}
                             </div>
                             <Button
                                 variant="outline"
                                 type="button"
                                 onClick={openMobileFilters}
                                 aria-haspopup="dialog"
-                                className="lg:hidden"
+                                className="shrink-0 lg:hidden"
                             >
                                 <SlidersHorizontal size={16} aria-hidden="true" />
                                 {t('فیلترها')}
@@ -581,20 +596,7 @@ export default function ArtworkCatalogue() {
                                     </span>
                                 )}
                             </Button>
-                            <p className="hidden text-xs text-muted lg:block">{t('نمایش آثار عمومی و تأییدشده')}</p>
                         </div>
-
-                        <ArtworkActiveFilterChips
-                            activeFilterCount={activeFilterCount}
-                            search={search}
-                            category={category}
-                            medium={medium}
-                            availability={availability}
-                            sort={sort}
-                            categories={categories}
-                            filters={filters}
-                            onRemove={updateFilters}
-                        />
                         <div ref={filterSummaryEndRef} className="h-px w-full" aria-hidden="true" />
 
                         {loading ? (
@@ -648,6 +650,27 @@ export default function ArtworkCatalogue() {
                 >
                     <Container width="wide">
                         <div className="flex min-w-0 items-center gap-3 py-3">
+                            <p aria-live="polite" className="shrink-0 whitespace-nowrap text-xs font-bold text-ink sm:text-sm">
+                                {loading ? t('در حال دریافت آثار…') : meta.total.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('اثر')}
+                            </p>
+                            <div className="min-w-0 flex-1">
+                                {activeFilterCount > 0 ? (
+                                    <ArtworkActiveFilterChips
+                                        activeFilterCount={activeFilterCount}
+                                        search={search}
+                                        category={category}
+                                        medium={medium}
+                                        availability={availability}
+                                        sort={sort}
+                                        categories={categories}
+                                        filters={filters}
+                                        onRemove={updateFilters}
+                                        dark
+                                    />
+                                ) : (
+                                    <p className="truncate text-xs text-muted">{t('نمایش آثار عمومی و تأییدشده')}</p>
+                                )}
+                            </div>
                             <Button
                                 variant="outline"
                                 type="button"
@@ -663,28 +686,6 @@ export default function ArtworkCatalogue() {
                                     </span>
                                 )}
                             </Button>
-                            <span aria-hidden="true" className="h-6 w-px shrink-0 bg-border lg:hidden" />
-                            <div className="min-w-0 flex-1">
-                                <ArtworkActiveFilterChips
-                                    activeFilterCount={activeFilterCount}
-                                    search={search}
-                                    category={category}
-                                    medium={medium}
-                                    availability={availability}
-                                    sort={sort}
-                                    categories={categories}
-                                    filters={filters}
-                                    onRemove={updateFilters}
-                                    dark
-                                />
-                                {activeFilterCount === 0 && (
-                                    <p className="truncate text-xs text-muted">{t('نمایش آثار عمومی و تأییدشده')}</p>
-                                )}
-                            </div>
-                            <span aria-hidden="true" className="h-6 w-px shrink-0 bg-border" />
-                            <p aria-live="polite" className="shrink-0 whitespace-nowrap text-xs font-bold text-ink sm:text-sm">
-                                {loading ? t('در حال دریافت آثار…') : meta.total.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('اثر')}
-                            </p>
                         </div>
                     </Container>
                 </div>
