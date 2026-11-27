@@ -22,7 +22,7 @@
 
 ### Current implementation status
 
-The foundation, shared container/section architecture, public-route migrations, workspace-route migrations, loading skeletons, and shared control/surface normalization have been applied on this branch. The remaining work is the final audit of route-specific arbitrary values and class duplication, followed by browser-based visual and responsive verification.
+These notes describe work on the former redesign branch, not a verified snapshot of current main. The branch's PR #283 was closed unmerged. Current implementation and token ownership are documented in AI/ARCHITECTURE.md, AI/DESIGN-SYSTEM.md and AI/DESIGN-TOKENS.md. Do not use the old branch status or file list as an active task plan.
 
 Regression tests have been added or updated, but they have **not been executed** in this session. The repository's available color-accessibility workflow is manually dispatched; no workflow run or browser test result is available for the current branch head.
 
