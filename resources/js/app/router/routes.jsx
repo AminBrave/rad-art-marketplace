@@ -11,11 +11,11 @@ import {
 const HomePage = lazy(() => import('../HomePage'));
 const ArtworkCatalogue = lazy(() => import('../../features/artworks/pages/ArtworkCatalogue'));
 const ArtworkDetailPage = lazy(() => import('../../features/artworks/pages/ArtworkDetailPage'));
-const ArtistProfilePage = lazy(() => import('../ArtistProfilePage'));
-const ArtistDirectoryPage = lazy(() => import('../ArtistDirectoryPage'));
+const ArtistProfilePage = lazy(() => import('../../features/artists/pages/ArtistProfilePage'));
+const ArtistDirectoryPage = lazy(() => import('../../features/artists/pages/ArtistDirectoryPage'));
 const PublicInfoPage = lazy(() => import('../PublicInfoPages'));
 const AuthPage = lazy(() => import('../AuthPage'));
-const ArtistWorkspaceOverview = lazy(() => import('../ArtistWorkspaceOverview'));
+const ArtistWorkspaceOverview = lazy(() => import('../../features/artist/pages/ArtistWorkspaceOverview'));
 const BuyerDashboardHome = lazy(() => import('../BuyerWorkspace').then((module) => ({ default: module.BuyerDashboardHome })));
 const AdminDashboardHome = lazy(() => import('../AdminWorkspace').then((module) => ({ default: module.AdminDashboardHome })));
 const AdminArtworkModeration = lazy(() => import('../AdminWorkspace').then((module) => ({ default: module.AdminArtworkModeration })));
