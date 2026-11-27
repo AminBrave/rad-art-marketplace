@@ -29,6 +29,10 @@ See composer.json and package.json for current constraints and scripts.
 ## Frontend state and UI
 
 - Shared UI components currently live under resources/js/components/ui/.
+- Localization dictionaries, locale provider and translation hook are owned by resources/js/shared/i18n/; app/LanguageContext.jsx is a compatibility facade.
+- Theme context, provider and hook are owned by resources/js/shared/theme/; the former app theme modules remain compatibility facades.
+- resources/js/shared/api/httpClient.js configures the shared Axios singleton; bootstrap exposes the same instance as window.axios for legacy consumers.
+- The first feature-owned request/query modules are under resources/js/features/artworks/ and resources/js/features/artists/. Legacy page modules are still under app/ during the staged migration.
 - Global CSS and semantic design variables currently live in resources/css/app.css.
 - TanStack Query is used for server-state concerns; inspect the actual hooks and query keys before changing caching or synchronization behavior.
 - Route guards improve navigation and user experience; server-side authorization remains the security boundary.
