@@ -481,8 +481,11 @@ export default function ArtworkCatalogue() {
                             ref={sidebarScrollRef}
                             data-testid="artwork-filter-sidebar"
                             tabIndex={0}
-                            style={{ maxHeight: `calc(100dvh - 6rem - ${bottomNavigationHeight}px - 1rem)` }}
-                            className="min-w-0 overscroll-y-contain overflow-y-auto pe-3 pb-4"
+                            style={{
+                                maxHeight: 'calc(100dvh - 6rem - 1rem)',
+                                paddingBottom: `calc(${bottomNavigationHeight}px + 1rem)`,
+                            }}
+                            className="min-w-0 overscroll-y-contain overflow-y-auto pe-3"
                             aria-label={t('فیلتر و مرتب‌سازی آثار')}
                         >
                             <div className="flex items-center justify-between gap-3 border-b border-ink pb-4">
