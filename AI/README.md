@@ -18,6 +18,7 @@ This folder contains the current product context and engineering guidance. It is
 - [Design system](DESIGN-SYSTEM.md) — visual principles, tokens and shared UI ownership.
 - [Localization](LOCALIZATION.md) — locale state, translations, localized content and directionality.
 - [Security](SECURITY.md) — security and privacy considerations.
+- [Agent skills](../.agents/skills/README.md) — task workflows and their authoring/validation standard.
 
 ## Maintenance rules
 

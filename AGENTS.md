@@ -3,6 +3,7 @@
 Follow the user's latest explicit direction for the requested outcome, scope and trade-offs. Repository guidance and AI recommendations support the work; they do not override the user.
 
 ## Before changing code
+- Select a relevant workflow from [the agent skills index](.agents/skills/README.md); load only the skill needed for the task.
 - Inspect the current implementation, callers, configuration and relevant documentation. Treat source and runtime evidence as the authority for what exists.
 - Read only the references relevant to the task; do not load the whole documentation set by default.
 - Verify commands and dependency versions in the current manifests and scripts.

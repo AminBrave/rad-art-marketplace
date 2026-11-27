@@ -91,6 +91,8 @@ npm run production
 npm run quality:frontend
 ```
 
+For skill changes, run `npm run skills:check`. This validates portable metadata, shared structure, length, links and index coverage; it does not prove semantic quality or trigger accuracy.
+
 Inspect current scripts before using any command, especially commands that touch databases, external services or shared state. Manual browser, RTL/LTR, theme, responsive, keyboard and assistive-technology checks must be reported separately from automated checks.
 
 Finish with a concise summary of changes, branch/PR/commit, verification actually performed, integration state and remaining risks.

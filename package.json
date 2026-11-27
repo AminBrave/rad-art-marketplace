@@ -30,7 +30,8 @@
     "a11y:colors": "node --test tests/js/colorAccessibility.test.js",
     "build:cpanel": "node scripts/package-cpanel.js",
     "a11y:build": "node scripts/project.mjs a11y:build",
-    "quality:frontend": "npm run architecture:frontend && npm run lint && npm run production"
+    "quality:frontend": "npm run architecture:frontend && npm run lint && npm run production",
+    "skills:check": "node scripts/check-skills.mjs"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.2.1",
