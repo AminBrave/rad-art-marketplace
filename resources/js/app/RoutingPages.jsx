@@ -1,13 +1,71 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import {
+    lazy,
+    Suspense,
+    useEffect,
+    useRef,
+    useState } from 'react';
 import { useLanguage } from './LanguageContext';
 import axios from 'axios';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Link, Navigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
+import { useMutation,
+    useQuery,
+    useQueryClient } from '@tanstack/react-query';
+import { Link,
+    Navigate,
+    Outlet,
+    useLocation,
+    useOutletContext } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useTheme } from './useTheme';
 import { WorkspaceLayout } from './Layouts';
 import { getWorkspacePrimaryLinks } from './workspaceNavigation';
-import { Skeleton, ArtworkCardSkeleton, ArtworkDetailSkeleton, ArtistCardSkeleton, ArtistProfileSkeleton, AdminDashboardSkeleton, ArtistWorkspaceOverviewSkeleton, BuyerDashboardSkeleton, FormFieldSkeleton, ArtworkStudioListSkeleton, ConversationInboxSkeleton, MessageHistorySkeleton, ArtworkModerationSkeleton, AdminUserCardsSkeleton, MessageReportsSkeleton, AdminEditorialSkeleton, CollectionCardSkeleton, CollectionDetailSkeleton, HomePageSkeleton, PageHeader, SectionHeader, WorkspaceHero, Checkbox, FormField, TextInput, TextareaField, Button, Container, Section, FileInput, MediaImage } from '../components/ui';
+import { Skeleton,
+    FormFieldSkeleton,
+    PageHeader,
+    SectionHeader,
+    WorkspaceHero,
+    Checkbox,
+    FormField,
+    TextInput,
+    TextareaField,
+    Button,
+    Container,
+    Section,
+    FileInput,
+    MediaImage,
+} from '../shared/ui';
+import {
+    ArtworkCardSkeleton,
+    ArtworkDetailSkeleton,
+} from '../features/artworks';
+import {
+    ArtistCardSkeleton,
+    ArtistProfileSkeleton,
+} from '../features/artists';
+import {
+    AdminDashboardSkeleton,
+    ArtworkModerationSkeleton,
+    AdminUserCardsSkeleton,
+    MessageReportsSkeleton,
+    AdminEditorialSkeleton,
+} from '../features/admin';
+import {
+    ArtistWorkspaceOverviewSkeleton,
+    ArtworkStudioListSkeleton,
+} from '../features/artist';
+import {
+    BuyerDashboardSkeleton,
+} from '../features/buyer';
+import {
+    ConversationInboxSkeleton,
+    MessageHistorySkeleton,
+} from '../features/messaging';
+import {
+    CollectionCardSkeleton,
+    CollectionDetailSkeleton,
+} from '../features/collections';
+import {
+    HomePageSkeleton,
+} from '../features/home';
 const ArtworkStudio = lazy(() => import('./ArtworkStudio'));
 
 const emptyProfile = { display_name: '', display_name_en: '', bio: '', bio_en: '', city: '', city_en: '', website_url: '', instagram_handle: '', is_public: true };
