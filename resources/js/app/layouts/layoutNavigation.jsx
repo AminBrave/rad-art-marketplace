@@ -193,7 +193,7 @@ export function NotificationBell({ user, onNavigate }) {
 
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog modal={false} open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button variant="ghost"
                     type="button"
@@ -209,6 +209,7 @@ export function NotificationBell({ user, onNavigate }) {
                 </Button>
             </DialogTrigger>
             <DialogContent
+                nonModalOverlay
                 id="workspace-notification-panel"
                 placement="drawer"
                 className="!w-[min(25rem,100vw)] !p-0 flex flex-col !overflow-hidden text-start"
