@@ -159,11 +159,11 @@ function ArtworkActiveFilterChips({
     if (activeFilterCount === 0) return null;
 
     const chipClass = dark
-        ? "inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3 text-xs font-semibold text-white transition-colors hover:border-white/60 hover:bg-white/20"
+        ? "inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-full border border-border bg-surface-muted px-3 text-xs font-semibold text-ink transition-colors hover:border-action"
         : "inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-full border border-border bg-paper px-3 text-xs font-semibold text-ink hover:border-terracotta";
     return (
         <div className={`flex min-w-0 items-center gap-2 ${dark ? 'overflow-x-auto overscroll-x-contain whitespace-nowrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden' : 'mt-5 flex-wrap'}`} aria-label={t('معیارهای فعال')}>
-            <span className={`shrink-0 text-xs font-bold ${dark ? 'text-white/70' : 'text-muted'}`}>{t('انتخاب شما:')}</span>
+            <span className={`shrink-0 text-xs font-bold ${text-muted}`}>{t('انتخاب شما:')}</span>
             {search && <Button variant="outline" type="button" onClick={() => onRemove({ q: '' })} className={chipClass}>{search}<X size={12} aria-hidden="true" /></Button>}
             {category && <Button variant="outline" type="button" onClick={() => onRemove({ category: '' })} className={chipClass}>{localizedValue(categories.find((item) => item.slug === category), 'name', locale) || category}<X size={12} aria-hidden="true" /></Button>}
             {medium && <Button variant="outline" type="button" onClick={() => onRemove({ medium: '' })} className={chipClass}>{medium}<X size={12} aria-hidden="true" /></Button>}
@@ -462,11 +462,11 @@ export default function ArtworkCatalogue() {
                 <div
                     aria-hidden={!stickyToolbarVisible}
                     style={{ top: stickyToolbarTop }}
-                    className={`fixed inset-x-0 z-40 border-b border-white/10 bg-ink text-white shadow-lg transition-[transform,opacity,visibility] duration-200 motion-reduce:transition-none ${stickyToolbarVisible ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-full opacity-0 pointer-events-none'}`}
+                    className={`fixed inset-x-0 z-40 border-b border-divider-section bg-surface text-ink shadow-soft transition-[transform,opacity,visibility] duration-200 motion-reduce:transition-none ${stickyToolbarVisible ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-full opacity-0 pointer-events-none'}`}
                 >
                     <Container width="wide">
                         <div className="flex min-w-0 items-center gap-3 py-2.5">
-                            <p aria-live="polite" className="shrink-0 whitespace-nowrap text-xs font-bold text-white sm:text-sm">
+                            <p aria-live="polite" className="shrink-0 whitespace-nowrap text-xs font-bold text-ink sm:text-sm">
                                 {loading ? t('در حال دریافت آثار…') : meta.total.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US') + ' ' + t('اثر')}
                             </p>
                             <Button
@@ -474,12 +474,12 @@ export default function ArtworkCatalogue() {
                                 type="button"
                                 onClick={openMobileFilters}
                                 aria-haspopup="dialog"
-                                className="min-h-9 shrink-0 border-white/30 bg-white/10 px-3 text-white hover:bg-white/20 hover:text-white lg:hidden"
+                                className="min-h-9 shrink-0 border-border bg-surface-muted px-3 text-ink hover:border-action hover:bg-surface hover:text-ink lg:hidden"
                             >
                                 <SlidersHorizontal size={15} aria-hidden="true" />
                                 {t('فیلترها')}
                                 {activeFilterCount > 0 && (
-                                    <span className="ms-1 inline-flex min-w-5 items-center justify-center rounded-full bg-white/15 px-1.5 py-0.5 text-xs tabular-nums text-white">
+                                    <span className="ms-1 inline-flex min-w-5 items-center justify-center bg-surface px-1.5 py-0.5 text-xs tabular-nums text-ink">
                                         {activeFilterCount.toLocaleString(locale === 'fa' ? 'fa-IR' : 'en-US')}
                                     </span>
                                 )}
@@ -498,7 +498,7 @@ export default function ArtworkCatalogue() {
                                     dark
                                 />
                                 {activeFilterCount === 0 && (
-                                    <p className="truncate text-xs text-white/65">{t('نمایش آثار عمومی و تأییدشده')}</p>
+                                    <p className="truncate text-xs text-muted">{t('نمایش آثار عمومی و تأییدشده')}</p>
                                 )}
                             </div>
                         </div>
