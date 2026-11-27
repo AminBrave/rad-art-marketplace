@@ -326,7 +326,7 @@ export default function ArtworkCatalogue() {
     );
     const sidebarFades = useScrollOverflow(sidebarScrollRef, {
         axis: 'vertical',
-        contentKey: [activeFilterCount, bottomNavigationHeight, filtersLoading, filtersError].join('|'),
+        contentKey: [activeFilterCount, viewportHeight, bottomNavigationInset, filtersLoading, filtersError].join('|'),
     });
     const measureMobileFilterFades = () => {
         const element = mobileFilterScrollRef.current;
