@@ -347,7 +347,7 @@ class ArtworkCatalogueResilienceTests(unittest.TestCase):
 
             sidebar = page.locator("aside")
             sidebar.wait_for(state="visible")
-            results_box = page.locator("main").bounding_box()
+            results_box = page.locator("#main-content main").bounding_box()
             sidebar_box = sidebar.bounding_box()
             self.assertGreater(sidebar_box["x"], results_box["x"])
             self.assertTrue(sidebar.get_by_role("group", name="دسته‌بندی هنری").is_visible())
