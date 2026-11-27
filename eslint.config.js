@@ -34,4 +34,22 @@ export default [
             ],
         },
     },
+    // These files are deliberate compatibility facades; the react-refresh rule
+    // cannot statically validate wildcard re-exports in re-export-only modules.
+    {
+        files: [
+            'resources/js/components/ui/AlertDialog.jsx',
+            'resources/js/components/ui/BrandLogo.jsx',
+            'resources/js/components/ui/Dialog.jsx',
+            'resources/js/components/ui/Tooltip.jsx',
+            'resources/js/components/ui/feedback.jsx',
+            'resources/js/components/ui/layout.jsx',
+            'resources/js/components/ui/navigation.jsx',
+            'resources/js/components/ui/primitives.jsx',
+            'resources/js/shared/ui/primitives.jsx',
+        ],
+        rules: {
+            'react-refresh/only-export-components': 'off',
+        },
+    },
 ];
