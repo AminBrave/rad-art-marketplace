@@ -1,2 +1,2 @@
-// Compatibility facade. Artwork engagement is owned by the artworks feature.
-export { default } from '../features/artworks/components/ArtworkEngagement';
+// Compatibility facade. This domain module is owned by its feature public entry point.
+export { ArtworkEngagement as default } from '../features/artworks';
