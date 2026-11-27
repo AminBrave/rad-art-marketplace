@@ -16,24 +16,6 @@ const roots = {
     ],
 };
 
-// Exact, temporary exceptions for dependencies that are scheduled to move in
-// the localization/theme and shared-component stages. Do not add broad globs.
-const legacySharedImportAllowlist = new Map([
-    ['resources/js/components/ui/cards.jsx', new Set([
-        '../../app/LanguageContext',
-    ])],
-    ['resources/js/components/ui/feedback.jsx', new Set([
-        '../../app/LanguageContext',
-    ])],
-    ['resources/js/components/ui/layout.jsx', new Set([
-        '../../app/LanguageContext',
-    ])],
-    ['resources/js/components/ui/BrandLogo.jsx', new Set([
-        '../../app/LanguageContext',
-        '../../app/useTheme',
-    ])],
-]);
-
 function isWithin(candidate, directory) {
     const relativePath = path.relative(directory, candidate);
     return relativePath === '' || (!relativePath.startsWith('..') && !path.isAbsolute(relativePath));
@@ -101,7 +83,6 @@ const sourceFiles = [
 ].filter((file, index, all) => all.indexOf(file) === index);
 
 const violations = [];
-const legacyWarnings = [];
 
 for (const sourceFile of sourceFiles) {
     const relativeFile = path.relative(projectRoot, sourceFile).split(path.sep).join('/');
@@ -121,21 +102,12 @@ for (const sourceFile of sourceFiles) {
         const targetFeature = featurePath(target);
 
         if (isShared && (targetIsApp || targetFeature !== null)) {
-            const allowed = legacySharedImportAllowlist.get(relativeFile)?.has(imported.specifier);
-            if (allowed) {
-                legacyWarnings.push({
-                    file: relativeFile,
-                    line: imported.line,
-                    specifier: imported.specifier,
-                });
-            } else {
-                violations.push({
-                    file: relativeFile,
-                    line: imported.line,
-                    message: 'Shared code must not depend on app or feature modules.',
-                    specifier: imported.specifier,
-                });
-            }
+            violations.push({
+                file: relativeFile,
+                line: imported.line,
+                message: 'Shared code must not depend on app or feature modules.',
+                specifier: imported.specifier,
+            });
         }
 
         if (isFeature && targetIsApp) {
@@ -168,13 +140,6 @@ for (const sourceFile of sourceFiles) {
     }
 }
 
-if (legacyWarnings.length) {
-    console.warn('Known transitional shared-layer dependencies:');
-    for (const warning of legacyWarnings) {
-        console.warn(`  WARN ${warning.file}:${warning.line} -> ${warning.specifier}`);
-    }
-}
-
 if (violations.length) {
     console.error('\nFrontend architecture boundary violations:');
     for (const violation of violations) {
@@ -184,7 +149,4 @@ if (violations.length) {
     process.exitCode = 1;
 } else {
     console.log(`Frontend architecture boundaries passed across ${sourceFiles.length} source file(s).`);
-    if (legacyWarnings.length) {
-        console.log(`${legacyWarnings.length} documented transitional import(s) remain; remove them in their scheduled migration stages.`);
-    }
 }
