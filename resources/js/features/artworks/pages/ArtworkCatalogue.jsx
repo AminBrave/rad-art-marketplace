@@ -220,6 +220,8 @@ export default function ArtworkCatalogue() {
     const filterSummaryEndRef = useRef(null);
     const archiveSectionRef = useRef(null);
     const sidebarScrollRef = useRef(null);
+    const stickyToolbarRef = useRef(null);
+    const [stickyToolbarHeight, setStickyToolbarHeight] = useState(0);
     const mobileFilterScrollRef = useRef(null);
     const [viewportHeight, setViewportHeight] = useState(() => (typeof window === 'undefined' ? 0 : window.innerHeight));
     const [bottomNavigationInset, setBottomNavigationInset] = useState(0);
@@ -235,6 +237,35 @@ export default function ArtworkCatalogue() {
         offset: 12,
         onBeforeScroll: () => suppressDirectionFor(1500),
     });
+
+    useLayoutEffect(() => {
+        const toolbar = stickyToolbarRef.current;
+        if (!stickyToolbarEnabled || !toolbar) {
+            setStickyToolbarHeight(0);
+            return undefined;
+        }
+
+        const measureToolbar = () => {
+            const height = toolbar.getBoundingClientRect().height;
+            setStickyToolbarHeight((current) => (
+                Math.abs(current - height) > 1 ? height : current
+            ));
+        };
+
+        measureToolbar();
+        const observer = typeof ResizeObserver === 'function'
+            ? new ResizeObserver(measureToolbar)
+            : null;
+        observer?.observe(toolbar);
+        window.addEventListener('resize', measureToolbar);
+        window.visualViewport?.addEventListener('resize', measureToolbar);
+
+        return () => {
+            observer?.disconnect();
+            window.removeEventListener('resize', measureToolbar);
+            window.visualViewport?.removeEventListener('resize', measureToolbar);
+        };
+    }, [stickyToolbarEnabled]);
 
     useLayoutEffect(() => {
         const navigation = document.querySelector(
@@ -486,7 +517,10 @@ export default function ArtworkCatalogue() {
                 <div className="mt-8 grid min-w-0 gap-8 lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-9">
                     <div
                         className="relative hidden min-w-0 lg:sticky lg:block lg:self-start"
-                        style={{ top: stickyToolbarTop + 16 }}
+                        style={{
+                            top: stickyToolbarTop + 16 + (stickyToolbarVisible ? stickyToolbarHeight : 0),
+                            transition: 'top 200ms ease-in-out',
+                        }}
                     >
                         <aside
                             ref={sidebarScrollRef}
@@ -605,6 +639,7 @@ export default function ArtworkCatalogue() {
 
             {stickyToolbarEnabled && (
                 <div
+                    ref={stickyToolbarRef}
                     aria-hidden={!stickyToolbarVisible}
                     style={{ top: stickyToolbarTop }}
                     className={`fixed inset-x-0 z-40 border-b border-divider-section bg-[color:color-mix(in_srgb,var(--color-canvas)_96%,transparent)] text-ink shadow-soft backdrop-blur supports-[backdrop-filter]:bg-[color:color-mix(in_srgb,var(--color-canvas)_90%,transparent)] transition-[transform,opacity,visibility] duration-200 motion-reduce:transition-none ${stickyToolbarVisible ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-full opacity-0 pointer-events-none'}`}
