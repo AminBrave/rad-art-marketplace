@@ -3,7 +3,7 @@ import { useLanguage } from '../../../shared/i18n';
 import axios from '../../../shared/api/httpClient';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useOutletContext } from 'react-router-dom';
-import { RouteLoading } from './router/guards';
+import { WorkspaceIdentitySkeleton } from '../components/skeletons';
 
 const emptyProfile = { display_name: '', display_name_en: '', bio: '', bio_en: '', city: '', city_en: '', website_url: '', instagram_handle: '', is_public: true };
 
@@ -75,7 +75,7 @@ export function ArtistProfileSettings() {
         }
     };
 
-    if (profileLoading) return <RouteLoading label={t("در حال دریافت پروفایل هنرمند…")} />;
+    if (profileLoading) return <WorkspaceIdentitySkeleton />;
 
     return (
         <section className="min-w-0 mx-auto w-full max-w-content space-y-6">

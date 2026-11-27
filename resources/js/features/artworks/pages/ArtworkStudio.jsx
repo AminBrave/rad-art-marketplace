@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from '../../../shared/api/httpClient';
 import { Link, useLocation } from 'react-router-dom';
 import { Badge, Button, EmptyState, ErrorState, FormField, TextInput, TextareaField, FileInput, UploadFeedback, MediaImage, PageHeader, SectionHeader, SelectField } from '../../../shared/ui';
-import { ArtworkStudioListSkeleton } from '../../artist';
+import { ArtworkStudioListSkeleton } from '../components/skeletons';
 
 const emptyArtwork = { title: '', title_en: '', description: '', description_en: '', city: '', city_en: '', category_id: '', medium: '', dimensions: '', year: '', price: '', availability: 'available' };
 const statusLabels = { pending_review: 'در انتظار بررسی', approved: 'تأیید و منتشرشده', rejected: 'ردشده', changes_requested: 'نیازمند اصلاح' };
