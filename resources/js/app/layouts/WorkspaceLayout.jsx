@@ -66,7 +66,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
     }, [isMessagingRoute, unreadInboxEndpoint, queryClient, user?.id]);
 
     return (
-        <Dialog open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+        <Dialog modal={false} open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <div data-experience={user?.role ?? 'workspace'} className={isMessagingRoute ? "flex h-dvh flex-col overflow-hidden bg-canvas text-ink" : "min-h-screen bg-canvas text-ink"}>
             <header className="sticky top-0 z-40 shrink-0 border-b border-divider-section bg-[color:color-mix(in_srgb,var(--color-paper)_96%,transparent)] backdrop-blur">
                 <div className="mx-auto flex min-h-[4.5rem] max-w-content items-center justify-between gap-3 px-page-gutter sm:min-h-20 sm:gap-4">
@@ -85,6 +85,7 @@ export function WorkspaceLayout({ title, links, outletContext }) {
             </header>
 
             <DialogContent
+                nonModalOverlay
                 placement="drawer"
                 className="flex flex-col"
             >
