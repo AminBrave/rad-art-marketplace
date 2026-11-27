@@ -81,8 +81,6 @@ export function Badge({ children, variant = 'neutral', className = '' }) {
 }
 
 
-// Backward-compatible name; Container in layout.jsx is the single implementation.
-
 const controlClass = 'w-full min-h-11  border border-border-strong bg-paper px-3.5 py-2 font-sans text-sm text-ink transition-colors placeholder:text-subtle focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:bg-surface-muted disabled:opacity-65 aria-[invalid=true]:border-danger';
 
 
