@@ -108,6 +108,7 @@ export function SelectField({
     name,
     required = false,
     disabled = false,
+    modal = false,
     placeholder,
     ...triggerProps
 }) {
@@ -128,6 +129,7 @@ export function SelectField({
             name={name}
             required={required}
             disabled={disabled}
+            modal={modal}
         >
             <SelectPrimitive.Trigger
                 className={cn(controlClass, 'flex items-center justify-between gap-3 text-start', className, '')}
