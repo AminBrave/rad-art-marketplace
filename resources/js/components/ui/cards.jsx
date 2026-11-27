@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { formatArtworkPrice } from '../../utils/formatArtworkPrice';
-import { useLanguage } from '../../app/LanguageContext';
+import { useLanguage } from '../../shared/i18n';
 import { localizedValue } from '../../utils/localizedContent';
 import { MediaImage } from './feedback';
 import { cn } from '../../lib/utils';
