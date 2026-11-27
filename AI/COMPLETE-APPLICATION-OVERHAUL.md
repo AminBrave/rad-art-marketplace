@@ -1,10 +1,12 @@
 # Rademan — complete application overhaul execution map
 
-**Status:** Active implementation  
-**Working branch:** `agent-chatgpt/rademan-redesign`  
-**Pull request:** #283 (draft; do not merge without owner approval)  
-**Product direction:** distinctive editorial art-market experience; Persian-first RTL with resilient LTR handling  
-**Constraint:** preserve existing Laravel/API contracts, authentication, role boundaries, moderation policy, privacy rules, and user data unless a separate approved product change is required.
+**Status:** Historical coverage ledger; not an active implementation workstream  
+**Former branch:** agent-chatgpt/rademan-redesign (historical; do not assume it is current or active)  
+**Former pull request:** [#283](https://github.com/AminBrave/rad-art-marketplace/pull/283) — closed unmerged on 2026-11-24  
+**Current architecture work:** Issue [#294](https://github.com/AminBrave/rad-art-marketplace/issues/294); Stages 1–6 are merged, Stage 7 is the current final conformance pass  
+**Separate open work:** [PR #293](https://github.com/AminBrave/rad-art-marketplace/pull/293) targets main from refactor/292-unified-spacing-layout and remains unmerged. It is not part of PR #283 or Issue #294's merged history.
+
+> **Status warning:** The route and accessibility checkboxes below are an unverified coverage backlog, not a report of current completion. The historical implementation notes refer to an earlier branch and must not be treated as source-backed facts about current main. Use AI/ARCHITECTURE.md, AI/FRONTEND-ARCHITECTURE.md and AI/DESIGN-SYSTEM.md for current implementation guidance. Do not resume the former branch or infer that PR #283's work was integrated.
 
 This document is the coverage ledger for the complete application overhaul. It is intentionally broader than a homepage redesign or component refresh. Every route, shared surface, interaction state, viewport, and accessibility concern below must be reviewed and either redesigned, verified as already meeting the target, or explicitly recorded as not applicable. A checkbox is not complete merely because a component exists; the rendered experience and behavior must be inspected.
 
@@ -132,9 +134,9 @@ Before the overhaul can be called complete, run and report the current repositor
 
 Work proceeds in vertical slices, but the coverage ledger remains the source of truth until every applicable item is verified.
 
-## 9. Current implementation log
+## 9. Historical implementation notes (not current-main verification)
 
-### Slice A — shared editorial foundation (implemented; fresh verification pending)
+### Former Slice A — shared editorial foundation (historical branch notes)
 
 - Updated shared artwork and artist card treatments in `resources/js/components/ui/cards.jsx`.
 - Refined shared button, page-header, section-header, workspace-hero, metric-card and surface treatments in `resources/js/components/ui/primitives.jsx`.
@@ -148,13 +150,13 @@ Work proceeds in vertical slices, but the coverage ledger remains the source of 
 - Aligned route fallbacks and reusable loading skeletons with the updated visual grammar in `RoutingPages.jsx` and `components/ui/skeletons.jsx`.
 - Documented the editorial visual language in `AI/DESIGN-SYSTEM.md`.
 
-**Verification state:** the user confirmed the previous local test suite passed before this slice. No fresh lint, build, automated test, browser, keyboard, screen-reader, or visual-regression run has been observed after these edits. This slice is therefore implemented but not yet verified.
+**Historical verification state:** this was reported for the former branch only. PR #283 was closed unmerged, so it does not establish verification of current main.
 
 ### Still open
 
 All unchecked route, state, breakpoint, accessibility and regression items in sections 2–7 remain open until individually reviewed. In particular, do not infer that a shared-component update alone completes every consumer route. Continue with route-specific review of authentication and public information pages, artist profile editing and artwork studio, every admin workflow, messaging inbox/history/safety/attachment states, notification preferences, and all responsive/theme combinations.
 
-### Slice B — role workspaces, authoring, overlays and loading consistency (implemented; fresh verification pending)
+### Former Slice B — role workspaces, authoring, overlays and loading consistency (historical branch notes)
 
 - Refreshed the role-aware workspace shell, desktop navigation rail and mobile navigation treatment in `resources/js/app/Layouts.jsx`.
 - Restyled sign-in/registration and the artist profile editor without changing authentication or profile mutation behavior in `AuthPage.jsx` and `RoutingPages.jsx`.
@@ -163,13 +165,13 @@ All unchecked route, state, breakpoint, accessibility and regression items in se
 - Updated shared dialog and confirmation dialog framing in `Dialog.jsx` and `AlertDialog.jsx`.
 - Updated route-specific and reusable loading skeletons in `RoutingPages.jsx` and `skeletons.jsx` to better match the revised page geometry.
 
-**Verification state:** no GitHub Actions PR workflow runs are associated with the latest commit. These changes still require a fresh local lint/build/test/browser pass and manual visual inspection in both themes and at the required viewport widths.
+**Historical verification state:** no current-main verification can be inferred from this note. Use the active quality workflow and record manual checks against the current branch.
 
-### Slice C — administration, public information and recovery states (implemented; fresh verification pending)
+### Former Slice C — administration, public information and recovery states (historical branch notes)
 
 - Updated the admin dashboard's artwork preview to preserve the complete artwork image and refined report metrics into the editorial surface system in `AdminWorkspace.jsx`.
 - Refined public About/Help/Contact reading hierarchy in `PublicInfoPages.jsx`.
 - Restyled unauthorized and not-found recovery pages in `RoutingPages.jsx`.
 - Kept moderation decisions, role-change confirmation, report review, destructive confirmations and all server-side permission checks unchanged.
 
-**Verification state:** these additions are also unverified by a fresh local run. No route is marked complete in the ledger solely because this visual pass has been applied.
+**Historical verification state:** this former branch note does not establish current-main route or visual conformance.
