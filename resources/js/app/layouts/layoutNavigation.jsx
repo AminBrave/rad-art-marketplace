@@ -210,6 +210,7 @@ export function NotificationBell({ user, onNavigate }) {
             </DialogTrigger>
             <DialogContent
                 nonModalOverlay
+                overlayOpen={open}
                 id="workspace-notification-panel"
                 placement="drawer"
                 className="!w-[min(25rem,100vw)] !p-0 flex flex-col !overflow-hidden text-start"
