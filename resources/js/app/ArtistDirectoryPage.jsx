@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchArtists } from '../features/artists';
-import { artistKeys } from '../features/artists';
+import { fetchArtists, artistKeys } from '../features/artists';
 import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from './LanguageContext';
 import { ArtistCard, ArtistCardSkeleton, EmptyState, ErrorState, SearchField, SectionHeader, Button, Section, Container } from '../components/ui';
