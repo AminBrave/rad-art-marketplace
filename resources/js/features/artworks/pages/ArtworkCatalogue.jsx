@@ -19,7 +19,6 @@ import {
     ErrorState,
     PageHeader,
     SearchField,
-    SelectField,
 } from '../../../shared/ui';
 import { ArtworkCardSkeleton } from '../components/skeletons';
 
@@ -59,39 +58,42 @@ function ArtworkFilterControls({
 
             <div className="grid gap-2 border-t border-divider-section pt-4">
                 <label className="text-sm font-bold text-ink" htmlFor={idPrefix + "-artwork-filter-category"}>{t('دسته‌بندی')}</label>
-                <SelectField
+                <select
                     id={idPrefix + "-artwork-filter-category"}
                     value={values.category}
                     onChange={(event) => onChange({ category: event.target.value })}
                     aria-label={t('فیلتر دسته‌بندی')}
+                    className="min-h-11 w-full appearance-auto border border-border-strong bg-paper px-3.5 py-2 font-sans text-sm text-ink focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                 >
                     <option value="">{t('همه دسته‌ها')}</option>
                     {categories.map((item) => (
                         <option key={item.id} value={item.slug}>{localizedValue(item, 'name', locale)}</option>
                     ))}
-                </SelectField>
+                </select>
             </div>
 
             <div className="grid gap-2 border-t border-divider-section pt-4">
                 <label className="text-sm font-bold text-ink" htmlFor={idPrefix + "-artwork-filter-medium"}>{t('تکنیک و مواد')}</label>
-                <SelectField
+                <select
                     id={idPrefix + "-artwork-filter-medium"}
                     value={values.medium}
                     onChange={(event) => onChange({ medium: event.target.value })}
                     aria-label={t('فیلتر تکنیک و مواد')}
+                    className="min-h-11 w-full appearance-auto border border-border-strong bg-paper px-3.5 py-2 font-sans text-sm text-ink focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                 >
                     <option value="">{t('همه تکنیک‌ها')}</option>
                     {(filters.mediums ?? []).map((item) => <option key={item} value={item}>{t(item)}</option>)}
-                </SelectField>
+                </select>
             </div>
 
             <div className="grid gap-2 border-t border-divider-section pt-4">
                 <label className="text-sm font-bold text-ink" htmlFor={idPrefix + "-artwork-filter-availability"}>{t('وضعیت اثر')}</label>
-                <SelectField
+                <select
                     id={idPrefix + "-artwork-filter-availability"}
                     value={values.availability}
                     onChange={(event) => onChange({ availability: event.target.value })}
                     aria-label={t('فیلتر وضعیت اثر')}
+                    className="min-h-11 w-full appearance-auto border border-border-strong bg-paper px-3.5 py-2 font-sans text-sm text-ink focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                 >
                     <option value="">{t('همه وضعیت‌ها')}</option>
                     {(filters.availability ?? []).map((item) => (
@@ -99,23 +101,24 @@ function ArtworkFilterControls({
                             {locale === 'en' ? (item.label_en || item.label) : item.label}
                         </option>
                     ))}
-                </SelectField>
+                </select>
             </div>
 
             <div className="grid gap-2 border-t border-divider-section pt-4">
                 <label className="text-sm font-bold text-ink" htmlFor={idPrefix + "-artwork-filter-sort"}>{t('مرتب‌سازی آثار')}</label>
-                <SelectField
+                <select
                     id={idPrefix + "-artwork-filter-sort"}
                     value={values.sort}
                     onChange={(event) => onChange({ sort: event.target.value })}
                     aria-label={t('مرتب‌سازی آثار')}
+                    className="min-h-11 w-full appearance-auto border border-border-strong bg-paper px-3.5 py-2 font-sans text-sm text-ink focus-visible:border-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                 >
                     {sortOptions.map((item) => (
                         <option key={item.value} value={item.value}>
                             {locale === 'en' ? (item.label_en || item.label) : item.label}
                         </option>
                     ))}
-                </SelectField>
+                </select>
             </div>
 
             {filtersError && (
@@ -379,8 +382,8 @@ export default function ArtworkCatalogue() {
 
             <Dialog open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
                 <DialogContent
-                    placement="drawer"
-                    className="flex w-[min(26rem,calc(100vw-1rem))] flex-col gap-0 overflow-hidden"
+                    placement="center"
+                    className="flex h-[min(42rem,calc(100dvh-6rem))] w-[min(26rem,calc(100vw-6rem))] flex-col gap-0 overflow-hidden"
                     aria-label={t('فیلتر و مرتب‌سازی آثار')}
                 >
                     <div className="flex items-start justify-between gap-4 border-b border-divider-section p-5">
