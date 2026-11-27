@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import {
+    useState } from 'react';
 import {
     ArtistCard,
-    ArtworkCard,
     Badge,
     Breadcrumbs,
     Button,
@@ -55,7 +55,10 @@ import {
     Spinner,
     Text,
     VisuallyHidden,
-} from '../components/ui';
+} from '../shared/ui';
+import {
+    ArtworkCard,
+} from '../features/artworks';
 
 const sampleArtwork = {
     slug: 'sample-work',
